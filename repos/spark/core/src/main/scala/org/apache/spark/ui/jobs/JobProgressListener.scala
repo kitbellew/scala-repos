@@ -92,10 +92,12 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
   // To limit the total memory usage of JobProgressListener, we only track information for a fixed
   // number of non-active jobs and stages (there is no limit for active jobs and stages):
 
-  val retainedStages =
-    conf.getInt("spark.ui.retainedStages", SparkUI.DEFAULT_RETAINED_STAGES)
-  val retainedJobs =
-    conf.getInt("spark.ui.retainedJobs", SparkUI.DEFAULT_RETAINED_JOBS)
+  val retainedStages = conf.getInt(
+    "spark.ui.retainedStages",
+    SparkUI.DEFAULT_RETAINED_STAGES)
+  val retainedJobs = conf.getInt(
+    "spark.ui.retainedJobs",
+    SparkUI.DEFAULT_RETAINED_JOBS)
 
   // We can test for memory leaks by ensuring that collections that track non-active jobs and
   // stages do not grow without bound and that collections for active jobs/stages eventually become
@@ -182,13 +184,12 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         for (props <- Option(jobStart.properties);
              group <- Option(
                props.getProperty(SparkContext.SPARK_JOB_GROUP_ID))) yield group
-      val jobData: JobUIData =
-        new JobUIData(
-          jobId = jobStart.jobId,
-          submissionTime = Option(jobStart.time).filter(_ >= 0),
-          stageIds = jobStart.stageIds,
-          jobGroup = jobGroup,
-          status = JobExecutionStatus.RUNNING)
+      val jobData: JobUIData = new JobUIData(
+        jobId = jobStart.jobId,
+        submissionTime = Option(jobStart.time).filter(_ >= 0),
+        stageIds = jobStart.stageIds,
+        jobGroup = jobGroup,
+        status = JobExecutionStatus.RUNNING)
       // A null jobGroupId is used for jobs that are run without a job group
       jobGroupToJobIds
         .getOrElseUpdate(jobGroup.orNull, new HashSet[JobId])
@@ -384,8 +385,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         }
 
         val execSummaryMap = stageData.executorSummary
-        val execSummary =
-          execSummaryMap.getOrElseUpdate(info.executorId, new ExecutorSummary)
+        val execSummary = execSummaryMap.getOrElseUpdate(
+          info.executorId,
+          new ExecutorSummary)
 
         taskEnd.reason match {
           case Success =>
@@ -415,13 +417,14 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
             Some(TaskMetrics.fromAccumulatorUpdates(accums))
           } else { None }
         taskMetrics.foreach { m =>
-          val oldMetrics =
-            stageData.taskData.get(info.taskId).flatMap(_.taskMetrics)
+          val oldMetrics = stageData.taskData
+            .get(info.taskId)
+            .flatMap(_.taskMetrics)
           updateAggregateMetrics(stageData, info.executorId, m, oldMetrics)
         }
 
-        val taskData =
-          stageData.taskData.getOrElseUpdate(info.taskId, new TaskUIData(info))
+        val taskData = stageData.taskData
+          .getOrElseUpdate(info.taskId, new TaskUIData(info))
         taskData.taskInfo = info
         taskData.taskMetrics = taskMetrics
         taskData.errorMessage = errorMessage
@@ -451,8 +454,8 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
       execId: String,
       taskMetrics: TaskMetrics,
       oldMetrics: Option[TaskMetrics]) {
-    val execSummary =
-      stageData.executorSummary.getOrElseUpdate(execId, new ExecutorSummary)
+    val execSummary = stageData.executorSummary
+      .getOrElseUpdate(execId, new ExecutorSummary)
 
     val shuffleWriteDelta =
       (taskMetrics.shuffleWriteMetrics.map(_.bytesWritten).getOrElse(0L)

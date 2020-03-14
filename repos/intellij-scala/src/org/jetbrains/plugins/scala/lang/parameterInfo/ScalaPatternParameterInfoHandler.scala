@@ -252,8 +252,9 @@ class ScalaPatternParameterInfoHandler
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
     if (element == null) return null
-    val args: ScPatternArgumentList =
-      PsiTreeUtil.getParentOfType(element, getArgumentListClass)
+    val args: ScPatternArgumentList = PsiTreeUtil.getParentOfType(
+      element,
+      getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext =>
@@ -273,21 +274,20 @@ class ScalaPatternParameterInfoHandler
                       val subst =
                         if (fun.typeParameters.length == 0) substitutor
                         else {
-                          val undefSubst =
-                            fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                              (s, p) =>
-                                s.bindT(
-                                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                                  ScUndefinedType(
-                                    new ScTypeParameterType(p, substitutor))))
-                          val emptySubst: ScSubstitutor =
-                            fun.typeParameters.foldLeft(ScSubstitutor.empty)(
-                              (s, p) =>
-                                s.bindT(
-                                  (p.name, ScalaPsiUtil.getPsiElementId(p)),
-                                  p.upperBound.getOrAny))
-                          val result =
-                            fun.parameters(0).getType(TypingContext.empty)
+                          val undefSubst = fun.typeParameters.foldLeft(
+                            ScSubstitutor.empty)((s, p) =>
+                            s.bindT(
+                              (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                              ScUndefinedType(
+                                new ScTypeParameterType(p, substitutor))))
+                          val emptySubst: ScSubstitutor = fun.typeParameters
+                            .foldLeft(ScSubstitutor.empty)((s, p) =>
+                              s.bindT(
+                                (p.name, ScalaPsiUtil.getPsiElementId(p)),
+                                p.upperBound.getOrAny))
+                          val result = fun
+                            .parameters(0)
+                            .getType(TypingContext.empty)
                           if (result.isEmpty) substitutor
                           else {
                             val funType = undefSubst.subst(result.get)
@@ -295,8 +295,9 @@ class ScalaPatternParameterInfoHandler
                               case Some(tp) =>
                                 val t = Conformance.conforms(tp, funType)
                                 if (t) {
-                                  val undefSubst =
-                                    Conformance.undefinedSubst(tp, funType)
+                                  val undefSubst = Conformance.undefinedSubst(
+                                    tp,
+                                    funType)
                                   undefSubst.getSubstitutor match {
                                     case Some(newSubst) =>
                                       newSubst.followed(substitutor)

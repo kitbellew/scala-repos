@@ -107,8 +107,10 @@ object Package {
       version: String,
       orgName: String): PackageOption = {
     import Attributes.Name._
-    val attribKeys =
-      Seq(SPECIFICATION_TITLE, SPECIFICATION_VERSION, SPECIFICATION_VENDOR)
+    val attribKeys = Seq(
+      SPECIFICATION_TITLE,
+      SPECIFICATION_VERSION,
+      SPECIFICATION_VENDOR)
     val attribVals = Seq(name, version, orgName)
     ManifestAttributes(attribKeys zip attribVals: _*)
   }

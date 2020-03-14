@@ -36,8 +36,7 @@ import com.codecommit.util.UniversalCharSet
 trait Parser extends RegexParsers with Filters with AST {
   import ast._
 
-  def parse(str: String): Set[Expr] =
-    parse(LineStream(str))
+  def parse(str: String): Set[Expr] = parse(LineStream(str))
 
   def parse(input: LineStream): Set[Expr] = {
     val results = expr(input)
@@ -265,26 +264,25 @@ trait Parser extends RegexParsers with Filters with AST {
   override val whitespace = """([;\s]+|--.*|\(-([^\-]|-+[^)\-])*-+\))+""".r
   override val skipWhitespace = true
 
-  private val precedence =
-    prec(
-      (Descent, MetaDescent),
-      Deref,
-      Comp,
-      Neg,
-      Pow,
-      (Mul, Div, Mod),
-      (Add, Sub),
-      (Lt, LtEq, Gt, GtEq),
-      (Eq, NotEq),
-      (And, Or),
-      (Union, Intersect, Difference),
-      Cond,
-      With,
-      New,
-      Where,
-      Observe,
-      (Relate, Let, Solve, Import, Assert)
-    )
+  private val precedence = prec(
+    (Descent, MetaDescent),
+    Deref,
+    Comp,
+    Neg,
+    Pow,
+    (Mul, Div, Mod),
+    (Add, Sub),
+    (Lt, LtEq, Gt, GtEq),
+    (Eq, NotEq),
+    (And, Or),
+    (Union, Intersect, Difference),
+    Cond,
+    With,
+    New,
+    Where,
+    Observe,
+    (Relate, Let, Solve, Import, Assert)
+  )
 
   private def arrayDefDeref =
     new com.codecommit.gll.ast.Filter[Node] {

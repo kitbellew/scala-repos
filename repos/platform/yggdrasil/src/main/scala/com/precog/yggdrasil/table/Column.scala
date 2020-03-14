@@ -241,8 +241,7 @@ trait DoubleColumn extends Column with (Int => Double) {
 trait NumColumn extends Column with (Int => BigDecimal) {
   def apply(row: Int): BigDecimal
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compare apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compare apply(row2)
 
   override val tpe = CNum
   override def jValue(row: Int) = JNum(this(row))
@@ -254,8 +253,7 @@ trait NumColumn extends Column with (Int => BigDecimal) {
 trait StrColumn extends Column with (Int => String) {
   def apply(row: Int): String
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compareTo apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compareTo apply(row2)
 
   override val tpe = CString
   override def jValue(row: Int) = JString(this(row))
@@ -267,8 +265,7 @@ trait StrColumn extends Column with (Int => String) {
 trait DateColumn extends Column with (Int => DateTime) {
   def apply(row: Int): DateTime
   def rowEq(row1: Int, row2: Int): Boolean = apply(row1) == apply(row2)
-  def rowCompare(row1: Int, row2: Int): Int =
-    apply(row1) compareTo apply(row2)
+  def rowCompare(row1: Int, row2: Int): Int = apply(row1) compareTo apply(row2)
 
   override val tpe = CDate
   override def jValue(row: Int) = JString(this(row).toString)

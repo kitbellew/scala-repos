@@ -33,8 +33,9 @@ object OffsetMetadata {
   val InvalidOffset: Long = -1L
   val NoMetadata: String = ""
 
-  val InvalidOffsetMetadata =
-    OffsetMetadata(OffsetMetadata.InvalidOffset, OffsetMetadata.NoMetadata)
+  val InvalidOffsetMetadata = OffsetMetadata(
+    OffsetMetadata.InvalidOffset,
+    OffsetMetadata.NoMetadata)
 }
 
 case class OffsetAndMetadata(

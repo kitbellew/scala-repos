@@ -78,10 +78,14 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
         .asInstanceOf[ClientIdConfigHandler]
       val quotaManagers: Map[Short, ClientQuotaManager] =
         servers(0).apis.quotaManagers
-      val overrideProducerQuota =
-        quotaManagers.get(ApiKeys.PRODUCE.id).get.quota(clientId)
-      val overrideConsumerQuota =
-        quotaManagers.get(ApiKeys.FETCH.id).get.quota(clientId)
+      val overrideProducerQuota = quotaManagers
+        .get(ApiKeys.PRODUCE.id)
+        .get
+        .quota(clientId)
+      val overrideConsumerQuota = quotaManagers
+        .get(ApiKeys.FETCH.id)
+        .get
+        .quota(clientId)
 
       assertEquals(
         s"ClientId $clientId must have overridden producer quota of 1000",
@@ -144,8 +148,10 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
     }
     // Version is provided. EntityType is incorrect
     try {
-      val jsonMap =
-        Map("version" -> 1, "entity_type" -> "garbage", "entity_name" -> "x")
+      val jsonMap = Map(
+        "version" -> 1,
+        "entity_type" -> "garbage",
+        "entity_name" -> "x")
       configManager.ConfigChangedNotificationHandler.processNotification(
         Json.encode(jsonMap))
       fail(

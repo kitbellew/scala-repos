@@ -43,10 +43,10 @@ private[csv] object CSVInferSchema {
       header: Array[String],
       nullValue: String = ""): StructType = {
 
-    val startType: Array[DataType] =
-      Array.fill[DataType](header.length)(NullType)
-    val rootTypes: Array[DataType] =
-      tokenRdd.aggregate(startType)(inferRowType(nullValue), mergeRowTypes)
+    val startType: Array[DataType] = Array.fill[DataType](header.length)(
+      NullType)
+    val rootTypes: Array[DataType] = tokenRdd
+      .aggregate(startType)(inferRowType(nullValue), mergeRowTypes)
 
     val structFields = header.zip(rootTypes).map {
       case (thisHeader, rootType) =>

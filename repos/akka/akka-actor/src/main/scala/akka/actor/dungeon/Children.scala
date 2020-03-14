@@ -68,8 +68,8 @@ private[akka] trait Children { this: ActorCell ⇒
       async = true,
       systemService = systemService)
 
-  @volatile private var _functionRefsDoNotCallMeDirectly =
-    Map.empty[String, FunctionRef]
+  @volatile private var _functionRefsDoNotCallMeDirectly = Map
+    .empty[String, FunctionRef]
   private def functionRefs: Map[String, FunctionRef] =
     Unsafe.instance
       .getObjectVolatile(this, AbstractActorCell.functionRefsOffset)
@@ -139,13 +139,17 @@ private[akka] trait Children { this: ActorCell ⇒
 
   @volatile private var _nextNameDoNotCallMeDirectly = 0L
   final protected def randomName(sb: java.lang.StringBuilder): String = {
-    val num =
-      Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
+    val num = Unsafe.instance.getAndAddLong(
+      this,
+      AbstractActorCell.nextNameOffset,
+      1)
     Helpers.base64(num, sb)
   }
   final protected def randomName(): String = {
-    val num =
-      Unsafe.instance.getAndAddLong(this, AbstractActorCell.nextNameOffset, 1)
+    val num = Unsafe.instance.getAndAddLong(
+      this,
+      AbstractActorCell.nextNameOffset,
+      1)
     Helpers.base64(num)
   }
 

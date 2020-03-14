@@ -197,8 +197,8 @@ trait Infer extends Checkable {
       case _ => tp // @MAT aliases already handled by subtyping
     }
 
-  private lazy val stdErrorClass =
-    rootMirror.RootClass.newErrorClass(tpnme.ERROR)
+  private lazy val stdErrorClass = rootMirror.RootClass.newErrorClass(
+    tpnme.ERROR)
   private lazy val stdErrorValue = stdErrorClass.newErrorValue(nme.ERROR)
 
   /** The context-dependent inferencer part */
@@ -300,8 +300,12 @@ trait Infer extends Checkable {
           if (ex.msg contains "malformed type") "is malformed"
           else s"contains a ${ex.msg}"
         val message = s"\n because its instance type $instance $what"
-        val error =
-          AccessError(tree, sym, pre, context.enclClass.owner, message)
+        val error = AccessError(
+          tree,
+          sym,
+          pre,
+          context.enclClass.owner,
+          message)
         ErrorUtils.issueTypeError(error)(context)
         ErrorType
       }
@@ -794,8 +798,8 @@ trait Infer extends Checkable {
       val argtpes1 = argtpes map {
         case NamedType(name, tp) => // a named argument
           var res = tp
-          val pos =
-            params.indexWhere(p => paramMatchesName(p, name) && !p.isSynthetic)
+          val pos = params.indexWhere(p =>
+            paramMatchesName(p, name) && !p.isSynthetic)
 
           if (pos == -1) {
             if (positionalAllowed) { // treat assignment as positional argument
@@ -889,8 +893,10 @@ trait Infer extends Checkable {
         mt: MethodType,
         argtpes0: List[Type],
         pt: Type): Boolean = {
-      val formals =
-        formalTypes(mt.paramTypes, argtpes0.length, removeByName = false)
+      val formals = formalTypes(
+        mt.paramTypes,
+        argtpes0.length,
+        removeByName = false)
       def missingArgs =
         missingParams[Type](
           argtpes0,
@@ -1004,8 +1010,11 @@ trait Infer extends Checkable {
         pt: Type): Boolean = {
       def applicableExpectingPt(pt: Type): Boolean = {
         val silent = context.makeSilent(reportAmbiguousErrors = false)
-        val result =
-          newTyper(silent).infer.isApplicable(undetparams, ftpe, argtpes0, pt)
+        val result = newTyper(silent).infer.isApplicable(
+          undetparams,
+          ftpe,
+          argtpes0,
+          pt)
         if (silent.reporter.hasErrors && !pt.isWildcard)
           applicableExpectingPt(WildcardType) // second try
         else result
@@ -1298,8 +1307,12 @@ trait Infer extends Checkable {
               okparams,
               okargs,
               allargs,
-              leftUndet) =
-              methTypeArgs(undetparams, formals, restpe, argtpes, pt)
+              leftUndet) = methTypeArgs(
+              undetparams,
+              formals,
+              restpe,
+              argtpes,
+              pt)
 
             if (checkBounds(
                   fn,
@@ -1862,8 +1875,9 @@ trait Infer extends Checkable {
             // overloaded type which carries an "AntiPolyType" as a prefix.
             val tparams = new AsSeenFromMap(pre, hd.owner) mapOver hd.typeParams
             val bounds = tparams map (_.tpeHK) // see e.g., #1236
-            val tpe =
-              PolyType(tparams, OverloadedType(AntiPolyType(pre, bounds), alts))
+            val tpe = PolyType(
+              tparams,
+              OverloadedType(AntiPolyType(pre, bounds), alts))
             finish(sym setInfo tpe, tpe)
         }
       matchingLength.alternatives match {

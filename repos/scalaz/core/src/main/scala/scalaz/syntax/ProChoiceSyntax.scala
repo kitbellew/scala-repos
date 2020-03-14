@@ -6,11 +6,9 @@ final class ProChoiceOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     implicit val F: ProChoice[F])
     extends Ops[F[A, B]] {
   ////
-  final def proleft[C]: F[A \/ C, B \/ C] =
-    F.left(self)
+  final def proleft[C]: F[A \/ C, B \/ C] = F.left(self)
 
-  final def proright[C]: F[C \/ A, C \/ B] =
-    F.right(self)
+  final def proright[C]: F[C \/ A, C \/ B] = F.right(self)
 
   ////
 }
@@ -25,8 +23,7 @@ sealed trait ToProChoiceOps0 {
 trait ToProChoiceOps extends ToProChoiceOps0 with ToProfunctorOps {
 
   implicit def ToProChoiceOps[F[_, _], A, B](v: F[A, B])(
-      implicit F0: ProChoice[F]) =
-    new ProChoiceOps[F, A, B](v)
+      implicit F0: ProChoice[F]) = new ProChoiceOps[F, A, B](v)
 
   implicit def ToProChoiceVFromKleisliLike[G[_], F[G[_], _, _], A, B](
       v: F[G, A, B])(implicit F0: ProChoice[F[G, ?, ?]]) =

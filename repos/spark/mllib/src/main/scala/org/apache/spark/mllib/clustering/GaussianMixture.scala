@@ -179,8 +179,9 @@ class GaussianMixture private (
     // Get length of the input vectors
     val d = breezeData.first().length
 
-    val shouldDistributeGaussians =
-      GaussianMixture.shouldDistributeGaussians(k, d)
+    val shouldDistributeGaussians = GaussianMixture.shouldDistributeGaussians(
+      k,
+      d)
 
     // Determine initial weights and corresponding Gaussians.
     // If the user supplied an initial GMM, we use those values, otherwise
@@ -191,8 +192,10 @@ class GaussianMixture private (
       case Some(gmm) => (gmm.weights, gmm.gaussians)
 
       case None => {
-        val samples =
-          breezeData.takeSample(withReplacement = true, k * nSamples, seed)
+        val samples = breezeData.takeSample(
+          withReplacement = true,
+          k * nSamples,
+          seed)
         (
           Array.fill(k)(1.0 / k),
           Array.tabulate(k) { i =>
@@ -211,8 +214,8 @@ class GaussianMixture private (
       val compute = sc.broadcast(ExpectationSum.add(weights, gaussians) _)
 
       // aggregate the cluster contribution for all sample points
-      val sums =
-        breezeData.aggregate(ExpectationSum.zero(k, d))(compute.value, _ += _)
+      val sums = breezeData
+        .aggregate(ExpectationSum.zero(k, d))(compute.value, _ += _)
 
       // Create new distributions based on the partial assignments
       // (often referred to as the "M" step in literature)
@@ -220,8 +223,8 @@ class GaussianMixture private (
 
       if (shouldDistributeGaussians) {
         val numPartitions = math.min(k, 1024)
-        val tuples =
-          Seq.tabulate(k)(i => (sums.means(i), sums.sigmas(i), sums.weights(i)))
+        val tuples = Seq.tabulate(k)(i =>
+          (sums.means(i), sums.sigmas(i), sums.weights(i)))
         val (ws, gs) = sc
           .parallelize(tuples, numPartitions)
           .map {
@@ -235,12 +238,11 @@ class GaussianMixture private (
       } else {
         var i = 0
         while (i < k) {
-          val (weight, gaussian) =
-            updateWeightsAndGaussians(
-              sums.means(i),
-              sums.sigmas(i),
-              sums.weights(i),
-              sumWeights)
+          val (weight, gaussian) = updateWeightsAndGaussians(
+            sums.means(i),
+            sums.sigmas(i),
+            sums.weights(i),
+            sumWeights)
           weights(i) = weight
           gaussians(i) = gaussian
           i = i + 1

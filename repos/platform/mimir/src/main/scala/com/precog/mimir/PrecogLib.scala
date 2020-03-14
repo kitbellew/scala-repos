@@ -76,8 +76,9 @@ trait PrecogLibModule[M[+_]]
       class EnrichmentMapper(ctx: MorphContext) extends CMapperM[M] {
         import Extractor.Error
 
-        private type Result[+A] =
-          Validation[NonEmptyList[HttpClientError \/ Error], A]
+        private type Result[+A] = Validation[
+          NonEmptyList[HttpClientError \/ Error],
+          A]
         private val httpError: HttpClientError => HttpClientError \/ Error =
           -\/(_)
         private val jsonError: Error => HttpClientError \/ Error = \/-(_)
@@ -127,14 +128,14 @@ trait PrecogLibModule[M[+_]]
           // A list of (row, definedness) pairs. The row is the first row with
           // a particular unique combo of params.
           val paramsOrder = params.order
-          val chunks0: List[(Int, BitSet)] =
-            range.foldLeft(List.empty[(Int, BitSet)]) {
-              case (acc, row) if urls.isDefinedAt(row) =>
-                addOrCreate(row, acc, paramsOrder) map { pair =>
-                  pair :: acc
-                } getOrElse acc
-              case (acc, _) => acc
-            }
+          val chunks0: List[(Int, BitSet)] = range.foldLeft(
+            List.empty[(Int, BitSet)]) {
+            case (acc, row) if urls.isDefinedAt(row) =>
+              addOrCreate(row, acc, paramsOrder) map { pair =>
+                pair :: acc
+              } getOrElse acc
+            case (acc, _) => acc
+          }
 
           val options = params.deref(CPathField("options"))
           // TODO: Add these values to MorphContext.
@@ -180,8 +181,9 @@ trait PrecogLibModule[M[+_]]
                         else Stream.cons(CUndefined, sparseStream(row + 1, xs))
                       } else Stream.empty
 
-                    val sparseData =
-                      sparseStream(0, data map (RValue.fromJValue(_)))
+                    val sparseData = sparseStream(
+                      0,
+                      data map (RValue.fromJValue(_)))
                     Success(Slice.fromRValues(sparseData))
                   }
                 }

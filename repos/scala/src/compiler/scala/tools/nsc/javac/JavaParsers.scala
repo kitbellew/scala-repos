@@ -101,16 +101,13 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
 
     import gen.{rootId, scalaDot}
 
-    def javaDot(name: Name): Tree =
-      Select(rootId(nme.java), name)
+    def javaDot(name: Name): Tree = Select(rootId(nme.java), name)
 
-    def javaLangDot(name: Name): Tree =
-      Select(javaDot(nme.lang), name)
+    def javaLangDot(name: Name): Tree = Select(javaDot(nme.lang), name)
 
     def javaLangObject(): Tree = javaLangDot(tpnme.Object)
 
-    def arrayOf(tpt: Tree) =
-      AppliedTypeTree(scalaDot(tpnme.Array), List(tpt))
+    def arrayOf(tpt: Tree) = AppliedTypeTree(scalaDot(tpnme.Array), List(tpt))
 
     def blankExpr = Ident(nme.WILDCARD)
 
@@ -133,8 +130,8 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       ValDef(Modifiers(Flags.JAVA | Flags.PARAM), name, tpt, EmptyTree)
 
     def makeConstructor(formals: List[Tree]) = {
-      val vparams =
-        mapWithIndex(formals)((p, i) => makeSyntheticParam(i + 1, p))
+      val vparams = mapWithIndex(formals)((p, i) =>
+        makeSyntheticParam(i + 1, p))
       DefDef(
         Modifiers(Flags.JAVA),
         nme.CONSTRUCTOR,
@@ -306,10 +303,12 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
         if (in.token == QMARK) {
           val pos = in.currentPos
           in.nextToken()
-          val hi = if (in.token == EXTENDS) { in.nextToken(); typ() }
-          else EmptyTree
-          val lo = if (in.token == SUPER) { in.nextToken(); typ() }
-          else EmptyTree
+          val hi =
+            if (in.token == EXTENDS) { in.nextToken(); typ() }
+            else EmptyTree
+          val lo =
+            if (in.token == SUPER) { in.nextToken(); typ() }
+            else EmptyTree
           val tdef = atPos(pos) {
             TypeDef(
               Modifiers(Flags.JAVA | Flags.DEFERRED),
@@ -417,8 +416,9 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
     def typeParam(): TypeDef =
       atPos(in.currentPos) {
         val name = identForType()
-        val hi = if (in.token == EXTENDS) { in.nextToken(); bound() }
-        else EmptyTree
+        val hi =
+          if (in.token == EXTENDS) { in.nextToken(); bound() }
+          else EmptyTree
         TypeDef(
           Modifiers(Flags.JAVA | Flags.DEFERRED | Flags.PARAM),
           name,
@@ -528,14 +528,11 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             if (bodyOk && in.token == LBRACE) { methodBody() }
             else {
               if (parentToken == AT && in.token == DEFAULT) {
-                val annot =
-                  atPos(pos) {
-                    New(
-                      Select(
-                        scalaDot(nme.runtime),
-                        tpnme.AnnotationDefaultATTR),
-                      Nil)
-                  }
+                val annot = atPos(pos) {
+                  New(
+                    Select(scalaDot(nme.runtime), tpnme.AnnotationDefaultATTR),
+                    Nil)
+                }
                 mods1 = mods1 withAnnotations annot :: Nil
                 skipTo(SEMI)
                 accept(SEMI)
@@ -866,8 +863,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
           blankExpr)
       )
       accept(RBRACE)
-      val superclazz =
-        AppliedTypeTree(javaLangDot(tpnme.Enum), List(enumType))
+      val superclazz = AppliedTypeTree(javaLangDot(tpnme.Enum), List(enumType))
       val finalFlag = if (enumIsFinal) Flags.FINAL else 0L
       addCompanionObject(
         consts ::: statics ::: predefs,

@@ -50,8 +50,7 @@ trait StartingBehavior { this: Actor with ActorLogging =>
   }
 
   final override def receive: Receive = {
-    val behavior =
-      if (withHealthChecks) checkForHealthy else checkForRunning
+    val behavior = if (withHealthChecks) checkForHealthy else checkForRunning
     behavior orElse commonBehavior: PartialFunction[
       Any,
       Unit

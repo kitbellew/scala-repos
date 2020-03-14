@@ -110,8 +110,9 @@ trait AllowedHostsComponents {
   def configuration: Configuration
   def httpErrorHandler: HttpErrorHandler
 
-  lazy val allowedHostsConfig: AllowedHostsConfig =
-    AllowedHostsConfig.fromConfiguration(configuration)
-  lazy val allowedHostsFilter: AllowedHostsFilter =
-    AllowedHostsFilter(allowedHostsConfig, httpErrorHandler)
+  lazy val allowedHostsConfig: AllowedHostsConfig = AllowedHostsConfig
+    .fromConfiguration(configuration)
+  lazy val allowedHostsFilter: AllowedHostsFilter = AllowedHostsFilter(
+    allowedHostsConfig,
+    httpErrorHandler)
 }

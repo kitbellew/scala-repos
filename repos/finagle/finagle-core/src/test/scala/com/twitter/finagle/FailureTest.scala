@@ -12,8 +12,8 @@ class FailureTest
     extends FunSuite
     with AssertionsForJUnit
     with GeneratorDrivenPropertyChecks {
-  val exc =
-    Gen.oneOf[Throwable](null, new Exception("first"), new Exception("second"))
+  val exc = Gen
+    .oneOf[Throwable](null, new Exception("first"), new Exception("second"))
 
   val flag = Gen.oneOf(
     0L,

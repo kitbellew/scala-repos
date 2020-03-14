@@ -48,8 +48,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "be valid with mandatory params passed" in {
@@ -67,8 +68,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "have an error due to badly formatted date" in new WithApplication() {
@@ -86,8 +88,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(2)
       myForm.errors.get("dueDate").get(0).messages().get(1) must beEqualTo(
@@ -117,8 +120,9 @@ object FormSpec extends Specification {
 
       Context.current.get().setTransientLang("fr");
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
@@ -154,8 +158,9 @@ object FormSpec extends Specification {
 
       Context.current.get().changeLang("fr");
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().size() must beEqualTo(3)
       myForm.errors.get("dueDate").get(0).messages().get(2) must beEqualTo(
@@ -183,8 +188,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("dueDate").get(0).messages().asScala must contain(
         "error.required")
@@ -204,8 +210,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("id").get(0).messages().asScala must contain(
         "error.invalid")
@@ -226,8 +233,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(false)
     }
     "have an error due to badly formatted date for default date binder" in new WithApplication() {
@@ -246,8 +254,9 @@ object FormSpec extends Specification {
           Map.empty.asJava,
           Map.empty.asJava))
 
-      val myForm =
-        formFactory.form(classOf[play.data.models.Task]).bindFromRequest()
+      val myForm = formFactory
+        .form(classOf[play.data.models.Task])
+        .bindFromRequest()
       myForm hasErrors () must beEqualTo(true)
       myForm.errors.get("endDate").get(0).messages().asScala must contain(
         "error.invalid.java.util.Date")

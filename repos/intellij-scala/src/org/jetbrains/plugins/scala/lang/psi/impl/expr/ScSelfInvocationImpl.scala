@@ -94,8 +94,8 @@ class ScSelfInvocationImpl(node: ASTNode)
     }
     clazz match {
       case tp: ScTypeParametersOwner if tp.typeParameters.length > 0 =>
-        val params: Seq[TypeParameter] =
-          tp.typeParameters.map(new TypeParameter(_))
+        val params: Seq[TypeParameter] = tp.typeParameters.map(
+          new TypeParameter(_))
         Success(ScTypePolymorphicType(res, params), Some(this))
       case _ => Success(res, Some(this))
     }

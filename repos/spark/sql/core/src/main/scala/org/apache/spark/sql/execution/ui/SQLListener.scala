@@ -55,8 +55,9 @@ private[sql] class SQLListener(conf: SparkConf)
     extends SparkListener
     with Logging {
 
-  private val retainedExecutions =
-    conf.getInt("spark.sql.ui.retainedExecutions", 1000)
+  private val retainedExecutions = conf.getInt(
+    "spark.sql.ui.retainedExecutions",
+    1000)
 
   private val activeExecutions = mutable.HashMap[Long, SQLExecutionUIData]()
 
@@ -105,8 +106,8 @@ private[sql] class SQLListener(conf: SparkConf)
   }
 
   override def onJobStart(jobStart: SparkListenerJobStart): Unit = {
-    val executionIdString =
-      jobStart.properties.getProperty(SQLExecution.EXECUTION_ID_KEY)
+    val executionIdString = jobStart.properties.getProperty(
+      SQLExecution.EXECUTION_ID_KEY)
     if (executionIdString == null) {
       // This is not a job created by SQL
       return

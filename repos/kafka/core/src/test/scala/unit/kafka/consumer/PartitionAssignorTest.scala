@@ -174,8 +174,8 @@ private object PartitionAssignorTest extends Logging {
   }
 
   private def setupZkClientMock(scenario: Scenario) = {
-    val consumers =
-      java.util.Arrays.asList(scenario.subscriptions.keys.toSeq: _*)
+    val consumers = java.util.Arrays
+      .asList(scenario.subscriptions.keys.toSeq: _*)
 
     val zkClient = EasyMock.createStrictMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
@@ -233,8 +233,8 @@ private object PartitionAssignorTest extends Logging {
     }
 
     // check for uniqueness (i.e., any partition should be assigned to exactly one consumer stream)
-    val globalAssignment =
-      collection.mutable.Map[TopicAndPartition, ConsumerThreadId]()
+    val globalAssignment = collection.mutable
+      .Map[TopicAndPartition, ConsumerThreadId]()
     assignments.foreach(assignment => {
       assignment.foreach {
         case (topicPartition, owner) =>

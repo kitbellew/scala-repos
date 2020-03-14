@@ -46,14 +46,13 @@ private[spark] trait Spillable[C] extends Logging {
 
   // Initial threshold for the size of a collection before we start tracking its memory usage
   // For testing only
-  private[this] val initialMemoryThreshold: Long =
-    SparkEnv.get.conf
-      .getLong("spark.shuffle.spill.initialMemoryThreshold", 5 * 1024 * 1024)
+  private[this] val initialMemoryThreshold: Long = SparkEnv.get.conf
+    .getLong("spark.shuffle.spill.initialMemoryThreshold", 5 * 1024 * 1024)
 
   // Force this collection to spill when there are this many elements in memory
   // For testing only
-  private[this] val numElementsForceSpillThreshold: Long =
-    SparkEnv.get.conf.getLong(
+  private[this] val numElementsForceSpillThreshold: Long = SparkEnv.get.conf
+    .getLong(
       "spark.shuffle.spill.numElementsForceSpillThreshold",
       Long.MaxValue)
 
@@ -83,11 +82,10 @@ private[spark] trait Spillable[C] extends Logging {
     if (elementsRead % 32 == 0 && currentMemory >= myMemoryThreshold) {
       // Claim up to double our current memory from the shuffle memory pool
       val amountToRequest = 2 * currentMemory - myMemoryThreshold
-      val granted =
-        taskMemoryManager.acquireExecutionMemory(
-          amountToRequest,
-          MemoryMode.ON_HEAP,
-          null)
+      val granted = taskMemoryManager.acquireExecutionMemory(
+        amountToRequest,
+        MemoryMode.ON_HEAP,
+        null)
       myMemoryThreshold += granted
       // If we were granted too little memory to grow further (either tryToAcquire returned 0,
       // or we already had more memory than myMemoryThreshold), spill the current collection

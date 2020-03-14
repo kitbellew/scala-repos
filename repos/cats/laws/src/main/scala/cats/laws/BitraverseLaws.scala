@@ -22,11 +22,10 @@ trait BitraverseLaws[F[_, _]] extends BifoldableLaws[F] with BifunctorLaws[F] {
     type GCompose[X] = G[G[X]]
     val GCompose = G.compose[G]
 
-    val c =
-      F.bitraverse[GCompose, A, B, E, H](fab)(
-        a => G.map(f(a))(h),
-        b => G.map(g(b))(i)
-      )(GCompose)
+    val c = F.bitraverse[GCompose, A, B, E, H](fab)(
+      a => G.map(f(a))(h),
+      b => G.map(g(b))(i)
+    )(GCompose)
 
     hi <-> c
   }

@@ -20,8 +20,7 @@ class DenseVectorTest extends FunSuite with Checkers {
 
   val TOLERANCE = 1e-4
 
-  def assertClose(a: Double, b: Double) =
-    assert(math.abs(a - b) < TOLERANCE)
+  def assertClose(a: Double, b: Double) = assert(math.abs(a - b) < TOLERANCE)
 
   def assertClose(a: Complex, b: Complex) =
     assert(
@@ -73,8 +72,11 @@ class DenseVectorTest extends FunSuite with Checkers {
   }
 
   test("Can raise ComplexVector by Complex") {
-    val v =
-      DenseVector(Complex(0, 0), Complex(1, 1), Complex(2, 2), Complex(-1, -1))
+    val v = DenseVector(
+      Complex(0, 0),
+      Complex(1, 1),
+      Complex(2, 2),
+      Complex(-1, -1))
     val w = v :^ Complex(2, 0)
     assertClose(w(0), Complex(0, 0))
     assertClose(w(1), Complex(0, 2))

@@ -184,13 +184,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getStableAliasesByName(
       name: String,
       scope: GlobalSearchScope): Seq[ScTypeAlias] = {
-    val types: util.Collection[ScTypeAlias] =
-      StubIndex.getElements(
-        ScalaIndexKeys.TYPE_ALIAS_NAME_KEY,
-        name,
-        project,
-        new ScalaSourceFilterScope(scope, project),
-        classOf[ScTypeAlias])
+    val types: util.Collection[ScTypeAlias] = StubIndex.getElements(
+      ScalaIndexKeys.TYPE_ALIAS_NAME_KEY,
+      name,
+      project,
+      new ScalaSourceFilterScope(scope, project),
+      classOf[ScTypeAlias])
     import scala.collection.JavaConversions._
     types.toSeq
   }
@@ -221,12 +220,11 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
       scope: GlobalSearchScope,
       classCategory: ClassCategory): PsiClass = {
     val allClasses = getCachedClasses(scope, fqn)
-    val classes =
-      classCategory match {
-        case ALL    => allClasses
-        case OBJECT => allClasses.filter(_.isInstanceOf[ScObject])
-        case TYPE   => allClasses.filter(!_.isInstanceOf[ScObject])
-      }
+    val classes = classCategory match {
+      case ALL    => allClasses
+      case OBJECT => allClasses.filter(_.isInstanceOf[ScObject])
+      case TYPE   => allClasses.filter(!_.isInstanceOf[ScObject])
+    }
     if (classes.length == 0) null else classes(0)
   }
 
@@ -249,16 +247,15 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   private[this] def getClassesImpl(
       pack: PsiPackage,
       scope: GlobalSearchScope): Array[PsiClass] = {
-    val classes =
-      JavaPsiFacade
-        .getInstance(project)
-        .asInstanceOf[JavaPsiFacadeImpl]
-        .getClasses(pack, scope)
-        .filterNot(p =>
-          p.isInstanceOf[ScTemplateDefinition] || p
-            .isInstanceOf[PsiClassWrapper])
-    val scalaClasses =
-      ScalaShortNamesCacheManager.getInstance(project).getClasses(pack, scope)
+    val classes = JavaPsiFacade
+      .getInstance(project)
+      .asInstanceOf[JavaPsiFacadeImpl]
+      .getClasses(pack, scope)
+      .filterNot(p =>
+        p.isInstanceOf[ScTemplateDefinition] || p.isInstanceOf[PsiClassWrapper])
+    val scalaClasses = ScalaShortNamesCacheManager
+      .getInstance(project)
+      .getClasses(pack, scope)
     classes ++ scalaClasses
   }
 
@@ -272,11 +269,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     def getCachedFacadeClasses(
         scope: GlobalSearchScope,
         fqn: String): Array[PsiClass] = {
-      val classes =
-        JavaPsiFacade.getInstance(project).findClasses(fqn, scope).filterNot {
-          p =>
-            p.isInstanceOf[ScTemplateDefinition] || p
-              .isInstanceOf[PsiClassWrapper]
+      val classes = JavaPsiFacade
+        .getInstance(project)
+        .findClasses(fqn, scope)
+        .filterNot { p =>
+          p.isInstanceOf[ScTemplateDefinition] || p
+            .isInstanceOf[PsiClassWrapper]
         }
 
       ArrayUtil.mergeArrays(
@@ -313,13 +311,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   private def getJavaPackageClassNamesCached(
       packageFQN: String,
       scope: GlobalSearchScope): JSet[String] = {
-    val classes: util.Collection[PsiClass] =
-      StubIndex.getElements(
-        ScalaIndexKeys.JAVA_CLASS_NAME_IN_PACKAGE_KEY,
-        packageFQN,
-        project,
-        new ScalaSourceFilterScope(scope, project),
-        classOf[PsiClass])
+    val classes: util.Collection[PsiClass] = StubIndex.getElements(
+      ScalaIndexKeys.JAVA_CLASS_NAME_IN_PACKAGE_KEY,
+      packageFQN,
+      project,
+      new ScalaSourceFilterScope(scope, project),
+      classOf[PsiClass])
     val strings: util.HashSet[String] = new util.HashSet[String]
     val classesIterator = classes.iterator()
     while (classesIterator.hasNext) {
@@ -350,13 +347,12 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
   def getScalaClassNamesCached(
       packageFQN: String,
       scope: GlobalSearchScope): mutable.HashSet[String] = {
-    val classes: util.Collection[PsiClass] =
-      StubIndex.getElements(
-        ScalaIndexKeys.CLASS_NAME_IN_PACKAGE_KEY,
-        packageFQN,
-        project,
-        new ScalaSourceFilterScope(scope, project),
-        classOf[PsiClass])
+    val classes: util.Collection[PsiClass] = StubIndex.getElements(
+      ScalaIndexKeys.CLASS_NAME_IN_PACKAGE_KEY,
+      packageFQN,
+      project,
+      new ScalaSourceFilterScope(scope, project),
+      classOf[PsiClass])
     var strings: mutable.HashSet[String] = new mutable.HashSet[String]
     val classesIterator = classes.iterator()
     while (classesIterator.hasNext) {
@@ -537,8 +533,8 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
 }
 
 object ScalaPsiManager {
-  val TYPE_VARIABLE_KEY: Key[ScTypeParameterType] =
-    Key.create("type.variable.key")
+  val TYPE_VARIABLE_KEY: Key[ScTypeParameterType] = Key.create(
+    "type.variable.key")
 
   def instance(project: Project) =
     project.getComponent(classOf[ScalaPsiManager])

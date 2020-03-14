@@ -41,10 +41,9 @@ object Play {
    * no explicit doco stating this is the case. That said, there does not appear to be any other way than
    * declaring a factory in order to yield a parser of a specific type.
    */
-  private[play] val xercesSaxParserFactory =
-    SAXParserFactory.newInstance(
-      "org.apache.xerces.jaxp.SAXParserFactoryImpl",
-      Play.getClass.getClassLoader)
+  private[play] val xercesSaxParserFactory = SAXParserFactory.newInstance(
+    "org.apache.xerces.jaxp.SAXParserFactoryImpl",
+    Play.getClass.getClassLoader)
   xercesSaxParserFactory.setFeature(
     Constants.SAX_FEATURE_PREFIX + Constants.EXTERNAL_GENERAL_ENTITIES_FEATURE,
     false)

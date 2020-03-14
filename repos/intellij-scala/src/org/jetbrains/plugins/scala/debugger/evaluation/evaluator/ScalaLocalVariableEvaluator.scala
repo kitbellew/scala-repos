@@ -81,8 +81,8 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
     }
 
     def withSimpleName(frameProxy: StackFrameProxyImpl): Option[AnyRef] = {
-      val local: LocalVariableProxyImpl =
-        frameProxy.visibleVariableByName(myName)
+      val local: LocalVariableProxyImpl = frameProxy.visibleVariableByName(
+        myName)
       Option(local).flatMap(saveContextAndGetValue(frameProxy, _))
     }
 

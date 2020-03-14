@@ -107,13 +107,14 @@ private[finagle] class InetResolver(
   type HostPortMetadata = (String, Int, Addr.Metadata)
 
   val scheme = "inet"
-  private[this] val statsReceiver =
-    unscopedStatsReceiver.scope("inet").scope("dns")
+  private[this] val statsReceiver = unscopedStatsReceiver
+    .scope("inet")
+    .scope("dns")
   private[this] val latencyStat = statsReceiver.stat("lookup_ms")
   private[this] val successes = statsReceiver.counter("successes")
   private[this] val failures = statsReceiver.counter("failures")
-  private[this] val dnsLookupFailures =
-    statsReceiver.counter("dns_lookup_failures")
+  private[this] val dnsLookupFailures = statsReceiver.counter(
+    "dns_lookup_failures")
   private val log = Logger.getLogger(getClass.getName)
   private val timer = DefaultTimer.twitter
 
@@ -243,8 +244,8 @@ private[finagle] class FixedInetResolver(
   override val scheme = FixedInetResolver.scheme
 
   // fallback to InetResolver.resolveHost if no override was provided
-  val resolveFn: (String => Future[Seq[InetAddress]]) =
-    resolveOverride.getOrElse(super.resolveHost)
+  val resolveFn: (String => Future[Seq[InetAddress]]) = resolveOverride
+    .getOrElse(super.resolveHost)
 
   // A size-bounded FutureCache backed by a LoaderCache
   private[this] val cache = CacheBuilder
@@ -427,13 +428,11 @@ object Resolvers {
   /**
     * @see [[Resolver.eval]]
     */
-  def eval(name: String): Name =
-    Resolver.eval(name)
+  def eval(name: String): Name = Resolver.eval(name)
 
   /**
     * @see [[Resolver.evalLabeled]]
     */
-  def evalLabeled(addr: String): (Name, String) =
-    Resolver.evalLabeled(addr)
+  def evalLabeled(addr: String): (Name, String) = Resolver.evalLabeled(addr)
 
 }

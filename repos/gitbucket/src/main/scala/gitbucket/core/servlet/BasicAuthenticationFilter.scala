@@ -26,8 +26,8 @@ class BasicAuthenticationFilter
     with AccountService
     with SystemSettingsService {
 
-  private val logger =
-    LoggerFactory.getLogger(classOf[BasicAuthenticationFilter])
+  private val logger = LoggerFactory.getLogger(
+    classOf[BasicAuthenticationFilter])
 
   def init(config: FilterConfig) = {}
 

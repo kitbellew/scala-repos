@@ -417,8 +417,8 @@ trait AST extends Phases {
     private[quirrel] def constrainingExpr_=(expr: Option[Expr]) =
       _constrainingExpr() = expr
 
-    private val _relations =
-      attribute[Map[Provenance, Set[Provenance]]](checkProvenance)
+    private val _relations = attribute[Map[Provenance, Set[Provenance]]](
+      checkProvenance)
     def relations = _relations()
     private[quirrel] def relations_=(rels: Map[Provenance, Set[Provenance]]) =
       _relations() = rels
@@ -931,8 +931,8 @@ trait AST extends Phases {
         case _            => true
       } toSet
 
-      private val _buckets =
-        attribute[Map[Set[Dispatch], BucketSpec]](inferBuckets)
+      private val _buckets = attribute[Map[Set[Dispatch], BucketSpec]](
+        inferBuckets)
       def buckets = _buckets()
       private[quirrel] def buckets_=(spec: Map[Set[Dispatch], BucketSpec]) =
         _buckets() = spec

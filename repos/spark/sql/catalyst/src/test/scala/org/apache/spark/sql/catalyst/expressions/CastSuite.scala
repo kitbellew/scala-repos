@@ -622,8 +622,9 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
       checkEvaluation(ret, Seq(123, null, null))
     }
     {
-      val ret =
-        cast(array_notNull, ArrayType(IntegerType, containsNull = false))
+      val ret = cast(
+        array_notNull,
+        ArrayType(IntegerType, containsNull = false))
       assert(ret.resolved === false)
     }
     {
@@ -632,8 +633,9 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
       checkEvaluation(ret, Seq(null, true, false))
     }
     {
-      val ret =
-        cast(array_notNull, ArrayType(BooleanType, containsNull = false))
+      val ret = cast(
+        array_notNull,
+        ArrayType(BooleanType, containsNull = false))
       assert(ret.resolved === false)
       checkEvaluation(ret, Seq(null, true, false))
     }
@@ -657,34 +659,39 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
       MapType(StringType, StringType))
 
     {
-      val ret =
-        cast(map, MapType(StringType, IntegerType, valueContainsNull = true))
+      val ret = cast(
+        map,
+        MapType(StringType, IntegerType, valueContainsNull = true))
       assert(ret.resolved === true)
       checkEvaluation(
         ret,
         Map("a" -> 123, "b" -> null, "c" -> null, "d" -> null))
     }
     {
-      val ret =
-        cast(map, MapType(StringType, IntegerType, valueContainsNull = false))
+      val ret = cast(
+        map,
+        MapType(StringType, IntegerType, valueContainsNull = false))
       assert(ret.resolved === false)
     }
     {
-      val ret =
-        cast(map, MapType(StringType, BooleanType, valueContainsNull = true))
+      val ret = cast(
+        map,
+        MapType(StringType, BooleanType, valueContainsNull = true))
       assert(ret.resolved === true)
       checkEvaluation(
         ret,
         Map("a" -> null, "b" -> true, "c" -> false, "d" -> null))
     }
     {
-      val ret =
-        cast(map, MapType(StringType, BooleanType, valueContainsNull = false))
+      val ret = cast(
+        map,
+        MapType(StringType, BooleanType, valueContainsNull = false))
       assert(ret.resolved === false)
     }
     {
-      val ret =
-        cast(map, MapType(IntegerType, StringType, valueContainsNull = true))
+      val ret = cast(
+        map,
+        MapType(IntegerType, StringType, valueContainsNull = true))
       assert(ret.resolved === false)
     }
 

@@ -401,8 +401,7 @@ final class WeakHashSet[A <: AnyRef](
     /**
       * Number of buckets that are occupied in this hash table.
       */
-    def fullBucketsCount: Int =
-      (table count (entry => entry != null))
+    def fullBucketsCount: Int = (table count (entry => entry != null))
 
     /**
       *  Number of buckets in the table

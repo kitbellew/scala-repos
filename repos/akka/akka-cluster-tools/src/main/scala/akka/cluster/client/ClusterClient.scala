@@ -450,8 +450,8 @@ object ClusterClientReceptionist
 final class ClusterClientReceptionist(system: ExtendedActorSystem)
     extends Extension {
 
-  private val config =
-    system.settings.config.getConfig("akka.cluster.client.receptionist")
+  private val config = system.settings.config
+    .getConfig("akka.cluster.client.receptionist")
   private val role: Option[String] = config.getString("role") match {
     case "" ⇒ None
     case r ⇒ Some(r)
@@ -715,8 +715,8 @@ final class ClusterReceptionist(
           throw new IllegalStateException(
             s"Unexpected address without host/port: [$node]")
       }
-    implicit val ringOrdering: Ordering[Address] =
-      Ordering.fromLessThan[Address] { (a, b) ⇒
+    implicit val ringOrdering: Ordering[Address] = Ordering
+      .fromLessThan[Address] { (a, b) ⇒
         val ha = hashFor(a)
         val hb = hashFor(b)
         ha < hb || (ha == hb && Member.addressOrdering.compare(a, b) < 0)
@@ -724,8 +724,9 @@ final class ClusterReceptionist(
     immutable.SortedSet()
   }
   val virtualNodesFactor = 10
-  var consistentHash: ConsistentHash[Address] =
-    ConsistentHash(nodes, virtualNodesFactor)
+  var consistentHash: ConsistentHash[Address] = ConsistentHash(
+    nodes,
+    virtualNodesFactor)
 
   override def preStart(): Unit = {
     super.preStart()

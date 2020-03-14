@@ -93,9 +93,8 @@ object Templates {
 
       val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
         case templateSources: TemplateSources =>
-          val relativeMappings: Seq[(File, String)] =
-            templateSources.sourceDirs.flatMap(dir =>
-              dir.***.filter(fileFilter(_)) x relativeTo(dir))
+          val relativeMappings: Seq[(File, String)] = templateSources.sourceDirs
+            .flatMap(dir => dir.***.filter(fileFilter(_)) x relativeTo(dir))
           // Rebase the files onto the target directory, also filtering out ignored files
           relativeMappings.collect {
             case (orig, targ) if !ignore.contains(orig.getName) =>
@@ -203,8 +202,8 @@ object Templates {
         sys.error("Could not find credentials for host: " + host)
       }
       val upload = S3.upload.value // Ignore result
-      val uploaded =
-        (mappings in S3.upload).value.map(m => m._1.getName -> m._2)
+      val uploaded = (mappings in S3.upload).value.map(m =>
+        m._1.getName -> m._2)
       val logger = streams.value.log
 
       logger.info("Publishing templates...")
@@ -296,12 +295,14 @@ object Templates {
                     }
                     val js = resp.json
                     val uuid = (js \ "uuid").as[String]
-                    val statusUrl = (for {
-                      links <- (js \ "_links").asOpt[JsObject]
-                      status <- (links \ "activator/templates/status")
-                        .asOpt[JsObject]
-                      url <- (status \ "href").asOpt[String]
-                    } yield url).getOrElse(s"/activator/template/status/$uuid")
+                    val statusUrl =
+                      (for {
+                        links <- (js \ "_links").asOpt[JsObject]
+                        status <- (links \ "activator/templates/status")
+                          .asOpt[JsObject]
+                        url <- (status \ "href").asOpt[String]
+                      } yield url)
+                        .getOrElse(s"/activator/template/status/$uuid")
                     waitUntilNotPending(uuid, statusUrl)
                 }
                 .map(result => (name, key, result))
@@ -374,8 +375,9 @@ object Templates {
       state: State): Parser[(Seq[TemplateSources], String)] = {
     import Parser._
     import Parsers._
-    val templateSourcesList: Seq[TemplateSources] =
-      Project.extract(state).get(Templates.templates)
+    val templateSourcesList: Seq[TemplateSources] = Project
+      .extract(state)
+      .get(Templates.templates)
     val templateParser = Parsers.OpOrID
       .examples(templateSourcesList.map(_.name): _*)
       .flatMap { name =>

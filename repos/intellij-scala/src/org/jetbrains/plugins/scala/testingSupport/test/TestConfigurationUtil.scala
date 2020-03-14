@@ -43,8 +43,8 @@ object TestConfigurationUtil {
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(displayName, confFactory)
-    val configuration =
-      settings.getConfiguration.asInstanceOf[AbstractTestRunConfiguration]
+    val configuration = settings.getConfiguration
+      .asInstanceOf[AbstractTestRunConfiguration]
     configuration.setTestPackagePath(pack.getQualifiedName)
     configuration.setTestKind(TestRunConfigurationForm.TestKind.ALL_IN_PACKAGE)
     configuration.setGeneratedName(displayName)

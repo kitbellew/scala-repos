@@ -82,8 +82,9 @@ abstract class SuperAccessors
     private val accDefs = mutable.Map[Symbol, ListBuffer[Tree]]()
 
     private def storeAccessorDefinition(clazz: Symbol, tree: Tree) = {
-      val buf =
-        accDefs.getOrElse(clazz, sys.error("no acc def buf for " + clazz))
+      val buf = accDefs.getOrElse(
+        clazz,
+        sys.error("no acc def buf for " + clazz))
       buf += typers(clazz) typed tree
     }
     private def ensureAccessor(sel: Select, mixName: TermName = nme.EMPTY) = {
@@ -159,8 +160,8 @@ abstract class SuperAccessors
           )
       } else if (mix == tpnme.EMPTY && !sym.owner.isTrait) {
         // SI-4989 Check if an intermediate class between `clazz` and `sym.owner` redeclares the method as abstract.
-        val intermediateClasses =
-          clazz.info.baseClasses.tail.takeWhile(_ != sym.owner)
+        val intermediateClasses = clazz.info.baseClasses.tail
+          .takeWhile(_ != sym.owner)
         intermediateClasses
           .map(sym.overridingSymbol)
           .find(s => s.isDeferred && !s.isAbstractOverride && !s.owner.isTrait)

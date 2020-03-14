@@ -31,8 +31,8 @@ class DefaultMethodTest extends ClearAfterClass {
         tree match {
           case dd @ DefDef(_, Foo, _, _, _, _) =>
             dd.symbol.setFlag(reflect.internal.Flags.JAVA_DEFAULTMETHOD)
-            copyDefDef(dd)(rhs =
-              Literal(Constant(1)).setType(definitions.IntTpe))
+            copyDefDef(dd)(rhs = Literal(Constant(1))
+              .setType(definitions.IntTpe))
           case _ => super.transform(tree)
         }
     }

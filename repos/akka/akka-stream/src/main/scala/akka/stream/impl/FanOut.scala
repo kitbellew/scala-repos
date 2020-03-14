@@ -47,8 +47,8 @@ private[akka] object FanOut {
   class OutputBunch(outputCount: Int, impl: ActorRef, pump: Pump) {
     private var bunchCancelled = false
 
-    private val outputs =
-      Array.tabulate(outputCount)(new FanoutOutputs(_, impl, pump))
+    private val outputs = Array.tabulate(outputCount)(
+      new FanoutOutputs(_, impl, pump))
 
     private val marked = Array.ofDim[Boolean](outputCount)
     private var markedCount = 0
@@ -59,8 +59,7 @@ private[akka] object FanOut {
     private val completed = Array.ofDim[Boolean](outputCount)
     private val errored = Array.ofDim[Boolean](outputCount)
 
-    override def toString: String =
-      s"""|OutputBunch
+    override def toString: String = s"""|OutputBunch
           |  marked:    ${marked.mkString(", ")}
           |  pending:   ${pending.mkString(", ")}
           |  errored:   ${errored.mkString(", ")}

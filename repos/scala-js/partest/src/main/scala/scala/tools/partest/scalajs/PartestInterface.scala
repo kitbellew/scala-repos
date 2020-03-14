@@ -100,8 +100,9 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
         .getRuntime()
         .maxMemory() / (1024 * 1024)}M). Please add the following to your build.sbt: javaOptions in Test += "-Xmx1G""""))
 
-    val maybeOptions =
-      ScalaJSPartestOptions(args, str => loggers.foreach(_.error(str)))
+    val maybeOptions = ScalaJSPartestOptions(
+      args,
+      str => loggers.foreach(_.error(str)))
 
     maybeOptions foreach { options =>
       val runner = SBTRunner(
@@ -146,8 +147,8 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       scalacArgs: Array[String],
       options: ScalaJSPartestOptions,
       scalaVersion: String): SBTRunner = {
-    val runnerClass =
-      Class.forName("scala.tools.partest.scalajs.ScalaJSSBTRunner")
+    val runnerClass = Class.forName(
+      "scala.tools.partest.scalajs.ScalaJSSBTRunner")
     runnerClass
       .getConstructors()(0)
       .newInstance(

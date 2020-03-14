@@ -67,26 +67,21 @@ object CoreMatchers {
   //  def equalToObject[T](operand: AnyRef): Matcher[AnyRef] =
   //    IsEqual.equalToObject(operand)
 
-  def any[T](typ: Class[T]): Matcher[T] =
-    core.IsInstanceOf.any(typ)
+  def any[T](typ: Class[T]): Matcher[T] = core.IsInstanceOf.any(typ)
 
   def instanceOf[T](typ: Class[_]): Matcher[T] =
     core.IsInstanceOf.instanceOf(typ)
 
-  def not[T](matcher: Matcher[T]): Matcher[T] =
-    core.IsNot.not(matcher)
+  def not[T](matcher: Matcher[T]): Matcher[T] = core.IsNot.not(matcher)
 
-  def not[T](value: T): Matcher[T] =
-    core.IsNot.not(value)
+  def not[T](value: T): Matcher[T] = core.IsNot.not(value)
 
-  def notNullValue(): Matcher[AnyRef] =
-    core.IsNull.notNullValue()
+  def notNullValue(): Matcher[AnyRef] = core.IsNull.notNullValue()
 
   def notNullValue[T](typ: java.lang.Class[T]): Matcher[T] =
     core.IsNull.notNullValue(typ)
 
-  def nullValue(): Matcher[AnyRef] =
-    core.IsNull.nullValue()
+  def nullValue(): Matcher[AnyRef] = core.IsNull.nullValue()
 
   def nullValue[T](typ: java.lang.Class[T]): Matcher[T] =
     core.IsNull.nullValue(typ)

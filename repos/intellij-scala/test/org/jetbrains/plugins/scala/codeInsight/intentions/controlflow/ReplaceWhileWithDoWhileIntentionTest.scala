@@ -12,8 +12,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = ReplaceWhileWithDoWhileIntention.familyName
 
   def testReplaceWhile() {
-    val text =
-      """
+    val text = """
         |class X {
         |  val flag: Boolean
         |
@@ -24,8 +23,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  val flag: Boolean
         |
@@ -42,8 +40,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testReplaceWhile2() {
-    val text =
-      """
+    val text = """
         |class X {
         |  val flag: Boolean
         |
@@ -54,8 +51,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  val flag: Boolean
         |
@@ -72,8 +68,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testReplaceWhile3() {
-    val text =
-      """
+    val text = """
         |class X {
         |  val flag: Boolean
         |
@@ -82,8 +77,7 @@ class ReplaceWhileWithDoWhileIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  val flag: Boolean
         |

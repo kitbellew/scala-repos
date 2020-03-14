@@ -113,8 +113,7 @@ class BufferedReader(in: Reader, sz: Int) extends Reader {
   }
 
   /** Prepare the buffer for reading. Returns false if EOF */
-  private def prepareRead(): Boolean =
-    pos < end || fillBuffer()
+  private def prepareRead(): Boolean = pos < end || fillBuffer()
 
   /** Tries to fill the buffer. Returns false if EOF */
   private def fillBuffer(): Boolean = {

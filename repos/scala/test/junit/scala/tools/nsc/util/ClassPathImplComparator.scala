@@ -73,10 +73,12 @@ object ClassPathImplComparator {
 
     if (args contains "-help") usage()
     else {
-      val oldCpSettings =
-        loadSettings(args.toList, ClassPathRepresentationType.Recursive)
-      val flatCpSettings =
-        loadSettings(args.toList, ClassPathRepresentationType.Flat)
+      val oldCpSettings = loadSettings(
+        args.toList,
+        ClassPathRepresentationType.Recursive)
+      val flatCpSettings = loadSettings(
+        args.toList,
+        ClassPathRepresentationType.Flat)
 
       val classesToCheck = oldCpSettings.checkClasses.value
       val classesToFind =

@@ -21,12 +21,11 @@ object Test {
     // a basic test case
 
     val input = L.range(0, 20)
-    val oddFirstTimesTwo =
-      for {
-        x <- input
-        xf = firstDigit(x)
-        if xf % 2 == 1
-      } yield x * 2
+    val oddFirstTimesTwo = for {
+      x <- input
+      xf = firstDigit(x)
+      if xf % 2 == 1
+    } yield x * 2
     println(oddFirstTimesTwo)
   }
 
@@ -34,14 +33,13 @@ object Test {
     // a test case with patterns
 
     val input = L.range(0, 20)
-    val oddFirstTimesTwo =
-      for {
-        x <- input
-        xf = firstDigit(x)
-        yf = x - firstDigit(x) / 10
-        (a, b) = (xf - yf, xf + yf)
-        if xf % 2 == 1
-      } yield a + b
+    val oddFirstTimesTwo = for {
+      x <- input
+      xf = firstDigit(x)
+      yf = x - firstDigit(x) / 10
+      (a, b) = (xf - yf, xf + yf)
+      if xf % 2 == 1
+    } yield a + b
     println(oddFirstTimesTwo)
   }
 
@@ -50,12 +48,11 @@ object Test {
 
     //   val input: Queue = Queue.Empty[int].incl(L.range(0,20))
     val input = L.range(0, 20).iterator
-    val oddFirstTimesTwo =
-      for {
-        x <- input
-        xf = firstDigit(x)
-        if xf % 2 == 1
-      } yield x * 2
+    val oddFirstTimesTwo = for {
+      x <- input
+      xf = firstDigit(x)
+      if xf % 2 == 1
+    } yield x * 2
     println(oddFirstTimesTwo.toList)
   }
 
@@ -63,12 +60,11 @@ object Test {
     // yield the computed value
 
     val input = L.range(0, 20)
-    val oddFirstTimesTwo =
-      for {
-        x <- input
-        xf = firstDigit(x)
-        if xf % 2 == 1
-      } yield xf * 2
+    val oddFirstTimesTwo = for {
+      x <- input
+      xf = firstDigit(x)
+      if xf % 2 == 1
+    } yield xf * 2
     println(oddFirstTimesTwo)
   }
 

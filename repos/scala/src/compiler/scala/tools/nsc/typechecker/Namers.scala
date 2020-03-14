@@ -91,8 +91,9 @@ trait Namers extends MethodSynthesis {
         : Namer = { //todo: can we merge this with SCCmode?
       val classContext = context.enclClass
       val outerContext = classContext.outer.outer
-      val paramContext =
-        outerContext.makeNewScope(outerContext.tree, outerContext.owner)
+      val paramContext = outerContext.makeNewScope(
+        outerContext.tree,
+        outerContext.owner)
 
       owner.unsafeTypeParams foreach (paramContext.scope enter _)
       newNamer(paramContext)
@@ -166,9 +167,8 @@ trait Namers extends MethodSynthesis {
       setPrivateWithin(tree, sym, tree.mods)
 
     def inConstructorFlag: Long = {
-      val termOwnedContexts: List[Context] =
-        context.enclosingContextChain.takeWhile(c =>
-          c.owner.isTerm && !c.owner.isAnonymousFunction)
+      val termOwnedContexts: List[Context] = context.enclosingContextChain
+        .takeWhile(c => c.owner.isTerm && !c.owner.isAnonymousFunction)
       val constructorNonSuffix = termOwnedContexts exists (c =>
         c.owner.isConstructor && !c.inConstructorSuffix)
       val earlyInit = termOwnedContexts exists (_.owner.isEarlyInitialized)
@@ -1154,10 +1154,9 @@ trait Namers extends MethodSynthesis {
       }
 
       def overriddenSymbol(resTp: Type) = {
-        lazy val schema: Type =
-          methodTypeSchema(
-            resTp
-          ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
+        lazy val schema: Type = methodTypeSchema(
+          resTp
+        ) // OPT create once. Must be lazy to avoid cycles in neg/t5093.scala
         intersectionType(methOwner.info.parents)
           .nonPrivateMember(meth.name)
           .filter { sym =>
@@ -1272,14 +1271,15 @@ trait Namers extends MethodSynthesis {
       if (meth.isMacro) { typer.computeMacroDefType(ddef, resTpFromOverride) }
 
       val res = thisMethodType({
-        val rt = (if (!tpt.isEmpty) { methResTp }
-                  else {
-                    // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
-                    //   trait T { def f: Object }; class C <: T { def f = "" }
-                    // using resTpFromOverride as expected type allows for the following (C.f has type A):
-                    //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
-                    assignTypeToTree(ddef, typer, resTpFromOverride)
-                  })
+        val rt =
+          (if (!tpt.isEmpty) { methResTp }
+           else {
+             // return type is inferred, we don't just use resTpFromOverride. Here, C.f has type String:
+             //   trait T { def f: Object }; class C <: T { def f = "" }
+             // using resTpFromOverride as expected type allows for the following (C.f has type A):
+             //   trait T { def f: A }; class C <: T { implicit def b2a(t: B): A = ???; def f = new B }
+             assignTypeToTree(ddef, typer, resTpFromOverride)
+           })
         // #2382: return type of default getters are always @uncheckedVariance
         if (meth.hasDefault)
           rt.withAnnotation(
@@ -1372,40 +1372,42 @@ trait Namers extends MethodSynthesis {
               copyValDef(rvp)(mods = rvp.mods &~ DEFAULTPARAM, rhs = EmptyTree)
             }
 
-            val parentNamer = if (isConstr) {
-              val (cdef, nmr) = moduleNamer.getOrElse {
-                val module = companionSymbolOf(methOwner, context)
-                module.initialize // call type completer (typedTemplate), adds the
-                // module's templateNamer to classAndNamerOfModule
-                module.attachments.get[ConstructorDefaultsAttachment] match {
-                  // by martin: the null case can happen in IDE; this is really an ugly hack on top of an ugly hack but it seems to work
-                  case Some(cda) =>
-                    if (cda.companionModuleClassNamer == null) {
-                      devWarning(
-                        s"SI-6576 The companion module namer for $meth was unexpectedly null")
-                      return
-                    }
-                    val p =
-                      (cda.classWithDefault, cda.companionModuleClassNamer)
-                    moduleNamer = Some(p)
-                    p
-                  case _ =>
-                    return // fix #3649 (prevent crash in erroneous source code)
+            val parentNamer =
+              if (isConstr) {
+                val (cdef, nmr) = moduleNamer.getOrElse {
+                  val module = companionSymbolOf(methOwner, context)
+                  module.initialize // call type completer (typedTemplate), adds the
+                  // module's templateNamer to classAndNamerOfModule
+                  module.attachments.get[ConstructorDefaultsAttachment] match {
+                    // by martin: the null case can happen in IDE; this is really an ugly hack on top of an ugly hack but it seems to work
+                    case Some(cda) =>
+                      if (cda.companionModuleClassNamer == null) {
+                        devWarning(
+                          s"SI-6576 The companion module namer for $meth was unexpectedly null")
+                        return
+                      }
+                      val p =
+                        (cda.classWithDefault, cda.companionModuleClassNamer)
+                      moduleNamer = Some(p)
+                      p
+                    case _ =>
+                      return // fix #3649 (prevent crash in erroneous source code)
+                  }
                 }
-              }
-              val ClassDef(_, _, rtparams, _) = resetAttrs(cdef.duplicate)
-              defTparams = rtparams.map(rt =>
-                copyTypeDef(rt)(mods = rt.mods &~ (COVARIANT | CONTRAVARIANT)))
-              nmr
-            } else
-              ownerNamer getOrElse {
-                val ctx =
-                  context.nextEnclosing(c => c.scope.toList.contains(meth))
-                assert(ctx != NoContext, meth)
-                val nmr = newNamer(ctx)
-                ownerNamer = Some(nmr)
+                val ClassDef(_, _, rtparams, _) = resetAttrs(cdef.duplicate)
+                defTparams = rtparams.map(rt =>
+                  copyTypeDef(rt)(mods =
+                    rt.mods &~ (COVARIANT | CONTRAVARIANT)))
                 nmr
-              }
+              } else
+                ownerNamer getOrElse {
+                  val ctx = context.nextEnclosing(c =>
+                    c.scope.toList.contains(meth))
+                  assert(ctx != NoContext, meth)
+                  val nmr = newNamer(ctx)
+                  ownerNamer = Some(nmr)
+                  nmr
+                }
 
             val defTpt =
               // don't mess with tpt's of case copy default getters, because assigning something other than TypeTree()
@@ -1462,12 +1464,13 @@ trait Namers extends MethodSynthesis {
 
     private def valDefSig(vdef: ValDef) = {
       val ValDef(_, _, tpt, rhs) = vdef
-      val result = if (tpt.isEmpty) {
-        if (rhs.isEmpty) {
-          MissingParameterOrValTypeError(tpt)
-          ErrorType
-        } else assignTypeToTree(vdef, typer, WildcardType)
-      } else { typer.typedType(tpt).tpe }
+      val result =
+        if (tpt.isEmpty) {
+          if (rhs.isEmpty) {
+            MissingParameterOrValTypeError(tpt)
+            ErrorType
+          } else assignTypeToTree(vdef, typer, WildcardType)
+        } else { typer.typedType(tpt).tpe }
       pluginsTypeSig(
         result,
         typer,
@@ -1481,10 +1484,9 @@ trait Namers extends MethodSynthesis {
     private def typeDefSig(tdef: TypeDef) = {
       val TypeDef(_, _, tparams, rhs) = tdef
       // log("typeDefSig(" + tpsym + ", " + tparams + ")")
-      val tparamSyms =
-        typer.reenterTypeParams(
-          tparams
-        ) //@M make tparams available in scope (just for this abstypedef)
+      val tparamSyms = typer.reenterTypeParams(
+        tparams
+      ) //@M make tparams available in scope (just for this abstypedef)
       val tp = typer.typedType(rhs).tpe match {
         case TypeBounds(lt, rt) if (lt.isError || rt.isError) =>
           TypeBounds.empty
@@ -1532,8 +1534,9 @@ trait Namers extends MethodSynthesis {
             typer.TyperErrorGen.UnstableTreeError(expr1)
         }
 
-        val newImport =
-          treeCopy.Import(imp, expr1, selectors).asInstanceOf[Import]
+        val newImport = treeCopy
+          .Import(imp, expr1, selectors)
+          .asInstanceOf[Import]
         checkSelectors(newImport)
         context.unit.transformed(imp) = newImport
         // copy symbol and type attributes back into old expression

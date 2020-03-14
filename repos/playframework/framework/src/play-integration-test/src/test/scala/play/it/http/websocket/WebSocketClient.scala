@@ -287,8 +287,8 @@ object WebSocketClient {
               }
             }
 
-            val handleConnectionTerminated =
-              Flow[WebSocketFrame].transform(() =>
+            val handleConnectionTerminated = Flow[WebSocketFrame].transform(
+              () =>
                 new PushStage[WebSocketFrame, WebSocketFrame] {
                   def onPush(
                       elem: WebSocketFrame,

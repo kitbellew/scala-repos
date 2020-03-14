@@ -269,25 +269,23 @@ object Extraction {
         json match {
           case o: JObject =>
             formats.fieldSerializer(a.getClass).map { serializer =>
-              val constructorArgNames =
-                Reflection
-                  .constructorArgs(
-                    a.getClass,
-                    constructor,
-                    formats.parameterNameReader,
-                    None)
-                  .map(_._1)
-                  .toSet
+              val constructorArgNames = Reflection
+                .constructorArgs(
+                  a.getClass,
+                  constructor,
+                  formats.parameterNameReader,
+                  None)
+                .map(_._1)
+                .toSet
               val jsonFields = o.obj.map { f =>
-                val JField(n, v) =
-                  (serializer.deserializer orElse Map(f -> f))(f)
+                val JField(n, v) = (serializer.deserializer orElse Map(f -> f))(
+                  f)
                 (n, (n, v))
               }.toMap
 
-              val fieldsToSet =
-                Reflection
-                  .fields(a.getClass)
-                  .filterNot(f => constructorArgNames.contains(f._1))
+              val fieldsToSet = Reflection
+                .fields(a.getClass)
+                .filterNot(f => constructorArgNames.contains(f._1))
 
               fieldsToSet.foreach {
                 case (name, typeInfo) =>
@@ -304,8 +302,10 @@ object Extraction {
                                 ScalaSigReader.readField(name, a.getClass, idx)
                               else t
                           })
-                      val value =
-                        extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
+                      val value = extract0(
+                        v,
+                        typeInfo.clazz,
+                        typeArgs.getOrElse(Nil))
                       Reflection.setField(a, n, value)
                   }
               }

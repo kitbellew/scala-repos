@@ -51,13 +51,12 @@ private[ml] trait DecisionTreeParams
     * (default = 5)
     * @group param
     */
-  final val maxDepth: IntParam =
-    new IntParam(
-      this,
-      "maxDepth",
-      "Maximum depth of the tree. (>= 0)" +
-        " E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes.",
-      ParamValidators.gtEq(0))
+  final val maxDepth: IntParam = new IntParam(
+    this,
+    "maxDepth",
+    "Maximum depth of the tree. (>= 0)" +
+      " E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes.",
+    ParamValidators.gtEq(0))
 
   /**
     * Maximum number of bins used for discretizing continuous features and for choosing how to split
@@ -255,8 +254,8 @@ private[ml] trait TreeClassifierParams extends Params {
 
 private[ml] object TreeClassifierParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] =
-    Array("entropy", "gini").map(_.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("entropy", "gini").map(
+    _.toLowerCase)
 }
 
 private[ml] trait DecisionTreeClassifierParams
@@ -305,8 +304,8 @@ private[ml] trait TreeRegressorParams extends Params {
 
 private[ml] object TreeRegressorParams {
   // These options should be lowercase.
-  final val supportedImpurities: Array[String] =
-    Array("variance").map(_.toLowerCase)
+  final val supportedImpurities: Array[String] = Array("variance").map(
+    _.toLowerCase)
 }
 
 private[ml] trait DecisionTreeRegressorParams
@@ -318,8 +317,10 @@ private[ml] trait DecisionTreeRegressorParams
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    val newSchema =
-      super.validateAndTransformSchema(schema, fitting, featuresDataType)
+    val newSchema = super.validateAndTransformSchema(
+      schema,
+      fitting,
+      featuresDataType)
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
       SchemaUtils.appendColumn(newSchema, $(varianceCol), DoubleType)
     } else { newSchema }
@@ -444,8 +445,12 @@ private[ml] trait RandomForestParams extends TreeEnsembleParams {
 
 private[ml] object RandomForestParams {
   // These options should be lowercase.
-  final val supportedFeatureSubsetStrategies: Array[String] =
-    Array("auto", "all", "onethird", "sqrt", "log2").map(_.toLowerCase)
+  final val supportedFeatureSubsetStrategies: Array[String] = Array(
+    "auto",
+    "all",
+    "onethird",
+    "sqrt",
+    "log2").map(_.toLowerCase)
 }
 
 /**

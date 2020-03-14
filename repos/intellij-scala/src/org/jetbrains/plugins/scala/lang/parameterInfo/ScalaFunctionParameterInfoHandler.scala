@@ -125,8 +125,8 @@ class ScalaFunctionParameterInfoHandler
       item: LookupElement,
       context: ParameterInfoContext): Array[Object] = {
     if (!item.isInstanceOf[LookupItem[_]]) return null
-    val allElements =
-      JavaCompletionUtil.getAllPsiElements(item.asInstanceOf[LookupItem[_]])
+    val allElements = JavaCompletionUtil.getAllPsiElements(
+      item.asInstanceOf[LookupItem[_]])
 
     if (allElements != null &&
         allElements.size > 0 &&
@@ -710,22 +710,21 @@ class ScalaFunctionParameterInfoHandler
                          }) > i))
                       res += ((new PhysicalSignature(constr, subst), i))
                   case clazz: PsiClass if clazz.isAnnotationType =>
-                    val resulting: (AnnotationParameters, Int) =
-                      (
-                        AnnotationParameters(
-                          clazz.getMethods.toSeq
-                            .filter(_.isInstanceOf[PsiAnnotationMethod])
-                            .map(meth =>
-                              (
-                                meth.name,
-                                ScType.create(
-                                  meth.getReturnType,
-                                  meth.getProject,
-                                  meth.getResolveScope),
-                                meth
-                                  .asInstanceOf[PsiAnnotationMethod]
-                                  .getDefaultValue))),
-                        i)
+                    val resulting: (AnnotationParameters, Int) = (
+                      AnnotationParameters(
+                        clazz.getMethods.toSeq
+                          .filter(_.isInstanceOf[PsiAnnotationMethod])
+                          .map(meth =>
+                            (
+                              meth.name,
+                              ScType.create(
+                                meth.getReturnType,
+                                meth.getProject,
+                                meth.getResolveScope),
+                              meth
+                                .asInstanceOf[PsiAnnotationMethod]
+                                .getDefaultValue))),
+                      i)
                     res += resulting
                   case clazz: PsiClass
                       if !clazz.isInstanceOf[ScTypeDefinition] =>
@@ -769,8 +768,10 @@ class ScalaFunctionParameterInfoHandler
           case self: ScSelfInvocation =>
             val res: ArrayBuffer[Object] = new ArrayBuffer[Object]
             val i = self.arguments.indexOf(args.element)
-            val clazz =
-              PsiTreeUtil.getParentOfType(self, classOf[ScClass], true)
+            val clazz = PsiTreeUtil.getParentOfType(
+              self,
+              classOf[ScClass],
+              true)
             clazz match {
               case clazz: ScClass =>
                 clazz.constructor match {

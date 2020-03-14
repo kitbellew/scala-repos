@@ -160,8 +160,8 @@ class CircuitBreakerSpec extends AkkaSpec with BeforeAndAfter {
       val breaker = CircuitBreakerSpec.multiFailureCb()
       breaker().currentFailureCount should ===(0)
       intercept[TestException] {
-        val ct =
-          Thread.currentThread() // Ensure that the thunk is executed in the tests thread
+        val ct = Thread
+          .currentThread() // Ensure that the thunk is executed in the tests thread
         breaker().withSyncCircuitBreaker({
           if (Thread.currentThread() eq ct) throwException else "fail"
         })

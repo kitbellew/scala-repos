@@ -128,8 +128,8 @@ trait Types
     *  It makes use of the fact that these two operations depend only on the parents,
     *  not on the refinement.
     */
-  private val _intersectionWitness =
-    perRunCaches.newWeakMap[List[Type], WeakReference[Type]]()
+  private val _intersectionWitness = perRunCaches
+    .newWeakMap[List[Type], WeakReference[Type]]()
   def intersectionWitness = _intersectionWitness
 
   /** A proxy for a type (identified by field `underlying`) that forwards most
@@ -636,8 +636,7 @@ trait Types
 
     /** The member with given name,
       *  an OverloadedSymbol if several exist, NoSymbol if none exist */
-    def member(name: Name): Symbol =
-      memberBasedOnName(name, BridgeFlags)
+    def member(name: Name): Symbol = memberBasedOnName(name, BridgeFlags)
 
     /** The non-private member with given name,
       *  an OverloadedSymbol if several exist, NoSymbol if none exist.
@@ -771,8 +770,7 @@ trait Types
       */
     def substThis(from: Symbol, to: Type): Type =
       new SubstThisMap(from, to) apply this
-    def substThis(from: Symbol, to: Symbol): Type =
-      substThis(from, to.thisType)
+    def substThis(from: Symbol, to: Symbol): Type = substThis(from, to.thisType)
 
     /** Performs both substThis and substSym, in that order.
       *
@@ -1589,9 +1587,8 @@ trait Types
             case tv: TypeVar => tvs += tv
             case _           =>
           }
-          val varToParamMap: Map[Type, Symbol] =
-            mapFrom[TypeVar, Type, Symbol](tvs.toList)(
-              _.origin.typeSymbol.cloneSymbol)
+          val varToParamMap: Map[Type, Symbol] = mapFrom[TypeVar, Type, Symbol](
+            tvs.toList)(_.origin.typeSymbol.cloneSymbol)
           val paramToVarMap = varToParamMap map (_.swap)
           val varToParam = new TypeMap {
             def apply(tp: Type) =
@@ -3008,11 +3005,10 @@ trait Types
     def withTypeVars(op: Type => Boolean, depth: Depth): Boolean = {
       val quantifiedFresh = cloneSymbols(quantified)
       val tvars = quantifiedFresh map (tparam => TypeVar(tparam))
-      val underlying1 =
-        underlying.instantiateTypeParams(
-          quantified,
-          tvars
-        ) // fuse subst quantified -> quantifiedFresh -> tvars
+      val underlying1 = underlying.instantiateTypeParams(
+        quantified,
+        tvars
+      ) // fuse subst quantified -> quantifiedFresh -> tvars
       op(underlying1) && {
         solve(
           tvars,
@@ -5217,23 +5213,23 @@ trait Types
 
 // -------------- Classtags --------------------------------------------------------
 
-  implicit val AnnotatedTypeTag =
-    ClassTag[AnnotatedType](classOf[AnnotatedType])
-  implicit val BoundedWildcardTypeTag =
-    ClassTag[BoundedWildcardType](classOf[BoundedWildcardType])
-  implicit val ClassInfoTypeTag =
-    ClassTag[ClassInfoType](classOf[ClassInfoType])
+  implicit val AnnotatedTypeTag = ClassTag[AnnotatedType](
+    classOf[AnnotatedType])
+  implicit val BoundedWildcardTypeTag = ClassTag[BoundedWildcardType](
+    classOf[BoundedWildcardType])
+  implicit val ClassInfoTypeTag = ClassTag[ClassInfoType](
+    classOf[ClassInfoType])
   implicit val CompoundTypeTag = ClassTag[CompoundType](classOf[CompoundType])
   implicit val ConstantTypeTag = ClassTag[ConstantType](classOf[ConstantType])
-  implicit val ExistentialTypeTag =
-    ClassTag[ExistentialType](classOf[ExistentialType])
+  implicit val ExistentialTypeTag = ClassTag[ExistentialType](
+    classOf[ExistentialType])
   implicit val MethodTypeTag = ClassTag[MethodType](classOf[MethodType])
-  implicit val NullaryMethodTypeTag =
-    ClassTag[NullaryMethodType](classOf[NullaryMethodType])
+  implicit val NullaryMethodTypeTag = ClassTag[NullaryMethodType](
+    classOf[NullaryMethodType])
   implicit val PolyTypeTag = ClassTag[PolyType](classOf[PolyType])
   implicit val RefinedTypeTag = ClassTag[RefinedType](classOf[RefinedType])
-  implicit val SingletonTypeTag =
-    ClassTag[SingletonType](classOf[SingletonType])
+  implicit val SingletonTypeTag = ClassTag[SingletonType](
+    classOf[SingletonType])
   implicit val SingleTypeTag = ClassTag[SingleType](classOf[SingleType])
   implicit val SuperTypeTag = ClassTag[SuperType](classOf[SuperType])
   implicit val ThisTypeTag = ClassTag[ThisType](classOf[ThisType])
@@ -5264,30 +5260,41 @@ object TypesStats {
   val nestedLubCount = Statistics.newCounter("#all lubs/glbs")
   val findMemberCount = Statistics.newCounter("#findMember ops")
   val findMembersCount = Statistics.newCounter("#findMembers ops")
-  val noMemberCount =
-    Statistics.newSubCounter("  of which not found", findMemberCount)
-  val multMemberCount =
-    Statistics.newSubCounter("  of which multiple overloaded", findMemberCount)
+  val noMemberCount = Statistics.newSubCounter(
+    "  of which not found",
+    findMemberCount)
+  val multMemberCount = Statistics.newSubCounter(
+    "  of which multiple overloaded",
+    findMemberCount)
   val typerNanos = Statistics.newTimer("time spent typechecking", "typer")
   val lubNanos = Statistics.newStackableTimer("time spent in lubs", typerNanos)
-  val subtypeNanos =
-    Statistics.newStackableTimer("time spent in <:<", typerNanos)
-  val findMemberNanos =
-    Statistics.newStackableTimer("time spent in findmember", typerNanos)
-  val findMembersNanos =
-    Statistics.newStackableTimer("time spent in findmembers", typerNanos)
-  val asSeenFromNanos =
-    Statistics.newStackableTimer("time spent in asSeenFrom", typerNanos)
-  val baseTypeSeqNanos =
-    Statistics.newStackableTimer("time spent in baseTypeSeq", typerNanos)
-  val baseClassesNanos =
-    Statistics.newStackableTimer("time spent in baseClasses", typerNanos)
-  val compoundBaseTypeSeqCount =
-    Statistics.newSubCounter("  of which for compound types", baseTypeSeqCount)
-  val typerefBaseTypeSeqCount =
-    Statistics.newSubCounter("  of which for typerefs", baseTypeSeqCount)
-  val singletonBaseTypeSeqCount =
-    Statistics.newSubCounter("  of which for singletons", baseTypeSeqCount)
+  val subtypeNanos = Statistics.newStackableTimer(
+    "time spent in <:<",
+    typerNanos)
+  val findMemberNanos = Statistics.newStackableTimer(
+    "time spent in findmember",
+    typerNanos)
+  val findMembersNanos = Statistics.newStackableTimer(
+    "time spent in findmembers",
+    typerNanos)
+  val asSeenFromNanos = Statistics.newStackableTimer(
+    "time spent in asSeenFrom",
+    typerNanos)
+  val baseTypeSeqNanos = Statistics.newStackableTimer(
+    "time spent in baseTypeSeq",
+    typerNanos)
+  val baseClassesNanos = Statistics.newStackableTimer(
+    "time spent in baseClasses",
+    typerNanos)
+  val compoundBaseTypeSeqCount = Statistics.newSubCounter(
+    "  of which for compound types",
+    baseTypeSeqCount)
+  val typerefBaseTypeSeqCount = Statistics.newSubCounter(
+    "  of which for typerefs",
+    baseTypeSeqCount)
+  val singletonBaseTypeSeqCount = Statistics.newSubCounter(
+    "  of which for singletons",
+    baseTypeSeqCount)
   val typeOpsStack = Statistics.newTimerStack()
 
   /* Commented out, because right now this does not inline, so creates a closure which will distort statistics

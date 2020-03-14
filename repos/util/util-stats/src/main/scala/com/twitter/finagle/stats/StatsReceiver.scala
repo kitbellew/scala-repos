@@ -27,8 +27,7 @@ object StatsReceivers {
   def addGauge(
       statsReceiver: StatsReceiver,
       callable: Callable[JFloat],
-      name: String*): Gauge =
-    statsReceiver.addGauge(name: _*)(callable.call())
+      name: String*): Gauge = statsReceiver.addGauge(name: _*)(callable.call())
 
   /**
     * Java compatible version of [[StatsReceiver.provideGauge]].

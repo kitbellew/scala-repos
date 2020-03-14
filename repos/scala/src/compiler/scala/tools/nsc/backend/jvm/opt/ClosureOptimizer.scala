@@ -254,8 +254,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           val numArgs = Type.getArgumentTypes(invocation.desc).length
           invocationFrame.stackTop - numArgs
         }
-        val receiverProducers =
-          prodCons.initialProducersForValueAt(invocation, receiverSlot)
+        val receiverProducers = prodCons.initialProducersForValueAt(
+          invocation,
+          receiverSlot)
         receiverProducers.size == 1 && receiverProducers.head == indy
       }
 
@@ -328,8 +329,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     if (invokeDesc == lambdaBodyMethodDescWithoutCaptures) { _ => None }
     else {
       val invokeArgTypes = Type.getArgumentTypes(invokeDesc)
-      val implMethodArgTypes =
-        Type.getArgumentTypes(lambdaBodyMethodDescWithoutCaptures)
+      val implMethodArgTypes = Type.getArgumentTypes(
+        lambdaBodyMethodDescWithoutCaptures)
       val res = new Array[Option[AbstractInsnNode]](invokeArgTypes.length)
       for (i <- invokeArgTypes.indices) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) { res(i) = None }
@@ -452,8 +453,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         .getOrElse(false)
     val callee = bodyMethod.map({
       case (bodyMethodNode, bodyMethodDeclClass) =>
-        val bodyDeclClassType =
-          classBTypeFromParsedClassfile(bodyMethodDeclClass)
+        val bodyDeclClassType = classBTypeFromParsedClassfile(
+          bodyMethodDeclClass)
         val canInlineFromSource =
           compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
         Callee(
@@ -465,8 +466,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
           canInlineFromSource = canInlineFromSource,
           annotatedInline = false,
           annotatedNoInline = false,
-          samParamTypes =
-            callGraph.samParamTypes(bodyMethodNode, bodyDeclClassType),
+          samParamTypes = callGraph
+            .samParamTypes(bodyMethodNode, bodyDeclClassType),
           calleeInfoWarning = None
         )
     })
@@ -484,8 +485,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
       argInfos = argInfos,
       callsiteStackHeight = invocationStackHeight,
       receiverKnownNotNull = true, // see below (*)
-      callsitePosition =
-        originalCallsite.map(_.callsitePosition).getOrElse(NoPosition),
+      callsitePosition = originalCallsite
+        .map(_.callsitePosition)
+        .getOrElse(NoPosition),
       annotatedInline = false,
       annotatedNoInline = false
     )
@@ -519,8 +521,9 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // local. On the other hand, further optimizations (copy propagation, remove unused locals) will
     // clean it up.
 
-    val localsForCaptures =
-      LocalsList.fromTypes(firstCaptureLocal, capturedTypes)
+    val localsForCaptures = LocalsList.fromTypes(
+      firstCaptureLocal,
+      capturedTypes)
     closureInit.ownerMethod.maxLocals =
       firstCaptureLocal + localsForCaptures.size
 

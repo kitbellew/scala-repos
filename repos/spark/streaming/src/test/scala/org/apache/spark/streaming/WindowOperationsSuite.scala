@@ -261,8 +261,10 @@ class WindowOperationsSuite extends TestSuiteBase {
 
   test("countByValueAndWindow") {
     val input = Seq(Seq("a"), Seq("b", "b"), Seq("a", "b"))
-    val expectedOutput =
-      Seq(Seq(("a", 1)), Seq(("a", 1), ("b", 2)), Seq(("a", 1), ("b", 3)))
+    val expectedOutput = Seq(
+      Seq(("a", 1)),
+      Seq(("a", 1), ("b", 2)),
+      Seq(("a", 1), ("b", 3)))
     val windowDuration = Seconds(2)
     val slideDuration = Seconds(1)
     val numBatches = expectedOutput.size * (slideDuration / batchDuration).toInt

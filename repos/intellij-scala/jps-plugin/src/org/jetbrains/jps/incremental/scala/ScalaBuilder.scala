@@ -202,8 +202,8 @@ object ScalaBuilder {
       compilationData: CompilationData,
       client: Client) {
     val hasScalaFacet = modules.exists(SettingsManager.hasScalaSdk)
-    val hasScalaLibrary =
-      compilationData.classpath.exists(_.getName.startsWith("scala-library"))
+    val hasScalaLibrary = compilationData.classpath.exists(
+      _.getName.startsWith("scala-library"))
 
     if (hasScalaFacet && !hasScalaLibrary) {
       val names = modules.map(_.getName).mkString(", ")

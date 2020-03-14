@@ -183,15 +183,14 @@ object Duration extends TimeLikeOps[Duration] {
     TimeUnit.MICROSECONDS,
     TimeUnit.NANOSECONDS)
 
-  private val nameToUnit: Map[String, TimeUnit] =
-    TimeUnit
-      .values()
-      .flatMap { u =>
-        val pluralK = u.toString.toLowerCase
-        val singularK = pluralK dropRight 1
-        Seq(pluralK -> u, singularK -> u)
-      }
-      .toMap
+  private val nameToUnit: Map[String, TimeUnit] = TimeUnit
+    .values()
+    .flatMap { u =>
+      val pluralK = u.toString.toLowerCase
+      val singularK = pluralK dropRight 1
+      Seq(pluralK -> u, singularK -> u)
+    }
+    .toMap
 
   private val SingleDurationRegex =
     """\s*([+-]?)\s*(?:([0-9]+)\.([a-z]+)|duration\.(top|bottom|undefined))""".r
@@ -407,8 +406,7 @@ sealed class Duration private[util] (protected val nanos: Long) extends {
   /**
     * Scales this `Duration` by dividing by `x`.
     */
-  def /(x: Double): Duration =
-    if (x == 0.0) this / 0 else this * (1.0 / x)
+  def /(x: Double): Duration = if (x == 0.0) this / 0 else this * (1.0 / x)
 
   /**
     * Scales this `Duration` by modding by `x`.

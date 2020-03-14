@@ -74,8 +74,12 @@ private[streaming] object MasterFailureTest extends Logging {
     val operation = (st: DStream[String]) => st.map(_.toInt)
 
     // Run streaming operation with multiple master failures
-    val output =
-      testOperation(directory, batchDuration, input, operation, expectedOutput)
+    val output = testOperation(
+      directory,
+      batchDuration,
+      input,
+      operation,
+      expectedOutput)
 
     logInfo("Expected output, size = " + expectedOutput.size)
     logInfo(expectedOutput.mkString("[", ",", "]"))
@@ -95,8 +99,9 @@ private[streaming] object MasterFailureTest extends Logging {
     val input =
       (1 to numBatches).map(i => (1 to i).map(_ => "a").mkString(" ")).toSeq
     // Expected output: time=1 ==> [ (a, 1) ] , time=2 ==> [ (a, 3) ] , time=3 ==> [ (a,6) ] , ...
-    val expectedOutput =
-      (1L to numBatches).map(i => (1L to i).sum).map(j => ("a", j))
+    val expectedOutput = (1L to numBatches)
+      .map(i => (1L to i).sum)
+      .map(j => ("a", j))
 
     val operation = (st: DStream[String]) => {
       val updateFunc = (values: Seq[Long], state: Option[Long]) => {
@@ -109,8 +114,12 @@ private[streaming] object MasterFailureTest extends Logging {
     }
 
     // Run streaming operation with multiple master failures
-    val output =
-      testOperation(directory, batchDuration, input, operation, expectedOutput)
+    val output = testOperation(
+      directory,
+      batchDuration,
+      input,
+      operation,
+      expectedOutput)
 
     logInfo(
       "Expected output, size = " + expectedOutput.size + "\n" + expectedOutput)

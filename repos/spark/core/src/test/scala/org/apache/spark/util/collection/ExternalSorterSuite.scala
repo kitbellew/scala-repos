@@ -198,8 +198,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val it = sorter.iterator
     while (it.hasNext) {
       val kv = it.next()
-      val expectedValue =
-        ArrayBuffer[String](collisionPairsMap.getOrElse(kv._1, kv._1))
+      val expectedValue = ArrayBuffer[String](
+        collisionPairsMap.getOrElse(kv._1, kv._1))
       assert(kv._2.equals(expectedValue))
       count += 1
     }
@@ -256,12 +256,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       createCombiner,
       mergeValue,
       mergeCombiners)
-    val sorter =
-      new ExternalSorter[Int, Int, ArrayBuffer[Int]](
-        context,
-        Some(agg),
-        None,
-        None)
+    val sorter = new ExternalSorter[Int, Int, ArrayBuffer[Int]](
+      context,
+      Some(agg),
+      None,
+      None)
     sorter.insertAll(
       (1 to size).iterator.map(i => (i, i)) ++ Iterator(
         (Int.MaxValue, Int.MaxValue)))
@@ -288,8 +287,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         i: String): ArrayBuffer[String] = buffer += i
     def mergeCombiners(
         buf1: ArrayBuffer[String],
-        buf2: ArrayBuffer[String]): ArrayBuffer[String] =
-      buf1 ++= buf2
+        buf2: ArrayBuffer[String]): ArrayBuffer[String] = buf1 ++= buf2
 
     val agg = new Aggregator[String, String, ArrayBuffer[String]](
       createCombiner,
@@ -671,12 +669,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       } else { None }
     val ord = if (withOrdering) Some(implicitly[Ordering[Int]]) else None
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
-    val sorter =
-      new ExternalSorter[Int, Int, Int](
-        context,
-        agg,
-        Some(new HashPartitioner(3)),
-        ord)
+    val sorter = new ExternalSorter[Int, Int, Int](
+      context,
+      agg,
+      Some(new HashPartitioner(3)),
+      ord)
     sorter.insertAll((0 until size).iterator.map { i => (i / 4, i) })
     if (withSpilling) { assert(sorter.numSpills > 0, "sorter did not spill") }
     else { assert(sorter.numSpills === 0, "sorter spilled") }
@@ -742,8 +739,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       c += i
     def mergeCombiners(
         c1: ArrayBuffer[String],
-        c2: ArrayBuffer[String]): ArrayBuffer[String] =
-      c1 ++= c2
+        c2: ArrayBuffer[String]): ArrayBuffer[String] = c1 ++= c2
 
     val agg = new Aggregator[String, String, ArrayBuffer[String]](
       createCombiner,

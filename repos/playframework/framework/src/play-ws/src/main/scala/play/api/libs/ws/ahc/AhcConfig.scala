@@ -76,8 +76,8 @@ class AhcWSClientConfigParser @Inject() (
     val maximumConnectionsPerHost = get[Int]("maxConnectionsPerHost")
     val maximumConnectionsTotal = get[Int]("maxConnectionsTotal")
     val maxConnectionLifetime = get[Duration]("maxConnectionLifetime")
-    val idleConnectionInPoolTimeout =
-      get[Duration]("idleConnectionInPoolTimeout")
+    val idleConnectionInPoolTimeout = get[Duration](
+      "idleConnectionInPoolTimeout")
     val maximumNumberOfRedirects = get[Int]("maxNumberOfRedirects")
     val maxRequestRetry = get[Int]("maxRequestRetry")
     val disableUrlEncoding = get[Boolean]("disableUrlEncoding")
@@ -273,20 +273,21 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
   def configureSSL(sslConfig: SSLConfig) {
 
     // context!
-    val sslContext = if (sslConfig.default) {
-      logger.info(
-        "buildSSLContext: ws.ssl.default is true, using default SSLContext")
-      validateDefaultTrustManager(sslConfig)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = buildKeyManagerFactory(sslConfig)
-      val trustManagerFactory = buildTrustManagerFactory(sslConfig)
-      new ConfigSSLContextBuilder(
-        sslConfig,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+    val sslContext =
+      if (sslConfig.default) {
+        logger.info(
+          "buildSSLContext: ws.ssl.default is true, using default SSLContext")
+        validateDefaultTrustManager(sslConfig)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = buildKeyManagerFactory(sslConfig)
+        val trustManagerFactory = buildTrustManagerFactory(sslConfig)
+        new ConfigSSLContextBuilder(
+          sslConfig,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters
@@ -327,11 +328,12 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     //
     // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/security/ssl/SSLContextImpl.java#79
 
-    val tmf =
-      TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory.getInstance(
+      TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(null.asInstanceOf[KeyStore])
-    val trustManager: X509TrustManager =
-      tmf.getTrustManagers()(0).asInstanceOf[X509TrustManager]
+    val trustManager: X509TrustManager = tmf
+      .getTrustManagers()(0)
+      .asInstanceOf[X509TrustManager]
 
     val constraints = sslConfig.disabledKeyAlgorithms
       .map(a =>

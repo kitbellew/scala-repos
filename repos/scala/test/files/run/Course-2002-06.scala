@@ -89,8 +89,7 @@ class PostScript(filename: String, _width: Double, _height: Double)
   /** Convert mm into 72th of inch.*/
   def mm2ps(x: Double): Double = round(x * 72.0 / 25.4);
 
-  def round(x: Double): Double =
-    Math.floor(x * 100.0 + 0.5) / 100.0;
+  def round(x: Double): Double = Math.floor(x * 100.0 + 0.5) / 100.0;
 
   def scaleAndCenter(frm: Frame, ratio: Double): Frame = {
     val currentRatio = frm.edgeX.norm / frm.edgeY.norm;

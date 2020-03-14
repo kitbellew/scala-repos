@@ -19,8 +19,9 @@ private[play] case class PlayCoreTestApplication(
     extends Application {
   val classloader = Thread.currentThread.getContextClassLoader
   lazy val configuration = Configuration.from(config)
-  private val lazyActorSystem =
-    ActorSystemProvider.lazyStart(classloader, configuration)
+  private val lazyActorSystem = ActorSystemProvider.lazyStart(
+    classloader,
+    configuration)
   def actorSystem = lazyActorSystem.get()
   lazy val materializer = ActorMaterializer()(actorSystem)
   def stop() = lazyActorSystem.close()

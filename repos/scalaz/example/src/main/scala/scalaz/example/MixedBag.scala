@@ -83,8 +83,7 @@ object MixedBag extends App {
     type Tree[A] = Free[Pair, A]
 
     implicit val pairFunctor: Functor[Pair] = new Functor[Pair] {
-      def map[A, B](as: Pair[A])(f: A => B) =
-        f(as._1) -> f(as._2)
+      def map[A, B](as: Pair[A])(f: A => B) = f(as._1) -> f(as._2)
     }
 
     def leaf[A](a: A): Tree[A] = Free.pure(a)

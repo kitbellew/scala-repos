@@ -67,8 +67,8 @@ private[execution] sealed trait HashedRelation {
   // This is a helper method to implement Externalizable, and is used by
   // GeneralHashedRelation and UniqueKeyHashedRelation
   protected def readBytes(in: ObjectInput): Array[Byte] = {
-    val serializedSize =
-      in.readInt() // Read the length of serialized bytes first
+    val serializedSize = in
+      .readInt() // Read the length of serialized bytes first
     val bytes = new Array[Byte](serializedSize)
     in.readFully(bytes)
     bytes
@@ -186,14 +186,15 @@ private[execution] object HashedRelation {
       val rowKey = keyGenerator(currentRow)
       if (!rowKey.anyNull) {
         val existingMatchList = hashTable.get(rowKey)
-        val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[InternalRow]()
-          hashTable.put(rowKey.copy(), newMatchList)
-          newMatchList
-        } else {
-          keyIsUnique = false
-          existingMatchList
-        }
+        val matchList =
+          if (existingMatchList == null) {
+            val newMatchList = new CompactBuffer[InternalRow]()
+            hashTable.put(rowKey.copy(), newMatchList)
+            newMatchList
+          } else {
+            keyIsUnique = false
+            existingMatchList
+          }
         matchList += currentRow
       }
     }
@@ -408,8 +409,10 @@ private[joins] final class UnsafeHashedRelation(
         in.readFully(valuesBuffer, 0, valuesSize)
 
         // put it into binary map
-        val loc =
-          binaryMap.lookup(keyBuffer, Platform.BYTE_ARRAY_OFFSET, keySize)
+        val loc = binaryMap.lookup(
+          keyBuffer,
+          Platform.BYTE_ARRAY_OFFSET,
+          keySize)
         assert(!loc.isDefined, "Duplicated key found!")
         val putSuceeded = loc.putNewKey(
           keyBuffer,
@@ -444,11 +447,12 @@ private[joins] object UnsafeHashedRelation {
       val rowKey = keyGenerator(unsafeRow)
       if (!rowKey.anyNull) {
         val existingMatchList = hashTable.get(rowKey)
-        val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[UnsafeRow]()
-          hashTable.put(rowKey.copy(), newMatchList)
-          newMatchList
-        } else { existingMatchList }
+        val matchList =
+          if (existingMatchList == null) {
+            val newMatchList = new CompactBuffer[UnsafeRow]()
+            hashTable.put(rowKey.copy(), newMatchList)
+            newMatchList
+          } else { existingMatchList }
         matchList += unsafeRow
       }
     }
@@ -628,14 +632,15 @@ private[joins] object LongHashedRelation {
         minKey = math.min(minKey, key)
         maxKey = math.max(maxKey, key)
         val existingMatchList = hashTable.get(key)
-        val matchList = if (existingMatchList == null) {
-          val newMatchList = new CompactBuffer[UnsafeRow]()
-          hashTable.put(key, newMatchList)
-          newMatchList
-        } else {
-          keyIsUnique = false
-          existingMatchList
-        }
+        val matchList =
+          if (existingMatchList == null) {
+            val newMatchList = new CompactBuffer[UnsafeRow]()
+            hashTable.put(key, newMatchList)
+            newMatchList
+          } else {
+            keyIsUnique = false
+            existingMatchList
+          }
         matchList += unsafeRow
       }
     }

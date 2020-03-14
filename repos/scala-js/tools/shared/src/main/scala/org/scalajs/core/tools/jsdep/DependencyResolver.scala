@@ -21,8 +21,9 @@ object DependencyResolver {
       dependencyFilter: DependencyFilter): List[ResolvedJSDependency] = {
 
     val resourceNames = collectAllResourceNames(manifests)
-    val resolvedJSLibs =
-      resolveAllResourceNames(resourceNames, availableLibs.keys)
+    val resolvedJSLibs = resolveAllResourceNames(
+      resourceNames,
+      availableLibs.keys)
 
     val allFlatDeps = for {
       manifest <- manifests

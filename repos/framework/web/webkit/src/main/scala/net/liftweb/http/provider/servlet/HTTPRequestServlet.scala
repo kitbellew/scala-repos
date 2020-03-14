@@ -62,14 +62,11 @@ class HTTPRequestServlet(
       li <- enumToList[String](h) if null != li
     } yield li
 
-  lazy val headers: List[HTTPParam] =
-    for {
-      hne <- (Box !! req.getHeaderNames)
-        .asA[java.util.Enumeration[String]]
-        .toList
-      n <- enumToList[String](hne) if null != n
-      hl <- Full(headers(n)) if !hl.isEmpty
-    } yield HTTPParam(n, hl)
+  lazy val headers: List[HTTPParam] = for {
+    hne <- (Box !! req.getHeaderNames).asA[java.util.Enumeration[String]].toList
+    n <- enumToList[String](hne) if null != n
+    hl <- Full(headers(n)) if !hl.isEmpty
+  } yield HTTPParam(n, hl)
 
   def contextPath: String = req.getContextPath
 

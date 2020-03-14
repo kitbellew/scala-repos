@@ -73,8 +73,9 @@ class DefaultSource extends FileFormat with DataSourceRegister {
     verifySchema(dataSchema)
 
     val conf = job.getConfiguration
-    val compressionCodec =
-      options.get("compression").map(CompressionCodecs.getCodecClassName)
+    val compressionCodec = options
+      .get("compression")
+      .map(CompressionCodecs.getCodecClassName)
     compressionCodec.foreach { codec =>
       CompressionCodecs.setCodecConfiguration(conf, codec)
     }
@@ -150,8 +151,8 @@ class TextOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId =
-          configuration.get("spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration.get(
+          "spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
         new Path(path, f"part-r-$split%05d-$uniqueWriteJobId.txt$extension")

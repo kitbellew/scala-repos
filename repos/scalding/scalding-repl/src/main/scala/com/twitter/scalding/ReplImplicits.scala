@@ -148,22 +148,21 @@ trait BaseReplState {
     // "tempjars" which can be passed in from the command line, allowing code
     // in the repl to be distributed for the Hadoop job to run.
     val replCodeJar: Option[java.io.File] = shell.createReplCodeJar()
-    val tmpJarsConfig: Map[String, String] =
-      replCodeJar match {
-        case Some(jar) =>
-          Map("tmpjars" -> {
-            // Use tmpjars already in the configuration.
-            config
-              .get("tmpjars")
-              .map(_ + ",")
-              .getOrElse("")
-              // And a jar of code compiled by the REPL.
-              .concat("file://" + jar.getAbsolutePath)
-          })
-        case None =>
-          // No need to add the tmpjars to the configuration
-          Map()
-      }
+    val tmpJarsConfig: Map[String, String] = replCodeJar match {
+      case Some(jar) =>
+        Map("tmpjars" -> {
+          // Use tmpjars already in the configuration.
+          config
+            .get("tmpjars")
+            .map(_ + ",")
+            .getOrElse("")
+            // And a jar of code compiled by the REPL.
+            .concat("file://" + jar.getAbsolutePath)
+        })
+      case None =>
+        // No need to add the tmpjars to the configuration
+        Map()
+    }
     config ++ tmpJarsConfig
   }
 

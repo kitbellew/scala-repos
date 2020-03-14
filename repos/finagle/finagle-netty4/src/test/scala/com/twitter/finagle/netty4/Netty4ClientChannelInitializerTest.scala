@@ -156,8 +156,7 @@ class Netty4ClientChannelInitializerTest
       override def write(
           ctx: ChannelHandlerContext,
           msg: scala.Any,
-          promise: ChannelPromise): Unit =
-        ()
+          promise: ChannelPromise): Unit = ()
     }
 
     new Ctx {
@@ -186,13 +185,12 @@ class Netty4ClientChannelInitializerTest
       new FixedLengthDecoder[String](4, Buf.Utf8.unapply(_).getOrElse("???"))
 
     val transportP = new Promise[Transport[Int, String]]
-    val channelInit =
-      new Netty4ClientChannelInitializer[Int, String](
-        transportP,
-        Params.empty,
-        Some(enc),
-        Some(() => decoder)
-      )
+    val channelInit = new Netty4ClientChannelInitializer[Int, String](
+      transportP,
+      Params.empty,
+      Some(enc),
+      Some(() => decoder)
+    )
 
     channelInit.initChannel(ctx.client)
     val server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
@@ -232,11 +230,10 @@ class Netty4ClientChannelInitializerTest
           case _ => fail("expected ByteBuf message")
         }
     }
-    val init =
-      new RawNetty4ClientChannelInitializer[ByteBuf, ByteBuf](
-        p,
-        Params.empty,
-        _.addLast(reverser))
+    val init = new RawNetty4ClientChannelInitializer[ByteBuf, ByteBuf](
+      p,
+      Params.empty,
+      _.addLast(reverser))
 
     val channel: SocketChannel = new NioSocketChannel()
     val loop = new NioEventLoopGroup()

@@ -17,8 +17,7 @@ class PriorityQueue[E] protected (
     if (initialCapacity < 1) throw new IllegalArgumentException()
   }
 
-  def this() =
-    this(11)
+  def this() = this(11)
 
   def this(initialCapacity: Int, comparator: Comparator[_ >: E]) = {
     this(
@@ -63,8 +62,7 @@ class PriorityQueue[E] protected (
 
   def offer(e: E): Boolean = add(e)
 
-  def peek(): E =
-    inner.headOption.fold(null.asInstanceOf[E])(_.inner)
+  def peek(): E = inner.headOption.fold(null.asInstanceOf[E])(_.inner)
 
   override def remove(o: Any): Boolean = {
     val boxed = Box(o.asInstanceOf[E])
@@ -88,8 +86,7 @@ class PriorityQueue[E] protected (
     (inner.size != initialSize)
   }
 
-  override def contains(o: Any): Boolean =
-    inner.exists(_ === Box(o))
+  override def contains(o: Any): Boolean = inner.exists(_ === Box(o))
 
   def iterator(): Iterator[E] = {
     new Iterator[E] {
@@ -116,8 +113,7 @@ class PriorityQueue[E] protected (
 
   def size(): Int = inner.size
 
-  override def clear(): Unit =
-    inner.dequeueAll
+  override def clear(): Unit = inner.dequeueAll
 
   def poll(): E =
     if (inner.isEmpty) null.asInstanceOf[E] else inner.dequeue().inner

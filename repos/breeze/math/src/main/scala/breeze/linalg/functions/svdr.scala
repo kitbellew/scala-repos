@@ -30,8 +30,7 @@ object svdr extends UFunc {
         M: DenseMatrix[Double],
         k: Int,
         nOversamples: Int,
-        nIter: Int): DenseSVD =
-      doSVDR_Double(M, k, nOversamples, nIter)
+        nIter: Int): DenseSVD = doSVDR_Double(M, k, nOversamples, nIter)
   }
 
   /**

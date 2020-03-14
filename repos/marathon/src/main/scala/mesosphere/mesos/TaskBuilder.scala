@@ -47,13 +47,15 @@ class TaskBuilder(
       val staticHostPorts = hostPorts.filter(_ != 0)
       val numberDynamicHostPorts = hostPorts.count(_ == 0)
 
-      val maybeStatic: Option[String] = if (staticHostPorts.nonEmpty) {
-        Some(s"[${staticHostPorts.mkString(", ")}] required")
-      } else { None }
+      val maybeStatic: Option[String] =
+        if (staticHostPorts.nonEmpty) {
+          Some(s"[${staticHostPorts.mkString(", ")}] required")
+        } else { None }
 
-      val maybeDynamic: Option[String] = if (numberDynamicHostPorts > 0) {
-        Some(s"$numberDynamicHostPorts dynamic")
-      } else { None }
+      val maybeDynamic: Option[String] =
+        if (numberDynamicHostPorts > 0) {
+          Some(s"$numberDynamicHostPorts dynamic")
+        } else { None }
 
       val portStrings = Seq(maybeStatic, maybeDynamic).flatten.mkString(" + ")
 
@@ -86,12 +88,11 @@ class TaskBuilder(
       roles
     }
 
-    val resourceMatch =
-      ResourceMatcher.matchResources(
-        offer,
-        app,
-        runningTasks,
-        ResourceSelector(acceptedResourceRoles, reserved = false))
+    val resourceMatch = ResourceMatcher.matchResources(
+      offer,
+      app,
+      runningTasks,
+      ResourceSelector(acceptedResourceRoles, reserved = false))
 
     build(offer, resourceMatch)
   }
@@ -104,8 +105,9 @@ class TaskBuilder(
       volumeMatchOpt: Option[PersistentVolumeMatcher.VolumeMatch])
       : Some[(TaskInfo, Seq[Int])] = {
 
-    val executor: Executor = if (app.executor == "") { config.executor }
-    else { Executor.dispatch(app.executor) }
+    val executor: Executor =
+      if (app.executor == "") { config.executor }
+      else { Executor.dispatch(app.executor) }
 
     val host: Option[String] = Some(offer.getHostname)
 
@@ -148,16 +150,15 @@ class TaskBuilder(
         val executorPath = s"'$path'" // TODO: Really escape this.
         val cmd = app.cmd orElse app.args.map(_ mkString " ") getOrElse ""
         val shell = s"chmod ug+rx $executorPath && exec $executorPath $cmd"
-        val command =
-          TaskBuilder
-            .commandInfo(
-              app,
-              Some(taskId),
-              host,
-              resourceMatch.hostPorts,
-              envPrefix)
-            .toBuilder
-            .setValue(shell)
+        val command = TaskBuilder
+          .commandInfo(
+            app,
+            Some(taskId),
+            host,
+            resourceMatch.hostPorts,
+            envPrefix)
+          .toBuilder
+          .setValue(shell)
 
         val info = ExecutorInfo
           .newBuilder()
@@ -275,12 +276,11 @@ class TaskBuilder(
             case (key, value) =>
               Label.newBuilder.setKey(key).setValue(value).build()
           }.asJava)
-        val networkInfo: NetworkInfo.Builder =
-          NetworkInfo
-            .newBuilder()
-            .addAllGroups(ipAddress.groups.asJava)
-            .setLabels(ipAddressLabels)
-            .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
+        val networkInfo: NetworkInfo.Builder = NetworkInfo
+          .newBuilder()
+          .addAllGroups(ipAddress.groups.asJava)
+          .setLabels(ipAddressLabels)
+          .addIpAddresses(NetworkInfo.IPAddress.getDefaultInstance)
         builder.addNetworkInfos(networkInfo)
       }
 

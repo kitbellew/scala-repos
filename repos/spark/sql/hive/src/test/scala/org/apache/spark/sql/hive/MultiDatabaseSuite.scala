@@ -28,8 +28,8 @@ class MultiDatabaseSuite
   private lazy val df = sqlContext.range(10).coalesce(1).toDF()
 
   private def checkTablePath(dbName: String, tableName: String): Unit = {
-    val metastoreTable =
-      hiveContext.sessionState.catalog.client.getTable(dbName, tableName)
+    val metastoreTable = hiveContext.sessionState.catalog.client
+      .getTable(dbName, tableName)
     val expectedPath =
       hiveContext.sessionState.catalog.client
         .getDatabase(dbName)

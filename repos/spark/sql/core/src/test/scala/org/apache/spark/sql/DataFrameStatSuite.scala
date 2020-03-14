@@ -73,11 +73,10 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     // This test ensures that randomSplit does not create overlapping splits even when the
     // underlying dataframe (such as the one below) doesn't guarantee a deterministic ordering of
     // rows in each partition.
-    val data =
-      sparkContext
-        .parallelize(1 to 600, 2)
-        .mapPartitions(scala.util.Random.shuffle(_))
-        .toDF("id")
+    val data = sparkContext
+      .parallelize(1 to 600, 2)
+      .mapPartitions(scala.util.Random.shuffle(_))
+      .toDF("id")
     val splits = data.randomSplit(Array[Double](2, 3), seed = 1)
 
     assert(splits.length == 2, "wrong number of splits")
@@ -150,10 +149,14 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
       val Array(single1) = df.stat.approxQuantile("singles", Array(q1), epsilon)
       val Array(double2) = df.stat.approxQuantile("doubles", Array(q2), epsilon)
       // Also make sure there is no regression by computing multiple quantiles at once.
-      val Array(d1, d2) =
-        df.stat.approxQuantile("doubles", Array(q1, q2), epsilon)
-      val Array(s1, s2) =
-        df.stat.approxQuantile("singles", Array(q1, q2), epsilon)
+      val Array(d1, d2) = df.stat.approxQuantile(
+        "doubles",
+        Array(q1, q2),
+        epsilon)
+      val Array(s1, s2) = df.stat.approxQuantile(
+        "singles",
+        Array(q1, q2),
+        epsilon)
 
       val error_single = 2 * 1000 * epsilon
       val error_double = 2 * 2000 * epsilon
@@ -264,26 +267,38 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
   test("countMinSketch") {
     val df = sqlContext.range(1000)
 
-    val sketch1 =
-      df.stat.countMinSketch("id", depth = 10, width = 20, seed = 42)
+    val sketch1 = df.stat.countMinSketch(
+      "id",
+      depth = 10,
+      width = 20,
+      seed = 42)
     assert(sketch1.totalCount() === 1000)
     assert(sketch1.depth() === 10)
     assert(sketch1.width() === 20)
 
-    val sketch2 =
-      df.stat.countMinSketch($"id", depth = 10, width = 20, seed = 42)
+    val sketch2 = df.stat.countMinSketch(
+      $"id",
+      depth = 10,
+      width = 20,
+      seed = 42)
     assert(sketch2.totalCount() === 1000)
     assert(sketch2.depth() === 10)
     assert(sketch2.width() === 20)
 
-    val sketch3 =
-      df.stat.countMinSketch("id", eps = 0.001, confidence = 0.99, seed = 42)
+    val sketch3 = df.stat.countMinSketch(
+      "id",
+      eps = 0.001,
+      confidence = 0.99,
+      seed = 42)
     assert(sketch3.totalCount() === 1000)
     assert(sketch3.relativeError() === 0.001)
     assert(sketch3.confidence() === 0.99 +- 5e-3)
 
-    val sketch4 =
-      df.stat.countMinSketch($"id", eps = 0.001, confidence = 0.99, seed = 42)
+    val sketch4 = df.stat.countMinSketch(
+      $"id",
+      eps = 0.001,
+      confidence = 0.99,
+      seed = 42)
     assert(sketch4.totalCount() === 1000)
     assert(sketch4.relativeError() === 0.001 +- 1e04)
     assert(sketch4.confidence() === 0.99 +- 5e-3)

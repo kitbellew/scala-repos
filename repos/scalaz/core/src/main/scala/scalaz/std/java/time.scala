@@ -33,16 +33,15 @@ trait TimeInstances extends TimeInstances0 {
       Ordering.fromInt(x compareTo y)
   }
 
-  implicit val monthDayInstance: Order[MonthDay] =
-    orderFromInt[MonthDay](_ compareTo _)
-  implicit val localTimeInstance: Order[LocalTime] =
-    orderFromInt[LocalTime](_ compareTo _)
+  implicit val monthDayInstance: Order[MonthDay] = orderFromInt[MonthDay](
+    _ compareTo _)
+  implicit val localTimeInstance: Order[LocalTime] = orderFromInt[LocalTime](
+    _ compareTo _)
 
   implicit val yearInstance: Enum[Year] = new Enum[Year] {
     override def pred(a: Year) = a.minusYears(1)
     override def succ(a: Year) = a.plusYears(1)
-    override def order(x: Year, y: Year) =
-      Ordering.fromInt(x compareTo y)
+    override def order(x: Year, y: Year) = Ordering.fromInt(x compareTo y)
   }
 
   implicit val localDateInstance: Enum[LocalDate] = new Enum[LocalDate] {
@@ -57,8 +56,7 @@ trait TimeInstances extends TimeInstances0 {
     override val min = Some(Month.JANUARY)
     override def pred(a: Month): Month = a.minus(1)
     override def succ(a: Month): Month = a.plus(1)
-    override def order(x: Month, y: Month) =
-      Ordering.fromInt(x compareTo y)
+    override def order(x: Month, y: Month) = Ordering.fromInt(x compareTo y)
   }
 
 }

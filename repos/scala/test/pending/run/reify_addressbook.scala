@@ -34,17 +34,16 @@ object Test extends App {
       *  quotes). Raw strings may contain newlines and special
       *  characters (like \) are not interpreted.
       */
-    val header =
-      <head>
+    val header = <head>
         <title>
           {"My Address Book"}
         </title>
         <style type="text/css"> {
-        """table { border-right: 1px solid #cccccc; }
+      """table { border-right: 1px solid #cccccc; }
           th { background-color: #cccccc; }
           td { border-left: 1px solid #acacac; }
           td { border-bottom: 1px solid #acacac;"""
-      }
+    }
         </style>
       </head>;
 
@@ -53,8 +52,7 @@ object Test extends App {
       Person("Bob", 22),
       Person("James", 19));
 
-    val page =
-      <html>
+    val page = <html>
         {header}
         <body>
          {people.toXHTML}

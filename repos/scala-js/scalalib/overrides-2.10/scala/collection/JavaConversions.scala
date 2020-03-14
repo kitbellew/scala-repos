@@ -53,8 +53,9 @@ import convert._
 object JavaConversions extends WrapAsScala with WrapAsJava {
   @deprecated(
     "Use a member of scala.collection.convert.Wrappers",
-    "2.10.0") type ConcurrentMapWrapper[A, B] =
-    Wrappers.ConcurrentMapWrapper[A, B]
+    "2.10.0") type ConcurrentMapWrapper[A, B] = Wrappers.ConcurrentMapWrapper[
+    A,
+    B]
   @deprecated(
     "Use a member of scala.collection.convert.Wrappers",
     "2.10.0") type DictionaryWrapper[A, B] = Wrappers.DictionaryWrapper[A, B]
@@ -69,8 +70,9 @@ object JavaConversions extends WrapAsScala with WrapAsJava {
     "2.10.0") type JCollectionWrapper[A] = Wrappers.JCollectionWrapper[A]
   @deprecated(
     "Use a member of scala.collection.convert.Wrappers",
-    "2.10.0") type JConcurrentMapWrapper[A, B] =
-    Wrappers.JConcurrentMapWrapper[A, B]
+    "2.10.0") type JConcurrentMapWrapper[A, B] = Wrappers.JConcurrentMapWrapper[
+    A,
+    B]
   @deprecated(
     "Use a member of scala.collection.convert.Wrappers",
     "2.10.0") type JDictionaryWrapper[A, B] = Wrappers.JDictionaryWrapper[A, B]

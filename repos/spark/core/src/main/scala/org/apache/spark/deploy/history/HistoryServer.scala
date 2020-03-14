@@ -64,8 +64,9 @@ class HistoryServer(
     with ApplicationCacheOperations {
 
   // How many applications to retain
-  private val retainedApplications =
-    conf.getInt("spark.history.retainedApplications", 50)
+  private val retainedApplications = conf.getInt(
+    "spark.history.retainedApplications",
+    50)
 
   // application
   private val appCache =

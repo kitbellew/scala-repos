@@ -1211,8 +1211,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
             tree,
             functionType(List(ownerTpe), AnyTpe),
             isView = true,
-            context0 =
-              context.makeImplicit(reportAmbiguousErrors = false)).allImplicits
+            context0 = context.makeImplicit(reportAmbiguousErrors =
+              false)).allImplicits
       for (view <- applicableViews) {
         val vtree = viewApply(view)
         val vpre = stabilizedType(vtree)

@@ -29,8 +29,9 @@ import de.johoop.cpd4sbt.CopyPasteDetector._
 import net.virtualvoid.sbt.graph.Plugin.graphSettings
 
 object PlatformBuild extends Build {
-  val jprofilerLib =
-    SettingKey[String]("jprofiler-lib", "The library file used by jprofiler")
+  val jprofilerLib = SettingKey[String](
+    "jprofiler-lib",
+    "The library file used by jprofiler")
   val jprofilerConf = SettingKey[String](
     "jprofiler-conf",
     "The relative path to jprofiler's XML config file")
@@ -43,8 +44,9 @@ object PlatformBuild extends Build {
   val dataDir = SettingKey[String](
     "data-dir",
     "The temporary directory into which to extract the test data")
-  val profileTask =
-    InputKey[Unit]("profile", "Runs the given project under JProfiler")
+  val profileTask = InputKey[Unit](
+    "profile",
+    "Runs the given project under JProfiler")
   val extractData = TaskKey[String](
     "extract-data",
     "Extracts the data files used by the tests and the REPL")

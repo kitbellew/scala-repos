@@ -90,8 +90,11 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
     val path = Path("/%s/".format(accountId))
     val grantName = name.map(_ + "-grant")
     val grantDescription = name.map(_ + " account grant")
-    val grant =
-      newStandardAccountGrant(accountId, path, grantName, grantDescription)
+    val grant = newStandardAccountGrant(
+      accountId,
+      path,
+      grantName,
+      grantDescription)
     for {
       rk <- rootAPIKey
       ng <- grant
@@ -173,8 +176,9 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
     validGrants(issuerKey, expiration).flatMap { grants =>
       if (!Grant.implies(grants, perms, expiration)) none[Grant].point[M]
       else {
-        val minimized =
-          Grant.coveringGrants(grants, perms, expiration).map(_.grantId)
+        val minimized = Grant
+          .coveringGrants(grants, perms, expiration)
+          .map(_.grantId)
         if (minimized.isEmpty) { none[Grant].point[M] }
         else {
           createGrant(

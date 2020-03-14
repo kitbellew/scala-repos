@@ -16,16 +16,14 @@ class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   val END = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_END
 
   def testFromTrait() {
-    val text =
-      """
+    val text = """
         |trait A {
         |  def <caret>f: Int
         |}
         |
         |class AA extends A
       """
-    val result =
-      s"""
+    val result = s"""
         |trait A {
         |  def f: Int
         |}
@@ -37,16 +35,14 @@ class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   }
 
   def testFromAbstractClass() {
-    val text =
-      """
+    val text = """
         |abstract class A {
         |  def <caret>f: Int
         |}
         |
         |class AA extends A {}
       """
-    val result =
-      s"""
+    val result = s"""
         |abstract class A {
         |  def f: Int
         |}
@@ -58,16 +54,14 @@ class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   }
 
   def testParameterizedTrait() {
-    val text =
-      """
+    val text = """
         |trait A[T] {
         |  def <caret>f: T
         |}
         |
         |class AA extends A[Int] {}
       """
-    val result =
-      s"""
+    val result = s"""
         |trait A[T] {
         |  def f: T
         |}
@@ -79,8 +73,7 @@ class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   }
 
   def testFunDefInTrait() {
-    val text =
-      """
+    val text = """
         |trait A {
         |  def <caret>f: Int = 0
         |}
@@ -91,16 +84,14 @@ class ImplementAbstractMethodTest extends ScalaIntentionTestBase {
   }
 
   def testUnitReturn() {
-    val text =
-      """
+    val text = """
         |trait A {
         |  def <caret>f
         |}
         |
         |class AA extends A
       """
-    val result =
-      s"""
+    val result = s"""
         |trait A {
         |  def f
         |}

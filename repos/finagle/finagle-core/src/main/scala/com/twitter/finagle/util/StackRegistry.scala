@@ -61,8 +61,8 @@ trait StackRegistry {
   private[this] val numEntries = new AtomicInteger(0)
 
   // thread-safe updates via synchronization on `this`
-  private[this] var duplicates: Map[String, Seq[Entry]] =
-    Map.empty[String, Seq[Entry]]
+  private[this] var duplicates: Map[String, Seq[Entry]] = Map
+    .empty[String, Seq[Entry]]
 
   /**
     * Returns any registered [[Entry Entries]] that had the same [[Label]].

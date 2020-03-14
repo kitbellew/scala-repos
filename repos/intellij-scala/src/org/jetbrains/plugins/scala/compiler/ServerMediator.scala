@@ -76,8 +76,11 @@ class ServerMediator(project: Project) extends ProjectComponent {
         val test = extension.getCompilerOutputUrlForTests
         production == test
       }
-    val modulesWithClashes =
-      ModuleManager.getInstance(project).getModules.toSeq.filter(hasClashes)
+    val modulesWithClashes = ModuleManager
+      .getInstance(project)
+      .getModules
+      .toSeq
+      .filter(hasClashes)
 
     var result = true
 
@@ -104,8 +107,8 @@ class ServerMediator(project: Project) extends ProjectComponent {
             modulesWithClashes.foreach { module =>
               val model =
                 ModuleRootManager.getInstance(module).getModifiableModel
-              val extension =
-                model.getModuleExtension(classOf[CompilerModuleExtension])
+              val extension = model.getModuleExtension(
+                classOf[CompilerModuleExtension])
 
               val outputUrlParts = extension.getCompilerOutputUrl match {
                 case null => Seq.empty

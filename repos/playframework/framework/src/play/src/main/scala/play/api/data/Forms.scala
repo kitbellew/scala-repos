@@ -2830,8 +2830,8 @@ object Forms {
     * Form("birthdate" -> jodaLocalDate)
     * }}}
     */
-  val jodaLocalDate: Mapping[org.joda.time.LocalDate] =
-    of[org.joda.time.LocalDate]
+  val jodaLocalDate
+      : Mapping[org.joda.time.LocalDate] = of[org.joda.time.LocalDate]
 
   /**
     * Constructs a simple mapping for a date field (mapped as `org.joda.time.LocalDate type`).

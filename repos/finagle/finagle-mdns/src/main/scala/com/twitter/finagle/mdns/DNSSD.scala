@@ -186,8 +186,10 @@ private object DNSSD {
       case ("serviceFound", args) =>
         val record = mkRecord(args)
         instance.resolve(record) foreach { resolved =>
-          val metadata =
-            MdnsAddrMetadata(record.serviceName, record.regType, record.domain)
+          val metadata = MdnsAddrMetadata(
+            record.serviceName,
+            record.regType,
+            record.domain)
           val addr = Address.Inet(
             new InetSocketAddress(resolved.hostName, resolved.port),
             MdnsAddrMetadata.toAddrMetadata(metadata))
@@ -235,6 +237,5 @@ private class DNSSDAnnouncer extends MDNSAnnouncerIface {
 private class DNSSDResolver extends MDNSResolverIface {
   DNSSD.check()
 
-  def resolve(regType: String, domain: String) =
-    DNSSD.resolve(regType, domain)
+  def resolve(regType: String, domain: String) = DNSSD.resolve(regType, domain)
 }

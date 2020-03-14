@@ -53,8 +53,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   private val ORMultiMapKeyManifest = "k"
   private val VersionVectorManifest = "L"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       GSetManifest -> gsetFromBinary,
       ORSetManifest -> orsetFromBinary,
       FlagManifest -> flagFromBinary,
@@ -186,8 +186,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     orsetToProtoImpl(orset.asInstanceOf[ORSet[Any]])
 
   private def orsetToProtoImpl(orset: ORSet[Any]): rd.ORSet = {
-    val b =
-      rd.ORSet.newBuilder().setVvector(versionVectorToProto(orset.vvector))
+    val b = rd.ORSet
+      .newBuilder()
+      .setVvector(versionVectorToProto(orset.vvector))
     // using java collections and sorting for performance (avoid conversions)
     val stringElements = new ArrayList[String]
     val intElements = new ArrayList[Integer]
@@ -263,8 +264,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def flagFromBinary(bytes: Array[Byte]): Flag =
     flagFromProto(rd.Flag.parseFrom(bytes))
 
-  def flagFromProto(flag: rd.Flag): Flag =
-    Flag(flag.getEnabled)
+  def flagFromProto(flag: rd.Flag): Flag = Flag(flag.getEnabled)
 
   def lwwRegisterToProto(lwwRegister: LWWRegister[_]): rd.LWWRegister =
     rd.LWWRegister
@@ -437,8 +437,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   }
 
   def multimapToProto(multimap: ORMultiMap[_]): rd.ORMultiMap = {
-    val b =
-      rd.ORMultiMap.newBuilder().setKeys(orsetToProto(multimap.underlying.keys))
+    val b = rd.ORMultiMap
+      .newBuilder()
+      .setKeys(orsetToProto(multimap.underlying.keys))
     multimap.underlying.entries.toVector
       .sortBy { case (key, _) ⇒ key }
       .foreach {
@@ -465,11 +466,9 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
         entries))
   }
 
-  def keyIdToBinary(id: String): Array[Byte] =
-    id.getBytes(UTF_8)
+  def keyIdToBinary(id: String): Array[Byte] = id.getBytes(UTF_8)
 
-  def keyIdFromBinary(bytes: Array[Byte]): String =
-    new String(bytes, UTF_8)
+  def keyIdFromBinary(bytes: Array[Byte]): String = new String(bytes, UTF_8)
 
 }
 

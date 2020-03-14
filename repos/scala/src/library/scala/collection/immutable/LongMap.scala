@@ -504,8 +504,7 @@ sealed abstract class LongMap[+T]
   def intersection[R](that: LongMap[R]): LongMap[T] =
     this.intersectionWith(that, (key: Long, value: T, value2: R) => value)
 
-  def ++[S >: T](that: LongMap[S]) =
-    this.unionWith[S](that, (key, x, y) => y)
+  def ++[S >: T](that: LongMap[S]) = this.unionWith[S](that, (key, x, y) => y)
 
   @tailrec
   final def firstKey: Long =

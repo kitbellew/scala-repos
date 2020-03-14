@@ -69,8 +69,7 @@ class IntegerTestOnJDK8 {
   }
 
   @Test def should_provide_compareUnsigned(): Unit = {
-    def compare(x: Int, y: Int): Int =
-      Integer.compareUnsigned(x, y)
+    def compare(x: Int, y: Int): Int = Integer.compareUnsigned(x, y)
 
     assertTrue(compare(0, 5) < 0)
     assertTrue(compare(10, 9) > 0)
@@ -83,8 +82,7 @@ class IntegerTestOnJDK8 {
   }
 
   @Test def should_provide_toUnsignedLong(): Unit = {
-    def test(x: Int, y: Long): Unit =
-      assertEquals(y, Integer.toUnsignedLong(x))
+    def test(x: Int, y: Long): Unit = assertEquals(y, Integer.toUnsignedLong(x))
 
     test(0, 0L)
     test(5, 5L)

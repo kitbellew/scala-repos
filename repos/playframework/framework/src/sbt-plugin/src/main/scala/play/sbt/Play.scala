@@ -58,8 +58,7 @@ object PlayJava extends AutoPlugin {
   */
 object PlayScala extends AutoPlugin {
   override def requires = Play
-  override def projectSettings =
-    PlaySettings.defaultScalaSettings
+  override def projectSettings = PlaySettings.defaultScalaSettings
 }
 
 /**

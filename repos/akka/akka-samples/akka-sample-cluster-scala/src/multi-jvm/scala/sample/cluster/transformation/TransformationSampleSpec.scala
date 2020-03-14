@@ -82,8 +82,9 @@ abstract class TransformationSampleSpec
       runOn(frontend1) {
         // this will only run on the 'first' node
         Cluster(system) join node(frontend1).address
-        val transformationFrontend =
-          system.actorOf(Props[TransformationFrontend], name = "frontend")
+        val transformationFrontend = system.actorOf(
+          Props[TransformationFrontend],
+          name = "frontend")
         transformationFrontend ! TransformationJob("hello")
         expectMsgPF() {
           // no backends yet, service unavailable
@@ -131,8 +132,8 @@ abstract class TransformationSampleSpec
   }
 
   def assertServiceOk(): Unit = {
-    val transformationFrontend =
-      system.actorSelection("akka://" + system.name + "/user/frontend")
+    val transformationFrontend = system.actorSelection(
+      "akka://" + system.name + "/user/frontend")
     // eventually the service should be ok,
     // backends might not have registered initially
     awaitAssert {

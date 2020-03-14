@@ -10,17 +10,15 @@ import com.twitter.util.{Throw, Try, Await, Future}
 @RunWith(classOf[JUnitRunner])
 class FilterTest extends FunSuite {
   class FilterHelper {
-    val stringToInt =
-      new Filter[Int, Int, String, String] {
-        def apply(request: Int, service: Service[String, String]) =
-          service(request.toString) map (_.toInt)
-      }
+    val stringToInt = new Filter[Int, Int, String, String] {
+      def apply(request: Int, service: Service[String, String]) =
+        service(request.toString) map (_.toInt)
+    }
 
-    val intToString =
-      new Filter[String, String, Int, Int] {
-        def apply(request: String, service: Service[Int, Int]) =
-          service(request.toInt) map (_.toString)
-      }
+    val intToString = new Filter[String, String, Int, Int] {
+      def apply(request: String, service: Service[Int, Int]) =
+        service(request.toInt) map (_.toString)
+    }
   }
 
   test("filters should compose when it's all chill") {

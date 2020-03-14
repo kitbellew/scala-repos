@@ -42,8 +42,8 @@ class RationalBenchmarks extends MyBenchmark with BenchmarkData {
 
   override protected def setUp(): Unit = {
     rats = init(size)(Rational(BigInt(bits, Random), BigInt(bits, Random) + 1))
-    bigRats =
-      init(size)(BigIntRational(BigInt(bits, Random), BigInt(bits, Random) + 1))
+    bigRats = init(size)(
+      BigIntRational(BigInt(bits, Random), BigInt(bits, Random) + 1))
     if (bits <= 32) {
       longRats = init(size)(
         LongRational(

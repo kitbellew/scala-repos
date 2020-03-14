@@ -106,8 +106,9 @@ class SparkIMain(
 
   /** Local directory to save .class files too */
   private[repl] val outputDir = {
-    val rootDir =
-      conf.getOption("spark.repl.classdir").getOrElse(Utils.getLocalDir(conf))
+    val rootDir = conf
+      .getOption("spark.repl.classdir")
+      .getOrElse(Utils.getLocalDir(conf))
     Utils.createTempDir(root = rootDir, namePrefix = "repl")
   }
   if (SPARK_DEBUG_REPL) { echo("Output directory: " + outputDir) }
@@ -140,8 +141,10 @@ class SparkIMain(
     *  on the future.
     */
   private var _classLoader: AbstractFileClassLoader = null // active classloader
-  private val _compiler: Global =
-    newCompiler(settings, reporter) // our private compiler
+  private val _compiler: Global = newCompiler(
+    settings,
+    reporter
+  ) // our private compiler
 
   private trait ExposeAddUrl extends URLClassLoader {
     def addNewUrl(url: URL) = this.addURL(url)
@@ -1147,10 +1150,9 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot =
-        rootMirror.getClassByName(
-          newTypeName(readPath)
-        ) // the outermost wrapper
+      val readRoot = rootMirror.getClassByName(
+        newTypeName(readPath)
+      ) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "")   => sym
         case (sym, name) => afterTyper(termMember(sym, name))
@@ -1414,8 +1416,8 @@ class SparkIMain(
         typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect)
     ).toMap[Name, Symbol] withDefaultValue NoSymbol
 
-    lazy val typesOfDefinedTerms =
-      mapFrom[Name, Name, Type](termNames)(x => applyToResultMember(x, _.tpe))
+    lazy val typesOfDefinedTerms = mapFrom[Name, Name, Type](termNames)(x =>
+      applyToResultMember(x, _.tpe))
 
     /** load and run the code using reflection */
     def loadAndRun: (String, Boolean) = {
@@ -1501,8 +1503,7 @@ class SparkIMain(
     * @return Some containing term name (id) class if exists, else None
     */
   @DeveloperApi
-  def classOfTerm(id: String): Option[JClass] =
-    valueOfTerm(id) map (_.getClass)
+  def classOfTerm(id: String): Option[JClass] = valueOfTerm(id) map (_.getClass)
 
   /**
     * Retrieves the type representing the id (variable name, method name,
@@ -1615,8 +1616,7 @@ class SparkIMain(
     * @return The Symbol or NoSymbol (found under scala.reflect.internal)
     */
   @DeveloperApi
-  def symbolOfLine(code: String): Symbol =
-    exprTyper.symbolOfLine(code)
+  def symbolOfLine(code: String): Symbol = exprTyper.symbolOfLine(code)
 
   /**
     * Constructs type information based on the provided expression's final
@@ -1686,8 +1686,7 @@ class SparkIMain(
 
   /** Translate a repl-defined identifier into a Symbol.
     */
-  private def apply(name: String): Symbol =
-    types(name) orElse terms(name)
+  private def apply(name: String): Symbol = types(name) orElse terms(name)
 
   private def types(name: String): Symbol = {
     val tpname = newTypeName(name)

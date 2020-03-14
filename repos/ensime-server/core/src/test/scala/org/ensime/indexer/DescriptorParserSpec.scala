@@ -41,8 +41,7 @@ class DescriptorParserSpec extends EnsimeSpec {
   }
 
   it should "be invertible" in {
-    def invert(desc: String) =
-      parse(desc).descriptorString shouldBe desc
+    def invert(desc: String) = parse(desc).descriptorString shouldBe desc
 
     invert("(I[IILjava/lang/String;Z)V")
   }
@@ -82,8 +81,7 @@ class DescriptorParserSpec extends EnsimeSpec {
   }
 
   it should "be invertible" in {
-    def invert(desc: String) =
-      parseType(desc).internalString shouldBe desc
+    def invert(desc: String) = parseType(desc).internalString shouldBe desc
 
     invert("Ljava/lang/String;")
     invert("[[Ljava/lang/String;")

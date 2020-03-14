@@ -87,8 +87,8 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   }
 
   private val structOfString = new StructType().add("str", StringType)
-  private val structOfUDT =
-    new StructType().add("udt", new ExamplePointUDT, false)
+  private val structOfUDT = new StructType()
+    .add("udt", new ExamplePointUDT, false)
   private val arrayOfString = ArrayType(StringType)
   private val arrayOfNull = ArrayType(NullType)
   private val mapOfString = MapType(StringType, StringType)
@@ -155,10 +155,10 @@ class MiscFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         val input = encoder
           .toRow(inputGenerator.apply().asInstanceOf[Row])
           .asInstanceOf[UnsafeRow]
-        val literals =
-          input.toSeq(inputSchema).zip(inputSchema.map(_.dataType)).map {
-            case (value, dt) => Literal.create(value, dt)
-          }
+        val literals = input
+          .toSeq(inputSchema)
+          .zip(inputSchema.map(_.dataType))
+          .map { case (value, dt) => Literal.create(value, dt) }
         // Only test the interpreted version has same result with codegen version.
         checkEvaluation(
           Murmur3Hash(literals, seed),

@@ -228,11 +228,10 @@ trait SecurityHelpers {
     * parsing XML from an untrusted source.
     */
   def secureXML: XMLLoader[Elem] = {
-    val parserFactory =
-      SAXParserFactory.newInstance(
-        "org.apache.xerces.jaxp.SAXParserFactoryImpl",
-        SecurityHelpers.getClass.getClassLoader
-      )
+    val parserFactory = SAXParserFactory.newInstance(
+      "org.apache.xerces.jaxp.SAXParserFactoryImpl",
+      SecurityHelpers.getClass.getClassLoader
+    )
 
     parserFactory.setNamespaceAware(false)
     parserFactory.setFeature(

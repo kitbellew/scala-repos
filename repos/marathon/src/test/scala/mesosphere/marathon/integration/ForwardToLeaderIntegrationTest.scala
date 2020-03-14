@@ -101,12 +101,12 @@ class ForwardToLeaderIntegrationTest
 
     val pingURL = new URL(s"https://localhost:${ports.head}/ping")
     val connection = SSLContextTestUtil.sslConnection(pingURL)
-    val via =
-      connection.getHeaderField(JavaUrlConnectionRequestForwarder.HEADER_VIA)
-    val leader =
-      connection.getHeaderField(LeaderProxyFilter.HEADER_MARATHON_LEADER)
-    val response =
-      IO.using(connection.getInputStream)(IO.copyInputStreamToString)
+    val via = connection.getHeaderField(
+      JavaUrlConnectionRequestForwarder.HEADER_VIA)
+    val leader = connection.getHeaderField(
+      LeaderProxyFilter.HEADER_MARATHON_LEADER)
+    val response = IO.using(connection.getInputStream)(
+      IO.copyInputStreamToString)
     assert(response == "pong\n")
     assert(via == null)
     assert(leader == s"https://localhost:${ports.head}")
@@ -142,12 +142,12 @@ class ForwardToLeaderIntegrationTest
 
     val pingURL = new URL(s"https://localhost:${ports(1)}/ping")
     val connection = SSLContextTestUtil.sslConnection(pingURL)
-    val via =
-      connection.getHeaderField(JavaUrlConnectionRequestForwarder.HEADER_VIA)
-    val leader =
-      connection.getHeaderField(LeaderProxyFilter.HEADER_MARATHON_LEADER)
-    val response =
-      IO.using(connection.getInputStream)(IO.copyInputStreamToString)
+    val via = connection.getHeaderField(
+      JavaUrlConnectionRequestForwarder.HEADER_VIA)
+    val leader = connection.getHeaderField(
+      LeaderProxyFilter.HEADER_MARATHON_LEADER)
+    val response = IO.using(connection.getInputStream)(
+      IO.copyInputStreamToString)
     assert(response == "pong\n")
     assert(via == s"1.1 localhost:${ports(1)}")
     assert(leader == s"https://localhost:${ports.head}")
@@ -178,8 +178,8 @@ class ForwardToLeaderIntegrationTest
     ProcessKeeper.startService(
       ForwarderService.createHelloApp("--http_port", ports.head.toString))
     val appFacade = new AppMockFacade()
-    val result =
-      appFacade.custom("/hello/crash")("localhost", port = ports.head)
+    val result = appFacade
+      .custom("/hello/crash")("localhost", port = ports.head)
     assert(result.originalResponse.status.intValue == 500)
     assert(result.entityString == "Error")
   }

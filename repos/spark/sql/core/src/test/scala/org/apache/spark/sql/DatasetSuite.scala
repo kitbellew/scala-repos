@@ -137,12 +137,13 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("map and group by with class data") {
     // We inject a group by here to make sure this test case is future proof
     // when we implement better pipelining and local execution mode.
-    val ds: Dataset[(ClassData, Long)] =
-      Seq(ClassData("one", 1), ClassData("two", 2))
-        .toDS()
-        .map(c => ClassData(c.a, c.b + 1))
-        .groupByKey(p => p)
-        .count()
+    val ds: Dataset[(ClassData, Long)] = Seq(
+      ClassData("one", 1),
+      ClassData("two", 2))
+      .toDS()
+      .map(c => ClassData(c.a, c.b + 1))
+      .groupByKey(p => p)
+      .count()
 
     checkDataset(ds, (ClassData("one", 2), 1L), (ClassData("two", 3), 1L))
   }

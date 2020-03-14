@@ -8,13 +8,11 @@ package javac
 
 object JavaTokens extends ast.parser.CommonTokens {
 
-  def isLiteral(code: Int) =
-    code >= CHARLIT && code <= STRINGLIT
+  def isLiteral(code: Int) = code >= CHARLIT && code <= STRINGLIT
 
   /** identifiers */
   final val IDENTIFIER = 10
-  def isIdentifier(code: Int) =
-    code == IDENTIFIER
+  def isIdentifier(code: Int) = code == IDENTIFIER
 
   /** keywords */
   final val INSTANCEOF = 27

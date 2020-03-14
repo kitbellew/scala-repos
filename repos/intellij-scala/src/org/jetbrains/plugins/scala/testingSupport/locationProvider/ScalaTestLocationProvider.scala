@@ -67,16 +67,18 @@ class ScalaTestLocationProvider extends SMTestLocator {
             val classes = ScalaShortNamesCacheManager
               .getInstance(project)
               .getClassesByFQName(classFqn, scope)
-            val clazz =
-              classes.find(!_.isInstanceOf[ScObject]).orElse(classes.headOption)
+            val clazz = classes
+              .find(!_.isInstanceOf[ScObject])
+              .orElse(classes.headOption)
             clazz.foreach(c =>
               res.add(new PsiLocationWithName(project, c, testName)))
           case ScalaTestTopOfMethodPattern(classFqn, methodName, testName) =>
             val classes = ScalaShortNamesCacheManager
               .getInstance(project)
               .getClassesByFQName(classFqn, GlobalSearchScope.allScope(project))
-            val methodOwner =
-              classes.find(!_.isInstanceOf[ScObject]).orElse(classes.headOption)
+            val methodOwner = classes
+              .find(!_.isInstanceOf[ScObject])
+              .orElse(classes.headOption)
             methodOwner match {
               case Some(td: ScTypeDefinition) =>
                 td.signaturesByName(methodName).foreach {
@@ -143,8 +145,9 @@ class ScalaTestLocationProvider extends SMTestLocator {
       lineNum: Int,
       withName: Option[String] = None): Location[_ <: PsiElement] = {
     assert(lineNum > 0)
-    val doc: Document =
-      PsiDocumentManager.getInstance(project).getDocument(psiFile)
+    val doc: Document = PsiDocumentManager
+      .getInstance(project)
+      .getDocument(psiFile)
     if (doc == null) { return null }
     val lineCount: Int = doc.getLineCount
     var lineStartOffset: Int = 0

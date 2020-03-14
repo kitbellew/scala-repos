@@ -58,8 +58,7 @@ class ThreadLocalRandom extends Random {
     while (n >= Integer.MAX_VALUE) {
       val bits = next(2)
       val halfn = n >>> 1
-      val nextn =
-        if ((bits & 2) == 0) halfn else n - halfn
+      val nextn = if ((bits & 2) == 0) halfn else n - halfn
       if ((bits & 1) == 0) offset += n - nextn
       n = nextn
     }
@@ -105,8 +104,7 @@ class ThreadLocalRandom extends Random {
 
 object ThreadLocalRandom {
 
-  private val _current =
-    new ThreadLocalRandom()
+  private val _current = new ThreadLocalRandom()
 
   def current(): ThreadLocalRandom = _current
 

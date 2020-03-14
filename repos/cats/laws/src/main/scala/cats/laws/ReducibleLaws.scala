@@ -11,8 +11,7 @@ trait ReducibleLaws[F[_]] extends FoldableLaws[F] {
       f: A => B
   )(implicit
       B: Semigroup[B]
-  ): IsEq[B] =
-    fa.reduceMap(f) <-> fa.reduceLeftTo(f)((b, a) => b |+| f(a))
+  ): IsEq[B] = fa.reduceMap(f) <-> fa.reduceLeftTo(f)((b, a) => b |+| f(a))
 
   def reduceRightToConsistentWithReduceMap[A, B](
       fa: F[A],

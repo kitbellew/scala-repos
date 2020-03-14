@@ -42,11 +42,10 @@ private[spark] class WholeTextFileInputFormat
   override def createRecordReader(
       split: InputSplit,
       context: TaskAttemptContext): RecordReader[Text, Text] = {
-    val reader =
-      new ConfigurableCombineFileRecordReader(
-        split,
-        context,
-        classOf[WholeTextFileRecordReader])
+    val reader = new ConfigurableCombineFileRecordReader(
+      split,
+      context,
+      classOf[WholeTextFileRecordReader])
     reader.setConf(getConf)
     reader
   }

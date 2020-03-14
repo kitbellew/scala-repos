@@ -213,10 +213,10 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
           }
           ci = ci1
         }
-        val colPtrs: Array[Int] =
-          Array.tabulate[Int](cols + 1)((i: Int) => i * rows)
-        val rowIndices: Array[Int] =
-          Array.tabulate[Int](nData.length)((i: Int) => i % rows)
+        val colPtrs: Array[Int] = Array.tabulate[Int](cols + 1)((i: Int) =>
+          i * rows)
+        val rowIndices: Array[Int] = Array.tabulate[Int](nData.length)(
+          (i: Int) => i % rows)
         new CSCMatrix[T](nData, rows, cols, colPtrs, nData.length, rowIndices)
       }
     }
@@ -591,8 +591,8 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(a: CSCMatrix[T], b: T): CSCMatrix[T] = {
         if (b == zero) return CSCMatrix.zeros[T](a.rows, a.cols)
-        val data: Array[T] =
-          Array.tabulate[T](a.data.length)(i => a.data(i) * b)
+        val data: Array[T] = Array.tabulate[T](a.data.length)(i =>
+          a.data(i) * b)
         new CSCMatrix[T](
           data,
           a.rows,
@@ -1068,8 +1068,9 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
             val v = b(j, i)
             var k = a.colPtrs(j)
             while (k < a.colPtrs(j + 1)) {
-              res(a.rowIndices(k), i) =
-                ring.+(res(a.rowIndices(k), i), ring.*(v, a.data(k)))
+              res(a.rowIndices(k), i) = ring.+(
+                res(a.rowIndices(k), i),
+                ring.*(v, a.data(k)))
               k += 1
             }
             j += 1
@@ -1286,10 +1287,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           }
           c += 1
         }
-        val colPtrs: Array[Int] =
-          Array.tabulate[Int](v.cols + 1)((i: Int) => i * v.rows)
-        val rowIndices: Array[Int] =
-          Array.tabulate[Int](data.length)((i: Int) => i % v.rows)
+        val colPtrs: Array[Int] = Array.tabulate[Int](v.cols + 1)((i: Int) =>
+          i * v.rows)
+        val rowIndices: Array[Int] = Array.tabulate[Int](data.length)(
+          (i: Int) => i % v.rows)
         new CSCMatrix[T](data, v.rows, v.cols, colPtrs, data.length, rowIndices)
       }
     }
@@ -1313,10 +1314,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           }
           c += 1
         }
-        val colPtrs: Array[Int] =
-          Array.tabulate[Int](v.cols + 1)((i: Int) => i * v.rows)
-        val rowIndices: Array[Int] =
-          Array.tabulate[Int](data.length)((i: Int) => i % v.rows)
+        val colPtrs: Array[Int] = Array.tabulate[Int](v.cols + 1)((i: Int) =>
+          i * v.rows)
+        val rowIndices: Array[Int] = Array.tabulate[Int](data.length)(
+          (i: Int) => i % v.rows)
         new CSCMatrix[T](data, v.rows, v.cols, colPtrs, data.length, rowIndices)
       }
     }
@@ -1329,10 +1330,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
       def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
         if (v2 == zero) return CSCMatrix.zeros[T](v.rows, v.cols)
         val data: Array[T] = Array.fill[T](v.rows * v.cols)(v2)
-        val colPtrs: Array[Int] =
-          Array.tabulate[Int](v.cols + 1)((i: Int) => i * v.rows)
-        val rowIndices: Array[Int] =
-          Array.tabulate[Int](data.length)((i: Int) => i % v.rows)
+        val colPtrs: Array[Int] = Array.tabulate[Int](v.cols + 1)((i: Int) =>
+          i * v.rows)
+        val rowIndices: Array[Int] = Array.tabulate[Int](data.length)(
+          (i: Int) => i % v.rows)
         new CSCMatrix[T](
           data,
           v.rows,
@@ -1351,8 +1352,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
     new Op.Impl2[CSCMatrix[T], T, CSCMatrix[T]] {
       def apply(v: CSCMatrix[T], v2: T): CSCMatrix[T] = {
         if (v2 == r.zero) return CSCMatrix.zeros[T](v.rows, v.cols)
-        val data: Array[T] =
-          Array.tabulate[T](v.data.length)(i => r.*(v.data(i), v2))
+        val data: Array[T] = Array.tabulate[T](v.data.length)(i =>
+          r.*(v.data(i), v2))
         new CSCMatrix[T](
           data,
           v.rows,
@@ -1546,10 +1547,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           // degenerate case, creates effectively dense matrix
           val default = op(f.zero, b)
           val data: Array[T] = Array.fill[T](a.rows * a.cols)(default)
-          val colPtrs: Array[Int] =
-            Array.tabulate[Int](a.cols + 1)((i: Int) => i * a.rows)
-          val rowIndices: Array[Int] =
-            Array.tabulate[Int](data.length)((i: Int) => i % a.rows)
+          val colPtrs: Array[Int] = Array.tabulate[Int](a.cols + 1)((i: Int) =>
+            i * a.rows)
+          val rowIndices: Array[Int] = Array.tabulate[Int](data.length)(
+            (i: Int) => i % a.rows)
           var c = 0
           while (c < a.cols) {
             var ip = a.colPtrs(c)
@@ -1649,10 +1650,10 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           }
           ci = ci1
         }
-        val colPtrs: Array[Int] =
-          Array.tabulate[Int](cols + 1)((i: Int) => i * rows)
-        val rowIndices: Array[Int] =
-          Array.tabulate[Int](nData.length)((i: Int) => i % rows)
+        val colPtrs: Array[Int] = Array.tabulate[Int](cols + 1)((i: Int) =>
+          i * rows)
+        val rowIndices: Array[Int] = Array.tabulate[Int](nData.length)(
+          (i: Int) => i % rows)
         new CSCMatrix[T](nData, rows, cols, colPtrs, nData.length, rowIndices)
       }
     }

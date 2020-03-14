@@ -149,10 +149,10 @@ class SymbolTableForUnitTesting extends SymbolTable {
   phase = SomePhase
 
   type RuntimeClass = java.lang.Class[_]
-  implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[GlobalMirror])
-  implicit val TreeCopierTag: ClassTag[TreeCopier] =
-    ClassTag[TreeCopier](classOf[TreeCopier])
+  implicit val RuntimeClassTag: ClassTag[RuntimeClass] = ClassTag[RuntimeClass](
+    classOf[RuntimeClass])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[GlobalMirror])
+  implicit val TreeCopierTag: ClassTag[TreeCopier] = ClassTag[TreeCopier](
+    classOf[TreeCopier])
 }

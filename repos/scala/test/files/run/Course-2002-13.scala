@@ -123,8 +123,7 @@ import Terms._;
 object Programs {
 
   case class Clause(lhs: Term, rhs: List[Term]) {
-    def tyvars =
-      (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
+    def tyvars = (lhs.tyvars ::: (rhs flatMap (t => t.tyvars))).distinct;
     def newInstance = {
       var s: Subst = List();
       for (a <- tyvars) { s = Binding(a, newVar(a)) :: s }

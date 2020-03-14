@@ -145,8 +145,10 @@ class KinesisReceiverSuite
     val expectedIsStopped = false
     when(receiverMock.isStopped()).thenReturn(expectedIsStopped)
 
-    val actualVal =
-      KinesisRecordProcessor.retryRandom(receiverMock.isStopped(), 2, 100)
+    val actualVal = KinesisRecordProcessor.retryRandom(
+      receiverMock.isStopped(),
+      2,
+      100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(1)).isStopped()
@@ -158,8 +160,10 @@ class KinesisReceiverSuite
       .thenThrow(new ThrottlingException("error message"))
       .thenReturn(expectedIsStopped)
 
-    val actualVal =
-      KinesisRecordProcessor.retryRandom(receiverMock.isStopped(), 2, 100)
+    val actualVal = KinesisRecordProcessor.retryRandom(
+      receiverMock.isStopped(),
+      2,
+      100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(2)).isStopped()
@@ -171,8 +175,10 @@ class KinesisReceiverSuite
       .thenThrow(new KinesisClientLibDependencyException("error message"))
       .thenReturn(expectedIsStopped)
 
-    val actualVal =
-      KinesisRecordProcessor.retryRandom(receiverMock.isStopped(), 2, 100)
+    val actualVal = KinesisRecordProcessor.retryRandom(
+      receiverMock.isStopped(),
+      2,
+      100)
     assert(actualVal == expectedIsStopped)
 
     verify(receiverMock, times(2)).isStopped()

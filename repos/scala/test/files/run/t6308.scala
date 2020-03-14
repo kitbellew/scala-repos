@@ -31,8 +31,7 @@ object Test {
 
   def main(args: Array[String]) {
     val s = ""
-    val result =
-      s"""|- Unspecialized type args
+    val result = s"""|- Unspecialized type args
           |// Specialized
           |f1 ${f1(1, "some ref")}
           |f2 ${f2(1, "some ref")}

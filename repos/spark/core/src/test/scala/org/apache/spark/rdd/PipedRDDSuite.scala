@@ -50,16 +50,16 @@ class PipedRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("failure in iterating over pipe input") {
     if (testCommandAvailable("cat")) {
-      val nums =
-        sc.makeRDD(Array(1, 2, 3, 4), 2)
-          .mapPartitionsWithIndex((index, iterator) => {
-            new Iterator[Int] {
-              def hasNext = true
-              def next() = {
-                throw new SparkException("Exception to simulate bad scenario")
-              }
+      val nums = sc
+        .makeRDD(Array(1, 2, 3, 4), 2)
+        .mapPartitionsWithIndex((index, iterator) => {
+          new Iterator[Int] {
+            def hasNext = true
+            def next() = {
+              throw new SparkException("Exception to simulate bad scenario")
             }
-          })
+          }
+        })
 
       val piped = nums.pipe(Seq("cat"))
 

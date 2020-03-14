@@ -279,8 +279,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   @Test
   def testExpandingTopicSubscriptions() {
     val otherTopic = "other"
-    val subscriptions =
-      Set(new TopicPartition(topic, 0), new TopicPartition(topic, 1))
+    val subscriptions = Set(
+      new TopicPartition(topic, 0),
+      new TopicPartition(topic, 1))
     val expandedSubscriptions = subscriptions ++ Set(
       new TopicPartition(otherTopic, 0),
       new TopicPartition(otherTopic, 1))
@@ -323,8 +324,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       new TopicPartition(topic, 1),
       new TopicPartition(otherTopic, 0),
       new TopicPartition(otherTopic, 1))
-    val shrunkenSubscriptions =
-      Set(new TopicPartition(topic, 0), new TopicPartition(topic, 1))
+    val shrunkenSubscriptions = Set(
+      new TopicPartition(topic, 0),
+      new TopicPartition(topic, 1))
     this.consumers(0).subscribe(List(topic, otherTopic).asJava)
     TestUtils.waitUntilTrue(
       () => {
@@ -878,8 +880,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     testConsumer.seek(tp2, 20)
 
     // change subscription to trigger rebalance
-    val commitCountBeforeRebalance =
-      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
+    val commitCountBeforeRebalance = MockConsumerInterceptor.ON_COMMIT_COUNT
+      .intValue()
     changeConsumerSubscriptionAndValidateAssignment(
       testConsumer,
       List(topic, topic2),
@@ -898,8 +900,8 @@ class PlaintextConsumerTest extends BaseConsumerTest {
         .intValue() > commitCountBeforeRebalance)
 
     // verify commits are intercepted on close
-    val commitCountBeforeClose =
-      MockConsumerInterceptor.ON_COMMIT_COUNT.intValue()
+    val commitCountBeforeClose = MockConsumerInterceptor.ON_COMMIT_COUNT
+      .intValue()
     testConsumer.close()
     assertTrue(
       MockConsumerInterceptor.ON_COMMIT_COUNT
@@ -1038,8 +1040,9 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     val expandedConsumers =
       consumers ++ Buffer[KafkaConsumer[Array[Byte], Array[Byte]]](
         timeoutConsumer)
-    val timeoutPoller =
-      subscribeConsumerAndStartPolling(timeoutConsumer, List(topic, topic1))
+    val timeoutPoller = subscribeConsumerAndStartPolling(
+      timeoutConsumer,
+      List(topic, topic1))
     val expandedPollers =
       consumerPollers ++ Buffer[ConsumerAssignmentPoller](timeoutPoller)
 

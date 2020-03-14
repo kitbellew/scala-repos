@@ -104,8 +104,10 @@ class IMain(
     */
   private var _classLoader: util.AbstractFileClassLoader =
     null // active classloader
-  private val _compiler: ReplGlobal =
-    newCompiler(settings, reporter) // our private compiler
+  private val _compiler: ReplGlobal = newCompiler(
+    settings,
+    reporter
+  ) // our private compiler
 
   private var _runtimeClassLoader: URLClassLoader =
     null // wrapper exposing addURL
@@ -985,13 +987,12 @@ class IMain(
       headerPreamble,
       importsPreamble,
       importsTrailer,
-      accessPath) =
-      exitingTyper(
-        importsCode(
-          referencedNames.toSet,
-          ObjectSourceCode,
-          definesClass,
-          generousImports))
+      accessPath) = exitingTyper(
+      importsCode(
+        referencedNames.toSet,
+        ObjectSourceCode,
+        definesClass,
+        generousImports))
 
     /** the line of code to compute */
     def toCompute = line
@@ -1150,8 +1151,8 @@ class IMain(
         typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect)
     ).toMap[Name, Symbol] withDefaultValue NoSymbol
 
-    lazy val typesOfDefinedTerms =
-      mapFrom[Name, Name, Type](termNames)(x => applyToResultMember(x, _.tpe))
+    lazy val typesOfDefinedTerms = mapFrom[Name, Name, Type](termNames)(x =>
+      applyToResultMember(x, _.tpe))
 
     /** load and run the code using reflection */
     def loadAndRun: (String, Boolean) = {
@@ -1329,8 +1330,7 @@ class IMain(
       }
   }
 
-  def symbolOfLine(code: String): Symbol =
-    exprTyper.symbolOfLine(code)
+  def symbolOfLine(code: String): Symbol = exprTyper.symbolOfLine(code)
 
   def typeOfExpression(expr: String, silent: Boolean = true): Type =
     exprTyper.typeOfExpression(expr, silent)

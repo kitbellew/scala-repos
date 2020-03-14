@@ -64,11 +64,11 @@ object Container {
       }
     }
 
-    val uniquePortNames: Validator[Seq[PortMapping]] =
-      isTrue[Seq[PortMapping]]("Port names must be unique.") { portMappings =>
-        val portNames = portMappings.flatMap(_.name)
-        portNames.size == portNames.distinct.size
-      }
+    val uniquePortNames: Validator[Seq[PortMapping]] = isTrue[Seq[PortMapping]](
+      "Port names must be unique.") { portMappings =>
+      val portNames = portMappings.flatMap(_.name)
+      portNames.size == portNames.distinct.size
+    }
 
     implicit val dockerValidator = validator[Docker] { docker =>
       docker.image is notEmpty

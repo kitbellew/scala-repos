@@ -356,8 +356,8 @@ private[parallel] abstract class HashMapCombiner[K, V]
         case htm: HashMap.HashTrieMap[k, v] =>
           var i = 0
           while (i < htm.elems.length) {
-            htm.elems(i) =
-              evaluateCombiners(htm.elems(i)).asInstanceOf[HashMap[k, v]]
+            htm.elems(i) = evaluateCombiners(htm.elems(i))
+              .asInstanceOf[HashMap[k, v]]
             i += 1
           }
           htm.asInstanceOf[HashMap[K, Repr]]

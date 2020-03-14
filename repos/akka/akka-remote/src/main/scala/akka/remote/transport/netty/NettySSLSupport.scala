@@ -37,8 +37,8 @@ private[akka] class SSLSettings(config: Config) {
 
   val SSLTrustStorePassword = emptyIsNone(getString("trust-store-password"))
 
-  val SSLEnabledAlgorithms =
-    immutableSeq(getStringList("enabled-algorithms")).to[Set]
+  val SSLEnabledAlgorithms = immutableSeq(getStringList("enabled-algorithms"))
+    .to[Set]
 
   val SSLProtocol = emptyIsNone(getString("protocol"))
 
@@ -125,8 +125,9 @@ private[akka] object NettySSLSupport {
         trustStorePassword: String,
         protocol: String): Option[SSLContext] =
       try {
-        val rng =
-          initializeCustomSecureRandom(settings.SSLRandomNumberGenerator, log)
+        val rng = initializeCustomSecureRandom(
+          settings.SSLRandomNumberGenerator,
+          log)
         val trustManagers: Array[TrustManager] = {
           val trustManagerFactory = TrustManagerFactory.getInstance(
             TrustManagerFactory.getDefaultAlgorithm)
@@ -201,10 +202,11 @@ private[akka] object NettySSLSupport {
         keyPassword: String,
         protocol: String): Option[SSLContext] =
       try {
-        val rng =
-          initializeCustomSecureRandom(settings.SSLRandomNumberGenerator, log)
-        val factory =
-          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm)
+        val rng = initializeCustomSecureRandom(
+          settings.SSLRandomNumberGenerator,
+          log)
+        val factory = KeyManagerFactory.getInstance(
+          KeyManagerFactory.getDefaultAlgorithm)
         factory.init(
           {
             val keyStore = KeyStore.getInstance(KeyStore.getDefaultType)

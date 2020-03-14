@@ -27,8 +27,7 @@ sealed abstract class TopicRepo(troll: Boolean) {
   def hide(id: String, value: Boolean): Funit =
     $update.field(id, "hidden", value)
 
-  def byCateg(categ: Categ): Fu[List[Topic]] =
-    $find(byCategQuery(categ))
+  def byCateg(categ: Categ): Fu[List[Topic]] = $find(byCategQuery(categ))
 
   def byTree(categSlug: String, slug: String): Fu[Option[Topic]] =
     $find.one(Json.obj("categId" -> categSlug, "slug" -> slug) ++ trollFilter)

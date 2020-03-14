@@ -106,8 +106,9 @@ trait TestEventService
     Map(testAccount.apiKey -> testAccount.accountId),
     Map(testAccount.accountId -> testAccount))
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(0, Duration(1, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    0,
+    Duration(1, "second"))
 
   val shortFutureTimeouts = FutureTimeouts(5, Duration(50, "millis"))
 
@@ -156,8 +157,9 @@ trait TestEventService
     val shardClient =
       new HttpClient.EchoClient((_: HttpRequest[ByteChunk]).content)
     val localhost = ServiceLocation("http", "localhost", 80, None)
-    val tmpdir =
-      java.io.File.createTempFile("test.ingest.tmpdir", null).getParentFile()
+    val tmpdir = java.io.File
+      .createTempFile("test.ingest.tmpdir", null)
+      .getParentFile()
     val serviceConfig = ServiceConfig(
       localhost,
       localhost,

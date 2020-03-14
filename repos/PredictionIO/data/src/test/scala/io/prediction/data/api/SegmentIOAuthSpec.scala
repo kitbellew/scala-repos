@@ -49,8 +49,7 @@ class SegmentIOAuthSpec extends Specification {
         eventId: String,
         appId: Int,
         channelId: Option[Int])(
-        implicit ec: ExecutionContext): Future[Boolean] =
-      Future successful true
+        implicit ec: ExecutionContext): Future[Boolean] = Future successful true
 
     override def close(): Unit = {}
   }

@@ -108,8 +108,8 @@ trait EnumerateeTFunctions {
         def step(s: StepT[E, F, A], last: Input[E]): IterateeT[E, F, A] =
           s mapCont { k =>
             cont { in =>
-              val inr =
-                in.filter(e => last.forall(l => Order[E].order(e, l) != EQ))
+              val inr = in.filter(e =>
+                last.forall(l => Order[E].order(e, l) != EQ))
               k(inr) >>== (step(_, in))
             }
           }

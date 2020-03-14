@@ -332,8 +332,12 @@ private[akka] class LocalActorRef private[akka] (
    * actorCell before we call init and start, since we can start using "this"
    * object from another thread as soon as we run init.
    */
-  private val actorCell: ActorCell =
-    newActorCell(_system, this, _props, _dispatcher, _supervisor)
+  private val actorCell: ActorCell = newActorCell(
+    _system,
+    this,
+    _props,
+    _dispatcher,
+    _supervisor)
   actorCell.init(sendSupervise = true, _mailboxType)
 
   protected def newActorCell(

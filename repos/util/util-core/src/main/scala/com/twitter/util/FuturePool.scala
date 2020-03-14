@@ -57,8 +57,8 @@ object FuturePool {
     * is raised on a returned Future and the work has started, the worker
     * thread will not be interrupted.
     */
-  lazy val unboundedPool: FuturePool =
-    new ExecutorServiceFuturePool(defaultExecutor)
+  lazy val unboundedPool: FuturePool = new ExecutorServiceFuturePool(
+    defaultExecutor)
 
   /**
     * The default future pool, using a cached threadpool, provided by

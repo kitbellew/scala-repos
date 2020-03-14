@@ -222,11 +222,10 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       // We ran 3 stages, and the accumulator values should be distinct
       val stageInfos = listener.getCompletedStageInfos
       assert(stageInfos.size === 3)
-      val (firstStageAccum, secondStageAccum, thirdStageAccum) =
-        (
-          findTestAccum(stageInfos(0).accumulables.values),
-          findTestAccum(stageInfos(1).accumulables.values),
-          findTestAccum(stageInfos(2).accumulables.values))
+      val (firstStageAccum, secondStageAccum, thirdStageAccum) = (
+        findTestAccum(stageInfos(0).accumulables.values),
+        findTestAccum(stageInfos(1).accumulables.values),
+        findTestAccum(stageInfos(2).accumulables.values))
       assert(firstStageAccum.value.get.asInstanceOf[Long] === numPartitions)
       assert(
         secondStageAccum.value.get.asInstanceOf[Long] === numPartitions * 10)
@@ -288,10 +287,10 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
           fail("expected two attempts of the same shuffle map stage.")
         }
       }
-      val stageAccum1stAttempt =
-        findTestAccum(mapStageInfo1stAttempt.accumulables.values)
-      val stageAccum2ndAttempt =
-        findTestAccum(mapStageInfo2ndAttempt.accumulables.values)
+      val stageAccum1stAttempt = findTestAccum(
+        mapStageInfo1stAttempt.accumulables.values)
+      val stageAccum2ndAttempt = findTestAccum(
+        mapStageInfo2ndAttempt.accumulables.values)
       // Both map stages should have succeeded, since the fetch failure happened in the
       // result stage, not the map stage. This means we should get the accumulator updates
       // from all partitions.

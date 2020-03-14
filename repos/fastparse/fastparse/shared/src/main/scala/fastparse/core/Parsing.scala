@@ -130,8 +130,11 @@ object Parsed {
           index: Int)
           extends Extra {
 
-        lazy val traced =
-          TracedFailure(input, index, lastParser, (startIndex, startParser))
+        lazy val traced = TracedFailure(
+          input,
+          index,
+          lastParser,
+          (startIndex, startParser))
 
         lazy val pos = Position.computeFrom(input, index)
 

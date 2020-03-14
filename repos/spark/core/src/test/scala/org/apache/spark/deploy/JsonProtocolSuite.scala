@@ -100,11 +100,13 @@ class JsonProtocolSuite extends SparkFunSuite with JsonTestUtils {
 
   test("writeWorkerState") {
     val executors = List[ExecutorRunner]()
-    val finishedExecutors =
-      List[ExecutorRunner](createExecutorRunner(123), createExecutorRunner(123))
+    val finishedExecutors = List[ExecutorRunner](
+      createExecutorRunner(123),
+      createExecutorRunner(123))
     val drivers = List(createDriverRunner("driverId"))
-    val finishedDrivers =
-      List(createDriverRunner("driverId"), createDriverRunner("driverId"))
+    val finishedDrivers = List(
+      createDriverRunner("driverId"),
+      createDriverRunner("driverId"))
     val stateResponse = new WorkerStateResponse(
       "host",
       8080,
@@ -136,21 +138,19 @@ object JsonConstants {
   val currTimeInMillis = System.currentTimeMillis()
   val appInfoStartTime = 3
   val submitDate = new Date(123456789)
-  val appInfoJsonStr =
-    """
+  val appInfoJsonStr = """
       |{"starttime":3,"id":"id","name":"name",
       |"cores":4,"user":"%s",
       |"memoryperslave":1234,"submitdate":"%s",
       |"state":"WAITING","duration":%d}
     """
-      .format(
-        System.getProperty("user.name", "<unknown>"),
-        submitDate.toString,
-        currTimeInMillis - appInfoStartTime)
-      .stripMargin
+    .format(
+      System.getProperty("user.name", "<unknown>"),
+      submitDate.toString,
+      currTimeInMillis - appInfoStartTime)
+    .stripMargin
 
-  val workerInfoJsonStr =
-    """
+  val workerInfoJsonStr = """
       |{"id":"id","host":"host","port":8080,
       |"webuiaddress":"http://publicAddress:80",
       |"cores":4,"coresused":0,"coresfree":4,
@@ -164,8 +164,7 @@ object JsonConstants {
       |"user":"%s","command":"Command(mainClass,List(arg1, arg2),Map(),List(),List(),List())"}
     """.format(System.getProperty("user.name", "<unknown>")).stripMargin
 
-  val executorRunnerJsonStr =
-    """
+  val executorRunnerJsonStr = """
       |{"id":123,"memory":1234,"appid":"appId",
       |"appdesc":%s}
     """.format(appDescJsonStr).stripMargin

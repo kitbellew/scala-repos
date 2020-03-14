@@ -144,8 +144,8 @@ object Cord {
   def fromStrings[A](as: Seq[String]): Cord =
     cord(as.foldLeft(FingerTree.empty[Int, String](sizer))((x, y) => x :+ y))
 
-  implicit val sizer: Reducer[String, Int] =
-    UnitReducer((a: String) => a.length)
+  implicit val sizer: Reducer[String, Int] = UnitReducer((a: String) =>
+    a.length)
 
   def mkCord(sep: Cord, as: Cord*): Cord =
     if (!as.isEmpty) as.tail.foldLeft(as.head)(_ ++ sep ++ _) else Cord()

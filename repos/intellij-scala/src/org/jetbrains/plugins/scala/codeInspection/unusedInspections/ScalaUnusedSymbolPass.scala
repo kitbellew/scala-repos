@@ -48,8 +48,8 @@ import scala.collection.mutable
 // TODO merge with UnusedImportPass (?)
 class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
     extends TextEditorHighlightingPass(file.getProject, editor.getDocument) {
-  val findUsageProvider: FindUsagesProvider =
-    LanguageFindUsages.INSTANCE.forLanguage(ScalaFileType.SCALA_LANGUAGE)
+  val findUsageProvider: FindUsagesProvider = LanguageFindUsages.INSTANCE
+    .forLanguage(ScalaFileType.SCALA_LANGUAGE)
   val highlightInfos = mutable.Buffer[HighlightInfo]()
 
   private val inspectionSuppressor = new ScalaInspectionSuppressor
@@ -99,8 +99,10 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
   private def processScalaFile(sFile: ScalaFile) {
     val annotationHolder = new AnnotationHolderImpl(new AnnotationSession(file))
     val annotations = mutable.Buffer[Annotation]()
-    val state =
-      UnusedPassState(annotationHolder, annotations, readConfig(sFile))
+    val state = UnusedPassState(
+      annotationHolder,
+      annotations,
+      readConfig(sFile))
     val config = state.config
     if (!config.checkLocalAssign && !config.checkLocalUnused) return
 
@@ -199,13 +201,16 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
             hasAtLeastOneUnusedHighlight = true
             val elementTypeDesc = findUsageProvider.getType(declElementHolder)
             val severity = state.config.localUnusedSeverity
-            val message =
-              "%s '%s' is never used".format(elementTypeDesc, decElem.name)
-            val key =
-              HighlightDisplayKey.find(ScalaUnusedSymbolInspection.ShortName)
+            val message = "%s '%s' is never used".format(
+              elementTypeDesc,
+              decElem.name)
+            val key = HighlightDisplayKey.find(
+              ScalaUnusedSymbolInspection.ShortName)
             val range = decElem.nameId.getTextRange
-            val annotation =
-              state.annotationHolder.createAnnotation(severity, range, message)
+            val annotation = state.annotationHolder.createAnnotation(
+              severity,
+              range,
+              message)
             annotation.registerFix(new DeleteElementFix(elem), range, key)
             state.annotations += annotation
           }
@@ -260,8 +265,8 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
 
 class DeleteElementFix(element: PsiElement) extends IntentionAction {
   def getText: String = {
-    val provider: FindUsagesProvider =
-      LanguageFindUsages.INSTANCE.forLanguage(ScalaFileType.SCALA_LANGUAGE)
+    val provider: FindUsagesProvider = LanguageFindUsages.INSTANCE.forLanguage(
+      ScalaFileType.SCALA_LANGUAGE)
     element match {
       case n: ScNamedElement =>
         val elementToClassify = ScalaPsiUtil.nameContext(n)

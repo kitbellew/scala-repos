@@ -143,8 +143,8 @@ class DocResolver(
   private def resolveWellKnownUri(sig: DocSigPair): Option[String] = {
     if (sig.java.fqn.javaStdLib) {
       val path = javaFqnToPath(sig.java.fqn)
-      val rawVersion =
-        forceJavaVersion.getOrElse(scala.util.Properties.javaVersion)
+      val rawVersion = forceJavaVersion.getOrElse(
+        scala.util.Properties.javaVersion)
       val version =
         if (rawVersion.startsWith("1.8")) "8"
         else if (rawVersion.startsWith("1.7")) "7"
@@ -156,8 +156,9 @@ class DocResolver(
 
     } else if (sig.java.fqn.androidStdLib) {
       val path = javaFqnToPath(sig.java.fqn)
-      val anchor =
-        sig.java.member.map { m => "#" + toAndroidAnchor(m) }.getOrElse("")
+      val anchor = sig.java.member
+        .map { m => "#" + toAndroidAnchor(m) }
+        .getOrElse("")
       Some(s"http://developer.android.com/reference/$path$anchor")
 
     } else None

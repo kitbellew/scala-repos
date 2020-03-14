@@ -76,8 +76,7 @@ sealed abstract class Future[+A] {
         Suspend(() => BindAsync(listen, g andThen (_ flatMap f)))
     }
 
-  def map[B](f: A => B): Future[B] =
-    flatMap(f andThen (b => Future.now(b)))
+  def map[B](f: A => B): Future[B] = flatMap(f andThen (b => Future.now(b)))
 
   /**
     * Run this computation to obtain an `A`, then invoke the given callback.
@@ -91,8 +90,7 @@ sealed abstract class Future[+A] {
         onFinish(x => Trampoline.delay(g(x)) map (_ unsafePerformListen cb))
     }
   @deprecated("use unsafePerformListen", "7.2")
-  def listen(cb: A => Trampoline[Unit]): Unit =
-    unsafePerformListen(cb)
+  def listen(cb: A => Trampoline[Unit]): Unit = unsafePerformListen(cb)
 
   /**
     * Run this computation to obtain an `A`, so long as `cancel` remains false.
@@ -162,8 +160,7 @@ sealed abstract class Future[+A] {
   }
 
   @deprecated("use unsafeStart", "7.2")
-  def start: Future[A] =
-    unsafeStart
+  def start: Future[A] = unsafeStart
 
   /**
     * Run this `Future`, passing the result to the given callback once available.
@@ -175,8 +172,7 @@ sealed abstract class Future[+A] {
     unsafePerformListen(a => Trampoline.done(cb(a)))
 
   @deprecated("use unsafePerformAsync", "7.2")
-  def runAsync(cb: A => Unit): Unit =
-    unsafePerformAsync(cb)
+  def runAsync(cb: A => Unit): Unit = unsafePerformAsync(cb)
 
   /**
     * Run this computation to obtain an `A`, so long as `cancel` remains false.
@@ -207,8 +203,7 @@ sealed abstract class Future[+A] {
     }
 
   @deprecated("use unsafePerformSync", "7.2")
-  def run: A =
-    unsafePerformSync
+  def run: A = unsafePerformSync
 
   /**
     * Run this `Future` and block until its result is available, or until
@@ -225,12 +220,10 @@ sealed abstract class Future[+A] {
     unsafePerformSyncFor(timeout.toMillis)
 
   @deprecated("use unsafePerformSyncFor", "7.2")
-  def runFor(timeoutInMillis: Long): A =
-    unsafePerformSyncFor(timeoutInMillis)
+  def runFor(timeoutInMillis: Long): A = unsafePerformSyncFor(timeoutInMillis)
 
   @deprecated("use unsafePerformSyncFor", "7.2")
-  def runFor(timeout: Duration): A =
-    unsafePerformSyncFor(timeout)
+  def runFor(timeout: Duration): A = unsafePerformSyncFor(timeout)
 
   /** Like `unsafePerformSyncFor`, but returns `TimeoutException` as left value.
     * Will not report any other exceptions that may be raised during computation of `A`*/
@@ -290,8 +283,7 @@ sealed abstract class Future[+A] {
 
   def unsafePerformTimed(timeout: Duration)(implicit
       scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[Throwable \/ A] =
-    unsafePerformTimed(timeout.toMillis)
+      : Future[Throwable \/ A] = unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
   def timed(timeoutInMillis: Long)(
@@ -300,14 +292,12 @@ sealed abstract class Future[+A] {
   @deprecated("use unsafePerformTimed", "7.2")
   def timed(timeout: Duration)(implicit
       scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[Throwable \/ A] =
-    unsafePerformTimed(timeout)
+      : Future[Throwable \/ A] = unsafePerformTimed(timeout)
 
   /**
     * Returns a `Future` that delays the execution of this `Future` by the duration `t`.
     */
-  def after(t: Duration): Future[A] =
-    after(t.toMillis)
+  def after(t: Duration): Future[A] = after(t.toMillis)
 
   def after(t: Long): Future[A] =
     Timer.default.valueWait((), t).flatMap(_ => this)
@@ -330,8 +320,7 @@ object Future {
 
   implicit val futureInstance: Nondeterminism[Future] =
     new Nondeterminism[Future] {
-      def bind[A, B](fa: Future[A])(f: A => Future[B]): Future[B] =
-        fa flatMap f
+      def bind[A, B](fa: Future[A])(f: A => Future[B]): Future[B] = fa flatMap f
       def point[A](a: => A): Future[A] = delay(a)
 
       def chooseAny[A](
@@ -392,10 +381,8 @@ object Future {
         }
       }
 
-      private val finishedCallback: Any => Trampoline[Unit] =
-        _ =>
-          sys.error(
-            "impossible, since there can only be one runner of chooseAny")
+      private val finishedCallback: Any => Trampoline[Unit] = _ =>
+        sys.error("impossible, since there can only be one runner of chooseAny")
 
       // implementation runs all threads, dumping to a shared queue
       // last thread to finish invokes the callback with the results
@@ -507,6 +494,5 @@ object Future {
     futureInstance.gatherUnordered(fs)
 
   def reduceUnordered[A, M](fs: Seq[Future[A]])(
-      implicit R: Reducer[A, M]): Future[M] =
-    futureInstance.reduceUnordered(fs)
+      implicit R: Reducer[A, M]): Future[M] = futureInstance.reduceUnordered(fs)
 }

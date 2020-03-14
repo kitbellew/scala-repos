@@ -60,8 +60,8 @@ abstract class ParquetSchemaTest extends ParquetTest with SharedSQLContext {
       writeLegacyParquetFormat = writeLegacyParquetFormat)
 
     test(s"sql <= parquet: $testName") {
-      val actual =
-        converter.convert(MessageTypeParser.parseMessageType(parquetSchema))
+      val actual = converter.convert(
+        MessageTypeParser.parseMessageType(parquetSchema))
       val expected = sqlSchema
       assert(
         actual === expected,
@@ -714,10 +714,9 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type 8 - " +
       "parquet-protobuf non-primitive lists", {
-      val elementType =
-        new StructType()
-          .add("c1", StringType, nullable = true)
-          .add("c2", IntegerType, nullable = false)
+      val elementType = new StructType()
+        .add("c1", StringType, nullable = true)
+        .add("c2", IntegerType, nullable = false)
 
       new StructType()
         .add(
@@ -1431,10 +1430,9 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
          |}
        """.stripMargin,
     catalystSchema = {
-      val f00ElementType =
-        new StructType()
-          .add("f001", LongType, nullable = true)
-          .add("f002", DoubleType, nullable = false)
+      val f00ElementType = new StructType()
+        .add("f001", LongType, nullable = true)
+        .add("f002", DoubleType, nullable = false)
 
       val f00Type = ArrayType(f00ElementType, containsNull = false)
       val f0Type = new StructType().add("f00", f00Type, nullable = false)
@@ -1566,10 +1564,9 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         |}
       """.stripMargin,
     catalystSchema = {
-      val valueType =
-        new StructType()
-          .add("value_f1", LongType, nullable = false)
-          .add("value_f2", DoubleType, nullable = false)
+      val valueType = new StructType()
+        .add("value_f1", LongType, nullable = false)
+        .add("value_f2", DoubleType, nullable = false)
 
       val f0Type = MapType(IntegerType, valueType, valueContainsNull = false)
 
@@ -1604,10 +1601,9 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         |}
       """.stripMargin,
     catalystSchema = {
-      val valueType =
-        new StructType()
-          .add("value_f1", LongType, nullable = false)
-          .add("value_f2", DoubleType, nullable = false)
+      val valueType = new StructType()
+        .add("value_f1", LongType, nullable = false)
+        .add("value_f2", DoubleType, nullable = false)
 
       val f0Type = MapType(IntegerType, valueType, valueContainsNull = false)
 
@@ -1642,10 +1638,9 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         |}
       """.stripMargin,
     catalystSchema = {
-      val keyType =
-        new StructType()
-          .add("value_f1", LongType, nullable = false)
-          .add("value_f2", DoubleType, nullable = false)
+      val keyType = new StructType()
+        .add("value_f1", LongType, nullable = false)
+        .add("value_f2", DoubleType, nullable = false)
 
       val f0Type = MapType(keyType, IntegerType, valueContainsNull = false)
 

@@ -38,8 +38,8 @@ class NonServerRunner(
       listener: String => Unit): CompilationProcess = {
     val sdk =
       Option(ProjectRootManager.getInstance(project).getProjectSdk) getOrElse {
-        val all =
-          ProjectJdkTable.getInstance.getSdksOfType(JavaSdk.getInstance())
+        val all = ProjectJdkTable.getInstance.getSdksOfType(
+          JavaSdk.getInstance())
 
         if (all.isEmpty) {
           error("No JDK available")

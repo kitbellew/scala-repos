@@ -283,11 +283,10 @@ class ShowImplicitParametersAction
 
     panel.add(scrollPane, BorderLayout.CENTER)
 
-    val F4: Array[Shortcut] =
-      ActionManager.getInstance
-        .getAction(IdeActions.ACTION_EDIT_SOURCE)
-        .getShortcutSet
-        .getShortcuts
+    val F4: Array[Shortcut] = ActionManager.getInstance
+      .getAction(IdeActions.ACTION_EDIT_SOURCE)
+      .getShortcutSet
+      .getShortcuts
     val ENTER: Array[Shortcut] =
       CustomShortcutSet.fromString("ENTER").getShortcuts
     val shortcutSet: CustomShortcutSet = new CustomShortcutSet(

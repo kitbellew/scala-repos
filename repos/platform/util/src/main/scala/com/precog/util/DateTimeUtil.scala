@@ -29,16 +29,17 @@ object DateTimeUtil {
   private val basicParser = ISODateTimeFormat.basicDateTime
 
   //2013-02-04T18:07:39.608835
-  private val dateTimeRegex =
-    Pattern.compile("^[0-9]{4}-?[0-9]{2}-?[0-9]{2}.*$")
+  private val dateTimeRegex = Pattern.compile(
+    "^[0-9]{4}-?[0-9]{2}-?[0-9]{2}.*$")
 
   def looksLikeIso8601(s: String): Boolean = dateTimeRegex.matcher(s).matches
 
   def parseDateTime(value0: String, withOffset: Boolean): DateTime = {
     val value = value0.trim.replace(" ", "T")
 
-    val parser = if (value.contains("-") || value.contains(":")) { fullParser }
-    else { basicParser }
+    val parser =
+      if (value.contains("-") || value.contains(":")) { fullParser }
+      else { basicParser }
 
     val p = if (withOffset) parser.withOffsetParsed else parser
     p.parseDateTime(value)

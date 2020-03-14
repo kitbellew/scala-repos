@@ -117,8 +117,8 @@ abstract class IntroduceParameterTestBase
                     classOf[ScFunctionDefinition])
                   (fun, fun.returnType.getOrAny)
                 }
-              val collectedData =
-                handler.collectData(exprWithTypes, elems, methodLike, editor)
+              val collectedData = handler
+                .collectData(exprWithTypes, elems, methodLike, editor)
               assert(
                 collectedData.isDefined,
                 "Could not collect data for introduce parameter")

@@ -31,8 +31,7 @@ class SessionQualificationParams[A <: Stack.Parameterized[A]](
     *      [[https://twitter.github.io/finagle/guide/Clients.html#circuit-breaking]]
     *      [[FailFastFactory]]
     */
-  def noFailFast: A =
-    self.configured(FailFastFactory.FailFast(enabled = false))
+  def noFailFast: A = self.configured(FailFastFactory.FailFast(enabled = false))
 
   /**
     * Disables the Failure Accrual module on this client (default: enabled).
@@ -50,6 +49,5 @@ class SessionQualificationParams[A <: Stack.Parameterized[A]](
     *      [[https://twitter.github.io/finagle/guide/Clients.html#circuit-breaking]]
     *      [[FailureAccrualFactory]]
     */
-  def noFailureAccrual: A =
-    self.configured(FailureAccrualFactory.Disabled)
+  def noFailureAccrual: A = self.configured(FailureAccrualFactory.Disabled)
 }

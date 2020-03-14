@@ -7,8 +7,7 @@ class JUnitAnnotationsParamTest {
   def test0(): Unit = ()
 
   @Test(expected = classOf[Exception])
-  def testException(): Unit =
-    throw new Exception("error message")
+  def testException(): Unit = throw new Exception("error message")
 
   @Test(expected = classOf[Exception])
   def testException2(): Unit =

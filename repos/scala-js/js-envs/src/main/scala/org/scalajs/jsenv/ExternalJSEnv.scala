@@ -63,16 +63,14 @@ abstract class ExternalJSEnv(
       *
       *  Default is `sys.env` and [[additionalEnv]]
       */
-    protected def getVMEnv(): Map[String, String] =
-      sys.env ++ additionalEnv
+    protected def getVMEnv(): Map[String, String] = sys.env ++ additionalEnv
 
     /** Get files that are a library (i.e. that do not run anything) */
     protected def getLibJSFiles(): Seq[VirtualJSFile] =
       initFiles() ++ customInitFiles() ++ libs.map(_.lib)
 
     /** Get all files that are passed to VM (libraries and code) */
-    protected def getJSFiles(): Seq[VirtualJSFile] =
-      getLibJSFiles() :+ code
+    protected def getJSFiles(): Seq[VirtualJSFile] = getLibJSFiles() :+ code
 
     /** write a single JS file to a writer using an include fct if appropriate */
     protected def writeJSFile(file: VirtualJSFile, writer: Writer): Unit = {

@@ -358,8 +358,8 @@ class RowMatrix @Since("1.0.0") (
     val n = numCols().toInt
     checkNumColumns(n)
 
-    val (m, mean) =
-      rows.treeAggregate[(Long, BDV[Double])]((0L, BDV.zeros[Double](n)))(
+    val (m, mean) = rows
+      .treeAggregate[(Long, BDV[Double])]((0L, BDV.zeros[Double](n)))(
         seqOp = (s: (Long, BDV[Double]), v: Vector) =>
           (s._1 + 1L, s._2 += v.toBreeze),
         combOp = (s1: (Long, BDV[Double]), s2: (Long, BDV[Double])) =>
@@ -558,8 +558,9 @@ class RowMatrix @Since("1.0.0") (
           " however there is no correctness guarantee.")
     }
 
-    val gamma = if (threshold < 1e-6) { Double.PositiveInfinity }
-    else { 10 * math.log(numCols()) / threshold }
+    val gamma =
+      if (threshold < 1e-6) { Double.PositiveInfinity }
+      else { 10 * math.log(numCols()) / threshold }
 
     columnSimilaritiesDIMSUM(
       computeColumnSummaryStatistics().normL2.toArray,
@@ -597,16 +598,17 @@ class RowMatrix @Since("1.0.0") (
       breeze.linalg.qr.reduced(stackedR).r
     }
     val finalR = Matrices.fromBreeze(combinedR.toDenseMatrix)
-    val finalQ = if (computeQ) {
-      try {
-        val invR = inv(combinedR)
-        this.multiply(Matrices.fromBreeze(invR))
-      } catch {
-        case err: MatrixSingularException =>
-          logWarning("R is not invertible and return Q as null")
-          null
-      }
-    } else { null }
+    val finalQ =
+      if (computeQ) {
+        try {
+          val invR = inv(combinedR)
+          this.multiply(Matrices.fromBreeze(invR))
+        } catch {
+          case err: MatrixSingularException =>
+            logWarning("R is not invertible and return Q as null")
+            null
+        }
+      } else { null }
     QRDecomposition(finalQ, finalR)
   }
 

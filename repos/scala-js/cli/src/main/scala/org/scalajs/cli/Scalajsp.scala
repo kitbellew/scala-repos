@@ -103,14 +103,14 @@ object Scalajsp {
       if (entry == null) fail(s"No such file in jar: $name")
       else {
         val name = jarFile.getName + "#" + entry.getName
-        val content =
-          IO.readInputStreamToByteArray(jarFile.getInputStream(entry))
+        val content = IO.readInputStreamToByteArray(
+          jarFile.getInputStream(entry))
         new MemVirtualSerializedScalaJSIRFile(name).withContent(content)
       }
     } finally { jarFile.close() }
   }
 
-  private val stdout =
-    new BufferedWriter(new OutputStreamWriter(Console.out, "UTF-8"))
+  private val stdout = new BufferedWriter(
+    new OutputStreamWriter(Console.out, "UTF-8"))
 
 }

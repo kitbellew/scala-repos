@@ -28,13 +28,13 @@ class ReachingDefsTest extends LightCodeInsightFixtureTestCase {
   }
 
   def doTest() {
-    val input: java.util.List[String] =
-      TestUtils.readInput(getBasePath + getTestName(true) + ".test")
+    val input: java.util.List[String] = TestUtils.readInput(
+      getBasePath + getTestName(true) + ".test")
     myFixture.configureByText(ScalaFileType.SCALA_FILE_TYPE, input.get(0))
     val file: ScalaFile = myFixture.getFile.asInstanceOf[ScalaFile]
     val model: SelectionModel = myFixture.getEditor.getSelectionModel
-    val start: PsiElement =
-      file.findElementAt(if (model.hasSelection) model.getSelectionStart else 0)
+    val start: PsiElement = file.findElementAt(
+      if (model.hasSelection) model.getSelectionStart else 0)
     val end: PsiElement = file.findElementAt(
       if (model.hasSelection) model.getSelectionEnd - 1
       else file.getTextLength - 1)

@@ -96,14 +96,13 @@ class UnionMacros(val c: whitebox.Context) {
         c.enclosingPosition,
         s"this method must be called as 'apply' not '$methodString'")
 
-    val elem =
-      elems match {
-        case Seq(e) => e
-        case _ =>
-          c.abort(
-            c.enclosingPosition,
-            s"only one branch of a union may be inhabited")
-      }
+    val elem = elems match {
+      case Seq(e) => e
+      case _ =>
+        c.abort(
+          c.enclosingPosition,
+          s"only one branch of a union may be inhabited")
+    }
 
     q""" _root_.shapeless.Coproduct[${weakTypeOf[U]}](${promoteElem(elem)}) """
   }

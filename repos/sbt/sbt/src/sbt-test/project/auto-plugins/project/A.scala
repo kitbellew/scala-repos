@@ -43,8 +43,8 @@ object TopB extends AutoPlugin {
 object TopC extends AutoPlugin {
 
   object autoImport {
-    lazy val topLevelKeyTest =
-      settingKey[String]("A top level setting declared in a plugin.")
+    lazy val topLevelKeyTest = settingKey[String](
+      "A top level setting declared in a plugin.")
   }
 
 }

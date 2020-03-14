@@ -30,8 +30,7 @@ abstract class HeaderMap
     * Adds a header without replacing existing headers, as in [[add(String, String)]],
     * but with standard formatting for dates in HTTP headers.
     */
-  def add(k: String, date: Date): HeaderMap =
-    add(k, HeaderMap.format(date))
+  def add(k: String, date: Date): HeaderMap = add(k, HeaderMap.format(date))
 
   /**
     * Set a header. If an entry already exists, it is replaced.
@@ -42,15 +41,13 @@ abstract class HeaderMap
     * Set or replace a header, as in [[set(String, String)]],
     * but with standard formatting for dates in HTTP headers.
     */
-  def set(k: String, date: Date): HeaderMap =
-    set(k, HeaderMap.format(date))
+  def set(k: String, date: Date): HeaderMap = set(k, HeaderMap.format(date))
 
   /**
     * Set or replace a header, as in [[+=((String, String))]],
     * but with standard formatting for dates in HTTP headers.
     */
-  def +=(kv: (String, Date)): HeaderMap =
-    +=((kv._1, HeaderMap.format(kv._2)))
+  def +=(kv: (String, Date)): HeaderMap = +=((kv._1, HeaderMap.format(kv._2)))
 
   override def empty: HeaderMap = new MapHeaderMap(mutable.Map.empty)
 }
@@ -59,8 +56,7 @@ abstract class HeaderMap
 class MapHeaderMap(underlying: mutable.Map[String, Seq[String]])
     extends HeaderMap {
 
-  def getAll(key: String): Iterable[String] =
-    underlying.getOrElse(key, Nil)
+  def getAll(key: String): Iterable[String] = underlying.getOrElse(key, Nil)
 
   def add(k: String, v: String): MapHeaderMap = {
     underlying(k) = underlying.getOrElse(k, Nil) :+ v
@@ -97,14 +93,11 @@ class MapHeaderMap(underlying: mutable.Map[String, Seq[String]])
     this
   }
 
-  override def keys: Iterable[String] =
-    underlying.keys
+  override def keys: Iterable[String] = underlying.keys
 
-  override def keySet: Set[String] =
-    underlying.keySet.toSet
+  override def keySet: Set[String] = underlying.keySet.toSet
 
-  override def keysIterator: Iterator[String] =
-    underlying.keysIterator
+  override def keysIterator: Iterator[String] = underlying.keysIterator
 }
 
 object MapHeaderMap {
@@ -121,22 +114,18 @@ object MapHeaderMap {
   */
 private[finagle] class MessageHeaderMap(httpMessage: HttpMessageProxy)
     extends HeaderMap {
-  def get(key: String): Option[String] =
-    Option(httpMessage.headers.get(key))
+  def get(key: String): Option[String] = Option(httpMessage.headers.get(key))
 
   def iterator: Iterator[(String, String)] =
     httpMessage.headers.iterator.asScala.map { entry =>
       (entry.getKey, entry.getValue)
     }
 
-  override def keys: Iterable[String] =
-    httpMessage.headers.names.asScala
+  override def keys: Iterable[String] = httpMessage.headers.names.asScala
 
-  override def keySet: Set[String] =
-    keys.toSet
+  override def keySet: Set[String] = keys.toSet
 
-  override def keysIterator: Iterator[String] =
-    keySet.iterator
+  override def keysIterator: Iterator[String] = keySet.iterator
 
   override def contains(key: String): Boolean =
     httpMessage.headers.contains(key)

@@ -13,8 +13,9 @@ import VersionUtil.versionProperties
   * this is always `fullClasspath in Compile` whereas we want `products in Compile in packageBin`. */
 object Osgi {
   val bundle = TaskKey[File]("osgiBundle", "Create an OSGi bundle.")
-  val bundleName =
-    SettingKey[String]("osgiBundleName", "The Bundle-Name for the manifest.")
+  val bundleName = SettingKey[String](
+    "osgiBundleName",
+    "The Bundle-Name for the manifest.")
   val bundleSymbolicName = SettingKey[String](
     "osgiBundleSymbolicName",
     "The Bundle-SymbolicName for the manifest.")
@@ -71,8 +72,10 @@ object Osgi {
     val builder = new Builder
     builder.setClasspath(fullClasspath.toArray)
     headers foreach { case (k, v) => builder.setProperty(k, v) }
-    val includeRes =
-      resourceDirectories.filter(_.exists).map(_.getAbsolutePath).mkString(",")
+    val includeRes = resourceDirectories
+      .filter(_.exists)
+      .map(_.getAbsolutePath)
+      .mkString(",")
     if (!includeRes.isEmpty) builder.setProperty(INCLUDERESOURCE, includeRes)
     builder.getProperties.foreach { case (k, v) => log.debug(s"bnd: $k: $v") }
     // builder.build is not thread-safe because it uses a static SimpleDateFormat.  This ensures

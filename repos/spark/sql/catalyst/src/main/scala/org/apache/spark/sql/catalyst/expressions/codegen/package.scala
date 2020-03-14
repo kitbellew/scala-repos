@@ -47,19 +47,17 @@ package object codegen {
 
     def apply(obj: Any): Unit = {
       val generatedClass = obj.getClass
-      val classLoader =
-        generatedClass.getClassLoader
-          .asInstanceOf[scala.tools.nsc.interpreter.AbstractFileClassLoader]
+      val classLoader = generatedClass.getClassLoader
+        .asInstanceOf[scala.tools.nsc.interpreter.AbstractFileClassLoader]
       val generatedBytes = classLoader.classBytes(generatedClass.getName)
 
       val packageDir =
         new java.io.File(dumpDirectory, generatedClass.getPackage.getName)
       if (!packageDir.exists()) { packageDir.mkdir() }
 
-      val classFile =
-        new java.io.File(
-          packageDir,
-          generatedClass.getName.split("\\.").last + ".class")
+      val classFile = new java.io.File(
+        packageDir,
+        generatedClass.getName.split("\\.").last + ".class")
 
       val outfile = new java.io.FileOutputStream(classFile)
       outfile.write(generatedBytes)

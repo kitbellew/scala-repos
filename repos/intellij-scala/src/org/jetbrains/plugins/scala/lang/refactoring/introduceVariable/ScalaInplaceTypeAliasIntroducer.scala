@@ -43,8 +43,8 @@ object ScalaInplaceTypeAliasIntroducer {
       myProject,
       new Runnable {
         def run() {
-          val revertInfo =
-            myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
+          val revertInfo = myEditor.getUserData(
+            ScalaIntroduceVariableHandler.REVERT_INFO)
           val document = myEditor.getDocument
           if (revertInfo != null) {
             extensions.inWriteAction {
@@ -119,8 +119,8 @@ class ScalaInplaceTypeAliasIntroducer(
                  .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
                  .isCallModalDialogInProgress) {
 
-      val revertInfo =
-        myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
+      val revertInfo = myEditor.getUserData(
+        ScalaIntroduceVariableHandler.REVERT_INFO)
       if (revertInfo != null) {
         extensions.inWriteAction {
           val myFile: PsiFile = PsiDocumentManager

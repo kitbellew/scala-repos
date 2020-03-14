@@ -78,10 +78,10 @@ object CategoricalNaiveBayes {
       .toMap
 
     val noOfPoints = labelCountFeatureLikelihoods.map(_._2._1).sum
-    val priors =
-      labelCountFeatureLikelihoods.mapValues { countFeatureLikelihoods =>
+    val priors = labelCountFeatureLikelihoods.mapValues {
+      countFeatureLikelihoods =>
         math.log(countFeatureLikelihoods._1 / noOfPoints.toDouble)
-      }
+    }
     val likelihoods = labelCountFeatureLikelihoods.mapValues(_._2)
 
     CategoricalNaiveBayesModel(priors, likelihoods)

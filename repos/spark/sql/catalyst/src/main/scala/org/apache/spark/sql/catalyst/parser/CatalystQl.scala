@@ -229,16 +229,16 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             val select = (selectClause orElse selectDistinctClause)
               .getOrElse(sys.error("No select clause."))
 
-            val transformation =
-              nodeToTransformation(select.children.head, withWhere)
+            val transformation = nodeToTransformation(
+              select.children.head,
+              withWhere)
 
             // The projection of the query can either be a normal projection, an aggregation
             // (if there is a group by) or a script transformation.
             val withProject: LogicalPlan = transformation.getOrElse {
-              val selectExpressions =
-                select.children
-                  .flatMap(selExprNodeToExpr)
-                  .map(UnresolvedAlias(_))
+              val selectExpressions = select.children
+                .flatMap(selExprNodeToExpr)
+                .map(UnresolvedAlias(_))
               Seq(
                 groupByClause.map(e =>
                   e match {
@@ -301,58 +301,55 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               else withHaving
 
             // Handle ORDER BY, SORT BY, DISTRIBUTE BY, and CLUSTER BY clause.
-            val withSort =
-              (
-                orderByClause,
-                sortByClause,
-                distributeByClause,
-                clusterByClause) match {
-                case (Some(totalOrdering), None, None, None) =>
-                  Sort(
-                    totalOrdering.children.map(nodeToSortOrder),
-                    global = true,
-                    withDistinct)
-                case (None, Some(perPartitionOrdering), None, None) =>
-                  Sort(
-                    perPartitionOrdering.children.map(nodeToSortOrder),
-                    global = false,
-                    withDistinct)
-                case (None, None, Some(partitionExprs), None) =>
+            val withSort = (
+              orderByClause,
+              sortByClause,
+              distributeByClause,
+              clusterByClause) match {
+              case (Some(totalOrdering), None, None, None) =>
+                Sort(
+                  totalOrdering.children.map(nodeToSortOrder),
+                  global = true,
+                  withDistinct)
+              case (None, Some(perPartitionOrdering), None, None) =>
+                Sort(
+                  perPartitionOrdering.children.map(nodeToSortOrder),
+                  global = false,
+                  withDistinct)
+              case (None, None, Some(partitionExprs), None) =>
+                RepartitionByExpression(
+                  partitionExprs.children.map(nodeToExpr),
+                  withDistinct)
+              case (
+                    None,
+                    Some(perPartitionOrdering),
+                    Some(partitionExprs),
+                    None) =>
+                Sort(
+                  perPartitionOrdering.children.map(nodeToSortOrder),
+                  global = false,
                   RepartitionByExpression(
                     partitionExprs.children.map(nodeToExpr),
+                    withDistinct))
+              case (None, None, None, Some(clusterExprs)) =>
+                Sort(
+                  clusterExprs.children
+                    .map(nodeToExpr)
+                    .map(SortOrder(_, Ascending)),
+                  global = false,
+                  RepartitionByExpression(
+                    clusterExprs.children.map(nodeToExpr),
                     withDistinct)
-                case (
-                      None,
-                      Some(perPartitionOrdering),
-                      Some(partitionExprs),
-                      None) =>
-                  Sort(
-                    perPartitionOrdering.children.map(nodeToSortOrder),
-                    global = false,
-                    RepartitionByExpression(
-                      partitionExprs.children.map(nodeToExpr),
-                      withDistinct))
-                case (None, None, None, Some(clusterExprs)) =>
-                  Sort(
-                    clusterExprs.children
-                      .map(nodeToExpr)
-                      .map(SortOrder(_, Ascending)),
-                    global = false,
-                    RepartitionByExpression(
-                      clusterExprs.children.map(nodeToExpr),
-                      withDistinct)
-                  )
-                case (None, None, None, None) => withDistinct
-                case _ =>
-                  sys.error(
-                    "Unsupported set of ordering / distribution clauses.")
-              }
+                )
+              case (None, None, None, None) => withDistinct
+              case _ =>
+                sys.error("Unsupported set of ordering / distribution clauses.")
+            }
 
-            val withLimit =
-              limitClause
-                .map(l => nodeToExpr(l.children.head))
-                .map(Limit(_, withSort))
-                .getOrElse(withSort)
+            val withLimit = limitClause
+              .map(l => nodeToExpr(l.children.head))
+              .map(Limit(_, withSort))
+              .getOrElse(withSort)
 
             // Collect all window specifications defined in the WINDOW clause.
             val windowDefinitions = windowClause.map(_.children.collect {
@@ -377,16 +374,14 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               }
             }
 
-            val withWindowDefinitions =
-              resolvedCrossReference
-                .map(WithWindowDefinition(_, withLimit))
-                .getOrElse(withLimit)
+            val withWindowDefinitions = resolvedCrossReference
+              .map(WithWindowDefinition(_, withLimit))
+              .getOrElse(withLimit)
 
             // TOK_INSERT_INTO means to add files to the table.
             // TOK_DESTINATION means to overwrite the table.
-            val resultDestination =
-              (intoClause orElse destClause).getOrElse(
-                sys.error("No destination found."))
+            val resultDestination = (intoClause orElse destClause).getOrElse(
+              sys.error("No destination found."))
             val overwrite = intoClause.isEmpty
             nodeToDest(resultDestination, withWindowDefinitions, overwrite)
         }
@@ -553,8 +548,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         query
 
       case Token(destinationToken(), Token("TOK_TAB", tableArgs) :: Nil) =>
-        val Some(tableNameParts) :: partitionClause :: Nil =
-          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+        val Some(tableNameParts) :: partitionClause :: Nil = getClauses(
+          Seq("TOK_TABNAME", "TOK_PARTSPEC"),
+          tableArgs)
 
         val tableIdent = extractTableIdent(tableNameParts)
 
@@ -581,8 +577,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             destinationToken(),
             Token("TOK_TAB", tableArgs) ::
             Token("TOK_IFNOTEXISTS", ifNotExists) :: Nil) =>
-        val Some(tableNameParts) :: partitionClause :: Nil =
-          getClauses(Seq("TOK_TABNAME", "TOK_PARTSPEC"), tableArgs)
+        val Some(tableNameParts) :: partitionClause :: Nil = getClauses(
+          Seq("TOK_TABNAME", "TOK_PARTSPEC"),
+          tableArgs)
 
         val tableIdent = extractTableIdent(tableNameParts)
 
@@ -802,10 +799,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
             minValue ::
             maxValue :: Nil) =>
         val targetExpression = nodeToExpr(target)
-        val betweenExpr =
-          And(
-            GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
-            LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
+        val betweenExpr = And(
+          GreaterThanOrEqual(targetExpression, nodeToExpr(minValue)),
+          LessThanOrEqual(targetExpression, nodeToExpr(maxValue)))
         kw match {
           case Token("KW_FALSE", Nil) => betweenExpr
           case Token("KW_TRUE", Nil)  => Not(betweenExpr)
@@ -927,8 +923,8 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               case "TOK_INTERVAL_MICROSECOND_LITERAL" => "microsecond"
               case _                                  => noParseRule(s"Interval($name)", e)
             }
-            interval =
-              interval.add(CalendarInterval.fromSingleUnitString(unit, value))
+            interval = interval.add(
+              CalendarInterval.fromSingleUnitString(unit, value))
             updated = true
           case _ =>
         }
@@ -958,10 +954,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           orderSpec = Nil,
           frameSpecification = UnspecifiedFrame)
       case spec =>
-        val (partitionClause :: rowFrame :: rangeFrame :: Nil) =
-          getClauses(
-            Seq("TOK_PARTITIONINGSPEC", "TOK_WINDOWRANGE", "TOK_WINDOWVALUES"),
-            spec)
+        val (partitionClause :: rowFrame :: rangeFrame :: Nil) = getClauses(
+          Seq("TOK_PARTITIONINGSPEC", "TOK_WINDOWRANGE", "TOK_WINDOWVALUES"),
+          spec)
 
         // Handle Partition By and Order By.
         val (partitionSpec, orderSpec) = partitionClause

@@ -19,8 +19,7 @@ private[i18n] final class UpstreamFetch(upstreamUrl: Int => String) {
   def apply(from: String): Fetched =
     parseIntOption(from).fold(fufail("Bad from argument"): Fetched)(apply)
 
-  private def fetch(url: String): Fu[JsValue] =
-    WS.url(url).get() map (_.json)
+  private def fetch(url: String): Fu[JsValue] = WS.url(url).get() map (_.json)
 
   private def parse(json: JsValue): JsResult[List[Translation]] =
     Json.fromJson[List[Translation]](json)

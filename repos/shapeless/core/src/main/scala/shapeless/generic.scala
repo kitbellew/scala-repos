@@ -298,11 +298,9 @@ trait CaseClassMacros extends ReprTypes {
   import internal.constantType
   import Flag._
 
-  def abort(msg: String) =
-    c.abort(c.enclosingPosition, msg)
+  def abort(msg: String) = c.abort(c.enclosingPosition, msg)
 
-  def isReprType(tpe: Type): Boolean =
-    tpe <:< hlistTpe || tpe <:< coproductTpe
+  def isReprType(tpe: Type): Boolean = tpe <:< hlistTpe || tpe <:< coproductTpe
 
   def isReprType1(tpe: Type): Boolean = {
     val normalized = appliedType(tpe, WildcardType).dealias
@@ -341,13 +339,12 @@ trait CaseClassMacros extends ReprTypes {
   }
 
   def mkDependentRef(prefix: Type, path: List[Name]): (Type, Symbol) = {
-    val (_, pre, sym) =
-      path.foldLeft((prefix, NoType, NoSymbol)) {
-        case ((pre, _, sym), nme) =>
-          val sym0 = pre.member(nme)
-          val pre0 = sym0.typeSignature
-          (pre0, pre, sym0)
-      }
+    val (_, pre, sym) = path.foldLeft((prefix, NoType, NoSymbol)) {
+      case ((pre, _, sym), nme) =>
+        val sym0 = pre.member(nme)
+        val pre0 = sym0.typeSignature
+        (pre0, pre, sym0)
+    }
     (pre, sym)
   }
 
@@ -689,8 +686,8 @@ trait CaseClassMacros extends ReprTypes {
     val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
     val gTpe = tpe.asInstanceOf[global.Type]
     val pre = gTpe.prefix
-    val cSym =
-      patchedCompanionSymbolOf(tpe.typeSymbol).asInstanceOf[global.Symbol]
+    val cSym = patchedCompanionSymbolOf(tpe.typeSymbol)
+      .asInstanceOf[global.Symbol]
     if (cSym != NoSymbol)
       global.gen.mkAttributedRef(pre, cSym).asInstanceOf[Tree]
     else
@@ -946,8 +943,9 @@ trait CaseClassMacros extends ReprTypes {
       val sym = tpe.typeSymbol
       val isCaseClass = sym.asClass.isCaseClass
 
-      val repWCard =
-        Star(Ident(termNames.WILDCARD)) // like pq"_*" except that it does work
+      val repWCard = Star(
+        Ident(termNames.WILDCARD)
+      ) // like pq"_*" except that it does work
 
       def narrow(tree: Tree, tpe: Type): Tree =
         tpe match {
@@ -968,10 +966,9 @@ trait CaseClassMacros extends ReprTypes {
           case (binder, tpe) =>
             if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
         }})"
-        val reprPattern =
-          elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-            case ((bound, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
-          }
+        val reprPattern = elems.foldRight(q"_root_.shapeless.HNil": Tree) {
+          case ((bound, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
+        }
         new CtorDtor {
           def construct(args: List[Tree]): Tree =
             q"${companionRef(tpe)}(..$args)"
@@ -990,10 +987,9 @@ trait CaseClassMacros extends ReprTypes {
           elems: List[(TermName, TermName, Type)],
           pattern: Tree,
           rhs: List[Tree]) = {
-        val reprPattern =
-          elems.foldRight(q"_root_.shapeless.HNil": Tree) {
-            case ((bound, _, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
-          }
+        val reprPattern = elems.foldRight(q"_root_.shapeless.HNil": Tree) {
+          case ((bound, _, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
+        }
         new CtorDtor {
           def construct(args: List[Tree]): Tree = q"new $tpe(..$args)"
           def binding: (Tree, List[Tree]) = (pattern, rhs)
@@ -1016,17 +1012,16 @@ trait CaseClassMacros extends ReprTypes {
 
         // case 2: singleton
         case tpe if isCaseObjectLike(tpe.typeSymbol.asClass) =>
-          val singleton =
-            tpe match {
-              case SingleType(pre, sym) =>
-                c.internal.gen.mkAttributedRef(pre, sym)
-              case TypeRef(pre, sym, List()) if sym.isModule =>
-                c.internal.gen.mkAttributedRef(pre, sym.asModule)
-              case TypeRef(pre, sym, List()) if sym.isModuleClass =>
-                c.internal.gen.mkAttributedRef(pre, sym.asClass.module)
-              case other =>
-                abort(s"Bad case object-like type $tpe")
-            }
+          val singleton = tpe match {
+            case SingleType(pre, sym) =>
+              c.internal.gen.mkAttributedRef(pre, sym)
+            case TypeRef(pre, sym, List()) if sym.isModule =>
+              c.internal.gen.mkAttributedRef(pre, sym.asModule)
+            case TypeRef(pre, sym, List()) if sym.isModuleClass =>
+              c.internal.gen.mkAttributedRef(pre, sym.asClass.module)
+            case other =>
+              abort(s"Bad case object-like type $tpe")
+          }
           new CtorDtor {
             def construct(args: List[Tree]): Tree = q"$singleton: $tpe"
             def binding: (Tree, List[Tree]) = (pq"_: $tpe", Nil)

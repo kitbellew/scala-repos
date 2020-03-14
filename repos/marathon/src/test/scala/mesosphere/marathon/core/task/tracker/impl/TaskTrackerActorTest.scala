@@ -82,8 +82,8 @@ class TaskTrackerActorTest
     Given("an empty task loader result")
     val appId: PathId = PathId("/app")
     val task = MarathonTestHelper.dummyTaskProto(appId)
-    val appDataMap =
-      TaskTracker.TasksByApp.of(TaskTracker.AppTasks(appId, Iterable(task)))
+    val appDataMap = TaskTracker.TasksByApp.of(
+      TaskTracker.AppTasks(appId, Iterable(task)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("the task tracker actor gets a List query")
@@ -171,8 +171,8 @@ class TaskTrackerActorTest
 
     When("staged task transitions to running")
     val probe = TestProbe()
-    val stagedTaskNowRunning =
-      MarathonTestHelper.runningTaskProto(stagedTask.getId)
+    val stagedTaskNowRunning = MarathonTestHelper.runningTaskProto(
+      stagedTask.getId)
     val taskState = TaskSerializer.fromProto(stagedTaskNowRunning)
     probe.send(
       f.taskTrackerActor,

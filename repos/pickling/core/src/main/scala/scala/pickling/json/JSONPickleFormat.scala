@@ -123,8 +123,7 @@ package json {
       withHints { hints =>
         indent()
         // We add special support here for null
-        val realTag =
-          if (null == picklee) FastTypeTag.Null else tag
+        val realTag = if (null == picklee) FastTypeTag.Null else tag
         if (hints.isSharedReference) {
           tags.push(FastTypeTag.Ref)
           append("{ \"$ref\": " + hints.oid + " }")

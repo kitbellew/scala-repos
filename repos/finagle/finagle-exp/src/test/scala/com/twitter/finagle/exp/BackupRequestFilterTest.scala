@@ -37,8 +37,7 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
         0.05)
       val service = filter andThen underlying
 
-      def cutoff() =
-        Duration.fromMilliseconds(filter.cutoffMs())
+      def cutoff() = Duration.fromMilliseconds(filter.cutoffMs())
 
       val rng = new Random(123)
       val latencies = Seq.fill(100) {

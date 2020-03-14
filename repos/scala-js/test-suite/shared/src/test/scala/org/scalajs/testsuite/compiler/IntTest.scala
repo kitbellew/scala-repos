@@ -22,8 +22,7 @@ class IntTest {
   import IntTest._
 
   @Test def `should_support_unary_minus`(): Unit = {
-    def test(a: Int, expected: Int): Unit =
-      assertEquals(expected, -a)
+    def test(a: Int, expected: Int): Unit = assertEquals(expected, -a)
 
     test(56, -56)
     test(0, 0)

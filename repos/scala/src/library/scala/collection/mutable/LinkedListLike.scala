@@ -74,8 +74,7 @@ trait LinkedListLike[A, This <: Seq[A] with LinkedListLike[A, This]]
   @tailrec private def length0(elem: This, acc: Int): Int =
     if (elem.isEmpty) acc else length0(elem.next, acc + 1)
 
-  override def head: A =
-    if (isEmpty) throw new NoSuchElementException else elem
+  override def head: A = if (isEmpty) throw new NoSuchElementException else elem
 
   override def tail: This = {
     require(nonEmpty, "tail of empty list")

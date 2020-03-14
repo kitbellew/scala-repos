@@ -7,8 +7,7 @@ import org.scalatest.junit.{AssertionsForJUnit, JUnitRunner}
 @RunWith(classOf[JUnitRunner])
 class DtabTest extends FunSuite with AssertionsForJUnit {
 
-  def pathTree(t: String) =
-    NameTree.read(t).map(Name(_))
+  def pathTree(t: String) = NameTree.read(t).map(Name(_))
 
   def assertEquiv[T: Equiv](left: T, right: T) =
     assert(

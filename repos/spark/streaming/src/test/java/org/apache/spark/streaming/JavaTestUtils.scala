@@ -42,8 +42,8 @@ trait JavaTestBase extends TestSuiteBase {
       numPartitions: Int) = {
     val seqData = data.asScala.map(_.asScala)
 
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     val dstream = new TestInputStream[T](ssc.ssc, seqData, numPartitions)
     new JavaDStream[T](dstream)
   }
@@ -56,8 +56,8 @@ trait JavaTestBase extends TestSuiteBase {
       T,
       This <: JavaDStreamLike[T, This, R],
       R <: JavaRDDLike[T, R]](dstream: JavaDStreamLike[T, This, R]) = {
-    implicit val cm: ClassTag[T] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[T]]
+    implicit val cm: ClassTag[T] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[T]]
     val ostream = new TestOutputStreamWithPartitions(dstream.dstream)
     ostream.register()
   }
@@ -73,8 +73,8 @@ trait JavaTestBase extends TestSuiteBase {
       ssc: JavaStreamingContext,
       numBatches: Int,
       numExpectedOutput: Int): JList[JList[V]] = {
-    implicit val cm: ClassTag[V] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[V]]
+    implicit val cm: ClassTag[V] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[V]]
     ssc.getState()
     val res = runStreams[V](ssc.ssc, numBatches, numExpectedOutput)
     res.map(_.asJava).toSeq.asJava
@@ -92,10 +92,12 @@ trait JavaTestBase extends TestSuiteBase {
       ssc: JavaStreamingContext,
       numBatches: Int,
       numExpectedOutput: Int): JList[JList[JList[V]]] = {
-    implicit val cm: ClassTag[V] =
-      implicitly[ClassTag[AnyRef]].asInstanceOf[ClassTag[V]]
-    val res =
-      runStreamsWithPartitions[V](ssc.ssc, numBatches, numExpectedOutput)
+    implicit val cm: ClassTag[V] = implicitly[ClassTag[AnyRef]]
+      .asInstanceOf[ClassTag[V]]
+    val res = runStreamsWithPartitions[V](
+      ssc.ssc,
+      numBatches,
+      numExpectedOutput)
     res.map(entry => entry.map(_.asJava).asJava).toSeq.asJava
   }
 }

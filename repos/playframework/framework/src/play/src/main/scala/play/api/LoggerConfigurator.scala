@@ -44,14 +44,13 @@ object LoggerConfigurator {
       loggerConfiguratorClassName: String,
       classLoader: ClassLoader): Option[LoggerConfigurator] = {
     try {
-      val loggerConfiguratorClass: Class[_] =
-        classLoader.loadClass(loggerConfiguratorClassName)
+      val loggerConfiguratorClass: Class[_] = classLoader.loadClass(
+        loggerConfiguratorClassName)
       Some(
         loggerConfiguratorClass.newInstance().asInstanceOf[LoggerConfigurator])
     } catch {
       case ex: Exception =>
-        val msg =
-          s"""
+        val msg = s"""
              |Play cannot load "$loggerConfiguratorClassName". Please make sure you have logback (or another module
              |that implements play.api.LoggerConfigurator) in your classpath.
              """.stripMargin

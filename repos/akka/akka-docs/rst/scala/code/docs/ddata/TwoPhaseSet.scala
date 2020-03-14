@@ -13,8 +13,7 @@ case class TwoPhaseSet(
     extends ReplicatedData {
   type T = TwoPhaseSet
 
-  def add(element: String): TwoPhaseSet =
-    copy(adds = adds.add(element))
+  def add(element: String): TwoPhaseSet = copy(adds = adds.add(element))
 
   def remove(element: String): TwoPhaseSet =
     copy(removals = removals.add(element))

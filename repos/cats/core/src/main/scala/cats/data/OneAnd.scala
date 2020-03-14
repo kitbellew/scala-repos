@@ -19,8 +19,7 @@ final case class OneAnd[F[_], A](head: A, tail: F[A]) {
   /**
     * Combine the head and tail into a single `F[A]` value.
     */
-  def unwrap(implicit F: MonadCombine[F]): F[A] =
-    F.combineK(F.pure(head), tail)
+  def unwrap(implicit F: MonadCombine[F]): F[A] = F.combineK(F.pure(head), tail)
 
   /**
     * remove elements not matching the predicate
@@ -106,8 +105,7 @@ private[data] sealed trait OneAndInstances extends OneAndLowPriority2 {
 
   implicit def oneAndShow[A, F[_]](implicit
       A: Show[A],
-      FA: Show[F[A]]): Show[OneAnd[F, A]] =
-    Show.show[OneAnd[F, A]](_.show)
+      FA: Show[F[A]]): Show[OneAnd[F, A]] = Show.show[OneAnd[F, A]](_.show)
 
   implicit def oneAndSemigroupK[F[_]: MonadCombine]: SemigroupK[OneAnd[F, ?]] =
     new SemigroupK[OneAnd[F, ?]] {
@@ -130,8 +128,7 @@ private[data] sealed trait OneAndInstances extends OneAndLowPriority2 {
       override def map[A, B](fa: OneAnd[F, A])(f: A => B): OneAnd[F, B] =
         fa map f
 
-      def pure[A](x: A): OneAnd[F, A] =
-        OneAnd(x, monad.empty)
+      def pure[A](x: A): OneAnd[F, A] = OneAnd(x, monad.empty)
 
       def flatMap[A, B](fa: OneAnd[F, A])(
           f: A => OneAnd[F, B]): OneAnd[F, B] = {
@@ -158,11 +155,9 @@ trait OneAndLowPriority0 {
         OneAnd(f(fa), consume(fa.tail, ListBuffer.empty))
       }
 
-      def extract[A](fa: OneAnd[List, A]): A =
-        fa.head
+      def extract[A](fa: OneAnd[List, A]): A = fa.head
 
-      def map[A, B](fa: OneAnd[List, A])(f: A => B): OneAnd[List, B] =
-        fa map f
+      def map[A, B](fa: OneAnd[List, A])(f: A => B): OneAnd[List, B] = fa map f
     }
 }
 
@@ -170,8 +165,7 @@ trait OneAndLowPriority1 extends OneAndLowPriority0 {
   implicit def oneAndFunctor[F[_]](
       implicit F: Functor[F]): Functor[OneAnd[F, ?]] =
     new Functor[OneAnd[F, ?]] {
-      def map[A, B](fa: OneAnd[F, A])(f: A => B): OneAnd[F, B] =
-        fa map f
+      def map[A, B](fa: OneAnd[F, A])(f: A => B): OneAnd[F, B] = fa map f
     }
 
 }

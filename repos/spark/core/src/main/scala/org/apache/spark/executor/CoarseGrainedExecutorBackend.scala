@@ -52,8 +52,8 @@ private[spark] class CoarseGrainedExecutorBackend(
 
   // If this CoarseGrainedExecutorBackend is changed to support multiple threads, then this may need
   // to be changed so that we don't share the serializer instance across threads
-  private[this] val ser: SerializerInstance =
-    env.closureSerializer.newInstance()
+  private[this] val ser: SerializerInstance = env.closureSerializer
+    .newInstance()
 
   override def onStart() {
     logInfo("Connecting to driver: " + driverUrl)

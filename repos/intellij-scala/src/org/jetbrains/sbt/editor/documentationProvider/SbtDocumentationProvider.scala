@@ -58,8 +58,8 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
 
   private def extractDocFromSettingKey(settingKey: ScNamedElement): String = {
     val keyDefinition = findSettingKeyDefinition(settingKey)
-    val keyDefinitionArgs =
-      keyDefinition.fold(Seq.empty[ScExpression])(getKeyDefinitionArgs)
+    val keyDefinitionArgs = keyDefinition.fold(Seq.empty[ScExpression])(
+      getKeyDefinitionArgs)
     val argStrings = keyDefinitionArgs.flatMap(argToString)
 
     val doc = keyDefinitionArgs.headOption match {

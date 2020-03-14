@@ -488,8 +488,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           result: CompletionResultSet) {
         val element = positionFromParameters(parameters)
         val (ref, _) = extractReference[ScReturnStmt](element)
-        val fun: ScFunction =
-          PsiTreeUtil.getContextOfType(ref, classOf[ScFunction])
+        val fun: ScFunction = PsiTreeUtil
+          .getContextOfType(ref, classOf[ScFunction])
         if (fun == null) return
         acceptTypes(
           Seq[ScType](fun.returnType.getOrAny),
@@ -528,8 +528,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           def renderElement(
               element: LookupElement,
               presentation: LookupElementPresentation) {
-            val arrowText =
-              ScalaPsiUtil.functionArrow(referenceExpression.getProject)
+            val arrowText = ScalaPsiUtil.functionArrow(
+              referenceExpression.getProject)
             val text = ScalaCompletionUtil.generateAnonymousFunctionText(
               braceArgs,
               presentableParams,
@@ -542,8 +542,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   val suffix = s", ... $arrowText"
                   var end = false
                   while (prefixIndex > 0 && !end) {
-                    val prefix =
-                      ScalaCompletionUtil.generateAnonymousFunctionText(
+                    val prefix = ScalaCompletionUtil
+                      .generateAnonymousFunctionText(
                         braceArgs,
                         presentableParams.slice(0, prefixIndex),
                         canonical = false,
@@ -594,8 +594,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           context: ProcessingContext,
           result: CompletionResultSet) {
         val element = positionFromParameters(parameters)
-        val (referenceExpression, args) =
-          extractReference[ScArgumentExprList](element)
+        val (referenceExpression, args) = extractReference[ScArgumentExprList](
+          element)
         argumentsForFunction(args, referenceExpression, result)
       }
     }
@@ -614,8 +614,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           context: ProcessingContext,
           result: CompletionResultSet) {
         val element = positionFromParameters(parameters)
-        val referenceExpression =
-          element.getContext.asInstanceOf[ScReferenceExpression]
+        val referenceExpression = element.getContext
+          .asInstanceOf[ScReferenceExpression]
         val block = referenceExpression.getContext.asInstanceOf[ScBlockExpr]
         val args = block.getContext.asInstanceOf[ScArgumentExprList]
         argumentsForFunction(args, referenceExpression, result)
@@ -635,8 +635,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
           context: ProcessingContext,
           result: CompletionResultSet) {
         val element = positionFromParameters(parameters)
-        val (referenceExpression, _) =
-          extractReference[ScArgumentExprList](element)
+        val (referenceExpression, _) = extractReference[ScArgumentExprList](
+          element)
         acceptTypes(
           referenceExpression.expectedTypes(),
           referenceExpression.getVariants,
@@ -1066,10 +1066,9 @@ private[completion] object ScalaSmartCompletionContributor {
 
   def superParentsPattern(
       classes: Class[_ <: PsiElement]*): ElementPattern[PsiElement] = {
-    var pattern: Capture[PsiElement] =
-      PlatformPatterns
-        .psiElement(ScalaTokenTypes.tIDENTIFIER)
-        .withParent(classes(0))
+    var pattern: Capture[PsiElement] = PlatformPatterns
+      .psiElement(ScalaTokenTypes.tIDENTIFIER)
+      .withParent(classes(0))
     for (i <- 1 until classes.length) {
       pattern = pattern.withSuperParent(i + 1, classes(i))
     }

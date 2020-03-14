@@ -188,8 +188,8 @@ object User extends LilaController {
                 nbAllTime = nbAllTime))),
           api = _ =>
             fuccess {
-              implicit val lpWrites =
-                OWrites[UserModel.LightPerf](env.jsonView.lightPerfIsOnline)
+              implicit val lpWrites = OWrites[UserModel.LightPerf](
+                env.jsonView.lightPerfIsOnline)
               Ok(
                 Json.obj(
                   "bullet" -> leaderboards.bullet,

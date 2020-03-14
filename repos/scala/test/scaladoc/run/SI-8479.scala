@@ -7,8 +7,7 @@ import java.io.File
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
       |object Test {
       |  val x = new SparkContext(master = "")
       |}

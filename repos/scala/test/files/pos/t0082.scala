@@ -13,7 +13,6 @@ object Main {
 
   def min(xs: List[Int]) = min0((x: Int, y: Int) => x < y, xs);
 
-  def main(args: Array[String]) =
-    Console.println(min(List()));
+  def main(args: Array[String]) = Console.println(min(List()));
 
 }

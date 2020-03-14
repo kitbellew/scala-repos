@@ -67,8 +67,8 @@ class HakkerStatusTest
     // takes some time for the first message to get through
     testProbe.within(10.seconds) {
       testProbe.send(hakker, Identify)
-      val Identification(fromHakker, busyWith) =
-        testProbe.expectMsgType[Identification]
+      val Identification(fromHakker, busyWith) = testProbe
+        .expectMsgType[Identification]
 
       println(
         "---------------> %s is busy with %s.".format(fromHakker, busyWith))

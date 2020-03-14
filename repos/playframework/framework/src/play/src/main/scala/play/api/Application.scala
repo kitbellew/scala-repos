@@ -265,8 +265,8 @@ trait BuiltInComponents {
   lazy val injector: Injector = new SimpleInjector(
     NewInstanceInjector) + router + cookieSigner + csrfTokenSigner + httpConfiguration + tempFileCreator + global + crypto
 
-  lazy val httpConfiguration: HttpConfiguration =
-    HttpConfiguration.fromConfiguration(configuration)
+  lazy val httpConfiguration: HttpConfiguration = HttpConfiguration
+    .fromConfiguration(configuration)
   lazy val httpRequestHandler: HttpRequestHandler =
     new DefaultHttpRequestHandler(
       router,
@@ -296,8 +296,8 @@ trait BuiltInComponents {
     environment,
     configuration,
     applicationLifecycle).get
-  implicit lazy val materializer: Materializer =
-    ActorMaterializer()(actorSystem)
+  implicit lazy val materializer: Materializer = ActorMaterializer()(
+    actorSystem)
 
   lazy val cryptoConfig: CryptoConfig =
     new CryptoConfigParser(environment, configuration).get
@@ -311,8 +311,8 @@ trait BuiltInComponents {
     new Crypto(cookieSigner, csrfTokenSigner, aesCrypter)
 
   @deprecated("Use dependency injection", "2.5.x")
-  lazy val global: GlobalSettings.Deprecated =
-    play.api.GlobalSettings(configuration, environment)
+  lazy val global: GlobalSettings.Deprecated = play.api
+    .GlobalSettings(configuration, environment)
 
   lazy val tempFileCreator: TemporaryFileCreator =
     new DefaultTemporaryFileCreator(applicationLifecycle)

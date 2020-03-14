@@ -105,8 +105,7 @@ private[deploy] class ClientArguments(args: Array[String]) {
   private def printUsageAndExit(exitCode: Int) {
     // TODO: It wouldn't be too hard to allow users to submit their app and dependency jars
     //       separately similar to in the YARN client.
-    val usage =
-      s"""
+    val usage = s"""
       |Usage: DriverClient [options] launch <active-master> <jar-url> <main-class> [driver options]
       |Usage: DriverClient kill <active-master> <driver-id>
       |

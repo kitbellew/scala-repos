@@ -74,15 +74,14 @@ object MiscDirectives extends MiscDirectives {
       headerValuePF { case `Remote-Address`(address) ⇒ address } |
       headerValuePF { case `X-Real-Ip`(address) ⇒ address }
 
-  private val _requestEntityEmpty: Directive0 =
-    extract(_.request.entity.isKnownEmpty).flatMap(if (_) pass else reject)
+  private val _requestEntityEmpty: Directive0 = extract(
+    _.request.entity.isKnownEmpty).flatMap(if (_) pass else reject)
 
-  private val _requestEntityPresent: Directive0 =
-    extract(_.request.entity.isKnownEmpty).flatMap(if (_) reject else pass)
+  private val _requestEntityPresent: Directive0 = extract(
+    _.request.entity.isKnownEmpty).flatMap(if (_) reject else pass)
 
-  private val _rejectEmptyResponse: Directive0 =
-    mapRouteResult {
-      case Complete(response) if response.entity.isKnownEmpty ⇒ Rejected(Nil)
-      case x ⇒ x
-    }
+  private val _rejectEmptyResponse: Directive0 = mapRouteResult {
+    case Complete(response) if response.entity.isKnownEmpty ⇒ Rejected(Nil)
+    case x ⇒ x
+  }
 }

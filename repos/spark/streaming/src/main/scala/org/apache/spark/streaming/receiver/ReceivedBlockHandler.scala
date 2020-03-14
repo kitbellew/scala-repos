@@ -233,8 +233,9 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
     }
 
     // Combine the futures, wait for both to complete, and return the write ahead log record handle
-    val combinedFuture =
-      storeInBlockManagerFuture.zip(storeInWriteAheadLogFuture).map(_._2)
+    val combinedFuture = storeInBlockManagerFuture
+      .zip(storeInWriteAheadLogFuture)
+      .map(_._2)
     val walRecordHandle = Await.result(combinedFuture, blockStoreTimeout)
     WriteAheadLogBasedStoreResult(blockId, numRecords, walRecordHandle)
   }

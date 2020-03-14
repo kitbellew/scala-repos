@@ -207,11 +207,9 @@ trait IterableViewLike[
       1
     ) // we could inherit this, but that implies knowledge of the way the super class is implemented.
 
-  override def dropRight(n: Int): This =
-    take(thisSeq.length - math.max(n, 0))
+  override def dropRight(n: Int): This = take(thisSeq.length - math.max(n, 0))
 
-  override def takeRight(n: Int): This =
-    drop(thisSeq.length - math.max(n, 0))
+  override def takeRight(n: Int): This = drop(thisSeq.length - math.max(n, 0))
 
   override def stringPrefix = "IterableView"
 }

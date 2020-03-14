@@ -77,14 +77,14 @@ class HasManyThrough[
   }
 
   override def afterUpdate {
-    val current =
-      through.findAll(By(throughFromField, owner.primaryKeyField.get))
+    val current = through.findAll(
+      By(throughFromField, owner.primaryKeyField.get))
 
     val newKeys = new HashSet[ThroughType];
 
     theSetList.foreach(i => newKeys += i)
-    val toDelete =
-      current.filter(c => !newKeys.contains(throughToField.actualField(c).get))
+    val toDelete = current.filter(c =>
+      !newKeys.contains(throughToField.actualField(c).get))
     toDelete.foreach(_.delete_!)
 
     val oldKeys = new HashSet[ThroughType];

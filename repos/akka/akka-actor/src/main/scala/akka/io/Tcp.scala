@@ -842,8 +842,7 @@ object TcpMessage {
       filePath: String,
       position: Long,
       count: Long,
-      ack: Event): Command =
-    WriteFile(filePath, position, count, ack)
+      ack: Event): Command = WriteFile(filePath, position, count, ack)
 
   /**
     * When `useResumeWriting` is in effect as was indicated in the [[Tcp.Register]] message

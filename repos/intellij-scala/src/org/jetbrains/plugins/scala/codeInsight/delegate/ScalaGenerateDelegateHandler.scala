@@ -71,14 +71,13 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       try {
         val aClass = classAtOffset(editor.getCaretModel.getOffset, file)
         val generatedMethods = for (member <- candidates) yield {
-          val prototype: ScFunctionDefinition =
-            ScalaPsiElementFactory
-              .createMethodFromSignature(
-                member.sign,
-                aClass.getManager,
-                specifyType,
-                body = "???")
-              .asInstanceOf[ScFunctionDefinition]
+          val prototype: ScFunctionDefinition = ScalaPsiElementFactory
+            .createMethodFromSignature(
+              member.sign,
+              aClass.getManager,
+              specifyType,
+              body = "???")
+            .asInstanceOf[ScFunctionDefinition]
           prototype.setModifierProperty("override", value = member.isOverride)
           val body = methodBody(target, prototype)
           prototype.body.foreach(_.replace(body))

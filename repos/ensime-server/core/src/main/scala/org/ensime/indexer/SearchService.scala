@@ -53,8 +53,8 @@ class SearchService(
   private val index = new IndexService(config.cacheDir / ("index-" + version))
   private val db = new DatabaseService(config.cacheDir / ("sql-" + version))
 
-  implicit val workerEC =
-    actorSystem.dispatchers.lookup("akka.search-service-dispatcher")
+  implicit val workerEC = actorSystem.dispatchers.lookup(
+    "akka.search-service-dispatcher")
 
   private def scan(f: FileObject) =
     f.findFiles(ClassfileSelector) match {
@@ -286,8 +286,9 @@ class SearchService(
    * the list of symbols is non-empty.
    */
 
-  val backlogActor =
-    actorSystem.actorOf(Props(new IndexingQueueActor(this)), "ClassfileIndexer")
+  val backlogActor = actorSystem.actorOf(
+    Props(new IndexingQueueActor(this)),
+    "ClassfileIndexer")
 
   // deletion in both Lucene and H2 is really slow, batching helps
   def deleteInBatches(

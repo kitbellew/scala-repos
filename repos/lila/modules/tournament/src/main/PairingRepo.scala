@@ -102,8 +102,7 @@ object PairingRepo {
   def removeByTourAndUserId(tourId: String, userId: String) =
     coll.remove(selectTourUser(tourId, userId)).void
 
-  def count(tourId: String): Fu[Int] =
-    coll.count(selectTour(tourId).some)
+  def count(tourId: String): Fu[Int] = coll.count(selectTour(tourId).some)
 
   def countByTourIdAndUserIds(tourId: String): Fu[Map[String, Int]] = {
     import reactivemongo.api.collections.bson.BSONBatchCommands.AggregationFramework._

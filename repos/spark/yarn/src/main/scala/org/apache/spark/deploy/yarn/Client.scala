@@ -153,8 +153,9 @@ private[spark] class Client(
 
       // Set up the appropriate contexts to launch our AM
       val containerContext = createContainerLaunchContext(newAppResponse)
-      val appContext =
-        createApplicationSubmissionContext(newApp, containerContext)
+      val appContext = createApplicationSubmissionContext(
+        newApp,
+        containerContext)
 
       // Finally, submit and monitor the application
       logInfo(s"Submitting application ${appId.getId} to ResourceManager")
@@ -254,10 +255,9 @@ private[spark] class Client(
             .getMethod("setNodeLabelExpression", classOf[String])
           method.invoke(amRequest, expr)
 
-          val setResourceRequestMethod =
-            appContext.getClass.getMethod(
-              "setAMContainerResourceRequest",
-              classOf[ResourceRequest])
+          val setResourceRequestMethod = appContext.getClass.getMethod(
+            "setAMContainerResourceRequest",
+            classOf[ResourceRequest])
           setResourceRequestMethod.invoke(appContext, amRequest)
         } catch {
           case e: NoSuchMethodException =>
@@ -501,8 +501,9 @@ private[spark] class Client(
           val localJars = new ArrayBuffer[String]()
           jars.foreach { jar =>
             if (!isLocalUri(jar)) {
-              val path =
-                getQualifiedLocalPath(Utils.resolveURI(jar), hadoopConf)
+              val path = getQualifiedLocalPath(
+                Utils.resolveURI(jar),
+                hadoopConf)
               val pathFs = FileSystem.get(path.toUri(), hadoopConf)
               pathFs.globStatus(path).filter(_.isFile()).foreach { entry =>
                 distribute(
@@ -547,8 +548,9 @@ private[spark] class Client(
     ).foreach {
       case (destName, path, confKey) =>
         if (path != null && !path.trim().isEmpty()) {
-          val (isLocal, localizedPath) =
-            distribute(path, destName = Some(destName))
+          val (isLocal, localizedPath) = distribute(
+            path,
+            destName = Some(destName))
           if (isLocal && confKey != null) {
             require(localizedPath != null, s"Path $path already distributed.")
             // If the resource is intended for local use only, handle this downstream
@@ -801,8 +803,7 @@ private[spark] class Client(
     // described above).
     if (isClusterMode) {
       sys.env.get("SPARK_JAVA_OPTS").foreach { value =>
-        val warning =
-          s"""
+        val warning = s"""
             |SPARK_JAVA_OPTS was detected (set to '$value').
             |This is deprecated in Spark 1.0+.
             |
@@ -880,8 +881,9 @@ private[spark] class Client(
     // Instead of using this, rely on cpusets by YARN to enforce "proper" Spark behavior in
     // multi-tenant environments. Not sure how default Java GC behaves if it is limited to subset
     // of cores on a node.
-    val useConcurrentAndIncrementalGC =
-      launchEnv.get("SPARK_USE_CONC_INCR_GC").exists(_.toBoolean)
+    val useConcurrentAndIncrementalGC = launchEnv
+      .get("SPARK_USE_CONC_INCR_GC")
+      .exists(_.toBoolean)
     if (useConcurrentAndIncrementalGC) {
       // In our expts, using (default) throughput collector has severe perf ramifications in
       // multi-tenant machines
@@ -1192,8 +1194,8 @@ private[spark] class Client(
       .get("PYSPARK_ARCHIVES_PATH")
       .map(_.split(",").toSeq)
       .getOrElse {
-        val pyLibPath =
-          Seq(sys.env("SPARK_HOME"), "python", "lib").mkString(File.separator)
+        val pyLibPath = Seq(sys.env("SPARK_HOME"), "python", "lib")
+          .mkString(File.separator)
         val pyArchivesFile = new File(pyLibPath, "pyspark.zip")
         require(
           pyArchivesFile.exists(),
@@ -1240,12 +1242,12 @@ object Client extends Logging {
   val SPARK_STAGING: String = ".sparkStaging"
 
   // Staging directory is private! -> rwx--------
-  val STAGING_DIR_PERMISSION: FsPermission =
-    FsPermission.createImmutable(Integer.parseInt("700", 8).toShort)
+  val STAGING_DIR_PERMISSION: FsPermission = FsPermission.createImmutable(
+    Integer.parseInt("700", 8).toShort)
 
   // App files are world-wide readable and owner writable -> rw-r--r--
-  val APP_FILE_PERMISSION: FsPermission =
-    FsPermission.createImmutable(Integer.parseInt("644", 8).toShort)
+  val APP_FILE_PERMISSION: FsPermission = FsPermission.createImmutable(
+    Integer.parseInt("644", 8).toShort)
 
   // Distribution-defined classpath to add to processes
   val ENV_DIST_CLASSPATH = "SPARK_DIST_CLASSPATH"
@@ -1322,8 +1324,8 @@ object Client extends Logging {
 
   private[yarn] def getDefaultMRApplicationClasspath: Option[Seq[String]] = {
     val triedDefault = Try[Seq[String]] {
-      val field =
-        classOf[MRJobConfig].getField("DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH")
+      val field = classOf[MRJobConfig].getField(
+        "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH")
       StringUtils.getStrings(field.get(null).asInstanceOf[String]).toSeq
     } recoverWith { case e: NoSuchFieldException => Success(Seq.empty[String]) }
 

@@ -13,8 +13,7 @@ object MonadCatchIO extends MonadCatchIOFunctions {
 
 sealed abstract class MonadCatchIOFunctions {
   def except[M[_], A](ma: M[A])(handler: Throwable => M[A])(
-      implicit M: MonadCatchIO[M]): M[A] =
-    M.except(ma)(handler)
+      implicit M: MonadCatchIO[M]): M[A] = M.except(ma)(handler)
 
   import scalaz.syntax.monad._
 
@@ -68,8 +67,7 @@ sealed abstract class MonadCatchIOFunctions {
 
   /**A variant of "bracket" where the return value of this computation is not needed. */
   def bracket_[M[_]: MonadCatchIO, A, B, C](before: M[A])(after: M[B])(
-      during: M[C]): M[C] =
-    bracket(before)(_ => after)(_ => during)
+      during: M[C]): M[C] = bracket(before)(_ => after)(_ => during)
 
   /**A variant of "bracket" that performs the final action only if there was an error. */
   def bracketOnError[M[_]: MonadCatchIO, A, B, C](before: M[A])(

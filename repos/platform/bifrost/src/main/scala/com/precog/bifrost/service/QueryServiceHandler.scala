@@ -174,13 +174,15 @@ class AnalysisServiceHandler(
             Path.Root,
             path.prefix getOrElse Path.Root,
             clock.now())
-          val cacheDirectives =
-            request.headers.header[`Cache-Control`].toSeq.flatMap(_.directives)
+          val cacheDirectives = request.headers
+            .header[`Cache-Control`]
+            .toSeq
+            .flatMap(_.directives)
           logger.debug(
             "Received analysis request with cache directives: " + cacheDirectives)
 
-          val cacheControl0 =
-            CacheControl.fromCacheDirectives(cacheDirectives: _*)
+          val cacheControl0 = CacheControl.fromCacheDirectives(
+            cacheDirectives: _*)
           // Internally maxAge/maxStale are compared against ms times
           platform.vfs.executeStoredQuery(
             platform,
@@ -289,14 +291,22 @@ class SyncQueryServiceHandler(
               case Some((buffer, tail)) =>
                 M.point(Some((buffer, Some(tail))))
               case None =>
-                val warningsM =
-                  jobManager.listMessages(jobId, channels.Warning, None)
-                val errorsM =
-                  jobManager.listMessages(jobId, channels.Error, None)
-                val serverErrorsM =
-                  jobManager.listMessages(jobId, channels.ServerError, None)
-                val serverWarningsM =
-                  jobManager.listMessages(jobId, channels.ServerWarning, None)
+                val warningsM = jobManager.listMessages(
+                  jobId,
+                  channels.Warning,
+                  None)
+                val errorsM = jobManager.listMessages(
+                  jobId,
+                  channels.Error,
+                  None)
+                val serverErrorsM = jobManager.listMessages(
+                  jobId,
+                  channels.ServerError,
+                  None)
+                val serverWarningsM = jobManager.listMessages(
+                  jobId,
+                  channels.ServerWarning,
+                  None)
                 (warningsM |@| errorsM |@| serverErrorsM |@| serverWarningsM) {
                   (warnings, errors, serverErrors, serverWarnings) =>
                     val suffix =

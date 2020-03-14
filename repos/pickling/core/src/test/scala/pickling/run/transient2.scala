@@ -78,8 +78,7 @@ class Transient2SparkTest extends FunSuite {
     //implicit val rddpp = PicklerUnpickler.generate[RDD[Int]]
     //implicit val fmrddp = PicklerUnpickler.generate[FlatMappedRDD[Int, Int]]
     val fmrdd = new FlatMappedRDD[Int, Int](rdd, (x: Int) => (1 to x).toList)
-    val p: JSONPickle =
-      fmrdd.pickle
+    val p: JSONPickle = fmrdd.pickle
     //System.err.println(p)
     val up = p.unpickle[FlatMappedRDD[Int, Int]]
     //System.err.println(up)

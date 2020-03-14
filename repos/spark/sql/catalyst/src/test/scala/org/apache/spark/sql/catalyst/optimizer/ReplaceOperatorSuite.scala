@@ -41,11 +41,10 @@ class ReplaceOperatorSuite extends PlanTest {
     val query = Intersect(table1, table2)
     val optimized = Optimize.execute(query.analyze)
 
-    val correctAnswer =
-      Aggregate(
-        table1.output,
-        table1.output,
-        Join(table1, table2, LeftSemi, Option('a <=> 'c && 'b <=> 'd))).analyze
+    val correctAnswer = Aggregate(
+      table1.output,
+      table1.output,
+      Join(table1, table2, LeftSemi, Option('a <=> 'c && 'b <=> 'd))).analyze
 
     comparePlans(optimized, correctAnswer)
   }

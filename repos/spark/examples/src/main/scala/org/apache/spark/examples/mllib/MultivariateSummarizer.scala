@@ -66,8 +66,8 @@ object MultivariateSummarizer {
   }
 
   def run(params: Params) {
-    val conf =
-      new SparkConf().setAppName(s"MultivariateSummarizer with $params")
+    val conf = new SparkConf()
+      .setAppName(s"MultivariateSummarizer with $params")
     val sc = new SparkContext(conf)
 
     val examples = MLUtils.loadLibSVMFile(sc, params.input).cache()

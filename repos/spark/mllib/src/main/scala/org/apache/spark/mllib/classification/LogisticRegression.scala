@@ -197,17 +197,18 @@ object LogisticRegressionModel extends Loader[LogisticRegressionModel] {
       "org.apache.spark.mllib.classification.LogisticRegressionModel"
     (loadedClassName, version) match {
       case (className, "1.0") if className == classNameV1_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
-        val data =
-          GLMClassificationModel.SaveLoadV1_0.loadData(sc, path, classNameV1_0)
+        val (numFeatures, numClasses) = ClassificationModel
+          .getNumFeaturesClasses(metadata)
+        val data = GLMClassificationModel.SaveLoadV1_0.loadData(
+          sc,
+          path,
+          classNameV1_0)
         // numFeatures, numClasses, weights are checked in model initialization
-        val model =
-          new LogisticRegressionModel(
-            data.weights,
-            data.intercept,
-            numFeatures,
-            numClasses)
+        val model = new LogisticRegressionModel(
+          data.weights,
+          data.intercept,
+          numFeatures,
+          numClasses)
         data.threshold match {
           case Some(t) => model.setThreshold(t)
           case None    => model.clearThreshold()
@@ -487,8 +488,8 @@ class LogisticRegressionWithLBFGS
         // Train our model
         val mlLogisticRegresionModel = lr.train(df, handlePersistence)
         // convert the model
-        val weights =
-          Vectors.dense(mlLogisticRegresionModel.coefficients.toArray)
+        val weights = Vectors.dense(
+          mlLogisticRegresionModel.coefficients.toArray)
         createModel(weights, mlLogisticRegresionModel.intercept)
       }
       optimizer.getUpdater() match {

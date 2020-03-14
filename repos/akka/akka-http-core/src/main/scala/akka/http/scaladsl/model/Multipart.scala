@@ -60,15 +60,14 @@ sealed trait Multipart extends jm.Multipart {
       charset: HttpCharset = HttpCharsets.`UTF-8`,
       boundary: String = BodyPartRenderer.randomBoundary())(
       implicit log: LoggingAdapter = NoLogging): MessageEntity = {
-    val chunks =
-      parts
-        .transform(() ⇒
-          BodyPartRenderer.streamed(
-            boundary,
-            charset.nioCharset,
-            partHeadersSizeHint = 128,
-            log))
-        .flatMapConcat(ConstantFun.scalaIdentityFunction)
+    val chunks = parts
+      .transform(() ⇒
+        BodyPartRenderer.streamed(
+          boundary,
+          charset.nioCharset,
+          partHeadersSizeHint = 128,
+          log))
+      .flatMapConcat(ConstantFun.scalaIdentityFunction)
     HttpEntity.Chunked(
       mediaType withBoundary boundary withCharset charset,
       chunks)

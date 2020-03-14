@@ -101,8 +101,8 @@ class PersistenceEngineSuite extends SparkFunSuite {
 
         persistenceEngine.addWorker(workerToPersist)
 
-        val (storedApps, storedDrivers, storedWorkers) =
-          persistenceEngine.readPersistedData(testRpcEnv)
+        val (storedApps, storedDrivers, storedWorkers) = persistenceEngine
+          .readPersistedData(testRpcEnv)
 
         assert(storedApps.isEmpty)
         assert(storedDrivers.isEmpty)

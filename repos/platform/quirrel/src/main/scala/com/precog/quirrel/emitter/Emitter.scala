@@ -320,10 +320,11 @@ trait Emitter
       StateT.apply[Id, Emission, Unit] { e =>
         val ast.Where(loc, left, right) = where
 
-        val state = if (e.groups contains where) {
-          val id = e.groups(where)
-          emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
-        } else { emitFilter(left, right, dispatches) }
+        val state =
+          if (e.groups contains where) {
+            val id = e.groups(where)
+            emitOrDup(MarkGroup(where))(emitInstr(PushGroup(id)))
+          } else { emitFilter(left, right, dispatches) }
 
         state(e)
       }
@@ -466,8 +467,8 @@ trait Emitter
 
             assert(!resolvedProv.isParametric)
 
-            val intersection =
-              resolvedProv.possibilities.intersect(resolvedProvAcc)
+            val intersection = resolvedProv.possibilities.intersect(
+              resolvedProvAcc)
             val itx = intersection.filter(p =>
               p != ValueProvenance && p != NullProvenance)
 
@@ -529,11 +530,11 @@ trait Emitter
           case expr @ ast.Solve(loc, _, body) =>
             val spec = expr.buckets(dispatches)
 
-            val btraces: Map[Expr, List[List[(Sigma, Expr)]]] =
-              spec.exprs.map({ expr =>
+            val btraces: Map[Expr, List[List[(Sigma, Expr)]]] = spec.exprs.map({
+              expr =>
                 val btrace = buildBacktrace(trace)(expr)
                 (expr -> btrace)
-              })(collection.breakOut)
+            })(collection.breakOut)
 
             val contextualDispatches: Map[Expr, Set[List[ast.Dispatch]]] =
               btraces map {
@@ -644,8 +645,9 @@ trait Emitter
                 stateAcc ++ (singles ++ joins)
             }
 
-            val (_, joins) =
-              createJoins(NEL(provs.head, provs.tail: _*), JoinObject)
+            val (_, joins) = createJoins(
+              NEL(provs.head, provs.tail: _*),
+              JoinObject)
 
             reduce(groups ++ joins)
           }
@@ -684,8 +686,9 @@ trait Emitter
               }
             }
 
-            val (_, joins) =
-              createJoins(NEL(provs.head, provs.tail: _*), JoinArray)
+            val (_, joins) = createJoins(
+              NEL(provs.head, provs.tail: _*),
+              JoinArray)
 
             val joined = reduce(groups ++ joins)
 

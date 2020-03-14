@@ -29,8 +29,7 @@ sealed trait ToAssociativeOps0 {
 trait ToAssociativeOps extends ToAssociativeOps0 {
 
   implicit def ToAssociativeOps[F[_, _], A, B](v: F[A, B])(
-      implicit F0: Associative[F]) =
-    new AssociativeOps[F, A, B](v)
+      implicit F0: Associative[F]) = new AssociativeOps[F, A, B](v)
 
   implicit def ToAssociativeVFromKleisliLike[G[_], F[G[_], _, _], A, B](
       v: F[G, A, B])(implicit F0: Associative[F[G, ?, ?]]) =

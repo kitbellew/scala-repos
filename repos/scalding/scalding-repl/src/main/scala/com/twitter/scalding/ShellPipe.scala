@@ -32,8 +32,7 @@ class ShellTypedPipe[T](pipe: TypedPipe[T])(implicit state: BaseReplState) {
     * Save snapshot of a typed pipe to a temporary sequence file.
     * @return A TypedPipe to a new Source, reading from the sequence file.
     */
-  def snapshot: TypedPipe[T] =
-    execute(pipe.forceToDiskExecution)
+  def snapshot: TypedPipe[T] = execute(pipe.forceToDiskExecution)
 
   /**
     * Create a (local) iterator over the pipe. For non-trivial pipes (anything except
@@ -41,8 +40,7 @@ class ShellTypedPipe[T](pipe: TypedPipe[T])(implicit state: BaseReplState) {
     * iterated over.
     * @return local iterator
     */
-  def toIterator: Iterator[T] =
-    execute(pipe.toIterableExecution).iterator
+  def toIterator: Iterator[T] = execute(pipe.toIterableExecution).iterator
 
   /**
     * Create a list from the pipe in memory. Uses `ShellTypedPipe.toIterator`.

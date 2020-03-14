@@ -38,21 +38,19 @@ private[spark] class ExecutorDelegationTokenUpdater(
   @volatile private var lastCredentialsFileSuffix = 0
 
   private val credentialsFile = sparkConf.get(CREDENTIALS_FILE_PATH)
-  private val freshHadoopConf =
-    SparkHadoopUtil.get.getConfBypassingFSCache(
-      hadoopConf,
-      new Path(credentialsFile).toUri.getScheme)
+  private val freshHadoopConf = SparkHadoopUtil.get.getConfBypassingFSCache(
+    hadoopConf,
+    new Path(credentialsFile).toUri.getScheme)
 
-  private val delegationTokenRenewer =
-    Executors.newSingleThreadScheduledExecutor(
+  private val delegationTokenRenewer = Executors
+    .newSingleThreadScheduledExecutor(
       ThreadUtils.namedThreadFactory("Delegation Token Refresh Thread"))
 
   // On the executor, this thread wakes up and picks up new tokens from HDFS, if any.
-  private val executorUpdaterRunnable =
-    new Runnable {
-      override def run(): Unit =
-        Utils.logUncaughtExceptions(updateCredentialsIfRequired())
-    }
+  private val executorUpdaterRunnable = new Runnable {
+    override def run(): Unit =
+      Utils.logUncaughtExceptions(updateCredentialsIfRequired())
+  }
 
   def updateCredentialsIfRequired(): Unit = {
     try {
@@ -71,8 +69,9 @@ private[spark] class ExecutorDelegationTokenUpdater(
           if (suffix > lastCredentialsFileSuffix) {
             logInfo(
               "Reading new delegation tokens from " + credentialsStatus.getPath)
-            val newCredentials =
-              getCredentialsFromHDFSFile(remoteFs, credentialsStatus.getPath)
+            val newCredentials = getCredentialsFromHDFSFile(
+              remoteFs,
+              credentialsStatus.getPath)
             lastCredentialsFileSuffix = suffix
             UserGroupInformation.getCurrentUser.addCredentials(newCredentials)
             logInfo("Tokens updated from credentials file.")
@@ -88,11 +87,10 @@ private[spark] class ExecutorDelegationTokenUpdater(
             return
           }
         }
-      val timeFromNowToRenewal =
-        SparkHadoopUtil.get.getTimeFromNowToRenewal(
-          sparkConf,
-          0.8,
-          UserGroupInformation.getCurrentUser.getCredentials)
+      val timeFromNowToRenewal = SparkHadoopUtil.get.getTimeFromNowToRenewal(
+        sparkConf,
+        0.8,
+        UserGroupInformation.getCurrentUser.getCredentials)
       if (timeFromNowToRenewal <= 0) {
         // We just checked for new credentials but none were there, wait a minute and retry.
         // This handles the shutdown case where the staging directory may have been removed(see

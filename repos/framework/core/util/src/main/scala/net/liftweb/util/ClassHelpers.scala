@@ -29,8 +29,9 @@ object ClassHelpers extends ClassHelpers with ControlHelpers
   */
 trait ClassHelpers { self: ControlHelpers =>
 
-  private val nameModifiers =
-    List[String => String](StringHelpers.camelify _, n => n)
+  private val nameModifiers = List[String => String](
+    StringHelpers.camelify _,
+    n => n)
 
   /**
     * This operator transforms its arguments into a List

@@ -239,10 +239,10 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
     }
 
     "withLoggers applies logger factories, executes a block, and then applies original factories" in {
-      val initialFactories =
-        List(LoggerFactory(node = "", level = Some(Level.DEBUG)))
-      val otherFactories =
-        List(LoggerFactory(node = "", level = Some(Level.INFO)))
+      val initialFactories = List(
+        LoggerFactory(node = "", level = Some(Level.DEBUG)))
+      val otherFactories = List(
+        LoggerFactory(node = "", level = Some(Level.INFO)))
       Logger.configure(initialFactories)
 
       assert(Logger.get("").getLevel == Level.DEBUG)

@@ -14,8 +14,7 @@ final class ForumSearchApi(client: ESClient, postApi: PostApi)
       postApi.viewsFromIds(res.ids)
     }
 
-  def count(query: Query) =
-    client.count(query) map (_.count)
+  def count(query: Query) = client.count(query) map (_.count)
 
   def store(post: Post) =
     postApi liteView post flatMap {

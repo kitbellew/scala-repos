@@ -17,8 +17,9 @@ import org.jetbrains.sbt.resolvers.{SbtResolverIndexesManager, SbtResolverUtils}
   */
 class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
 
-  val insideInfixExpr =
-    PlatformPatterns.psiElement().withSuperParent(2, classOf[ScInfixExpr])
+  val insideInfixExpr = PlatformPatterns
+    .psiElement()
+    .withSuperParent(2, classOf[ScInfixExpr])
 
   extend(
     CompletionType.BASIC,

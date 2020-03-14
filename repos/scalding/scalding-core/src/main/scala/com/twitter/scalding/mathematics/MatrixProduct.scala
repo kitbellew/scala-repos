@@ -488,8 +488,7 @@ object MatrixProduct extends java.io.Serializable {
   def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT]): MatrixProduct[
     RowVector[IdxT, ValT],
     ColVector[IdxT, ValT],
-    Scalar[ValT]] =
-    rowColProduct(ring)
+    Scalar[ValT]] = rowColProduct(ring)
 
   implicit def rowColProduct[IdxT, ValT](
       implicit ring: Ring[ValT]): MatrixProduct[

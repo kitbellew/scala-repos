@@ -118,8 +118,8 @@ trait WebJobManager
     )
 
     withJsonClient { client =>
-      val job0: Response[Job] =
-        eitherT(client.query("apiKey", apiKey).post("/jobs/")(content) map {
+      val job0: Response[Job] = eitherT(
+        client.query("apiKey", apiKey).post("/jobs/")(content) map {
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
             obj.validated[Job] map (right(_)) getOrElse left(
               "Invalid job returned by server:\n" + obj)

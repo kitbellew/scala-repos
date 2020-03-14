@@ -43,12 +43,12 @@ private[netty3] class ChannelConnector[In, Out](
     newTransport: Channel => Transport[In, Out],
     statsReceiver: StatsReceiver
 ) extends (SocketAddress => Future[Transport[In, Out]]) {
-  private[this] val connectLatencyStat =
-    statsReceiver.stat("connect_latency_ms")
-  private[this] val failedConnectLatencyStat =
-    statsReceiver.stat("failed_connect_latency_ms")
-  private[this] val cancelledConnects =
-    statsReceiver.counter("cancelled_connects")
+  private[this] val connectLatencyStat = statsReceiver.stat(
+    "connect_latency_ms")
+  private[this] val failedConnectLatencyStat = statsReceiver.stat(
+    "failed_connect_latency_ms")
+  private[this] val cancelledConnects = statsReceiver.counter(
+    "cancelled_connects")
 
   def apply(addr: SocketAddress): Future[Transport[In, Out]] = {
     require(addr != null)
@@ -147,20 +147,20 @@ object Netty3Transporter {
     // transport and transporter params
     val ChannelFactory(cf) = params[ChannelFactory]
     val TransportFactory(newTransport) = params[TransportFactory]
-    val Transporter.ConnectTimeout(connectTimeout) =
-      params[Transporter.ConnectTimeout]
-    val LatencyCompensation.Compensation(compensation) =
-      params[LatencyCompensation.Compensation]
+    val Transporter
+      .ConnectTimeout(connectTimeout) = params[Transporter.ConnectTimeout]
+    val LatencyCompensation
+      .Compensation(compensation) = params[LatencyCompensation.Compensation]
     val Transporter.TLSHostname(tlsHostname) = params[Transporter.TLSHostname]
-    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) =
-      params[Transporter.HttpProxy]
-    val Transporter.SocksProxy(socksProxy, socksCredentials) =
-      params[Transporter.SocksProxy]
-    val Transport.BufferSizes(sendBufSize, recvBufSize) =
-      params[Transport.BufferSizes]
+    val Transporter.HttpProxy(httpProxy, httpProxyCredentials) = params[
+      Transporter.HttpProxy]
+    val Transporter
+      .SocksProxy(socksProxy, socksCredentials) = params[Transporter.SocksProxy]
+    val Transport
+      .BufferSizes(sendBufSize, recvBufSize) = params[Transport.BufferSizes]
     val Transport.TLSClientEngine(tls) = params[Transport.TLSClientEngine]
-    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) =
-      params[Transport.Liveness]
+    val Transport.Liveness(readerTimeout, writerTimeout, keepAlive) = params[
+      Transport.Liveness]
     val snooper = params[Transport.Verbose] match {
       case Transport.Verbose(true) =>
         Some(ChannelSnooper(label)(logger.log(Level.INFO, _, _)))
@@ -243,8 +243,7 @@ private[netty3] object FireChannelClosedLater extends ChannelFutureListener {
         val channelClosed = new ChannelRunnableWrapper(
           nioChannel,
           new Runnable() {
-            override def run(): Unit =
-              Channels.fireChannelClosed(nioChannel)
+            override def run(): Unit = Channels.fireChannelClosed(nioChannel)
           })
         nioChannel.getWorker
           .executeInIoThread(channelClosed, /* alwaysAsync */ true)
@@ -357,10 +356,9 @@ case class Netty3Transporter[In, Out](
       engine.self.setUseClientMode(true)
       engine.self.setEnableSessionCreation(true)
 
-      val verifier =
-        verifyHost.map(SslConnectHandler.sessionHostnameVerifier).getOrElse {
-          Function.const(None) _
-        }
+      val verifier = verifyHost
+        .map(SslConnectHandler.sessionHostnameVerifier)
+        .getOrElse { Function.const(None) _ }
 
       val sslHandler = new SslHandler(engine.self)
       val sslConnectHandler = new SslConnectHandler(sslHandler, verifier)

@@ -109,8 +109,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     }
 
   @deprecated("use unsafePerformSync", "7.2")
-  def run: A =
-    unsafePerformSync
+  def run: A = unsafePerformSync
 
   /** Like `run`, but returns exceptions as values. */
   def unsafePerformSyncAttempt: Throwable \/ A =
@@ -118,8 +117,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     catch { case t: Throwable => -\/(t) }
 
   @deprecated("use unsafePerformSyncAttempt", "7.2")
-  def attemptRun: Throwable \/ A =
-    unsafePerformSyncAttempt
+  def attemptRun: Throwable \/ A = unsafePerformSyncAttempt
 
   /**
     * Run this computation to obtain an `A`, so long as `cancel` remains false.
@@ -135,8 +133,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   @deprecated("use unsafePerformAsyncInterruptibly", "7.2")
   def runAsyncInterruptibly(
       f: (Throwable \/ A) => Unit,
-      cancel: AtomicBoolean): Unit =
-    unsafePerformAsyncInterruptibly(f, cancel)
+      cancel: AtomicBoolean): Unit = unsafePerformAsyncInterruptibly(f, cancel)
 
   /**
     * Similar to `unsafePerformAsyncInterruptibly(f,cancel)` except instead of interrupting by setting cancel to true,
@@ -184,8 +181,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     get.unsafePerformAsync(f)
 
   @deprecated("use unsafePerformAsync", "7.2")
-  def runAsync(f: (Throwable \/ A) => Unit): Unit =
-    unsafePerformAsync(f)
+  def runAsync(f: (Throwable \/ A) => Unit): Unit = unsafePerformAsync(f)
 
   /**
     * Run this `Task` and block until its result is available, or until
@@ -202,12 +198,10 @@ class Task[+A](val get: Future[Throwable \/ A]) {
     unsafePerformSyncFor(timeout.toMillis)
 
   @deprecated("use unsafePerformSyncFor", "7.2")
-  def runFor(timeoutInMillis: Long): A =
-    unsafePerformSyncFor(timeoutInMillis)
+  def runFor(timeoutInMillis: Long): A = unsafePerformSyncFor(timeoutInMillis)
 
   @deprecated("use unsafePerformSyncFor", "7.2")
-  def runFor(timeout: Duration): A =
-    unsafePerformSyncFor(timeout)
+  def runFor(timeout: Duration): A = unsafePerformSyncFor(timeout)
 
   /**
     * Like `unsafePerformSyncFor`, but returns exceptions as values. Both `TimeoutException`
@@ -237,8 +231,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
 
   def unsafePerformTimed(timeout: Duration)(implicit
       scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Task[A] =
-    unsafePerformTimed(timeout.toMillis)
+      : Task[A] = unsafePerformTimed(timeout.toMillis)
 
   @deprecated("use unsafePerformTimed", "7.2")
   def timed(timeoutInMillis: Long)(
@@ -248,8 +241,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   @deprecated("use unsafePerformTimed", "7.2")
   def timed(timeout: Duration)(implicit
       scheduler: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Task[A] =
-    unsafePerformTimed(timeout)
+      : Task[A] = unsafePerformTimed(timeout)
 
   /**
     * Retries this task if it fails, once for each element in `delays`,
@@ -260,15 +252,13 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   def unsafePerformRetryAccumulating(
       delays: Seq[Duration],
       p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-      : Task[(A, List[Throwable])] =
-    unsafeRetryInternal(delays, p, true)
+      : Task[(A, List[Throwable])] = unsafeRetryInternal(delays, p, true)
 
   @deprecated("use unsafePerformRetryAccumulating", "7.2")
   def retryAccumulating(
       delays: Seq[Duration],
       p: (Throwable => Boolean) = _.isInstanceOf[Exception])
-      : Task[(A, List[Throwable])] =
-    unsafePerformRetryAccumulating(delays, p)
+      : Task[(A, List[Throwable])] = unsafePerformRetryAccumulating(delays, p)
 
   /**
     * Retries this task if it fails, once for each element in `delays`,
@@ -314,8 +304,7 @@ class Task[+A](val get: Future[Throwable \/ A]) {
   /**
     * Delays the execution of this `Task` by the duration `t`.
     */
-  def after(t: Duration): Task[A] =
-    new Task(get after t)
+  def after(t: Duration): Task[A] = new Task(get after t)
 }
 
 object Task {
@@ -323,32 +312,30 @@ object Task {
   implicit val taskInstance: Nondeterminism[Task]
     with BindRec[Task]
     with Catchable[Task]
-    with MonadError[Task, Throwable] =
-    new Nondeterminism[Task]
-      with BindRec[Task]
-      with Catchable[Task]
-      with MonadError[Task, Throwable] {
-      val F = Nondeterminism[Future]
-      def point[A](a: => A) = Task.point(a)
-      def bind[A, B](a: Task[A])(f: A => Task[B]): Task[B] =
-        a flatMap f
-      def chooseAny[A](h: Task[A], t: Seq[Task[A]]): Task[(A, Seq[Task[A]])] =
-        new Task(F.map(F.chooseAny(h.get, t map (_ get))) {
-          case (a, residuals) =>
-            a.map((_, residuals.map(new Task(_))))
-        })
-      override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] = {
-        new Task(F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
-          Traverse[List].sequenceU(eithers)))
-      }
-      def fail[A](e: Throwable): Task[A] = new Task(Future.now(-\/(e)))
-      def attempt[A](a: Task[A]): Task[Throwable \/ A] = a.attempt
-      def tailrecM[A, B](f: A => Task[A \/ B])(a: A): Task[B] =
-        Task.tailrecM(f)(a)
-      def raiseError[A](e: Throwable): Task[A] = fail(e)
-      def handleError[A](fa: Task[A])(f: Throwable => Task[A]): Task[A] =
-        fa.handleWith { case t => f(t) }
+    with MonadError[Task, Throwable] = new Nondeterminism[Task]
+    with BindRec[Task]
+    with Catchable[Task]
+    with MonadError[Task, Throwable] {
+    val F = Nondeterminism[Future]
+    def point[A](a: => A) = Task.point(a)
+    def bind[A, B](a: Task[A])(f: A => Task[B]): Task[B] = a flatMap f
+    def chooseAny[A](h: Task[A], t: Seq[Task[A]]): Task[(A, Seq[Task[A]])] =
+      new Task(F.map(F.chooseAny(h.get, t map (_ get))) {
+        case (a, residuals) =>
+          a.map((_, residuals.map(new Task(_))))
+      })
+    override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] = {
+      new Task(F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
+        Traverse[List].sequenceU(eithers)))
     }
+    def fail[A](e: Throwable): Task[A] = new Task(Future.now(-\/(e)))
+    def attempt[A](a: Task[A]): Task[Throwable \/ A] = a.attempt
+    def tailrecM[A, B](f: A => Task[A \/ B])(a: A): Task[B] =
+      Task.tailrecM(f)(a)
+    def raiseError[A](e: Throwable): Task[A] = fail(e)
+    def handleError[A](fa: Task[A])(f: Throwable => Task[A]): Task[A] =
+      fa.handleWith { case t => f(t) }
+  }
 
   /** signals task was interrupted **/
   case object TaskInterrupted extends InterruptedException {

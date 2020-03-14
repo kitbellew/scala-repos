@@ -162,15 +162,13 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Detect continuous features or labels
     val random = new Random(11L)
-    val continuousLabel =
-      Seq.fill(100000)(
-        LabeledPoint(random.nextDouble(), Vectors.dense(random.nextInt(2))))
+    val continuousLabel = Seq.fill(100000)(
+      LabeledPoint(random.nextDouble(), Vectors.dense(random.nextInt(2))))
     intercept[SparkException] {
       Statistics.chiSqTest(sc.parallelize(continuousLabel, 2))
     }
-    val continuousFeature =
-      Seq.fill(100000)(
-        LabeledPoint(random.nextInt(2), Vectors.dense(random.nextDouble())))
+    val continuousFeature = Seq.fill(100000)(
+      LabeledPoint(random.nextInt(2), Vectors.dense(random.nextDouble())))
     intercept[SparkException] {
       Statistics.chiSqTest(sc.parallelize(continuousFeature, 2))
     }
@@ -201,8 +199,9 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing a standard normal sample to a standard normal distribution
     val result1 = Statistics.kolmogorovSmirnovTest(sampledNorm, "norm", 0, 1)
-    val referenceStat1 =
-      ksTest.kolmogorovSmirnovStatistic(stdNormalDist, sampledNorm.collect())
+    val referenceStat1 = ksTest.kolmogorovSmirnovStatistic(
+      stdNormalDist,
+      sampledNorm.collect())
     val referencePVal1 = 1 - ksTest.cdf(referenceStat1, n)
     // Verify vs apache math commons ks test
     assert(result1.statistic ~== referenceStat1 relTol 1e-4)
@@ -212,8 +211,9 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Comparing an exponential sample to a standard normal distribution
     val result2 = Statistics.kolmogorovSmirnovTest(sampledExp, "norm", 0, 1)
-    val referenceStat2 =
-      ksTest.kolmogorovSmirnovStatistic(stdNormalDist, sampledExp.collect())
+    val referenceStat2 = ksTest.kolmogorovSmirnovStatistic(
+      stdNormalDist,
+      sampledExp.collect())
     val referencePVal2 = 1 - ksTest.cdf(referenceStat2, n)
     // verify vs apache math commons ks test
     assert(result2.statistic ~== referenceStat2 relTol 1e-4)

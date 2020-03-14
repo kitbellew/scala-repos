@@ -41,8 +41,8 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
   @transient private val hadoopConf = sc.hadoopConfiguration
   @transient private val cpath = new Path(checkpointPath)
   @transient private val fs = cpath.getFileSystem(hadoopConf)
-  private val broadcastedConf =
-    sc.broadcast(new SerializableConfiguration(hadoopConf))
+  private val broadcastedConf = sc.broadcast(
+    new SerializableConfiguration(hadoopConf))
 
   // Fail fast if checkpoint directory does not exist
   require(
@@ -142,8 +142,8 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     }
 
     // Save to file, and reload it as an RDD
-    val broadcastedConf =
-      sc.broadcast(new SerializableConfiguration(sc.hadoopConfiguration))
+    val broadcastedConf = sc.broadcast(
+      new SerializableConfiguration(sc.hadoopConfiguration))
     // TODO: This is expensive because it computes the RDD again unnecessarily (SPARK-8582)
     sc.runJob(
       originalRDD,
@@ -181,8 +181,8 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     val outputDir = new Path(path)
     val fs = outputDir.getFileSystem(broadcastedConf.value.value)
 
-    val finalOutputName =
-      ReliableCheckpointRDD.checkpointFileName(ctx.partitionId())
+    val finalOutputName = ReliableCheckpointRDD.checkpointFileName(
+      ctx.partitionId())
     val finalOutputPath = new Path(outputDir, finalOutputName)
     val tempOutputPath =
       new Path(outputDir, s".$finalOutputName-attempt-${ctx.attemptNumber()}")
@@ -193,17 +193,17 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     }
     val bufferSize = env.conf.getInt("spark.buffer.size", 65536)
 
-    val fileOutputStream = if (blockSize < 0) {
-      fs.create(tempOutputPath, false, bufferSize)
-    } else {
-      // This is mainly for testing purpose
-      fs.create(
-        tempOutputPath,
-        false,
-        bufferSize,
-        fs.getDefaultReplication(fs.getWorkingDirectory),
-        blockSize)
-    }
+    val fileOutputStream =
+      if (blockSize < 0) { fs.create(tempOutputPath, false, bufferSize) }
+      else {
+        // This is mainly for testing purpose
+        fs.create(
+          tempOutputPath,
+          false,
+          bufferSize,
+          fs.getDefaultReplication(fs.getWorkingDirectory),
+          blockSize)
+      }
     val serializer = env.serializer.newInstance()
     val serializeStream = serializer.serializeStream(fileOutputStream)
     Utils.tryWithSafeFinally { serializeStream.writeAll(iterator) } {

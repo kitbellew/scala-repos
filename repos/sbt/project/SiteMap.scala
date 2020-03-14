@@ -29,8 +29,7 @@ object SiteMap {
           </urlset>
     }
 
-    def entryXML(e: Entry, f: File, relPath: String) =
-      <url>
+    def entryXML(e: Entry, f: File, relPath: String) = <url>
           <loc>{remoteBase.resolve(relPath).toString}</loc>
           <lastmod>{lastModifiedString(f)}</lastmod>
           <changefreq>{e.changeFreq}</changefreq>
@@ -48,8 +47,7 @@ object SiteMap {
             gzip,
             entriesXML(es)))
     }
-    def indexEntryXML(sub: File, relPath: String): xml.Elem =
-      <sitemap>
+    def indexEntryXML(sub: File, relPath: String): xml.Elem = <sitemap>
           <loc>{remoteBase.resolve(relPath).toString}</loc>
           <lastmod>{lastModifiedString(sub)}</lastmod>
         </sitemap>
@@ -69,8 +67,8 @@ object SiteMap {
     }
     def isSymlink(f: File) = f.getCanonicalFile != f.getAbsoluteFile
 
-    val (symlinks, normal) =
-      (repoBase * DirectoryFilter).get.partition(dir => isSymlink(dir))
+    val (symlinks, normal) = (repoBase * DirectoryFilter).get.partition(dir =>
+      isSymlink(dir))
     log.debug("Detected symlinks: " + symlinks.mkString("\n\t", "\n\t", ""))
     val subMaps =
       singleSiteMap(

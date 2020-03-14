@@ -9,6 +9,5 @@ trait Comparator[A] {
   def equals(obj: Any): Boolean
 
   @JavaDefaultMethod
-  def reversed(): Comparator[A] =
-    Collections.reverseOrder(this)
+  def reversed(): Comparator[A] = Collections.reverseOrder(this)
 }

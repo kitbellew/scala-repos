@@ -80,8 +80,8 @@ object GroupSolverSpecs
           origin @ Where(
             _,
             target,
-            And(_, Eq(_, leftSol, _), Eq(_, rightSol, _))))) =
-        compileSingle(input)
+            And(_, Eq(_, leftSol, _), Eq(_, rightSol, _))))) = compileSingle(
+        input)
 
       val btrace = List()
       val expected = Group(
@@ -371,8 +371,11 @@ object GroupSolverSpecs
       val Let(_, _, _, _, tree @ Solve(_, Vector(Eq(_, _, constrSol)), _)) =
         compileSingle(input)
 
-      val expected =
-        Group(None, constrSol, UnfixedSolution("'a", constrSol, Nil), Nil)
+      val expected = Group(
+        None,
+        constrSol,
+        UnfixedSolution("'a", constrSol, Nil),
+        Nil)
 
       tree.errors must beEmpty
       tree.buckets mustEqual Map(Set() -> expected)
@@ -473,8 +476,8 @@ object GroupSolverSpecs
                   add @ Add(
                     _,
                     decA @ Descent(_, dA: Dispatch, _),
-                    decB @ Descent(_, dB: Dispatch, _)))))))) =
-        compileSingle(input)
+                    decB @ Descent(_, dB: Dispatch, _)))))))) = compileSingle(
+        input)
 
       val btraceA = List()
       val btraceB = List()
@@ -722,8 +725,8 @@ object GroupSolverSpecs
             boolean @ Eq(
               _,
               fooa,
-              Add(_, TicVar(_, "'a"), n @ NumLit(_, "42")))))) =
-        compileSingle(input)
+              Add(_, TicVar(_, "'a"), n @ NumLit(_, "42")))))) = compileSingle(
+        input)
 
       tree.errors must beEmpty
 
@@ -1272,8 +1275,11 @@ object GroupSolverSpecs
         Let(_, _, _, _, solve @ Solve(_, Vector(Eq(_, _, target)), _))) =
         compileSingle(input)
 
-      val expected =
-        Group(None, target, UnfixedSolution("'bins", target, Nil), Nil)
+      val expected = Group(
+        None,
+        target,
+        UnfixedSolution("'bins", target, Nil),
+        Nil)
 
       tree.errors must beEmpty
       solve.buckets mustEqual Map(Set() -> expected)
@@ -1376,8 +1382,11 @@ object GroupSolverSpecs
           Let(_, _, _, where @ Where(_, target, Eq(_, solution, _)), _))) =
         compileSingle(input)
 
-      val expected =
-        Group(Some(where), target, UnfixedSolution("'a", solution, Nil), Nil)
+      val expected = Group(
+        Some(where),
+        target,
+        UnfixedSolution("'a", solution, Nil),
+        Nil)
 
       solve.errors must beEmpty
       solve.buckets mustEqual (Map(Set() -> expected))

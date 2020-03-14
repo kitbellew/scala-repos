@@ -318,8 +318,9 @@ class BlockManagerReplicationSuite
 
     // Add a failable block manager with a mock transfer service that does not
     // allow receiving of blocks. So attempts to use it as a replication target will fail.
-    val failableTransfer =
-      mock(classOf[BlockTransferService]) // this wont actually work
+    val failableTransfer = mock(
+      classOf[BlockTransferService]
+    ) // this wont actually work
     when(failableTransfer.hostName).thenReturn("some-hostname")
     when(failableTransfer.port).thenReturn(1000)
     val memManager =
@@ -364,8 +365,12 @@ class BlockManagerReplicationSuite
     def replicateAndGetNumCopies(
         blockId: String,
         replicationFactor: Int): Int = {
-      val storageLevel =
-        StorageLevel(true, true, false, true, replicationFactor)
+      val storageLevel = StorageLevel(
+        true,
+        true,
+        false,
+        true,
+        replicationFactor)
       initialStores.head.putSingle(
         blockId,
         new Array[Byte](blockSize),
@@ -465,8 +470,8 @@ class BlockManagerReplicationSuite
               .contains(testStoreName),
             s"master does not have status for ${blockId.name} in $testStoreName")
 
-          val blockStatus =
-            master.getBlockStatus(blockId)(testStore.blockManagerId)
+          val blockStatus = master.getBlockStatus(blockId)(
+            testStore.blockManagerId)
 
           // Assert that block status in the master for this store has expected storage level
           assert(
@@ -495,8 +500,9 @@ class BlockManagerReplicationSuite
             }
             (1 to 10).foreach { i => testStore.removeBlock(s"dummy-block-$i") }
 
-            val newBlockStatusOption =
-              master.getBlockStatus(blockId).get(testStore.blockManagerId)
+            val newBlockStatusOption = master
+              .getBlockStatus(blockId)
+              .get(testStore.blockManagerId)
 
             // Assert that the block status in the master either does not exist (block removed
             // from every store) or has zero memory usage for this store

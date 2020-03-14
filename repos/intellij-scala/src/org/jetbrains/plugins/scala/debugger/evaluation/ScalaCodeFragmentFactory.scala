@@ -131,8 +131,10 @@ class ScalaCodeFragmentFactory extends CodeFragmentFactory {
           variablesText,
           "",
           getFileType)
-        val codeFragment: JavaCodeFragment =
-          createCodeFragmentInner(textWithImports, context, project)
+        val codeFragment: JavaCodeFragment = createCodeFragmentInner(
+          textWithImports,
+          context,
+          project)
         codeFragment.accept(new ScalaRecursiveElementVisitor() {
           override def visitPatternDefinition(
               pat: ScPatternDefinition): Unit = {

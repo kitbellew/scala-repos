@@ -88,8 +88,8 @@ abstract class RemoteQuarantinePiercingSpec
           awaitAssert {
             system.actorSelection(
               RootActorPath(secondAddress) / "user" / "subject") ! "identify"
-            val (uidSecond, subjectSecond) =
-              expectMsgType[(Int, ActorRef)](1.second)
+            val (uidSecond, subjectSecond) = expectMsgType[(Int, ActorRef)](
+              1.second)
             uidSecond should not be (uidFirst)
             subjectSecond should not be (subjectFirst)
           }

@@ -567,15 +567,17 @@ private[collection] object RedBlackTree {
     // this can't be done later, though, or it would change the result of compareDepth
     val blkNewLeft = blacken(newLeft)
     val blkNewRight = blacken(newRight)
-    val (zipper, levelled, leftMost, smallerDepth) =
-      compareDepth(blkNewLeft, blkNewRight)
+    val (zipper, levelled, leftMost, smallerDepth) = compareDepth(
+      blkNewLeft,
+      blkNewRight)
 
     if (levelled) { BlackTree(tree.key, tree.value, blkNewLeft, blkNewRight) }
     else {
       val zipFrom = findDepth(zipper, smallerDepth)
-      val union = if (leftMost) {
-        RedTree(tree.key, tree.value, blkNewLeft, zipFrom.head)
-      } else { RedTree(tree.key, tree.value, zipFrom.head, blkNewRight) }
+      val union =
+        if (leftMost) {
+          RedTree(tree.key, tree.value, blkNewLeft, zipFrom.head)
+        } else { RedTree(tree.key, tree.value, zipFrom.head, blkNewRight) }
       val zippedTree = NList.foldLeft(zipFrom.tail, union: Tree[A, B]) {
         (tree, node) =>
           if (leftMost)

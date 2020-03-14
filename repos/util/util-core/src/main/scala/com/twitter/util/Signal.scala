@@ -43,8 +43,10 @@ object SunSignalHandler {
 class SunSignalHandler extends SignalHandler {
   private val signalHandlerClass = Class.forName("sun.misc.SignalHandler")
   private val signalClass = Class.forName("sun.misc.Signal")
-  private val handleMethod =
-    signalClass.getMethod("handle", signalClass, signalHandlerClass)
+  private val handleMethod = signalClass.getMethod(
+    "handle",
+    signalClass,
+    signalHandlerClass)
   private val nameMethod = signalClass.getMethod("getName")
 
   def handle(signal: String, handlers: Map[String, Set[String => Unit]]) {

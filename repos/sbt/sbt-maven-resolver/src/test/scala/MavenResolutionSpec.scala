@@ -96,15 +96,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       None,
       defaultUpdateOptions)
     val report = ivyUpdate(m) // should not(throwAn[IllegalStateException])
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == Compile.name
-        m <- conf.modules
-        if (m.module.name contains "stringtemplate")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == Compile.name
+      m <- conf.modules
+      if (m.module.name contains "stringtemplate")
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     jars should have size 1
   }
 
@@ -115,15 +114,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       None,
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == ScalaTool.name
-        m <- conf.modules
-        if (m.module.name contains "scala-compiler")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == ScalaTool.name
+      m <- conf.modules
+      if (m.module.name contains "scala-compiler")
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     jars should have size 1
   }
 
@@ -164,14 +162,13 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions.withLatestSnapshots(true))
     val report = ivyUpdate(m)
-    val pubTime =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if m.module.revision endsWith "-SNAPSHOT"
-        date <- m.publicationDate
-      } yield date
+    val pubTime = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if m.module.revision endsWith "-SNAPSHOT"
+      date <- m.publicationDate
+    } yield date
     (pubTime should have size 1)
   }
 
@@ -182,15 +179,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if (m.module.name == "scala-library") || (m.module.name contains "parser")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if (m.module.name == "scala-library") || (m.module.name contains "parser")
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     jars should have size 2
   }
 
@@ -221,15 +217,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if m.module.name == "testng"
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if m.module.name == "testng"
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     (report.configurations should have size configurations.size)
     (jars should have size 1)
     (jars.forall(_.exists) shouldBe true)
@@ -243,15 +238,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if m.module.name == "scala-library"
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if m.module.name == "scala-library"
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     (report.configurations should have size configurations.size)
     (jars should not be empty)
     (jars.forall(_.exists) shouldBe true)
@@ -265,24 +259,22 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val transitiveJars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if (m.module.name contains "akka-actor") && !(m.module.name contains "testkit")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
-    val directJars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "compile"
-        m <- conf.modules
-        if (m.module.name contains "akka-actor") && (m.module.name contains "testkit")
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val transitiveJars = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if (m.module.name contains "akka-actor") && !(m.module.name contains "testkit")
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
+    val directJars = for {
+      conf <- report.configurations
+      if conf.configuration == "compile"
+      m <- conf.modules
+      if (m.module.name contains "akka-actor") && (m.module.name contains "testkit")
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     (report.configurations should have size configurations.size)
     (transitiveJars shouldBe empty)
     (directJars.forall(_.exists) shouldBe true)
@@ -295,15 +287,14 @@ class MavenResolutionSpec extends BaseIvySpecification {
       Some("2.10.2"),
       defaultUpdateOptions)
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        if conf.configuration == "test"
-        m <- conf.modules
-        if m.module.name contains "akka-actor"
-        (a, f) <- m.artifacts
-        if a.extension == "jar"
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      if conf.configuration == "test"
+      m <- conf.modules
+      if m.module.name contains "akka-actor"
+      (a, f) <- m.artifacts
+      if a.extension == "jar"
+    } yield f
     (report.configurations should have size configurations.size)
     (jars should not be empty)
     (jars.forall(_.exists) shouldBe true)
@@ -321,16 +312,15 @@ class MavenResolutionSpec extends BaseIvySpecification {
       defaultUpdateOptions
     )
     val report = ivyUpdate(m)
-    val jars =
-      for {
-        conf <- report.configurations
-        //  We actually injected javadoc/sources into the compile scope, due to how we did the request.
-        //  SO, we report that here.
-        if conf.configuration == "compile"
-        m <- conf.modules
-        (a, f) <- m.artifacts
-        if (f.getName contains "sources") || (f.getName contains "javadoc")
-      } yield f
+    val jars = for {
+      conf <- report.configurations
+      //  We actually injected javadoc/sources into the compile scope, due to how we did the request.
+      //  SO, we report that here.
+      if conf.configuration == "compile"
+      m <- conf.modules
+      (a, f) <- m.artifacts
+      if (f.getName contains "sources") || (f.getName contains "javadoc")
+    } yield f
     (report.configurations should have size configurations.size)
     (jars should have size 2)
   }
@@ -373,8 +363,8 @@ class MavenResolutionSpec extends BaseIvySpecification {
       .PathFinder(new java.io.File(baseLocalMavenDir, "com/example/test-it"))
       .allPaths
       .get
-    val metadataFiles =
-      allFiles.filter(_.getName contains "maven-metadata-local")
+    val metadataFiles = allFiles.filter(
+      _.getName contains "maven-metadata-local")
     // TODO - maybe we check INSIDE the metadata, or make sure we can get a publication date on resolve...
     // We end up with 4 files, two mavne-metadata files, and 2 maven-metadata-local files.
     metadataFiles should have size 2

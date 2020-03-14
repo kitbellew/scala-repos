@@ -28,8 +28,8 @@ import org.apache.spark.mllib.util.MLUtils
 
 object GradientBoostingClassificationExample {
   def main(args: Array[String]): Unit = {
-    val conf =
-      new SparkConf().setAppName("GradientBoostedTreesClassificationExample")
+    val conf = new SparkConf()
+      .setAppName("GradientBoostedTreesClassificationExample")
     val sc = new SparkContext(conf)
     // $example on$
     // Load and parse the data file.

@@ -212,8 +212,9 @@ class LinearRegressionSuite
     Seq("auto", "l-bfgs", "normal").foreach { solver =>
       val trainer1 = new LinearRegression().setSolver(solver)
       // The result should be the same regardless of standardization without regularization
-      val trainer2 =
-        (new LinearRegression).setStandardization(false).setSolver(solver)
+      val trainer2 = (new LinearRegression)
+        .setStandardization(false)
+        .setSolver(solver)
       val model1 = trainer1.fit(datasetWithDenseFeature)
       val model2 = trainer2.fit(datasetWithDenseFeature)
 
@@ -257,19 +258,20 @@ class LinearRegressionSuite
 
   test("linear regression without intercept without regularization") {
     Seq("auto", "l-bfgs", "normal").foreach { solver =>
-      val trainer1 =
-        (new LinearRegression).setFitIntercept(false).setSolver(solver)
+      val trainer1 = (new LinearRegression)
+        .setFitIntercept(false)
+        .setSolver(solver)
       // Without regularization the results should be the same
       val trainer2 = (new LinearRegression)
         .setFitIntercept(false)
         .setStandardization(false)
         .setSolver(solver)
       val model1 = trainer1.fit(datasetWithDenseFeature)
-      val modelWithoutIntercept1 =
-        trainer1.fit(datasetWithDenseFeatureWithoutIntercept)
+      val modelWithoutIntercept1 = trainer1.fit(
+        datasetWithDenseFeatureWithoutIntercept)
       val model2 = trainer2.fit(datasetWithDenseFeature)
-      val modelWithoutIntercept2 =
-        trainer2.fit(datasetWithDenseFeatureWithoutIntercept)
+      val modelWithoutIntercept2 = trainer2.fit(
+        datasetWithDenseFeatureWithoutIntercept)
 
       /*
          coefficients <- coef(glmnet(features, label, family="gaussian", alpha = 0, lambda = 0,
@@ -807,8 +809,8 @@ class LinearRegressionSuite
       val trainer = new LinearRegression().setSolver(solver)
       val model = trainer.fit(datasetWithDenseFeature)
       val trainerNoPredictionCol = trainer.setPredictionCol("")
-      val modelNoPredictionCol =
-        trainerNoPredictionCol.fit(datasetWithDenseFeature)
+      val modelNoPredictionCol = trainerNoPredictionCol.fit(
+        datasetWithDenseFeature)
 
       // Training results for the model should be available
       assert(model.hasSummary)

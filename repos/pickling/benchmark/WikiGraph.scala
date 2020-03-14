@@ -64,10 +64,8 @@ final class Graph extends Serializable {
 object GraphReader extends RegexParsers {
   override def skipWhitespace = false
 
-  lazy val token: Parser[String] =
-    """\S+""".r
-  lazy val edgeline: Parser[List[String]] =
-    repsep(token, whiteSpace)
+  lazy val token: Parser[String] = """\S+""".r
+  lazy val edgeline: Parser[List[String]] = repsep(token, whiteSpace)
 
   val vertices: Map[String, Vertex] = new HashMap[String, Vertex]
 
@@ -102,8 +100,8 @@ object GraphReader extends RegexParsers {
         val vertexOpt = vertices.get(targetLabel)
 
         if (vertexOpt.isEmpty) {
-          val newVertex =
-            graph.addVertex(new Vertex(names(targetLabel), List()))
+          val newVertex = graph.addVertex(
+            new Vertex(names(targetLabel), List()))
           vertices.put(targetLabel, newVertex)
           newVertex
         } else { vertexOpt.get }
@@ -162,13 +160,13 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   implicit val VertexTag = FastTypeTag.materializeFastTypeTag[Vertex]
   implicit val GraphTag = FastTypeTag.materializeFastTypeTag[Graph]
   implicit val StringTag = FastTypeTag.materializeFastTypeTag[String]
-  implicit val ColonColonVertexTag =
-    FastTypeTag.materializeFastTypeTag[::[Vertex]]
+  implicit val ColonColonVertexTag = FastTypeTag
+    .materializeFastTypeTag[::[Vertex]]
   import scala.reflect.runtime.{universe => ru}
-  implicit val myLittlePony: ru.Mirror =
-    ru.runtimeMirror(getClass.getClassLoader)
-  implicit val VectorVertexTag =
-    FastTypeTag.materializeFastTypeTag[Vector[Vertex]]
+  implicit val myLittlePony: ru.Mirror = ru.runtimeMirror(
+    getClass.getClassLoader)
+  implicit val VectorVertexTag = FastTypeTag
+    .materializeFastTypeTag[Vector[Vertex]]
   implicit val ListVertexTag = FastTypeTag.materializeFastTypeTag[List[Vertex]]
   implicit val NilTag = FastTypeTag.materializeFastTypeTag[Nil.type]
   // TODO - why does this no longer compile?
@@ -230,8 +228,8 @@ object WikiGraphPicklingBench extends WikiGraphBenchmark {
   implicit lazy val picklerUnpicklerColonColonVertex
       : Pickler[::[Vertex]] with Unpickler[::[Vertex]] = implicitly
   implicit lazy val picklerUnpicklerVectorVertex
-      : Pickler[Vector[Vertex]] with Unpickler[Vector[Vertex]] =
-    Defaults.vectorPickler[Vertex]
+      : Pickler[Vector[Vertex]] with Unpickler[Vector[Vertex]] = Defaults
+    .vectorPickler[Vertex]
   implicit val picklerGraph = implicitly[Pickler[Graph]]
   implicit val unpicklerGraph = implicitly[Unpickler[Graph]]
 

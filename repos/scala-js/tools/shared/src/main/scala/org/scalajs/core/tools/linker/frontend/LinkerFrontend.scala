@@ -39,8 +39,8 @@ final class LinkerFrontend(
   private[this] val linker: BaseLinker =
     new BaseLinker(semantics, esLevel, withSourceMap)
 
-  private[this] val optOptimizer: Option[GenIncOptimizer] =
-    optimizerFactory.map(_(semantics, esLevel, withSourceMap))
+  private[this] val optOptimizer: Option[GenIncOptimizer] = optimizerFactory
+    .map(_(semantics, esLevel, withSourceMap))
 
   private[this] val refiner: Refiner = new Refiner
 
@@ -110,8 +110,7 @@ object LinkerFrontend {
       copy(bypassLinkingErrors = bypassLinkingErrors)
     }
 
-    def withCheckIR(checkIR: Boolean): Config =
-      copy(checkIR = checkIR)
+    def withCheckIR(checkIR: Boolean): Config = copy(checkIR = checkIR)
 
     private def copy(
         bypassLinkingErrors: Boolean = bypassLinkingErrors,

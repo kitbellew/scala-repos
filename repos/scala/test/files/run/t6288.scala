@@ -6,8 +6,7 @@ object Test extends DirectTest {
   override def extraSettings: String =
     "-usejavacp -Xprint:patmat -Xprint-pos -d " + testOutput.path
 
-  override def code =
-    """
+  override def code = """
       |object Case3 {
       |  def unapply(z: Any): Option[Int] = Some(-1)
       |

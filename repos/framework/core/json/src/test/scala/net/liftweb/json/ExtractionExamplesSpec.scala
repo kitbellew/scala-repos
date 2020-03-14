@@ -121,8 +121,8 @@ object ExtractionExamples extends Specification {
   }
 
   "Option extraction example" in {
-    val json =
-      parse("""{ "name": null, "age": 5, "mother":{"name":"Marilyn"}}""")
+    val json = parse(
+      """{ "name": null, "age": 5, "mother":{"name":"Marilyn"}}""")
     json
       .extract[OChild] mustEqual OChild(None, 5, Some(Parent("Marilyn")), None)
   }
@@ -302,8 +302,7 @@ object ExtractionExamples extends Specification {
       "a" -> List(Map("b" -> "c")))
   }
 
-  val testJson =
-    """
+  val testJson = """
 { "name": "joe",
   "address": {
     "street": "Bulevard",
@@ -323,8 +322,7 @@ object ExtractionExamples extends Specification {
 }
 """
 
-  val missingChildren =
-    """
+  val missingChildren = """
 {
   "name": "joe",
   "address": {
@@ -334,8 +332,7 @@ object ExtractionExamples extends Specification {
 }
 """
 
-  val twoAddresses =
-    """
+  val twoAddresses = """
 {
   "name": "joe",
   "addresses": {
@@ -351,8 +348,7 @@ object ExtractionExamples extends Specification {
 }
 """
 
-  val primitives =
-    """
+  val primitives = """
 {
   "l": 123,
   "i": 124,
@@ -374,16 +370,14 @@ object ExtractionExamples extends Specification {
 }
 """
 
-  val stringField =
-    """
+  val stringField = """
 {
   "name": "one",
   "message": "msg"
 }
 """
 
-  val objField =
-    """
+  val objField = """
 {
   "name": "one",
   "message": {

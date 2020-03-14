@@ -60,8 +60,8 @@ class StressTest {
 
   val chefs = (1 to 4).map { _ => actorSystem.actorOf(Props(makechef)) }
 
-  val chef =
-    actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val chef = actorSystem.actorOf(
+    Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val owner: AccountId = "account999"
 

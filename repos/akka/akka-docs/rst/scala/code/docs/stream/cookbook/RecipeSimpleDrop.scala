@@ -14,14 +14,12 @@ class RecipeSimpleDrop extends RecipeSpec {
     "work" in {
 
       //#simple-drop
-      val droppyStream: Flow[Message, Message, NotUsed] =
-        Flow[Message].conflate((lastMessage, newMessage) => newMessage)
+      val droppyStream: Flow[Message, Message, NotUsed] = Flow[Message]
+        .conflate((lastMessage, newMessage) => newMessage)
       //#simple-drop
       val latch = TestLatch(2)
-      val realDroppyStream =
-        Flow[Message].conflate((lastMessage, newMessage) => {
-          latch.countDown(); newMessage
-        })
+      val realDroppyStream = Flow[Message].conflate(
+        (lastMessage, newMessage) => { latch.countDown(); newMessage })
 
       val pub = TestPublisher.probe[Message]()
       val sub = TestSubscriber.manualProbe[Message]()

@@ -218,12 +218,13 @@ object DebuggerUtil {
         }
       case _ => None
     }
-    val simpleParameters =
-      function.effectiveParameterClauses.flatMap(_.effectiveParameters)
+    val simpleParameters = function.effectiveParameterClauses.flatMap(
+      _.effectiveParameters)
     val parameters =
       valueClassParameter ++: simpleParameters ++: localParameters
-    val paramTypes =
-      parameters.map(parameterForJVMSignature(_, subst)).mkString("(", "", ")")
+    val paramTypes = parameters
+      .map(parameterForJVMSignature(_, subst))
+      .mkString("(", "", ")")
     val resultType = function match {
       case fun: ScFunction if !fun.isConstructor =>
         getJVMStringForType(

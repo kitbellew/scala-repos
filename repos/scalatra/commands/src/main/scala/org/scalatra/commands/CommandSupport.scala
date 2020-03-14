@@ -66,8 +66,7 @@ trait CommandSupport extends ParamsValueReaderProperties with CommandExecutors {
 
   private[commands] def commandRequestKey[T <: CommandType](implicit
       request: HttpServletRequest,
-      mf: Manifest[T]) =
-    "_command_" + manifest[T].erasure.getName
+      mf: Manifest[T]) = "_command_" + manifest[T].erasure.getName
 
   private class CommandRouteMatcher[T <: CommandType](implicit mf: Manifest[T])
       extends RouteMatcher {

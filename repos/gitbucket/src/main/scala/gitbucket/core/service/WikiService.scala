@@ -232,8 +232,8 @@ trait WikiService {
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()
               val inserter = git.getRepository.newObjectInserter()
-              val headId =
-                git.getRepository.resolve(Constants.HEAD + "^{commit}")
+              val headId = git.getRepository.resolve(
+                Constants.HEAD + "^{commit}")
 
               JGitUtil.processTree(git, headId) { (path, tree) =>
                 if (revertInfo.find(x => x.filePath == path).isEmpty) {

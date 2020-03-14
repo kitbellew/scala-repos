@@ -205,8 +205,7 @@ class RichPipe(val pipe: Pipe)
     * Discard the given fields, and keep the rest.
     * Kind of the opposite of project method.
     */
-  def discard(f: Fields): Pipe =
-    new Each(pipe, f, new NoOp, Fields.SWAP)
+  def discard(f: Fields): Pipe = new Each(pipe, f, new NoOp, Fields.SWAP)
 
   /**
     * Insert a function into the pipeline:
@@ -408,8 +407,7 @@ class RichPipe(val pipe: Pipe)
     * {{{ filter('name) { name: String => !(name contains "a") } }}}
     */
   def filterNot[A](f: Fields)(fn: (A) => Boolean)(
-      implicit conv: TupleConverter[A]): Pipe =
-    filter[A](f)(!fn(_))
+      implicit conv: TupleConverter[A]): Pipe = filter[A](f)(!fn(_))
 
   /**
     * Text files can have corrupted data. If you use this function and a

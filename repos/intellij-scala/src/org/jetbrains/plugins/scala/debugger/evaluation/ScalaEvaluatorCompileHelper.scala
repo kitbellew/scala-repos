@@ -161,8 +161,8 @@ private class ServerConnector(
   def compile(): Either[Array[(File, String)], Seq[String]] = {
     val project = module.getProject
 
-    val compilationProcess =
-      new RemoteServerRunner(project).buildProcess(arguments, client)
+    val compilationProcess = new RemoteServerRunner(project)
+      .buildProcess(arguments, client)
     var result: Either[Array[(File, String)], Seq[String]] = Right(
       Seq("Compilation failed"))
     compilationProcess.addTerminationCallback {

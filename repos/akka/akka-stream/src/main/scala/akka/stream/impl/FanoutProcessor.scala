@@ -107,19 +107,18 @@ private[akka] object FanoutProcessorImpl {
 private[akka] class FanoutProcessorImpl(_settings: ActorMaterializerSettings)
     extends ActorProcessorImpl(_settings) {
 
-  override val primaryOutputs: FanoutOutputs =
-    new FanoutOutputs(
-      settings.maxInputBufferSize,
-      settings.initialInputBufferSize,
-      self,
-      this) {
-      override def afterShutdown(): Unit = afterFlush()
-    }
+  override val primaryOutputs: FanoutOutputs = new FanoutOutputs(
+    settings.maxInputBufferSize,
+    settings.initialInputBufferSize,
+    self,
+    this) {
+    override def afterShutdown(): Unit = afterFlush()
+  }
 
-  val running: TransferPhase =
-    TransferPhase(primaryInputs.NeedsInput && primaryOutputs.NeedsDemand) { () ⇒
-      primaryOutputs.enqueueOutputElement(primaryInputs.dequeueInputElement())
-    }
+  val running: TransferPhase = TransferPhase(
+    primaryInputs.NeedsInput && primaryOutputs.NeedsDemand) { () ⇒
+    primaryOutputs.enqueueOutputElement(primaryInputs.dequeueInputElement())
+  }
 
   override def fail(e: Throwable): Unit = {
     if (settings.debugLogging) log.debug("fail due to: {}", e.getMessage)

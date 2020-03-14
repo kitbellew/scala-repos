@@ -150,8 +150,10 @@ object ScalaPsiUtil {
 
   @tailrec
   def drvTemplate(elem: PsiElement): Option[ScTemplateDefinition] = {
-    val template =
-      PsiTreeUtil.getContextOfType(elem, true, classOf[ScTemplateDefinition])
+    val template = PsiTreeUtil.getContextOfType(
+      elem,
+      true,
+      classOf[ScTemplateDefinition])
     if (template == null) return None
     template.extendsBlock.templateParents match {
       case Some(parents)
@@ -268,13 +270,13 @@ object ScalaPsiUtil {
         // object A { def foo(a: Any) = ()}; A foo () ==>> A.foo(()), or A.foo() ==>> A.foo( () )
         Some(Seq(new Expression(types.Unit, place)))
       case _ =>
-        val exprTypes: Seq[ScType] =
-          s.map(
-              _.getTypeAfterImplicitConversion(
-                checkImplicits = true,
-                isShape = false,
-                None))
-            .map { case (res, _) => res.getOrAny }
+        val exprTypes: Seq[ScType] = s
+          .map(
+            _.getTypeAfterImplicitConversion(
+              checkImplicits = true,
+              isShape = false,
+              None))
+          .map { case (res, _) => res.getOrAny }
         val qual = "scala.Tuple" + exprTypes.length
         val tupleClass = ScalaPsiManager
           .instance(manager.getProject)
@@ -308,8 +310,10 @@ object ScalaPsiUtil {
       place: PsiElement,
       lastParent: PsiElement,
       typeResult: => TypeResult[ScType]): Boolean = {
-    val subst =
-      state.get(ScSubstitutor.key).toOption.getOrElse(ScSubstitutor.empty)
+    val subst = state
+      .get(ScSubstitutor.key)
+      .toOption
+      .getOrElse(ScSubstitutor.empty)
     lastParent match {
       case _: ScImportStmt =>
         typeResult match {
@@ -616,8 +620,9 @@ object ScalaPsiUtil {
         case _                             => Seq.empty
       }
       .getOrElse(Seq.empty)
-    val emptyStringExpression =
-      ScalaPsiElementFactory.createExpressionFromText("\"\"", call.getManager)
+    val emptyStringExpression = ScalaPsiElementFactory.createExpressionFromText(
+      "\"\"",
+      call.getManager)
     val processor = new MethodResolveProcessor(
       expr,
       methodName,
@@ -637,8 +642,9 @@ object ScalaPsiUtil {
               internal,
               call.getProject,
               call.getResolveScope)) {
-          val state: ResolveState =
-            ResolveState.initial().put(BaseProcessor.FROM_TYPE_KEY, internal)
+          val state: ResolveState = ResolveState
+            .initial()
+            .put(BaseProcessor.FROM_TYPE_KEY, internal)
           processor.processType(internal, call.getEffectiveInvokedExpr, state)
         }
         candidates = processor.candidatesS
@@ -674,8 +680,9 @@ object ScalaPsiUtil {
             .put(CachesUtil.IMPLICIT_FUNCTION, function)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state =
-                state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
+              state = state.put(
+                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
+                cl)
             case _ =>
           }
           state = state.put(BaseProcessor.FROM_TYPE_KEY, res.tp)
@@ -1261,8 +1268,10 @@ object ScalaPsiUtil {
   def getPlaceTd(
       placer: PsiElement,
       ignoreTemplateParents: Boolean = false): ScTemplateDefinition = {
-    val td =
-      PsiTreeUtil.getContextOfType(placer, true, classOf[ScTemplateDefinition])
+    val td = PsiTreeUtil.getContextOfType(
+      placer,
+      true,
+      classOf[ScTemplateDefinition])
     if (ignoreTemplateParents) return td
     if (td == null) return null
     val res = td.extendsBlock.templateParents match {
@@ -1850,8 +1859,9 @@ object ScalaPsiUtil {
         expr.getParent match {
           case ScParenthesisedExpr(_) =>
             val text = expr.getText
-            val dummyFile =
-              ScalaPsiElementFactory.createScalaFile(text, expr.getManager)
+            val dummyFile = ScalaPsiElementFactory.createScalaFile(
+              text,
+              expr.getManager)
             dummyFile.firstChild match {
               case Some(newExpr: ScExpression) => newExpr.getText != text
               case _                           => true
@@ -2210,8 +2220,8 @@ object ScalaPsiUtil {
         holder: ScImportsHolder): Set[(ScReferenceElement, String)] = {
       val result = collection.mutable.Set[(ScReferenceElement, String)]()
       if (holder != null) {
-        val importExprs: Seq[ScImportExpr] =
-          holder.getImportStatements.flatMap(_.importExprs)
+        val importExprs: Seq[ScImportExpr] = holder.getImportStatements.flatMap(
+          _.importExprs)
         importExprs.flatMap(_.selectors).filter(_.importedName != "_").foreach {
           s =>
             if (s.reference.refName != s.importedName)
@@ -2535,15 +2545,16 @@ object ScalaPsiUtil {
               //need to generate ScType for Java method
               val method = abst.head
               val project = method.getProject
-              val returnType: ScType =
-                ScType.create(method.getReturnType, project, scalaScope)
-              val params: Array[ScType] =
-                method.getParameterList.getParameters.map {
-                  param: PsiParameter =>
-                    ScType.create(
-                      param.getTypeElement.getType,
-                      project,
-                      scalaScope)
+              val returnType: ScType = ScType.create(
+                method.getReturnType,
+                project,
+                scalaScope)
+              val params: Array[ScType] = method.getParameterList.getParameters
+                .map { param: PsiParameter =>
+                  ScType.create(
+                    param.getTypeElement.getType,
+                    project,
+                    scalaScope)
                 }
               val fun = ScFunctionType(returnType, params)(project, scalaScope)
               val subbed = sub.subst(fun)
@@ -2615,8 +2626,8 @@ object ScalaPsiUtil {
               }
             }
             //parameter clauses are contravariant positions, return types are covariant positions
-            val newParams =
-              params.map(convertParameter(_, ScTypeParam.Contravariant))
+            val newParams = params.map(
+              convertParameter(_, ScTypeParam.Contravariant))
             val newRetTp = convertParameter(retTp, ScTypeParam.Covariant)
             Some(ScFunctionType(newRetTp, newParams)(proj, scope))
           case _ => None

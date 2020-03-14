@@ -95,8 +95,9 @@ class MapWithStateRDDSuite
       val initialStateMap = new OpenHashMapBasedStateMap[String, Int]()
       initStates.foreach { s => initialStateMap.put("key", s, initialTime) }
       functionCalled = false
-      val record =
-        MapWithStateRDDRecord[String, Int, Int](initialStateMap, Seq.empty)
+      val record = MapWithStateRDDRecord[String, Int, Int](
+        initialStateMap,
+        Seq.empty)
       val dataIterator = data.map { v => ("key", v) }.iterator
       val removedStates = new ArrayBuffer[Int]
       val timingOutStates = new ArrayBuffer[Int]
@@ -139,8 +140,8 @@ class MapWithStateRDDSuite
         }
       }
 
-      val updatedRecord =
-        MapWithStateRDDRecord.updateRecordWithData[String, String, Int, Int](
+      val updatedRecord = MapWithStateRDDRecord
+        .updateRecordWithData[String, String, Int, Int](
           Some(record),
           dataIterator,
           testFunc,
@@ -148,8 +149,9 @@ class MapWithStateRDDSuite
           timeoutThreshold,
           removeTimedoutData)
 
-      val updatedStateData =
-        updatedRecord.stateMap.getAll().map { x => (x._2, x._3) }
+      val updatedStateData = updatedRecord.stateMap.getAll().map { x =>
+        (x._2, x._3)
+      }
       assert(
         updatedStateData.toSet === expectedStates.toSet,
         "states do not match after updating the MapWithStateRDDRecord")
@@ -323,8 +325,9 @@ class MapWithStateRDDSuite
             Int
           ]] // Do not return anything, not being tested
         }
-      val newDataRDD =
-        sc.makeRDD(testData).partitionBy(testStateRDD.partitioner.get)
+      val newDataRDD = sc
+        .makeRDD(testData)
+        .partitionBy(testStateRDD.partitioner.get)
 
       // Assert that the new state RDD has expected state data
       val newStateRDD = assertOperation(
@@ -458,8 +461,8 @@ class MapWithStateRDDSuite
         longLineageRDD: RDD[Int]): MapWithStateRDD[Int, Int, Int, Int] = {
 
       // Create a MapWithStateRDD that has a long lineage using the data RDD with a long lineage
-      val stateRDDWithLongLineage =
-        makeStateRDDWithLongLineageDataRDD(longLineageRDD)
+      val stateRDDWithLongLineage = makeStateRDDWithLongLineageDataRDD(
+        longLineageRDD)
 
       // Create a new MapWithStateRDD, with the lineage lineage MapWithStateRDD as the parent
       new MapWithStateRDD[Int, Int, Int, Int](

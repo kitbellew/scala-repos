@@ -358,44 +358,45 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     val dotOutput = dotRunner.feedToDot(dotInput, template)
     var tSVG = -System.currentTimeMillis
 
-    val result = if (dotOutput != null) {
-      val src = scala.io.Source.fromString(dotOutput)
-      try {
-        val cpa = scala.xml.parsing.ConstructingParser
-          .fromSource(src, preserveWS = false)
-        val doc = cpa.document()
-        if (doc != null) transform(doc.docElem) else NodeSeq.Empty
-      } catch {
-        case exc: Exception =>
-          if (settings.docDiagramsDebug) {
-            settings.printMsg(
-              "\n\n**********************************************************************")
-            settings.printMsg(
-              "Encountered an error while generating page for " + template.qualifiedName)
-            settings.printMsg(
-              dotInput.toString
-                .split("\n")
-                .mkString("\nDot input:\n\t", "\n\t", ""))
-            settings.printMsg(
-              dotOutput.toString
-                .split("\n")
-                .mkString("\nDot output:\n\t", "\n\t", ""))
-            settings.printMsg(
-              exc.getStackTrace.mkString(
-                "\nException: " + exc.toString + ":\n\tat ",
-                "\n\tat ",
-                ""))
-            settings.printMsg(
-              "\n\n**********************************************************************")
-          } else {
-            settings.printMsg(
-              "\nThe diagram for " + template.qualifiedName + " could not be created due to an internal error.")
-            settings.printMsg(
-              "Use " + settings.docDiagramsDebug.name + " for more information and please file this as a bug.")
-          }
-          NodeSeq.Empty
-      }
-    } else NodeSeq.Empty
+    val result =
+      if (dotOutput != null) {
+        val src = scala.io.Source.fromString(dotOutput)
+        try {
+          val cpa = scala.xml.parsing.ConstructingParser
+            .fromSource(src, preserveWS = false)
+          val doc = cpa.document()
+          if (doc != null) transform(doc.docElem) else NodeSeq.Empty
+        } catch {
+          case exc: Exception =>
+            if (settings.docDiagramsDebug) {
+              settings.printMsg(
+                "\n\n**********************************************************************")
+              settings.printMsg(
+                "Encountered an error while generating page for " + template.qualifiedName)
+              settings.printMsg(
+                dotInput.toString
+                  .split("\n")
+                  .mkString("\nDot input:\n\t", "\n\t", ""))
+              settings.printMsg(
+                dotOutput.toString
+                  .split("\n")
+                  .mkString("\nDot output:\n\t", "\n\t", ""))
+              settings.printMsg(
+                exc.getStackTrace.mkString(
+                  "\nException: " + exc.toString + ":\n\tat ",
+                  "\n\tat ",
+                  ""))
+              settings.printMsg(
+                "\n\n**********************************************************************")
+            } else {
+              settings.printMsg(
+                "\nThe diagram for " + template.qualifiedName + " could not be created due to an internal error.")
+              settings.printMsg(
+                "Use " + settings.docDiagramsDebug.name + " for more information and please file this as a bug.")
+            }
+            NodeSeq.Empty
+        }
+      } else NodeSeq.Empty
 
     tSVG += System.currentTimeMillis
     DiagramStats.addSvgTime(tSVG)

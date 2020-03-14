@@ -256,8 +256,9 @@ abstract class MappedDecimal[T <: Mapper[T]](
     * top of the page concerning default precision.
     */
   def fieldCreatorString(dbType: DriverType, colName: String): String = {
-    val suffix = if (context.getPrecision == 0) { "" }
-    else { "(" + context.getPrecision + "," + scale + ")" }
+    val suffix =
+      if (context.getPrecision == 0) { "" }
+      else { "(" + context.getPrecision + "," + scale + ")" }
 
     colName + " DECIMAL" + suffix + notNullAppender()
   }

@@ -41,10 +41,11 @@ private[sql] object InferSchema {
       configOptions.samplingRatio > 0,
       s"samplingRatio (${configOptions.samplingRatio}) should be greater than 0")
     val shouldHandleCorruptRecord = configOptions.permissive
-    val schemaData = if (configOptions.samplingRatio > 0.99) { json }
-    else {
-      json.sample(withReplacement = false, configOptions.samplingRatio, 1)
-    }
+    val schemaData =
+      if (configOptions.samplingRatio > 0.99) { json }
+      else {
+        json.sample(withReplacement = false, configOptions.samplingRatio, 1)
+      }
 
     // perform schema inference on each row and merge afterwards
     val rootType = schemaData
@@ -123,8 +124,9 @@ private[sql] object InferSchema {
         // the type as we pass through all JSON objects.
         var elementType: DataType = NullType
         while (nextUntil(parser, END_ARRAY)) {
-          elementType =
-            compatibleType(elementType, inferField(parser, configOptions))
+          elementType = compatibleType(
+            elementType,
+            inferField(parser, configOptions))
         }
 
         ArrayType(elementType)
@@ -249,11 +251,13 @@ private[sql] object InferSchema {
           } else { DecimalType(range + scale, scale) }
 
         case (StructType(fields1), StructType(fields2)) =>
-          val newFields =
-            (fields1 ++ fields2).groupBy(field => field.name).map {
+          val newFields = (fields1 ++ fields2)
+            .groupBy(field => field.name)
+            .map {
               case (name, fieldTypes) =>
-                val dataType =
-                  fieldTypes.view.map(_.dataType).reduce(compatibleType)
+                val dataType = fieldTypes.view
+                  .map(_.dataType)
+                  .reduce(compatibleType)
                 StructField(name, dataType, nullable = true)
             }
           StructType(newFields.toSeq.sortBy(_.name))

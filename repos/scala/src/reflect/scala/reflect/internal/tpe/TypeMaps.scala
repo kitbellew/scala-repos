@@ -114,11 +114,12 @@ private[internal] trait TypeMaps {
       tp match {
         case tr @ TypeRef(pre, sym, args) =>
           val pre1 = this(pre)
-          val args1 = (
-            if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
-              mapOverArgs(args, sym.typeParams)
-            else args mapConserve this
-          )
+          val args1 =
+            (
+              if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
+                mapOverArgs(args, sym.typeParams)
+              else args mapConserve this
+            )
           if ((pre1 eq pre) && (args1 eq args)) tp
           else copyTypeRef(tp, pre1, tr.coevolveSym(pre1), args1)
         case ThisType(_) => tp
@@ -279,8 +280,7 @@ private[internal] trait TypeMaps {
       if (args1 contains UnmappableTree) Nil else args1
     }
 
-    def mapOver(tree: Tree): Tree =
-      mapOver(tree, () => return UnmappableTree)
+    def mapOver(tree: Tree): Tree = mapOver(tree, () => return UnmappableTree)
 
     /** Map a tree that is part of an annotation argument.
       *  If the tree cannot be mapped, then invoke giveup().
@@ -588,8 +588,7 @@ private[internal] trait TypeMaps {
         // It's easy to get here when working on hardcore type machinery (not to
         // mention when not doing so, see above) so let's provide a standout error.
         def own_s(s: Symbol) = s.nameString + " in " + s.owner.nameString
-        def explain =
-          sm"""|   sought  ${own_s(lhsSym)}
+        def explain = sm"""|   sought  ${own_s(lhsSym)}
                | classSym  ${own_s(rhsSym)}
                |  tparams  ${rhsSym.typeParams map own_s mkString ", "}
                |"""

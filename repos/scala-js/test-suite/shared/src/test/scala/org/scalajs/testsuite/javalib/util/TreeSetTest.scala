@@ -346,17 +346,13 @@ class TreeSetFactory
     extends AbstractSetFactory
     with NavigableSetFactory
     with SortedSetFactory {
-  def implementationName: String =
-    "java.util.TreeSet"
+  def implementationName: String = "java.util.TreeSet"
 
-  def empty[E: ClassTag]: ju.TreeSet[E] =
-    new TreeSet[E]
+  def empty[E: ClassTag]: ju.TreeSet[E] = new TreeSet[E]
 
-  def empty[E](cmp: ju.Comparator[E]): ju.TreeSet[E] =
-    new TreeSet[E](cmp)
+  def empty[E](cmp: ju.Comparator[E]): ju.TreeSet[E] = new TreeSet[E](cmp)
 
-  def newFrom[E](coll: ju.Collection[E]): ju.TreeSet[E] =
-    new TreeSet[E](coll)
+  def newFrom[E](coll: ju.Collection[E]): ju.TreeSet[E] = new TreeSet[E](coll)
 
   override def allowsNullElement: Boolean = false
 

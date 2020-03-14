@@ -249,8 +249,9 @@ object HttpEntity {
     else empty(contentType)
   }
 
-  val Empty: HttpEntity.Strict =
-    HttpEntity.Strict(ContentTypes.NoContentType, data = ByteString.empty)
+  val Empty: HttpEntity.Strict = HttpEntity.Strict(
+    ContentTypes.NoContentType,
+    data = ByteString.empty)
 
   def empty(contentType: ContentType): HttpEntity.Strict =
     if (contentType == Empty.contentType) Empty
@@ -313,8 +314,10 @@ object HttpEntity {
           try {
             val maxBytes = 4096
             if (data.length > maxBytes) {
-              val truncatedString =
-                data.take(maxBytes).decodeString(nb.charset.value).dropRight(1)
+              val truncatedString = data
+                .take(maxBytes)
+                .decodeString(nb.charset.value)
+                .dropRight(1)
               s"$truncatedString ... (${data.length} bytes total)"
             } else data.decodeString(nb.charset.value)
           } catch {
@@ -648,8 +651,8 @@ object HttpEntity {
         val (newData, whenCompleted) = StreamUtils.captureTermination(x.data)
         x.copy(data = newData).asInstanceOf[T] -> whenCompleted
       case x: HttpEntity.Chunked ⇒
-        val (newChunks, whenCompleted) =
-          StreamUtils.captureTermination(x.chunks)
+        val (newChunks, whenCompleted) = StreamUtils.captureTermination(
+          x.chunks)
         x.copy(chunks = newChunks).asInstanceOf[T] -> whenCompleted
       case x: HttpEntity.CloseDelimited ⇒
         val (newData, whenCompleted) = StreamUtils.captureTermination(x.data)

@@ -478,8 +478,12 @@ final case class ClusterMultiReaderConfig private[kestrel] (
   */
 abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     config: MultiReaderConfig[Req, Rep]) {
-  type ClientBuilderBase =
-    ClientBuilder[Req, Rep, Nothing, ClientConfig.Yes, ClientConfig.Yes]
+  type ClientBuilderBase = ClientBuilder[
+    Req,
+    Rep,
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   private[this] val logger = DefaultLogger
 
@@ -608,13 +612,12 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
 abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
     config: MultiReaderConfig[Command, Response])
     extends MultiReaderBuilder[Command, Response, Builder](config) {
-  type MemcacheClientBuilder =
-    ClientBuilder[
-      Command,
-      Response,
-      Nothing,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+  type MemcacheClientBuilder = ClientBuilder[
+    Command,
+    Response,
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   protected[kestrel] def defaultClientBuilder: MemcacheClientBuilder =
     ClientBuilder()
@@ -625,8 +628,7 @@ abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
       .daemon(true)
 
   protected[kestrel] def createClient(
-      factory: ServiceFactory[Command, Response]): Client =
-    Client(factory)
+      factory: ServiceFactory[Command, Response]): Client = Client(factory)
 }
 
 @deprecated("Use MultiReaderBuilderMemcache instead", "6.15.1")
@@ -665,8 +667,7 @@ class MultiReaderBuilderMemcache private[kestrel] (
     extends MultiReaderBuilderMemcacheBase[MultiReaderBuilderMemcache](config) {
 
   protected[kestrel] def copy(config: MultiReaderConfig[Command, Response])
-      : MultiReaderBuilderMemcache =
-    new MultiReaderBuilderMemcache(config)
+      : MultiReaderBuilderMemcache = new MultiReaderBuilderMemcache(config)
 }
 
 /**
@@ -679,18 +680,16 @@ class MultiReaderBuilderThrift private[kestrel] (
       ThriftClientRequest,
       Array[Byte],
       MultiReaderBuilderThrift](config) {
-  type ThriftClientBuilder =
-    ClientBuilder[
-      ThriftClientRequest,
-      Array[Byte],
-      Nothing,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+  type ThriftClientBuilder = ClientBuilder[
+    ThriftClientRequest,
+    Array[Byte],
+    Nothing,
+    ClientConfig.Yes,
+    ClientConfig.Yes]
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[ThriftClientRequest, Array[Byte]])
-      : MultiReaderBuilderThrift =
-    new MultiReaderBuilderThrift(config)
+      : MultiReaderBuilderThrift = new MultiReaderBuilderThrift(config)
 
   protected[kestrel] def defaultClientBuilder: ThriftClientBuilder =
     ClientBuilder()

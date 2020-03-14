@@ -50,8 +50,7 @@ object ModuleExtDataService {
         project,
         modelsProvider) {
 
-    override def importData(): Unit =
-      dataToImport.foreach(doImport)
+    override def importData(): Unit = dataToImport.foreach(doImport)
 
     private def doImport(dataNode: DataNode[ModuleExtData]): Unit = {
       for {
@@ -112,8 +111,8 @@ object ModuleExtDataService {
         .javaLanguageLevelFrom(javacOptions)
         .orElse(moduleSdk.flatMap(SdkUtils.defaultJavaLanguageLevelIn))
       languageLevel.foreach { level =>
-        val extension =
-          model.getModuleExtension(classOf[LanguageLevelModuleExtensionImpl])
+        val extension = model.getModuleExtension(
+          classOf[LanguageLevelModuleExtensionImpl])
         extension.setLanguageLevel(level)
       }
     }

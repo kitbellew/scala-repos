@@ -64,12 +64,11 @@ trait UnwrappedInstances extends LowPriorityUnwrappedInstances {
 }
 
 trait LowPriorityUnwrappedInstances {
-  val theSelfUnwrapped =
-    new Unwrapped[Any] {
-      type U = Any
-      def unwrap(t: Any) = t
-      def wrap(t: Any) = t
-    }
+  val theSelfUnwrapped = new Unwrapped[Any] {
+    type U = Any
+    def unwrap(t: Any) = t
+    def wrap(t: Any) = t
+  }
   implicit def selfUnwrapped[T] =
     theSelfUnwrapped.asInstanceOf[Unwrapped.Aux[T, T]]
 }

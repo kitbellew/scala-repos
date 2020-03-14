@@ -154,14 +154,16 @@ class ReceivedBlockTrackerSuite
     incrementTime()
 
     // Recovery without recovery from WAL and verify list of unallocated blocks is empty
-    val tracker1_ =
-      createTracker(clock = manualClock, recoverFromWriteAheadLog = false)
+    val tracker1_ = createTracker(
+      clock = manualClock,
+      recoverFromWriteAheadLog = false)
     tracker1_.getUnallocatedBlocks(streamId) shouldBe empty
     tracker1_.hasUnallocatedReceivedBlocks should be(false)
 
     // Restart tracker and verify recovered list of unallocated blocks
-    val tracker2 =
-      createTracker(clock = manualClock, recoverFromWriteAheadLog = true)
+    val tracker2 = createTracker(
+      clock = manualClock,
+      recoverFromWriteAheadLog = true)
     val unallocatedBlocks = tracker2.getUnallocatedBlocks(streamId).toList
     unallocatedBlocks shouldEqual blockInfos1
     unallocatedBlocks.foreach { block =>
@@ -195,8 +197,9 @@ class ReceivedBlockTrackerSuite
 
     // Restart tracker and verify recovered state
     incrementTime()
-    val tracker3 =
-      createTracker(clock = manualClock, recoverFromWriteAheadLog = true)
+    val tracker3 = createTracker(
+      clock = manualClock,
+      recoverFromWriteAheadLog = true)
     tracker3.getBlocksOfBatchAndStream(
       batchTime1,
       streamId) shouldEqual blockInfos1
@@ -226,8 +229,9 @@ class ReceivedBlockTrackerSuite
     // Restart tracker and verify recovered state, specifically whether info about the first
     // batch has been removed, but not the second batch
     incrementTime()
-    val tracker4 =
-      createTracker(clock = manualClock, recoverFromWriteAheadLog = true)
+    val tracker4 = createTracker(
+      clock = manualClock,
+      recoverFromWriteAheadLog = true)
     tracker4.getUnallocatedBlocks(streamId) shouldBe empty
     tracker4.getBlocksOfBatchAndStream(
       batchTime1,

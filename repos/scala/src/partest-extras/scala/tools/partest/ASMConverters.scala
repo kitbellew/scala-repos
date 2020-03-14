@@ -39,8 +39,8 @@ object ASMConverters {
     def dropStaleLabels = {
       val definedLabels: Set[Instruction] =
         self.filter(_.isInstanceOf[Label]).toSet
-      val usedLabels: Set[Instruction] =
-        self.flatMap(referencedLabels)(collection.breakOut)
+      val usedLabels: Set[Instruction] = self.flatMap(referencedLabels)(
+        collection.breakOut)
       self.filterNot(definedLabels diff usedLabels)
     }
 

@@ -138,8 +138,7 @@ object Cors {
      */
 
     protected[this] object Preflight {
-      def unapply(request: Request): Boolean =
-        request.method == Method.Options
+      def unapply(request: Request): Boolean = request.method == Method.Options
     }
 
     /** Let method be the value as result of parsing the Access-Control-Request-Method header. */

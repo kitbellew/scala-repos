@@ -94,20 +94,19 @@ class Eval(target: Option[File]) {
     *   lazy val preprocessors = {...}
     * }
     */
-  protected lazy val preprocessors: Seq[Preprocessor] =
-    Seq(
-      new IncludePreprocessor(
-        Seq(
-          new ClassScopedResolver(getClass),
-          new FilesystemResolver(new File(".")),
-          new FilesystemResolver(new File("." + File.separator + "config"))
-        ) ++ (
-          Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
-            path => new FilesystemResolver(new File(path))
-          }
-        )
+  protected lazy val preprocessors: Seq[Preprocessor] = Seq(
+    new IncludePreprocessor(
+      Seq(
+        new ClassScopedResolver(getClass),
+        new FilesystemResolver(new File(".")),
+        new FilesystemResolver(new File("." + File.separator + "config"))
+      ) ++ (
+        Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
+          path => new FilesystemResolver(new File(path))
+        }
       )
     )
+  )
 
   // For derived classes to provide an alternate compiler message handler.
   protected lazy val compilerMessageHandler: Option[Reporter] = None
@@ -152,14 +151,16 @@ class Eval(target: Option[File]) {
   def apply[T](files: File*): T = {
     if (target.isDefined) {
       val targetDir = target.get
-      val unprocessedSource =
-        files.map { scala.io.Source.fromFile(_).mkString }.mkString("\n")
+      val unprocessedSource = files
+        .map { scala.io.Source.fromFile(_).mkString }
+        .mkString("\n")
       val processed = sourceForString(unprocessedSource)
       val sourceChecksum = uniqueId(processed, None)
       val checksumFile = new File(targetDir, "checksum")
-      val lastChecksum = if (checksumFile.exists) {
-        Source.fromFile(checksumFile).getLines().take(1).toList.head
-      } else { -1 }
+      val lastChecksum =
+        if (checksumFile.exists) {
+          Source.fromFile(checksumFile).getLines().take(1).toList.head
+        } else { -1 }
 
       if (lastChecksum != sourceChecksum) {
         compiler.reset()
@@ -397,16 +398,13 @@ class Eval(target: Option[File]) {
     private[this] def file(path: String): File =
       new File(root.getAbsolutePath + File.separator + path)
 
-    def resolvable(path: String): Boolean =
-      file(path).exists
+    def resolvable(path: String): Boolean = file(path).exists
 
-    def get(path: String): InputStream =
-      new FileInputStream(file(path))
+    def get(path: String): InputStream = new FileInputStream(file(path))
   }
 
   class ClassScopedResolver(clazz: Class[_]) extends Resolver {
-    private[this] def quotePath(path: String) =
-      "/" + path
+    private[this] def quotePath(path: String) = "/" + path
 
     def resolvable(path: String): Boolean =
       clazz.getResourceAsStream(quotePath(path)) != null
@@ -432,8 +430,7 @@ class Eval(target: Option[File]) {
   class IncludePreprocessor(resolvers: Seq[Resolver]) extends Preprocessor {
     def maximumRecursionDepth = 100
 
-    def apply(code: String): String =
-      apply(code, maximumRecursionDepth)
+    def apply(code: String): String = apply(code, maximumRecursionDepth)
 
     def apply(code: String, maxDepth: Int): String = {
       val lines = code.lines map { line: String =>
@@ -472,8 +469,8 @@ class Eval(target: Option[File]) {
     outputDirs.setSingleOutput(compilerOutputDir)
     private[this] val pathList = compilerPath ::: libPath
     bootclasspath.value = pathList.mkString(File.pathSeparator)
-    classpath.value =
-      (pathList ::: impliedClassPath).mkString(File.pathSeparator)
+    classpath.value = (pathList ::: impliedClassPath).mkString(
+      File.pathSeparator)
   }
 
   /**

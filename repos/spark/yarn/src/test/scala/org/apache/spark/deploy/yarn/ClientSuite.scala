@@ -143,8 +143,9 @@ class ClientSuite
 
   test("Jar path propagation through SparkConf") {
     val sparkConf = new SparkConf().set(SPARK_JARS, Seq(SPARK))
-    val client =
-      createClient(sparkConf, args = Array("--jar", USER, "--addJars", ADDED))
+    val client = createClient(
+      sparkConf,
+      args = Array("--jar", USER, "--addJars", ADDED))
 
     val tempDir = Utils.createTempDir()
     try {
@@ -204,10 +205,10 @@ class ClientSuite
       sparkConf)
 
     val appContext = Records.newRecord(classOf[ApplicationSubmissionContext])
-    val getNewApplicationResponse =
-      Records.newRecord(classOf[GetNewApplicationResponse])
-    val containerLaunchContext =
-      Records.newRecord(classOf[ContainerLaunchContext])
+    val getNewApplicationResponse = Records.newRecord(
+      classOf[GetNewApplicationResponse])
+    val containerLaunchContext = Records.newRecord(
+      classOf[ContainerLaunchContext])
 
     val client = new Client(args, conf, sparkConf)
     client.createApplicationSubmissionContext(
@@ -314,33 +315,31 @@ class ClientSuite
 
   object Fixtures {
 
-    val knownDefYarnAppCP: Seq[String] =
-      getFieldValue[Array[String], Seq[String]](
-        classOf[YarnConfiguration],
-        "DEFAULT_YARN_APPLICATION_CLASSPATH",
-        Seq[String]())(a => a.toSeq)
+    val knownDefYarnAppCP
+        : Seq[String] = getFieldValue[Array[String], Seq[String]](
+      classOf[YarnConfiguration],
+      "DEFAULT_YARN_APPLICATION_CLASSPATH",
+      Seq[String]())(a => a.toSeq)
 
-    val knownDefMRAppCP: Seq[String] =
-      getFieldValue2[String, Array[String], Seq[String]](
-        classOf[MRJobConfig],
-        "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH",
-        Seq[String]())(a => a.split(","))(a => a.toSeq)
+    val knownDefMRAppCP
+        : Seq[String] = getFieldValue2[String, Array[String], Seq[String]](
+      classOf[MRJobConfig],
+      "DEFAULT_MAPREDUCE_APPLICATION_CLASSPATH",
+      Seq[String]())(a => a.split(","))(a => a.toSeq)
 
     val knownYARNAppCP = Some(Seq("/known/yarn/path"))
 
     val knownMRAppCP = Some(Seq("/known/mr/path"))
 
-    val mapMRAppConf =
-      Map(
-        "mapreduce.application.classpath" -> knownMRAppCP
-          .map(_.mkString(":"))
-          .get)
+    val mapMRAppConf = Map(
+      "mapreduce.application.classpath" -> knownMRAppCP
+        .map(_.mkString(":"))
+        .get)
 
-    val mapYARNAppConf =
-      Map(
-        YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
-          .map(_.mkString(":"))
-          .get)
+    val mapYARNAppConf = Map(
+      YarnConfiguration.YARN_APPLICATION_CLASSPATH -> knownYARNAppCP
+        .map(_.mkString(":"))
+        .get)
 
     val mapAppConf = mapYARNAppConf ++ mapMRAppConf
   }

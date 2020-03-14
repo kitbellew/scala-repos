@@ -63,8 +63,8 @@ private class UnsafeRowSerializerInstance(numFields: Int)
   override def serializeStream(out: OutputStream): SerializationStream =
     new SerializationStream {
       private[this] var writeBuffer: Array[Byte] = new Array[Byte](4096)
-      private[this] val dOut: DataOutputStream =
-        new DataOutputStream(new BufferedOutputStream(out))
+      private[this] val dOut: DataOutputStream = new DataOutputStream(
+        new BufferedOutputStream(out))
 
       override def writeValue[T: ClassTag](value: T): SerializationStream = {
         val row = value.asInstanceOf[UnsafeRow]
@@ -180,6 +180,5 @@ private class UnsafeRowSerializerInstance(numFields: Int)
     throw new UnsupportedOperationException
   override def deserialize[T: ClassTag](
       bytes: ByteBuffer,
-      loader: ClassLoader): T =
-    throw new UnsupportedOperationException
+      loader: ClassLoader): T = throw new UnsupportedOperationException
 }

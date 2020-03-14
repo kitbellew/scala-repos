@@ -210,8 +210,9 @@ class JDBCLEvents(
         val orderByClause = reversed
           .map(x => if (x) sqls"eventTime desc" else sqls"eventTime asc")
           .getOrElse(sqls"eventTime asc")
-        val limitClause =
-          limit.map(x => if (x < 0) sqls"" else sqls.limit(x)).getOrElse(sqls"")
+        val limitClause = limit
+          .map(x => if (x < 0) sqls"" else sqls.limit(x))
+          .getOrElse(sqls"")
         val q = sql"""
       select
         id,

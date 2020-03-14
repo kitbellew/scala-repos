@@ -106,23 +106,20 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
     //
 
     // Get the RDDs of the reduced values in "old time steps"
-    val oldRDDs =
-      reducedStream.slice(
-        previousWindow.beginTime,
-        currentWindow.beginTime - parent.slideDuration)
+    val oldRDDs = reducedStream.slice(
+      previousWindow.beginTime,
+      currentWindow.beginTime - parent.slideDuration)
     logDebug("# old RDDs = " + oldRDDs.size)
 
     // Get the RDDs of the reduced values in "new time steps"
-    val newRDDs =
-      reducedStream.slice(
-        previousWindow.endTime + parent.slideDuration,
-        currentWindow.endTime)
+    val newRDDs = reducedStream.slice(
+      previousWindow.endTime + parent.slideDuration,
+      currentWindow.endTime)
     logDebug("# new RDDs = " + newRDDs.size)
 
     // Get the RDD of the reduced value of the previous window
-    val previousWindowRDD =
-      getOrCompute(previousWindow.endTime)
-        .getOrElse(ssc.sc.makeRDD(Seq[(K, V)]()))
+    val previousWindowRDD = getOrCompute(previousWindow.endTime)
+      .getOrElse(ssc.sc.makeRDD(Seq[(K, V)]()))
 
     // Make the list of RDDs that needs to cogrouped together for reducing their reduced values
     val allRDDs = new ArrayBuffer[
@@ -147,11 +144,10 @@ private[streaming] class ReducedWindowedDStream[K: ClassTag, V: ClassTag](
         .filter(!_.isEmpty)
         .map(_.head)
       // Getting reduced values "new time steps"
-      val newValues =
-        (1 to numNewValues)
-          .map(i => arrayOfValues(numOldValues + i))
-          .filter(!_.isEmpty)
-          .map(_.head)
+      val newValues = (1 to numNewValues)
+        .map(i => arrayOfValues(numOldValues + i))
+        .filter(!_.isEmpty)
+        .map(_.head)
 
       if (arrayOfValues(0).isEmpty) {
         // If previous window's reduce value does not exist, then at least new values should exist

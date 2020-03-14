@@ -228,12 +228,11 @@ trait ScTypePresentation {
         case (s: Signature, rt: ScType)
             if s.namedElement.isInstanceOf[ScFunction] =>
           val fun = s.namedElement.asInstanceOf[ScFunction]
-          val funCopy =
-            ScFunction.getCompoundCopy(
-              s.substitutedTypes.map(_.map(_()).toList),
-              s.typeParams.toList,
-              rt,
-              fun)
+          val funCopy = ScFunction.getCompoundCopy(
+            s.substitutedTypes.map(_.map(_()).toList),
+            s.typeParams.toList,
+            rt,
+            fun)
           val paramClauses = funCopy.paramClauses.clauses
             .map(
               _.parameters
@@ -353,8 +352,8 @@ trait ScTypePresentation {
           if (left.isEmpty) s"$designatorText$typeArgsText"
           else s"($designatorText$typeArgsText) forSome $existentialArgsText"
         case ScExistentialType(q, wilds) =>
-          val wildsWithBounds =
-            wilds.map(w => existentialArgWithBounds(w, "type " + w.name))
+          val wildsWithBounds = wilds.map(w =>
+            existentialArgWithBounds(w, "type " + w.name))
           wildsWithBounds.mkString(
             s"(${innerTypeText(q)}) forSome {",
             "; ",
@@ -373,8 +372,9 @@ trait ScTypePresentation {
           name
         case f @ ScFunctionType(ret, params) if !t.isAliasType.isDefined =>
           val projectOption = ScType.extractClass(f).map(_.getProject)
-          val arrow =
-            projectOption.map(ScalaPsiUtil.functionArrow).getOrElse("=>")
+          val arrow = projectOption
+            .map(ScalaPsiUtil.functionArrow)
+            .getOrElse("=>")
           typeSeqText(params, "(", ", ", s") $arrow ") + innerTypeText(ret)
         case ScThisType(clazz: ScTypeDefinition) =>
           clazz.name + ".this" + typeTail(needDotType)
@@ -460,8 +460,9 @@ object ScTypePresentation {
   type A = ScTypePresentation { type B }
 
   def withoutAliases(tpe: ScType): String = {
-    val withoutAliasesType =
-      ScType.removeAliasDefinitions(tpe, expandableOnly = true)
+    val withoutAliasesType = ScType.removeAliasDefinitions(
+      tpe,
+      expandableOnly = true)
     withoutAliasesType.presentableText
   }
 }

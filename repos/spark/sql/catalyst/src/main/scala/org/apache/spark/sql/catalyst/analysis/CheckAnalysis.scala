@@ -248,8 +248,8 @@ trait CheckAnalysis {
                  | ${exprs.map(_.sql).mkString(",")}""".stripMargin)
 
           case j: Join if !j.duplicateResolved =>
-            val conflictingAttributes =
-              j.left.outputSet.intersect(j.right.outputSet)
+            val conflictingAttributes = j.left.outputSet
+              .intersect(j.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Join:
                  |$plan
@@ -257,8 +257,8 @@ trait CheckAnalysis {
                  |""".stripMargin)
 
           case i: Intersect if !i.duplicateResolved =>
-            val conflictingAttributes =
-              i.left.outputSet.intersect(i.right.outputSet)
+            val conflictingAttributes = i.left.outputSet
+              .intersect(i.right.outputSet)
             failAnalysis(s"""
                  |Failure when resolving conflicting references in Intersect:
                  |$plan

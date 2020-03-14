@@ -70,10 +70,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     finally { s.close() }
   } //58468
 
-  val listResourceJValue =
-    readJson(
-      "api-docs.json"
-    ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
+  val listResourceJValue = readJson(
+    "api-docs.json"
+  ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
   val petOperationsJValue = readJson(
     "pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
@@ -84,8 +83,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
 
   private def readJson(file: String) = {
     val f = if (file startsWith "/") file else "/" + file
-    val rdr =
-      Source.fromInputStream(getClass.getResourceAsStream(f)).bufferedReader()
+    val rdr = Source
+      .fromInputStream(getClass.getResourceAsStream(f))
+      .bufferedReader()
     JsonParser.parse(rdr)
   }
 

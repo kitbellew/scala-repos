@@ -20,28 +20,23 @@ private[nio] final class TypedArrayDoubleBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): DoubleBuffer =
-    GenTypedArrayBuffer(this).generic_slice()
+  def slice(): DoubleBuffer = GenTypedArrayBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): DoubleBuffer =
-    GenTypedArrayBuffer(this).generic_duplicate()
+  def duplicate(): DoubleBuffer = GenTypedArrayBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): DoubleBuffer =
     GenTypedArrayBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Double =
-    GenBuffer(this).generic_get()
+  def get(): Double = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Double): DoubleBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Double): DoubleBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Double =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Double = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, c: Double): DoubleBuffer =
@@ -56,11 +51,9 @@ private[nio] final class TypedArrayDoubleBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): DoubleBuffer =
-    GenTypedArrayBuffer(this).generic_compact()
+  def compact(): DoubleBuffer = GenTypedArrayBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    ByteOrder.nativeOrder()
+  def order(): ByteOrder = ByteOrder.nativeOrder()
 
   // Internal API
 
@@ -77,8 +70,7 @@ private[nio] final class TypedArrayDoubleBuffer private (
     GenTypedArrayBuffer(this).generic_dataView
 
   @inline
-  private[nio] def load(index: Int): Double =
-    _typedArray(index)
+  private[nio] def load(index: Int): Double = _typedArray(index)
 
   @inline
   private[nio] def store(index: Int, elem: Double): Unit =

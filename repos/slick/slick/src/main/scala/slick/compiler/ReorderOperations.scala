@@ -51,8 +51,8 @@ class ReorderOperations extends Phase {
         logger.debug(
           "Pushing CollectionCast into both sides of a Union",
           Ellipsis(n, List(0, 0), List(0, 1)))
-        val n2 =
-          Union(CollectionCast(l1, cons), CollectionCast(r1, cons), all).infer()
+        val n2 = Union(CollectionCast(l1, cons), CollectionCast(r1, cons), all)
+          .infer()
         logger.debug(
           "Pushed CollectionCast into both sides of a Union",
           Ellipsis(n2, List(0, 0), List(1, 0)))

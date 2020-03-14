@@ -156,8 +156,9 @@ private[prediction] object EventOp {
     val t = e.eventTime.getMillis
     e.event match {
       case "$set" => {
-        val fields =
-          e.properties.fields.mapValues(jv => PropTime(jv, t)).map(identity)
+        val fields = e.properties.fields
+          .mapValues(jv => PropTime(jv, t))
+          .map(identity)
 
         EventOp(
           setProp = Some(SetProp(fields = fields, t = t)),

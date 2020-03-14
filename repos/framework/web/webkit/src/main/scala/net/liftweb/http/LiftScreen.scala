@@ -144,11 +144,12 @@ trait AbstractScreen extends Factory with Loggable {
 
     AbstractScreen.this.addFields(() => this)
 
-    private val _currentValue: NonCleanAnyVar[ValueType] =
-      vendAVar[ValueType](setFilter.foldLeft(default)((nv, f) => f(nv)))
+    private val _currentValue: NonCleanAnyVar[ValueType] = vendAVar[ValueType](
+      setFilter.foldLeft(default)((nv, f) => f(nv)))
 
-    private val _otherValue: NonCleanAnyVar[OtherValueType] =
-      vendAVar[OtherValueType](otherValueDefault)
+    private val _otherValue
+        : NonCleanAnyVar[OtherValueType] = vendAVar[OtherValueType](
+      otherValueDefault)
 
     /**
       * Is this field on the confirm screen
@@ -225,8 +226,8 @@ trait AbstractScreen extends Factory with Loggable {
 
     override def uniqueFieldId: Box[String] = Full(_theFieldId.get)
 
-    private lazy val _theFieldId: NonCleanAnyVar[String] =
-      vendAVar(Helpers.nextFuncName)
+    private lazy val _theFieldId: NonCleanAnyVar[String] = vendAVar(
+      Helpers.nextFuncName)
 
     override def toString = if (is != null) is.toString else ""
 
@@ -341,8 +342,8 @@ trait AbstractScreen extends Factory with Loggable {
 
         override def binding = newBinding
 
-        private lazy val _theFieldId: NonCleanAnyVar[String] =
-          vendAVar(Helpers.nextFuncName)
+        private lazy val _theFieldId: NonCleanAnyVar[String] = vendAVar(
+          Helpers.nextFuncName)
 
         override def transforms = newTransforms
 
@@ -1281,8 +1282,8 @@ trait ScreenWizardRendered extends Loggable {
       val theForm = theFormEarly.map { fe =>
         {
           val f = Helpers.deepEnsureUniqueId(fe)
-          val id =
-            Helpers.findBox(f)(_.attribute("id").map(_.text).filter(_ == curId))
+          val id = Helpers.findBox(f)(
+            _.attribute("id").map(_.text).filter(_ == curId))
           if (id.isEmpty) { Helpers.ensureId(f, curId) }
           else { f }
         }
@@ -1297,11 +1298,10 @@ trait ScreenWizardRendered extends Loggable {
         myNotices match {
           case Nil => basicLabel
           case _ =>
-            val maxN =
-              myNotices
-                .map(_._1)
-                .sortWith { _.id > _.id }
-                .head // get the maximum type of notice (Error > Warning > Notice)
+            val maxN = myNotices
+              .map(_._1)
+              .sortWith { _.id > _.id }
+              .head // get the maximum type of notice (Error > Warning > Notice)
             val metaData: MetaData =
               noticeTypeToAttr(theScreen).map(_(maxN)) openOr Null
             basicLabel & update(_.label, metaData)
@@ -1400,9 +1400,8 @@ trait ScreenWizardRendered extends Loggable {
           <form id={cancelId._1} action={url} method="post">{
             SHtml.hidden(() => {
               snapshot.restore();
-              val res =
-                cancelId
-                  ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
+              val res = cancelId
+                ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
               if (!ajax_?) { S.seeOther(Referer.get) }
               res
             }) % liftScreenAttr("restoreAction")
@@ -1576,8 +1575,7 @@ case class ScreenFieldInfo(
       field: BaseField,
       text: NodeSeq,
       help: Box[NodeSeq],
-      input: Box[NodeSeq]) =
-    this(field, text, help, input, Empty, Nil)
+      input: Box[NodeSeq]) = this(field, text, help, input, Empty, Nil)
 }
 
 object ScreenFieldInfo {
@@ -1585,8 +1583,7 @@ object ScreenFieldInfo {
       field: BaseField,
       text: NodeSeq,
       help: Box[NodeSeq],
-      input: Box[NodeSeq]) =
-    new ScreenFieldInfo(field, text, help, input)
+      input: Box[NodeSeq]) = new ScreenFieldInfo(field, text, help, input)
 }
 
 trait LiftScreen
@@ -1756,8 +1753,7 @@ trait LiftScreen
     def set[T](name: String, from: ScreenVar[_], value: T): Unit =
       ScreenVars.set(ScreenVars.get + (name -> (from, value)))
 
-    def clear(name: String): Unit =
-      ScreenVars.set(ScreenVars.get - name)
+    def clear(name: String): Unit = ScreenVars.set(ScreenVars.get - name)
   }
 
   protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {

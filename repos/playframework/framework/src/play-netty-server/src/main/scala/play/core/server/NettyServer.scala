@@ -49,8 +49,8 @@ class NettyServer(
     val actorSystem: ActorSystem)(implicit val materializer: Materializer)
     extends Server {
 
-  private val nettyConfig =
-    config.configuration.underlying.getConfig("play.server.netty")
+  private val nettyConfig = config.configuration.underlying
+    .getConfig("play.server.netty")
   private val maxInitialLineLength = nettyConfig.getInt("maxInitialLineLength")
   private val maxHeaderSize = nettyConfig.getInt("maxHeaderSize")
   private val maxChunkSize = nettyConfig.getInt("maxChunkSize")
@@ -364,8 +364,8 @@ trait NettyServerComponents {
       application.actorSystem)(application.materializer)
   }
 
-  lazy val environment: Environment =
-    Environment.simple(mode = serverConfig.mode)
+  lazy val environment: Environment = Environment.simple(mode =
+    serverConfig.mode)
   lazy val sourceMapper: Option[SourceMapper] = None
   lazy val webCommands: WebCommands = new DefaultWebCommands
   lazy val configuration: Configuration = Configuration(ConfigFactory.load())

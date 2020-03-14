@@ -328,8 +328,10 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
 
     val pd = ProcessedData(1, TrainingData(0))
 
-    val expectedResults =
-      Seq(LAlgo0.Model(2, pd), LAlgo1.Model(3, pd), LAlgo0.Model(4, pd))
+    val expectedResults = Seq(
+      LAlgo0.Model(2, pd),
+      LAlgo1.Model(3, pd),
+      LAlgo0.Model(4, pd))
 
     forAll(models.zip(expectedResults)) {
       case (model, expected) =>
@@ -421,8 +423,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val en = 2
     val qn = 5
 
-    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] =
-      Engine.eval(
+    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = Engine
+      .eval(
         sc,
         new PDataSource1(id = 1, en = en, qn = qn),
         new PPreparator0(id = 2),
@@ -468,8 +470,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val en = 2
     val qn = 5
 
-    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] =
-      Engine.eval(
+    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = Engine
+      .eval(
         sc,
         new PDataSource1(id = 1, en = en, qn = qn),
         new PPreparator0(id = 2),
@@ -518,8 +520,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val en = 2
     val qn = 5
 
-    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] =
-      Engine.eval(
+    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = Engine
+      .eval(
         sc,
         new PDataSource1(id = 1, en = en, qn = qn),
         new PPreparator0(id = 2),
@@ -572,8 +574,8 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
     val en = 2
     val qn = 5
 
-    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] =
-      Engine.eval(
+    val evalDataSet: Seq[(EvalInfo, RDD[(Query, Prediction, Actual)])] = Engine
+      .eval(
         sc,
         new LDataSource0(id = 1, en = en, qn = qn),
         new LPreparator0(id = 2),

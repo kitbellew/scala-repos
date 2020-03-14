@@ -396,12 +396,11 @@ class CoproductTests {
 
   @Test
   def testPartialOrdering {
-    val (one, two, abc, xyz) =
-      (
-        Coproduct[ISB](1),
-        Coproduct[ISB](2),
-        Coproduct[ISB]("abc"),
-        Coproduct[ISB]("xyz"))
+    val (one, two, abc, xyz) = (
+      Coproduct[ISB](1),
+      Coproduct[ISB](2),
+      Coproduct[ISB]("abc"),
+      Coproduct[ISB]("xyz"))
 
     def assertPOEquals(expected: Option[Int], l: ISB, r: ISB)(
         implicit po: PartialOrdering[ISB]) = {
@@ -1213,8 +1212,8 @@ class CoproductTests {
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
-    val isdi: I :+: S :+: D :+: I :+: CNil =
-      Inr[I, S :+: D :+: I :+: CNil](Coproduct[S :+: D :+: I :+: CNil](2))
+    val isdi: I :+: S :+: D :+: I :+: CNil = Inr[I, S :+: D :+: I :+: CNil](
+      Coproduct[S :+: D :+: I :+: CNil](2))
 
     val r1 = i.partition[I]
     assertTypedEquals[Either[I :+: CNil, CNil]](Left(i), r1)
@@ -1243,8 +1242,8 @@ class CoproductTests {
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
-    val isdi: I :+: S :+: D :+: I :+: CNil =
-      Inr[I, S :+: D :+: I :+: CNil](Coproduct[S :+: D :+: I :+: CNil](2))
+    val isdi: I :+: S :+: D :+: I :+: CNil = Inr[I, S :+: D :+: I :+: CNil](
+      Coproduct[S :+: D :+: I :+: CNil](2))
 
     val r1 = i.partitionC[I]
     assertTypedEquals[(I :+: CNil) :+: CNil :+: CNil](Inl(i), r1)
@@ -1273,8 +1272,8 @@ class CoproductTests {
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
-    val isdi: I :+: S :+: D :+: I :+: CNil =
-      Inr[I, S :+: D :+: I :+: CNil](Coproduct[S :+: D :+: I :+: CNil](2))
+    val isdi: I :+: S :+: D :+: I :+: CNil = Inr[I, S :+: D :+: I :+: CNil](
+      Coproduct[S :+: D :+: I :+: CNil](2))
 
     val r1 = i.filter[I]
     assertTypedEquals[Option[I :+: CNil]](Some(i), r1)
@@ -1303,8 +1302,8 @@ class CoproductTests {
     val i = Coproduct[I :+: CNil](1)
     val is = Coproduct[I :+: S :+: CNil](1)
 
-    val isdi: I :+: S :+: D :+: I :+: CNil =
-      Inr[I, S :+: D :+: I :+: CNil](Coproduct[S :+: D :+: I :+: CNil](2))
+    val isdi: I :+: S :+: D :+: I :+: CNil = Inr[I, S :+: D :+: I :+: CNil](
+      Coproduct[S :+: D :+: I :+: CNil](2))
 
     val r1 = i.filterNot[I]
     assertTypedEquals[Option[CNil]](None, r1)

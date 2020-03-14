@@ -38,8 +38,7 @@ object EventBusDocSpec {
     // `java.lang.Comparable.compare`
     override protected def compareSubscribers(
         a: Subscriber,
-        b: Subscriber): Int =
-      a.compareTo(b)
+        b: Subscriber): Int = a.compareTo(b)
 
     // determines the initial size of the index data structure
     // used internally (i.e. the expected number of different classifiers)
@@ -53,11 +52,9 @@ object EventBusDocSpec {
   import akka.util.Subclassification
 
   class StartsWithSubclassification extends Subclassification[String] {
-    override def isEqual(x: String, y: String): Boolean =
-      x == y
+    override def isEqual(x: String, y: String): Boolean = x == y
 
-    override def isSubclass(x: String, y: String): Boolean =
-      x.startsWith(y)
+    override def isSubclass(x: String, y: String): Boolean = x.startsWith(y)
   }
 
   import akka.event.SubchannelClassification
@@ -103,21 +100,18 @@ object EventBusDocSpec {
     // ordered collection
     override protected def compareClassifiers(
         a: Classifier,
-        b: Classifier): Int =
-      if (a < b) -1 else if (a == b) 0 else 1
+        b: Classifier): Int = if (a < b) -1 else if (a == b) 0 else 1
 
     // is needed for storing subscribers in an ordered collection
     override protected def compareSubscribers(
         a: Subscriber,
-        b: Subscriber): Int =
-      a.compareTo(b)
+        b: Subscriber): Int = a.compareTo(b)
 
     // determines whether a given classifier shall match a given event; it is invoked
     // for each subscription for all received events, hence the name of the classifier
     override protected def matches(
         classifier: Classifier,
-        event: Event): Boolean =
-      event.length <= classifier
+        event: Event): Boolean = event.length <= classifier
 
     // will be invoked for each event for all subscribers which registered themselves
     // for a classifier matching this event

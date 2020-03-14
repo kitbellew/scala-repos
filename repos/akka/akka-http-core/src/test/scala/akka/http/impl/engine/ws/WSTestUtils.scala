@@ -18,8 +18,7 @@ object WSTestUtils {
       rsv1: Boolean = false,
       rsv2: Boolean = false,
       rsv3: Boolean = false): ByteString = {
-    def set(should: Boolean, mask: Int): Int =
-      if (should) mask else 0
+    def set(should: Boolean, mask: Int): Int = if (should) mask else 0
 
     val flags =
       set(fin, Protocol.FIN_MASK) |

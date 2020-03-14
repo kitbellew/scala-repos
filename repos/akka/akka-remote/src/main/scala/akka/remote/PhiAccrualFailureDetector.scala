@@ -72,8 +72,8 @@ class PhiAccrualFailureDetector(
       threshold = config.getDouble("threshold"),
       maxSampleSize = config.getInt("max-sample-size"),
       minStdDeviation = config.getMillisDuration("min-std-deviation"),
-      acceptableHeartbeatPause =
-        config.getMillisDuration("acceptable-heartbeat-pause"),
+      acceptableHeartbeatPause = config.getMillisDuration(
+        "acceptable-heartbeat-pause"),
       firstHeartbeatEstimate = config.getMillisDuration("heartbeat-interval"))
 
   require(threshold > 0.0, "failure-detector.threshold must be > 0")

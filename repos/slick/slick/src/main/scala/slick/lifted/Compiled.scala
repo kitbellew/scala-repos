@@ -30,8 +30,7 @@ sealed trait Compiled[T] {
 
   /** Perform a transformation of the underlying value. The computed `Compiled`
     * value is returned unmodified. */
-  def flatMap[U <: Compiled[_]](f: T => U): U =
-    f(extract)
+  def flatMap[U <: Compiled[_]](f: T => U): U = f(extract)
 
   /** Return the underlying query or query function. It can be safely
     * extracted for reuse without caching the compiled representation. */

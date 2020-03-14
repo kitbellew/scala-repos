@@ -76,8 +76,9 @@ akka.loglevel = DEBUG
   )
   val addr = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 
-  val receptionist =
-    system.actorOf(Props(classOf[Receptionist], testActor), "receptionist")
+  val receptionist = system.actorOf(
+    Props(classOf[Receptionist], testActor),
+    "receptionist")
 
   lazy val remoteDaemon = {
     {
@@ -105,8 +106,8 @@ akka.loglevel = DEBUG
   "UntrustedMode" must {
 
     "allow actor selection to configured white list" in {
-      val sel =
-        client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      val sel = client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements)
       sel ! "hello"
       expectMsg("hello")
     }
@@ -155,8 +156,8 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection" in {
-      val sel =
-        client.actorSelection(RootActorPath(addr) / testActor.path.elements)
+      val sel = client.actorSelection(
+        RootActorPath(addr) / testActor.path.elements)
       sel ! "hello"
       expectNoMsg(1.second)
     }
@@ -190,8 +191,8 @@ akka.loglevel = DEBUG
     }
 
     "discard actor selection containing harmful message" in {
-      val sel =
-        client.actorSelection(RootActorPath(addr) / receptionist.path.elements)
+      val sel = client.actorSelection(
+        RootActorPath(addr) / receptionist.path.elements)
       sel ! PoisonPill
       expectNoMsg(1.second)
     }

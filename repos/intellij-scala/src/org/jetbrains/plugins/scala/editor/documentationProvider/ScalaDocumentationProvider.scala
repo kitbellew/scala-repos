@@ -328,12 +328,13 @@ object ScalaDocumentationProvider {
     "#org.jetbrains.plugins.scala.editor.documentationProvider.ScalaDocumentationProvider")
 
   private def debugMessage(msg: String, elem: PsiElement) {
-    val footer = if (!elem.isValid) {
-      s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
-    } else if (elem.getContainingFile == null) {
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
-    } else
-      s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
+    val footer =
+      if (!elem.isValid) {
+        s"[Invalid Element: ${elem.getNode} ${elem.getClass.getName}]"
+      } else if (elem.getContainingFile == null) {
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: NULL]"
+      } else
+        s"[Element: ${elem.getNode} ${elem.getClass.getName}] [File: ${elem.getContainingFile.getName}] [Language: ${elem.getContainingFile.getLanguage}]"
 
     LOG debug s"[ScalaDocProvider] [ $msg ] $footer"
   }
@@ -561,9 +562,8 @@ object ScalaDocumentationProvider {
             .append(paramText.substring(0, paramText.lastIndexOf("\n") + 1))
         } else if (inheritedTParams.contains("<" + tparam + ">")) {
           val paramTag = inheritedTParams.get("<" + tparam.name + ">").get
-          val descriptionText =
-            paramTag.getText.substring(
-              paramTag.getValueElement.getTextOffset + paramTag.getValueElement.getTextLength)
+          val descriptionText = paramTag.getText.substring(
+            paramTag.getValueElement.getTextOffset + paramTag.getValueElement.getTextLength)
           val parameterName = paramTag.getValueElement.getText
 
           buffer
@@ -793,8 +793,13 @@ object ScalaDocumentationProvider {
         }
       case None => ""
     })
-    val modifiers =
-      Array("abstract", "final", "sealed", "implicit", "lazy", "override")
+    val modifiers = Array(
+      "abstract",
+      "final",
+      "sealed",
+      "implicit",
+      "lazy",
+      "override")
     for (modifier <- modifiers if elem.hasModifierPropertyScala(modifier))
       buffer.append(modifier + " ")
     buffer.toString()
@@ -989,8 +994,8 @@ object ScalaDocumentationProvider {
                 }
 
                 if (inherited != null) {
-                  val (inheritedBody, _) =
-                    getWikiTextRepresentation(macroFinder)(inherited)
+                  val (inheritedBody, _) = getWikiTextRepresentation(
+                    macroFinder)(inherited)
                   result append inheritedBody
                     .toString()
                     .stripPrefix("/**")
@@ -1095,8 +1100,8 @@ object ScalaDocumentationProvider {
         a._1.result()
       })
 
-    val (commentBody, tagsPart) =
-      getWikiTextRepresentation(macroFinder)(comment)
+    val (commentBody, tagsPart) = getWikiTextRepresentation(macroFinder)(
+      comment)
     val scalaComment = ScalaPsiElementFactory
       .createScalaFile(
         commentBody
@@ -1255,8 +1260,8 @@ object ScalaDocumentationProvider {
     val buffer = new StringBuilder
     buffer.append("Pattern: ")
     buffer.append(binding.name)
-    val typez =
-      subst.subst(subst.subst(binding.getType(TypingContext.empty).getOrAny))
+    val typez = subst.subst(
+      subst.subst(binding.getType(TypingContext.empty).getOrAny))
     if (typez != null) buffer.append(": " + ScType.presentableText(typez))
 
     buffer.toString()
@@ -1291,8 +1296,9 @@ object ScalaDocumentationProvider {
 
     (parameter match {
       case clParameter: ScClassParameter =>
-        val clazz =
-          PsiTreeUtil.getParentOfType(clParameter, classOf[ScTypeDefinition])
+        val clazz = PsiTreeUtil.getParentOfType(
+          clParameter,
+          classOf[ScTypeDefinition])
 
         if (clazz == null) defaultText
         else

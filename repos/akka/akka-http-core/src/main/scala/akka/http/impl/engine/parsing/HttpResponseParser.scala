@@ -176,8 +176,9 @@ private[http] class HttpResponseParser(
           }
 
         case Some(te) ⇒
-          val completedHeaders =
-            addTransferEncodingWithChunkedPeeled(headers, te)
+          val completedHeaders = addTransferEncodingWithChunkedPeeled(
+            headers,
+            te)
           if (te.isChunked) {
             if (clh.isEmpty) {
               emitResponseStart(chunkedEntity(cth), completedHeaders)

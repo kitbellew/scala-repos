@@ -60,8 +60,8 @@ private class ApertureLoadBandBalancer[Req, Rep](
     with LoadBand[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted =
-    statsReceiver.counter("max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver.counter(
+    "max_effort_exhausted")
 
 }
 
@@ -129,8 +129,9 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
         (ring, unit, max)
       }
 
-    private[this] val minAperture =
-      math.min(Aperture.this.minAperture, maxAperture)
+    private[this] val minAperture = math.min(
+      Aperture.this.minAperture,
+      maxAperture)
 
     @volatile private[Aperture] var aperture = initAperture
 
@@ -141,8 +142,7 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       aperture = math.max(minAperture, math.min(maxAperture, aperture + n))
     }
 
-    def rebuild() =
-      new Distributor(vector, aperture)
+    def rebuild() = new Distributor(vector, aperture)
 
     def rebuild(vector: Vector[Node]) =
       new Distributor(vector.sortBy(_.token), aperture)
@@ -172,8 +172,7 @@ private trait Aperture[Req, Rep] { self: Balancer[Req, Rep] =>
       sawDown || (down.nonEmpty && down.exists(nodeUp))
   }
 
-  protected def initDistributor() =
-    new Distributor(Vector.empty, 1)
+  protected def initDistributor() = new Distributor(Vector.empty, 1)
 
   /**
     * Adjust the aperture by `n` serving units.

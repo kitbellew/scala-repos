@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.base.ScalaLightPlatformCodeInsightTestCaseAda
 class GoToImplementationTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   def testTraitImplementation() {
-    val fileText =
-      """
+    val fileText = """
         |trait a {
         |  def f<caret>
         |}

@@ -68,8 +68,8 @@ class RailsPathPatternParserTest extends FunSuite with Matchers {
   }
 
   test("multiple glob segments") {
-    val PathPattern(re, names) =
-      RailsPathPatternParser("src/*files/dir/*morefiles/foo.txt")
+    val PathPattern(re, names) = RailsPathPatternParser(
+      "src/*files/dir/*morefiles/foo.txt")
     re.toString should equal("""\Asrc/(.+)/dir/(.+)/foo\.txt\Z""")
     names should equal(List("files", "morefiles"))
   }

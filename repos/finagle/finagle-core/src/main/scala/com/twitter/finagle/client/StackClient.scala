@@ -466,14 +466,12 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
     */
   def transformed(
       f: Stack[ServiceFactory[Req, Rep]] => Stack[ServiceFactory[Req, Rep]])
-      : This =
-    copy1(stack = f(stack))
+      : This = copy1(stack = f(stack))
 
   /**
     * Creates a new StackClient with parameter `p`.
     */
-  override def configured[P: Stack.Param](p: P): This =
-    withParams(params + p)
+  override def configured[P: Stack.Param](p: P): This = withParams(params + p)
 
   /**
     * Creates a new StackClient with parameter `psp._1` and Stack Param type `psp._2`.
@@ -486,8 +484,7 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
   /**
     * Creates a new StackClient with `params` used to configure this StackClient's `stack`.
     */
-  def withParams(params: Stack.Params): This =
-    copy1(params = params)
+  def withParams(params: Stack.Params): This = copy1(params = params)
 
   /**
     * Prepends `filter` to the top of the client. That is, after materializing
@@ -530,13 +527,12 @@ trait StdStackClient[Req, Rep, This <: StdStackClient[Req, Rep, This]]
           case Address.Inet(ia, _) =>
             val endpointClient = copy1(params = prms)
             val transporter = endpointClient.newTransporter()
-            val mkFutureSvc: () => Future[Service[Req, Rep]] =
-              () =>
-                transporter(ia).map { trans =>
-                  // we do not want to capture and request specific Locals
-                  // that would live for the life of the session.
-                  Contexts.letClear { endpointClient.newDispatcher(trans) }
-                }
+            val mkFutureSvc: () => Future[Service[Req, Rep]] = () =>
+              transporter(ia).map { trans =>
+                // we do not want to capture and request specific Locals
+                // that would live for the life of the session.
+                Contexts.letClear { endpointClient.newDispatcher(trans) }
+              }
             ServiceFactory(mkFutureSvc)
         }
         Stack.Leaf(this, factory)

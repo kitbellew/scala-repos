@@ -14,8 +14,7 @@ private sealed trait ConstMonoid[A, B]
     with ConstSemigroup[A, B] {
   def A: Monoid[A]
 
-  override def zero: Const[A, B] =
-    Const(A.zero)
+  override def zero: Const[A, B] = Const(A.zero)
 }
 
 private sealed trait ConstTraverse[C] extends Traverse[Const[C, ?]] {
@@ -23,8 +22,7 @@ private sealed trait ConstTraverse[C] extends Traverse[Const[C, ?]] {
     Const(fa.getConst)
 
   override def traverseImpl[G[_], A, B](fa: Const[C, A])(f: A => G[B])(
-      implicit G: Applicative[G]) =
-    G.point(Const(fa.getConst))
+      implicit G: Applicative[G]) = G.point(Const(fa.getConst))
 }
 
 private sealed trait ConstApply[C]
@@ -64,13 +62,11 @@ private sealed trait ConstOrder[A, B]
 }
 
 private class ConstContravariant[C] extends Contravariant[Const[C, ?]] {
-  def contramap[A, B](r: Const[C, A])(f: B => A) =
-    Const(r.getConst)
+  def contramap[A, B](r: Const[C, A])(f: B => A) = Const(r.getConst)
 }
 
 sealed abstract class ConstInstances1 {
-  implicit def constTraverse[C]: Traverse[Const[C, ?]] =
-    new ConstTraverse[C] {}
+  implicit def constTraverse[C]: Traverse[Const[C, ?]] = new ConstTraverse[C] {}
 
   implicit def constContravariant[C]: Contravariant[Const[C, ?]] =
     new ConstContravariant[C]

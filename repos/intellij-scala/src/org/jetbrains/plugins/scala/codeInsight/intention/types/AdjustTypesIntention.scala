@@ -47,8 +47,10 @@ class AdjustTypesIntention extends PsiElementBaseIntentionAction {
       case sf: ScalaFile => sf
       case _             => return
     }
-    val elements =
-      ScalaRefactoringUtil.selectedElements(editor, file, trimComments = true)
+    val elements = ScalaRefactoringUtil.selectedElements(
+      editor,
+      file,
+      trimComments = true)
     TypeAdjuster.adjustFor(elements)
   }
 

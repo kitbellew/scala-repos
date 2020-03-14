@@ -17,8 +17,7 @@ class LongReflectiveCall(value: Long) {
   def floatValue(): Float = value.toFloat
   def doubleValue(): Double = value.toDouble
 
-  def compareTo(that: JLong): Int =
-    new JLong(value).compareTo(that)
+  def compareTo(that: JLong): Int = new JLong(value).compareTo(that)
   def compareTo(that: AnyRef): Int =
     new JLong(value).compareTo(that.asInstanceOf[JLong])
 

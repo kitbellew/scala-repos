@@ -81,13 +81,14 @@ abstract class ExactBreakpointTestBase extends ScalaDebuggerTestCase {
   }
 
   private def highlightedText(sourcePosition: SourcePosition): String = {
-    val elemRange =
-      SourcePositionHighlighter.getHighlightRangeFor(sourcePosition)
+    val elemRange = SourcePositionHighlighter.getHighlightRangeFor(
+      sourcePosition)
     val document = PsiDocumentManager
       .getInstance(getProject)
       .getDocument(sourcePosition.getFile)
-    val lineRange =
-      DocumentUtil.getLineTextRange(document, sourcePosition.getLine)
+    val lineRange = DocumentUtil.getLineTextRange(
+      document,
+      sourcePosition.getLine)
     val textRange =
       if (elemRange != null) elemRange.intersection(lineRange) else lineRange
     document.getText(textRange).trim

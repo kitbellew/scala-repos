@@ -146,8 +146,8 @@ class ScalaAnnotator
 
       override def visitParameterizedTypeElement(
           parameterized: ScParameterizedTypeElement) {
-        val tp =
-          parameterized.typeElement.getTypeNoConstructor(TypingContext.empty)
+        val tp = parameterized.typeElement.getTypeNoConstructor(
+          TypingContext.empty)
         tp match {
           case Success(res, _) =>
             ScType.extractDesignated(res, withoutAliases = false) match {
@@ -160,15 +160,17 @@ class ScalaAnnotator
                   val leftBracket = parameterized.typeArgList.getNode
                     .findChildByType(ScalaTokenTypes.tLSQBRACKET)
                   if (leftBracket != null) {
-                    val annotation =
-                      holder.createErrorAnnotation(leftBracket, error)
+                    val annotation = holder.createErrorAnnotation(
+                      leftBracket,
+                      error)
                     annotation.setHighlightType(ProblemHighlightType.ERROR)
                   }
                   val rightBracket = parameterized.typeArgList.getNode
                     .findChildByType(ScalaTokenTypes.tRSQBRACKET)
                   if (rightBracket != null) {
-                    val annotation =
-                      holder.createErrorAnnotation(rightBracket, error)
+                    val annotation = holder.createErrorAnnotation(
+                      rightBracket,
+                      error)
                     annotation.setHighlightType(ProblemHighlightType.ERROR)
                   }
                 }
@@ -608,8 +610,9 @@ class ScalaAnnotator
             annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
           } else if (checkReturnTypeIsBoolean) {
             def error() {
-              val error =
-                ScalaBundle.message("expected.type.boolean", memberName)
+              val error = ScalaBundle.message(
+                "expected.type.boolean",
+                memberName)
               val annotation = holder.createErrorAnnotation(expr, error)
               annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
             }
@@ -644,8 +647,8 @@ class ScalaAnnotator
                           "expr.type.does.not.conform.expected.type",
                           retTypeText,
                           expectedTypeText)
-                        val annotation: Annotation =
-                          holder.createErrorAnnotation(expr, error)
+                        val annotation: Annotation = holder
+                          .createErrorAnnotation(expr, error)
                         annotation.setHighlightType(
                           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
                         typeElement match {
@@ -655,8 +658,9 @@ class ScalaAnnotator
                             val fix =
                               new ChangeTypeFix(te, returnType.getOrNothing)
                             annotation.registerFix(fix)
-                            val teAnnotation =
-                              annotationWithoutHighlighting(holder, te)
+                            val teAnnotation = annotationWithoutHighlighting(
+                              holder,
+                              te)
                             teAnnotation.registerFix(fix)
                           case _ =>
                         }
@@ -785,8 +789,9 @@ class ScalaAnnotator
     }
 
     def getFix: Seq[IntentionAction] = {
-      val classes =
-        ScalaImportTypeFix.getTypesToImport(refElement, refElement.getProject)
+      val classes = ScalaImportTypeFix.getTypesToImport(
+        refElement,
+        refElement.getProject)
       if (classes.length == 0) return Seq.empty
       Seq[IntentionAction](new ScalaImportTypeFix(classes, refElement))
     }
@@ -928,8 +933,9 @@ class ScalaAnnotator
               .exists(!_.getElement.isInstanceOf[PsiPackage])) {
           // We can't resolve the method call A(arg1, arg2), but we can resolve A. Highlight this differently.
           val error = ScalaBundle.message(messageKey, refElement.refName)
-          val annotation =
-            holder.createErrorAnnotation(refElement.nameId, error)
+          val annotation = holder.createErrorAnnotation(
+            refElement.nameId,
+            error)
           annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
           annotation.registerFix(ReportHighlightingErrorQuickFix)
           refWithoutArgs match {
@@ -1066,8 +1072,8 @@ class ScalaAnnotator
           .isInstanceOf[ScDocResolvableCodeReferenceImpl]) return
     resolve(0) match {
       case r: ScalaResolveResult if !r.isAccessible =>
-        val error =
-          "Symbol %s is inaccessible from this place".format(r.element.name)
+        val error = "Symbol %s is inaccessible from this place".format(
+          r.element.name)
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
         annotation.setHighlightType(
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
@@ -1172,8 +1178,8 @@ class ScalaAnnotator
       holder: AnnotationHolder,
       typeAware: Boolean) {
     def checkExpressionTypeInner(fromUnderscore: Boolean) {
-      val ExpressionTypeResult(exprType, importUsed, implicitFunction) =
-        expr.getTypeAfterImplicitConversion(
+      val ExpressionTypeResult(exprType, importUsed, implicitFunction) = expr
+        .getTypeAfterImplicitConversion(
           expectedOption = expr.smartExpectedType(fromUnderscore),
           fromUnderscore = fromUnderscore)
       ImportTracker
@@ -1241,8 +1247,9 @@ class ScalaAnnotator
                     EffectType.LINE_UNDERSCORE, Color.LIGHT_GRAY)*/
                 case None => //do nothing
               }
-              val conformance =
-                ScalaAnnotator.smartCheckConformance(expectedType, exprType)
+              val conformance = ScalaAnnotator.smartCheckConformance(
+                expectedType,
+                exprType)
               if (!conformance) {
                 if (typeAware) {
                   val markedPsi = (expr, expr.getParent) match {
@@ -1259,8 +1266,9 @@ class ScalaAnnotator
                     "expr.type.does.not.conform.expected.type",
                     exprTypeText,
                     expectedTypeText)
-                  val annotation: Annotation =
-                    holder.createErrorAnnotation(markedPsi, error)
+                  val annotation: Annotation = holder.createErrorAnnotation(
+                    markedPsi,
+                    error)
                   annotation.setHighlightType(
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
                   if (WrapInOptionQuickFix.isAvailable(
@@ -1279,8 +1287,9 @@ class ScalaAnnotator
                         if te.getContainingFile == expr.getContainingFile =>
                       val fix = new ChangeTypeFix(te, exprType.getOrNothing)
                       annotation.registerFix(fix)
-                      val teAnnotation =
-                        annotationWithoutHighlighting(holder, te)
+                      val teAnnotation = annotationWithoutHighlighting(
+                        holder,
+                        te)
                       teAnnotation.registerFix(fix)
                     case _ =>
                   }
@@ -1323,16 +1332,18 @@ class ScalaAnnotator
         case varDef @ ScVariableDefinition.expr(expr)
             if varDef.expr.contains(under) =>
           if (varDef.containingClass == null) {
-            val error =
-              ScalaBundle.message("local.variables.must.be.initialized")
-            val annotation: Annotation =
-              holder.createErrorAnnotation(under, error)
+            val error = ScalaBundle.message(
+              "local.variables.must.be.initialized")
+            val annotation: Annotation = holder.createErrorAnnotation(
+              under,
+              error)
             annotation.setHighlightType(
               ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           } else if (varDef.typeElement.isEmpty) {
             val error = ScalaBundle.message("unbound.placeholder.parameter")
-            val annotation: Annotation =
-              holder.createErrorAnnotation(under, error)
+            val annotation: Annotation = holder.createErrorAnnotation(
+              under,
+              error)
             annotation.setHighlightType(
               ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
           }
@@ -1352,8 +1363,9 @@ class ScalaAnnotator
     fun match {
       case null =>
         val error = ScalaBundle.message("return.outside.method.definition")
-        val annotation: Annotation =
-          holder.createErrorAnnotation(ret.returnKeyword, error)
+        val annotation: Annotation = holder.createErrorAnnotation(
+          ret.returnKeyword,
+          error)
         annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
       case _ if !fun.hasAssign || fun.returnType.exists(_ == psi.types.Unit) =>
       case _ =>
@@ -1683,8 +1695,9 @@ class ScalaAnnotator
         case Some(ScalaLanguageLevel.Scala_2_10) =>
           val deprecatedMeaasge =
             "Octal number is deprecated in Scala-2.10 and will be removed in Scala-2.11"
-          val annotation =
-            holder.createWarningAnnotation(literal, deprecatedMeaasge)
+          val annotation = holder.createWarningAnnotation(
+            literal,
+            deprecatedMeaasge)
           annotation.setHighlightType(ProblemHighlightType.LIKE_DEPRECATED)
           annotation.registerFix(convertFix)
         case Some(version) if version >= ScalaLanguageLevel.Scala_2_11 =>
@@ -1738,11 +1751,11 @@ class ScalaAnnotator
 }
 
 object ScalaAnnotator {
-  val ignoreHighlightingKey: Key[(Long, mutable.HashSet[TextRange])] =
-    Key.create("ignore.highlighting.key")
+  val ignoreHighlightingKey: Key[(Long, mutable.HashSet[TextRange])] = Key
+    .create("ignore.highlighting.key")
 
-  val usedImportsKey: Key[mutable.HashSet[ImportUsed]] =
-    Key.create("used.imports.key")
+  val usedImportsKey: Key[mutable.HashSet[ImportUsed]] = Key.create(
+    "used.imports.key")
 
   /**
     * This method will return checked conformance if it's possible to check it.

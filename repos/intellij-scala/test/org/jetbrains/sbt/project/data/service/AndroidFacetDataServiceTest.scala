@@ -49,8 +49,9 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
   private def doTestFacetSetup(proguardConfig: Seq[String]): Unit = {
     importProjectData(generateProject(proguardConfig))
 
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
     assert(module != null)
 
     val facet = FacetManager.getInstance(module).getFacetByType(AndroidFacet.ID)
@@ -74,14 +75,13 @@ class AndroidFacetDataServiceTest extends ProjectDataServiceTestCase {
         getProject.getBasePath + "/proguard-sbt.txt")
       assert(
         properties.myProGuardCfgFiles.asScala.toSeq == Seq(proguardConfigPath))
-      val actualProguardConfig =
-        using(Source.fromFile(proguardConfigPath))(_.getLines().toVector)
+      val actualProguardConfig = using(Source.fromFile(proguardConfigPath))(
+        _.getLines().toVector)
       assert(actualProguardConfig == proguardConfig)
     }
   }
 
-  def testWithoutProguard(): Unit =
-    doTestFacetSetup(Seq.empty)
+  def testWithoutProguard(): Unit = doTestFacetSetup(Seq.empty)
 
   def testWithProguard(): Unit =
     doTestFacetSetup(Seq("-some-option", "-another-option"))

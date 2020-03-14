@@ -77,8 +77,9 @@ class ProducerConfig private (val props: VerifiableProperties)
   val brokerList = props.getString("metadata.broker.list")
 
   /** the partitioner class for partitioning events amongst sub-topics */
-  val partitionerClass =
-    props.getString("partitioner.class", "kafka.producer.DefaultPartitioner")
+  val partitionerClass = props.getString(
+    "partitioner.class",
+    "kafka.producer.DefaultPartitioner")
 
   /** this parameter specifies whether the messages are sent asynchronously *
     * or not. Valid values are - async for asynchronous send                 *
@@ -89,8 +90,9 @@ class ProducerConfig private (val props: VerifiableProperties)
     * This parameter allows you to specify the compression codec for all data generated *
     * by this producer. The default is NoCompressionCodec
     */
-  val compressionCodec =
-    props.getCompressionCodec("compression.codec", NoCompressionCodec)
+  val compressionCodec = props.getCompressionCodec(
+    "compression.codec",
+    NoCompressionCodec)
 
   /** This parameter allows you to set whether compression should be turned *
     *  on for particular topics
@@ -103,8 +105,8 @@ class ProducerConfig private (val props: VerifiableProperties)
     *
     *  If the compression codec is NoCompressionCodec, compression is disabled for all topics
     */
-  val compressedTopics =
-    CoreUtils.parseCsvList(props.getString("compressed.topics", null))
+  val compressedTopics = CoreUtils.parseCsvList(
+    props.getString("compressed.topics", null))
 
   /** The leader may be unavailable transiently, which can fail the sending of a message.
     *  This property specifies the number of retries when such failures occur.
@@ -125,8 +127,9 @@ class ProducerConfig private (val props: VerifiableProperties)
     * Important note: the refresh happen only AFTER the message is sent, so if the producer never sends
     * a message the metadata is never refreshed
     */
-  val topicMetadataRefreshIntervalMs =
-    props.getInt("topic.metadata.refresh.interval.ms", 600000)
+  val topicMetadataRefreshIntervalMs = props.getInt(
+    "topic.metadata.refresh.interval.ms",
+    600000)
 
   validate(this)
 }

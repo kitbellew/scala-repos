@@ -51,11 +51,10 @@ class IpAddressTest extends MarathonSpec with Matchers {
     val proto = f.defaultIpAddress.toProto
 
     // The default IpAddress has an empty DiscoveryInfo
-    val defaultIpAddressProto =
-      Protos.IpAddress
-        .newBuilder()
-        .setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance)
-        .build()
+    val defaultIpAddressProto = Protos.IpAddress
+      .newBuilder()
+      .setDiscoveryInfo(Protos.DiscoveryInfo.getDefaultInstance)
+      .build()
     proto should be(defaultIpAddressProto)
   }
 
@@ -172,8 +171,7 @@ class IpAddressTest extends MarathonSpec with Matchers {
   }
 
   test("Reading empty IpAddress from JSON") {
-    val json =
-      """
+    val json = """
       {}
       """
 
@@ -183,8 +181,7 @@ class IpAddressTest extends MarathonSpec with Matchers {
   }
 
   test("Reading IpAddress with groups from JSON") {
-    val json =
-      """
+    val json = """
       {
         "groups": ["foo", "bar"]
       }
@@ -196,8 +193,7 @@ class IpAddressTest extends MarathonSpec with Matchers {
   }
 
   test("Reading complete IpAddress from JSON") {
-    val json =
-      """
+    val json = """
       {
         "groups": ["a", "b", "c"],
         "labels": {

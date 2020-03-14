@@ -52,8 +52,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
 
   // Dummy parameters for API testing
   private val dummyEndpointUrl = defaultEndpointUrl
-  private val dummyRegionName =
-    RegionUtils.getRegionByEndpoint(dummyEndpointUrl).getName()
+  private val dummyRegionName = RegionUtils
+    .getRegionByEndpoint(dummyEndpointUrl)
+    .getName()
   private val dummyAWSAccessKey = "dummyAccessKey"
   private val dummyAWSSecretKey = "dummySecretKey"
 
@@ -135,8 +136,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     )
     assert(inputStream.isInstanceOf[KinesisInputDStream[Array[Byte]]])
 
-    val kinesisStream =
-      inputStream.asInstanceOf[KinesisInputDStream[Array[Byte]]]
+    val kinesisStream = inputStream
+      .asInstanceOf[KinesisInputDStream[Array[Byte]]]
     val time = Time(1000)
 
     // Generate block info data for testing

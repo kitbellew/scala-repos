@@ -48,10 +48,10 @@ import scalaz.syntax.validation._
 import shapeless._
 
 object JavaSerialization {
-  implicit val uuidDecomposer: Decomposer[UUID] =
-    implicitly[Decomposer[String]].contramap((_: UUID).toString)
-  implicit val uuidExtractor: Extractor[UUID] =
-    implicitly[Extractor[String]].map(UUID.fromString)
+  implicit val uuidDecomposer: Decomposer[UUID] = implicitly[Decomposer[String]]
+    .contramap((_: UUID).toString)
+  implicit val uuidExtractor: Extractor[UUID] = implicitly[Extractor[String]]
+    .map(UUID.fromString)
 }
 
 import JavaSerialization._
@@ -109,10 +109,12 @@ object Ingest {
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
-  val decomposerV1: Decomposer[Ingest] =
-    decomposerV[Ingest](schemaV1, Some("1.1".v))
-  val extractorV1: Extractor[Ingest] =
-    extractorV[Ingest](schemaV1, Some("1.1".v))
+  val decomposerV1: Decomposer[Ingest] = decomposerV[Ingest](
+    schemaV1,
+    Some("1.1".v))
+  val extractorV1: Extractor[Ingest] = extractorV[Ingest](
+    schemaV1,
+    Some("1.1".v))
 
   // A transitionary format similar to V1 structure, but lacks a version number and only carries a single data element
   val extractorV1a = new Extractor[Ingest] {
@@ -178,8 +180,9 @@ object Archive {
   val schemaV0 =
     "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
 
-  val decomposerV1: Decomposer[Archive] =
-    decomposerV[Archive](schemaV1, Some("1.0".v))
+  val decomposerV1: Decomposer[Archive] = decomposerV[Archive](
+    schemaV1,
+    Some("1.0".v))
   val extractorV1: Extractor[Archive] =
     extractorV[Archive](schemaV1, Some("1.0".v)) <+> extractorV1a
 
@@ -308,8 +311,10 @@ object StoreFile {
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "jobId" :: "content" :: "timestamp" :: "streamRef" :: HNil
 
-  implicit val decomposer: Decomposer[StoreFile] =
-    decomposerV[StoreFile](schemaV1, Some("1.0".v))
-  implicit val extractor: Extractor[StoreFile] =
-    extractorV[StoreFile](schemaV1, Some("1.0".v))
+  implicit val decomposer: Decomposer[StoreFile] = decomposerV[StoreFile](
+    schemaV1,
+    Some("1.0".v))
+  implicit val extractor: Extractor[StoreFile] = extractorV[StoreFile](
+    schemaV1,
+    Some("1.0".v))
 }

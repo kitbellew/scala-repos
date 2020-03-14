@@ -32,8 +32,8 @@ import org.I0Itec.zkclient.exception.ZkNoNodeException
 
 object ConsumerOffsetChecker extends Logging {
 
-  private val consumerMap: mutable.Map[Int, Option[SimpleConsumer]] =
-    mutable.Map()
+  private val consumerMap: mutable.Map[Int, Option[SimpleConsumer]] = mutable
+    .Map()
   private val offsetMap: mutable.Map[TopicAndPartition, Long] = mutable.Map()
   private var topicPidMap: immutable.Map[String, Seq[Int]] = immutable.Map()
 
@@ -83,17 +83,17 @@ object ConsumerOffsetChecker extends Logging {
       ._1
     zkUtils.getLeaderForPartition(topic, pid) match {
       case Some(bid) =>
-        val consumerOpt =
-          consumerMap.getOrElseUpdate(bid, getConsumer(zkUtils, bid))
+        val consumerOpt = consumerMap.getOrElseUpdate(
+          bid,
+          getConsumer(zkUtils, bid))
         consumerOpt match {
           case Some(consumer) =>
             val topicAndPartition = TopicAndPartition(topic, pid)
-            val request =
-              OffsetRequest(
-                immutable.Map(
-                  topicAndPartition -> PartitionOffsetRequestInfo(
-                    OffsetRequest.LatestTime,
-                    1)))
+            val request = OffsetRequest(
+              immutable.Map(
+                topicAndPartition -> PartitionOffsetRequestInfo(
+                  OffsetRequest.LatestTime,
+                  1)))
             val logSize = consumer
               .getOffsetsBefore(request)
               .partitionErrorAndOffsets(topicAndPartition)
@@ -198,10 +198,12 @@ object ConsumerOffsetChecker extends Logging {
     val group = options.valueOf(groupOpt)
     val groupDirs = new ZKGroupDirs(group)
 
-    val channelSocketTimeoutMs =
-      options.valueOf(channelSocketTimeoutMsOpt).intValue()
-    val channelRetryBackoffMs =
-      options.valueOf(channelRetryBackoffMsOpt).intValue()
+    val channelSocketTimeoutMs = options
+      .valueOf(channelSocketTimeoutMsOpt)
+      .intValue()
+    val channelRetryBackoffMs = options
+      .valueOf(channelRetryBackoffMsOpt)
+      .intValue()
 
     val topics =
       if (options.has(topicsOpt)) Some(options.valueOf(topicsOpt)) else None
@@ -209,8 +211,11 @@ object ConsumerOffsetChecker extends Logging {
     var zkUtils: ZkUtils = null
     var channel: BlockingChannel = null
     try {
-      zkUtils =
-        ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
+      zkUtils = ZkUtils(
+        zkConnect,
+        30000,
+        30000,
+        JaasUtils.isZkSecurityEnabled())
 
       val topicList = topics match {
         case Some(x) => x.split(",").view.toList
@@ -218,8 +223,8 @@ object ConsumerOffsetChecker extends Logging {
           zkUtils.getChildren(groupDirs.consumerGroupDir + "/owners").toList
       }
 
-      topicPidMap =
-        immutable.Map(zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
+      topicPidMap = immutable.Map(
+        zkUtils.getPartitionsForTopics(topicList).toSeq: _*)
       val topicPartitions = topicPidMap.flatMap {
         case (topic, partitionSeq) =>
           partitionSeq.map(TopicAndPartition(topic, _))
@@ -234,8 +239,8 @@ object ConsumerOffsetChecker extends Logging {
         "Sending offset fetch request to coordinator %s:%d."
           .format(channel.host, channel.port))
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse =
-        OffsetFetchResponse.readFrom(channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse.readFrom(
+        channel.receive().payload())
       debug("Received offset fetch response %s.".format(offsetFetchResponse))
 
       offsetFetchResponse.requestInfo.foreach {

@@ -542,8 +542,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     /* ------------- ERROR HANDLING ------------------------------------------- */
 
-    val assumedClosingParens =
-      mutable.Map(RPAREN -> 0, RBRACKET -> 0, RBRACE -> 0)
+    val assumedClosingParens = mutable.Map(
+      RPAREN -> 0,
+      RBRACKET -> 0,
+      RBRACE -> 0)
 
     private var inFunReturnType = false
     @inline private def fromWithinReturnType[T](body: => T): T = {
@@ -640,8 +642,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case NEWLINE | NEWLINES => in.nextToken()
         case _                  => accept(SEMI)
       }
-    def acceptStatSepOpt() =
-      if (!isStatSeqEnd) acceptStatSep()
+    def acceptStatSepOpt() = if (!isStatSeqEnd) acceptStatSep()
 
     def errorTypeTree = setInPos(TypeTree() setType ErrorType)
     def errorTermTree = setInPos(newLiteral(null))
@@ -799,8 +800,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             val example = analyzer.exampleTuplePattern(as map {
               case Ident(name) => name; case _ => nme.EMPTY
             })
-            val msg =
-              sm"""|not a legal formal parameter.
+            val msg = sm"""|not a legal formal parameter.
                  |Note: Tuples cannot be directly destructured in method or function parameters.
                  |      Either create a single parameter accepting the Tuple${arity},
                  |      or consider a pattern matching anonymous function: `{ case $example => ... }"""
@@ -968,8 +968,11 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     def finishBinaryOp(isExpr: Boolean, opinfo: OpInfo, rhs: Tree): Tree = {
       import opinfo._
-      val operatorPos: Position =
-        Position.range(rhs.pos.source, offset, offset, offset + operator.length)
+      val operatorPos: Position = Position.range(
+        rhs.pos.source,
+        offset,
+        offset,
+        offset + operator.length)
       val pos = lhs.pos union rhs.pos union operatorPos withPoint offset
 
       atPos(pos)(
@@ -1339,8 +1342,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       *            |  [id `.'] super [`[' id `]']`.' id
       *  }}}
       */
-    def stableId(): Tree =
-      path(thisOK = false, typeOK = false)
+    def stableId(): Tree = path(thisOK = false, typeOK = false)
 
     /** {{{
       *   QualId ::= Id {`.' Id}
@@ -1583,8 +1585,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
               val cond = condExpr()
               newLinesOpt()
               val thenp = expr()
-              val elsep = if (in.token == ELSE) { in.nextToken(); expr() }
-              else literalUnit
+              val elsep =
+                if (in.token == ELSE) { in.nextToken(); expr() }
+                else literalUnit
               If(cond, thenp, elsep)
             }
           parseIf
@@ -1662,8 +1665,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             }
           parseReturn
         case THROW =>
-          def parseThrow =
-            atPos(in.skipToken()) { Throw(expr()) }
+          def parseThrow = atPos(in.skipToken()) { Throw(expr()) }
           parseThrow
         case IMPLICIT =>
           implicitClosure(in.skipToken(), location)
@@ -1947,8 +1949,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
     }
 
     // IDE HOOK (so we can memoize case blocks) // needed?
-    def caseBlock(): Tree =
-      atPos(accept(ARROW))(block())
+    def caseBlock(): Tree = atPos(accept(ARROW))(block())
 
     /** {{{
       *  Guard ::= if PostfixExpr
@@ -2011,8 +2012,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       def loop(): List[Tree] =
         if (in.token != IF) Nil else makeFilter(in.offset, guard()) :: loop()
 
-      val tail =
-        if (allowNestedIf) loop() else Nil
+      val tail = if (allowNestedIf) loop() else Nil
 
       // why max? IDE stress tests have shown that lastOffset could be less than start,
       // I guess this happens if instead if a for-expression we sit on a closing paren.
@@ -2330,8 +2330,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         in.nextToken()
         if (mods.hasAccessBoundary)
           syntaxError("duplicate private/protected qualifier", skipIt = false)
-        result = if (in.token == THIS) { in.nextToken(); mods | Flags.LOCAL }
-        else Modifiers(mods.flags, identForType())
+        result =
+          if (in.token == THIS) { in.nextToken(); mods | Flags.LOCAL }
+          else Modifiers(mods.flags, identForType())
         accept(RBRACKET)
       }
       result
@@ -2597,11 +2598,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         // TODO AM: freshTermName(o2p(in.skipToken()), "_$$"), will need to update test suite
         val pname: TypeName = wildcardOrIdent().toTypeName
         val param = atPos(start, nameOffset) {
-          val tparams =
-            typeParamClauseOpt(
-              pname,
-              null
-            ) // @M TODO null --> no higher-order context bounds for now
+          val tparams = typeParamClauseOpt(
+            pname,
+            null
+          ) // @M TODO null --> no higher-order context bounds for now
           TypeDef(mods, pname, tparams, typeBounds())
         }
         if (contextBoundBuf ne null) {
@@ -2691,9 +2691,10 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             val name = ident()
             if (in.token == DOT) {
               // import foo.bar.ident.<unknown> and so create a select node and recurse.
-              val t =
-                atPos(start, if (name == nme.ERROR) in.offset else nameOffset)(
-                  Select(expr, name))
+              val t = atPos(
+                start,
+                if (name == nme.ERROR) in.offset else nameOffset)(
+                Select(expr, name))
               in.nextToken()
               return loop(t)
             }
@@ -2916,48 +2917,51 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         nameOffset: Offset,
         mods: Modifiers,
         name: Name): Tree = {
-      val result =
-        atPos(start, if (name.toTermName == nme.ERROR) start else nameOffset) {
-          var newmods = mods
-          // contextBoundBuf is for context bounded type parameters of the form
-          // [T : B] or [T : => B]; it contains the equivalent implicit parameter type,
-          // i.e. (B[T] or T => B)
-          val contextBoundBuf = new ListBuffer[Tree]
-          val tparams = typeParamClauseOpt(name, contextBoundBuf)
-          val vparamss =
-            paramClauses(name, contextBoundBuf.toList, ofCaseClass = false)
-          newLineOptWhenFollowedBy(LBRACE)
-          var restype = fromWithinReturnType(typedOpt())
-          val rhs =
-            if (isStatSep || in.token == RBRACE) {
-              if (restype.isEmpty) {
-                if (settings.future)
-                  deprecationWarning(
-                    in.lastOffset,
-                    s"Procedure syntax is deprecated. Convert procedure `$name` to method by adding `: Unit`.")
-                restype = scalaUnitConstr
-              }
-              newmods |= Flags.DEFERRED
-              EmptyTree
-            } else if (restype.isEmpty && in.token == LBRACE) {
+      val result = atPos(
+        start,
+        if (name.toTermName == nme.ERROR) start else nameOffset) {
+        var newmods = mods
+        // contextBoundBuf is for context bounded type parameters of the form
+        // [T : B] or [T : => B]; it contains the equivalent implicit parameter type,
+        // i.e. (B[T] or T => B)
+        val contextBoundBuf = new ListBuffer[Tree]
+        val tparams = typeParamClauseOpt(name, contextBoundBuf)
+        val vparamss = paramClauses(
+          name,
+          contextBoundBuf.toList,
+          ofCaseClass = false)
+        newLineOptWhenFollowedBy(LBRACE)
+        var restype = fromWithinReturnType(typedOpt())
+        val rhs =
+          if (isStatSep || in.token == RBRACE) {
+            if (restype.isEmpty) {
               if (settings.future)
                 deprecationWarning(
-                  in.offset,
-                  s"Procedure syntax is deprecated. Convert procedure `$name` to method by adding `: Unit =`.")
+                  in.lastOffset,
+                  s"Procedure syntax is deprecated. Convert procedure `$name` to method by adding `: Unit`.")
               restype = scalaUnitConstr
-              blockExpr()
-            } else {
-              if (in.token == EQUALS) {
-                in.nextTokenAllow(nme.MACROkw)
-                if (isMacro) {
-                  in.nextToken()
-                  newmods |= Flags.MACRO
-                }
-              } else { accept(EQUALS) }
-              expr()
             }
-          DefDef(newmods, name.toTermName, tparams, vparamss, restype, rhs)
-        }
+            newmods |= Flags.DEFERRED
+            EmptyTree
+          } else if (restype.isEmpty && in.token == LBRACE) {
+            if (settings.future)
+              deprecationWarning(
+                in.offset,
+                s"Procedure syntax is deprecated. Convert procedure `$name` to method by adding `: Unit =`.")
+            restype = scalaUnitConstr
+            blockExpr()
+          } else {
+            if (in.token == EQUALS) {
+              in.nextTokenAllow(nme.MACROkw)
+              if (isMacro) {
+                in.nextToken()
+                newmods |= Flags.MACRO
+              }
+            } else { accept(EQUALS) }
+            expr()
+          }
+        DefDef(newmods, name.toTermName, tparams, vparamss, restype, rhs)
+      }
       signalParseProgress(result.pos)
       result
     }
@@ -3223,8 +3227,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         // @S: pre template body cannot stub like post body can!
         val (self, body) = templateBody(isPre = true)
         if (in.token == WITH && (self eq noSelfType)) {
-          val earlyDefs: List[Tree] =
-            body.map(ensureEarlyDef).filter(_.nonEmpty)
+          val earlyDefs: List[Tree] = body
+            .map(ensureEarlyDef)
+            .filter(_.nonEmpty)
           in.nextToken()
           val parents = templateParents()
           val (self1, body1) = templateBodyOpt(parenMeansSyntaxError = false)
@@ -3410,10 +3415,9 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         var firstOpt: Option[Tree] = None
         if (isExprIntro) {
           in.flushDoc
-          val first =
-            expr(
-              InTemplate
-            ) // @S: first statement is potentially converted so cannot be stubbed.
+          val first = expr(
+            InTemplate
+          ) // @S: first statement is potentially converted so cannot be stubbed.
           if (in.token == ARROW) {
             first match {
               case Typed(tree @ This(tpnme.EMPTY), tpt) =>

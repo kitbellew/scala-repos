@@ -171,11 +171,9 @@ case class DefaultClient[Req, Rep](
 
   private[this] val underlying = Client()
 
-  def newService(dest: Name, label: String) =
-    underlying.newService(dest, label)
+  def newService(dest: Name, label: String) = underlying.newService(dest, label)
 
-  def newClient(dest: Name, label: String) =
-    underlying.newClient(dest, label)
+  def newClient(dest: Name, label: String) = underlying.newClient(dest, label)
 
   // These are kept around to not break the API. They probably should
   // have been private[finagle] to begin with.

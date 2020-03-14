@@ -91,15 +91,15 @@ class LoadBalancerFactoryTest
   }
 
   test("throws NoBrokersAvailableException with negative addresses") {
-    val next: Stack[ServiceFactory[String, String]] =
-      Stack.Leaf(
-        Stack.Role("mock"),
-        ServiceFactory.const[String, String](Service.mk[String, String](req =>
-          Future.value(s"$req"))))
+    val next: Stack[ServiceFactory[String, String]] = Stack.Leaf(
+      Stack.Role("mock"),
+      ServiceFactory.const[String, String](Service.mk[String, String](req =>
+        Future.value(s"$req"))))
 
-    val stack = new LoadBalancerFactory.StackModule[String, String] {
-      val description = "mock"
-    }.toStack(next)
+    val stack =
+      new LoadBalancerFactory.StackModule[String, String] {
+        val description = "mock"
+      }.toStack(next)
 
     val addrs = Seq(Addr.Neg)
     addrs.foreach { addr =>
@@ -122,10 +122,9 @@ class ConcurrentLoadBalancerFactoryTest
     val server = stringServer.serve(address, echoService)
 
     val sr = new InMemoryStatsReceiver
-    val clientStack =
-      StackClient.newStack.replace(
-        LoadBalancerFactory.role,
-        ConcurrentLoadBalancerFactory.module[String, String])
+    val clientStack = StackClient.newStack.replace(
+      LoadBalancerFactory.role,
+      ConcurrentLoadBalancerFactory.module[String, String])
     val client = stringClient
       .withStack(clientStack)
       .configured(Stats(sr))
@@ -146,10 +145,9 @@ class ConcurrentLoadBalancerFactoryTest
     val server2 = stringServer.serve(addr2, echoService)
 
     val sr = new InMemoryStatsReceiver
-    val clientStack =
-      StackClient.newStack.replace(
-        LoadBalancerFactory.role,
-        ConcurrentLoadBalancerFactory.module[String, String])
+    val clientStack = StackClient.newStack.replace(
+      LoadBalancerFactory.role,
+      ConcurrentLoadBalancerFactory.module[String, String])
     val client = stringClient
       .withStack(clientStack)
       .configured(Stats(sr))

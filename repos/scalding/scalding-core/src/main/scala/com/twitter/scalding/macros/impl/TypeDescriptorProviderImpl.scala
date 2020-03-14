@@ -325,8 +325,8 @@ object TypeDescriptorProviderImpl {
 
     val converter = TupleConverterImpl
       .caseClassTupleConverterCommonImpl[T](c, allowUnknownTypes)
-    val setter =
-      TupleSetterImpl.caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
+    val setter = TupleSetterImpl
+      .caseClassTupleSetterCommonImpl[T](c, allowUnknownTypes)
 
     val namingScheme = if (isTuple[T](c)) Indexed else NamedWithPrefix
 

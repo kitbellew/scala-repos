@@ -76,8 +76,8 @@ import ManagedQueryTestSupport._
 class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobs")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,
@@ -124,8 +124,12 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     val timeout = ticksToTimeout map { t =>
       Duration(clock.duration * t, TimeUnit.MILLISECONDS)
     }
-    val ctx =
-      EvaluationContext(apiKey, account, Path.Root, Path.Root, clock.now())
+    val ctx = EvaluationContext(
+      apiKey,
+      account,
+      Path.Root,
+      Path.Root,
+      clock.now())
 
     val result = for {
       // TODO: No idea how to work with EitherT[TestFuture, so sys.error it is]
@@ -301,8 +305,11 @@ trait TestManagedQueryModule
               query: String,
               ctx: EvaluationContext,
               opts: QueryOptions) = {
-            val userQuery =
-              UserQuery(query, ctx.basePath, opts.sortOn, opts.sortOrder)
+            val userQuery = UserQuery(
+              query,
+              ctx.basePath,
+              opts.sortOn,
+              opts.sortOrder)
             val numTicks = query.toInt
 
             EitherT.right[

@@ -154,10 +154,9 @@ trait Interface extends ast.TreeDSL {
     val outer = newTermName("<outer>")
     val runOrElse = newTermName("runOrElse")
     val zero = newTermName("zero")
-    val _match =
-      newTermName(
-        "__match"
-      ) // don't call the val __match, since that will trigger virtual pattern matching...
+    val _match = newTermName(
+      "__match"
+    ) // don't call the val __match, since that will trigger virtual pattern matching...
 
     def counted(str: String, i: Int) = newTermName(str + i)
   }
@@ -324,15 +323,19 @@ trait Interface extends ast.TreeDSL {
 object PatternMatchingStats {
   val patmatNanos = Statistics.newTimer("time spent in patmat", "patmat")
   val patmatAnaDPLL = Statistics.newSubTimer("  of which DPLL", patmatNanos)
-  val patmatCNF =
-    Statistics.newSubTimer("  of which in CNF conversion", patmatNanos)
+  val patmatCNF = Statistics.newSubTimer(
+    "  of which in CNF conversion",
+    patmatNanos)
   val patmatCNFSizes = Statistics.newQuantMap[Int, Statistics.Counter](
     "  CNF size counts",
     "patmat")(Statistics.newCounter(""))
-  val patmatAnaVarEq =
-    Statistics.newSubTimer("  of which variable equality", patmatNanos)
-  val patmatAnaExhaust =
-    Statistics.newSubTimer("  of which in exhaustivity", patmatNanos)
-  val patmatAnaReach =
-    Statistics.newSubTimer("  of which in unreachability", patmatNanos)
+  val patmatAnaVarEq = Statistics.newSubTimer(
+    "  of which variable equality",
+    patmatNanos)
+  val patmatAnaExhaust = Statistics.newSubTimer(
+    "  of which in exhaustivity",
+    patmatNanos)
+  val patmatAnaReach = Statistics.newSubTimer(
+    "  of which in unreachability",
+    patmatNanos)
 }

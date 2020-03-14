@@ -76,8 +76,9 @@ class PythonMLLibAPISuite extends SparkFunSuite {
            Double.MaxValue,
            Double.MinValue,
            Double.NaN)) {
-      val deser =
-        SerDe.loads(SerDe.dumps(x.asInstanceOf[AnyRef])).asInstanceOf[Double]
+      val deser = SerDe
+        .loads(SerDe.dumps(x.asInstanceOf[AnyRef]))
+        .asInstanceOf[Double]
       // We use `equals` here for comparison because we cannot use `==` for NaN
       assert(x.equals(deser))
     }

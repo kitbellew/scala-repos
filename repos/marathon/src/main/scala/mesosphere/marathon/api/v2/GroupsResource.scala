@@ -168,8 +168,10 @@ class GroupsResource @Inject() (
           rootGroup.transitiveApps.find(_.id == effectivePath),
           s"An app with the path $effectivePath already exists.")
 
-        val (deployment, path) =
-          updateOrCreate(id.toRootPath, groupUpdate, force)
+        val (deployment, path) = updateOrCreate(
+          id.toRootPath,
+          groupUpdate,
+          force)
         deploymentResult(deployment, Response.created(new URI(path.toString)))
       }
     }
@@ -205,10 +207,12 @@ class GroupsResource @Inject() (
         val newVersion = Timestamp.now()
 
         if (dryRun) {
-          val originalGroup =
-            result(groupManager.group(id.toRootPath)).getOrElse(Group.empty)
-          val updatedGroup =
-            applyGroupUpdate(originalGroup, groupUpdate, newVersion)
+          val originalGroup = result(groupManager.group(id.toRootPath))
+            .getOrElse(Group.empty)
+          val updatedGroup = applyGroupUpdate(
+            originalGroup,
+            groupUpdate,
+            newVersion)
 
           ok(
             Json
@@ -218,8 +222,10 @@ class GroupsResource @Inject() (
               .toString()
           )
         } else {
-          val (deployment, _) =
-            updateOrCreate(id.toRootPath, groupUpdate, force)
+          val (deployment, _) = updateOrCreate(
+            id.toRootPath,
+            groupUpdate,
+            force)
           deploymentResult(deployment)
         }
       }
@@ -271,8 +277,8 @@ class GroupsResource @Inject() (
         parentGroup.remove(groupId, version)
       }
 
-      val deployment =
-        result(groupManager.update(groupId.parent, deleteGroup, version, force))
+      val deployment = result(
+        groupManager.update(groupId.parent, deleteGroup, version, force))
       deploymentResult(deployment)
     }
 

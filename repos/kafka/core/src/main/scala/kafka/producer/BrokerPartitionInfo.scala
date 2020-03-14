@@ -47,20 +47,19 @@ class BrokerPartitionInfo(
     debug("Getting broker partition info for topic %s".format(topic))
     // check if the cache has metadata for this topic
     val topicMetadata = topicPartitionInfo.get(topic)
-    val metadata: TopicMetadata =
-      topicMetadata match {
-        case Some(m) => m
-        case None    =>
-          // refresh the topic metadata cache
-          updateInfo(Set(topic), correlationId)
-          val topicMetadata = topicPartitionInfo.get(topic)
-          topicMetadata match {
-            case Some(m) => m
-            case None =>
-              throw new KafkaException(
-                "Failed to fetch topic metadata for topic: " + topic)
-          }
-      }
+    val metadata: TopicMetadata = topicMetadata match {
+      case Some(m) => m
+      case None    =>
+        // refresh the topic metadata cache
+        updateInfo(Set(topic), correlationId)
+        val topicMetadata = topicPartitionInfo.get(topic)
+        topicMetadata match {
+          case Some(m) => m
+          case None =>
+            throw new KafkaException(
+              "Failed to fetch topic metadata for topic: " + topic)
+        }
+    }
     val partitionMetadata = metadata.partitionsMetadata
     if (partitionMetadata.size == 0) {
       if (metadata.errorCode != Errors.NONE.code) {

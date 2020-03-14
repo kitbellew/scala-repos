@@ -17,8 +17,7 @@ trait CaptchedForm {
 
   def captcher: akka.actor.ActorSelection
 
-  def anyCaptcha: Fu[Captcha] =
-    (captcher ? AnyCaptcha).mapTo[Captcha]
+  def anyCaptcha: Fu[Captcha] = (captcher ? AnyCaptcha).mapTo[Captcha]
 
   def getCaptcha(id: String): Fu[Captcha] =
     (captcher ? GetCaptcha(id)).mapTo[Captcha]

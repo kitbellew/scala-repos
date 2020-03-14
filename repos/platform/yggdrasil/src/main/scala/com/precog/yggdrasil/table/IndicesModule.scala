@@ -285,8 +285,9 @@ trait IndicesModule[M[+_]]
     private[table] def getRowsForKeys(
         keyIds: Seq[Int],
         keyValues: Seq[RValue]): ArrayIntList = {
-      var rows: ArrayIntList =
-        dict.getOrElse((keyIds(0), keyValues(0)), emptyBuffer)
+      var rows: ArrayIntList = dict.getOrElse(
+        (keyIds(0), keyValues(0)),
+        emptyBuffer)
       var i: Int = 1
       while (i < keyIds.length && !rows.isEmpty) {
         rows = intersectBuffers(

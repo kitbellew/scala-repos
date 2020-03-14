@@ -45,8 +45,7 @@ class Replayer(raw: Reader) extends LogReplay {
   private val rd = new Lexer(raw)
   private var nextComma = false
 
-  private def eatComma() =
-    if (nextComma) { rd.accept(','); nextComma = false }
+  private def eatComma() = if (nextComma) { rd.accept(','); nextComma = false }
 
   def logreplay(event: String, x: => Boolean) =
     if (rd.token == EOF) NullLogger.logreplay(event, x)

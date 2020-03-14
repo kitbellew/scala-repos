@@ -29,13 +29,12 @@ class KafkaStream[K, V](
     extends Iterable[MessageAndMetadata[K, V]]
     with java.lang.Iterable[MessageAndMetadata[K, V]] {
 
-  private val iter: ConsumerIterator[K, V] =
-    new ConsumerIterator[K, V](
-      queue,
-      consumerTimeoutMs,
-      keyDecoder,
-      valueDecoder,
-      clientId)
+  private val iter: ConsumerIterator[K, V] = new ConsumerIterator[K, V](
+    queue,
+    consumerTimeoutMs,
+    keyDecoder,
+    valueDecoder,
+    clientId)
 
   /**
     *  Create an iterator over messages in the stream.

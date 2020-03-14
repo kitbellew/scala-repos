@@ -264,8 +264,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           val qualText = infix.getBaseExpr.getText
           val newCallText =
             s"$qualText.${infix.operation.refName}${argsText(change, usage)}"
-          val methodCall =
-            ScalaPsiElementFactory.createExpressionWithContextFromText(
+          val methodCall = ScalaPsiElementFactory
+            .createExpressionWithContextFromText(
               newCallText,
               infix.getContext,
               infix)
@@ -473,8 +473,8 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
           case nameId: PsiIdentifier =>
             val factory: PsiElementFactory =
               JavaPsiFacade.getInstance(jRef.getProject).getElementFactory
-            val newNameIdentifier: PsiIdentifier =
-              factory.createIdentifier(newName)
+            val newNameIdentifier: PsiIdentifier = factory.createIdentifier(
+              newName)
             nameId.replace(newNameIdentifier)
           case _ =>
         }

@@ -110,8 +110,8 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       .withPartitionsRDD(
         edges
           .map { e =>
-            val part: PartitionID =
-              partitionStrategy.getPartition(e.srcId, e.dstId, numPartitions)
+            val part: PartitionID = partitionStrategy
+              .getPartition(e.srcId, e.dstId, numPartitions)
             (part, (e.srcId, e.dstId, e.attr))
           }
           .partitionBy(new HashPartitioner(numPartitions))
@@ -420,13 +420,9 @@ object GraphImpl {
       edgeStorageLevel: StorageLevel,
       vertexStorageLevel: StorageLevel): GraphImpl[VD, ED] = {
     val edgesCached = edges.withTargetStorageLevel(edgeStorageLevel).cache()
-    val vertices =
-      VertexRDD
-        .fromEdges(
-          edgesCached,
-          edgesCached.partitions.length,
-          defaultVertexAttr)
-        .withTargetStorageLevel(vertexStorageLevel)
+    val vertices = VertexRDD
+      .fromEdges(edgesCached, edgesCached.partitions.length, defaultVertexAttr)
+      .withTargetStorageLevel(vertexStorageLevel)
     fromExistingRDDs(vertices, edgesCached)
   }
 

@@ -78,8 +78,8 @@ object SyntheticMembersInjector {
   val LOG = Logger.getInstance(getClass)
 
   private val CLASS_NAME = "org.intellij.scala.syntheticMemberInjector"
-  val EP_NAME: ExtensionPointName[SyntheticMembersInjector] =
-    ExtensionPointName.create(CLASS_NAME)
+  val EP_NAME: ExtensionPointName[SyntheticMembersInjector] = ExtensionPointName
+    .create(CLASS_NAME)
   val injectedExtensions = { proj: Project =>
     try {
       LibraryInjectorLoader

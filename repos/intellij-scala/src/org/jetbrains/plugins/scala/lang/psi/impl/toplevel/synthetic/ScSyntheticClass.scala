@@ -81,8 +81,7 @@ class ScSyntheticTypeParameter(
   def getOwner = null
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)
@@ -206,10 +205,9 @@ class ScSyntheticFunction(
       },
       Seq.empty)
 
-  val typeParams: Seq[ScSyntheticTypeParameter] =
-    typeParameterNames.map { name =>
-      new ScSyntheticTypeParameter(manager, name, this)
-    }
+  val typeParams: Seq[ScSyntheticTypeParameter] = typeParameterNames.map {
+    name => new ScSyntheticTypeParameter(manager, name, this)
+  }
   override def typeParameters = typeParams
 
   override def getIcon(flags: Int) = icons.Icons.FUNCTION
@@ -314,8 +312,8 @@ class SyntheticClasses(project: Project)
               false,
               false,
               0)))
-        override val retType: ScType =
-          ScalaPsiManager.typeVariable(typeParams(0))
+        override val retType: ScType = ScalaPsiManager.typeVariable(
+          typeParams(0))
       })
 
     registerClass(AnyVal, "AnyVal")

@@ -212,8 +212,7 @@ object Examples {
             ("name" -> "Marilyn") ~
               ("age" -> 33))))
 
-  val objArray =
-    """
+  val objArray = """
 { "name": "joe",
   "address": {
     "street": "Bulevard",

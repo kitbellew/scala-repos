@@ -806,52 +806,53 @@ trait Printers extends api.Printers { self: SymbolTable =>
           if (mods.isJavaDefined) super.printTree(cl)
           printAnnotations(cl)
           // traits
-          val clParents: List[Tree] = if (mods.isTrait) {
-            // avoid abstract modifier for traits
-            printModifiers(tree, mods &~ ABSTRACT)
-            print("trait ", printedName(name))
-            printTypeParams(tparams)
+          val clParents: List[Tree] =
+            if (mods.isTrait) {
+              // avoid abstract modifier for traits
+              printModifiers(tree, mods &~ ABSTRACT)
+              print("trait ", printedName(name))
+              printTypeParams(tparams)
 
-            val build.SyntacticTraitDef(_, _, _, _, parents, _, _) = tree
-            parents
-            // classes
-          } else {
-            printModifiers(tree, mods)
-            print("class ", printedName(name))
-            printTypeParams(tparams)
+              val build.SyntacticTraitDef(_, _, _, _, parents, _, _) = tree
+              parents
+              // classes
+            } else {
+              printModifiers(tree, mods)
+              print("class ", printedName(name))
+              printTypeParams(tparams)
 
-            val build.SyntacticClassDef(
-              _,
-              _,
-              _,
-              ctorMods,
-              vparamss,
-              earlyDefs,
-              parents,
-              selfType,
-              body) = cl
+              val build.SyntacticClassDef(
+                _,
+                _,
+                _,
+                ctorMods,
+                vparamss,
+                earlyDefs,
+                parents,
+                selfType,
+                body) = cl
 
-            // constructor's modifier
-            if (ctorMods.hasFlag(AccessFlags) || ctorMods.hasAccessBoundary) {
-              print(" ")
-              printModifiers(ctorMods, primaryCtorParam = false)
-            }
-
-            def printConstrParams(ts: List[ValDef]): Unit = {
-              parenthesize() {
-                printImplicitInParamsList(ts)
-                printSeq(ts)(printParam(_, primaryCtorParam = true))(
-                  print(", "))
+              // constructor's modifier
+              if (ctorMods.hasFlag(AccessFlags) || ctorMods.hasAccessBoundary) {
+                print(" ")
+                printModifiers(ctorMods, primaryCtorParam = false)
               }
+
+              def printConstrParams(ts: List[ValDef]): Unit = {
+                parenthesize() {
+                  printImplicitInParamsList(ts)
+                  printSeq(ts)(printParam(_, primaryCtorParam = true))(
+                    print(", "))
+                }
+              }
+              // constructor's params processing (don't print single empty constructor param list)
+              vparamss match {
+                case Nil | List(Nil)
+                    if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
+                case _                                                  => vparamss foreach printConstrParams
+              }
+              parents
             }
-            // constructor's params processing (don't print single empty constructor param list)
-            vparamss match {
-              case Nil | List(Nil)
-                  if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
-              case _                                                  => vparamss foreach printConstrParams
-            }
-            parents
-          }
 
           // get trees without default classes and traits (when they are last)
           val printedParents = removeDefaultTypesFromList(clParents)()(
@@ -1003,8 +1004,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
               print(")")
             } else body
 
-          val printParentheses =
-            needsParentheses(selector)(insideLabelDef = false)
+          val printParentheses = needsParentheses(selector)(insideLabelDef =
+            false)
           tree match {
             case Match(EmptyTree, cs) =>
               printColumn(cases, "{", "", "}")

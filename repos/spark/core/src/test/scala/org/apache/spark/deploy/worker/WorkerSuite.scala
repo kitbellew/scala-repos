@@ -79,8 +79,12 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (small number of executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 2.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
+      conf,
+      new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -114,8 +118,12 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedExecutors (more executors)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedExecutors", 30.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
+      conf,
+      new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -156,8 +164,12 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (small number of drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 2.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
+      conf,
+      new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,
@@ -193,8 +205,12 @@ class WorkerSuite extends SparkFunSuite with Matchers {
   test("test clearing of finishedDrivers (more drivers)") {
     val conf = new SparkConf()
     conf.set("spark.worker.ui.retainedDrivers", 30.toString)
-    val rpcEnv =
-      RpcEnv.create("test", "localhost", 12345, conf, new SecurityManager(conf))
+    val rpcEnv = RpcEnv.create(
+      "test",
+      "localhost",
+      12345,
+      conf,
+      new SecurityManager(conf))
     val worker = new Worker(
       rpcEnv,
       50000,

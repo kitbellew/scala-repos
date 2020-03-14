@@ -56,8 +56,11 @@ private[ui] class LogPage(parent: WorkerWebUI)
           "Request must specify either application or driver identifiers")
     }
 
-    val (logText, startByte, endByte, logLength) =
-      getLog(logDir, logType, offset, byteLength)
+    val (logText, startByte, endByte, logLength) = getLog(
+      logDir,
+      logType,
+      offset,
+      byteLength)
     val pre =
       s"==== Bytes $startByte-$endByte of $logLength of $logDir$logType ====\n"
     pre + logText
@@ -84,8 +87,11 @@ private[ui] class LogPage(parent: WorkerWebUI)
           "Request must specify either application or driver identifiers")
     }
 
-    val (logText, startByte, endByte, logLength) =
-      getLog(logDir, logType, offset, byteLength)
+    val (logText, startByte, endByte, logLength) = getLog(
+      logDir,
+      logType,
+      offset,
+      byteLength)
     val linkToMaster = <p><a href={
       worker.activeMasterWebUiUrl
     }>Back to Master</a></p>
@@ -134,8 +140,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
         </button>
       }
 
-    val content =
-      <html>
+    val content = <html>
         <body>
           {linkToMaster}
           <div>
@@ -176,8 +181,9 @@ private[ui] class LogPage(parent: WorkerWebUI)
     }
 
     try {
-      val files =
-        RollingFileAppender.getSortedRolledOverFiles(logDirectory, logType)
+      val files = RollingFileAppender.getSortedRolledOverFiles(
+        logDirectory,
+        logType)
       logDebug(
         s"Sorted log files of type $logType in $logDirectory:\n${files.mkString("\n")}")
 

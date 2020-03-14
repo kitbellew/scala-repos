@@ -388,8 +388,9 @@ object HBEventsUtil {
         filters.addFilter(filter)
       } else {
         tetOpt.foreach { tet =>
-          val filter =
-            createBinaryFilter("targetEntityType", Bytes.toBytes(tet))
+          val filter = createBinaryFilter(
+            "targetEntityType",
+            Bytes.toBytes(tet))
           // the entire row will be skipped if the column is not found.
           filter.setFilterIfMissing(true)
           filters.addFilter(filter)

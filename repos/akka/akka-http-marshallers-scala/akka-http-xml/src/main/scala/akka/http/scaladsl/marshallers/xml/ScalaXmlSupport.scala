@@ -48,8 +48,11 @@ trait ScalaXmlSupport {
     ScalaXmlSupport.createSaferSAXParser()
 }
 object ScalaXmlSupport extends ScalaXmlSupport {
-  val nodeSeqMediaTypes: immutable.Seq[MediaType.NonBinary] =
-    List(`text/xml`, `application/xml`, `text/html`, `application/xhtml+xml`)
+  val nodeSeqMediaTypes: immutable.Seq[MediaType.NonBinary] = List(
+    `text/xml`,
+    `application/xml`,
+    `text/html`,
+    `application/xhtml+xml`)
   val nodeSeqContentTypeRanges: immutable.Seq[ContentTypeRange] =
     nodeSeqMediaTypes.map(ContentTypeRange(_))
 

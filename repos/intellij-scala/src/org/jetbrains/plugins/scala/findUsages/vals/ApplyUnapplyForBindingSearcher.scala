@@ -51,8 +51,11 @@ class ApplyUnapplyForBindingSearcher
           checkUnapply = true)
         processBinding(processor, scope, binding, queryParameters.getProject)
       case inAnonClassWithBinding((binding, checkApply, checkUnapply)) =>
-        val processor =
-          createProcessor(consumer, binding, checkApply, checkUnapply)
+        val processor = createProcessor(
+          consumer,
+          binding,
+          checkApply,
+          checkUnapply)
         processBinding(processor, scope, binding, queryParameters.getProject)
       case _ => true
     }

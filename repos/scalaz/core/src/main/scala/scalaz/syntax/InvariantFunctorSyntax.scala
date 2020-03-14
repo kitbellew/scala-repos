@@ -25,8 +25,7 @@ sealed trait ToInvariantFunctorOps0 {
 
 trait ToInvariantFunctorOps extends ToInvariantFunctorOps0 {
   implicit def ToInvariantFunctorOps[F[_], A](v: F[A])(
-      implicit F0: InvariantFunctor[F]) =
-    new InvariantFunctorOps[F, A](v)
+      implicit F0: InvariantFunctor[F]) = new InvariantFunctorOps[F, A](v)
 
   ////
 

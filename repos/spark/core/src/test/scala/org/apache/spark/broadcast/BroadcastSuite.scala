@@ -75,8 +75,9 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       conf)
     val list = List[Int](1, 2, 3, 4)
     val broadcast = sc.broadcast(list)
-    val results =
-      sc.parallelize(1 to numSlaves).map(x => (x, broadcast.value.sum))
+    val results = sc
+      .parallelize(1 to numSlaves)
+      .map(x => (x, broadcast.value.sum))
     assert(results.collect().toSet === (1 to numSlaves).map(x => (x, 10)).toSet)
   }
 
@@ -93,8 +94,10 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       val data: Array[Byte] = new Array[Byte](size)
       rand.nextBytes(data)
       val blocks = blockifyObject(data, blockSize, serializer, compressionCodec)
-      val unblockified =
-        unBlockifyObject[Array[Byte]](blocks, serializer, compressionCodec)
+      val unblockified = unBlockifyObject[Array[Byte]](
+        blocks,
+        serializer,
+        compressionCodec)
       assert(unblockified === data)
     }
   }
@@ -219,19 +222,21 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
       afterUnpersist: (Long, BlockManagerMaster) => Unit,
       removeFromDriver: Boolean) {
 
-    sc = if (distributed) {
-      val _sc =
-        new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
-      // Wait until all salves are up
-      try {
-        _sc.jobProgressListener.waitUntilExecutorsUp(numSlaves, 60000)
-        _sc
-      } catch {
-        case e: Throwable =>
-          _sc.stop()
-          throw e
-      }
-    } else { new SparkContext("local", "test") }
+    sc =
+      if (distributed) {
+        val _sc = new SparkContext(
+          "local-cluster[%d, 1, 1024]".format(numSlaves),
+          "test")
+        // Wait until all salves are up
+        try {
+          _sc.jobProgressListener.waitUntilExecutorsUp(numSlaves, 60000)
+          _sc
+        } catch {
+          case e: Throwable =>
+            _sc.stop()
+            throw e
+        }
+      } else { new SparkContext("local", "test") }
     val blockManagerMaster = sc.env.blockManager.master
     val list = List[Int](1, 2, 3, 4)
 

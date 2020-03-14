@@ -70,8 +70,7 @@ object Scalatest {
     exec(javac, "-d", outputdir, "-classpath", classpath, tmpfilename)
   }
 
-  def java(cname: String) =
-    exec(javacmd, "-cp", classpath, cname)
+  def java(cname: String) = exec(javacmd, "-cp", classpath, cname)
 
   /** Execute cmd, wait for the process to end and pipe its output to stdout */
   private def exec(args: String*) {

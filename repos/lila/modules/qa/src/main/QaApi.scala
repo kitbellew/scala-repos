@@ -353,8 +353,8 @@ final class QaApi(
   }
 
   object relation {
-    private val questionsCache: Cache[List[Question]] =
-      LruCache(timeToLive = 3.hours)
+    private val questionsCache: Cache[List[Question]] = LruCache(timeToLive =
+      3.hours)
 
     def questions(q: Question, max: Int): Fu[List[Question]] =
       questionsCache(q.id -> max) {

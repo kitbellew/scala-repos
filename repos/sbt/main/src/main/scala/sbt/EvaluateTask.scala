@@ -526,8 +526,9 @@ object EvaluateTask {
     val tags = tagged[Task[_]](
       _.info get tagsKey getOrElse Map.empty,
       Tags.predicate(config.restrictions))
-    val (service, shutdownThreads) =
-      completionService[Task[_], Completed](tags, (s: String) => log.warn(s))
+    val (service, shutdownThreads) = completionService[Task[_], Completed](
+      tags,
+      (s: String) => log.warn(s))
 
     def shutdown(): Unit = {
       // First ensure that all threads are stopped for task execution.

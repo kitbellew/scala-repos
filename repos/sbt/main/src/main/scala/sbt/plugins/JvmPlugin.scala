@@ -31,8 +31,7 @@ object JvmPlugin extends AutoPlugin {
       Defaults.packageBase ++
       Defaults.compileBase ++
       Defaults.defaultConfigs
-  override lazy val globalSettings: Seq[Setting[_]] =
-    Defaults.globalJvmCore
+  override lazy val globalSettings: Seq[Setting[_]] = Defaults.globalJvmCore
 
   override def projectConfigurations: Seq[Configuration] =
     Configurations.default

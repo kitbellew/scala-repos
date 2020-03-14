@@ -54,8 +54,7 @@ object BigDecimalConvertor {
 }
 
 object BigIntConvertor {
-  def fromBitSet(bitSet: BitSet): BigInt =
-    fromBitMask(bitSet.toBitMask)
+  def fromBitSet(bitSet: BitSet): BigInt = fromBitMask(bitSet.toBitMask)
 
   def toBitSet(bigInt: BigInt): im.BitSet = {
     im.BitSet.fromBitMaskNoCopy(toBitMask(bigInt))

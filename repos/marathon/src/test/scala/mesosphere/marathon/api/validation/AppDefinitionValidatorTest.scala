@@ -287,8 +287,8 @@ class AppDefinitionValidatorTest
   test("persistent volume with size 0 is invalid") {
     val f = new Fixture
     val container = f.validDockerContainer.copy(
-      volumes =
-        Seq(f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(0)))
+      volumes = Seq(
+        f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(0)))
     )
     assert(validate(container).isFailure)
   }
@@ -296,8 +296,8 @@ class AppDefinitionValidatorTest
   test("persistent volume with size < 0 is invalid") {
     val f = new Fixture
     val container = f.validDockerContainer.copy(
-      volumes =
-        Seq(f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(-1)))
+      volumes = Seq(
+        f.validPersistentVolume.copy(persistent = PersistentVolumeInfo(-1)))
     )
     assert(validate(container).isFailure)
   }
@@ -444,7 +444,7 @@ class AppDefinitionValidatorTest
     val vol1 = persistentVolume("foo")
     val vol2 = persistentVolume("bla")
     val vol3 = persistentVolume("test")
-    val validResident =
-      residentApp("/app1", Seq(vol1, vol2)).copy(upgradeStrategy = zero)
+    val validResident = residentApp("/app1", Seq(vol1, vol2))
+      .copy(upgradeStrategy = zero)
   }
 }

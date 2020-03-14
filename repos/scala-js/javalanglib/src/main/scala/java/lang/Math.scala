@@ -121,8 +121,7 @@ object Math {
       }
       val d = Math.max(Math.abs(a) * 2e-16, MinPositiveValue)
       val ad = a + d
-      val xi0 =
-        if (ad == PositiveInfinity) MaxValue else ad
+      val xi0 = if (ad == PositiveInfinity) MaxValue else ad
       iter(x = a, xi = xi0, n = a)
     }
   }

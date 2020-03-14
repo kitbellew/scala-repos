@@ -15,14 +15,11 @@ object System {
   var err: PrintStream = new JSConsoleBasedPrintStream(isErr = true)
   var in: InputStream = null
 
-  def setIn(in: InputStream): Unit =
-    this.in = in
+  def setIn(in: InputStream): Unit = this.in = in
 
-  def setOut(out: PrintStream): Unit =
-    this.out = out
+  def setOut(out: PrintStream): Unit = this.out = out
 
-  def setErr(err: PrintStream): Unit =
-    this.err = err
+  def setErr(err: PrintStream): Unit = this.err = err
 
   def currentTimeMillis(): scala.Long = { (new js.Date).getTime().toLong }
 
@@ -39,8 +36,7 @@ object System {
     } else { () => new js.Date().getTime() }
   }
 
-  def nanoTime(): scala.Long =
-    (getHighPrecisionTime() * 1000000).toLong
+  def nanoTime(): scala.Long = (getHighPrecisionTime() * 1000000).toLong
 
   def arraycopy(
       src: Object,
@@ -238,8 +234,7 @@ object System {
     }
   }
 
-  def getProperties(): ju.Properties =
-    SystemProperties.value
+  def getProperties(): ju.Properties = SystemProperties.value
 
   def setProperties(properties: ju.Properties): Unit = {
     SystemProperties.value =
@@ -247,8 +242,7 @@ object System {
       else SystemProperties.loadSystemProperties()
   }
 
-  def getProperty(key: String): String =
-    SystemProperties.value.getProperty(key)
+  def getProperty(key: String): String = SystemProperties.value.getProperty(key)
 
   def getProperty(key: String, default: String): String =
     SystemProperties.value.getProperty(key, default)
@@ -278,8 +272,7 @@ private[lang] final class JSConsoleBasedPrintStream(isErr: Boolean)
   private var flushed: scala.Boolean = true
   private var buffer: String = ""
 
-  override def write(b: Int): Unit =
-    write(Array(b.toByte), 0, 1)
+  override def write(b: Int): Unit = write(Array(b.toByte), 0, 1)
 
   override def write(buf: Array[scala.Byte], off: Int, len: Int): Unit = {
     /* This does *not* decode buf as a sequence of UTF-8 code units.

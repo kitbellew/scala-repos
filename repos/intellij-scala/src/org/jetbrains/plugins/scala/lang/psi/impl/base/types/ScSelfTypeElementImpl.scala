@@ -42,8 +42,9 @@ class ScSelfTypeElementImpl private (
   def nameId: PsiElement = findChildByType[PsiElement](TokenSets.SELF_TYPE_ID)
 
   def getType(ctx: TypingContext): TypeResult[ScType] = {
-    val parent =
-      PsiTreeUtil.getParentOfType(this, classOf[ScTemplateDefinition])
+    val parent = PsiTreeUtil.getParentOfType(
+      this,
+      classOf[ScTemplateDefinition])
     assert(parent != null)
     typeElement match {
       case Some(ste) =>

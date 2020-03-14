@@ -20,8 +20,7 @@ final case class Kleisli[F[_], A, B](run: A => F[B]) { self =>
   def map[C](f: B => C)(implicit F: Functor[F]): Kleisli[F, A, C] =
     Kleisli(a => F.map(run(a))(f))
 
-  def mapF[N[_], C](f: F[B] => N[C]): Kleisli[N, A, C] =
-    Kleisli(run andThen f)
+  def mapF[N[_], C](f: F[B] => N[C]): Kleisli[N, A, C] = Kleisli(run andThen f)
 
   def flatMap[C](f: B => Kleisli[F, A, C])(
       implicit F: FlatMap[F]): Kleisli[F, A, C] =
@@ -34,15 +33,13 @@ final case class Kleisli[F[_], A, B](run: A => F[B]) { self =>
     Kleisli((a: A) => F.flatMap(run(a))(f))
 
   def andThen[C](k: Kleisli[F, B, C])(
-      implicit F: FlatMap[F]): Kleisli[F, A, C] =
-    this andThen k.run
+      implicit F: FlatMap[F]): Kleisli[F, A, C] = this andThen k.run
 
   def compose[Z](f: Z => F[A])(implicit F: FlatMap[F]): Kleisli[F, Z, B] =
     Kleisli((z: Z) => F.flatMap(f(z))(run))
 
   def compose[Z](k: Kleisli[F, Z, A])(
-      implicit F: FlatMap[F]): Kleisli[F, Z, B] =
-    this compose k.run
+      implicit F: FlatMap[F]): Kleisli[F, Z, B] = this compose k.run
 
   def traverse[G[_]](
       f: G[A])(implicit F: Applicative[F], G: Traverse[G]): F[G[B]] =
@@ -51,11 +48,9 @@ final case class Kleisli[F[_], A, B](run: A => F[B]) { self =>
   def lift[G[_]](implicit G: Applicative[G]): Kleisli[λ[α => G[F[α]]], A, B] =
     Kleisli[λ[α => G[F[α]]], A, B](a => Applicative[G].pure(run(a)))
 
-  def local[AA](f: AA => A): Kleisli[F, AA, B] =
-    Kleisli(f.andThen(run))
+  def local[AA](f: AA => A): Kleisli[F, AA, B] = Kleisli(f.andThen(run))
 
-  def transform[G[_]](f: F ~> G): Kleisli[G, A, B] =
-    Kleisli(a => f(run(a)))
+  def transform[G[_]](f: F ~> G): Kleisli[G, A, B] = Kleisli(a => f(run(a)))
 
   def lower(implicit F: Applicative[F]): Kleisli[F, A, F[B]] =
     Kleisli(a => F.pure(run(a)))
@@ -104,8 +99,7 @@ private[data] sealed abstract class KleisliInstances extends KleisliInstances0 {
       def F: Monad[F] = ev
     }
 
-  implicit val kleisliIdArrow: Arrow[Kleisli[Id, ?, ?]] =
-    kleisliArrow[Id]
+  implicit val kleisliIdArrow: Arrow[Kleisli[Id, ?, ?]] = kleisliArrow[Id]
 
   implicit def kleisliChoice[F[_]](
       implicit ev: Monad[F]): Choice[Kleisli[F, ?, ?]] =
@@ -119,12 +113,10 @@ private[data] sealed abstract class KleisliInstances extends KleisliInstances0 {
 
       def compose[A, B, C](
           f: Kleisli[F, B, C],
-          g: Kleisli[F, A, B]): Kleisli[F, A, C] =
-        f.compose(g)
+          g: Kleisli[F, A, B]): Kleisli[F, A, C] = f.compose(g)
     }
 
-  implicit val kleisliIdChoice: Choice[Kleisli[Id, ?, ?]] =
-    kleisliChoice[Id]
+  implicit val kleisliIdChoice: Choice[Kleisli[Id, ?, ?]] = kleisliChoice[Id]
 
   implicit def kleisliIdMonadReader[A]: MonadReader[Kleisli[Id, A, ?], A] =
     kleisliMonadReader[Id, A]
@@ -132,8 +124,7 @@ private[data] sealed abstract class KleisliInstances extends KleisliInstances0 {
   implicit def kleisliContravariant[F[_], C]: Contravariant[Kleisli[F, ?, C]] =
     new Contravariant[Kleisli[F, ?, C]] {
       override def contramap[A, B](fa: Kleisli[F, A, C])(
-          f: (B) => A): Kleisli[F, B, C] =
-        fa.local(f)
+          f: (B) => A): Kleisli[F, B, C] = fa.local(f)
     }
 
   implicit def kleisliTransLift[M[_], A]
@@ -160,8 +151,7 @@ private[data] sealed abstract class KleisliInstances0
   implicit def kleisliFlatMap[F[_]: FlatMap, A]: FlatMap[Kleisli[F, A, ?]] =
     new FlatMap[Kleisli[F, A, ?]] {
       def flatMap[B, C](fa: Kleisli[F, A, B])(
-          f: B => Kleisli[F, A, C]): Kleisli[F, A, C] =
-        fa.flatMap(f)
+          f: B => Kleisli[F, A, C]): Kleisli[F, A, C] = fa.flatMap(f)
 
       def map[B, C](fa: Kleisli[F, A, B])(f: B => C): Kleisli[F, A, C] =
         fa.map(f)
@@ -185,12 +175,10 @@ private[data] sealed abstract class KleisliInstances1
   implicit def kleisliApplicative[F[_]: Applicative, A]
       : Applicative[Kleisli[F, A, ?]] =
     new Applicative[Kleisli[F, A, ?]] {
-      def pure[B](x: B): Kleisli[F, A, B] =
-        Kleisli.pure[F, A, B](x)
+      def pure[B](x: B): Kleisli[F, A, B] = Kleisli.pure[F, A, B](x)
 
       def ap[B, C](f: Kleisli[F, A, B => C])(
-          fa: Kleisli[F, A, B]): Kleisli[F, A, C] =
-        fa(f)
+          fa: Kleisli[F, A, B]): Kleisli[F, A, C] = fa(f)
 
       def map[B, C](fb: Kleisli[F, A, B])(f: B => C): Kleisli[F, A, C] =
         fb.map(f)
@@ -207,8 +195,7 @@ private[data] sealed abstract class KleisliInstances2
   implicit def kleisliApply[F[_]: Apply, A]: Apply[Kleisli[F, A, ?]] =
     new Apply[Kleisli[F, A, ?]] {
       def ap[B, C](f: Kleisli[F, A, B => C])(
-          fa: Kleisli[F, A, B]): Kleisli[F, A, C] =
-        fa(f)
+          fa: Kleisli[F, A, B]): Kleisli[F, A, C] = fa(f)
 
       def product[B, C](
           fb: Kleisli[F, A, B],
@@ -234,12 +221,10 @@ private[data] sealed abstract class KleisliInstances4 {
   implicit def kleisliMonadReader[F[_]: Monad, A]
       : MonadReader[Kleisli[F, A, ?], A] =
     new MonadReader[Kleisli[F, A, ?], A] {
-      def pure[B](x: B): Kleisli[F, A, B] =
-        Kleisli.pure[F, A, B](x)
+      def pure[B](x: B): Kleisli[F, A, B] = Kleisli.pure[F, A, B](x)
 
       def flatMap[B, C](fa: Kleisli[F, A, B])(
-          f: B => Kleisli[F, A, C]): Kleisli[F, A, C] =
-        fa.flatMap(f)
+          f: B => Kleisli[F, A, C]): Kleisli[F, A, C] = fa.flatMap(f)
 
       val ask: Kleisli[F, A, A] = Kleisli(Monad[F].pure)
 
@@ -254,11 +239,9 @@ private trait KleisliArrow[F[_]]
     with KleisliStrong[F] {
   implicit def F: Monad[F]
 
-  def lift[A, B](f: A => B): Kleisli[F, A, B] =
-    Kleisli(a => F.pure(f(a)))
+  def lift[A, B](f: A => B): Kleisli[F, A, B] = Kleisli(a => F.pure(f(a)))
 
-  def id[A]: Kleisli[F, A, A] =
-    Kleisli(a => F.pure(a))
+  def id[A]: Kleisli[F, A, A] = Kleisli(a => F.pure(a))
 
   override def second[A, B, C](
       fa: Kleisli[F, A, B]): Kleisli[F, (C, A), (C, B)] =
@@ -282,24 +265,20 @@ private trait KleisliSplit[F[_]] extends Split[Kleisli[F, ?, ?]] {
 
   def compose[A, B, C](
       f: Kleisli[F, B, C],
-      g: Kleisli[F, A, B]): Kleisli[F, A, C] =
-    f.compose(g)
+      g: Kleisli[F, A, B]): Kleisli[F, A, C] = f.compose(g)
 }
 
 private trait KleisliStrong[F[_]] extends Strong[Kleisli[F, ?, ?]] {
   implicit def F: Functor[F]
 
   override def lmap[A, B, C](fab: Kleisli[F, A, B])(
-      f: C => A): Kleisli[F, C, B] =
-    fab.local(f)
+      f: C => A): Kleisli[F, C, B] = fab.local(f)
 
   override def rmap[A, B, C](fab: Kleisli[F, A, B])(
-      f: B => C): Kleisli[F, A, C] =
-    fab.map(f)
+      f: B => C): Kleisli[F, A, C] = fab.map(f)
 
   override def dimap[A, B, C, D](fab: Kleisli[F, A, B])(f: C => A)(
-      g: B => D): Kleisli[F, C, D] =
-    fab.dimap(f)(g)
+      g: B => D): Kleisli[F, C, D] = fab.dimap(f)(g)
 
   def first[A, B, C](fa: Kleisli[F, A, B]): Kleisli[F, (A, C), (B, C)] =
     fa.first[C]

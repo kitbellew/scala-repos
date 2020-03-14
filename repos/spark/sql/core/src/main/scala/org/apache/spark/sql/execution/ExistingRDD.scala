@@ -44,8 +44,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters =
-        outputTypes.map(CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes.map(
+        CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -67,8 +67,8 @@ object RDDConversions {
     data.mapPartitions { iterator =>
       val numColumns = outputTypes.length
       val mutableRow = new GenericMutableRow(numColumns)
-      val converters =
-        outputTypes.map(CatalystTypeConverters.createToCatalystConverter)
+      val converters = outputTypes.map(
+        CatalystTypeConverters.createToCatalystConverter)
       iterator.map { r =>
         var i = 0
         while (i < numColumns) {
@@ -198,13 +198,14 @@ private[sql] case class DataSourceScan(
   }
 
   protected override def doExecute(): RDD[InternalRow] = {
-    val unsafeRow = if (outputUnsafeRows) { rdd }
-    else {
-      rdd.mapPartitionsInternal { iter =>
-        val proj = UnsafeProjection.create(schema)
-        iter.map(proj)
+    val unsafeRow =
+      if (outputUnsafeRows) { rdd }
+      else {
+        rdd.mapPartitionsInternal { iter =>
+          val proj = UnsafeProjection.create(schema)
+          iter.map(proj)
+        }
       }
-    }
 
     val numOutputRows = longMetric("numOutputRows")
     unsafeRow.map { r =>

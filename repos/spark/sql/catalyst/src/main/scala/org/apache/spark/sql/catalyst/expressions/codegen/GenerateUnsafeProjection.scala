@@ -88,16 +88,17 @@ object GenerateUnsafeProjection
       rowWriter,
       s"this.$rowWriter = new $rowWriterClass($bufferHolder, ${inputs.length});")
 
-    val resetWriter = if (isTopLevel) {
-      // For top level row writer, it always writes to the beginning of the global buffer holder,
-      // which means its fixed-size region always in the same position, so we don't need to call
-      // `reset` to set up its fixed-size region every time.
-      if (inputs.map(_.isNull).forall(_ == "false")) {
-        // If all fields are not nullable, which means the null bits never changes, then we don't
-        // need to clear it out every time.
-        ""
-      } else { s"$rowWriter.zeroOutNullBytes();" }
-    } else { s"$rowWriter.reset();" }
+    val resetWriter =
+      if (isTopLevel) {
+        // For top level row writer, it always writes to the beginning of the global buffer holder,
+        // which means its fixed-size region always in the same position, so we don't need to call
+        // `reset` to set up its fixed-size region every time.
+        if (inputs.map(_.isNull).forall(_ == "false")) {
+          // If all fields are not nullable, which means the null bits never changes, then we don't
+          // need to clear it out every time.
+          ""
+        } else { s"$rowWriter.zeroOutNullBytes();" }
+      } else { s"$rowWriter.reset();" }
 
     val writeFields = inputs.zip(inputTypes).zipWithIndex.map {
       case ((input, dataType), index) =>
@@ -333,25 +334,25 @@ object GenerateUnsafeProjection
       holder,
       s"this.$holder = new $holderClass($result, ${numVarLenFields * 32});")
 
-    val resetBufferHolder = if (numVarLenFields == 0) { "" }
-    else { s"$holder.reset();" }
-    val updateRowSize = if (numVarLenFields == 0) { "" }
-    else { s"$result.setTotalSize($holder.totalSize());" }
+    val resetBufferHolder =
+      if (numVarLenFields == 0) { "" }
+      else { s"$holder.reset();" }
+    val updateRowSize =
+      if (numVarLenFields == 0) { "" }
+      else { s"$result.setTotalSize($holder.totalSize());" }
 
     // Evaluate all the subexpression.
     val evalSubexpr = ctx.subexprFunctions.mkString("\n")
 
-    val writeExpressions =
-      writeExpressionsToBuffer(
-        ctx,
-        ctx.INPUT_ROW,
-        exprEvals,
-        exprTypes,
-        holder,
-        isTopLevel = true)
+    val writeExpressions = writeExpressionsToBuffer(
+      ctx,
+      ctx.INPUT_ROW,
+      exprEvals,
+      exprTypes,
+      holder,
+      isTopLevel = true)
 
-    val code =
-      s"""
+    val code = s"""
         $resetBufferHolder
         $evalSubexpr
         $writeExpressions

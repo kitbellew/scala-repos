@@ -332,9 +332,9 @@ object ClusterEvent {
     if (newGossip eq oldGossip) Nil
     else {
       val newMembers = newGossip.members diff oldGossip.members
-      val membersGroupedByAddress =
-        List(newGossip.members, oldGossip.members).flatten
-          .groupBy(_.uniqueAddress)
+      val membersGroupedByAddress = List(
+        newGossip.members,
+        oldGossip.members).flatten.groupBy(_.uniqueAddress)
       val changedMembers = membersGroupedByAddress collect {
         case (_, newMember :: oldMember :: Nil)
             if newMember.status != oldMember.status || newMember.upNumber != oldMember.upNumber ⇒

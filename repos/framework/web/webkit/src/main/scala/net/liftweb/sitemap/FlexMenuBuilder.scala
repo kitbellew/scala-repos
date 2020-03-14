@@ -173,8 +173,7 @@ trait FlexMenuBuilder {
       uri: NodeSeq,
       text: NodeSeq,
       path: Boolean,
-      current: Boolean): NodeSeq =
-    <a href={uri}>{text}</a>
+      current: Boolean): NodeSeq = <a href={uri}>{text}</a>
 
   /**
     * Render an item in the current path

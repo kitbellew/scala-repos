@@ -107,8 +107,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     val project = context.getProjectDescriptor
 
     val resourceTargets: Seq[ResourcesTarget] = {
-      val sourceModules =
-        SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
+      val sourceModules = SourceDependenciesProviderService
+        .getSourceDependenciesFor(chunk)
       val targetType = chunk.representativeTarget.getTargetType match {
         case JavaModuleBuildTargetType.PRODUCTION =>
           ResourcesTargetType.PRODUCTION
@@ -199,8 +199,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     val excludeIndex = project.getModuleExcludeIndex
 
     val sourceTargets = {
-      val sourceModules =
-        SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
+      val sourceModules = SourceDependenciesProviderService
+        .getSourceDependenciesFor(chunk)
       val targetType = chunk.representativeTarget.getTargetType match {
         case javaBuildTarget: JavaModuleBuildTargetType => javaBuildTarget
         case _                                          => JavaModuleBuildTargetType.PRODUCTION

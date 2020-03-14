@@ -45,8 +45,7 @@ trait Subtractable[A, +Repr <: Subtractable[A, Repr]] { self =>
     *  @return a new $coll that contains all elements of the current $coll
     *  except one less occurrence of each of the given elements.
     */
-  def -(elem1: A, elem2: A, elems: A*): Repr =
-    this - elem1 - elem2 -- elems
+  def -(elem1: A, elem2: A, elems: A*): Repr = this - elem1 - elem2 -- elems
 
   /** Creates a new $coll from this $coll by removing all elements of another
     *  collection.

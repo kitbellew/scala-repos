@@ -81,8 +81,8 @@ abstract class CreateApplyOrUnapplyQuickFix(td: ScTypeDefinition)
     IdeDocumentHistory.getInstance(project).includeCurrentPlaceAsChangePlace()
 
     inWriteAction {
-      val entity =
-        createEntity(td.extendsBlock, methodText).asInstanceOf[ScFunction]
+      val entity = createEntity(td.extendsBlock, methodText)
+        .asInstanceOf[ScFunction]
 
       ScalaPsiUtil.adjustTypes(entity)
 

@@ -43,8 +43,9 @@ object BroadcastTest {
       println("===========")
       val startTime = System.nanoTime
       val barr1 = sc.broadcast(arr1)
-      val observedSizes =
-        sc.parallelize(1 to 10, slices).map(_ => barr1.value.length)
+      val observedSizes = sc
+        .parallelize(1 to 10, slices)
+        .map(_ => barr1.value.length)
       // Collect the small RDD so we can print the observed sizes locally.
       observedSizes.collect().foreach(i => println(i))
       println(

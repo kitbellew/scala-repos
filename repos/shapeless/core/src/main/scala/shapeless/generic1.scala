@@ -212,12 +212,10 @@ class Generic1Macros(val c: whitebox.Context) extends CaseClassMacros {
       frTag: WeakTypeTag[FR[Any]]): Tree = {
     val tpe = tTag.tpe
 
-    val frTpe =
-      c.openImplicits.headOption match {
-        case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, tpe)), _)) =>
-          tpe
-        case other => frTag.tpe.typeConstructor
-      }
+    val frTpe = c.openImplicits.headOption match {
+      case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, tpe)), _)) => tpe
+      case other                                                         => frTag.tpe.typeConstructor
+    }
 
     if (isReprType1(tpe))
       abort("No Generic1 instance available for HList or Coproduct")
@@ -378,12 +376,11 @@ trait IsCons1Macros extends CaseClassMacros {
     val lParamTpe = lParam.asType.toType
     val lDealiasedTpe = appliedType(lTpe, lParamTpe).dealias
 
-    val (fhTpe, ftTpe) =
-      c.openImplicits.headOption match {
-        case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fh, ft)), _)) =>
-          (fh, ft)
-        case other => (fhTpe0, ftTpe0)
-      }
+    val (fhTpe, ftTpe) = c.openImplicits.headOption match {
+      case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fh, ft)), _)) =>
+        (fh, ft)
+      case other => (fhTpe0, ftTpe0)
+    }
 
     if (!(lDealiasedTpe.typeConstructor =:= consTpe)) abort("Not H/CCons")
 
@@ -429,12 +426,11 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
       fiTag: WeakTypeTag[FI[Any]]): Tree = {
     val lTpe = lTag.tpe
 
-    val (foTpe, fiTpe) =
-      c.openImplicits.headOption match {
-        case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fo, fi)), _)) =>
-          (fo, fi)
-        case other => (foTag.tpe.typeConstructor, fiTag.tpe.typeConstructor)
-      }
+    val (foTpe, fiTpe) = c.openImplicits.headOption match {
+      case Some(ImplicitCandidate(_, _, TypeRef(_, _, List(_, fo, fi)), _)) =>
+        (fo, fi)
+      case other => (foTag.tpe.typeConstructor, fiTag.tpe.typeConstructor)
+    }
 
     if (isReprType1(lTpe))
       abort("No Split1 instance available for HList or Coproduct")
@@ -454,24 +450,23 @@ class Split1Macros(val c: whitebox.Context) extends CaseClassMacros {
         }
         .getOrElse(false)
 
-    val (oTpt, iTpt) =
-      lDealiasedTpe match {
-        case tpe @ TypeRef(pre, sym, args) if balanced(args) =>
-          val Some(pivot) = args.find(_.contains(lParam))
-          val oPoly = c.internal.polyType(
-            List(lParam),
-            appliedType(
-              tpe.typeConstructor,
-              args.map { arg => if (arg =:= pivot) lParamTpe else arg }))
-          val oTpt = appliedTypTree1(oPoly, lParamTpe, nme)
-          val iPoly = c.internal.polyType(List(lParam), pivot)
-          val iTpt = appliedTypTree1(iPoly, lParamTpe, nme)
-          (oTpt, iTpt)
-        case other =>
-          c.abort(
-            c.enclosingPosition,
-            s"Can't split $other into a non-trivial outer and inner type constructor")
-      }
+    val (oTpt, iTpt) = lDealiasedTpe match {
+      case tpe @ TypeRef(pre, sym, args) if balanced(args) =>
+        val Some(pivot) = args.find(_.contains(lParam))
+        val oPoly = c.internal.polyType(
+          List(lParam),
+          appliedType(
+            tpe.typeConstructor,
+            args.map { arg => if (arg =:= pivot) lParamTpe else arg }))
+        val oTpt = appliedTypTree1(oPoly, lParamTpe, nme)
+        val iPoly = c.internal.polyType(List(lParam), pivot)
+        val iTpt = appliedTypTree1(iPoly, lParamTpe, nme)
+        (oTpt, iTpt)
+      case other =>
+        c.abort(
+          c.enclosingPosition,
+          s"Can't split $other into a non-trivial outer and inner type constructor")
+    }
 
     val lPoly = c.internal.polyType(List(lParam), lDealiasedTpe)
     val lTpt = appliedTypTree1(lPoly, lParamTpe, nme)

@@ -23,10 +23,9 @@ abstract class Erasure
   import definitions._
   import CODE._
 
-  val analyzer: typechecker.Analyzer { val global: Erasure.this.global.type } =
-    this.asInstanceOf[typechecker.Analyzer {
-      val global: Erasure.this.global.type
-    }]
+  val analyzer
+      : typechecker.Analyzer { val global: Erasure.this.global.type } = this
+    .asInstanceOf[typechecker.Analyzer { val global: Erasure.this.global.type }]
 
   val phaseName: String = "erasure"
 
@@ -639,12 +638,11 @@ abstract class Erasure
       tree match {
         case Apply(ta @ TypeApply(sel @ Select(qual, name), List(targ)), List())
             if tree.symbol == Any_asInstanceOf =>
-          val qual1 =
-            typedQualifier(
-              qual,
-              NOmode,
-              ObjectTpe
-            ) // need to have an expected type, see #3037
+          val qual1 = typedQualifier(
+            qual,
+            NOmode,
+            ObjectTpe
+          ) // need to have an expected type, see #3037
           // !!! Make pending/run/t5866b.scala work. The fix might be here and/or in unbox1.
           if (isPrimitiveValueType(targ.tpe) || isErasedValueType(targ.tpe)) {
             val noNullCheckNeeded = targ.tpe match {
@@ -738,8 +736,7 @@ abstract class Erasure
         tree: Tree,
         mode: Mode,
         pt: Type,
-        original: Tree = EmptyTree): Tree =
-      adaptToType(tree, pt)
+        original: Tree = EmptyTree): Tree = adaptToType(tree, pt)
 
     /** A replacement for the standard typer's `typed1` method.
       */

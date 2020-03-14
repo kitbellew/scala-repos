@@ -12,8 +12,9 @@ import org.junit.runners.JUnit4
 import scala.tools.testing.AssertUtil._
 
 object StringContextTestUtils {
-  private val decimalSeparator: Char =
-    new DecimalFormat().getDecimalFormatSymbols().getDecimalSeparator()
+  private val decimalSeparator: Char = new DecimalFormat()
+    .getDecimalFormatSymbols()
+    .getDecimalSeparator()
   private val numberPattern = """(\d+)\.(\d+.*)""".r
 
   implicit class StringContextOps(val sc: StringContext) extends AnyVal {

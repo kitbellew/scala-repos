@@ -153,8 +153,8 @@ object PersistenceQueryDocSpec {
     implicit val system = ActorSystem()
     implicit val mat = ActorMaterializer()
 
-    val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal](JournalId)
+    val readJournal = PersistenceQuery(system)
+      .readJournalFor[MyScaladslReadJournal](JournalId)
     val dbBatchWriter: Subscriber[immutable.Seq[Any]] =
       ReactiveStreamsCompatibleDBDriver.batchWriter
 
@@ -210,13 +210,13 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
   class BasicUsage {
     //#basic-usage
     // obtain read journal by plugin id
-    val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal](
+    val readJournal = PersistenceQuery(system)
+      .readJournalFor[MyScaladslReadJournal](
         "akka.persistence.query.my-read-journal")
 
     // issue query to journal
-    val source: Source[EventEnvelope, NotUsed] =
-      readJournal.eventsByPersistenceId("user-1337", 0, Long.MaxValue)
+    val source: Source[EventEnvelope, NotUsed] = readJournal
+      .eventsByPersistenceId("user-1337", 0, Long.MaxValue)
 
     // materialize stream, consuming events
     implicit val mat = ActorMaterializer()
@@ -234,15 +234,14 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-tag
     // assuming journal is able to work with numeric offsets we can:
 
-    val blueThings: Source[EventEnvelope, NotUsed] =
-      readJournal.eventsByTag("blue")
+    val blueThings: Source[EventEnvelope, NotUsed] = readJournal.eventsByTag(
+      "blue")
 
     // find top 10 blue things:
-    val top10BlueThings: Future[Vector[Any]] =
-      blueThings
-        .map(_.event)
-        .take(10) // cancels the query stream after pulling 10 elements
-        .runFold(Vector.empty[Any])(_ :+ _)
+    val top10BlueThings: Future[Vector[Any]] = blueThings
+      .map(_.event)
+      .take(10) // cancels the query stream after pulling 10 elements
+      .runFold(Vector.empty[Any])(_ :+ _)
 
     // start another query, from the known offset
     val furtherBlueThings = readJournal.eventsByTag("blue", offset = 10)
@@ -254,8 +253,8 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     //#events-by-persistent-id
 
     //#advanced-journal-query-usage
-    val query: Source[RichEvent, QueryMetadata] =
-      readJournal.byTagsWithMeta(Set("red", "blue"))
+    val query: Source[RichEvent, QueryMetadata] = readJournal.byTagsWithMeta(
+      Set("red", "blue"))
 
     query
       .mapMaterializedValue { meta =>
@@ -278,8 +277,8 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
   //#projection-into-different-store
 
   class RunWithActor {
-    val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal](JournalId)
+    val readJournal = PersistenceQuery(system)
+      .readJournalFor[MyScaladslReadJournal](JournalId)
 
     //#projection-into-different-store-actor-run
     import akka.pattern.ask
@@ -304,8 +303,8 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
   }
 
   class RunWithAsyncFunction {
-    val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal](
+    val readJournal = PersistenceQuery(system)
+      .readJournalFor[MyScaladslReadJournal](
         "akka.persistence.query.my-read-journal")
 
     //#projection-into-different-store-simple

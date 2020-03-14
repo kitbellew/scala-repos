@@ -52,8 +52,7 @@ object TestSuiteContext {
   @JSExport
   protected def setTags(newTags: String*): Unit = setTags(newTags.toSet)
 
-  private[jasminetest] def setTags(newTags: Set[String]): Unit =
-    tags = newTags
+  private[jasminetest] def setTags(newTags: Set[String]): Unit = tags = newTags
 
   def hasTag(tag: String): Boolean = tags.contains(tag)
 
@@ -61,11 +60,9 @@ object TestSuiteContext {
       extends TestSuiteContext {
     def describe(title: String)(test: => Unit): Unit =
       baseContext.xdescribe(title)(test)
-    def it(title: String)(test: => Unit): Unit =
-      baseContext.xit(title)(test)
+    def it(title: String)(test: => Unit): Unit = baseContext.xit(title)(test)
     def xdescribe(title: String)(test: => Unit): Unit =
       baseContext.xdescribe(title)(test)
-    def xit(title: String)(test: => Unit): Unit =
-      baseContext.xit(title)(test)
+    def xit(title: String)(test: => Unit): Unit = baseContext.xit(title)(test)
   }
 }

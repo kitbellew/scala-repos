@@ -65,9 +65,8 @@ private[finagle] class PipelineFactory(
       )
       val richHeader = new RichRequestHeader(header)
 
-      val contextBuf =
-        new mutable.ArrayBuffer[(ChannelBuffer, ChannelBuffer)](
-          2 + (if (header.contexts == null) 0 else header.contexts.size))
+      val contextBuf = new mutable.ArrayBuffer[(ChannelBuffer, ChannelBuffer)](
+        2 + (if (header.contexts == null) 0 else header.contexts.size))
 
       contextBuf += (BufChannelBuffer(Trace.idCtx.marshalId) ->
         BufChannelBuffer(Trace.idCtx.marshal(richHeader.traceId)))
@@ -385,14 +384,12 @@ private[finagle] class PipelineFactory(
   private[this] val thriftMuxConnectionCount = new AtomicInteger
 
   private[this] val thriftmuxConnects = statsReceiver.counter("connects")
-  private[this] val downgradedConnects =
-    statsReceiver.counter("downgraded_connects")
-  private[this] val downgradedConnectionGauge =
-    statsReceiver.addGauge("downgraded_connections") {
-      downgradedConnectionCount.get()
-    }
-  private[this] val thriftmuxConnectionGauge =
-    statsReceiver.addGauge("connections") { thriftMuxConnectionCount.get() }
+  private[this] val downgradedConnects = statsReceiver.counter(
+    "downgraded_connects")
+  private[this] val downgradedConnectionGauge = statsReceiver.addGauge(
+    "downgraded_connections") { downgradedConnectionCount.get() }
+  private[this] val thriftmuxConnectionGauge = statsReceiver.addGauge(
+    "connections") { thriftMuxConnectionCount.get() }
 
   def getPipeline(): ChannelPipeline = {
     val pipeline = Netty3Framer.getPipeline()

@@ -83,14 +83,12 @@ class ReflectionTupleUnpacker[T](implicit m: Manifest[T])
     * fields to see if Fields.ALL is set.
     * If it is, return lazy allFields.
     */
-  def expandIfAll(fields: Fields) =
-    if (fields.isAll) allFields else fields
+  def expandIfAll(fields: Fields) = if (fields.isAll) allFields else fields
 
   override def newSetter(fields: Fields) =
     new ReflectionSetter[T](expandIfAll(fields))(m)
 
-  override def getResultFields(fields: Fields): Fields =
-    expandIfAll(fields)
+  override def getResultFields(fields: Fields): Fields = expandIfAll(fields)
 }
 
 class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])

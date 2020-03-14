@@ -714,18 +714,17 @@ private[akka] final case class MapAsync[In, Out](
           if (isAvailable(out)) pushOne()
         }
 
-      val futureCB =
-        getAsyncCallback[(Holder[Try[Out]], Try[Out])]({
-          case (holder, f: Failure[_]) ⇒ failOrPull(holder, f)
-          case (holder, s @ Success(elem)) ⇒
-            if (elem == null) {
-              val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
-              failOrPull(holder, Failure(ex))
-            } else {
-              holder.elem = s
-              if (isAvailable(out)) pushOne()
-            }
-        })
+      val futureCB = getAsyncCallback[(Holder[Try[Out]], Try[Out])]({
+        case (holder, f: Failure[_]) ⇒ failOrPull(holder, f)
+        case (holder, s @ Success(elem)) ⇒
+          if (elem == null) {
+            val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
+            failOrPull(holder, Failure(ex))
+          } else {
+            holder.elem = s
+            if (isAvailable(out)) pushOne()
+          }
+      })
 
       setHandler(
         in,
@@ -776,11 +775,10 @@ private[akka] final case class MapAsyncUnordered[In, Out](
       override def toString =
         s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
 
-      val decider =
-        inheritedAttributes
-          .get[SupervisionStrategy]
-          .map(_.decider)
-          .getOrElse(Supervision.stoppingDecider)
+      val decider = inheritedAttributes
+        .get[SupervisionStrategy]
+        .map(_.decider)
+        .getOrElse(Supervision.stoppingDecider)
 
       var inFlight = 0
       var buffer: BufferImpl[Out] = _
@@ -794,21 +792,20 @@ private[akka] final case class MapAsyncUnordered[In, Out](
         else if (isClosed(in) && todo == 0) completeStage()
         else if (!hasBeenPulled(in)) tryPull(in)
 
-      val futureCB =
-        getAsyncCallback((result: Try[Out]) ⇒ {
-          inFlight -= 1
-          result match {
-            case Failure(ex) ⇒ failOrPull(ex)
-            case Success(elem) ⇒
-              if (elem == null) {
-                val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
-                failOrPull(ex)
-              } else if (isAvailable(out)) {
-                if (!hasBeenPulled(in)) tryPull(in)
-                push(out, elem)
-              } else buffer.enqueue(elem)
-          }
-        }).invoke _
+      val futureCB = getAsyncCallback((result: Try[Out]) ⇒ {
+        inFlight -= 1
+        result match {
+          case Failure(ex) ⇒ failOrPull(ex)
+          case Success(elem) ⇒
+            if (elem == null) {
+              val ex = ReactiveStreamsCompliance.elementMustNotBeNullException
+              failOrPull(ex)
+            } else if (isAvailable(out)) {
+              if (!hasBeenPulled(in)) tryPull(in)
+              push(out, elem)
+            } else buffer.enqueue(elem)
+        }
+      }).invoke _
 
       setHandler(
         in,
@@ -1052,13 +1049,12 @@ private[stream] final class Delay[T](
   override def initialAttributes: Attributes = DefaultAttributes.delay
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new TimerGraphStageLogic(shape) {
-      val size =
-        inheritedAttributes.get[InputBuffer] match {
-          case None ⇒
-            throw new IllegalStateException(
-              s"Couldn't find InputBuffer Attribute for $this")
-          case Some(InputBuffer(min, max)) ⇒ max
-        }
+      val size = inheritedAttributes.get[InputBuffer] match {
+        case None ⇒
+          throw new IllegalStateException(
+            s"Couldn't find InputBuffer Attribute for $this")
+        case Some(InputBuffer(min, max)) ⇒ max
+      }
 
       var buffer: BufferImpl[(Long, T)] =
         _ // buffer has pairs timestamp with upstream element
@@ -1166,8 +1162,7 @@ private[stream] final class TakeWithin[T](timeout: FiniteDuration)
           override def onPull(): Unit = pull(in)
         })
 
-      final override protected def onTimer(key: Any): Unit =
-        completeStage()
+      final override protected def onTimer(key: Any): Unit = completeStage()
 
       override def preStart(): Unit = scheduleOnce("TakeWithinTimer", timeout)
     }

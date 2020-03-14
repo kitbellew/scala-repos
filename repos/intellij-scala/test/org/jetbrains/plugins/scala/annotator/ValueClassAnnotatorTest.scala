@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 class ValueClassAnnotatorTest extends SimpleTestCase {
 
   def testPrimaryConstructorParameters(): Unit = {
-    val code =
-      """
+    val code = """
         |class Foo(private val b: Int) extends AnyVal
         |class Bar(val g: Int) extends AnyVal
         |case class Baz(a: Int) extends AnyVal
@@ -26,8 +25,7 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
   }
 
   def testSecondaryConstructors(): Unit = {
-    val code =
-      """
+    val code = """
         |class Foo(val b: Int) extends AnyVal {
         |  def this() {
         |    this(-1)
@@ -40,8 +38,7 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
   }
 
   def testNestedObjects(): Unit = {
-    val code =
-      """
+    val code = """
         |class Foo(val s: Int) extends AnyVal {
         |  trait Inner
         |}
@@ -52,8 +49,7 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
   }
 
   def testRedefineEqualsHashCode(): Unit = {
-    val code =
-      """
+    val code = """
         |class Foo(val a: Int) extends AnyVal {
         |  def equals: Int = 2
         |  def hashCode: Double = 2.0
@@ -67,8 +63,7 @@ class ValueClassAnnotatorTest extends SimpleTestCase {
   }
 
   def testOnlyDefMembers(): Unit = {
-    val code =
-      """
+    val code = """
         |class Foo(val a: Int) extends AnyVal {
         |  def foo: Double = 2.0
         |  val x = 10

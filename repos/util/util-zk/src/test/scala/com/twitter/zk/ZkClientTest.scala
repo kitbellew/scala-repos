@@ -379,8 +379,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       }
 
       "chained" in {
-        val transformed =
-          zkClient.withAcl(acl).withMode(mode).withRetryPolicy(retryPolicy)
+        val transformed = zkClient
+          .withAcl(acl)
+          .withMode(mode)
+          .withRetryPolicy(retryPolicy)
         try { transformed.asInstanceOf[ZkClient] }
         catch { case _: ClassCastException => fail("not ZNode") }
         assert(transformed.acl == acl)
@@ -442,8 +444,8 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         "with a name and data" in {
           val data = "blah".getBytes
           create(childPath, data)(Future(childPath))
-          val znode =
-            Await.result(zkClient(path).create(data, child = Some("child")))
+          val znode = Await.result(
+            zkClient(path).create(data, child = Some("child")))
           assert(znode.path == childPath)
         }
 
@@ -634,8 +636,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       import h._
 
       val znode = zkClient("/parent")
-      val result =
-        ZNode.Children(znode, new Stat, "doe" :: "ray" :: "me" :: Nil)
+      val result = ZNode.Children(
+        znode,
+        new Stat,
+        "doe" :: "ray" :: "me" :: Nil)
 
       "apply" should {
         "ok" in {
@@ -816,8 +820,10 @@ class ZkClientTest extends WordSpec with MockitoSugar {
       }.toMap
 
       val updatesByPath = updateTree.map { z =>
-        val prior: Set[ZNode] =
-          expectedByPath.get(z.path).map { _.added }.getOrElse(Set.empty)
+        val prior: Set[ZNode] = expectedByPath
+          .get(z.path)
+          .map { _.added }
+          .getOrElse(Set.empty)
         z.path -> ZNode.TreeUpdate(
           z,
           z.children.toSet -- prior,

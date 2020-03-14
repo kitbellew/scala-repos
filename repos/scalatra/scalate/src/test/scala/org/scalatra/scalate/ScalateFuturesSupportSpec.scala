@@ -146,12 +146,11 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
 
   get("/bindings/*") {
     new AsyncResult {
-      val is =
-        Future {
-          flash.now("message") = "flash works"
-          session("message") = "session works"
-          jade(requestPath)
-        }
+      val is = Future {
+        flash.now("message") = "flash works"
+        session("message") = "session works"
+        jade(requestPath)
+      }
     }
   }
 
@@ -169,11 +168,10 @@ class ScalateFuturesSupportServlet(exec: ExecutorService)
 
   get("/template-attributes") {
     new AsyncResult {
-      val is =
-        Future {
-          templateAttributes("foo") = "from attributes"
-          scaml("params")
-        }
+      val is = Future {
+        templateAttributes("foo") = "from attributes"
+        scaml("params")
+      }
     }
   }
 

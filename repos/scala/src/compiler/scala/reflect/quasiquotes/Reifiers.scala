@@ -28,10 +28,9 @@ trait Reifiers { self: Quasiquotes =>
     /** Map that stores freshly generated names linked to the corresponding names in the reified tree.
       *  This information is used to reify names created by calls to freshTermName and freshTypeName.
       */
-    val nameMap =
-      collection.mutable.HashMap.empty[Name, Set[TermName]].withDefault { _ =>
-        Set()
-      }
+    val nameMap = collection.mutable.HashMap
+      .empty[Name, Set[TermName]]
+      .withDefault { _ => Set() }
 
     /** Wraps expressions into:
       *    a block which starts with a sequence of vals that correspond
@@ -110,22 +109,21 @@ trait Reifiers { self: Quasiquotes =>
                   Apply(Ident(SomeModule), List(SyntacticTuple(vars))),
                   Ident(NoneModule))
             }
-            val guard =
-              nameMap
-                .collect {
-                  case (_, nameset) if nameset.size >= 2 =>
-                    nameset.toList.sliding(2).map {
-                      case List(n1, n2) =>
-                        // q"$n1 == $n2"
-                        Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
-                    }
-                }
-                .flatten
-                .reduceOption[Tree] { (l, r) =>
-                  // q"$l && $r"
-                  Apply(Select(l, nme.ZAND), List(r))
-                }
-                .getOrElse { EmptyTree }
+            val guard = nameMap
+              .collect {
+                case (_, nameset) if nameset.size >= 2 =>
+                  nameset.toList.sliding(2).map {
+                    case List(n1, n2) =>
+                      // q"$n1 == $n2"
+                      Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
+                  }
+              }
+              .flatten
+              .reduceOption[Tree] { (l, r) =>
+                // q"$l && $r"
+                Apply(Select(l, nme.ZAND), List(r))
+              }
+              .getOrElse { EmptyTree }
             // cq"$tree if $guard => $succ" :: cq"_ => $fail" :: Nil
             CaseDef(tree, guard, succ) :: CaseDef(
               Ident(nme.WILDCARD),

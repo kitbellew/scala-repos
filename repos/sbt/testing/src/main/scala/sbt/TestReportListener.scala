@@ -46,13 +46,12 @@ final class SuiteResult(
     val canceledCount: Int,
     val pendingCount: Int) {
   def +(other: SuiteResult): SuiteResult = {
-    val combinedTestResult =
-      (result, other.result) match {
-        case (TestResult.Passed, TestResult.Passed) => TestResult.Passed
-        case (_, TestResult.Error)                  => TestResult.Error
-        case (TestResult.Error, _)                  => TestResult.Error
-        case _                                      => TestResult.Failed
-      }
+    val combinedTestResult = (result, other.result) match {
+      case (TestResult.Passed, TestResult.Passed) => TestResult.Passed
+      case (_, TestResult.Error)                  => TestResult.Error
+      case (TestResult.Error, _)                  => TestResult.Error
+      case _                                      => TestResult.Failed
+    }
     new SuiteResult(
       combinedTestResult,
       passedCount + other.passedCount,

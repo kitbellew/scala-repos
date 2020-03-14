@@ -658,8 +658,8 @@ trait BodyParsers {
 
         def maxLengthOrDefault = maxLength.fold(DefaultMaxTextLength)(_.toInt)
         def maxLengthOrDefaultLarge = maxLength.getOrElse(DefaultMaxDiskLength)
-        val contentType: Option[String] =
-          request.contentType.map(_.toLowerCase(Locale.ENGLISH))
+        val contentType: Option[String] = request.contentType.map(
+          _.toLowerCase(Locale.ENGLISH))
         contentType match {
           case Some("text/plain") =>
             logger.trace("Parsing AnyContent as text")

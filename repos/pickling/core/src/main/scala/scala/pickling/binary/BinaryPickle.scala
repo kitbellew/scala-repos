@@ -256,8 +256,7 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
 
   def atObject: Boolean = !atPrimitive
 
-  def readField(name: String): BinaryPickleReader =
-    this
+  def readField(name: String): BinaryPickleReader = this
 
   def endEntry(): Unit = { /* do nothing */ }
 

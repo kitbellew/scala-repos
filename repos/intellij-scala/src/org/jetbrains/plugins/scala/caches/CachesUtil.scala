@@ -80,8 +80,8 @@ object CachesUtil {
   val IMPLICIT_TYPE: Key[ScType] = Key.create("implicit.type")
   val IMPLICIT_FUNCTION: Key[PsiNamedElement] = Key.create("implicit.function")
   val NAMED_PARAM_KEY: Key[java.lang.Boolean] = Key.create("named.key")
-  val PACKAGE_OBJECT_KEY: Key[(ScTypeDefinition, java.lang.Long)] =
-    Key.create("package.object.key")
+  val PACKAGE_OBJECT_KEY: Key[(ScTypeDefinition, java.lang.Long)] = Key.create(
+    "package.object.key")
 
   /**
     * IMPORTANT:
@@ -106,8 +106,8 @@ object CachesUtil {
               if (ScPackageImpl.isPackageObjectProcessing) {
                 throw new ScPackageImpl.DoNotProcessPackageObjectException
               }
-              val fun =
-                PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
+              val fun = PsiTreeUtil
+                .getContextOfType(e, true, classOf[ScFunction])
               if (fun == null || fun.isProbablyRecursive) {
                 return new CachedValueProvider.Result(
                   defaultValue,
@@ -183,8 +183,8 @@ object CachesUtil {
     def compute() = new CachedValueProvider.Result(builder(e), dependencyItem)
   }
 
-  private val guards: ConcurrentMap[String, RecursionGuard] =
-    ContainerUtil.newConcurrentMap[String, RecursionGuard]()
+  private val guards: ConcurrentMap[String, RecursionGuard] = ContainerUtil
+    .newConcurrentMap[String, RecursionGuard]()
   def getRecursionGuard(id: String): RecursionGuard = {
     val guard = guards.get(id)
     if (guard == null) {
@@ -260,8 +260,8 @@ object CachesUtil {
                     finally set.foreach(_.setProbablyRecursive(false))
                   case t @ ProbablyRecursionException(ee, innerData, k, set)
                       if k == key =>
-                    val fun =
-                      PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
+                    val fun = PsiTreeUtil
+                      .getContextOfType(e, true, classOf[ScFunction])
                     if (fun == null || fun.isProbablyRecursive) throw t
                     else {
                       fun.setProbablyRecursive(true)

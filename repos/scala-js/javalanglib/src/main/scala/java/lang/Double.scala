@@ -10,8 +10,7 @@ final class Double private () extends Number with Comparable[Double] {
   def this(value: scala.Double) = this()
   def this(s: String) = this()
 
-  @inline def doubleValue(): scala.Double =
-    this.asInstanceOf[scala.Double]
+  @inline def doubleValue(): scala.Double = this.asInstanceOf[scala.Double]
 
   @inline override def byteValue(): scala.Byte = doubleValue.toByte
   @inline override def shortValue(): scala.Short = doubleValue.toShort
@@ -35,14 +34,11 @@ final class Double private () extends Number with Comparable[Double] {
   @inline override def compareTo(that: Double): Int =
     Double.compare(doubleValue, that.doubleValue)
 
-  @inline override def toString(): String =
-    Double.toString(doubleValue)
+  @inline override def toString(): String = Double.toString(doubleValue)
 
-  @inline def isNaN(): scala.Boolean =
-    Double.isNaN(doubleValue)
+  @inline def isNaN(): scala.Boolean = Double.isNaN(doubleValue)
 
-  @inline def isInfinite(): scala.Boolean =
-    Double.isInfinite(doubleValue)
+  @inline def isInfinite(): scala.Boolean = Double.isInfinite(doubleValue)
 
 }
 
@@ -80,8 +76,7 @@ object Double {
     else throw new NumberFormatException(s"""For input string: "$s"""")
   }
 
-  @inline def toString(d: scala.Double): String =
-    "" + d
+  @inline def toString(d: scala.Double): String = "" + d
 
   def compare(a: scala.Double, b: scala.Double): scala.Int = {
     // NaN must equal itself, and be greater than anything else
@@ -98,8 +93,7 @@ object Double {
     }
   }
 
-  @inline def isNaN(v: scala.Double): scala.Boolean =
-    v != v
+  @inline def isNaN(v: scala.Double): scala.Boolean = v != v
 
   @inline def isInfinite(v: scala.Double): scala.Boolean =
     v == POSITIVE_INFINITY || v == NEGATIVE_INFINITY

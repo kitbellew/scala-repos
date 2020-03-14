@@ -170,8 +170,12 @@ private[ui] class StoragePage(parent: StorageTab) extends WebUIPage("") {
     }
   }
 
-  private val streamBlockTableHeader =
-    Seq("Block ID", "Replication Level", "Location", "Storage Level", "Size")
+  private val streamBlockTableHeader = Seq(
+    "Block ID",
+    "Replication Level",
+    "Location",
+    "Storage Level",
+    "Size")
 
   /** Render a stream block */
   private def streamBlockTableRow(

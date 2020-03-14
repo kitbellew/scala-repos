@@ -20,28 +20,23 @@ private[nio] final class HeapByteBuffer private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): ByteBuffer =
-    GenHeapBuffer(this).generic_slice()
+  def slice(): ByteBuffer = GenHeapBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): ByteBuffer =
-    GenHeapBuffer(this).generic_duplicate()
+  def duplicate(): ByteBuffer = GenHeapBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): ByteBuffer =
     GenHeapBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Byte =
-    GenBuffer(this).generic_get()
+  def get(): Byte = GenBuffer(this).generic_get()
 
   @noinline
-  def put(b: Byte): ByteBuffer =
-    GenBuffer(this).generic_put(b)
+  def put(b: Byte): ByteBuffer = GenBuffer(this).generic_put(b)
 
   @noinline
-  def get(index: Int): Byte =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Byte = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, b: Byte): ByteBuffer =
@@ -56,16 +51,14 @@ private[nio] final class HeapByteBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): ByteBuffer =
-    GenHeapBuffer(this).generic_compact()
+  def compact(): ByteBuffer = GenHeapBuffer(this).generic_compact()
 
   // Here begins the stuff specific to ByteArrays
 
   @inline private def arrayBits: ByteArrayBits =
     ByteArrayBits(_array, _arrayOffset, isBigEndian)
 
-  @noinline def getChar(): Char =
-    arrayBits.loadChar(getPosAndAdvanceRead(2))
+  @noinline def getChar(): Char = arrayBits.loadChar(getPosAndAdvanceRead(2))
   @noinline def putChar(value: Char): ByteBuffer = {
     ensureNotReadOnly(); arrayBits.storeChar(getPosAndAdvanceWrite(2), value);
     this
@@ -80,8 +73,7 @@ private[nio] final class HeapByteBuffer private (
   def asCharBuffer(): CharBuffer =
     HeapByteBufferCharView.fromHeapByteBuffer(this)
 
-  @noinline def getShort(): Short =
-    arrayBits.loadShort(getPosAndAdvanceRead(2))
+  @noinline def getShort(): Short = arrayBits.loadShort(getPosAndAdvanceRead(2))
   @noinline def putShort(value: Short): ByteBuffer = {
     ensureNotReadOnly(); arrayBits.storeShort(getPosAndAdvanceWrite(2), value);
     this
@@ -96,8 +88,7 @@ private[nio] final class HeapByteBuffer private (
   def asShortBuffer(): ShortBuffer =
     HeapByteBufferShortView.fromHeapByteBuffer(this)
 
-  @noinline def getInt(): Int =
-    arrayBits.loadInt(getPosAndAdvanceRead(4))
+  @noinline def getInt(): Int = arrayBits.loadInt(getPosAndAdvanceRead(4))
   @noinline def putInt(value: Int): ByteBuffer = {
     ensureNotReadOnly(); arrayBits.storeInt(getPosAndAdvanceWrite(4), value);
     this
@@ -109,11 +100,9 @@ private[nio] final class HeapByteBuffer private (
     this
   }
 
-  def asIntBuffer(): IntBuffer =
-    HeapByteBufferIntView.fromHeapByteBuffer(this)
+  def asIntBuffer(): IntBuffer = HeapByteBufferIntView.fromHeapByteBuffer(this)
 
-  @noinline def getLong(): Long =
-    arrayBits.loadLong(getPosAndAdvanceRead(8))
+  @noinline def getLong(): Long = arrayBits.loadLong(getPosAndAdvanceRead(8))
   @noinline def putLong(value: Long): ByteBuffer = {
     ensureNotReadOnly(); arrayBits.storeLong(getPosAndAdvanceWrite(8), value);
     this
@@ -128,8 +117,7 @@ private[nio] final class HeapByteBuffer private (
   def asLongBuffer(): LongBuffer =
     HeapByteBufferLongView.fromHeapByteBuffer(this)
 
-  @noinline def getFloat(): Float =
-    arrayBits.loadFloat(getPosAndAdvanceRead(4))
+  @noinline def getFloat(): Float = arrayBits.loadFloat(getPosAndAdvanceRead(4))
   @noinline def putFloat(value: Float): ByteBuffer = {
     ensureNotReadOnly(); arrayBits.storeFloat(getPosAndAdvanceWrite(4), value);
     this

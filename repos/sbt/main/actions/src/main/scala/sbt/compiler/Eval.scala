@@ -366,8 +366,7 @@ final class Eval(
     }
   private[this] def moduleFileFilter(moduleName: String) =
     new java.io.FilenameFilter {
-      def accept(dir: File, s: String) =
-        (s contains moduleName)
+      def accept(dir: File, s: String) = (s contains moduleName)
     }
   private[this] def moduleClassFilter(moduleName: String) =
     new java.io.FilenameFilter {

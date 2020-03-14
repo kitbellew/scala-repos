@@ -182,8 +182,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         }
 
         new CellMatrix { self =>
-          private[this] val allCells: mutable.Map[Int, Cell] =
-            initialCells.map(c => (c.index, c))(collection.breakOut)
+          private[this] val allCells: mutable.Map[Int, Cell] = initialCells.map(
+            c => (c.index, c))(collection.breakOut)
           private[this] val comparatorMatrix = fillMatrix(initialCells)
 
           def cells = allCells.values
@@ -263,13 +263,13 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 .groupBy(_._1)
                 .map {
                   case (ref, columns) => {
-                    val cp: Pair[ColumnRef, Column] = if (columns.size == 1) {
-                      columns.head
-                    } else {
-                      (
-                        ref,
-                        ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
-                    }
+                    val cp: Pair[ColumnRef, Column] =
+                      if (columns.size == 1) { columns.head }
+                      else {
+                        (
+                          ref,
+                          ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
+                      }
                     cp
                   }
                 }
@@ -629,8 +629,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   NoSpan)
 
               case LT =>
-                val leftIdx =
-                  comparator.nextLeftIndex(leftRow + 1, lhead.size - 1, 0)
+                val leftIdx = comparator.nextLeftIndex(
+                  leftRow + 1,
+                  lhead.size - 1,
+                  0)
                 //println("found next left index " + leftIdx + " from " + (lhead.size - 1, lhead.size, 0, lhead.size - leftRow - 1))
                 if (leftIdx == lhead.size) {
                   MoreLeft(NoSpan, leq, rightRow, req)
@@ -647,8 +649,10 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 }
 
               case GT =>
-                val rightIdx =
-                  comparator.swap.nextLeftIndex(rightRow + 1, rhead.size - 1, 0)
+                val rightIdx = comparator.swap.nextLeftIndex(
+                  rightRow + 1,
+                  rhead.size - 1,
+                  0)
                 //println("found next right index " + rightIdx + " from " + (rhead.size - 1, rhead.size, 0, rhead.size - rightRow - 1))
                 if (rightIdx == rhead.size) {
                   MoreRight(NoSpan, leftRow, leq, req)
@@ -841,8 +845,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   val comparator = buildRowComparator(lkey, rkey, null)
 
                   // do some preliminary comparisons to figure out if we even need to look at the current slice
-                  val nextState =
-                    findEqual(comparator, leftRow, stepleq, 0, stepreq)
+                  val nextState = findEqual(
+                    comparator,
+                    leftRow,
+                    stepleq,
+                    0,
+                    stepreq)
                   //println("Next state: " + nextState)
                   continue(
                     nextState,
@@ -866,8 +874,12 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   val comparator = buildRowComparator(lkey, rkey, null)
 
                   // do some preliminary comparisons to figure out if we even need to look at the current slice
-                  val nextState =
-                    findEqual(comparator, 0, stepleq, rightRow, stepreq)
+                  val nextState = findEqual(
+                    comparator,
+                    0,
+                    stepleq,
+                    rightRow,
+                    stepreq)
                   continue(
                     nextState,
                     comparator,
@@ -1071,8 +1083,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       kslice.columns.toList.sortBy(_._1).unzip
                     if (keyColumnRefs.nonEmpty) {
                       val keyRowFormat = RowFormat.forSortingKey(keyColumnRefs)
-                      val keyColumnEncoder =
-                        keyRowFormat.ColumnEncoder(keyColumns)
+                      val keyColumnEncoder = keyRowFormat.ColumnEncoder(
+                        keyColumns)
                       val keyComparator = SortingKeyComparator(
                         keyRowFormat,
                         sortOrder.isAscending)
@@ -1124,8 +1136,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
       val (keyColumnRefs, keyColumns) = kslice.columns.toList.sortBy(_._1).unzip
       val keyRowFormat = RowFormat.forSortingKey(keyColumnRefs)
       val keyColumnEncoder = keyRowFormat.ColumnEncoder(keyColumns)
-      val keyComparator =
-        SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
+      val keyComparator = SortingKeyComparator(
+        keyRowFormat,
+        sortOrder.isAscending)
 
       //M.point(println("writing slice from writeAligned; key: \n" + kslice + "\nvalue\n" + vslice)) >>
       writeRawSlices(
@@ -1200,16 +1213,22 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 valRefs,
                 count) =>
             val keyRowFormat = RowFormat.forSortingKey(krefs)
-            val keyComparator =
-              SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
+            val keyComparator = SortingKeyComparator(
+              keyRowFormat,
+              sortOrder.isAscending)
             val (dbFile, db, openedJdbmState) = jdbmState.opened()
             val storage = db.createTreeMap(
               indexName,
               keyComparator,
               ByteArraySerializer,
               ByteArraySerializer)
-            val count =
-              storeRows(kslice0, vslice0, keyRowFormat, vEncoder0, storage, 0)
+            val count = storeRows(
+              kslice0,
+              vslice0,
+              keyRowFormat,
+              vEncoder0,
+              storage,
+              0)
             val sliceIndex = SliceIndex(
               indexName,
               dbFile,
@@ -1392,8 +1411,9 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
                   val (index0, head0) =
                     (index.remap(indexBuf), head.remap(headBuf))
-                  val advancedM = if (flip) { joinTrans.advance(head0, index0) }
-                  else { joinTrans.advance(index0, head0) }
+                  val advancedM =
+                    if (flip) { joinTrans.advance(head0, index0) }
+                    else { joinTrans.advance(index0, head0) }
                   advancedM map {
                     case (joinTrans0, slice) =>
                       StreamT.Yield(
@@ -1680,19 +1700,20 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
       // If we don't want unique key values (e.g. preserve duplicates), we need to add
       // in a distinct "row id" for each value to disambiguate it
-      val (sourceTrans0, keyTrans0, valueTrans0) = if (!unique) {
-        (
-          addGlobalId(Leaf(Source)),
-          groupKeys map { kt =>
-            OuterObjectConcat(
-              WrapObject(
-                deepMap(kt) { case Leaf(_) => TransSpec1.DerefArray0 },
-                "0"),
-              WrapObject(TransSpec1.DerefArray1, "1"))
-          },
-          deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
-        )
-      } else { (Leaf(Source), groupKeys, valueSpec) }
+      val (sourceTrans0, keyTrans0, valueTrans0) =
+        if (!unique) {
+          (
+            addGlobalId(Leaf(Source)),
+            groupKeys map { kt =>
+              OuterObjectConcat(
+                WrapObject(
+                  deepMap(kt) { case Leaf(_) => TransSpec1.DerefArray0 },
+                  "0"),
+                WrapObject(TransSpec1.DerefArray1, "1"))
+            },
+            deepMap(valueSpec) { case Leaf(_) => TransSpec1.DerefArray0 }
+          )
+        } else { (Leaf(Source), groupKeys, valueSpec) }
 
       writeTables(
         this.transform(sourceTrans0).slices,

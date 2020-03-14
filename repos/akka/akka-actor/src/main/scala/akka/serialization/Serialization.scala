@@ -246,12 +246,11 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     *  bindings is a Seq of tuple representing the mapping from Class to Serializer.
     *  It is primarily ordered by the most specific classes first, and secondly in the configured order.
     */
-  private[akka] val bindings: immutable.Seq[ClassSerializer] =
-    sort(
-      for ((k: String, v: String) ← settings.SerializationBindings
-           if v != "none" && checkGoogleProtobuf(k))
-        yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
-      .to[immutable.Seq]
+  private[akka] val bindings: immutable.Seq[ClassSerializer] = sort(
+    for ((k: String, v: String) ← settings.SerializationBindings
+         if v != "none" && checkGoogleProtobuf(k))
+      yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
+    .to[immutable.Seq]
 
   // com.google.protobuf serialization binding is only used if the class can be loaded,
   // i.e. com.google.protobuf dependency has been added in the application project.
@@ -293,8 +292,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       case (_, v) ⇒ (v.identifier, v)
     }
 
-  private val isJavaSerializationWarningEnabled =
-    settings.config.getBoolean("akka.actor.warn-about-java-serializer-usage")
+  private val isJavaSerializationWarningEnabled = settings.config.getBoolean(
+    "akka.actor.warn-about-java-serializer-usage")
 
   private def shouldWarnAboutJavaSerializer(
       serializedClass: Class[_],

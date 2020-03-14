@@ -79,9 +79,9 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   test("date comparison with date strings") {
-    val df =
-      Seq((1, Date.valueOf("2015-01-01")), (2, Date.valueOf("2014-01-01")))
-        .toDF("i", "t")
+    val df = Seq(
+      (1, Date.valueOf("2015-01-01")),
+      (2, Date.valueOf("2014-01-01"))).toDF("i", "t")
 
     checkAnswer(
       df.select("t").filter($"t" <= "2014-06-01"),
@@ -335,8 +335,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
 
   test("function last_day") {
     val df1 = Seq((1, "2015-07-23"), (2, "2015-07-24")).toDF("i", "d")
-    val df2 =
-      Seq((1, "2015-07-23 00:11:22"), (2, "2015-07-24 11:22:33")).toDF("i", "t")
+    val df2 = Seq((1, "2015-07-23 00:11:22"), (2, "2015-07-24 11:22:33"))
+      .toDF("i", "t")
     checkAnswer(
       df1.select(last_day(col("d"))),
       Seq(Row(Date.valueOf("2015-07-31")), Row(Date.valueOf("2015-07-31"))))
@@ -346,8 +346,8 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   test("function next_day") {
-    val df1 =
-      Seq(("mon", "2015-07-23"), ("tuesday", "2015-07-20")).toDF("dow", "d")
+    val df1 = Seq(("mon", "2015-07-23"), ("tuesday", "2015-07-20"))
+      .toDF("dow", "d")
     val df2 = Seq(("th", "2015-07-23 00:11:22"), ("xx", "2015-07-24 11:22:33"))
       .toDF("dow", "t")
     checkAnswer(
@@ -408,9 +408,9 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
     val sdf2 = new SimpleDateFormat(fmt2)
     val fmt3 = "yy-MM-dd HH-mm-ss"
     val sdf3 = new SimpleDateFormat(fmt3)
-    val df =
-      Seq((1000, "yyyy-MM-dd HH:mm:ss.SSS"), (-1000, "yy-MM-dd HH-mm-ss"))
-        .toDF("a", "b")
+    val df = Seq(
+      (1000, "yyyy-MM-dd HH:mm:ss.SSS"),
+      (-1000, "yy-MM-dd HH-mm-ss")).toDF("a", "b")
     checkAnswer(
       df.select(from_unixtime(col("a"))),
       Seq(

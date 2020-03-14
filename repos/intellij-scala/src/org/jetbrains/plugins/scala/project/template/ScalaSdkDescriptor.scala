@@ -143,15 +143,16 @@ trait SdkDescriptorCompanion {
       val compilerBinaries = binaryComponents.filter(it =>
         requiredBinaryArtifacts.contains(it.artifact))
 
-      val libraryBinaries =
-        binaryComponents.filter(it => libraryArtifacts.contains(it.artifact))
-      val librarySources =
-        sourceComponents.filter(it => libraryArtifacts.contains(it.artifact))
-      val libraryDocs =
-        docComponents.filter(it => libraryArtifacts.contains(it.artifact))
+      val libraryBinaries = binaryComponents.filter(it =>
+        libraryArtifacts.contains(it.artifact))
+      val librarySources = sourceComponents.filter(it =>
+        libraryArtifacts.contains(it.artifact))
+      val libraryDocs = docComponents.filter(it =>
+        libraryArtifacts.contains(it.artifact))
 
-      val libraryVersion =
-        binaryComponents.find(_.artifact == ScalaLibrary).flatMap(_.version)
+      val libraryVersion = binaryComponents
+        .find(_.artifact == ScalaLibrary)
+        .flatMap(_.version)
 
       val descriptor = createSdkDescriptor(
         libraryVersion,

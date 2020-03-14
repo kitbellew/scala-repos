@@ -60,8 +60,7 @@ object Memcache {
     */
   def keyEncoder[T](namespace: String)(implicit inj: Codec[T]): T => String = {
     key: T =>
-      def concat(bytes: Array[Byte]): Array[Byte] =
-        namespace.getBytes ++ bytes
+      def concat(bytes: Array[Byte]): Array[Byte] = namespace.getBytes ++ bytes
 
       (inj
         .andThen(concat _)

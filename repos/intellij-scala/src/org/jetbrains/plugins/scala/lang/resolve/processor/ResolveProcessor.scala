@@ -165,13 +165,12 @@ class ResolveProcessor(
               .getInstance(element.getProject)
               .findPackage(o.qualifiedName) != null =>
         case pack: PsiPackage =>
-          val resolveResult: ScalaResolveResult =
-            new ScalaResolveResult(
-              ScPackageImpl(pack),
-              getSubst(state),
-              getImports(state),
-              nameShadow,
-              isAccessible = accessible)
+          val resolveResult: ScalaResolveResult = new ScalaResolveResult(
+            ScPackageImpl(pack),
+            getSubst(state),
+            getImports(state),
+            nameShadow,
+            isAccessible = accessible)
           addResult(resolveResult)
         case clazz: PsiClass
             if !isThisOrSuperResolve || PsiTreeUtil.isContextAncestor(
@@ -208,12 +207,13 @@ class ResolveProcessor(
       named: PsiNamedElement,
       state: ResolveState): Boolean = {
     val nameSet = state.get(ResolverEnv.nameKey)
-    val elName = if (nameSet == null) {
-      val name = named.name
-      if (name == null) return false
-      if (name == "") return false
-      name
-    } else nameSet
+    val elName =
+      if (nameSet == null) {
+        val name = named.name
+        if (name == null) return false
+        if (name == "") return false
+        name
+      } else nameSet
     val nameMatches = ScalaPsiUtil.memberNamesEquals(elName, name)
     nameMatches && kindMatches(named)
   }

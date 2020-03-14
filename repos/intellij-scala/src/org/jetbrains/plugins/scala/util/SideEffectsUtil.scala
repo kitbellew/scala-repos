@@ -100,8 +100,8 @@ object SideEffectsUtil {
             val withApplyText = baseExpr.getText + ".apply" + args
               .map(_.getText)
               .mkString("(", ", ", ")")
-            val withApply =
-              ScalaPsiElementFactory.createExpressionWithContextFromText(
+            val withApply = ScalaPsiElementFactory
+              .createExpressionWithContextFromText(
                 withApplyText,
                 expr.getContext,
                 expr)
@@ -117,8 +117,8 @@ object SideEffectsUtil {
     }
 
   private def listImmutableClasses = {
-    val excludeNonString =
-      Seq("StringBuffer._", "StringBuilder._").map("exclude:java.lang." + _)
+    val excludeNonString = Seq("StringBuffer._", "StringBuilder._").map(
+      "exclude:java.lang." + _)
 
     val javaWrappers = Seq(
       "Integer",
@@ -137,16 +137,28 @@ object SideEffectsUtil {
       "java.math.BigInteger._",
       "java.math.BigDecimal._")
 
-    val scalaValueClasses =
-      Seq("Boolean", "Byte", "Char", "Double", "Float", "Int", "Lont", "Unit")
-        .map(name => s"scala.$name._")
+    val scalaValueClasses = Seq(
+      "Boolean",
+      "Byte",
+      "Char",
+      "Double",
+      "Float",
+      "Int",
+      "Lont",
+      "Unit")
+      .map(name => s"scala.$name._")
 
-    val otherFromScalaPackage =
-      Seq("Option._", "Some._", "Tuple._", "Symbol._").map("scala." + _)
+    val otherFromScalaPackage = Seq("Option._", "Some._", "Tuple._", "Symbol._")
+      .map("scala." + _)
 
-    val fromScalaUtil =
-      Seq("Either", "Failure", "Left", "Right", "Success", "Try")
-        .map(name => s"scala.util.$name._")
+    val fromScalaUtil = Seq(
+      "Either",
+      "Failure",
+      "Left",
+      "Right",
+      "Success",
+      "Try")
+      .map(name => s"scala.util.$name._")
 
     val fromScalaMath = Seq("scala.math.BigInt._", "scala.math.BigDecimal._")
 

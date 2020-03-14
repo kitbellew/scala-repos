@@ -219,8 +219,8 @@ trait GenericTraversableTemplate[+A, +CC[X] <: GenTraversable[X]]
         "transpose requires all collections have the same size")
 
     val headSize = asTraversable(head).size
-    val bs: IndexedSeq[Builder[B, CC[B]]] =
-      IndexedSeq.fill(headSize)(genericBuilder[B])
+    val bs: IndexedSeq[Builder[B, CC[B]]] = IndexedSeq.fill(headSize)(
+      genericBuilder[B])
     for (xs <- sequential) {
       var i = 0
       for (x <- asTraversable(xs).seq) {

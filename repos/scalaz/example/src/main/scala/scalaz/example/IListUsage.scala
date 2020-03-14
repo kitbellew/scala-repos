@@ -36,8 +36,9 @@ object IListUsage extends App {
   val prod = ns.reduceLeftOption(_ * _)
 
   // Destructure with uncons
-  val s1 =
-    ns.uncons("empty", (h, t) => "head is %s and tail is %s".format(h, t))
+  val s1 = ns.uncons(
+    "empty",
+    (h, t) => "head is %s and tail is %s".format(h, t))
 
   // Destructure with matching
   val s2 = ns match {

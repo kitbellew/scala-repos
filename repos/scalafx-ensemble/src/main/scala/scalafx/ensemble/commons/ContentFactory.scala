@@ -53,14 +53,17 @@ object ContentFactory {
     // Construct content of the samples dynamically
     val fullClassName = ExampleInfo.className(exampleName, groupName)
     var cache = Map[String, EnsembleExample]()
-    val sampleNode = if (cache.get(fullClassName).isDefined) {
-      cache(fullClassName).getContent
-    } else {
-      val inst =
-        Class.forName(fullClassName).newInstance().asInstanceOf[EnsembleExample]
-      cache = cache.+((fullClassName, inst))
-      inst.getContent
-    }
+    val sampleNode =
+      if (cache.get(fullClassName).isDefined) {
+        cache(fullClassName).getContent
+      } else {
+        val inst = Class
+          .forName(fullClassName)
+          .newInstance()
+          .asInstanceOf[EnsembleExample]
+        cache = cache.+((fullClassName, inst))
+        inst.getContent
+      }
 
     val header = new Label(exampleName) {
       styleClass += "page-header"
@@ -101,8 +104,7 @@ object ContentFactory {
     // Create HTML, for now do not embed SyntaxHighlighter scripts to avoid issues with auto-escaping,
     // just put placeholders @@...@@
     val codeFont = if (isMac) "Ayuthaya" else "monospace"
-    val html =
-      <html>
+    val html = <html>
         <head>
           <script type="text/javascript">
             @@shCoreJs@@
@@ -152,8 +154,8 @@ object ContentFactory {
                   title = "Save SBT Project As:"
                   initialDirectory = initialDir
                 }
-                val result =
-                  Option(fileChooser.showDialog(thisButton.scene.window()))
+                val result = Option(
+                  fileChooser.showDialog(thisButton.scene.window()))
                 result match {
                   case Some(projectDir) =>
                     SBTProjectBuilder

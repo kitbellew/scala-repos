@@ -40,8 +40,8 @@ object ClusterShardingSettings {
       rebalanceInterval =
         config.getDuration("rebalance-interval", MILLISECONDS).millis,
       snapshotAfter = config.getInt("snapshot-after"),
-      leastShardAllocationRebalanceThreshold =
-        config.getInt("least-shard-allocation-strategy.rebalance-threshold"),
+      leastShardAllocationRebalanceThreshold = config.getInt(
+        "least-shard-allocation-strategy.rebalance-threshold"),
       leastShardAllocationMaxSimultaneousRebalance = config.getInt(
         "least-shard-allocation-strategy.max-simultaneous-rebalance"),
       waitingForStateTimeout =
@@ -142,8 +142,7 @@ final class ClusterShardingSettings(
 
   def withTuningParameters(
       tuningParameters: ClusterShardingSettings.TuningParameters)
-      : ClusterShardingSettings =
-    copy(tuningParameters = tuningParameters)
+      : ClusterShardingSettings = copy(tuningParameters = tuningParameters)
 
   /**
     * The `role` of the `ClusterSingletonManagerSettings` is not used. The `role` of the

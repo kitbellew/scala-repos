@@ -114,8 +114,8 @@ final class NIHDBPerfTestRunner[T](
       VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))
 
   val chefs = (1 to 4).map { _ => actorSystem.actorOf(Props(makeChef)) }
-  val masterChef =
-    actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+  val masterChef = actorSystem.actorOf(
+    Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
   val jobManager = new InMemoryJobManager[Future]
   val resourceBuilder = new ResourceBuilder(

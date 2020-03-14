@@ -60,11 +60,9 @@ case class Game(
       case Black => blackPlayer
     }
 
-  def player(playerId: String): Option[Player] =
-    players find (_.id == playerId)
+  def player(playerId: String): Option[Player] = players find (_.id == playerId)
 
-  def player(user: User): Option[Player] =
-    players find (_ isUser user)
+  def player(user: User): Option[Player] = players find (_ isUser user)
 
   def player(c: Color.type => Color): Player = player(c(Color))
 
@@ -578,8 +576,8 @@ object Game {
       turns = game.turns,
       startedAtTurn = game.startedAtTurn,
       clock = game.clock,
-      castleLastMoveTime =
-        CastleLastMoveTime.init.copy(castles = game.board.history.castles),
+      castleLastMoveTime = CastleLastMoveTime.init.copy(castles =
+        game.board.history.castles),
       daysPerTurn = daysPerTurn,
       mode = mode,
       variant = variant,

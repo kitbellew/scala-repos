@@ -161,20 +161,20 @@ object Constraints {
     if (runningTasks.size == toKillCount) return runningTasks
 
     //currently, only the GROUP_BY operator is able to select tasks to kill
-    val distributions =
-      app.constraints.filter(_.getOperator == Operator.GROUP_BY).map {
-        constraint =>
-          def groupFn(task: Task): Option[String] =
-            constraint.getField match {
-              case "hostname" => Some(task.agentInfo.host)
-              case field: String =>
-                task.agentInfo.attributes
-                  .find(_.getName == field)
-                  .map(_.getText.getValue)
-            }
-          val taskGroups: Seq[Map[Task.Id, Task]] =
-            runningTasks.groupBy(groupFn).values.map(Task.tasksById(_)).toSeq
-          GroupByDistribution(constraint, taskGroups)
+    val distributions = app.constraints
+      .filter(_.getOperator == Operator.GROUP_BY)
+      .map { constraint =>
+        def groupFn(task: Task): Option[String] =
+          constraint.getField match {
+            case "hostname" => Some(task.agentInfo.host)
+            case field: String =>
+              task.agentInfo.attributes
+                .find(_.getName == field)
+                .map(_.getText.getValue)
+          }
+        val taskGroups: Seq[Map[Task.Id, Task]] =
+          runningTasks.groupBy(groupFn).values.map(Task.tasksById(_)).toSeq
+        GroupByDistribution(constraint, taskGroups)
       }
 
     //short circuit, if there are no constraints to align with
@@ -194,10 +194,9 @@ object Constraints {
         runningTasks.iterator.filterNot(task =>
           toKillTasks.contains(task.taskId))
 
-      val matchingTask =
-        tried.find(tryTask =>
-          distributions.forall(
-            _.isMoreEvenWithout(toKillTasks + (tryTask.taskId -> tryTask))))
+      val matchingTask = tried.find(tryTask =>
+        distributions.forall(
+          _.isMoreEvenWithout(toKillTasks + (tryTask.taskId -> tryTask))))
 
       matchingTask match {
         case Some(task) => toKillTasks += task.taskId -> task

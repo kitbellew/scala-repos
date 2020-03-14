@@ -91,13 +91,16 @@ abstract class CommonWriteAheadLogTests(
     }
 
     val logDirectoryPath = new Path(testDir)
-    val fileSystem =
-      HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
+    val fileSystem = HdfsUtils.getFileSystemForPath(
+      logDirectoryPath,
+      hadoopConf)
     assert(fileSystem.exists(logDirectoryPath) === true)
 
     // Read data using manager and verify
-    val readData =
-      readDataUsingWriteAheadLog(testDir, closeFileAfterWrite, allowBatching)
+    val readData = readDataUsingWriteAheadLog(
+      testDir,
+      closeFileAfterWrite,
+      allowBatching)
     assert(readData === writtenData)
   }
 
@@ -127,8 +130,10 @@ abstract class CommonWriteAheadLogTests(
       allowBatching)
     val logFiles = getLogFilesInDirectory(testDir)
     assert(logFiles.size > 1)
-    val readData =
-      readDataUsingWriteAheadLog(testDir, closeFileAfterWrite, allowBatching)
+    val readData = readDataUsingWriteAheadLog(
+      testDir,
+      closeFileAfterWrite,
+      allowBatching)
     assert(dataToWrite === readData)
   }
 
@@ -191,8 +196,10 @@ abstract class CommonWriteAheadLogTests(
     assert(logFiles2.size > logFiles1.size)
 
     // Read the files and verify that all the written data can be read
-    val readData1 =
-      readDataUsingWriteAheadLog(testDir, closeFileAfterWrite, allowBatching)
+    val readData1 = readDataUsingWriteAheadLog(
+      testDir,
+      closeFileAfterWrite,
+      allowBatching)
     assert(readData1 === (dataToWrite1 ++ dataToWrite2))
 
     // Corrupt the first set of files so that they are basically unreadable
@@ -203,8 +210,10 @@ abstract class CommonWriteAheadLogTests(
     }
 
     // Verify that the corrupted files do not prevent reading of the second set of data
-    val readData =
-      readDataUsingWriteAheadLog(testDir, closeFileAfterWrite, allowBatching)
+    val readData = readDataUsingWriteAheadLog(
+      testDir,
+      closeFileAfterWrite,
+      allowBatching)
     assert(readData === dataToWrite2)
   }
 
@@ -213,8 +222,10 @@ abstract class CommonWriteAheadLogTests(
     nonexistentTempPath.delete()
     assert(!nonexistentTempPath.exists())
 
-    val writtenSegment =
-      writeDataManually(generateRandomData(), testFile, allowBatching)
+    val writtenSegment = writeDataManually(
+      generateRandomData(),
+      testFile,
+      allowBatching)
     val wal = createWriteAheadLog(testDir, closeFileAfterWrite, allowBatching)
     assert(
       !nonexistentTempPath.exists(),
@@ -401,8 +412,10 @@ class FileBasedWriteAheadLogSuite
     "FileBasedWriteAheadLogRandomReader - reading data using random reader") {
     // Write data manually for testing the random reader
     val writtenData = generateRandomData()
-    val segments =
-      writeDataManually(writtenData, testFile, allowBatching = false)
+    val segments = writeDataManually(
+      writtenData,
+      testFile,
+      allowBatching = false)
 
     // Get a random order of these segments and read them back
     val writtenDataAndSegments =
@@ -455,8 +468,9 @@ abstract class CloseFileAfterWriteTests(allowBatching: Boolean, testTag: String)
     // Read data manually to verify the written data
     val logFiles = getLogFilesInDirectory(testDir)
     assert(logFiles.size === numFiles)
-    val writtenData: Seq[String] =
-      readAndDeserializeDataManually(logFiles, allowBatching)
+    val writtenData: Seq[String] = readAndDeserializeDataManually(
+      logFiles,
+      allowBatching)
     assert(writtenData === dataToWrite)
   }
 }
@@ -491,10 +505,11 @@ class BatchedWriteAheadLogSuite
     super.beforeEach()
     wal = mock[WriteAheadLog]
     walHandle = mock[WriteAheadLogRecordHandle]
-    walBatchingThreadPool =
-      ThreadUtils.newDaemonFixedThreadPool(8, "wal-test-thread-pool")
-    walBatchingExecutionContext =
-      ExecutionContext.fromExecutorService(walBatchingThreadPool)
+    walBatchingThreadPool = ThreadUtils.newDaemonFixedThreadPool(
+      8,
+      "wal-test-thread-pool")
+    walBatchingExecutionContext = ExecutionContext.fromExecutorService(
+      walBatchingThreadPool)
   }
 
   override def afterEach(): Unit = {
@@ -512,8 +527,8 @@ class BatchedWriteAheadLogSuite
       BatchCleanupEvent(Nil)
     )
 
-    val buffers =
-      events.map(e => Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
+    val buffers = events.map(e =>
+      Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
     val batched = BatchedWriteAheadLog.aggregate(buffers)
     val deaggregate = BatchedWriteAheadLog
       .deaggregate(batched)
@@ -698,8 +713,10 @@ object WriteAheadLogSuite {
       closeLog: Boolean = true,
       clockAdvanceTime: Int = 500): WriteAheadLog = {
     if (manualClock.getTimeMillis() < 100000) manualClock.setTime(10000)
-    val wal =
-      createWriteAheadLog(logDirectory, closeFileAfterWrite, allowBatching)
+    val wal = createWriteAheadLog(
+      logDirectory,
+      closeFileAfterWrite,
+      allowBatching)
 
     // Ensure that 500 does not get sorted after 2000, so put a high base value.
     data.foreach { item =>
@@ -758,8 +775,10 @@ object WriteAheadLogSuite {
       logDirectory: String,
       closeFileAfterWrite: Boolean,
       allowBatching: Boolean): Seq[String] = {
-    val wal =
-      createWriteAheadLog(logDirectory, closeFileAfterWrite, allowBatching)
+    val wal = createWriteAheadLog(
+      logDirectory,
+      closeFileAfterWrite,
+      allowBatching)
     val data = wal.readAll().asScala.map(byteBufferToString).toArray
     wal.close()
     data
@@ -768,8 +787,9 @@ object WriteAheadLogSuite {
   /** Get the log files in a directory. */
   def getLogFilesInDirectory(directory: String): Seq[String] = {
     val logDirectoryPath = new Path(directory)
-    val fileSystem =
-      HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
+    val fileSystem = HdfsUtils.getFileSystemForPath(
+      logDirectoryPath,
+      hadoopConf)
 
     if (fileSystem.exists(logDirectoryPath) &&
         fileSystem.getFileStatus(logDirectoryPath).isDirectory) {

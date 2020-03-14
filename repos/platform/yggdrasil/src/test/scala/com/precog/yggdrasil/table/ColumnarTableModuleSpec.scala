@@ -457,8 +457,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
-        val JArray(elements) =
-          JParser.parseUnsafe("""[
+        val JArray(elements) = JParser.parseUnsafe(
+          """[
           {"foo": 4, "bar": 12},
           {"foo": 5},
           {"bar": 45},

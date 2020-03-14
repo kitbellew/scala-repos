@@ -43,8 +43,8 @@ class ConfigTest extends WordSpec with Matchers {
       val (oldDate, newConf) = Config.empty.maybeSetSubmittedTimestamp(date)
       oldDate shouldBe empty
       newConf.getSubmittedTimestamp should contain(date)
-      val (stillOld, new2) =
-        newConf.maybeSetSubmittedTimestamp(date + Seconds(1))
+      val (stillOld, new2) = newConf.maybeSetSubmittedTimestamp(
+        date + Seconds(1))
       stillOld should contain(date)
       new2 shouldBe newConf
     }
@@ -107,8 +107,9 @@ object ConfigProps extends Properties("Config") {
       testKeys.forall { k => merged.get(k) == c2.get(k).orElse(c1.get(k)) }
   }
   property("adding many UniqueIDs works") = forAll { (l: List[String]) =>
-    val uids =
-      l.filterNot { s => s.isEmpty || s.contains(",") }.map(UniqueID(_))
+    val uids = l
+      .filterNot { s => s.isEmpty || s.contains(",") }
+      .map(UniqueID(_))
     (uids
       .foldLeft(Config.empty) { (conf, id) => conf.addUniqueId(id) }
       .getUniqueIds == uids.toSet)

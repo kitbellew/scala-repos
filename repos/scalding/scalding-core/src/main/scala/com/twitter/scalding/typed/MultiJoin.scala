@@ -11,8 +11,7 @@ object MultiJoin extends java.io.Serializable {
 
   def apply[KEY, A, B](
       a: CoGroupable[KEY, A],
-      b: CoGroupable[KEY, B]): CoGrouped[KEY, (A, B)] =
-    a.join(b)
+      b: CoGroupable[KEY, B]): CoGrouped[KEY, (A, B)] = a.join(b)
 
   def apply[KEY, A, B, C](
       a: CoGroupable[KEY, A],
@@ -595,8 +594,7 @@ object MultiJoin extends java.io.Serializable {
 
   def left[KEY, A, B](
       a: CoGroupable[KEY, A],
-      b: CoGroupable[KEY, B]): CoGrouped[KEY, (A, Option[B])] =
-    a.leftJoin(b)
+      b: CoGroupable[KEY, B]): CoGrouped[KEY, (A, Option[B])] = a.leftJoin(b)
 
   def left[KEY, A, B, C](
       a: CoGroupable[KEY, A],

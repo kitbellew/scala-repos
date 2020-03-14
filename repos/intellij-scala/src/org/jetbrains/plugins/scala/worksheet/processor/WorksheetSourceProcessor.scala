@@ -42,8 +42,7 @@ object WorksheetSourceProcessor {
 
   private val PRINT_ARRAY_NAME = "print$$$Worksheet$$$Array$$$"
 
-  private val PRINT_ARRAY_TEXT =
-    s"""
+  private val PRINT_ARRAY_TEXT = s"""
       |def $PRINT_ARRAY_NAME(an: Any): String = {
       |  an match {
       |    case arr: Array[_] => scala.collection.mutable.WrappedArray.make(arr).toString().stripPrefix("Wrapped")
@@ -97,8 +96,10 @@ object WorksheetSourceProcessor {
           }
       } getOrElse dflt
 
-    val macroPrinterName =
-      withCompilerVersion("MacroPrinter210", "MacroPrinter211", "MacroPrinter")
+    val macroPrinterName = withCompilerVersion(
+      "MacroPrinter210",
+      "MacroPrinter211",
+      "MacroPrinter")
 
     val runPrinterName = "worksheet$$run$$printer"
 

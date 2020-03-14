@@ -37,8 +37,9 @@ class PermuteArgumentsIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Option[() => Unit] = {
-    val argList =
-      PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
+    val argList = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScArgumentExprList])
     if (argList == null) return None
 
     val argsAndMatchingParams: Seq[(ScExpression, Parameter)] =

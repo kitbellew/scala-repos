@@ -33,6 +33,5 @@ object RouteResult {
       executionContext: ExecutionContext = null,
       rejectionHandler: RejectionHandler = RejectionHandler.default,
       exceptionHandler: ExceptionHandler = null)
-      : Flow[HttpRequest, HttpResponse, NotUsed] =
-    Route.handlerFlow(route)
+      : Flow[HttpRequest, HttpResponse, NotUsed] = Route.handlerFlow(route)
 }

@@ -335,32 +335,30 @@ object ScalaReflection extends ScalaReflection {
           // TODO: add walked type path for map
           val TypeRef(_, _, Seq(keyType, valueType)) = t
 
-          val keyData =
-            Invoke(
-              MapObjects(
-                p => constructorFor(keyType, Some(p), walkedTypePath),
-                Invoke(
-                  getPath,
-                  "keyArray",
-                  ArrayType(schemaFor(keyType).dataType)),
-                schemaFor(keyType).dataType),
-              "array",
-              ObjectType(classOf[Array[Any]])
-            )
+          val keyData = Invoke(
+            MapObjects(
+              p => constructorFor(keyType, Some(p), walkedTypePath),
+              Invoke(
+                getPath,
+                "keyArray",
+                ArrayType(schemaFor(keyType).dataType)),
+              schemaFor(keyType).dataType),
+            "array",
+            ObjectType(classOf[Array[Any]])
+          )
 
-          val valueData =
-            Invoke(
-              MapObjects(
-                p => constructorFor(valueType, Some(p), walkedTypePath),
-                Invoke(
-                  getPath,
-                  "valueArray",
-                  ArrayType(schemaFor(valueType).dataType)),
-                schemaFor(valueType).dataType
-              ),
-              "array",
-              ObjectType(classOf[Array[Any]])
-            )
+          val valueData = Invoke(
+            MapObjects(
+              p => constructorFor(valueType, Some(p), walkedTypePath),
+              Invoke(
+                getPath,
+                "valueArray",
+                ArrayType(schemaFor(valueType).dataType)),
+              schemaFor(valueType).dataType
+            ),
+            "array",
+            ObjectType(classOf[Array[Any]])
+          )
 
           StaticInvoke(
             ArrayBasedMapData.getClass,
@@ -396,8 +394,11 @@ object ScalaReflection extends ScalaReflection {
               }
           }
 
-          val newInstance =
-            NewInstance(cls, arguments, ObjectType(cls), propagateNull = false)
+          val newInstance = NewInstance(
+            cls,
+            arguments,
+            ObjectType(cls),
+            propagateNull = false)
 
           if (path.nonEmpty) {
             expressions.If(
@@ -564,8 +565,10 @@ object ScalaReflection extends ScalaReflection {
             val params = getConstructorParameters(t)
             val nonNullOutput = CreateNamedStruct(params.flatMap {
               case (fieldName, fieldType) =>
-                val fieldValue =
-                  Invoke(inputObject, fieldName, dataTypeFor(fieldType))
+                val fieldValue = Invoke(
+                  inputObject,
+                  fieldName,
+                  dataTypeFor(fieldType))
                 val clsName = getClassNameFromType(fieldType)
                 val newPath =
                   s"""- field (class: "$clsName", name: "$fieldName")""" +: walkedTypePath
@@ -574,8 +577,8 @@ object ScalaReflection extends ScalaReflection {
                   fieldType,
                   newPath) :: Nil
             })
-            val nullOutput =
-              expressions.Literal.create(null, nonNullOutput.dataType)
+            val nullOutput = expressions.Literal
+              .create(null, nonNullOutput.dataType)
             expressions.If(IsNull(inputObject), nullOutput, nonNullOutput)
 
           case t if t <:< localTypeOf[Array[_]] =>
@@ -589,24 +592,22 @@ object ScalaReflection extends ScalaReflection {
           case t if t <:< localTypeOf[Map[_, _]] =>
             val TypeRef(_, _, Seq(keyType, valueType)) = t
 
-            val keys =
+            val keys = Invoke(
               Invoke(
-                Invoke(
-                  inputObject,
-                  "keysIterator",
-                  ObjectType(classOf[scala.collection.Iterator[_]])),
-                "toSeq",
-                ObjectType(classOf[scala.collection.Seq[_]]))
+                inputObject,
+                "keysIterator",
+                ObjectType(classOf[scala.collection.Iterator[_]])),
+              "toSeq",
+              ObjectType(classOf[scala.collection.Seq[_]]))
             val convertedKeys = toCatalystArray(keys, keyType)
 
-            val values =
+            val values = Invoke(
               Invoke(
-                Invoke(
-                  inputObject,
-                  "valuesIterator",
-                  ObjectType(classOf[scala.collection.Iterator[_]])),
-                "toSeq",
-                ObjectType(classOf[scala.collection.Seq[_]]))
+                inputObject,
+                "valuesIterator",
+                ObjectType(classOf[scala.collection.Iterator[_]])),
+              "toSeq",
+              ObjectType(classOf[scala.collection.Seq[_]]))
             val convertedValues = toCatalystArray(values, valueType)
 
             val Schema(keyDataType, _) = schemaFor(keyType)
@@ -902,8 +903,8 @@ trait ScalaReflection {
     * Returns classes of input parameters of scala function object.
     */
   def getParameterTypes(func: AnyRef): Seq[Class[_]] = {
-    val methods =
-      func.getClass.getMethods.filter(m => m.getName == "apply" && !m.isBridge)
+    val methods = func.getClass.getMethods.filter(m =>
+      m.getName == "apply" && !m.isBridge)
     assert(methods.length == 1)
     methods.head.getParameterTypes
   }
@@ -925,18 +926,18 @@ trait ScalaReflection {
 
   protected def constructParams(tpe: Type): Seq[Symbol] = {
     val constructorSymbol = tpe.member(nme.CONSTRUCTOR)
-    val params = if (constructorSymbol.isMethod) {
-      constructorSymbol.asMethod.paramss
-    } else {
-      // Find the primary constructor, and use its parameter ordering.
-      val primaryConstructorSymbol: Option[Symbol] =
-        constructorSymbol.asTerm.alternatives.find(s =>
-          s.isMethod && s.asMethod.isPrimaryConstructor)
-      if (primaryConstructorSymbol.isEmpty) {
-        sys.error(
-          "Internal SQL error: Product object did not have a primary constructor.")
-      } else { primaryConstructorSymbol.get.asMethod.paramss }
-    }
+    val params =
+      if (constructorSymbol.isMethod) { constructorSymbol.asMethod.paramss }
+      else {
+        // Find the primary constructor, and use its parameter ordering.
+        val primaryConstructorSymbol: Option[Symbol] =
+          constructorSymbol.asTerm.alternatives.find(s =>
+            s.isMethod && s.asMethod.isPrimaryConstructor)
+        if (primaryConstructorSymbol.isEmpty) {
+          sys.error(
+            "Internal SQL error: Product object did not have a primary constructor.")
+        } else { primaryConstructorSymbol.get.asMethod.paramss }
+      }
     params.flatten
   }
 

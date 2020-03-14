@@ -189,9 +189,9 @@ trait StringHelpers {
     def addChar(pos: Int, lastRand: Int, sb: GoodSB): GoodSB = {
       if (pos >= size) sb
       else {
-        val randNum = if ((pos % 6) == 0) {
-          _random.synchronized(_random.nextInt)
-        } else { lastRand }
+        val randNum =
+          if ((pos % 6) == 0) { _random.synchronized(_random.nextInt) }
+          else { lastRand }
 
         sb.append((randNum & 0x1f) match {
           case n if n < 26 => ('A' + n).toChar

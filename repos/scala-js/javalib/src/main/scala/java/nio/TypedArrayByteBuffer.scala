@@ -24,28 +24,23 @@ private[nio] final class TypedArrayByteBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): ByteBuffer =
-    GenTypedArrayBuffer(this).generic_slice()
+  def slice(): ByteBuffer = GenTypedArrayBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): ByteBuffer =
-    GenTypedArrayBuffer(this).generic_duplicate()
+  def duplicate(): ByteBuffer = GenTypedArrayBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): ByteBuffer =
     GenTypedArrayBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Byte =
-    GenBuffer(this).generic_get()
+  def get(): Byte = GenBuffer(this).generic_get()
 
   @noinline
-  def put(b: Byte): ByteBuffer =
-    GenBuffer(this).generic_put(b)
+  def put(b: Byte): ByteBuffer = GenBuffer(this).generic_put(b)
 
   @noinline
-  def get(index: Int): Byte =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Byte = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, b: Byte): ByteBuffer =
@@ -60,8 +55,7 @@ private[nio] final class TypedArrayByteBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): ByteBuffer =
-    GenTypedArrayBuffer(this).generic_compact()
+  def compact(): ByteBuffer = GenTypedArrayBuffer(this).generic_compact()
 
   // Here begins the stuff specific to ByteArrays
 
@@ -191,8 +185,7 @@ private[nio] final class TypedArrayByteBuffer private (
     GenTypedArrayBuffer(this).generic_arrayBufferOffset
 
   @inline
-  private[nio] def load(index: Int): Byte =
-    _typedArray(index)
+  private[nio] def load(index: Int): Byte = _typedArray(index)
 
   @inline
   private[nio] def store(index: Int, elem: Byte): Unit =
@@ -244,8 +237,7 @@ private[nio] object TypedArrayByteBuffer {
     new TypedArrayByteBuffer(new Int8Array(capacity), 0, capacity, false)
   }
 
-  def wrap(array: ArrayBuffer): ByteBuffer =
-    wrap(new Int8Array(array))
+  def wrap(array: ArrayBuffer): ByteBuffer = wrap(new Int8Array(array))
 
   def wrap(array: ArrayBuffer, byteOffset: Int, length: Int): ByteBuffer =
     wrap(new Int8Array(array, byteOffset, length))

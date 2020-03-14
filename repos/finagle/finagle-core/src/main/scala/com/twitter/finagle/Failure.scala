@@ -70,8 +70,7 @@ final class Failure private[finagle] (
     *
     * See [[Failure$ Failure]] flag definitions.
     */
-  def isFlagged(which: Long): Boolean =
-    (flags & which) == which
+  def isFlagged(which: Long): Boolean = (flags & which) == which
 
   /**
     * A new failure with the current [[Failure]] as cause.
@@ -84,8 +83,7 @@ final class Failure private[finagle] (
     * Note: it is not guaranteed that all `Failure`s are logged
     * within finagle and this only applies to ones that are.
     */
-  def withLogLevel(level: Level): Failure =
-    copy(logLevel = level)
+  def withLogLevel(level: Level): Failure = copy(logLevel = level)
 
   /**
     * A [[Throwable]] appropriate for user presentation (e.g., for stats,
@@ -135,9 +133,8 @@ final class Failure private[finagle] (
 }
 
 object Failure {
-  private val NoStacktrace =
-    Array(
-      new StackTraceElement("com.twitter.finagle", "NoStacktrace", null, -1))
+  private val NoStacktrace = Array(
+    new StackTraceElement("com.twitter.finagle", "NoStacktrace", null, -1))
 
   object Source extends Enumeration {
     val Service, Role, RemoteInfo = Value
@@ -189,8 +186,7 @@ object Failure {
   /**
     * Create a new failure with the given cause; no flags.
     */
-  def apply(cause: Throwable): Failure =
-    apply(cause, 0L)
+  def apply(cause: Throwable): Failure = apply(cause, 0L)
 
   /**
     * Create a new failure with the given message, cause, and flags.
@@ -201,20 +197,17 @@ object Failure {
   /**
     * Create a new failure with the given message and cause; no flags.
     */
-  def apply(why: String, cause: Throwable): Failure =
-    apply(why, cause, 0L)
+  def apply(why: String, cause: Throwable): Failure = apply(why, cause, 0L)
 
   /**
     * Create a new failure with the given message and flags.
     */
-  def apply(why: String, flags: Long): Failure =
-    new Failure(why, None, flags)
+  def apply(why: String, flags: Long): Failure = new Failure(why, None, flags)
 
   /**
     * Create a new failure with the given message; no flags.
     */
-  def apply(why: String): Failure =
-    new Failure(why, None, 0L)
+  def apply(why: String): Failure = new Failure(why, None, 0L)
 
   /**
     * Extractor for [[Failure]]; returns its cause.
@@ -263,8 +256,7 @@ object Failure {
     * Create a new wrapped Failure with no flags. If the passed-in exception
     * is a failure, it is simply extended, otherwise a new Failure is created.
     */
-  def wrap(exc: Throwable): Failure =
-    wrap(exc, 0L)
+  def wrap(exc: Throwable): Failure = wrap(exc, 0L)
 
   /**
     * Create a new [[Restartable]] failure with the given message.

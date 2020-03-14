@@ -48,8 +48,8 @@ object LambdaDeserializer {
       val funcInterfaceSignature = parseDescriptor(
         getFunctionalInterfaceMethodSignature)
       val instantiated = parseDescriptor(getInstantiatedMethodType)
-      val functionalInterfaceClass =
-        loader.loadClass(slashDot(getFunctionalInterfaceClass))
+      val functionalInterfaceClass = loader.loadClass(
+        slashDot(getFunctionalInterfaceClass))
 
       val implMethodSig = parseDescriptor(getImplMethodSignature)
       // Construct the invoked type from the impl method type. This is the type of a factory
@@ -94,8 +94,8 @@ object LambdaDeserializer {
 
       val flags: Int =
         LambdaMetafactory.FLAG_SERIALIZABLE | LambdaMetafactory.FLAG_MARKERS
-      val isScalaFunction =
-        functionalInterfaceClass.getName.startsWith("scala.Function")
+      val isScalaFunction = functionalInterfaceClass.getName.startsWith(
+        "scala.Function")
       val markerInterface: Class[_] = loader.loadClass(
         if (isScalaFunction) ScalaSerializable else JavaIOSerializable)
 
@@ -115,16 +115,17 @@ object LambdaDeserializer {
 
     val key =
       serialized.getImplMethodName + " : " + serialized.getImplMethodSignature
-    val factory: MethodHandle = if (cache == null) { makeCallSite.getTarget }
-    else
-      cache.get(key) match {
-        case null =>
-          val callSite = makeCallSite
-          val temp = callSite.getTarget
-          cache.put(key, temp)
-          temp
-        case target => target
-      }
+    val factory: MethodHandle =
+      if (cache == null) { makeCallSite.getTarget }
+      else
+        cache.get(key) match {
+          case null =>
+            val callSite = makeCallSite
+            val temp = callSite.getTarget
+            cache.put(key, temp)
+            temp
+          case target => target
+        }
 
     val captures = Array.tabulate(serialized.getCapturedArgCount)(n =>
       serialized.getCapturedArg(n))

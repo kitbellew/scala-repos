@@ -25,8 +25,10 @@ object ClientMergeableLaws extends Properties("ClientMergeable") {
       online: Store[(K, BatchID), V])(implicit
       val batcher: Batcher,
       semi: Semigroup[V]) {
-    val mergeable =
-      ClientMergeable(offline, MergeableStore.fromStoreNoMulti(online), 10)
+    val mergeable = ClientMergeable(
+      offline,
+      MergeableStore.fromStoreNoMulti(online),
+      10)
   }
 
   def jstore[K, V]: Store[K, V] =

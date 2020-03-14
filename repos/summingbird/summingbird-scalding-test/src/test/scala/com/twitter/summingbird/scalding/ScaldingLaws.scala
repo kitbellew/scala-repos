@@ -85,14 +85,19 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCovered(
+        inWithTime,
+        intr,
+        batcher)
 
       val inMemory = TestGraphs.singleStepInScala(batchCoveredInput)(fn)
 
       val initStore = sample[Map[Int, Int]]
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
       val summer = TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
@@ -101,8 +106,8 @@ class ScaldingLaws extends WordSpec {
 
       val scald = Scalding("scalaCheckJob")
       val ws = new LoopState(intr)
-      val mode: Mode =
-        TestMode(t => (testStore.sourceToBuffer ++ buffer).get(t))
+      val mode: Mode = TestMode(t =>
+        (testStore.sourceToBuffer ++ buffer).get(t))
 
       scald.run(ws, mode, scald.plan(summer))
       // Now check that the inMemory ==
@@ -129,8 +134,10 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCovered(
+        inWithTime,
+        intr,
+        batcher)
 
       val inMemory = {
         val computedMap = TestGraphs.singleStepInScala(batchCoveredInput)(fn)
@@ -144,8 +151,12 @@ class ScaldingLaws extends WordSpec {
         }
       }
 
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size, pruner)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size,
+        pruner)
       val (buffer, source) = TestSource(inWithTime)
 
       val summer = TestGraphs.singleStepJob[Scalding, (Long, Int), Int, Int](
@@ -154,8 +165,8 @@ class ScaldingLaws extends WordSpec {
 
       val scald = Scalding("scalaCheckJob")
       val ws = new LoopState(intr)
-      val mode: Mode =
-        TestMode(t => (testStore.sourceToBuffer ++ buffer).get(t))
+      val mode: Mode = TestMode(t =>
+        (testStore.sourceToBuffer ++ buffer).get(t))
 
       scald.run(ws, mode, scald.plan(summer))
       // Now check that the inMemory ==
@@ -178,25 +189,30 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCovered(
+        inWithTime,
+        intr,
+        batcher)
 
-      val inMemory =
-        TestGraphs.singleStepMapKeysInScala(batchCoveredInput)(fnA, fnB)
+      val inMemory = TestGraphs
+        .singleStepMapKeysInScala(batchCoveredInput)(fnA, fnB)
 
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
-      val summer =
-        TestGraphs.singleStepMapKeysJob[Scalding, (Long, Int), Int, Int, Int](
+      val summer = TestGraphs
+        .singleStepMapKeysJob[Scalding, (Long, Int), Int, Int, Int](
           source,
           testStore)(t => fnA(t._2), fnB)
 
       val scald = Scalding("scalaCheckJob")
       val ws = new LoopState(intr)
-      val mode: Mode =
-        TestMode(t => (testStore.sourceToBuffer ++ buffer).get(t))
+      val mode: Mode = TestMode(t =>
+        (testStore.sourceToBuffer ++ buffer).get(t))
 
       scald.run(ws, mode, scald.plan(summer))
       // Now check that the inMemory ==
@@ -228,13 +244,19 @@ class ScaldingLaws extends WordSpec {
       val batchCoveredInput =
         TestUtil.pruneToBatchCovered(inWithTime, intr, batcher).toList
 
-      val (inMemoryA, inMemoryB) =
-        TestGraphs.multipleSummerJobInScala(batchCoveredInput)(fnA, fnB, fnC)
+      val (inMemoryA, inMemoryB) = TestGraphs.multipleSummerJobInScala(
+        batchCoveredInput)(fnA, fnB, fnC)
 
-      val testStoreA =
-        TestStore[Int, Int]("testA", batcher, initStoreA, inWithTime.size)
-      val testStoreB =
-        TestStore[Int, Int]("testB", batcher, initStoreB, inWithTime.size)
+      val testStoreA = TestStore[Int, Int](
+        "testA",
+        batcher,
+        initStoreA,
+        inWithTime.size)
+      val testStoreB = TestStore[Int, Int](
+        "testB",
+        batcher,
+        initStoreB,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
       val tail = TestGraphs
@@ -294,8 +316,8 @@ class ScaldingLaws extends WordSpec {
       }
       val srvWithTime = { (key: Int) => service(fakeTime, key) }
 
-      val inMemory =
-        TestGraphs.leftJoinInScala(timeIncIt)(srvWithTime)(prejoinMap)(postJoin)
+      val inMemory = TestGraphs.leftJoinInScala(timeIncIt)(srvWithTime)(
+        prejoinMap)(postJoin)
 
       // Add a time:
       val allKeys = original.flatMap(prejoinMap).map { _._1 }
@@ -305,16 +327,18 @@ class ScaldingLaws extends WordSpec {
       } yield (time.toLong, (key, v))
 
       val initStore = sample[Map[Int, Int]]
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
 
       /**
         * Create the batched service
         */
-      val batchedService =
-        stream.map { case (time, v) => (Timestamp(time), v) }.groupBy {
-          case (ts, _) => batcher.batchOf(ts)
-        }
+      val batchedService = stream
+        .map { case (time, v) => (Timestamp(time), v) }
+        .groupBy { case (ts, _) => batcher.batchOf(ts) }
       val testService = new TestService[Int, Int](
         "srv",
         batcher,
@@ -323,8 +347,8 @@ class ScaldingLaws extends WordSpec {
 
       val (buffer, source) = TestSource(inWithTime)
 
-      val summer =
-        TestGraphs.leftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
+      val summer = TestGraphs
+        .leftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
           source,
           testService,
           testStore) { tup => prejoinMap(tup._2) }(postJoin)
@@ -385,16 +409,18 @@ class ScaldingLaws extends WordSpec {
       } yield (time.toLong, (key, v))
 
       val initStore = sample[Map[Int, Int]]
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
 
       /**
         * Create the batched service
         */
-      val batchedService =
-        stream.map { case (time, v) => (Timestamp(time), v) }.groupBy {
-          case (ts, _) => batcher.batchOf(ts)
-        }
+      val batchedService = stream
+        .map { case (time, v) => (Timestamp(time), v) }
+        .groupBy { case (ts, _) => batcher.batchOf(ts) }
       val testService = new TestService[Int, Int](
         "srv",
         batcher,
@@ -403,12 +429,11 @@ class ScaldingLaws extends WordSpec {
 
       val (buffer, source) = TestSource(inWithTime)
 
-      val summer =
-        TestGraphs
-          .repeatedTupleLeftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
-            source,
-            testService,
-            testStore) { tup => prejoinMap(tup._2) }(postJoin)
+      val summer = TestGraphs
+        .repeatedTupleLeftJoinJob[Scalding, (Long, Int), Int, Int, Int, Int](
+          source,
+          testService,
+          testStore) { tup => prejoinMap(tup._2) }(postJoin)
 
       val scald = Scalding("scalaCheckleftJoinJob")
       val ws = new LoopState(intr)
@@ -448,10 +473,14 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original1.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime1)
-      val batchCoveredInput1 =
-        TestUtil.pruneToBatchCoveredWithTime(inWithTime1, intr, batcher)
-      val batchCoveredInput2 =
-        TestUtil.pruneToBatchCoveredWithTime(inWithTime2, intr, batcher)
+      val batchCoveredInput1 = TestUtil.pruneToBatchCoveredWithTime(
+        inWithTime1,
+        intr,
+        batcher)
+      val batchCoveredInput2 = TestUtil.pruneToBatchCoveredWithTime(
+        inWithTime2,
+        intr,
+        batcher)
 
       def toTime[T, U](fn: T => TraversableOnce[U])
           : ((Long, T)) => TraversableOnce[(Long, U)] =
@@ -461,10 +490,9 @@ class ScaldingLaws extends WordSpec {
       val fnBWithTime = toTime(fnB)
       val postJoinWithTime = toTime(postJoin)
 
-      val (inMemoryA, inMemoryB) =
-        TestGraphs.leftJoinWithStoreInScala(
-          batchCoveredInput1,
-          batchCoveredInput2)(fnAWithTime)(fnBWithTime)(postJoinWithTime)
+      val (inMemoryA, inMemoryB) = TestGraphs.leftJoinWithStoreInScala(
+        batchCoveredInput1,
+        batchCoveredInput2)(fnAWithTime)(fnBWithTime)(postJoinWithTime)
 
       val storeAndServiceInit = sample[Map[Int, Int]]
       val storeAndServiceStore = TestStore[Int, Int](
@@ -495,16 +523,15 @@ class ScaldingLaws extends WordSpec {
         inWithTime2,
         Some(DateRange(RichDate(0), RichDate(endTimeOfLastBatch2))))
 
-      val summer =
-        TestGraphs.leftJoinWithStoreJob[
-          Scalding,
-          (Long, Int),
-          (Long, Int),
-          Int,
-          Int,
-          Int,
-          Int](source1, source2, storeAndService, finalStore)(tup =>
-          fnA(tup._2))(tup => fnB(tup._2))(postJoin)
+      val summer = TestGraphs.leftJoinWithStoreJob[
+        Scalding,
+        (Long, Int),
+        (Long, Int),
+        Int,
+        Int,
+        Int,
+        Int](source1, source2, storeAndService, finalStore)(tup => fnA(tup._2))(
+        tup => fnB(tup._2))(postJoin)
 
       val scald = Scalding("scalaCheckleftJoinWithStoreJob")
       val ws = new LoopState(intr)
@@ -536,9 +563,8 @@ class ScaldingLaws extends WordSpec {
       val valuesFlatMap1 = sample[((Int, Option[Int])) => List[String]]
       val valuesFlatMap2 = sample[(String) => List[Int]]
 
-      val valuesFlatMap =
-        (e: ((Int, Option[Int]))) =>
-          valuesFlatMap1(e).flatMap { x => { valuesFlatMap2(x) } }
+      val valuesFlatMap = (e: ((Int, Option[Int]))) =>
+        valuesFlatMap1(e).flatMap { x => { valuesFlatMap2(x) } }
 
       def toTime[T, U](fn: T => TraversableOnce[U])
           : ((Long, T)) => TraversableOnce[(Long, U)] =
@@ -556,12 +582,13 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCoveredWithTime(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCoveredWithTime(
+        inWithTime,
+        intr,
+        batcher)
 
-      val inMemoryStore =
-        TestGraphs.leftJoinWithDependentStoreInScala(batchCoveredInput)(
-          fnAWithTime)(valuesFlatMapWithTime)
+      val inMemoryStore = TestGraphs.leftJoinWithDependentStoreInScala(
+        batchCoveredInput)(fnAWithTime)(valuesFlatMapWithTime)
 
       val storeAndServiceInit = sample[Map[Int, Int]]
       val storeAndServiceStore = TestStore[Int, Int](
@@ -579,20 +606,19 @@ class ScaldingLaws extends WordSpec {
         inWithTime,
         Some(DateRange(RichDate(0), RichDate(endTimeOfLastBatch))))
 
-      val summer =
-        TestGraphs.leftJoinWithDependentStoreJob[
-          Scalding,
-          (Long, Int),
-          String,
-          Int,
-          Int,
-          Int](source, storeAndService)(tup => fnA(tup._2))(valuesFlatMap1)(
-          valuesFlatMap2)
+      val summer = TestGraphs.leftJoinWithDependentStoreJob[
+        Scalding,
+        (Long, Int),
+        String,
+        Int,
+        Int,
+        Int](source, storeAndService)(tup => fnA(tup._2))(valuesFlatMap1)(
+        valuesFlatMap2)
 
       val scald = Scalding("scalaCheckleftJoinWithDependentJob")
       val ws = new LoopState(intr)
-      val mode: Mode =
-        TestMode((storeAndService.sourceToBuffer ++ buffer).get(_))
+      val mode: Mode = TestMode(
+        (storeAndService.sourceToBuffer ++ buffer).get(_))
 
       scald.run(ws, mode, summer)
 
@@ -630,13 +656,14 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCoveredWithTime(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCoveredWithTime(
+        inWithTime,
+        intr,
+        batcher)
 
-      val (inMemoryStoreAfterJoin, inMemoryStoreAfterFlatMap) =
-        TestGraphs.leftJoinWithDependentStoreJoinFanoutInScala(
-          batchCoveredInput)(fnAWithTime)(valuesFlatMapWithTime)(
-          flatMapWithTime)
+      val (inMemoryStoreAfterJoin, inMemoryStoreAfterFlatMap) = TestGraphs
+        .leftJoinWithDependentStoreJoinFanoutInScala(batchCoveredInput)(
+          fnAWithTime)(valuesFlatMapWithTime)(flatMapWithTime)
 
       val storeAndServiceInit = sample[Map[Int, Int]]
       val storeAndServiceStore = TestStore[Int, Int](
@@ -647,8 +674,11 @@ class ScaldingLaws extends WordSpec {
       val storeAndService = TestStoreService[Int, Int](storeAndServiceStore)
 
       val fmStoreInit = sample[Map[Int, Int]]
-      val fmStore =
-        TestStore[Int, Int]("store", batcher, fmStoreInit, inWithTime.size)
+      val fmStore = TestStore[Int, Int](
+        "store",
+        batcher,
+        fmStoreInit,
+        inWithTime.size)
 
       // the end range needs to be multiple of batchsize
       val endTimeOfLastBatch = batcher
@@ -658,15 +688,14 @@ class ScaldingLaws extends WordSpec {
         inWithTime,
         Some(DateRange(RichDate(0), RichDate(endTimeOfLastBatch))))
 
-      val summer =
-        TestGraphs.leftJoinWithDependentStoreJoinFanoutJob[
-          Scalding,
-          (Long, Int),
-          Int,
-          Int,
-          Int,
-          Int](source, storeAndService, fmStore)(tup => fnA(tup._2))(
-          valuesFlatMap)(flatMapFn)
+      val summer = TestGraphs.leftJoinWithDependentStoreJoinFanoutJob[
+        Scalding,
+        (Long, Int),
+        Int,
+        Int,
+        Int,
+        Int](source, storeAndService, fmStore)(tup => fnA(tup._2))(
+        valuesFlatMap)(flatMapFn)
 
       val scald = Scalding("scalaCheckleftJoinWithDependentJob")
       val ws = new LoopState(intr)
@@ -703,14 +732,19 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCovered(
+        inWithTime,
+        intr,
+        batcher)
 
       val inMemory = TestGraphs.diamondJobInScala(batchCoveredInput)(fn1)(fn2)
 
       val initStore = sample[Map[Int, Int]]
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
       val testSink = new TestSink[(Long, Int)]
       val (buffer, source) = TestSource(inWithTime)
 
@@ -722,8 +756,8 @@ class ScaldingLaws extends WordSpec {
 
       val scald = Scalding("scalding-diamond-Job")
       val ws = new LoopState(intr)
-      val mode: Mode =
-        TestMode(s => (testStore.sourceToBuffer ++ buffer).get(s))
+      val mode: Mode = TestMode(s =>
+        (testStore.sourceToBuffer ++ buffer).get(s))
 
       scald.run(ws, mode, summer)
       // Now check that the inMemory ==
@@ -759,14 +793,21 @@ class ScaldingLaws extends WordSpec {
       val batchCoveredInput =
         TestUtil.pruneToBatchCovered(inWithTime, intr, batcher).toList
 
-      val (inMemoryA, inMemoryB) =
-        TestGraphs.twoSumByKeyInScala(batchCoveredInput, keyExpand)
+      val (inMemoryA, inMemoryB) = TestGraphs.twoSumByKeyInScala(
+        batchCoveredInput,
+        keyExpand)
 
       val initStore = sample[Map[Int, Int]]
-      val testStoreA =
-        TestStore[Int, Int]("testA", batcher, initStore, inWithTime.size)
-      val testStoreB =
-        TestStore[Int, Int]("testB", batcher, initStore, inWithTime.size)
+      val testStoreA = TestStore[Int, Int](
+        "testA",
+        batcher,
+        initStore,
+        inWithTime.size)
+      val testStoreB = TestStore[Int, Int](
+        "testB",
+        batcher,
+        initStore,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
       val summer = TestGraphs
@@ -812,14 +853,19 @@ class ScaldingLaws extends WordSpec {
       val intr = TestUtil.toTimeInterval(0L, original.size.toLong)
 
       val batcher = TestUtil.randomBatcher(inWithTime)
-      val batchCoveredInput =
-        TestUtil.pruneToBatchCovered(inWithTime, intr, batcher)
+      val batchCoveredInput = TestUtil.pruneToBatchCovered(
+        inWithTime,
+        intr,
+        batcher)
 
       val inMemory = TestGraphs.singleStepInScala(batchCoveredInput)(fn)
 
       val initStore = sample[Map[Int, Int]]
-      val testStore =
-        TestStore[Int, Int]("test", batcher, initStore, inWithTime.size)
+      val testStore = TestStore[Int, Int](
+        "test",
+        batcher,
+        initStore,
+        inWithTime.size)
       val (buffer, source) = TestSource(inWithTime)
 
       val jobID: JobId = new JobId("scalding.job.testJobId")
@@ -832,19 +878,23 @@ class ScaldingLaws extends WordSpec {
       }
       val ws = new LoopState(intr)
       val conf: Configuration = new Configuration()
-      val mode: Mode =
-        HadoopTest(conf, t => (testStore.sourceToBuffer ++ buffer).get(t))
+      val mode: Mode = HadoopTest(
+        conf,
+        t => (testStore.sourceToBuffer ++ buffer).get(t))
 
       var flow: Flow[_] = null
       scald.run(ws, mode, scald.plan(summer), { f: Flow[_] => flow = f })
 
       val flowStats: FlowStats = flow.getFlowStats()
-      val origCounter: Long =
-        flowStats.getCounterValue("counter.test", "orig_counter")
-      val fmCounter: Long =
-        flowStats.getCounterValue("counter.test", "fm_counter")
-      val fltrCounter: Long =
-        flowStats.getCounterValue("counter.test", "fltr_counter")
+      val origCounter: Long = flowStats.getCounterValue(
+        "counter.test",
+        "orig_counter")
+      val fmCounter: Long = flowStats.getCounterValue(
+        "counter.test",
+        "fm_counter")
+      val fltrCounter: Long = flowStats.getCounterValue(
+        "counter.test",
+        "fltr_counter")
       // Now check that the stats are computed correctly
       assert(origCounter == original.size)
       assert(fmCounter == original.flatMap(fn).size * 2)

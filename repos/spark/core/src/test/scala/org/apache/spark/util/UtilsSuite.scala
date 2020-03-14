@@ -255,8 +255,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val hour = minute * 60
     def str: (Long) => String = Utils.msDurationToString(_)
 
-    val sep =
-      new DecimalFormatSymbols(Locale.getDefault()).getDecimalSeparator()
+    val sep = new DecimalFormatSymbols(Locale.getDefault())
+      .getDecimalSeparator()
 
     assert(str(123) === "123 ms")
     assert(str(second) === "1" + sep + "0 s")
@@ -571,8 +571,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
 
   test("loading properties from file") {
     val tmpDir = Utils.createTempDir()
-    val outFile =
-      File.createTempFile("test-load-spark-properties", "test", tmpDir)
+    val outFile = File.createTempFile(
+      "test-load-spark-properties",
+      "test",
+      tmpDir)
     try {
       System.setProperty("spark.test.fileNameLoadB", "2")
       Files.write(
@@ -605,8 +607,10 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     val tempDir = Utils.createTempDir()
     val sourceDir = new File(tempDir, "source-dir")
     val innerSourceDir = Utils.createTempDir(root = sourceDir.getPath)
-    val sourceFile =
-      File.createTempFile("someprefix", "somesuffix", innerSourceDir)
+    val sourceFile = File.createTempFile(
+      "someprefix",
+      "somesuffix",
+      innerSourceDir)
     val targetDir = new File(tempDir, "target-dir")
     Files.write("some text", sourceFile, StandardCharsets.UTF_8)
 
@@ -861,8 +865,7 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
         // creating a very misbehaving process. It ignores SIGTERM and has been SIGSTOPed. On
         // older versions of java, this will *not* terminate.
         val file = File.createTempFile("temp-file-name", ".tmp")
-        val cmd =
-          s"""
+        val cmd = s"""
              |#!/bin/bash
              |trap "" SIGTERM
              |sleep 10

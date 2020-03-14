@@ -9,8 +9,7 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
   */
 class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
 
-  private val baseText =
-    """
+  private val baseText = """
       |class Base {
       |  protected def foo(int: Int): Int = 45
       |  type StringType = String
@@ -23,8 +22,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
     text.stripMargin.replaceAll("\r", "").trim()
 
   def testFunction() {
-    val inText =
-      """
+    val inText = """
           |class Inheritor extends Base {
           |   override def f<caret>
           |}
@@ -32,8 +30,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
 
     configureFromFileTextAdapter("dummy.scala", handleText(baseText + inText))
 
-    val outText =
-      """
+    val outText = """
           |class Inheritor extends Base {
           |  override def foo(int: Int): Int = super.foo(int)
           |}
@@ -45,8 +42,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testValue() {
-    val inText =
-      """
+    val inText = """
           |class Inheritor extends Base {
           |   override val intVa<caret>
           |}
@@ -54,8 +50,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", handleText(baseText + inText))
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val outText =
-      """
+    val outText = """
           |class Inheritor extends Base {
           |  override val intValue: Int = _
           |}
@@ -68,8 +63,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testVariable() {
-    val inText =
-      """
+    val inText = """
           |class Inheritor extends Base {
           |   override var i<caret>
           |}
@@ -77,8 +71,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", handleText(baseText + inText))
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val outText =
-      """
+    val outText = """
           |class Inheritor extends Base {
           |  override var intVariable: Int = _
           |}
@@ -91,8 +84,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testJavaObjectMethod() {
-    val inText =
-      """
+    val inText = """
           |class Inheritor extends Base {
           |   override def e<caret>
           |}
@@ -114,8 +106,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testOverrideKeword() {
-    val inText =
-      """
+    val inText = """
         |class Inheritor extends Base {
         |   over<caret>
         |}
@@ -123,8 +114,7 @@ class ScalaOverrideCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", handleText(baseText + inText))
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val outText =
-      """
+    val outText = """
         |class Inheritor extends Base {
         |  override protected def foo(int: Int): Int = super.foo(int)
         |}

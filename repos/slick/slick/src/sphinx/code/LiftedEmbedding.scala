@@ -310,10 +310,11 @@ object LiftedEmbedding extends App {
     };
     {
       //#aggregation3
-      val q = (for {
-        c <- coffees
-        s <- c.supplier
-      } yield (c, s)).groupBy(_._1.supID)
+      val q =
+        (for {
+          c <- coffees
+          s <- c.supplier
+        } yield (c, s)).groupBy(_._1.supID)
 
       val q2 = q.map {
         case (supID, css) =>
@@ -374,8 +375,9 @@ object LiftedEmbedding extends App {
           "Stefan",
           "Zeiger")
       //#insert3b
-      val userWithIdRes =
-        Await.result(db.run(users.schema.create >> userWithId), Duration.Inf)
+      val userWithIdRes = Await.result(
+        db.run(users.schema.create >> userWithId),
+        Duration.Inf)
       println(userWithIdRes)
 
       //#insert4

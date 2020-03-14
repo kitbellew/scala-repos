@@ -26,8 +26,7 @@ class CustomReporter extends ResourcefulReporter {
 
   def dispose(): Unit = {
     val file = new File("target/dispose")
-    val filePath =
-      if (file.exists) "target/dispose2" else "target/dispose"
+    val filePath = if (file.exists) "target/dispose2" else "target/dispose"
     writeFile(filePath, "dispose")
   }
 }

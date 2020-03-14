@@ -389,8 +389,8 @@ trait LinearRegressionSpecs[M[+_]]
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString =
-        pointsString0.take(pointsString0.length - suffix.length)
+      val pointsString = pointsString0.take(
+        pointsString0.length - suffix.length)
 
       val input = makeDAG(pointsString)
 
@@ -512,8 +512,10 @@ trait LinearRegressionSpecs[M[+_]]
   //more comprehensive linear prediction tests in muspelheim
   "linear prediction" should {
     "return empty set when given incorrectly formatted model" in {
-      val input =
-        morph2Input(LinearPrediction, "/hom/model1data", "/hom/model1")
+      val input = morph2Input(
+        LinearPrediction,
+        "/hom/model1data",
+        "/hom/model1")
       testEval(input) must beEmpty
     }
   }

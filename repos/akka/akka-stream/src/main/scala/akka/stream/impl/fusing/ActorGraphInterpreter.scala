@@ -48,8 +48,7 @@ private[stream] final case class GraphModule(
   override final def replaceShape(newShape: Shape): Module =
     if (newShape != shape) CompositeModule(this, newShape) else this
 
-  override def toString: String =
-    s"""GraphModule
+  override def toString: String = s"""GraphModule
        |  ${assembly.toString.replace("\n", "\n  ")}
        |  shape=$shape, attributes=$attributes
        |  matVals=
@@ -201,8 +200,8 @@ private[stream] object ActorGraphInterpreter {
         if (inputBufferElements == size)
           throw new IllegalStateException("Input buffer overrun")
         inputBuffer(
-          (nextInputElementCursor + inputBufferElements) & IndexMask) =
-          elem.asInstanceOf[AnyRef]
+          (nextInputElementCursor + inputBufferElements) & IndexMask) = elem
+          .asInstanceOf[AnyRef]
         inputBufferElements += 1
         if (isAvailable(out)) push(out, dequeue())
       }
@@ -558,8 +557,8 @@ private[stream] final class GraphInterpreterShell(
   def runBatch(actorEventLimit: Int): Int = {
     try {
       val usingShellLimit = shellEventLimit < actorEventLimit
-      val remainingQuota =
-        interpreter.execute(Math.min(actorEventLimit, shellEventLimit))
+      val remainingQuota = interpreter.execute(
+        Math.min(actorEventLimit, shellEventLimit))
       if (interpreter.isCompleted) {
         // Cannot stop right away if not completely subscribed
         if (canShutDown) _isTerminated = true

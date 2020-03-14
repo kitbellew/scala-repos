@@ -72,8 +72,7 @@ object | { // scalastyle:ignore
     *  This needs evidence that `A <: B1 | B2`.
     */
   implicit def from[A, B1, B2](a: A)(
-      implicit ev: Evidence[A, B1 | B2]): B1 | B2 =
-    a.asInstanceOf[B1 | B2]
+      implicit ev: Evidence[A, B1 | B2]): B1 | B2 = a.asInstanceOf[B1 | B2]
 
   /** Operations on union types. */
   implicit class UnionOps[A <: _ | _](val self: A) extends AnyVal {
@@ -83,7 +82,6 @@ object | { // scalastyle:ignore
       *
       *  This needs evidence that `A <: B`.
       */
-    def merge[B](implicit ev: |.Evidence[A, B]): B =
-      self.asInstanceOf[B]
+    def merge[B](implicit ev: |.Evidence[A, B]): B = self.asInstanceOf[B]
   }
 }

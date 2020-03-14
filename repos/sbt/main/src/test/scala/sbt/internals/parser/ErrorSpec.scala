@@ -33,8 +33,7 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
     }
 
     "handle wrong parsing " in {
-      val buildSbt =
-        """
+      val buildSbt = """
           |libraryDependencies ++= Seq("a" % "b" % "2") map {
           |(dependency) =>{
           | dependency
@@ -50,8 +49,7 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
     }
 
     "handle xml error " in {
-      val buildSbt =
-        """
+      val buildSbt = """
           |val a = <a/><b/>
           |val s = '
         """.stripMargin

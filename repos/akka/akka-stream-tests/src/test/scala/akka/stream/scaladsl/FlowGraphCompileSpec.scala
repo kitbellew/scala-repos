@@ -122,8 +122,9 @@ class FlowGraphCompileSpec extends AkkaSpec {
           val merge = b.add(Merge[String](2))
           val bcast1 = b.add(Broadcast[String](2))
           val bcast2 = b.add(Broadcast[String](2))
-          val feedbackLoopBuffer =
-            Flow[String].buffer(10, OverflowStrategy.dropBuffer)
+          val feedbackLoopBuffer = Flow[String].buffer(
+            10,
+            OverflowStrategy.dropBuffer)
           in1 ~> f1 ~> merge.in(0)
           merge ~> f2 ~> bcast1
           bcast1.out(0) ~> f3 ~> out1
@@ -142,8 +143,8 @@ class FlowGraphCompileSpec extends AkkaSpec {
           val merge = b.add(Merge[String](2))
           val bcast1 = b.add(Broadcast[String](2))
           val bcast2 = b.add(Broadcast[String](2))
-          val feedbackLoopBuffer =
-            Flow[String].buffer(10, OverflowStrategy.dropBuffer)
+          val feedbackLoopBuffer = Flow[String]
+            .buffer(10, OverflowStrategy.dropBuffer)
           import GraphDSL.Implicits._
           b.add(in1) ~> f1 ~> merge ~> f2 ~> bcast1 ~> f3 ~> b.add(out1)
           bcast1 ~> feedbackLoopBuffer ~> bcast2 ~> f5 ~> merge

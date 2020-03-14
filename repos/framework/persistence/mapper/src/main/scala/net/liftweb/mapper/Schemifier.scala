@@ -446,8 +446,10 @@ object Schemifier extends Loggable {
     }.toList
     //rs.close
 
-    val single =
-      table.mappedFields.filter { f => f.dbIndexed_? }.toList.flatMap { field =>
+    val single = table.mappedFields
+      .filter { f => f.dbIndexed_? }
+      .toList
+      .flatMap { field =>
         if (!indexedFields.contains(List(field._dbColumnNameLC.toLowerCase))) {
           cmds += maybeWrite(performWrite, logFunc, connection) { () =>
             "CREATE INDEX " + (table._dbTableNameLC + "_" + field._dbColumnNameLC) + " ON " + table._dbTableNameLC + " ( " + field._dbColumnNameLC + " )"

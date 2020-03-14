@@ -342,8 +342,11 @@ class ScProjectionType private (
             val subst = actualSubst
             val tp = subst.subst(a.getType(TypingContext.empty).getOrAny)
             if (ScType.isSingletonType(tp)) {
-              val resInner =
-                Equivalence.equivInner(tp, this, uSubst, falseUndef)
+              val resInner = Equivalence.equivInner(
+                tp,
+                this,
+                uSubst,
+                falseUndef)
               if (resInner._1) return resInner
             }
           case _ =>

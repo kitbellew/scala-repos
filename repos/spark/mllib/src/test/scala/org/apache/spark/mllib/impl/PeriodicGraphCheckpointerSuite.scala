@@ -35,10 +35,9 @@ class PeriodicGraphCheckpointerSuite
     var graphsToCheck = Seq.empty[GraphToCheck]
 
     val graph1 = createGraph(sc)
-    val checkpointer =
-      new PeriodicGraphCheckpointer[Double, Double](
-        10,
-        graph1.vertices.sparkContext)
+    val checkpointer = new PeriodicGraphCheckpointer[Double, Double](
+      10,
+      graph1.vertices.sparkContext)
     checkpointer.update(graph1)
     graphsToCheck = graphsToCheck :+ GraphToCheck(graph1, 1)
     checkPersistence(graphsToCheck, 1)

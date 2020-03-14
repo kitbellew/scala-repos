@@ -203,8 +203,10 @@ private[twitter] class ClientSession(
     } else { FuturePingNack }
   }
 
-  private[this] val detector =
-    FailureDetector(detectorConfig, ping, sr.scope("failuredetector"))
+  private[this] val detector = FailureDetector(
+    detectorConfig,
+    ping,
+    sr.scope("failuredetector"))
 
   override def status: Status =
     Status.worst(
@@ -235,11 +237,11 @@ private[twitter] class ClientSession(
 }
 
 private object ClientSession {
-  val FutureNackException =
-    Future.exception(Failure.rejected("The request was Nacked by the server"))
+  val FutureNackException = Future.exception(
+    Failure.rejected("The request was Nacked by the server"))
 
-  val FuturePingNack =
-    Future.exception(Failure("A ping is already outstanding on this session."))
+  val FuturePingNack = Future.exception(
+    Failure("A ping is already outstanding on this session."))
 
   sealed trait State
   case object Dispatching extends State

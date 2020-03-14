@@ -17,8 +17,7 @@ object Environment {
       s"  Built on: ${BuildInfo.builtAtString}"
     )
 
-  private def osVersion: String =
-    System.getProperty("os.name")
+  private def osVersion: String = System.getProperty("os.name")
 
   private def javaVersion: String = {
     val vmInfo = System.getProperty("java.vm.name") + " " + System.getProperty(
@@ -29,11 +28,9 @@ object Environment {
     vmInfo + ", " + rtInfo
   }
 
-  private def scalaVersion: String =
-    scala.util.Properties.versionString
+  private def scalaVersion: String = scala.util.Properties.versionString
 
-  private def ensimeVersion: String =
-    BuildInfo.version
+  private def ensimeVersion: String = BuildInfo.version
 
   def shutdownOnDisconnectFlag: Boolean = {
     Option(System.getProperty("ensime.explode.on.disconnect")).isDefined

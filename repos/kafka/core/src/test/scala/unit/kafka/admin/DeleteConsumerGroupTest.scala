@@ -178,10 +178,10 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
 
     TestUtils.createTopic(zkUtils, topicToDelete, 1, 3, servers)
     TestUtils.createTopic(zkUtils, otherTopic, 1, 3, servers)
-    val groupTopicDirsForTopicToDelete =
-      groups.map(group => new ZKGroupTopicDirs(group, topicToDelete))
-    val groupTopicDirsForOtherTopic =
-      groups.map(group => new ZKGroupTopicDirs(group, otherTopic))
+    val groupTopicDirsForTopicToDelete = groups.map(group =>
+      new ZKGroupTopicDirs(group, topicToDelete))
+    val groupTopicDirsForOtherTopic = groups.map(group =>
+      new ZKGroupTopicDirs(group, otherTopic))
     groupTopicDirsForTopicToDelete.foreach(dir =>
       fillInConsumerGroupInfo(
         topicToDelete,
@@ -229,8 +229,10 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
     produceEvents(producer, topic, List.fill(10)("test"))
 
     //consume events
-    val consumerProps =
-      TestUtils.createConsumerProperties(zkConnect, group, "consumer")
+    val consumerProps = TestUtils.createConsumerProperties(
+      zkConnect,
+      group,
+      "consumer")
     consumerProps.put("auto.commit.enable", "false")
     consumerProps.put("auto.offset.reset", "smallest")
     consumerProps.put("consumer.timeout.ms", "2000")
@@ -256,8 +258,10 @@ class DeleteConsumerGroupTest extends KafkaServerTestHarness {
       partition: Int,
       offset: Int,
       registerConsumer: Boolean) {
-    val consumerProps =
-      TestUtils.createConsumerProperties(zkConnect, group, consumerId)
+    val consumerProps = TestUtils.createConsumerProperties(
+      zkConnect,
+      group,
+      consumerId)
     val consumerConfig = new ConsumerConfig(consumerProps)
     val dir = new ZKGroupTopicDirs(group, topic)
     TestUtils.updateConsumerOffset(

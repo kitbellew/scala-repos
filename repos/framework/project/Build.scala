@@ -54,206 +54,197 @@ object BuildDef extends Build {
 
   lazy val liftProjects = core ++ web ++ persistence
 
-  lazy val framework =
-    liftProject("lift-framework", file("."))
-      .aggregate(liftProjects: _*)
-      .settings(
-        aggregatedSetting(sources in (Compile, doc)),
-        aggregatedSetting(dependencyClasspath in (Compile, doc)),
-        publishArtifact := false)
+  lazy val framework = liftProject("lift-framework", file("."))
+    .aggregate(liftProjects: _*)
+    .settings(
+      aggregatedSetting(sources in (Compile, doc)),
+      aggregatedSetting(dependencyClasspath in (Compile, doc)),
+      publishArtifact := false)
 
   // Core Projects
   // -------------
-  lazy val core: Seq[ProjectReference] =
-    Seq(common, actor, markdown, json, json_scalaz7, json_ext, util)
+  lazy val core: Seq[ProjectReference] = Seq(
+    common,
+    actor,
+    markdown,
+    json,
+    json_scalaz7,
+    json_ext,
+    util)
 
-  lazy val common =
-    coreProject("common")
-      .settings(
-        description := "Common Libraties and Utilities",
-        libraryDependencies ++= Seq(
-          slf4j_api,
-          logback,
-          slf4j_log4j12,
-          scala_xml,
-          scala_parser))
+  lazy val common = coreProject("common")
+    .settings(
+      description := "Common Libraties and Utilities",
+      libraryDependencies ++= Seq(
+        slf4j_api,
+        logback,
+        slf4j_log4j12,
+        scala_xml,
+        scala_parser))
 
-  lazy val actor =
-    coreProject("actor")
-      .dependsOn(common)
-      .settings(
-        description := "Simple Actor",
-        parallelExecution in Test := false)
+  lazy val actor = coreProject("actor")
+    .dependsOn(common)
+    .settings(description := "Simple Actor", parallelExecution in Test := false)
 
-  lazy val markdown =
-    coreProject("markdown")
-      .settings(
-        description := "Markdown Parser",
-        parallelExecution in Test := false,
-        libraryDependencies <++= scalaVersion { sv =>
-          Seq(scalatest, junit, scala_xml, scala_parser)
-        })
+  lazy val markdown = coreProject("markdown")
+    .settings(
+      description := "Markdown Parser",
+      parallelExecution in Test := false,
+      libraryDependencies <++= scalaVersion { sv =>
+        Seq(scalatest, junit, scala_xml, scala_parser)
+      })
 
-  lazy val json =
-    coreProject("json")
-      .settings(
-        description := "JSON Library",
-        parallelExecution in Test := false,
-        libraryDependencies <++= scalaVersion { sv =>
-          Seq(scalap(sv), paranamer)
-        })
+  lazy val json = coreProject("json")
+    .settings(
+      description := "JSON Library",
+      parallelExecution in Test := false,
+      libraryDependencies <++= scalaVersion { sv =>
+        Seq(scalap(sv), paranamer)
+      })
 
-  lazy val documentationHelpers =
-    coreProject("documentation-helpers")
-      .settings(description := "Documentation Helpers")
-      .dependsOn(util)
+  lazy val documentationHelpers = coreProject("documentation-helpers")
+    .settings(description := "Documentation Helpers")
+    .dependsOn(util)
 
-  lazy val json_scalaz7 =
-    coreProject("json-scalaz7")
-      .dependsOn(json)
-      .settings(
-        description := "JSON Library based on Scalaz 7",
-        libraryDependencies ++= Seq(scalaz7))
+  lazy val json_scalaz7 = coreProject("json-scalaz7")
+    .dependsOn(json)
+    .settings(
+      description := "JSON Library based on Scalaz 7",
+      libraryDependencies ++= Seq(scalaz7))
 
-  lazy val json_ext =
-    coreProject("json-ext")
-      .dependsOn(common, json)
-      .settings(
-        description := "Extentions to JSON Library",
-        libraryDependencies ++= Seq(commons_codec, joda_time, joda_convert))
+  lazy val json_ext = coreProject("json-ext")
+    .dependsOn(common, json)
+    .settings(
+      description := "Extentions to JSON Library",
+      libraryDependencies ++= Seq(commons_codec, joda_time, joda_convert))
 
-  lazy val util =
-    coreProject("util")
-      .dependsOn(actor, json, markdown)
-      .settings(
-        description := "Utilities Library",
-        parallelExecution in Test := false,
-        libraryDependencies <++= scalaVersion { sv =>
-          Seq(
-            scala_compiler(sv),
-            joda_time,
-            joda_convert,
-            commons_codec,
-            javamail,
-            log4j,
-            htmlparser,
-            xerces)
-        }
-      )
+  lazy val util = coreProject("util")
+    .dependsOn(actor, json, markdown)
+    .settings(
+      description := "Utilities Library",
+      parallelExecution in Test := false,
+      libraryDependencies <++= scalaVersion { sv =>
+        Seq(
+          scala_compiler(sv),
+          joda_time,
+          joda_convert,
+          commons_codec,
+          javamail,
+          log4j,
+          htmlparser,
+          xerces)
+      }
+    )
 
   // Web Projects
   // ------------
-  lazy val web: Seq[ProjectReference] =
-    Seq(testkit, webkit)
+  lazy val web: Seq[ProjectReference] = Seq(testkit, webkit)
 
-  lazy val testkit =
-    webProject("testkit")
-      .dependsOn(util)
-      .settings(
-        description := "Testkit for Webkit Library",
-        libraryDependencies ++= Seq(commons_httpclient, servlet_api))
-  lazy val webkit =
-    webProject("webkit")
-      .dependsOn(util, testkit % "provided")
-      .settings(
-        libraryDependencies ++= Seq(
-          mockito_all,
-          jquery,
-          jasmineCore,
-          jasmineAjax))
-      .settings(yuiCompressor.Plugin.yuiSettings: _*)
-      .settings(
-        description := "Webkit Library",
-        parallelExecution in Test := false,
-        libraryDependencies <++= scalaVersion { sv =>
-          Seq(
-            commons_fileupload,
-            rhino,
-            servlet_api,
-            specs2.copy(configurations = Some("provided")),
-            jetty6,
-            jwebunit)
-        },
-        initialize in Test <<= (sourceDirectory in Test) { src =>
-          System.setProperty(
-            "net.liftweb.webapptest.src.test.webapp",
-            (src / "webapp").absString)
-        },
-        (compile in Compile) <<= (compile in Compile) dependsOn (WebKeys.assets),
-        /**
-          * This is to ensure that the tests in net.liftweb.webapptest run last
-          * so that other tests (MenuSpec in particular) run before the SiteMap
-          * is set.
-          */
-        testGrouping in Test <<= (definedTests in Test).map { tests =>
-          import Tests._
+  lazy val testkit = webProject("testkit")
+    .dependsOn(util)
+    .settings(
+      description := "Testkit for Webkit Library",
+      libraryDependencies ++= Seq(commons_httpclient, servlet_api))
+  lazy val webkit = webProject("webkit")
+    .dependsOn(util, testkit % "provided")
+    .settings(
+      libraryDependencies ++= Seq(
+        mockito_all,
+        jquery,
+        jasmineCore,
+        jasmineAjax))
+    .settings(yuiCompressor.Plugin.yuiSettings: _*)
+    .settings(
+      description := "Webkit Library",
+      parallelExecution in Test := false,
+      libraryDependencies <++= scalaVersion { sv =>
+        Seq(
+          commons_fileupload,
+          rhino,
+          servlet_api,
+          specs2.copy(configurations = Some("provided")),
+          jetty6,
+          jwebunit)
+      },
+      initialize in Test <<= (sourceDirectory in Test) { src =>
+        System.setProperty(
+          "net.liftweb.webapptest.src.test.webapp",
+          (src / "webapp").absString)
+      },
+      (compile in Compile) <<= (compile in Compile) dependsOn (WebKeys.assets),
+      /**
+        * This is to ensure that the tests in net.liftweb.webapptest run last
+        * so that other tests (MenuSpec in particular) run before the SiteMap
+        * is set.
+        */
+      testGrouping in Test <<= (definedTests in Test).map { tests =>
+        import Tests._
 
-          val (webapptests, others) = tests.partition { test =>
-            test.name.startsWith("net.liftweb.webapptest")
-          }
-
-          Seq(
-            new Group("others", others, InProcess),
-            new Group("webapptests", webapptests, InProcess)
-          )
+        val (webapptests, others) = tests.partition { test =>
+          test.name.startsWith("net.liftweb.webapptest")
         }
-      )
-      .enablePlugins(SbtWeb)
+
+        Seq(
+          new Group("others", others, InProcess),
+          new Group("webapptests", webapptests, InProcess)
+        )
+      }
+    )
+    .enablePlugins(SbtWeb)
 
   // Persistence Projects
   // --------------------
-  lazy val persistence: Seq[ProjectReference] =
-    Seq(db, proto, mapper, record, squeryl_record, mongodb, mongodb_record)
+  lazy val persistence: Seq[ProjectReference] = Seq(
+    db,
+    proto,
+    mapper,
+    record,
+    squeryl_record,
+    mongodb,
+    mongodb_record)
 
-  lazy val db =
-    persistenceProject("db")
-      .dependsOn(util, webkit)
-      .settings(libraryDependencies += mockito_all)
+  lazy val db = persistenceProject("db")
+    .dependsOn(util, webkit)
+    .settings(libraryDependencies += mockito_all)
 
-  lazy val proto =
-    persistenceProject("proto")
-      .dependsOn(webkit)
+  lazy val proto = persistenceProject("proto")
+    .dependsOn(webkit)
 
-  lazy val mapper =
-    persistenceProject("mapper")
-      .dependsOn(db, proto)
-      .settings(
-        description := "Mapper Library",
-        parallelExecution in Test := false,
-        libraryDependencies ++= Seq(h2, derby),
-        initialize in Test <<= (crossTarget in Test) { ct =>
-          System.setProperty(
-            "derby.stream.error.file",
-            (ct / "derby.log").absolutePath)
-        }
-      )
+  lazy val mapper = persistenceProject("mapper")
+    .dependsOn(db, proto)
+    .settings(
+      description := "Mapper Library",
+      parallelExecution in Test := false,
+      libraryDependencies ++= Seq(h2, derby),
+      initialize in Test <<= (crossTarget in Test) { ct =>
+        System.setProperty(
+          "derby.stream.error.file",
+          (ct / "derby.log").absolutePath)
+      }
+    )
 
-  lazy val record =
-    persistenceProject("record")
-      .dependsOn(proto)
+  lazy val record = persistenceProject("record")
+    .dependsOn(proto)
 
-  lazy val squeryl_record =
-    persistenceProject("squeryl-record")
-      .dependsOn(record, db)
-      .settings(libraryDependencies ++= Seq(h2, squeryl))
+  lazy val squeryl_record = persistenceProject("squeryl-record")
+    .dependsOn(record, db)
+    .settings(libraryDependencies ++= Seq(h2, squeryl))
 
-  lazy val mongodb =
-    persistenceProject("mongodb")
-      .dependsOn(json_ext, util)
-      .settings(
-        parallelExecution in Test := false,
-        libraryDependencies += mongo_driver,
-        initialize in Test <<= (resourceDirectory in Test) { rd =>
-          System.setProperty(
-            "java.util.logging.config.file",
-            (rd / "logging.properties").absolutePath)
-        }
-      )
+  lazy val mongodb = persistenceProject("mongodb")
+    .dependsOn(json_ext, util)
+    .settings(
+      parallelExecution in Test := false,
+      libraryDependencies += mongo_driver,
+      initialize in Test <<= (resourceDirectory in Test) { rd =>
+        System.setProperty(
+          "java.util.logging.config.file",
+          (rd / "logging.properties").absolutePath)
+      }
+    )
 
-  lazy val mongodb_record =
-    persistenceProject("mongodb-record")
-      .dependsOn(record, mongodb)
-      .settings(parallelExecution in Test := false)
+  lazy val mongodb_record = persistenceProject("mongodb-record")
+    .dependsOn(record, mongodb)
+    .settings(parallelExecution in Test := false)
 
   def coreProject = liftProject("core") _
   def webProject = liftProject("web") _

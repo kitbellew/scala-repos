@@ -733,8 +733,8 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg(List("a-1", "a-2", "b-11", "b-12", "c-10", "c-11", "c-12"))
     }
     "allow behavior changes in event handler (when handling first event)" in {
-      val persistentActor =
-        namedPersistentActor[ChangeBehaviorInFirstEventHandlerPersistentActor]
+      val persistentActor = namedPersistentActor[
+        ChangeBehaviorInFirstEventHandlerPersistentActor]
       persistentActor ! Cmd("b")
       persistentActor ! Cmd("c")
       persistentActor ! Cmd("d")
@@ -744,8 +744,8 @@ abstract class PersistentActorSpec(config: Config)
         List("a-1", "a-2", "b-0", "c-21", "c-22", "d-0", "e-21", "e-22"))
     }
     "allow behavior changes in event handler (when handling last event)" in {
-      val persistentActor =
-        namedPersistentActor[ChangeBehaviorInLastEventHandlerPersistentActor]
+      val persistentActor = namedPersistentActor[
+        ChangeBehaviorInLastEventHandlerPersistentActor]
       persistentActor ! Cmd("b")
       persistentActor ! Cmd("c")
       persistentActor ! Cmd("d")
@@ -755,8 +755,8 @@ abstract class PersistentActorSpec(config: Config)
         List("a-1", "a-2", "b-0", "c-21", "c-22", "d-0", "e-21", "e-22"))
     }
     "allow behavior changes in command handler (as first action)" in {
-      val persistentActor =
-        namedPersistentActor[ChangeBehaviorInCommandHandlerFirstPersistentActor]
+      val persistentActor = namedPersistentActor[
+        ChangeBehaviorInCommandHandlerFirstPersistentActor]
       persistentActor ! Cmd("b")
       persistentActor ! Cmd("c")
       persistentActor ! Cmd("d")
@@ -776,8 +776,8 @@ abstract class PersistentActorSpec(config: Config)
           "e-32"))
     }
     "allow behavior changes in command handler (as last action)" in {
-      val persistentActor =
-        namedPersistentActor[ChangeBehaviorInCommandHandlerLastPersistentActor]
+      val persistentActor = namedPersistentActor[
+        ChangeBehaviorInCommandHandlerLastPersistentActor]
       persistentActor ! Cmd("b")
       persistentActor ! Cmd("c")
       persistentActor ! Cmd("d")
@@ -830,8 +830,8 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg(List("a-1", "a-2", "b-41", "b-42", "c-41", "c-42"))
     }
     "be able to reply within an event handler" in {
-      val persistentActor =
-        namedPersistentActor[ReplyInEventHandlerPersistentActor]
+      val persistentActor = namedPersistentActor[
+        ReplyInEventHandlerPersistentActor]
       persistentActor ! Cmd("a")
       expectMsg("a")
     }
@@ -850,8 +850,8 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg("y-2")
     }
     "support multiple persistAsync calls for one command, and execute them 'when possible', not hindering command processing" in {
-      val persistentActor =
-        namedPersistentActor[AsyncPersistThreeTimesPersistentActor]
+      val persistentActor = namedPersistentActor[
+        AsyncPersistThreeTimesPersistentActor]
       val commands = 1 to 10 map { i ⇒ Cmd(s"c-$i") }
 
       commands foreach { i ⇒
@@ -859,10 +859,9 @@ abstract class PersistentActorSpec(config: Config)
         persistentActor ! i
       }
 
-      val all: Seq[String] =
-        this
-          .receiveN(40)
-          .asInstanceOf[Seq[String]] // each command = 1 reply + 3 event-replies
+      val all: Seq[String] = this
+        .receiveN(40)
+        .asInstanceOf[Seq[String]] // each command = 1 reply + 3 event-replies
 
       val replies = all.filter(r ⇒ r.count(_ == '-') == 1)
       replies should equal(commands.map(_.data))
@@ -874,8 +873,8 @@ abstract class PersistentActorSpec(config: Config)
     "reply to the original sender() of a command, even when using persistAsync" in {
       // sanity check, the setting of sender() for PersistentRepl is handled by PersistentActor currently
       // but as we want to remove it soon, keeping the explicit test here.
-      val persistentActor =
-        namedPersistentActor[AsyncPersistThreeTimesPersistentActor]
+      val persistentActor = namedPersistentActor[
+        AsyncPersistThreeTimesPersistentActor]
 
       val commands = 1 to 10 map { i ⇒ Cmd(s"c-$i") }
       val probes = Vector.fill(10)(TestProbe())
@@ -891,8 +890,8 @@ abstract class PersistentActorSpec(config: Config)
       }
     }
     "support the same event being asyncPersist'ed multiple times" in {
-      val persistentActor =
-        namedPersistentActor[AsyncPersistSameEventTwicePersistentActor]
+      val persistentActor = namedPersistentActor[
+        AsyncPersistSameEventTwicePersistentActor]
       persistentActor ! Cmd("x")
       expectMsg("x")
 
@@ -963,8 +962,8 @@ abstract class PersistentActorSpec(config: Config)
       expectNoMsg(100.millis)
     }
     "correlate persistAsync handlers after restart" in {
-      val persistentActor =
-        namedPersistentActor[AsyncPersistHandlerCorrelationCheck]
+      val persistentActor = namedPersistentActor[
+        AsyncPersistHandlerCorrelationCheck]
       for (n ← 1 to 100) persistentActor ! Cmd(n)
       persistentActor ! "boom"
       for (n ← 1 to 20) persistentActor ! Cmd(n)
@@ -990,8 +989,8 @@ abstract class PersistentActorSpec(config: Config)
       expectNoMsg(100.millis)
     }
     "invoke deferred handlers, in presence of mixed a long series persist / persistAsync calls" in {
-      val persistentActor =
-        namedPersistentActor[DeferringMixedCallsPPADDPADPersistActor]
+      val persistentActor = namedPersistentActor[
+        DeferringMixedCallsPPADDPADPersistActor]
       val p1, p2 = TestProbe()
 
       persistentActor.tell(Cmd("a"), p1.ref)
@@ -1013,8 +1012,8 @@ abstract class PersistentActorSpec(config: Config)
       expectNoMsg(100.millis)
     }
     "invoke deferred handlers right away, if there are no pending persist handlers registered" in {
-      val persistentActor =
-        namedPersistentActor[DeferringWithNoPersistCallsPersistActor]
+      val persistentActor = namedPersistentActor[
+        DeferringWithNoPersistCallsPersistActor]
       persistentActor ! Cmd("a")
       expectMsg("d-1")
       expectMsg("d-2")
@@ -1075,8 +1074,8 @@ abstract class PersistentActorSpec(config: Config)
       expectMsg("d")
     }
     "be used as a stackable modification" in {
-      val persistentActor =
-        system.actorOf(Props(classOf[StackableTestPersistentActor], testActor))
+      val persistentActor = system.actorOf(
+        Props(classOf[StackableTestPersistentActor], testActor))
       expectMsg("mixin aroundPreStart")
       expectMsg("base aroundPreStart")
       expectMsg("preStart")

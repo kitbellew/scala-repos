@@ -62,19 +62,20 @@ class SourceMapTest {
         val topSte = trace2.head
         assertTrue(normFileName(topSte).contains("/SourceMapTest.scala"))
 
-        val throwSte = if (topSte.getLineNumber == 19) {
-          // line where `case class TestException is written` above
-          val throwSte = trace2.tail.head
-          assertTrue(normFileName(throwSte).contains("/SourceMapTest.scala"))
-          throwSte
-        } else {
-          /* In fullOpt, it may happen that the constructor of
-           * TestException is inlined, in which case there is no trace of
-           * it anymore. The first stack element in SourceMapTest.scala is
-           * therefore the one we're interested in.
-           */
-          topSte
-        }
+        val throwSte =
+          if (topSte.getLineNumber == 19) {
+            // line where `case class TestException is written` above
+            val throwSte = trace2.tail.head
+            assertTrue(normFileName(throwSte).contains("/SourceMapTest.scala"))
+            throwSte
+          } else {
+            /* In fullOpt, it may happen that the constructor of
+             * TestException is inlined, in which case there is no trace of
+             * it anymore. The first stack element in SourceMapTest.scala is
+             * therefore the one we're interested in.
+             */
+            topSte
+          }
 
         assertEquals(lineNo, throwSte.getLineNumber)
     }
@@ -438,17 +439,18 @@ class Json extends Writer2 {
         /**/
         ch = s.charAt(pos) /**/
         /**/
-        chKind = /***/ if (ch < 255) {
+        chKind =
+          /***/ if (ch < 255) {
 
-          /**/
-          /**/ /***/
-          charKind(ch)
-        } else {
+            /**/
+            /**/ /***/
+            charKind(ch)
+          } else {
 
-          /**/
-          /**/ /***/
-          Other
-        } /**/
+            /**/
+            /**/ /***/
+            Other
+          } /**/
         pos += 1
         if (ch == '\n'.toInt) {
           chLinePos += 1
@@ -489,18 +491,20 @@ class Json extends Writer2 {
     def handleDigit() {
       val first = chMark
       getDigits()
-      val k1 = if (ch == '.'.toInt) {
-        chNext()
-        getDigits()
-        BIGNUMBER
-      } else { NUMBER }
-      val k2 = if (ch == 'E'.toInt || ch == 'e'.toInt) {
-        chNext()
-        if (ch == '+'.toInt) { chNext() }
-        else if (ch == '-'.toInt) { chNext() }
-        getDigits()
-        FLOATNUMBER
-      } else { k1 }
+      val k1 =
+        if (ch == '.'.toInt) {
+          chNext()
+          getDigits()
+          BIGNUMBER
+        } else { NUMBER }
+      val k2 =
+        if (ch == 'E'.toInt || ch == 'e'.toInt) {
+          chNext()
+          if (ch == '+'.toInt) { chNext() }
+          else if (ch == '-'.toInt) { chNext() }
+          getDigits()
+          FLOATNUMBER
+        } else { k1 }
 
       /**/
       tokenKind = k2 /**/

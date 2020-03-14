@@ -78,8 +78,10 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
         searchOneSampleCandidates(partDiffs) // candidates: local extrema
       }
       .collect()
-    val ksStat =
-      searchOneSampleStatistic(localData, n) // result: global extreme
+    val ksStat = searchOneSampleStatistic(
+      localData,
+      n
+    ) // result: global extreme
     evalOneSampleP(ksStat, n.toLong)
   }
 
@@ -187,29 +189,28 @@ private[stat] object KolmogorovSmirnovTest extends Logging {
       data: RDD[Double],
       distName: String,
       params: Double*): KolmogorovSmirnovTestResult = {
-    val distObj =
-      distName match {
-        case "norm" => {
-          if (params.nonEmpty) {
-            // parameters are passed, then can only be 2
-            require(
-              params.length == 2,
-              "Normal distribution requires mean and standard " +
-                "deviation as parameters")
-            new NormalDistribution(params(0), params(1))
-          } else {
-            // if no parameters passed in initializes to standard normal
-            logInfo(
-              "No parameters specified for normal distribution," +
-                "initialized to standard normal (i.e. N(0, 1))")
-            new NormalDistribution(0, 1)
-          }
+    val distObj = distName match {
+      case "norm" => {
+        if (params.nonEmpty) {
+          // parameters are passed, then can only be 2
+          require(
+            params.length == 2,
+            "Normal distribution requires mean and standard " +
+              "deviation as parameters")
+          new NormalDistribution(params(0), params(1))
+        } else {
+          // if no parameters passed in initializes to standard normal
+          logInfo(
+            "No parameters specified for normal distribution," +
+              "initialized to standard normal (i.e. N(0, 1))")
+          new NormalDistribution(0, 1)
         }
-        case _ =>
-          throw new UnsupportedOperationException(
-            s"$distName not yet supported through" +
-              s" convenience method. Current options are:['norm'].")
       }
+      case _ =>
+        throw new UnsupportedOperationException(
+          s"$distName not yet supported through" +
+            s" convenience method. Current options are:['norm'].")
+    }
 
     testOneSample(data, distObj)
   }

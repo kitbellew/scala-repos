@@ -114,8 +114,7 @@ object BasicCommands {
     } map (_.trim)).+
   }
 
-  def multiApplied(s: State) =
-    Command.applyEffect(multiParser(s))(_ ::: s)
+  def multiApplied(s: State) = Command.applyEffect(multiParser(s))(_ ::: s)
 
   def multi =
     Command.custom(multiApplied, Help(Multi, MultiBrief, MultiDetailed))
@@ -376,8 +375,8 @@ object BasicCommands {
       state: State): Parser[() => State] = {
     val aliasRemoved = removeAlias(state, name)
     // apply the alias value to the commands of `state` except for the alias to avoid recursion (#933)
-    val partiallyApplied =
-      Parser(Command.combine(aliasRemoved.definedCommands)(aliasRemoved))(value)
+    val partiallyApplied = Parser(
+      Command.combine(aliasRemoved.definedCommands)(aliasRemoved))(value)
     val arg = matched(partiallyApplied & (success(()) | (SpaceClass ~ any.*)))
     // by scheduling the expanded alias instead of directly executing, we get errors on the expanded string (#598)
     arg.map(str => () => (value + str) :: state)

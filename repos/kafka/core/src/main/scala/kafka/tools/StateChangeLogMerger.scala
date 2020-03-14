@@ -145,10 +145,10 @@ object StateChangeLogMerger extends Logging {
         System.exit(1)
       }
     }
-    startDate =
-      dateFormat.parse(options.valueOf(startTimeOpt).replace('\"', ' ').trim)
-    endDate =
-      dateFormat.parse(options.valueOf(endTimeOpt).replace('\"', ' ').trim)
+    startDate = dateFormat.parse(
+      options.valueOf(startTimeOpt).replace('\"', ' ').trim)
+    endDate = dateFormat.parse(
+      options.valueOf(endTimeOpt).replace('\"', ' ').trim)
 
     /**
       * n-way merge from m input files:

@@ -38,8 +38,9 @@ class ClientDispatcherTest extends FunSuite {
       clientq.offer(okPacket)
     }
 
-  val okPacket =
-    Packet(1, Buffer(Array[Byte](0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00)))
+  val okPacket = Packet(
+    1,
+    Buffer(Array[Byte](0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00)))
 
   test("handshaking") {
     val ctx = newCtx
@@ -150,8 +151,9 @@ class ClientDispatcherTest extends FunSuite {
   val numFields = 5
   val numRows = 3
   val headerPacket = Packet(0, Buffer(Array(numFields.toByte)))
-  val eof =
-    Packet(0, Buffer(Array[Byte](Packet.EofByte, 0x00, 0x00, 0x00, 0x00)))
+  val eof = Packet(
+    0,
+    Buffer(Array[Byte](Packet.EofByte, 0x00, 0x00, 0x00, 0x00)))
   val fields = createFields(numFields)
   val fieldPackets = fields map { toPacket(_) }
 
@@ -206,8 +208,8 @@ class ClientDispatcherTest extends FunSuite {
   test("Decode PreparedStatement numParams > 0, numCols > 0") {
     val ctx = newCtx
     import ctx._
-    val query =
-      service(PrepareRequest("SELECT name FROM t1 WHERE id IN (?, ?, ?, ?, ?)"))
+    val query = service(
+      PrepareRequest("SELECT name FROM t1 WHERE id IN (?, ?, ?, ?, ?)"))
     val numParams = numFields
     clientq.offer(makePreparedHeader(1, numParams))
     fieldPackets foreach { clientq.offer(_) }

@@ -13,8 +13,7 @@ import play.utils.PlayIO
 
 object MultipartFormDataParserSpec extends PlaySpecification {
 
-  val body =
-    """
+  val body = """
       |--aabbccddee
       |Content-Disposition: form-data; name="text1"
       |

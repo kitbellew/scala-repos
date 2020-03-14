@@ -52,10 +52,12 @@ object ScalaWrapManager {
       psi.getParent match {
         case parent: PsiElement if elementMatch(parent) =>
           import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils.priority
-          val parentPriority =
-            priority(elementOperation(parent).getText, assignments)
-          val childPriority =
-            priority(elementOperation(psi).getText, assignments)
+          val parentPriority = priority(
+            elementOperation(parent).getText,
+            assignments)
+          val childPriority = priority(
+            elementOperation(psi).getText,
+            assignments)
           val notSamePriority = parentPriority != childPriority
           if (notSamePriority) {
             Wrap.createChildWrap(
@@ -217,8 +219,9 @@ object ScalaWrapManager {
         else return null
       case _
           if parentNode.getElementType == ScalaTokenTypes.kEXTENDS && parent.myLastNode != null =>
-        val e: ScExtendsBlock =
-          PsiTreeUtil.getParentOfType(parentPsi, classOf[ScExtendsBlock])
+        val e: ScExtendsBlock = PsiTreeUtil.getParentOfType(
+          parentPsi,
+          classOf[ScExtendsBlock])
         val first: PsiElement = e.earlyDefinitions match {
           case Some(z) => z
           case _ =>

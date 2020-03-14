@@ -90,8 +90,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
           implicit val pos = ctors.head.pos
 
-          val js.MethodDef(_, _, args, _, body) =
-            withNewLocalNameScope(genExportMethod(ctors, jsName))
+          val js.MethodDef(_, _, args, _, body) = withNewLocalNameScope(
+            genExportMethod(ctors, jsName))
 
           js.ConstructorExportDef(jsName, args, body)
         }
@@ -125,12 +125,11 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val Block(Apply(fun, _) :: Nil, _) = dd.rhs
       val trgSym = fun.symbol
 
-      val inArg =
-        js.ParamDef(
-          js.Ident("namedParams"),
-          jstpe.AnyType,
-          mutable = false,
-          rest = false)
+      val inArg = js.ParamDef(
+        js.Ident("namedParams"),
+        jstpe.AnyType,
+        mutable = false,
+        rest = false)
       val inArgRef = inArg.ref
 
       val methodIdent = encodeMethodSym(sym)
@@ -183,8 +182,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val (jsName, isProp) = jsInterop.jsExportInfo(name)
 
       // Check if we have a conflicting export of the other kind
-      val conflicting =
-        classSym.info.member(jsInterop.scalaExportName(jsName, !isProp))
+      val conflicting = classSym.info.member(
+        jsInterop.scalaExportName(jsName, !isProp))
 
       if (conflicting != NoSymbol) {
         val kind = if (isProp) "property" else "method"
@@ -343,8 +342,9 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
 
       // Create a map: argCount -> methods (methods may appear multiple times)
-      val methodByArgCount =
-        methodArgCounts.groupBy(_._1).mapValues(_.map(_._2).toSet)
+      val methodByArgCount = methodArgCounts
+        .groupBy(_._1)
+        .mapValues(_.map(_._2).toSet)
 
       // Minimum number of arguments that must be given
       val minArgc = methodByArgCount.keys.min
@@ -356,8 +356,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       val formalArgs = genFormalArgs(minArgc, needsRestParam)
 
       // Create tuples: (methods, argCounts). This will be the cases we generate
-      val caseDefinitions =
-        methodByArgCount.groupBy(_._2).mapValues(_.keySet)
+      val caseDefinitions = methodByArgCount.groupBy(_._2).mapValues(_.keySet)
 
       // Verify stuff about caseDefinitions
       assert(
@@ -470,8 +469,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         } else {
           // Sort them so that, e.g., isInstanceOf[String]
           // comes before isInstanceOf[Object]
-          val sortedAltsByTypeTest =
-            topoSortDistinctsBy(altsByTypeTest)(_._1)(RTTypeTest.Ordering)
+          val sortedAltsByTypeTest = topoSortDistinctsBy(altsByTypeTest)(_._1)(
+            RTTypeTest.Ordering)
 
           val defaultCase = genThrowTypeError()
 
@@ -536,8 +535,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         lazy val paramsTypesUncurry = paramsUncurry.map(_.tpe)
         lazy val isRepeatedUncurry = paramsUncurry.map(isRepeated)
 
-        lazy val paramsPosterasure =
-          enteringPhase(currentRun.posterasurePhase) { alt.paramss.flatten }
+        lazy val paramsPosterasure = enteringPhase(
+          currentRun.posterasurePhase) { alt.paramss.flatten }
         def paramTypePosterasure =
           enteringPhase(currentRun.posterasurePhase) {
             paramsPosterasure.apply(paramIndex).tpe
@@ -642,8 +641,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
 
       // normal arguments
-      val jsArgRefs =
-        (1 to normalArgc).toList.map(i => genFormalArgRef(i, minArgc))
+      val jsArgRefs = (1 to normalArgc).toList.map(i =>
+        genFormalArgRef(i, minArgc))
 
       // Generate JS code to prepare arguments (default getters and unboxes)
       val jsArgPrep = genPrepareArgs(jsArgRefs, sym) ++ jsVarArgPrep
@@ -672,57 +671,64 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
       for { (jsArg, (param, i)) <- jsArgs zip params.zipWithIndex } yield {
         // Unboxed argument (if it is defined)
-        val unboxedArg =
-          fromAny(jsArg, enteringPhase(currentRun.posterasurePhase)(param.tpe))
+        val unboxedArg = fromAny(
+          jsArg,
+          enteringPhase(currentRun.posterasurePhase)(param.tpe))
 
         // If argument is undefined and there is a default getter, call it
-        val verifiedOrDefault = if (param.hasFlag(Flags.DEFAULTPARAM)) {
-          js.If(
-            js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
-              val trgSym = {
-                if (sym.isClassConstructor) {
-                  /* Get the companion module class.
-                   * For inner classes the sym.owner.companionModule can be broken,
-                   * therefore companionModule is fetched at uncurryPhase.
-                   */
-                  val companionModule = enteringPhase(currentRun.namerPhase) {
-                    sym.owner.companionModule
-                  }
-                  companionModule.moduleClass
-                } else { sym.owner }
+        val verifiedOrDefault =
+          if (param.hasFlag(Flags.DEFAULTPARAM)) {
+            js.If(
+              js.BinaryOp(js.BinaryOp.===, jsArg, js.Undefined()), {
+                val trgSym = {
+                  if (sym.isClassConstructor) {
+                    /* Get the companion module class.
+                     * For inner classes the sym.owner.companionModule can be broken,
+                     * therefore companionModule is fetched at uncurryPhase.
+                     */
+                    val companionModule = enteringPhase(currentRun.namerPhase) {
+                      sym.owner.companionModule
+                    }
+                    companionModule.moduleClass
+                  } else { sym.owner }
+                }
+                val defaultGetter = trgSym.tpe.member(
+                  nme.defaultGetterName(sym.name, i + 1))
+
+                assert(
+                  defaultGetter.exists,
+                  s"need default getter for method ${sym.fullName}")
+                assert(!defaultGetter.isOverloaded)
+
+                val trgTree = {
+                  if (sym.isClassConstructor) genLoadModule(trgSym)
+                  else js.This()(encodeClassType(trgSym))
+                }
+
+                // Pass previous arguments to defaultGetter
+                val defaultGetterArgs = result
+                  .take(defaultGetter.tpe.params.size)
+                  .toList
+                  .map(_.ref)
+
+                if (isRawJSType(trgSym.toTypeConstructor)) {
+                  assert(isScalaJSDefinedJSClass(defaultGetter.owner))
+                  genApplyJSClassMethod(
+                    trgTree,
+                    defaultGetter,
+                    defaultGetterArgs)
+                } else {
+                  genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
+                }
+              }, {
+                // Otherwise, unbox the argument
+                unboxedArg
               }
-              val defaultGetter =
-                trgSym.tpe.member(nme.defaultGetterName(sym.name, i + 1))
-
-              assert(
-                defaultGetter.exists,
-                s"need default getter for method ${sym.fullName}")
-              assert(!defaultGetter.isOverloaded)
-
-              val trgTree = {
-                if (sym.isClassConstructor) genLoadModule(trgSym)
-                else js.This()(encodeClassType(trgSym))
-              }
-
-              // Pass previous arguments to defaultGetter
-              val defaultGetterArgs =
-                result.take(defaultGetter.tpe.params.size).toList.map(_.ref)
-
-              if (isRawJSType(trgSym.toTypeConstructor)) {
-                assert(isScalaJSDefinedJSClass(defaultGetter.owner))
-                genApplyJSClassMethod(trgTree, defaultGetter, defaultGetterArgs)
-              } else {
-                genApplyMethod(trgTree, defaultGetter, defaultGetterArgs)
-              }
-            }, {
-              // Otherwise, unbox the argument
-              unboxedArg
-            }
-          )(unboxedArg.tpe)
-        } else {
-          // Otherwise, it is always the unboxed argument
-          unboxedArg
-        }
+            )(unboxedArg.tpe)
+          } else {
+            // Otherwise, it is always the unboxed argument
+            unboxedArg
+          }
 
         result +=
           js.VarDef(
@@ -855,8 +861,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       if (coll.isEmpty) acc
       else if (coll.tail.isEmpty) coll.head :: acc
       else {
-        val (lhs, rhs) =
-          coll.span(x => !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
+        val (lhs, rhs) = coll.span(x =>
+          !coll.forall(y => (x eq y) || !ord.lteq(f(x), f(y))))
         assert(!rhs.isEmpty, s"cycle while ordering $coll")
         loop(lhs ::: rhs.tail, rhs.head :: acc)
       }

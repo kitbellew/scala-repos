@@ -12,16 +12,14 @@ class AddNameToArgumentIntentionTest extends ScalaIntentionTestBase {
   def familyName = AddNameToArgumentIntention.familyName
 
   def test() {
-    val text =
-      """
+    val text = """
         |class NameParameters {
         |  def doSomething(flag: Boolean) {}
         |
         |  doSomething(t<caret>rue)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class NameParameters {
         |  def doSomething(flag: Boolean) {}
         |
@@ -33,16 +31,14 @@ class AddNameToArgumentIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test2() {
-    val text =
-      """
+    val text = """
         |class NameParameters {
         |  def doSomething(flag: Boolean, a: Int) {}
         |
         |  doSomething(t<caret>rue, 8)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class NameParameters {
         |  def doSomething(flag: Boolean, a: Int) {}
         |
@@ -54,16 +50,14 @@ class AddNameToArgumentIntentionTest extends ScalaIntentionTestBase {
   }
 
   def test3() {
-    val text =
-      """
+    val text = """
         |class NameParameters {
         |  def doSomething(flag: Boolean, a: Int, b: Int) {}
         |
         |  doSomething(true, 8, <caret>9)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class NameParameters {
         |  def doSomething(flag: Boolean, a: Int, b: Int) {}
         |

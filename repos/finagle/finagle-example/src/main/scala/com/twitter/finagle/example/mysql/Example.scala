@@ -17,8 +17,7 @@ case class SwimmingRecord(
 )
 
 object SwimmingRecord {
-  val createTableSQL =
-    """CREATE TABLE IF NOT EXISTS `finagle-mysql-example` (
+  val createTableSQL = """CREATE TABLE IF NOT EXISTS `finagle-mysql-example` (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `event` varchar(30) DEFAULT NULL,
     `time` float DEFAULT NULL,

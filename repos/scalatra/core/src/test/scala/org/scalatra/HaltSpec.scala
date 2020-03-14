@@ -113,8 +113,7 @@ class HaltSpec extends ScalatraSpec {
   def haltsAction(uri: String) =
     get(uri) { body must not contain ("this content must not be returned") }
 
-  def status(uri: String, status: Int) =
-    get(uri) { status must_== status }
+  def status(uri: String, status: Int) = get(uri) { status must_== status }
 
   def retainsHeaders(uri: String) = hasHeader(uri, "Before-Header", "before")
 
@@ -124,8 +123,7 @@ class HaltSpec extends ScalatraSpec {
   def bodyContains(uri: String, text: String) =
     get(uri) { body must contain(text) }
 
-  def bodyEquals(uri: String, text: String) =
-    get(uri) { body must_== (text) }
+  def bodyEquals(uri: String, text: String) = get(uri) { body must_== (text) }
 
   def hasHeader(uri: String, name: String, value: String) =
     get(uri) { header(name) must_== value }

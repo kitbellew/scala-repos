@@ -27,8 +27,7 @@ package object util {
       }
     }
 
-    override def hashCode(): Int =
-      if (inner == null) 0 else inner.hashCode
+    override def hashCode(): Int = if (inner == null) 0 else inner.hashCode
   }
 
 }

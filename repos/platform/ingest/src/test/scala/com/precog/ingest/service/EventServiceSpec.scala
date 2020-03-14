@@ -262,9 +262,11 @@ class EventServiceSpec
     }
 
     "reject track request when no API key provided" in {
-      val result =
-        track(JSON, None, testAccount.rootPath, Some(testAccount.accountId))(
-          testValue)
+      val result = track(
+        JSON,
+        None,
+        testAccount.rootPath,
+        Some(testAccount.accountId))(testValue)
 
       result.copoint must beLike {
         case (HttpResponse(HttpStatus(BadRequest, _), _, _, _), _) => ok

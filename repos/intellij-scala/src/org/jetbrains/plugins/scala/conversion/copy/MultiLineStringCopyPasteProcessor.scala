@@ -84,9 +84,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
 }
 
 object MultiLineStringCopyPasteProcessor {
-  private val SAFE_ELEMENTS =
-    TokenSet.create(
-      ScalaTokenTypes.tMULTILINE_STRING,
-      ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING,
-      ScalaTokenTypes.tINTERPOLATED_STRING_ID)
+  private val SAFE_ELEMENTS = TokenSet.create(
+    ScalaTokenTypes.tMULTILINE_STRING,
+    ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING,
+    ScalaTokenTypes.tINTERPOLATED_STRING_ID)
 }

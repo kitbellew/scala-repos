@@ -36,8 +36,8 @@ class JavaCompiler(
 
   private val listener = new JavaDiagnosticListener()
   private val silencer = new SilencedDiagnosticListener()
-  private val cp =
-    (config.allJars ++ config.targetClasspath).mkString(File.pathSeparator)
+  private val cp = (config.allJars ++ config.targetClasspath)
+    .mkString(File.pathSeparator)
   private var workingSet = new ConcurrentHashMap[String, JavaFileObject]()
 
   // Cache the filemanager so we can re-use jars on the classpath. This has

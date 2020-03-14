@@ -56,11 +56,9 @@ final case class AdaptiveLoadBalancingRoutingLogic(
   // The current weighted routees, if any. Weights are produced by the metricsSelector
   // via the metricsListener Actor. It's only updated by the actor, but accessed from
   // the threads of the sender()s.
-  private val weightedRouteesRef =
-    new AtomicReference[(
-        immutable.IndexedSeq[Routee],
-        Set[NodeMetrics],
-        Option[WeightedRoutees])]((Vector.empty, Set.empty, None))
+  private val weightedRouteesRef = new AtomicReference[
+    (immutable.IndexedSeq[Routee], Set[NodeMetrics], Option[WeightedRoutees])](
+    (Vector.empty, Set.empty, None))
 
   @tailrec final def metricsChanged(event: ClusterMetricsChanged): Unit = {
     val oldValue = weightedRouteesRef.get
@@ -161,8 +159,8 @@ final case class AdaptiveLoadBalancingPool(
 
   def this(config: Config, dynamicAccess: DynamicAccess) =
     this(
-      nrOfInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
+      nrOfInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
       metricsSelector = MetricsSelector.fromConfig(config, dynamicAccess),
       usePoolDispatcher = config.hasPath("pool-dispatcher"))
 
@@ -423,8 +421,8 @@ abstract class MixMetricsSelectorBase(
     this(immutableSeq(selectors).toVector)
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    val combined: immutable.IndexedSeq[(Address, Double)] =
-      selectors.flatMap(_.capacity(nodeMetrics).toSeq)
+    val combined: immutable.IndexedSeq[(Address, Double)] = selectors.flatMap(
+      _.capacity(nodeMetrics).toSeq)
     // aggregated average of the capacities by address
     combined
       .foldLeft(Map.empty[Address, (Double, Int)].withDefaultValue((0.0, 0))) {
@@ -550,10 +548,9 @@ private[cluster] class WeightedRoutees(
     val buckets = Array.ofDim[Int](routees.size)
     val meanWeight =
       if (weights.isEmpty) 1 else weights.values.sum / weights.size
-    val w =
-      weights.withDefaultValue(
-        meanWeight
-      ) // we don’t necessarily have metrics for all addresses
+    val w = weights.withDefaultValue(
+      meanWeight
+    ) // we don’t necessarily have metrics for all addresses
     var i = 0
     var sum = 0
     routees foreach { r ⇒

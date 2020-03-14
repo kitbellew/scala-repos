@@ -55,8 +55,9 @@ class TestTransport(
     registry.transportFor(remoteAddress) match {
 
       case Some((remoteTransport, remoteListenerFuture)) ⇒
-        val (localHandle, remoteHandle) =
-          createHandlePair(remoteTransport, remoteAddress)
+        val (localHandle, remoteHandle) = createHandlePair(
+          remoteTransport,
+          remoteAddress)
         localHandle.writable = false
         remoteHandle.writable = false
 
@@ -489,8 +490,8 @@ object TestTransport {
  strongly recommended to use long, randomly generated strings to key the registry to avoid interference between tests.
  */
 object AssociationRegistry {
-  private final val registries =
-    scala.collection.mutable.Map[String, AssociationRegistry]()
+  private final val registries = scala.collection.mutable
+    .Map[String, AssociationRegistry]()
 
   def get(key: String): AssociationRegistry =
     this.synchronized {

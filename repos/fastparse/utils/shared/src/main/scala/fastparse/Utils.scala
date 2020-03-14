@@ -20,10 +20,10 @@ object MacroUtils {
   def preComputeImpl(c: Compat.Context)(
       pred: c.Expr[Char => Boolean]): c.Expr[Utils.CharBitSet] = {
     import c.universe._
-    val evaled =
-      c.eval(c.Expr[Char => Boolean](c.resetLocalAttrs(pred.tree.duplicate)))
-    val (first, last, array) =
-      Utils.CharBitSet.compute((Char.MinValue to Char.MaxValue).filter(evaled))
+    val evaled = c.eval(
+      c.Expr[Char => Boolean](c.resetLocalAttrs(pred.tree.duplicate)))
+    val (first, last, array) = Utils.CharBitSet.compute(
+      (Char.MinValue to Char.MaxValue).filter(evaled))
     val txt = Utils.CharBitSet.ints2Hex(array)
     c.Expr[Utils.CharBitSet](q"""
       new fastparse.Utils.CharBitSet(fastparse.Utils.CharBitSet.hex2Ints($txt), $first, $last)

@@ -83,10 +83,9 @@ package Generic1TestsAux {
   object Functor extends Functor0 {
     def apply[F[_]](implicit f: Lazy[Functor[F]]): Functor[F] = f.value
 
-    implicit val idFunctor: Functor[Id] =
-      new Functor[Id] {
-        def map[A, B](a: A)(f: A => B): B = f(a)
-      }
+    implicit val idFunctor: Functor[Id] = new Functor[Id] {
+      def map[A, B](a: A)(f: A => B): B = f(a)
+    }
 
     // Induction step for products
     implicit def hcons[F[_]](
@@ -143,10 +142,9 @@ package Generic1TestsAux {
   object Pointed extends Pointed0 {
     def apply[F[_]](implicit f: Lazy[Pointed[F]]): Pointed[F] = f.value
 
-    implicit val idPointed: Pointed[Id] =
-      new Pointed[Id] {
-        def point[A](a: A): Id[A] = a
-      }
+    implicit val idPointed: Pointed[Id] = new Pointed[Id] {
+      def point[A](a: A): Id[A] = a
+    }
 
     // Pointed can be built for Singleton types
     implicit def constSingletonPointed[T](
@@ -408,26 +406,24 @@ class Generic1Tests {
     assertEquals(expectedProd, p1)
 
     // Any ADT has a Functor ... even with recursion
-    val tree =
+    val tree = Node(
+      Leaf("quux"),
       Node(
-        Leaf("quux"),
-        Node(
-          Leaf("foo"),
-          Leaf("wibble")
-        )
+        Leaf("foo"),
+        Leaf("wibble")
       )
+    )
 
     val t0 = transform(tree)(_.length)
     val t1 = tree.map(_.length) // they also have Functor syntax ...
 
-    val expectedTree =
+    val expectedTree = Node(
+      Leaf(4),
       Node(
-        Leaf(4),
-        Node(
-          Leaf(3),
-          Leaf(6)
-        )
+        Leaf(3),
+        Leaf(6)
       )
+    )
     assertEquals(expectedTree, t0)
     assertEquals(expectedTree, t1)
   }

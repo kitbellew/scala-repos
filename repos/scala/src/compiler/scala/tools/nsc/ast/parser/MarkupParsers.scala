@@ -428,11 +428,12 @@ trait MarkupParsers {
 
     def escapeToScala[A](op: => A, kind: String) = {
       xEmbeddedBlock = false
-      val res =
-        saving[List[Int], A](parser.in.sepRegions, parser.in.sepRegions = _) {
-          parser.in resume LBRACE
-          op
-        }
+      val res = saving[List[Int], A](
+        parser.in.sepRegions,
+        parser.in.sepRegions = _) {
+        parser.in resume LBRACE
+        op
+      }
       if (parser.in.token != RBRACE)
         reportSyntaxError(" expected end of Scala " + kind)
 

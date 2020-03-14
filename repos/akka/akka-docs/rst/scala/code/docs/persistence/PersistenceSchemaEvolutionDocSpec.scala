@@ -149,8 +149,7 @@ class RenamePlainJson {
     // this could be done independently for each event type
     override def manifest(event: Any): String = V2
 
-    override def toJournal(event: Any): JsObject =
-      marshaller.toJson(event)
+    override def toJournal(event: Any): JsObject = marshaller.toJson(event)
 
     override def fromJournal(event: Any, manifest: String): EventSeq =
       event match {
@@ -396,8 +395,7 @@ class JsonDataModelAdapter extends EventAdapter {
 
   val marshaller = new ExampleJsonMarshaller
 
-  override def toJournal(event: Any): JsObject =
-    marshaller.toJson(event)
+  override def toJournal(event: Any): JsObject = marshaller.toJson(event)
 
   override def fromJournal(event: Any, manifest: String): EventSeq =
     event match {

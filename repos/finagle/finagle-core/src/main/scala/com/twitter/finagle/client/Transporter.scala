@@ -34,8 +34,7 @@ object Transporter {
       (this, EndpointAddr.param)
   }
   object EndpointAddr {
-    implicit val param =
-      Stack.Param(EndpointAddr(Address.failing))
+    implicit val param = Stack.Param(EndpointAddr(Address.failing))
   }
 
   /**
@@ -74,8 +73,7 @@ object Transporter {
   case class SocksProxy(
       sa: Option[SocketAddress],
       credentials: Option[(String, String)]) {
-    def mk(): (SocksProxy, Stack.Param[SocksProxy]) =
-      (this, SocksProxy.param)
+    def mk(): (SocksProxy, Stack.Param[SocksProxy]) = (this, SocksProxy.param)
   }
   object SocksProxy {
     implicit val param = Stack.Param(
@@ -92,8 +90,7 @@ object Transporter {
   case class HttpProxy(
       sa: Option[SocketAddress],
       credentials: Option[Credentials]) {
-    def mk(): (HttpProxy, Stack.Param[HttpProxy]) =
-      (this, HttpProxy.param)
+    def mk(): (HttpProxy, Stack.Param[HttpProxy]) = (this, HttpProxy.param)
 
     def this(sa: Option[SocketAddress]) = this(sa, None)
   }

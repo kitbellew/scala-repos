@@ -176,8 +176,9 @@ class RFormula(override val uid: String)
         .setOutputCol($(labelCol))
     }
 
-    val pipelineModel =
-      new Pipeline(uid).setStages(encoderStages.toArray).fit(dataset)
+    val pipelineModel = new Pipeline(uid)
+      .setStages(encoderStages.toArray)
+      .fit(dataset)
     copyValues(
       new RFormulaModel(uid, resolvedFormula, pipelineModel).setParent(this))
   }
@@ -404,8 +405,10 @@ private object ColumnPruner extends MLReadable[ColumnPruner] {
       val metadata = DefaultParamsReader.loadMetadata(path, sc, className)
 
       val dataPath = new Path(path, "data").toString
-      val data =
-        sqlContext.read.parquet(dataPath).select("columnsToPrune").head()
+      val data = sqlContext.read
+        .parquet(dataPath)
+        .select("columnsToPrune")
+        .head()
       val columnsToPrune = data.getAs[Seq[String]](0).toSet
       val pruner = new ColumnPruner(metadata.uid, columnsToPrune)
 

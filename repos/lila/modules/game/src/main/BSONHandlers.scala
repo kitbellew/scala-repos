@@ -112,8 +112,8 @@ object BSONHandlers {
         updatedAt = r dateO updatedAt,
         metadata = Metadata(
           source = r intO source flatMap Source.apply,
-          pgnImport =
-            r.getO[PgnImport](pgnImport)(PgnImport.pgnImportBSONHandler),
+          pgnImport = r.getO[PgnImport](pgnImport)(
+            PgnImport.pgnImportBSONHandler),
           tournamentId = r strO tournamentId,
           simulId = r strO simulId,
           tvAt = r dateO tvAt,

@@ -54,8 +54,9 @@ abstract class DefaultMacroCompiler
         case ex: MacroImplResolutionException => scala.util.Failure(ex)
       }
     }
-    val vanillaImplRef =
-      MacroImplRefCompiler(macroDdef.rhs.duplicate, isImplBundle = false)
+    val vanillaImplRef = MacroImplRefCompiler(
+      macroDdef.rhs.duplicate,
+      isImplBundle = false)
     val (maybeBundleRef, methName, targs) = macroDdef.rhs.duplicate match {
       case Applied(
             Select(Applied(RefTree(qual, bundleName), _, Nil), methName),

@@ -196,8 +196,7 @@ abstract class TreeCheckers extends Analyzer {
       println("[check: %s] %s".format(phase.prev, msg))
   }
 
-  def assertFn(cond: Boolean, msg: => Any) =
-    if (!cond) errorFn(msg)
+  def assertFn(cond: Boolean, msg: => Any) = if (!cond) errorFn(msg)
 
   private def wrap[T](msg: => Any)(body: => T): T = {
     try body
@@ -270,10 +269,8 @@ abstract class TreeCheckers extends Analyzer {
         "types differ\n old: " + tp1 + "\n new: " + tp2 + "\n tree: " + tree)
 
     /** XXX Disabled reporting of position errors until there is less noise. */
-    private def noPos(t: Tree) =
-      () // errorFn("no pos: " + treestr(t))
-    private def noType(t: Tree) =
-      errorFn(t.pos, "no type: " + treestr(t))
+    private def noPos(t: Tree) = () // errorFn("no pos: " + treestr(t))
+    private def noType(t: Tree) = errorFn(t.pos, "no type: " + treestr(t))
 
     private def checkSym(t: Tree) =
       if (t.symbol == NoSymbol) errorFn(t.pos, "no symbol: " + treestr(t))

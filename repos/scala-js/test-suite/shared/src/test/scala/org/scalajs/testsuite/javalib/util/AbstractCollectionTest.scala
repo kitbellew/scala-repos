@@ -17,8 +17,7 @@ class AbstractCollectionTest extends CollectionTest {
 
 class AbstractCollectionFactory extends CollectionFactory {
 
-  override def implementationName: String =
-    "java.util.AbstractCollection"
+  override def implementationName: String = "java.util.AbstractCollection"
 
   override def empty[E: ClassTag]: ju.AbstractCollection[E] = {
     // inefficient but simple for debugging implementation of AbstractCollection
@@ -32,8 +31,7 @@ class AbstractCollectionFactory extends CollectionFactory {
         canAdd
       }
 
-      def size(): Int =
-        inner.size
+      def size(): Int = inner.size
 
       override def iterator(): ju.Iterator[E] = {
         new ju.Iterator[E] {

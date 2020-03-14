@@ -73,18 +73,19 @@ private[hive] class HadoopTableReader(
   // https://hadoop.apache.org/docs/r1.0.4/mapred-default.html
   //
   // In order keep consistency with Hive, we will let it be 0 in local mode also.
-  private val _minSplitsPerRDD = if (sc.sparkContext.isLocal) {
-    0 // will splitted based on block by default.
-  } else {
-    math.max(
-      sc.hiveconf.getInt("mapred.map.tasks", 1),
-      sc.sparkContext.defaultMinPartitions)
-  }
+  private val _minSplitsPerRDD =
+    if (sc.sparkContext.isLocal) {
+      0 // will splitted based on block by default.
+    } else {
+      math.max(
+        sc.hiveconf.getInt("mapred.map.tasks", 1),
+        sc.sparkContext.defaultMinPartitions)
+    }
 
   // TODO: set aws s3 credentials.
 
-  private val _broadcastedHiveConf =
-    sc.sparkContext.broadcast(new SerializableConfiguration(hiveExtraConf))
+  private val _broadcastedHiveConf = sc.sparkContext.broadcast(
+    new SerializableConfiguration(hiveExtraConf))
 
   override def makeRDDForTable(hiveTable: HiveTable): RDD[InternalRow] =
     makeRDDForTable(
@@ -194,8 +195,10 @@ private[hive] class HadoopTableReader(
             }
 
             val partPath = partition.getDataLocation
-            val partNum =
-              Utilities.getPartitionDesc(partition).getPartSpec.size();
+            val partNum = Utilities
+              .getPartitionDesc(partition)
+              .getPartSpec
+              .size();
             var pathPatternStr = getPathPatternByPath(partNum, partPath)
             if (!pathPatternSet.contains(pathPatternStr)) {
               pathPatternSet += pathPatternStr
@@ -217,14 +220,14 @@ private[hive] class HadoopTableReader(
         val partSpec = partDesc.getPartSpec
         val partProps = partDesc.getProperties
 
-        val partColsDelimited: String =
-          partProps.getProperty(META_TABLE_PARTITION_COLUMNS)
+        val partColsDelimited: String = partProps.getProperty(
+          META_TABLE_PARTITION_COLUMNS)
         // Partitioning columns are delimited by "/"
         val partCols = partColsDelimited.trim().split("/").toSeq
         // 'partValues[i]' contains the value for the partitioning column at 'partCols[i]'.
-        val partValues = if (partSpec == null) {
-          Array.fill(partCols.size)(new String)
-        } else { partCols.map(col => new String(partSpec.get(col))).toArray }
+        val partValues =
+          if (partSpec == null) { Array.fill(partCols.size)(new String) }
+          else { partCols.map(col => new String(partSpec.get(col))).toArray }
 
         // Create local references so that the outer object isn't serialized.
         val tableDesc = relation.tableDesc
@@ -234,8 +237,8 @@ private[hive] class HadoopTableReader(
 
         // Splits all attributes into two groups, partition key attributes and those that are not.
         // Attached indices indicate the position of each attribute in the output schema.
-        val (partitionKeyAttrs, nonPartitionKeyAttrs) =
-          attributes.zipWithIndex.partition {
+        val (partitionKeyAttrs, nonPartitionKeyAttrs) = attributes.zipWithIndex
+          .partition {
             case (attr, _) =>
               relation.partitionKeys.contains(attr)
           }
@@ -246,9 +249,9 @@ private[hive] class HadoopTableReader(
           partitionKeyAttrs.foreach {
             case (attr, ordinal) =>
               val partOrdinal = relation.partitionKeys.indexOf(attr)
-              row(ordinal) =
-                Cast(Literal(rawPartValues(partOrdinal)), attr.dataType)
-                  .eval(null)
+              row(ordinal) = Cast(
+                Literal(rawPartValues(partOrdinal)),
+                attr.dataType).eval(null)
           }
         }
 
@@ -460,8 +463,9 @@ private[hive] object HadoopTableReader extends HiveInspectors with Logging {
       }
     }
 
-    val converter =
-      ObjectInspectorConverters.getConverter(rawDeser.getObjectInspector, soi)
+    val converter = ObjectInspectorConverters.getConverter(
+      rawDeser.getObjectInspector,
+      soi)
 
     // Map each tuple to a row object
     iterator.map { value =>

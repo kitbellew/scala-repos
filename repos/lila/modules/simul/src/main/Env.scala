@@ -104,8 +104,8 @@ final class Env(
   def isHosting(userId: String): Fu[Boolean] =
     api.currentHostIds map (_ contains userId)
 
-  val allCreated =
-    lila.memo.AsyncCache.single(repo.allCreated, timeToLive = CreatedCacheTtl)
+  val allCreated = lila.memo.AsyncCache
+    .single(repo.allCreated, timeToLive = CreatedCacheTtl)
 
   val allCreatedFeaturable = lila.memo.AsyncCache
     .single(repo.allCreatedFeaturable, timeToLive = CreatedCacheTtl)

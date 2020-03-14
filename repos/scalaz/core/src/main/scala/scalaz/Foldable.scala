@@ -134,18 +134,15 @@ trait Foldable[F[_]] { self =>
 
   /**Curried version of `foldRightM` */
   final def foldrM[G[_], A, B](fa: F[A], z: => B)(f: A => (=> B) => G[B])(
-      implicit M: Monad[G]): G[B] =
-    foldRightM(fa, z)((a, b) => f(a)(b))
+      implicit M: Monad[G]): G[B] = foldRightM(fa, z)((a, b) => f(a)(b))
 
   /**Curried version of `foldLeftM` */
   final def foldlM[G[_], A, B](fa: F[A], z: => B)(f: B => A => G[B])(
-      implicit M: Monad[G]): G[B] =
-    foldLeftM(fa, z)((b, a) => f(b)(a))
+      implicit M: Monad[G]): G[B] = foldLeftM(fa, z)((b, a) => f(b)(a))
 
   /** map elements in a Foldable with a monadic function and return the first element that is mapped successfully */
   final def findMapM[M[_]: Monad, A, B](fa: F[A])(
-      f: A => M[Option[B]]): M[Option[B]] =
-    toEphemeralStream(fa) findMapM f
+      f: A => M[Option[B]]): M[Option[B]] = toEphemeralStream(fa) findMapM f
 
   def findLeft[A](fa: F[A])(f: A => Boolean): Option[A] =
     foldLeft[A, Option[A]](fa, None)((b, a) =>

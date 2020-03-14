@@ -20,8 +20,9 @@ import akka.http.javadsl.{model ⇒ jm}
 import akka.http.scaladsl.model._
 
 sealed abstract class ModeledCompanion[T: ClassTag] extends Renderable {
-  val name =
-    getClass.getSimpleName.replace("$minus", "-").dropRight(1) // trailing $
+  val name = getClass.getSimpleName
+    .replace("$minus", "-")
+    .dropRight(1) // trailing $
   val lowercaseName = name.toRootLowerCase
   private[this] val nameBytes = name.asciiBytes
   final def render[R <: Rendering](r: R): r.type = r ~~ nameBytes ~~ ':' ~~ ' '
@@ -122,8 +123,8 @@ import akka.http.impl.util.JavaMapping.Implicits._
 object Accept extends ModeledCompanion[Accept] {
   def apply(mediaRanges: MediaRange*): Accept =
     apply(immutable.Seq(mediaRanges: _*))
-  implicit val mediaRangesRenderer =
-    Renderer.defaultSeqRenderer[MediaRange] // cache
+  implicit val mediaRangesRenderer = Renderer
+    .defaultSeqRenderer[MediaRange] // cache
 }
 final case class Accept(mediaRanges: immutable.Seq[MediaRange])
     extends jm.headers.Accept
@@ -143,8 +144,8 @@ object `Accept-Charset` extends ModeledCompanion[`Accept-Charset`] {
       first: HttpCharsetRange,
       more: HttpCharsetRange*): `Accept-Charset` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val charsetRangesRenderer =
-    Renderer.defaultSeqRenderer[HttpCharsetRange] // cache
+  implicit val charsetRangesRenderer = Renderer
+    .defaultSeqRenderer[HttpCharsetRange] // cache
 }
 final case class `Accept-Charset`(
     charsetRanges: immutable.Seq[HttpCharsetRange])
@@ -163,8 +164,8 @@ final case class `Accept-Charset`(
 object `Accept-Encoding` extends ModeledCompanion[`Accept-Encoding`] {
   def apply(encodings: HttpEncodingRange*): `Accept-Encoding` =
     apply(immutable.Seq(encodings: _*))
-  implicit val encodingsRenderer =
-    Renderer.defaultSeqRenderer[HttpEncodingRange] // cache
+  implicit val encodingsRenderer = Renderer
+    .defaultSeqRenderer[HttpEncodingRange] // cache
 }
 final case class `Accept-Encoding`(encodings: immutable.Seq[HttpEncodingRange])
     extends jm.headers.AcceptEncoding
@@ -181,8 +182,8 @@ final case class `Accept-Encoding`(encodings: immutable.Seq[HttpEncodingRange])
 object `Accept-Language` extends ModeledCompanion[`Accept-Language`] {
   def apply(first: LanguageRange, more: LanguageRange*): `Accept-Language` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val languagesRenderer =
-    Renderer.defaultSeqRenderer[LanguageRange] // cache
+  implicit val languagesRenderer = Renderer
+    .defaultSeqRenderer[LanguageRange] // cache
 }
 final case class `Accept-Language`(languages: immutable.Seq[LanguageRange])
     extends jm.headers.AcceptLanguage
@@ -200,8 +201,8 @@ final case class `Accept-Language`(languages: immutable.Seq[LanguageRange])
 object `Accept-Ranges` extends ModeledCompanion[`Accept-Ranges`] {
   def apply(rangeUnits: RangeUnit*): `Accept-Ranges` =
     apply(immutable.Seq(rangeUnits: _*))
-  implicit val rangeUnitsRenderer =
-    Renderer.defaultSeqRenderer[RangeUnit] // cache
+  implicit val rangeUnitsRenderer = Renderer
+    .defaultSeqRenderer[RangeUnit] // cache
 }
 final case class `Accept-Ranges`(rangeUnits: immutable.Seq[RangeUnit])
     extends jm.headers.AcceptRanges
@@ -248,8 +249,8 @@ object `Access-Control-Allow-Methods`
     extends ModeledCompanion[`Access-Control-Allow-Methods`] {
   def apply(methods: HttpMethod*): `Access-Control-Allow-Methods` =
     apply(immutable.Seq(methods: _*))
-  implicit val methodsRenderer =
-    Renderer.defaultSeqRenderer[HttpMethod] // cache
+  implicit val methodsRenderer = Renderer
+    .defaultSeqRenderer[HttpMethod] // cache
 }
 final case class `Access-Control-Allow-Methods`(
     methods: immutable.Seq[HttpMethod])
@@ -356,8 +357,8 @@ final case class Age(deltaSeconds: Long)
 // http://tools.ietf.org/html/rfc7231#section-7.4.1
 object Allow extends ModeledCompanion[Allow] {
   def apply(methods: HttpMethod*): Allow = apply(immutable.Seq(methods: _*))
-  implicit val methodsRenderer =
-    Renderer.defaultSeqRenderer[HttpMethod] // cache
+  implicit val methodsRenderer = Renderer
+    .defaultSeqRenderer[HttpMethod] // cache
 }
 final case class Allow(methods: immutable.Seq[HttpMethod])
     extends jm.headers.Allow
@@ -383,8 +384,8 @@ final case class Authorization(credentials: HttpCredentials)
 object `Cache-Control` extends ModeledCompanion[`Cache-Control`] {
   def apply(first: CacheDirective, more: CacheDirective*): `Cache-Control` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val directivesRenderer =
-    Renderer.defaultSeqRenderer[CacheDirective] // cache
+  implicit val directivesRenderer = Renderer
+    .defaultSeqRenderer[CacheDirective] // cache
 }
 final case class `Cache-Control`(directives: immutable.Seq[CacheDirective])
     extends jm.headers.CacheControl
@@ -458,8 +459,8 @@ final case class `Content-Disposition`(
 object `Content-Encoding` extends ModeledCompanion[`Content-Encoding`] {
   def apply(first: HttpEncoding, more: HttpEncoding*): `Content-Encoding` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val encodingsRenderer =
-    Renderer.defaultSeqRenderer[HttpEncoding] // cache
+  implicit val encodingsRenderer = Renderer
+    .defaultSeqRenderer[HttpEncoding] // cache
 }
 final case class `Content-Encoding`(encodings: immutable.Seq[HttpEncoding])
     extends jm.headers.ContentEncoding
@@ -510,8 +511,8 @@ object Cookie extends ModeledCompanion[Cookie] {
     apply(HttpCookiePair(name, value))
   def apply(values: (String, String)*): Cookie =
     apply(values.map(HttpCookiePair(_)).toList)
-  implicit val cookiePairsRenderer =
-    Renderer.seqRenderer[HttpCookiePair](separator = "; ") // cache
+  implicit val cookiePairsRenderer = Renderer
+    .seqRenderer[HttpCookiePair](separator = "; ") // cache
 }
 final case class Cookie(cookies: immutable.Seq[HttpCookiePair])
     extends jm.headers.Cookie
@@ -726,8 +727,8 @@ final case class Origin(origins: immutable.Seq[HttpOrigin])
 object `Proxy-Authenticate` extends ModeledCompanion[`Proxy-Authenticate`] {
   def apply(first: HttpChallenge, more: HttpChallenge*): `Proxy-Authenticate` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val challengesRenderer =
-    Renderer.defaultSeqRenderer[HttpChallenge] // cache
+  implicit val challengesRenderer = Renderer
+    .defaultSeqRenderer[HttpChallenge] // cache
 }
 final case class `Proxy-Authenticate`(challenges: immutable.Seq[HttpChallenge])
     extends jm.headers.ProxyAuthenticate
@@ -855,8 +856,8 @@ private[http] final case class `Sec-WebSocket-Accept`(key: String)
 // http://tools.ietf.org/html/rfc6455#section-4.3
 private[http] object `Sec-WebSocket-Extensions`
     extends ModeledCompanion[`Sec-WebSocket-Extensions`] {
-  implicit val extensionsRenderer =
-    Renderer.defaultSeqRenderer[WebSocketExtension]
+  implicit val extensionsRenderer = Renderer
+    .defaultSeqRenderer[WebSocketExtension]
 }
 
 /**
@@ -959,8 +960,8 @@ object Server extends ModeledCompanion[Server] {
     apply(ProductVersion.parseMultiple(products))
   def apply(first: ProductVersion, more: ProductVersion*): Server =
     apply(immutable.Seq(first +: more: _*))
-  implicit val productsRenderer =
-    Renderer.seqRenderer[ProductVersion](separator = " ") // cache
+  implicit val productsRenderer = Renderer
+    .seqRenderer[ProductVersion](separator = " ") // cache
 }
 final case class Server(products: immutable.Seq[ProductVersion])
     extends jm.headers.Server
@@ -1039,8 +1040,8 @@ object `Transfer-Encoding` extends ModeledCompanion[`Transfer-Encoding`] {
       first: TransferEncoding,
       more: TransferEncoding*): `Transfer-Encoding` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val encodingsRenderer =
-    Renderer.defaultSeqRenderer[TransferEncoding] // cache
+  implicit val encodingsRenderer = Renderer
+    .defaultSeqRenderer[TransferEncoding] // cache
 }
 final case class `Transfer-Encoding`(encodings: immutable.Seq[TransferEncoding])
     extends jm.headers.TransferEncoding
@@ -1088,8 +1089,8 @@ object `User-Agent` extends ModeledCompanion[`User-Agent`] {
     apply(ProductVersion.parseMultiple(products))
   def apply(first: ProductVersion, more: ProductVersion*): `User-Agent` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val productsRenderer =
-    Renderer.seqRenderer[ProductVersion](separator = " ") // cache
+  implicit val productsRenderer = Renderer
+    .seqRenderer[ProductVersion](separator = " ") // cache
 }
 final case class `User-Agent`(products: immutable.Seq[ProductVersion])
     extends jm.headers.UserAgent
@@ -1107,8 +1108,8 @@ final case class `User-Agent`(products: immutable.Seq[ProductVersion])
 object `WWW-Authenticate` extends ModeledCompanion[`WWW-Authenticate`] {
   def apply(first: HttpChallenge, more: HttpChallenge*): `WWW-Authenticate` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val challengesRenderer =
-    Renderer.defaultSeqRenderer[HttpChallenge] // cache
+  implicit val challengesRenderer = Renderer
+    .defaultSeqRenderer[HttpChallenge] // cache
 }
 final case class `WWW-Authenticate`(challenges: immutable.Seq[HttpChallenge])
     extends jm.headers.WWWAuthenticate
@@ -1126,8 +1127,8 @@ final case class `WWW-Authenticate`(challenges: immutable.Seq[HttpChallenge])
 object `X-Forwarded-For` extends ModeledCompanion[`X-Forwarded-For`] {
   def apply(first: RemoteAddress, more: RemoteAddress*): `X-Forwarded-For` =
     apply(immutable.Seq(first +: more: _*))
-  implicit val addressesRenderer =
-    Renderer.defaultSeqRenderer[RemoteAddress] // cache
+  implicit val addressesRenderer = Renderer
+    .defaultSeqRenderer[RemoteAddress] // cache
 }
 final case class `X-Forwarded-For`(addresses: immutable.Seq[RemoteAddress])
     extends jm.headers.XForwardedFor

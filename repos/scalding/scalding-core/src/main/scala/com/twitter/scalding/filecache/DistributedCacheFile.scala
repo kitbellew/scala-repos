@@ -14,11 +14,9 @@ import org.apache.hadoop.fs.Path
 object URIHasher {
   private[this] final val HashFunc = MurmurHash128(1L)
 
-  private[this] def deSign(b: Byte): Int =
-    if (b < 0) b + 0xff else b
+  private[this] def deSign(b: Byte): Int = if (b < 0) b + 0xff else b
 
-  def apply(stringUri: String): String =
-    apply(new URI(stringUri))
+  def apply(stringUri: String): String = apply(new URI(stringUri))
 
   /**
     * generates hashes of hdfs URIs using algebird's MurmurHash128
@@ -104,11 +102,10 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
     }
 
   private[this] def addLocal(): CachedFile = {
-    val path =
-      source match {
-        case Left(strPath) => strPath
-        case Right(uri)    => uri.getPath
-      }
+    val path = source match {
+      case Left(strPath) => strPath
+      case Right(uri)    => uri.getPath
+    }
 
     LocallyCachedFile(path)
   }
@@ -129,11 +126,10 @@ final case class UncachedFile private[scalding] (source: Either[String, URI]) {
       p.makeQualified(p.getFileSystem(conf))
         .toUri // make sure we have fully-qualified URI
 
-    val sourceUri =
-      source match {
-        case Left(strPath) => makeQualifiedStr(strPath, conf)
-        case Right(uri)    => makeQualifiedURI(uri, conf)
-      }
+    val sourceUri = source match {
+      case Left(strPath) => makeQualifiedStr(strPath, conf)
+      case Right(uri)    => makeQualifiedURI(uri, conf)
+    }
 
     HDistributedCache.addCacheFile(symlinkedUriFor(sourceUri), conf)
     HadoopCachedFile(sourceUri)

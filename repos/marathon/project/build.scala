@@ -260,8 +260,9 @@ object Dependencies {
     guava % "compile"
   )
 
-  val excludeSlf4jLog4j12 =
-    ExclusionRule(organization = "org.slf4j", name = "slf4j-log4j12")
+  val excludeSlf4jLog4j12 = ExclusionRule(
+    organization = "org.slf4j",
+    name = "slf4j-log4j12")
   val excludeLog4j = ExclusionRule(organization = "log4j")
   val excludeJCL = ExclusionRule(organization = "commons-logging")
 

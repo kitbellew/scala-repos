@@ -184,18 +184,19 @@ trait ScalacPatternExpanders {
       val requiresTupling =
         isUnapply && patterns.totalArity == 1 && productArity > 1
 
-      val normalizedExtractor = if (requiresTupling) {
-        val tupled = extractor.asSinglePattern
-        if (effectivePatternArity(args) == 1 && isTupleType(
-              extractor.typeOfSinglePattern)) {
-          val sym = sel.symbol.owner
-          currentRun.reporting.deprecationWarning(
-            sel.pos,
-            sym,
-            s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
-        }
-        tupled
-      } else extractor
+      val normalizedExtractor =
+        if (requiresTupling) {
+          val tupled = extractor.asSinglePattern
+          if (effectivePatternArity(args) == 1 && isTupleType(
+                extractor.typeOfSinglePattern)) {
+            val sym = sel.symbol.owner
+            currentRun.reporting.deprecationWarning(
+              sel.pos,
+              sym,
+              s"${sym} expects $productArity patterns$acceptMessage but crushing into $productArity-tuple to fit single pattern (SI-6675)")
+          }
+          tupled
+        } else extractor
       validateAligned(context, fn, Aligned(patterns, normalizedExtractor))
     }
 

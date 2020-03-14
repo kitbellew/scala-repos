@@ -48,22 +48,21 @@ object FreeUsage extends App {
 
   // Natural transformation to (Random => A)
   type RandomReader[A] = Random => A
-  val toState: RngOp ~> RandomReader =
-    new (RngOp ~> RandomReader) {
-      def apply[A](fa: RngOp[A]) =
-        fa match {
-          case RngOp.NextBoolean       => _.nextBoolean
-          case RngOp.NextDouble        => _.nextDouble
-          case RngOp.NextFloat         => _.nextFloat
-          case RngOp.NextGaussian      => _.nextGaussian
-          case RngOp.NextInt           => _.nextInt
-          case RngOp.NextIntInRange(n) => _.nextInt(n)
-          case RngOp.NextLong          => _.nextLong
-          case RngOp.NextPrintableChar => _.nextPrintableChar
-          case RngOp.NextString(n)     => _.nextString(n)
-          case RngOp.SetSeed(n)        => _.setSeed(n)
-        }
-    }
+  val toState: RngOp ~> RandomReader = new (RngOp ~> RandomReader) {
+    def apply[A](fa: RngOp[A]) =
+      fa match {
+        case RngOp.NextBoolean       => _.nextBoolean
+        case RngOp.NextDouble        => _.nextDouble
+        case RngOp.NextFloat         => _.nextFloat
+        case RngOp.NextGaussian      => _.nextGaussian
+        case RngOp.NextInt           => _.nextInt
+        case RngOp.NextIntInRange(n) => _.nextInt(n)
+        case RngOp.NextLong          => _.nextLong
+        case RngOp.NextPrintableChar => _.nextPrintableChar
+        case RngOp.NextString(n)     => _.nextString(n)
+        case RngOp.SetSeed(n)        => _.setSeed(n)
+      }
+  }
 
   // Now we have enough structure to run a program
   def runRng[A](program: Rng[A], seed: Long): A =
@@ -76,12 +75,11 @@ object FreeUsage extends App {
   }
 
   // An example that returns a pair of integers, a < 100, b < a and a color
-  val prog: Rng[(Int, Int, String)] =
-    for {
-      a <- nextIntInRange(100)
-      b <- nextIntInRange(a)
-      c <- choose("red", "green", "blue")
-    } yield (a, b, c)
+  val prog: Rng[(Int, Int, String)] = for {
+    a <- nextIntInRange(100)
+    b <- nextIntInRange(a)
+    c <- choose("red", "green", "blue")
+  } yield (a, b, c)
 
   // Run that baby
   println(prog.exec(0L)) // pure! always returns (60,28,green)

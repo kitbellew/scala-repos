@@ -78,15 +78,14 @@ abstract class HiveComparisonTest
     * For example when `-Dspark.hive.skiptests=passed,hiveFailed` is specified and test cases listed
     * in [[passedDirectory]] or [[hiveFailedDirectory]] will be skipped.
     */
-  val skipDirectories =
-    Option(System.getProperty("spark.hive.skiptests")).toSeq
-      .flatMap(_.split(","))
-      .map(name => new File(targetDir, s"$suiteName.$name"))
+  val skipDirectories = Option(System.getProperty("spark.hive.skiptests")).toSeq
+    .flatMap(_.split(","))
+    .map(name => new File(targetDir, s"$suiteName.$name"))
 
-  val runOnlyDirectories =
-    Option(System.getProperty("spark.hive.runonlytests")).toSeq
-      .flatMap(_.split(","))
-      .map(name => new File(targetDir, s"$suiteName.$name"))
+  val runOnlyDirectories = Option(
+    System.getProperty("spark.hive.runonlytests")).toSeq
+    .flatMap(_.split(","))
+    .map(name => new File(targetDir, s"$suiteName.$name"))
 
   /** The local directory with cached golden answer will be stored. */
   protected val answerCache = new File(
@@ -122,8 +121,11 @@ abstract class HiveComparisonTest
   }
 
   /** All directories that contain per-query output files */
-  val outputDirectories =
-    Seq(passedDirectory, failedDirectory, wrongDirectory, hiveFailedDirectory)
+  val outputDirectories = Seq(
+    passedDirectory,
+    failedDirectory,
+    wrongDirectory,
+    hiveFailedDirectory)
 
   protected val cacheDigest = java.security.MessageDigest.getInstance("MD5")
   protected def getMd5(str: String): String = {
@@ -248,10 +250,9 @@ abstract class HiveComparisonTest
 
     // If runonlytests is set, skip this test unless we find a file in one of the specified
     // directories.
-    val runIndicators =
-      runOnlyDirectories
-        .map(new File(_, testCaseName))
-        .filter(_.exists)
+    val runIndicators = runOnlyDirectories
+      .map(new File(_, testCaseName))
+      .filter(_.exists)
     if (runOnlyDirectories.nonEmpty && runIndicators.isEmpty) {
       logDebug(
         s"Skipping test '$testCaseName' not found in ${runOnlyDirectories.map(_.getCanonicalPath)}")
@@ -261,26 +262,23 @@ abstract class HiveComparisonTest
     test(testCaseName) {
       logDebug(s"=== HIVE TEST: $testCaseName ===")
 
-      val sqlWithoutComment =
-        sql
-          .split("\n")
-          .filterNot(l => l.matches("--.*(?<=[^\\\\]);"))
-          .mkString("\n")
-      val allQueries =
-        sqlWithoutComment
-          .split("(?<=[^\\\\]);")
-          .map(_.trim)
-          .filterNot(q => q == "")
-          .toSeq
+      val sqlWithoutComment = sql
+        .split("\n")
+        .filterNot(l => l.matches("--.*(?<=[^\\\\]);"))
+        .mkString("\n")
+      val allQueries = sqlWithoutComment
+        .split("(?<=[^\\\\]);")
+        .map(_.trim)
+        .filterNot(q => q == "")
+        .toSeq
 
       // TODO: DOCUMENT UNSUPPORTED
-      val queryList =
-        allQueries
-        // In hive, setting the hive.outerjoin.supports.filters flag to "false" essentially tells
-        // the system to return the wrong answer.  Since we have no intention of mirroring their
-        // previously broken behavior we simply filter out changes to this setting.
-          .filterNot(_ contains "hive.outerjoin.supports.filters")
-          .filterNot(_ contains "hive.exec.post.hooks")
+      val queryList = allQueries
+      // In hive, setting the hive.outerjoin.supports.filters flag to "false" essentially tells
+      // the system to return the wrong answer.  Since we have no intention of mirroring their
+      // previously broken behavior we simply filter out changes to this setting.
+        .filterNot(_ contains "hive.outerjoin.supports.filters")
+        .filterNot(_ contains "hive.exec.post.hooks")
 
       if (allQueries != queryList) {
         logWarning(
@@ -311,8 +309,8 @@ abstract class HiveComparisonTest
         // thus the tables referenced in those DDL commands cannot be extracted for use by our
         // test table auto-loading mechanism. In addition, the tests which use the SHOW TABLES
         // command expect these tables to exist.
-        val hasShowTableCommand =
-          queryList.exists(_.toLowerCase.contains("show tables"))
+        val hasShowTableCommand = queryList.exists(
+          _.toLowerCase.contains("show tables"))
         for (table <- Seq("src", "srcpart")) {
           val hasMatchingQuery = queryList.exists { query =>
             val normalizedQuery = query.toLowerCase.stripSuffix(";")
@@ -389,8 +387,7 @@ abstract class HiveComparisonTest
                     answer
                   } catch {
                     case e: Exception =>
-                      val errorMessage =
-                        s"""
+                      val errorMessage = s"""
                         |Failed to generate golden answer for query:
                         |Error: ${e.getMessage}
                         |${stackTraceToString(e)}
@@ -470,8 +467,7 @@ abstract class HiveComparisonTest
                 (query, prepareAnswer(query, query.stringResult()))
               } catch {
                 case e: Throwable =>
-                  val errorMessage =
-                    s"""
+                  val errorMessage = s"""
                   |Failed to execute query using catalyst:
                   |Error: ${e.getMessage}
                   |${stackTraceToString(e)}
@@ -504,8 +500,8 @@ abstract class HiveComparisonTest
               val catalystPrintOut =
                 s"== CATALYST - ${catalyst.size} row(s) ==" +: catalyst
 
-              val resultComparison =
-                sideBySide(hivePrintOut, catalystPrintOut).mkString("\n")
+              val resultComparison = sideBySide(hivePrintOut, catalystPrintOut)
+                .mkString("\n")
 
               if (recomputeCache) {
                 logWarning(
@@ -553,12 +549,11 @@ abstract class HiveComparisonTest
                     s"Couldn't compute dependent tables: $e"
                 }
 
-              val errorMessage =
-                s"""
+              val errorMessage = s"""
                   |Results do not match for $testCaseName:
                   |$hiveQuery\n${hiveQuery.analyzed.output
-                     .map(_.name)
-                     .mkString("\t")}
+                                      .map(_.name)
+                                      .mkString("\t")}
                   |$resultComparison
                   |$computedTablesMessages
                 """.stripMargin

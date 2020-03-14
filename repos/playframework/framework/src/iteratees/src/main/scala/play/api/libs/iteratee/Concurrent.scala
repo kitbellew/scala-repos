@@ -197,8 +197,8 @@ object Concurrent {
 
           val itPromise = Promise[Iteratee[E, Unit]]()
 
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Iteratee.flatten(itPromise.future))
+          val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+            Iteratee.flatten(itPromise.future))
 
           val next = current.pureFold {
             case Step.Done(a, e)    => Done(a, e)
@@ -221,8 +221,8 @@ object Concurrent {
 
       def end(e: Throwable) =
         schedule {
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Done((), Input.Empty))
+          val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+            Done((), Input.Empty))
           def endEveryone() =
             Future {
               val its = atomic { implicit txn =>
@@ -237,8 +237,8 @@ object Concurrent {
 
       def end() =
         schedule {
-          val current: Iteratee[E, Unit] =
-            mainIteratee.single.swap(Done((), Input.Empty))
+          val current: Iteratee[E, Unit] = mainIteratee.single.swap(
+            Done((), Input.Empty))
           def endEveryone() =
             Future {
               val its = atomic { implicit txn =>
@@ -446,8 +446,8 @@ object Concurrent {
             case in =>
               if (!busy.single()) {
                 val readyOrNot
-                    : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] =
-                  Future.firstCompletedOf(
+                    : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] = Future
+                  .firstCompletedOf(
                     Seq(
                       inner
                         .pureFold[Iteratee[E, Iteratee[E, A]]] {
@@ -505,8 +505,8 @@ object Concurrent {
       import scala.concurrent.stm.Ref
 
       def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] = {
-        val promise: scala.concurrent.Promise[Iteratee[E, A]] =
-          Promise[Iteratee[E, A]]()
+        val promise: scala.concurrent.Promise[Iteratee[E, A]] = Promise[
+          Iteratee[E, A]]()
         val iteratee: Ref[Future[Option[Input[E] => Iteratee[E, A]]]] = Ref(
           it.pureFold {
             case Step.Cont(k) => Some(k);
@@ -872,8 +872,8 @@ object Concurrent {
         }
 
         Future(patcher(new PatchPanel[E] {
-          val ref: Ref[Ref[Iteratee[E, Option[A]]]] =
-            Ref(Ref(it.map(Some(_))(dec)))
+          val ref: Ref[Ref[Iteratee[E, Option[A]]]] = Ref(
+            Ref(it.map(Some(_))(dec)))
 
           def closed() = isClosed
 

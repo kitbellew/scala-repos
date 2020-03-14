@@ -946,8 +946,9 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     def shouldBuildTask(message: String, offer: Offer) {
       val Some((taskInfo, ports)) = builder.buildIfMatches(offer, runningTasks)
-      val marathonTask =
-        MarathonTestHelper.makeTaskFromTaskInfo(taskInfo, offer)
+      val marathonTask = MarathonTestHelper.makeTaskFromTaskInfo(
+        taskInfo,
+        offer)
       runningTasks += marathonTask
     }
 
@@ -1017,8 +1018,9 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     def shouldBuildTask(message: String, offer: Offer) {
       val Some((taskInfo, ports)) = builder.buildIfMatches(offer, runningTasks)
-      val marathonTask =
-        MarathonTestHelper.makeTaskFromTaskInfo(taskInfo, offer)
+      val marathonTask = MarathonTestHelper.makeTaskFromTaskInfo(
+        taskInfo,
+        offer)
       runningTasks += marathonTask
     }
 
@@ -1086,8 +1088,9 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
       id = PathId("/app"),
       versionInfo = version
     )
-    val env =
-      TaskBuilder.taskContextEnv(app = app, taskId = Some(Task.Id("taskId")))
+    val env = TaskBuilder.taskContextEnv(
+      app = app,
+      taskId = Some(Task.Id("taskId")))
 
     assert(
       env == Map(
@@ -1173,24 +1176,23 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("AppContextEnvironment") {
-    val command =
-      TaskBuilder.commandInfo(
-        app = AppDefinition(
-          id = "/test".toPath,
-          portDefinitions = PortDefinitions(8080, 8081),
-          container = Some(
-            Container(
-              docker = Some(
-                Docker(
-                  image = "myregistry/myimage:version"
-                ))
-            ))
-        ),
-        taskId = Some(Task.Id("task-123")),
-        host = Some("host.mega.corp"),
-        ports = Seq(1000, 1001),
-        envPrefix = None
-      )
+    val command = TaskBuilder.commandInfo(
+      app = AppDefinition(
+        id = "/test".toPath,
+        portDefinitions = PortDefinitions(8080, 8081),
+        container = Some(
+          Container(
+            docker = Some(
+              Docker(
+                image = "myregistry/myimage:version"
+              ))
+          ))
+      ),
+      taskId = Some(Task.Id("task-123")),
+      host = Some("host.mega.corp"),
+      ports = Seq(1000, 1001),
+      envPrefix = None
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1206,25 +1208,24 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     // why?
     // see https://github.com/mesosphere/marathon/issues/905
 
-    val command =
-      TaskBuilder.commandInfo(
-        app = AppDefinition(
-          id = "/test".toPath,
-          portDefinitions = PortDefinitions(8080, 8081),
-          env = Map(
-            "PORT" -> "1",
-            "PORTS" -> "ports",
-            "PORT0" -> "1",
-            "PORT1" -> "2",
-            "PORT_8080" -> "port8080",
-            "PORT_8081" -> "port8081"
-          )
-        ),
-        taskId = Some(Task.Id("task-123")),
-        host = Some("host.mega.corp"),
-        ports = Seq(1000, 1001),
-        envPrefix = None
-      )
+    val command = TaskBuilder.commandInfo(
+      app = AppDefinition(
+        id = "/test".toPath,
+        portDefinitions = PortDefinitions(8080, 8081),
+        env = Map(
+          "PORT" -> "1",
+          "PORTS" -> "ports",
+          "PORT0" -> "1",
+          "PORT1" -> "2",
+          "PORT_8080" -> "port8080",
+          "PORT_8081" -> "port8081"
+        )
+      ),
+      taskId = Some(Task.Id("task-123")),
+      host = Some("host.mega.corp"),
+      ports = Seq(1000, 1001),
+      envPrefix = None
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1239,16 +1240,15 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("PortsEnvWithOnlyPorts") {
-    val command =
-      TaskBuilder.commandInfo(
-        app = AppDefinition(
-          portDefinitions = PortDefinitions(8080, 8081)
-        ),
-        taskId = Some(Task.Id("task-123")),
-        host = Some("host.mega.corp"),
-        ports = Seq(1000, 1001),
-        envPrefix = None
-      )
+    val command = TaskBuilder.commandInfo(
+      app = AppDefinition(
+        portDefinitions = PortDefinitions(8080, 8081)
+      ),
+      taskId = Some(Task.Id("task-123")),
+      host = Some("host.mega.corp"),
+      ports = Seq(1000, 1001),
+      envPrefix = None
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1259,16 +1259,15 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("PortsEnvWithCustomPrefix") {
-    val command =
-      TaskBuilder.commandInfo(
-        AppDefinition(
-          portDefinitions = PortDefinitions(8080, 8081)
-        ),
-        Some(Task.Id("task-123")),
-        Some("host.mega.corp"),
-        Seq(1000, 1001),
-        Some("CUSTOM_PREFIX_")
-      )
+    val command = TaskBuilder.commandInfo(
+      AppDefinition(
+        portDefinitions = PortDefinitions(8080, 8081)
+      ),
+      Some(Task.Id("task-123")),
+      Some("host.mega.corp"),
+      Seq(1000, 1001),
+      Some("CUSTOM_PREFIX_")
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1293,16 +1292,15 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("OnlyWhitelistedUnprefixedVariablesWithCustomPrefix") {
-    val command =
-      TaskBuilder.commandInfo(
-        AppDefinition(
-          portDefinitions = PortDefinitions(8080, 8081)
-        ),
-        Some(Task.Id("task-123")),
-        Some("host.mega.corp"),
-        Seq(1000, 1001),
-        Some("P_")
-      )
+    val command = TaskBuilder.commandInfo(
+      AppDefinition(
+        portDefinitions = PortDefinitions(8080, 8081)
+      ),
+      Some(Task.Id("task-123")),
+      Some("host.mega.corp"),
+      Seq(1000, 1001),
+      Some("P_")
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1324,34 +1322,33 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("PortsEnvWithOnlyMappings") {
-    val command =
-      TaskBuilder.commandInfo(
-        app = AppDefinition(
-          container = Some(
-            Container(
-              docker = Some(Docker(
-                network = Some(DockerInfo.Network.BRIDGE),
-                portMappings = Some(
-                  Seq(
-                    PortMapping(
-                      containerPort = 8080,
-                      hostPort = 0,
-                      servicePort = 9000,
-                      protocol = "tcp"),
-                    PortMapping(
-                      containerPort = 8081,
-                      hostPort = 0,
-                      servicePort = 9000,
-                      protocol = "tcp")
-                  ))
-              ))
+    val command = TaskBuilder.commandInfo(
+      app = AppDefinition(
+        container = Some(
+          Container(
+            docker = Some(Docker(
+              network = Some(DockerInfo.Network.BRIDGE),
+              portMappings = Some(
+                Seq(
+                  PortMapping(
+                    containerPort = 8080,
+                    hostPort = 0,
+                    servicePort = 9000,
+                    protocol = "tcp"),
+                  PortMapping(
+                    containerPort = 8081,
+                    hostPort = 0,
+                    servicePort = 9000,
+                    protocol = "tcp")
+                ))
             ))
-        ),
-        taskId = Some(Task.Id("task-123")),
-        host = Some("host.mega.corp"),
-        ports = Seq(1000, 1001),
-        envPrefix = None
-      )
+          ))
+      ),
+      taskId = Some(Task.Id("task-123")),
+      host = Some("host.mega.corp"),
+      ports = Seq(1000, 1001),
+      envPrefix = None
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)
@@ -1362,35 +1359,34 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
   }
 
   test("PortsEnvWithBothPortsAndMappings") {
-    val command =
-      TaskBuilder.commandInfo(
-        app = AppDefinition(
-          portDefinitions = PortDefinitions(22, 23),
-          container = Some(
-            Container(
-              docker = Some(Docker(
-                network = Some(DockerInfo.Network.BRIDGE),
-                portMappings = Some(
-                  Seq(
-                    PortMapping(
-                      containerPort = 8080,
-                      hostPort = 0,
-                      servicePort = 9000,
-                      protocol = "tcp"),
-                    PortMapping(
-                      containerPort = 8081,
-                      hostPort = 0,
-                      servicePort = 9000,
-                      protocol = "tcp")
-                  ))
-              ))
+    val command = TaskBuilder.commandInfo(
+      app = AppDefinition(
+        portDefinitions = PortDefinitions(22, 23),
+        container = Some(
+          Container(
+            docker = Some(Docker(
+              network = Some(DockerInfo.Network.BRIDGE),
+              portMappings = Some(
+                Seq(
+                  PortMapping(
+                    containerPort = 8080,
+                    hostPort = 0,
+                    servicePort = 9000,
+                    protocol = "tcp"),
+                  PortMapping(
+                    containerPort = 8081,
+                    hostPort = 0,
+                    servicePort = 9000,
+                    protocol = "tcp")
+                ))
             ))
-        ),
-        taskId = Some(Task.Id("task-123")),
-        host = Some("host.mega.corp"),
-        ports = Seq(1000, 1001),
-        envPrefix = None
-      )
+          ))
+      ),
+      taskId = Some(Task.Id("task-123")),
+      host = Some("host.mega.corp"),
+      ports = Seq(1000, 1001),
+      envPrefix = None
+    )
     val env: Map[String, String] =
       command.getEnvironment.getVariablesList.asScala.toList
         .map(v => v.getName -> v.getValue)

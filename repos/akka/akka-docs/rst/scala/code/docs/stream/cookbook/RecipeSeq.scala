@@ -28,12 +28,14 @@ class RecipeSeq extends RecipeSpec {
 
       // OK. Future will fail with a `StreamLimitReachedException`
       // if the number of incoming elements is larger than max
-      val limited: Future[Seq[String]] =
-        mySource.limit(MAX_ALLOWED_SIZE).runWith(Sink.seq)
+      val limited: Future[Seq[String]] = mySource
+        .limit(MAX_ALLOWED_SIZE)
+        .runWith(Sink.seq)
 
       // OK. Collect up until max-th elements only, then cancel upstream
-      val ignoreOverflow: Future[Seq[String]] =
-        mySource.take(MAX_ALLOWED_SIZE).runWith(Sink.seq)
+      val ignoreOverflow: Future[Seq[String]] = mySource
+        .take(MAX_ALLOWED_SIZE)
+        .runWith(Sink.seq)
       //#draining-to-seq-safe
       limited.futureValue should ===(Seq("1", "2", "3"))
       ignoreOverflow.futureValue should ===(Seq("1", "2", "3"))

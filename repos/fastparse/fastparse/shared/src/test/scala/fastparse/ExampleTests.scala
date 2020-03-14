@@ -179,8 +179,8 @@ object ExampleTests extends TestSuite {
           ParseError(p.parse(str).asInstanceOf[Parsed.Failure]).getMessage
 
         // Portuguese number plate format since 2006
-        val numberPlate =
-          P(twice(digit) ~ "-" ~ twice(letter) ~ "-" ~ twice(digit))
+        val numberPlate = P(
+          twice(digit) ~ "-" ~ twice(letter) ~ "-" ~ twice(digit))
 
         assert(errorMessage(numberPlate, "11-A1-22") == """
           |found "1-22", expected CharIn("ABCDEFGHIJKLMNOPQRSTUVWXYZ") at index 4
@@ -273,8 +273,8 @@ object ExampleTests extends TestSuite {
         val stmts = P(stmt.rep(1) ~ End)
 
         val Parsed.Success(Seq("abcd"), _) = stmts.parse("val abcd;")
-        val Parsed.Success(Seq("abcd", "efg"), _) =
-          stmts.parse("val abcd; val efg;")
+        val Parsed.Success(Seq("abcd", "efg"), _) = stmts.parse(
+          "val abcd; val efg;")
 
         val failure = stmts.parse("val abcd; val ").asInstanceOf[Parsed.Failure]
         assert(
@@ -380,8 +380,9 @@ object ExampleTests extends TestSuite {
           val plus = P("+")
           val num = P(CharIn('0' to '9').rep(1)).!.map(_.toInt)
           val side = P("(" ~/ expr ~ ")" | num).log()
-          val expr: P[Int] =
-            P(side ~ plus ~ side).map { case (l, r) => l + r }.log()
+          val expr: P[Int] = P(side ~ plus ~ side)
+            .map { case (l, r) => l + r }
+            .log()
         }
 
         Foo.expr.parse("(1+(2+3x))+4")

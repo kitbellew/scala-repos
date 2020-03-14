@@ -127,8 +127,8 @@ class MaxAbsScalerModel private[ml] (
   override def transform(dataset: DataFrame): DataFrame = {
     transformSchema(dataset.schema, logging = true)
     // TODO: this looks hack, we may have to handle sparse and dense vectors separately.
-    val maxAbsUnzero =
-      Vectors.dense(maxAbs.toArray.map(x => if (x == 0) 1 else x))
+    val maxAbsUnzero = Vectors.dense(
+      maxAbs.toArray.map(x => if (x == 0) 1 else x))
     val reScale = udf { (vector: Vector) =>
       val brz = vector.toBreeze / maxAbsUnzero.toBreeze
       Vectors.fromBreeze(brz)

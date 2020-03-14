@@ -135,10 +135,11 @@ class ClosureCleanerSuite2
 
   // Accessors for private methods
   private val _isClosure = PrivateMethod[Boolean]('isClosure)
-  private val _getInnerClosureClasses =
-    PrivateMethod[List[Class[_]]]('getInnerClosureClasses)
-  private val _getOuterClassesAndObjects =
-    PrivateMethod[(List[Class[_]], List[AnyRef])]('getOuterClassesAndObjects)
+  private val _getInnerClosureClasses = PrivateMethod[List[Class[_]]](
+    'getInnerClosureClasses)
+  private val _getOuterClassesAndObjects = PrivateMethod[(
+      List[Class[_]],
+      List[AnyRef])]('getOuterClassesAndObjects)
 
   private def isClosure(obj: AnyRef): Boolean = {
     ClosureCleaner invokePrivate _isClosure(obj)
@@ -279,12 +280,18 @@ class ClosureCleanerSuite2
     val (outerClasses2, _) = getOuterClassesAndObjects(closure2)
     val (outerClasses3, _) = getOuterClassesAndObjects(closure3)
 
-    val fields1 =
-      findAccessedFields(closure1, outerClasses1, findTransitively = false)
-    val fields2 =
-      findAccessedFields(closure2, outerClasses2, findTransitively = false)
-    val fields3 =
-      findAccessedFields(closure3, outerClasses3, findTransitively = false)
+    val fields1 = findAccessedFields(
+      closure1,
+      outerClasses1,
+      findTransitively = false)
+    val fields2 = findAccessedFields(
+      closure2,
+      outerClasses2,
+      findTransitively = false)
+    val fields3 = findAccessedFields(
+      closure3,
+      outerClasses3,
+      findTransitively = false)
     assert(fields1.isEmpty)
     assert(fields2.isEmpty)
     assert(fields3.size === 2)
@@ -297,12 +304,18 @@ class ClosureCleanerSuite2
     // through the fields referenced by this method.
     assert(fields3(outerClasses3(1)).isEmpty)
 
-    val fields1t =
-      findAccessedFields(closure1, outerClasses1, findTransitively = true)
-    val fields2t =
-      findAccessedFields(closure2, outerClasses2, findTransitively = true)
-    val fields3t =
-      findAccessedFields(closure3, outerClasses3, findTransitively = true)
+    val fields1t = findAccessedFields(
+      closure1,
+      outerClasses1,
+      findTransitively = true)
+    val fields2t = findAccessedFields(
+      closure2,
+      outerClasses2,
+      findTransitively = true)
+    val fields3t = findAccessedFields(
+      closure3,
+      outerClasses3,
+      findTransitively = true)
     assert(fields1t.isEmpty)
     assert(fields2t.isEmpty)
     assert(fields3t.size === 2)
@@ -329,14 +342,22 @@ class ClosureCleanerSuite2
       val (outerClasses4, _) = getOuterClassesAndObjects(closure4)
 
       // First, find only fields accessed directly, not transitively, by these closures
-      val fields1 =
-        findAccessedFields(closure1, outerClasses1, findTransitively = false)
-      val fields2 =
-        findAccessedFields(closure2, outerClasses2, findTransitively = false)
-      val fields3 =
-        findAccessedFields(closure3, outerClasses3, findTransitively = false)
-      val fields4 =
-        findAccessedFields(closure4, outerClasses4, findTransitively = false)
+      val fields1 = findAccessedFields(
+        closure1,
+        outerClasses1,
+        findTransitively = false)
+      val fields2 = findAccessedFields(
+        closure2,
+        outerClasses2,
+        findTransitively = false)
+      val fields3 = findAccessedFields(
+        closure3,
+        outerClasses3,
+        findTransitively = false)
+      val fields4 = findAccessedFields(
+        closure4,
+        outerClasses4,
+        findTransitively = false)
       assert(fields1.isEmpty)
       // Note that the size here represents the number of outer classes, not the number of fields
       // "test1" < parameter of "FunSuite#test" < ClosureCleanerSuite2
@@ -368,14 +389,22 @@ class ClosureCleanerSuite2
       assert(fields4(outerClasses4(2)).isEmpty)
 
       // Now do the same, but find fields that the closures transitively reference
-      val fields1t =
-        findAccessedFields(closure1, outerClasses1, findTransitively = true)
-      val fields2t =
-        findAccessedFields(closure2, outerClasses2, findTransitively = true)
-      val fields3t =
-        findAccessedFields(closure3, outerClasses3, findTransitively = true)
-      val fields4t =
-        findAccessedFields(closure4, outerClasses4, findTransitively = true)
+      val fields1t = findAccessedFields(
+        closure1,
+        outerClasses1,
+        findTransitively = true)
+      val fields2t = findAccessedFields(
+        closure2,
+        outerClasses2,
+        findTransitively = true)
+      val fields3t = findAccessedFields(
+        closure3,
+        outerClasses3,
+        findTransitively = true)
+      val fields4t = findAccessedFields(
+        closure4,
+        outerClasses4,
+        findTransitively = true)
       assert(fields1t.isEmpty)
       assert(fields2t.size === 3)
       assert(

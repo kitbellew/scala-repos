@@ -45,14 +45,17 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
     val parameterBlockPrevPageSize = request.getParameter("block.prevPageSize")
 
     val blockPage = Option(parameterBlockPage).map(_.toInt).getOrElse(1)
-    val blockSortColumn =
-      Option(parameterBlockSortColumn).getOrElse("Block Name")
-    val blockSortDesc =
-      Option(parameterBlockSortDesc).map(_.toBoolean).getOrElse(false)
-    val blockPageSize =
-      Option(parameterBlockPageSize).map(_.toInt).getOrElse(100)
-    val blockPrevPageSize =
-      Option(parameterBlockPrevPageSize).map(_.toInt).getOrElse(blockPageSize)
+    val blockSortColumn = Option(parameterBlockSortColumn).getOrElse(
+      "Block Name")
+    val blockSortDesc = Option(parameterBlockSortDesc)
+      .map(_.toBoolean)
+      .getOrElse(false)
+    val blockPageSize = Option(parameterBlockPageSize)
+      .map(_.toInt)
+      .getOrElse(100)
+    val blockPrevPageSize = Option(parameterBlockPrevPageSize)
+      .map(_.toInt)
+      .getOrElse(blockPageSize)
 
     val rddId = parameterId.toInt
     val rddStorageInfo = AllRDDResource
@@ -91,11 +94,10 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
           <div class="alert alert-error">{e.getMessage}</div>
       }
 
-    val jsForScrollingDownToBlockTable =
-      <script>
+    val jsForScrollingDownToBlockTable = <script>
         {
-        Unparsed {
-          """
+      Unparsed {
+        """
               |$(function() {
               |  if (/.*&block.sort=.*$/.test(location.search)) {
               |    var topOffset = $("#blocks-section").offset().top;
@@ -103,12 +105,11 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
               |  }
               |});
             """.stripMargin
-        }
       }
+    }
       </script>
 
-    val content =
-      <div class="row-fluid">
+    val content = <div class="row-fluid">
         <div class="span12">
           <ul class="unstyled">
             <li>
@@ -139,8 +140,8 @@ private[ui] class RDDPage(parent: StorageTab) extends WebUIPage("rdd") {
         <div class="span12">
           <h4>
             Data Distribution on {
-        rddStorageInfo.dataDistribution.map(_.size).getOrElse(0)
-      }
+      rddStorageInfo.dataDistribution.map(_.size).getOrElse(0)
+    }
             Executors
           </h4>
           {workerTable}
@@ -190,8 +191,9 @@ private[ui] class BlockDataSource(
     desc: Boolean)
     extends PagedDataSource[BlockTableRowData](pageSize) {
 
-  private val data =
-    rddPartitions.map(blockRow).sorted(ordering(sortColumn, desc))
+  private val data = rddPartitions
+    .map(blockRow)
+    .sorted(ordering(sortColumn, desc))
 
   override def dataSize: Int = data.size
 

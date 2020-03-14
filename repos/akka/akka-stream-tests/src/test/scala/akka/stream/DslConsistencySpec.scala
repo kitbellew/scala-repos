@@ -30,24 +30,24 @@ class DslConsistencySpec extends WordSpec with Matchers {
   val sFlowClass: Class[_] = classOf[akka.stream.scaladsl.Flow[_, _, _]]
   val jFlowClass: Class[_] = classOf[akka.stream.javadsl.Flow[_, _, _]]
 
-  val sSubFlowClass: Class[_] =
-    classOf[DslConsistencySpec.ScalaSubFlow[_, _, _]]
+  val sSubFlowClass
+      : Class[_] = classOf[DslConsistencySpec.ScalaSubFlow[_, _, _]]
   val jSubFlowClass: Class[_] = classOf[akka.stream.javadsl.SubFlow[_, _, _]]
 
   val sSourceClass: Class[_] = classOf[akka.stream.scaladsl.Source[_, _]]
   val jSourceClass: Class[_] = classOf[akka.stream.javadsl.Source[_, _]]
 
-  val sSubSourceClass: Class[_] =
-    classOf[DslConsistencySpec.ScalaSubSource[_, _]]
+  val sSubSourceClass
+      : Class[_] = classOf[DslConsistencySpec.ScalaSubSource[_, _]]
   val jSubSourceClass: Class[_] = classOf[akka.stream.javadsl.SubSource[_, _]]
 
   val sSinkClass: Class[_] = classOf[akka.stream.scaladsl.Sink[_, _]]
   val jSinkClass: Class[_] = classOf[akka.stream.javadsl.Sink[_, _]]
 
-  val jRunnableGraphClass: Class[_] =
-    classOf[akka.stream.javadsl.RunnableGraph[_]]
-  val sRunnableGraphClass: Class[_] =
-    classOf[akka.stream.scaladsl.RunnableGraph[_]]
+  val jRunnableGraphClass
+      : Class[_] = classOf[akka.stream.javadsl.RunnableGraph[_]]
+  val sRunnableGraphClass
+      : Class[_] = classOf[akka.stream.scaladsl.RunnableGraph[_]]
 
   val ignore =
     Set(
@@ -130,29 +130,27 @@ class DslConsistencySpec extends WordSpec with Matchers {
       Nil foreach {
       case (element, classes) ⇒
         s"provide same $element transforming operators" in {
-          val allOps =
-            (for {
-              c ← classes
-              m ← c.getMethods
-              if !Modifier.isStatic(m.getModifiers)
-              if !ignore(m.getName)
-              if !m.getName.contains("$")
-              if !materializing(m)
-            } yield m.getName).toSet
+          val allOps = (for {
+            c ← classes
+            m ← c.getMethods
+            if !Modifier.isStatic(m.getModifiers)
+            if !ignore(m.getName)
+            if !m.getName.contains("$")
+            if !materializing(m)
+          } yield m.getName).toSet
 
           for (c ← classes; op ← allOps) assertHasMethod(c, op)
         }
 
         s"provide same $element materializing operators" in {
-          val materializingOps =
-            (for {
-              c ← classes
-              m ← c.getMethods
-              if !Modifier.isStatic(m.getModifiers)
-              if !ignore(m.getName)
-              if !m.getName.contains("$")
-              if materializing(m)
-            } yield m.getName).toSet
+          val materializingOps = (for {
+            c ← classes
+            m ← c.getMethods
+            if !Modifier.isStatic(m.getModifiers)
+            if !ignore(m.getName)
+            if !m.getName.contains("$")
+            if materializing(m)
+          } yield m.getName).toSet
 
           for (c ← classes; op ← materializingOps) assertHasMethod(c, op)
         }

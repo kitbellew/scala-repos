@@ -106,8 +106,7 @@ object FreeAp {
 
   /** A version of `lift` that infers the nested type constructor. */
   def liftU[FA](x: => FA)(
-      implicit FA: Unapply[Functor, FA]): FreeAp[FA.M, FA.A] =
-    lift(FA(x))
+      implicit FA: Unapply[Functor, FA]): FreeAp[FA.M, FA.A] = lift(FA(x))
 
   private[scalaz] case class Pure[F[_], A](a: A) extends FreeAp[F, A]
   private abstract case class Ap[F[_], A]() extends FreeAp[F, A] {

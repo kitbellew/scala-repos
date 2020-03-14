@@ -79,8 +79,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     // TODO: handle optional fields
     val json =
@@ -128,8 +128,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "unsubscribe") ~
@@ -172,8 +172,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "profile") ~
@@ -208,8 +208,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "upemail") ~
@@ -242,8 +242,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "cleaned") ~
@@ -275,8 +275,8 @@ private[prediction] object MailChimpConnector extends FormConnector {
      */
 
     // convert to ISO8601 format
-    val eventTime =
-      Utils.dateTimeToString(parseMailChimpDateTime(data("fired_at")))
+    val eventTime = Utils.dateTimeToString(
+      parseMailChimpDateTime(data("fired_at")))
 
     val json =
       ("event" -> "campaign") ~

@@ -60,11 +60,9 @@ final class ParIncOptimizer(
       map.keys.flatMap(f).toParArray
 
     // Operations on ParIterable
-    def prepAdd[V](it: ParIterable[V]): Addable[V] =
-      AtomicAcc(it.toList)
+    def prepAdd[V](it: ParIterable[V]): Addable[V] = AtomicAcc(it.toList)
 
-    def add[V](addable: Addable[V], v: V): Unit =
-      addable += v
+    def add[V](addable: Addable[V], v: V): Unit = addable += v
 
     def finishAdd[V](addable: Addable[V]): ParIterable[V] =
       addable.removeAll().toParArray
@@ -102,14 +100,12 @@ final class ParIncOptimizer(
     /** PROCESS PASS ONLY. Concurrency safe except with
       *  [[addInstantiatedSubclass]] and [[removeInstantiatedSubclass]]
       */
-    def instantiatedSubclasses: Iterable[Class] =
-      _instantiatedSubclasses.keys
+    def instantiatedSubclasses: Iterable[Class] = _instantiatedSubclasses.keys
 
     /** UPDATE PASS ONLY. Concurrency safe except with
       *  [[instantiatedSubclasses]]
       */
-    def addInstantiatedSubclass(x: Class): Unit =
-      _instantiatedSubclasses += x
+    def addInstantiatedSubclass(x: Class): Unit = _instantiatedSubclasses += x
 
     /** UPDATE PASS ONLY. Concurrency safe except with
       *  [[instantiatedSubclasses]]
@@ -130,8 +126,7 @@ final class ParIncOptimizer(
     }
 
     /** PROCESS PASS ONLY. Concurrency safe except with [[ancestors_=]]. */
-    def registerAskAncestors(asker: MethodImpl): Unit =
-      ancestorsAskers += asker
+    def registerAskAncestors(asker: MethodImpl): Unit = ancestorsAskers += asker
 
     /** PROCESS PASS ONLY. */
     def registerDynamicCaller(methodName: String, caller: MethodImpl): Unit =
@@ -174,12 +169,10 @@ final class ParIncOptimizer(
     private val bodyAskers = TrieSet.empty[MethodImpl]
 
     /** PROCESS PASS ONLY. */
-    def registerBodyAsker(asker: MethodImpl): Unit =
-      bodyAskers += asker
+    def registerBodyAsker(asker: MethodImpl): Unit = bodyAskers += asker
 
     /** UPDATE PASS ONLY. */
-    def unregisterDependee(dependee: MethodImpl): Unit =
-      bodyAskers -= dependee
+    def unregisterDependee(dependee: MethodImpl): Unit = bodyAskers -= dependee
 
     /** UPDATE PASS ONLY. */
     def tagBodyAskers(): Unit = {

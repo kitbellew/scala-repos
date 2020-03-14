@@ -11,8 +11,7 @@ class FuncTests extends CatsSuite {
   import cats.laws.discipline.eq._
   implicit def funcEq[F[_], A, B](implicit
       A: Arbitrary[A],
-      FB: Eq[F[B]]): Eq[Func[F, A, B]] =
-    Eq.by[Func[F, A, B], A => F[B]](_.run)
+      FB: Eq[F[B]]): Eq[Func[F, A, B]] = Eq.by[Func[F, A, B], A => F[B]](_.run)
   implicit def appFuncEq[F[_], A, B](implicit
       A: Arbitrary[A],
       FB: Eq[F[B]]): Eq[AppFunc[F, A, B]] =
@@ -59,8 +58,8 @@ class FuncTests extends CatsSuite {
 
   {
     implicit val appFuncApp = AppFunc.appFuncApplicative[Option, Int]
-    implicit val iso =
-      CartesianTests.Isomorphisms.invariant[AppFunc[Option, Int, ?]]
+    implicit val iso = CartesianTests.Isomorphisms
+      .invariant[AppFunc[Option, Int, ?]]
     checkAll(
       "AppFunc[Option, Int, Int]",
       ApplicativeTests[AppFunc[Option, Int, ?]].applicative[Int, Int, Int])

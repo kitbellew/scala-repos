@@ -15,8 +15,7 @@ object CodensityTest extends SpecLite {
 
   implicit def eqlCodensity[F[_], A](implicit
       A: Equal[F[A]],
-      M: Applicative[F]): Equal[Codensity[F, A]] =
-    Equal.equalBy(_.improve)
+      M: Applicative[F]): Equal[Codensity[F, A]] = Equal.equalBy(_.improve)
 
   checkAll("List", monadPlus.laws[Codensity[List, ?]])
   checkAll("Option", monadPlus.laws[Codensity[Option, ?]])

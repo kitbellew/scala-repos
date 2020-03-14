@@ -43,8 +43,9 @@ trait GenTypes {
             mirrorMirrorSelect(nme.EmptyPackageClass))
         case tpe @ ThisType(clazz) if clazz.isModuleClass && clazz.isStatic =>
           val module = reify(clazz.sourceModule)
-          val moduleClass =
-            Select(Select(module, nme.asModule), nme.moduleClass)
+          val moduleClass = Select(
+            Select(module, nme.asModule),
+            nme.moduleClass)
           mirrorBuildCall(nme.ThisType, moduleClass)
         case tpe @ ThisType(sym) =>
           reifyBuildCall(nme.ThisType, sym)
@@ -82,34 +83,32 @@ trait GenTypes {
         println(
           "launching implicit search for %s.%s[%s]"
             .format(universe, tagFlavor, tpe))
-      val result =
-        typer.resolveTypeTag(
-          defaultErrorPosition,
-          universe.tpe,
-          tpe,
-          concrete = concrete,
-          allowMaterialization = false) match {
-          case failure if failure.isEmpty =>
-            if (reifyDebug) println("implicit search was fruitless")
-            if (reifyDebug) println("trying to splice as manifest")
-            val splicedAsManifest = spliceAsManifest(tpe)
-            if (splicedAsManifest.isEmpty) {
-              if (reifyDebug) println("no manifest in scope")
-              EmptyTree
-            } else {
-              if (reifyDebug)
-                println(
-                  "successfully spliced as manifest: " + splicedAsManifest)
-              splicedAsManifest
-            }
-          case success =>
+      val result = typer.resolveTypeTag(
+        defaultErrorPosition,
+        universe.tpe,
+        tpe,
+        concrete = concrete,
+        allowMaterialization = false) match {
+        case failure if failure.isEmpty =>
+          if (reifyDebug) println("implicit search was fruitless")
+          if (reifyDebug) println("trying to splice as manifest")
+          val splicedAsManifest = spliceAsManifest(tpe)
+          if (splicedAsManifest.isEmpty) {
+            if (reifyDebug) println("no manifest in scope")
+            EmptyTree
+          } else {
             if (reifyDebug)
-              println("implicit search has produced a result: " + success)
-            state.reificationIsConcrete &= concrete || success.tpe <:< TypeTagClass.toTypeConstructor
-            Select(
-              Apply(Select(success, nme.in), List(Ident(nme.MIRROR_SHORT))),
-              nme.tpe)
-        }
+              println("successfully spliced as manifest: " + splicedAsManifest)
+            splicedAsManifest
+          }
+        case success =>
+          if (reifyDebug)
+            println("implicit search has produced a result: " + success)
+          state.reificationIsConcrete &= concrete || success.tpe <:< TypeTagClass.toTypeConstructor
+          Select(
+            Apply(Select(success, nme.in), List(Ident(nme.MIRROR_SHORT))),
+            nme.tpe)
+      }
       if (result != EmptyTree) return result
       state.reificationIsConcrete = false
     }

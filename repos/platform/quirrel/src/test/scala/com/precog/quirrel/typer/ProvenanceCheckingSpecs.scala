@@ -675,8 +675,8 @@ object ProvenanceCheckingSpecs
     }
 
     "give left for difference with coproducts containing commonality" in {
-      val tree =
-        compileSingle("(//foo union //bar) difference (//bar union //baz)")
+      val tree = compileSingle(
+        "(//foo union //bar) difference (//bar union //baz)")
       tree.provenance must beLike {
         case CoproductProvenance(
               StaticProvenance("/foo"),
@@ -691,8 +691,8 @@ object ProvenanceCheckingSpecs
     }
 
     "give null provenance for difference with unrelated coproducts" in {
-      val tree =
-        compileSingle("(//foo union //bar) difference (//baz union //qux)")
+      val tree = compileSingle(
+        "(//foo union //bar) difference (//baz union //qux)")
       tree.provenance mustEqual NullProvenance
       tree.errors mustEqual Set(DifferenceWithNoCommonalities)
     }
@@ -719,8 +719,8 @@ object ProvenanceCheckingSpecs
     }
 
     "propagate provenance through multiple let bindings" in {
-      val tree @ Let(_, _, _, _, _) =
-        compileSingle("back := //foo ~ //bar //foo + //bar back")
+      val tree @ Let(_, _, _, _, _) = compileSingle(
+        "back := //foo ~ //bar //foo + //bar back")
 
       tree.resultProvenance must beLike {
         case ProductProvenance(

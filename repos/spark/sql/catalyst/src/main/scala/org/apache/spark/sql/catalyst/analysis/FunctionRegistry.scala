@@ -54,8 +54,9 @@ trait FunctionRegistry {
 
 class SimpleFunctionRegistry extends FunctionRegistry {
 
-  private[sql] val functionBuilders =
-    StringKeyHashMap[(ExpressionInfo, FunctionBuilder)](caseSensitive = false)
+  private[sql] val functionBuilders = StringKeyHashMap[(
+      ExpressionInfo,
+      FunctionBuilder)](caseSensitive = false)
 
   override def registerFunction(
       name: String,

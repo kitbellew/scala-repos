@@ -91,8 +91,10 @@ object SealedTraitOrderedBuf {
         SealedTraitLike.compare(c)(outerType, elementA, elementB)(subData)
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         SealedTraitLike.length(c)(element)(subData)
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        subData.map(_._3).map(_.lazyOuterVariables).reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = subData
+        .map(_._3)
+        .map(_.lazyOuterVariables)
+        .reduce(_ ++ _)
     }
   }
 }

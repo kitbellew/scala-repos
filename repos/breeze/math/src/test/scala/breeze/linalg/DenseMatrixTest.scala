@@ -277,15 +277,19 @@ class DenseMatrixTest
 
   test("horzcat") {
     val a: DenseMatrix[Int] = DenseMatrix((1, 0, 5), (2, 3, -1))
-    val result: DenseMatrix[Int] =
-      DenseMatrix((1, 0, 5, 1, 0, 5), (2, 3, -1, 2, 3, -1))
+    val result: DenseMatrix[Int] = DenseMatrix(
+      (1, 0, 5, 1, 0, 5),
+      (2, 3, -1, 2, 3, -1))
     assert(DenseMatrix.horzcat(a, a) === result)
   }
 
   test("vertcat") {
     val a: DenseMatrix[Int] = DenseMatrix((1, 0, 5), (2, 3, -1))
-    val result: DenseMatrix[Int] =
-      DenseMatrix((1, 0, 5), (2, 3, -1), (1, 0, 5), (2, 3, -1))
+    val result: DenseMatrix[Int] = DenseMatrix(
+      (1, 0, 5),
+      (2, 3, -1),
+      (1, 0, 5),
+      (2, 3, -1))
     assert(DenseMatrix.vertcat(a, a) === result)
   }
 
@@ -348,8 +352,10 @@ class DenseMatrixTest
 
   test("Multiply Boolean") {
     val a = DenseMatrix((true, true, true), (true, true, true))
-    val b =
-      DenseMatrix((true, false, true), (true, false, true), (true, false, true))
+    val b = DenseMatrix(
+      (true, false, true),
+      (true, false, true),
+      (true, false, true))
     assert(a * b === DenseMatrix((true, false, true), (true, false, true)))
   }
 
@@ -424,8 +430,8 @@ class DenseMatrixTest
 
   test("Multiply BigDecimal") {
     val a = DenseMatrix((1, 2, 3), (4, 5, 6)).mapValues(BigDecimal(_))
-    val b =
-      DenseMatrix((7, -2, 8), (-3, -3, 1), (12, 0, 5)).mapValues(BigDecimal(_))
+    val b = DenseMatrix((7, -2, 8), (-3, -3, 1), (12, 0, 5))
+      .mapValues(BigDecimal(_))
     val c = DenseVector(6, 2, 3).mapValues(BigDecimal(_))
     assert(
       a.*(b)(DenseMatrix.op_DM_DM_Semiring[BigDecimal]) === DenseMatrix(

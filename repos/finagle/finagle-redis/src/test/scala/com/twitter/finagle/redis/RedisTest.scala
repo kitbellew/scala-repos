@@ -27,14 +27,16 @@ trait RedisTest extends FunSuite {
 
 trait RedisResponseTest extends RedisTest {
   protected val replyCodec = new ReplyCodec
-  protected val (codec, counter) =
-    TestCodec(replyCodec.decode, replyCodec.encode)
+  protected val (codec, counter) = TestCodec(
+    replyCodec.decode,
+    replyCodec.encode)
 }
 
 trait RedisRequestTest extends RedisTest {
   protected val commandCodec = new CommandCodec
-  protected val (codec, counter) =
-    TestCodec(commandCodec.decode, commandCodec.encode)
+  protected val (codec, counter) = TestCodec(
+    commandCodec.decode,
+    commandCodec.encode)
 
   def unwrap(list: Seq[AnyRef])(fn: PartialFunction[Command, Unit]) =
     list.toList match {

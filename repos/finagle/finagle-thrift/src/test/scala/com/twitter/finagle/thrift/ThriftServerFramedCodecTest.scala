@@ -18,8 +18,12 @@ class ThriftServerFramedCodecTest extends FunSuite with MockitoSugar {
   val protocolFactory = new TBinaryProtocol.Factory()
 
   test("ThriftServerTracingFilter read header correctly") {
-    val traceId =
-      TraceId(Some(SpanId(1L)), None, SpanId(2L), Some(true), Flags().setDebug)
+    val traceId = TraceId(
+      Some(SpanId(1L)),
+      None,
+      SpanId(2L),
+      Some(true),
+      Flags().setDebug)
     val bufferingTracer = new BufferingTracer
     Trace.letTracer(bufferingTracer) {
       val filter = new TTwitterServerFilter("service", protocolFactory)

@@ -57,13 +57,13 @@ private[ml] object TreeTests extends SparkFunSuite {
           .withNumValues(categoricalFeatures(feature))
       } else { NumericAttribute.defaultAttr.withIndex(feature) }
     }.toArray
-    val featuresMetadata =
-      new AttributeGroup("features", featuresAttributes).toMetadata()
-    val labelAttribute = if (numClasses == 0) {
-      NumericAttribute.defaultAttr.withName("label")
-    } else {
-      NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
-    }
+    val featuresMetadata = new AttributeGroup("features", featuresAttributes)
+      .toMetadata()
+    val labelAttribute =
+      if (numClasses == 0) { NumericAttribute.defaultAttr.withName("label") }
+      else {
+        NominalAttribute.defaultAttr.withName("label").withNumValues(numClasses)
+      }
     val labelMetadata = labelAttribute.toMetadata()
     df.select(
       df("features").as("features", featuresMetadata),

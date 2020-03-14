@@ -24,11 +24,10 @@ final class NoSnapshotStore extends SnapshotStore {
   final class NoSnapshotStoreException
       extends RuntimeException("No snapshot store configured!")
 
-  private val flop: Future[Nothing] =
-    Future.failed(new NoSnapshotStoreException)
+  private val flop: Future[Nothing] = Future.failed(
+    new NoSnapshotStoreException)
 
-  private val none: Future[Option[SelectedSnapshot]] =
-    Future.successful(None)
+  private val none: Future[Option[SelectedSnapshot]] = Future.successful(None)
 
   override def loadAsync(
       persistenceId: String,
@@ -37,15 +36,12 @@ final class NoSnapshotStore extends SnapshotStore {
 
   override def saveAsync(
       metadata: SnapshotMetadata,
-      snapshot: Any): Future[Unit] =
-    flop
+      snapshot: Any): Future[Unit] = flop
 
-  override def deleteAsync(metadata: SnapshotMetadata): Future[Unit] =
-    flop
+  override def deleteAsync(metadata: SnapshotMetadata): Future[Unit] = flop
 
   override def deleteAsync(
       persistenceId: String,
-      criteria: SnapshotSelectionCriteria): Future[Unit] =
-    flop
+      criteria: SnapshotSelectionCriteria): Future[Unit] = flop
 
 }

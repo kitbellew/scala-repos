@@ -70,8 +70,9 @@ class ScalaTestGenerator extends TestGenerator {
         case _                                                 => "Scala Class"
       }
     )
-    val typeDefinition =
-      file.depthFirst.filterByType(classOf[ScTypeDefinition]).next()
+    val typeDefinition = file.depthFirst
+      .filterByType(classOf[ScTypeDefinition])
+      .next()
     val scope: GlobalSearchScope = GlobalSearchScope.allScope(project)
     val fqName = d.getSuperClassName
     if (fqName != null) {
@@ -84,8 +85,10 @@ class ScalaTestGenerator extends TestGenerator {
     val positionElement = typeDefinition.extendsBlock.templateBody
       .map(_.getFirstChild)
       .getOrElse(typeDefinition)
-    var editor: Editor =
-      CodeInsightUtil.positionCursor(project, file, positionElement)
+    var editor: Editor = CodeInsightUtil.positionCursor(
+      project,
+      file,
+      positionElement)
     addTestMethods(
       editor,
       typeDefinition,
@@ -105,8 +108,9 @@ class ScalaTestGenerator extends TestGenerator {
     def addExtendsRef(refName: String) = {
       val (extendsToken, classParents) = ScalaPsiElementFactory
         .createClassTemplateParents(refName, typeDefinition.getManager)
-      val extendsAdded =
-        extendsBlock.addBefore(extendsToken, extendsBlock.getFirstChild)
+      val extendsAdded = extendsBlock.addBefore(
+        extendsToken,
+        extendsBlock.getFirstChild)
       extendsBlock.addAfter(classParents, extendsAdded)
     }
     psiClass match {

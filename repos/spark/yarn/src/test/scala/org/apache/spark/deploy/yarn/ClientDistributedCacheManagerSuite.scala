@@ -75,8 +75,8 @@ class ClientDistributedCacheManagerSuite
       null,
       new Path("/tmp/testing"))
     when(fs.getFileStatus(new Path(uri))).thenReturn(new FileStatus())
-    val statCache: Map[URI, FileStatus] =
-      HashMap[URI, FileStatus](uri -> realFileStatus)
+    val statCache: Map[URI, FileStatus] = HashMap[URI, FileStatus](
+      uri -> realFileStatus)
     val stat = distMgr.getFileStatus(fs, uri, statCache)
     assert(stat.getPath().toString() === "/tmp/testing")
   }

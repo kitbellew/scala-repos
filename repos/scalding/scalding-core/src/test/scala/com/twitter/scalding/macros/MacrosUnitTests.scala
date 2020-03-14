@@ -266,10 +266,10 @@ class MacrosUnitTests extends WordSpec with Matchers {
       shouldRoundTrip(SampleClassD(Some(c)))
       shouldRoundTrip(SampleClassD(None))
 
-      implicit val tupSetterG =
-        Macros.caseClassTupleSetterWithUnknown[SampleClassG]
-      implicit val tupConverterG =
-        Macros.caseClassTupleConverterWithUnknown[SampleClassG]
+      implicit val tupSetterG = Macros
+        .caseClassTupleSetterWithUnknown[SampleClassG]
+      implicit val tupConverterG = Macros
+        .caseClassTupleConverterWithUnknown[SampleClassG]
       shouldRoundTrip(SampleClassG(new java.util.Date(123412L)))
     }
 

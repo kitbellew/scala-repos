@@ -500,8 +500,8 @@ class ScSubstitutor(
           comps.map(substInternal),
           signatureMap.map {
             case (s: Signature, tp: ScType) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f => () => substInternal(f())))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
+                _.map(f => () => substInternal(f())))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                 else s.typeParams.map(substTypeParam)
@@ -660,52 +660,51 @@ class ScUndefinedSubstitutor(
       additional: Boolean = false,
       variance: Int = 1): ScUndefinedSubstitutor = {
     var index = 0
-    val upper =
-      (_upper match {
-        case ScAbstractType(_, lower, absUpper) if variance == 0 =>
-          if (absUpper.equiv(Any)) return this
-          absUpper // lower will be added separately
-        case ScAbstractType(_, lower, absUpper)
-            if variance == 1 && absUpper.equiv(Any) =>
-          return this
-        case _ =>
-          _upper.recursiveVarianceUpdate(
-            (tp: ScType, i: Int) => {
-              tp match {
-                case ScAbstractType(_, lower, absUpper) =>
-                  i match {
-                    case -1 => (true, lower)
-                    case 1  => (true, absUpper)
-                    case 0 =>
-                      (
-                        true,
-                        ScSkolemizedType(
-                          s"_$$${ index += 1; index }",
-                          Nil,
-                          lower,
-                          absUpper
-                        )
-                      ) //todo: why this is right?
-                  }
-                case ScSkolemizedType(_, _, lower, skoUpper) =>
-                  i match {
-                    case -1 => (true, lower)
-                    case 1  => (true, skoUpper)
-                    case 0 =>
-                      (
-                        true,
-                        ScSkolemizedType(
-                          s"_$$${ index += 1; index }",
-                          Nil,
-                          lower,
-                          skoUpper))
-                  }
-                case _ => (false, tp)
-              }
-            },
-            variance
-          )
-      }).unpackedType
+    val upper = (_upper match {
+      case ScAbstractType(_, lower, absUpper) if variance == 0 =>
+        if (absUpper.equiv(Any)) return this
+        absUpper // lower will be added separately
+      case ScAbstractType(_, lower, absUpper)
+          if variance == 1 && absUpper.equiv(Any) =>
+        return this
+      case _ =>
+        _upper.recursiveVarianceUpdate(
+          (tp: ScType, i: Int) => {
+            tp match {
+              case ScAbstractType(_, lower, absUpper) =>
+                i match {
+                  case -1 => (true, lower)
+                  case 1  => (true, absUpper)
+                  case 0 =>
+                    (
+                      true,
+                      ScSkolemizedType(
+                        s"_$$${ index += 1; index }",
+                        Nil,
+                        lower,
+                        absUpper
+                      )
+                    ) //todo: why this is right?
+                }
+              case ScSkolemizedType(_, _, lower, skoUpper) =>
+                i match {
+                  case -1 => (true, lower)
+                  case 1  => (true, skoUpper)
+                  case 0 =>
+                    (
+                      true,
+                      ScSkolemizedType(
+                        s"_$$${ index += 1; index }",
+                        Nil,
+                        lower,
+                        skoUpper))
+                }
+              case _ => (false, tp)
+            }
+          },
+          variance
+        )
+    }).unpackedType
     val uMap = if (additional) upperAdditionalMap else upperMap
     uMap.get(name) match {
       case Some(set: HashSet[ScType]) =>

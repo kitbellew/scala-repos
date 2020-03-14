@@ -43,20 +43,17 @@ class WrappedDictionary[A](val dict: Dictionary[A])
     this
   }
 
-  override def update(key: String, value: A): Unit =
-    dict.update(key, value)
+  override def update(key: String, value: A): Unit = dict.update(key, value)
 
   def +=(kv: (String, A)): this.type = {
     dict(kv._1) = kv._2
     this
   }
 
-  def iterator: Iterator[(String, A)] =
-    new DictionaryIterator(dict)
+  def iterator: Iterator[(String, A)] = new DictionaryIterator(dict)
 
   @inline
-  override def keys: Iterable[String] =
-    Object.keys(dict.asInstanceOf[Object])
+  override def keys: Iterable[String] = Object.keys(dict.asInstanceOf[Object])
 
   override def empty: WrappedDictionary[A] =
     new WrappedDictionary(Dictionary.empty)
@@ -68,9 +65,8 @@ object WrappedDictionary {
   // it requires support for any type of key
 
   private object Cache {
-    val safeHasOwnProperty =
-      Dynamic.global.Object.prototype.hasOwnProperty
-        .asInstanceOf[ThisFunction1[Dictionary[_], String, Boolean]]
+    val safeHasOwnProperty = Dynamic.global.Object.prototype.hasOwnProperty
+      .asInstanceOf[ThisFunction1[Dictionary[_], String, Boolean]]
   }
 
   @inline
@@ -91,8 +87,10 @@ object WrappedDictionary {
 
   def empty[A]: WrappedDictionary[A] = new WrappedDictionary(Dictionary.empty)
 
-  type CBF[A] =
-    CanBuildFrom[WrappedDictionary[_], (String, A), WrappedDictionary[A]]
+  type CBF[A] = CanBuildFrom[
+    WrappedDictionary[_],
+    (String, A),
+    WrappedDictionary[A]]
   implicit def canBuildFrom[A]: CBF[A] =
     new CBF[A] {
       def apply(from: WrappedDictionary[_])
@@ -109,10 +107,8 @@ object WrappedDictionary {
       dict(elem._1) = elem._2
       this
     }
-    def clear(): Unit =
-      dict = Dictionary.empty
-    def result(): WrappedDictionary[A] =
-      new WrappedDictionary(dict)
+    def clear(): Unit = dict = Dictionary.empty
+    def result(): WrappedDictionary[A] = new WrappedDictionary(dict)
   }
 
 }

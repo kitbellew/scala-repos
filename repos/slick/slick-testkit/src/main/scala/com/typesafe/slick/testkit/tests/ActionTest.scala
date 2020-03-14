@@ -100,8 +100,8 @@ class ActionTest extends AsyncTest[RelationalTestDB] {
 
   def testDeepRecursion =
     if (tdb == StandardTestDBs.H2Disk) {
-      val a1 =
-        DBIO.sequence((1 to 5000).toSeq.map(i => LiteralColumn(i).result))
+      val a1 = DBIO.sequence(
+        (1 to 5000).toSeq.map(i => LiteralColumn(i).result))
       val a2 = DBIO.sequence(
         (1 to 20).toSeq.map(i =>
           if (i % 2 == 0) LiteralColumn(i).result

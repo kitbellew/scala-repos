@@ -80,8 +80,9 @@ private[classification] object GLMClassificationModel {
       val datapath = Loader.dataPath(path)
       val sqlContext = SQLContext.getOrCreate(sc)
       val dataRDD = sqlContext.read.parquet(datapath)
-      val dataArray =
-        dataRDD.select("weights", "intercept", "threshold").take(1)
+      val dataArray = dataRDD
+        .select("weights", "intercept", "threshold")
+        .take(1)
       assert(
         dataArray.length == 1,
         s"Unable to load $modelClass data from: $datapath")
@@ -91,8 +92,9 @@ private[classification] object GLMClassificationModel {
         case Row(weights: Vector, intercept: Double, _) =>
           (weights, intercept)
       }
-      val threshold = if (data.isNullAt(2)) { None }
-      else { Some(data.getDouble(2)) }
+      val threshold =
+        if (data.isNullAt(2)) { None }
+        else { Some(data.getDouble(2)) }
       Data(weights, intercept, threshold)
     }
   }

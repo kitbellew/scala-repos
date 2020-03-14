@@ -51,32 +51,32 @@ object EnsimeConfigFixture {
   lazy val dotEnsimeCache = File("../.ensime_cache")
   dotEnsimeCache.mkdirs()
 
-  lazy val EnsimeTestProject =
-    EnsimeConfigProtocol.parse(dotEnsime.readString())
+  lazy val EnsimeTestProject = EnsimeConfigProtocol.parse(
+    dotEnsime.readString())
 
   // not completely empty, has a reference to the scala-library jar
   lazy val EmptyTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects =
-      EnsimeTestProject.subprojects.filter(_.name == "testingEmpty"),
+    subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingEmpty"),
     javaLibs = Nil
   )
   lazy val SimpleTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects =
-      EnsimeTestProject.subprojects.filter(_.name == "testingSimple")
+    subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingSimple")
   )
   lazy val SimpleJarTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects =
-      EnsimeTestProject.subprojects.filter(_.name == "testingSimpleJar"),
+    subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingSimpleJar"),
     javaLibs = Nil
   )
   lazy val ImplicitsTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects =
-      EnsimeTestProject.subprojects.filter(_.name == "testingImplicits"),
+    subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingImplicits"),
     javaLibs = Nil
   )
   lazy val TimingTestProject: EnsimeConfig = EnsimeTestProject.copy(
-    subprojects =
-      EnsimeTestProject.subprojects.filter(_.name == "testingTiming"),
+    subprojects = EnsimeTestProject.subprojects.filter(
+      _.name == "testingTiming"),
     javaLibs = Nil
   )
   lazy val DebugTestProject: EnsimeConfig = EnsimeTestProject.copy(

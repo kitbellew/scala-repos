@@ -644,10 +644,9 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     // Because Rand function is not deterministic, the column rand is not deterministic.
     // So, in the optimizer, we will not collapse Project [rand + 1 AS rand1, rand - 1 AS rand2]
     // and Project [key, Rand 5 AS rand]. The final plan still has two Projects.
-    val dfWithTwoProjects =
-      testData
-        .select($"key", (rand(5L) + 1).as("rand"))
-        .select(($"rand" + 1).as("rand1"), ($"rand" - 1).as("rand2"))
+    val dfWithTwoProjects = testData
+      .select($"key", (rand(5L) + 1).as("rand"))
+      .select(($"rand" + 1).as("rand1"), ($"rand" - 1).as("rand2"))
     checkNumProjects(dfWithTwoProjects, 2)
 
     // Now, we add one more project rand1 - rand2 on top of the query plan.

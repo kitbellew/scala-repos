@@ -25,14 +25,11 @@ trait ToUnzipOps extends ToUnzipOps0 {
 
   final class UnzipPairOps[F[_], A, B] private[syntax] (self: F[(A, B)])(
       implicit F: Unzip[F]) {
-    def unfzip: (F[A], F[B]) =
-      F.unzip(self)
+    def unfzip: (F[A], F[B]) = F.unzip(self)
 
-    def firsts: F[A] =
-      F.firsts(self)
+    def firsts: F[A] = F.firsts(self)
 
-    def seconds: F[B] =
-      F.seconds(self)
+    def seconds: F[B] = F.seconds(self)
   }
 
   ////

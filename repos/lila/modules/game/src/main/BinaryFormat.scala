@@ -185,8 +185,11 @@ object BinaryFormat {
         b5: Int,
         b6: Option[Int]) =
       CastleLastMoveTime(
-        castles =
-          Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
+        castles = Castles(
+          b1 > 127,
+          (b1 & 64) != 0,
+          (b1 & 32) != 0,
+          (b1 & 16) != 0),
         lastMove = for {
           from ← posAt((b1 & 15) >> 1, ((b1 & 1) << 2) + (b2 >> 6))
           to ← posAt((b2 & 63) >> 3, b2 & 7)

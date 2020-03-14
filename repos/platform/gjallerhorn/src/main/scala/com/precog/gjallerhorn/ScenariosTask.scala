@@ -49,8 +49,9 @@ class ScenariosTask(settings: Settings)
           "apiKey" -> account.apiKey,
           "q" -> "count(//foo)")
         val str = Http(res OK as.String)()
-        val json =
-          JParser.parseFromString(Http(res OK as.String)()).valueOr(throw _)
+        val json = JParser
+          .parseFromString(Http(res OK as.String)())
+          .valueOr(throw _)
         val count = json(0).deserialize[Double]
         count must_== 2
       }
@@ -128,8 +129,8 @@ class ScenariosTask(settings: Settings)
       }
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account2.apiKey)(_ / account1.bareRootPath / "foo")
+        val json = metadataFor(account2.apiKey)(
+          _ / account1.bareRootPath / "foo")
         (json \ "size").deserialize[Long] must_== 2
       }
     }
@@ -148,8 +149,8 @@ class ScenariosTask(settings: Settings)
       }
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account1.apiKey)(_ / account1.bareRootPath / "foo")
+        val json = metadataFor(account1.apiKey)(
+          _ / account1.bareRootPath / "foo")
         (json \ "size").deserialize[Long] must_== 0
       }
     }
@@ -179,8 +180,8 @@ class ScenariosTask(settings: Settings)
       res must beLike { case Success(jobj) => ok }
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account1.apiKey)(_ / account1.bareRootPath / "foo")
+        val json = metadataFor(account1.apiKey)(
+          _ / account1.bareRootPath / "foo")
         (json \ "size").deserialize[Long] must_== 2
       }
     }

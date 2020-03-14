@@ -60,8 +60,10 @@ class DataServiceHandler[A](
       import ResourceError._
 
       (apiKey: APIKey, path: Path) => {
-        val mimeTypes =
-          request.headers.header[Accept].toSeq.flatMap(_.mimeTypes)
+        val mimeTypes = request.headers
+          .header[Accept]
+          .toSeq
+          .flatMap(_.mimeTypes)
         platform.vfs
           .readResource(apiKey, path, Version.Current, AccessMode.Read)
           .run flatMap {

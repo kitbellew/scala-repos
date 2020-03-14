@@ -45,16 +45,16 @@ private[mllib] class BinaryClassificationPMMLModelExport(
       val fields = new SArray[FieldName](model.weights.size)
       val dataDictionary = new DataDictionary
       val miningSchema = new MiningSchema
-      val regressionTableYES =
-        new RegressionTable(model.intercept).setTargetCategory("1")
+      val regressionTableYES = new RegressionTable(model.intercept)
+        .setTargetCategory("1")
       var interceptNO = threshold
       if (RegressionNormalizationMethodType.LOGIT == normalizationMethod) {
         if (threshold <= 0) { interceptNO = Double.MinValue }
         else if (threshold >= 1) { interceptNO = Double.MaxValue }
         else { interceptNO = -math.log(1 / threshold - 1) }
       }
-      val regressionTableNO =
-        new RegressionTable(interceptNO).setTargetCategory("0")
+      val regressionTableNO = new RegressionTable(interceptNO)
+        .setTargetCategory("0")
       val regressionModel = new RegressionModel()
         .setFunctionName(MiningFunctionType.CLASSIFICATION)
         .setMiningSchema(miningSchema)

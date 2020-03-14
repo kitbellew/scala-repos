@@ -139,12 +139,11 @@ private[math] object Elementary {
         op2.digits,
         op2.numberLength)
     } else {
-      val sign =
-        unsignedArraysCompare(
-          op1.digits,
-          op2.digits,
-          op1.numberLength,
-          op2.numberLength)
+      val sign = unsignedArraysCompare(
+        op1.digits,
+        op2.digits,
+        op1.numberLength,
+        op2.numberLength)
       if (sign > 0) {
         subtract(
           op1.digits,
@@ -190,12 +189,11 @@ private[math] object Elementary {
         op2.numberLength)
       op1.sign = resultSign
     } else {
-      val sign =
-        unsignedArraysCompare(
-          op1.digits,
-          op2.digits,
-          op1.numberLength,
-          op2.numberLength)
+      val sign = unsignedArraysCompare(
+        op1.digits,
+        op2.digits,
+        op1.numberLength,
+        op2.numberLength)
       if (sign > 0) {
         subtract(
           op1.digits,

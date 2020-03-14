@@ -136,8 +136,8 @@ object ReplicaVerificationTool extends Logging {
       clientId,
       maxWaitMs)
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
-    val filteredTopicMetadata =
-      topicsMetadataResponse.topicsMetadata.filter(topicMetadata =>
+    val filteredTopicMetadata = topicsMetadataResponse.topicsMetadata.filter(
+      topicMetadata =>
         if (topicWhiteListFiler.isTopicAllowed(
               topicMetadata.topic,
               excludeInternalTopics = false)) true
@@ -197,8 +197,8 @@ object ReplicaVerificationTool extends Logging {
       reportInterval)
     // create all replica fetcher threads
     val verificationBrokerId = topicAndPartitionsPerBroker.head._1
-    val fetcherThreads: Iterable[ReplicaFetcher] =
-      topicAndPartitionsPerBroker.map {
+    val fetcherThreads: Iterable[ReplicaFetcher] = topicAndPartitionsPerBroker
+      .map {
         case (brokerId, topicAndPartitions) =>
           new ReplicaFetcher(
             name = "ReplicaFetcher-" + brokerId,

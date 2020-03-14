@@ -80,8 +80,10 @@ object CachedMappedWithRecursionGuard {
             }
         }
 
-        val actualCalculation =
-          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
+        val actualCalculation = transformRhsToAnalyzeCaches(c)(
+          cacheStatsName,
+          retTp,
+          rhs)
         val builder = q"""
           def $cachedFunName(${generateTermName()}: _root_.scala.Any, $dataName: $dataTypeName): $retTp = {
             ..$parameterDefinitions
@@ -181,8 +183,13 @@ object CachedMappedWithRecursionGuard {
             q"private val $cacheStatsName = $cacheStatisticsFQN($keyId, $defdefFQN)"
           } else EmptyTree
 
-        val updatedDef =
-          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef = DefDef(
+          mods,
+          name,
+          tpParams,
+          paramss,
+          retTp,
+          updatedRhs)
         val res = q"""
           private val $key = $cachesUtilFQN.getOrCreateKey[$mappedKeyTypeFQN[(..$parameterTypes), $retTp]]($keyId)
           ..$cacheStatsField

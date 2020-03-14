@@ -113,36 +113,28 @@ object Stopwatches {
   import Stopwatch.Elapsed
 
   /** @see [[Stopwatch.start()]] */
-  def start(): Elapsed =
-    Stopwatch.start()
+  def start(): Elapsed = Stopwatch.start()
 
   /** @see [[Stopwatch.const]] */
-  def constant(duration: Duration): Stopwatch =
-    Stopwatch.const(duration)
+  def constant(duration: Duration): Stopwatch = Stopwatch.const(duration)
 
   /** @see [[Stopwatch.systemNanos]] */
-  def systemNanos: () => Long =
-    Stopwatch.systemNanos
+  def systemNanos: () => Long = Stopwatch.systemNanos
 
   /** @see [[Stopwatch.timeNanos]] */
-  def timeNanos: () => Long =
-    Stopwatch.timeNanos
+  def timeNanos: () => Long = Stopwatch.timeNanos
 
   /** @see [[Stopwatch.systemMicros]] */
-  def systemMicros: () => Long =
-    Stopwatch.systemMicros
+  def systemMicros: () => Long = Stopwatch.systemMicros
 
   /** @see [[Stopwatch.timeMicros]] */
-  def timeMicros: () => Long =
-    Stopwatch.timeMicros
+  def timeMicros: () => Long = Stopwatch.timeMicros
 
   /** @see [[Stopwatch.systemMillis]] */
-  def systemMillis: () => Long =
-    Stopwatch.systemMillis
+  def systemMillis: () => Long = Stopwatch.systemMillis
 
   /** @see [[Stopwatch.timeMillis]] */
-  def timeMillis: () => Long =
-    Stopwatch.timeMillis
+  def timeMillis: () => Long = Stopwatch.timeMillis
 }
 
 /**

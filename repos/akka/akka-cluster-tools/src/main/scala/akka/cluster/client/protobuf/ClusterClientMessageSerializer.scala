@@ -29,8 +29,8 @@ private[akka] class ClusterClientMessageSerializer(
 
   private val emptyByteArray = Array.empty[Byte]
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       ContactsManifest -> contactsFromBinary,
       GetContactsManifest -> { _ ⇒ GetContacts },
       HeartbeatManifest -> { _ ⇒ Heartbeat },

@@ -41,8 +41,8 @@ class WatermarkPool[Req, Rep](
   @volatile private[this] var isOpen = true
 
   private[this] val numWaiters = statsReceiver.counter("pool_num_waited")
-  private[this] val tooManyWaiters =
-    statsReceiver.counter("pool_num_too_many_waiters")
+  private[this] val tooManyWaiters = statsReceiver.counter(
+    "pool_num_too_many_waiters")
   private[this] val waitersStat = statsReceiver.addGauge("pool_waiters") {
     thePool.synchronized { waiters.size }
   }
@@ -147,8 +147,9 @@ class WatermarkPool[Req, Rep](
     }
     p.setInterruptHandler {
       case e =>
-        val failure =
-          Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
+        val failure = Failure.adapt(
+          e,
+          Failure.Restartable | Failure.Interrupted)
         if (p.updateIfEmpty(Throw(failure))) underlying.onSuccess { _.close() }
     }
     p
@@ -175,8 +176,7 @@ class WatermarkPool[Req, Rep](
       factory.close(deadline)
     }
 
-  override def status: Status =
-    if (isOpen) factory.status else Status.Closed
+  override def status: Status = if (isOpen) factory.status else Status.Closed
 
   override val toString: String = "watermark_pool_%s".format(factory.toString)
 }

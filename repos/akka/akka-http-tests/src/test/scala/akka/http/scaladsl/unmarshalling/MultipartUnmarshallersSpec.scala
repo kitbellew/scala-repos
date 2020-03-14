@@ -87,8 +87,8 @@ class MultipartUnmarshallersSpec
                         |
                         |Perfectly fine part content.
                         |--XYZABC--""".stripMarginWithNewline("\r\n")
-        val byteStrings =
-          content.map(c ⇒ ByteString(c.toString)) // one-char ByteStrings
+        val byteStrings = content.map(c ⇒
+          ByteString(c.toString)) // one-char ByteStrings
         Unmarshal(
           HttpEntity.Default(
             `multipart/mixed` withBoundary "XYZABC" withCharset `UTF-8`,
@@ -199,8 +199,8 @@ class MultipartUnmarshallersSpec
                         |--12345--
                         |epilogue and
                         |more epilogue""".stripMarginWithNewline("\r\n")
-        val byteStrings =
-          content.map(c ⇒ ByteString(c.toString)) // one-char ByteStrings
+        val byteStrings = content.map(c ⇒
+          ByteString(c.toString)) // one-char ByteStrings
         Unmarshal(
           HttpEntity.Default(
             `multipart/mixed` withBoundary "12345" withCharset `UTF-8`,
@@ -311,8 +311,8 @@ class MultipartUnmarshallersSpec
                         |---
                         |not ok
                         |-----""".stripMarginWithNewline("\r\n")
-        val byteStrings =
-          content.map(c ⇒ ByteString(c.toString)) // one-char ByteStrings
+        val byteStrings = content.map(c ⇒
+          ByteString(c.toString)) // one-char ByteStrings
         val contentType =
           `multipart/form-data` withBoundary "-" withCharset `UTF-8`
         Await

@@ -118,8 +118,8 @@ object Endpoint {
     val tmpl = Endpoint.Empty
       .copy(shard = shard.getOrElse(Int.MinValue), status = status)
 
-    val namesByHostPort =
-      Memoize.snappable[(String, Int), ArrayBuffer[String]] {
+    val namesByHostPort = Memoize
+      .snappable[(String, Int), ArrayBuffer[String]] {
         case (host, port) =>
           new ArrayBuffer[String]
       }

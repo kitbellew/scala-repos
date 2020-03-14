@@ -119,25 +119,24 @@ trait LoggingBus extends ActorEventBus {
         case Nil ⇒ classOf[DefaultLogger].getName :: Nil
         case loggers ⇒ loggers
       }
-      val myloggers =
-        for {
-          loggerName ← defaultLoggers
-          if loggerName != StandardOutLogger.getClass.getName
-        } yield {
-          system.dynamicAccess
-            .getClassFor[Actor](loggerName)
-            .map({
-              case actorClass ⇒ addLogger(system, actorClass, level, logName)
-            })
-            .recover({
-              case e ⇒
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                    "] due to [" + e.toString + "]",
-                  e)
-            })
-            .get
-        }
+      val myloggers = for {
+        loggerName ← defaultLoggers
+        if loggerName != StandardOutLogger.getClass.getName
+      } yield {
+        system.dynamicAccess
+          .getClassFor[Actor](loggerName)
+          .map({
+            case actorClass ⇒ addLogger(system, actorClass, level, logName)
+          })
+          .recover({
+            case e ⇒
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                  "] due to [" + e.toString + "]",
+                e)
+          })
+          .get
+      }
       guard.withGuard {
         loggers = myloggers
         _logLevel = level
@@ -530,8 +529,11 @@ object Logging {
     }
 
   // these type ascriptions/casts are necessary to avoid CCEs during construction while retaining correct type
-  val AllLogLevels: immutable.Seq[LogLevel] =
-    Vector(ErrorLevel, WarningLevel, InfoLevel, DebugLevel)
+  val AllLogLevels: immutable.Seq[LogLevel] = Vector(
+    ErrorLevel,
+    WarningLevel,
+    InfoLevel,
+    DebugLevel)
 
   /**
     * Obtain LoggingAdapter for the given actor system and source object. This

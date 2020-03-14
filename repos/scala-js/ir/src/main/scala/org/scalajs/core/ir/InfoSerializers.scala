@@ -43,8 +43,7 @@ object InfoSerializers {
         seq.foreach(writeElem)
       }
 
-      def writeStrings(seq: Seq[String]): Unit =
-        writeSeq(seq)(s.writeUTF(_))
+      def writeStrings(seq: Seq[String]): Unit = writeSeq(seq)(s.writeUTF(_))
 
       // Write the Scala.js IR magic number
       s.writeInt(IRMagicNumber)
@@ -92,16 +91,15 @@ object InfoSerializers {
     def readList[A](readElem: => A): List[A] =
       List.fill(input.readInt())(readElem)
 
-    def readStrings(): List[String] =
-      readList(input.readUTF())
+    def readStrings(): List[String] = readList(input.readUTF())
 
     def deserialize(): (String, ClassInfo) = {
       val version = readHeader()
 
       import input._
 
-      val useHacks065 =
-        Set("0.6.0", "0.6.3", "0.6.4", "0.6.5").contains(version)
+      val useHacks065 = Set("0.6.0", "0.6.3", "0.6.4", "0.6.5").contains(
+        version)
 
       val encodedName = readUTF()
       val isExported = readBoolean()
@@ -138,9 +136,10 @@ object InfoSerializers {
       }
 
       val methods0 = readList(readMethod())
-      val methods = if (useHacks065) {
-        methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
-      } else { methods0 }
+      val methods =
+        if (useHacks065) {
+          methods0.filter(m => !Definitions.isReflProxyName(m.encodedName))
+        } else { methods0 }
 
       val info = ClassInfo(
         encodedName,

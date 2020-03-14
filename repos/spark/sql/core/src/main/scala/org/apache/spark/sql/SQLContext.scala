@@ -91,10 +91,9 @@ class SQLContext private[sql] (
 
   // If spark.sql.allowMultipleContexts is true, we will throw an exception if a user
   // wants to create a new root SQLContext (a SQLContext that is not created by newSession).
-  private val allowMultipleContexts =
-    sparkContext.conf.getBoolean(
-      SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
-      SQLConf.ALLOW_MULTIPLE_CONTEXTS.defaultValue.get)
+  private val allowMultipleContexts = sparkContext.conf.getBoolean(
+    SQLConf.ALLOW_MULTIPLE_CONTEXTS.key,
+    SQLConf.ALLOW_MULTIPLE_CONTEXTS.defaultValue.get)
 
   // Assert no root SQLContext is running when allowMultipleContexts is false.
   {
@@ -260,8 +259,9 @@ class SQLContext private[sql] (
     */
   @Experimental
   @transient
-  lazy val emptyDataFrame: DataFrame =
-    createDataFrame(sparkContext.emptyRDD[Row], StructType(Nil))
+  lazy val emptyDataFrame: DataFrame = createDataFrame(
+    sparkContext.emptyRDD[Row],
+    StructType(Nil))
 
   /**
     * A collection of methods for registering user-defined functions (UDF).
@@ -454,10 +454,11 @@ class SQLContext private[sql] (
       needsConversion: Boolean) = {
     // TODO: use MutableProjection when rowRDD is another DataFrame and the applied
     // schema differs from the existing schema on any field data type.
-    val catalystRows = if (needsConversion) {
-      val converter = CatalystTypeConverters.createToCatalystConverter(schema)
-      rowRDD.map(converter(_).asInstanceOf[InternalRow])
-    } else { rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) } }
+    val catalystRows =
+      if (needsConversion) {
+        val converter = CatalystTypeConverters.createToCatalystConverter(schema)
+        rowRDD.map(converter(_).asInstanceOf[InternalRow])
+      } else { rowRDD.map { r: Row => InternalRow.fromSeq(r.toSeq) } }
     val logicalPlan = LogicalRDD(schema.toAttributes, catalystRows)(self)
     Dataset.newDataFrame(this, logicalPlan)
   }
@@ -542,8 +543,8 @@ class SQLContext private[sql] (
     val className = beanClass.getName
     val rowRdd = rdd.mapPartitions { iter =>
       // BeanInfo is not serializable so we must rediscover it remotely for each partition.
-      val localBeanInfo =
-        Introspector.getBeanInfo(Utils.classForName(className))
+      val localBeanInfo = Introspector.getBeanInfo(
+        Utils.classForName(className))
       SQLContext.beansToRows(iter, localBeanInfo, attributeSeq)
     }
     Dataset.newDataFrame(this, LogicalRDD(attributeSeq, rowRdd)(this))
@@ -654,15 +655,14 @@ class SQLContext private[sql] (
       source: String,
       options: Map[String, String]): DataFrame = {
     val tableIdent = sessionState.sqlParser.parseTableIdentifier(tableName)
-    val cmd =
-      CreateTableUsing(
-        tableIdent,
-        userSpecifiedSchema = None,
-        source,
-        temporary = false,
-        options,
-        allowExisting = false,
-        managedIfNoPath = false)
+    val cmd = CreateTableUsing(
+      tableIdent,
+      userSpecifiedSchema = None,
+      source,
+      temporary = false,
+      options,
+      allowExisting = false,
+      managedIfNoPath = false)
     executePlan(cmd).toRdd
     table(tableIdent)
   }
@@ -700,15 +700,14 @@ class SQLContext private[sql] (
       schema: StructType,
       options: Map[String, String]): DataFrame = {
     val tableIdent = sessionState.sqlParser.parseTableIdentifier(tableName)
-    val cmd =
-      CreateTableUsing(
-        tableIdent,
-        userSpecifiedSchema = Some(schema),
-        source,
-        temporary = false,
-        options,
-        allowExisting = false,
-        managedIfNoPath = false)
+    val cmd = CreateTableUsing(
+      tableIdent,
+      userSpecifiedSchema = Some(schema),
+      source,
+      temporary = false,
+      options,
+      allowExisting = false,
+      managedIfNoPath = false)
     executePlan(cmd).toRdd
     table(tableIdent)
   }
@@ -889,8 +888,9 @@ class SQLContext private[sql] (
   }
 
   @transient
-  protected[sql] lazy val emptyResult =
-    sparkContext.parallelize(Seq.empty[InternalRow], 1)
+  protected[sql] lazy val emptyResult = sparkContext.parallelize(
+    Seq.empty[InternalRow],
+    1)
 
   /**
     * Parses the data type in our internal string representation. The data type string should
@@ -1044,10 +1044,9 @@ object SQLContext {
       data: Iterator[_],
       beanInfo: BeanInfo,
       attrs: Seq[AttributeReference]): Iterator[InternalRow] = {
-    val extractors =
-      beanInfo.getPropertyDescriptors
-        .filterNot(_.getName == "class")
-        .map(_.getReadMethod)
+    val extractors = beanInfo.getPropertyDescriptors
+      .filterNot(_.getName == "class")
+      .map(_.getReadMethod)
     val methodsToConverts = extractors.zip(attrs).map {
       case (e, attr) =>
         (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))

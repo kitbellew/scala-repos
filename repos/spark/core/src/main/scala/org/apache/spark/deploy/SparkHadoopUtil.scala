@@ -190,9 +190,8 @@ class SparkHadoopUtil extends Logging {
 
   private def getFileSystemThreadStatisticsMethod(
       methodName: String): Method = {
-    val statisticsDataClass =
-      Utils.classForName(
-        "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
+    val statisticsDataClass = Utils.classForName(
+      "org.apache.hadoop.fs.FileSystem$Statistics$StatisticsData")
     statisticsDataClass.getDeclaredMethod(methodName)
   }
 
@@ -214,8 +213,9 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, leaves) =
-        fs.listStatus(status.getPath).partition(_.isDirectory)
+      val (directories, leaves) = fs
+        .listStatus(status.getPath)
+        .partition(_.isDirectory)
       leaves ++ directories.flatMap(f => listLeafStatuses(fs, f))
     }
 
@@ -230,8 +230,9 @@ class SparkHadoopUtil extends Logging {
       fs: FileSystem,
       baseStatus: FileStatus): Seq[FileStatus] = {
     def recurse(status: FileStatus): Seq[FileStatus] = {
-      val (directories, files) =
-        fs.listStatus(status.getPath).partition(_.isDirectory)
+      val (directories, files) = fs
+        .listStatus(status.getPath)
+        .partition(_.isDirectory)
       val leaves =
         if (directories.isEmpty) Seq(status) else Seq.empty[FileStatus]
       leaves ++ directories.flatMap(dir => listLeafDirStatuses(fs, dir))
@@ -306,10 +307,9 @@ class SparkHadoopUtil extends Logging {
       credentials: Credentials): Long = {
     val now = System.currentTimeMillis()
 
-    val renewalInterval =
-      sparkConf.getLong(
-        "spark.yarn.token.renewal.interval",
-        (24 hours).toMillis)
+    val renewalInterval = sparkConf.getLong(
+      "spark.yarn.token.renewal.interval",
+      (24 hours).toMillis)
 
     credentials.getAllTokens.asScala
       .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
@@ -344,11 +344,10 @@ class SparkHadoopUtil extends Logging {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)
-        val key =
-          matched.substring(
-            13,
-            matched.length() - 1
-          ) // remove ${hadoopconf- .. }
+        val key = matched.substring(
+          13,
+          matched.length() - 1
+        ) // remove ${hadoopconf- .. }
         val eval = Option[String](hadoopConf.get(key))
           .map { value =>
             logDebug("Substituted " + matched + " with " + value)

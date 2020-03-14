@@ -438,11 +438,9 @@ object Hashers {
       }
     }
 
-    def mixTrees(trees: List[Tree]): Unit =
-      trees.foreach(mixTree)
+    def mixTrees(trees: List[Tree]): Unit = trees.foreach(mixTree)
 
-    def mixRefType(tpe: ReferenceType): Unit =
-      mixType(tpe.asInstanceOf[Type])
+    def mixRefType(tpe: ReferenceType): Unit = mixType(tpe.asInstanceOf[Type])
 
     def mixType(tpe: Type): Unit =
       tpe match {

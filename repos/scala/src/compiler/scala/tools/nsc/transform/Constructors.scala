@@ -23,10 +23,10 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
   protected def newTransformer(unit: CompilationUnit): Transformer =
     new ConstructorTransformer(unit)
 
-  private val guardedCtorStats: mutable.Map[Symbol, List[Tree]] =
-    perRunCaches.newMap[Symbol, List[Tree]]()
-  private val ctorParams: mutable.Map[Symbol, List[Symbol]] =
-    perRunCaches.newMap[Symbol, List[Symbol]]()
+  private val guardedCtorStats: mutable.Map[Symbol, List[Tree]] = perRunCaches
+    .newMap[Symbol, List[Tree]]()
+  private val ctorParams: mutable.Map[Symbol, List[Symbol]] = perRunCaches
+    .newMap[Symbol, List[Symbol]]()
 
   class ConstructorTransformer(unit: CompilationUnit) extends Transformer {
     /*
@@ -281,8 +281,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       methodSym setInfoAndEnter MethodType(Nil, UnitTpe)
 
       // changeOwner needed because the `stats` contained in the DefDef were owned by the template, not long ago.
-      val blk =
-        Block(stats, gen.mkZero(UnitTpe)).changeOwner(impl.symbol -> methodSym)
+      val blk = Block(stats, gen.mkZero(UnitTpe))
+        .changeOwner(impl.symbol -> methodSym)
       val delayedDD = localTyper typed { DefDef(methodSym, Nil, blk) }
 
       delayedDD.asInstanceOf[DefDef]
@@ -483,14 +483,13 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
           guardedCtorStats(clazz) = stats
           ctorParams(clazz) = primaryConstrParams
 
-          val tree =
-            If(
-              Apply(
-                CODE.NOT(
-                  Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
-                List()),
-              Block(stats, Literal(Constant(()))),
-              EmptyTree)
+          val tree = If(
+            Apply(
+              CODE.NOT(
+                Apply(gen.mkAttributedRef(hasSpecializedFieldsSym), List())),
+              List()),
+            Block(stats, Literal(Constant(()))),
+            EmptyTree)
 
           List(localTyper.typed(tree))
         } else if (clazz.hasFlag(SPECIALIZED)) {
@@ -843,8 +842,8 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       //  Add the static initializers
       if (classInitStats.isEmpty) deriveTemplate(impl)(_ => prunedStats)
       else {
-        val staticCtor =
-          staticConstructor(prunedStats, localTyper, impl.pos)(classInitStats)
+        val staticCtor = staticConstructor(prunedStats, localTyper, impl.pos)(
+          classInitStats)
         deriveTemplate(impl)(_ => staticCtor :: prunedStats)
       }
     }

@@ -431,15 +431,15 @@ object SparkSubmit {
 
       // Distribute the SparkR package.
       // Assigns a symbol link name "sparkr" to the shipped package.
-      args.archives =
-        mergeFileLists(args.archives, sparkRPackageURI + "#sparkr")
+      args.archives = mergeFileLists(
+        args.archives,
+        sparkRPackageURI + "#sparkr")
 
       // Distribute the R package archive containing all the built R packages.
       if (!RUtils.rPackages.isEmpty) {
-        val rPackageFile =
-          RPackageUtils.zipRLibraries(
-            new File(RUtils.rPackages.get),
-            R_PACKAGE_ARCHIVE)
+        val rPackageFile = RPackageUtils.zipRLibraries(
+          new File(RUtils.rPackages.get),
+          R_PACKAGE_ARCHIVE)
         if (!rPackageFile.exists()) {
           printErrorAndExit("Failed to zip all the built R packages.")
         }
@@ -773,8 +773,9 @@ object SparkSubmit {
     // explicitly sets `spark.submit.pyFiles` in his/her default properties file.
     sysProps.get("spark.submit.pyFiles").foreach { pyFiles =>
       val resolvedPyFiles = Utils.resolveURIs(pyFiles)
-      val formattedPyFiles =
-        PythonRunner.formatPaths(resolvedPyFiles).mkString(",")
+      val formattedPyFiles = PythonRunner
+        .formatPaths(resolvedPyFiles)
+        .mkString(",")
       sysProps("spark.submit.pyFiles") = formattedPyFiles
     }
 
@@ -1111,8 +1112,10 @@ private[spark] object SparkSubmitUtils {
       artifacts: Seq[MavenCoordinate],
       ivyConfName: String): Unit = {
     artifacts.foreach { mvn =>
-      val ri =
-        ModuleRevisionId.newInstance(mvn.groupId, mvn.artifactId, mvn.version)
+      val ri = ModuleRevisionId.newInstance(
+        mvn.groupId,
+        mvn.artifactId,
+        mvn.version)
       val dd = new DefaultDependencyDescriptor(ri, false, false)
       dd.addDependencyConfiguration(ivyConfName, ivyConfName)
       // scalastyle:off println

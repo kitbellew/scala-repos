@@ -93,8 +93,8 @@ abstract class Filter[-ReqIn, +RepOut, +ReqOut, -RepIn]
   def andThen(
       factory: ServiceFactory[ReqOut, RepIn]): ServiceFactory[ReqIn, RepOut] =
     new ServiceFactory[ReqIn, RepOut] {
-      val fn: Service[ReqOut, RepIn] => Service[ReqIn, RepOut] =
-        svc => Filter.this.andThen(svc)
+      val fn: Service[ReqOut, RepIn] => Service[ReqIn, RepOut] = svc =>
+        Filter.this.andThen(svc)
       def apply(conn: ClientConnection): Future[Service[ReqIn, RepOut]] =
         factory(conn).map(fn)
       def close(deadline: Time) = factory.close(deadline)
@@ -144,8 +144,8 @@ object Filter {
         factory: ServiceFactory[ReqOut, RepIn]
     ): ServiceFactory[ReqIn, RepOut] =
       new ServiceFactory[ReqIn, RepOut] {
-        val fn: Service[ReqOut, RepIn] => Service[ReqIn, RepOut] =
-          svc => AndThen.this.andThen(svc)
+        val fn: Service[ReqOut, RepIn] => Service[ReqIn, RepOut] = svc =>
+          AndThen.this.andThen(svc)
         def apply(conn: ClientConnection): Future[Service[ReqIn, RepOut]] =
           factory(conn).map(fn)
         def close(deadline: Time) = factory.close(deadline)
@@ -209,11 +209,10 @@ object Filter {
   }
 
   object TypeAgnostic {
-    val Identity: TypeAgnostic =
-      new TypeAgnostic {
-        override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-          identity[Req, Rep]
-      }
+    val Identity: TypeAgnostic = new TypeAgnostic {
+      override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+        identity[Req, Rep]
+    }
   }
 
   def identity[Req, Rep]: SimpleFilter[Req, Rep] =
@@ -239,8 +238,8 @@ object Filter {
       pf: PartialFunction[Req, Filter[Req, Rep, Req, Rep]]
   ): Filter[Req, Rep, Req, Rep] =
     new Filter[Req, Rep, Req, Rep] {
-      private[this] val const: (Req => SimpleFilter[Req, Rep]) =
-        Function.const(Filter.identity[Req, Rep])
+      private[this] val const: (Req => SimpleFilter[Req, Rep]) = Function.const(
+        Filter.identity[Req, Rep])
 
       def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
         pf.applyOrElse(request, const)(request, service)

@@ -167,15 +167,15 @@ object FastEvalEngineWorkflow {
     val algoCount = algoMap.size
 
     // Model Train
-    val algoModelsMap: Map[EX, Map[AX, Any]] =
-      getPreparatorResult(workflow, new PreparatorPrefix(prefix))
-        .mapValues { pd => algoMap.mapValues(_.trainBase(workflow.sc, pd)) }
+    val algoModelsMap: Map[EX, Map[AX, Any]] = getPreparatorResult(
+      workflow,
+      new PreparatorPrefix(prefix))
+      .mapValues { pd => algoMap.mapValues(_.trainBase(workflow.sc, pd)) }
 
     // Predict
-    val dataSourceResult =
-      FastEvalEngineWorkflow.getDataSourceResult(
-        workflow = workflow,
-        prefix = new DataSourcePrefix(prefix))
+    val dataSourceResult = FastEvalEngineWorkflow.getDataSourceResult(
+      workflow = workflow,
+      prefix = new DataSourcePrefix(prefix))
 
     val algoResult: Map[EX, RDD[(QX, Seq[P])]] = dataSourceResult.par
       .map {
@@ -188,8 +188,10 @@ object FastEvalEngineWorkflow {
               {
                 val algo = algoMap(ax)
                 val model = modelsMap(ax)
-                val rawPredicts: RDD[(QX, P)] =
-                  algo.batchPredictBase(workflow.sc, model, qs)
+                val rawPredicts: RDD[(QX, P)] = algo.batchPredictBase(
+                  workflow.sc,
+                  model,
+                  qs)
 
                 val predicts: RDD[(QX, (AX, P))] = rawPredicts.map {
                   case (qx, p) => (qx, (ax, p))

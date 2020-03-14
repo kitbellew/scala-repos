@@ -220,8 +220,7 @@ class HealthCheckTest extends MarathonSpec {
   }
 
   test("Read COMMAND health check") {
-    val json =
-      """
+    val json = """
         {
           "protocol": "COMMAND",
           "command": { "value": "echo healthy" },
@@ -231,19 +230,17 @@ class HealthCheckTest extends MarathonSpec {
           "maxConsecutiveFailures": 3
         }
       """
-    val expected =
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        command = Some(Command("echo healthy"))
-      )
+    val expected = HealthCheck(
+      protocol = Protocol.COMMAND,
+      command = Some(Command("echo healthy"))
+    )
     val readResult = fromJson(json)
     assert(readResult == expected)
   }
 
   test(
     "Read COMMAND health check (portIndex may be provided for backwards-compatibility)") {
-    val json =
-      """
+    val json = """
         {
           "protocol": "COMMAND",
           "command": { "value": "echo healthy" },
@@ -254,12 +251,11 @@ class HealthCheckTest extends MarathonSpec {
           "maxConsecutiveFailures": 3
         }
       """
-    val expected =
-      HealthCheck(
-        protocol = Protocol.COMMAND,
-        command = Some(Command("echo healthy")),
-        portIndex = Some(0)
-      )
+    val expected = HealthCheck(
+      protocol = Protocol.COMMAND,
+      command = Some(Command("echo healthy")),
+      portIndex = Some(0)
+    )
     val readResult = fromJson(json)
     assert(readResult == expected)
   }

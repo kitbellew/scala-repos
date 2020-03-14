@@ -135,8 +135,7 @@ object Console {
     *
     *  @param out the new output stream.
     */
-  def setOut(out: OutputStream): Unit =
-    setOut(new PrintStream(out))
+  def setOut(out: OutputStream): Unit = setOut(new PrintStream(out))
 
   /** Sets the default output stream for the duration
     *  of execution of one thunk.
@@ -175,8 +174,7 @@ object Console {
     *
     *  @param err the new error stream.
     */
-  def setErr(err: OutputStream): Unit =
-    setErr(new PrintStream(err))
+  def setErr(err: OutputStream): Unit = setErr(new PrintStream(err))
 
   /** Sets the default error stream for the duration
     *  of execution of one thunk.

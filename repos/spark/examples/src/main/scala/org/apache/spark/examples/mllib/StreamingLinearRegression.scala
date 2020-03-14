@@ -55,8 +55,9 @@ object StreamingLinearRegression {
       System.exit(1)
     }
 
-    val conf =
-      new SparkConf().setMaster("local").setAppName("StreamingLinearRegression")
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName("StreamingLinearRegression")
     val ssc = new StreamingContext(conf, Seconds(args(2).toLong))
 
     val trainingData = ssc.textFileStream(args(0)).map(LabeledPoint.parse)

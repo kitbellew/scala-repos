@@ -8,8 +8,7 @@ object ScalaOptionParser {
 
   /** A SBT parser for the Scala command line runners (scala, scalac, etc) */
   def scalaParser(entryPoint: String, globalBase: File): Parser[String] = {
-    def BooleanSetting(name: String): Parser[String] =
-      token(name)
+    def BooleanSetting(name: String): Parser[String] = token(name)
     def StringSetting(name: String): Parser[String] = {
       val valueParser = name match {
         case "-d" => JarOrDirectoryParser

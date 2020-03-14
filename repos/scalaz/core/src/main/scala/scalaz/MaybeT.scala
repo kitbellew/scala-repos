@@ -56,8 +56,7 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
     mapO(_.getOrElse(default))
 
   /** Alias for `getOrElse`. */
-  def |(default: => A)(implicit F: Functor[F]): F[A] =
-    getOrElse(default)
+  def |(default: => A)(implicit F: Functor[F]): F[A] = getOrElse(default)
 
   def getOrElseF(default: => F[A])(implicit F: Monad[F]): F[A] =
     F.bind(self.run)(_.cata(F.point(_), default))
@@ -75,8 +74,7 @@ final case class MaybeT[F[_], A](run: F[Maybe[A]]) {
   def orElse(a: => MaybeT[F, A])(implicit F: Monad[F]): MaybeT[F, A] =
     MaybeT(F.bind(run)(_.cata(a => F.point(just(a)), a.run)))
 
-  def |||(a: => MaybeT[F, A])(implicit F: Monad[F]): MaybeT[F, A] =
-    orElse(a)
+  def |||(a: => MaybeT[F, A])(implicit F: Monad[F]): MaybeT[F, A] = orElse(a)
 
   def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] =
     EitherT(F.map(run)(_.toRight(e)))
@@ -263,8 +261,7 @@ private trait MaybeTMonadTell[F[_], W]
 
   implicit def F = MT
 
-  def writer[A](w: W, v: A): MaybeT[F, A] =
-    liftM[F, A](MT.writer(w, v))
+  def writer[A](w: W, v: A): MaybeT[F, A] = liftM[F, A](MT.writer(w, v))
 }
 
 private trait MaybeTMonadListen[F[_], W]

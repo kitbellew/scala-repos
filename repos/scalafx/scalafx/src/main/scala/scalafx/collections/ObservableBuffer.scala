@@ -255,8 +255,8 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
   *
   */
 class ObservableBuffer[T](
-    override val delegate: jfxc.ObservableList[T] =
-      jfxc.FXCollections.observableArrayList[T])
+    override val delegate: jfxc.ObservableList[T] = jfxc.FXCollections
+      .observableArrayList[T])
     extends mutable.Buffer[T]
     with mutable.BufferLike[T, ObservableBuffer[T]]
     with GenericTraversableTemplate[T, ObservableBuffer]

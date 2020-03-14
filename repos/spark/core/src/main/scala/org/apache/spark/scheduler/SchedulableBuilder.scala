@@ -139,8 +139,9 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
     var poolName = DEFAULT_POOL_NAME
     var parentPool = rootPool.getSchedulableByName(poolName)
     if (properties != null) {
-      poolName =
-        properties.getProperty(FAIR_SCHEDULER_PROPERTIES, DEFAULT_POOL_NAME)
+      poolName = properties.getProperty(
+        FAIR_SCHEDULER_PROPERTIES,
+        DEFAULT_POOL_NAME)
       parentPool = rootPool.getSchedulableByName(poolName)
       if (parentPool == null) {
         // we will create a new pool that user has configured in app

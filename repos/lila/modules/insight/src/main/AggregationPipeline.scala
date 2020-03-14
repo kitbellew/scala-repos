@@ -12,17 +12,16 @@ private final class AggregationPipeline {
   import Storage._
   import Entry.{BSONFields => F}
 
-  private lazy val movetimeIdDispatcher =
-    MovetimeRange.reversedNoInf
-      .foldLeft[BSONValue](BSONInteger(MovetimeRange.MTRInf.id)) {
-        case (acc, mtr) =>
-          BSONDocument(
-            "$cond" -> BSONArray(
-              BSONDocument(
-                "$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
-              mtr.id,
-              acc))
-      }
+  private lazy val movetimeIdDispatcher = MovetimeRange.reversedNoInf
+    .foldLeft[BSONValue](BSONInteger(MovetimeRange.MTRInf.id)) {
+      case (acc, mtr) =>
+        BSONDocument(
+          "$cond" -> BSONArray(
+            BSONDocument(
+              "$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
+            mtr.id,
+            acc))
+    }
   private lazy val materialIdDispatcher = BSONDocument(
     "$cond" -> BSONArray(
       BSONDocument("$eq" -> BSONArray("$" + F.moves("i"), 0)),

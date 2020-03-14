@@ -62,8 +62,9 @@ class HiveSparkSubmitSuite
     val jar3 = TestHive.getHiveFile("hive-contrib-0.13.1.jar").getCanonicalPath
     val jar4 =
       TestHive.getHiveFile("hive-hcatalog-core-0.13.1.jar").getCanonicalPath
-    val jarsString =
-      Seq(jar1, jar2, jar3, jar4).map(j => j.toString).mkString(",")
+    val jarsString = Seq(jar1, jar2, jar3, jar4)
+      .map(j => j.toString)
+      .mkString(",")
     val args = Seq(
       "--class",
       SparkSubmitClassLoaderTest.getClass.getName.stripSuffix("$"),
@@ -186,8 +187,8 @@ class HiveSparkSubmitSuite
     val commands = Seq("./bin/spark-submit") ++ args
     val commandLine = commands.mkString("'", "' '", "'")
 
-    val builder =
-      new ProcessBuilder(commands: _*).directory(new File(sparkHome))
+    val builder = new ProcessBuilder(commands: _*)
+      .directory(new File(sparkHome))
     val env = builder.environment()
     env.put("SPARK_TESTING", "1")
     env.put("SPARK_HOME", sparkHome)
@@ -252,8 +253,9 @@ object SparkSubmitClassLoaderTest extends Logging {
     conf.set("spark.ui.enabled", "false")
     val sc = new SparkContext(conf)
     val hiveContext = new TestHiveContext(sc)
-    val df =
-      hiveContext.createDataFrame((1 to 100).map(i => (i, i))).toDF("i", "j")
+    val df = hiveContext
+      .createDataFrame((1 to 100).map(i => (i, i)))
+      .toDF("i", "j")
     logInfo("Testing load classes at the driver side.")
     // First, we load classes at driver side.
     try {
@@ -290,10 +292,9 @@ object SparkSubmitClassLoaderTest extends Logging {
         |CREATE TEMPORARY FUNCTION example_max
         |AS 'org.apache.hadoop.hive.contrib.udaf.example.UDAFExampleMax'
       """.stripMargin)
-    val source =
-      hiveContext
-        .createDataFrame((1 to 10).map(i => (i, s"str$i")))
-        .toDF("key", "val")
+    val source = hiveContext
+      .createDataFrame((1 to 10).map(i => (i, s"str$i")))
+      .toDF("key", "val")
     source.registerTempTable("sourceTable")
     // Load a Hive SerDe from the jar.
     logInfo("Creating a Hive table with a SerDe provided in a jar.")
@@ -335,8 +336,8 @@ object SparkSQLConfTest extends Logging {
           conf == "spark.sql.hive.metastore.version" || conf == "spark.sql.hive.metastore.jars"
         }
         // If there is any metastore settings, remove them.
-        val filteredSettings =
-          super.getAll.filterNot(e => isMetastoreSetting(e._1))
+        val filteredSettings = super.getAll.filterNot(e =>
+          isMetastoreSetting(e._1))
 
         // Always add these two metastore settings at the beginning.
         ("spark.sql.hive.metastore.version" -> "0.12") +:
@@ -379,10 +380,9 @@ object SPARK_9757 extends QueryTest {
 
     try {
       {
-        val df =
-          hiveContext
-            .range(10)
-            .select(('id + 0.1) cast DecimalType(10, 3) as 'dec)
+        val df = hiveContext
+          .range(10)
+          .select(('id + 0.1) cast DecimalType(10, 3) as 'dec)
         df.write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
@@ -391,13 +391,12 @@ object SPARK_9757 extends QueryTest {
       }
 
       {
-        val df =
-          hiveContext
-            .range(10)
-            .select(
-              callUDF(
-                "struct",
-                ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
+        val df = hiveContext
+          .range(10)
+          .select(
+            callUDF(
+              "struct",
+              ('id + 0.2) cast DecimalType(10, 3)) as 'dec_struct)
         df.write
           .option("path", dir.getCanonicalPath)
           .mode("overwrite")
@@ -430,8 +429,9 @@ object SPARK_11009 extends QueryTest {
 
     try {
       val df = sqlContext.range(1 << 20)
-      val df2 =
-        df.select((df("id") % 1000).alias("A"), (df("id") / 1000).alias("B"))
+      val df2 = df.select(
+        (df("id") % 1000).alias("A"),
+        (df("id") / 1000).alias("B"))
       val ws = Window.partitionBy(df2("A")).orderBy(df2("B"))
       val df3 = df2
         .select(df2("A"), df2("B"), row_number().over(ws).alias("rn"))

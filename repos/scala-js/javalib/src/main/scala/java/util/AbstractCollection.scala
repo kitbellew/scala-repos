@@ -11,11 +11,9 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
 
   def isEmpty(): Boolean = size == 0
 
-  def contains(o: Any): Boolean =
-    iterator.exists(o === _)
+  def contains(o: Any): Boolean = iterator.exists(o === _)
 
-  def toArray(): Array[AnyRef] =
-    toArray(new Array[AnyRef](size))
+  def toArray(): Array[AnyRef] = toArray(new Array[AnyRef](size))
 
   def toArray[T <: AnyRef](a: Array[T]): Array[T] = {
     val toFill: Array[T] =
@@ -31,8 +29,7 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
     toFill
   }
 
-  def add(e: E): Boolean =
-    throw new UnsupportedOperationException()
+  def add(e: E): Boolean = throw new UnsupportedOperationException()
 
   def remove(o: Any): Boolean = {
     @tailrec
@@ -53,14 +50,11 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
   def addAll(c: Collection[_ <: E]): Boolean =
     c.foldLeft(false)((prev, elem) => add(elem) || prev)
 
-  def removeAll(c: Collection[_]): Boolean =
-    removeWhere(c.contains(_))
+  def removeAll(c: Collection[_]): Boolean = removeWhere(c.contains(_))
 
-  def retainAll(c: Collection[_]): Boolean =
-    removeWhere(!c.contains(_))
+  def retainAll(c: Collection[_]): Boolean = removeWhere(!c.contains(_))
 
-  def clear(): Unit =
-    removeWhere(_ => true)
+  def clear(): Unit = removeWhere(_ => true)
 
   private def removeWhere(p: Any => Boolean): Boolean = {
     val iter = iterator()
@@ -74,6 +68,5 @@ abstract class AbstractCollection[E] protected () extends Collection[E] {
     changed
   }
 
-  override def toString(): String =
-    iterator.mkString("[", ",", "]")
+  override def toString(): String = iterator.mkString("[", ",", "]")
 }

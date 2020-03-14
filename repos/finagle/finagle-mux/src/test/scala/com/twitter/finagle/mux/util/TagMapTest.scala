@@ -12,11 +12,10 @@ class TagMapTest extends FunSuite with GeneratorDrivenPropertyChecks {
   val min = 8
   val max = 10000
 
-  implicit val genTagSet: Arbitrary[TagSet] =
-    Arbitrary(for {
-      start <- Gen.choose(0, max)
-      end <- Gen.choose(start, max - min)
-    } yield TagSet(start to end + min))
+  implicit val genTagSet: Arbitrary[TagSet] = Arbitrary(for {
+    start <- Gen.choose(0, max)
+    end <- Gen.choose(start, max - min)
+  } yield TagSet(start to end + min))
 
   test("map tags to elems") {
     forAll { set: TagSet =>

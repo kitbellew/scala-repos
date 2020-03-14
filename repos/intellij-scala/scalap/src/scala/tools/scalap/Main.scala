@@ -137,8 +137,8 @@ object Main {
           case ConstValueIndex(index) => constantWrapped(index)
         }).asInstanceOf[StringBytesPair].bytes)
         val length = ByteCodecs.decode(bytes)
-        val scalaSig =
-          ScalaSigAttributeParsers.parse(ByteCode(bytes.take(length)))
+        val scalaSig = ScalaSigAttributeParsers.parse(
+          ByteCode(bytes.take(length)))
         parseScalaSignature(scalaSig, isPackageObject)
     }
   }

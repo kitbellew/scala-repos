@@ -103,8 +103,10 @@ class DynamicConfigManager(
               throw new IllegalArgumentException(
                 "Config change notification does not specify 'entity_name'. Received: " + json)
           }
-          val entityConfig =
-            AdminUtils.fetchEntityConfig(zkUtils, entityType, entity)
+          val entityConfig = AdminUtils.fetchEntityConfig(
+            zkUtils,
+            entityType,
+            entity)
           logger.info(
             s"Processing override for entityType: $entityType, entity: $entity with config: $entityConfig")
           configHandlers(entityType).processConfigChanges(entity, entityConfig)

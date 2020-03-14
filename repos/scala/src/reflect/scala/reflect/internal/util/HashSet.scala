@@ -12,8 +12,7 @@ object HashSet {
     this("No Label", initialCapacity)
   def apply[T >: Null <: AnyRef](
       label: String,
-      initialCapacity: Int): HashSet[T] =
-    new HashSet[T](label, initialCapacity)
+      initialCapacity: Int): HashSet[T] = new HashSet[T](label, initialCapacity)
 }
 
 class HashSet[T >: Null <: AnyRef](val label: String, initialCapacity: Int)

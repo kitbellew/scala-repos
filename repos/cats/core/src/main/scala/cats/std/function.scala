@@ -7,18 +7,15 @@ import cats.data.Xor
 import cats.functor.Contravariant
 
 private[std] sealed trait Function0Instances {
-  implicit val function0Instance: Bimonad[Function0] =
-    new Bimonad[Function0] {
-      def extract[A](x: () => A): A = x()
+  implicit val function0Instance: Bimonad[Function0] = new Bimonad[Function0] {
+    def extract[A](x: () => A): A = x()
 
-      def coflatMap[A, B](fa: () => A)(f: (() => A) => B): () => B =
-        () => f(fa)
+    def coflatMap[A, B](fa: () => A)(f: (() => A) => B): () => B = () => f(fa)
 
-      def pure[A](x: A): () => A = () => x
+    def pure[A](x: A): () => A = () => x
 
-      def flatMap[A, B](fa: () => A)(f: A => () => B): () => B =
-        () => f(fa())()
-    }
+    def flatMap[A, B](fa: () => A)(f: A => () => B): () => B = () => f(fa())()
+  }
 
   implicit def eqFunction0[A](implicit A: Eq[A]): Eq[() => A] =
     new Eq[() => A] {
@@ -29,8 +26,7 @@ private[std] sealed trait Function0Instances {
 private[std] sealed trait Function1Instances extends Function1Instances0 {
   implicit def function1Contravariant[R]: Contravariant[? => R] =
     new Contravariant[? => R] {
-      def contramap[T1, T0](fa: T1 => R)(f: T0 => T1): T0 => R =
-        fa.compose(f)
+      def contramap[T1, T0](fa: T1 => R)(f: T0 => T1): T0 => R = fa.compose(f)
     }
 
   implicit def function1Covariant[T1]: MonadReader[T1 => ?, T1] =

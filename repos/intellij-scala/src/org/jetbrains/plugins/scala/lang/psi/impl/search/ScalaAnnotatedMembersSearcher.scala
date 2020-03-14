@@ -42,8 +42,8 @@ class ScalaAnnotatedMembersSearcher
 
     ApplicationManager.getApplication.runReadAction(new Computable[Boolean] {
       def compute: Boolean = {
-        val candidates: java.util.Collection[ScAnnotation] =
-          StubIndex.getElements(
+        val candidates: java.util.Collection[ScAnnotation] = StubIndex
+          .getElements(
             ScAnnotatedMemberIndex.KEY,
             annClass.name,
             annClass.getProject,

@@ -112,8 +112,7 @@ class MasterSuite
       webUiAddress = "http://localhost:80"
     )
 
-    val (rpcEnv, _, _) =
-      Master.startRpcEnvAndEndpoint("127.0.0.1", 0, 0, conf)
+    val (rpcEnv, _, _) = Master.startRpcEnvAndEndpoint("127.0.0.1", 0, 0, conf)
 
     try {
       rpcEnv.setupEndpointRef(rpcEnv.address, Master.ENDPOINT_NAME)
@@ -241,16 +240,22 @@ class MasterSuite
   private def basicScheduling(spreadOut: Boolean): Unit = {
     val master = makeMaster()
     val appInfo = makeAppInfo(1024)
-    val scheduledCores =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores === Array(10, 10, 10))
   }
 
   private def basicSchedulingWithMoreMemory(spreadOut: Boolean): Unit = {
     val master = makeMaster()
     val appInfo = makeAppInfo(3072)
-    val scheduledCores =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores === Array(10, 10, 10))
   }
 
@@ -258,10 +263,16 @@ class MasterSuite
     val master = makeMaster()
     val appInfo1 = makeAppInfo(1024, maxCores = Some(8))
     val appInfo2 = makeAppInfo(1024, maxCores = Some(16))
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo1, workerInfos, spreadOut)
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo2, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo1,
+      workerInfos,
+      spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo2,
+      workerInfos,
+      spreadOut)
     if (spreadOut) {
       assert(scheduledCores1 === Array(3, 3, 2))
       assert(scheduledCores2 === Array(6, 5, 5))
@@ -276,12 +287,21 @@ class MasterSuite
     val appInfo1 = makeAppInfo(1024, coresPerExecutor = Some(2))
     val appInfo2 = makeAppInfo(256, coresPerExecutor = Some(2))
     val appInfo3 = makeAppInfo(256, coresPerExecutor = Some(3))
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo1, workerInfos, spreadOut)
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo2, workerInfos, spreadOut)
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo3, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo1,
+      workerInfos,
+      spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo2,
+      workerInfos,
+      spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo3,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores1 === Array(8, 8, 8)) // 4 * 2 because of memory limits
     assert(scheduledCores2 === Array(10, 10, 10)) // 5 * 2
     assert(scheduledCores3 === Array(9, 9, 9)) // 3 * 3
@@ -291,18 +311,33 @@ class MasterSuite
   private def schedulingWithCoresPerExecutorAndMaxCores(
       spreadOut: Boolean): Unit = {
     val master = makeMaster()
-    val appInfo1 =
-      makeAppInfo(256, coresPerExecutor = Some(2), maxCores = Some(4))
-    val appInfo2 =
-      makeAppInfo(256, coresPerExecutor = Some(2), maxCores = Some(20))
-    val appInfo3 =
-      makeAppInfo(256, coresPerExecutor = Some(3), maxCores = Some(20))
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo1, workerInfos, spreadOut)
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo2, workerInfos, spreadOut)
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo3, workerInfos, spreadOut)
+    val appInfo1 = makeAppInfo(
+      256,
+      coresPerExecutor = Some(2),
+      maxCores = Some(4))
+    val appInfo2 = makeAppInfo(
+      256,
+      coresPerExecutor = Some(2),
+      maxCores = Some(20))
+    val appInfo3 = makeAppInfo(
+      256,
+      coresPerExecutor = Some(3),
+      maxCores = Some(20))
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo1,
+      workerInfos,
+      spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo2,
+      workerInfos,
+      spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo3,
+      workerInfos,
+      spreadOut)
     if (spreadOut) {
       assert(scheduledCores1 === Array(2, 2, 0))
       assert(scheduledCores2 === Array(8, 6, 6))
@@ -318,14 +353,23 @@ class MasterSuite
     val master = makeMaster()
     val appInfo = makeAppInfo(256)
     appInfo.executorLimit = 0
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 2
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 5
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
     assert(scheduledCores2 === Array(10, 10, 0))
     assert(scheduledCores3 === Array(10, 10, 10))
@@ -336,14 +380,23 @@ class MasterSuite
     val master = makeMaster()
     val appInfo = makeAppInfo(256, maxCores = Some(16))
     appInfo.executorLimit = 0
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 2
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 5
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
     if (spreadOut) {
       assert(scheduledCores2 === Array(8, 8, 0))
@@ -359,14 +412,23 @@ class MasterSuite
     val master = makeMaster()
     val appInfo = makeAppInfo(256, coresPerExecutor = Some(4))
     appInfo.executorLimit = 0
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 2
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 5
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
     if (spreadOut) { assert(scheduledCores2 === Array(4, 4, 0)) }
     else { assert(scheduledCores2 === Array(8, 0, 0)) }
@@ -376,17 +438,28 @@ class MasterSuite
   // Everything being: executor limit + cores per executor + max cores
   private def schedulingWithEverything(spreadOut: Boolean): Unit = {
     val master = makeMaster()
-    val appInfo =
-      makeAppInfo(256, coresPerExecutor = Some(4), maxCores = Some(18))
+    val appInfo = makeAppInfo(
+      256,
+      coresPerExecutor = Some(4),
+      maxCores = Some(18))
     appInfo.executorLimit = 0
-    val scheduledCores1 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores1 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 2
-    val scheduledCores2 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores2 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     appInfo.executorLimit = 5
-    val scheduledCores3 =
-      scheduleExecutorsOnWorkers(master, appInfo, workerInfos, spreadOut)
+    val scheduledCores3 = scheduleExecutorsOnWorkers(
+      master,
+      appInfo,
+      workerInfos,
+      spreadOut)
     assert(scheduledCores1 === Array(0, 0, 0))
     if (spreadOut) {
       assert(scheduledCores2 === Array(4, 4, 0))
@@ -401,16 +474,20 @@ class MasterSuite
   // | Utility methods and fields for testing |
   // ==========================================
 
-  private val _scheduleExecutorsOnWorkers =
-    PrivateMethod[Array[Int]]('scheduleExecutorsOnWorkers)
+  private val _scheduleExecutorsOnWorkers = PrivateMethod[Array[Int]](
+    'scheduleExecutorsOnWorkers)
   private val workerInfo = makeWorkerInfo(4096, 10)
   private val workerInfos = Array(workerInfo, workerInfo, workerInfo)
 
   private def makeMaster(conf: SparkConf = new SparkConf): Master = {
     assert(_master === null, "Some Master's RpcEnv is leaked in tests")
     val securityMgr = new SecurityManager(conf)
-    val rpcEnv =
-      RpcEnv.create(Master.SYSTEM_NAME, "localhost", 0, conf, securityMgr)
+    val rpcEnv = RpcEnv.create(
+      Master.SYSTEM_NAME,
+      "localhost",
+      0,
+      conf,
+      securityMgr)
     _master = new Master(rpcEnv, rpcEnv.address, 0, securityMgr, conf)
     _master
   }
@@ -458,8 +535,8 @@ class MasterSuite
     val master = makeMaster()
     master.rpcEnv.setupEndpoint(Master.ENDPOINT_NAME, master)
     eventually(timeout(10.seconds)) {
-      val masterState =
-        master.self.askWithRetry[MasterStateResponse](RequestMasterState)
+      val masterState = master.self
+        .askWithRetry[MasterStateResponse](RequestMasterState)
       assert(masterState.status === RecoveryState.ALIVE, "Master is not alive")
     }
 

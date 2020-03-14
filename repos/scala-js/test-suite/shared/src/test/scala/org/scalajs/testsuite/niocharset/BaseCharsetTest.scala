@@ -38,8 +38,7 @@ class BaseCharsetTest(val charset: Charset) {
       decoder.onMalformedInput(malformedAction)
       decoder.onUnmappableCharacter(unmappableAction)
 
-      val inBuf =
-        if (readOnly) in.asReadOnlyBuffer() else in.duplicate()
+      val inBuf = if (readOnly) in.asReadOnlyBuffer() else in.duplicate()
       assert(inBuf.isReadOnly == readOnly)
       assert(inBuf.hasArray != readOnly)
 
@@ -124,8 +123,7 @@ class BaseCharsetTest(val charset: Charset) {
       encoder.onMalformedInput(malformedAction)
       encoder.onUnmappableCharacter(unmappableAction)
 
-      val inBuf =
-        if (readOnly) in.asReadOnlyBuffer() else in.duplicate()
+      val inBuf = if (readOnly) in.asReadOnlyBuffer() else in.duplicate()
       assertTrue(inBuf.isReadOnly == readOnly)
       assertTrue(inBuf.hasArray != readOnly)
 
@@ -206,8 +204,7 @@ object BaseCharsetTest {
 
   object OutPart {
     implicit def fromBuffer[BufferType <: Buffer](
-        buf: BufferType): BufferPart[BufferType] =
-      BufferPart(buf)
+        buf: BufferType): BufferPart[BufferType] = BufferPart(buf)
   }
 
   implicit class Interpolators(val sc: StringContext) extends AnyVal {
@@ -237,7 +234,6 @@ object BaseCharsetTest {
       ByteBuffer.wrap(buf.result())
     }
 
-    def cb(args: Any*): CharBuffer =
-      CharBuffer.wrap(sc.s(args: _*).toCharArray)
+    def cb(args: Any*): CharBuffer = CharBuffer.wrap(sc.s(args: _*).toCharArray)
   }
 }

@@ -119,8 +119,9 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     assert(!eventLog.isDirectory)
 
     // Replay events
-    val logData =
-      EventLoggingListener.openEventLog(eventLog.getPath(), fileSystem)
+    val logData = EventLoggingListener.openEventLog(
+      eventLog.getPath(),
+      fileSystem)
     val eventMonster = new EventMonster(conf)
     try {
       val replayer = new ReplayListenerBus()

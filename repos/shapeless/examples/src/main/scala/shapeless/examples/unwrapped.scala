@@ -79,14 +79,12 @@ object UnwrappedExamples {
     def toJsonFragment(t: T): String
   }
   object EncodeValue {
-    implicit lazy val encodeString =
-      new EncodeValue[String] {
-        def toJsonFragment(s: String) = s""""$s""""
-      }
-    implicit lazy val encodeInt =
-      new EncodeValue[Int] {
-        def toJsonFragment(i: Int) = s"""$i"""
-      }
+    implicit lazy val encodeString = new EncodeValue[String] {
+      def toJsonFragment(s: String) = s""""$s""""
+    }
+    implicit lazy val encodeInt = new EncodeValue[Int] {
+      def toJsonFragment(i: Int) = s"""$i"""
+    }
     implicit def encodeRoot[T](implicit r: Lazy[Encode[T]]) =
       new EncodeValue[T] {
         def toJsonFragment(t: T) = r.value.toJson(t)

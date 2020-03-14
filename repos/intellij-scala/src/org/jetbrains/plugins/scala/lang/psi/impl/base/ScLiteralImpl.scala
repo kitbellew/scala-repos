@@ -104,8 +104,10 @@ class ScLiteralImpl(node: ASTNode)
           text = text.substring(1, textLength - 1)
         } else { text = text.substring(1, textLength) }
         val chars: StringBuilder = new StringBuilder
-        val success: Boolean =
-          PsiLiteralExpressionImpl.parseStringCharacters(text, chars, null)
+        val success: Boolean = PsiLiteralExpressionImpl.parseStringCharacters(
+          text,
+          chars,
+          null)
         if (!success) return null
         if (chars.length != 1) return null
         Character.valueOf(chars.charAt(0))

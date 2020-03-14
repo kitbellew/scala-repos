@@ -58,8 +58,8 @@ trait Resizer {
 object Resizer {
   def fromConfig(parentConfig: Config): Option[Resizer] = {
     val defaultResizerConfig = parentConfig.getConfig("resizer")
-    val metricsBasedResizerConfig =
-      parentConfig.getConfig("optimal-size-exploring-resizer")
+    val metricsBasedResizerConfig = parentConfig.getConfig(
+      "optimal-size-exploring-resizer")
     (
       defaultResizerConfig.getBoolean("enabled"),
       metricsBasedResizerConfig.getBoolean("enabled")) match {
@@ -321,13 +321,13 @@ private[akka] final class ResizablePoolCell(
       tryReportMessageCount()
       val requestedCapacity = resizer.resize(router.routees)
       if (requestedCapacity > 0) {
-        val newRoutees =
-          Vector.fill(requestedCapacity)(pool.newRoutee(routeeProps, this))
+        val newRoutees = Vector.fill(requestedCapacity)(
+          pool.newRoutee(routeeProps, this))
         addRoutees(newRoutees)
       } else if (requestedCapacity < 0) {
         val currentRoutees = router.routees
-        val abandon =
-          currentRoutees.drop(currentRoutees.length + requestedCapacity)
+        val abandon = currentRoutees.drop(
+          currentRoutees.length + requestedCapacity)
         removeRoutees(abandon, stopChild = true)
       }
     } finally resizeInProgress.set(false)

@@ -337,20 +337,18 @@ object StringHelpersSpec extends Specification with ScalaCheck with StringGen {
 }
 
 trait StringGen {
-  val underscoredStrings =
-    for {
-      length <- choose(0, 4)
-      s <- listOfN(length, frequency((3, alphaChar), (1, oneOf(List('_')))))
-    } yield s.mkString
+  val underscoredStrings = for {
+    length <- choose(0, 4)
+    s <- listOfN(length, frequency((3, alphaChar), (1, oneOf(List('_')))))
+  } yield s.mkString
 
-  val camelCasedStrings =
-    for {
-      length <- choose(0, 4)
-      firstLetter <- alphaNumChar.map(_.toUpper)
-      string <- listOfN(
-        length,
-        frequency(
-          (3, alphaNumChar.map(_.toLower)),
-          (1, alphaNumChar.map(_.toUpper))))
-    } yield (firstLetter :: string).mkString
+  val camelCasedStrings = for {
+    length <- choose(0, 4)
+    firstLetter <- alphaNumChar.map(_.toUpper)
+    string <- listOfN(
+      length,
+      frequency(
+        (3, alphaNumChar.map(_.toLower)),
+        (1, alphaNumChar.map(_.toUpper))))
+  } yield (firstLetter :: string).mkString
 }

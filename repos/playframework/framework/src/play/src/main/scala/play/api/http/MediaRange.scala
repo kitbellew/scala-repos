@@ -212,8 +212,9 @@ object MediaRange {
           logger.debug(msg + ": " + charSeqToString(chars))
           None
       }
-    val badParameter =
-      badPart(c => c != ',' && c != ';', "Bad media type parameter")
+    val badParameter = badPart(
+      c => c != ',' && c != ';',
+      "Bad media type parameter")
     val badMediaType = badPart(c => c != ',', "Bad media type")
 
     def tolerant[T](p: Parser[T], bad: Parser[Option[T]]) =
@@ -233,8 +234,9 @@ object MediaRange {
     }
 
     // Either it's a valid parameter followed immediately by the end, a comma or a semicolon, or it's a bad parameter
-    val tolerantParameter =
-      tolerant(parameter <~ guard(end | ';' | ','), badParameter)
+    val tolerantParameter = tolerant(
+      parameter <~ guard(end | ';' | ','),
+      badParameter)
 
     val parameters = rep(';' ~> rep(' ') ~> tolerantParameter <~ rep(' '))
     val mediaType: Parser[MediaType] =
@@ -279,8 +281,9 @@ object MediaRange {
     }
 
     // Either it's a valid media range followed immediately by the end or a comma, or it's a bad media type
-    val tolerantMediaRange =
-      tolerant(mediaRange <~ guard(end | ','), badMediaType)
+    val tolerantMediaRange = tolerant(
+      mediaRange <~ guard(end | ','),
+      badMediaType)
 
     val mediaRanges = rep1sep(tolerantMediaRange, ',' ~ rep(' ')).map(_.flatten)
 

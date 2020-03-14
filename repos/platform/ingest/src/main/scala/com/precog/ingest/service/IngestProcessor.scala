@@ -174,8 +174,9 @@ class DefaultIngestProcessingSelectors(
     def select(
         partialData: Array[Byte],
         request: HttpRequest[_]): Option[IngestProcessing] = {
-      val (AsyncParse(errors, values), parser) =
-        AsyncParser.stream().apply(More(ByteBuffer.wrap(partialData)))
+      val (AsyncParse(errors, values), parser) = AsyncParser
+        .stream()
+        .apply(More(ByteBuffer.wrap(partialData)))
       if (errors.isEmpty && !values.isEmpty) {
         request.headers
           .header[`Content-Type`]

@@ -44,29 +44,25 @@ trait TypeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object isNumber extends Op1(TypeNamespace, "isNumber") {
       val tpe = UnaryOperationType(JType.JUniverseT, JBooleanT)
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.IsType(source, JNumberT)
+          source: TransSpec[A]): TransSpec[A] = trans.IsType(source, JNumberT)
     }
 
     object isBoolean extends Op1(TypeNamespace, "isBoolean") {
       val tpe = UnaryOperationType(JType.JUniverseT, JBooleanT)
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.IsType(source, JBooleanT)
+          source: TransSpec[A]): TransSpec[A] = trans.IsType(source, JBooleanT)
     }
 
     object isNull extends Op1(TypeNamespace, "isNull") {
       val tpe = UnaryOperationType(JType.JUniverseT, JBooleanT)
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.IsType(source, JNullT)
+          source: TransSpec[A]): TransSpec[A] = trans.IsType(source, JNullT)
     }
 
     object isString extends Op1(TypeNamespace, "isString") {
       val tpe = UnaryOperationType(JType.JUniverseT, JBooleanT)
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.IsType(source, JTextT)
+          source: TransSpec[A]): TransSpec[A] = trans.IsType(source, JTextT)
     }
 
     object isObject extends Op1(TypeNamespace, "isObject") {

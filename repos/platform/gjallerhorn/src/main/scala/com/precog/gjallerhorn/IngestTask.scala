@@ -56,8 +56,8 @@ class IngestTask(settings: Settings)
           << simpleData)
       val res = http(req)()
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         (json \ "size").deserialize[Long] must_== 5
       }
     }
@@ -82,8 +82,8 @@ class IngestTask(settings: Settings)
       }
 
       EventuallyResults.eventually(20, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         (json \ "size").deserialize[Long] must_== 100
       }
     }

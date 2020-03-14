@@ -265,8 +265,8 @@ class MetastoreDataSourcesSuite
           sql("SELECT `c_!@(3)` FROM expectedJsonTable").collect().toSeq)
 
         invalidateTable("jsonTable")
-        val expectedSchema =
-          StructType(StructField("c_!@(3)", IntegerType, true) :: Nil)
+        val expectedSchema = StructType(
+          StructField("c_!@(3)", IntegerType, true) :: Nil)
 
         assert(expectedSchema === table("jsonTable").schema)
       }
@@ -368,9 +368,8 @@ class MetastoreDataSourcesSuite
            |)
          """.stripMargin)
 
-      val expectedPath =
-        sessionState.catalog.hiveDefaultTableFilePath(
-          TableIdentifier("ctasJsonTable"))
+      val expectedPath = sessionState.catalog.hiveDefaultTableFilePath(
+        TableIdentifier("ctasJsonTable"))
       val filesystemPath = new Path(expectedPath)
       val fs = filesystemPath.getFileSystem(sparkContext.hadoopConfiguration)
       if (fs.exists(filesystemPath)) fs.delete(filesystemPath, true)
@@ -589,12 +588,11 @@ class MetastoreDataSourcesSuite
     withTable("arrayInParquet") {
       {
         val df = (Tuple1(Seq(Int.box(1), null: Integer)) :: Nil).toDF("a")
-        val expectedSchema =
-          StructType(
-            StructField(
-              "a",
-              ArrayType(IntegerType, containsNull = true),
-              nullable = true) :: Nil)
+        val expectedSchema = StructType(
+          StructField(
+            "a",
+            ArrayType(IntegerType, containsNull = true),
+            nullable = true) :: Nil)
 
         assert(df.schema === expectedSchema)
 
@@ -606,12 +604,11 @@ class MetastoreDataSourcesSuite
 
       {
         val df = (Tuple1(Seq(2, 3)) :: Nil).toDF("a")
-        val expectedSchema =
-          StructType(
-            StructField(
-              "a",
-              ArrayType(IntegerType, containsNull = false),
-              nullable = true) :: Nil)
+        val expectedSchema = StructType(
+          StructField(
+            "a",
+            ArrayType(IntegerType, containsNull = false),
+            nullable = true) :: Nil)
 
         assert(df.schema === expectedSchema)
 
@@ -650,12 +647,11 @@ class MetastoreDataSourcesSuite
     withTable("mapInParquet") {
       {
         val df = (Tuple1(Map(1 -> (null: Integer))) :: Nil).toDF("a")
-        val expectedSchema =
-          StructType(
-            StructField(
-              "a",
-              MapType(IntegerType, IntegerType, valueContainsNull = true),
-              nullable = true) :: Nil)
+        val expectedSchema = StructType(
+          StructField(
+            "a",
+            MapType(IntegerType, IntegerType, valueContainsNull = true),
+            nullable = true) :: Nil)
 
         assert(df.schema === expectedSchema)
 
@@ -667,12 +663,11 @@ class MetastoreDataSourcesSuite
 
       {
         val df = (Tuple1(Map(2 -> 3)) :: Nil).toDF("a")
-        val expectedSchema =
-          StructType(
-            StructField(
-              "a",
-              MapType(IntegerType, IntegerType, valueContainsNull = false),
-              nullable = true) :: Nil)
+        val expectedSchema = StructType(
+          StructField(
+            "a",
+            MapType(IntegerType, IntegerType, valueContainsNull = false),
+            nullable = true) :: Nil)
 
         assert(df.schema === expectedSchema)
 
@@ -775,21 +770,21 @@ class MetastoreDataSourcesSuite
     withTable(tableName) {
       df.write.format("parquet").partitionBy("d", "b").saveAsTable(tableName)
       invalidateTable(tableName)
-      val metastoreTable =
-        sessionState.catalog.client.getTable("default", tableName)
-      val expectedPartitionColumns =
-        StructType(df.schema("d") :: df.schema("b") :: Nil)
+      val metastoreTable = sessionState.catalog.client
+        .getTable("default", tableName)
+      val expectedPartitionColumns = StructType(
+        df.schema("d") :: df.schema("b") :: Nil)
 
       val numPartCols =
         metastoreTable.properties("spark.sql.sources.schema.numPartCols").toInt
       assert(numPartCols == 2)
 
-      val actualPartitionColumns =
-        StructType((0 until numPartCols).map { index =>
+      val actualPartitionColumns = StructType((0 until numPartCols).map {
+        index =>
           df.schema(
             metastoreTable.properties(
               s"spark.sql.sources.schema.partCol.$index"))
-        })
+      })
       // Make sure partition columns are correctly stored in metastore.
       assert(
         expectedPartitionColumns.sameType(actualPartitionColumns),
@@ -817,10 +812,10 @@ class MetastoreDataSourcesSuite
         .sortBy("c")
         .saveAsTable(tableName)
       invalidateTable(tableName)
-      val metastoreTable =
-        sessionState.catalog.client.getTable("default", tableName)
-      val expectedBucketByColumns =
-        StructType(df.schema("d") :: df.schema("b") :: Nil)
+      val metastoreTable = sessionState.catalog.client
+        .getTable("default", tableName)
+      val expectedBucketByColumns = StructType(
+        df.schema("d") :: df.schema("b") :: Nil)
       val expectedSortByColumns = StructType(df.schema("c") :: Nil)
 
       val numBuckets =
@@ -836,12 +831,12 @@ class MetastoreDataSourcesSuite
         metastoreTable.properties("spark.sql.sources.schema.numSortCols").toInt
       assert(numSortCols == 1)
 
-      val actualBucketByColumns =
-        StructType((0 until numBucketCols).map { index =>
+      val actualBucketByColumns = StructType((0 until numBucketCols).map {
+        index =>
           df.schema(
             metastoreTable.properties(
               s"spark.sql.sources.schema.bucketCol.$index"))
-        })
+      })
       // Make sure bucketBy columns are correctly stored in metastore.
       assert(
         expectedBucketByColumns.sameType(actualBucketByColumns),
@@ -849,12 +844,10 @@ class MetastoreDataSourcesSuite
           s"partition columns defined by the saveAsTable operation $expectedBucketByColumns."
       )
 
-      val actualSortByColumns =
-        StructType((0 until numSortCols).map { index =>
-          df.schema(
-            metastoreTable.properties(
-              s"spark.sql.sources.schema.sortCol.$index"))
-        })
+      val actualSortByColumns = StructType((0 until numSortCols).map { index =>
+        df.schema(
+          metastoreTable.properties(s"spark.sql.sources.schema.sortCol.$index"))
+      })
       // Make sure sortBy columns are correctly stored in metastore.
       assert(
         expectedSortByColumns.sameType(actualSortByColumns),
@@ -964,8 +957,9 @@ class MetastoreDataSourcesSuite
       partitionColumns = Array.empty[String],
       bucketSpec = None,
       provider = "parquet",
-      options =
-        Map("path" -> "just a dummy path", "skipHiveMetadata" -> "false"),
+      options = Map(
+        "path" -> "just a dummy path",
+        "skipHiveMetadata" -> "false"),
       isExternal = false
     )
 
@@ -984,8 +978,9 @@ class MetastoreDataSourcesSuite
       partitionColumns = Array.empty[String],
       bucketSpec = None,
       provider = "parquet",
-      options =
-        Map("path" -> "just a dummy path", "skipHiveMetadata" -> "true"),
+      options = Map(
+        "path" -> "just a dummy path",
+        "skipHiveMetadata" -> "true"),
       isExternal = false
     )
 

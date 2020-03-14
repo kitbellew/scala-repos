@@ -87,8 +87,7 @@ trait TimeLikeOps[This <: TimeLike[This]] {
     * }}}
     */
   object Finite {
-    def unapply(x: This): Option[This] =
-      if (x.isFinite) Some(x) else None
+    def unapply(x: This): Option[This] = if (x.isFinite) Some(x) else None
   }
 
   /** Make a new `This` from the given number of nanoseconds */
@@ -227,11 +226,9 @@ trait TimeLike[This <: TimeLike[This]] extends Ordered[This] { self: This =>
       case (_, _)                          => Undefined
     }
 
-  def max(that: This): This =
-    if ((this compare that) < 0) that else this
+  def max(that: This): This = if ((this compare that) < 0) that else this
 
-  def min(that: This): This =
-    if ((this compare that) < 0) this else that
+  def min(that: This): This = if ((this compare that) < 0) this else that
 
   def compare(that: This): Int =
     if ((that eq Top) || (that eq Undefined)) -1

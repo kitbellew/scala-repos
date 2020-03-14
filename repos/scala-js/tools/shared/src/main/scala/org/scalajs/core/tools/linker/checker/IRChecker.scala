@@ -208,10 +208,12 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           s"Constructor ${classDef.name.name}.$name cannot be abstract")
     } else {
       // Concrete
-      val thisType =
-        if (static) NoType else ClassType(classDef.name.name)
-      val bodyEnv =
-        Env.fromSignature(thisType, params, resultType, isConstructor)
+      val thisType = if (static) NoType else ClassType(classDef.name.name)
+      val bodyEnv = Env.fromSignature(
+        thisType,
+        params,
+        resultType,
+        isConstructor)
       if (resultType == NoType) typecheckStat(body, bodyEnv)
       else typecheckExpect(body, bodyEnv, resultType)
     }
@@ -282,8 +284,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case _            => body :: Nil
     }
 
-    val (prepStats, superCallAndRest) =
-      bodyStats.span(!_.isInstanceOf[JSSuperConstructorCall])
+    val (prepStats, superCallAndRest) = bodyStats.span(
+      !_.isInstanceOf[JSSuperConstructorCall])
 
     val (superCall, restStats) = superCallAndRest match {
       case (superCall: JSSuperConstructorCall) :: restStats =>
@@ -295,8 +297,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         (JSSuperConstructorCall(Nil)(methodDef.pos), Nil)
     }
 
-    val initialEnv =
-      Env.fromSignature(NoType, params, NoType, isConstructor = true)
+    val initialEnv = Env.fromSignature(
+      NoType,
+      params,
+      NoType,
+      isConstructor = true)
 
     val preparedEnv = (initialEnv /: prepStats) { (prevEnv, stat) =>
       typecheckStat(stat, prevEnv)
@@ -464,8 +469,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       case Try(block, errVar, handler, finalizer) =>
         typecheckStat(block, env)
         if (handler != EmptyTree) {
-          val handlerEnv =
-            env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env.withLocal(
+            LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckStat(handler, handlerEnv)
         }
         if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
@@ -581,8 +586,8 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
         val tpe = tree.tpe
         typecheckExpect(block, env, tpe)
         if (handler != EmptyTree) {
-          val handlerEnv =
-            env.withLocal(LocalDef(errVar.name, AnyType, false)(errVar.pos))
+          val handlerEnv = env.withLocal(
+            LocalDef(errVar.name, AnyType, false)(errVar.pos))
           typecheckExpect(handler, handlerEnv, tpe)
         }
         if (finalizer != EmptyTree) { typecheckStat(finalizer, env) }
@@ -866,8 +871,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
             reportError(s"Closure parameter $name cannot be a rest parameter")
         }
 
-        val bodyEnv =
-          Env.fromSignature(AnyType, captureParams ++ params, AnyType)
+        val bodyEnv = Env.fromSignature(
+          AnyType,
+          captureParams ++ params,
+          AnyType)
         typecheckExpect(body, bodyEnv, AnyType)
 
       case _ =>
@@ -1134,8 +1141,7 @@ object IRChecker {
     implicit def tree2errorContext(tree: Tree): ErrorContext =
       ErrorContext(tree)
 
-    def apply(tree: Tree): ErrorContext =
-      new ErrorContext(tree)
+    def apply(tree: Tree): ErrorContext = new ErrorContext(tree)
 
     def apply(linkedClass: LinkedClass): ErrorContext =
       new ErrorContext(linkedClass)

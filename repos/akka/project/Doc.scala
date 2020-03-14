@@ -27,8 +27,8 @@ object Scaladoc extends AutoPlugin {
   override def trigger = allRequirements
   override def requires = plugins.JvmPlugin
 
-  val validateDiagrams =
-    settingKey[Boolean]("Validate generated scaladoc diagrams")
+  val validateDiagrams = settingKey[Boolean](
+    "Validate generated scaladoc diagrams")
 
   override lazy val projectSettings = {
     inTask(doc)(

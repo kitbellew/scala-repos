@@ -114,8 +114,9 @@ object ScalaGenerationInfo {
 
   def positionCaret(editor: Editor, element: PsiMember) {
     //hack for postformatting IDEA bug.
-    val member =
-      CodeStyleManager.getInstance(element.getProject).reformat(element)
+    val member = CodeStyleManager
+      .getInstance(element.getProject)
+      .reformat(element)
     //Setting selection
     val body: PsiElement = member match {
       case ta: ScTypeAliasDefinition       => ta.aliasedTypeElement
@@ -212,8 +213,9 @@ object ScalaGenerationInfo {
       if (isImplement) ScalaFileTemplateUtil.SCALA_IMPLEMENTED_METHOD_TEMPLATE
       else ScalaFileTemplateUtil.SCALA_OVERRIDDEN_METHOD_TEMPLATE
 
-    val template =
-      FileTemplateManager.getInstance().getCodeTemplate(templateName)
+    val template = FileTemplateManager
+      .getInstance()
+      .getCodeTemplate(templateName)
 
     val properties = new Properties()
 

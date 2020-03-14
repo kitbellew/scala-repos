@@ -29,8 +29,9 @@ class ScalaChangeSignatureRowEditor(
   private val separatorColor: Color = dialog.clauseSeparatorColor
 
   private val table = dialog.parametersTable
-  val typeDoc =
-    PsiDocumentManager.getInstance(project).getDocument(item.typeCodeFragment)
+  val typeDoc = PsiDocumentManager
+    .getInstance(project)
+    .getDocument(item.typeCodeFragment)
   val myTypeEditor: EditorTextField =
     new EditorTextField(typeDoc, project, fileType)
 

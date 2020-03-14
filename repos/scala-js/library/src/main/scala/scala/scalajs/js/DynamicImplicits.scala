@@ -22,12 +22,9 @@ object DynamicImplicits {
     (!(!x)).asInstanceOf[Boolean]
 
   // Useful for Scala 2.10
-  implicit def number2dynamic(x: Int): Dynamic =
-    x.asInstanceOf[Dynamic]
+  implicit def number2dynamic(x: Int): Dynamic = x.asInstanceOf[Dynamic]
 
-  implicit def number2dynamic(x: Double): Dynamic =
-    x.asInstanceOf[Dynamic]
+  implicit def number2dynamic(x: Double): Dynamic = x.asInstanceOf[Dynamic]
 
-  implicit def boolean2dynamic(x: Boolean): Dynamic =
-    x.asInstanceOf[Dynamic]
+  implicit def boolean2dynamic(x: Boolean): Dynamic = x.asInstanceOf[Dynamic]
 }

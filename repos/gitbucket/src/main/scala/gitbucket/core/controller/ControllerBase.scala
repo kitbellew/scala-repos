@@ -203,8 +203,8 @@ case class Context(
     loginAccount: Option[Account],
     request: HttpServletRequest) {
   val path = settings.baseUrl.getOrElse(request.getContextPath)
-  val currentPath =
-    request.getRequestURI.substring(request.getContextPath.length)
+  val currentPath = request.getRequestURI.substring(
+    request.getContextPath.length)
   val baseUrl = settings.baseUrl(request)
   val host = new java.net.URL(baseUrl).getHost
   val platform = request.getHeader("User-Agent") match {

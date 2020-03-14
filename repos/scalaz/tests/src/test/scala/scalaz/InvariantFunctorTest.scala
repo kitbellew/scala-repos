@@ -20,8 +20,9 @@ object InvariantFunctorTest extends SpecLite {
   }
 
   "xmap bijection" in {
-    val succB: Bijection[Int, Int] =
-      liftBijection[Id, Id, Int, Int](_ + 1, _ - 1)
+    val succB: Bijection[Int, Int] = liftBijection[Id, Id, Int, Int](
+      _ + 1,
+      _ - 1)
     some(1) xmapb succB must_=== (some(2))
   }
 

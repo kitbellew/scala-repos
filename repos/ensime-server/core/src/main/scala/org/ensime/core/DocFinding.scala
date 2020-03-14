@@ -72,8 +72,9 @@ trait DocFinding { self: RichPresentationCompiler =>
   private def javaFqn(tpe: Type): DocFqn = {
     def nameString(sym: Symbol) = sym.nameString.replace("$", "")
     val sym = tpe.typeSymbol
-    val s = if (sym.hasPackageFlag) { DocFqn(fullPackage(sym), "package") }
-    else { DocFqn(fullPackage(sym), fullTypeName(sym, ".", nameString)) }
+    val s =
+      if (sym.hasPackageFlag) { DocFqn(fullPackage(sym), "package") }
+      else { DocFqn(fullPackage(sym), fullTypeName(sym, ".", nameString)) }
     s match {
       case DocFqn("scala", ScalaPrim(datatype)) =>
         DocFqn("", datatype.toLowerCase)

@@ -58,8 +58,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testIntentionAction_Simple() {
-    val text =
-      """
+    val text = """
         |class UsesJavaCollections {
         |  val list = new java.util.HashMap<caret>[String, Int]()
         |}
@@ -77,8 +76,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testIntentionAction_Import_Already_Exists() {
-    val text =
-      """
+    val text = """
         |import java.util
         |
         |import scala.collection.JavaConverters._

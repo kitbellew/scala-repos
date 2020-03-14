@@ -98,8 +98,8 @@ trait BaseBlockStoreTestModule[M[+_]]
     }
     def structure(implicit M: Monad[M]) = M.point(xyz)
 
-    private implicit val keyOrder: Order[JArray] =
-      Order[List[JValue]].contramap((_: JArray).elements)
+    private implicit val keyOrder: Order[JArray] = Order[List[JValue]]
+      .contramap((_: JArray).elements)
 
     def getBlockAfter(id: Option[JArray], colSelection: Option[Set[ColumnRef]])(
         implicit M: Monad[M]) =

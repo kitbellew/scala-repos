@@ -128,8 +128,8 @@ object CassandraTest {
           colCount.setValue(ByteBufferUtil.bytes(count.toLong))
           colCount.setTimestamp(System.currentTimeMillis)
 
-          val outputkey =
-            ByteBufferUtil.bytes(word + "-COUNT-" + System.currentTimeMillis)
+          val outputkey = ByteBufferUtil.bytes(
+            word + "-COUNT-" + System.currentTimeMillis)
 
           val mutations = Arrays.asList(new Mutation(), new Mutation())
           mutations.get(0).setColumn_or_supercolumn(new ColumnOrSuperColumn())

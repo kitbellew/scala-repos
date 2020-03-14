@@ -34,8 +34,8 @@ class ModelSpec extends AkkaSpec {
     import MediaTypes._
     import HttpCharsets._
     val userData = ByteString("abc")
-    val authorization =
-      headers.Authorization(BasicHttpCredentials("user", "pass"))
+    val authorization = headers.Authorization(
+      BasicHttpCredentials("user", "pass"))
     HttpRequest(
       PUT,
       uri = "/user",

@@ -123,13 +123,14 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
       val (nonConflictingUps, uRest) = application.span(e =>
         !database.headOption.exists(_.revision >= e.revision))
 
-      val (conflictingDowns, conflictingUps) =
-        Evolutions.conflictings(dRest, uRest)
+      val (conflictingDowns, conflictingUps) = Evolutions.conflictings(
+        dRest,
+        uRest)
 
-      val ups =
-        (nonConflictingUps ++ conflictingUps).reverseMap(e => UpScript(e))
-      val downs =
-        (nonConflictingDowns ++ conflictingDowns).map(e => DownScript(e))
+      val ups = (nonConflictingUps ++ conflictingUps).reverseMap(e =>
+        UpScript(e))
+      val downs = (nonConflictingDowns ++ conflictingDowns).map(e =>
+        DownScript(e))
 
       downs ++ ups
     } else Nil
@@ -373,8 +374,7 @@ private object DefaultEvolutionsApi {
 
   val logger = Logger(classOf[DefaultEvolutionsApi])
 
-  val CreatePlayEvolutionsSql =
-    """
+  val CreatePlayEvolutionsSql = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -386,8 +386,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsSqlServerSql =
-    """
+  val CreatePlayEvolutionsSqlServerSql = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -413,8 +412,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsMySql =
-    """
+  val CreatePlayEvolutionsMySql = """
       CREATE TABLE ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,
@@ -426,8 +424,7 @@ private object DefaultEvolutionsApi {
       )
     """
 
-  val CreatePlayEvolutionsDerby =
-    """
+  val CreatePlayEvolutionsDerby = """
       create table ${schema}play_evolutions (
           id int not null primary key,
           hash varchar(255) not null,

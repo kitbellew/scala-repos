@@ -138,8 +138,9 @@ private[prediction] object EventOp {
     val t = e.eventTime.getMillis
     e.event match {
       case "$set" => {
-        val fields =
-          e.properties.fields.mapValues(jv => PropTime(jv, t)).map(identity)
+        val fields = e.properties.fields
+          .mapValues(jv => PropTime(jv, t))
+          .map(identity)
 
         EventOp(
           setProp = Some(SetProp(fields = fields, t = t))
@@ -171,13 +172,12 @@ class PBatchView(
   // NOTE: parallel Events DB interface
   @transient lazy val eventsDb = Storage.getPEvents()
 
-  @transient lazy val _events: RDD[Event] =
-    eventsDb.getByAppIdAndTimeAndEntity(
-      appId = appId,
-      startTime = startTime,
-      untilTime = untilTime,
-      entityType = None,
-      entityId = None)(sc)
+  @transient lazy val _events: RDD[Event] = eventsDb.getByAppIdAndTimeAndEntity(
+    appId = appId,
+    startTime = startTime,
+    untilTime = untilTime,
+    entityType = None,
+    entityId = None)(sc)
 
   // TODO: change to use EventSeq?
   @transient lazy val events: RDD[Event] = _events

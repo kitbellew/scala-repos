@@ -6,11 +6,9 @@ import scala.scalajs.js
 import scala.scalajs.js.|
 
 object QueueExecutionContext {
-  def timeouts(): ExecutionContextExecutor =
-    new TimeoutsExecutionContext
+  def timeouts(): ExecutionContextExecutor = new TimeoutsExecutionContext
 
-  def promises(): ExecutionContextExecutor =
-    new PromisesExecutionContext
+  def promises(): ExecutionContextExecutor = new PromisesExecutionContext
 
   def apply(): ExecutionContextExecutor =
     if (js.isUndefined(js.Dynamic.global.Promise)) timeouts() else promises()
@@ -26,8 +24,7 @@ object QueueExecutionContext {
         0)
     }
 
-    def reportFailure(t: Throwable): Unit =
-      t.printStackTrace()
+    def reportFailure(t: Throwable): Unit = t.printStackTrace()
   }
 
   private final class PromisesExecutionContext
@@ -42,7 +39,6 @@ object QueueExecutionContext {
       }
     }
 
-    def reportFailure(t: Throwable): Unit =
-      t.printStackTrace()
+    def reportFailure(t: Throwable): Unit = t.printStackTrace()
   }
 }

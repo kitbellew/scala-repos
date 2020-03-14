@@ -53,22 +53,30 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     )
 
   //Some commonly used trees that are created on demand
-  lazy val GetResultTypeTree =
-    createClassTreeFromString("slick.jdbc.GetResult", TypeName(_))
-  lazy val SetParameterTypeTree =
-    createClassTreeFromString("slick.jdbc.SetParameter", TypeName(_))
-  lazy val TypedStaticQueryTypeTree =
-    createClassTreeFromString("slick.jdbc.TypedStaticQuery", TypeName(_))
-  lazy val GetResultTree =
-    createClassTreeFromString("slick.jdbc.GetResult", TermName(_))
-  lazy val SetParameterTree =
-    createClassTreeFromString("slick.jdbc.SetParameter", TermName(_))
-  lazy val ImplicitlyTree =
-    createClassTreeFromString("scala.Predef.implicitly", TermName(_))
-  lazy val HeterogenousTree =
-    createClassTreeFromString("slick.collection.heterogeneous", TermName(_))
-  lazy val VectorTree =
-    createClassTreeFromString("scala.collection.immutable.Vector", TermName(_))
+  lazy val GetResultTypeTree = createClassTreeFromString(
+    "slick.jdbc.GetResult",
+    TypeName(_))
+  lazy val SetParameterTypeTree = createClassTreeFromString(
+    "slick.jdbc.SetParameter",
+    TypeName(_))
+  lazy val TypedStaticQueryTypeTree = createClassTreeFromString(
+    "slick.jdbc.TypedStaticQuery",
+    TypeName(_))
+  lazy val GetResultTree = createClassTreeFromString(
+    "slick.jdbc.GetResult",
+    TermName(_))
+  lazy val SetParameterTree = createClassTreeFromString(
+    "slick.jdbc.SetParameter",
+    TermName(_))
+  lazy val ImplicitlyTree = createClassTreeFromString(
+    "scala.Predef.implicitly",
+    TermName(_))
+  lazy val HeterogenousTree = createClassTreeFromString(
+    "slick.collection.heterogeneous",
+    TermName(_))
+  lazy val VectorTree = createClassTreeFromString(
+    "scala.collection.immutable.Vector",
+    TermName(_))
   lazy val GetNoResultTree = createClassTreeFromString(
     "slick.jdbc.TypedStaticQuery.GetNoResult",
     TermName(_))
@@ -77,8 +85,8 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     * Creates the tree for GetResult[] of the tsql macro
     */
   def rconvTree(resultTypes: Vector[ClassTag[_]]) = {
-    val resultTypeTrees =
-      resultTypes.map(_.runtimeClass.getCanonicalName match {
+    val resultTypeTrees = resultTypes.map(
+      _.runtimeClass.getCanonicalName match {
         case "int"     => TypeTree(typeOf[Int])
         case "byte"    => TypeTree(typeOf[Byte])
         case "long"    => TypeTree(typeOf[Long])
@@ -248,8 +256,9 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
     }
   }
 
-  lazy val queryParts: Tree =
-    Apply(Select(VectorTree, TermName("apply")), interpolationResultParams._1)
+  lazy val queryParts: Tree = Apply(
+    Select(VectorTree, TermName("apply")),
+    interpolationResultParams._1)
 
   def staticQueryString: String =
     interpolationResultParams._1 match {

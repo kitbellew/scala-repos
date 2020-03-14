@@ -51,8 +51,7 @@ trait Semigroup[F] { self =>
     *
     * @note `compose.semigroup` = `this`
     */
-  final def compose: Compose[λ[(α, β) => F]] =
-    new SemigroupCompose {}
+  final def compose: Compose[λ[(α, β) => F]] = new SemigroupCompose {}
 
   protected[this] trait SemigroupApply extends Apply[λ[α => F]] {
     override def map[A, B](fa: F)(f: A => B) = fa
@@ -65,8 +64,7 @@ trait Semigroup[F] { self =>
     * discarded; it is a phantom type.  As such, the functor cannot
     * support [[scalaz.Bind]].
     */
-  final def apply: Apply[λ[α => F]] =
-    new SemigroupApply {}
+  final def apply: Apply[λ[α => F]] = new SemigroupApply {}
 
   /**
     * A semigroup in type F must satisfy two laws:

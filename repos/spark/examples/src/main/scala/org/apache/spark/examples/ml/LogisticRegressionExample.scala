@@ -120,15 +120,15 @@ object LogisticRegressionExample {
   }
 
   def run(params: Params) {
-    val conf =
-      new SparkConf().setAppName(s"LogisticRegressionExample with $params")
+    val conf = new SparkConf()
+      .setAppName(s"LogisticRegressionExample with $params")
     val sc = new SparkContext(conf)
 
     println(s"LogisticRegressionExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      DecisionTreeExample.loadDatasets(
+    val (training: DataFrame, test: DataFrame) = DecisionTreeExample
+      .loadDatasets(
         sc,
         params.input,
         params.dataFormat,
@@ -162,8 +162,8 @@ object LogisticRegressionExample {
     val elapsedTime = (System.nanoTime() - startTime) / 1e9
     println(s"Training time: $elapsedTime seconds")
 
-    val lorModel =
-      pipelineModel.stages.last.asInstanceOf[LogisticRegressionModel]
+    val lorModel = pipelineModel.stages.last
+      .asInstanceOf[LogisticRegressionModel]
     // Print the weights and intercept for logistic regression.
     println(
       s"Weights: ${lorModel.coefficients} Intercept: ${lorModel.intercept}")

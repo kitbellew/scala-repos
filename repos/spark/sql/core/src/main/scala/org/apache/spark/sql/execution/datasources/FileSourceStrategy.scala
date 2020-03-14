@@ -70,35 +70,33 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         //  - filters that need to be evaluated again after the scan
         val filterSet = ExpressionSet(filters)
 
-        val partitionColumns =
-          AttributeSet(
-            l.resolve(
-              files.partitionSchema,
-              files.sqlContext.sessionState.analyzer.resolver))
-        val partitionKeyFilters =
-          ExpressionSet(filters.filter(_.references.subsetOf(partitionColumns)))
+        val partitionColumns = AttributeSet(
+          l.resolve(
+            files.partitionSchema,
+            files.sqlContext.sessionState.analyzer.resolver))
+        val partitionKeyFilters = ExpressionSet(
+          filters.filter(_.references.subsetOf(partitionColumns)))
         logInfo(
           s"Pruning directories with: ${partitionKeyFilters.mkString(",")}")
 
-        val bucketColumns =
-          AttributeSet(
-            files.bucketSpec
-              .map(_.bucketColumnNames)
-              .getOrElse(Nil)
-              .map(l
-                .resolveQuoted(_, files.sqlContext.conf.resolver)
-                .getOrElse(sys.error(""))))
+        val bucketColumns = AttributeSet(
+          files.bucketSpec
+            .map(_.bucketColumnNames)
+            .getOrElse(Nil)
+            .map(l
+              .resolveQuoted(_, files.sqlContext.conf.resolver)
+              .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
-        val dataFilters =
-          filters.filter(_.references.intersect(partitionColumns).isEmpty)
+        val dataFilters = filters.filter(
+          _.references.intersect(partitionColumns).isEmpty)
 
         // Predicates with both partition keys and attributes need to be evaluated after the scan.
         val afterScanFilters = filterSet -- partitionKeyFilters
         logInfo(s"Post-Scan Filters: ${afterScanFilters.mkString(",")}")
 
-        val selectedPartitions =
-          files.location.listFiles(partitionKeyFilters.toSeq)
+        val selectedPartitions = files.location.listFiles(
+          partitionKeyFilters.toSeq)
 
         val filterAttributes = AttributeSet(afterScanFilters)
         val requiredExpressions: Seq[NamedExpression] =
@@ -106,13 +104,12 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         val requiredAttributes =
           AttributeSet(requiredExpressions).map(_.name).toSet
 
-        val prunedDataSchema =
-          StructType(
-            files.dataSchema.filter(f => requiredAttributes.contains(f.name)))
+        val prunedDataSchema = StructType(
+          files.dataSchema.filter(f => requiredAttributes.contains(f.name)))
         logInfo(s"Pruned Data Schema: ${prunedDataSchema.simpleString(5)}")
 
-        val pushedDownFilters =
-          dataFilters.flatMap(DataSourceStrategy.translateFilter)
+        val pushedDownFilters = dataFilters.flatMap(
+          DataSourceStrategy.translateFilter)
         logInfo(s"Pushed Filters: ${pushedDownFilters.mkString(",")}")
 
         val readFile = files.fileFormat.buildReader(
@@ -125,21 +122,20 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         val plannedPartitions = files.bucketSpec match {
           case Some(bucketing) if files.sqlContext.conf.bucketingEnabled =>
             logInfo(s"Planning with ${bucketing.numBuckets} buckets")
-            val bucketed =
-              selectedPartitions
-                .flatMap { p =>
-                  p.files.map(f =>
-                    PartitionedFile(
-                      p.values,
-                      f.getPath.toUri.toString,
-                      0,
-                      f.getLen))
-                }
-                .groupBy { f =>
-                  BucketingUtils
-                    .getBucketId(new Path(f.filePath).getName)
-                    .getOrElse(sys.error(s"Invalid bucket file ${f.filePath}"))
-                }
+            val bucketed = selectedPartitions
+              .flatMap { p =>
+                p.files.map(f =>
+                  PartitionedFile(
+                    p.values,
+                    f.getPath.toUri.toString,
+                    0,
+                    f.getLen))
+              }
+              .groupBy { f =>
+                BucketingUtils
+                  .getBucketId(new Path(f.filePath).getName)
+                  .getOrElse(sys.error(s"Invalid bucket file ${f.filePath}"))
+              }
 
             (0 until bucketing.numBuckets).map { bucketId =>
               FilePartition(bucketId, bucketed.getOrElse(bucketId, Nil))
@@ -183,11 +179,10 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
             /** Close the current partition and move to the next. */
             def closePartition(): Unit = {
               if (currentFiles.nonEmpty) {
-                val newPartition =
-                  FilePartition(
-                    partitions.size,
-                    currentFiles.toArray.toSeq
-                  ) // Copy to a new Array.
+                val newPartition = FilePartition(
+                  partitions.size,
+                  currentFiles.toArray.toSeq
+                ) // Copy to a new Array.
                 partitions.append(newPartition)
               }
               currentFiles.clear()
@@ -206,17 +201,17 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
             partitions
         }
 
-        val scan =
-          DataSourceScan(
-            l.output,
-            new FileScanRDD(files.sqlContext, readFile, plannedPartitions),
-            files,
-            Map("format" -> files.fileFormat.toString))
+        val scan = DataSourceScan(
+          l.output,
+          new FileScanRDD(files.sqlContext, readFile, plannedPartitions),
+          files,
+          Map("format" -> files.fileFormat.toString))
 
-        val afterScanFilter =
-          afterScanFilters.toSeq.reduceOption(expressions.And)
-        val withFilter =
-          afterScanFilter.map(execution.Filter(_, scan)).getOrElse(scan)
+        val afterScanFilter = afterScanFilters.toSeq.reduceOption(
+          expressions.And)
+        val withFilter = afterScanFilter
+          .map(execution.Filter(_, scan))
+          .getOrElse(scan)
         val withProjections =
           if (projects.forall(_.isInstanceOf[AttributeReference])) {
             withFilter

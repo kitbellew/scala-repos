@@ -43,8 +43,7 @@ class ParquetInteroperabilitySuite
       val avroStylePath = new File(dir, "avro-style").getCanonicalPath
       val protobufStylePath = new File(dir, "protobuf-style").getCanonicalPath
 
-      val avroStyleSchema =
-        """message avro_style {
+      val avroStyleSchema = """message avro_style {
           |  required group f (LIST) {
           |    repeated int32 array;
           |  }
@@ -69,8 +68,7 @@ class ParquetInteroperabilitySuite
 
       logParquetSchema(avroStylePath)
 
-      val protobufStyleSchema =
-        """message protobuf_style {
+      val protobufStyleSchema = """message protobuf_style {
           |  repeated int32 f;
           |}
         """.stripMargin

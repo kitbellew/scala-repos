@@ -24,8 +24,7 @@ class SbtSystemSettingsControl(settings: SbtSystemSettings)
       pane.getCustomVMPath == settings.customVMPath
     }
 
-  def showUi(show: Boolean): Unit =
-    pane.getContentPanel.setVisible(show)
+  def showUi(show: Boolean): Unit = pane.getContentPanel.setVisible(show)
 
   def fillUi(canvas: PaintAwarePanel, indentLevel: Int): Unit =
     canvas.add(

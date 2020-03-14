@@ -31,10 +31,10 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
     extends ScalaRecursiveElementVisitor {
   private val myPostProcessor: PostFormatProcessorHelper =
     new PostFormatProcessorHelper(settings)
-  private val commonSetttings =
-    settings.getCommonSettings(ScalaFileType.SCALA_LANGUAGE)
-  private val scalaSettings =
-    settings.getCustomSettings(classOf[ScalaCodeStyleSettings])
+  private val commonSetttings = settings.getCommonSettings(
+    ScalaFileType.SCALA_LANGUAGE)
+  private val scalaSettings = settings.getCustomSettings(
+    classOf[ScalaCodeStyleSettings])
 
   override def visitIfStatement(stmt: ScIfStmt) {
     if (checkElementContainsRange(stmt)) {

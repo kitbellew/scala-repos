@@ -58,8 +58,10 @@ object GenerateSafeProjection
 
     val fieldWriters = schema.map(_.dataType).zipWithIndex.map {
       case (dt, i) =>
-        val converter =
-          convertToSafe(ctx, ctx.getValue(tmp, dt, i.toString), dt)
+        val converter = convertToSafe(
+          ctx,
+          ctx.getValue(tmp, dt, i.toString),
+          dt)
         s"""
         if (!$tmp.isNullAt($i)) {
           ${converter.code}
@@ -89,8 +91,10 @@ object GenerateSafeProjection
     val index = ctx.freshName("index")
     val arrayClass = classOf[GenericArrayData].getName
 
-    val elementConverter =
-      convertToSafe(ctx, ctx.getValue(tmp, elementType, index), elementType)
+    val elementConverter = convertToSafe(
+      ctx,
+      ctx.getValue(tmp, elementType, index),
+      elementType)
     val code = s"""
       final ArrayData $tmp = $input;
       final int $numElements = $tmp.numElements();
@@ -117,8 +121,10 @@ object GenerateSafeProjection
     val mapClass = classOf[ArrayBasedMapData].getName
 
     val keyConverter = createCodeForArray(ctx, s"$tmp.keyArray()", keyType)
-    val valueConverter =
-      createCodeForArray(ctx, s"$tmp.valueArray()", valueType)
+    val valueConverter = createCodeForArray(
+      ctx,
+      s"$tmp.valueArray()",
+      valueType)
     val code = s"""
       final MapData $tmp = $input;
       ${keyConverter.code}

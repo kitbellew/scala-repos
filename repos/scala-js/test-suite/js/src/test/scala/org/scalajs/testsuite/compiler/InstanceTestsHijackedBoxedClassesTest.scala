@@ -107,8 +107,7 @@ class InstanceTestsHijackedBoxedClassesTest {
   }
 
   @Test def should_support_isInstanceOf_via_java_lang_Class_positive(): Unit = {
-    def test(x: Any, clazz: Class[_]): Unit =
-      assertTrue(clazz.isInstance(x))
+    def test(x: Any, clazz: Class[_]): Unit = assertTrue(clazz.isInstance(x))
 
     test((), classOf[scala.runtime.BoxedUnit])
     test(false, classOf[java.lang.Boolean])
@@ -126,8 +125,7 @@ class InstanceTestsHijackedBoxedClassesTest {
   }
 
   @Test def should_support_isInstanceOf_via_java_lang_Class_negative(): Unit = {
-    def test(x: Any, clazz: Class[_]): Unit =
-      assertFalse(clazz.isInstance(x))
+    def test(x: Any, clazz: Class[_]): Unit = assertFalse(clazz.isInstance(x))
 
     test(12345, classOf[scala.runtime.BoxedUnit])
     test(12345, classOf[java.lang.Boolean])

@@ -14,30 +14,28 @@ import scala.reflect.ClassTag
 private[twitter] object ThriftUtil {
   private type BinaryService = Service[Array[Byte], Array[Byte]]
 
-  private val thriftFinagleClientParamTypes =
-    Seq(classOf[Service[_, _]], classOf[TProtocolFactory])
+  private val thriftFinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory])
 
-  private val scrooge2FinagleClientParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[Option[_]],
-      classOf[StatsReceiver])
+  private val scrooge2FinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[Option[_]],
+    classOf[StatsReceiver])
 
-  private val scrooge3FinagleClientParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[String],
-      classOf[StatsReceiver])
+  private val scrooge3FinagleClientParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[String],
+    classOf[StatsReceiver])
 
-  private val scrooge3FinagleClientWithRepClassifierParamTypes =
-    Seq(
-      classOf[Service[_, _]],
-      classOf[TProtocolFactory],
-      classOf[String],
-      classOf[StatsReceiver],
-      classOf[ResponseClassifier])
+  private val scrooge3FinagleClientWithRepClassifierParamTypes = Seq(
+    classOf[Service[_, _]],
+    classOf[TProtocolFactory],
+    classOf[String],
+    classOf[StatsReceiver],
+    classOf[ResponseClassifier])
 
   def findClass1(name: String): Option[Class[_]] =
     try Some(Class.forName(name))
@@ -191,8 +189,11 @@ private[twitter] object ThriftUtil {
           classOf[StatsReceiver],
           Integer.TYPE)
         val newParameters = oldParameters :+ classOf[String]
-        val oldArgs =
-          Seq(impl, protocolFactory, stats, Int.box(maxThriftBufferSize))
+        val oldArgs = Seq(
+          impl,
+          protocolFactory,
+          stats,
+          Int.box(maxThriftBufferSize))
         val newArgs = oldArgs :+ label
         def newConsCall: Option[BinaryService] =
           findConstructor(serviceCls, newParameters: _*).map(cons =>
@@ -509,8 +510,8 @@ trait ThriftRichServer { self: Server[Array[Byte], Array[Byte]] =>
 
   protected val serverLabel = "thrift"
 
-  protected lazy val serverStats: StatsReceiver =
-    ServerStatsReceiver.scope(serverLabel)
+  protected lazy val serverStats: StatsReceiver = ServerStatsReceiver.scope(
+    serverLabel)
 
   /**
     * $serveIface

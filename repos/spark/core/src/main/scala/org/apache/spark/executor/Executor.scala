@@ -85,8 +85,8 @@ private[spark] class Executor(
   }
 
   // Start worker thread pool
-  private val threadPool =
-    ThreadUtils.newDaemonCachedThreadPool("Executor task launch worker")
+  private val threadPool = ThreadUtils.newDaemonCachedThreadPool(
+    "Executor task launch worker")
   private val executorSource = new ExecutorSource(threadPool, executorId)
 
   if (!isLocal) {
@@ -95,8 +95,9 @@ private[spark] class Executor(
   }
 
   // Whether to load classes in user jars before those in Spark jars
-  private val userClassPathFirst =
-    conf.getBoolean("spark.executor.userClassPathFirst", false)
+  private val userClassPathFirst = conf.getBoolean(
+    "spark.executor.userClassPathFirst",
+    false)
 
   // Create our ClassLoader
   // do this after SparkEnv creation so can access the SecurityManager
@@ -119,20 +120,23 @@ private[spark] class Executor(
   private val runningTasks = new ConcurrentHashMap[Long, TaskRunner]
 
   // Executor for the heartbeat task.
-  private val heartbeater =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor("driver-heartbeater")
+  private val heartbeater = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+    "driver-heartbeater")
 
   // must be initialized before running startDriverHeartbeat()
-  private val heartbeatReceiverRef =
-    RpcUtils.makeDriverRef(HeartbeatReceiver.ENDPOINT_NAME, conf, env.rpcEnv)
+  private val heartbeatReceiverRef = RpcUtils.makeDriverRef(
+    HeartbeatReceiver.ENDPOINT_NAME,
+    conf,
+    env.rpcEnv)
 
   /**
     * When an executor is unable to send heartbeats to the driver more than `HEARTBEAT_MAX_FAILURES`
     * times, it should kill itself. The default value is 60. It means we will retry to send
     * heartbeats about 10 minutes because the heartbeat interval is 10s.
     */
-  private val HEARTBEAT_MAX_FAILURES =
-    conf.getInt("spark.executor.heartbeat.maxFailures", 60)
+  private val HEARTBEAT_MAX_FAILURES = conf.getInt(
+    "spark.executor.heartbeat.maxFailures",
+    60)
 
   /**
     * Count the failure times of heartbeat. It should only be accessed in the heartbeat thread. Each
@@ -215,8 +219,8 @@ private[spark] class Executor(
       startGCTime = computeTotalGcTime()
 
       try {
-        val (taskFiles, taskJars, taskBytes) =
-          Task.deserializeWithDependencies(serializedTask)
+        val (taskFiles, taskJars, taskBytes) = Task.deserializeWithDependencies(
+          serializedTask)
         updateDependencies(taskFiles, taskJars)
         task = ser.deserialize[Task[Any]](
           taskBytes,

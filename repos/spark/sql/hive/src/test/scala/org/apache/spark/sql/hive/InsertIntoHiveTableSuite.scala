@@ -97,8 +97,8 @@ class InsertIntoHiveTableSuite
   }
 
   test("SPARK-4052: scala.collection.Map as value type of MapType") {
-    val schema =
-      StructType(StructField("m", MapType(StringType, StringType), true) :: Nil)
+    val schema = StructType(
+      StructField("m", MapType(StringType, StringType), true) :: Nil)
     val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
       Row(scala.collection.mutable.HashMap(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)

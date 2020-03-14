@@ -31,8 +31,10 @@ class FilterTest extends FunSuite {
       0.1064299, 0.91305795, 0.67988086, -0.05227671, 0.01563969, 0.30337291,
       -0.00920251, -0.42358677, -0.48613482, 0.04960337, 0.6784219, 0.23758627)
 
-    val firwin1 =
-      designFilterFirwin[Double](11, DenseVector(0.25, 0.5), zeroPass = false)
+    val firwin1 = designFilterFirwin[Double](
+      11,
+      DenseVector(0.25, 0.5),
+      zeroPass = false)
     assert(
       norm(spFirwin1 - firwin1.kernel) < testNormThreshold,
       "generated kernel is incorrect!")

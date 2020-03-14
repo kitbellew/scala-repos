@@ -32,20 +32,17 @@ trait Monoid[F] extends Semigroup[F] { self =>
     if (n <= 0) zero else multiply1(value, n - 1)
 
   /** Whether `a` == `zero`. */
-  def isMZero(a: F)(implicit eq: Equal[F]): Boolean =
-    eq.equal(a, zero)
+  def isMZero(a: F)(implicit eq: Equal[F]): Boolean = eq.equal(a, zero)
 
   final def ifEmpty[B](a: F)(t: => B)(f: => B)(implicit eq: Equal[F]): B =
     if (isMZero(a)) { t }
     else { f }
 
   final def onNotEmpty[B](a: F)(
-      v: => B)(implicit eq: Equal[F], mb: Monoid[B]): B =
-    ifEmpty(a)(mb.zero)(v)
+      v: => B)(implicit eq: Equal[F], mb: Monoid[B]): B = ifEmpty(a)(mb.zero)(v)
 
   final def onEmpty[A, B](a: F)(
-      v: => B)(implicit eq: Equal[F], mb: Monoid[B]): B =
-    ifEmpty(a)(v)(mb.zero)
+      v: => B)(implicit eq: Equal[F], mb: Monoid[B]): B = ifEmpty(a)(v)(mb.zero)
 
   /** Every `Monoid` gives rise to a [[scalaz.Category]], for which
     * the type parameters are phantoms.

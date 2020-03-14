@@ -34,8 +34,8 @@ abstract class AsyncBase[I, O, S, D, RC](
     extends Serializable
     with OperationContainer[I, O, S, D, RC] {
 
-  @transient protected lazy val logger: Logger =
-    LoggerFactory.getLogger(getClass)
+  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(
+    getClass)
 
   /**
     * If you can use Future.value below, do so. The double Future is here to deal with
@@ -49,8 +49,8 @@ abstract class AsyncBase[I, O, S, D, RC](
     Future.value(Nil)
 
   private lazy val outstandingFutures = Queue.linkedNonBlocking[Future[Unit]]
-  private lazy val responses =
-    Queue.linkedNonBlocking[(Seq[S], Try[TraversableOnce[O]])]
+  private lazy val responses = Queue
+    .linkedNonBlocking[(Seq[S], Try[TraversableOnce[O]])]
 
   override def executeTick =
     finishExecute(tick.onFailure { thr =>

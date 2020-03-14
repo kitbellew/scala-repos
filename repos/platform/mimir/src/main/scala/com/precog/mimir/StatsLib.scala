@@ -105,8 +105,8 @@ trait StatsLibModule[M[+_]]
             ) //todo make function for this
             Mean(transformedTable, ctx)
           } else {
-            val middleValue =
-              M.point(sortedTable.takeRange((count.toLong / 2), 1))
+            val middleValue = M.point(
+              sortedTable.takeRange((count.toLong / 2), 1))
             middleValue map {
               _.transform(trans.DerefObjectStatic(Leaf(Source), paths.Value))
             }
@@ -114,8 +114,8 @@ trait StatsLibModule[M[+_]]
         } yield {
           val keyTable = Table.constEmptyArray.transform(
             trans.WrapObject(Leaf(Source), paths.Key.name))
-          val valueTable =
-            median.transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+          val valueTable = median.transform(
+            trans.WrapObject(Leaf(Source), paths.Value.name))
 
           valueTable.cross(keyTable)(
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -125,8 +125,9 @@ trait StatsLibModule[M[+_]]
 
     object Mode extends Morphism1(EmptyNamespace, "mode") {
 
-      type Result =
-        Set[BigDecimal] //(currentRunValue, curentCount, listOfModes, maxCount)
+      type Result = Set[
+        BigDecimal
+      ] //(currentRunValue, curentCount, listOfModes, maxCount)
 
       val tpe = UnaryOperationType(JNumberT, JNumberT)
 
@@ -780,10 +781,9 @@ trait StatsLibModule[M[+_]]
               val stdDev2 = sqrt(unscaledVar2) / count
               val correlation = cov / (stdDev1 * stdDev2)
 
-              val resultTable =
-                Table.constDecimal(
-                  Set(correlation)
-                ) //TODO the following lines are used throughout. refactor!
+              val resultTable = Table.constDecimal(
+                Set(correlation)
+              ) //TODO the following lines are used throughout. refactor!
               val valueTable = resultTable.transform(
                 trans.WrapObject(Leaf(Source), paths.Value.name))
               val keyTable = Table.constEmptyArray.transform(
@@ -1045,8 +1045,8 @@ trait StatsLibModule[M[+_]]
           BigDecimal,
           BigDecimal,
           BigDecimal) // (count, sum1, sum2, sumsq1, productSum)
-      type Result =
-        Option[(BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
+      type Result = Option[
+        (BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]
 
@@ -1341,8 +1341,8 @@ trait StatsLibModule[M[+_]]
           BigDecimal,
           BigDecimal,
           BigDecimal) // (count, sum1, sum2, sumsq1, productSum)
-      type Result =
-        Option[(BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
+      type Result = Option[
+        (BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]
 
@@ -1725,8 +1725,9 @@ trait StatsLibModule[M[+_]]
                 sys.error("unexpected column found: %s" format col)
             }
 
-            m2(ColumnRef(path, CNum)) =
-              shiftColumn(ArrayNumColumn(bs, arr), start)
+            m2(ColumnRef(path, CNum)) = shiftColumn(
+              ArrayNumColumn(bs, arr),
+              start)
         }
         m2.toMap
       }
@@ -1856,22 +1857,26 @@ trait StatsLibModule[M[+_]]
         val row = findFirstDefined(defined, range)
 
         // if none of our rows are defined let's short-circuit out of here!
-        val back = if (row == end) { (ctxt, Map.empty[ColumnRef, Column]) }
-        else {
-          // build the actual rank array
-          val (values, curr, lastRow) =
-            buildRankArrayIndexed(defined, range, ctxt)
+        val back =
+          if (row == end) { (ctxt, Map.empty[ColumnRef, Column]) }
+          else {
+            // build the actual rank array
+            val (values, curr, lastRow) = buildRankArrayIndexed(
+              defined,
+              range,
+              ctxt)
 
-          // build the context to be used for the next slice
-          val ctxt2 = buildRankContext(m, lastRow, curr, curr + 1L)
+            // build the context to be used for the next slice
+            val ctxt2 = buildRankContext(m, lastRow, curr, curr + 1L)
 
-          // construct the column ref and column to return
-          val col2: Column =
-            shiftColumn(ArrayLongColumn(defined, values), start)
-          val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
+            // construct the column ref and column to return
+            val col2: Column = shiftColumn(
+              ArrayLongColumn(defined, values),
+              start)
+            val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
 
-          (ctxt2, data)
-        }
+            (ctxt2, data)
+          }
 
         back
       }
@@ -2011,25 +2016,33 @@ trait StatsLibModule[M[+_]]
         val row = findFirstDefined(defined, range)
 
         // if none of our rows are defined let's short-circuit out of here!
-        val back = if (row == end) { (ctxt, Map.empty[ColumnRef, Column]) }
-        else {
-          // find a bitset of duplicate rows and the last defined row
-          val (duplicateRows, lastRow) =
-            findDuplicates(defined, definedCols, cols, range, row)
+        val back =
+          if (row == end) { (ctxt, Map.empty[ColumnRef, Column]) }
+          else {
+            // find a bitset of duplicate rows and the last defined row
+            val (duplicateRows, lastRow) = findDuplicates(
+              defined,
+              definedCols,
+              cols,
+              range,
+              row)
 
-          // build the actual rank array
-          val (values, curr, next) =
-            buildRankArrayUnique(defined, duplicateRows, range, ctxt)
+            // build the actual rank array
+            val (values, curr, next) = buildRankArrayUnique(
+              defined,
+              duplicateRows,
+              range,
+              ctxt)
 
-          // build the context to be used for the next slice
-          val ctxt2 = buildRankContext(m, lastRow, curr, next)
+            // build the context to be used for the next slice
+            val ctxt2 = buildRankContext(m, lastRow, curr, next)
 
-          // construct the column ref and column to return
-          val col2 = shiftColumn(ArrayLongColumn(defined, values), start)
-          val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
+            // construct the column ref and column to return
+            val col2 = shiftColumn(ArrayLongColumn(defined, values), start)
+            val data = Map(ColumnRef(CPath.Identity, CLong) -> col2)
 
-          (ctxt2, data)
-        }
+            (ctxt2, data)
+          }
 
         back
       }

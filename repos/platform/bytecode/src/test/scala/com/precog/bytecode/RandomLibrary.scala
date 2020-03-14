@@ -108,8 +108,10 @@ trait RandomLibrary extends Library {
 
   case class Morphism2(namespace: Vector[String], name: String, opcode: Int)
       extends Morphism2Like {
-    val tpe =
-      BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JType.JUniverseT)
+    val tpe = BinaryOperationType(
+      JType.JUniverseT,
+      JType.JUniverseT,
+      JType.JUniverseT)
     val rowLevel: Boolean = false
   }
 
@@ -123,8 +125,10 @@ trait RandomLibrary extends Library {
   case class Op2(namespace: Vector[String], name: String, opcode: Int)
       extends Op2Like
       with Morphism2Like {
-    val tpe =
-      BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JType.JUniverseT)
+    val tpe = BinaryOperationType(
+      JType.JUniverseT,
+      JType.JUniverseT,
+      JType.JUniverseT)
     val rowLevel: Boolean = true
   }
 

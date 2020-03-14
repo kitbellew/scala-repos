@@ -450,8 +450,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     nested.elems = outer.elems
     nested.nestinglevel = outer.nestinglevel + 1
     if (outer.hashtable ne null)
-      nested.hashtable =
-        java.util.Arrays.copyOf(outer.hashtable, outer.hashtable.length)
+      nested.hashtable = java.util.Arrays
+        .copyOf(outer.hashtable, outer.hashtable.length)
     nested
   }
 

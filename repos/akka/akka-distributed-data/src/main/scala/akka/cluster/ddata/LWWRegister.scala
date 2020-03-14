@@ -67,8 +67,7 @@ object LWWRegister {
   def create[A](
       node: Cluster,
       initialValue: A,
-      clock: Clock[A]): LWWRegister[A] =
-    apply(initialValue)(node, clock)
+      clock: Clock[A]): LWWRegister[A] = apply(initialValue)(node, clock)
 
   /**
     * Extract the [[LWWRegister#value]].

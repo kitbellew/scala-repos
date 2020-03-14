@@ -76,7 +76,6 @@ case class LocalRelation(output: Seq[Attribute], data: Seq[InternalRow] = Nil)
       case _ => false
     }
 
-  override lazy val statistics =
-    Statistics(sizeInBytes =
-      output.map(_.dataType.defaultSize).sum * data.length)
+  override lazy val statistics = Statistics(sizeInBytes =
+    output.map(_.dataType.defaultSize).sum * data.length)
 }

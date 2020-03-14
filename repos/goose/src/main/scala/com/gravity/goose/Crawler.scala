@@ -85,15 +85,16 @@ class Crawler(config: Configuration) {
             try {
               if (article.rawDoc == null) { article.topImage = new Image }
               else {
-                article.topImage =
-                  imageExtractor.getBestImage(article.rawDoc, article.topNode)
+                article.topImage = imageExtractor.getBestImage(
+                  article.rawDoc,
+                  article.topNode)
               }
             } catch { case e: Exception => { warn(e, e.toString) } }
           }
           article.topNode = extractor.postExtractionCleanup(article.topNode)
 
-          article.cleanedArticleText =
-            outputFormatter.getFormattedText(article.topNode)
+          article.cleanedArticleText = outputFormatter.getFormattedText(
+            article.topNode)
         }
         case _ => trace("NO ARTICLE FOUND")
       }

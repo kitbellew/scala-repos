@@ -57,8 +57,7 @@ trait Node extends Dumpable {
   /** Apply a side-effecting function to all direct children from left to right. Note that
     * {{{ n.childrenForeach(f) }}} is equivalent to {{{ n.children.foreach(f) }}} but can be
     * implemented more efficiently in `Node` subclasses. */
-  def childrenForeach[R](f: Node => R): Unit =
-    children.foreach(f)
+  def childrenForeach[R](f: Node => R): Unit = children.foreach(f)
 
   /** The current type of this node. */
   def nodeType: Type = {
@@ -104,8 +103,9 @@ trait Node extends Dumpable {
         val n =
           if (cln.endsWith("$")) cln.substring(0, cln.length - 1)
           else cln.replaceFirst(".*\\$", "")
-        val args =
-          p.productIterator.filterNot(_.isInstanceOf[Node]).mkString(", ")
+        val args = p.productIterator
+          .filterNot(_.isInstanceOf[Node])
+          .mkString(", ")
         (n, args)
       case _ => (super.toString, "")
     }
@@ -225,8 +225,9 @@ object LiteralNode {
   def apply[T](v: T)(implicit tp: ScalaBaseType[T]): LiteralNode = apply(tp, v)
   def unapply(n: LiteralNode): Option[Any] = Some(n.value)
 
-  private[slick] val nullOption =
-    LiteralNode(ScalaBaseType.nullType.optionType, None)
+  private[slick] val nullOption = LiteralNode(
+    ScalaBaseType.nullType.optionType,
+    None)
 }
 
 trait BinaryNode extends Node {
@@ -602,8 +603,9 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
   def withInferredType(scope: Type.Scope, typeChildren: Boolean): Self = {
     val from2 = from.infer(scope, typeChildren)
     val from2Type = from2.nodeType.asCollectionType
-    val select2 =
-      select.infer(scope + (generator -> from2Type.elementType), typeChildren)
+    val select2 = select.infer(
+      scope + (generator -> from2Type.elementType),
+      typeChildren)
     val withCh =
       if ((from2 eq from) && (select2 eq select)) this
       else rebuild(from2, select2)

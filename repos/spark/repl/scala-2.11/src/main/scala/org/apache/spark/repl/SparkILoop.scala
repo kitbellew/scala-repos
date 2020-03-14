@@ -80,8 +80,12 @@ class SparkILoop(in0: Option[BufferedReader], out: JPrintWriter)
 
   import LoopCommand.{cmd, nullary}
 
-  private val blockedCommands =
-    Set("implicits", "javap", "power", "type", "kind")
+  private val blockedCommands = Set(
+    "implicits",
+    "javap",
+    "power",
+    "type",
+    "kind")
 
   /** Standard commands **/
   lazy val sparkStandardCommands: List[SparkILoop.this.LoopCommand] =

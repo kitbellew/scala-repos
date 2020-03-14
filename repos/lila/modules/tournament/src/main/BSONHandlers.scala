@@ -24,8 +24,8 @@ object BSONHandlers {
       def write(x: Status) = BSONInteger(x.id)
     }
 
-  private implicit val tournamentClockBSONHandler =
-    Macros.handler[TournamentClock]
+  private implicit val tournamentClockBSONHandler = Macros
+    .handler[TournamentClock]
 
   private implicit val spotlightBSONHandler = Macros.handler[Spotlight]
 
@@ -37,8 +37,9 @@ object BSONHandlers {
 
   implicit val tournamentHandler = new BSON[Tournament] {
     def reads(r: BSON.Reader) = {
-      val variant =
-        r.intO("variant").fold[Variant](Variant.default)(Variant.orDefault)
+      val variant = r
+        .intO("variant")
+        .fold[Variant](Variant.default)(Variant.orDefault)
       val position =
         r.strO("eco").flatMap(StartingPosition.byEco) | StartingPosition.initial
       val startsAt = r date "startsAt"
@@ -46,8 +47,9 @@ object BSONHandlers {
         id = r str "_id",
         name = r str "name",
         status = r.get[Status]("status"),
-        system =
-          r.intO("system").fold[System](System.default)(System.orDefault),
+        system = r
+          .intO("system")
+          .fold[System](System.default)(System.orDefault),
         clock = r.get[TournamentClock]("clock"),
         minutes = r int "minutes",
         variant = variant,
@@ -187,6 +189,6 @@ object BSONHandlers {
   }
 
   import LeaderboardApi.ChartData.AggregationResult
-  implicit val leaderboardAggregationResultBSONHandler =
-    Macros.handler[AggregationResult]
+  implicit val leaderboardAggregationResultBSONHandler = Macros
+    .handler[AggregationResult]
 }

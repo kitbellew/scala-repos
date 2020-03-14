@@ -65,8 +65,8 @@ object PlayCommands {
 
   val playCompileEverythingTask = Def.taskDyn {
     // Run playAssetsWithCompilation, or, if it doesn't exist (because it's not a Play project), just the compile task
-    val compileTask =
-      Def.taskDyn(playAssetsWithCompilation ?? (compile in Compile).value)
+    val compileTask = Def.taskDyn(
+      playAssetsWithCompilation ?? (compile in Compile).value)
 
     compileTask.all(
       ScopeFilter(

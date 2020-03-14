@@ -37,8 +37,7 @@ class AbstractFileClassLoader(val root: AbstractFile, parent: ClassLoader)
     }
   }
 
-  protected def dirNameToPath(name: String): String =
-    name.replace('.', '/')
+  protected def dirNameToPath(name: String): String = name.replace('.', '/')
 
   protected def findAbstractDir(name: String): AbstractFile = {
     var file: AbstractFile = root

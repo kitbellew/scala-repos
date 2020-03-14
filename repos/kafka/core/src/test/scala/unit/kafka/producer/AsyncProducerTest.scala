@@ -108,8 +108,8 @@ class AsyncProducerTest {
       *  Send a total of 10 messages with batch size of 5. Expect 2 calls to the handler, one for each batch.
       */
     val producerDataList = getProduceData(10)
-    val mockHandler =
-      EasyMock.createStrictMock(classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock.createStrictMock(
+      classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList.take(5))
     EasyMock.expectLastCall
     mockHandler.handle(producerDataList.takeRight(5))
@@ -117,14 +117,13 @@ class AsyncProducerTest {
     EasyMock.replay(mockHandler)
 
     val queue = new LinkedBlockingQueue[KeyedMessage[String, String]](10)
-    val producerSendThread =
-      new ProducerSendThread[String, String](
-        "thread1",
-        queue,
-        mockHandler,
-        Integer.MAX_VALUE,
-        5,
-        "")
+    val producerSendThread = new ProducerSendThread[String, String](
+      "thread1",
+      queue,
+      mockHandler,
+      Integer.MAX_VALUE,
+      5,
+      "")
     producerSendThread.start()
 
     for (producerData <- producerDataList) queue.put(producerData)
@@ -141,22 +140,21 @@ class AsyncProducerTest {
       *  Expect 1 calls to the handler after 200ms.
       */
     val producerDataList = getProduceData(2)
-    val mockHandler =
-      EasyMock.createStrictMock(classOf[DefaultEventHandler[String, String]])
+    val mockHandler = EasyMock.createStrictMock(
+      classOf[DefaultEventHandler[String, String]])
     mockHandler.handle(producerDataList)
     EasyMock.expectLastCall
     EasyMock.replay(mockHandler)
 
     val queueExpirationTime = 200
     val queue = new LinkedBlockingQueue[KeyedMessage[String, String]](10)
-    val producerSendThread =
-      new ProducerSendThread[String, String](
-        "thread1",
-        queue,
-        mockHandler,
-        queueExpirationTime,
-        5,
-        "")
+    val producerSendThread = new ProducerSendThread[String, String](
+      "thread1",
+      queue,
+      mockHandler,
+      queueExpirationTime,
+      5,
+      "")
     producerSendThread.start()
 
     for (producerData <- producerDataList) queue.put(producerData)
@@ -233,16 +231,9 @@ class AsyncProducerTest {
       producerPool = producerPool,
       topicPartitionInfos = topicPartitionInfos)
 
-    val topic1Broker1Data =
-      ArrayBuffer[KeyedMessage[Int, Message]](
-        new KeyedMessage[Int, Message](
-          "topic1",
-          0,
-          new Message("msg1".getBytes)),
-        new KeyedMessage[Int, Message](
-          "topic1",
-          2,
-          new Message("msg3".getBytes)))
+    val topic1Broker1Data = ArrayBuffer[KeyedMessage[Int, Message]](
+      new KeyedMessage[Int, Message]("topic1", 0, new Message("msg1".getBytes)),
+      new KeyedMessage[Int, Message]("topic1", 2, new Message("msg3".getBytes)))
     val topic1Broker2Data = ArrayBuffer[KeyedMessage[Int, Message]](
       new KeyedMessage[Int, Message](
         "topic1",
@@ -457,8 +448,12 @@ class AsyncProducerTest {
     val config = new ProducerConfig(props)
 
     val topic1 = "topic1"
-    val topic1Metadata =
-      getTopicMetadata(topic1, Array(0, 1), 0, "localhost", 9092)
+    val topic1Metadata = getTopicMetadata(
+      topic1,
+      Array(0, 1),
+      0,
+      "localhost",
+      9092)
     val topicPartitionInfos =
       new collection.mutable.HashMap[String, TopicMetadata]
     topicPartitionInfos.put("topic1", topic1Metadata)
@@ -558,15 +553,15 @@ class AsyncProducerTest {
   def testJavaProducer() {
     val topic = "topic1"
     val msgs = TestUtils.getMsgStrings(5)
-    val scalaProducerData =
-      msgs.map(m => new KeyedMessage[String, String](topic, m))
+    val scalaProducerData = msgs.map(m =>
+      new KeyedMessage[String, String](topic, m))
     val javaProducerData: java.util.List[KeyedMessage[String, String]] = {
       import scala.collection.JavaConversions._
       scalaProducerData
     }
 
-    val mockScalaProducer =
-      EasyMock.createMock(classOf[kafka.producer.Producer[String, String]])
+    val mockScalaProducer = EasyMock.createMock(
+      classOf[kafka.producer.Producer[String, String]])
     mockScalaProducer.send(scalaProducerData.head)
     EasyMock.expectLastCall()
     mockScalaProducer.send(scalaProducerData: _*)

@@ -81,8 +81,12 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   @inline
   def generic_duplicate()(
       implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
-    val result =
-      newDataViewBuffer(_dataView, position, limit, isReadOnly, isBigEndian)
+    val result = newDataViewBuffer(
+      _dataView,
+      position,
+      limit,
+      isReadOnly,
+      isBigEndian)
     result._mark = _mark
     result
   }
@@ -90,8 +94,12 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
   @inline
   def generic_asReadOnlyBuffer()(
       implicit newDataViewBuffer: NewThisDataViewBuffer): BufferType = {
-    val result =
-      newDataViewBuffer(_dataView, position, limit, true, isBigEndian)
+    val result = newDataViewBuffer(
+      _dataView,
+      position,
+      limit,
+      true,
+      isBigEndian)
     result._mark = _mark
     result
   }
@@ -119,11 +127,9 @@ private[nio] final class GenDataViewBuffer[B <: Buffer](val self: B)
     if (isBigEndian) ByteOrder.BIG_ENDIAN else ByteOrder.LITTLE_ENDIAN
 
   @inline
-  def generic_arrayBuffer: ArrayBuffer =
-    _dataView.buffer
+  def generic_arrayBuffer: ArrayBuffer = _dataView.buffer
 
   @inline
-  def generic_arrayBufferOffset: Int =
-    _dataView.byteOffset
+  def generic_arrayBufferOffset: Int = _dataView.byteOffset
 
 }

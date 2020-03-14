@@ -15,15 +15,13 @@ abstract class LongBufferTest extends BaseBufferTest {
   type Factory = BufferFactory.LongBufferFactory
 
   class AllocLongBufferFactory extends Factory {
-    def allocBuffer(capacity: Int): LongBuffer =
-      LongBuffer.allocate(capacity)
+    def allocBuffer(capacity: Int): LongBuffer = LongBuffer.allocate(capacity)
   }
 
   class WrappedLongBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Long]): LongBuffer =
-      LongBuffer.wrap(array)
+    def baseWrap(array: Array[Long]): LongBuffer = LongBuffer.wrap(array)
 
     def baseWrap(array: Array[Long], offset: Int, length: Int): LongBuffer =
       LongBuffer.wrap(array, offset, length)
@@ -51,13 +49,13 @@ class WrappedLongBufferTest extends LongBufferTest {
 }
 
 class WrappedLongReadOnlyBufferTest extends LongBufferTest {
-  val factory: Factory =
-    new WrappedLongBufferFactory with BufferFactory.ReadOnlyBufferFactory
+  val factory: Factory = new WrappedLongBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocLongSlicedBufferTest extends LongBufferTest {
-  val factory: Factory =
-    new AllocLongBufferFactory with BufferFactory.SlicedBufferFactory
+  val factory: Factory = new AllocLongBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Long views of byte buffers

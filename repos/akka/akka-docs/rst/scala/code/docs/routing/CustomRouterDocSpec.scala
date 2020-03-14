@@ -50,8 +50,8 @@ akka.actor.deployment {
   class RedundancyRoutingLogic(nbrCopies: Int) extends RoutingLogic {
     val roundRobin = RoundRobinRoutingLogic()
     def select(message: Any, routees: immutable.IndexedSeq[Routee]): Routee = {
-      val targets =
-        (1 to nbrCopies).map(_ => roundRobin.select(message, routees))
+      val targets = (1 to nbrCopies).map(_ =>
+        roundRobin.select(message, routees))
       SeveralRoutees(targets)
     }
   }
@@ -129,18 +129,18 @@ class CustomRouterDocSpec
     for (n <- 1 to 10) system.actorOf(Props[Storage], "s" + n)
 
     val paths = for (n <- 1 to 10) yield ("/user/s" + n)
-    val redundancy1: ActorRef =
-      system.actorOf(
-        RedundancyGroup(paths, nbrCopies = 3).props(),
-        name = "redundancy1")
+    val redundancy1: ActorRef = system.actorOf(
+      RedundancyGroup(paths, nbrCopies = 3).props(),
+      name = "redundancy1")
     redundancy1 ! "important"
     //#usage-1
 
     for (_ <- 1 to 3) expectMsg("important")
 
     //#usage-2
-    val redundancy2: ActorRef =
-      system.actorOf(FromConfig.props(), name = "redundancy2")
+    val redundancy2: ActorRef = system.actorOf(
+      FromConfig.props(),
+      name = "redundancy2")
     redundancy2 ! "very important"
     //#usage-2
 

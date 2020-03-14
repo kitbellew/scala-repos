@@ -44,14 +44,13 @@ object ZipperExamples extends App {
   case class Dept[E <: HList](manager: Employee, employees: E)
   case class Employee(name: String, salary: Int)
 
-  val dept =
-    Dept(
-      Employee("Agamemnon", 5000),
-      Employee("Menelaus", 3000) ::
-        Employee("Achilles", 2000) ::
-        Employee("Odysseus", 2000) ::
-        HNil
-    )
+  val dept = Dept(
+    Employee("Agamemnon", 5000),
+    Employee("Menelaus", 3000) ::
+      Employee("Achilles", 2000) ::
+      Employee("Odysseus", 2000) ::
+      HNil
+  )
 
   type D = Dept[Employee :: Employee :: Employee :: HNil]
 
@@ -104,20 +103,19 @@ object ZipperExamples extends App {
   // Dept(Employee(King Agamemnon,8000),Employee(Menelaus,3000) :: Employee(Achilles,3000) :: Employee(Odysseus,2000) :: HNil)
 
   // All together in a single pass ...
-  val singlePass =
-    z.down
-      .put("King Agamemnon")
-      .right
-      .put(8000)
-      .up
-      .right
-      .down
-      .right
-      .down
-      .right
-      .put(3000)
-      .root
-      .reify
+  val singlePass = z.down
+    .put("King Agamemnon")
+    .right
+    .put(8000)
+    .up
+    .right
+    .down
+    .right
+    .down
+    .right
+    .put(3000)
+    .root
+    .reify
 
   typed[D](singlePass)
   println(singlePass)

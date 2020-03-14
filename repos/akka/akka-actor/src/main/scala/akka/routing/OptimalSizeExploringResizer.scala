@@ -63,13 +63,13 @@ case object OptimalSizeExploringResizer {
     DefaultOptimalSizeExploringResizer(
       lowerBound = resizerCfg.getInt("lower-bound"),
       upperBound = resizerCfg.getInt("upper-bound"),
-      chanceOfScalingDownWhenFull =
-        resizerCfg.getDouble("chance-of-ramping-down-when-full"),
+      chanceOfScalingDownWhenFull = resizerCfg.getDouble(
+        "chance-of-ramping-down-when-full"),
       actionInterval = resizerCfg.getDuration("action-interval").asScala,
       downsizeAfterUnderutilizedFor =
         resizerCfg.getDuration("downsize-after-underutilized-for").asScala,
-      numOfAdjacentSizesToConsiderDuringOptimization =
-        resizerCfg.getInt("optimization-range"),
+      numOfAdjacentSizesToConsiderDuringOptimization = resizerCfg.getInt(
+        "optimization-range"),
       exploreStepSize = resizerCfg.getDouble("explore-step-size"),
       explorationProbability = resizerCfg.getDouble("chance-of-exploration"),
       weightOfLatestMetric = resizerCfg.getDouble("weight-of-latest-metric"),
@@ -246,8 +246,8 @@ case class DefaultOptimalSizeExploringResizer(
         val queueSizeChange = record.totalQueueLength - totalQueueLength
         val totalProcessed = queueSizeChange + totalMessageReceived
         if (totalProcessed > 0) {
-          val duration =
-            Duration.fromNanos(System.nanoTime() - record.checkTime)
+          val duration = Duration.fromNanos(
+            System.nanoTime() - record.checkTime)
           val last: Duration = duration / totalProcessed
           //exponentially decrease the weight of old last metrics data
           val toUpdate = performanceLog.get(currentSize).fold(last) { oldSpeed ⇒

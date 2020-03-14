@@ -55,11 +55,10 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
     }
     "provide a whiteSpace parser always succeeding and discarding its result" in {
       import StringWithWhiteGen._
-      val whiteSpaceParse =
-        (s: String) =>
-          whiteSpace(s) must beLike {
-            case Success(x, y) => x.toString must_== "()"
-          }
+      val whiteSpaceParse = (s: String) =>
+        whiteSpace(s) must beLike {
+          case Success(x, y) => x.toString must_== "()"
+        }
       forAll(whiteSpaceParse)
     }
     "provide an acceptCI parser to parse whatever string matching another string ignoring case" in {
@@ -74,22 +73,20 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
     }
 
     "provide a digit parser - returning a String" in {
-      val isDigit: String => Boolean =
-        (s: String) =>
-          digit(s) match {
-            case Success(x, y) => s must beMatching("(?s)\\p{Nd}.*")
-            case _             => true
-          }
+      val isDigit: String => Boolean = (s: String) =>
+        digit(s) match {
+          case Success(x, y) => s must beMatching("(?s)\\p{Nd}.*")
+          case _             => true
+        }
       forAll(isDigit)
     }
     "provide an aNumber parser - returning an Int if succeeding" in {
-      val number: String => Boolean =
-        (s: String) => {
-          aNumber(s) match {
-            case Success(x, y) => s must beMatching("(?s)\\p{Nd}+.*")
-            case _             => true
-          }
+      val number: String => Boolean = (s: String) => {
+        aNumber(s) match {
+          case Success(x, y) => s must beMatching("(?s)\\p{Nd}+.*")
+          case _             => true
         }
+      }
       forAll(number)
     }
 
@@ -169,8 +166,7 @@ object WhiteStringGen {
              (1, Gen.const("\r")),
              (1, Gen.const("\n"))))) yield string.mkString("")
 
-  implicit def genWhiteString: Arbitrary[String] =
-    Arbitrary { genWhite }
+  implicit def genWhiteString: Arbitrary[String] = Arbitrary { genWhite }
 }
 
 object StringWithWhiteGen {
@@ -183,6 +179,5 @@ object StringWithWhiteGen {
            frequency((1, Gen.const("a")), (2, Gen.const("b")), (1, genWhite))))
       yield string.mkString("")
 
-  implicit def genString: Arbitrary[String] =
-    Arbitrary { genStringWithWhite }
+  implicit def genString: Arbitrary[String] = Arbitrary { genStringWithWhite }
 }

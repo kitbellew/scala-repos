@@ -46,8 +46,7 @@ class AbstractFileReader(val file: AbstractFile) {
 
   /** read a character
     */
-  def nextChar: Char =
-    (((nextByte & 0xff) << 8) + (nextByte & 0xff)).toChar
+  def nextChar: Char = (((nextByte & 0xff) << 8) + (nextByte & 0xff)).toChar
 
   /** read an integer
     */

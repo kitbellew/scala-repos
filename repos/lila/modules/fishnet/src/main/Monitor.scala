@@ -42,8 +42,9 @@ private final class Monitor(
     } / 1000000)
     monitor.totalPosition(result.analysis.size)
 
-    val metaMovesSample =
-      sample(result.analysis.drop(6).filterNot(_.mateFound), 100)
+    val metaMovesSample = sample(
+      result.analysis.drop(6).filterNot(_.mateFound),
+      100)
     def avgOf(f: JsonApi.Request.Evaluation => Option[Int]): Option[Int] = {
       val (sum, nb) = metaMovesSample.foldLeft(0 -> 0) {
         case ((sum, nb), move) =>

@@ -21,10 +21,16 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
     it("should return contained labels") {
       withTestDB { implicit session =>
         generateNewUserWithDBRepository("user1", "repo1")
-        val labelId1 =
-          dummyService.createLabel("user1", "repo1", "label1", "000000")
-        val labelId2 =
-          dummyService.createLabel("user1", "repo1", "label2", "ffffff")
+        val labelId1 = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label1",
+          "000000")
+        val labelId2 = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label2",
+          "ffffff")
 
         generateNewUserWithDBRepository("user1", "repo2")
         dummyService.createLabel("user1", "repo2", "label1", "000000")
@@ -55,8 +61,11 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
     it("should return a label fetched by label id") {
       withTestDB { implicit session =>
         generateNewUserWithDBRepository("user1", "repo1")
-        val labelId1 =
-          dummyService.createLabel("user1", "repo1", "label1", "000000")
+        val labelId1 = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label1",
+          "000000")
         dummyService.createLabel("user1", "repo1", "label2", "ffffff")
 
         generateNewUserWithDBRepository("user1", "repo2")
@@ -74,8 +83,11 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
     it("should return a label fetched by label name") {
       withTestDB { implicit session =>
         generateNewUserWithDBRepository("user1", "repo1")
-        val labelId1 =
-          dummyService.createLabel("user1", "repo1", "label1", "000000")
+        val labelId1 = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label1",
+          "000000")
         dummyService.createLabel("user1", "repo1", "label2", "ffffff")
 
         generateNewUserWithDBRepository("user1", "repo2")
@@ -98,8 +110,11 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
         dummyService.createLabel("user1", "repo1", "label1", "000000")
         dummyService.createLabel("user1", "repo2", "label1", "000000")
         dummyService.createLabel("user2", "repo1", "label1", "000000")
-        val labelId =
-          dummyService.createLabel("user1", "repo1", "label2", "000000")
+        val labelId = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label2",
+          "000000")
         assert(labelId == 4)
         def getLabel = dummyService.getLabel("user1", "repo1", labelId)
         assert(
@@ -114,8 +129,11 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
         generateNewUserWithDBRepository("user1", "repo1")
         generateNewUserWithDBRepository("user1", "repo2")
         generateNewUserWithDBRepository("user2", "repo1")
-        val labelId =
-          dummyService.createLabel("user1", "repo1", "label1", "000000")
+        val labelId = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label1",
+          "000000")
         dummyService.createLabel("user1", "repo2", "label1", "000000")
         dummyService.createLabel("user2", "repo1", "label1", "000000")
         dummyService.updateLabel(
@@ -137,8 +155,11 @@ class LabelsServiceSpec extends FunSpec with ServiceSpecBase {
         generateNewUserWithDBRepository("user1", "repo1")
         generateNewUserWithDBRepository("user1", "repo2")
         generateNewUserWithDBRepository("user2", "repo1")
-        val labelId =
-          dummyService.createLabel("user1", "repo1", "label1", "000000")
+        val labelId = dummyService.createLabel(
+          "user1",
+          "repo1",
+          "label1",
+          "000000")
         dummyService.createLabel("user1", "repo2", "label1", "000000")
         dummyService.createLabel("user2", "repo1", "label1", "000000")
         dummyService.deleteLabel("user1", "repo1", labelId)

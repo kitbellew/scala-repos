@@ -4,8 +4,8 @@ object PhoneCode {
 
   def main(args: Array[String]) {
     //load all 3 files - and according to the spec, not into the memory. just open the file and have an iterator sucking lines from it - (1 line only :))
-    val Array(dictEntries, phoneEntries, testResult) =
-      args.map(fileName => File("resource/" + fileName).lines())
+    val Array(dictEntries, phoneEntries, testResult) = args.map(fileName =>
+      File("resource/" + fileName).lines())
     //function to create strings without noise chars, 1 line
     val cleanString = (s: String) => s.filterNot(Set('-', '"', '/'))
     //prepare lookup table number -> all words, 8 lines

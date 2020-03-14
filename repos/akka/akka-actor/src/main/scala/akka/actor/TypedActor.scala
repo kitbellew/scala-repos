@@ -186,8 +186,8 @@ object TypedActor
         case ps ⇒
           val serialization = SerializationExtension(
             akka.serialization.JavaSerializer.currentSystem.value)
-          val serializedParameters =
-            Array.ofDim[(Int, Class[_], Array[Byte])](ps.length)
+          val serializedParameters = Array
+            .ofDim[(Int, Class[_], Array[Byte])](ps.length)
           for (i ← 0 until ps.length) {
             val p = ps(i)
             val s = serialization.findSerializerFor(p)
@@ -234,8 +234,9 @@ object TypedActor
           case null ⇒ null
           case a if a.length == 0 ⇒ Array[AnyRef]()
           case a ⇒
-            val deserializedParameters: Array[AnyRef] =
-              Array.ofDim[AnyRef](a.length) //Mutable for the sake of sanity
+            val deserializedParameters: Array[AnyRef] = Array.ofDim[AnyRef](
+              a.length
+            ) //Mutable for the sake of sanity
             for (i ← 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
               deserializedParameters(i) = serialization
@@ -626,8 +627,7 @@ object TypedProps {
     */
   private[akka] def apply[T <: AnyRef](
       interfaces: immutable.Seq[Class[_]],
-      creator: ⇒ T): TypedProps[T] =
-    new TypedProps[T](interfaces, () ⇒ creator)
+      creator: ⇒ T): TypedProps[T] = new TypedProps[T](interfaces, () ⇒ creator)
 }
 
 /**

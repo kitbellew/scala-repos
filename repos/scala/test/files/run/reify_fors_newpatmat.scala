@@ -63,8 +63,7 @@ object Test extends App {
       }
 
       /** Return the sum of the elements of 'xs'. */
-      def sum(xs: List[Double]): Double =
-        xs.foldLeft(0.0) { (x, y) => x + y }
+      def sum(xs: List[Double]): Double = xs.foldLeft(0.0) { (x, y) => x + y }
 
       /** Return the sum of pairwise product of the two lists. */
       def scalProd(xs: List[Double], ys: List[Double]) =

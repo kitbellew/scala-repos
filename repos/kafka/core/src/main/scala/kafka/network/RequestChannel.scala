@@ -78,17 +78,15 @@ object RequestChannel extends Logging {
     // request types should only use the client-side versions which are parsed with
     // o.a.k.common.requests.AbstractRequest.getRequest()
     private val keyToNameAndDeserializerMap
-        : Map[Short, (ByteBuffer) => RequestOrResponse] =
-      Map(
-        ApiKeys.FETCH.id -> FetchRequest.readFrom,
-        ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> ControlledShutdownRequest.readFrom)
+        : Map[Short, (ByteBuffer) => RequestOrResponse] = Map(
+      ApiKeys.FETCH.id -> FetchRequest.readFrom,
+      ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> ControlledShutdownRequest.readFrom)
 
     // TODO: this will be removed once we migrated to client-side format
-    val requestObj =
-      keyToNameAndDeserializerMap
-        .get(requestId)
-        .map(readFrom => readFrom(buffer))
-        .orNull
+    val requestObj = keyToNameAndDeserializerMap
+      .get(requestId)
+      .map(readFrom => readFrom(buffer))
+      .orNull
 
     // if we failed to find a server-side mapping, then try using the
     // client-side request / response format
@@ -140,12 +138,12 @@ object RequestChannel extends Logging {
 
       val requestQueueTime = (requestDequeueTimeMs - startTimeMs).max(0L)
       val apiLocalTime = (apiLocalCompleteTimeMs - requestDequeueTimeMs).max(0L)
-      val apiRemoteTime =
-        (apiRemoteCompleteTimeMs - apiLocalCompleteTimeMs).max(0L)
-      val apiThrottleTime =
-        (responseCompleteTimeMs - apiRemoteCompleteTimeMs).max(0L)
-      val responseQueueTime =
-        (responseDequeueTimeMs - responseCompleteTimeMs).max(0L)
+      val apiRemoteTime = (apiRemoteCompleteTimeMs - apiLocalCompleteTimeMs)
+        .max(0L)
+      val apiThrottleTime = (responseCompleteTimeMs - apiRemoteCompleteTimeMs)
+        .max(0L)
+      val responseQueueTime = (responseDequeueTimeMs - responseCompleteTimeMs)
+        .max(0L)
       val responseSendTime = (endTimeMs - responseDequeueTimeMs).max(0L)
       val totalTime = endTimeMs - startTimeMs
       var metricsList = List(
@@ -296,8 +294,7 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
     requestQueue.poll(timeout, TimeUnit.MILLISECONDS)
 
   /** Get the next request or block until there is one */
-  def receiveRequest(): RequestChannel.Request =
-    requestQueue.take()
+  def receiveRequest(): RequestChannel.Request = requestQueue.take()
 
   /** Get a response for the given processor if there is one */
   def receiveResponse(processor: Int): RequestChannel.Response = {
@@ -325,11 +322,16 @@ object RequestMetrics {
 
 class RequestMetrics(name: String) extends KafkaMetricsGroup {
   val tags = Map("request" -> name)
-  val requestRate =
-    newMeter("RequestsPerSec", "requests", TimeUnit.SECONDS, tags)
+  val requestRate = newMeter(
+    "RequestsPerSec",
+    "requests",
+    TimeUnit.SECONDS,
+    tags)
   // time a request spent in a request queue
-  val requestQueueTimeHist =
-    newHistogram("RequestQueueTimeMs", biased = true, tags)
+  val requestQueueTimeHist = newHistogram(
+    "RequestQueueTimeMs",
+    biased = true,
+    tags)
   // time a request takes to be processed at the local broker
   val localTimeHist = newHistogram("LocalTimeMs", biased = true, tags)
   // time a request takes to wait on remote brokers (currently only relevant to fetch and produce requests)
@@ -337,10 +339,14 @@ class RequestMetrics(name: String) extends KafkaMetricsGroup {
   // time a request is throttled (only relevant to fetch and produce requests)
   val throttleTimeHist = newHistogram("ThrottleTimeMs", biased = true, tags)
   // time a response spent in a response queue
-  val responseQueueTimeHist =
-    newHistogram("ResponseQueueTimeMs", biased = true, tags)
+  val responseQueueTimeHist = newHistogram(
+    "ResponseQueueTimeMs",
+    biased = true,
+    tags)
   // time to send the response to the requester
-  val responseSendTimeHist =
-    newHistogram("ResponseSendTimeMs", biased = true, tags)
+  val responseSendTimeHist = newHistogram(
+    "ResponseSendTimeMs",
+    biased = true,
+    tags)
   val totalTimeHist = newHistogram("TotalTimeMs", biased = true, tags)
 }

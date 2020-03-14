@@ -146,8 +146,8 @@ class ScImplicitlyConvertible(
       s"Implicit map: $exprType, from companion: $isFromCompanion, expected: $exp",
       LOG)
 
-    val typez: ScType =
-      exprType.getOrElse(placeType(fromUnder).getOrElse(return Seq.empty))
+    val typez: ScType = exprType.getOrElse(
+      placeType(fromUnder).getOrElse(return Seq.empty))
 
     val buffer = new ArrayBuffer[ImplicitMapResult]
     if (!isFromCompanion) {
@@ -287,8 +287,14 @@ class ScImplicitlyConvertible(
   def forMap(r: ScalaResolveResult, typez: ScType): ImplicitMapResult = {
     ScalaPsiUtil.debug(s"Check implicit: $r for type: $typez", LOG)
 
-    val default =
-      ImplicitMapResult(condition = false, r, null, null, null, null, null)
+    val default = ImplicitMapResult(
+      condition = false,
+      r,
+      null,
+      null,
+      null,
+      null,
+      null)
     if (!PsiTreeUtil.isContextAncestor(
           ScalaPsiUtil.nameContext(r.element),
           place,
@@ -481,8 +487,8 @@ class ScImplicitlyConvertible(
                           val params: Seq[Parameter] =
                             f.paramClauses.clauses.last.effectiveParameters.map(
                               param => new Parameter(param))
-                          val (inferredParams, expr, _) =
-                            InferUtil.findImplicits(
+                          val (inferredParams, expr, _) = InferUtil
+                            .findImplicits(
                               params,
                               None,
                               place,
@@ -681,11 +687,11 @@ object ScImplicitlyConvertible {
   private implicit val LOG = Logger.getInstance(
     "#org.jetbrains.plugins.scala.lang.psi.implicits.ScImplicitlyConvertible")
 
-  val IMPLICIT_RESOLUTION_KEY: Key[PsiClass] =
-    Key.create("implicit.resolution.key")
+  val IMPLICIT_RESOLUTION_KEY: Key[PsiClass] = Key.create(
+    "implicit.resolution.key")
   val IMPLICIT_CONVERSIONS_KEY: Key[CachedValue[
-    collection.Map[ScType, Set[(ScFunctionDefinition, Set[ImportUsed])]]]] =
-    Key.create("implicit.conversions.key")
+    collection.Map[ScType, Set[(ScFunctionDefinition, Set[ImportUsed])]]]] = Key
+    .create("implicit.conversions.key")
 
   case class Implicit(
       tp: ScType,
@@ -697,11 +703,11 @@ object ScImplicitlyConvertible {
   val IMPLICIT_CALL_TEXT =
     IMPLICIT_REFERENCE_NAME + "(" + IMPLICIT_EXPRESSION_NAME + ")"
 
-  val FAKE_RESOLVE_RESULT_KEY: Key[ScalaResolveResult] =
-    Key.create("fake.resolve.result.key")
+  val FAKE_RESOLVE_RESULT_KEY: Key[ScalaResolveResult] = Key.create(
+    "fake.resolve.result.key")
   val FAKE_EXPRESSION_TYPE_KEY: Key[ScType] = Key.create("fake.expr.type.key")
-  val FAKE_EXPECTED_TYPE_KEY: Key[Option[ScType]] =
-    Key.create("fake.expected.type.key")
+  val FAKE_EXPECTED_TYPE_KEY: Key[Option[ScType]] = Key.create(
+    "fake.expected.type.key")
 
   def setupFakeCall(
       expr: ScMethodCall,

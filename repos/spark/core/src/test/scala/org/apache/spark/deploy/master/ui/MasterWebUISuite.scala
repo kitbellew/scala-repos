@@ -39,8 +39,12 @@ class MasterWebUISuite extends SparkFunSuite with BeforeAndAfter {
   val master = {
     val conf = new SparkConf
     val securityMgr = new SecurityManager(conf)
-    val rpcEnv =
-      RpcEnv.create(Master.SYSTEM_NAME, "localhost", 0, conf, securityMgr)
+    val rpcEnv = RpcEnv.create(
+      Master.SYSTEM_NAME,
+      "localhost",
+      0,
+      conf,
+      securityMgr)
     val master = new Master(rpcEnv, rpcEnv.address, 0, securityMgr, conf)
     master
   }

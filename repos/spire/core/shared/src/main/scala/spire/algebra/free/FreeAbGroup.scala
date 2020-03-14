@@ -94,8 +94,7 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
   def |-|(rhs: FreeAbGroup[A]): FreeAbGroup[A] =
     new FreeAbGroup(lhs.terms - rhs.terms)
 
-  def inverse: FreeAbGroup[A] =
-    new FreeAbGroup(-terms)
+  def inverse: FreeAbGroup[A] = new FreeAbGroup(-terms)
 
   override def toString: String =
     if (terms.isEmpty) "e"

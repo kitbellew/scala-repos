@@ -131,8 +131,7 @@ private[akka] object ReplicatorMessageSerializer {
         }
       }
 
-    override def toString: String =
-      elements.mkString("[", ",", "]")
+    override def toString: String = elements.mkString("[", ",", "]")
   }
 }
 
@@ -180,8 +179,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   val StatusManifest = "M"
   val GossipManifest = "N"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       GetManifest -> getFromBinary,
       GetSuccessManifest -> getSuccessFromBinary,
       NotFoundManifest -> notFoundFromBinary,
@@ -343,8 +342,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
       if (getSuccess.hasRequest())
         Some(otherMessageFromProto(getSuccess.getRequest))
       else None
-    val data =
-      otherMessageFromProto(getSuccess.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(getSuccess.getData)
+      .asInstanceOf[ReplicatedData]
     GetSuccess(key, request)(data)
   }
 
@@ -365,8 +364,9 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def getFailureToProto(getFailure: GetFailure[_]): dm.GetFailure = {
-    val b =
-      dm.GetFailure.newBuilder().setKey(otherMessageToProto(getFailure.key))
+    val b = dm.GetFailure
+      .newBuilder()
+      .setKey(otherMessageToProto(getFailure.key))
     getFailure.request.foreach(o ⇒ b.setRequest(otherMessageToProto(o)))
     b.build()
   }
@@ -416,8 +416,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
 
   private def changedFromBinary(bytes: Array[Byte]): Changed[_] = {
     val changed = dm.Changed.parseFrom(bytes)
-    val data =
-      otherMessageFromProto(changed.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(changed.getData)
+      .asInstanceOf[ReplicatedData]
     val key = otherMessageFromProto(changed.getKey).asInstanceOf[KeyR]
     Changed(key)(data)
   }
@@ -466,8 +466,8 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
         val removed = uniqueAddressFromProto(pruningEntry.getRemovedAddress)
         removed -> state
       }(breakOut)
-    val data =
-      otherMessageFromProto(dataEnvelope.getData).asInstanceOf[ReplicatedData]
+    val data = otherMessageFromProto(dataEnvelope.getData)
+      .asInstanceOf[ReplicatedData]
     DataEnvelope(data, pruning)
   }
 

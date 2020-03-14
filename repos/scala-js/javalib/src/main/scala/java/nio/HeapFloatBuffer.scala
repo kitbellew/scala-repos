@@ -20,28 +20,23 @@ private[nio] final class HeapFloatBuffer private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): FloatBuffer =
-    GenHeapBuffer(this).generic_slice()
+  def slice(): FloatBuffer = GenHeapBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): FloatBuffer =
-    GenHeapBuffer(this).generic_duplicate()
+  def duplicate(): FloatBuffer = GenHeapBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): FloatBuffer =
     GenHeapBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Float =
-    GenBuffer(this).generic_get()
+  def get(): Float = GenBuffer(this).generic_get()
 
   @noinline
-  def put(f: Float): FloatBuffer =
-    GenBuffer(this).generic_put(f)
+  def put(f: Float): FloatBuffer = GenBuffer(this).generic_put(f)
 
   @noinline
-  def get(index: Int): Float =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Float = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, f: Float): FloatBuffer =
@@ -56,8 +51,7 @@ private[nio] final class HeapFloatBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): FloatBuffer =
-    GenHeapBuffer(this).generic_compact()
+  def compact(): FloatBuffer = GenHeapBuffer(this).generic_compact()
 
   def order(): ByteOrder = ByteOrder.nativeOrder()
 

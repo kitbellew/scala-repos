@@ -41,9 +41,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
   def app = HttpBinApplication.app
 
-  val foldingSink =
-    Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
-      state ++ bs)
+  val foldingSink = Sink.fold[ByteString, ByteString](ByteString.empty)(
+    (state, bs) => state ++ bs)
 
   "WS@java" should {
 
@@ -82,8 +81,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     "make GET Requests" in withServer { ws =>
       val req = ws.url("/get").get
-      val rep =
-        req.toCompletableFuture.get(10, TimeUnit.SECONDS) // AWait result
+      val rep = req.toCompletableFuture
+        .get(10, TimeUnit.SECONDS) // AWait result
 
       rep.getStatus aka "status" must_== 200 and (rep.asJson
         .path("origin")
@@ -140,10 +139,16 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
     }
 
     "consider query string in JSON conversion" in withServer { ws =>
-      val empty =
-        ws.url("/get?foo").get.toCompletableFuture.get(10, TimeUnit.SECONDS)
-      val bar =
-        ws.url("/get?foo=bar").get.toCompletableFuture.get(10, TimeUnit.SECONDS)
+      val empty = ws
+        .url("/get?foo")
+        .get
+        .toCompletableFuture
+        .get(10, TimeUnit.SECONDS)
+      val bar = ws
+        .url("/get?foo=bar")
+        .get
+        .toCompletableFuture
+        .get(10, TimeUnit.SECONDS)
 
       empty.asJson
         .path("args")
@@ -229,9 +234,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
 
     implicit val materializer = app.materializer
 
-    val foldingSink =
-      Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
-        state ++ bs)
+    val foldingSink = Sink.fold[ByteString, ByteString](ByteString.empty)(
+      (state, bs) => state ++ bs)
 
     def withServer[T](block: play.api.libs.ws.WSClient => T) = {
       Server.withApplication(app) { implicit port =>

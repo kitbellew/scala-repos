@@ -84,14 +84,13 @@ object SQLConf {
           throw new IllegalArgumentException(
             s"Duplicate SQLConfEntry. $key has been registered")
         }
-        val entry =
-          new SQLConfEntry[T](
-            key,
-            defaultValue,
-            valueConverter,
-            stringConverter,
-            doc,
-            isPublic)
+        val entry = new SQLConfEntry[T](
+          key,
+          defaultValue,
+          valueConverter,
+          stringConverter,
+          doc,
+          isPublic)
         sqlConfEntries.put(key, entry)
         entry
       }
@@ -291,14 +290,12 @@ object SQLConf {
     isPublic = false
   )
 
-  val IN_MEMORY_PARTITION_PRUNING =
-    booleanConf(
-      "spark.sql.inMemoryColumnarStorage.partitionPruning",
-      defaultValue = Some(true),
-      doc =
-        "When true, enable partition pruning for in-memory columnar tables.",
-      isPublic = false
-    )
+  val IN_MEMORY_PARTITION_PRUNING = booleanConf(
+    "spark.sql.inMemoryColumnarStorage.partitionPruning",
+    defaultValue = Some(true),
+    doc = "When true, enable partition pruning for in-memory columnar tables.",
+    isPublic = false
+  )
 
   val PREFER_SORTMERGEJOIN = booleanConf(
     "spark.sql.join.preferSortMergeJoin",
@@ -330,29 +327,26 @@ object SQLConf {
     doc =
       "The default number of partitions to use when shuffling data for joins or aggregations.")
 
-  val SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE =
-    longMemConf(
-      "spark.sql.adaptive.shuffle.targetPostShuffleInputSize",
-      defaultValue = Some(64 * 1024 * 1024),
-      doc = "The target post-shuffle input size in bytes of a task.")
+  val SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE = longMemConf(
+    "spark.sql.adaptive.shuffle.targetPostShuffleInputSize",
+    defaultValue = Some(64 * 1024 * 1024),
+    doc = "The target post-shuffle input size in bytes of a task.")
 
   val ADAPTIVE_EXECUTION_ENABLED = booleanConf(
     "spark.sql.adaptive.enabled",
     defaultValue = Some(false),
     doc = "When true, enable adaptive query execution.")
 
-  val SHUFFLE_MIN_NUM_POSTSHUFFLE_PARTITIONS =
-    intConf(
-      "spark.sql.adaptive.minNumPostShufflePartitions",
-      defaultValue = Some(-1),
-      doc =
-        "The advisory minimal number of post-shuffle partitions provided to " +
-          "ExchangeCoordinator. This setting is used in our test to make sure we " +
-          "have enough parallelism to expose issues that will not be exposed with a " +
-          "single partition. When the value is a non-positive value, this setting will " +
-          "not be provided to ExchangeCoordinator.",
-      isPublic = false
-    )
+  val SHUFFLE_MIN_NUM_POSTSHUFFLE_PARTITIONS = intConf(
+    "spark.sql.adaptive.minNumPostShufflePartitions",
+    defaultValue = Some(-1),
+    doc = "The advisory minimal number of post-shuffle partitions provided to " +
+      "ExchangeCoordinator. This setting is used in our test to make sure we " +
+      "have enough parallelism to expose issues that will not be exposed with a " +
+      "single partition. When the value is a non-positive value, this setting will " +
+      "not be provided to ExchangeCoordinator.",
+    isPublic = false
+  )
 
   val SUBEXPRESSION_ELIMINATION_ENABLED = booleanConf(
     "spark.sql.subexpressionElimination.enabled",
@@ -538,22 +532,20 @@ object SQLConf {
     defaultValue = Some(true),
     doc = "When true, automatically discover data partitions.")
 
-  val PARTITION_COLUMN_TYPE_INFERENCE =
-    booleanConf(
-      "spark.sql.sources.partitionColumnTypeInference.enabled",
-      defaultValue = Some(true),
-      doc =
-        "When true, automatically infer the data types for partitioned columns."
-    )
+  val PARTITION_COLUMN_TYPE_INFERENCE = booleanConf(
+    "spark.sql.sources.partitionColumnTypeInference.enabled",
+    defaultValue = Some(true),
+    doc =
+      "When true, automatically infer the data types for partitioned columns."
+  )
 
-  val PARTITION_MAX_FILES =
-    intConf(
-      "spark.sql.sources.maxConcurrentWrites",
-      defaultValue = Some(1),
-      doc =
-        "The maximum number of concurrent files to open before falling back on sorting when " +
-          "writing out files using dynamic partitioning."
-    )
+  val PARTITION_MAX_FILES = intConf(
+    "spark.sql.sources.maxConcurrentWrites",
+    defaultValue = Some(1),
+    doc =
+      "The maximum number of concurrent files to open before falling back on sorting when " +
+        "writing out files using dynamic partitioning."
+  )
 
   val BUCKETING_ENABLED = booleanConf(
     "spark.sql.sources.bucketing.enabled",
@@ -575,8 +567,9 @@ object SQLConf {
   //
   //  1. Instead of SQLConf, this option *must be set in Hadoop Configuration*.
   //  2. This option can be overridden by "spark.sql.parquet.output.committer.class".
-  val OUTPUT_COMMITTER_CLASS =
-    stringConf("spark.sql.sources.outputCommitterClass", isPublic = false)
+  val OUTPUT_COMMITTER_CLASS = stringConf(
+    "spark.sql.sources.outputCommitterClass",
+    isPublic = false)
 
   val PARALLEL_PARTITION_DISCOVERY_THRESHOLD = intConf(
     key = "spark.sql.sources.parallelPartitionDiscovery.threshold",

@@ -69,9 +69,11 @@ object CrossOrderingSpecs
       val left = dag.AbsoluteLoad(Const(CString("/foo"))(line))(line)
       val right = Const(CLong(42))(line)
 
-      val input =
-        Join(Or, IdentitySort, Join(Eq, Cross(None), left, right)(line), left)(
-          line)
+      val input = Join(
+        Or,
+        IdentitySort,
+        Join(Eq, Cross(None), left, right)(line),
+        left)(line)
       val expected = Join(
         Or,
         IdentitySort,
@@ -87,9 +89,10 @@ object CrossOrderingSpecs
       val left = dag.AbsoluteLoad(Const(CString("/foo"))(line))(line)
       val right = Const(CLong(42))(line)
 
-      val input =
-        Filter(IdentitySort, Join(Eq, Cross(None), left, right)(line), left)(
-          line)
+      val input = Filter(
+        IdentitySort,
+        Join(Eq, Cross(None), left, right)(line),
+        left)(line)
       val expected = Filter(
         IdentitySort,
         Join(Eq, Cross(Some(CrossLeft)), left, right)(line),
@@ -129,12 +132,11 @@ object CrossOrderingSpecs
 
       val foo = dag.AbsoluteLoad(Const(CString("/foo"))(line), JTextT)(line)
 
-      val input =
-        Join(
-          Add,
-          IdentitySort,
-          Join(Add, Cross(Some(CrossLeft)), foo, Const(CLong(42))(line))(line),
-          foo)(line)
+      val input = Join(
+        Add,
+        IdentitySort,
+        Join(Add, Cross(Some(CrossLeft)), foo, Const(CLong(42))(line))(line),
+        foo)(line)
 
       orderCrosses(input) mustEqual input
     }
@@ -144,16 +146,15 @@ object CrossOrderingSpecs
 
       val foo = dag.AbsoluteLoad(Const(CString("/foo"))(line), JTextT)(line)
 
-      val input =
+      val input = Join(
+        Add,
+        ValueSort(0),
         Join(
           Add,
-          ValueSort(0),
-          Join(
-            Add,
-            Cross(Some(CrossLeft)),
-            AddSortKey(foo, "a", "b", 0),
-            Const(CLong(42))(line))(line),
-          AddSortKey(foo, "a", "b", 0))(line)
+          Cross(Some(CrossLeft)),
+          AddSortKey(foo, "a", "b", 0),
+          Const(CLong(42))(line))(line),
+        AddSortKey(foo, "a", "b", 0))(line)
 
       orderCrosses(input) mustEqual input
     }

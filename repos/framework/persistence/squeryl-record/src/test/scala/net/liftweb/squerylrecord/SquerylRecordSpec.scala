@@ -77,8 +77,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
     "load record by string field value" in {
       transaction {
         S.initIfUninitted(session) {
-          val company =
-            from(companies)(c => where(c.name === td.c1.name.get) select (c))
+          val company = from(companies)(c =>
+            where(c.name === td.c1.name.get) select (c))
           checkCompaniesEqual(company.single, td.c1)
         }
       }
@@ -113,8 +113,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
     "support left outer joins" in {
       transaction {
         S.initIfUninitted(session) {
-          val companiesWithEmployees =
-            join(companies, employees.leftOuter)((c, e) =>
+          val companiesWithEmployees = join(companies, employees.leftOuter)(
+            (c, e) =>
               select(c, e)
                 on (c.id === e.map(_.companyId)))
 
@@ -122,11 +122,12 @@ class SquerylRecordSpec extends Specification with AroundExample {
           // One company doesn't have an employee, two have
           companiesWithEmployees.filter(ce => ce._2.isEmpty) must haveSize(1)
 
-          val companiesAndEmployeesWithSameName =
-            join(companies, employees.leftOuter)((c, e) =>
-              groupBy(c.id)
-                compute (countDistinct(e.map(_.id)))
-                on (c.name === e.map(_.name)))
+          val companiesAndEmployeesWithSameName = join(
+            companies,
+            employees.leftOuter)((c, e) =>
+            groupBy(c.id)
+              compute (countDistinct(e.map(_.id)))
+              on (c.name === e.map(_.name)))
 
           // There are three companies
           companiesAndEmployeesWithSameName must haveSize(3)
@@ -134,29 +135,32 @@ class SquerylRecordSpec extends Specification with AroundExample {
           companiesAndEmployeesWithSameName.filter(ce =>
             ce.measures == 0) must haveSize(2)
 
-          val employeesWithSameAdminSetting =
-            join(employees, employees.leftOuter)((e1, e2) =>
-              select(e1, e2)
-                on (e1.admin === e2.map(_.admin)))
+          val employeesWithSameAdminSetting = join(
+            employees,
+            employees.leftOuter)((e1, e2) =>
+            select(e1, e2)
+              on (e1.admin === e2.map(_.admin)))
 
           employeesWithSameAdminSetting.foreach { ee =>
             ee._2 must not(beEmpty)
           }
 
-          val companiesWithSameCreationDate =
-            join(companies, companies.leftOuter)((c1, c2) =>
-              select(c1, c2)
-                on (c1.created === c2.map(_.created)))
+          val companiesWithSameCreationDate = join(
+            companies,
+            companies.leftOuter)((c1, c2) =>
+            select(c1, c2)
+              on (c1.created === c2.map(_.created)))
           companiesWithSameCreationDate must not(beEmpty)
 
-          val employeesWithSameDepartmentNumber =
-            join(employees, employees.leftOuter)((e1, e2) =>
-              select(e1, e2)
-                on (e1.departmentNumber === e2.map(_.departmentNumber)))
+          val employeesWithSameDepartmentNumber = join(
+            employees,
+            employees.leftOuter)((e1, e2) =>
+            select(e1, e2)
+              on (e1.departmentNumber === e2.map(_.departmentNumber)))
           employeesWithSameDepartmentNumber must not(beEmpty)
 
-          val employeesWithSameRoles =
-            join(employees, employees.leftOuter)((e1, e2) =>
+          val employeesWithSameRoles = join(employees, employees.leftOuter)(
+            (e1, e2) =>
               select(e1, e2)
                 on (e1.role === e2.map(_.role)))
           employeesWithSameRoles must not(beEmpty)
@@ -387,10 +391,9 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
     "Allow custom functions" in {
       inTransaction {
-        val created =
-          from(companies)(c =>
-            where(c.name === "First Company USA")
-              select (&(toChar(c.created, "EEE, d MMM yyyy"))))
+        val created = from(companies)(c =>
+          where(c.name === "First Company USA")
+            select (&(toChar(c.created, "EEE, d MMM yyyy"))))
         created.head must_== new SimpleDateFormat("EEE, d MMM yyyy")
           .format(Calendar.getInstance().getTime())
       }
@@ -492,7 +495,6 @@ class SquerylRecordSpec extends Specification with AroundExample {
       f1.name must_== f2.name
     }
 
-    def checkXHtml(): Result =
-      r1.toXHtml must_== r2.toXHtml
+    def checkXHtml(): Result = r1.toXHtml must_== r2.toXHtml
   }
 }

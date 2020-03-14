@@ -19,8 +19,8 @@ class CacheStatistics private (id: String, name: String) {
   var cachedAreaEntrances: Long = 0
   @volatile
   var cachesRecalculated: Long = 0
-  val objectsToKeepTrackOf =
-    ContainerUtil.newConcurrentSet[WeakReference[AnyRef]]
+  val objectsToKeepTrackOf = ContainerUtil
+    .newConcurrentSet[WeakReference[AnyRef]]
   val calculationTimes = ContainerUtil.newConcurrentSet[Long]()
 
   val memoryMeter = new MemoryMeter()

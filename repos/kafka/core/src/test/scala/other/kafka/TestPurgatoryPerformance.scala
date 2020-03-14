@@ -109,8 +109,9 @@ object TestPurgatoryPerformance {
     val pct50 = options.valueOf(pct50Opt).doubleValue
     val verbose = options.valueOf(verboseOpt).booleanValue
 
-    val gcMXBeans =
-      ManagementFactory.getGarbageCollectorMXBeans().sortBy(_.getName)
+    val gcMXBeans = ManagementFactory
+      .getGarbageCollectorMXBeans()
+      .sortBy(_.getName)
     val osMXBean = ManagementFactory.getOperatingSystemMXBean
     val latencySamples = new LatencySamples(1000000, pct75, pct50)
     val intervalSamples = new IntervalSamples(1000000, requestRate)

@@ -23,11 +23,9 @@ trait CollectionsOnSynchronizedMapTest extends CollectionsOnMapsTest {
       def empty[K: ClassTag, V: ClassTag]: ju.Map[K, V] =
         ju.Collections.synchronizedMap(originalFactory.empty[K, V])
 
-      override def allowsNullKeys: Boolean =
-        originalFactory.allowsNullKeys
+      override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys
 
-      override def allowsNullValues: Boolean =
-        originalFactory.allowsNullValues
+      override def allowsNullValues: Boolean = originalFactory.allowsNullValues
     }
   }
 }
@@ -45,11 +43,9 @@ trait CollectionsOnSynchronizedSortedMapTest
       def empty[K: ClassTag, V: ClassTag]: ju.SortedMap[K, V] =
         ju.Collections.synchronizedSortedMap(originalFactory.empty[K, V])
 
-      override def allowsNullKeys: Boolean =
-        originalFactory.allowsNullKeys
+      override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys
 
-      override def allowsNullValues: Boolean =
-        originalFactory.allowsNullValues
+      override def allowsNullValues: Boolean = originalFactory.allowsNullValues
     }
   }
 }

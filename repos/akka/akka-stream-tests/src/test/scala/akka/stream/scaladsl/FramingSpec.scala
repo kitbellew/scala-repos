@@ -62,8 +62,9 @@ class FramingSpec extends AkkaSpec {
     }
   }
 
-  val rechunk =
-    Flow[ByteString].transform(() ⇒ new Rechunker).named("rechunker")
+  val rechunk = Flow[ByteString]
+    .transform(() ⇒ new Rechunker)
+    .named("rechunker")
 
   "Delimiter bytes based framing" must {
 
@@ -185,8 +186,9 @@ class FramingSpec extends AkkaSpec {
         fieldLength ← fieldLengths
       } {
 
-        val encodedFrames =
-          frameLengths.filter(_ < (1L << (fieldLength * 8))).map { length ⇒
+        val encodedFrames = frameLengths
+          .filter(_ < (1L << (fieldLength * 8)))
+          .map { length ⇒
             val payload = referenceChunk.take(length)
             encode(payload, fieldOffset, fieldLength, byteOrder)
           }
@@ -269,15 +271,14 @@ class FramingSpec extends AkkaSpec {
 
     "support simple framing adapter" in {
       val rechunkBidi = BidiFlow.fromFlowsMat(rechunk, rechunk)(Keep.left)
-      val codecFlow =
-        Framing
-          .simpleFramingProtocol(1024)
-          .atop(rechunkBidi)
-          .atop(Framing.simpleFramingProtocol(1024).reversed)
-          .join(Flow[ByteString]) // Loopback
+      val codecFlow = Framing
+        .simpleFramingProtocol(1024)
+        .atop(rechunkBidi)
+        .atop(Framing.simpleFramingProtocol(1024).reversed)
+        .join(Flow[ByteString]) // Loopback
 
-      val testMessages =
-        List.fill(100)(referenceChunk.take(Random.nextInt(1024)))
+      val testMessages = List.fill(100)(
+        referenceChunk.take(Random.nextInt(1024)))
       Await.result(
         Source(testMessages).via(codecFlow).limit(1000).runWith(Sink.seq),
         3.seconds) should ===(testMessages)

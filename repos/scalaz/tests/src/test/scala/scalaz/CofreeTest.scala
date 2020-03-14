@@ -140,8 +140,7 @@ object CofreeTest extends SpecLite {
     type CofreeZipStream[A] = CofreeZip[Stream, A]
 
     implicit def CofreeZipStreamArb[A: Arbitrary]
-        : Arbitrary[CofreeZipStream[A]] =
-      Tags.Zip.subst(CofreeStreamArb[A])
+        : Arbitrary[CofreeZipStream[A]] = Tags.Zip.subst(CofreeStreamArb[A])
 
     checkAll("CofreeZipStream", ScalazProperties.apply.laws[CofreeZipStream])
   }

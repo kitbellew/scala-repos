@@ -579,8 +579,11 @@ class IntervalIteratorCheck
           Try(xs.iterator(0)).isFailure shouldBe true
         }
       } else {
-        val triples =
-          List((cu, true, 1), (ou, false, 1), (uc, true, -1), (uo, false, -1))
+        val triples = List(
+          (cu, true, 1),
+          (ou, false, 1),
+          (uc, true, -1),
+          (uo, false, -1))
         triples.foreach {
           case (interval, hasN, mult) =>
             val step = step0 * mult

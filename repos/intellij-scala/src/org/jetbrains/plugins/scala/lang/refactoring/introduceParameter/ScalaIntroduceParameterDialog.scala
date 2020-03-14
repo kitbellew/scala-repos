@@ -78,14 +78,13 @@ class ScalaIntroduceParameterDialog(
 
   override def createRefactoringProcessor(): BaseRefactoringProcessor = {
     val parameters = splittedItems.map(_.map(_.parameter))
-    val changeInfo =
-      new ScalaChangeInfo(
-        getVisibility,
-        method.fun,
-        getMethodName,
-        returnType,
-        parameters,
-        isAddDefaultArgs)
+    val changeInfo = new ScalaChangeInfo(
+      getVisibility,
+      method.fun,
+      getMethodName,
+      returnType,
+      parameters,
+      isAddDefaultArgs)
 
     val newData = introduceData.copy(
       paramName = paramNameField.getText,
@@ -128,15 +127,14 @@ class ScalaIntroduceParameterDialog(
     table.getSelectionModel.setSelectionMode(
       ListSelectionModel.SINGLE_SELECTION)
     table.setSurrendersFocusOnKeystroke(true)
-    val buttonsPanel: JPanel =
-      ToolbarDecorator
-        .createDecorator(table)
-        .setMoveUpAction(upAction)
-        .setMoveDownAction(downAction)
-        .disableAddAction()
-        .disableRemoveAction()
-        .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
-        .createPanel
+    val buttonsPanel: JPanel = ToolbarDecorator
+      .createDecorator(table)
+      .setMoveUpAction(upAction)
+      .setMoveDownAction(downAction)
+      .disableAddAction()
+      .disableRemoveAction()
+      .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
+      .createPanel
     myParametersTableModel.addTableModelListener(mySignatureUpdater)
     buttonsPanel
   }
@@ -168,8 +166,8 @@ class ScalaIntroduceParameterDialog(
     typeCombobox = new ComboBox()
     val typeLabel = new JLabel("Type:")
     typeLabel.setLabelFor(typeCombobox)
-    typeMap =
-      ScalaRefactoringUtil.getCompatibleTypeNames(introduceData.possibleTypes)
+    typeMap = ScalaRefactoringUtil.getCompatibleTypeNames(
+      introduceData.possibleTypes)
     for (typeName <- typeMap.keySet.asScala) {
       JListCompatibility.addItem(typeCombobox, typeName)
     }

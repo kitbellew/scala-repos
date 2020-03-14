@@ -71,8 +71,7 @@ object CacheIvy {
   import Cache._
   implicit def wrapHL[W, H, T <: HList](implicit
       f: W => H :+: T,
-      cache: InputCache[H :+: T]): InputCache[W] =
-    Cache.wrapIn(f, cache)
+      cache: InputCache[H :+: T]): InputCache[W] = Cache.wrapIn(f, cache)
 
   lazy val excludeMap: Format[Map[ModuleID, Set[String]]] = implicitly
   lazy val updateIC: InputCache[
@@ -379,12 +378,11 @@ object CacheIvy {
   }
   import L3._
 
-  implicit lazy val chainedIC: InputCache[ChainedResolver] =
-    InputCache.lzy(wrapIn)
-  implicit lazy val resolverIC: InputCache[Resolver] =
-    unionInputCache[
-      Resolver,
-      ChainedResolver :+: MavenRepository :+: MavenCache :+: FileRepository :+: URLRepository :+: SshRepository :+: SftpRepository :+: RawRepository :+: HNil]
+  implicit lazy val chainedIC: InputCache[ChainedResolver] = InputCache.lzy(
+    wrapIn)
+  implicit lazy val resolverIC: InputCache[Resolver] = unionInputCache[
+    Resolver,
+    ChainedResolver :+: MavenRepository :+: MavenCache :+: FileRepository :+: URLRepository :+: SshRepository :+: SftpRepository :+: RawRepository :+: HNil]
   implicit def moduleIC: InputCache[ModuleID] = wrapIn
   implicitly[InputCache[Seq[Configuration]]]
 

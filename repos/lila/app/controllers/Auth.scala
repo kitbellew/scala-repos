@@ -111,8 +111,8 @@ object Auth extends LilaController {
       password: String,
       rawEmail: Option[String])(
       implicit ctx: Context): Fu[(UserModel, Option[String])] = {
-    val email =
-      rawEmail.map(e => env.emailAddress.validate(e) err s"Invalid email $e")
+    val email = rawEmail.map(e =>
+      env.emailAddress.validate(e) err s"Invalid email $e")
     UserRepo
       .create(username, password, email, ctx.blindMode, ctx.mobileApiVersion)
       .flatten(s"No user could be created for ${username}")

@@ -113,8 +113,10 @@ trait FunctionAnnotator {
         val message = ScalaBundle.message(
           "function.must.define.type.explicitly",
           function.name)
-        val returnTypes =
-          function.returnUsages(withBooleanInfix = false).toSeq.collect {
+        val returnTypes = function
+          .returnUsages(withBooleanInfix = false)
+          .toSeq
+          .collect {
             case retStmt: ScReturnStmt =>
               retStmt.expr.flatMap(_.getType().toOption).getOrElse(AnyType)
             case expr: ScExpression => expr.getType().getOrAny
@@ -137,8 +139,9 @@ trait FunctionAnnotator {
 
       def typeMismatch() {
         if (typeAware) {
-          val (usageTypeText, functionTypeText) =
-            ScTypePresentation.different(usageType, functionType)
+          val (usageTypeText, functionTypeText) = ScTypePresentation.different(
+            usageType,
+            functionType)
           val message = ScalaBundle.message(
             "type.mismatch.found.required",
             usageTypeText,

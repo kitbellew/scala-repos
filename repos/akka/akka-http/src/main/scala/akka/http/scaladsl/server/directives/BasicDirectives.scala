@@ -85,8 +85,7 @@ trait BasicDirectives {
   /**
     * Injects the given values into a directive.
     */
-  def tprovide[L: Tuple](values: L): Directive[L] =
-    Directive { _(values) }
+  def tprovide[L: Tuple](values: L): Directive[L] = Directive { _(values) }
 
   /**
     * Extracts a single value using the given function.
@@ -176,8 +175,7 @@ trait BasicDirectives {
   /**
     * Extracts the [[akka.event.LoggingAdapter]] from the [[akka.http.scaladsl.server.RequestContext]].
     */
-  def extractLog: Directive1[LoggingAdapter] =
-    BasicDirectives._extractLog
+  def extractLog: Directive1[LoggingAdapter] = BasicDirectives._extractLog
 
   /**
     * Runs its inner route with the given alternative [[RoutingSettings]].

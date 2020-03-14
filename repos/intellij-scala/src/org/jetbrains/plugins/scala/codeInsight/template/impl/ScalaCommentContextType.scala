@@ -25,8 +25,10 @@ object ScalaCommentContextType {
       case elem: PsiWhiteSpace if offset > 0 => file.findElementAt(offset - 1)
       case elem                              => elem
     }
-    val comment =
-      PsiTreeUtil.getParentOfType(element, classOf[PsiComment], false)
+    val comment = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[PsiComment],
+      false)
     comment != null
   }
 }

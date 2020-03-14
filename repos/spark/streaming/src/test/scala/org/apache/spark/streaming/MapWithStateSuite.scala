@@ -57,8 +57,9 @@ class MapWithStateSuite
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val conf =
-      new SparkConf().setMaster("local").setAppName("MapWithStateSuite")
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName("MapWithStateSuite")
     conf.set("spark.streaming.clock", classOf[ManualClock].getName())
     sc = new SparkContext(conf)
   }
@@ -128,38 +129,35 @@ class MapWithStateSuite
   }
 
   test("mapWithState - basic operations with simple API") {
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(),
-        Seq(1),
-        Seq(2, 1),
-        Seq(3, 2, 1),
-        Seq(4, 3),
-        Seq(5),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(),
+      Seq(1),
+      Seq(2, 1),
+      Seq(3, 2, 1),
+      Seq(4, 3),
+      Seq(5),
+      Seq()
+    )
 
-    val stateData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val stateData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
     // state maintains running count, and updated count is returned
     val mappingFunc = (key: String, value: Option[Int], state: State[Int]) => {
@@ -176,38 +174,35 @@ class MapWithStateSuite
   }
 
   test("mapWithState - basic operations with advanced API") {
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(),
-        Seq("aa"),
-        Seq("aa", "bb"),
-        Seq("aa", "bb", "cc"),
-        Seq("aa", "bb"),
-        Seq("aa"),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(),
+      Seq("aa"),
+      Seq("aa", "bb"),
+      Seq("aa", "bb", "cc"),
+      Seq("aa", "bb"),
+      Seq("aa"),
+      Seq()
+    )
 
-    val stateData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val stateData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
     // state maintains running count, key string doubled and returned
     val mappingFunc =
@@ -238,8 +233,8 @@ class MapWithStateSuite
       }
 
     def testTypes(dstream: MapWithStateDStream[_, _, _, _]): Unit = {
-      val dstreamImpl =
-        dstream.asInstanceOf[MapWithStateDStreamImpl[_, _, _, _]]
+      val dstreamImpl = dstream
+        .asInstanceOf[MapWithStateDStreamImpl[_, _, _, _]]
       assert(dstreamImpl.keyClass === classOf[String])
       assert(dstreamImpl.valueClass === classOf[Int])
       assert(dstreamImpl.stateClass === classOf[Double])
@@ -250,13 +245,13 @@ class MapWithStateSuite
       new TestInputStream[(String, Int)](ssc, Seq.empty, numPartitions = 2)
 
     // Defining StateSpec inline with mapWithState and simple function implicitly gets the types
-    val simpleFunctionStateStream1 =
-      inputStream.mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
+    val simpleFunctionStateStream1 = inputStream.mapWithState(
+      StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(simpleFunctionStateStream1)
 
     // Separately defining StateSpec with simple function requires explicitly specifying types
-    val simpleFuncSpec =
-      StateSpec.function[String, Int, Double, Long](simpleFunc)
+    val simpleFuncSpec = StateSpec.function[String, Int, Double, Long](
+      simpleFunc)
     val simpleFunctionStateStream2 = inputStream.mapWithState(simpleFuncSpec)
     testTypes(simpleFunctionStateStream2)
 
@@ -266,51 +261,48 @@ class MapWithStateSuite
     testTypes(advFunctionStateStream1)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFunctionStateStream2 =
-      inputStream.mapWithState(StateSpec.function(simpleFunc).numPartitions(1))
+    val advFunctionStateStream2 = inputStream.mapWithState(
+      StateSpec.function(simpleFunc).numPartitions(1))
     testTypes(advFunctionStateStream2)
 
     // Defining StateSpec inline with mapWithState and advanced func implicitly gets the types
-    val advFuncSpec2 =
-      StateSpec.function[String, Int, Double, Long](advancedFunc)
-    val advFunctionStateStream3 =
-      inputStream.mapWithState[Double, Long](advFuncSpec2)
+    val advFuncSpec2 = StateSpec.function[String, Int, Double, Long](
+      advancedFunc)
+    val advFunctionStateStream3 = inputStream.mapWithState[Double, Long](
+      advFuncSpec2)
     testTypes(advFunctionStateStream3)
   }
 
   test("mapWithState - states as mapped data") {
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3)),
-        Seq(("a", 5)),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3)),
+      Seq(("a", 5)),
+      Seq()
+    )
 
-    val stateData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val stateData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
@@ -332,29 +324,27 @@ class MapWithStateSuite
 
     val initialState = Seq(("a", 5), ("b", 10), ("c", -20), ("d", 0))
 
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
     val outputData = Seq.fill(inputData.size)(Seq.empty[Int])
 
-    val stateData =
-      Seq(
-        Seq(("a", 5), ("b", 10), ("c", -20), ("d", 0)),
-        Seq(("a", 6), ("b", 10), ("c", -20), ("d", 0)),
-        Seq(("a", 7), ("b", 11), ("c", -20), ("d", 0)),
-        Seq(("a", 8), ("b", 12), ("c", -19), ("d", 0)),
-        Seq(("a", 9), ("b", 13), ("c", -19), ("d", 0)),
-        Seq(("a", 10), ("b", 13), ("c", -19), ("d", 0)),
-        Seq(("a", 10), ("b", 13), ("c", -19), ("d", 0))
-      )
+    val stateData = Seq(
+      Seq(("a", 5), ("b", 10), ("c", -20), ("d", 0)),
+      Seq(("a", 6), ("b", 10), ("c", -20), ("d", 0)),
+      Seq(("a", 7), ("b", 11), ("c", -20), ("d", 0)),
+      Seq(("a", 8), ("b", 12), ("c", -19), ("d", 0)),
+      Seq(("a", 9), ("b", 13), ("c", -19), ("d", 0)),
+      Seq(("a", 10), ("b", 13), ("c", -19), ("d", 0)),
+      Seq(("a", 10), ("b", 13), ("c", -19), ("d", 0))
+    )
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
@@ -364,48 +354,46 @@ class MapWithStateSuite
         None.asInstanceOf[Option[Int]]
       }
 
-    val mapWithStateSpec =
-      StateSpec.function(mappingFunc).initialState(sc.makeRDD(initialState))
+    val mapWithStateSpec = StateSpec
+      .function(mappingFunc)
+      .initialState(sc.makeRDD(initialState))
     testOperation(inputData, mapWithStateSpec, outputData, stateData)
   }
 
   test("mapWithState - state removing") {
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"), // a will be removed
-        Seq("a", "b", "c"), // b will be removed
-        Seq("a", "b", "c"), // a and c will be removed
-        Seq("a", "b"), // b will be removed
-        Seq("a"), // a will be removed
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"), // a will be removed
+      Seq("a", "b", "c"), // b will be removed
+      Seq("a", "b", "c"), // a and c will be removed
+      Seq("a", "b"), // b will be removed
+      Seq("a"), // a will be removed
+      Seq()
+    )
 
     // States that were removed
-    val outputData =
-      Seq(
-        Seq(),
-        Seq(),
-        Seq("a"),
-        Seq("b"),
-        Seq("a", "c"),
-        Seq("b"),
-        Seq("a"),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(),
+      Seq(),
+      Seq("a"),
+      Seq("b"),
+      Seq("a", "c"),
+      Seq("b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val stateData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("b", 1)),
-        Seq(("a", 1), ("c", 1)),
-        Seq(("b", 1)),
-        Seq(("a", 1)),
-        Seq(),
-        Seq()
-      )
+    val stateData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("b", 1)),
+      Seq(("a", 1), ("c", 1)),
+      Seq(("b", 1)),
+      Seq(("a", 1)),
+      Seq(),
+      Seq()
+    )
 
     val mappingFunc =
       (time: Time, key: String, value: Option[Int], state: State[Int]) => {
@@ -461,8 +449,8 @@ class MapWithStateSuite
   }
 
   test("mapWithState - checkpoint durations") {
-    val privateMethod =
-      PrivateMethod[InternalMapWithStateDStream[_, _, _, _]]('internalStream)
+    val privateMethod = PrivateMethod[InternalMapWithStateDStream[_, _, _, _]](
+      'internalStream)
 
     def testCheckpointDuration(
         batchDuration: Duration,
@@ -472,11 +460,11 @@ class MapWithStateSuite
       val ssc = new StreamingContext(sc, batchDuration)
 
       try {
-        val inputStream =
-          new TestInputStream(ssc, Seq.empty[Seq[Int]], 2).map(_ -> 1)
+        val inputStream = new TestInputStream(ssc, Seq.empty[Seq[Int]], 2)
+          .map(_ -> 1)
         val dummyFunc = (key: Int, value: Option[Int], state: State[Int]) => 0
-        val mapWithStateStream =
-          inputStream.mapWithState(StateSpec.function(dummyFunc))
+        val mapWithStateStream = inputStream.mapWithState(
+          StateSpec.function(dummyFunc))
         val internalmapWithStateStream =
           mapWithStateStream invokePrivate privateMethod()
 
@@ -502,27 +490,25 @@ class MapWithStateSuite
   }
 
   test("mapWithState - driver failure recovery") {
-    val inputData =
-      Seq(
-        Seq(),
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq(),
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val stateData =
-      Seq(
-        Seq(),
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val stateData = Seq(
+      Seq(),
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
     def operation(dstream: DStream[String]): DStream[(String, Int)] = {
 
@@ -534,8 +520,9 @@ class MapWithStateSuite
           state.get()
         }
 
-      val mapWithStateStream =
-        dstream.map { _ -> 1 }.mapWithState(StateSpec.function(runningCount))
+      val mapWithStateStream = dstream
+        .map { _ -> 1 }
+        .mapWithState(StateSpec.function(runningCount))
       // Set interval make sure there is one RDD checkpointing
       mapWithStateStream.checkpoint(checkpointDuration)
       mapWithStateStream.stateSnapshots()
@@ -558,8 +545,10 @@ class MapWithStateSuite
   ): Unit = {
     require(expectedOutputs.size == expectedStateSnapshots.size)
 
-    val (collectedOutputs, collectedStateSnapshots) =
-      getOperationOutput(input, mapWithStateSpec, expectedOutputs.size)
+    val (collectedOutputs, collectedStateSnapshots) = getOperationOutput(
+      input,
+      mapWithStateSpec,
+      expectedOutputs.size)
     assert(expectedOutputs, collectedOutputs, "outputs")
     assert(expectedStateSnapshots, collectedStateSnapshots, "state snapshots")
   }
@@ -573,8 +562,9 @@ class MapWithStateSuite
     // Setup the stream computation
     val ssc = new StreamingContext(sc, Seconds(1))
     val inputStream = new TestInputStream(ssc, input, numPartitions = 2)
-    val trackeStateStream =
-      inputStream.map(x => (x, 1)).mapWithState(mapWithStateSpec)
+    val trackeStateStream = inputStream
+      .map(x => (x, 1))
+      .mapWithState(mapWithStateSpec)
     val collectedOutputs = new ConcurrentLinkedQueue[Seq[T]]
     val outputStream = new TestOutputStream(trackeStateStream, collectedOutputs)
     val collectedStateSnapshots = new ConcurrentLinkedQueue[Seq[(K, S)]]

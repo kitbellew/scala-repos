@@ -33,8 +33,8 @@ import org.apache.spark.sql.SQLContext
 object ModelSelectionViaCrossValidationExample {
 
   def main(args: Array[String]): Unit = {
-    val conf =
-      new SparkConf().setAppName("ModelSelectionViaCrossValidationExample")
+    val conf = new SparkConf()
+      .setAppName("ModelSelectionViaCrossValidationExample")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 

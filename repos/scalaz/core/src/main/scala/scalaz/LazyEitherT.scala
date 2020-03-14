@@ -10,21 +10,17 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def ?[X](left: => X, right: => X)(implicit F: Functor[F]): F[X] =
     F.map(run)(_.fold(_ => left, _ => right))
 
-  def isLeft(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isLeft)
+  def isLeft(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isLeft)
 
-  def isRight(implicit F: Functor[F]): F[Boolean] =
-    F.map(run)(_.isRight)
+  def isRight(implicit F: Functor[F]): F[Boolean] = F.map(run)(_.isRight)
 
-  def swap(implicit F: Functor[F]): F[LazyEither[B, A]] =
-    F.map(run)(_.swap)
+  def swap(implicit F: Functor[F]): F[LazyEither[B, A]] = F.map(run)(_.swap)
 
   def getOrElse(default: => B)(implicit F: Functor[F]): F[B] =
     F.map(run)(_ getOrElse default)
 
   /** Return the right value of this disjunction or the given default if left. Alias for `getOrElse` */
-  def |(default: => B)(implicit F: Functor[F]): F[B] =
-    getOrElse(default)
+  def |(default: => B)(implicit F: Functor[F]): F[B] = getOrElse(default)
 
   def exists(f: (=> B) => Boolean)(implicit F: Functor[F]): F[Boolean] =
     F.map(run)(_ exists f)
@@ -45,8 +41,7 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
 
   /** Return this if it is a right, otherwise, return the given value. Alias for `orElse` */
   def |||(x: => LazyEitherT[F, A, B])(
-      implicit F: Bind[F]): LazyEitherT[F, A, B] =
-    orElse(x)
+      implicit F: Bind[F]): LazyEitherT[F, A, B] = orElse(x)
 
   def toLazyOption(implicit F: Functor[F]): LazyOptionT[F, B] =
     lazyOptionT(F.map(run)(_.toLazyOption))
@@ -57,11 +52,9 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
   def toMaybe(implicit F: Functor[F]): MaybeT[F, B] =
     maybeT(F.map(run)(_.toMaybe))
 
-  def toList(implicit F: Functor[F]): F[List[B]] =
-    F.map(run)(_.toList)
+  def toList(implicit F: Functor[F]): F[List[B]] = F.map(run)(_.toList)
 
-  def toStream(implicit F: Functor[F]): F[Stream[B]] =
-    F.map(run)(_.toStream)
+  def toStream(implicit F: Functor[F]): F[Stream[B]] = F.map(run)(_.toStream)
 
   def map[C](f: (=> B) => C)(implicit F: Functor[F]): LazyEitherT[F, A, C] =
     lazyEitherT(F.map(run)(_ map f))
@@ -72,8 +65,7 @@ final case class LazyEitherT[F[_], A, B](run: F[LazyEither[A, B]]) {
       M.bind(run)(_.fold(a => M.point(lazyLeft[C](a)), b => f(b).run)))
 
   def bimap[C, D](f: (=> A) => C, g: (=> B) => D)(
-      implicit F: Functor[F]): LazyEitherT[F, C, D] =
-    map(g).left.map(f)
+      implicit F: Functor[F]): LazyEitherT[F, C, D] = map(g).left.map(f)
 
   /** Run the given function on the left value. */
   def leftMap[C](f: (=> A) => C)(implicit F: Functor[F]): LazyEitherT[F, C, B] =
@@ -359,8 +351,7 @@ sealed abstract class LazyEitherTInstances extends LazyEitherTInstances0 {
         }
       override def liftM[M[_], B](mb: M[B])(implicit M: Monad[M]) =
         LazyEitherT(M.map(mb)(LazyEither.lazyRight[A].apply(_)))
-      override def apply[M[_]: Monad] =
-        LazyEitherT.lazyEitherTMonad[M, A]
+      override def apply[M[_]: Monad] = LazyEitherT.lazyEitherTMonad[M, A]
     }
 }
 

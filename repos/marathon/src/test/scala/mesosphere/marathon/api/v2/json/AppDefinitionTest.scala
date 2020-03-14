@@ -375,8 +375,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("Reading app definition with command health check") {
-    val json2 =
-      """
+    val json2 = """
       {
         "id": "toggle",
         "cmd": "python toggle.py $PORT0",
@@ -602,8 +601,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       )
     )
 
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-fetch",
         "cmd": "brew update",
@@ -699,8 +697,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       maxLaunchDelay = 3600.seconds
     )
 
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-ip-address",
         "cmd": "python3 -m http.server 8080",
@@ -742,8 +739,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       maxLaunchDelay = 3600.seconds
     )
 
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-ip-address",
         "cmd": "python3 -m http.server 8080",
@@ -770,8 +766,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
       ipAddress = Some(IpAddress())
     )
 
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-network-isolation",
         "cmd": "python3 -m http.server 8080",
@@ -786,8 +781,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("App may not have non-empty ports and ipAddress") {
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-network-isolation",
         "cmd": "python3 -m http.server 8080",
@@ -810,8 +804,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("App may not have both uris and fetch") {
-    val json =
-      """
+    val json = """
       {
         "id": "app-with-network-isolation",
         "uris": ["http://example.com/file1.tar.gz"],

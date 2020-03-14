@@ -67,8 +67,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   override val useOffsetPositions = !currentSettings.Yrangepos
 
   type RuntimeClass = java.lang.Class[_]
-  implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
+  implicit val RuntimeClassTag: ClassTag[RuntimeClass] = ClassTag[RuntimeClass](
+    classOf[RuntimeClass])
 
   class GlobalMirror extends Roots(NoSymbol) {
     val universe: self.type = self
@@ -84,8 +84,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     }
     override def toString = "compiler mirror"
   }
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[GlobalMirror])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[GlobalMirror])
 
   lazy val rootMirror: Mirror = {
     val rm = new GlobalMirror
@@ -109,8 +109,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def this(reporter: Reporter) =
     this(new Settings(err => reporter.error(null, err)), reporter)
 
-  def this(settings: Settings) =
-    this(settings, Global.reporter(settings))
+  def this(settings: Settings) = this(settings, Global.reporter(settings))
 
   def picklerPhase: Phase =
     if (currentRun.isDefined) currentRun.picklerPhase else NoPhase
@@ -200,8 +199,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       print(" // " + unit.source)
       if (unit.body == null) println(": tree is null")
       else {
-        val source =
-          util.stringFromWriter(w => newTreePrinter(w) print unit.body)
+        val source = util.stringFromWriter(w =>
+          newTreePrinter(w) print unit.body)
 
         // treePrinter show unit.body
         if (lastPrintedSource == source)
@@ -783,16 +782,17 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             width: Int,
             precision: Int) {
           val p = elliptically(s, precision)
-          val w = if (width > 0 && p.length < width) {
-            import FormattableFlags.LEFT_JUSTIFY
-            val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
-            val sb = new StringBuilder
-            def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
-            if (!leftly) pad()
-            sb.append(p)
-            if (leftly) pad()
-            sb.toString
-          } else p
+          val w =
+            if (width > 0 && p.length < width) {
+              import FormattableFlags.LEFT_JUSTIFY
+              val leftly = (flags & LEFT_JUSTIFY) == LEFT_JUSTIFY
+              val sb = new StringBuilder
+              def pad() = 1 to width - p.length foreach (_ => sb.append(' '))
+              if (!leftly) pad()
+              sb.append(p)
+              if (leftly) pad()
+              sb.toString
+            } else p
           formatter.out.append(w)
         }
       }
@@ -1176,11 +1176,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def newCompilationUnit(code: String, filename: String = "<console>") =
     new CompilationUnit(newSourceFile(code, filename))
 
-  def newUnitScanner(unit: CompilationUnit): UnitScanner =
-    new UnitScanner(unit)
+  def newUnitScanner(unit: CompilationUnit): UnitScanner = new UnitScanner(unit)
 
-  def newUnitParser(unit: CompilationUnit): UnitParser =
-    new UnitParser(unit)
+  def newUnitParser(unit: CompilationUnit): UnitParser = new UnitParser(unit)
 
   def newUnitParser(code: String, filename: String = "<console>"): UnitParser =
     newUnitParser(newCompilationUnit(code, filename))
@@ -1300,8 +1298,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         } else phs
       }
       // Create phases and link them together. We supply the previous, and the ctor sets prev.next.
-      val last =
-        components.foldLeft(NoPhase: Phase)((prev, c) => c newPhase prev)
+      val last = components.foldLeft(NoPhase: Phase)((prev, c) =>
+        c newPhase prev)
       // rewind (Iterator.iterate(last)(_.prev) dropWhile (_.prev ne NoPhase)).next
       val first = { var p = last; while (p.prev ne NoPhase) p = p.prev; p }
       val ss = settings

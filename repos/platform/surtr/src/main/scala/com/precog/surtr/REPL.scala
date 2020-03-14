@@ -86,8 +86,9 @@ class REPLConfig(dataDir: Option[String])
     with EvaluatorConfig
     with ColumnarTableModuleConfig
     with BlockStoreColumnarTableModuleConfig {
-  val defaultConfig =
-    Configuration.loadResource("/default_ingest.conf", BlockFormat)
+  val defaultConfig = Configuration.loadResource(
+    "/default_ingest.conf",
+    BlockFormat)
   val config = dataDir map {
     defaultConfig.set("precog.storage.root", _)
   } getOrElse { defaultConfig }
@@ -267,8 +268,7 @@ trait REPL
   }
 
   def printHelp(out: PrintStream) {
-    val str =
-      """Note: command abbreviations are not yet supported!
+    val str = """Note: command abbreviations are not yet supported!
         |
         |<expr>        Evaluate the expression
         |:help         Print this help message
@@ -307,8 +307,8 @@ object Console extends App {
           val storageTimeout = yggConfig.storageTimeout
 
           implicit val actorSystem = ActorSystem("replActorSystem")
-          implicit val asyncContext =
-            ExecutionContext.defaultExecutionContext(actorSystem)
+          implicit val asyncContext = ExecutionContext.defaultExecutionContext(
+            actorSystem)
           implicit val M = new blueeyes.bkka.UnsafeFutureComonad(
             asyncContext,
             yggConfig.maxEvalDuration)

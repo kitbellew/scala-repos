@@ -52,13 +52,12 @@ case class DottySdkDescriptor(
 object DottySdkDescriptor extends SdkDescriptorCompanion {
   override protected val requiredBinaries: Set[Artifact] = DottyArtifact.values
 
-  override protected val libraryArtifacts: Set[Artifact] =
-    Set(
-      Artifact.ScalaLibrary,
-      Artifact.ScalaReflect,
-      DottyArtifact.Main,
-      DottyArtifact.Interfaces
-    )
+  override protected val libraryArtifacts: Set[Artifact] = Set(
+    Artifact.ScalaLibrary,
+    Artifact.ScalaReflect,
+    DottyArtifact.Main,
+    DottyArtifact.Interfaces
+  )
 
   override protected def createSdkDescriptor(
       version: Option[Version],

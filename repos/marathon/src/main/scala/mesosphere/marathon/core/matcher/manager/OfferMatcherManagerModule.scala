@@ -27,8 +27,8 @@ class OfferMatcherManagerModule(
     offerMatcherConfig: OfferMatcherManagerConfig,
     leadershipModule: LeadershipModule) {
 
-  private[this] lazy val offersWanted: Subject[Boolean] =
-    PublishSubject[Boolean]()
+  private[this] lazy val offersWanted
+      : Subject[Boolean] = PublishSubject[Boolean]()
 
   private[this] lazy val offerMatcherManagerMetrics =
     new OfferMatcherManagerActorMetrics(metrics)

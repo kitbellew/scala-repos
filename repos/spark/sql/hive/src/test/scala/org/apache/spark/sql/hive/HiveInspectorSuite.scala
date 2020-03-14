@@ -220,10 +220,10 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     val constantTypes = constantExprs.map(_.dataType)
     val constantData = constantExprs.map(_.eval())
     val constantNullData = constantData.map(_ => null)
-    val constantWritableOIs =
-      constantExprs.map(e => toWritableInspector(e.dataType))
-    val constantNullWritableOIs =
-      constantExprs.map(e => toInspector(Literal.create(null, e.dataType)))
+    val constantWritableOIs = constantExprs.map(e =>
+      toWritableInspector(e.dataType))
+    val constantNullWritableOIs = constantExprs.map(e =>
+      toInspector(Literal.create(null, e.dataType)))
 
     checkValues(
       constantData,

@@ -65,9 +65,8 @@ class RandomDataGeneratorSuite extends SparkFunSuite {
     test(s"$arrayType") { testRandomDataGeneration(arrayType) }
   }
 
-  val atomicTypesWithDataGenerators =
-    DataTypeTestUtils.atomicTypes.filter(
-      RandomDataGenerator.forType(_).isDefined)
+  val atomicTypesWithDataGenerators = DataTypeTestUtils.atomicTypes.filter(
+    RandomDataGenerator.forType(_).isDefined)
 
   // Complex types:
   for (keyType <- atomicTypesWithDataGenerators;

@@ -19,14 +19,13 @@ object ScalaResultsSpec extends PlaySpecification {
     val decodedSession = Session.decode(encodedSession)
 
     decodedSession must_== Map("user" -> "kiki", "langs" -> "fr:en:de")
-    val Result(ResponseHeader(_, headers, _), _) =
-      Ok("hello")
-        .as("text/html")
-        .withSession("user" -> "kiki", "langs" -> "fr:en:de")
-        .withCookies(Cookie("session", "items"), Cookie("preferences", "blue"))
-        .discardingCookies(DiscardingCookie("logged"))
-        .withSession("user" -> "kiki", "langs" -> "fr:en:de")
-        .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
+    val Result(ResponseHeader(_, headers, _), _) = Ok("hello")
+      .as("text/html")
+      .withSession("user" -> "kiki", "langs" -> "fr:en:de")
+      .withCookies(Cookie("session", "items"), Cookie("preferences", "blue"))
+      .discardingCookies(DiscardingCookie("logged"))
+      .withSession("user" -> "kiki", "langs" -> "fr:en:de")
+      .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
 
     val setCookies = Cookies
       .decodeSetCookieHeader(headers("Set-Cookie"))
@@ -38,8 +37,8 @@ object ScalaResultsSpec extends PlaySpecification {
     setCookies("lang").value must be_==("fr")
     setCookies("logged").maxAge must beSome
     setCookies("logged").maxAge must beSome(0)
-    val playSession =
-      Session.decodeFromCookie(setCookies.get(Session.COOKIE_NAME))
+    val playSession = Session.decodeFromCookie(
+      setCookies.get(Session.COOKIE_NAME))
     playSession.data must_== Map("user" -> "kiki", "langs" -> "fr:en:de")
   }
 
@@ -47,8 +46,9 @@ object ScalaResultsSpec extends PlaySpecification {
     val data = Map("user" -> "alice")
     val encodedSession = Session.encode(data)
     // Change a value in the session
-    val maliciousSession =
-      encodedSession.replaceFirst("user=alice", "user=mallory")
+    val maliciousSession = encodedSession.replaceFirst(
+      "user=alice",
+      "user=mallory")
     val decodedSession = Session.decode(maliciousSession)
     decodedSession must beEmpty
   }

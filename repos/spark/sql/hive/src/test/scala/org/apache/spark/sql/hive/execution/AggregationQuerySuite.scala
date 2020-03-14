@@ -118,8 +118,7 @@ class LongProductSum extends UserDefinedAggregateFunction {
     buffer1(0) = buffer1.getLong(0) + buffer2.getLong(0)
   }
 
-  def evaluate(buffer: Row): Any =
-    buffer.getLong(0)
+  def evaluate(buffer: Row): Any = buffer.getLong(0)
 }
 
 abstract class AggregationQuerySuite
@@ -734,10 +733,15 @@ abstract class AggregationQuerySuite
   }
 
   test("pearson correlation") {
-    val df =
-      Seq.tabulate(10)(i => (1.0 * i, 2.0 * i, i * -1.0)).toDF("a", "b", "c")
-    val corr1 =
-      df.repartition(2).groupBy().agg(corr("a", "b")).collect()(0).getDouble(0)
+    val df = Seq
+      .tabulate(10)(i => (1.0 * i, 2.0 * i, i * -1.0))
+      .toDF("a", "b", "c")
+    val corr1 = df
+      .repartition(2)
+      .groupBy()
+      .agg(corr("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(corr1 - 1.0) < 1e-12)
     val corr2 = df.groupBy().agg(corr("a", "c")).collect()(0).getDouble(0)
     assert(math.abs(corr2 + 1.0) < 1e-12)
@@ -753,8 +757,9 @@ abstract class AggregationQuerySuite
     // > b <- mapply(function(x) x * x - 2 * x + 3.5, a)
     // > cor(a, b)
     // [1] 0.957233913947585835
-    val df2 =
-      Seq.tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5)).toDF("a", "b")
+    val df2 = Seq
+      .tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
+      .toDF("a", "b")
     val corr3 = df2.groupBy().agg(corr("a", "b")).collect()(0).getDouble(0)
     assert(math.abs(corr3 - 0.95723391394758572) < 1e-12)
 
@@ -763,8 +768,12 @@ abstract class AggregationQuerySuite
     assert(corr4 == Row(null))
 
     val df4 = Seq.tabulate(10)(i => (1 * i, 2 * i, i * -1)).toDF("a", "b", "c")
-    val corr5 =
-      df4.repartition(2).groupBy().agg(corr("a", "b")).collect()(0).getDouble(0)
+    val corr5 = df4
+      .repartition(2)
+      .groupBy()
+      .agg(corr("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(corr5 - 1.0) < 1e-12)
     val corr6 = df4.groupBy().agg(corr("a", "c")).collect()(0).getDouble(0)
     assert(math.abs(corr6 + 1.0) < 1e-12)
@@ -840,23 +849,36 @@ abstract class AggregationQuerySuite
     // 595.0
     // >>> np.cov(a, b, bias = 1)[0][1]
     // 565.25
-    val df =
-      Seq.tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5)).toDF("a", "b")
-    val cov_samp =
-      df.groupBy().agg(covar_samp("a", "b")).collect()(0).getDouble(0)
+    val df = Seq
+      .tabulate(20)(x => (1.0 * x, x * x - 2 * x + 3.5))
+      .toDF("a", "b")
+    val cov_samp = df
+      .groupBy()
+      .agg(covar_samp("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(cov_samp - 595.0) < 1e-12)
 
-    val cov_pop =
-      df.groupBy().agg(covar_pop("a", "b")).collect()(0).getDouble(0)
+    val cov_pop = df
+      .groupBy()
+      .agg(covar_pop("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(cov_pop - 565.25) < 1e-12)
 
     val df2 = Seq.tabulate(20)(x => (1 * x, x * x * x - 2)).toDF("a", "b")
-    val cov_samp2 =
-      df2.groupBy().agg(covar_samp("a", "b")).collect()(0).getDouble(0)
+    val cov_samp2 = df2
+      .groupBy()
+      .agg(covar_samp("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(cov_samp2 - 11564.0) < 1e-12)
 
-    val cov_pop2 =
-      df2.groupBy().agg(covar_pop("a", "b")).collect()(0).getDouble(0)
+    val cov_pop2 = df2
+      .groupBy()
+      .agg(covar_pop("a", "b"))
+      .collect()(0)
+      .getDouble(0)
     assert(math.abs(cov_pop2 - 10985.799999999999) < 1e-12)
 
     // one row test
@@ -877,10 +899,9 @@ abstract class AggregationQuerySuite
   }
 
   test("udaf with all data types") {
-    val struct =
-      StructType(
-        StructField("f1", FloatType, true) ::
-          StructField("f2", ArrayType(BooleanType), true) :: Nil)
+    val struct = StructType(
+      StructField("f1", FloatType, true) ::
+        StructField("f2", ArrayType(BooleanType), true) :: Nil)
     val dataTypes = Seq(
       StringType,
       BinaryType,
@@ -921,15 +942,13 @@ abstract class AggregationQuerySuite
         val udaf = new ScalaAggregateFunction(schema)
         // Generate data at the driver side. We need to materialize the data first and then
         // create RDD.
-        val maybeDataGenerator =
-          RandomDataGenerator.forType(
-            dataType = schemaForGenerator,
-            nullable = true,
-            new Random(System.nanoTime()))
-        val dataGenerator =
-          maybeDataGenerator
-            .getOrElse(fail(
-              s"Failed to create data generator for schema $schemaForGenerator"))
+        val maybeDataGenerator = RandomDataGenerator.forType(
+          dataType = schemaForGenerator,
+          nullable = true,
+          new Random(System.nanoTime()))
+        val dataGenerator = maybeDataGenerator
+          .getOrElse(fail(
+            s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
             case row: Row => Row.fromSeq(i +: row.toSeq)
@@ -947,10 +966,9 @@ abstract class AggregationQuerySuite
         val df = sqlContext.createDataFrame(rdd, schema)
 
         val allColumns = df.schema.fields.map(f => col(f.name))
-        val expectedAnswer =
-          data
-            .find(r => r.getInt(0) == 50)
-            .getOrElse(fail("A row with id 50 should be the expected answer."))
+        val expectedAnswer = data
+          .find(r => r.getInt(0) == 50)
+          .getOrElse(fail("A row with id 50 should be the expected answer."))
         checkAnswer(
           df.groupBy().agg(udaf(allColumns: _*)),
           // udaf returns a Row as the output value.
@@ -968,13 +986,11 @@ abstract class AggregationQuerySuite
         Row(1, Seq(Row(1), Row(2), Row(3))) ::
           Row(1, Seq(Row(4), Row(5), Row(6))) ::
           Row(2, Seq(Row(-10))) :: Nil
-      val schema =
-        StructType(
-          StructField("key", IntegerType) ::
-            StructField(
-              "myArray",
-              ArrayType(
-                StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
+      val schema = StructType(
+        StructField("key", IntegerType) ::
+          StructField(
+            "myArray",
+            ArrayType(StructType(StructField("v", IntegerType) :: Nil))) :: Nil)
       sqlContext
         .createDataFrame(sparkContext.parallelize(data, 2), schema)
         .registerTempTable("noInputSchemaUDAF")
@@ -1016,8 +1032,7 @@ class TungstenAggregationQueryWithControlledFallbackSuite
 
         QueryTest.checkAnswer(newActual, expectedAnswer) match {
           case Some(errorMessage) =>
-            val newErrorMessage =
-              s"""
+            val newErrorMessage = s"""
                 |The following aggregation query failed when using TungstenAggregate with
                 |controlled fallback (it falls back to sort-based aggregation once it has processed
                 |$fallbackStartsAt input rows). The query is

@@ -266,11 +266,10 @@ object Scope {
       case Global | This => globalProjectDelegates(scope)
       case Select(proj) =>
         val resolvedProj = resolve(proj)
-        val projAxes: Seq[ScopeAxis[ResolvedReference]] =
-          resolvedProj match {
-            case pr: ProjectRef => index.project(pr)
-            case br: BuildRef   => Select(br) :: Global :: Nil
-          }
+        val projAxes: Seq[ScopeAxis[ResolvedReference]] = resolvedProj match {
+          case pr: ProjectRef => index.project(pr)
+          case br: BuildRef   => Select(br) :: Global :: Nil
+        }
         projAxes flatMap nonProjectScopes(resolvedProj)
     }
   }

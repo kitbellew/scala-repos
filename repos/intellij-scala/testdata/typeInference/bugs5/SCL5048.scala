@@ -14,9 +14,8 @@ object DepMethTypes {
 
   def bar(foo: Foo): foo.Bar =
     foo.bar /* Expression of type DepMethTypes.Foo#Bar doesn't conform to expected type foo.type#Bar */
-  val s: String =
-    /*start*/ bar(
-      AFoo
-    ) /*end*/ /* Expression of type foo.type#Bar doesn't conform to expected type String */
+  val s: String = /*start*/ bar(
+    AFoo
+  ) /*end*/ /* Expression of type foo.type#Bar doesn't conform to expected type String */
 }
 //DepMethTypes.AFoo.Bar

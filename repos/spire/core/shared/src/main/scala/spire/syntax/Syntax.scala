@@ -231,22 +231,19 @@ trait ActionSyntax {
 
 trait IntervalSyntax {
   implicit def groupActionGroupOps[A: Order: AdditiveGroup](
-      a: A): IntervalPointOps[A] =
-    new IntervalPointOps(a)
+      a: A): IntervalPointOps[A] = new IntervalPointOps(a)
 }
 
 trait UnboundSyntax {
   implicit def moduleUnboundOps[F](f: F)(
-      implicit ev: Module[_, F]): ModuleUnboundOps[F] =
-    new ModuleUnboundOps(f)
+      implicit ev: Module[_, F]): ModuleUnboundOps[F] = new ModuleUnboundOps(f)
 
   implicit def vectorSpaceUnboundOps[F](f: F)(
       implicit ev: VectorSpace[_, F]): VectorSpaceUnboundOps[F] =
     new VectorSpaceUnboundOps(f)
 
   implicit def groupActionUnboundOps[G](g: G)(
-      implicit ev: Action[_, G]): ActionUnboundOps[G] =
-    new ActionUnboundOps(g)
+      implicit ev: Action[_, G]): ActionUnboundOps[G] = new ActionUnboundOps(g)
   implicit def additiveActionUnboundOps[G](g: G)(
       implicit ev: AdditiveAction[_, G]): AdditiveActionUnboundOps[G] =
     new AdditiveActionUnboundOps(g)
@@ -290,10 +287,8 @@ trait ConvertableFromSyntax {
 
 trait CforSyntax {
   def cfor[A](init: A)(test: A => Boolean, next: A => A)(
-      body: A => Unit): Unit =
-    macro Syntax.cforMacro[A]
-  def cforRange(r: Range)(body: Int => Unit): Unit =
-    macro Syntax.cforRangeMacro
+      body: A => Unit): Unit = macro Syntax.cforMacro[A]
+  def cforRange(r: Range)(body: Int => Unit): Unit = macro Syntax.cforRangeMacro
   def cforRange2(r1: Range, r2: Range)(body: (Int, Int) => Unit): Unit =
     macro Syntax.cforRange2Macro
 }

@@ -14,8 +14,7 @@ object future extends FutureInstances0
 private[std] sealed trait FutureInstances0 extends FutureInstances1 {
   def futureComonad(atMost: FiniteDuration)(implicit ec: E): Comonad[Future] =
     new FutureCoflatMap with Comonad[Future] {
-      def extract[A](x: Future[A]): A =
-        Await.result(x, atMost)
+      def extract[A](x: Future[A]): A = Await.result(x, atMost)
     }
 
   def futureOrder[A: Order](atMost: FiniteDuration)(

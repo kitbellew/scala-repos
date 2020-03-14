@@ -28,11 +28,9 @@ class ByteArrayOutputStream(initBufSize: Int) extends OutputStream {
     count += len
   }
 
-  def writeTo(out: OutputStream): Unit =
-    out.write(buf, 0, count)
+  def writeTo(out: OutputStream): Unit = out.write(buf, 0, count)
 
-  def reset(): Unit =
-    count = 0
+  def reset(): Unit = count = 0
 
   def toByteArray(): Array[Byte] = {
     val res = new Array[Byte](count)
@@ -42,8 +40,7 @@ class ByteArrayOutputStream(initBufSize: Int) extends OutputStream {
 
   def size(): Int = count
 
-  override def toString(): String =
-    new String(buf, 0, count)
+  override def toString(): String = new String(buf, 0, count)
 
   def toString(charsetName: String): String =
     new String(buf, 0, count, charsetName)

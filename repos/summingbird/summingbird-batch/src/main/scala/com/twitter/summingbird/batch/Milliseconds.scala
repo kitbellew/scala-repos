@@ -25,6 +25,6 @@ case class Milliseconds(toLong: Long) extends Ordered[Milliseconds] {
 object Milliseconds {
   val Max = Milliseconds(Long.MaxValue)
   val Min = Milliseconds(Long.MinValue)
-  implicit val orderingOnTimestamp: Ordering[Milliseconds] =
-    Ordering.by(_.toLong)
+  implicit val orderingOnTimestamp: Ordering[Milliseconds] = Ordering.by(
+    _.toLong)
 }

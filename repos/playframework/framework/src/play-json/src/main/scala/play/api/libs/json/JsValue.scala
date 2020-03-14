@@ -56,8 +56,7 @@ case class JsArray(value: Seq[JsValue] = List()) extends JsValue {
   /**
     * Concatenates this array with the elements of an other array.
     */
-  def ++(other: JsArray): JsArray =
-    JsArray(value ++ other.value)
+  def ++(other: JsArray): JsArray = JsArray(value ++ other.value)
 
   /**
     * Append an element to this array.

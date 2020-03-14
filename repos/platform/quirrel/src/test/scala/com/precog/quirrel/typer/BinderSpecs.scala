@@ -57,8 +57,8 @@ object BinderSpecs
       }
 
       {
-        val e @ Let(_, _, _, _, d: Dispatch) =
-          parseSingle("a(b, c, d) := 42 a(true, false, 2)")
+        val e @ Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "a(b, c, d) := 42 a(true, false, 2)")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -114,8 +114,8 @@ object BinderSpecs
         val e @ Solve(
           _,
           _,
-          Add(_, Add(_, tb: TicVar, tc: TicVar), td: TicVar)) =
-          parseSingle("solve 'b, 'c, 'd 'b + 'c + 'd")
+          Add(_, Add(_, tb: TicVar, tc: TicVar), td: TicVar)) = parseSingle(
+          "solve 'b, 'c, 'd 'b + 'c + 'd")
 
         tb.binding mustEqual SolveBinding(e)
         tc.binding mustEqual SolveBinding(e)
@@ -144,8 +144,8 @@ object BinderSpecs
         val e @ Solve(
           _,
           _,
-          Add(_, Add(_, ta: TicVar, tb: TicVar), tc: TicVar)) =
-          parseSingle("solve 'a, 'b, 'c 'a + 'b + 'c")
+          Add(_, Add(_, ta: TicVar, tb: TicVar), tc: TicVar)) = parseSingle(
+          "solve 'a, 'b, 'c 'a + 'b + 'c")
 
         ta.binding mustEqual SolveBinding(e)
         tb.binding mustEqual SolveBinding(e)
@@ -160,8 +160,8 @@ object BinderSpecs
         val e @ Solve(
           _,
           _,
-          Add(_, Add(_, ta: TicVar, tb: TicVar), tc: TicVar)) =
-          parseSingle("solve 'a * 42, 'b = false where count('c) 'a + 'b + 'c")
+          Add(_, Add(_, ta: TicVar, tb: TicVar), tc: TicVar)) = parseSingle(
+          "solve 'a * 42, 'b = false where count('c) 'a + 'b + 'c")
 
         ta.binding mustEqual SolveBinding(e)
         tb.binding mustEqual SolveBinding(e)
@@ -217,8 +217,8 @@ object BinderSpecs
     }
 
     "bind name in inner scope" in {
-      val e1 @ Let(_, _, _, _, e2 @ Let(_, _, _, _, d: Dispatch)) =
-        parseSingle("a := 42 b := 24 b")
+      val e1 @ Let(_, _, _, _, e2 @ Let(_, _, _, _, d: Dispatch)) = parseSingle(
+        "a := 42 b := 24 b")
 
       d.binding mustEqual LetBinding(e2)
       d.isReduction mustEqual false
@@ -226,8 +226,8 @@ object BinderSpecs
     }
 
     "bind formal in inner scope" in {
-      val e1 @ Let(_, _, _, _, e2 @ Let(_, _, _, t: Dispatch, _)) =
-        parseSingle("a := 42 b(b) := b 24")
+      val e1 @ Let(_, _, _, _, e2 @ Let(_, _, _, t: Dispatch, _)) = parseSingle(
+        "a := 42 b(b) := b 24")
 
       t.binding mustEqual FormalBinding(e2)
       t.errors must beEmpty
@@ -299,8 +299,8 @@ object BinderSpecs
       }
 
       {
-        val Let(_, _, _, _, d: Dispatch) =
-          parseSingle("a(b, c, d) := 42 a(1, 2, 3, 4, 5, 6)")
+        val Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "a(b, c, d) := 42 a(1, 2, 3, 4, 5, 6)")
         d.binding mustEqual NullBinding
         d.isReduction mustEqual false
         d.errors mustEqual Set(IncorrectArity(3, 6))
@@ -378,16 +378,16 @@ object BinderSpecs
     }
 
     "allow shadowing of user-defined bindings" in {
-      val Let(_, _, _, _, e @ Let(_, _, _, _, d: Dispatch)) =
-        parseSingle("a := 1 a := 2 a")
+      val Let(_, _, _, _, e @ Let(_, _, _, _, d: Dispatch)) = parseSingle(
+        "a := 1 a := 2 a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "allow shadowing of formals" in {
-      val Let(_, _, _, _, e @ Let(_, _, _, t: Dispatch, _)) =
-        parseSingle("a(c) := 1 b(c) := c 2")
+      val Let(_, _, _, _, e @ Let(_, _, _, t: Dispatch, _)) = parseSingle(
+        "a(c) := 1 b(c) := c 2")
       t.binding mustEqual FormalBinding(e)
       t.errors must beEmpty
     }
@@ -401,8 +401,8 @@ object BinderSpecs
       }
 
       "geometricMean" >> {
-        val e @ Let(_, _, _, _, d: Dispatch) =
-          parseSingle("geometricMean := 1 geometricMean")
+        val e @ Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "geometricMean := 1 geometricMean")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -416,8 +416,8 @@ object BinderSpecs
       }
 
       "relativeLoad" >> {
-        val e @ Let(_, _, _, _, d: Dispatch) =
-          parseSingle("relativeLoad := 1 relativeLoad")
+        val e @ Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "relativeLoad := 1 relativeLoad")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -487,16 +487,16 @@ object BinderSpecs
       }
 
       "variance" >> {
-        val e @ Let(_, _, _, _, d: Dispatch) =
-          parseSingle("variance := 1 variance")
+        val e @ Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "variance := 1 variance")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       "distinct" >> {
-        val e @ Let(_, _, _, _, d: Dispatch) =
-          parseSingle("distinct := 1 distinct")
+        val e @ Let(_, _, _, _, d: Dispatch) = parseSingle(
+          "distinct := 1 distinct")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -504,8 +504,8 @@ object BinderSpecs
     }
 
     "not leak shadowing into an adjacent scope" in {
-      val e @ Let(_, _, _, _, Add(_, _, d: Dispatch)) =
-        parseSingle("a := 1 (a := 2 3) + a")
+      val e @ Let(_, _, _, _, Add(_, _, d: Dispatch)) = parseSingle(
+        "a := 1 (a := 2 3) + a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
@@ -534,24 +534,24 @@ object BinderSpecs
     }
 
     "forward binding through import" in {
-      val e @ Let(_, _, _, _, Import(_, _, d: Dispatch)) =
-        parseSingle("a := 42 import std a")
+      val e @ Let(_, _, _, _, Import(_, _, d: Dispatch)) = parseSingle(
+        "a := 42 import std a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through assert" in {
-      val e @ Let(_, _, _, _, Assert(_, _, d: Dispatch)) =
-        parseSingle("a := 42 assert true a")
+      val e @ Let(_, _, _, _, Assert(_, _, d: Dispatch)) = parseSingle(
+        "a := 42 assert true a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through new" in {
-      val e @ Let(_, _, _, _, New(_, d: Dispatch)) =
-        parseSingle("a := 42 new a")
+      val e @ Let(_, _, _, _, New(_, d: Dispatch)) = parseSingle(
+        "a := 42 new a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
@@ -559,24 +559,24 @@ object BinderSpecs
 
     "forward binding through relate" in {
       {
-        val e @ Let(_, _, _, _, Relate(_, d: Dispatch, _, _)) =
-          parseSingle("a := 42 a ~ 1 2")
+        val e @ Let(_, _, _, _, Relate(_, d: Dispatch, _, _)) = parseSingle(
+          "a := 42 a ~ 1 2")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Relate(_, _, d: Dispatch, _)) =
-          parseSingle("a := 42 1 ~ a 2")
+        val e @ Let(_, _, _, _, Relate(_, _, d: Dispatch, _)) = parseSingle(
+          "a := 42 1 ~ a 2")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Relate(_, _, _, d: Dispatch)) =
-          parseSingle("a := 42 1 ~ 2 a")
+        val e @ Let(_, _, _, _, Relate(_, _, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 ~ 2 a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -592,32 +592,32 @@ object BinderSpecs
     }
 
     "forward binding through array definition" in {
-      val e @ Let(_, _, _, _, ArrayDef(_, Vector(d: Dispatch))) =
-        parseSingle("a := 42 [a]")
+      val e @ Let(_, _, _, _, ArrayDef(_, Vector(d: Dispatch))) = parseSingle(
+        "a := 42 [a]")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through descent" in {
-      val e @ Let(_, _, _, _, Descent(_, d: Dispatch, _)) =
-        parseSingle("a := 42 a.b")
+      val e @ Let(_, _, _, _, Descent(_, d: Dispatch, _)) = parseSingle(
+        "a := 42 a.b")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through metadescent" in {
-      val e @ Let(_, _, _, _, MetaDescent(_, d: Dispatch, _)) =
-        parseSingle("a := 42 a@b")
+      val e @ Let(_, _, _, _, MetaDescent(_, d: Dispatch, _)) = parseSingle(
+        "a := 42 a@b")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through dereference" in {
-      val e @ Let(_, _, _, _, Deref(_, _, d: Dispatch)) =
-        parseSingle("a := 42 1[a]")
+      val e @ Let(_, _, _, _, Deref(_, _, d: Dispatch)) = parseSingle(
+        "a := 42 1[a]")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
@@ -635,16 +635,16 @@ object BinderSpecs
 
     "forward binding through where" in {
       {
-        val e @ Let(_, _, _, _, Where(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a where 1")
+        val e @ Let(_, _, _, _, Where(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a where 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Where(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 where a")
+        val e @ Let(_, _, _, _, Where(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 where a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -653,16 +653,16 @@ object BinderSpecs
 
     "forward binding through with" in {
       {
-        val e @ Let(_, _, _, _, With(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a with 1")
+        val e @ Let(_, _, _, _, With(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a with 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, With(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 with a")
+        val e @ Let(_, _, _, _, With(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 with a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -671,16 +671,16 @@ object BinderSpecs
 
     "forward binding through union" in {
       {
-        val e @ Let(_, _, _, _, Union(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a union 1")
+        val e @ Let(_, _, _, _, Union(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a union 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Union(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 union a")
+        val e @ Let(_, _, _, _, Union(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 union a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -689,16 +689,16 @@ object BinderSpecs
 
     "forward binding through intersect" in {
       {
-        val e @ Let(_, _, _, _, Intersect(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a intersect 1")
+        val e @ Let(_, _, _, _, Intersect(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a intersect 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Intersect(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 intersect a")
+        val e @ Let(_, _, _, _, Intersect(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 intersect a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -707,16 +707,16 @@ object BinderSpecs
 
     "forward binding through difference" in {
       {
-        val e @ Let(_, _, _, _, Difference(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a difference 1")
+        val e @ Let(_, _, _, _, Difference(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a difference 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Difference(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 difference a")
+        val e @ Let(_, _, _, _, Difference(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 difference a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -725,16 +725,16 @@ object BinderSpecs
 
     "forward binding through addition" in {
       {
-        val e @ Let(_, _, _, _, Add(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a + 1")
+        val e @ Let(_, _, _, _, Add(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a + 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Add(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 + a")
+        val e @ Let(_, _, _, _, Add(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 + a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -743,16 +743,16 @@ object BinderSpecs
 
     "forward binding through subtraction" in {
       {
-        val e @ Let(_, _, _, _, Sub(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a - 1")
+        val e @ Let(_, _, _, _, Sub(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a - 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Sub(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 - a")
+        val e @ Let(_, _, _, _, Sub(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 - a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -761,16 +761,16 @@ object BinderSpecs
 
     "forward binding through multiplication" in {
       {
-        val e @ Let(_, _, _, _, Mul(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a * 1")
+        val e @ Let(_, _, _, _, Mul(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a * 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Mul(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 * a")
+        val e @ Let(_, _, _, _, Mul(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 * a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -779,16 +779,16 @@ object BinderSpecs
 
     "forward binding through division" in {
       {
-        val e @ Let(_, _, _, _, Div(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a / 1")
+        val e @ Let(_, _, _, _, Div(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a / 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Div(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 / a")
+        val e @ Let(_, _, _, _, Div(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 / a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -797,16 +797,16 @@ object BinderSpecs
 
     "forward binding through mod" in {
       {
-        val e @ Let(_, _, _, _, Mod(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a % 1")
+        val e @ Let(_, _, _, _, Mod(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a % 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Mod(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 % a")
+        val e @ Let(_, _, _, _, Mod(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 % a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -815,16 +815,16 @@ object BinderSpecs
 
     "forward binding through pow" in {
       {
-        val e @ Let(_, _, _, _, Pow(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a ^ 1")
+        val e @ Let(_, _, _, _, Pow(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a ^ 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Pow(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 ^ a")
+        val e @ Let(_, _, _, _, Pow(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 ^ a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -833,16 +833,16 @@ object BinderSpecs
 
     "forward binding through less-than" in {
       {
-        val e @ Let(_, _, _, _, Lt(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a < 1")
+        val e @ Let(_, _, _, _, Lt(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a < 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Lt(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 < a")
+        val e @ Let(_, _, _, _, Lt(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 < a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -851,16 +851,16 @@ object BinderSpecs
 
     "forward binding through less-than-equal" in {
       {
-        val e @ Let(_, _, _, _, LtEq(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a <= 1")
+        val e @ Let(_, _, _, _, LtEq(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a <= 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, LtEq(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 <= a")
+        val e @ Let(_, _, _, _, LtEq(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 <= a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -869,16 +869,16 @@ object BinderSpecs
 
     "forward binding through greater-than" in {
       {
-        val e @ Let(_, _, _, _, Gt(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a > 1")
+        val e @ Let(_, _, _, _, Gt(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a > 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Gt(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 > a")
+        val e @ Let(_, _, _, _, Gt(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 > a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -887,16 +887,16 @@ object BinderSpecs
 
     "forward binding through greater-than-equal" in {
       {
-        val e @ Let(_, _, _, _, GtEq(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a >= 1")
+        val e @ Let(_, _, _, _, GtEq(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a >= 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, GtEq(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 >= a")
+        val e @ Let(_, _, _, _, GtEq(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 >= a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -905,16 +905,16 @@ object BinderSpecs
 
     "forward binding through equality" in {
       {
-        val e @ Let(_, _, _, _, Eq(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a = 1")
+        val e @ Let(_, _, _, _, Eq(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a = 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Eq(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 = a")
+        val e @ Let(_, _, _, _, Eq(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 = a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -923,16 +923,16 @@ object BinderSpecs
 
     "forward binding through not-equality" in {
       {
-        val e @ Let(_, _, _, _, NotEq(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a != 1")
+        val e @ Let(_, _, _, _, NotEq(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a != 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, NotEq(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 != a")
+        val e @ Let(_, _, _, _, NotEq(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 != a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -941,16 +941,16 @@ object BinderSpecs
 
     "forward binding through boolean and" in {
       {
-        val e @ Let(_, _, _, _, And(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a & 1")
+        val e @ Let(_, _, _, _, And(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a & 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, And(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 & a")
+        val e @ Let(_, _, _, _, And(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 & a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -959,16 +959,16 @@ object BinderSpecs
 
     "forward binding through boolean or" in {
       {
-        val e @ Let(_, _, _, _, Or(_, d: Dispatch, _)) =
-          parseSingle("a := 42 a | 1")
+        val e @ Let(_, _, _, _, Or(_, d: Dispatch, _)) = parseSingle(
+          "a := 42 a | 1")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
       }
 
       {
-        val e @ Let(_, _, _, _, Or(_, _, d: Dispatch)) =
-          parseSingle("a := 42 1 | a")
+        val e @ Let(_, _, _, _, Or(_, _, d: Dispatch)) = parseSingle(
+          "a := 42 1 | a")
         d.binding mustEqual LetBinding(e)
         d.isReduction mustEqual false
         d.errors must beEmpty
@@ -983,16 +983,16 @@ object BinderSpecs
     }
 
     "forward binding through negation" in {
-      val e @ Let(_, _, _, _, Neg(_, d: Dispatch)) =
-        parseSingle("a := 42 neg a")
+      val e @ Let(_, _, _, _, Neg(_, d: Dispatch)) = parseSingle(
+        "a := 42 neg a")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty
     }
 
     "forward binding through parentheses" in {
-      val e @ Let(_, _, _, _, Paren(_, d: Dispatch)) =
-        parseSingle("a := 42 (a)")
+      val e @ Let(_, _, _, _, Paren(_, d: Dispatch)) = parseSingle(
+        "a := 42 (a)")
       d.binding mustEqual LetBinding(e)
       d.isReduction mustEqual false
       d.errors must beEmpty

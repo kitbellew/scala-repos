@@ -225,8 +225,8 @@ abstract class BTypes {
       })
     }
 
-    val nestedClasses: List[ClassBType] =
-      classNode.innerClasses.asScala.collect({
+    val nestedClasses: List[ClassBType] = classNode.innerClasses.asScala
+      .collect({
         case i if nestedInCurrentClass(i) =>
           classBTypeFromParsedClassfile(i.name)
       })(collection.breakOut)

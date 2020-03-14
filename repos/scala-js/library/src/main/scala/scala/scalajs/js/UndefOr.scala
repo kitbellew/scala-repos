@@ -183,8 +183,7 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
     *  @see map
     *  @see flatMap
     */
-  @inline final def foreach[U](f: A => U): Unit =
-    if (!isEmpty) f(this.forceGet)
+  @inline final def foreach[U](f: A => U): Unit = if (!isEmpty) f(this.forceGet)
 
   /** Returns the result of applying `pf` to this $option's contained
     *  value, '''if''' this option is
@@ -218,8 +217,7 @@ final class UndefOrOps[A](val self: UndefOr[A]) extends AnyVal {
   /** Returns a singleton list containing the $option's value
     *  if it is nonempty, or the empty list if the $option is empty.
     */
-  def toList: List[A] =
-    if (isEmpty) Nil else this.forceGet :: Nil
+  def toList: List[A] = if (isEmpty) Nil else this.forceGet :: Nil
 
   // Can't link doc to Left or Right - #1969
   /** Returns a `Left` containing the given argument `left` if this $option is

@@ -61,9 +61,10 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   private val supportedMasterPrefixes = Seq("spark://", "mesos://")
 
-  private val masters: Array[String] = if (master.startsWith("spark://")) {
-    Utils.parseStandaloneMasterUrls(master)
-  } else { Array(master) }
+  private val masters: Array[String] =
+    if (master.startsWith("spark://")) {
+      Utils.parseStandaloneMasterUrls(master)
+    } else { Array(master) }
 
   // Set of masters that lost contact with us, used to keep track of
   // whether there are masters still alive for us to communicate with
@@ -335,8 +336,9 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
           "Application successfully submitted, but submission ID was not provided!")
       }
     } else {
-      val failMessage =
-        Option(submitResponse.message).map { ": " + _ }.getOrElse("")
+      val failMessage = Option(submitResponse.message)
+        .map { ": " + _ }
+        .getOrElse("")
       logError(s"Application submission failed$failMessage")
     }
   }

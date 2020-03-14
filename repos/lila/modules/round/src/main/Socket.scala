@@ -225,8 +225,7 @@ private[round] final class Socket(
   def ownerOf(color: Color): Option[Member] =
     members.values find { m => m.owner && m.color == color }
 
-  def ownerOf(uid: String): Option[Member] =
-    members get uid filter (_.owner)
+  def ownerOf(uid: String): Option[Member] = members get uid filter (_.owner)
 
   def watchers: Iterable[Member] = members.values.filter(_.watcher)
 

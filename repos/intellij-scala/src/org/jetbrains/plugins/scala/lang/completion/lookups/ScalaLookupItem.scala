@@ -99,8 +99,8 @@ class ScalaLookupItem(
 
   def isNamedParameterOrAssignment = isNamedParameter || isAssignment
 
-  val containingClass =
-    containingClass0.getOrElse(ScalaPsiUtil.nameContext(element) match {
+  val containingClass = containingClass0.getOrElse(
+    ScalaPsiUtil.nameContext(element) match {
       case memb: PsiMember => memb.containingClass
       case _               => null
     })
@@ -143,21 +143,22 @@ class ScalaLookupItem(
           if (!etaExpanded) fun.returnType.getOrAny
           else fun.getType(TypingContext.empty).getOrAny
         presentation.setTypeText(presentationString(scType, substitutor))
-        val tailText1 = if (isAssignment) {
-          " = " + presentationString(fun.paramClauses, substitutor)
-        } else {
-          tailText + (
-            if (!isOverloadedForClassName)
-              presentationString(fun.paramClauses, substitutor)
-            else "(...)"
-          ) + (
-            if (shouldImport && isClassName && containingClass != null)
-              " " + containingClass.getPresentation.getLocationString
-            else if (isClassName && containingClass != null)
-              " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
-            else ""
-          )
-        }
+        val tailText1 =
+          if (isAssignment) {
+            " = " + presentationString(fun.paramClauses, substitutor)
+          } else {
+            tailText + (
+              if (!isOverloadedForClassName)
+                presentationString(fun.paramClauses, substitutor)
+              else "(...)"
+            ) + (
+              if (shouldImport && isClassName && containingClass != null)
+                " " + containingClass.getPresentation.getLocationString
+              else if (isClassName && containingClass != null)
+                " in " + containingClass.name + " " + containingClass.getPresentation.getLocationString
+              else ""
+            )
+          }
         if (!etaExpanded) presentation.setTailText(tailText1)
         else presentation.setTailText(" _")
       case fun: ScFun =>
@@ -178,10 +179,9 @@ class ScalaLookupItem(
             f.getType(TypingContext.empty).getOrAny,
             substitutor))
       case param: ScParameter =>
-        val str: String =
-          presentationString(
-            param.getRealParameterType(TypingContext.empty).getOrAny,
-            substitutor)
+        val str: String = presentationString(
+          param.getRealParameterType(TypingContext.empty).getOrAny,
+          substitutor)
         if (isNamedParameter) { presentation.setTailText(" = " + str) }
         else { presentation.setTypeText(str) }
       case clazz: PsiClass =>
@@ -356,12 +356,11 @@ class ScalaLookupItem(
         case p: PsiPackage if shouldImport =>
           simpleInsert(context)
           context.commitDocument()
-          val ref: ScReferenceElement =
-            PsiTreeUtil.findElementOfClassAtOffset(
-              context.getFile,
-              context.getStartOffset + shift,
-              classOf[ScReferenceElement],
-              false)
+          val ref: ScReferenceElement = PsiTreeUtil.findElementOfClassAtOffset(
+            context.getFile,
+            context.getStartOffset + shift,
+            classOf[ScReferenceElement],
+            false)
           if (ref == null) return
           ScalaImportTypeFix
             .getImportHolder(ref, ref.getProject)
@@ -375,8 +374,8 @@ class ScalaLookupItem(
               .commitDocument(document)
             context.getFile match {
               case scalaFile: ScalaFile =>
-                val elem =
-                  scalaFile.findElementAt(context.getStartOffset + shift)
+                val elem = scalaFile.findElementAt(
+                  context.getStartOffset + shift)
                 def qualifyReference(ref: ScReferenceExpression) {
                   val newRef = ScalaPsiElementFactory
                     .createExpressionFromText(

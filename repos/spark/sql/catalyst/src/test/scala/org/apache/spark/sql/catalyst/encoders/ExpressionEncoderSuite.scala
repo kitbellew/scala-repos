@@ -322,13 +322,13 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
         }
 
       // Test the correct resolution of serialization / deserialization.
-      val attr =
-        AttributeReference("obj", ObjectType(encoder.clsTag.runtimeClass))()
+      val attr = AttributeReference(
+        "obj",
+        ObjectType(encoder.clsTag.runtimeClass))()
       val inputPlan = LocalRelation(attr)
-      val plan =
-        Project(
-          Alias(encoder.fromRowExpression, "obj")() :: Nil,
-          Project(encoder.namedExpressions, inputPlan))
+      val plan = Project(
+        Alias(encoder.fromRowExpression, "obj")() :: Nil,
+        Project(encoder.namedExpressions, inputPlan))
       assertAnalysisSuccess(plan)
 
       val isCorrect = (input, convertedBack) match {

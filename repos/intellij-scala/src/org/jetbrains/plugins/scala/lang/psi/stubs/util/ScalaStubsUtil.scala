@@ -42,15 +42,14 @@ object ScalaStubsUtil {
     val name: String = clazz.name
     if (name == null) return Seq.empty
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
-    val iterator: java.util.Iterator[ScExtendsBlock] =
-      StubIndex
-        .getElements(
-          ScDirectInheritorsIndex.KEY,
-          name,
-          clazz.getProject,
-          new ScalaSourceFilterScope(scope, clazz.getProject),
-          classOf[ScExtendsBlock])
-        .iterator
+    val iterator: java.util.Iterator[ScExtendsBlock] = StubIndex
+      .getElements(
+        ScDirectInheritorsIndex.KEY,
+        name,
+        clazz.getProject,
+        new ScalaSourceFilterScope(scope, clazz.getProject),
+        classOf[ScExtendsBlock])
+      .iterator
     while (iterator.hasNext) {
       val extendsBlock: PsiElement = iterator.next
       val stub = extendsBlock.asInstanceOf[ScExtendsBlockImpl].getStub
@@ -79,15 +78,14 @@ object ScalaStubsUtil {
     val inheritors = new ArrayBuffer[ScTemplateDefinition]
     def processClass(inheritedClazz: PsiClass) {
       inReadAction {
-        val iterator: java.util.Iterator[ScSelfTypeElement] =
-          StubIndex
-            .getElements(
-              ScSelfTypeInheritorsIndex.KEY,
-              name,
-              inheritedClazz.getProject,
-              scope,
-              classOf[ScSelfTypeElement])
-            .iterator
+        val iterator: java.util.Iterator[ScSelfTypeElement] = StubIndex
+          .getElements(
+            ScSelfTypeInheritorsIndex.KEY,
+            name,
+            inheritedClazz.getProject,
+            scope,
+            classOf[ScSelfTypeElement])
+          .iterator
         while (iterator.hasNext) {
           val selfTypeElement = iterator.next
           selfTypeElement.typeElement match {

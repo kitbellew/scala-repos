@@ -674,13 +674,12 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     val solver = if (nonnegative) new NNLSSolver else new CholeskySolver
     val blockRatings = partitionRatings(ratings, userPart, itemPart)
       .persist(intermediateRDDStorageLevel)
-    val (userInBlocks, userOutBlocks) =
-      makeBlocks(
-        "user",
-        blockRatings,
-        userPart,
-        itemPart,
-        intermediateRDDStorageLevel)
+    val (userInBlocks, userOutBlocks) = makeBlocks(
+      "user",
+      blockRatings,
+      userPart,
+      itemPart,
+      intermediateRDDStorageLevel)
     // materialize blockRatings and user blocks
     userOutBlocks.count()
     val swappedBlockRatings = blockRatings.map {
@@ -691,13 +690,12 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
           (itemBlockId, userBlockId),
           RatingBlock(itemIds, userIds, localRatings))
     }
-    val (itemInBlocks, itemOutBlocks) =
-      makeBlocks(
-        "item",
-        swappedBlockRatings,
-        itemPart,
-        userPart,
-        intermediateRDDStorageLevel)
+    val (itemInBlocks, itemOutBlocks) = makeBlocks(
+      "item",
+      swappedBlockRatings,
+      itemPart,
+      userPart,
+      intermediateRDDStorageLevel)
     // materialize item blocks
     itemOutBlocks.count()
     val seedGen = new XORShiftRandom(seed)
@@ -1265,9 +1263,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       }
       .groupByKey(new ALSPartitioner(srcPart.numPartitions))
       .mapValues { iter =>
-        val builder =
-          new UncompressedInBlockBuilder[ID](
-            new LocalIndexEncoder(dstPart.numPartitions))
+        val builder = new UncompressedInBlockBuilder[ID](
+          new LocalIndexEncoder(dstPart.numPartitions))
         iter.foreach {
           case (dstBlockId, srcIds, dstLocalIndices, ratings) =>
             builder.add(dstBlockId, srcIds, dstLocalIndices, ratings)
@@ -1280,8 +1277,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       .mapValues {
         case InBlock(srcIds, dstPtrs, dstEncodedIndices, _) =>
           val encoder = new LocalIndexEncoder(dstPart.numPartitions)
-          val activeIds =
-            Array.fill(dstPart.numPartitions)(mutable.ArrayBuilder.make[Int])
+          val activeIds = Array.fill(dstPart.numPartitions)(
+            mutable.ArrayBuilder.make[Int])
           var i = 0
           val seen = new Array[Boolean](dstPart.numPartitions)
           while (i < srcIds.length) {
@@ -1342,8 +1339,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
               (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
         }
     }
-    val merged =
-      srcOut.groupByKey(new ALSPartitioner(dstInBlocks.partitions.length))
+    val merged = srcOut.groupByKey(
+      new ALSPartitioner(dstInBlocks.partitions.length))
     dstInBlocks.join(merged).mapValues {
       case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
         val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)
@@ -1418,8 +1415,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
 
     require(numBlocks > 0, s"numBlocks must be positive but found $numBlocks.")
 
-    private[this] final val numLocalIndexBits =
-      math.min(java.lang.Integer.numberOfLeadingZeros(numBlocks - 1), 31)
+    private[this] final val numLocalIndexBits = math.min(
+      java.lang.Integer.numberOfLeadingZeros(numBlocks - 1),
+      31)
     private[this] final val localIndexMask = (1 << numLocalIndexBits) - 1
 
     /** Encodes a (blockId, localIndex) into a single integer. */

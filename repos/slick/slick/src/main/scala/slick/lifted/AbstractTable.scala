@@ -30,9 +30,11 @@ abstract class AbstractTable[T](
 
   def tableIdentitySymbol: TableIdentitySymbol
 
-  lazy val tableNode =
-    TableNode(schemaName, tableName, tableIdentitySymbol, tableIdentitySymbol)(
-      this)
+  lazy val tableNode = TableNode(
+    schemaName,
+    tableName,
+    tableIdentitySymbol,
+    tableIdentitySymbol)(this)
 
   def encodeRef(path: Node) =
     tableTag.taggedAs(path).asInstanceOf[AbstractTable[T]]

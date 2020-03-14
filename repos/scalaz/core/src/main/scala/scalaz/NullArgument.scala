@@ -8,14 +8,11 @@ final class NullArgument[A, B] private (_apply: Option[A] => B) {
   def dimap[C, D](f: C => A, g: B => D): NullArgument[C, D] =
     NullArgument(c => g(_apply(c.map(f))))
 
-  def map[C](f: B => C): A ?=> C =
-    NullArgument(_apply andThen f)
+  def map[C](f: B => C): A ?=> C = NullArgument(_apply andThen f)
 
-  def contramap[C](f: C => A): C ?=> B =
-    NullArgument(c => apply(c.map(f)))
+  def contramap[C](f: C => A): C ?=> B = NullArgument(c => apply(c.map(f)))
 
-  def flatMap[C](f: B => A ?=> C): A ?=> C =
-    NullArgument(a => f(apply(a))(a))
+  def flatMap[C](f: B => A ?=> C): A ?=> C = NullArgument(a => f(apply(a))(a))
 
   def ap[C](f: A ?=> (B => C)): A ?=> C =
     for {
@@ -35,8 +32,7 @@ final class NullArgument[A, B] private (_apply: Option[A] => B) {
       case Some((a, c)) => (apply(Some(a)), x(Some(c)))
     }
 
-  def +++[C, D](x: C ?=> D): (A \/ C) ?=> (B \/ D) =
-    left compose x.right
+  def +++[C, D](x: C ?=> D): (A \/ C) ?=> (B \/ D) = left compose x.right
 
   def left[C]: (A \/ C) ?=> (B \/ C) =
     NullArgument {
@@ -58,8 +54,7 @@ final class NullArgument[A, B] private (_apply: Option[A] => B) {
       case c @ Some(_) => apply(Some(f(c)))
     }
 
-  def andThen[C](g: B ?=> C): A ?=> C =
-    g compose this
+  def andThen[C](g: B ?=> C): A ?=> C = g compose this
 
   def |+|(x: A ?=> B)(implicit S: Semigroup[B]): A ?=> B =
     for {
@@ -67,37 +62,29 @@ final class NullArgument[A, B] private (_apply: Option[A] => B) {
       b2 <- x
     } yield S.append(b1, b2)
 
-  def cokleisli: Cokleisli[Option, A, B] =
-    Cokleisli(_apply)
+  def cokleisli: Cokleisli[Option, A, B] = Cokleisli(_apply)
 
   def on[F[_]](o: OptionT[F, A])(implicit F: Functor[F]): F[B] =
     F.map(o.run)(_apply)
 
-  def lower: A => B =
-    a => apply(Some(a))
+  def lower: A => B = a => apply(Some(a))
 
-  def never: B =
-    apply(None)
+  def never: B = apply(None)
 
-  def zero(implicit M: Monoid[A]): B =
-    lower(M.zero)
+  def zero(implicit M: Monoid[A]): B = lower(M.zero)
 
-  def pair: (A => B, B) =
-    (a => apply(Some(a)), apply(None))
+  def pair: (A => B, B) = (a => apply(Some(a)), apply(None))
 
 }
 
 object NullArgument extends NullArgumentInstances {
-  def apply[A, B](f: Option[A] => B): A ?=> B =
-    new (A ?=> B)(f)
+  def apply[A, B](f: Option[A] => B): A ?=> B = new (A ?=> B)(f)
 
   type ?=>[A, B] = NullArgument[A, B]
 
-  def always[A, B](b: => B): A ?=> B =
-    NullArgument(_ => b)
+  def always[A, B](b: => B): A ?=> B = NullArgument(_ => b)
 
-  def zero[A, B](implicit M: Monoid[B]): A ?=> B =
-    always(M.zero)
+  def zero[A, B](implicit M: Monoid[B]): A ?=> B = always(M.zero)
 
   def pair[A, B](f: A => B, b: => B): A ?=> B =
     NullArgument((_: Option[A]) match {
@@ -105,8 +92,7 @@ object NullArgument extends NullArgumentInstances {
       case Some(a) => f(a)
     })
 
-  def cokleisli[A, B](c: Cokleisli[Option, A, B]): A ?=> B =
-    NullArgument(c.run)
+  def cokleisli[A, B](c: Cokleisli[Option, A, B]): A ?=> B = NullArgument(c.run)
 }
 
 sealed abstract class NullArgumentInstances0 {
@@ -119,13 +105,10 @@ sealed abstract class NullArgumentInstances0 {
 
   implicit val nullArgumentProfunctor: Profunctor[NullArgument] =
     new Profunctor[NullArgument] {
-      def mapfst[A, B, C](fab: NullArgument[A, B])(f: C => A) =
-        fab contramap f
-      def mapsnd[A, B, C](fab: NullArgument[A, B])(f: B => C) =
-        fab map f
+      def mapfst[A, B, C](fab: NullArgument[A, B])(f: C => A) = fab contramap f
+      def mapsnd[A, B, C](fab: NullArgument[A, B])(f: B => C) = fab map f
       override def dimap[A, B, C, D](fab: NullArgument[A, B])(f: C => A)(
-          g: B => D) =
-        fab.dimap(f, g)
+          g: B => D) = fab.dimap(f, g)
     }
 
 }
@@ -143,31 +126,25 @@ sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
     new Split[NullArgument] with Profunctor[NullArgument] {
       override def compose[A, B, C](
           f: NullArgument[B, C],
-          g: NullArgument[A, B]): NullArgument[A, C] =
-        f compose g
+          g: NullArgument[A, B]): NullArgument[A, C] = f compose g
       override def split[A, B, C, D](
           f: NullArgument[A, B],
-          g: NullArgument[C, D]) =
-        f *** g
+          g: NullArgument[C, D]) = f *** g
       override def mapfst[A, B, C](r: NullArgument[A, B])(f: C => A) =
         r contramap f
-      override def mapsnd[A, B, C](r: NullArgument[A, B])(f: B => C) =
-        r map f
+      override def mapsnd[A, B, C](r: NullArgument[A, B])(f: B => C) = r map f
     }
 
   implicit def nullArgumentMonad[X]
       : Monad[NullArgument[X, ?]] with BindRec[NullArgument[X, ?]] =
     new Monad[NullArgument[X, ?]] with BindRec[NullArgument[X, ?]] {
       override def ap[A, B](a: => NullArgument[X, A])(
-          f: => NullArgument[X, A => B]) =
-        a ap f
-      override def map[A, B](a: NullArgument[X, A])(f: A => B) =
-        a map f
+          f: => NullArgument[X, A => B]) = a ap f
+      override def map[A, B](a: NullArgument[X, A])(f: A => B) = a map f
       override def point[A](a: => A): NullArgument[X, A] =
         NullArgument.always(a)
       override def bind[A, B](a: NullArgument[X, A])(
-          f: A => NullArgument[X, B]) =
-        a flatMap f
+          f: A => NullArgument[X, B]) = a flatMap f
       override def tailrecM[A, B](f: A => NullArgument[X, A \/ B])(a: A) =
         NullArgument { t =>
           @annotation.tailrec
@@ -200,8 +177,7 @@ private trait NullArgumentMonoid[A, B]
     with NullArgumentSemigroup[A, B] {
   implicit val M: Monoid[B]
 
-  override def zero =
-    NullArgument.zero
+  override def zero = NullArgument.zero
 }
 
 // vim: expandtab:ts=2:sw=2

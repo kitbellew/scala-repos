@@ -11,8 +11,8 @@ import algebra.laws.OrderLaws
 class XorTTests extends CatsSuite {
   implicit val eq0 = XorT.xorTEq[List, String, String Xor Int]
   implicit val eq1 = XorT.xorTEq[XorT[List, String, ?], String, Int](eq0)
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[XorT[List, String, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[XorT[List, String, ?]]
   checkAll(
     "XorT[List, String, Int]",
     MonadErrorTests[XorT[List, String, ?], String].monadError[Int, Int, Int])

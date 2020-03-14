@@ -57,8 +57,9 @@ class BiMapSpec extends Specification {
     "getOrElse return default values for invalid key" in {
       val keys = Seq(999, -1, -2)
       val defaults = Seq(1234, 5678, 987)
-      val biValues =
-        keys.zip(defaults).map { case (k, d) => bi.getOrElse(k, d) }
+      val biValues = keys.zip(defaults).map {
+        case (k, d) => bi.getOrElse(k, d)
+      }
 
       biValues must beEqualTo(defaults)
     }

@@ -68,9 +68,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("lead with default value") {
-    val df =
-      Seq((1, "1"), (1, "1"), (2, "2"), (1, "1"), (2, "2"), (1, "1"), (2, "2"))
-        .toDF("key", "value")
+    val df = Seq(
+      (1, "1"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -88,9 +93,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("lag with default value") {
-    val df =
-      Seq((1, "1"), (1, "1"), (2, "2"), (1, "1"), (2, "2"), (1, "1"), (2, "2"))
-        .toDF("key", "value")
+    val df = Seq(
+      (1, "1"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2"),
+      (1, "1"),
+      (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -133,8 +143,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("aggregation and rows between") {
-    val df =
-      Seq((1, "1"), (2, "1"), (2, "2"), (1, "1"), (2, "2")).toDF("key", "value")
+    val df = Seq((1, "1"), (2, "1"), (2, "2"), (1, "1"), (2, "2"))
+      .toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
@@ -279,9 +289,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("statistical functions") {
-    val df =
-      Seq(("a", 1), ("a", 1), ("a", 2), ("a", 2), ("b", 4), ("b", 3), ("b", 2))
-        .toDF("key", "value")
+    val df = Seq(
+      ("a", 1),
+      ("a", 1),
+      ("a", 2),
+      ("a", 2),
+      ("b", 4),
+      ("b", 3),
+      ("b", 2)).toDF("key", "value")
     val window = Window.partitionBy($"key")
     checkAnswer(
       df.select(
@@ -295,9 +310,14 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("window function with aggregates") {
-    val df =
-      Seq(("a", 1), ("a", 1), ("a", 2), ("a", 2), ("b", 4), ("b", 3), ("b", 2))
-        .toDF("key", "value")
+    val df = Seq(
+      ("a", 1),
+      ("a", 1),
+      ("a", 2),
+      ("a", 2),
+      ("b", 4),
+      ("b", 3),
+      ("b", 2)).toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
       df.groupBy($"key")
@@ -334,8 +354,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
         buffer1(0) = buffer1.getLong(0) + buffer2.getLong(0)
       }
 
-      def evaluate(buffer: Row): Any =
-        buffer.getLong(0)
+      def evaluate(buffer: Row): Any = buffer.getLong(0)
     }
     val df = Seq(
       ("a", 1, 1),
@@ -346,8 +365,10 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       ("b", 3, 8),
       ("b", 2, 4))
       .toDF("key", "a", "b")
-    val window =
-      Window.partitionBy($"key").orderBy($"a").rangeBetween(Long.MinValue, 0L)
+    val window = Window
+      .partitionBy($"key")
+      .orderBy($"a")
+      .rangeBetween(Long.MinValue, 0L)
     checkAnswer(
       df.select($"key", $"a", $"b", udaf($"a", $"b").over(window)),
       Seq(
@@ -362,9 +383,15 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
   }
 
   test("null inputs") {
-    val df =
-      Seq(("a", 1), ("a", 1), ("a", 2), ("a", 2), ("b", 4), ("b", 3), ("b", 2))
-        .toDF("key", "value")
+    val df = Seq(
+      ("a", 1),
+      ("a", 1),
+      ("a", 2),
+      ("a", 2),
+      ("b", 4),
+      ("b", 3),
+      ("b", 2))
+      .toDF("key", "value")
     val window = Window.orderBy()
     checkAnswer(
       df.select(

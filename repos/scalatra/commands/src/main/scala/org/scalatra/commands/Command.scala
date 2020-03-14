@@ -75,8 +75,7 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
       field: FieldDescriptor[T]): Field[T] = { new Field(bind(field), this) }
 
   implicit def autoBind[T: Manifest: TypeConverterFactory](
-      fieldName: String): Field[T] =
-    bind[T](FieldDescriptor[T](fieldName))
+      fieldName: String): Field[T] = bind[T](FieldDescriptor[T](fieldName))
 
   implicit def bind[T](field: FieldDescriptor[T])(implicit
       mf: Manifest[T],
@@ -137,8 +136,9 @@ trait Command extends BindingSyntax with ParamsValueReaderProperties {
         val cv = typeConverterBuilder(
           tcf.asInstanceOf[CommandTypeConverterFactory[_]])(data)
           .asInstanceOf[TypeConverter[I, b.T]]
-        val fieldBinding =
-          Binding(b.field, cv, b.typeConverterFactory)(mi, b.valueManifest)
+        val fieldBinding = Binding(b.field, cv, b.typeConverterFactory)(
+          mi,
+          b.valueManifest)
 
         val result = b.field.valueSource match {
           case ValueSource.Body =>

@@ -12,8 +12,12 @@ class TracingTest extends FunSuite {
   import HttpTracing.{Header, stripParameters}
 
   lazy val flags = Flags().setDebug
-  lazy val traceId =
-    TraceId(Some(SpanId(1)), None, SpanId(2), Some(true), flags)
+  lazy val traceId = TraceId(
+    Some(SpanId(1)),
+    None,
+    SpanId(2),
+    Some(true),
+    flags)
 
   test("set header") {
     Trace.letId(traceId) {
@@ -42,8 +46,8 @@ class TracingTest extends FunSuite {
   }
 
   test("record only path of url") {
-    val stripped =
-      stripParameters("/1/lists/statuses.json?count=50&super_secret=ohyeah")
+    val stripped = stripParameters(
+      "/1/lists/statuses.json?count=50&super_secret=ohyeah")
     assert(stripped == "/1/lists/statuses.json")
 
     val invalid = stripParameters("\\")

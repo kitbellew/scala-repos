@@ -135,8 +135,8 @@ private[cluster] final class ClusterHeartbeatSender
 
   def init(snapshot: CurrentClusterState): Unit = {
     val nodes: Set[UniqueAddress] = snapshot.members.map(_.uniqueAddress)
-    val unreachable: Set[UniqueAddress] =
-      snapshot.unreachable.map(_.uniqueAddress)
+    val unreachable: Set[UniqueAddress] = snapshot.unreachable.map(
+      _.uniqueAddress)
     state = state.init(nodes, unreachable)
   }
 
@@ -223,8 +223,8 @@ private[cluster] final case class ClusterHeartbeatSenderState(
   def init(
       nodes: Set[UniqueAddress],
       unreachable: Set[UniqueAddress]): ClusterHeartbeatSenderState =
-    copy(ring =
-      ring.copy(nodes = nodes + selfAddress, unreachable = unreachable))
+    copy(ring = ring
+      .copy(nodes = nodes + selfAddress, unreachable = unreachable))
 
   def contains(node: UniqueAddress): Boolean = ring.nodes(node)
 
@@ -292,8 +292,8 @@ private[cluster] final case class HeartbeatNodeRing(
     s"nodes [${nodes.mkString(", ")}] must contain selfAddress [${selfAddress}]")
 
   private val nodeRing: immutable.SortedSet[UniqueAddress] = {
-    implicit val ringOrdering: Ordering[UniqueAddress] =
-      Ordering.fromLessThan[UniqueAddress] { (a, b) ⇒
+    implicit val ringOrdering: Ordering[UniqueAddress] = Ordering
+      .fromLessThan[UniqueAddress] { (a, b) ⇒
         val ha = a.##
         val hb = b.##
         ha < hb || (ha == hb && Member.addressOrdering

@@ -52,8 +52,8 @@ private[spark] abstract class WebUI(
     new HashMap[WebUIPage, ArrayBuffer[ServletContextHandler]]
   protected var serverInfo: Option[ServerInfo] = None
   protected val localHostName = Utils.localHostNameForURI()
-  protected val publicHostName =
-    Option(conf.getenv("SPARK_PUBLIC_DNS")).getOrElse(localHostName)
+  protected val publicHostName = Option(conf.getenv("SPARK_PUBLIC_DNS"))
+    .getOrElse(localHostName)
   private val className = Utils.getFormattedClassName(this)
 
   def getBasePath: String = basePath

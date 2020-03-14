@@ -72,8 +72,7 @@ sealed trait LocPath {
 }
 
 object LocPath {
-  implicit def stringToLocPath(in: String): LocPath =
-    new NormalLocPath(in)
+  implicit def stringToLocPath(in: String): LocPath = new NormalLocPath(in)
 }
 
 case object * extends LocPath {
@@ -513,14 +512,13 @@ object Menu extends MenuSingleton {
     /**
       * Rewrite the request and emit the type-safe parameter
       */
-    override lazy val rewrite: LocRewrite =
-      Full(NamedPF(locPath.toString) {
-        case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
-            if param.isDefined || params.contains(
-              Loc.MatchWithoutCurrentValue) => {
-          RewriteResponse(path, true) -> param
-        }
-      })
+    override lazy val rewrite: LocRewrite = Full(NamedPF(locPath.toString) {
+      case RewriteRequest(ParsePath(ExtractSan(path, param), _, _, _), _, _)
+          if param.isDefined || params.contains(
+            Loc.MatchWithoutCurrentValue) => {
+        RewriteResponse(path, true) -> param
+      }
+    })
 
     def headMatch: Boolean
 
@@ -776,13 +774,9 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
       pathAt: HasKids,
       actual: Menu,
       populate: List[MenuItem]): List[MenuItem] = {
-    val kids: List[MenuItem] =
-      _parent.toList.flatMap(
-        _.kids.toList.flatMap(m =>
-          m.loc.buildItem(
-            if (m == this) populate else Nil,
-            m == actual,
-            m == pathAt)))
+    val kids: List[MenuItem] = _parent.toList.flatMap(_.kids.toList.flatMap(m =>
+      m.loc
+        .buildItem(if (m == this) populate else Nil, m == actual, m == pathAt)))
 
     _parent.toList.flatMap(p => p.buildUpperLines(p, actual, kids))
   }

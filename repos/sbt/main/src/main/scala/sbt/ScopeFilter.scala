@@ -165,23 +165,22 @@ object ScopeFilter {
       val allScopes: Set[Scope])
 
   /** Constructs a Data instance from the list of static scopes and the project relationships.*/
-  private[this] val getData: Initialize[Data] =
-    Def.setting {
-      val build = Keys.loadedBuild.value
-      val scopes = Def.StaticScopes.value
-      val thisRef = Keys.thisProjectRef.?.value
-      val current = thisRef match {
-        case Some(ProjectRef(uri, _)) => uri
-        case None                     => build.root
-      }
-      val rootProject = Load.getRootProject(build.units)
-      val resolve: ProjectReference => ProjectRef = p =>
-        (p, thisRef) match {
-          case (ThisProject, Some(pref)) => pref
-          case _                         => Scope.resolveProjectRef(current, rootProject, p)
-        }
-      new Data(build.units, resolve, scopes)
+  private[this] val getData: Initialize[Data] = Def.setting {
+    val build = Keys.loadedBuild.value
+    val scopes = Def.StaticScopes.value
+    val thisRef = Keys.thisProjectRef.?.value
+    val current = thisRef match {
+      case Some(ProjectRef(uri, _)) => uri
+      case None                     => build.root
     }
+    val rootProject = Load.getRootProject(build.units)
+    val resolve: ProjectReference => ProjectRef = p =>
+      (p, thisRef) match {
+        case (ThisProject, Some(pref)) => pref
+        case _                         => Scope.resolveProjectRef(current, rootProject, p)
+      }
+    new Data(build.units, resolve, scopes)
+  }
 
   private[this] def getDependencies(
       structure: Map[URI, LoadedBuildUnit],
@@ -223,8 +222,7 @@ object ScopeFilter {
 
   private[this] def globalAxis[T]: AxisFilter[T] =
     new AxisFilter[T] {
-      private[sbt] def apply(data: Data): ScopeAxis[T] => Boolean =
-        _ == Global
+      private[sbt] def apply(data: Data): ScopeAxis[T] => Boolean = _ == Global
     }
   private[this] def selectAny[T]: AxisFilter[T] = selectAxis(const(const(true)))
   private[this] def selectAxis[T](f: Data => T => Boolean): AxisFilter[T] =

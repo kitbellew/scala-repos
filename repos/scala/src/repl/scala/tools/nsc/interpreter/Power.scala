@@ -138,8 +138,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     |Try :help or completions for vals._ and power._
   """.stripMargin.trim
 
-  private def initImports =
-    """scala.tools.nsc._
+  private def initImports = """scala.tools.nsc._
     |scala.collection.JavaConverters._
     |intp.global.{ error => _, _ }
     |definitions.{ getClass => _, _ }

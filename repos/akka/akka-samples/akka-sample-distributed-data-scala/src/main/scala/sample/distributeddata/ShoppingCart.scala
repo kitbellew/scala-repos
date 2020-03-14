@@ -66,10 +66,11 @@ class ShoppingCart(userId: String) extends Actor {
   //#add-item
   def receiveAddItem: Receive = {
     case cmd @ AddItem(item) ⇒
-      val update =
-        Update(DataKey, LWWMap.empty[LineItem], writeMajority, Some(cmd)) {
-          cart ⇒ updateCart(cart, item)
-        }
+      val update = Update(
+        DataKey,
+        LWWMap.empty[LineItem],
+        writeMajority,
+        Some(cmd)) { cart ⇒ updateCart(cart, item) }
       replicator ! update
   }
   //#add-item

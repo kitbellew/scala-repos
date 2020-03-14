@@ -103,8 +103,8 @@ class PhantomJSEnv(
         if (jettyClassLoader != null) jettyClassLoader
         else getClass().getClassLoader()
 
-      val clazz =
-        loader.loadClass("org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
+      val clazz = loader.loadClass(
+        "org.scalajs.jsenv.phantomjs.JettyWebsocketManager")
 
       val ctors = clazz.getConstructors()
       assert(ctors.length == 1, "JettyWebsocketManager may only have one ctor")

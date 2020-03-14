@@ -11,8 +11,8 @@ import org.scalatest.junit.JUnitRunner
 class OptsTest extends FunSuite {
   test("Opts") {
     if (System.getProperty("java.vm.name").contains("HotSpot")) {
-      val DiagnosticName =
-        ObjectName.getInstance("com.sun.management:type=HotSpotDiagnostic")
+      val DiagnosticName = ObjectName.getInstance(
+        "com.sun.management:type=HotSpotDiagnostic")
 
       val originalValue: String = Opt("MaxHeapFreeRatio").getOrElse("100")
 

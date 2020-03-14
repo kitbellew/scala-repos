@@ -67,13 +67,13 @@ trait ModelLibModule[M[+_]] {
 
           val shift = keyCols.size
 
-          val modelCols: Map[ColumnRef, Column] =
-            modelSet.identity.zipWithIndex.flatMap({
+          val modelCols: Map[ColumnRef, Column] = modelSet.identity.zipWithIndex
+            .flatMap({
               case (id, idx) =>
                 id map {
                   case (ColumnRef(cpath, ctype), cvalue) =>
-                    val cpath0 =
-                      CPath(paths.Key :: CPathIndex(idx + shift) :: cpath.nodes)
+                    val cpath0 = CPath(
+                      paths.Key :: CPathIndex(idx + shift) :: cpath.nodes)
                     (ColumnRef(cpath0, ctype), Column.const(cvalue))
                 }
             })(collection.breakOut)

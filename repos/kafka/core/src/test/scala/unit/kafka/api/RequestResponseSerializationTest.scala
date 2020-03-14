@@ -117,8 +117,8 @@ object SerializationTestUtils {
           1013,
           SecurityProtocol.PLAINTEXT)))
   )
-  private val brokerEndpoints =
-    brokers.map(_.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
+  private val brokerEndpoints = brokers.map(
+    _.getBrokerEndPoint(SecurityProtocol.PLAINTEXT))
 
   private val partitionMetaData0 = new PartitionMetadata(
     0,
@@ -183,8 +183,8 @@ object SerializationTestUtils {
     leaderIsrAndControllerEpoch3,
     brokers.map(_.id).toSet)
 
-  private val updateMetadataRequestPartitionStateInfo =
-    collection.immutable.Map(
+  private val updateMetadataRequestPartitionStateInfo = collection.immutable
+    .Map(
       TopicAndPartition(topic1, 0) -> partitionStateInfo0,
       TopicAndPartition(topic1, 1) -> partitionStateInfo1,
       TopicAndPartition(topic1, 2) -> partitionStateInfo2,
@@ -345,30 +345,29 @@ class RequestResponseSerializationTest extends JUnitSuite {
   @Test
   def testSerializationAndDeserialization() {
 
-    val requestsAndResponses =
-      collection.immutable.Seq(
-        producerRequest,
-        producerResponse,
-        fetchRequest,
-        offsetRequest,
-        offsetResponse,
-        offsetCommitRequestV0,
-        offsetCommitRequestV1,
-        offsetCommitRequestV2,
-        offsetCommitResponse,
-        offsetFetchRequest,
-        offsetFetchResponse,
-        consumerMetadataRequest,
-        consumerMetadataResponse,
-        consumerMetadataResponseNoCoordinator
-      )
+    val requestsAndResponses = collection.immutable.Seq(
+      producerRequest,
+      producerResponse,
+      fetchRequest,
+      offsetRequest,
+      offsetResponse,
+      offsetCommitRequestV0,
+      offsetCommitRequestV1,
+      offsetCommitRequestV2,
+      offsetCommitResponse,
+      offsetFetchRequest,
+      offsetFetchResponse,
+      consumerMetadataRequest,
+      consumerMetadataResponse,
+      consumerMetadataResponseNoCoordinator
+    )
 
     requestsAndResponses.foreach { original =>
       val buffer = ByteBuffer.allocate(original.sizeInBytes)
       original.writeTo(buffer)
       buffer.rewind()
-      val deserializer =
-        original.getClass.getDeclaredMethod("readFrom", classOf[ByteBuffer])
+      val deserializer = original.getClass
+        .getDeclaredMethod("readFrom", classOf[ByteBuffer])
       val deserialized = deserializer.invoke(null, buffer)
       assertFalse(
         "All serialized bytes in " + original.getClass.getSimpleName + " should have been consumed",

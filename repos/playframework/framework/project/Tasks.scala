@@ -14,8 +14,7 @@ object Generators {
       sbtVersion: String,
       dir: File): Seq[File] = {
     val file = dir / "PlayVersion.scala"
-    val scalaSource =
-      """|package play.core
+    val scalaSource = """|package play.core
             |
             |object PlayVersion {
             |    val current = "%s"

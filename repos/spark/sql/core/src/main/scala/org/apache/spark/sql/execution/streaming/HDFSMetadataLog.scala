@@ -71,8 +71,8 @@ class HDFSMetadataLog[T: ClassTag](sqlContext: SQLContext, path: String)
       } catch { case _: NumberFormatException => false }
   }
 
-  private val serializer =
-    new JavaSerializer(sqlContext.sparkContext.conf).newInstance()
+  private val serializer = new JavaSerializer(sqlContext.sparkContext.conf)
+    .newInstance()
 
   private def batchFile(batchId: Long): Path = {
     new Path(metadataPath, batchId.toString)

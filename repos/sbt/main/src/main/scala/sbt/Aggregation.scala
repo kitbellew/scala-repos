@@ -183,8 +183,7 @@ final object Aggregation {
     // to make the call sites clearer
     def separate[L](in: Seq[KeyValue[_]])(
         f: KeyValue[_] => Either[KeyValue[L], KeyValue[_]])
-        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) =
-      Util.separate(in)(f)
+        : (Seq[KeyValue[L]], Seq[KeyValue[_]]) = Util.separate(in)(f)
 
     val kvs = keys.toList
     if (kvs.isEmpty) failure("No such setting/task")
@@ -206,10 +205,12 @@ final object Aggregation {
       // Once that is addressed, the tasks constructed by the input tasks would need to be combined with the explicit tasks.
       if (inputTasks.nonEmpty) {
         if (other.nonEmpty) {
-          val inputStrings =
-            inputTasks.map(_.key).mkString("Input task(s):\n\t", "\n\t", "\n")
-          val otherStrings =
-            other.map(_.key).mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
+          val inputStrings = inputTasks
+            .map(_.key)
+            .mkString("Input task(s):\n\t", "\n\t", "\n")
+          val otherStrings = other
+            .map(_.key)
+            .mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
           failure(
             s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
         } else

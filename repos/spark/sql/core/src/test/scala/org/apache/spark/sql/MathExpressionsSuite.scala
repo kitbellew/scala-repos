@@ -32,15 +32,19 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
   import MathExpressionsTestData._
   import testImplicits._
 
-  private lazy val doubleData =
-    (1 to 10).map(i => DoubleData(i * 0.2 - 1, i * -0.2 + 1)).toDF()
+  private lazy val doubleData = (1 to 10)
+    .map(i => DoubleData(i * 0.2 - 1, i * -0.2 + 1))
+    .toDF()
 
-  private lazy val nnDoubleData =
-    (1 to 10).map(i => DoubleData(i * 0.1, i * -0.1)).toDF()
+  private lazy val nnDoubleData = (1 to 10)
+    .map(i => DoubleData(i * 0.1, i * -0.1))
+    .toDF()
 
-  private lazy val nullDoubles =
-    Seq(NullDoubles(1.0), NullDoubles(2.0), NullDoubles(3.0), NullDoubles(null))
-      .toDF()
+  private lazy val nullDoubles = Seq(
+    NullDoubles(1.0),
+    NullDoubles(2.0),
+    NullDoubles(3.0),
+    NullDoubles(null)).toDF()
 
   private def testOneToOneMathFunction[
       @specialized(Int, Long, Float, Double) T,
@@ -384,12 +388,11 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
   }
 
   test("abs") {
-    val input =
-      Seq[(java.lang.Double, java.lang.Double)](
-        (null, null),
-        (0.0, 0.0),
-        (1.5, 1.5),
-        (-2.5, 2.5))
+    val input = Seq[(java.lang.Double, java.lang.Double)](
+      (null, null),
+      (0.0, 0.0),
+      (1.5, 1.5),
+      (-2.5, 2.5))
     checkAnswer(
       input.toDF("key", "value").select(abs($"key").alias("a")).sort("a"),
       input.map(pair => Row(pair._2)))

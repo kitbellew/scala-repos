@@ -85,8 +85,9 @@ class DebugManager(
 
   def addPendingBreakpoint(bp: Breakpoint): Unit = {
     val file = bp.file
-    val breaks =
-      pendingBreaksBySourceName.getOrElse(file.getName, mutable.HashSet())
+    val breaks = pendingBreaksBySourceName.getOrElse(
+      file.getName,
+      mutable.HashSet())
     breaks.add(bp)
     pendingBreaksBySourceName(file.getName) = breaks
   }

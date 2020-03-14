@@ -242,8 +242,8 @@ case class ScMethodType(
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
           params.map(p =>
-            p.copy(paramType =
-              p.paramType.recursiveUpdate(update, newVisited))),
+            p.copy(paramType = p.paramType
+              .recursiveUpdate(update, newVisited))),
           isImplicit)(project, scope)
     }
   }

@@ -21,8 +21,8 @@ private[finagle] class PayloadSizeFilter[Req, Rep](
   private[this] val requestBytes = statsReceiver.stat("request_payload_bytes")
   private[this] val responseBytes = statsReceiver.stat("response_payload_bytes")
 
-  private[this] val recordRepSize: Rep => Unit =
-    rep => responseBytes.add(repSize(rep).toFloat)
+  private[this] val recordRepSize: Rep => Unit = rep =>
+    responseBytes.add(repSize(rep).toFloat)
 
   def apply(req: Req, service: Service[Req, Rep]): Future[Rep] = {
     requestBytes.add(reqSize(req).toFloat)

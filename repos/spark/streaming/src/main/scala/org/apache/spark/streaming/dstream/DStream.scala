@@ -336,16 +336,17 @@ abstract class DStream[T: ClassTag](
       // of RDD generation, else generate nothing.
       if (isTimeValid(time)) {
 
-        val rddOption =
-          createRDDWithLocalProperties(time, displayInnerRDDOps = false) {
-            // Disable checks for existing output directories in jobs launched by the streaming
-            // scheduler, since we may need to write output to an existing directory during checkpoint
-            // recovery; see SPARK-4835 for more details. We need to have this call here because
-            // compute() might cause Spark jobs to be launched.
-            PairRDDFunctions.disableOutputSpecValidation.withValue(true) {
-              compute(time)
-            }
+        val rddOption = createRDDWithLocalProperties(
+          time,
+          displayInnerRDDOps = false) {
+          // Disable checks for existing output directories in jobs launched by the streaming
+          // scheduler, since we may need to write output to an existing directory during checkpoint
+          // recovery; see SPARK-4835 for more details. We need to have this call here because
+          // compute() might cause Spark jobs to be launched.
+          PairRDDFunctions.disableOutputSpecValidation.withValue(true) {
+            compute(time)
           }
+        }
 
         rddOption.foreach {
           case newRDD =>
@@ -391,8 +392,8 @@ abstract class DStream[T: ClassTag](
       ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM)
     )
     val prevScope = ssc.sparkContext.getLocalProperty(scopeKey)
-    val prevScopeNoOverride =
-      ssc.sparkContext.getLocalProperty(scopeNoOverrideKey)
+    val prevScopeNoOverride = ssc.sparkContext.getLocalProperty(
+      scopeNoOverrideKey)
 
     try {
       if (displayInnerRDDOps) {
@@ -931,13 +932,13 @@ abstract class DStream[T: ClassTag](
         throw new SparkException(this + " has not been initialized")
       }
 
-      val alignedToTime = if ((toTime - zeroTime).isMultipleOf(slideDuration)) {
-        toTime
-      } else {
-        logWarning(
-          s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
-        toTime.floor(slideDuration, zeroTime)
-      }
+      val alignedToTime =
+        if ((toTime - zeroTime).isMultipleOf(slideDuration)) { toTime }
+        else {
+          logWarning(
+            s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
+          toTime.floor(slideDuration, zeroTime)
+        }
 
       val alignedFromTime =
         if ((fromTime - zeroTime).isMultipleOf(slideDuration)) { fromTime }

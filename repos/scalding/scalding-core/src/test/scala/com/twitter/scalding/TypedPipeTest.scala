@@ -1108,8 +1108,9 @@ class TypedFilterTest extends WordSpec with Matchers {
 }
 
 class TypedPartitionJob(args: Args) extends Job(args) {
-  val (p1, p2) =
-    TypedPipe.from(TypedText.tsv[Int]("input")).partition { _ > 50 }
+  val (p1, p2) = TypedPipe.from(TypedText.tsv[Int]("input")).partition {
+    _ > 50
+  }
   p1.write(TypedText.tsv[Int]("output1"))
   p2.write(TypedText.tsv[Int]("output2"))
 }
@@ -1530,8 +1531,10 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
 
   "A TypedSketchJoinJob" should {
     "get the same result as an inner join" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 10, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        10,
+        x => 1)
       sk shouldBe inner
     }
 
@@ -1552,8 +1555,10 @@ class TypedSketchJoinJobTest extends WordSpec with Matchers {
     }
 
     "still work with only one reducer" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 1, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        1,
+        x => 1)
       sk shouldBe inner
     }
 
@@ -1573,8 +1578,10 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
 
   "A TypedSketchLeftJoinJob" should {
     "get the same result as a left join" in {
-      val (sk, left) =
-        runJobWithArguments(new TypedSketchLeftJoinJob(_), 10, x => 1)
+      val (sk, left) = runJobWithArguments(
+        new TypedSketchLeftJoinJob(_),
+        10,
+        x => 1)
       sk shouldBe left
     }
 
@@ -1595,8 +1602,10 @@ class TypedSketchLeftJoinJobTest extends WordSpec with Matchers {
     }
 
     "still work with only one reducer" in {
-      val (sk, inner) =
-        runJobWithArguments(new TypedSketchJoinJob(_), 1, x => 1)
+      val (sk, inner) = runJobWithArguments(
+        new TypedSketchJoinJob(_),
+        1,
+        x => 1)
       sk shouldBe inner
     }
 

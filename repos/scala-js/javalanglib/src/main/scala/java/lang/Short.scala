@@ -20,14 +20,12 @@ final class Short private () extends Number with Comparable[Short] {
   @inline override def equals(that: Any): scala.Boolean =
     this eq that.asInstanceOf[AnyRef]
 
-  @inline override def hashCode(): Int =
-    shortValue
+  @inline override def hashCode(): Int = shortValue
 
   @inline override def compareTo(that: Short): Int =
     Short.compare(shortValue, that.shortValue)
 
-  @inline override def toString(): String =
-    Short.toString(shortValue)
+  @inline override def toString(): String = Short.toString(shortValue)
 
 }
 
@@ -61,11 +59,9 @@ object Short {
     else r.toShort
   }
 
-  @inline def toString(s: scala.Short): String =
-    "" + s
+  @inline def toString(s: scala.Short): String = "" + s
 
-  @inline def compare(x: scala.Short, y: scala.Short): scala.Int =
-    x - y
+  @inline def compare(x: scala.Short, y: scala.Short): scala.Int = x - y
 
   def reverseBytes(i: scala.Short): scala.Short =
     (((i >>> 8) & 0xff) + ((i & 0xff) << 8)).toShort

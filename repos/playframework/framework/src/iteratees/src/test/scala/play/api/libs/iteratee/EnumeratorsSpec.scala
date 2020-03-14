@@ -241,9 +241,9 @@ object EnumeratorsSpec
     "Call onError on future failure" in {
       val it1 = Iteratee.fold1[String, String](Future.successful(""))((_, _) =>
         Future.failed(new RuntimeException()))
-      val it2 =
-        Iteratee.fold1[String, String](Future.failed(new RuntimeException()))(
-          (_, _) => Future.failed(new RuntimeException()))
+      val it2 = Iteratee.fold1[String, String](
+        Future.failed(new RuntimeException()))((_, _) =>
+        Future.failed(new RuntimeException()))
       val errorCount = new AtomicInteger(0)
 
       val enum = Enumerator.fromCallback1[String](

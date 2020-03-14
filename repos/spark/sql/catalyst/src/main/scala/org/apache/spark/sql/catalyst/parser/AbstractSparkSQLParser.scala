@@ -53,10 +53,9 @@ private[sql] abstract class AbstractSparkSQLParser
   // NOTICE, Since the Keyword properties defined by sub class, we couldn't call this
   // method during the parent class instantiation, because the sub class instance
   // isn't created yet.
-  protected lazy val reservedWords: Seq[String] =
-    this.getClass.getMethods
-      .filter(_.getReturnType == classOf[Keyword])
-      .map(_.invoke(this).asInstanceOf[Keyword].normalize)
+  protected lazy val reservedWords: Seq[String] = this.getClass.getMethods
+    .filter(_.getReturnType == classOf[Keyword])
+    .map(_.invoke(this).asInstanceOf[Keyword].normalize)
 
   // Set the keywords as empty by default, will change that later.
   override val lexical = new SqlLexical

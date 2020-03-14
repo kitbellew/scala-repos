@@ -70,8 +70,8 @@ trait LocationLineManager {
 
     checkAndUpdateCaches(refType)
 
-    val nonCustomized =
-      jvmLocations.asScala.filterNot(customizedLocationsCache.contains)
+    val nonCustomized = jvmLocations.asScala.filterNot(
+      customizedLocationsCache.contains)
     val customized = customizedLocations(refType, line)
     (nonCustomized ++ customized).filter(!shouldSkip(_))
   }
@@ -131,8 +131,9 @@ trait LocationLineManager {
         val lineNumber = ScalaPositionManager.checkedLineNumber(location)
         if (lineNumber < 0) return true
 
-        val linePosition =
-          SourcePosition.createFromLine(containingFile, lineNumber)
+        val linePosition = SourcePosition.createFromLine(
+          containingFile,
+          lineNumber)
         val elem = nonWhitespaceElement(linePosition)
         val parent = PsiTreeUtil.getParentOfType(
           elem,
@@ -147,8 +148,8 @@ trait LocationLineManager {
         .filter(_.declaringType() == refType)
       for { location <- methods.flatMap(_.allLineLocations().asScala) } {
         if (shouldPointAtStartLine(location)) {
-          val significantElem =
-            DebuggerUtil.getSignificantElement(generatingElem)
+          val significantElem = DebuggerUtil.getSignificantElement(
+            generatingElem)
           val lineNumber = elementStartLine(significantElem)
           if (lineNumber != ScalaPositionManager.checkedLineNumber(location))
             cacheCustomLine(location, lineNumber)

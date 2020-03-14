@@ -112,8 +112,7 @@ trait CollectionTest {
 
   @Test def shouldStoreCustomObjects(): Unit = {
     case class TestObj(num: Int) extends jl.Comparable[TestObj] {
-      def compareTo(o: TestObj): Int =
-        o.num.compareTo(num)
+      def compareTo(o: TestObj): Int = o.num.compareTo(num)
     }
 
     val coll = factory.empty[TestObj]

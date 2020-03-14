@@ -60,8 +60,9 @@ object SummingbirdRuntimeStats {
   private[this] final val platformObjects = List(SCALDING_STATS_MODULE)
 
   // invoke the ScaldingRuntimeStatsProvider object initializer on remote node
-  private[this] lazy val platformsInit =
-    platformObjects.foreach { s: String => Try[Unit] { Class.forName(s) } }
+  private[this] lazy val platformsInit = platformObjects.foreach { s: String =>
+    Try[Unit] { Class.forName(s) }
+  }
 
   def hasStatProviders: Boolean = platformStatProviders.nonEmpty
 

@@ -156,8 +156,7 @@ class WindowLookupJoinerJob(args: Args) extends Job(args) {
   val in1 = TypedTsv[(Int, Int, Int)]("input1")
   val window = args("window").toInt
 
-  def gate(left: Int, right: Int) =
-    (left.toLong - right.toLong) < window
+  def gate(left: Int, right: Int) = (left.toLong - right.toLong) < window
 
   LookupJoin
     .withWindow(

@@ -91,8 +91,8 @@ class ScalaTestConfigurationProducer extends {
         StringUtil.getShortName(testClassPath) +
           (if (testName != null) "." + testName else ""),
         confFactory)
-    val runConfiguration =
-      settings.getConfiguration.asInstanceOf[ScalaTestRunConfiguration]
+    val runConfiguration = settings.getConfiguration
+      .asInstanceOf[ScalaTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
     if (testName != null) runConfiguration.setTestName(testName)
@@ -140,16 +140,20 @@ class ScalaTestConfigurationProducer extends {
   def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {
     val element = location.getPsiElement
-    var clazz: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    var clazz: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (clazz == null) return (null, null)
     val tb = clazz.extendsBlock.templateBody.orNull
     while (PsiTreeUtil.getParentOfType(
              clazz,
              classOf[ScTypeDefinition],
              true) != null) {
-      clazz =
-        PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
+      clazz = PsiTreeUtil.getParentOfType(
+        clazz,
+        classOf[ScTypeDefinition],
+        true)
     }
     if (!clazz.isInstanceOf[ScClass]) return (null, null)
     if (ScalaTestRunConfiguration.isInvalidSuite(clazz)) return (null, null)
@@ -770,8 +774,10 @@ class ScalaTestConfigurationProducer extends {
               .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.name.startsWith("test")) { return Some(fun.name) }
         }
-        fun =
-          PsiTreeUtil.getParentOfType(fun, classOf[ScFunctionDefinition], true)
+        fun = PsiTreeUtil.getParentOfType(
+          fun,
+          classOf[ScFunctionDefinition],
+          true)
       }
       None
     }
@@ -787,8 +793,10 @@ class ScalaTestConfigurationProducer extends {
               .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.hasAnnotation(annot) != None) { return Some(fun.name) }
         }
-        fun =
-          PsiTreeUtil.getParentOfType(fun, classOf[ScFunctionDefinition], true)
+        fun = PsiTreeUtil.getParentOfType(
+          fun,
+          classOf[ScFunctionDefinition],
+          true)
       }
       None
     }

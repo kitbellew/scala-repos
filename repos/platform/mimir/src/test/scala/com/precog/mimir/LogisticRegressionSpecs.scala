@@ -322,8 +322,8 @@ trait LogisticRegressionSpecs[M[+_]]
       IOUtils.writeSeqToFile(points, tmpFile).unsafePerformIO
 
       val pointsString0 = "filesystem" + tmpFile.toString
-      val pointsString =
-        pointsString0.take(pointsString0.length - suffix.length)
+      val pointsString = pointsString0.take(
+        pointsString0.length - suffix.length)
 
       val input = makeDAG(pointsString)
 
@@ -404,8 +404,10 @@ trait LogisticRegressionSpecs[M[+_]]
     "predict simple case" in {
       val line = Line(0, 0, "")
 
-      val input =
-        predictionInput(LogisticPrediction, "/hom/model1data", "/hom/model1")
+      val input = predictionInput(
+        LogisticPrediction,
+        "/hom/model1data",
+        "/hom/model1")
 
       val result0 = testEval(input)
 
@@ -480,8 +482,10 @@ trait LogisticRegressionSpecs[M[+_]]
     "predict case with repeated model names and arrays" in {
       val line = Line(0, 0, "")
 
-      val input =
-        predictionInput(LogisticPrediction, "/hom/model2data", "/hom/model2")
+      val input = predictionInput(
+        LogisticPrediction,
+        "/hom/model2data",
+        "/hom/model2")
 
       val result0 = testEval(input)
 

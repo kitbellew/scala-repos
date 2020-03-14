@@ -137,11 +137,10 @@ class NIHDBProjectionSpecs
           NIHDB.Batch(i, Seq(JNum(i)))
         }
 
-        val results =
-          for {
-            _ <- nihdb.insertVerified(toInsert)
-            result <- projection.getBlockAfter(None, None)
-          } yield result
+        val results = for {
+          _ <- nihdb.insertVerified(toInsert)
+          result <- projection.getBlockAfter(None, None)
+        } yield result
 
         results.onComplete { _ => ctxt.stop } must awaited(maxDuration)(beLike {
           case Some(BlockProjectionData(min, max, data)) =>
@@ -158,8 +157,12 @@ class NIHDBProjectionSpecs
         val ctxt = new TempContext {}
         import ctxt._
 
-        val expected: Seq[JValue] =
-          Seq(JNum(0L), JNum(1L), JNum(2L), JNum(3L), JNum(4L))
+        val expected: Seq[JValue] = Seq(
+          JNum(0L),
+          JNum(1L),
+          JNum(2L),
+          JNum(3L),
+          JNum(4L))
 
         val io =
           nihdb.insert((0L to 2L).toSeq.map { i =>

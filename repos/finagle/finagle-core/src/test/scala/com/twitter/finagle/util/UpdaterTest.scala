@@ -14,8 +14,7 @@ class UpdaterTest extends FunSuite {
     val first = new CountDownLatch(1)
 
     val u = new Updater[Work] {
-      protected def preprocess(elems: Seq[Work]) =
-        Seq(elems.minBy(_.p))
+      protected def preprocess(elems: Seq[Work]) = Seq(elems.minBy(_.p))
 
       def handle(w: Work) {
         worked :+= w

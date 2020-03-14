@@ -146,10 +146,9 @@ class UISeleniumSuite
             "Output Ops: Succeeded/Total")
         }
 
-        val batchLinks =
-          findAll(cssSelector("""#completed-batches-table a"""))
-            .flatMap(_.attribute("href"))
-            .toSeq
+        val batchLinks = findAll(cssSelector("""#completed-batches-table a"""))
+          .flatMap(_.attribute("href"))
+          .toSeq
         batchLinks.size should be >= 1
 
         // Check a normal batch page

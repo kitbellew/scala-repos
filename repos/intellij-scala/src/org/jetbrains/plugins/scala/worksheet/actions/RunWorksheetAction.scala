@@ -95,8 +95,9 @@ object RunWorksheetAction {
       return
     }
 
-    val psiFile =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val psiFile = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
     WorksheetProcessManager.stop(psiFile.getVirtualFile)
 
     psiFile match {
@@ -228,8 +229,9 @@ object RunWorksheetAction {
 
     val editor = EditorHelper openInEditor file
 
-    val worksheetPrinter =
-      WorksheetEditorPrinter.newWorksheetUiFor(editor, virtualFile)
+    val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
+      editor,
+      virtualFile)
 
     val myProcessListener: ProcessAdapter = new ProcessAdapter {
       override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {

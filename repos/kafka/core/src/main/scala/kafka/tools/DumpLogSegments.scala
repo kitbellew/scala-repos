@@ -99,17 +99,17 @@ object DumpLogSegments {
     val maxMessageSize = options.valueOf(maxMessageSizeOpt).intValue()
     val isDeepIteration = if (options.has(deepIterationOpt)) true else false
 
-    val messageParser = if (options.has(offsetsOpt)) {
-      new OffsetsMessageParser
-    } else {
-      val valueDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
-        options.valueOf(valueDecoderOpt),
-        new VerifiableProperties)
-      val keyDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
-        options.valueOf(keyDecoderOpt),
-        new VerifiableProperties)
-      new DecoderMessageParser(keyDecoder, valueDecoder)
-    }
+    val messageParser =
+      if (options.has(offsetsOpt)) { new OffsetsMessageParser }
+      else {
+        val valueDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
+          options.valueOf(valueDecoderOpt),
+          new VerifiableProperties)
+        val keyDecoder: Decoder[_] = CoreUtils.createObject[Decoder[_]](
+          options.valueOf(keyDecoderOpt),
+          new VerifiableProperties)
+        new DecoderMessageParser(keyDecoder, valueDecoder)
+      }
 
     val misMatchesForIndexFilesMap =
       new mutable.HashMap[String, List[(Long, Long)]]
@@ -179,10 +179,12 @@ object DumpLogSegments {
 
     for (i <- 0 until index.entries) {
       val entry = index.entry(i)
-      val partialFileMessageSet: FileMessageSet =
-        messageSet.read(entry.position, maxMessageSize)
-      val messageAndOffset =
-        getIterator(partialFileMessageSet.head, isDeepIteration = true).next()
+      val partialFileMessageSet: FileMessageSet = messageSet.read(
+        entry.position,
+        maxMessageSize)
+      val messageAndOffset = getIterator(
+        partialFileMessageSet.head,
+        isDeepIteration = true).next()
       if (messageAndOffset.offset != entry.offset + index.baseOffset) {
         var misMatchesSeq = misMatchesForIndexFilesMap.getOrElse(
           file.getAbsolutePath,

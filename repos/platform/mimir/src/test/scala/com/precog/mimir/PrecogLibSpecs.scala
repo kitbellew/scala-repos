@@ -54,8 +54,8 @@ trait PrecogLibSpecs[M[+_]]
   private val line = Line(1, 1, "")
   private def const[A: CValueType](a: A) = Const(CValueType[A](a))(line)
 
-  val echo =
-    Join(WrapObject, Cross(None), const("url"), const("http://echo"))(line)
+  val echo = Join(WrapObject, Cross(None), const("url"), const("http://echo"))(
+    line)
   // { "url": "http://wrapper", "options": { "field": "abc" } }
   val wrapper = Join(
     JoinObject,
@@ -67,13 +67,21 @@ trait PrecogLibSpecs[M[+_]]
       const("options"),
       Join(WrapObject, Cross(None), const("field"), const("abc"))(line))(line)
   )(line)
-  val misbehave =
-    Join(WrapObject, Cross(None), const("url"), const("http://misbehave"))(line)
-  val empty =
-    Join(WrapObject, Cross(None), const("url"), const("http://empty"))(line)
-  val serverError =
-    Join(WrapObject, Cross(None), const("url"), const("http://server-error"))(
-      line)
+  val misbehave = Join(
+    WrapObject,
+    Cross(None),
+    const("url"),
+    const("http://misbehave"))(line)
+  val empty = Join(
+    WrapObject,
+    Cross(None),
+    const("url"),
+    const("http://empty"))(line)
+  val serverError = Join(
+    WrapObject,
+    Cross(None),
+    const("url"),
+    const("http://server-error"))(line)
 
   "enrichment" should {
     "enrich a homogenous set" in {

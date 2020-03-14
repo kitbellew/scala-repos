@@ -71,10 +71,10 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
   testWithoutWAL(
     "createBlockRDD filters non-existent blocks before creating BlockRDD") {
     receiverStream =>
-      val presentBlockInfos =
-        Seq.fill(2)(createBlockInfo(withWALInfo = false, createBlock = true))
-      val absentBlockInfos =
-        Seq.fill(3)(createBlockInfo(withWALInfo = false, createBlock = false))
+      val presentBlockInfos = Seq.fill(2)(
+        createBlockInfo(withWALInfo = false, createBlock = true))
+      val absentBlockInfos = Seq.fill(3)(
+        createBlockInfo(withWALInfo = false, createBlock = false))
       val blockInfos = presentBlockInfos ++ absentBlockInfos
       val blockIds = blockInfos.map(_.blockId)
 
@@ -169,12 +169,13 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
         tellMaster = true)
       require(SparkEnv.get.blockManager.master.contains(blockId))
     }
-    val storeResult = if (withWALInfo) {
-      new WriteAheadLogBasedStoreResult(
-        blockId,
-        None,
-        new WriteAheadLogRecordHandle {})
-    } else { new BlockManagerBasedStoreResult(blockId, None) }
+    val storeResult =
+      if (withWALInfo) {
+        new WriteAheadLogBasedStoreResult(
+          blockId,
+          None,
+          new WriteAheadLogRecordHandle {})
+      } else { new BlockManagerBasedStoreResult(blockId, None) }
     new ReceivedBlockInfo(0, None, None, storeResult)
   }
 }

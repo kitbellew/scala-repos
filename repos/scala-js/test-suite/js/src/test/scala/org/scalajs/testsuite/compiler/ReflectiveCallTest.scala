@@ -54,8 +54,7 @@ class ReflectiveCallTest {
       def e(x: Tata): Tata = new Tata("iei")
     }
 
-    def m[T](r: Object { def e(x: Tata): T }): T =
-      r.e(new Tata("foo"))
+    def m[T](r: Object { def e(x: Tata): T }): T = r.e(new Tata("foo"))
 
     assertEquals("Tata(iei)", m[Tata](Rec).toString)
   }
@@ -201,8 +200,7 @@ class ReflectiveCallTest {
   }
 
   @Test def should_work_with_Strings(): Unit = {
-    def get(obj: { def codePointAt(str: Int): Int }): Int =
-      obj.codePointAt(1)
+    def get(obj: { def codePointAt(str: Int): Int }): Int = obj.codePointAt(1)
     assertEquals('i'.toInt, get("Hi"))
 
     def sub(x: { def substring(x: Int): AnyRef }): AnyRef = x.substring(5)

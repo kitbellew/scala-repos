@@ -28,10 +28,14 @@ class CoGroupedIteratorSuite extends SparkFunSuite with ExpressionEvalHelper {
       Seq(create_row(1, "a"), create_row(1, "b"), create_row(2, "c")).iterator
     val rightInput =
       Seq(create_row(1, 2L), create_row(2, 3L), create_row(3, 4L)).iterator
-    val leftGrouped =
-      GroupedIterator(leftInput, Seq('i.int.at(0)), Seq('i.int, 's.string))
-    val rightGrouped =
-      GroupedIterator(rightInput, Seq('i.int.at(0)), Seq('i.int, 'l.long))
+    val leftGrouped = GroupedIterator(
+      leftInput,
+      Seq('i.int.at(0)),
+      Seq('i.int, 's.string))
+    val rightGrouped = GroupedIterator(
+      rightInput,
+      Seq('i.int.at(0)),
+      Seq('i.int, 'l.long))
     val cogrouped =
       new CoGroupedIterator(leftGrouped, rightGrouped, Seq('i.int))
 
@@ -55,10 +59,14 @@ class CoGroupedIteratorSuite extends SparkFunSuite with ExpressionEvalHelper {
     "SPARK-11393: respect the fact that GroupedIterator.hasNext is not idempotent") {
     val leftInput = Seq(create_row(2, "a")).iterator
     val rightInput = Seq(create_row(1, 2L)).iterator
-    val leftGrouped =
-      GroupedIterator(leftInput, Seq('i.int.at(0)), Seq('i.int, 's.string))
-    val rightGrouped =
-      GroupedIterator(rightInput, Seq('i.int.at(0)), Seq('i.int, 'l.long))
+    val leftGrouped = GroupedIterator(
+      leftInput,
+      Seq('i.int.at(0)),
+      Seq('i.int, 's.string))
+    val rightGrouped = GroupedIterator(
+      rightInput,
+      Seq('i.int.at(0)),
+      Seq('i.int, 'l.long))
     val cogrouped =
       new CoGroupedIterator(leftGrouped, rightGrouped, Seq('i.int))
 

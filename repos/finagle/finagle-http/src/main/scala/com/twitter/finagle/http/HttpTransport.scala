@@ -32,8 +32,7 @@ class HttpTransport(self: Transport[Any, Any], manager: ConnectionManager)
       if (manager.shouldClose) f before self.close() else f
     } catch { case NonFatal(e) => Future.exception(e) }
 
-  def status =
-    if (manager.shouldClose) finagle.Status.Closed else self.status
+  def status = if (manager.shouldClose) finagle.Status.Closed else self.status
 
   def localAddress = self.localAddress
 

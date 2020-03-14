@@ -31,8 +31,7 @@ private[spark] class ManualClock(private var time: Long) extends Clock {
     */
   def this() = this(0L)
 
-  def getTimeMillis(): Long =
-    synchronized { time }
+  def getTimeMillis(): Long = synchronized { time }
 
   /**
     * @param timeToSet new time (in milliseconds) that the clock should represent

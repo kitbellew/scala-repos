@@ -37,8 +37,10 @@ private[spark] trait ClassifierParams
       schema: StructType,
       fitting: Boolean,
       featuresDataType: DataType): StructType = {
-    val parentSchema =
-      super.validateAndTransformSchema(schema, fitting, featuresDataType)
+    val parentSchema = super.validateAndTransformSchema(
+      schema,
+      fitting,
+      featuresDataType)
     SchemaUtils.appendColumn(parentSchema, $(rawPredictionCol), new VectorUDT)
   }
 }
@@ -116,14 +118,15 @@ abstract class ClassificationModel[
       numColsOutput += 1
     }
     if (getPredictionCol != "") {
-      val predUDF = if (getRawPredictionCol != "") {
-        udf(raw2prediction _).apply(col(getRawPredictionCol))
-      } else {
-        val predictUDF = udf { (features: Any) =>
-          predict(features.asInstanceOf[FeaturesType])
+      val predUDF =
+        if (getRawPredictionCol != "") {
+          udf(raw2prediction _).apply(col(getRawPredictionCol))
+        } else {
+          val predictUDF = udf { (features: Any) =>
+            predict(features.asInstanceOf[FeaturesType])
+          }
+          predictUDF(col(getFeaturesCol))
         }
-        predictUDF(col(getFeaturesCol))
-      }
       outputData = outputData.withColumn(getPredictionCol, predUDF)
       numColsOutput += 1
     }

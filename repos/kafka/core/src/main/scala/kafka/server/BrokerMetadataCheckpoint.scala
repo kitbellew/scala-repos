@@ -59,12 +59,14 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
       try {
         val brokerMetaProps =
           new VerifiableProperties(Utils.loadProps(file.getAbsolutePath()))
-        val version =
-          brokerMetaProps.getIntInRange("version", (0, Int.MaxValue))
+        val version = brokerMetaProps.getIntInRange(
+          "version",
+          (0, Int.MaxValue))
         version match {
           case 0 =>
-            val brokerId =
-              brokerMetaProps.getIntInRange("broker.id", (0, Int.MaxValue))
+            val brokerId = brokerMetaProps.getIntInRange(
+              "broker.id",
+              (0, Int.MaxValue))
             return Some(BrokerMetadata(brokerId))
           case _ =>
             throw new IOException(

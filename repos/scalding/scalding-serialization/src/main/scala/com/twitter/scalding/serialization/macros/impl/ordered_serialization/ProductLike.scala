@@ -97,8 +97,8 @@ object ProductLike {
       : CompileTimeLengthTypes[c.type] = {
     import c.universe._
     import CompileTimeLengthTypes._
-    val (constSize, dynamicFunctions, maybeLength, noLength) =
-      elementData.foldLeft((0, Vector[c.Tree](), Vector[c.Tree](), 0)) {
+    val (constSize, dynamicFunctions, maybeLength, noLength) = elementData
+      .foldLeft((0, Vector[c.Tree](), Vector[c.Tree](), 0)) {
         case (
               (constantLength, dynamicLength, maybeLength, noLength),
               (tpe, accessorSymbol, tBuf)) =>

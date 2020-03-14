@@ -158,8 +158,9 @@ class ScConstructorImpl(node: ASTNode)
       }
       val res = constr match {
         case fun: ScMethodLike =>
-          val methodType =
-            ScType.nested(fun.methodType(Some(tp)), i).getOrElse(return FAILURE)
+          val methodType = ScType
+            .nested(fun.methodType(Some(tp)), i)
+            .getOrElse(return FAILURE)
           subst.subst(methodType)
         case method: PsiMethod =>
           if (i > 0)

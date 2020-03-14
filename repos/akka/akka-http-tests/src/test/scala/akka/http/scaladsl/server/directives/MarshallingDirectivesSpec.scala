@@ -30,8 +30,8 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     }
 
   val `text/xxml` = MediaType.customWithFixedCharset("text", "xxml", `UTF-8`)
-  implicit val IntMarshaller: ToEntityMarshaller[Int] =
-    Marshaller.oneOf[MediaType.NonBinary, Int, MessageEntity](
+  implicit val IntMarshaller: ToEntityMarshaller[Int] = Marshaller
+    .oneOf[MediaType.NonBinary, Int, MessageEntity](
       `application/xhtml+xml`,
       `text/xxml`) { mediaType ⇒
       nodeSeqMarshaller(mediaType).wrap(mediaType) { (i: Int) ⇒ <int>{i}</int> }
@@ -125,13 +125,13 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
     "properly extract with a super-unmarshaller" in {
       case class Person(name: String)
       val jsonUnmarshaller: FromEntityUnmarshaller[Person] = jsonFormat1(Person)
-      val xmlUnmarshaller: FromEntityUnmarshaller[Person] =
-        ScalaXmlSupport
-          .nodeSeqUnmarshaller(`text/xml`)
-          .map(seq ⇒ Person(seq.text))
+      val xmlUnmarshaller: FromEntityUnmarshaller[Person] = ScalaXmlSupport
+        .nodeSeqUnmarshaller(`text/xml`)
+        .map(seq ⇒ Person(seq.text))
 
-      implicit val unmarshaller =
-        Unmarshaller.firstOf(jsonUnmarshaller, xmlUnmarshaller)
+      implicit val unmarshaller = Unmarshaller.firstOf(
+        jsonUnmarshaller,
+        xmlUnmarshaller)
 
       val route = entity(as[Person]) { echoComplete }
 

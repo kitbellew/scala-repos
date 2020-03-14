@@ -35,14 +35,14 @@ class AppInfoBaseData(
       : Future[Map[PathId, Seq[Identifiable]]] = {
     log.debug("Retrieving running deployments")
 
-    val allRunningDeploymentsFuture: Future[Seq[DeploymentPlan]] =
-      for {
-        stepInfos <- marathonSchedulerService.listRunningDeployments()
-      } yield stepInfos.map(_.plan)
+    val allRunningDeploymentsFuture: Future[Seq[DeploymentPlan]] = for {
+      stepInfos <- marathonSchedulerService.listRunningDeployments()
+    } yield stepInfos.map(_.plan)
 
     allRunningDeploymentsFuture.map { allDeployments =>
-      val byApp =
-        Map.empty[PathId, Vector[DeploymentPlan]].withDefaultValue(Vector.empty)
+      val byApp = Map
+        .empty[PathId, Vector[DeploymentPlan]]
+        .withDefaultValue(Vector.empty)
       val deploymentsByAppId = allDeployments.foldLeft(byApp) {
         (result, deploymentPlan) =>
           deploymentPlan.affectedApplicationIds.foldLeft(result) {
@@ -99,8 +99,8 @@ class AppInfoBaseData(
   private[this] class AppData(app: AppDefinition) {
     lazy val now: Timestamp = clock.now()
 
-    lazy val tasksFuture: Future[Iterable[Task]] =
-      tasksByAppFuture.map(_.appTasks(app.id))
+    lazy val tasksFuture: Future[Iterable[Task]] = tasksByAppFuture.map(
+      _.appTasks(app.id))
 
     lazy val healthCountsFuture: Future[Map[Task.Id, Seq[Health]]] = {
       log.debug(s"retrieving health counts for app [${app.id}]")

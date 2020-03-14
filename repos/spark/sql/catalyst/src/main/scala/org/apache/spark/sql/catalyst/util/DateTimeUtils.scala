@@ -325,12 +325,13 @@ object DateTimeUtils {
         segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(
           8) > 59) { return None }
 
-    val c = if (timeZone.isEmpty) { Calendar.getInstance() }
-    else {
-      Calendar.getInstance(
-        TimeZone.getTimeZone(
-          f"GMT${timeZone.get.toChar}${segments(7)}%02d:${segments(8)}%02d"))
-    }
+    val c =
+      if (timeZone.isEmpty) { Calendar.getInstance() }
+      else {
+        Calendar.getInstance(
+          TimeZone.getTimeZone(
+            f"GMT${timeZone.get.toChar}${segments(7)}%02d:${segments(8)}%02d"))
+      }
     c.set(Calendar.MILLISECOND, 0)
 
     if (justTime) {

@@ -55,10 +55,9 @@ object ResultsSpec extends Specification {
     }
 
     "support headers manipulation" in {
-      val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
-          .withHeaders("Set-Cookie" -> "yes", "X-YOP" -> "1", "X-Yop" -> "2")
+      val Result(ResponseHeader(_, headers, _), _) = Ok("hello")
+        .as("text/html")
+        .withHeaders("Set-Cookie" -> "yes", "X-YOP" -> "1", "X-Yop" -> "2")
 
       headers.size must_== 2
       headers must havePair("Set-Cookie" -> "yes")
@@ -67,13 +66,10 @@ object ResultsSpec extends Specification {
     }
 
     "support date headers manipulation" in {
-      val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
-          .withDateHeaders(
-            DATE ->
-              new DateTime(2015, 4, 1, 0, 0)
-                .withZoneRetainFields(DateTimeZone.UTC))
+      val Result(ResponseHeader(_, headers, _), _) = Ok("hello")
+        .as("text/html")
+        .withDateHeaders(DATE ->
+          new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(DateTimeZone.UTC))
       headers must havePair(DATE -> "Wed, 01 Apr 2015 00:00:00 GMT")
     }
 
@@ -102,14 +98,11 @@ object ResultsSpec extends Specification {
       newDecodedCookies("preferences").value must be_==("blue")
       newDecodedCookies("lang").value must be_==("fr")
 
-      val Result(ResponseHeader(_, headers, _), _) =
-        Ok("hello")
-          .as("text/html")
-          .withCookies(
-            Cookie("session", "items"),
-            Cookie("preferences", "blue"))
-          .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
-          .discardingCookies(DiscardingCookie("logged"))
+      val Result(ResponseHeader(_, headers, _), _) = Ok("hello")
+        .as("text/html")
+        .withCookies(Cookie("session", "items"), Cookie("preferences", "blue"))
+        .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
+        .discardingCookies(DiscardingCookie("logged"))
 
       val setCookies = Cookies
         .decodeSetCookieHeader(headers("Set-Cookie"))
@@ -128,8 +121,9 @@ object ResultsSpec extends Specification {
           cookies1: List[Cookie],
           cookies2: List[Cookie],
           expected: Option[Set[Cookie]]) = {
-        val result =
-          Ok("hello").withCookies(cookies1: _*).withCookies(cookies2: _*)
+        val result = Ok("hello")
+          .withCookies(cookies1: _*)
+          .withCookies(cookies2: _*)
         result.header.headers
           .get("Set-Cookie")
           .map(Cookies.decodeSetCookieHeader(_).to[Set]) must_== expected

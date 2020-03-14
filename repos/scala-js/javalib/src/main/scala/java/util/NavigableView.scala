@@ -15,8 +15,7 @@ private[util] class NavigableView[E](
     with NavigableSet[E]
     with SortedSet[E] {
 
-  def size(): Int =
-    iterator.size
+  def size(): Int = iterator.size
 
   override def contains(o: Any): Boolean =
     inner().contains(Box(o.asInstanceOf[E]))
@@ -36,8 +35,7 @@ private[util] class NavigableView[E](
     original.add(e)
   }
 
-  override def remove(o: Any): Boolean =
-    original.remove(o)
+  override def remove(o: Any): Boolean = original.remove(o)
 
   private def _iterator(iter: Iterator[E]) = {
     new Iterator[E] {
@@ -60,8 +58,7 @@ private[util] class NavigableView[E](
     }
   }
 
-  def iterator(): Iterator[E] =
-    _iterator(inner().iterator.map(_.inner))
+  def iterator(): Iterator[E] = _iterator(inner().iterator.map(_.inner))
 
   def descendingIterator(): Iterator[E] =
     _iterator(iterator.toList.reverse.iterator)
@@ -73,8 +70,7 @@ private[util] class NavigableView[E](
     changed
   }
 
-  override def addAll(c: Collection[_ <: E]): Boolean =
-    original.addAll(c)
+  override def addAll(c: Collection[_ <: E]): Boolean = original.addAll(c)
 
   def lower(e: E): E =
     headSet(e, false).lastOption.getOrElse(null.asInstanceOf[E])
@@ -110,8 +106,7 @@ private[util] class NavigableView[E](
     new Comparator[E] {
       val ordering = inner().ordering
 
-      def compare(a: E, b: E): Int =
-        ordering.compare(Box(a), Box(b))
+      def compare(a: E, b: E): Int = ordering.compare(Box(a), Box(b))
     }
   }
 
@@ -180,11 +175,9 @@ private[util] class NavigableView[E](
   def subSet(fromElement: E, toElement: E): NavigableSet[E] =
     subSet(fromElement, true, toElement, false)
 
-  def headSet(toElement: E): NavigableSet[E] =
-    headSet(toElement, false)
+  def headSet(toElement: E): NavigableSet[E] = headSet(toElement, false)
 
-  def tailSet(fromElement: E): NavigableSet[E] =
-    tailSet(fromElement, true)
+  def tailSet(fromElement: E): NavigableSet[E] = tailSet(fromElement, true)
 
   def descendingSet(): NavigableSet[E] = {
     val descSetFun = { () =>

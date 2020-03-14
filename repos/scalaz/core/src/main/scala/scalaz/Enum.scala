@@ -16,10 +16,8 @@ trait Enum[F] extends Order[F] { self =>
   def succn(n: Int, a: F): F = Enum.succn(n, a)(self)
   def predn(n: Int, a: F): F = Enum.predn(n, a)(self)
 
-  def min: Option[F] =
-    None
-  def max: Option[F] =
-    None
+  def min: Option[F] = None
+  def max: Option[F] = None
 
   /**
     * Moves to the successor, unless at the maximum.
@@ -38,8 +36,7 @@ trait Enum[F] extends Order[F] { self =>
     *
     * @param f The function to execute on each spin of the state value.
     */
-  def succState[X](f: F => X): State[F, X] =
-    State((s: F) => (succ(s), f(s)))
+  def succState[X](f: F => X): State[F, X] = State((s: F) => (succ(s), f(s)))
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and increments through a state value with the given binding function. This is useful to implement incremental looping.
@@ -49,8 +46,7 @@ trait Enum[F] extends Order[F] { self =>
     * @param m The implementation of the zero function from which to start.
     */
   def succStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(
-      implicit m: Monoid[F]): Y =
-    (succState(f) flatMap k) eval m.zero
+      implicit m: Monoid[F]): Y = (succState(f) flatMap k) eval m.zero
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and increments through a state value with the given mapping function. This is useful to implement incremental looping.
@@ -85,8 +81,7 @@ trait Enum[F] extends Order[F] { self =>
     *
     * @param f The function to execute on each spin of the state value.
     */
-  def predState[X](f: F => X): State[F, X] =
-    State((s: F) => (pred(s), f(s)))
+  def predState[X](f: F => X): State[F, X] = State((s: F) => (pred(s), f(s)))
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and decrements through a state value with the given binding function. This is useful to implement decremental looping.
@@ -96,8 +91,7 @@ trait Enum[F] extends Order[F] { self =>
     * @param m The implementation of the zero function from which to start.
     */
   def predStateZeroM[X, Y](f: F => X, k: X => State[F, Y])(
-      implicit m: Monoid[F]): Y =
-    (predState(f) flatMap k) eval m.zero
+      implicit m: Monoid[F]): Y = (predState(f) flatMap k) eval m.zero
 
   /**
     * Produce a value that starts at zero (`Monoid.zero`) and decrements through a state value with the given mapping function. This is useful to implement decremental looping.
@@ -130,8 +124,7 @@ trait Enum[F] extends Order[F] { self =>
   import Free._
   import std.function._
 
-  def from(a: F): EphemeralStream[F] =
-    EphemeralStream.cons(a, from(succ(a)))
+  def from(a: F): EphemeralStream[F] = EphemeralStream.cons(a, from(succ(a)))
 
   def fromStep(n: Int, a: F): EphemeralStream[F] =
     EphemeralStream.cons(a, fromStep(n, succn(n, a)))
@@ -178,11 +171,9 @@ trait Enum[F] extends Order[F] { self =>
   }
 
   trait EnumLaw extends OrderLaw {
-    def succpred(x: F): Boolean =
-      equal(succ(pred(x)), x)
+    def succpred(x: F): Boolean = equal(succ(pred(x)), x)
 
-    def predsucc(x: F): Boolean =
-      equal(pred(succ(x)), x)
+    def predsucc(x: F): Boolean = equal(pred(succ(x)), x)
 
     def minmaxpred: Boolean =
       min forall (x => max forall (y => equal(pred(x), y)))

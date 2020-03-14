@@ -47,8 +47,8 @@ class AutoOffsetResetTest extends KafkaServerTestHarness with Logging {
   val LargeOffset = 10000
   val SmallOffset = -1
 
-  val requestHandlerLogger =
-    Logger.getLogger(classOf[kafka.server.KafkaRequestHandler])
+  val requestHandlerLogger = Logger.getLogger(
+    classOf[kafka.server.KafkaRequestHandler])
 
   @Before
   override def setUp() {
@@ -101,8 +101,10 @@ class AutoOffsetResetTest extends KafkaServerTestHarness with Logging {
 
     // update offset in zookeeper for consumer to jump "forward" in time
     val dirs = new ZKGroupTopicDirs(group, topic)
-    val consumerProps =
-      TestUtils.createConsumerProperties(zkConnect, group, testConsumer)
+    val consumerProps = TestUtils.createConsumerProperties(
+      zkConnect,
+      group,
+      testConsumer)
     consumerProps.put("auto.offset.reset", resetTo)
     consumerProps.put("consumer.timeout.ms", "2000")
     consumerProps.put("fetch.wait.max.ms", "0")

@@ -57,8 +57,8 @@ class RoutingSpec
   "routers in general" must {
 
     "evict terminated routees" in {
-      val router =
-        system.actorOf(RoundRobinPool(2).props(routeeProps = Props[Echo]))
+      val router = system.actorOf(
+        RoundRobinPool(2).props(routeeProps = Props[Echo]))
       router ! ""
       router ! ""
       val c1, c2 = expectMsgType[ActorRef]
@@ -226,8 +226,8 @@ class RoutingSpec
         def receive = { case msg ⇒ testActor forward msg }
       }
 
-      val routedActor =
-        system.actorOf(NoRouter.props(routeeProps = Props(new Actor1)))
+      val routedActor = system.actorOf(
+        NoRouter.props(routeeProps = Props(new Actor1)))
       routedActor ! "hello"
       routedActor ! "end"
 

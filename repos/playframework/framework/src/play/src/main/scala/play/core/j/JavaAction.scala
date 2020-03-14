@@ -34,14 +34,13 @@ class JavaActionAnnotations(
   private def config: ActionCompositionConfiguration =
     HttpConfiguration.current.actionComposition
 
-  val parser: Class[_ <: JBodyParser[_]] =
-    Seq(
-      method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
-      controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
-      .filterNot(_ == null)
-      .headOption
-      .map(_.value)
-      .getOrElse(classOf[JBodyParser.Default])
+  val parser: Class[_ <: JBodyParser[_]] = Seq(
+    method.getAnnotation(classOf[play.mvc.BodyParser.Of]),
+    controller.getAnnotation(classOf[play.mvc.BodyParser.Of]))
+    .filterNot(_ == null)
+    .headOption
+    .map(_.value)
+    .getOrElse(classOf[JBodyParser.Default])
 
   val controllerAnnotations = play.api.libs.Collections
     .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
@@ -102,15 +101,15 @@ abstract class JavaAction(components: JavaHandlerComponents)
     val baseAction = components.actionCreator
       .createAction(javaContext.request, annotations.method)
 
-    val endOfChainAction = if (config.executeActionCreatorActionFirst) {
-      rootAction
-    } else {
-      baseAction.delegate = rootAction
-      baseAction
-    }
+    val endOfChainAction =
+      if (config.executeActionCreatorActionFirst) { rootAction }
+      else {
+        baseAction.delegate = rootAction
+        baseAction
+      }
 
-    val finalUserDeclaredAction =
-      annotations.actionMixins.foldLeft[JAction[_ <: Any]](endOfChainAction) {
+    val finalUserDeclaredAction = annotations.actionMixins
+      .foldLeft[JAction[_ <: Any]](endOfChainAction) {
         case (delegate, (annotation, actionClass)) =>
           val action = components
             .getAction(actionClass)
@@ -133,10 +132,10 @@ abstract class JavaAction(components: JavaHandlerComponents)
     val actionFuture: Future[Future[JResult]] = Future {
       FutureConverters.toScala(finalAction.call(javaContext))
     }(trampolineWithContext)
-    val flattenedActionFuture: Future[JResult] =
-      actionFuture.flatMap(identity)(trampoline)
-    val resultFuture: Future[Result] =
-      flattenedActionFuture.map(createResult(javaContext, _))(trampoline)
+    val flattenedActionFuture: Future[JResult] = actionFuture.flatMap(identity)(
+      trampoline)
+    val resultFuture: Future[Result] = flattenedActionFuture.map(
+      createResult(javaContext, _))(trampoline)
     resultFuture
   }
 

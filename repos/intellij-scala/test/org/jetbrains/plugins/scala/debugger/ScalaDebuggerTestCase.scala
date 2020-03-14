@@ -105,8 +105,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       ApplicationConfigurationType.getInstance)
     configuration.setModule(module)
     configuration.setMainClassName(className)
-    val executor: Executor =
-      Executor.EXECUTOR_EXTENSION_NAME.findExtension(executorClass)
+    val executor: Executor = Executor.EXECUTOR_EXTENSION_NAME.findExtension(
+      executorClass)
     val executionEnvironmentBuilder: ExecutionEnvironmentBuilder =
       new ExecutionEnvironmentBuilder(module.getProject, executor)
     executionEnvironmentBuilder.runProfile(configuration)
@@ -247,39 +247,38 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   protected def evalResult(codeText: String): String = {
     val semaphore = new Semaphore()
     semaphore.down()
-    val result =
-      managed[String] {
-        val ctx: EvaluationContextImpl = evaluationContext()
-        val factory = new ScalaCodeFragmentFactory()
-        val kind =
-          if (codeText.contains("\n")) CodeFragmentKind.CODE_BLOCK
-          else CodeFragmentKind.EXPRESSION
-        val codeFragment: PsiCodeFragment = inReadAction {
-          val result =
-            new CodeFragmentFactoryContextWrapper(factory).createCodeFragment(
-              new TextWithImportsImpl(kind, codeText),
-              ContextUtil.getContextElement(ctx),
-              getProject)
-          result.forceResolveScope(GlobalSearchScope.allScope(getProject))
-          DebuggerUtils.checkSyntax(result)
-          result
-        }
-        val evaluatorBuilder: EvaluatorBuilder = factory.getEvaluatorBuilder
-
-        val value = Try {
-          val evaluator = inReadAction(
-            evaluatorBuilder.build(codeFragment, currentSourcePosition))
-          evaluator.evaluate(ctx)
-        }
-        val res = value match {
-          case Success(v: VoidValue)         => "undefined"
-          case Success(v)                    => DebuggerUtils.getValueAsString(ctx, v)
-          case Failure(e: EvaluateException) => e.getMessage
-          case Failure(e: Throwable)         => "Other error: " + e.getMessage
-        }
-        semaphore.up()
-        res
+    val result = managed[String] {
+      val ctx: EvaluationContextImpl = evaluationContext()
+      val factory = new ScalaCodeFragmentFactory()
+      val kind =
+        if (codeText.contains("\n")) CodeFragmentKind.CODE_BLOCK
+        else CodeFragmentKind.EXPRESSION
+      val codeFragment: PsiCodeFragment = inReadAction {
+        val result = new CodeFragmentFactoryContextWrapper(factory)
+          .createCodeFragment(
+            new TextWithImportsImpl(kind, codeText),
+            ContextUtil.getContextElement(ctx),
+            getProject)
+        result.forceResolveScope(GlobalSearchScope.allScope(getProject))
+        DebuggerUtils.checkSyntax(result)
+        result
       }
+      val evaluatorBuilder: EvaluatorBuilder = factory.getEvaluatorBuilder
+
+      val value = Try {
+        val evaluator = inReadAction(
+          evaluatorBuilder.build(codeFragment, currentSourcePosition))
+        evaluator.evaluate(ctx)
+      }
+      val res = value match {
+        case Success(v: VoidValue)         => "undefined"
+        case Success(v)                    => DebuggerUtils.getValueAsString(ctx, v)
+        case Failure(e: EvaluateException) => e.getMessage
+        case Failure(e: Throwable)         => "Other error: " + e.getMessage
+      }
+      semaphore.up()
+      res
+    }
     assert(
       semaphore.waitFor(10000),
       "Too long evaluate expression: " + codeText)
@@ -332,18 +331,19 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           .getSourcePosition(location)
           .getLine
       }
-      val actual =
-        format(location.sourceName, location.method().name(), actualLine + 1)
+      val actual = format(
+        location.sourceName,
+        location.method().name(),
+        actualLine + 1)
       Assert.assertEquals("Wrong location:", expected, actual)
     }
   }
 
   protected def addFileWithBreakpoints(path: String, fileText: String): Unit = {
-    val breakpointLines =
-      for {
-        (line, idx) <- fileText.lines.zipWithIndex
-        if line.contains(bp)
-      } yield idx
+    val breakpointLines = for {
+      (line, idx) <- fileText.lines.zipWithIndex
+      if line.contains(bp)
+    } yield idx
     val cleanedText = fileText.replace(bp, "")
     addSourceFile(path, cleanedText)
 

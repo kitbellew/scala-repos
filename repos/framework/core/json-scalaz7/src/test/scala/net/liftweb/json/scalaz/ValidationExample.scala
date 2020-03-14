@@ -57,8 +57,8 @@ object ValidationExample extends Specification {
   // * parse a List with invalid values
 
   "Range filtering" should {
-    val json =
-      JsonParser.parse(""" [{"s":10,"e":17},{"s":12,"e":13},{"s":11,"e":8}] """)
+    val json = JsonParser.parse(
+      """ [{"s":10,"e":17},{"s":12,"e":13},{"s":11,"e":8}] """)
 
     def ascending: (Int, Int) => Result[(Int, Int)] =
       (x1: Int, x2: Int) =>

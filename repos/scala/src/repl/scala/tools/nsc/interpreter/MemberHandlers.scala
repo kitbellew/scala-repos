@@ -126,11 +126,9 @@ trait MemberHandlers {
       string2code(BOLD) + string2code(c) + s + string2code(RESET)
     else s
 
-  def colorName(s: String) =
-    color(BLUE, string2code(s))
+  def colorName(s: String) = color(BLUE, string2code(s))
 
-  def colorType(s: String) =
-    color(GREEN, string2code(s))
+  def colorType(s: String) = color(GREEN, string2code(s))
 
   class ValHandler(member: ValDef) extends MemberDefHandler(member) {
     val maxStringElements = 1000 // no need to mkString billions of elements

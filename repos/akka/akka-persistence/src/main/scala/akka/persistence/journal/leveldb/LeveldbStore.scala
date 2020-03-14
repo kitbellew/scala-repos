@@ -33,8 +33,9 @@ private[persistence] trait LeveldbStore
   val leveldbOptions = new Options().createIfMissing(true)
   def leveldbReadOptions =
     new ReadOptions().verifyChecksums(config.getBoolean("checksum"))
-  val leveldbWriteOptions =
-    new WriteOptions().sync(config.getBoolean("fsync")).snapshot(false)
+  val leveldbWriteOptions = new WriteOptions()
+    .sync(config.getBoolean("fsync"))
+    .snapshot(false)
   val leveldbDir = new File(config.getString("dir"))
   var leveldb: DB = _
 
@@ -175,11 +176,9 @@ private[persistence] trait LeveldbStore
     n + 1
   }
 
-  def tagNumericId(tag: String): Int =
-    numericId(tagAsPersistenceId(tag))
+  def tagNumericId(tag: String): Int = numericId(tagAsPersistenceId(tag))
 
-  def tagAsPersistenceId(tag: String): String =
-    tagPersistenceIdPrefix + tag
+  def tagAsPersistenceId(tag: String): String = tagPersistenceIdPrefix + tag
 
   override def preStart() {
     leveldb = leveldbFactory.open(

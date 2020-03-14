@@ -47,8 +47,8 @@ final class Merge[T] private (val inputPorts: Int, val eagerComplete: Boolean)
   // one input might seem counter intuitive but saves us from special handling in other places
   require(inputPorts >= 1, "A Merge must have one or more input ports")
 
-  val in: immutable.IndexedSeq[Inlet[T]] =
-    Vector.tabulate(inputPorts)(i ⇒ Inlet[T]("Merge.in" + i))
+  val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i ⇒
+    Inlet[T]("Merge.in" + i))
   val out: Outlet[T] = Outlet[T]("Merge.out")
   override def initialAttributes = DefaultAttributes.merge
   override val shape: UniformFanInShape[T, T] = UniformFanInShape(out, in: _*)
@@ -285,8 +285,8 @@ final class Interleave[T] private (
   require(inputPorts > 1, "input ports must be > 1")
   require(segmentSize > 0, "segmentSize must be > 0")
 
-  val in: immutable.IndexedSeq[Inlet[T]] =
-    Vector.tabulate(inputPorts)(i ⇒ Inlet[T]("Interleave.in" + i))
+  val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i ⇒
+    Inlet[T]("Interleave.in" + i))
   val out: Outlet[T] = Outlet[T]("Interleave.out")
   override val shape: UniformFanInShape[T, T] = UniformFanInShape(out, in: _*)
 
@@ -445,8 +445,8 @@ final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
   // one output might seem counter intuitive but saves us from special handling in other places
   require(outputPorts >= 1, "A Broadcast must have one or more output ports")
   val in: Inlet[T] = Inlet[T]("Broadcast.in")
-  val out: immutable.IndexedSeq[Outlet[T]] =
-    Vector.tabulate(outputPorts)(i ⇒ Outlet[T]("Broadcast.out" + i))
+  val out: immutable.IndexedSeq[Outlet[T]] = Vector.tabulate(outputPorts)(i ⇒
+    Outlet[T]("Broadcast.out" + i))
   override def initialAttributes = DefaultAttributes.broadcast
   override val shape: UniformFanOutShape[T, T] = UniformFanOutShape(in, out: _*)
 
@@ -554,10 +554,11 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
     extends GraphStage[UniformFanOutShape[T, T]] {
 
   val in: Inlet[T] = Inlet[T]("Partition.in")
-  val out: Seq[Outlet[T]] =
-    Seq.tabulate(outputPorts)(i ⇒ Outlet[T]("Partition.out" + i))
-  override val shape: UniformFanOutShape[T, T] =
-    UniformFanOutShape[T, T](in, out: _*)
+  val out: Seq[Outlet[T]] = Seq.tabulate(outputPorts)(i ⇒
+    Outlet[T]("Partition.out" + i))
+  override val shape: UniformFanOutShape[T, T] = UniformFanOutShape[T, T](
+    in,
+    out: _*)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
@@ -665,11 +666,12 @@ final class Balance[T](val outputPorts: Int, waitForAllDownstreams: Boolean)
   // one output might seem counter intuitive but saves us from special handling in other places
   require(outputPorts >= 1, "A Balance must have one or more output ports")
   val in: Inlet[T] = Inlet[T]("Balance.in")
-  val out: immutable.IndexedSeq[Outlet[T]] =
-    Vector.tabulate(outputPorts)(i ⇒ Outlet[T]("Balance.out" + i))
+  val out: immutable.IndexedSeq[Outlet[T]] = Vector.tabulate(outputPorts)(i ⇒
+    Outlet[T]("Balance.out" + i))
   override def initialAttributes = DefaultAttributes.balance
-  override val shape: UniformFanOutShape[T, T] =
-    UniformFanOutShape[T, T](in, out: _*)
+  override val shape: UniformFanOutShape[T, T] = UniformFanOutShape[T, T](
+    in,
+    out: _*)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) {
@@ -836,8 +838,8 @@ object Concat {
 final class Concat[T](inputPorts: Int)
     extends GraphStage[UniformFanInShape[T, T]] {
   require(inputPorts > 1, "A Concat must have more than 1 input ports")
-  val in: immutable.IndexedSeq[Inlet[T]] =
-    Vector.tabulate(inputPorts)(i ⇒ Inlet[T]("Concat.in" + i))
+  val in: immutable.IndexedSeq[Inlet[T]] = Vector.tabulate(inputPorts)(i ⇒
+    Inlet[T]("Concat.in" + i))
   val out: Outlet[T] = Outlet[T]("Concat.out")
   override def initialAttributes = DefaultAttributes.concat
   override val shape: UniformFanInShape[T, T] = UniformFanInShape(out, in: _*)
@@ -893,8 +895,7 @@ object GraphDSL extends GraphApply {
       */
     private[GraphDSL] def addEdge[T, U >: T](
         from: Outlet[T],
-        to: Inlet[U]): Unit =
-      moduleInProgress = moduleInProgress.wire(from, to)
+        to: Inlet[U]): Unit = moduleInProgress = moduleInProgress.wire(from, to)
 
     /**
       * Import a graph into this module, performing a deep copy, discarding its
@@ -972,8 +973,9 @@ object GraphDSL extends GraphApply {
        * the source would not be triggered.
        */
       if (moduleInProgress.isInstanceOf[CopiedModule]) {
-        moduleInProgress =
-          CompositeModule(moduleInProgress, moduleInProgress.shape)
+        moduleInProgress = CompositeModule(
+          moduleInProgress,
+          moduleInProgress.shape)
       }
       val source = new MaterializedValueSource[M](
         moduleInProgress.materializedValueComputation)
@@ -1299,16 +1301,14 @@ object GraphDSL extends GraphApply {
     import scala.language.implicitConversions
 
     implicit def port2flow[T](from: Outlet[T])(
-        implicit b: Builder[_]): PortOps[T] =
-      new PortOpsImpl(from, b)
+        implicit b: Builder[_]): PortOps[T] = new PortOpsImpl(from, b)
 
     implicit def fanOut2flow[I, O](j: UniformFanOutShape[I, O])(
         implicit b: Builder[_]): PortOps[O] =
       new PortOpsImpl(findOut(b, j, 0), b)
 
     implicit def flow2flow[I, O](f: FlowShape[I, O])(
-        implicit b: Builder[_]): PortOps[O] =
-      new PortOpsImpl(f.out, b)
+        implicit b: Builder[_]): PortOps[O] = new PortOpsImpl(f.out, b)
 
     implicit final class SourceArrow[T](val s: Graph[SourceShape[T], _])
         extends AnyVal

@@ -15,15 +15,13 @@ abstract class ShortBufferTest extends BaseBufferTest {
   type Factory = BufferFactory.ShortBufferFactory
 
   class AllocShortBufferFactory extends Factory {
-    def allocBuffer(capacity: Int): ShortBuffer =
-      ShortBuffer.allocate(capacity)
+    def allocBuffer(capacity: Int): ShortBuffer = ShortBuffer.allocate(capacity)
   }
 
   class WrappedShortBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Short]): ShortBuffer =
-      ShortBuffer.wrap(array)
+    def baseWrap(array: Array[Short]): ShortBuffer = ShortBuffer.wrap(array)
 
     def baseWrap(array: Array[Short], offset: Int, length: Int): ShortBuffer =
       ShortBuffer.wrap(array, offset, length)
@@ -51,13 +49,13 @@ class WrappedShortBufferTest extends ShortBufferTest {
 }
 
 class WrappedShortReadOnlyBufferTest extends ShortBufferTest {
-  val factory: Factory =
-    new WrappedShortBufferFactory with BufferFactory.ReadOnlyBufferFactory
+  val factory: Factory = new WrappedShortBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocShortSlicedBufferTest extends ShortBufferTest {
-  val factory: Factory =
-    new AllocShortBufferFactory with BufferFactory.SlicedBufferFactory
+  val factory: Factory = new AllocShortBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Short views of byte buffers

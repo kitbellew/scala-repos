@@ -33,8 +33,9 @@ class PCASuite
 
   test("params") {
     ParamsSuite.checkParams(new PCA)
-    val mat =
-      Matrices.dense(2, 2, Array(0.0, 1.0, 2.0, 3.0)).asInstanceOf[DenseMatrix]
+    val mat = Matrices
+      .dense(2, 2, Array(0.0, 1.0, 2.0, 3.0))
+      .asInstanceOf[DenseMatrix]
     val explainedVariance = Vectors.dense(0.5, 0.5).asInstanceOf[DenseVector]
     val model = new PCAModel("pca", mat, explainedVariance)
     ParamsSuite.checkParams(model)

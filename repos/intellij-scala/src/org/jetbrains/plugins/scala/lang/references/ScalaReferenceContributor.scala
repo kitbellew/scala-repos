@@ -106,8 +106,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
     if (thisModule == null) return Collections.emptyList[PsiFileSystemItem]
     val modules: java.util.List[Module] = new util.ArrayList[Module]
     modules.add(thisModule)
-    var moduleRootManager: ModuleRootManager =
-      ModuleRootManager.getInstance(thisModule)
+    var moduleRootManager: ModuleRootManager = ModuleRootManager.getInstance(
+      thisModule)
     ContainerUtil.addAll(modules, moduleRootManager.getDependencies: _*)
     val result: java.util.List[PsiFileSystemItem] =
       new java.util.ArrayList[PsiFileSystemItem]
@@ -126,8 +126,8 @@ class FilePathReferenceProvider extends PsiReferenceProvider {
       for (root <- sourceRoots) {
         val directory: PsiDirectory = psiManager.findDirectory(root)
         if (directory != null) {
-          val aPackage: PsiPackage =
-            JavaDirectoryService.getInstance.getPackage(directory)
+          val aPackage: PsiPackage = JavaDirectoryService.getInstance
+            .getPackage(directory)
           if (aPackage != null && aPackage.name != null) {
             try {
               val createMethod = Class

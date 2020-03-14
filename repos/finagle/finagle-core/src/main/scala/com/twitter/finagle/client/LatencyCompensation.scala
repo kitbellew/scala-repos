@@ -27,8 +27,7 @@ object LatencyCompensation {
       (this, Compensator.param)
   }
   object Compensator {
-    implicit val param =
-      Stack.Param(Compensator(_ => Duration.Zero))
+    implicit val param = Stack.Param(Compensator(_ => Duration.Zero))
   }
 
   /**
@@ -63,8 +62,7 @@ object LatencyCompensation {
       (this, Compensation.param)
   }
   private[finagle] object Compensation {
-    implicit val param =
-      Stack.Param(Compensation(Duration.Zero))
+    implicit val param = Stack.Param(Compensation(Duration.Zero))
   }
 
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =

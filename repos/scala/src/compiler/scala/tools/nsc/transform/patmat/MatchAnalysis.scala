@@ -114,8 +114,8 @@ trait TreeAndTypeAnalysis extends Debugging {
         case modSym: ModuleClassSymbol if !grouped =>
           List(List(tp))
         case sym: RefinementClassSymbol =>
-          val parentSubtypes =
-            tp.parents.flatMap(parent => enumerateSubtypes(parent, grouped))
+          val parentSubtypes = tp.parents.flatMap(parent =>
+            enumerateSubtypes(parent, grouped))
           if (parentSubtypes exists (_.nonEmpty)) {
             // If any of the parents is enumerable, then the refinement type is enumerable.
             // We must only include subtypes of the parents that conform to `tp`.
@@ -134,12 +134,16 @@ trait TreeAndTypeAnalysis extends Debugging {
               // so that we can rule out stuff like: sealed trait X[T]; class XInt extends X[Int] --> XInt not valid when enumerating X[String]
               // however, must approximate abstract types in
 
-              val memberType =
-                nestedMemberType(sym, pre, tpApprox.typeSymbol.owner)
-              val subTp =
-                appliedType(memberType, sym.typeParams.map(_ => WildcardType))
-              val subTpApprox =
-                typer.infer.approximateAbstracts(subTp) // TODO: needed?
+              val memberType = nestedMemberType(
+                sym,
+                pre,
+                tpApprox.typeSymbol.owner)
+              val subTp = appliedType(
+                memberType,
+                sym.typeParams.map(_ => WildcardType))
+              val subTpApprox = typer.infer.approximateAbstracts(
+                subTp
+              ) // TODO: needed?
               // debug.patmat("subtp"+(subTpApprox <:< tpApprox, subTpApprox, tpApprox))
               if (subTpApprox <:< tpApprox) Some(checkableType(subTp)) else None
             }
@@ -165,8 +169,8 @@ trait TreeAndTypeAnalysis extends Debugging {
                   // put each trait in a new group, since traits could belong to the same
                   // group as a derived class
                   val (traits, nonTraits) = children.partition(_.isTrait)
-                  val filtered =
-                    (traits.map(List(_)) ++ List(nonTraits)).map(filterChildren)
+                  val filtered = (traits.map(List(_)) ++ List(nonTraits))
+                    .map(filterChildren)
                   groupChildren(tl ++ children, acc ++ filtered)
                 case Nil => acc
               }
@@ -358,11 +362,10 @@ trait MatchApproximation
             boundFrom map (CODE.REF(_)))
           // debug.patmat ("normalize subst: "+ normalize)
 
-          val okSubst =
-            Substitution(
-              unboundFrom,
-              unboundTo map (normalize(_))
-            ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
+          val okSubst = Substitution(
+            unboundFrom,
+            unboundTo map (normalize(_))
+          ) // it's important substitution does not duplicate trees here -- it helps to keep hash consing simple, anyway
           pointsToBound ++= ((okSubst.from, okSubst.to).zipped filter {
             (f, t) => pointsToBound exists (sym => t.exists(_.symbol == sym))
           })._1
@@ -544,14 +547,15 @@ trait MatchAnalysis extends MatchApproximation {
         approximate(False) map (t => Not(caseWithoutBodyToProp(t)))
 
       try {
-        val (eqAxiomsFail, symbolicCasesFail) =
-          removeVarEq(propsCasesFail, modelNull = true)
-        val (eqAxiomsOk, symbolicCasesOk) =
-          removeVarEq(propsCasesOk, modelNull = true)
-        val eqAxioms =
-          simplify(
-            And(eqAxiomsOk, eqAxiomsFail)
-          ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
+        val (eqAxiomsFail, symbolicCasesFail) = removeVarEq(
+          propsCasesFail,
+          modelNull = true)
+        val (eqAxiomsOk, symbolicCasesOk) = removeVarEq(
+          propsCasesOk,
+          modelNull = true)
+        val eqAxioms = simplify(
+          And(eqAxiomsOk, eqAxiomsFail)
+        ) // I'm pretty sure eqAxiomsOk == eqAxiomsFail, but not 100% sure.
 
         val prefix = mutable.ArrayBuffer[Prop]()
         prefix += eqAxioms
@@ -657,8 +661,9 @@ trait MatchAnalysis extends MatchApproximation {
 
           try {
             // find the models (under which the match fails)
-            val matchFailModels =
-              findAllModelsFor(propToSolvable(matchFails), prevBinder.pos)
+            val matchFailModels = findAllModelsFor(
+              propToSolvable(matchFails),
+              prevBinder.pos)
 
             val scrutVar = Var(prevBinderTree)
             val counterExamples = {
@@ -837,8 +842,8 @@ trait MatchAnalysis extends MatchApproximation {
 
       // group symbols that assign values to the same variables (i.e., symbols are mutually exclusive)
       // (thus the groups are sets of disjoint assignments to variables)
-      val groupedByVar: Map[Var, List[Sym]] =
-        solution.unassigned.groupBy(_.variable)
+      val groupedByVar: Map[Var, List[Sym]] = solution.unassigned.groupBy(
+        _.variable)
 
       val expanded = for { (variable, syms) <- groupedByVar.toList } yield {
 
@@ -915,8 +920,8 @@ trait MatchAnalysis extends MatchApproximation {
         private def unique(variable: Var): VariableAssignment =
           uniques.getOrElseUpdate(
             variable, {
-              val (eqTo, neqTo) =
-                varAssignment.getOrElse(variable, (Nil, Nil)) // TODO
+              val (eqTo, neqTo) = varAssignment
+                .getOrElse(variable, (Nil, Nil)) // TODO
               VariableAssignment(variable, eqTo.toList, neqTo.toList)
             })
 

@@ -10,12 +10,9 @@ import docs.http.scaladsl.server.RoutingSpec
 class RespondWithDirectivesExamplesSpec extends RoutingSpec {
 
   "respondWithHeader-0" in {
-    val route =
-      path("foo") {
-        respondWithHeader(RawHeader("Funky-Muppet", "gonzo")) {
-          complete("beep")
-        }
-      }
+    val route = path("foo") {
+      respondWithHeader(RawHeader("Funky-Muppet", "gonzo")) { complete("beep") }
+    }
 
     // tests:
     Get("/foo") ~> route ~> check {
@@ -68,12 +65,11 @@ class RespondWithDirectivesExamplesSpec extends RoutingSpec {
   // format: ON
 
   "respondWithHeaders-0" in {
-    val route =
-      path("foo") {
-        respondWithHeaders(
-          RawHeader("Funky-Muppet", "gonzo"),
-          Origin(HttpOrigin("http://akka.io"))) { complete("beep") }
-      }
+    val route = path("foo") {
+      respondWithHeaders(
+        RawHeader("Funky-Muppet", "gonzo"),
+        Origin(HttpOrigin("http://akka.io"))) { complete("beep") }
+    }
 
     // tests:
     Get("/foo") ~> route ~> check {

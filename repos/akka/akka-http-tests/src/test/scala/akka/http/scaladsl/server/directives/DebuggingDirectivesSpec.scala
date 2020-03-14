@@ -28,8 +28,7 @@ class DebuggingDirectivesSpec extends RoutingSpec {
 
   "The 'logRequest' directive" should {
     "produce a proper log message for incoming requests" in {
-      val route =
-        withLog(log)(logRequest("1")(completeOk))
+      val route = withLog(log)(logRequest("1")(completeOk))
 
       resetDebugMsg()
       Get("/hello") ~> route ~> check {
@@ -41,8 +40,7 @@ class DebuggingDirectivesSpec extends RoutingSpec {
 
   "The 'logResponse' directive" should {
     "produce a proper log message for outgoing responses" in {
-      val route =
-        withLog(log)(logResult("2")(completeOk))
+      val route = withLog(log)(logResult("2")(completeOk))
 
       resetDebugMsg()
       Get("/hello") ~> route ~> check {
@@ -54,8 +52,7 @@ class DebuggingDirectivesSpec extends RoutingSpec {
 
   "The 'logRequestResponse' directive" should {
     "produce proper log messages for outgoing responses, thereby showing the corresponding request" in {
-      val route =
-        withLog(log)(logRequestResult("3")(completeOk))
+      val route = withLog(log)(logRequestResult("3")(completeOk))
 
       resetDebugMsg()
       Get("/hello") ~> route ~> check {

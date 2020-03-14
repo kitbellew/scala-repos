@@ -161,8 +161,8 @@ class GraphUnzipWithSpec extends AkkaSpec {
 
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b ⇒
-          val unzip =
-            b.add(UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
+          val unzip = b.add(
+            UnzipWith[Int, Int, String]((b: Int) ⇒ (1 / b, 1 + "/" + b)))
 
           Source(-2 to 2) ~> unzip.in
 

@@ -175,8 +175,8 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
   /** Clear the old time-to-files mappings along with old RDDs */
   protected[streaming] override def clearMetadata(time: Time) {
     batchTimeToSelectedFiles.synchronized {
-      val oldFiles =
-        batchTimeToSelectedFiles.filter(_._1 < (time - rememberDuration))
+      val oldFiles = batchTimeToSelectedFiles.filter(
+        _._1 < (time - rememberDuration))
       batchTimeToSelectedFiles --= oldFiles.keys
       recentlySelectedFiles --= oldFiles.values.flatten
       logInfo(
@@ -213,8 +213,9 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
         def accept(path: Path): Boolean =
           isNewFile(path, currentTime, modTimeIgnoreThreshold)
       }
-      val newFiles =
-        fs.listStatus(directoryPath, filter).map(_.getPath.toString)
+      val newFiles = fs
+        .listStatus(directoryPath, filter)
+        .map(_.getPath.toString)
       val timeTaken = clock.getTimeMillis() - lastNewFileFindingTime
       logInfo("Finding new files took " + timeTaken + " ms")
       logDebug("# cached file times = " + fileToModTime.size)

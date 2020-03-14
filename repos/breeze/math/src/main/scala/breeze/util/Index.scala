@@ -61,8 +61,7 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
   }
 
   /** Override Iterable's linear-scan indexOf to use our apply method. */
-  def indexOf(t: T): Int =
-    apply(t)
+  def indexOf(t: T): Int = apply(t)
 
   /** Returns the indexed items along with their indicies */
   def pairs: Iterator[(T, Int)]
@@ -82,8 +81,7 @@ trait Index[T] extends Iterable[T] with (T => Int) with Serializable {
     }
   }
 
-  protected lazy val defaultHashCode =
-    (17 /: this)(_ * 41 + _.hashCode)
+  protected lazy val defaultHashCode = (17 /: this)(_ * 41 + _.hashCode)
 
   override def hashCode = defaultHashCode
 
@@ -156,26 +154,21 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
   /** Map from object back to int index */
   private val indices = new util.HashMap[T, Int]().asScala
 
-  override def size =
-    indices.size
+  override def size = indices.size
 
-  override def apply(t: T): Int =
-    indices.getOrElse(t, -1)
+  override def apply(t: T): Int = indices.getOrElse(t, -1)
 
   override def unapply(pos: Int): Option[T] =
     if (pos >= 0 && pos < objects.length) Some(objects(pos)) else None
 
-  override def contains(t: T) =
-    indices contains t
+  override def contains(t: T) = indices contains t
 
-  override def indexOpt(t: T): Option[Int] =
-    indices.get(t)
+  override def indexOpt(t: T): Option[Int] = indices.get(t)
 
   override def get(pos: Int) =
     objects(pos); // throws IndexOutOfBoundsException as required
 
-  override def iterator =
-    objects.iterator
+  override def iterator = objects.iterator
 
   /** Returns the position of T, adding it to the index if it's not there. */
   override def index(t: T) = {
@@ -210,8 +203,7 @@ class DenseIntIndex(beg: Int, end: Int) extends Index[Int] {
 
   override def contains(t: Int) = t < end - beg && t >= 0
 
-  override def indexOpt(t: Int) =
-    if (contains(t)) Some(t) else None
+  override def indexOpt(t: Int) = if (contains(t)) Some(t) else None
 
   override def get(i: Int) =
     if (contains(i)) i else throw new IndexOutOfBoundsException()

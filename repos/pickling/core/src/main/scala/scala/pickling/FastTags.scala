@@ -242,20 +242,21 @@ object FastTypeTag {
     val elemClass = clazz.getComponentType()
     // debug(s"creating tag for array with element type '${elemClass.getName}'")
 
-    val (elemTpe, elemKey) = if (elemClass.isArray) {
-      mkRawArrayTypeAndKey(elemClass, mirror)
-    } else {
-      val elemClassSymbol =
-        try { mirror.classSymbol(elemClass) }
-        catch {
-          case t: Throwable =>
-            sys.error(
-              s"error: could not find class '${elemClass.getName}' in runtime mirror")
-        }
-      val primitiveTag: FastTypeTag[_] = raw.getOrElse(elemClass, null)
-      val k = if (primitiveTag == null) elemClass.getName else primitiveTag.key
-      (elemClassSymbol.asType.toType, k)
-    }
+    val (elemTpe, elemKey) =
+      if (elemClass.isArray) { mkRawArrayTypeAndKey(elemClass, mirror) }
+      else {
+        val elemClassSymbol =
+          try { mirror.classSymbol(elemClass) }
+          catch {
+            case t: Throwable =>
+              sys.error(
+                s"error: could not find class '${elemClass.getName}' in runtime mirror")
+          }
+        val primitiveTag: FastTypeTag[_] = raw.getOrElse(elemClass, null)
+        val k =
+          if (primitiveTag == null) elemClass.getName else primitiveTag.key
+        (elemClassSymbol.asType.toType, k)
+      }
 
     val tpe = ru.appliedType(ru.definitions.ArrayClass.toType, List(elemTpe))
     val key = "scala.Array[" + elemKey + "]"

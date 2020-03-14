@@ -161,8 +161,8 @@ object FilesystemIngestFailureLog {
       }
     }
 
-    val logFiles =
-      persistDir.listFiles.toSeq.filter(_.getName.startsWith(FilePrefix))
+    val logFiles = persistDir.listFiles.toSeq
+      .filter(_.getName.startsWith(FilePrefix))
     if (logFiles.isEmpty)
       new FilesystemIngestFailureLog(Map(), initialCheckpoint, persistDir)
     else {
@@ -243,15 +243,15 @@ abstract class KafkaShardIngestActor(
     maxConsecutiveFailures: Int = 3)
     extends Actor {
 
-  protected lazy val logger =
-    LoggerFactory.getLogger("com.precog.yggdrasil.actor.KafkaShardIngestActor")
+  protected lazy val logger = LoggerFactory.getLogger(
+    "com.precog.yggdrasil.actor.KafkaShardIngestActor")
 
   private var lastCheckpoint: YggCheckpoint = initialCheckpoint
 
   private var failureLog = ingestFailureLog
   private var totalConsecutiveFailures = 0
-  private var ingestCache =
-    TreeMap.empty[YggCheckpoint, Vector[(Long, EventMessage)]]
+  private var ingestCache = TreeMap
+    .empty[YggCheckpoint, Vector[(Long, EventMessage)]]
   private val runningBatches = new AtomicInteger
   private var pendingCompletes = Vector.empty[BatchComplete]
   private var initiated = 0
@@ -327,8 +327,10 @@ abstract class KafkaShardIngestActor(
           "Ingest will continue, but query results may be inconsistent until the problem is resolved.")
         for (messages <- ingestCache.get(checkpoint).toSeq;
              (offset, ingestMessage) <- messages) {
-          failureLog =
-            failureLog.logFailed(offset, ingestMessage, lastCheckpoint)
+          failureLog = failureLog.logFailed(
+            offset,
+            ingestMessage,
+            lastCheckpoint)
         }
 
         runningBatches.getAndDecrement
@@ -427,15 +429,16 @@ abstract class KafkaShardIngestActor(
         case (
               offset,
               event @ IngestMessage(_, _, _, records, _, _, _)) :: tail =>
-          val newCheckpoint = if (records.isEmpty) { checkpoint.skipTo(offset) }
-          else {
-            records.foldLeft(checkpoint) {
-              // TODO: This nested pattern match indicates that checkpoints are too closely
-              // coupled to the representation of event IDs.
-              case (acc, IngestRecord(EventId(pid, sid), _)) =>
-                acc.update(offset, pid, sid)
+          val newCheckpoint =
+            if (records.isEmpty) { checkpoint.skipTo(offset) }
+            else {
+              records.foldLeft(checkpoint) {
+                // TODO: This nested pattern match indicates that checkpoints are too closely
+                // coupled to the representation of event IDs.
+                case (acc, IngestRecord(EventId(pid, sid), _)) =>
+                  acc.update(offset, pid, sid)
+              }
             }
-          }
 
           buildBatch(tail, batch :+ (offset, event), newCheckpoint)
 
@@ -541,14 +544,14 @@ abstract class KafkaShardIngestActor(
               "Computed authorities from %d apiKeys in %d ms".format(
                 distinctKeys.size,
                 System.currentTimeMillis - authoritiesStartTime))
-            val authorityCache =
-              cached.foldLeft(Map.empty[(APIKey, Path), Authorities]) {
-                case (acc, (k, Some(a))) => acc + (k -> a)
-                case (acc, (_, None))    => acc
-              }
+            val authorityCache = cached.foldLeft(
+              Map.empty[(APIKey, Path), Authorities]) {
+              case (acc, (k, Some(a))) => acc + (k -> a)
+              case (acc, (_, None))    => acc
+            }
 
-            val updatedMessages: List[(Long, EventMessage)] =
-              messageSet.flatMap {
+            val updatedMessages: List[(Long, EventMessage)] = messageSet
+              .flatMap {
                 case (offset, \/-(message)) =>
                   Some((offset, message))
 

@@ -28,8 +28,7 @@ class DDLCommandSuite extends PlanTest {
   private val parser = new SparkQl
 
   test("create database") {
-    val sql =
-      """
+    val sql = """
        |CREATE DATABASE IF NOT EXISTS database_name
        |COMMENT 'database_comment' LOCATION '/home/user/db'
        |WITH DBPROPERTIES ('a'='a', 'b'='b', 'c'='c')
@@ -110,13 +109,11 @@ class DDLCommandSuite extends PlanTest {
 
   test("alter table: SerDe properties") {
     val sql1 = "ALTER TABLE table_name SET SERDE 'org.apache.class'"
-    val sql2 =
-      """
+    val sql2 = """
        |ALTER TABLE table_name SET SERDE 'org.apache.class'
        |WITH SERDEPROPERTIES ('columns'='foo,bar', 'field.delim' = ',')
       """.stripMargin
-    val sql3 =
-      """
+    val sql3 = """
        |ALTER TABLE table_name SET SERDEPROPERTIES ('columns'='foo,bar',
        |'field.delim' = ',')
       """.stripMargin
@@ -183,10 +180,12 @@ class DDLCommandSuite extends PlanTest {
     val tableIdent = TableIdentifier("table_name", None)
     val cols = List("dt", "country")
     // TODO: also test the sort directions once we keep track of that
-    val expected1 =
-      AlterTableStorageProperties(tableIdent, BucketSpec(10, cols, Nil))(sql1)
-    val expected2 =
-      AlterTableStorageProperties(tableIdent, BucketSpec(10, cols, cols))(sql2)
+    val expected1 = AlterTableStorageProperties(
+      tableIdent,
+      BucketSpec(10, cols, Nil))(sql1)
+    val expected2 = AlterTableStorageProperties(
+      tableIdent,
+      BucketSpec(10, cols, cols))(sql2)
     val expected3 = AlterTableNotClustered(tableIdent)(sql3)
     val expected4 = AlterTableNotSorted(tableIdent)(sql4)
     comparePlans(parsed1, expected1)
@@ -201,13 +200,11 @@ class DDLCommandSuite extends PlanTest {
        |ALTER TABLE table_name SKEWED BY (dt, country) ON
        |(('2008-08-08', 'us'), ('2009-09-09', 'uk'), ('2010-10-10', 'cn')) STORED AS DIRECTORIES
       """.stripMargin
-    val sql2 =
-      """
+    val sql2 = """
        |ALTER TABLE table_name SKEWED BY (dt, country) ON
        |('2008-08-08', 'us') STORED AS DIRECTORIES
       """.stripMargin
-    val sql3 =
-      """
+    val sql3 = """
        |ALTER TABLE table_name SKEWED BY (dt, country) ON
        |(('2008-08-08', 'us'), ('2009-09-09', 'uk'))
       """.stripMargin
@@ -247,13 +244,11 @@ class DDLCommandSuite extends PlanTest {
   }
 
   test("alter table: skewed location") {
-    val sql1 =
-      """
+    val sql1 = """
        |ALTER TABLE table_name SET SKEWED LOCATION
        |('123'='location1', 'test'='location2')
       """.stripMargin
-    val sql2 =
-      """
+    val sql2 = """
        |ALTER TABLE table_name SET SKEWED LOCATION
        |(('2008-08-08', 'us')='location1', 'test'='location2')
       """.stripMargin
@@ -274,8 +269,7 @@ class DDLCommandSuite extends PlanTest {
   }
 
   test("alter table: add partition") {
-    val sql =
-      """
+    val sql = """
        |ALTER TABLE table_name ADD IF NOT EXISTS PARTITION
        |(dt='2008-08-08', country='us') LOCATION 'location1' PARTITION
        |(dt='2009-09-09', country='uk')
@@ -292,8 +286,7 @@ class DDLCommandSuite extends PlanTest {
   }
 
   test("alter table: rename partition") {
-    val sql =
-      """
+    val sql = """
        |ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us')
        |RENAME TO PARTITION (dt='2008-09-09', country='uk')
       """.stripMargin
@@ -306,8 +299,7 @@ class DDLCommandSuite extends PlanTest {
   }
 
   test("alter table: exchange partition") {
-    val sql =
-      """
+    val sql = """
        |ALTER TABLE table_name_1 EXCHANGE PARTITION
        |(dt='2008-08-08', country='us') WITH TABLE table_name_2
       """.stripMargin
@@ -414,8 +406,8 @@ class DDLCommandSuite extends PlanTest {
     val parsed1 = parser.parsePlan(sql1)
     val parsed2 = parser.parsePlan(sql2)
     val tableIdent = TableIdentifier("table_name", None)
-    val expected1 =
-      AlterTableSetLocation(tableIdent, None, "new location")(sql1)
+    val expected1 = AlterTableSetLocation(tableIdent, None, "new location")(
+      sql1)
     val expected2 = AlterTableSetLocation(
       tableIdent,
       Some(Map("dt" -> "2008-08-08", "country" -> "us")),
@@ -441,8 +433,7 @@ class DDLCommandSuite extends PlanTest {
 
   test("alter table: compact") {
     val sql1 = "ALTER TABLE table_name COMPACT 'compaction_type'"
-    val sql2 =
-      """
+    val sql2 = """
        |ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us')
        |COMPACT 'MAJOR'
       """.stripMargin
@@ -528,8 +519,7 @@ class DDLCommandSuite extends PlanTest {
   }
 
   test("alter table: add/replace columns") {
-    val sql1 =
-      """
+    val sql1 = """
        |ALTER TABLE table_name PARTITION (dt='2008-08-08', country='us')
        |ADD COLUMNS (new_col1 INT COMMENT 'test_comment', new_col2 LONG
        |COMMENT 'test_comment2') CASCADE
@@ -541,10 +531,12 @@ class DDLCommandSuite extends PlanTest {
       """.stripMargin
     val parsed1 = parser.parsePlan(sql1)
     val parsed2 = parser.parsePlan(sql2)
-    val meta1 =
-      new MetadataBuilder().putString("comment", "test_comment").build()
-    val meta2 =
-      new MetadataBuilder().putString("comment", "test_comment2").build()
+    val meta1 = new MetadataBuilder()
+      .putString("comment", "test_comment")
+      .build()
+    val meta2 = new MetadataBuilder()
+      .putString("comment", "test_comment2")
+      .build()
     val tableIdent = TableIdentifier("table_name", None)
     val expected1 = AlterTableAddCol(
       tableIdent,

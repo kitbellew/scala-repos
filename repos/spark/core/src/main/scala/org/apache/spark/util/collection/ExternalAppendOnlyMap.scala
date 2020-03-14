@@ -103,8 +103,9 @@ class ExternalAppendOnlyMap[K, V, C](
     * NOTE: Setting this too low can cause excessive copying when serializing, since some serializers
     * grow internal data structures by growing + copying every time the number of objects doubles.
     */
-  private val serializerBatchSize =
-    sparkConf.getLong("spark.shuffle.spill.batchSize", 10000)
+  private val serializerBatchSize = sparkConf.getLong(
+    "spark.shuffle.spill.batchSize",
+    10000)
 
   // Number of bytes spilled in total
   private var _diskBytesSpilled = 0L
@@ -286,8 +287,8 @@ class ExternalAppendOnlyMap[K, V, C](
     private val sortedMap = CompletionIterator[(K, C), Iterator[(K, C)]](
       currentMap.destructiveSortedIterator(keyComparator),
       freeCurrentMap())
-    private val inputStreams =
-      (Seq(sortedMap) ++ spilledMaps).map(it => it.buffered)
+    private val inputStreams = (Seq(sortedMap) ++ spilledMaps).map(it =>
+      it.buffered)
 
     inputStreams.foreach { it =>
       val kcPairs = new ArrayBuffer[(K, C)]
@@ -350,8 +351,9 @@ class ExternalAppendOnlyMap[K, V, C](
       */
     private def removeFromBuffer[T](buffer: ArrayBuffer[T], index: Int): T = {
       val elem = buffer(index)
-      buffer(index) =
-        buffer(buffer.size - 1) // This also works if index == buffer.size - 1
+      buffer(index) = buffer(
+        buffer.size - 1
+      ) // This also works if index == buffer.size - 1
       buffer.reduceToSize(buffer.size - 1)
       elem
     }
@@ -434,8 +436,9 @@ class ExternalAppendOnlyMap[K, V, C](
       blockId: BlockId,
       batchSizes: ArrayBuffer[Long])
       extends Iterator[(K, C)] {
-    private val batchOffsets =
-      batchSizes.scanLeft(0L)(_ + _) // Size will be batchSize.length + 1
+    private val batchOffsets = batchSizes.scanLeft(0L)(
+      _ + _
+    ) // Size will be batchSize.length + 1
     assert(
       file.length() == batchOffsets.last,
       "File length is not equal to the last batch offset:\n" +
@@ -481,8 +484,9 @@ class ExternalAppendOnlyMap[K, V, C](
 
         val bufferedStream = new BufferedInputStream(
           ByteStreams.limit(fileStream, end - start))
-        val compressedStream =
-          blockManager.wrapForCompression(blockId, bufferedStream)
+        val compressedStream = blockManager.wrapForCompression(
+          blockId,
+          bufferedStream)
         ser.deserializeStream(compressedStream)
       } else {
         // No more batches left

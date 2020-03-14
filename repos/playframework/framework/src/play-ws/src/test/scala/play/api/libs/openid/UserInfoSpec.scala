@@ -14,8 +14,8 @@ object UserInfoSpec extends Specification {
 
   "UserInfo" should {
     "successfully be created using the value of the openid.claimed_id field" in {
-      val userInfo =
-        UserInfo(createDefaultResponse(claimedId, identity, defaultSigned))
+      val userInfo = UserInfo(
+        createDefaultResponse(claimedId, identity, defaultSigned))
       userInfo.id must be equalTo claimedId
       userInfo.attributes must beEmpty
     }

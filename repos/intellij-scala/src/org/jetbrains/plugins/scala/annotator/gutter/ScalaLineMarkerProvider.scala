@@ -157,8 +157,9 @@ class ScalaLineMarkerProvider(
             return marker(token, icon, typez)
           }
         case (x: ScObject, _: ScTemplateBody) if x.nameId == element =>
-          val signatures =
-            ScalaPsiUtil.superValsSignatures(x, withSelfType = true)
+          val signatures = ScalaPsiUtil.superValsSignatures(
+            x,
+            withSelfType = true)
           val icon =
             if (GutterUtil.isOverrides(x, signatures)) OVERRIDING_METHOD_ICON
             else IMPLEMENTING_METHOD_ICON

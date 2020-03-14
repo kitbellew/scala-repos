@@ -65,8 +65,9 @@ private[hive] case class HiveTableScan(
 
   // Bind all partition key attribute references in the partition pruning predicate for later
   // evaluation.
-  private[this] val boundPruningPred =
-    partitionPruningPred.reduceLeftOption(And).map { pred =>
+  private[this] val boundPruningPred = partitionPruningPred
+    .reduceLeftOption(And)
+    .map { pred =>
       require(
         pred.dataType == BooleanType,
         s"Data type of predicate $pred must be BooleanType rather than ${pred.dataType}.")
@@ -92,8 +93,9 @@ private[hive] case class HiveTableScan(
 
   private def addColumnMetadataToConf(hiveConf: HiveConf) {
     // Specifies needed column IDs for those non-partitioning columns.
-    val neededColumnIDs =
-      attributes.flatMap(relation.columnOrdinals.get).map(o => o: Integer)
+    val neededColumnIDs = attributes
+      .flatMap(relation.columnOrdinals.get)
+      .map(o => o: Integer)
 
     HiveShim.appendReadColumns(
       hiveConf,
@@ -149,16 +151,17 @@ private[hive] case class HiveTableScan(
   protected override def doExecute(): RDD[InternalRow] = {
     // Using dummyCallSite, as getCallSite can turn out to be expensive with
     // with multiple partitions.
-    val rdd = if (!relation.hiveQlTable.isPartitioned) {
-      Utils.withDummyCallSite(sqlContext.sparkContext) {
-        hadoopReader.makeRDDForTable(relation.hiveQlTable)
+    val rdd =
+      if (!relation.hiveQlTable.isPartitioned) {
+        Utils.withDummyCallSite(sqlContext.sparkContext) {
+          hadoopReader.makeRDDForTable(relation.hiveQlTable)
+        }
+      } else {
+        Utils.withDummyCallSite(sqlContext.sparkContext) {
+          hadoopReader.makeRDDForPartitionedTable(
+            prunePartitions(relation.getHiveQlPartitions(partitionPruningPred)))
+        }
       }
-    } else {
-      Utils.withDummyCallSite(sqlContext.sparkContext) {
-        hadoopReader.makeRDDForPartitionedTable(
-          prunePartitions(relation.getHiveQlPartitions(partitionPruningPred)))
-      }
-    }
     val numOutputRows = longMetric("numOutputRows")
     rdd.mapPartitionsInternal { iter =>
       val proj = UnsafeProjection.create(schema)

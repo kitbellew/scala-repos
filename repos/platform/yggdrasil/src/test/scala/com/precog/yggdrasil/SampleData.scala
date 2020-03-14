@@ -124,10 +124,9 @@ object SampleData extends CValueGenerators {
   }
 
   def shuffle(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
-    val gen =
-      for { sampleData <- arbitrary(sample) } yield {
-        SampleData(Random.shuffle(sampleData.data), sampleData.schema)
-      }
+    val gen = for { sampleData <- arbitrary(sample) } yield {
+      SampleData(Random.shuffle(sampleData.data), sampleData.schema)
+    }
 
     Arbitrary(gen)
   }
@@ -157,24 +156,22 @@ object SampleData extends CValueGenerators {
   }
 
   def duplicateRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
-    val gen =
-      for { sampleData <- arbitrary(sample) } yield {
-        val rows = sampleData.data
-        val duplicates = randomSubset(rows, 0.25)
-        SampleData(Random.shuffle(rows ++ duplicates), sampleData.schema)
-      }
+    val gen = for { sampleData <- arbitrary(sample) } yield {
+      val rows = sampleData.data
+      val duplicates = randomSubset(rows, 0.25)
+      SampleData(Random.shuffle(rows ++ duplicates), sampleData.schema)
+    }
 
     Arbitrary(gen)
   }
 
   def undefineRows(sample: Arbitrary[SampleData]): Arbitrary[SampleData] = {
-    val gen =
-      for { sampleData <- arbitrary(sample) } yield {
-        val rows =
-          for (row <- sampleData.data)
-            yield if (Random.nextDouble < 0.25) JUndefined else row
-        SampleData(rows, sampleData.schema)
-      }
+    val gen = for { sampleData <- arbitrary(sample) } yield {
+      val rows =
+        for (row <- sampleData.data)
+          yield if (Random.nextDouble < 0.25) JUndefined else row
+      SampleData(rows, sampleData.schema)
+    }
 
     Arbitrary(gen)
   }

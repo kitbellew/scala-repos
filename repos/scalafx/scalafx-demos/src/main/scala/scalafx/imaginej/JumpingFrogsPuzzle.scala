@@ -159,12 +159,11 @@ case object theDummyFrog extends Frog {
 // values
 //
 object theModelValues {
-  private val optionalFrogs =
-    for { i <- STONE_NUMBER_LIST } yield {
-      if (i < NUMBER_OF_FROGS) { i -> Some(new LeftFrog()) }
-      else if (i == NUMBER_OF_FROGS) { i -> None }
-      else { i -> Some(new RightFrog()) }
-    }
+  private val optionalFrogs = for { i <- STONE_NUMBER_LIST } yield {
+    if (i < NUMBER_OF_FROGS) { i -> Some(new LeftFrog()) }
+    else if (i == NUMBER_OF_FROGS) { i -> None }
+    else { i -> Some(new RightFrog()) }
+  }
 
   val optionalFrogMap = optionalFrogs.toMap
 }
@@ -173,17 +172,14 @@ object theModelValues {
 // model
 //
 class Model(var optionalFrogMap: Map[Int, Option[Frog]]) {
-  private def isAtRight(i: Int) =
-    i == NUMBER_OF_STONES - 1
+  private def isAtRight(i: Int) = i == NUMBER_OF_STONES - 1
 
   private def isAtRightOrOneButRight(i: Int) =
     i == NUMBER_OF_STONES - 1 || i == NUMBER_OF_STONES - 2
 
-  private def isAtLeft(i: Int) =
-    i == 0
+  private def isAtLeft(i: Int) = i == 0
 
-  private def isAtLeftOrOneButLeft(i: Int) =
-    i == 0 || i == 1
+  private def isAtLeftOrOneButLeft(i: Int) = i == 0 || i == 1
 
   private val canMoveOneRightAt = (i: Int) =>
     !isAtRight(i) && optionalFrogMap(i + 1) == None
@@ -288,21 +284,18 @@ case object theDummyFrogShape extends FrogShape(-1, theDummyFrog)
 // values
 //
 object theViewValues {
-  val canvasShape =
-    theCanvasShape
+  val canvasShape = theCanvasShape
 
-  val stoneShapes =
-    for { i <- STONE_NUMBER_LIST } yield StoneShape(i)
+  val stoneShapes = for { i <- STONE_NUMBER_LIST } yield StoneShape(i)
 
-  val frogShapes =
-    for {
-      i <- STONE_NUMBER_LIST
-      frog <- theModelValues.optionalFrogMap(i)
-    } yield {
-      if (i < NUMBER_OF_FROGS) { GreenFrogShape(i, frog) }
-      else if (i == NUMBER_OF_FROGS) { theDummyFrogShape }
-      else { RedFrogShape(i, frog) }
-    }
+  val frogShapes = for {
+    i <- STONE_NUMBER_LIST
+    frog <- theModelValues.optionalFrogMap(i)
+  } yield {
+    if (i < NUMBER_OF_FROGS) { GreenFrogShape(i, frog) }
+    else if (i == NUMBER_OF_FROGS) { theDummyFrogShape }
+    else { RedFrogShape(i, frog) }
+  }
 }
 
 //

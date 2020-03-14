@@ -33,16 +33,14 @@ trait MapPicklers {
       pairTag: FastTypeTag[(K, V)],
       collTag: FastTypeTag[Map[K, V]],
       cbf: CanBuildFrom[Map[K, V], (K, V), Map[K, V]])
-      : Pickler[Map[K, V]] with Unpickler[Map[K, V]] =
-    MapPickler[K, V, Map]
+      : Pickler[Map[K, V]] with Unpickler[Map[K, V]] = MapPickler[K, V, Map]
 
   locally {
-    val generator =
-      TravPickler.generate[(Any, Any), Map[Any, Any]](
-        implicitly[CanBuildFrom[Map[Any, Any], (Any, Any), Map[Any, Any]]],
-        identity[Map[Any, Any]]) { tpe =>
-        MapPicklerHelper.tupleTagExtractor(tpe)
-      } _
+    val generator = TravPickler.generate[(Any, Any), Map[Any, Any]](
+      implicitly[CanBuildFrom[Map[Any, Any], (Any, Any), Map[Any, Any]]],
+      identity[Map[Any, Any]]) { tpe =>
+      MapPicklerHelper.tupleTagExtractor(tpe)
+    } _
     currentRuntime.picklers.registerPicklerUnpicklerGenerator(
       "scala.collection.immutable.Map",
       generator)
@@ -92,15 +90,12 @@ trait MutableMapPicklers {
     MapPickler[K, V, mutable.Map]
 
   locally {
-    val generator =
-      TravPickler.generate[(Any, Any), mutable.Map[Any, Any]](
-        implicitly[CanBuildFrom[
-          mutable.Map[Any, Any],
-          (Any, Any),
-          mutable.Map[Any, Any]]],
-        identity[mutable.Map[Any, Any]]) { tpe =>
-        MapPicklerHelper.tupleTagExtractor(tpe)
-      } _
+    val generator = TravPickler.generate[(Any, Any), mutable.Map[Any, Any]](
+      implicitly[
+        CanBuildFrom[mutable.Map[Any, Any], (Any, Any), mutable.Map[Any, Any]]],
+      identity[mutable.Map[Any, Any]]) { tpe =>
+      MapPicklerHelper.tupleTagExtractor(tpe)
+    } _
     currentRuntime.picklers.registerPicklerUnpicklerGenerator(
       "scala.collection.mutable.Map",
       generator)

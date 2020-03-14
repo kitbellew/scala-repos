@@ -372,10 +372,9 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
             }
           case "scala.<byname>" => "=> " + toString(typeArgs.head)
           case _ => {
-            val path =
-              StringUtil.cutSubstring(symbol.path)(
-                ".package"
-              ) //remove package object reference
+            val path = StringUtil.cutSubstring(symbol.path)(
+              ".package"
+            ) //remove package object reference
             StringUtil.trimStart(
               processName(path) + typeArgString(typeArgs),
               "<empty>.")
@@ -406,8 +405,10 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case AnnotatedWithSelfType(typeRef, symbol, attribTreeRefs) =>
         toString(typeRef, sep)
       case ExistentialType(typeRef, symbols) => {
-        val refs =
-          symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
+        val refs = symbols
+          .map(toString)
+          .filter(!_.startsWith("_"))
+          .map("type " + _)
         toString(typeRef, sep) + (if (refs.size > 0)
                                     refs.mkString(" forSome {", "; ", "}")
                                   else "")
@@ -422,8 +423,8 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
   def toString(symbol: Symbol): String =
     symbol match {
       case symbol: TypeSymbol => {
-        val attrs =
-          (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
+        val attrs = (for (a <- symbol.attributes) yield toString(a))
+          .mkString(" ")
         val atrs = if (attrs.length > 0) attrs.trim + " " else ""
         atrs + getVariance(symbol) + processName(symbol.name) + toString(
           symbol.infoType)

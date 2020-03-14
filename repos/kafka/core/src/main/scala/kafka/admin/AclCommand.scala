@@ -152,8 +152,8 @@ object AclCommand {
 
   private def getProducerResourceToAcls(
       opts: AclCommandOptions): Map[Resource, Set[Acl]] = {
-    val topics: Set[Resource] =
-      getResource(opts).filter(_.resourceType == Topic)
+    val topics: Set[Resource] = getResource(opts).filter(
+      _.resourceType == Topic)
 
     val acls = getAcl(opts, Set(Write, Describe))
 
@@ -166,8 +166,8 @@ object AclCommand {
       opts: AclCommandOptions): Map[Resource, Set[Acl]] = {
     val resources = getResource(opts)
 
-    val topics: Set[Resource] =
-      getResource(opts).filter(_.resourceType == Topic)
+    val topics: Set[Resource] = getResource(opts).filter(
+      _.resourceType == Topic)
     val groups: Set[Resource] = resources.filter(_.resourceType == Group)
 
     //Read,Describe on topic, Read on consumerGroup + Create on cluster
@@ -192,8 +192,10 @@ object AclCommand {
 
     val deniedPrincipals = getPrincipals(opts, opts.denyPrincipalsOpt)
 
-    val allowedHosts =
-      getHosts(opts, opts.allowHostsOpt, opts.allowPrincipalsOpt)
+    val allowedHosts = getHosts(
+      opts,
+      opts.allowHostsOpt,
+      opts.allowPrincipalsOpt)
 
     val deniedHosts = getHosts(opts, opts.denyHostssOpt, opts.denyPrincipalsOpt)
 
@@ -337,8 +339,9 @@ object AclCommand {
       .ofType(classOf[String])
 
     val addOpt = parser.accepts("add", "Indicates you are trying to add ACLs.")
-    val removeOpt =
-      parser.accepts("remove", "Indicates you are trying to remove ACLs.")
+    val removeOpt = parser.accepts(
+      "remove",
+      "Indicates you are trying to remove ACLs.")
     val listOpt = parser.accepts(
       "list",
       "List ACLs for the specified resource, use --topic <topic> or --group <group> or --cluster to specify a resource.")

@@ -84,15 +84,15 @@ object Imports {
       "cached-translation-code-samples-report",
       "Generates a report on the translation code samples if not already generated",
       KeyRanks.CTask)
-    val playDocsValidationConfig =
-      settingKey[ValidationConfig]("Configuration for docs validation")
+    val playDocsValidationConfig = settingKey[ValidationConfig](
+      "Configuration for docs validation")
 
-    val javaManualSourceDirectories =
-      SettingKey[Seq[File]]("javaManualSourceDirectories")
-    val scalaManualSourceDirectories =
-      SettingKey[Seq[File]]("scalaManualSourceDirectories")
-    val commonManualSourceDirectories =
-      SettingKey[Seq[File]]("commonManualSourceDirectories")
+    val javaManualSourceDirectories = SettingKey[Seq[File]](
+      "javaManualSourceDirectories")
+    val scalaManualSourceDirectories = SettingKey[Seq[File]](
+      "scalaManualSourceDirectories")
+    val commonManualSourceDirectories = SettingKey[Seq[File]](
+      "commonManualSourceDirectories")
     val migrationManualSources = SettingKey[Seq[File]]("migrationManualSources")
     val javaTwirlSourceManaged = SettingKey[File]("javaRoutesSourceManaged")
     val scalaTwirlSourceManaged = SettingKey[File]("scalaRoutesSourceManaged")
@@ -215,8 +215,8 @@ object PlayDocsPlugin extends AutoPlugin {
       routesGenerator := InjectedRoutesGenerator,
       evaluateSbtFiles := {
         val unit = loadedBuild.value.units(thisProjectRef.value.build)
-        val (eval, structure) =
-          Load.defaultLoad(state.value, unit.localBase, state.value.log)
+        val (eval, structure) = Load
+          .defaultLoad(state.value, unit.localBase, state.value.log)
         val sbtFiles =
           ((unmanagedSourceDirectories in Test).value * "*.sbt").get
         val log = state.value.log
@@ -291,8 +291,8 @@ object PlayDocsPlugin extends AutoPlugin {
 
     val allResources = PlayDocsKeys.resources.value
 
-    val docHandlerFactoryClass =
-      classloader.loadClass("play.docs.BuildDocHandlerFactory")
+    val docHandlerFactoryClass = classloader.loadClass(
+      "play.docs.BuildDocHandlerFactory")
     val fromResourcesMethod = docHandlerFactoryClass.getMethod(
       "fromResources",
       classOf[Array[java.io.File]],

@@ -445,8 +445,10 @@ class UriSpec extends WordSpec with Matchers {
     }
     "support conversion from list of name/value pairs" in {
       import Query._
-      val pairs =
-        List("key1" -> "value1", "key2" -> "value2", "key3" -> "value3")
+      val pairs = List(
+        "key1" -> "value1",
+        "key2" -> "value2",
+        "key3" -> "value3")
       Query(pairs: _*).toList.diff(pairs) shouldEqual Nil
       Query() shouldEqual Empty
       Query("k" -> "v") shouldEqual ("k" -> "v") +: Empty

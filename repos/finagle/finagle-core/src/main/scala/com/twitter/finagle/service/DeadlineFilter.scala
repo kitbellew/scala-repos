@@ -39,12 +39,11 @@ object DeadlineFilter {
       maxRejectPercentage >= 0.0 && maxRejectPercentage <= 1.0,
       s"maxRejectPercentage must be between 0.0 and 1.0: $maxRejectPercentage")
 
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
-    implicit val param =
-      Stack.Param(Param(DefaultTolerance, DefaultMaxRejectPercentage))
+    implicit val param = Stack.Param(
+      Param(DefaultTolerance, DefaultMaxRejectPercentage))
   }
 
   /**
@@ -116,8 +115,8 @@ private[finagle] class DeadlineFilter[Req, Rep](
     s"maxRejectPercentage must be between 0.0 and 1.0: $maxRejectPercentage")
 
   private[this] val exceededStat = statsReceiver.counter("exceeded")
-  private[this] val beyondToleranceStat =
-    statsReceiver.counter("exceeded_beyond_tolerance")
+  private[this] val beyondToleranceStat = statsReceiver.counter(
+    "exceeded_beyond_tolerance")
   private[this] val rejectedStat = statsReceiver.counter("rejected")
   private[this] val transitTimeStat = statsReceiver.stat("transit_latency_ms")
   private[this] val budgetTimeStat = statsReceiver.stat("deadline_budget_ms")
@@ -127,8 +126,10 @@ private[finagle] class DeadlineFilter[Req, Rep](
   private[this] val rejectWithdrawal =
     (DeadlineFilter.RejectBucketScaleFactor / maxRejectPercentage).toInt
 
-  private[this] val rejectBucket =
-    TokenBucket.newLeakyBucket(rejectPeriod, 0, nowMillis)
+  private[this] val rejectBucket = TokenBucket.newLeakyBucket(
+    rejectPeriod,
+    0,
+    nowMillis)
 
   private[this] def deadlineExceeded(
       deadline: Deadline,

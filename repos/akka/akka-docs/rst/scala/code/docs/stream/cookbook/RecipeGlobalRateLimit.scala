@@ -52,8 +52,9 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       val open: Receive = {
         case ReplenishTokens =>
-          permitTokens =
-            math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
+          permitTokens = math.min(
+            permitTokens + tokenRefreshAmount,
+            maxAvailableTokens)
         case WantToPass =>
           permitTokens -= 1
           sender() ! MayPass
@@ -62,8 +63,9 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       val closed: Receive = {
         case ReplenishTokens =>
-          permitTokens =
-            math.min(permitTokens + tokenRefreshAmount, maxAvailableTokens)
+          permitTokens = math.min(
+            permitTokens + tokenRefreshAmount,
+            maxAvailableTokens)
           releaseWaiting()
         case WantToPass =>
           waitQueue = waitQueue.enqueue(sender())

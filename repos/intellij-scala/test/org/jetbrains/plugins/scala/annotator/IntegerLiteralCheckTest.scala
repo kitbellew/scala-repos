@@ -77,8 +77,8 @@ class IntegerLiteralCheckTest extends SimpleTestCase {
   }
 
   def testLiteralOverflowLong() {
-    val overflowLongStrings =
-      (longValues ++ randomLongValues(numOfGenInteger)).flatMap(x =>
+    val overflowLongStrings = (longValues ++ randomLongValues(numOfGenInteger))
+      .flatMap(x =>
         List(
           x.toString.padTo(21, '1'),
           "0x" + x.toHexString.padTo(17, '1'),

@@ -52,11 +52,14 @@ object ConnectedComponents {
       } else { Iterator.empty }
     }
     val initialMessage = Long.MaxValue
-    val pregelGraph =
-      Pregel(ccGraph, initialMessage, maxIterations, EdgeDirection.Either)(
-        vprog = (id, attr, msg) => math.min(attr, msg),
-        sendMsg = sendMessage,
-        mergeMsg = (a, b) => math.min(a, b))
+    val pregelGraph = Pregel(
+      ccGraph,
+      initialMessage,
+      maxIterations,
+      EdgeDirection.Either)(
+      vprog = (id, attr, msg) => math.min(attr, msg),
+      sendMsg = sendMessage,
+      mergeMsg = (a, b) => math.min(a, b))
     ccGraph.unpersist()
     pregelGraph
   } // end of connectedComponents

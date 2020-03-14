@@ -125,8 +125,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
                constructing)
            }
          }) map { scopeCandidates =>
-           val typeSearchResult =
-             typeSearch.flatMap(Await.result(_, Duration.Inf)).getOrElse(List())
+           val typeSearchResult = typeSearch
+             .flatMap(Await.result(_, Duration.Inf))
+             .getOrElse(List())
            scopeCandidates ++ typeSearchResult
          }
 
@@ -171,12 +172,13 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       caseSense: Boolean
   ): List[CompletionInfo] = {
     val pkg = selectedPackageName(select)
-    val candidates = (Option(info.getElements.getPackageElement(pkg)) map {
-      p: PackageElement =>
-        p.getEnclosedElements().flatMap { e =>
-          filterElement(info, e, prefix, caseSense, true, false)
-        }
-    }).getOrElse(List())
+    val candidates =
+      (Option(info.getElements.getPackageElement(pkg)) map {
+        p: PackageElement =>
+          p.getEnclosedElements().flatMap { e =>
+            filterElement(info, e, prefix, caseSense, true, false)
+          }
+      }).getOrElse(List())
     candidates.toList
   }
 
@@ -352,8 +354,9 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
 
   private def localTypeName(tm: TypeMirror) = {
     val s = tm.toString
-    val (front, back) =
-      s.split("\\.").partition { s => s.forall(Character.isLowerCase) }
+    val (front, back) = s.split("\\.").partition { s =>
+      s.forall(Character.isLowerCase)
+    }
     if (back.isEmpty) s else back.mkString(".")
   }
 

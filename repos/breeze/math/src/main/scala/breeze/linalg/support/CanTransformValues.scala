@@ -54,8 +54,7 @@ object CanTransformValues {
     def transformActive(from: Array[A], fn: (A) => A) { transform(from, fn) }
   }
 
-  implicit def opArray[@specialized A] =
-    new OpArray[A]
+  implicit def opArray[@specialized A] = new OpArray[A]
 
   implicit object OpArrayII extends OpArray[Int]
 

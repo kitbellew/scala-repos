@@ -97,10 +97,10 @@ trait OverridingAnnotator {
       holder: AnnotationHolder,
       isInSources: Boolean) {
     v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = false)
+      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = true)
+      val valsSignatures: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = false)
       checkStructural(v, valsSignatures, isInSources)
       checkOverrideMembers(
         td,
@@ -118,10 +118,10 @@ trait OverridingAnnotator {
       holder: AnnotationHolder,
       isInSources: Boolean) {
     v.declaredElements.foreach(td => {
-      val valsSignaturesWithSelfType: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = true)
-      val valsSignatures: Seq[Signature] =
-        ScalaPsiUtil.superValsSignatures(td, withSelfType = false)
+      val valsSignaturesWithSelfType: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = true)
+      val valsSignatures: Seq[Signature] = ScalaPsiUtil
+        .superValsSignatures(td, withSelfType = false)
       checkStructural(v, valsSignatures, isInSources)
       checkOverrideMembers(
         td,
@@ -137,8 +137,9 @@ trait OverridingAnnotator {
   def checkOverrideClassParameters(
       v: ScClassParameter,
       holder: AnnotationHolder) {
-    val supersWithSelfType =
-      ScalaPsiUtil.superValsSignatures(v, withSelfType = true)
+    val supersWithSelfType = ScalaPsiUtil.superValsSignatures(
+      v,
+      withSelfType = true)
     val supers = ScalaPsiUtil.superValsSignatures(v, withSelfType = false)
     checkOverrideMembers(
       v,
@@ -249,11 +250,10 @@ trait OverridingAnnotator {
       //fix for SCL-7831
       var overridesFinal = false
       for (signature <- superSignatures if !overridesFinal) {
-        val e =
-          signature match {
-            case signature: Signature => signature.namedElement
-            case _                    => signature
-          }
+        val e = signature match {
+          case signature: Signature => signature.namedElement
+          case _                    => signature
+        }
         e match {
           case owner1: PsiModifierListOwner if owner1.hasFinalModifier =>
             overridesFinal = true

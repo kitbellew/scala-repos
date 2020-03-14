@@ -27,11 +27,10 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     val connectionFlow
         : Flow[HttpRequest, HttpResponse, Future[Http.OutgoingConnection]] =
       Http().outgoingConnection("akka.io")
-    val responseFuture: Future[HttpResponse] =
-      Source
-        .single(HttpRequest(uri = "/"))
-        .via(connectionFlow)
-        .runWith(Sink.head)
+    val responseFuture: Future[HttpResponse] = Source
+      .single(HttpRequest(uri = "/"))
+      .via(connectionFlow)
+      .runWith(Sink.head)
     //#outgoing-connection-example
   }
 
@@ -50,11 +49,10 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     implicit val materializer = ActorMaterializer()
     // construct a pool client flow with context type `Int`
     val poolClientFlow = Http().cachedHostConnectionPool[Int]("akka.io")
-    val responseFuture: Future[(Try[HttpResponse], Int)] =
-      Source
-        .single(HttpRequest(uri = "/") -> 42)
-        .via(poolClientFlow)
-        .runWith(Sink.head)
+    val responseFuture: Future[(Try[HttpResponse], Int)] = Source
+      .single(HttpRequest(uri = "/") -> 42)
+      .via(poolClientFlow)
+      .runWith(Sink.head)
     //#host-level-example
   }
 
@@ -70,8 +68,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
 
-    val responseFuture: Future[HttpResponse] =
-      Http().singleRequest(HttpRequest(uri = "http://akka.io"))
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(
+      HttpRequest(uri = "http://akka.io"))
     //#single-request-example
   }
 
@@ -89,8 +87,8 @@ class HttpClientExampleSpec extends WordSpec with Matchers {
       import akka.pattern.pipe
       import context.dispatcher
 
-      final implicit val materializer: ActorMaterializer =
-        ActorMaterializer(ActorMaterializerSettings(context.system))
+      final implicit val materializer: ActorMaterializer = ActorMaterializer(
+        ActorMaterializerSettings(context.system))
 
       val http = Http(context.system)
 

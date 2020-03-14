@@ -14,8 +14,8 @@ import akka.http.scaladsl.Http
 import scala.concurrent.duration._
 
 object TestServer extends App {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
     akka.loglevel = INFO
     akka.log-dead-letters = off
     akka.stream.materializer.debug.fuzzing-mode = off
@@ -66,8 +66,7 @@ object TestServer extends App {
 
   bindingFuture.flatMap(_.unbind()).onComplete(_ ⇒ system.terminate())
 
-  lazy val index =
-    <html>
+  lazy val index = <html>
       <body>
         <h1>Say hello to <i>akka-http-core</i>!</h1>
         <p>Defined resources:</p>

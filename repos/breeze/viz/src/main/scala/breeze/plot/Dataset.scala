@@ -37,26 +37,19 @@ class XYDataset[Item](
   val names = ArrayBuffer[String]();
   val items = ArrayBuffer[IndexedSeq[Item]]();
 
-  override def getSeriesKey(series: Int) =
-    names(series)
+  override def getSeriesKey(series: Int) = names(series)
 
-  override def getSeriesCount =
-    names.length
+  override def getSeriesCount = names.length
 
-  override def getItemCount(series: Int) =
-    items(series).length
+  override def getItemCount(series: Int) = items(series).length
 
-  override def getX(series: Int, item: Int): Number =
-    x(items(series)(item))
+  override def getX(series: Int, item: Int): Number = x(items(series)(item))
 
-  override def getY(series: Int, item: Int): Number =
-    y(items(series)(item))
+  override def getY(series: Int, item: Int): Number = y(items(series)(item))
 
-  def getLabel(series: Int, item: Int): String =
-    label(items(series)(item))
+  def getLabel(series: Int, item: Int): String = label(items(series)(item))
 
-  def getTip(series: Int, item: Int): String =
-    tip(items(series)(item))
+  def getTip(series: Int, item: Int): String = tip(items(series)(item))
 
 }
 
@@ -92,29 +85,21 @@ class XYZDataset[Item](
   val names = ArrayBuffer[String]();
   val items = ArrayBuffer[IndexedSeq[Item]]();
 
-  override def getSeriesKey(series: Int) =
-    names(series);
+  override def getSeriesKey(series: Int) = names(series);
 
-  override def getSeriesCount =
-    names.length;
+  override def getSeriesCount = names.length;
 
-  override def getItemCount(series: Int) =
-    items(series).length;
+  override def getItemCount(series: Int) = items(series).length;
 
-  override def getX(series: Int, item: Int): Number =
-    x(items(series)(item));
+  override def getX(series: Int, item: Int): Number = x(items(series)(item));
 
-  override def getY(series: Int, item: Int): Number =
-    y(items(series)(item));
+  override def getY(series: Int, item: Int): Number = y(items(series)(item));
 
-  override def getZ(series: Int, item: Int): Number =
-    z(items(series)(item));
+  override def getZ(series: Int, item: Int): Number = z(items(series)(item));
 
-  def getLabel(series: Int, item: Int): String =
-    label(items(series)(item));
+  def getLabel(series: Int, item: Int): String = label(items(series)(item));
 
-  def getTip(series: Int, item: Int): String =
-    tip(items(series)(item));
+  def getTip(series: Int, item: Int): String = tip(items(series)(item));
 }
 
 object XYZDataset {

@@ -19,8 +19,7 @@ sealed trait ToNondeterminismOps0 {
 
 trait ToNondeterminismOps extends ToNondeterminismOps0 with ToMonadOps {
   implicit def ToNondeterminismOps[F[_], A](v: F[A])(
-      implicit F0: Nondeterminism[F]) =
-    new NondeterminismOps[F, A](v)
+      implicit F0: Nondeterminism[F]) = new NondeterminismOps[F, A](v)
 
   ////
 

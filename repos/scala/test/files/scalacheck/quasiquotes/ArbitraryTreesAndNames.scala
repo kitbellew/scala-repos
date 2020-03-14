@@ -149,8 +149,7 @@ trait ArbitraryTreesAndNames {
     for (name <- genTermName; params <- smallList(size, genIdent());
          rhs <- genTree(size - 1)) yield LabelDef(name, params, rhs)
 
-  def genLiteral =
-    for (const <- genConstant) yield Literal(const)
+  def genLiteral = for (const <- genConstant) yield Literal(const)
 
   def genMatch(size: Int) =
     for (selector <- genTree(size - 1);
@@ -161,8 +160,7 @@ trait ArbitraryTreesAndNames {
     for (mods <- genModifiers; name <- genTermName;
          impl <- genTemplate(size - 1)) yield ModuleDef(mods, name, impl)
 
-  def genNew(size: Int) =
-    for (tpt <- genTree(size - 1)) yield New(tpt)
+  def genNew(size: Int) = for (tpt <- genTree(size - 1)) yield New(tpt)
 
   def genRefTree(size: Int) =
     oneOf(genSelect(size), genIdent(), genSelectFromTypeTree(size))
@@ -186,23 +184,19 @@ trait ArbitraryTreesAndNames {
   def genReferenceToBoxed(size: Int) =
     for (ident <- genIdent()) yield ReferenceToBoxed(ident)
 
-  def genReturn(size: Int) =
-    for (expr <- genTree(size - 1)) yield Return(expr)
+  def genReturn(size: Int) = for (expr <- genTree(size - 1)) yield Return(expr)
 
   def genSingletonTypeTree(size: Int) =
     for (expr <- genTree(size - 1)) yield SingletonTypeTree(expr)
 
-  def genStar(size: Int) =
-    for (expr <- genTree(size - 1)) yield Star(expr)
+  def genStar(size: Int) = for (expr <- genTree(size - 1)) yield Star(expr)
 
   def genSuper(size: Int) =
     for (qual <- genTree(size - 1); mix <- genTypeName) yield Super(qual, mix)
 
-  def genThis(size: Int) =
-    for (qual <- genTypeName) yield This(qual)
+  def genThis(size: Int) = for (qual <- genTypeName) yield This(qual)
 
-  def genThrow(size: Int) =
-    for (expr <- genTree(size - 1)) yield Throw(expr)
+  def genThrow(size: Int) = for (expr <- genTree(size - 1)) yield Throw(expr)
 
   def genTry(size: Int) =
     for (block <- genTree(size - 1);

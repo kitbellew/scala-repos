@@ -10,8 +10,7 @@ import com.intellij.util.containers.WeakHashMap
   * @since 12/19/12
   */
 object WorksheetViewerInfo {
-  private val allViewers =
-    new WeakHashMap[Editor, List[(Editor)]]()
+  private val allViewers = new WeakHashMap[Editor, List[(Editor)]]()
 
   def getViewer(editor: Editor): Editor = get(editor)
 

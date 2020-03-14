@@ -76,11 +76,9 @@ abstract class TransitionSpec
       memberStatus(address) should ===(status)
     }
 
-  def leaderActions(): Unit =
-    cluster.clusterCore ! LeaderActionsTick
+  def leaderActions(): Unit = cluster.clusterCore ! LeaderActionsTick
 
-  def reapUnreachable(): Unit =
-    cluster.clusterCore ! ReapUnreachableTick
+  def reapUnreachable(): Unit = cluster.clusterCore ! ReapUnreachableTick
 
   // DSL sugar for `role1 gossipTo role2`
   implicit def roleExtras(role: RoleName): RoleWrapper = new RoleWrapper(role)

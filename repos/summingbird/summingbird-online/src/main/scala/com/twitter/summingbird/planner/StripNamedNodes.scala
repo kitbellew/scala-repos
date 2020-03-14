@@ -85,8 +85,8 @@ object StripNamedNode {
     /**
       * Basically do a graph walk on the list of irreducibles for each node
       */
-    val newNames: Map[Producer[P, Any], List[String]] =
-      newDependants.nodes.map { n =>
+    val newNames: Map[Producer[P, Any], List[String]] = newDependants.nodes
+      .map { n =>
         val newNodeIrr = transIrr(n)
         oldIrrToNode.get(newNodeIrr) match {
           case Some(oldProdList) => // get the name in the original graph

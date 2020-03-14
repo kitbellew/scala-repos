@@ -112,8 +112,11 @@ class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
 
     val max_groups = rizer.numUniq
 
-    val JoinResult(lTake, rTake) =
-      JoinHelper(leftLabels, rightLabels, max_groups, how)
+    val JoinResult(lTake, rTake) = JoinHelper(
+      leftLabels,
+      rightLabels,
+      max_groups,
+      how)
 
     // construct new joint index
     val newIdx = array.empty[T](lTake.length)

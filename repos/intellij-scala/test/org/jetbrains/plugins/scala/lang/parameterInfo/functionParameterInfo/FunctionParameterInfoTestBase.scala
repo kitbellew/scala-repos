@@ -58,8 +58,9 @@ abstract class FunctionParameterInfoTestBase
       -1)
     val handler = new ScalaFunctionParameterInfoHandler
     val leafElement = scalaFile.findElementAt(offset)
-    val element =
-      PsiTreeUtil.getParentOfType(leafElement, handler.getArgumentListClass)
+    val element = PsiTreeUtil.getParentOfType(
+      leafElement,
+      handler.getArgumentListClass)
     handler.findElementForParameterInfo(context)
     val items = new ArrayBuffer[String]
 

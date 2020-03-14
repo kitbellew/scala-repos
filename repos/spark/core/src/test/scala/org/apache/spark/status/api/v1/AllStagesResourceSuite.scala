@@ -69,8 +69,8 @@ class AllStagesResourceSuite extends SparkFunSuite {
   }
 
   test("firstTaskLaunchedTime when there are tasks and some launched") {
-    val result =
-      getFirstTaskLaunchTime(Seq(-100L, 1449255596000L, 1449255597000L))
+    val result = getFirstTaskLaunchTime(
+      Seq(-100L, 1449255596000L, 1449255597000L))
     assert(result == Some(new Date(1449255596000L)))
   }
 

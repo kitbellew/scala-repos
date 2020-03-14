@@ -28,14 +28,17 @@ object GlobifierProperties extends Properties("Globifier Properties") {
   implicit def dateParser: DateParser = DateParser.default
   implicit def tz: TimeZone = TimeZone.getTimeZone("UTC")
 
-  implicit val hourArb: Arbitrary[Hours] =
-    Arbitrary { choose(0, 10000).map { Hours(_) } }
+  implicit val hourArb: Arbitrary[Hours] = Arbitrary {
+    choose(0, 10000).map { Hours(_) }
+  }
 
-  implicit val dayArb: Arbitrary[Days] =
-    Arbitrary { choose(0, 100).map { Days(_) } }
+  implicit val dayArb: Arbitrary[Days] = Arbitrary {
+    choose(0, 100).map { Days(_) }
+  }
 
-  implicit val yearArb: Arbitrary[Years] =
-    Arbitrary { choose(0, 100).map { Years(_) } }
+  implicit val yearArb: Arbitrary[Years] = Arbitrary {
+    choose(0, 100).map { Years(_) }
+  }
 
   implicit val richDateArb: Arbitrary[RichDate] = Arbitrary {
     for (v <- choose(0L, 1L << 32)) yield RichDate(v)
@@ -45,8 +48,8 @@ object GlobifierProperties extends Properties("Globifier Properties") {
 
   def testHrDr(dr: DateRange): Boolean = {
     val resultantDR = globifierOps.hourlyRtGlobifier(dr)
-    val resultantWithNormalized =
-      globifierOps.hourlyRtGlobifier(globifierOps.normalizeHrDr(dr))
+    val resultantWithNormalized = globifierOps.hourlyRtGlobifier(
+      globifierOps.normalizeHrDr(dr))
 
     val res = globifierOps.normalizeHrDr(dr) == globifierOps.normalizeHrDr(
       resultantDR) &&
@@ -84,8 +87,8 @@ object GlobifierProperties extends Properties("Globifier Properties") {
 
   def testDayDr(dr: DateRange): Boolean = {
     val resultantDR = globifierOps.dailyRtGlobifier(dr)
-    val resultantWithNormalized =
-      globifierOps.dailyRtGlobifier(globifierOps.normalizeDayDr(dr))
+    val resultantWithNormalized = globifierOps.dailyRtGlobifier(
+      globifierOps.normalizeDayDr(dr))
 
     val res = globifierOps.normalizeDayDr(dr) == globifierOps.normalizeDayDr(
       resultantDR) &&

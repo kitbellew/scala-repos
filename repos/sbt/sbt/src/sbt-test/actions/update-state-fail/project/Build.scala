@@ -14,8 +14,8 @@ object TestBuild extends Build {
 
   lazy val a = Project("a", file("a")).settings(t := sys.error("Failing"))
 
-  lazy val b =
-    Project("b", file("b")).settings(t <<= Def.task("").updateState(updater))
+  lazy val b = Project("b", file("b"))
+    .settings(t <<= Def.task("").updateState(updater))
 
   def checkState(runs: Int, s: State): Unit = {
     val stored = s.get(akey).getOrElse(0)

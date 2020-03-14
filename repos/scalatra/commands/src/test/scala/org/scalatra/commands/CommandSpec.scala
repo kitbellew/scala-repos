@@ -13,11 +13,13 @@ import scalaz.Scalaz._
 
 trait BindingTemplate { self: Command with TypeConverterFactories =>
 
-  val upperCaseName: Field[String] =
-    bind[String]("name").transform(_.toUpperCase).optional("")
+  val upperCaseName: Field[String] = bind[String]("name")
+    .transform(_.toUpperCase)
+    .optional("")
 
-  val lowerCaseSurname: Field[String] =
-    asString("surname").transform(_.toLowerCase).optional("")
+  val lowerCaseSurname: Field[String] = asString("surname")
+    .transform(_.toLowerCase)
+    .optional("")
 
   val age: Field[Int] = asType[Int]("age").optional(-1) // explicit
 
@@ -60,8 +62,8 @@ class CommandWithConfirmationValidation extends ParamsOnlyCommand {
   val name: Field[String] = asString("name").notBlank
   val passwordConfirmation: Field[String] = asString(
     "passwordConfirmation").notBlank
-  val password: Field[String] =
-    asString("password").notBlank.validForConfirmation(passwordConfirmation)
+  val password: Field[String] = asString("password").notBlank
+    .validForConfirmation(passwordConfirmation)
 }
 
 class CommandWithRequiredValuesValidation extends ParamsOnlyCommand {
@@ -99,8 +101,11 @@ class CommandSpec extends Specification {
 
     "bindTo with values from all kinds of different sources and bind matching values to specific keys" in {
       val form = new MixAndMatchCommand
-      val params =
-        Map("name" -> "John", "age" -> "45", "limit" -> "30", "skip" -> "20")
+      val params = Map(
+        "name" -> "John",
+        "age" -> "45",
+        "limit" -> "30",
+        "skip" -> "20")
       val multi = MultiMap(params map { case (k, v) => k -> Seq(v) })
       val hdrs = Map("API-TOKEN" -> "123")
       form.bindTo(params, multi, hdrs)
@@ -201,8 +206,8 @@ class CommandSupportSpec extends Specification with Mockito {
     "provide a convention for request keys with commandRequestKey[T]" in {
 
       val page = new ScalatraPage
-      implicit val mockRequest: HttpServletRequest =
-        smartMock[HttpServletRequest]
+      implicit val mockRequest
+          : HttpServletRequest = smartMock[HttpServletRequest]
       val key = page.commandRequestKey[CommandSample]
       key must_== "_command_" + classOf[CommandSample].getName
 

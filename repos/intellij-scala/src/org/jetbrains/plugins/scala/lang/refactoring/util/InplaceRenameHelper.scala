@@ -41,8 +41,9 @@ class InplaceRenameHelper(parent: PsiElement) {
   private val dependentNames = mutable.HashMap[PsiElement, Seq[String]]()
   val project = parent.getProject
   val file = parent.getContainingFile
-  val document: Document =
-    PsiDocumentManager.getInstance(project).getDocument(file)
+  val document: Document = PsiDocumentManager
+    .getInstance(project)
+    .getDocument(file)
   val editor = EditorFactory.getInstance.getEditors(document)(0)
 
   def addGroup(
@@ -92,8 +93,8 @@ class InplaceRenameHelper(parent: PsiElement) {
     val template = builder.buildInlineTemplate().asInstanceOf[TemplateImpl]
     val templateVariables = template.getVariables
     val stopAtVariables = templateVariables.asScala.filter(_.isAlwaysStopAt)
-    val primarySortedVariables =
-      primaries.flatMap(p => stopAtVariables.find(_.getName == primaryNames(p)))
+    val primarySortedVariables = primaries.flatMap(p =>
+      stopAtVariables.find(_.getName == primaryNames(p)))
     for ((v, idx) <- primarySortedVariables.zipWithIndex) {
       templateVariables.set(idx, v)
     }
@@ -152,15 +153,15 @@ class InplaceRenameHelper(parent: PsiElement) {
           private def markCurrentVariables(groupIndex: Int) {
             val colorsManager: EditorColorsManager =
               EditorColorsManager.getInstance
-            val templateState: TemplateState =
-              TemplateManagerImpl.getTemplateState(editor)
+            val templateState: TemplateState = TemplateManagerImpl
+              .getTemplateState(editor)
             val document = editor.getDocument
             val primary = primaries(groupIndex)
 
             for (i <- 0 until templateState.getSegmentsCount) {
               val segmentRange: TextRange = templateState.getSegmentRange(i)
-              val segmentMarker: RangeMarker =
-                document.createRangeMarker(segmentRange)
+              val segmentMarker: RangeMarker = document.createRangeMarker(
+                segmentRange)
               val name: String = template.getSegmentName(i)
               val attributes: TextAttributes =
                 if (name == primaryNames(primary))

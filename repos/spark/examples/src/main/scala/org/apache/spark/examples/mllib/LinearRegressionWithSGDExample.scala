@@ -47,8 +47,10 @@ object LinearRegressionWithSGDExample {
     // Building the model
     val numIterations = 100
     val stepSize = 0.00000001
-    val model =
-      LinearRegressionWithSGD.train(parsedData, numIterations, stepSize)
+    val model = LinearRegressionWithSGD.train(
+      parsedData,
+      numIterations,
+      stepSize)
 
     // Evaluate model on training examples and compute training error
     val valuesAndPreds = parsedData.map { point =>

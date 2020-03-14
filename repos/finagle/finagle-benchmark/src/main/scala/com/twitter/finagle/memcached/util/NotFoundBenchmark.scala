@@ -24,8 +24,7 @@ class NotFoundBenchmark extends StdBenchAnnotations {
 
   private[this] val Keys: Set[String] = Text.split(" ").toSet.take(25)
 
-  private[this] val KVs: Map[String, String] =
-    Keys.map { k => k -> k }.toMap
+  private[this] val KVs: Map[String, String] = Keys.map { k => k -> k }.toMap
 
   private def pick(percent: Double): Set[String] = {
     val num = (Keys.size * percent).toInt
@@ -37,47 +36,36 @@ class NotFoundBenchmark extends StdBenchAnnotations {
 
   private[this] val notFound = new NotFound(NotFound.cutoff)
 
-  def baselineSet(toRemove: Set[String]): Set[String] =
-    Keys -- toRemove
+  def baselineSet(toRemove: Set[String]): Set[String] = Keys -- toRemove
 
-  def notFoundSet(toRemove: Set[String]): Set[String] =
-    notFound(Keys, toRemove)
+  def notFoundSet(toRemove: Set[String]): Set[String] = notFound(Keys, toRemove)
 
-  def baselineMap(toRemove: Set[String]): Map[String, String] =
-    KVs -- toRemove
+  def baselineMap(toRemove: Set[String]): Map[String, String] = KVs -- toRemove
 
   def notFoundMap(toRemove: Set[String]): Map[String, String] =
     notFound(KVs, toRemove)
 
   @Benchmark
-  def set_90_Baseline: Set[String] =
-    baselineSet(Hits90)
+  def set_90_Baseline: Set[String] = baselineSet(Hits90)
 
   @Benchmark
-  def set_Cutoff_Baseline: Set[String] =
-    baselineSet(HitsCutoff)
+  def set_Cutoff_Baseline: Set[String] = baselineSet(HitsCutoff)
 
   @Benchmark
-  def set_90_NotFound: Set[String] =
-    notFoundSet(Hits90)
+  def set_90_NotFound: Set[String] = notFoundSet(Hits90)
 
   @Benchmark
-  def set_Cutoff_NotFound: Set[String] =
-    notFoundSet(HitsCutoff)
+  def set_Cutoff_NotFound: Set[String] = notFoundSet(HitsCutoff)
   @Benchmark
-  def map_90_Baseline: Map[String, String] =
-    baselineMap(Hits90)
+  def map_90_Baseline: Map[String, String] = baselineMap(Hits90)
 
   @Benchmark
-  def map_Cutoff_Baseline: Map[String, String] =
-    baselineMap(HitsCutoff)
+  def map_Cutoff_Baseline: Map[String, String] = baselineMap(HitsCutoff)
 
   @Benchmark
-  def map_90_NotFound: Map[String, String] =
-    notFoundMap(Hits90)
+  def map_90_NotFound: Map[String, String] = notFoundMap(Hits90)
 
   @Benchmark
-  def map_Cutoff_NotFound: Map[String, String] =
-    notFoundMap(HitsCutoff)
+  def map_Cutoff_NotFound: Map[String, String] = notFoundMap(HitsCutoff)
 
 }

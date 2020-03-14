@@ -72,8 +72,8 @@ class IsotonicRegressionSuite
     val ir = new IsotonicRegression().setIsotonic(false)
 
     val model = ir.fit(dataset)
-    val features =
-      generatePredictionInput(Seq(-2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0))
+    val features = generatePredictionInput(
+      Seq(-2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0))
 
     val predictions = model
       .transform(features)

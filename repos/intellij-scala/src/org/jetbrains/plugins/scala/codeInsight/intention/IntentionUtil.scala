@@ -41,8 +41,9 @@ object IntentionUtil {
   def hasOtherComments(
       element: PsiElement,
       commentsAroundElement: CommentsAroundElement): Boolean = {
-    val allComments =
-      PsiTreeUtil.getChildrenOfTypeAsList(element, classOf[PsiComment])
+    val allComments = PsiTreeUtil.getChildrenOfTypeAsList(
+      element,
+      classOf[PsiComment])
     allComments
       .size() > commentsAroundElement.before.size + commentsAroundElement.after.size
   }

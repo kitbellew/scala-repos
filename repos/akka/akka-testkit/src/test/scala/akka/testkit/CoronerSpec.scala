@@ -45,8 +45,8 @@ class CoronerSpec extends WordSpec with Matchers {
 
     "display thread counts if enabled" in {
       val (_, report) = captureOutput(out ⇒ {
-        val coroner =
-          Coroner.watch(60.seconds, "XXXX", out, displayThreadCounts = true)
+        val coroner = Coroner
+          .watch(60.seconds, "XXXX", out, displayThreadCounts = true)
         coroner.cancel()
         Await.ready(coroner, 1.second)
       })

@@ -204,8 +204,7 @@ class Plot() {
   }
 
   /** The ChartPanel for this plot */
-  lazy val panel =
-    new org.jfree.chart.ChartPanel(chart)
+  lazy val panel = new org.jfree.chart.ChartPanel(chart)
 
 }
 
@@ -225,28 +224,23 @@ object Plot {
   }
 
   // color cycle ignoring bright colors
-  val paints: Array[Paint] =
-    PaintScale.Category20.values.asInstanceOf[Array[Paint]]
+  val paints: Array[Paint] = PaintScale.Category20.values
+    .asInstanceOf[Array[Paint]]
 
-  def paint(series: Int) =
-    paints(series % paints.length)
+  def paint(series: Int) = paints(series % paints.length)
 
   val shapes = DefaultDrawingSupplier.DEFAULT_SHAPE_SEQUENCE
-  def shape(series: Int) =
-    shapes(series % shapes.length)
+  def shape(series: Int) = shapes(series % shapes.length)
 
   val strokes = DefaultDrawingSupplier.DEFAULT_STROKE_SEQUENCE
-  def stroke(series: Int) =
-    strokes(series % strokes.length)
+  def stroke(series: Int) = strokes(series % strokes.length)
 
   val fillPaints = paints; // DefaultDrawingSupplier.DEFAULT_FILL_PAINT_SEQUENCE
-  def fillPaint(series: Int) =
-    fillPaints(series % fillPaints.length)
+  def fillPaint(series: Int) = fillPaints(series % fillPaints.length)
 
   val outlinePaints =
     paints; // DefaultDrawingSupplier.DEFAULT_OUTLINE_PAINT_SEQUENCE
-  def outlinePaint(series: Int) =
-    outlinePaints(series % outlinePaints.length)
+  def outlinePaint(series: Int) = outlinePaints(series % outlinePaints.length)
 
   val outlineStrokes = DefaultDrawingSupplier.DEFAULT_OUTLINE_STROKE_SEQUENCE
   def outlineStroke(series: Int) =
@@ -258,8 +252,7 @@ object Plot {
   // shapes
   //
 
-  val dot =
-    new java.awt.geom.Ellipse2D.Double(-1, -1, 2, 2)
+  val dot = new java.awt.geom.Ellipse2D.Double(-1, -1, 2, 2)
 
   val plus = {
     val shape = new java.awt.geom.GeneralPath()

@@ -11,10 +11,9 @@ object InetSocketAddressUtil {
 
   type HostPort = (String, Int)
 
-  private[finagle] val unconnected =
-    new SocketAddress {
-      override def toString = "unconnected"
-    }
+  private[finagle] val unconnected = new SocketAddress {
+    override def toString = "unconnected"
+  }
 
   /** converts 0.0.0.0 -> public ip in bound ip */
   def toPublic(bound: SocketAddress): SocketAddress = {

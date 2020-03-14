@@ -145,8 +145,8 @@ class SimplifyJumpsTest {
 
     // ensures that the goto is safely removed. ASM supports removing while iterating, but not the
     // next element of the current. Here, the current is the IFGE, the next is the GOTO.
-    val method =
-      genMethod()(code(Jump(IFGE, Label(2)), Jump(GOTO, Label(3))): _*)
+    val method = genMethod()(
+      code(Jump(IFGE, Label(2)), Jump(GOTO, Label(3))): _*)
     assertTrue(LocalOptImpls.simplifyJumps(method))
     assertSameCode(instructionsFromMethod(method), code(Jump(IFLT, Label(3))))
   }

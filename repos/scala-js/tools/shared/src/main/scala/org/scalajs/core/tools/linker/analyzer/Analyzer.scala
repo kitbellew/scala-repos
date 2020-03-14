@@ -159,8 +159,8 @@ private final class Analyzer(
       if getSuperclassMethodInfo.isReachable
     } {
       // calledFrom should always be nonEmpty if isReachable, but let's be robust
-      implicit val from =
-        getSuperclassMethodInfo.calledFrom.headOption.getOrElse(fromAnalyzer)
+      implicit val from = getSuperclassMethodInfo.calledFrom.headOption
+        .getOrElse(fromAnalyzer)
       for (classInfo <- _classInfos.values.filter(_.isDataAccessed).toList) {
         @tailrec
         def loop(classInfo: ClassInfo): Unit = {
@@ -281,8 +281,8 @@ private final class Analyzer(
           } else {
             val syntheticInfo = Infos.MethodInfo(
               encodedName = ctorName,
-              methodsCalledStatically =
-                Map(superClass.encodedName -> List(ctorName)))
+              methodsCalledStatically = Map(
+                superClass.encodedName -> List(ctorName)))
             val m = new MethodInfo(this, syntheticInfo)
             m.syntheticKind = MethodSyntheticKind.InheritedConstructor
             methodInfos += ctorName -> m
@@ -396,11 +396,11 @@ private final class Analyzer(
 
       val syntheticInfo = Infos.MethodInfo(
         encodedName = methodName,
-        methodsCalledStatically =
-          Map(targetOwner.encodedName -> List(methodName)))
+        methodsCalledStatically = Map(
+          targetOwner.encodedName -> List(methodName)))
       val m = new MethodInfo(this, syntheticInfo)
-      m.syntheticKind =
-        MethodSyntheticKind.DefaultBridge(targetOwner.encodedName)
+      m.syntheticKind = MethodSyntheticKind.DefaultBridge(
+        targetOwner.encodedName)
       methodInfos += methodName -> m
       m
     }

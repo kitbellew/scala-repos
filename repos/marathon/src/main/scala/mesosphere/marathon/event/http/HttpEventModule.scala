@@ -89,8 +89,8 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
       log.info(
         s"http_endpoints($urls) are specified at startup. Those will be added to subscribers list.")
       urls foreach { url =>
-        val f =
-          (actor ? Subscribe(local_ip, url)).mapTo[MarathonSubscriptionEvent]
+        val f = (actor ? Subscribe(local_ip, url))
+          .mapTo[MarathonSubscriptionEvent]
         f.onFailure {
           case th: Throwable =>
             log.warn(

@@ -76,8 +76,8 @@ trait ScMethodLike extends ScMember with PsiMethod {
     if (parameterList.clauses.length > 0)
       parameterList.clauses.apply(0).addParameter(param)
     else {
-      val clause: ScParameterClause =
-        ScalaPsiElementFactory.createClauseFromText("()", getManager)
+      val clause: ScParameterClause = ScalaPsiElementFactory
+        .createClauseFromText("()", getManager)
       val newClause = clause.addParameter(param)
       parameterList.addClause(newClause)
     }

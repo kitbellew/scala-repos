@@ -78,8 +78,7 @@ private[pickling] case class CallConstructor(
     fieldNames: Seq[String],
     constructor: IrConstructor)
     extends UnpicklerAst {
-  def requiresReflection: Boolean =
-    !(constructor.isPublic)
+  def requiresReflection: Boolean = !(constructor.isPublic)
   override def toString = s"constructor (${fieldNames.mkString(", ")})"
 }
 
@@ -99,8 +98,7 @@ private[pickling] case class CallModuleFactory(
     extends UnpicklerAst {
   assert(module.isScalaModule)
   assert(!factoryMethod.isStatic)
-  def requiresReflection: Boolean =
-    factoryMethod.isPublic
+  def requiresReflection: Boolean = factoryMethod.isPublic
 
   override def toString =
     s"call $module $factoryMethod (${fields.mkString(", ")})"

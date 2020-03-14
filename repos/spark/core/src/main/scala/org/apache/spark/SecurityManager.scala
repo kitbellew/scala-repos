@@ -184,17 +184,17 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
 
   import SecurityManager._
 
-  private val authOn =
-    sparkConf.getBoolean(SecurityManager.SPARK_AUTH_CONF, false)
+  private val authOn = sparkConf.getBoolean(
+    SecurityManager.SPARK_AUTH_CONF,
+    false)
   // keep spark.ui.acls.enable for backwards compatibility with 1.0
-  private var aclsOn =
-    sparkConf.getBoolean(
-      "spark.acls.enable",
-      sparkConf.getBoolean("spark.ui.acls.enable", false))
+  private var aclsOn = sparkConf.getBoolean(
+    "spark.acls.enable",
+    sparkConf.getBoolean("spark.ui.acls.enable", false))
 
   // admin acls should be set before view or modify acls
-  private var adminAcls: Set[String] =
-    stringToSet(sparkConf.get("spark.admin.acls", ""))
+  private var adminAcls: Set[String] = stringToSet(
+    sparkConf.get("spark.admin.acls", ""))
 
   private var viewAcls: Set[String] = _
 
@@ -203,8 +203,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   private var modifyAcls: Set[String] = _
 
   // always add the current user and SPARK_USER to the viewAcls
-  private val defaultAclUsers =
-    Set[String](System.getProperty("user.name", ""), Utils.getCurrentUserName())
+  private val defaultAclUsers = Set[String](
+    System.getProperty("user.name", ""),
+    Utils.getCurrentUserName())
 
   setViewAcls(defaultAclUsers, sparkConf.get("spark.ui.view.acls", ""))
   setModifyAcls(defaultAclUsers, sparkConf.get("spark.modify.acls", ""))
@@ -238,62 +239,68 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   }
 
   // the default SSL configuration - it will be used by all communication layers unless overwritten
-  private val defaultSSLOptions =
-    SSLOptions.parse(sparkConf, "spark.ssl", defaults = None)
+  private val defaultSSLOptions = SSLOptions.parse(
+    sparkConf,
+    "spark.ssl",
+    defaults = None)
 
   // SSL configuration for the file server. This is used by Utils.setupSecureURLConnection().
   val fileServerSSLOptions = getSSLOptions("fs")
-  val (sslSocketFactory, hostnameVerifier) = if (fileServerSSLOptions.enabled) {
-    val trustStoreManagers =
-      for (trustStore <- fileServerSSLOptions.trustStore) yield {
-        val input =
-          Files.asByteSource(fileServerSSLOptions.trustStore.get).openStream()
+  val (sslSocketFactory, hostnameVerifier) =
+    if (fileServerSSLOptions.enabled) {
+      val trustStoreManagers =
+        for (trustStore <- fileServerSSLOptions.trustStore) yield {
+          val input = Files
+            .asByteSource(fileServerSSLOptions.trustStore.get)
+            .openStream()
 
-        try {
-          val ks = KeyStore.getInstance(KeyStore.getDefaultType)
-          ks.load(
-            input,
-            fileServerSSLOptions.trustStorePassword.get.toCharArray)
+          try {
+            val ks = KeyStore.getInstance(KeyStore.getDefaultType)
+            ks.load(
+              input,
+              fileServerSSLOptions.trustStorePassword.get.toCharArray)
 
-          val tmf = TrustManagerFactory.getInstance(
-            TrustManagerFactory.getDefaultAlgorithm)
-          tmf.init(ks)
-          tmf.getTrustManagers
-        } finally { input.close() }
+            val tmf = TrustManagerFactory.getInstance(
+              TrustManagerFactory.getDefaultAlgorithm)
+            tmf.init(ks)
+            tmf.getTrustManagers
+          } finally { input.close() }
+        }
+
+      lazy val credulousTrustStoreManagers = Array({
+        logWarning("Using 'accept-all' trust manager for SSL connections.")
+        new X509TrustManager {
+          override def getAcceptedIssuers: Array[X509Certificate] = null
+
+          override def checkClientTrusted(
+              x509Certificates: Array[X509Certificate],
+              s: String) {}
+
+          override def checkServerTrusted(
+              x509Certificates: Array[X509Certificate],
+              s: String) {}
+        }: TrustManager
+      })
+
+      val sslContext = SSLContext.getInstance(
+        fileServerSSLOptions.protocol.getOrElse("Default"))
+      sslContext.init(
+        null,
+        trustStoreManagers.getOrElse(credulousTrustStoreManagers),
+        null)
+
+      val hostVerifier = new HostnameVerifier {
+        override def verify(s: String, sslSession: SSLSession): Boolean = true
       }
 
-    lazy val credulousTrustStoreManagers = Array({
-      logWarning("Using 'accept-all' trust manager for SSL connections.")
-      new X509TrustManager {
-        override def getAcceptedIssuers: Array[X509Certificate] = null
-
-        override def checkClientTrusted(
-            x509Certificates: Array[X509Certificate],
-            s: String) {}
-
-        override def checkServerTrusted(
-            x509Certificates: Array[X509Certificate],
-            s: String) {}
-      }: TrustManager
-    })
-
-    val sslContext =
-      SSLContext.getInstance(fileServerSSLOptions.protocol.getOrElse("Default"))
-    sslContext.init(
-      null,
-      trustStoreManagers.getOrElse(credulousTrustStoreManagers),
-      null)
-
-    val hostVerifier = new HostnameVerifier {
-      override def verify(s: String, sslSession: SSLSession): Boolean = true
-    }
-
-    (Some(sslContext.getSocketFactory), Some(hostVerifier))
-  } else { (None, None) }
+      (Some(sslContext.getSocketFactory), Some(hostVerifier))
+    } else { (None, None) }
 
   def getSSLOptions(module: String): SSLOptions = {
-    val opts =
-      SSLOptions.parse(sparkConf, s"spark.ssl.$module", Some(defaultSSLOptions))
+    val opts = SSLOptions.parse(
+      sparkConf,
+      s"spark.ssl.$module",
+      Some(defaultSSLOptions))
     logDebug(s"Created SSL options for $module: $opts")
     opts
   }
@@ -372,8 +379,8 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
       // In YARN mode, the secure cookie will be created by the driver and stashed in the
       // user's credentials, where executors can get it. The check for an array of size 0
       // is because of the test code in YarnSparkHadoopUtilSuite.
-      val secretKey =
-        SparkHadoopUtil.get.getSecretKeyFromUserCredentials(SECRET_LOOKUP_KEY)
+      val secretKey = SparkHadoopUtil.get.getSecretKeyFromUserCredentials(
+        SECRET_LOOKUP_KEY)
       if (secretKey == null || secretKey.length == 0) {
         logDebug(
           "generateSecretKey: yarn mode, secret key from credentials is null")

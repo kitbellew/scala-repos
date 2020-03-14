@@ -116,14 +116,15 @@ class IdeClientIdea(
       source: File,
       reader: ClassReader): Seq[PackageObjectBaseClass] = {
     val baseTypes: Seq[String] = {
-      val superClass =
-        Option(reader.getSuperName).filterNot(_ == "java/lang/Object")
+      val superClass = Option(reader.getSuperName)
+        .filterNot(_ == "java/lang/Object")
       val interfaces = reader.getInterfaces.toSeq
       interfaces ++ superClass
     }
     val className = reader.getClassName
-    val packageName =
-      className.stripSuffix(packageObjectClassName).replace("/", ".")
+    val packageName = className
+      .stripSuffix(packageObjectClassName)
+      .replace("/", ".")
     for {
       typeName <- baseTypes.map(_.replace('/', '.'))
       packObjectBaseClass = PackageObjectBaseClass(

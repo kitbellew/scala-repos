@@ -70,8 +70,10 @@ class TopicCommandTest
     val alterOpts = new TopicCommandOptions(
       Array("--partitions", numPartitionsModified.toString, "--topic", topic))
     TopicCommand.alterTopic(zkUtils, alterOpts)
-    val newProps =
-      AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
+    val newProps = AdminUtils.fetchEntityConfig(
+      zkUtils,
+      ConfigType.Topic,
+      topic)
     assertTrue(
       "Updated properties do not contain " + cleanupKey,
       newProps.containsKey(cleanupKey))

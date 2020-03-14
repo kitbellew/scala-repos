@@ -301,8 +301,8 @@ private[history] class ApplicationCache(
     time(metrics.loadTimer) {
       operations.getAppUI(appId, attemptId) match {
         case Some(LoadedAppUI(ui, updateState)) =>
-          val completed =
-            ui.getApplicationInfoList.exists(_.attempts.last.completed)
+          val completed = ui.getApplicationInfoList.exists(
+            _.attempts.last.completed)
           if (completed) {
             // completed spark UIs are attached directly
             operations.attachSparkUI(appId, attemptId, ui, completed)
@@ -589,8 +589,9 @@ private[history] class ApplicationCacheCheckFilter()
       // send a redirect back to the same location. This will be routed
       // to the *new* UI
       logInfo(s"Application Attempt $appId/$attemptId updated; refreshing")
-      val queryStr =
-        Option(httpRequest.getQueryString).map("?" + _).getOrElse("")
+      val queryStr = Option(httpRequest.getQueryString)
+        .map("?" + _)
+        .getOrElse("")
       val redirectUrl = httpResponse.encodeRedirectURL(requestURI + queryStr)
       httpResponse.sendRedirect(redirectUrl)
     } else { chain.doFilter(request, response) }
@@ -695,8 +696,8 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
       appId: String,
       attemptId: Option[String]): Unit = {
     require(ui != null)
-    val enumDispatcher =
-      java.util.EnumSet.of(DispatcherType.ASYNC, DispatcherType.REQUEST)
+    val enumDispatcher = java.util.EnumSet
+      .of(DispatcherType.ASYNC, DispatcherType.REQUEST)
     val holder = new FilterHolder()
     holder.setClassName(FILTER_NAME)
     holder.setInitParameter(APP_ID, appId)

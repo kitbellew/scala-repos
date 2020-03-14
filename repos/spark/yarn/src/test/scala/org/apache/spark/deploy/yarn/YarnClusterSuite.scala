@@ -146,8 +146,9 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     // creates the pyspark archive. Instead, let's use PYSPARK_ARCHIVES_PATH to point at the
     // needed locations.
     val sparkHome = sys.props("spark.test.home")
-    val pythonPath =
-      Seq(s"$sparkHome/python/lib/py4j-0.9.2-src.zip", s"$sparkHome/python")
+    val pythonPath = Seq(
+      s"$sparkHome/python/lib/py4j-0.9.2-src.zip",
+      s"$sparkHome/python")
     val extraEnv = Map(
       "PYSPARK_ARCHIVES_PATH" -> pythonPath
         .map("local:" + _)
@@ -167,10 +168,11 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     val pyModule = new File(moduleDir, "mod1.py")
     Files.write(TEST_PYMODULE, pyModule, StandardCharsets.UTF_8)
 
-    val mod2Archive =
-      TestUtils.createJarWithFiles(Map("mod2.py" -> TEST_PYMODULE), moduleDir)
-    val pyFiles =
-      Seq(pyModule.getAbsolutePath(), mod2Archive.getPath()).mkString(",")
+    val mod2Archive = TestUtils.createJarWithFiles(
+      Map("mod2.py" -> TEST_PYMODULE),
+      moduleDir)
+    val pyFiles = Seq(pyModule.getAbsolutePath(), mod2Archive.getPath())
+      .mkString(",")
     val result = File.createTempFile("result", null, tempDir)
 
     val finalState = runSpark(
@@ -184,8 +186,9 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
 
   private def testUseClassPathFirst(clientMode: Boolean): Unit = {
     // Create a jar file that contains a different version of "test.resource".
-    val originalJar =
-      TestUtils.createJarWithFiles(Map("test.resource" -> "ORIGINAL"), tempDir)
+    val originalJar = TestUtils.createJarWithFiles(
+      Map("test.resource" -> "ORIGINAL"),
+      tempDir)
     val userJar = TestUtils.createJarWithFiles(
       Map("test.resource" -> "OVERRIDDEN"),
       tempDir)
@@ -194,8 +197,9 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     val finalState = runSpark(
       clientMode,
       mainClassName(YarnClasspathTest.getClass),
-      appArgs =
-        Seq(driverResult.getAbsolutePath(), executorResult.getAbsolutePath()),
+      appArgs = Seq(
+        driverResult.getAbsolutePath(),
+        executorResult.getAbsolutePath()),
       extraClassPath = Seq(originalJar.getPath()),
       extraJars = Seq("local:" + userJar.getPath()),
       extraConf = Map(

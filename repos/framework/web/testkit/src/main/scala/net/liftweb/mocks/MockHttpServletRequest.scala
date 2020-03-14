@@ -379,8 +379,7 @@ class MockHttpServletRequest(
     * Adds an "Authorization" header, per RFC1945.
     */
   def addBasicAuth(user: String, pass: String) {
-    val hashedCredentials =
-      Helpers.base64Encode((user + ":" + pass).getBytes)
+    val hashedCredentials = Helpers.base64Encode((user + ":" + pass).getBytes)
     headers += "Authorization" -> List("Basic " + hashedCredentials)
   }
 
@@ -502,8 +501,7 @@ class MockHttpServletRequest(
 
   def getHeaderNames(): JEnum[String] = headers.keys.iterator
 
-  def getHeaders(s: String): JEnum[String] =
-    headers.getOrElse(s, Nil).iterator
+  def getHeaders(s: String): JEnum[String] = headers.getOrElse(s, Nil).iterator
 
   def getIntHeader(h: String): Int = {
     Box.!!(getHeader(h)).map(_.toInt) openOr -1

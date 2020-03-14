@@ -183,8 +183,10 @@ trait JoinAlgorithms {
        * For this (common) case, it doesn't matter if we drop one of the matching grouping fields.
        * So, we rename the right hand side to temporary names, then discard them after the operation
        */
-      val (renamedThat, newJoinFields, temp) =
-        renameCollidingFields(that, fs._2, intersection)
+      val (renamedThat, newJoinFields, temp) = renameCollidingFields(
+        that,
+        fs._2,
+        intersection)
       pipe
         .coGroupBy(fs._1, joiners._1) {
           _.coGroup(newJoinFields, renamedThat, joiners._2)
@@ -253,8 +255,10 @@ trait JoinAlgorithms {
         fs._2,
         WrappedJoiner(new InnerJoin))
     } else {
-      val (renamedThat, newJoinFields, temp) =
-        renameCollidingFields(that, fs._2, intersection)
+      val (renamedThat, newJoinFields, temp) = renameCollidingFields(
+        that,
+        fs._2,
+        intersection)
       (new HashJoin(
         assignName(pipe),
         fs._1,
@@ -323,8 +327,11 @@ trait JoinAlgorithms {
     val rightFields = new Fields("__RIGHT_I__", "__RIGHT_J__")
 
     // Add the new dummy replication fields
-    val newLeft =
-      addReplicationFields(pipe, leftFields, leftReplication, rightReplication)
+    val newLeft = addReplicationFields(
+      pipe,
+      leftFields,
+      leftReplication,
+      rightReplication)
     val newRight = addReplicationFields(
       otherPipe,
       rightFields,
@@ -530,18 +537,18 @@ trait JoinAlgorithms {
 
     // 3. Finally, join the replicated pipes together.
     val leftJoinFields = Fields.join(fs._1, leftReplicationFields)
-    val rightJoinFields =
-      Fields.join(rightResolvedJoinFields, rightReplicationFields)
+    val rightJoinFields = Fields.join(
+      rightResolvedJoinFields,
+      rightReplicationFields)
 
-    val joinedPipe =
-      replicatedLeft
-        .joinWithSmaller(
-          leftJoinFields -> rightJoinFields,
-          replicatedRight,
-          joiner = new InnerJoin,
-          reducers)
-        .discard(leftReplicationFields)
-        .discard(rightReplicationFields)
+    val joinedPipe = replicatedLeft
+      .joinWithSmaller(
+        leftJoinFields -> rightJoinFields,
+        replicatedRight,
+        joiner = new InnerJoin,
+        reducers)
+      .discard(leftReplicationFields)
+      .discard(rightReplicationFields)
 
     if (intersection.isEmpty) joinedPipe else joinedPipe.discard(dupeFields)
   }
@@ -600,8 +607,10 @@ trait JoinAlgorithms {
       .using(new Random(Seed) with Stateful)
       .flatMap(countFields -> replicationFields) {
         (rand: Random, counts: (Int, Int)) =>
-          val (leftRep, rightRep) =
-            replicator.getReplications(counts._1, counts._2, numReducers)
+          val (leftRep, rightRep) = replicator.getReplications(
+            counts._1,
+            counts._2,
+            numReducers)
 
           val (rep, otherRep) =
             if (isPipeOnRight) (rightRep, leftRep) else (leftRep, rightRep)

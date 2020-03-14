@@ -13,8 +13,8 @@ class FormatterTest extends FunSuite {
     registry.put(Seq("foo", "qux"), "quux")
 
     val actual = Formatter.asMap(registry)
-    val expected =
-      Map("registry" -> Map("foo" -> Map("bar" -> "baz", "qux" -> "quux")))
+    val expected = Map(
+      "registry" -> Map("foo" -> Map("bar" -> "baz", "qux" -> "quux")))
     assert(actual == expected)
   }
 
@@ -49,10 +49,12 @@ class FormatterTest extends FunSuite {
   }
 
   test("add should handle colliding prefixes that are shorter") {
-    val actual =
-      Formatter.add(Map("it's" -> "small"), Seq("it's", "very"), "big")
-    val expected =
-      Map("it's" -> Map("very" -> "big", Formatter.Eponymous -> "small"))
+    val actual = Formatter.add(
+      Map("it's" -> "small"),
+      Seq("it's", "very"),
+      "big")
+    val expected = Map(
+      "it's" -> Map("very" -> "big", Formatter.Eponymous -> "small"))
     assert(actual == expected)
   }
 

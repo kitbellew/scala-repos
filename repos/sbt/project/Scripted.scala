@@ -47,14 +47,13 @@ object Scripted {
       if (page.page == page.total) dropped else dropped.take(pageSize)
     }
     def nameP(group: String) = { token("*".id | id.examples(pairMap(group))) }
-    val PagedIds: Parser[Seq[String]] =
-      for {
-        group <- groupP
-        page <- pageP
-        files = pagedFilenames(group, page)
-        // TODO -  Fail the parser if we don't have enough files for the given page size
-        //if !files.isEmpty
-      } yield files map (f => group + '/' + f)
+    val PagedIds: Parser[Seq[String]] = for {
+      group <- groupP
+      page <- pageP
+      files = pagedFilenames(group, page)
+      // TODO -  Fail the parser if we don't have enough files for the given page size
+      //if !files.isEmpty
+    } yield files map (f => group + '/' + f)
 
     val testID =
       (for (group <- groupP; name <- nameP(group)) yield (group, name))
@@ -85,15 +84,14 @@ object Scripted {
       s"About to run tests: ${args.mkString("\n * ", "\n * ", "\n")}")
     val noJLine =
       new classpath.FilteredLoader(scriptedSbtInstance.loader, "jline." :: Nil)
-    val loader =
-      classpath.ClasspathUtilities.toLoader(scriptedSbtClasspath.files, noJLine)
+    val loader = classpath.ClasspathUtilities
+      .toLoader(scriptedSbtClasspath.files, noJLine)
     val bridgeClass = Class.forName("sbt.test.ScriptedRunner", true, loader)
     val bridge = bridgeClass.newInstance.asInstanceOf[SbtScriptedRunner]
-    val launcherVmOptions =
-      Array(
-        "-XX:MaxPermSize=256M",
-        "-Xmx1G"
-      ) // increased after a failure in scripted source-dependencies/macro
+    val launcherVmOptions = Array(
+      "-XX:MaxPermSize=256M",
+      "-Xmx1G"
+    ) // increased after a failure in scripted source-dependencies/macro
     try {
       // Using java.util.List to encode File => Unit.
       val callback = new java.util.AbstractList[File] {

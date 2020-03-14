@@ -119,8 +119,8 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       XYChart.Data[Number, Number](d.day, d.open, d)
     }
 
-    val series =
-      XYChart.Series[Number, Number](ObservableBuffer(seriesData.toSeq))
+    val series = XYChart.Series[Number, Number](
+      ObservableBuffer(seriesData.toSeq))
 
     new CandleStickChart(xAxis, yAxis) {
       title = "Custom Candle Stick Chart"
@@ -387,17 +387,19 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
       updateStyleClasses()
       highLowLine.startY = highOffset
       highLowLine.endY = lowOffset
-      val cw = if (candleWidth == -1) {
-        // FIXME: It should be possible to access this method without delegate, it is not the same as setPrefWidth
-        bar.delegate.prefWidth(-1)
-      } else candleWidth
+      val cw =
+        if (candleWidth == -1) {
+          // FIXME: It should be possible to access this method without delegate, it is not the same as setPrefWidth
+          bar.delegate.prefWidth(-1)
+        } else candleWidth
       if (openAboveClose) { bar.resizeRelocate(-cw / 2, 0, cw, closeOffset) }
       else { bar.resizeRelocate(-cw / 2, closeOffset, cw, closeOffset * -1) }
     }
 
     def updateTooltip(open: Double, close: Double, high: Double, low: Double) {
-      val tooltipContent: TooltipContent =
-        tooltip.graphic().asInstanceOf[TooltipContent]
+      val tooltipContent: TooltipContent = tooltip
+        .graphic()
+        .asInstanceOf[TooltipContent]
       tooltipContent.update(open, close, high, low)
     }
 
@@ -406,10 +408,16 @@ class EnsembleAdvCandleStickChart extends EnsembleExample {
         if (openAboveClose) "open-above-close" else "close-above-open"
 
       styleClass = Seq("candlestick-candle", seriesStyleClass, dataStyleClass)
-      highLowLine.styleClass =
-        Seq("candlestick-line", seriesStyleClass, dataStyleClass, closeVsOpen)
-      bar.styleClass =
-        Seq("candlestick-bar", seriesStyleClass, dataStyleClass, closeVsOpen)
+      highLowLine.styleClass = Seq(
+        "candlestick-line",
+        seriesStyleClass,
+        dataStyleClass,
+        closeVsOpen)
+      bar.styleClass = Seq(
+        "candlestick-bar",
+        seriesStyleClass,
+        dataStyleClass,
+        closeVsOpen)
     }
 
   }

@@ -69,8 +69,10 @@ object FindDeterioratedMetrics {
       printSlope(filterDeteriorated(new URL(args(0)), new URL(args(1)), 1))
       println(
         s"\n\nMetrics that got deteriorated (deterioration factor == ${args(2)}):")
-      val deteriorated =
-        filterDeteriorated(new URL(args(0)), new URL(args(1)), args(2).toDouble)
+      val deteriorated = filterDeteriorated(
+        new URL(args(0)),
+        new URL(args(1)),
+        args(2).toDouble)
       if (deteriorated.nonEmpty) {
         printSlope(deteriorated)
         throw new IllegalStateException(

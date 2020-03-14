@@ -61,8 +61,8 @@ class AppsResource @Inject() (
       @QueryParam("embed") embed: java.util.Set[String],
       @Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      val selector =
-        selectAuthorized(search(Option(cmd), Option(id), Option(label)))
+      val selector = selectAuthorized(
+        search(Option(cmd), Option(id), Option(label)))
       // additional embeds are deprecated!
       val resolvedEmbed = InfoEmbedResolver.resolveApp(embed.asScala.toSet) +
         AppInfo.Embed.Counts + AppInfo.Embed.Deployments
@@ -80,8 +80,8 @@ class AppsResource @Inject() (
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
           val now = clock.now()
-          val app = appDef.copy(versionInfo =
-            AppDefinition.VersionInfo.OnlyVersion(now))
+          val app = appDef
+            .copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(now))
 
           checkAuthorization(CreateApp, app)
 

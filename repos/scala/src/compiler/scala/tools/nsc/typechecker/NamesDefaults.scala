@@ -182,8 +182,8 @@ trait NamesDefaults { self: Analyzer =>
         // it stays in Vegas: SI-5720, SI-5727
         qual changeOwner (blockTyper.context.owner -> sym)
 
-        val newQual =
-          atPos(qual.pos.focus)(blockTyper.typedQualifier(Ident(sym.name)))
+        val newQual = atPos(qual.pos.focus)(
+          blockTyper.typedQualifier(Ident(sym.name)))
         val baseFunTransformed = atPos(baseFun.pos.makeTransparent) {
           // setSymbol below is important because the 'selected' function might be overloaded. by
           // assigning the correct method symbol, typedSelect will just assign the type. the reason
@@ -360,8 +360,9 @@ trait NamesDefaults { self: Analyzer =>
       tree match {
         // `fun` is typed. `namelessArgs` might be typed or not, if they are types are kept.
         case Apply(fun, namelessArgs) =>
-          val transformedFun =
-            transformNamedApplication(typer, mode, pt)(fun, x => x)
+          val transformedFun = transformNamedApplication(typer, mode, pt)(
+            fun,
+            x => x)
           if (transformedFun.isErroneous) setError(tree)
           else {
             assert(isNamedApplyBlock(transformedFun), transformedFun)
@@ -398,23 +399,24 @@ trait NamesDefaults { self: Analyzer =>
                   reorderArgsInv(formals, argPos),
                   blockTyper)
                 // refArgs: definition-site order again
-                val refArgs =
-                  map3(reorderArgs(valDefs, argPos), formals, typedArgs)(
-                    (vDefOpt, tpe, origArg) =>
-                      vDefOpt match {
-                        case None => origArg
-                        case Some(vDef) =>
-                          val ref = gen.mkAttributedRef(vDef.symbol)
-                          atPos(vDef.pos.focus) {
-                            // for by-name parameters, the local value is a nullary function returning the argument
-                            tpe.typeSymbol match {
-                              case ByNameParamClass => Apply(ref, Nil)
-                              case RepeatedParamClass =>
-                                Typed(ref, Ident(tpnme.WILDCARD_STAR))
-                              case _ => ref
-                            }
-                          }
-                      })
+                val refArgs = map3(
+                  reorderArgs(valDefs, argPos),
+                  formals,
+                  typedArgs)((vDefOpt, tpe, origArg) =>
+                  vDefOpt match {
+                    case None => origArg
+                    case Some(vDef) =>
+                      val ref = gen.mkAttributedRef(vDef.symbol)
+                      atPos(vDef.pos.focus) {
+                        // for by-name parameters, the local value is a nullary function returning the argument
+                        tpe.typeSymbol match {
+                          case ByNameParamClass => Apply(ref, Nil)
+                          case RepeatedParamClass =>
+                            Typed(ref, Ident(tpnme.WILDCARD_STAR))
+                          case _ => ref
+                        }
+                      }
+                  })
                 // cannot call blockTyper.typedBlock here, because the method expr might be partially applied only
                 val res = blockTyper.doTypedApply(tree, expr, refArgs, mode, pt)
                 res.setPos(res.pos.makeTransparent)
@@ -465,8 +467,8 @@ trait NamesDefaults { self: Analyzer =>
         n.isEmpty || n.get == param.name || params.forall(_.name != n.get)
     } map (_._1)
 
-    val paramsWithoutPositionalArg =
-      params.drop(args.length - namedArgsOnChangedPosition.length)
+    val paramsWithoutPositionalArg = params.drop(
+      args.length - namedArgsOnChangedPosition.length)
 
     // missing parameters: those with a name which is not specified in one of the namedArgsOnChangedPosition
     val missingParams = paramsWithoutPositionalArg.filter(p =>
@@ -497,8 +499,10 @@ trait NamesDefaults { self: Analyzer =>
       pos: scala.reflect.internal.util.Position,
       context: Context): (List[Tree], List[Symbol]) = {
     if (givenArgs.length < params.length) {
-      val (missing, positional) =
-        missingParams(givenArgs, params, nameOfNamedArg)
+      val (missing, positional) = missingParams(
+        givenArgs,
+        params,
+        nameOfNamedArg)
       if (missing forall (_.hasDefault)) {
         val defaultArgs = missing flatMap (p => {
           val defGetter = defaultGetter(p, context)

@@ -46,8 +46,7 @@ case class Dtab(dentries0: IndexedSeq[Dentry]) extends IndexedSeq[Dentry] {
     * Construct a new Dtab with the given delegation
     * entry appended.
     */
-  def +(dentry: Dentry): Dtab =
-    Dtab(dentries0 :+ dentry)
+  def +(dentry: Dentry): Dtab = Dtab(dentries0 :+ dentry)
 
   /**
     * Java API for '+'

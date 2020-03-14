@@ -32,8 +32,9 @@ class PriorityQueueTest {
 
     val objectInputStream = new ObjectInputStream(
       new ByteArrayInputStream(bytes))
-    val deserializedPriorityQueue =
-      objectInputStream.readObject().asInstanceOf[PriorityQueue[Int]]
+    val deserializedPriorityQueue = objectInputStream
+      .readObject()
+      .asInstanceOf[PriorityQueue[Int]]
     assert(deserializedPriorityQueue.dequeueAll == elements.sorted.reverse)
   }
 }

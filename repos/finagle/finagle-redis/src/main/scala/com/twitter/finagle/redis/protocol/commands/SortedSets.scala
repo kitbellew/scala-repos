@@ -170,8 +170,7 @@ case class ZRank(key: ChannelBuffer, member: ChannelBuffer) extends ZRankCmd {
   def commandBytes = CommandBytes.ZRANK
 }
 object ZRank extends ZRankCmdCompanion {
-  def get(key: ChannelBuffer, member: ChannelBuffer) =
-    new ZRank(key, member)
+  def get(key: ChannelBuffer, member: ChannelBuffer) = new ZRank(key, member)
 }
 
 case class ZRem(key: ChannelBuffer, members: Seq[ChannelBuffer])
@@ -297,8 +296,7 @@ case class ZRevRank(key: ChannelBuffer, member: ChannelBuffer)
   def commandBytes = CommandBytes.ZREVRANK
 }
 object ZRevRank extends ZRankCmdCompanion {
-  def get(key: ChannelBuffer, member: ChannelBuffer) =
-    new ZRevRank(key, member)
+  def get(key: ChannelBuffer, member: ChannelBuffer) = new ZRevRank(key, member)
 }
 
 case class ZScore(key: ChannelBuffer, member: ChannelBuffer)

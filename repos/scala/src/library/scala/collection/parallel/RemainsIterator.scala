@@ -688,8 +688,9 @@ trait SeqSplitter[+T]
             Seq(selfrem - from, until - selfrem)
           } else Seq(sz)
         }
-        val (selfszfrom, thatszfrom) =
-          splitsizes.zip(szcum.init).span(_._2 < selfrem)
+        val (selfszfrom, thatszfrom) = splitsizes
+          .zip(szcum.init)
+          .span(_._2 < selfrem)
         val (selfsizes, thatsizes) =
           (selfszfrom map { _._1 }, thatszfrom map { _._1 })
 

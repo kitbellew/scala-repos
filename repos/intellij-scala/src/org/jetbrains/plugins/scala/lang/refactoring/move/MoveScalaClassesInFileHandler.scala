@@ -34,8 +34,8 @@ class MoveScalaClassesInFileHandler extends MoveAllClassesInFileHandler {
         }
       case file: ScalaFile if allClasses.get(psiClass) =>
         //if move destination contains file with such name, we will try to move classes, not a whole file
-        val moveDestination =
-          psiClass.getUserData(ScalaMoveUtil.MOVE_DESTINATION)
+        val moveDestination = psiClass.getUserData(
+          ScalaMoveUtil.MOVE_DESTINATION)
         if (moveDestination.findFile(file.getName) != null)
           allClasses.put(psiClass, false)
       case _ =>

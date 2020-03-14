@@ -78,15 +78,17 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
     }
 
     "work with one delayed completed and one nonempty publisher" in assertAllStagesStopped {
-      val subscriber1 =
-        setup(soonToCompletePublisher, nonemptyPublisher(1 to 4))
+      val subscriber1 = setup(
+        soonToCompletePublisher,
+        nonemptyPublisher(1 to 4))
       val subscription1 = subscriber1.expectSubscription()
       subscription1.request(5)
       (1 to 4).foreach(subscriber1.expectNext)
       subscriber1.expectComplete()
 
-      val subscriber2 =
-        setup(nonemptyPublisher(1 to 4), soonToCompletePublisher)
+      val subscriber2 = setup(
+        nonemptyPublisher(1 to 4),
+        soonToCompletePublisher)
       val subscription2 = subscriber2.expectSubscription()
       subscription2.request(5)
       (1 to 4).foreach(subscriber2.expectNext)
@@ -140,8 +142,9 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
     }
 
     "work with Source DSL" in {
-      val testSource =
-        Source(1 to 5).concatMat(Source(6 to 10))(Keep.both).grouped(1000)
+      val testSource = Source(1 to 5)
+        .concatMat(Source(6 to 10))(Keep.both)
+        .grouped(1000)
       Await.result(testSource.runWith(Sink.head), 3.seconds) should ===(1 to 10)
 
       val runnable = testSource.toMat(Sink.ignore)(Keep.left)
@@ -153,8 +156,9 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
     }
 
     "work with Flow DSL" in {
-      val testFlow: Flow[Int, Seq[Int], (NotUsed, NotUsed)] =
-        Flow[Int].concatMat(Source(6 to 10))(Keep.both).grouped(1000)
+      val testFlow: Flow[Int, Seq[Int], (NotUsed, NotUsed)] = Flow[Int]
+        .concatMat(Source(6 to 10))(Keep.both)
+        .grouped(1000)
       Await.result(
         Source(1 to 5).viaMat(testFlow)(Keep.both).runWith(Sink.head),
         3.seconds) should ===(1 to 10)
@@ -170,8 +174,9 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
     }
 
     "work with Flow DSL2" in {
-      val testFlow =
-        Flow[Int].concatMat(Source(6 to 10))(Keep.both).grouped(1000)
+      val testFlow = Flow[Int]
+        .concatMat(Source(6 to 10))(Keep.both)
+        .grouped(1000)
       Await.result(
         Source(1 to 5).viaMat(testFlow)(Keep.both).runWith(Sink.head),
         3.seconds) should ===(1 to 10)

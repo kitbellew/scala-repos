@@ -65,9 +65,9 @@ class ReflectGlobal(
   // so here the compiler needs an extra push to help decide between those (in favor of the latter)
   import scala.reflect.ClassTag
   override type Mirror = JavaMirror
-  override implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[Mirror])
+  override implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[Mirror])
   override type RuntimeClass = java.lang.Class[_]
-  override implicit val RuntimeClassTag: ClassTag[RuntimeClass] =
-    ClassTag[RuntimeClass](classOf[RuntimeClass])
+  override implicit val RuntimeClassTag
+      : ClassTag[RuntimeClass] = ClassTag[RuntimeClass](classOf[RuntimeClass])
 }

@@ -5,19 +5,16 @@ import scala.scalajs.js.typedarray._
 object ShortBuffer {
   private final val HashSeed = 383731478 // "java.nio.ShortBuffer".##
 
-  def allocate(capacity: Int): ShortBuffer =
-    wrap(new Array[Short](capacity))
+  def allocate(capacity: Int): ShortBuffer = wrap(new Array[Short](capacity))
 
   def wrap(array: Array[Short], offset: Int, length: Int): ShortBuffer =
     HeapShortBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Short]): ShortBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Short]): ShortBuffer = wrap(array, 0, array.length)
 
   // Extended API
 
-  def wrap(array: Int16Array): ShortBuffer =
-    TypedArrayShortBuffer.wrap(array)
+  def wrap(array: Int16Array): ShortBuffer = TypedArrayShortBuffer.wrap(array)
 }
 
 abstract class ShortBuffer private[nio] (
@@ -51,28 +48,22 @@ abstract class ShortBuffer private[nio] (
   def get(dst: Array[Short], offset: Int, length: Int): ShortBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Short]): ShortBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Short]): ShortBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: ShortBuffer): ShortBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: ShortBuffer): ShortBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Short], offset: Int, length: Int): ShortBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Short]): ShortBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Short]): ShortBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Short] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Short] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): ShortBuffer
 

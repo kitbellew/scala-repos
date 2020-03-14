@@ -76,8 +76,7 @@ class CoreGuiceModule extends AbstractModule {
   def leadershipCoordinator(
       leadershipModule: LeadershipModule,
       makeSureToInitializeThisBeforeCreatingCoordinator: TaskStatusUpdateProcessor)
-      : LeadershipCoordinator =
-    leadershipModule.coordinator()
+      : LeadershipCoordinator = leadershipModule.coordinator()
 
   @Provides @Singleton
   def offerProcessor(coreModule: CoreModule): OfferProcessor =

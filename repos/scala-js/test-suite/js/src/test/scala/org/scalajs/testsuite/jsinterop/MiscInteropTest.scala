@@ -49,12 +49,12 @@ class MiscInteropTest {
     assertSame(concreteCtor, js.constructorOf[ConcreteJSClass])
     assertSame(abstractCtor, js.constructorOf[AbstractJSClass])
 
-    val concreteInstance =
-      js.Dynamic.newInstance(js.constructorOf[ConcreteJSClass])()
+    val concreteInstance = js.Dynamic.newInstance(
+      js.constructorOf[ConcreteJSClass])()
     assertTrue((concreteInstance: Any).isInstanceOf[ConcreteJSClass])
 
-    val instance =
-      js.Dynamic.newInstance(js.constructorOf[OtherwiseUnreferencedJSClass])(35)
+    val instance = js.Dynamic.newInstance(
+      js.constructorOf[OtherwiseUnreferencedJSClass])(35)
     assertEquals(35, instance.x)
   }
 
@@ -195,8 +195,7 @@ class MiscInteropTest {
     assumeFalse(executingInRhino)
     assumeFalse(isInFullOpt)
 
-    def nameOf(obj: Any): js.Any =
-      obj.asInstanceOf[js.Dynamic].constructor.name
+    def nameOf(obj: Any): js.Any = obj.asInstanceOf[js.Dynamic].constructor.name
 
     assertTrue(nameOf(new SomeScalaClass).toString.contains("SomeScalaClass"))
     assertTrue(nameOf(new SomeJSClass).toString.contains("SomeJSClass"))

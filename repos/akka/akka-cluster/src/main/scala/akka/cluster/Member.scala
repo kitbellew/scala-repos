@@ -90,8 +90,8 @@ object Member {
   /**
     * `Address` ordering type class, sorts addresses by host and port.
     */
-  implicit val addressOrdering: Ordering[Address] =
-    Ordering.fromLessThan[Address] { (a, b) ⇒
+  implicit val addressOrdering: Ordering[Address] = Ordering
+    .fromLessThan[Address] { (a, b) ⇒
       // cluster node identifier is the host and port of the address; protocol and system is assumed to be the same
       if (a eq b) false
       else if (a.host != b.host)
@@ -105,8 +105,8 @@ object Member {
     * Orders the members by their address except that members with status
     * Joining, Exiting and Down are ordered last (in that order).
     */
-  private[cluster] val leaderStatusOrdering: Ordering[Member] =
-    Ordering.fromLessThan[Member] { (a, b) ⇒
+  private[cluster] val leaderStatusOrdering: Ordering[Member] = Ordering
+    .fromLessThan[Member] { (a, b) ⇒
       (a.status, b.status) match {
         case (as, bs) if as == bs ⇒ ordering.compare(a, b) <= 0
         case (Down, _) ⇒ false
@@ -241,16 +241,15 @@ object MemberStatus {
     * INTERNAL API
     */
   private[cluster] val allowedTransitions
-      : Map[MemberStatus, Set[MemberStatus]] =
-    Map(
-      Joining -> Set(WeaklyUp, Up, Down, Removed),
-      WeaklyUp -> Set(Up, Down, Removed),
-      Up -> Set(Leaving, Down, Removed),
-      Leaving -> Set(Exiting, Down, Removed),
-      Down -> Set(Removed),
-      Exiting -> Set(Removed, Down),
-      Removed -> Set.empty[MemberStatus]
-    )
+      : Map[MemberStatus, Set[MemberStatus]] = Map(
+    Joining -> Set(WeaklyUp, Up, Down, Removed),
+    WeaklyUp -> Set(Up, Down, Removed),
+    Up -> Set(Leaving, Down, Removed),
+    Leaving -> Set(Exiting, Down, Removed),
+    Down -> Set(Removed),
+    Exiting -> Set(Removed, Down),
+    Removed -> Set.empty[MemberStatus]
+  )
 }
 
 /**

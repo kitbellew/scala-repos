@@ -100,8 +100,8 @@ private[stat] object ChiSqTest extends Logging {
       val pairCounts = data
         .mapPartitions { iter =>
           val distinctLabels = mutable.HashSet.empty[Double]
-          val allDistinctFeatures: Map[Int, mutable.HashSet[Double]] =
-            Map((startCol until endCol).map(col =>
+          val allDistinctFeatures: Map[Int, mutable.HashSet[Double]] = Map(
+            (startCol until endCol).map(col =>
               (col, mutable.HashSet.empty[Double])): _*)
           var i = 1
           iter.flatMap {
@@ -156,8 +156,9 @@ private[stat] object ChiSqTest extends Logging {
               val j = labels(label)
               contingency(i, j) += pairCounts((col, feature, label))
           }
-          results(col) =
-            chiSquaredMatrix(Matrices.fromBreeze(contingency), methodName)
+          results(col) = chiSquaredMatrix(
+            Matrices.fromBreeze(contingency),
+            methodName)
       }
       batch += 1
     }

@@ -44,8 +44,7 @@ final class RhinoJSEnv private (
 
   def this(
       semantics: Semantics = Semantics.Defaults,
-      withDOM: Boolean = false) =
-    this(semantics, withDOM, sourceMap = true)
+      withDOM: Boolean = false) = this(semantics, withDOM, sourceMap = true)
 
   def withSourceMap(sourceMap: Boolean): RhinoJSEnv =
     new RhinoJSEnv(semantics, withDOM, sourceMap)
@@ -290,8 +289,9 @@ final class RhinoJSEnv private (
 
   /** Make sure Rhino does not do its magic for JVM top-level packages (#364) */
   private def disableLiveConnect(context: Context, scope: Scriptable): Unit = {
-    val PackagesObject =
-      ScriptableObject.getProperty(scope, "Packages").asInstanceOf[Scriptable]
+    val PackagesObject = ScriptableObject
+      .getProperty(scope, "Packages")
+      .asInstanceOf[Scriptable]
     val topLevelPackageIds = ScriptableObject.getPropertyIds(PackagesObject)
     for (id <- topLevelPackageIds) (id: Any) match {
       case name: String => ScriptableObject.deleteProperty(scope, name)

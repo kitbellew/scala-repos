@@ -118,11 +118,10 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
     checkCondition(!(('a || 'b) && ('c || 'd)), (!'a && !'b) || (!'c && !'d))
   }
 
-  private val caseInsensitiveAnalyzer =
-    new Analyzer(
-      EmptyCatalog,
-      EmptyFunctionRegistry,
-      new SimpleCatalystConf(caseSensitiveAnalysis = false))
+  private val caseInsensitiveAnalyzer = new Analyzer(
+    EmptyCatalog,
+    EmptyFunctionRegistry,
+    new SimpleCatalystConf(caseSensitiveAnalysis = false))
 
   test("(a && b) || (a && c) => a && (b || c) when case insensitive") {
     val plan = caseInsensitiveAnalyzer.execute(

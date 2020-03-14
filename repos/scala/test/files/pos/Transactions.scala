@@ -13,8 +13,7 @@ object Transaction {
   val Aborted = 3
   val Compound = 4
 
-  def atomic[T](b: Transaction => T): Option[T] =
-    (new Transaction).run(b)
+  def atomic[T](b: Transaction => T): Option[T] = (new Transaction).run(b)
 }
 
 class Transaction {

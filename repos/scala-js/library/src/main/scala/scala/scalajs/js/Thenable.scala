@@ -80,7 +80,6 @@ object Thenable {
     *  [[scala.concurrent.Future Future]]'s operations are always well-typed.
     */
   object Implicits {
-    implicit def thenable2future[A](p: Thenable[A]): Future[A] =
-      p.toFuture
+    implicit def thenable2future[A](p: Thenable[A]): Future[A] = p.toFuture
   }
 }

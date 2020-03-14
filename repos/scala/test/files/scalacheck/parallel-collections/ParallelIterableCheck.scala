@@ -112,25 +112,25 @@ abstract class ParallelIterableCheck[T](collName: String)
     println("cf == tf - " + (cf == tf))
   }
 
-  property("reductions must be equal for assoc. operators") =
-    forAll(collectionPairs) {
-      case (t, coll) =>
-        if (t.size != 0) {
-          val results = for ((op, ind) <- reduceOperators.zipWithIndex) yield {
-            val tr = t.reduceLeft(op)
-            val cr = coll.reduce(op)
-            if (tr != cr) {
-              println("from: " + t)
-              println("and: " + coll)
-              println("reducing with " + ind)
-              println(tr)
-              println(cr)
-            }
-            ("op index: " + ind) |: tr == cr
+  property("reductions must be equal for assoc. operators") = forAll(
+    collectionPairs) {
+    case (t, coll) =>
+      if (t.size != 0) {
+        val results = for ((op, ind) <- reduceOperators.zipWithIndex) yield {
+          val tr = t.reduceLeft(op)
+          val cr = coll.reduce(op)
+          if (tr != cr) {
+            println("from: " + t)
+            println("and: " + coll)
+            println("reducing with " + ind)
+            println(tr)
+            println(cr)
           }
-          results.reduceLeft(_ && _)
-        } else "has size 0" |: true
-    }
+          ("op index: " + ind) |: tr == cr
+        }
+        results.reduceLeft(_ && _)
+      } else "has size 0" |: true
+  }
 
   property("counts must be equal") = forAll(collectionPairs) {
     case (t, coll) =>
@@ -375,22 +375,22 @@ abstract class ParallelIterableCheck[T](collName: String)
         }).reduceLeft(_ && _)
     }
 
-  property("folds must be equal for assoc. operators") =
-    forAll(collectionPairs) {
-      case (t, coll) =>
-        (for (((first, op), ind) <- foldArguments.zipWithIndex) yield {
-          val tres = t.foldLeft(first)(op)
-          val cres = coll.fold(first)(op)
-          if (cres != tres) {
-            println("from: " + t)
-            println("and: " + coll)
-            println("folds are: ")
-            println(tres)
-            println(cres)
-          }
-          ("operator " + ind) |: tres == cres
-        }).reduceLeft(_ && _)
-    }
+  property("folds must be equal for assoc. operators") = forAll(
+    collectionPairs) {
+    case (t, coll) =>
+      (for (((first, op), ind) <- foldArguments.zipWithIndex) yield {
+        val tres = t.foldLeft(first)(op)
+        val cres = coll.fold(first)(op)
+        if (cres != tres) {
+          println("from: " + t)
+          println("and: " + coll)
+          println("folds are: ")
+          println(tres)
+          println(cres)
+        }
+        ("operator " + ind) |: tres == cres
+      }).reduceLeft(_ && _)
+  }
 
   property("++s must be equal") = forAll(collectionTriplets) {
     case (t, coll, colltoadd) =>

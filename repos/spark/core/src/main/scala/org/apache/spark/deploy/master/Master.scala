@@ -62,12 +62,11 @@ private[deploy] class Master(
     with Logging
     with LeaderElectable {
 
-  private val forwardMessageThread =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "master-forward-message-thread")
+  private val forwardMessageThread = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("master-forward-message-thread")
 
-  private val rebuildUIThread =
-    ThreadUtils.newDaemonSingleThreadExecutor("master-rebuild-ui-thread")
+  private val rebuildUIThread = ThreadUtils.newDaemonSingleThreadExecutor(
+    "master-rebuild-ui-thread")
   private val rebuildUIContext = ExecutionContext.fromExecutor(rebuildUIThread)
 
   private val hadoopConf = SparkHadoopUtil.get.newConfiguration(conf)
@@ -77,12 +76,15 @@ private[deploy] class Master(
 
   private val WORKER_TIMEOUT_MS =
     conf.getLong("spark.worker.timeout", 60) * 1000
-  private val RETAINED_APPLICATIONS =
-    conf.getInt("spark.deploy.retainedApplications", 200)
-  private val RETAINED_DRIVERS =
-    conf.getInt("spark.deploy.retainedDrivers", 200)
-  private val REAPER_ITERATIONS =
-    conf.getInt("spark.dead.worker.persistence", 15)
+  private val RETAINED_APPLICATIONS = conf.getInt(
+    "spark.deploy.retainedApplications",
+    200)
+  private val RETAINED_DRIVERS = conf.getInt(
+    "spark.deploy.retainedDrivers",
+    200)
+  private val REAPER_ITERATIONS = conf.getInt(
+    "spark.dead.worker.persistence",
+    15)
   private val RECOVERY_MODE = conf.get("spark.deploy.recoveryMode", "NONE")
 
   val workers = new HashSet[WorkerInfo]
@@ -108,10 +110,14 @@ private[deploy] class Master(
 
   Utils.checkHost(address.host, "Expected hostname")
 
-  private val masterMetricsSystem =
-    MetricsSystem.createMetricsSystem("master", conf, securityMgr)
-  private val applicationMetricsSystem =
-    MetricsSystem.createMetricsSystem("applications", conf, securityMgr)
+  private val masterMetricsSystem = MetricsSystem.createMetricsSystem(
+    "master",
+    conf,
+    securityMgr)
+  private val applicationMetricsSystem = MetricsSystem.createMetricsSystem(
+    "applications",
+    conf,
+    securityMgr)
   private val masterSource = new MasterSource(this)
 
   // After onStart, webUi will be set
@@ -141,15 +147,17 @@ private[deploy] class Master(
   private val spreadOutApps = conf.getBoolean("spark.deploy.spreadOut", true)
 
   // Default maxCores for applications that don't specify it (i.e. pass Int.MaxValue)
-  private val defaultCores =
-    conf.getInt("spark.deploy.defaultCores", Int.MaxValue)
+  private val defaultCores = conf.getInt(
+    "spark.deploy.defaultCores",
+    Int.MaxValue)
   if (defaultCores < 1) {
     throw new SparkException("spark.deploy.defaultCores must be positive")
   }
 
   // Alternative application submission gateway that is stable across Spark versions
-  private val restServerEnabled =
-    conf.getBoolean("spark.master.rest.enabled", true)
+  private val restServerEnabled = conf.getBoolean(
+    "spark.master.rest.enabled",
+    true)
   private var restServer: Option[StandaloneRestServer] = None
   private var restServerBoundPort: Option[Int] = None
 
@@ -187,20 +195,18 @@ private[deploy] class Master(
     val (persistenceEngine_, leaderElectionAgent_) = RECOVERY_MODE match {
       case "ZOOKEEPER" =>
         logInfo("Persisting recovery state to ZooKeeper")
-        val zkFactory =
-          new ZooKeeperRecoveryModeFactory(conf, serializer)
+        val zkFactory = new ZooKeeperRecoveryModeFactory(conf, serializer)
         (
           zkFactory.createPersistenceEngine(),
           zkFactory.createLeaderElectionAgent(this))
       case "FILESYSTEM" =>
-        val fsFactory =
-          new FileSystemRecoveryModeFactory(conf, serializer)
+        val fsFactory = new FileSystemRecoveryModeFactory(conf, serializer)
         (
           fsFactory.createPersistenceEngine(),
           fsFactory.createLeaderElectionAgent(this))
       case "CUSTOM" =>
-        val clazz =
-          Utils.classForName(conf.get("spark.deploy.recoveryMode.factory"))
+        val clazz = Utils.classForName(
+          conf.get("spark.deploy.recoveryMode.factory"))
         val factory = clazz
           .getConstructor(classOf[SparkConf], classOf[Serializer])
           .newInstance(conf, serializer)
@@ -239,8 +245,8 @@ private[deploy] class Master(
 
   override def receive: PartialFunction[Any, Unit] = {
     case ElectedLeader => {
-      val (storedApps, storedDrivers, storedWorkers) =
-        persistenceEngine.readPersistedData(rpcEnv)
+      val (storedApps, storedDrivers, storedWorkers) = persistenceEngine
+        .readPersistedData(rpcEnv)
       state =
         if (storedApps.isEmpty && storedDrivers.isEmpty && storedWorkers.isEmpty) {
           RecoveryState.ALIVE
@@ -281,8 +287,9 @@ private[deploy] class Master(
     }
 
     case ExecutorStateChanged(appId, execId, state, message, exitStatus) => {
-      val execOption =
-        idToApp.get(appId).flatMap(app => app.executors.get(execId))
+      val execOption = idToApp
+        .get(appId)
+        .flatMap(app => app.executors.get(execId))
       execOption match {
         case Some(exec) => {
           val appInfo = idToApp(appId)
@@ -377,12 +384,14 @@ private[deploy] class Master(
           logInfo("Worker has been re-registered: " + workerId)
           worker.state = WorkerState.ALIVE
 
-          val validExecutors =
-            executors.filter(exec => idToApp.get(exec.appId).isDefined)
+          val validExecutors = executors.filter(exec =>
+            idToApp.get(exec.appId).isDefined)
           for (exec <- validExecutors) {
             val app = idToApp.get(exec.appId).get
-            val execInfo =
-              app.addExecutor(worker, exec.cores, Some(exec.execId))
+            val execInfo = app.addExecutor(
+              worker,
+              exec.cores,
+              Some(exec.execId))
             worker.addExecutor(execInfo)
             execInfo.copyState(exec)
           }
@@ -702,8 +711,9 @@ private[deploy] class Master(
       new Array[Int](numUsable) // Number of cores to give to each worker
     val assignedExecutors =
       new Array[Int](numUsable) // Number of new executors on each worker
-    var coresToAssign =
-      math.min(app.coresLeft, usableWorkers.map(_.coresFree).sum)
+    var coresToAssign = math.min(
+      app.coresLeft,
+      usableWorkers.map(_.coresFree).sum)
 
     /** Return whether the specified worker can launch an executor for this app. */
     def canLaunchExecutor(pos: Int): Boolean = {
@@ -772,8 +782,10 @@ private[deploy] class Master(
             worker.coresFree >= coresPerExecutor.getOrElse(1))
         .sortBy(_.coresFree)
         .reverse
-      val assignedCores =
-        scheduleExecutorsOnWorkers(app, usableWorkers, spreadOutApps)
+      val assignedCores = scheduleExecutorsOnWorkers(
+        app,
+        usableWorkers,
+        spreadOutApps)
 
       // Now that we've decided how many cores to allocate on each worker, let's allocate them
       for (pos <- 0 until usableWorkers.length if assignedCores(pos) > 0) {
@@ -817,8 +829,8 @@ private[deploy] class Master(
   private def schedule(): Unit = {
     if (state != RecoveryState.ALIVE) { return }
     // Drivers take strict precedence over executors
-    val shuffledAliveWorkers =
-      Random.shuffle(workers.toSeq.filter(_.state == WorkerState.ALIVE))
+    val shuffledAliveWorkers = Random.shuffle(
+      workers.toSeq.filter(_.state == WorkerState.ALIVE))
     val numWorkersAlive = shuffledAliveWorkers.size
     var curPos = 0
     for (driver <- waitingDrivers.toList) { // iterate over a copy of waitingDrivers
@@ -1112,15 +1124,17 @@ private[deploy] class Master(
         new Path(eventLogFilePrefix +
           EventLoggingListener.IN_PROGRESS))
 
-      val eventLogFile = if (inProgressExists) {
-        // Event logging is enabled for this application, but the application is still in progress
-        logWarning(
-          s"Application $appName is still in progress, it may be terminated abnormally.")
-        eventLogFilePrefix + EventLoggingListener.IN_PROGRESS
-      } else { eventLogFilePrefix }
+      val eventLogFile =
+        if (inProgressExists) {
+          // Event logging is enabled for this application, but the application is still in progress
+          logWarning(
+            s"Application $appName is still in progress, it may be terminated abnormally.")
+          eventLogFilePrefix + EventLoggingListener.IN_PROGRESS
+        } else { eventLogFilePrefix }
 
-      val logInput =
-        EventLoggingListener.openEventLog(new Path(eventLogFile), fs)
+      val logInput = EventLoggingListener.openEventLog(
+        new Path(eventLogFile),
+        fs)
       val replayBus = new ReplayListenerBus()
       val ui = SparkUI.createHistoryUI(
         new SparkConf,
@@ -1155,8 +1169,8 @@ private[deploy] class Master(
         logWarning(msg)
         msg += " Did you specify the correct logging directory?"
         msg = URLEncoder.encode(msg, "UTF-8")
-        app.appUIUrlAtHistoryServer =
-          Some(notFoundBasePath + s"?msg=$msg&title=$title")
+        app.appUIUrlAtHistoryServer = Some(
+          notFoundBasePath + s"?msg=$msg&title=$title")
 
       case e: Exception =>
         // Relay exception message to application UI page
@@ -1174,8 +1188,9 @@ private[deploy] class Master(
 
   /** Generate a new app ID given a app's submission date */
   private def newApplicationId(submitDate: Date): String = {
-    val appId =
-      "app-%s-%04d".format(createDateFormat.format(submitDate), nextAppNumber)
+    val appId = "app-%s-%04d".format(
+      createDateFormat.format(submitDate),
+      nextAppNumber)
     nextAppNumber += 1
     appId
   }
@@ -1254,8 +1269,11 @@ private[deploy] object Master extends Logging {
     Utils.initDaemon(log)
     val conf = new SparkConf
     val args = new MasterArguments(argStrings, conf)
-    val (rpcEnv, _, _) =
-      startRpcEnvAndEndpoint(args.host, args.port, args.webUiPort, conf)
+    val (rpcEnv, _, _) = startRpcEnvAndEndpoint(
+      args.host,
+      args.port,
+      args.webUiPort,
+      conf)
     rpcEnv.awaitTermination()
   }
 
@@ -1275,8 +1293,8 @@ private[deploy] object Master extends Logging {
     val masterEndpoint = rpcEnv.setupEndpoint(
       ENDPOINT_NAME,
       new Master(rpcEnv, rpcEnv.address, webUiPort, securityMgr, conf))
-    val portsResponse =
-      masterEndpoint.askWithRetry[BoundPortsResponse](BoundPortsRequest)
+    val portsResponse = masterEndpoint.askWithRetry[BoundPortsResponse](
+      BoundPortsRequest)
     (rpcEnv, portsResponse.webUIPort, portsResponse.restPort)
   }
 }

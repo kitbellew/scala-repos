@@ -212,8 +212,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   def findAll(
       qry: DBObject,
       sort: DBObject,
-      opts: FindOption*): List[BaseRecord] =
-    findAll(qry, Some(sort), opts: _*)
+      opts: FindOption*): List[BaseRecord] = findAll(qry, Some(sort), opts: _*)
 
   /**
     * Find all documents using a JObject query

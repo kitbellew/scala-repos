@@ -124,8 +124,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
   def complexSignum(implicit
       f: Field[T],
       o: IsReal[T],
-      n: NRoot[T]): Complex[T] =
-    if (isZero) this else this / abs
+      n: NRoot[T]): Complex[T] = if (isZero) this else this / abs
 
   def abs(implicit f: Field[T], o: IsReal[T], n: NRoot[T]): T =
     (real * real + imag * imag).sqrt
@@ -391,8 +390,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
 
   def underlying: Object = this
 
-  def isWhole: Boolean =
-    anyIsZero(imag) && anyIsWhole(real)
+  def isWhole: Boolean = anyIsZero(imag) && anyIsWhole(real)
 
   override final def isValidInt: Boolean =
     anyIsZero(imag) && anyIsValidInt(real)
@@ -412,11 +410,9 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
         anyIsZero(imag) && real == that
     }
 
-  def ===(that: Complex[_]): Boolean =
-    real == that.real && imag == that.imag
+  def ===(that: Complex[_]): Boolean = real == that.real && imag == that.imag
 
-  def =!=(that: Complex[_]): Boolean =
-    !(this === that)
+  def =!=(that: Complex[_]): Boolean = !(this === that)
 
   override def toString: String = s"($real + ${imag}i)"
 
@@ -672,8 +668,7 @@ trait ComplexInstances1 extends ComplexInstances0 {
 
 trait ComplexInstances extends ComplexInstances1 {
   implicit def ComplexAlgebra[@sp(Float, Double) A: Fractional: Trig: IsReal]
-      : ComplexAlgebra[A] =
-    new ComplexAlgebra[A]
+      : ComplexAlgebra[A] = new ComplexAlgebra[A]
 
   implicit def ComplexEq[A: Eq]: Eq[Complex[A]] = new ComplexEq[A]
 }

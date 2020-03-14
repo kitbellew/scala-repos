@@ -101,8 +101,12 @@ class ProducerBounceTest extends KafkaServerTestHarness {
   @Test
   def testBrokerFailure() {
     val numPartitions = 3
-    val leaders =
-      TestUtils.createTopic(zkUtils, topic1, numPartitions, numServers, servers)
+    val leaders = TestUtils.createTopic(
+      zkUtils,
+      topic1,
+      numPartitions,
+      numServers,
+      servers)
     assertTrue(
       "Leader of all partitions of the topic should exist",
       leaders.values.forall(leader => leader.isDefined))

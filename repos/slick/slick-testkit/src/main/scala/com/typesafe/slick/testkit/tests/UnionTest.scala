@@ -179,8 +179,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         .filter { case (d, m) => d.sentAt < 1400000000L }
     }
 
-    val query =
-      leftSide.union(rightSide).length
+    val query = leftSide.union(rightSide).length
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
@@ -204,8 +203,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     def rightSide = { TableQuery[Deliveries].filter(_.sentAt < 1400000000L) }
 
-    val query =
-      leftSide.union(rightSide).sortBy(_.id.desc).length
+    val query = leftSide.union(rightSide).sortBy(_.id.desc).length
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,

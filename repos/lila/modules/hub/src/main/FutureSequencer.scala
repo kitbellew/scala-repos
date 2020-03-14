@@ -12,9 +12,8 @@ final class FutureSequencer(
 
   import FutureSequencer._
 
-  private val sequencer =
-    system.actorOf(
-      Props(classOf[FSequencer], receiveTimeout, executionTimeout, logger))
+  private val sequencer = system.actorOf(
+    Props(classOf[FSequencer], receiveTimeout, executionTimeout, logger))
 
   def apply[A: Manifest](op: => Fu[A]): Fu[A] = {
     val promise = Promise[A]()

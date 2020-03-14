@@ -29,8 +29,7 @@ object Echo extends Client[String, String] with Server[String, String] {
 
     protected def copy1(
         stack: Stack[ServiceFactory[String, String]],
-        params: Stack.Params): Client =
-      copy(stack, params)
+        params: Stack.Params): Client = copy(stack, params)
 
     //#transporter
     protected def newTransporter(): Transporter[String, String] =

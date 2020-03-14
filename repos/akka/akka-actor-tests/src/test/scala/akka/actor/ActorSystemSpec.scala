@@ -114,8 +114,10 @@ object ActorSystemSpec {
           mbox: Mailbox,
           hasMessageHint: Boolean,
           hasSystemMessageHint: Boolean): Boolean = {
-        val ret =
-          super.registerForExecution(mbox, hasMessageHint, hasSystemMessageHint)
+        val ret = super.registerForExecution(
+          mbox,
+          hasMessageHint,
+          hasSystemMessageHint)
         doneIt.switchOn {
           TestKit.awaitCond(mbox.actor.actor != null, 1.second)
           mbox.actor.actor match {
@@ -387,8 +389,9 @@ class ActorSystemSpec
         ecProbe.ref,
         ExecutionContexts.global())
 
-      val system2 =
-        ActorSystem(name = "default", defaultExecutionContext = Some(ec))
+      val system2 = ActorSystem(
+        name = "default",
+        defaultExecutionContext = Some(ec))
 
       try {
         val ref = system2.actorOf(Props(new Actor {

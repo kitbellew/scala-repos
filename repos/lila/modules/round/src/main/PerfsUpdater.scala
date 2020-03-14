@@ -184,8 +184,10 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
         game.ratingVariant.antichess,
         perfs.antichess,
         ratings.antichess),
-      atomic =
-        addRatingIf(game.ratingVariant.atomic, perfs.atomic, ratings.atomic),
+      atomic = addRatingIf(
+        game.ratingVariant.atomic,
+        perfs.atomic,
+        ratings.atomic),
       horde = addRatingIf(game.ratingVariant.horde, perfs.horde, ratings.horde),
       racingKings = addRatingIf(
         game.ratingVariant.racingKings,
@@ -199,8 +201,10 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
         isStd && speed == Speed.Bullet,
         perfs.bullet,
         ratings.bullet),
-      blitz =
-        addRatingIf(isStd && speed == Speed.Blitz, perfs.blitz, ratings.blitz),
+      blitz = addRatingIf(
+        isStd && speed == Speed.Blitz,
+        perfs.blitz,
+        ratings.blitz),
       classical = addRatingIf(
         isStd && speed == Speed.Classical,
         perfs.classical,
@@ -213,8 +217,10 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
     val r = lila.rating.Regulator
     val perfs2 = perfs1.copy(
       chess960 = r(PT.Chess960, perfs.chess960, perfs1.chess960),
-      kingOfTheHill =
-        r(PT.KingOfTheHill, perfs.kingOfTheHill, perfs1.kingOfTheHill),
+      kingOfTheHill = r(
+        PT.KingOfTheHill,
+        perfs.kingOfTheHill,
+        perfs1.kingOfTheHill),
       threeCheck = r(PT.ThreeCheck, perfs.threeCheck, perfs1.threeCheck),
       antichess = r(PT.Antichess, perfs.antichess, perfs1.antichess),
       atomic = r(PT.Atomic, perfs.atomic, perfs1.atomic),
@@ -224,8 +230,10 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
       bullet = r(PT.Bullet, perfs.bullet, perfs1.bullet),
       blitz = r(PT.Blitz, perfs.blitz, perfs1.blitz),
       classical = r(PT.Classical, perfs.classical, perfs1.classical),
-      correspondence =
-        r(PT.Correspondence, perfs.correspondence, perfs1.correspondence)
+      correspondence = r(
+        PT.Correspondence,
+        perfs.correspondence,
+        perfs1.correspondence)
     )
     if (isStd) perfs2.updateStandard else perfs2
   }

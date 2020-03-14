@@ -28,8 +28,8 @@ final class DataForm(
   def emptyWithCaptcha = withCaptcha(empty)
 
   private val anyEmail = nonEmptyText.verifying(Constraints.emailAddress)
-  private val acceptableEmail =
-    anyEmail.verifying(emailAddress.acceptableConstraint)
+  private val acceptableEmail = anyEmail.verifying(
+    emailAddress.acceptableConstraint)
   private def acceptableUniqueEmail(forUser: Option[User]) =
     acceptableEmail.verifying(emailAddress uniqueConstraint forUser)
 

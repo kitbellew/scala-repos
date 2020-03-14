@@ -39,14 +39,14 @@ object RunWorkflow extends Logging {
       .map(kv => s"${kv._1}=${kv._2}")
       .mkString(",")
 
-    val sparkHome =
-      ca.common.sparkHome.getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
+    val sparkHome = ca.common.sparkHome
+      .getOrElse(sys.env.getOrElse("SPARK_HOME", "."))
 
     val hadoopConf = new Configuration
     val hdfs = FileSystem.get(hadoopConf)
 
-    val driverClassPathIndex =
-      ca.common.sparkPassThrough.indexOf("--driver-class-path")
+    val driverClassPathIndex = ca.common.sparkPassThrough
+      .indexOf("--driver-class-path")
     val driverClassPathPrefix =
       if (driverClassPathIndex != -1) {
         Seq(ca.common.sparkPassThrough(driverClassPathIndex + 1))
@@ -54,11 +54,11 @@ object RunWorkflow extends Logging {
     val extraClasspaths =
       driverClassPathPrefix ++ WorkflowUtils.thirdPartyClasspaths
 
-    val deployModeIndex =
-      ca.common.sparkPassThrough.indexOf("--deploy-mode")
-    val deployMode = if (deployModeIndex != -1) {
-      ca.common.sparkPassThrough(deployModeIndex + 1)
-    } else { "client" }
+    val deployModeIndex = ca.common.sparkPassThrough.indexOf("--deploy-mode")
+    val deployMode =
+      if (deployModeIndex != -1) {
+        ca.common.sparkPassThrough(deployModeIndex + 1)
+      } else { "client" }
 
     val extraFiles = WorkflowUtils.thirdPartyConfFiles
 
@@ -73,8 +73,9 @@ object RunWorkflow extends Logging {
         } else { core.getCanonicalPath }
       }
 
-    val workMode =
-      ca.common.evaluation.map(_ => "Evaluation").getOrElse("Training")
+    val workMode = ca.common.evaluation
+      .map(_ => "Evaluation")
+      .getOrElse("Training")
 
     val engineLocation = Seq(sys.env("PIO_FS_ENGINESDIR"), em.id, em.version)
 

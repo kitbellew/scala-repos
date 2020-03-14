@@ -85,8 +85,8 @@ class ScalaIntroduceParameterHandler
       return
     }
 
-    val canBeIntroduced: (ScExpression) => Boolean =
-      ScalaRefactoringUtil.checkCanBeIntroduced(_)
+    val canBeIntroduced: (ScExpression) => Boolean = ScalaRefactoringUtil
+      .checkCanBeIntroduced(_)
     ScalaRefactoringUtil.afterExpressionChoosing(
       project,
       editor,
@@ -224,8 +224,9 @@ class ScalaIntroduceParameterHandler
       editor: Editor): Option[ScalaIntroduceParameterData] = {
     val project = methodLike.getProject
 
-    val info =
-      ReachingDefintionsCollector.collectVariableInfo(elems, methodLike)
+    val info = ReachingDefintionsCollector.collectVariableInfo(
+      elems,
+      methodLike)
     val input = info.inputVariables
     val (types, argText, argClauseText) =
       if (input.nonEmpty || exprWithTypes.isEmpty) {

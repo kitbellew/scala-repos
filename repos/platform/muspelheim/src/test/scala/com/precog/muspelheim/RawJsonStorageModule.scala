@@ -70,8 +70,8 @@ trait RawJsonStorageModule[M[+_]] { self =>
   private var structures: Map[Path, Set[ColumnRef]] = Map.empty
 
   private def load(path: Path) = {
-    val resourceName =
-      ("/test_data" + path.toString.init + ".json").replaceAll("/+", "/")
+    val resourceName = ("/test_data" + path.toString.init + ".json")
+      .replaceAll("/+", "/")
 
     using(getClass.getResourceAsStream(resourceName)) { in =>
       // FIXME: Refactor as soon as JParser can parse from InputStreams

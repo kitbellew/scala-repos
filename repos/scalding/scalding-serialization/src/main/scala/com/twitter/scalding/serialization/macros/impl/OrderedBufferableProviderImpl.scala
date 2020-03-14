@@ -44,12 +44,12 @@ object OrderedSerializationProviderImpl {
     val caseObjectDispatcher = CaseObjectOrderedBuf.dispatch(c)
     val productDispatcher = ProductOrderedBuf.dispatch(c)(buildDispatcher)
     val stringDispatcher = StringOrderedBuf.dispatch(c)
-    val traversablesDispatcher =
-      TraversablesOrderedBuf.dispatch(c)(buildDispatcher)
+    val traversablesDispatcher = TraversablesOrderedBuf.dispatch(c)(
+      buildDispatcher)
     val unitDispatcher = UnitOrderedBuf.dispatch(c)
     val byteBufferDispatcher = ByteBufferOrderedBuf.dispatch(c)
-    val sealedTraitDispatcher =
-      SealedTraitOrderedBuf.dispatch(c)(buildDispatcher)
+    val sealedTraitDispatcher = SealedTraitOrderedBuf.dispatch(c)(
+      buildDispatcher)
 
     OrderedSerializationProviderImpl
       .normalizedDispatcher(c)(buildDispatcher)

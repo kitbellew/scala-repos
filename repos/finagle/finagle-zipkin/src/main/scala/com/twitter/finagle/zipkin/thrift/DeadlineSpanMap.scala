@@ -78,8 +78,7 @@ private class DeadlineSpanMap(
     *
     * @return Future indicating completion.
     */
-  def flush(): Future[Unit] =
-    flush(Time.Top)
+  def flush(): Future[Unit] = flush(Time.Top)
 }
 
 private final class MutableSpan(val traceId: TraceId, val started: Time) {

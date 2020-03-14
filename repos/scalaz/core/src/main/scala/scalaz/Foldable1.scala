@@ -53,8 +53,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
   }
 
   /**Left-associative fold of a structure. */
-  def foldLeft1[A](fa: F[A])(f: (A, A) => A): A =
-    foldMapLeft1(fa)(identity)(f)
+  def foldLeft1[A](fa: F[A])(f: (A, A) => A): A = foldMapLeft1(fa)(identity)(f)
 
   // XXX Would make a ⊥ with default foldMapLeft1; you can use it if
   // you also overrode foldMapLeft1
@@ -131,8 +130,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
         if (!NonEmptyList.nonEmptyList.element(seen, a)) a <:: seen else seen
     }.reverse
 
-  def sumr1[A](fa: F[A])(implicit A: Semigroup[A]): A =
-    foldRight1(fa)(A.append)
+  def sumr1[A](fa: F[A])(implicit A: Semigroup[A]): A = foldRight1(fa)(A.append)
 
   def suml1[A](fa: F[A])(implicit A: Semigroup[A]): A =
     foldLeft1(fa)(A.append(_, _))
@@ -144,8 +142,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
   def intercalate1[A](fa: F[A], a: A)(implicit A: Semigroup[A]): A =
     foldLeft1(fa)((x, y) => A.append(x, A.append(a, y)))
 
-  override def intercalate[A: Monoid](fa: F[A], a: A): A =
-    intercalate1(fa, a)
+  override def intercalate[A: Monoid](fa: F[A], a: A): A = intercalate1(fa, a)
 
   def traverse1_[M[_], A, B](fa: F[A])(
       f: A => M[B])(implicit a: Apply[M], x: Semigroup[M[B]]): M[Unit] =

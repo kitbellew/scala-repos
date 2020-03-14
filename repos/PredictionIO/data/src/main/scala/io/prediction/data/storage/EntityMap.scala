@@ -87,8 +87,7 @@ class EntityMap[A](
   def getOrElseData(id: String, default: => A): A =
     getData(id).getOrElse(default)
 
-  def getOrElseData(ix: Long, default: => A): A =
-    getData(ix).getOrElse(default)
+  def getOrElseData(ix: Long, default: => A): A = getData(ix).getOrElse(default)
 
   override def take(n: Int): EntityMap[A] = {
     val newIdToIx = idToIx.take(n)

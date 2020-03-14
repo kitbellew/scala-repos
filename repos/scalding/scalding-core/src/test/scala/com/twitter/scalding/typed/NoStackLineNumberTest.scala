@@ -33,10 +33,8 @@ class NoStackLineNumberTest extends WordSpec {
       implicit val fd = new FlowDef
       implicit val m = new Hdfs(false, new Configuration)
 
-      val pipeFut =
-        com.twitter.example.scalding.typed.InAnotherPackage.buildF.map { tp =>
-          tp.toPipe('a, 'b)
-        }
+      val pipeFut = com.twitter.example.scalding.typed.InAnotherPackage.buildF
+        .map { tp => tp.toPipe('a, 'b) }
       val pipe = Await.result(pipeFut, SDuration.Inf)
       // We pick up line number info via the NoStackAndThenClass
       // So this should have some non-scalding info in it.

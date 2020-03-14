@@ -29,8 +29,7 @@ import scalaz.{Either3, Left3, Right3, Middle3}
   */
 trait MapUtils {
   implicit def pimpMapUtils[A, B, CC[B] <: GenTraversable[B]](
-      self: GenMap[A, CC[B]]): MapPimp[A, B, CC] =
-    new MapPimp(self)
+      self: GenMap[A, CC[B]]): MapPimp[A, B, CC] = new MapPimp(self)
 }
 
 class MapPimp[A, B, CC[B] <: GenTraversable[B]](left: GenMap[A, CC[B]]) {

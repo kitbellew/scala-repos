@@ -566,8 +566,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   case class Atomic(op: OpTree) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.Atomic).tree
-    def renderInner(wrapped: Boolean): Tree =
-      if (wrapped) q"""
+    def renderInner(wrapped: Boolean): Tree = if (wrapped) q"""
         val saved = __enterAtomic(start)
         val matched = ${op.render(wrapped)}
         __exitAtomic(saved)
@@ -576,8 +575,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
 
   case class Quiet(op: OpTree) extends DefaultNonTerminalOpTree {
     def ruleTraceNonTerminalKey = reify(RuleTrace.Quiet).tree
-    def renderInner(wrapped: Boolean): Tree =
-      if (wrapped) q"""
+    def renderInner(wrapped: Boolean): Tree = if (wrapped) q"""
         val saved = __enterQuiet()
         val matched = ${op.render(wrapped)}
         __exitQuiet(saved)

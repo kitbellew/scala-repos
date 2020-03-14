@@ -150,16 +150,19 @@ final class KafkaRelayAgent(
         ) // try/catch is for this line. Okay to wrap in a future & flatMap instead?
         _ <- forwardAll(messages.toList)
       } yield {
-        val newDelay =
-          delayStrategy(messages.sizeInBytes.toInt, delay, waitCount)
+        val newDelay = delayStrategy(
+          messages.sizeInBytes.toInt,
+          delay,
+          waitCount)
 
-        val (newOffset, newWaitCount) = if (messages.size > 0) {
-          val o: Long = messages.last.offset
-          logger.debug(
-            "Kafka consumer batch size: %d offset: %d)"
-              .format(messages.size, o))
-          (o, 0L)
-        } else { (offset, waitCount + 1) }
+        val (newOffset, newWaitCount) =
+          if (messages.size > 0) {
+            val o: Long = messages.last.offset
+            logger.debug(
+              "Kafka consumer batch size: %d offset: %d)"
+                .format(messages.size, o))
+            (o, 0L)
+          } else { (offset, waitCount + 1) }
 
         Thread.sleep(newDelay)
 

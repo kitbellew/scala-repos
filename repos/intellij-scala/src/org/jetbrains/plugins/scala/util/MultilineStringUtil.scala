@@ -146,8 +146,8 @@ object MultilineStringUtil {
     val calls = new ArrayBuffer[Array[ScExpression]]()
     def callsArray = calls.toArray
 
-    var prevParent: PsiElement =
-      findParentMLString(stringElement).getOrElse(return Array.empty)
+    var prevParent: PsiElement = findParentMLString(stringElement).getOrElse(
+      return Array.empty)
     var parent = prevParent.getParent
 
     do {
@@ -239,8 +239,8 @@ object MultilineStringUtil {
         val literalOffsets = Seq(
           literal.getTextRange.getStartOffset,
           literal.getTextRange.getEndOffset)
-        val Seq(startLineNumber, endLineNumber) =
-          literalOffsets.map(document.getLineNumber)
+        val Seq(startLineNumber, endLineNumber) = literalOffsets.map(
+          document.getLineNumber)
         val literalStart = literalOffsets(0)
         val (startLineOffset, startLineEndOffset) = (
           document.getLineStartOffset(startLineNumber),
@@ -288,8 +288,8 @@ object MultilineStringUtil {
 class MultilineStringSettings(project: Project) {
   private val settings =
     CodeStyleSettingsManager.getInstance(project).getCurrentSettings
-  private val scalaSettings: ScalaCodeStyleSettings =
-    ScalaCodeStyleSettings.getInstance(project)
+  private val scalaSettings: ScalaCodeStyleSettings = ScalaCodeStyleSettings
+    .getInstance(project)
 
   val defaultMarginChar =
     settings.getCustomSettings(classOf[ScalaCodeStyleSettings]).MARGIN_CHAR

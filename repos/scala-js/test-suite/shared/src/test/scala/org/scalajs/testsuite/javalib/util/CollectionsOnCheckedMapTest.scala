@@ -38,11 +38,9 @@ trait CollectionsOnCheckedMapTest extends CollectionsOnMapsTest {
           vct.runtimeClass.asInstanceOf[Class[V]])
       }
 
-      override def allowsNullKeys: Boolean =
-        originalFactory.allowsNullKeys
+      override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys
 
-      override def allowsNullValues: Boolean =
-        originalFactory.allowsNullValues
+      override def allowsNullValues: Boolean = originalFactory.allowsNullValues
     }
   }
 
@@ -89,11 +87,9 @@ trait CollectionsOnCheckedSortedMapTest extends CollectionsOnSortedMapsTest {
           vct.runtimeClass.asInstanceOf[Class[V]])
       }
 
-      override def allowsNullKeys: Boolean =
-        originalFactory.allowsNullKeys
+      override def allowsNullKeys: Boolean = originalFactory.allowsNullKeys
 
-      override def allowsNullValues: Boolean =
-        originalFactory.allowsNullValues
+      override def allowsNullValues: Boolean = originalFactory.allowsNullValues
     }
   }
 

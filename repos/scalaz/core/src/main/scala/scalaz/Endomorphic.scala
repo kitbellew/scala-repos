@@ -11,8 +11,7 @@ final case class Endomorphic[=>:[_, _], A](run: A =>: A) {
     Endomorphic[=>:, A](F.compose(run, that.run))
 
   final def andThen(that: Endomorphic[=>:, A])(
-      implicit F: Compose[=>:]): Endomorphic[=>:, A] =
-    that.compose(this)
+      implicit F: Compose[=>:]): Endomorphic[=>:, A] = that.compose(this)
 
 }
 

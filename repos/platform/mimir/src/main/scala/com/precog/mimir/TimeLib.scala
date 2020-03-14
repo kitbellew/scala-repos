@@ -310,8 +310,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
 
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        Scan(source, scanner)
+          source: TransSpec[A]): TransSpec[A] = Scan(source, scanner)
     }
 
     trait ExtremeTime extends Op2F2 {

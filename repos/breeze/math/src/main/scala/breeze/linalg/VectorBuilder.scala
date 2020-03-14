@@ -156,8 +156,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
 
   def toHashVector: HashVector[E] = {
     requirePositiveLength()
-    implicit val man =
-      ClassTag[E](_data.getClass.getComponentType.asInstanceOf[Class[E]])
+    implicit val man = ClassTag[E](
+      _data.getClass.getComponentType.asInstanceOf[Class[E]])
     val hv = HashVector.zeros[E](length)
     var i = 0
     while (i < used) {
@@ -176,8 +176,8 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
 
   def toDenseVector: DenseVector[E] = {
     requirePositiveLength()
-    implicit val man =
-      ClassTag[E](_data.getClass.getComponentType.asInstanceOf[Class[E]])
+    implicit val man = ClassTag[E](
+      _data.getClass.getComponentType.asInstanceOf[Class[E]])
     val hv = DenseVector.zeros[E](length)
     var i = 0
     while (i < used) {

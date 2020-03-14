@@ -212,8 +212,7 @@ final class ArrayOps[@sp A](arr: Array[A]) {
 }
 
 final class IndexedSeqOps[@sp A, CC[A] <: IndexedSeq[A]](as: CC[A]) {
-  def qsearch(a: A)(implicit ev: Order[A]): Int =
-    Searching.search(as, a)
+  def qsearch(a: A)(implicit ev: Order[A]): Int = Searching.search(as, a)
 }
 
 final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
@@ -223,8 +222,7 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
   def qproduct(implicit ev: MultiplicativeMonoid[A]): A =
     as.aggregate(ev.one)(ev.times, ev.times)
 
-  def qcombine(implicit ev: Monoid[A]): A =
-    as.aggregate(ev.id)(ev.op, ev.op)
+  def qcombine(implicit ev: Monoid[A]): A = as.aggregate(ev.id)(ev.op, ev.op)
 
   def qnorm(p: Int)(implicit ev: Field[A], s: Signed[A], nr: NRoot[A]): A =
     as.aggregate(ev.one)(_ + _.abs.pow(p), _ + _).nroot(p)
@@ -386,6 +384,5 @@ final class SeqOps[@sp A, CC[A] <: Iterable[A]](as: CC[A]) { //fixme
       cbf: CanBuildFrom[CC[A], A, CC[A]]): CC[A] =
     fromArray(gen.sampleFromTraversable(as, n))
 
-  def qchoose(implicit gen: Generator): A =
-    gen.chooseFromIterable(as)
+  def qchoose(implicit gen: Generator): A = gen.chooseFromIterable(as)
 }

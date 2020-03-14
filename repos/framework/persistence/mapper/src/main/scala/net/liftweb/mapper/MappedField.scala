@@ -601,8 +601,9 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     if (dbColumnCount == 1) List(_dbColumnNameLC) else List(in.toLowerCase)
 
   def dbColumnName = {
-    val columnName =
-      MapperRules.columnName(fieldOwner.connectionIdentifier, name)
+    val columnName = MapperRules.columnName(
+      fieldOwner.connectionIdentifier,
+      name)
     if (DB.reservedWords.contains(columnName.toLowerCase)) columnName + "_c"
     else columnName
   }

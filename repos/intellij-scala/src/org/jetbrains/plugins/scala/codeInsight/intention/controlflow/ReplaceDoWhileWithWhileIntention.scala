@@ -118,8 +118,9 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
         val newWhileStmt = ScalaPsiElementFactory.createExpressionFromText(
           whileText.toString,
           manager)
-        val newBody =
-          ScalaPsiElementFactory.createExpressionFromText(bodyText, manager)
+        val newBody = ScalaPsiElementFactory.createExpressionFromText(
+          bodyText,
+          manager)
 
         val parentBlockHasBraces: Boolean = doStmt.getParent.children
           .map(_.getNode.getElementType)
@@ -138,17 +139,17 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
         inWriteAction {
           val newDoStmt =
             if (!parentBlockHasBraces && parentBlockNeedBraces) {
-              val doStmtInBraces =
-                doStmt.replaceExpression(
-                  ScalaPsiElementFactory.createBlockFromExpr(doStmt, manager),
-                  removeParenthesis = true)
+              val doStmtInBraces = doStmt.replaceExpression(
+                ScalaPsiElementFactory.createBlockFromExpr(doStmt, manager),
+                removeParenthesis = true)
               PsiTreeUtil.findChildOfType(
                 doStmtInBraces,
                 classOf[ScDoStmt],
                 true)
             } else doStmt
-          val newExpression: ScExpression =
-            newDoStmt.replaceExpression(newWhileStmt, removeParenthesis = true)
+          val newExpression: ScExpression = newDoStmt.replaceExpression(
+            newWhileStmt,
+            removeParenthesis = true)
           val parent = newExpression.getParent
 
           val bodyElements = newBody match {

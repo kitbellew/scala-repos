@@ -47,8 +47,8 @@ abstract class ScalaMemberInfoBase[Member <: PsiElement](member: Member)
         case _                       => method.hasModifierProperty(PsiModifier.STATIC)
       }
     case clazz: ScTypeDefinition =>
-      displayName =
-        ScalaElementPresentation.getTypeDefinitionPresentableText(clazz)
+      displayName = ScalaElementPresentation.getTypeDefinitionPresentableText(
+        clazz)
       isStatic = clazz.containingClass.isInstanceOf[ScObject]
       overrides = null
     case ta: ScTypeAlias =>

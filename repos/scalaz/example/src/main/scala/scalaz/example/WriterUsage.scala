@@ -13,16 +13,15 @@ object WriterUsage extends App {
   case class Person(name: String, age: Int, address: Option[Address] = None)
   case class Address(street: String, city: String)
 
-  val drWatson =
-    for {
-      watson <- Person("Watson", 40).set(List("Create Watson"))
-      address <- Address("Baker Street", "London").set(List("Create address."))
-      _ <- List(
-        "tell lets us log something in between. Writer[List[String], Unit]").tell
-      moveWatson <- watson
-        .copy(address = Some(address))
-        .set(List("Move to new address."))
-    } yield moveWatson
+  val drWatson = for {
+    watson <- Person("Watson", 40).set(List("Create Watson"))
+    address <- Address("Baker Street", "London").set(List("Create address."))
+    _ <- List(
+      "tell lets us log something in between. Writer[List[String], Unit]").tell
+    moveWatson <- watson
+      .copy(address = Some(address))
+      .set(List("Move to new address."))
+  } yield moveWatson
 
   // print log
   drWatson.written.map(println)
@@ -30,22 +29,21 @@ object WriterUsage extends App {
   // get value
   drWatson.value.map(println)
 
-  val sherlockHolmes =
-    for {
-      holmes <- Person("Holmes", 40).set(List("Create Holmes"))
-      address <- Address("Baker Street", "London").set(List("Create address."))
-      moveHolmes <- holmes
-        .copy(address = Some(address))
-        .set(List("Move to new address."))
-    } yield (moveHolmes)
+  val sherlockHolmes = for {
+    holmes <- Person("Holmes", 40).set(List("Create Holmes"))
+    address <- Address("Baker Street", "London").set(List("Create address."))
+    moveHolmes <- holmes
+      .copy(address = Some(address))
+      .set(List("Move to new address."))
+  } yield (moveHolmes)
 
   // map lets you map over the value side
   val mapValue: Logger[Option[Address]] = sherlockHolmes.map(x => x.address)
   mapValue.value.map(println)
 
   // with mapWritten you can map over the written side.
-  val mapWritten: Logger[Person] =
-    sherlockHolmes.mapWritten(_.map(entry => "[LOG] " + entry))
+  val mapWritten: Logger[Person] = sherlockHolmes.mapWritten(
+    _.map(entry => "[LOG] " + entry))
   mapWritten.written.map(println)
 
   // with mapValue you can map over both sides
@@ -66,8 +64,8 @@ object WriterUsage extends App {
   resultFappend.written.map(println)
 
   // <++: and <<++: work like :++>, :++>> only to prepend information
-  val resultPrepend: Logger[Person] =
-    sherlockHolmes.<++:(List("Starting to create a Person"))
+  val resultPrepend: Logger[Person] = sherlockHolmes.<++:(
+    List("Starting to create a Person"))
   resultPrepend.written.map(println)
 
   // reset your log to zero

@@ -82,8 +82,8 @@ object ByteBufferMessageSet {
           }
         } finally { output.close() }
       }
-      val buffer =
-        ByteBuffer.allocate(messageWriter.size + MessageSet.LogOverhead)
+      val buffer = ByteBuffer.allocate(
+        messageWriter.size + MessageSet.LogOverhead)
       writeMessage(buffer, messageWriter, offset)
       buffer.rewind()
       buffer

@@ -190,10 +190,9 @@ trait RouteTest
         type Out = RouteTestResult
         def apply(request: HttpRequest, route: Route): Out = {
           val routeTestResult = new RouteTestResult(timeout.duration)
-          val effectiveRequest =
-            request.withEffectiveUri(
-              securedConnection = defaultHostInfo.securedConnection,
-              defaultHostHeader = defaultHostInfo.host)
+          val effectiveRequest = request.withEffectiveUri(
+            securedConnection = defaultHostInfo.securedConnection,
+            defaultHostHeader = defaultHostInfo.host)
           val ctx = new RequestContextImpl(
             effectiveRequest,
             routingLog.requestLog(effectiveRequest),

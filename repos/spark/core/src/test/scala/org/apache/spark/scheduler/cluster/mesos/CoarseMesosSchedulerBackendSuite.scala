@@ -116,8 +116,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == executorCores)
   }
 
@@ -131,8 +132,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == offerCores)
   }
 
@@ -146,8 +148,9 @@ class CoarseMesosSchedulerBackendSuite
     val taskInfos = verifyTaskLaunched("o1")
     assert(taskInfos.size() == 1)
 
-    val cpus =
-      backend.getResource(taskInfos.iterator().next().getResourcesList, "cpus")
+    val cpus = backend.getResource(
+      taskInfos.iterator().next().getResourcesList,
+      "cpus")
     assert(cpus == maxCores)
   }
 
@@ -278,8 +281,8 @@ class CoarseMesosSchedulerBackendSuite
 
   private def verifyTaskLaunched(
       offerId: String): java.util.Collection[TaskInfo] = {
-    val captor =
-      ArgumentCaptor.forClass(classOf[java.util.Collection[TaskInfo]])
+    val captor = ArgumentCaptor.forClass(
+      classOf[java.util.Collection[TaskInfo]])
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(createOfferId(offerId))),
       captor.capture())

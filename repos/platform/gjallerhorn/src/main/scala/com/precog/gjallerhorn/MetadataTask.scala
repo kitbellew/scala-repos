@@ -61,8 +61,8 @@ class MetadataTask(settings: Settings)
         _ / account.bareRootPath / "foo" / "")
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         (json \ "size").deserialize[Long] must_== 5
         (json \ "children").children map (_.deserialize[String]) must_== Nil
         val cPathChildren =
@@ -138,8 +138,8 @@ class MetadataTask(settings: Settings)
       }
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         val subpaths = (json \ "children").children map (_.deserialize[String])
         subpaths must haveTheSameElementsAs(List("bar/"))
       }
@@ -187,16 +187,16 @@ class MetadataTask(settings: Settings)
         _ / account.bareRootPath / "foo" / "")
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         (json \ "size").deserialize[Long] must_== 5
       }
 
       deletePath(account.apiKey)(_ / account.bareRootPath / "foo" / "")
 
       EventuallyResults.eventually(10, 1.second) {
-        val json =
-          metadataFor(account.apiKey)(_ / account.bareRootPath / "foo" / "")
+        val json = metadataFor(account.apiKey)(
+          _ / account.bareRootPath / "foo" / "")
         (json \ "size").deserialize[Long] must_== 0
       }
     }

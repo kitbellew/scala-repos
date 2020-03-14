@@ -568,8 +568,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       import trans._
       import TransSpecModule._
 
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JType.JUniverseT,
+        JObjectUnfixedT)
 
       val independent = "predictors"
       val dependent = "dependent"
@@ -579,14 +581,17 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val sampleSize = 10000
       val maxForestSize = 2000
 
-      val independentSpec =
-        trans.DerefObjectStatic(TransSpec1.Id, CPathField(independent))
-      val dependentSpec =
-        trans.DerefObjectStatic(TransSpec1.Id, CPathField(dependent))
+      val independentSpec = trans.DerefObjectStatic(
+        TransSpec1.Id,
+        CPathField(independent))
+      val dependentSpec = trans.DerefObjectStatic(
+        TransSpec1.Id,
+        CPathField(dependent))
 
       override val idPolicy = IdentityPolicy.Retain.Merge
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Right, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Right,
+        alignCustom _)
 
       def extractDependent(table: Table): M[Array[A]]
 
@@ -693,8 +698,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
           def apply(table: Table, ctx: MorphContext): M[Table] = {
 
-            lazy val models: Map[String, (JType, F)] =
-              forests.zipWithIndex.map({
+            lazy val models: Map[String, (JType, F)] = forests.zipWithIndex
+              .map({
                 case (elem, i) =>
                   ("model" + (i + 1)) -> elem
               })(collection.breakOut)
@@ -714,44 +719,45 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             def predict(stream: StreamT[M, Slice]): StreamT[M, Slice] = {
               StreamT(stream.uncons map {
                 case Some((head, tail)) => {
-                  val valueColumns =
-                    models.foldLeft(Map.empty[ColumnRef, Column]) {
-                      case (acc, (modelId, (_, forest))) =>
-                        val modelSlice = head
-                          .deref(paths.Value)
-                          .deref(CPathField(modelId))
-                          .mapColumns(cf.util.CoerceToDouble)
-                          .toArray[Double]
-                        val vecsOpt =
-                          sliceToArray[Array[Double]](modelSlice, null) {
-                            case (c: HomogeneousArrayColumn[_]) => {
-                              (row: Int) => c(row).asInstanceOf[Array[Double]]
-                            }
-                          }
-
-                        val defined: BitSet = BitSetUtil.create()
-                        val values: Array[A] = new Array[A](head.size)
-
-                        vecsOpt map { vectors =>
-                          var i = 0
-                          while (i < vectors.length) {
-                            val v = vectors(i)
-                            if (v != null) {
-                              defined.set(i)
-                              values(i) = forest.predict(v)
-                            }
-                            i += 1
-                          }
+                  val valueColumns = models.foldLeft(
+                    Map.empty[ColumnRef, Column]) {
+                    case (acc, (modelId, (_, forest))) =>
+                      val modelSlice = head
+                        .deref(paths.Value)
+                        .deref(CPathField(modelId))
+                        .mapColumns(cf.util.CoerceToDouble)
+                        .toArray[Double]
+                      val vecsOpt = sliceToArray[Array[Double]](
+                        modelSlice,
+                        null) {
+                        case (c: HomogeneousArrayColumn[_]) => { (row: Int) =>
+                          c(row).asInstanceOf[Array[Double]]
                         }
+                      }
 
-                        val cols = makeColumns(defined, values)
-                        acc ++ cols map {
-                          case (ColumnRef(cpath, ctype), col) =>
-                            ColumnRef(
-                              CPath(paths.Value, CPathField(modelId)) \ cpath,
-                              ctype) -> col
+                      val defined: BitSet = BitSetUtil.create()
+                      val values: Array[A] = new Array[A](head.size)
+
+                      vecsOpt map { vectors =>
+                        var i = 0
+                        while (i < vectors.length) {
+                          val v = vectors(i)
+                          if (v != null) {
+                            defined.set(i)
+                            values(i) = forest.predict(v)
+                          }
+                          i += 1
                         }
-                    }
+                      }
+
+                      val cols = makeColumns(defined, values)
+                      acc ++ cols map {
+                        case (ColumnRef(cpath, ctype), col) =>
+                          ColumnRef(
+                            CPath(paths.Value, CPathField(modelId)) \ cpath,
+                            ctype) -> col
+                      }
+                  }
                   val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns
                   val columns = keyColumns ++ valueColumns
                   StreamT.Yield(Slice(columns, head.size), predict(tail))
@@ -762,16 +768,17 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
               })
             }
 
-            val predictions = if (forests.isEmpty) { Table.empty }
-            else { Table(predict(objectTable.slices), objectTable.size) }
+            val predictions =
+              if (forests.isEmpty) { Table.empty }
+              else { Table(predict(objectTable.slices), objectTable.size) }
 
             M.point(predictions)
           }
         }
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
-        val trainingTable =
-          t1.transform(trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
+        val trainingTable = t1.transform(
+          trans.DerefObjectStatic(TransSpec1.Id, paths.Value))
         val forestsM = makeForests(trainingTable)
 
         forestsM map { forests => (t2, morph1Apply(forests)) }

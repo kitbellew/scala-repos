@@ -42,12 +42,14 @@ class BucketedReadSuite
     with TestHiveSingleton {
   import testImplicits._
 
-  private val df =
-    (0 until 50).map(i => (i % 5, i % 13, i.toString)).toDF("i", "j", "k")
-  private val nullDF = (for {
-    i <- 0 to 50
-    s <- Seq(null, "a", "b", "c", "d", "e", "f", null, "g")
-  } yield (i % 5, s, i % 13)).toDF("i", "j", "k")
+  private val df = (0 until 50)
+    .map(i => (i % 5, i % 13, i.toString))
+    .toDF("i", "j", "k")
+  private val nullDF =
+    (for {
+      i <- 0 to 50
+      s <- Seq(null, "a", "b", "c", "d", "e", "f", null, "g")
+    } yield (i % 5, s, i % 13)).toDF("i", "j", "k")
 
   test("read bucketed data") {
     withTable("bucketed_table") {
@@ -87,15 +89,16 @@ class BucketedReadSuite
       originalDataFrame: DataFrame): Unit = {
     // This test verifies parts of the plan. Disable whole stage codegen.
     withSQLConf(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key -> "false") {
-      val bucketedDataFrame =
-        hiveContext.table("bucketed_table").select("i", "j", "k")
+      val bucketedDataFrame = hiveContext
+        .table("bucketed_table")
+        .select("i", "j", "k")
       val BucketSpec(numBuckets, bucketColumnNames, _) = bucketSpec
       // Limit: bucket pruning only works when the bucket column has one and only one column
       assert(bucketColumnNames.length == 1)
-      val bucketColumnIndex =
-        bucketedDataFrame.schema.fieldIndex(bucketColumnNames.head)
-      val bucketColumn =
-        bucketedDataFrame.schema.toAttributes(bucketColumnIndex)
+      val bucketColumnIndex = bucketedDataFrame.schema.fieldIndex(
+        bucketColumnNames.head)
+      val bucketColumn = bucketedDataFrame.schema.toAttributes(
+        bucketColumnIndex)
       val matchedBuckets = new BitSet(numBuckets)
       bucketValues.foreach { value =>
         matchedBuckets.set(
@@ -292,8 +295,8 @@ class BucketedReadSuite
             .sort("df1.k", "df2.k"))
 
         assert(joined.queryExecution.executedPlan.isInstanceOf[SortMergeJoin])
-        val joinOperator =
-          joined.queryExecution.executedPlan.asInstanceOf[SortMergeJoin]
+        val joinOperator = joined.queryExecution.executedPlan
+          .asInstanceOf[SortMergeJoin]
 
         assert(
           joinOperator.left

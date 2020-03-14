@@ -46,8 +46,8 @@ trait TimedTransformer {
   def apply(s: String) = {
 
     //first, run the input through the line parser
-    val (ms1, lineReader: MarkdownLineReader) =
-      TimeTest.executionTime(() => lineTokenizer.tokenize(s))
+    val (ms1, lineReader: MarkdownLineReader) = TimeTest.executionTime(() =>
+      lineTokenizer.tokenize(s))
 
     //then, run it through the block parser
     val (ms2, result) = TimeTest.executionTime(() => blockParser(lineReader))

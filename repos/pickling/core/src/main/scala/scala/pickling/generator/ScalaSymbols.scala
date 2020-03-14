@@ -32,8 +32,7 @@ private[pickling] class IrScalaSymbols[
   def isCaseClass(sym: TypeSymbol): Boolean =
     sym.isClass && sym.asClass.isCaseClass
 
-  def isClosed(sym: tools.u.TypeSymbol): Boolean =
-    whyNotClosed(sym).isEmpty
+  def isClosed(sym: tools.u.TypeSymbol): Boolean = whyNotClosed(sym).isEmpty
 
   def whyNotClosed(sym: tools.u.TypeSymbol): Seq[String] = {
     if (sym.isEffectivelyFinal) Nil
@@ -193,8 +192,8 @@ private[pickling] class IrScalaSymbols[
     /** Fill is the concrete types for a given symbol using the concrete types this class knows about. */
     final def fillParameters(baseSym: Symbol): Type = {
       //System.err.println(s"baseSym= ${baseSym.toString}")
-      val baseSymTpe =
-        baseSym.typeSignature.asSeenFrom(rawType, rawType.typeSymbol.asClass)
+      val baseSymTpe = baseSym.typeSignature
+        .asSeenFrom(rawType, rawType.typeSymbol.asClass)
       //System.err.println(s"baseSymTpe: ${baseSymTpe.toString}")
 
       val rawSymTpe = baseSymTpe match {

@@ -31,8 +31,10 @@ class AkkaGraphiteReporter(
   private final val ConsoleWidth = 80
 
   val locale = Locale.getDefault
-  val dateFormat =
-    DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale)
+  val dateFormat = DateFormat.getDateTimeInstance(
+    DateFormat.SHORT,
+    DateFormat.MEDIUM,
+    locale)
   val clock = Clock.defaultClock()
 
   override def report(

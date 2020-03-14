@@ -31,12 +31,13 @@ class ScalatraBroadcasterFactory(
 
   private def createBroadcaster[T <: Broadcaster](c: Class[T], id: Any): T = {
     try {
-      val b: T = if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
-        bCfg.broadcasterClass
-          .getConstructor(classOf[WireFormat], classOf[ActorSystem])
-          .newInstance(wireFormat, system)
-          .asInstanceOf[T]
-      } else { cfg.framework().newClassInstance(c, c) }
+      val b: T =
+        if (classOf[ScalatraBroadcaster].isAssignableFrom(c)) {
+          bCfg.broadcasterClass
+            .getConstructor(classOf[WireFormat], classOf[ActorSystem])
+            .newInstance(wireFormat, system)
+            .asInstanceOf[T]
+        } else { cfg.framework().newClassInstance(c, c) }
       b.initialize(id.toString, bCfg.uri, cfg)
       bCfg.extraSetup(b)
       b.setSuspendPolicy(-1, Broadcaster.POLICY.FIFO)

@@ -18,8 +18,7 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
     currentTestClassName.push(testClassName)
   }
 
-  def pushCurrentTestClassName(s: String): Unit =
-    currentTestClassName.push(s)
+  def pushCurrentTestClassName(s: String): Unit = currentTestClassName.push(s)
 
   def popCurrentTestClassName(): Unit = {
     if (currentTestClassName.size > 1) currentTestClassName.pop()

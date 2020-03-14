@@ -63,8 +63,8 @@ private[annotator] object AnnotatorUtils {
           case b: ScBlockExpr => b.getRBrace.map(_.getPsi).getOrElse(b)
           case _              => expression
         }
-        val (actualText, expText) =
-          ScTypePresentation.different(actual, expected)
+        val (actualText, expText) = ScTypePresentation
+          .different(actual, expected)
         val annotation = holder.createErrorAnnotation(
           expr,
           ScalaBundle

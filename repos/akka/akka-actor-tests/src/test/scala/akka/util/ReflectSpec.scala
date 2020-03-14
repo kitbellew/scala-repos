@@ -37,8 +37,9 @@ class ReflectSpec extends WordSpec with Matchers {
       Reflect.findConstructor(classOf[Two], immutable.Seq(null, new B))
     }
     "deal with `null` in 1 matching case" in {
-      val constructor =
-        Reflect.findConstructor(classOf[One], immutable.Seq(null))
+      val constructor = Reflect.findConstructor(
+        classOf[One],
+        immutable.Seq(null))
       constructor.newInstance(null)
     }
     "deal with multiple constructors" in {

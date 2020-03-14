@@ -5,19 +5,16 @@ import scala.scalajs.js.typedarray._
 object FloatBuffer {
   private final val HashSeed = 1920204022 // "java.nio.FloatBuffer".##
 
-  def allocate(capacity: Int): FloatBuffer =
-    wrap(new Array[Float](capacity))
+  def allocate(capacity: Int): FloatBuffer = wrap(new Array[Float](capacity))
 
   def wrap(array: Array[Float], offset: Int, length: Int): FloatBuffer =
     HeapFloatBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Float]): FloatBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Float]): FloatBuffer = wrap(array, 0, array.length)
 
   // Extended API
 
-  def wrap(array: Float32Array): FloatBuffer =
-    TypedArrayFloatBuffer.wrap(array)
+  def wrap(array: Float32Array): FloatBuffer = TypedArrayFloatBuffer.wrap(array)
 }
 
 abstract class FloatBuffer private[nio] (
@@ -51,28 +48,22 @@ abstract class FloatBuffer private[nio] (
   def get(dst: Array[Float], offset: Int, length: Int): FloatBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Float]): FloatBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Float]): FloatBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: FloatBuffer): FloatBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: FloatBuffer): FloatBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Float], offset: Int, length: Int): FloatBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Float]): FloatBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Float]): FloatBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Float] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Float] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): FloatBuffer
 

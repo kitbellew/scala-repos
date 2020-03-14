@@ -26,8 +26,7 @@ object Employee {
     """{"fname":"Frank","name":"Smith","age":42,"id":12345,"boardMember":false}"""
 
   val utf8 = Employee("Fränk", "Çmi√", 42, 12345, false)
-  val utf8json =
-    """{
+  val utf8json = """{
       |  "fname": "Fränk",
       |  "name": "Çmi√",
       |  "age": 42,

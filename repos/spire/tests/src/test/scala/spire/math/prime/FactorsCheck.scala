@@ -24,8 +24,8 @@ class FactorsCheck
 
   import Factors.{zero, one}
 
-  implicit val arbitraryFactors: Arbitrary[Factors] =
-    Arbitrary(arbitrary[SafeLong].map(n => Factors(n)))
+  implicit val arbitraryFactors: Arbitrary[Factors] = Arbitrary(
+    arbitrary[SafeLong].map(n => Factors(n)))
 
   property("Factors(n).value = n") {
     forAll { (n: Long) => Factors(n).value shouldBe n }

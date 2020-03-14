@@ -80,8 +80,11 @@ class AkkaProtocolSpec
     .setSerializerId(0)
     .setMessage(PByteString.copyFromUtf8("foo"))
     .build
-  val testEnvelope =
-    codec.constructMessage(localAkkaAddress, testActor, testMsg, None)
+  val testEnvelope = codec.constructMessage(
+    localAkkaAddress,
+    testActor,
+    testMsg,
+    None)
   val testMsgPdu: ByteString = codec.constructPayload(testEnvelope)
 
   def testHeartbeat = InboundPayload(codec.constructHeartbeat)

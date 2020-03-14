@@ -37,8 +37,9 @@ private[spark] class DiskBlockManager(
     deleteFilesOnStop: Boolean)
     extends Logging {
 
-  private[spark] val subDirsPerLocalDir =
-    conf.getInt("spark.diskStore.subDirectories", 64)
+  private[spark] val subDirsPerLocalDir = conf.getInt(
+    "spark.diskStore.subDirectories",
+    64)
 
   /* Create one local directory for each path mentioned in spark.local.dir; then, inside this
    * directory, create multiple subdirectories that we will hash files into, in order to avoid
@@ -50,8 +51,8 @@ private[spark] class DiskBlockManager(
   }
   // The content of subDirs is immutable but the content of subDirs(i) is mutable. And the content
   // of subDirs(i) is protected by the lock of subDirs(i)
-  private val subDirs =
-    Array.fill(localDirs.length)(new Array[File](subDirsPerLocalDir))
+  private val subDirs = Array.fill(localDirs.length)(
+    new Array[File](subDirsPerLocalDir))
 
   private val shutdownHook = addShutdownHook()
 

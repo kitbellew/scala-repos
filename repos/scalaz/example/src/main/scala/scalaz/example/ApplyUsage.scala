@@ -82,8 +82,9 @@ object ApplyUsage extends App {
 
   def add8(a: Int, b: Int, c: Int, d: Int, e: Int, f: Int, g: Int, h: Int) =
     a + b + c + d + e + f + g + h
-  val someOf8Options = (1.some |@| 2.some |@| 3.some |@| 4.some |@|
-    5.some |@| 6.some |@| 7.some |@| 8.some)(add8 _)
+  val someOf8Options =
+    (1.some |@| 2.some |@| 3.some |@| 4.some |@|
+      5.some |@| 6.some |@| 7.some |@| 8.some)(add8 _)
   assert(someOf8Options === 36.some)
 
   // the applicative builder created by |@| also has a "tupled" method
@@ -150,10 +151,9 @@ object ApplyUsage extends App {
   // applying the effects of all contexts:
   val applyVLO = Apply[Vector] compose Apply[List] compose Apply[Option]
 
-  val deepResult =
-    applyVLO.apply2(
-      Vector(List(1.some, none[Int]), List(2.some, 3.some)),
-      Vector(List("a".some, "b".some, "c".some)))(_.toString + _)
+  val deepResult = applyVLO.apply2(
+    Vector(List(1.some, none[Int]), List(2.some, 3.some)),
+    Vector(List("a".some, "b".some, "c".some)))(_.toString + _)
 
   val expectedDeep = Vector(
     List(Some("1a"), Some("1b"), Some("1c"), None, None, None),

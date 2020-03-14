@@ -131,8 +131,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       "C")
     val addressB = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
     val serviceB = new Service[String, String] {
-      def apply(request: String) =
-        clientB(request)
+      def apply(request: String) = clientB(request)
     }
     val serverB = stringServer.serveAndAnnounce("B", addressB, serviceB)
 
@@ -263,8 +262,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     Await.ready(server.close(), 1.second)
 
     val requestFailures = mem.counters(Seq("client", "failures"))
-    val requeues =
-      mem.counters.get(Seq("client", "retries", "requeues"))
+    val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
     assert(requestFailures == 1)
     assert(requeues == None)
   }
@@ -290,10 +288,9 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
       Trace.letId(traceId, true) { Await.result(client("hi"), 1.second) }
     }
 
-    val serviceCreationFailures =
-      mem.counters(Seq("client", "service_creation", "failures"))
-    val requeues =
-      mem.counters.get(Seq("client", "retries", "requeues"))
+    val serviceCreationFailures = mem.counters(
+      Seq("client", "service_creation", "failures"))
+    val requeues = mem.counters.get(Seq("client", "retries", "requeues"))
 
     // initial write exception and no requeues
     assert(serviceCreationFailures == 1)

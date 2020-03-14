@@ -47,9 +47,10 @@ class RelationalGroupedDataset protected[sql] (
     groupType: RelationalGroupedDataset.GroupType) {
 
   private[this] def toDF(aggExprs: Seq[Expression]): DataFrame = {
-    val aggregates = if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
-      groupingExprs ++ aggExprs
-    } else { aggExprs }
+    val aggregates =
+      if (df.sqlContext.conf.dataFrameRetainGroupColumns) {
+        groupingExprs ++ aggExprs
+      } else { aggExprs }
 
     val aliasedAgg = aggregates.map(alias)
 
@@ -87,21 +88,22 @@ class RelationalGroupedDataset protected[sql] (
   private[this] def aggregateNumericColumns(colNames: String*)(
       f: Expression => AggregateFunction): DataFrame = {
 
-    val columnExprs = if (colNames.isEmpty) {
-      // No columns specified. Use all numeric columns.
-      df.numericColumns
-    } else {
-      // Make sure all specified columns are numeric.
-      colNames.map { colName =>
-        val namedExpr = df.resolve(colName)
-        if (!namedExpr.dataType.isInstanceOf[NumericType]) {
-          throw new AnalysisException(
-            s""""$colName" is not a numeric column. """ +
-              "Aggregation function can only be applied on a numeric column.")
+    val columnExprs =
+      if (colNames.isEmpty) {
+        // No columns specified. Use all numeric columns.
+        df.numericColumns
+      } else {
+        // Make sure all specified columns are numeric.
+        colNames.map { colName =>
+          val namedExpr = df.resolve(colName)
+          if (!namedExpr.dataType.isInstanceOf[NumericType]) {
+            throw new AnalysisException(
+              s""""$colName" is not a numeric column. """ +
+                "Aggregation function can only be applied on a numeric column.")
+          }
+          namedExpr
         }
-        namedExpr
       }
-    }
     toDF(columnExprs.map(expr => f(expr).toAggregateExpression()))
   }
 
@@ -309,8 +311,8 @@ class RelationalGroupedDataset protected[sql] (
     */
   def pivot(pivotColumn: String): RelationalGroupedDataset = {
     // This is to prevent unintended OOM errors when the number of distinct values is large
-    val maxValues =
-      df.sqlContext.conf.getConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES)
+    val maxValues = df.sqlContext.conf
+      .getConf(SQLConf.DATAFRAME_PIVOT_MAX_VALUES)
     // Get the distinct values of the column and sort them so its consistent
     val values = df
       .select(pivotColumn)

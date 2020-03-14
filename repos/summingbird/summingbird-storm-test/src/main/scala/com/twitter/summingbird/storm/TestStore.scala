@@ -57,8 +57,9 @@ object TestStore {
     (storeID, supplier)
   }
 
-  def createStore[K, V: Semigroup](initialData: Map[K, V] = Map.empty[K, V])
-      : (String, MergeableStoreFactory[(K, BatchID), V]) = {
+  def createStore[K, V: Semigroup](
+      initialData: Map[K, V] = Map
+        .empty[K, V]): (String, MergeableStoreFactory[(K, BatchID), V]) = {
     val storeID = buildStore[K, V](initialData)
     val supplier = MergeableStoreFactory.fromOnlineOnly(
       TestStore
@@ -72,8 +73,8 @@ object TestStore {
 
 case class TestStore[K, V: Semigroup](storeID: String, initialData: Map[K, V])
     extends MergeableStore[K, V] {
-  private val backingStore: JMap[K, Option[V]] =
-    Collections.synchronizedMap(new HashMap[K, Option[V]]())
+  private val backingStore: JMap[K, Option[V]] = Collections.synchronizedMap(
+    new HashMap[K, Option[V]]())
   val updates: AtomicInteger = new AtomicInteger(0)
   val reads: AtomicInteger = new AtomicInteger(0)
 

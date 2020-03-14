@@ -97,11 +97,12 @@ class TestTransportSpec
       awaitCond(registry.transportsReady(addressA, addressB))
 
       val associate: Future[AssociationHandle] = transportA.associate(addressB)
-      val handleB =
-        expectMsgPF(timeout.duration, "Expect InboundAssociation from A") {
-          case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
-            handle
-        }
+      val handleB = expectMsgPF(
+        timeout.duration,
+        "Expect InboundAssociation from A") {
+        case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
+          handle
+      }
 
       handleB.readHandlerPromise.success(ActorHandleEventListener(self))
       val handleA = Await.result(associate, timeout.duration)
@@ -142,11 +143,12 @@ class TestTransportSpec
       awaitCond(registry.transportsReady(addressA, addressB))
 
       val associate: Future[AssociationHandle] = transportA.associate(addressB)
-      val handleB: AssociationHandle =
-        expectMsgPF(timeout.duration, "Expect InboundAssociation from A") {
-          case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
-            handle
-        }
+      val handleB: AssociationHandle = expectMsgPF(
+        timeout.duration,
+        "Expect InboundAssociation from A") {
+        case InboundAssociation(handle) if handle.remoteAddress == addressA ⇒
+          handle
+      }
 
       handleB.readHandlerPromise.success(ActorHandleEventListener(self))
       val handleA = Await.result(associate, timeout.duration)

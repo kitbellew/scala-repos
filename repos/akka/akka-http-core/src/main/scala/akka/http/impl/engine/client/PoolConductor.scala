@@ -73,10 +73,10 @@ private object PoolConductor {
     GraphDSL.create() { implicit b ⇒
       import GraphDSL.Implicits._
 
-      val retryMerge =
-        b.add(MergePreferred[RequestContext](1, eagerComplete = true))
-      val slotSelector =
-        b.add(new SlotSelector(slotCount, pipeliningLimit, log))
+      val retryMerge = b.add(
+        MergePreferred[RequestContext](1, eagerComplete = true))
+      val slotSelector = b.add(
+        new SlotSelector(slotCount, pipeliningLimit, log))
       val route = b.add(new Route(slotCount))
       val retrySplit = b.add(Broadcast[RawSlotEvent](2))
       val flatten = Flow[RawSlotEvent].mapAsyncUnordered(slotCount) {
@@ -150,8 +150,9 @@ private object PoolConductor {
             override def onPush(): Unit = {
               val ctx = grab(ctxIn)
               val slot = nextSlot
-              slotStates(slot) =
-                slotStateAfterDispatch(slotStates(slot), ctx.request.method)
+              slotStates(slot) = slotStateAfterDispatch(
+                slotStates(slot),
+                ctx.request.method)
               nextSlot = bestSlot()
               emit(out, SwitchCommand(ctx, slot), tryPullCtx)
             }
@@ -164,11 +165,12 @@ private object PoolConductor {
             override def onPush(): Unit = {
               grab(slotIn) match {
                 case SlotEvent.RequestCompleted(slotIx) ⇒
-                  slotStates(slotIx) =
-                    slotStateAfterRequestCompleted(slotStates(slotIx))
+                  slotStates(slotIx) = slotStateAfterRequestCompleted(
+                    slotStates(slotIx))
                 case SlotEvent.Disconnected(slotIx, failed) ⇒
-                  slotStates(slotIx) =
-                    slotStateAfterDisconnect(slotStates(slotIx), failed)
+                  slotStates(slotIx) = slotStateAfterDisconnect(
+                    slotStates(slotIx),
+                    failed)
               }
               pull(slotIn)
               val wasBlocked = nextSlot == -1

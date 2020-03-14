@@ -215,8 +215,9 @@ object CreateEntityQuickFix {
       block.add(createTemplateBody(block.getManager))
 
     val children = block.templateBody.get.children.toSeq
-    val anchor =
-      children.find(_.isInstanceOf[ScSelfTypeElement]).getOrElse(children.head)
+    val anchor = children
+      .find(_.isInstanceOf[ScSelfTypeElement])
+      .getOrElse(children.head)
     val holder = anchor.getParent
     val hasMembers = holder.children.findByType(classOf[ScMember]).isDefined
 

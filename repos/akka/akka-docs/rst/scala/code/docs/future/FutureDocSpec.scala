@@ -45,13 +45,13 @@ class FutureDocSpec extends AkkaSpec {
   val println: PartialFunction[Any, Unit] = { case _ => }
 
   "demonstrate usage custom ExecutionContext" in {
-    val yourExecutorServiceGoesHere =
-      java.util.concurrent.Executors.newSingleThreadExecutor()
+    val yourExecutorServiceGoesHere = java.util.concurrent.Executors
+      .newSingleThreadExecutor()
     //#diy-execution-context
     import scala.concurrent.{ExecutionContext, Promise}
 
-    implicit val ec =
-      ExecutionContext.fromExecutorService(yourExecutorServiceGoesHere)
+    implicit val ec = ExecutionContext.fromExecutorService(
+      yourExecutorServiceGoesHere)
 
     // Do stuff with your brand new shiny ExecutionContext
     val f = Promise.successful("foo")
@@ -234,8 +234,8 @@ class FutureDocSpec extends AkkaSpec {
     val oddActor = system.actorOf(Props[OddActor])
     //#sequence-ask
     // oddActor returns odd numbers sequentially from 1 as a List[Future[Int]]
-    val listOfFutures =
-      List.fill(100)(akka.pattern.ask(oddActor, GetNext).mapTo[Int])
+    val listOfFutures = List.fill(100)(
+      akka.pattern.ask(oddActor, GetNext).mapTo[Int])
 
     // now we have a Future[List[Int]]
     val futureList = Future.sequence(listOfFutures)
@@ -249,8 +249,8 @@ class FutureDocSpec extends AkkaSpec {
 
   "demonstrate usage of sequence" in {
     //#sequence
-    val futureList =
-      Future.sequence((1 to 100).toList.map(x => Future(x * 2 - 1)))
+    val futureList = Future.sequence(
+      (1 to 100).toList.map(x => Future(x * 2 - 1)))
     val oddSum = futureList.map(_.sum)
     oddSum foreach println
     //#sequence
@@ -390,8 +390,8 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future.successful("Yay!")
     //#successful
     //#failed
-    val otherFuture =
-      Future.failed[String](new IllegalArgumentException("Bang!"))
+    val otherFuture = Future.failed[String](
+      new IllegalArgumentException("Bang!"))
     //#failed
     //#promise
     val promise = Promise[String]()

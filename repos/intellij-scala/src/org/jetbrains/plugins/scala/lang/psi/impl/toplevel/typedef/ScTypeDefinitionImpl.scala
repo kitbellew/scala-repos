@@ -190,8 +190,10 @@ abstract class ScTypeDefinitionImpl protected (
     }
 
   def getSourceMirrorClass: PsiClass = {
-    val classParent =
-      PsiTreeUtil.getParentOfType(this, classOf[ScTypeDefinition], true)
+    val classParent = PsiTreeUtil.getParentOfType(
+      this,
+      classOf[ScTypeDefinition],
+      true)
     val name = this.name
     if (classParent == null) {
       val classes: Array[PsiClass] =

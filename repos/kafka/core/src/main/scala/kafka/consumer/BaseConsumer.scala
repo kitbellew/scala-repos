@@ -96,14 +96,13 @@ class OldConsumer(topicFilter: TopicFilter, consumerProps: Properties)
   import kafka.serializer.DefaultDecoder
 
   val consumerConnector = Consumer.create(new ConsumerConfig(consumerProps))
-  val stream: KafkaStream[Array[Byte], Array[Byte]] =
-    consumerConnector
-      .createMessageStreamsByFilter(
-        topicFilter,
-        1,
-        new DefaultDecoder(),
-        new DefaultDecoder())
-      .head
+  val stream: KafkaStream[Array[Byte], Array[Byte]] = consumerConnector
+    .createMessageStreamsByFilter(
+      topicFilter,
+      1,
+      new DefaultDecoder(),
+      new DefaultDecoder())
+    .head
   val iter = stream.iterator
 
   override def receive(): BaseConsumerRecord = {

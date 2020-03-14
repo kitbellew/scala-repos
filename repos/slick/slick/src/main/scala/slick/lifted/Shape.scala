@@ -491,8 +491,8 @@ object ProvenShape {
       implicit sh: Shape[_ <: FlatShapeLevel, T, U, _]): ProvenShape[U] =
     new ProvenShape[U] {
       def value = v
-      val shape: Shape[_ <: FlatShapeLevel, _, U, _] =
-        sh.asInstanceOf[Shape[FlatShapeLevel, _, U, _]]
+      val shape: Shape[_ <: FlatShapeLevel, _, U, _] = sh
+        .asInstanceOf[Shape[FlatShapeLevel, _, U, _]]
       def packedValue[R](
           implicit ev: Shape[_ <: FlatShapeLevel, _, U, R]): ShapedValue[R, U] =
         ShapedValue(

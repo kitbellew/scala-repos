@@ -67,6 +67,5 @@ class CollectionsOnSynchronizedCollectionConcurrentSkipListSetTest
 
 class CollectionsOnSynchronizedCollectionArrayDequeTest
     extends CollectionsSynchronizedCollectionTest {
-  def originalFactory: CollectionFactory =
-    new ArrayDequeFactory
+  def originalFactory: CollectionFactory = new ArrayDequeFactory
 }

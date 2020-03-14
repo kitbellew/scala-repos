@@ -110,8 +110,9 @@ object JsonApi {
     }
 
   object readers {
-    implicit val ClientVersionReads =
-      Reads.of[String].map(new Client.Version(_))
+    implicit val ClientVersionReads = Reads
+      .of[String]
+      .map(new Client.Version(_))
     implicit val ClientKeyReads = Reads.of[String].map(new Client.Key(_))
     implicit val EngineOptionsReads = Json.reads[Request.EngineOptions]
     implicit val BaseEngineReads = Json.reads[Request.BaseEngine]

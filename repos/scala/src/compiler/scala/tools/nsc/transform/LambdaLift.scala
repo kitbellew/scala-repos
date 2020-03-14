@@ -343,8 +343,7 @@ abstract class LambdaLift extends InfoTransform {
 
     def freeArgsOrNil(sym: Symbol) = free.getOrElse(sym, Nil).toList
 
-    private def freeArgs(sym: Symbol): List[Symbol] =
-      freeArgsOrNil(sym)
+    private def freeArgs(sym: Symbol): List[Symbol] = freeArgsOrNil(sym)
 
     private def addFreeArgs(pos: Position, sym: Symbol, args: List[Tree]) =
       freeArgs(sym) match {
@@ -358,8 +357,7 @@ abstract class LambdaLift extends InfoTransform {
 
     def proxiesOrNil(sym: Symbol) = proxies.getOrElse(sym, Nil)
 
-    private def freeParams(sym: Symbol): List[Symbol] =
-      proxiesOrNil(sym)
+    private def freeParams(sym: Symbol): List[Symbol] = proxiesOrNil(sym)
 
     private def addFreeParams(tree: Tree, sym: Symbol): Tree =
       tree match {
@@ -377,8 +375,8 @@ abstract class LambdaLift extends InfoTransform {
                 MethodType(
                   addFree(sym, free = paramSyms, original = sym.info.params),
                   sym.info.resultType)))
-            copyDefDef(tree)(vparamss =
-              List(addFree(sym, free = paramDefs, original = vparams)))
+            copyDefDef(tree)(vparamss = List(
+              addFree(sym, free = paramDefs, original = vparams)))
           }
 
         case ClassDef(_, _, _, _) =>

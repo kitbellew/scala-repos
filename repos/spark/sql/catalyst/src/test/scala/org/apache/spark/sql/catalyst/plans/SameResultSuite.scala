@@ -38,8 +38,8 @@ class SameResultSuite extends SparkFunSuite {
     val bAnalyzed = b.analyze
 
     if (aAnalyzed.sameResult(bAnalyzed) != result) {
-      val comparison =
-        sideBySide(aAnalyzed.toString, bAnalyzed.toString).mkString("\n")
+      val comparison = sideBySide(aAnalyzed.toString, bAnalyzed.toString)
+        .mkString("\n")
       fail(s"Plans should return sameResult = $result\n$comparison")
     }
   }

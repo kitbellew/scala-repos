@@ -73,9 +73,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
   @transient private var blockSize: Int = _
 
   private def setConf(conf: SparkConf) {
-    compressionCodec = if (conf.getBoolean("spark.broadcast.compress", true)) {
-      Some(CompressionCodec.createCodec(conf))
-    } else { None }
+    compressionCodec =
+      if (conf.getBoolean("spark.broadcast.compress", true)) {
+        Some(CompressionCodec.createCodec(conf))
+      } else { None }
     // Note: use getSizeAsKb (not bytes) to maintain compatibility if no units are provided
     blockSize = conf.getSizeAsKb("spark.broadcast.blockSize", "4m").toInt * 1024
   }
@@ -106,12 +107,11 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
           tellMaster = false)) {
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
     }
-    val blocks =
-      TorrentBroadcast.blockifyObject(
-        value,
-        blockSize,
-        SparkEnv.get.serializer,
-        compressionCodec)
+    val blocks = TorrentBroadcast.blockifyObject(
+      value,
+      blockSize,
+      SparkEnv.get.serializer,
+      compressionCodec)
     blocks.zipWithIndex.foreach {
       case (block, i) =>
         val pieceId = BroadcastBlockId(id, "piece" + i)
@@ -258,8 +258,9 @@ private object TorrentBroadcast extends Logging {
       serializer: Serializer,
       compressionCodec: Option[CompressionCodec]): Array[ByteBuffer] = {
     val bos = new ByteArrayChunkOutputStream(blockSize)
-    val out: OutputStream =
-      compressionCodec.map(c => c.compressedOutputStream(bos)).getOrElse(bos)
+    val out: OutputStream = compressionCodec
+      .map(c => c.compressedOutputStream(bos))
+      .getOrElse(bos)
     val ser = serializer.newInstance()
     val serOut = ser.serializeStream(out)
     serOut.writeObject[T](obj).close()
@@ -273,8 +274,9 @@ private object TorrentBroadcast extends Logging {
     require(blocks.nonEmpty, "Cannot unblockify an empty array of blocks")
     val is = new SequenceInputStream(
       blocks.iterator.map(new ByteBufferInputStream(_)).asJavaEnumeration)
-    val in: InputStream =
-      compressionCodec.map(c => c.compressedInputStream(is)).getOrElse(is)
+    val in: InputStream = compressionCodec
+      .map(c => c.compressedInputStream(is))
+      .getOrElse(is)
     val ser = serializer.newInstance()
     val serIn = ser.deserializeStream(in)
     val obj = serIn.readObject[T]()

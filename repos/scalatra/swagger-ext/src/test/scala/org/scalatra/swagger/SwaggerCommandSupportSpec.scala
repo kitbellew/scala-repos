@@ -42,10 +42,10 @@ object SwaggerCommandSupportSpec {
       with SwaggerSupport
       with SwaggerCommandSupport {
 
-    val allOperation =
-      apiOperation[Unit]("all").parametersFromCommand[SimpleCommand]
-    val newOperation =
-      apiOperation[Unit]("new").parametersFromCommand(new SimpleCommand)
+    val allOperation = apiOperation[Unit]("all")
+      .parametersFromCommand[SimpleCommand]
+    val newOperation = apiOperation[Unit]("new")
+      .parametersFromCommand(new SimpleCommand)
     get("/all", endpoint("all"), operation(allOperation)) { "OK" }
     get("/new", endpoint("new"), operation(newOperation)) { "OK" }
 
@@ -65,8 +65,8 @@ class SwaggerCommandSupportSpec extends MutableScalatraSpec {
   // Parameter(limit,ValueDataType(integer,Some(int32),None),Some(the max number of items to return),None,query,Some(20),AnyValue,false,None,0)
   "SwaggerCommandSupport" should {
     "generate a model and parameters for a simple command" in {
-      val (parameters, model) =
-        SwaggerCommandSupport.parametersFromCommand(new SimpleCommand)
+      val (parameters, model) = SwaggerCommandSupport.parametersFromCommand(
+        new SimpleCommand)
       parameters must_== List(
         Parameter(
           "body",
@@ -112,8 +112,8 @@ class SwaggerCommandSupportSpec extends MutableScalatraSpec {
           allowableValues = AllowableValues("123")
         )
       )
-      val (parameters, model) =
-        SwaggerCommandSupport.parametersFromCommand(new FullCommand)
+      val (parameters, model) = SwaggerCommandSupport.parametersFromCommand(
+        new FullCommand)
       parameters.size must_== 3 // parameterList.size // disabled for swagger codegen for now
       parameters must contain(parameterList(0))
       parameters must contain(parameterList(1))

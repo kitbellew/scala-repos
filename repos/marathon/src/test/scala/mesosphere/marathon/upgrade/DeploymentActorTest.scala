@@ -55,19 +55,27 @@ class DeploymentActorTest
     implicit val system = ActorSystem("TestSystem")
     val managerProbe = TestProbe()
     val receiverProbe = TestProbe()
-    val app1 =
-      AppDefinition(id = PathId("/app1"), cmd = Some("cmd"), instances = 2)
-    val app2 =
-      AppDefinition(id = PathId("/app2"), cmd = Some("cmd"), instances = 1)
-    val app3 =
-      AppDefinition(id = PathId("/app3"), cmd = Some("cmd"), instances = 1)
+    val app1 = AppDefinition(
+      id = PathId("/app1"),
+      cmd = Some("cmd"),
+      instances = 2)
+    val app2 = AppDefinition(
+      id = PathId("/app2"),
+      cmd = Some("cmd"),
+      instances = 1)
+    val app3 = AppDefinition(
+      id = PathId("/app3"),
+      cmd = Some("cmd"),
+      instances = 1)
     val app4 = AppDefinition(id = PathId("/app4"), cmd = Some("cmd"))
     val origGroup = Group(PathId("/foo/bar"), Set(app1, app2, app4))
 
     val version2 = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
     val app1New = app1.copy(instances = 1, versionInfo = version2)
-    val app2New =
-      app2.copy(instances = 2, cmd = Some("otherCmd"), versionInfo = version2)
+    val app2New = app2.copy(
+      instances = 2,
+      cmd = Some("otherCmd"),
+      versionInfo = version2)
 
     val targetGroup = Group(PathId("/foo/bar"), Set(app1New, app2New, app3))
 
@@ -80,12 +88,15 @@ class DeploymentActorTest
       "task1_2",
       appVersion = app1.version,
       startedAt = 1000)
-    val task2_1 =
-      MarathonTestHelper.runningTask("task2_1", appVersion = app2.version)
-    val task3_1 =
-      MarathonTestHelper.runningTask("task3_1", appVersion = app3.version)
-    val task4_1 =
-      MarathonTestHelper.runningTask("task4_1", appVersion = app4.version)
+    val task2_1 = MarathonTestHelper.runningTask(
+      "task2_1",
+      appVersion = app2.version)
+    val task3_1 = MarathonTestHelper.runningTask(
+      "task3_1",
+      appVersion = app3.version)
+    val task4_1 = MarathonTestHelper.runningTask(
+      "task4_1",
+      appVersion = app4.version)
 
     val plan = DeploymentPlan(origGroup, targetGroup)
 
@@ -232,8 +243,10 @@ class DeploymentActorTest
     implicit val system = ActorSystem("TestSystem")
     val managerProbe = TestProbe()
     val receiverProbe = TestProbe()
-    val app =
-      AppDefinition(id = PathId("/app1"), cmd = Some("cmd"), instances = 2)
+    val app = AppDefinition(
+      id = PathId("/app1"),
+      cmd = Some("cmd"),
+      instances = 2)
     val origGroup = Group(PathId("/foo/bar"), Set(app))
 
     val version2 = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
@@ -348,8 +361,10 @@ class DeploymentActorTest
     val managerProbe = TestProbe()
     val receiverProbe = TestProbe()
 
-    val app =
-      AppDefinition(id = PathId("/app1"), cmd = Some("cmd"), instances = 0)
+    val app = AppDefinition(
+      id = PathId("/app1"),
+      cmd = Some("cmd"),
+      instances = 0)
     val origGroup = Group(PathId("/foo/bar"), Set(app))
 
     val version2 = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
@@ -389,8 +404,10 @@ class DeploymentActorTest
     implicit val system = ActorSystem("TestSystem")
     val managerProbe = TestProbe()
     val receiverProbe = TestProbe()
-    val app1 =
-      AppDefinition(id = PathId("/app1"), cmd = Some("cmd"), instances = 3)
+    val app1 = AppDefinition(
+      id = PathId("/app1"),
+      cmd = Some("cmd"),
+      instances = 3)
     val origGroup = Group(PathId("/foo/bar"), Set(app1))
 
     val version2 = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))

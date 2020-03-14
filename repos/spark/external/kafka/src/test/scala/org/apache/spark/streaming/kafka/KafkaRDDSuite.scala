@@ -65,8 +65,8 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     val offsetRanges = Array(OffsetRange(topic, 0, 0, messages.size))
 
-    val rdd =
-      KafkaUtils.createRDD[String, String, StringDecoder, StringDecoder](
+    val rdd = KafkaUtils
+      .createRDD[String, String, StringDecoder, StringDecoder](
         sc,
         kafkaParams,
         offsetRanges)
@@ -82,8 +82,8 @@ class KafkaRDDSuite extends SparkFunSuite with BeforeAndAfterAll {
     assert(rdd.take(1).head._2 === messages.head)
     assert(rdd.take(messages.size + 10).size === messages.size)
 
-    val emptyRdd =
-      KafkaUtils.createRDD[String, String, StringDecoder, StringDecoder](
+    val emptyRdd = KafkaUtils
+      .createRDD[String, String, StringDecoder, StringDecoder](
         sc,
         kafkaParams,
         Array(OffsetRange(topic, 0, 0, 0)))

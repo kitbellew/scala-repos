@@ -399,8 +399,7 @@ object Test {
       class Bar1(val x: String)
       def p(b: Bar1) = b.x
 
-      def unapply(s: String): Option[Bar1] =
-        Some(new Bar1(s))
+      def unapply(s: String): Option[Bar1] = Some(new Bar1(s))
     }
     class Foo(j: Int) {
       case class Bar(i: Int)
@@ -638,8 +637,7 @@ object Test {
   object Bug1094 {
     def foo(ps: String*) = "Foo"
     case class X(p: String, ps: String*)
-    def bar =
-      X("a", "b") match { case X(p, ps @ _*) => foo(ps: _*) }
+    def bar = X("a", "b") match { case X(p, ps @ _*) => foo(ps: _*) }
     def run() { assertEquals("Foo", bar) }
   }
 

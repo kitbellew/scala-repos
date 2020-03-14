@@ -34,11 +34,10 @@ private object TrafficDistributorTest {
       }
   }
 
-  val weightClass: (Double, Int) => Set[Address] =
-    (w, size) =>
-      (0 until size).toSet.map { i: Int =>
-        WeightedAddress(WeightedTestAddr(i, w), w)
-      }
+  val weightClass: (Double, Int) => Set[Address] = (w, size) =>
+    (0 until size).toSet.map { i: Int =>
+      WeightedAddress(WeightedTestAddr(i, w), w)
+    }
 
   val busyWeight = 2.0
   case class AddressFactory(addr: Address) extends ServiceFactory[Int, Int] {
@@ -413,8 +412,7 @@ class TrafficDistributorTest extends FunSuite {
 
     def gauges: Map[Seq[String], () => Float] = underlying.gauges.toMap
 
-    def numGauges(name: Seq[String]): Int =
-      numUnderlying(name: _*)
+    def numGauges(name: Seq[String]): Int = numUnderlying(name: _*)
   }
 
   test("increment weights on a shard")(new StringClient with StringServer {

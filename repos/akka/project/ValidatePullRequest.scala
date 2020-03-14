@@ -71,11 +71,11 @@ object ValidatePullRequest extends AutoPlugin {
   val SourceBranchEnvVarName = "PR_SOURCE_BRANCH"
   val SourcePullIdJenkinsEnvVarName =
     "ghprbPullId" // used to obtain branch name in form of "pullreq/17397"
-  val sourceBranch =
-    settingKey[String]("Branch containing the changes of this PR")
+  val sourceBranch = settingKey[String](
+    "Branch containing the changes of this PR")
 
-  val targetBranch =
-    settingKey[String]("Target branch of this PR, defaults to `master`")
+  val targetBranch = settingKey[String](
+    "Target branch of this PR, defaults to `master`")
 
   // asking github comments if this PR should be PLS BUILD ALL
   val githubEnforcedBuildAll = taskKey[Option[BuildMode]](
@@ -84,22 +84,22 @@ object ValidatePullRequest extends AutoPlugin {
     "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
 
   // determining touched dirs and projects
-  val changedDirectories =
-    taskKey[immutable.Set[String]]("List of touched modules in this PR branch")
+  val changedDirectories = taskKey[immutable.Set[String]](
+    "List of touched modules in this PR branch")
   val projectBuildMode = taskKey[BuildMode](
     "Determines what will run when this project is affected by the PR and should be rebuilt")
 
   // running validation
   val validatePullRequest = taskKey[Unit]("Validate pull request")
-  val additionalTasks =
-    taskKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
+  val additionalTasks = taskKey[Seq[TaskKey[_]]](
+    "Additional tasks for pull request validation")
 
   def changedDirectoryIsDependency(
       changedDirs: Set[String],
       name: String,
       graphsToTest: Seq[(Configuration, ModuleGraph)])(log: Logger): Boolean = {
-    val dirsOrExperimental =
-      changedDirs.flatMap(dir => Set(dir, s"$dir-experimental"))
+    val dirsOrExperimental = changedDirs.flatMap(dir =>
+      Set(dir, s"$dir-experimental"))
     graphsToTest exists {
       case (ivyScope, deps) =>
         log.debug(s"Analysing [$ivyScope] scoped dependencies...")
@@ -182,14 +182,13 @@ object ValidatePullRequest extends AutoPlugin {
       // TODO could use jgit
       log.info(s"Diffing [$prId] to determine changed modules in PR...")
       val diffOutput = s"git diff $target --name-only".!!.split("\n")
-      val diffedModuleNames =
-        diffOutput
-          .map(l => l.trim)
-          .filter(l =>
-            l.startsWith("akka-") ||
-              (l.startsWith("project") && l != "project/MiMa.scala"))
-          .map(l ⇒ l.takeWhile(_ != '/'))
-          .toSet
+      val diffedModuleNames = diffOutput
+        .map(l => l.trim)
+        .filter(l =>
+          l.startsWith("akka-") ||
+            (l.startsWith("project") && l != "project/MiMa.scala"))
+        .map(l ⇒ l.takeWhile(_ != '/'))
+        .toSet
 
       val dirtyModuleNames: Set[String] =
         if (runningOnJenkins) Set.empty
@@ -230,9 +229,9 @@ object ValidatePullRequest extends AutoPlugin {
         val githubCommandEnforcedBuildAll =
           (githubEnforcedBuildAll in ValidatePR).value
 
-        val thisProjectId =
-          CrossVersion(scalaVersion.value, scalaBinaryVersion.value)(
-            projectID.value)
+        val thisProjectId = CrossVersion(
+          scalaVersion.value,
+          scalaBinaryVersion.value)(projectID.value)
 
         def graphFor(
             updateReport: UpdateReport,

@@ -59,8 +59,7 @@ sealed class :+:[+M, +N](private val rep: Vector[M \/ N]) {
     fold(m => (m, mzero[B]), n => (mzero[A], n))
 
   /** A homomorphism to a monoid `Z` (if `f` and `g` are homomorphisms). */
-  def fold[Z: Monoid](f: M => Z, g: N => Z): Z =
-    rep.foldMap(_.fold(f, g))
+  def fold[Z: Monoid](f: M => Z, g: N => Z): Z = rep.foldMap(_.fold(f, g))
 
   /**
     * Take a value from the coproduct monoid where each monoid acts on the

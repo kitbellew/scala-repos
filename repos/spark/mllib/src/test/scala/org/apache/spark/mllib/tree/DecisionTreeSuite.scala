@@ -162,8 +162,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0.0,
         0,
         0)
-      val featureSamples =
-        Array(1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3).map(_.toDouble)
+      val featureSamples = Array(1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3).map(
+        _.toDouble)
       val splits = DecisionTree.findSplitsForContinuousFeature(
         featureSamples,
         fakeMetadata,
@@ -190,8 +190,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0.0,
         0,
         0)
-      val featureSamples =
-        Array(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 5).map(_.toDouble)
+      val featureSamples = Array(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 5)
+        .map(_.toDouble)
       val splits = DecisionTree.findSplitsForContinuousFeature(
         featureSamples,
         fakeMetadata,
@@ -218,8 +218,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0.0,
         0,
         0)
-      val featureSamples =
-        Array(0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2).map(_.toDouble)
+      val featureSamples = Array(0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2).map(
+        _.toDouble)
       val splits = DecisionTree.findSplitsForContinuousFeature(
         featureSamples,
         fakeMetadata,
@@ -501,8 +501,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     val baggedInput = BaggedPoint.convertToBaggedRDD(treeInput, 1.0, 1, false)
 
     // Single group second level tree construction.
-    val nodesForGroup =
-      Map((0, Array(rootNode1.leftNode.get, rootNode1.rightNode.get)))
+    val nodesForGroup = Map(
+      (0, Array(rootNode1.leftNode.get, rootNode1.rightNode.get)))
     val treeToNodeToIndexInfo = Map(
       (
         0,
@@ -1146,10 +1146,11 @@ object DecisionTreeSuite extends SparkFunSuite {
   def generateOrderedLabeledPoints(): Array[LabeledPoint] = {
     val arr = new Array[LabeledPoint](1000)
     for (i <- 0 until 1000) {
-      val label = if (i < 100) { 0.0 }
-      else if (i < 500) { 1.0 }
-      else if (i < 900) { 0.0 }
-      else { 1.0 }
+      val label =
+        if (i < 100) { 0.0 }
+        else if (i < 500) { 1.0 }
+        else if (i < 900) { 0.0 }
+        else { 1.0 }
       arr(i) = new LabeledPoint(label, Vectors.dense(i.toDouble, 1000.0 - i))
     }
     arr

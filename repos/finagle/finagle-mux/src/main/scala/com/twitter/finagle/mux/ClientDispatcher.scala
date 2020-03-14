@@ -47,11 +47,10 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
   private[this] val tags = TagSet(Message.Tags.MinTag to Message.Tags.MaxTag)
   private[this] val messages = TagMap[Updatable[Try[Message]]](tags)
 
-  private[this] val processAndRead: Message => Future[Unit] =
-    msg => {
-      process(msg)
-      readLoop()
-    }
+  private[this] val processAndRead: Message => Future[Unit] = msg => {
+    process(msg)
+    readLoop()
+  }
 
   /**
     * Reads indefinitely from the transport, handing successfully
@@ -117,8 +116,8 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
 }
 
 private[twitter] object ClientDispatcher {
-  val FutureExhaustedTagsException =
-    Future.exception(Failure.rejected("Exhausted tags"))
+  val FutureExhaustedTagsException = Future.exception(
+    Failure.rejected("Exhausted tags"))
 
   val Empty: Updatable[Try[Message]] = Updatable.empty()
 
@@ -207,8 +206,8 @@ private class ReqRepFilter
 }
 
 private object ReqRepFilter {
-  val FutureNackedException =
-    Future.exception(Failure.rejected("The request was Nacked by the server"))
+  val FutureNackedException = Future.exception(
+    Failure.rejected("The request was Nacked by the server"))
 
   /** Indicates if our peer can accept `Tdispatch` messages. */
   object CanDispatch extends Enumeration {

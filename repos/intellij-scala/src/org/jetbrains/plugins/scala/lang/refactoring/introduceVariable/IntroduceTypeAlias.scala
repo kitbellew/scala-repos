@@ -65,8 +65,8 @@ import org.jetbrains.plugins.scala.util.{JListCompatibility, ScalaUtils}
 trait IntroduceTypeAlias {
   this: ScalaIntroduceVariableHandler =>
 
-  val INTRODUCE_TYPEALIAS_REFACTORING_NAME =
-    ScalaBundle.message("introduce.type.alias.title")
+  val INTRODUCE_TYPEALIAS_REFACTORING_NAME = ScalaBundle.message(
+    "introduce.type.alias.title")
 
   def invokeTypeElement(
       project: Project,
@@ -92,8 +92,8 @@ trait IntroduceTypeAlias {
             editor,
             INTRODUCE_TYPEALIAS_REFACTORING_NAME))
 
-      val currentDataObject =
-        editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+      val currentDataObject = editor.getUserData(
+        IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
 
       if (currentDataObject.possibleScopes == null) {
         currentDataObject.setPossibleScopes(
@@ -136,8 +136,8 @@ trait IntroduceTypeAlias {
         val updatedMainScope = mainScope match {
           case simpleScope: SimpleScopeItem if fromInplace =>
             val newScope = simpleScope.revalidate(enteredName)
-            val mainScopeIdx =
-              currentDataObject.possibleScopes.indexOf(mainScope)
+            val mainScopeIdx = currentDataObject.possibleScopes.indexOf(
+              mainScope)
             currentDataObject.possibleScopes(mainScopeIdx) = newScope
             newScope
           case simpleScope: SimpleScopeItem =>
@@ -195,14 +195,13 @@ trait IntroduceTypeAlias {
 
           val introduceRunnable: Computable[(
               SmartPsiElementPointer[PsiElement],
-              SmartPsiElementPointer[PsiElement])] =
-            introduceTypeAlias(
-              file,
-              editor,
-              typeElement,
-              allOccurrences,
-              suggestedNames(0),
-              scopeItem)
+              SmartPsiElementPointer[PsiElement])] = introduceTypeAlias(
+            file,
+            editor,
+            typeElement,
+            allOccurrences,
+            suggestedNames(0),
+            scopeItem)
 
           CommandProcessor.getInstance.executeCommand(
             project,
@@ -237,14 +236,13 @@ trait IntroduceTypeAlias {
                       .doPostponedOperationsAndUnblockDocument(
                         editor.getDocument)
 
-                    val typeAliasIntroducer =
-                      ScalaInplaceTypeAliasIntroducer(
-                        namedElement,
-                        namedElement,
-                        editor,
-                        namedElement.getName,
-                        namedElement.getName,
-                        scopeItem)
+                    val typeAliasIntroducer = ScalaInplaceTypeAliasIntroducer(
+                      namedElement,
+                      namedElement,
+                      editor,
+                      namedElement.getName,
+                      namedElement.getName,
+                      scopeItem)
 
                     typeAliasIntroducer.performInplaceRefactoring(
                       suggestedNamesSet)
@@ -263,9 +261,8 @@ trait IntroduceTypeAlias {
         if ((StartMarkAction.canStart(
               project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
-          val templateState: TemplateState =
-            TemplateManagerImpl.getTemplateState(
-              InjectedLanguageUtil.getTopLevelEditor(editor))
+          val templateState: TemplateState = TemplateManagerImpl
+            .getTemplateState(InjectedLanguageUtil.getTopLevelEditor(editor))
 
           if (templateState != null) { templateState.cancelTemplate() }
 
@@ -366,19 +363,23 @@ trait IntroduceTypeAlias {
         }
     }
 
-    val typeAlias =
-      addTypeAliasDefinition(typeName, occurrences.getAllOccurrences(0), parent)
+    val typeAlias = addTypeAliasDefinition(
+      typeName,
+      occurrences.getAllOccurrences(0),
+      parent)
     if (editor.getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO) != null) {
       editor
         .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
         .setTypeAlias(typeAlias)
     }
 
-    val typeElementIdx =
-      occurrences.getUsualOccurrences.indexWhere(_ == typeElement)
+    val typeElementIdx = occurrences.getUsualOccurrences.indexWhere(
+      _ == typeElement)
 
-    val usualOccurrences =
-      replaceTypeElements(occurrences.getUsualOccurrences, typeName, typeAlias)
+    val usualOccurrences = replaceTypeElements(
+      occurrences.getUsualOccurrences,
+      typeName,
+      typeAlias)
     replaceTypeElements(occurrences.getExtendedOccurrences, typeName, typeAlias)
 
     val className =
@@ -393,9 +394,10 @@ trait IntroduceTypeAlias {
       className + "." + typeName,
       typeAlias)
 
-    val resultTypeElement = if (typeElementIdx == -1) {
-      replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
-    } else { usualOccurrences.apply(typeElementIdx) }
+    val resultTypeElement =
+      if (typeElementIdx == -1) {
+        replaceTypeElements(Array(typeElement), typeName, typeAlias).apply(0)
+      } else { usualOccurrences.apply(typeElementIdx) }
 
     (
       SmartPointerManager
@@ -605,22 +607,23 @@ trait IntroduceTypeAlias {
       suggestedDirectory: PsiDirectory,
       needCreateDirectory: Boolean,
       inNewDirectoryName: String): ScTemplateBody = {
-    val newDirectoryName = if (needCreateDirectory) { inNewDirectoryName }
-    else { "package" }
+    val newDirectoryName =
+      if (needCreateDirectory) { inNewDirectoryName }
+      else { "package" }
 
     val currentDirectory = suggestedDirectory
-    val newDir = if (needCreateDirectory) {
-      currentDirectory.createSubdirectory(newDirectoryName)
-    } else { currentDirectory }
+    val newDir =
+      if (needCreateDirectory) {
+        currentDirectory.createSubdirectory(newDirectoryName)
+      } else { currentDirectory }
 
-    val packageObject: ScTypeDefinition =
-      ScalaDirectoryService
-        .createClassFromTemplate(
-          newDir,
-          newDirectoryName,
-          "Package Object",
-          askToDefineVariables = false)
-        .asInstanceOf[ScTypeDefinition]
+    val packageObject: ScTypeDefinition = ScalaDirectoryService
+      .createClassFromTemplate(
+        newDir,
+        newDirectoryName,
+        "Package Object",
+        askToDefineVariables = false)
+      .asInstanceOf[ScTypeDefinition]
 
     PsiTreeUtil.getChildOfType(
       PsiTreeUtil.getChildOfType(packageObject, classOf[ScExtendsBlock]),

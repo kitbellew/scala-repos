@@ -682,8 +682,10 @@ trait BaseCometActor
     */
   def jsonToIncludeInCode: JsCmd = _jsonToIncludeCode
 
-  private lazy val (_sendJson, _jsonToIncludeCode) =
-    S.createJsonFunc(Full(_defaultPrefix), onJsonError, receiveJson _)
+  private lazy val (_sendJson, _jsonToIncludeCode) = S.createJsonFunc(
+    Full(_defaultPrefix),
+    onJsonError,
+    receiveJson _)
 
   /**
     * Set this method to true to have the Json call code included in the Comet output
@@ -938,15 +940,14 @@ trait BaseCometActor
 
     case ActionMessageSet(msgs, req) =>
       S.doCometParams(req.params) {
-        val computed: List[Any] =
-          msgs.flatMap { f =>
-            try { List(f()) }
-            catch {
-              case e if exceptionHandler.isDefinedAt(e) =>
-                exceptionHandler(e); Nil
-              case e: Exception => reportError("Ajax function dispatch", e); Nil
-            }
+        val computed: List[Any] = msgs.flatMap { f =>
+          try { List(f()) }
+          catch {
+            case e if exceptionHandler.isDefinedAt(e) =>
+              exceptionHandler(e); Nil
+            case e: Exception => reportError("Ajax function dispatch", e); Nil
           }
+        }
 
         reply(computed ::: List(S.noticesToJsCmd))
       }
@@ -1013,20 +1014,19 @@ trait BaseCometActor
       deltas = _deltaPruner(this, (delta :: deltas))
       if (!listeners.isEmpty) {
         val postPage = theSession.postPageJavaScript()
-        val rendered =
-          AnswerRender(
-            new XmlOrJsCmd(
-              spanId,
-              Empty,
-              Empty,
-              Full(cmd & postPage),
-              Empty,
-              buildSpan,
-              false,
-              notices.toList),
-            whosAsking openOr this,
-            time,
-            false)
+        val rendered = AnswerRender(
+          new XmlOrJsCmd(
+            spanId,
+            Empty,
+            Empty,
+            Full(cmd & postPage),
+            Empty,
+            buildSpan,
+            false,
+            notices.toList),
+          whosAsking openOr this,
+          time,
+          false)
         clearNotices
         listeners.foreach(_._2(rendered))
         listeners = Nil
@@ -1126,12 +1126,11 @@ trait BaseCometActor
 
     val out = lastRendering
 
-    val rendered: AnswerRender =
-      AnswerRender(
-        new XmlOrJsCmd(spanId, out, buildSpan _, notices.toList),
-        this,
-        lastRenderTime,
-        sendAll)
+    val rendered: AnswerRender = AnswerRender(
+      new XmlOrJsCmd(spanId, out, buildSpan _, notices.toList),
+      this,
+      lastRenderTime,
+      sendAll)
 
     clearNotices
     listeners.foreach(_._2(rendered))
@@ -1441,16 +1440,15 @@ private[http] class XmlOrJsCmd(
         case (_, Full(js), _) => js
         case _                => JsCmds.Noop
       }
-    val fullUpdateJs =
-      LiftRules.cometUpdateExceptionHandler.vend.foldLeft(updateJs) {
-        (commands, catchHandler) =>
-          JsCmds.Run(
-            "try{" +
-              commands.toJsCmd +
-              "}catch(e){" +
-              catchHandler.toJsCmd +
-              "}"
-          )
+    val fullUpdateJs = LiftRules.cometUpdateExceptionHandler.vend
+      .foldLeft(updateJs) { (commands, catchHandler) =>
+        JsCmds.Run(
+          "try{" +
+            commands.toJsCmd +
+            "}catch(e){" +
+            catchHandler.toJsCmd +
+            "}"
+        )
       }
 
     var ret: JsCmd = JsCmds.JsTry(JsCmds.Run("destroy_" + id + "();"), false) &

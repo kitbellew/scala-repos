@@ -92,8 +92,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       val ResultSetMapping(
         _,
         CompiledStatement(_, ibr: InsertBuilderResult, _),
-        CompiledMapping(rconv, _)) =
-        forceInsertCompiler.run(node).tree
+        CompiledMapping(rconv, _)) = forceInsertCompiler.run(node).tree
       if (ibr.table.baseIdentity != standardInsert.table.baseIdentity)
         throw new SlickException(
           "Returned key columns must be from same table as inserted columns (" +
@@ -637,8 +636,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       case Select(_, fs: FieldSymbol) => fs
     }
     protected lazy val allNames = syms.map(fs => quoteIdentifier(fs.name))
-    protected lazy val allVars =
-      syms.iterator.map(_ => "?").mkString("(", ",", ")")
+    protected lazy val allVars = syms.iterator
+      .map(_ => "?")
+      .mkString("(", ",", ")")
     protected lazy val tableName = quoteTableName(table)
 
     def buildInsert: InsertBuilderResult = {
@@ -669,16 +669,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         n: Node,
         order: IndexedSeq[FieldSymbol]): Node = {
       val newIndices = order.zipWithIndex.groupBy(_._1)
-      lazy val reordering: ConstArray[IndexedSeq[Int]] =
-        syms.map(fs => newIndices(fs).map(_._2 + 1))
+      lazy val reordering: ConstArray[IndexedSeq[Int]] = syms.map(fs =>
+        newIndices(fs).map(_._2 + 1))
       n.replace(
         {
           case InsertColumn(
                 ConstArray(Select(ref, ElementSymbol(idx))),
                 fs,
                 tpe) =>
-            val newPaths =
-              reordering(idx - 1).map(i => Select(ref, ElementSymbol(i)))
+            val newPaths = reordering(idx - 1).map(i =>
+              Select(ref, ElementSymbol(i)))
             InsertColumn(ConstArray.from(newPaths), fs, tpe) :@ tpe
         },
         keepType = true
@@ -688,16 +688,16 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for upsert statements, builds standard SQL MERGE statements by default. */
   class UpsertBuilder(ins: Insert) extends InsertBuilder(ins) {
-    protected lazy val (pkSyms, softSyms) =
-      syms.toSeq.partition(_.options.contains(ColumnOption.PrimaryKey))
+    protected lazy val (pkSyms, softSyms) = syms.toSeq.partition(
+      _.options.contains(ColumnOption.PrimaryKey))
     protected lazy val pkNames = pkSyms.map { fs => quoteIdentifier(fs.name) }
     protected lazy val softNames = softSyms.map { fs =>
       quoteIdentifier(fs.name)
     }
-    protected lazy val nonAutoIncSyms =
-      syms.filter(s => !(s.options contains ColumnOption.AutoInc))
-    protected lazy val nonAutoIncNames =
-      nonAutoIncSyms.map(fs => quoteIdentifier(fs.name))
+    protected lazy val nonAutoIncSyms = syms.filter(s =>
+      !(s.options contains ColumnOption.AutoInc))
+    protected lazy val nonAutoIncNames = nonAutoIncSyms.map(fs =>
+      quoteIdentifier(fs.name))
 
     override def buildInsert: InsertBuilderResult = {
       val start = buildMergeStart
@@ -753,10 +753,12 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for various DDL statements. */
   class TableDDLBuilder(val table: Table[_]) { self =>
-    protected val tableNode =
-      table.toNode.asInstanceOf[TableExpansion].table.asInstanceOf[TableNode]
-    protected val columns: Iterable[ColumnDDLBuilder] =
-      table.create_*.map(fs => createColumnDDLBuilder(fs, table))
+    protected val tableNode = table.toNode
+      .asInstanceOf[TableExpansion]
+      .table
+      .asInstanceOf[TableNode]
+    protected val columns: Iterable[ColumnDDLBuilder] = table.create_*.map(fs =>
+      createColumnDDLBuilder(fs, table))
     protected val indexes: Iterable[Index] = table.indexes
     protected val foreignKeys: Iterable[ForeignKey] = table.foreignKeys
     protected val primaryKeys: Iterable[PrimaryKey] = table.primaryKeys

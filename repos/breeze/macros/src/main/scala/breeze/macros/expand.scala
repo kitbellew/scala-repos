@@ -73,8 +73,8 @@ object expand {
     import c.mirror.universe._
     annottees.head.tree match {
       case tree @ DefDef(mods, name, targs, vargs, tpt, rhs) =>
-        val (typesToExpand, typesLeftAbstract) =
-          targs.partition(shouldExpand(c)(_))
+        val (typesToExpand, typesLeftAbstract) = targs.partition(
+          shouldExpand(c)(_))
 
         val exclusions = getExclusions(c)(mods, targs.map(_.name))
         val shouldValify = checkValify(c)(mods)
@@ -88,8 +88,8 @@ object expand {
 
         val valsToExpand2 = valsToExpand.flatten
 
-        val configurations =
-          makeTypeMaps(c)(typesToUnrollAs).filterNot(exclusions.toSet)
+        val configurations = makeTypeMaps(c)(typesToUnrollAs)
+          .filterNot(exclusions.toSet)
         val valExpansions = valsToExpand2
           .map { v => v.name -> solveSequence(c)(v, typesToUnrollAs) }
           .asInstanceOf[List[(c.Name, (c.Name, Map[c.Type, c.Tree]))]]

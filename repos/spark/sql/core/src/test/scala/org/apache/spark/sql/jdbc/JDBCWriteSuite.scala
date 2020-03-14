@@ -81,23 +81,26 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     conn1.close()
   }
 
-  private lazy val arr2x2 =
-    Array[Row](Row.apply("dave", 42), Row.apply("mary", 222))
+  private lazy val arr2x2 = Array[Row](
+    Row.apply("dave", 42),
+    Row.apply("mary", 222))
   private lazy val arr1x2 = Array[Row](Row.apply("fred", 3))
   private lazy val schema2 = StructType(
     StructField("name", StringType) ::
       StructField("id", IntegerType) :: Nil)
 
-  private lazy val arr2x3 =
-    Array[Row](Row.apply("dave", 42, 1), Row.apply("mary", 222, 2))
+  private lazy val arr2x3 = Array[Row](
+    Row.apply("dave", 42, 1),
+    Row.apply("mary", 222, 2))
   private lazy val schema3 = StructType(
     StructField("name", StringType) ::
       StructField("id", IntegerType) ::
       StructField("seq", IntegerType) :: Nil)
 
   test("Basic CREATE") {
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x2), schema2)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x2),
+      schema2)
 
     df.write.jdbc(url, "TEST.BASICCREATETEST", new Properties)
     assert(
@@ -112,10 +115,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
   }
 
   test("CREATE with overwrite") {
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x3), schema3)
-    val df2 =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr1x2), schema2)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x3),
+      schema3)
+    val df2 = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr1x2),
+      schema2)
 
     df.write.jdbc(url1, "TEST.DROPTEST", properties)
     assert(2 === sqlContext.read.jdbc(url1, "TEST.DROPTEST", properties).count)
@@ -135,10 +140,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
   }
 
   test("CREATE then INSERT to append") {
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x2), schema2)
-    val df2 =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr1x2), schema2)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x2),
+      schema2)
+    val df2 = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr1x2),
+      schema2)
 
     df.write.jdbc(url, "TEST.APPENDTEST", new Properties)
     df2.write.mode(SaveMode.Append).jdbc(url, "TEST.APPENDTEST", new Properties)
@@ -152,10 +159,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
   }
 
   test("CREATE then INSERT to truncate") {
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x2), schema2)
-    val df2 =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr1x2), schema2)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x2),
+      schema2)
+    val df2 = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr1x2),
+      schema2)
 
     df.write.jdbc(url1, "TEST.TRUNCATETEST", properties)
     df2.write
@@ -171,10 +180,12 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
   }
 
   test("Incompatible INSERT to append") {
-    val df =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x2), schema2)
-    val df2 =
-      sqlContext.createDataFrame(sparkContext.parallelize(arr2x3), schema3)
+    val df = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x2),
+      schema2)
+    val df2 = sqlContext.createDataFrame(
+      sparkContext.parallelize(arr2x3),
+      schema3)
 
     df.write.jdbc(url, "TEST.INCOMPATIBLETEST", new Properties)
     intercept[org.apache.spark.SparkException] {

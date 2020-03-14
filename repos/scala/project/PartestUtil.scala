@@ -94,8 +94,8 @@ object PartestUtil {
             val Pattern = ("(?i)" + x).r
             testFiles.allTestCases.filter {
               case (testFile, testPath) =>
-                val assocFiles =
-                  List(".check", ".flags").map(testFile.getParentFile / _)
+                val assocFiles = List(".check", ".flags").map(
+                  testFile.getParentFile / _)
                 val sourceFiles =
                   if (testFile.isFile) List(testFile)
                   else testFile.**(AllPassFilter).get.toList

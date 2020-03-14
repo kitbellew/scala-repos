@@ -78,8 +78,10 @@ object Account extends LilaController {
           ok ← UserRepo.checkPasswordById(me.id, data.oldPasswd)
           _ ← ok ?? UserRepo.passwd(me.id, data.newPasswd1)
         } yield {
-          val content =
-            html.account.passwd(me, forms.passwd.fill(data), ok.some)
+          val content = html.account.passwd(
+            me,
+            forms.passwd.fill(data),
+            ok.some)
           ok.fold(Ok(content), BadRequest(content))
         }
       }

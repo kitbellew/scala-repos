@@ -20,28 +20,23 @@ private[nio] final class HeapShortBuffer private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): ShortBuffer =
-    GenHeapBuffer(this).generic_slice()
+  def slice(): ShortBuffer = GenHeapBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): ShortBuffer =
-    GenHeapBuffer(this).generic_duplicate()
+  def duplicate(): ShortBuffer = GenHeapBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): ShortBuffer =
     GenHeapBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Short =
-    GenBuffer(this).generic_get()
+  def get(): Short = GenBuffer(this).generic_get()
 
   @noinline
-  def put(s: Short): ShortBuffer =
-    GenBuffer(this).generic_put(s)
+  def put(s: Short): ShortBuffer = GenBuffer(this).generic_put(s)
 
   @noinline
-  def get(index: Int): Short =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Short = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, s: Short): ShortBuffer =
@@ -56,8 +51,7 @@ private[nio] final class HeapShortBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): ShortBuffer =
-    GenHeapBuffer(this).generic_compact()
+  def compact(): ShortBuffer = GenHeapBuffer(this).generic_compact()
 
   def order(): ByteOrder = ByteOrder.nativeOrder()
 

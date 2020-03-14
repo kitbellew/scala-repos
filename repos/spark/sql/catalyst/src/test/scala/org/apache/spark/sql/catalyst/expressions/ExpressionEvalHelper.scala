@@ -152,8 +152,9 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       }
     } else {
       val lit = InternalRow(expected)
-      val expectedRow =
-        UnsafeProjection.create(Array(expression.dataType)).apply(lit)
+      val expectedRow = UnsafeProjection
+        .create(Array(expression.dataType))
+        .apply(lit)
       if (unsafeRow != expectedRow) {
         fail(
           "Incorrect evaluation in unsafe mode: " +

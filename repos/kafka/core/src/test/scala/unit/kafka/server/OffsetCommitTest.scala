@@ -75,8 +75,8 @@ class OffsetCommitTest extends ZooKeeperTestHarness {
     val consumerMetadataRequest = GroupCoordinatorRequest(group)
     Stream
       .continually {
-        val consumerMetadataResponse =
-          simpleConsumer.send(consumerMetadataRequest)
+        val consumerMetadataResponse = simpleConsumer.send(
+          consumerMetadataRequest)
         consumerMetadataResponse.coordinatorOpt.isDefined
       }
       .dropWhile(success => {
@@ -351,15 +351,16 @@ class OffsetCommitTest extends ZooKeeperTestHarness {
     val topicPartition = TopicAndPartition(topic, 0)
     createTopic(zkUtils, topic, servers = Seq(server), numPartitions = 1)
 
-    val fetchRequest =
-      OffsetFetchRequest(group, Seq(TopicAndPartition(topic, 0)))
+    val fetchRequest = OffsetFetchRequest(
+      group,
+      Seq(TopicAndPartition(topic, 0)))
 
     // v0 version commit request
     // committed offset should not exist with fetch version 1 since it was stored in ZK
     val commitRequest0 = OffsetCommitRequest(
       groupId = group,
-      requestInfo =
-        immutable.Map(topicPartition -> OffsetAndMetadata(1L, "metadata")),
+      requestInfo = immutable.Map(
+        topicPartition -> OffsetAndMetadata(1L, "metadata")),
       versionId = 0
     )
     assertEquals(
@@ -396,8 +397,8 @@ class OffsetCommitTest extends ZooKeeperTestHarness {
     // committed offset should not expire
     val commitRequest1 = OffsetCommitRequest(
       groupId = group,
-      requestInfo =
-        immutable.Map(topicPartition -> OffsetAndMetadata(2L, "metadata", -1L)),
+      requestInfo = immutable.Map(
+        topicPartition -> OffsetAndMetadata(2L, "metadata", -1L)),
       versionId = 1
     )
     assertEquals(
@@ -449,8 +450,8 @@ class OffsetCommitTest extends ZooKeeperTestHarness {
     // committed offset should not expire
     val commitRequest3 = OffsetCommitRequest(
       groupId = group,
-      requestInfo =
-        immutable.Map(topicPartition -> OffsetAndMetadata(4L, "metadata", -1L)),
+      requestInfo = immutable.Map(
+        topicPartition -> OffsetAndMetadata(4L, "metadata", -1L)),
       versionId = 2,
       retentionMs = 1000 * 60 * 60L
     )

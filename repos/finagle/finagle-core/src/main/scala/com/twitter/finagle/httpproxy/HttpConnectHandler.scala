@@ -168,8 +168,9 @@ class HttpConnectHandler(
   }
 
   private[this] def proxyAuthorizationHeader(creds: Credentials) = {
-    val bytes =
-      "%s:%s".format(creds.username, creds.password).getBytes(Charsets.Utf8)
+    val bytes = "%s:%s"
+      .format(creds.username, creds.password)
+      .getBytes(Charsets.Utf8)
     "Basic " + Base64StringEncoder.encode(bytes)
   }
 }

@@ -278,8 +278,9 @@ class ActorSystemProvider @Inject() (
   private val logger = Logger(classOf[ActorSystemProvider])
 
   lazy val get: ActorSystem = {
-    val (system, stopHook) =
-      ActorSystemProvider.start(environment.classLoader, configuration)
+    val (system, stopHook) = ActorSystemProvider.start(
+      environment.classLoader,
+      configuration)
     applicationLifecycle.addStopHook(stopHook)
     system
   }

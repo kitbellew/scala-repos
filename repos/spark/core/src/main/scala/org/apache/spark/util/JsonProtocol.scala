@@ -271,12 +271,15 @@ private[spark] object JsonProtocol {
   def stageInfoToJson(stageInfo: StageInfo): JValue = {
     val rddInfo = JArray(stageInfo.rddInfos.map(rddInfoToJson).toList)
     val parentIds = JArray(stageInfo.parentIds.map(JInt(_)).toList)
-    val submissionTime =
-      stageInfo.submissionTime.map(JInt(_)).getOrElse(JNothing)
-    val completionTime =
-      stageInfo.completionTime.map(JInt(_)).getOrElse(JNothing)
-    val failureReason =
-      stageInfo.failureReason.map(JString(_)).getOrElse(JNothing)
+    val submissionTime = stageInfo.submissionTime
+      .map(JInt(_))
+      .getOrElse(JNothing)
+    val completionTime = stageInfo.completionTime
+      .map(JInt(_))
+      .getOrElse(JNothing)
+    val failureReason = stageInfo.failureReason
+      .map(JString(_))
+      .getOrElse(JNothing)
     ("Stage ID" -> stageInfo.stageId) ~
       ("Stage Attempt ID" -> stageInfo.attemptId) ~
       ("Stage Name" -> stageInfo.name) ~
@@ -358,47 +361,42 @@ private[spark] object JsonProtocol {
   }
 
   def taskMetricsToJson(taskMetrics: TaskMetrics): JValue = {
-    val shuffleReadMetrics: JValue =
-      taskMetrics.shuffleReadMetrics
-        .map { rm =>
-          ("Remote Blocks Fetched" -> rm.remoteBlocksFetched) ~
-            ("Local Blocks Fetched" -> rm.localBlocksFetched) ~
-            ("Fetch Wait Time" -> rm.fetchWaitTime) ~
-            ("Remote Bytes Read" -> rm.remoteBytesRead) ~
-            ("Local Bytes Read" -> rm.localBytesRead) ~
-            ("Total Records Read" -> rm.recordsRead)
-        }
-        .getOrElse(JNothing)
-    val shuffleWriteMetrics: JValue =
-      taskMetrics.shuffleWriteMetrics
-        .map { wm =>
-          ("Shuffle Bytes Written" -> wm.bytesWritten) ~
-            ("Shuffle Write Time" -> wm.writeTime) ~
-            ("Shuffle Records Written" -> wm.recordsWritten)
-        }
-        .getOrElse(JNothing)
-    val inputMetrics: JValue =
-      taskMetrics.inputMetrics
-        .map { im =>
-          ("Data Read Method" -> im.readMethod.toString) ~
-            ("Bytes Read" -> im.bytesRead) ~
-            ("Records Read" -> im.recordsRead)
-        }
-        .getOrElse(JNothing)
-    val outputMetrics: JValue =
-      taskMetrics.outputMetrics
-        .map { om =>
-          ("Data Write Method" -> om.writeMethod.toString) ~
-            ("Bytes Written" -> om.bytesWritten) ~
-            ("Records Written" -> om.recordsWritten)
-        }
-        .getOrElse(JNothing)
-    val updatedBlocks =
-      JArray(taskMetrics.updatedBlockStatuses.toList.map {
-        case (id, status) =>
-          ("Block ID" -> id.toString) ~
-            ("Status" -> blockStatusToJson(status))
-      })
+    val shuffleReadMetrics: JValue = taskMetrics.shuffleReadMetrics
+      .map { rm =>
+        ("Remote Blocks Fetched" -> rm.remoteBlocksFetched) ~
+          ("Local Blocks Fetched" -> rm.localBlocksFetched) ~
+          ("Fetch Wait Time" -> rm.fetchWaitTime) ~
+          ("Remote Bytes Read" -> rm.remoteBytesRead) ~
+          ("Local Bytes Read" -> rm.localBytesRead) ~
+          ("Total Records Read" -> rm.recordsRead)
+      }
+      .getOrElse(JNothing)
+    val shuffleWriteMetrics: JValue = taskMetrics.shuffleWriteMetrics
+      .map { wm =>
+        ("Shuffle Bytes Written" -> wm.bytesWritten) ~
+          ("Shuffle Write Time" -> wm.writeTime) ~
+          ("Shuffle Records Written" -> wm.recordsWritten)
+      }
+      .getOrElse(JNothing)
+    val inputMetrics: JValue = taskMetrics.inputMetrics
+      .map { im =>
+        ("Data Read Method" -> im.readMethod.toString) ~
+          ("Bytes Read" -> im.bytesRead) ~
+          ("Records Read" -> im.recordsRead)
+      }
+      .getOrElse(JNothing)
+    val outputMetrics: JValue = taskMetrics.outputMetrics
+      .map { om =>
+        ("Data Write Method" -> om.writeMethod.toString) ~
+          ("Bytes Written" -> om.bytesWritten) ~
+          ("Records Written" -> om.recordsWritten)
+      }
+      .getOrElse(JNothing)
+    val updatedBlocks = JArray(taskMetrics.updatedBlockStatuses.toList.map {
+      case (id, status) =>
+        ("Block ID" -> id.toString) ~
+          ("Status" -> blockStatusToJson(status))
+    })
     ("Executor Deserialize Time" -> taskMetrics.executorDeserializeTime) ~
       ("Executor Run Time" -> taskMetrics.executorRunTime) ~
       ("Result Size" -> taskMetrics.resultSize) ~
@@ -534,33 +532,33 @@ private[spark] object JsonProtocol {
     * JSON deserialization methods for SparkListenerEvents |
     * ---------------------------------------------------- */
   def sparkEventFromJson(json: JValue): SparkListenerEvent = {
-    val stageSubmitted =
-      Utils.getFormattedClassName(SparkListenerStageSubmitted)
-    val stageCompleted =
-      Utils.getFormattedClassName(SparkListenerStageCompleted)
+    val stageSubmitted = Utils.getFormattedClassName(
+      SparkListenerStageSubmitted)
+    val stageCompleted = Utils.getFormattedClassName(
+      SparkListenerStageCompleted)
     val taskStart = Utils.getFormattedClassName(SparkListenerTaskStart)
-    val taskGettingResult =
-      Utils.getFormattedClassName(SparkListenerTaskGettingResult)
+    val taskGettingResult = Utils.getFormattedClassName(
+      SparkListenerTaskGettingResult)
     val taskEnd = Utils.getFormattedClassName(SparkListenerTaskEnd)
     val jobStart = Utils.getFormattedClassName(SparkListenerJobStart)
     val jobEnd = Utils.getFormattedClassName(SparkListenerJobEnd)
-    val environmentUpdate =
-      Utils.getFormattedClassName(SparkListenerEnvironmentUpdate)
-    val blockManagerAdded =
-      Utils.getFormattedClassName(SparkListenerBlockManagerAdded)
-    val blockManagerRemoved =
-      Utils.getFormattedClassName(SparkListenerBlockManagerRemoved)
+    val environmentUpdate = Utils.getFormattedClassName(
+      SparkListenerEnvironmentUpdate)
+    val blockManagerAdded = Utils.getFormattedClassName(
+      SparkListenerBlockManagerAdded)
+    val blockManagerRemoved = Utils.getFormattedClassName(
+      SparkListenerBlockManagerRemoved)
     val unpersistRDD = Utils.getFormattedClassName(SparkListenerUnpersistRDD)
-    val applicationStart =
-      Utils.getFormattedClassName(SparkListenerApplicationStart)
-    val applicationEnd =
-      Utils.getFormattedClassName(SparkListenerApplicationEnd)
+    val applicationStart = Utils.getFormattedClassName(
+      SparkListenerApplicationStart)
+    val applicationEnd = Utils.getFormattedClassName(
+      SparkListenerApplicationEnd)
     val executorAdded = Utils.getFormattedClassName(SparkListenerExecutorAdded)
-    val executorRemoved =
-      Utils.getFormattedClassName(SparkListenerExecutorRemoved)
+    val executorRemoved = Utils.getFormattedClassName(
+      SparkListenerExecutorRemoved)
     val logStart = Utils.getFormattedClassName(SparkListenerLogStart)
-    val metricsUpdate =
-      Utils.getFormattedClassName(SparkListenerExecutorMetricsUpdate)
+    val metricsUpdate = Utils.getFormattedClassName(
+      SparkListenerExecutorMetricsUpdate)
 
     (json \ "Event").extract[String] match {
       case `stageSubmitted`      => stageSubmittedFromJson(json)
@@ -600,8 +598,9 @@ private[spark] object JsonProtocol {
 
   def taskStartFromJson(json: JValue): SparkListenerTaskStart = {
     val stageId = (json \ "Stage ID").extract[Int]
-    val stageAttemptId =
-      (json \ "Stage Attempt ID").extractOpt[Int].getOrElse(0)
+    val stageAttemptId = (json \ "Stage Attempt ID")
+      .extractOpt[Int]
+      .getOrElse(0)
     val taskInfo = taskInfoFromJson(json \ "Task Info")
     SparkListenerTaskStart(stageId, stageAttemptId, taskInfo)
   }
@@ -614,8 +613,9 @@ private[spark] object JsonProtocol {
 
   def taskEndFromJson(json: JValue): SparkListenerTaskEnd = {
     val stageId = (json \ "Stage ID").extract[Int]
-    val stageAttemptId =
-      (json \ "Stage Attempt ID").extractOpt[Int].getOrElse(0)
+    val stageAttemptId = (json \ "Stage Attempt ID")
+      .extractOpt[Int]
+      .getOrElse(0)
     val taskType = (json \ "Task Type").extract[String]
     val taskEndReason = taskEndReasonFromJson(json \ "Task End Reason")
     val taskInfo = taskInfoFromJson(json \ "Task Info")
@@ -631,13 +631,13 @@ private[spark] object JsonProtocol {
 
   def jobStartFromJson(json: JValue): SparkListenerJobStart = {
     val jobId = (json \ "Job ID").extract[Int]
-    val submissionTime =
-      Utils
-        .jsonOption(json \ "Submission Time")
-        .map(_.extract[Long])
-        .getOrElse(-1L)
-    val stageIds =
-      (json \ "Stage IDs").extract[List[JValue]].map(_.extract[Int])
+    val submissionTime = Utils
+      .jsonOption(json \ "Submission Time")
+      .map(_.extract[Long])
+      .getOrElse(-1L)
+    val stageIds = (json \ "Stage IDs")
+      .extract[List[JValue]]
+      .map(_.extract[Int])
     val properties = propertiesFromJson(json \ "Properties")
     // The "Stage Infos" field was added in Spark 1.2.0
     val stageInfos = Utils
@@ -652,11 +652,10 @@ private[spark] object JsonProtocol {
 
   def jobEndFromJson(json: JValue): SparkListenerJobEnd = {
     val jobId = (json \ "Job ID").extract[Int]
-    val completionTime =
-      Utils
-        .jsonOption(json \ "Completion Time")
-        .map(_.extract[Long])
-        .getOrElse(-1L)
+    val completionTime = Utils
+      .jsonOption(json \ "Completion Time")
+      .map(_.extract[Long])
+      .getOrElse(-1L)
     val jobResult = jobResultFromJson(json \ "Job Result")
     SparkListenerJobEnd(jobId, completionTime, jobResult)
   }
@@ -676,16 +675,20 @@ private[spark] object JsonProtocol {
       json: JValue): SparkListenerBlockManagerAdded = {
     val blockManagerId = blockManagerIdFromJson(json \ "Block Manager ID")
     val maxMem = (json \ "Maximum Memory").extract[Long]
-    val time =
-      Utils.jsonOption(json \ "Timestamp").map(_.extract[Long]).getOrElse(-1L)
+    val time = Utils
+      .jsonOption(json \ "Timestamp")
+      .map(_.extract[Long])
+      .getOrElse(-1L)
     SparkListenerBlockManagerAdded(time, blockManagerId, maxMem)
   }
 
   def blockManagerRemovedFromJson(
       json: JValue): SparkListenerBlockManagerRemoved = {
     val blockManagerId = blockManagerIdFromJson(json \ "Block Manager ID")
-    val time =
-      Utils.jsonOption(json \ "Timestamp").map(_.extract[Long]).getOrElse(-1L)
+    val time = Utils
+      .jsonOption(json \ "Timestamp")
+      .map(_.extract[Long])
+      .getOrElse(-1L)
     SparkListenerBlockManagerRemoved(time, blockManagerId)
   }
 
@@ -698,8 +701,9 @@ private[spark] object JsonProtocol {
     val appId = Utils.jsonOption(json \ "App ID").map(_.extract[String])
     val time = (json \ "Timestamp").extract[Long]
     val sparkUser = (json \ "User").extract[String]
-    val appAttemptId =
-      Utils.jsonOption(json \ "App Attempt ID").map(_.extract[String])
+    val appAttemptId = Utils
+      .jsonOption(json \ "App Attempt ID")
+      .map(_.extract[String])
     val driverLogs = Utils.jsonOption(json \ "Driver Logs").map(mapFromJson)
     SparkListenerApplicationStart(
       appName,
@@ -741,10 +745,9 @@ private[spark] object JsonProtocol {
         val taskId = (json \ "Task ID").extract[Long]
         val stageId = (json \ "Stage ID").extract[Int]
         val stageAttemptId = (json \ "Stage Attempt ID").extract[Int]
-        val updates =
-          (json \ "Accumulator Updates")
-            .extract[List[JValue]]
-            .map(accumulableInfoFromJson)
+        val updates = (json \ "Accumulator Updates")
+          .extract[List[JValue]]
+          .map(accumulableInfoFromJson)
         (taskId, stageId, stageAttemptId, updates)
     }
     SparkListenerExecutorMetricsUpdate(execInfo, accumUpdates)
@@ -758,19 +761,23 @@ private[spark] object JsonProtocol {
     val attemptId = (json \ "Stage Attempt ID").extractOpt[Int].getOrElse(0)
     val stageName = (json \ "Stage Name").extract[String]
     val numTasks = (json \ "Number of Tasks").extract[Int]
-    val rddInfos =
-      (json \ "RDD Info").extract[List[JValue]].map(rddInfoFromJson)
+    val rddInfos = (json \ "RDD Info")
+      .extract[List[JValue]]
+      .map(rddInfoFromJson)
     val parentIds = Utils
       .jsonOption(json \ "Parent IDs")
       .map { l => l.extract[List[JValue]].map(_.extract[Int]) }
       .getOrElse(Seq.empty)
     val details = (json \ "Details").extractOpt[String].getOrElse("")
-    val submissionTime =
-      Utils.jsonOption(json \ "Submission Time").map(_.extract[Long])
-    val completionTime =
-      Utils.jsonOption(json \ "Completion Time").map(_.extract[Long])
-    val failureReason =
-      Utils.jsonOption(json \ "Failure Reason").map(_.extract[String])
+    val submissionTime = Utils
+      .jsonOption(json \ "Submission Time")
+      .map(_.extract[Long])
+    val completionTime = Utils
+      .jsonOption(json \ "Completion Time")
+      .map(_.extract[Long])
+    val failureReason = Utils
+      .jsonOption(json \ "Failure Reason")
+      .map(_.extract[String])
     val accumulatedValues =
       (json \ "Accumulables").extractOpt[List[JValue]] match {
         case Some(values) => values.map(accumulableInfoFromJson)
@@ -801,10 +808,11 @@ private[spark] object JsonProtocol {
     val launchTime = (json \ "Launch Time").extract[Long]
     val executorId = (json \ "Executor ID").extract[String]
     val host = (json \ "Host").extract[String]
-    val taskLocality =
-      TaskLocality.withName((json \ "Locality").extract[String])
-    val speculative =
-      (json \ "Speculative").extractOpt[Boolean].getOrElse(false)
+    val taskLocality = TaskLocality.withName(
+      (json \ "Locality").extract[String])
+    val speculative = (json \ "Speculative")
+      .extractOpt[Boolean]
+      .getOrElse(false)
     val gettingResultTime = (json \ "Getting Result Time").extract[Long]
     val finishTime = (json \ "Finish Time").extract[Long]
     val failed = (json \ "Failed").extract[Boolean]
@@ -813,16 +821,15 @@ private[spark] object JsonProtocol {
       case None         => Seq[AccumulableInfo]()
     }
 
-    val taskInfo =
-      new TaskInfo(
-        taskId,
-        index,
-        attempt,
-        launchTime,
-        executorId,
-        host,
-        taskLocality,
-        speculative)
+    val taskInfo = new TaskInfo(
+      taskId,
+      index,
+      attempt,
+      launchTime,
+      executorId,
+      host,
+      taskLocality,
+      speculative)
     taskInfo.gettingResultTime = gettingResultTime
     taskInfo.finishTime = finishTime
     taskInfo.failed = failed
@@ -833,13 +840,16 @@ private[spark] object JsonProtocol {
   def accumulableInfoFromJson(json: JValue): AccumulableInfo = {
     val id = (json \ "ID").extract[Long]
     val name = (json \ "Name").extractOpt[String]
-    val update =
-      Utils.jsonOption(json \ "Update").map { v => accumValueFromJson(name, v) }
-    val value =
-      Utils.jsonOption(json \ "Value").map { v => accumValueFromJson(name, v) }
+    val update = Utils.jsonOption(json \ "Update").map { v =>
+      accumValueFromJson(name, v)
+    }
+    val value = Utils.jsonOption(json \ "Value").map { v =>
+      accumValueFromJson(name, v)
+    }
     val internal = (json \ "Internal").extractOpt[Boolean].getOrElse(false)
-    val countFailedValues =
-      (json \ "Count Failed Values").extractOpt[Boolean].getOrElse(false)
+    val countFailedValues = (json \ "Count Failed Values")
+      .extractOpt[Boolean]
+      .getOrElse(false)
     val metadata = (json \ "Metadata").extractOpt[String]
     new AccumulableInfo(
       id,
@@ -939,8 +949,8 @@ private[spark] object JsonProtocol {
 
     // Input metrics
     Utils.jsonOption(json \ "Input Metrics").foreach { inJson =>
-      val readMethod =
-        DataReadMethod.withName((inJson \ "Data Read Method").extract[String])
+      val readMethod = DataReadMethod.withName(
+        (inJson \ "Data Read Method").extract[String])
       val inputMetrics = metrics.registerInputMetrics(readMethod)
       inputMetrics.incBytesReadInternal((inJson \ "Bytes Read").extract[Long])
       inputMetrics.incRecordsReadInternal(
@@ -1011,8 +1021,10 @@ private[spark] object JsonProtocol {
         // Unfortunately, the `TaskCommitDenied` message was introduced in 1.3.0 but the JSON
         // de/serialization logic was not added until 1.5.1. To provide backward compatibility
         // for reading those logs, we need to provide default values for all the fields.
-        val jobId =
-          Utils.jsonOption(json \ "Job ID").map(_.extract[Int]).getOrElse(-1)
+        val jobId = Utils
+          .jsonOption(json \ "Job ID")
+          .map(_.extract[Int])
+          .getOrElse(-1)
         val partitionId = Utils
           .jsonOption(json \ "Partition ID")
           .map(_.extract[Int])
@@ -1023,12 +1035,15 @@ private[spark] object JsonProtocol {
           .getOrElse(-1)
         TaskCommitDenied(jobId, partitionId, attemptNo)
       case `executorLostFailure` =>
-        val exitCausedByApp =
-          Utils.jsonOption(json \ "Exit Caused By App").map(_.extract[Boolean])
-        val executorId =
-          Utils.jsonOption(json \ "Executor ID").map(_.extract[String])
-        val reason =
-          Utils.jsonOption(json \ "Loss Reason").map(_.extract[String])
+        val exitCausedByApp = Utils
+          .jsonOption(json \ "Exit Caused By App")
+          .map(_.extract[Boolean])
+        val executorId = Utils
+          .jsonOption(json \ "Executor ID")
+          .map(_.extract[String])
+        val reason = Utils
+          .jsonOption(json \ "Loss Reason")
+          .map(_.extract[String])
         ExecutorLostFailure(
           executorId.getOrElse("Unknown"),
           exitCausedByApp.getOrElse(true),
@@ -1065,16 +1080,18 @@ private[spark] object JsonProtocol {
       .jsonOption(json \ "Scope")
       .map(_.extract[String])
       .map(RDDOperationScope.fromJson)
-    val callsite =
-      Utils.jsonOption(json \ "Callsite").map(_.extract[String]).getOrElse("")
+    val callsite = Utils
+      .jsonOption(json \ "Callsite")
+      .map(_.extract[String])
+      .getOrElse("")
     val parentIds = Utils
       .jsonOption(json \ "Parent IDs")
       .map { l => l.extract[List[JValue]].map(_.extract[Int]) }
       .getOrElse(Seq.empty)
     val storageLevel = storageLevelFromJson(json \ "Storage Level")
     val numPartitions = (json \ "Number of Partitions").extract[Int]
-    val numCachedPartitions =
-      (json \ "Number of Cached Partitions").extract[Int]
+    val numCachedPartitions = (json \ "Number of Cached Partitions")
+      .extract[Int]
     val memSize = (json \ "Memory Size").extract[Long]
     val diskSize = (json \ "Disk Size").extract[Long]
 

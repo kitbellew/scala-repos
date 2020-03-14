@@ -43,8 +43,7 @@ object FreeT extends FreeTInstances {
     }
 
   def liftM[S[_], M[_], A](value: M[A])(
-      implicit M: Functor[M]): FreeT[S, M, A] =
-    Suspend(M.map(value)(\/.left))
+      implicit M: Functor[M]): FreeT[S, M, A] = Suspend(M.map(value)(\/.left))
 
   /** A version of `liftM` that infers the nested type constructor. */
   def liftMU[S[_], MA](value: MA)(
@@ -53,8 +52,7 @@ object FreeT extends FreeTInstances {
 
   /** Suspends a value within a functor in a single step. Monadic unit for a higher-order monad. */
   def liftF[S[_], M[_], A](value: S[A])(
-      implicit M: Applicative[M]): FreeT[S, M, A] =
-    Suspend(M.point(\/-(value)))
+      implicit M: Applicative[M]): FreeT[S, M, A] = Suspend(M.point(\/-(value)))
 
   def roll[S[_], M[_], A](value: S[FreeT[S, M, A]])(
       implicit M: Applicative[M]): FreeT[S, M, A] =
@@ -73,8 +71,7 @@ object FreeT extends FreeTInstances {
           case a @ Gosub() =>
             to(a.a).flatMap(a.f.andThen(to(_)))
         }
-      override def from[A](ga: Free[S, A]) =
-        ga.toFreeT
+      override def from[A](ga: Free[S, A]) = ga.toFreeT
     }
 }
 
@@ -83,8 +80,7 @@ sealed abstract class FreeT[S[_], M[_], A] {
     flatMap(a => point(f(a)))
 
   /** Binds the given continuation to the result of this computation. */
-  final def flatMap[B](f: A => FreeT[S, M, B]): FreeT[S, M, B] =
-    gosub(this)(f)
+  final def flatMap[B](f: A => FreeT[S, M, B]): FreeT[S, M, B] = gosub(this)(f)
 
   /**
     * Changes the underlying `Monad` for this `FreeT`, ie.
@@ -190,8 +186,7 @@ sealed abstract class FreeTInstances6 {
       implicit M1: MonadTell[M, E]): MonadTell[FreeT[S, M, ?], E] =
     new MonadTell[FreeT[S, M, ?], E] with FreeTMonad[S, M] {
       override def M = implicitly
-      override def writer[A](w: E, v: A) =
-        FreeT.liftM(M1.writer(w, v))
+      override def writer[A](w: E, v: A) = FreeT.liftM(M1.writer(w, v))
     }
 }
 
@@ -200,8 +195,7 @@ sealed abstract class FreeTInstances5 extends FreeTInstances6 {
       implicit M1: MonadReader[M, E]): MonadReader[FreeT[S, M, ?], E] =
     new MonadReader[FreeT[S, M, ?], E] with FreeTMonad[S, M] {
       override def M = implicitly
-      override def ask =
-        FreeT.liftM(M1.ask)
+      override def ask = FreeT.liftM(M1.ask)
       override def local[A](f: E => E)(fa: FreeT[S, M, A]) =
         fa.hoist(new (M ~> M) {
           def apply[A](a: M[A]) = M1.local(f)(a)
@@ -214,12 +208,9 @@ sealed abstract class FreeTInstances4 extends FreeTInstances5 {
       implicit M1: MonadState[M, E]): MonadState[FreeT[S, M, ?], E] =
     new MonadState[FreeT[S, M, ?], E] with FreeTMonad[S, M] {
       override def M = implicitly
-      override def init =
-        FreeT.liftM(M1.init)
-      override def get =
-        FreeT.liftM(M1.get)
-      override def put(s: E) =
-        FreeT.liftM(M1.put(s))
+      override def init = FreeT.liftM(M1.init)
+      override def get = FreeT.liftM(M1.get)
+      override def put(s: E) = FreeT.liftM(M1.put(s))
     }
 }
 
@@ -233,8 +224,7 @@ sealed abstract class FreeTInstances3 extends FreeTInstances4 {
           .liftM[S, M, FreeT[S, M, A]](E.handleError(fa.toM)(f.andThen(_.toM)))(
             M)
           .flatMap(identity)
-      override def raiseError[A](e: E) =
-        FreeT.liftM(E.raiseError[A](e))(M)
+      override def raiseError[A](e: E) = FreeT.liftM(E.raiseError[A](e))(M)
     }
 }
 
@@ -251,10 +241,8 @@ sealed abstract class FreeTInstances2 extends FreeTInstances3 {
         new (FreeT[S, M, ?] ~> FreeT[S, N, ?]) {
           def apply[A](fa: FreeT[S, M, A]) = fa.hoist(f)
         }
-      def liftM[G[_]: Monad, A](a: G[A]) =
-        FreeT.liftM(a)
-      def apply[G[_]: Monad] =
-        Monad[FreeT[S, G, ?]]
+      def liftM[G[_]: Monad, A](a: G[A]) = FreeT.liftM(a)
+      def apply[G[_]: Monad] = Monad[FreeT[S, G, ?]]
     }
 
   implicit def freeTFoldable[
@@ -324,8 +312,7 @@ private trait FreeTMonad[S[_], M[_]]
     with FreeTBind[S, M] {
   implicit def M: Applicative[M]
 
-  override final def point[A](a: => A) =
-    FreeT.point[S, M, A](a)
+  override final def point[A](a: => A) = FreeT.point[S, M, A](a)
   override final def tailrecM[A, B](f: A => FreeT[S, M, A \/ B])(a: A) =
     FreeT.tailrecM(f)(a)
 }

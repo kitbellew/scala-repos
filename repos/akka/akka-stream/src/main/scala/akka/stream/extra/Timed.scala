@@ -27,10 +27,12 @@ private[akka] trait TimedOps {
       onComplete: FiniteDuration ⇒ Unit): Source[O, Mat2] = {
     val ctx = new TimedFlowContext
 
-    val startTimed =
-      Flow[I].transform(() ⇒ new StartTimed(ctx)).named("startTimed")
-    val stopTimed =
-      Flow[O].transform(() ⇒ new StopTimed(ctx, onComplete)).named("stopTimed")
+    val startTimed = Flow[I]
+      .transform(() ⇒ new StartTimed(ctx))
+      .named("startTimed")
+    val stopTimed = Flow[O]
+      .transform(() ⇒ new StopTimed(ctx, onComplete))
+      .named("stopTimed")
 
     measuredOps(source.via(startTimed)).via(stopTimed)
   }
@@ -48,8 +50,9 @@ private[akka] trait TimedOps {
     // they do share a super-type (FlowOps), but all operations of FlowOps return path dependant type
     val ctx = new TimedFlowContext
 
-    val startTimed =
-      Flow[O].transform(() ⇒ new StartTimed(ctx)).named("startTimed")
+    val startTimed = Flow[O]
+      .transform(() ⇒ new StartTimed(ctx))
+      .named("startTimed")
     val stopTimed = Flow[Out]
       .transform(() ⇒ new StopTimed(ctx, onComplete))
       .named("stopTimed")

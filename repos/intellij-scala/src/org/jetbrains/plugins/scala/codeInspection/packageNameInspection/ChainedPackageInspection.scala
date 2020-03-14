@@ -21,32 +21,33 @@ class ChainedPackageInspection extends LocalInspectionTool {
       file: PsiFile,
       manager: InspectionManager,
       isOnTheFly: Boolean) = {
-    val problems =
-      file.asOptionOf[ScalaFile].filter(!_.isScriptFile()).flatMap {
-        scalaFile =>
-          scalaFile.getPackagings.headOption.flatMap { firstPackaging =>
-            val basePackages = ScalaProjectSettings
-              .getInstance(file.getProject)
-              .getBasePackages
-              .asScala
+    val problems = file
+      .asOptionOf[ScalaFile]
+      .filter(!_.isScriptFile())
+      .flatMap { scalaFile =>
+        scalaFile.getPackagings.headOption.flatMap { firstPackaging =>
+          val basePackages = ScalaProjectSettings
+            .getInstance(file.getProject)
+            .getBasePackages
+            .asScala
 
-            basePackages
-              .find(basePackage =>
-                firstPackaging.getPackageName != basePackage
-                  && firstPackaging.getPackageName.startsWith(basePackage))
-              .flatMap { basePackage =>
-                firstPackaging.reference.map(_.getTextRange).map { range =>
-                  manager.createProblemDescriptor(
-                    file,
-                    range,
-                    "Package declaration could use chained package clauses",
-                    ProblemHighlightType.WEAK_WARNING,
-                    false,
-                    new UseChainedPackageQuickFix(scalaFile, basePackage)
-                  )
-                }
+          basePackages
+            .find(basePackage =>
+              firstPackaging.getPackageName != basePackage
+                && firstPackaging.getPackageName.startsWith(basePackage))
+            .flatMap { basePackage =>
+              firstPackaging.reference.map(_.getTextRange).map { range =>
+                manager.createProblemDescriptor(
+                  file,
+                  range,
+                  "Package declaration could use chained package clauses",
+                  ProblemHighlightType.WEAK_WARNING,
+                  false,
+                  new UseChainedPackageQuickFix(scalaFile, basePackage)
+                )
               }
-          }
+            }
+        }
       }
 
     problems.toArray

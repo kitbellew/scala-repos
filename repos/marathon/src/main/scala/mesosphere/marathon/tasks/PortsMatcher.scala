@@ -20,8 +20,8 @@ case class PortsMatch(hostPortsWithRole: Seq[PortWithRole]) {
     * The resulting port resources which should be consumed from the offer. If no matching port ranges could
     * be generated from the offer, return `None`.
     */
-  lazy val resources: Seq[MesosProtos.Resource] =
-    PortWithRole.createPortsResources(hostPortsWithRole)
+  lazy val resources: Seq[MesosProtos.Resource] = PortWithRole
+    .createPortsResources(hostPortsWithRole)
 
   def hostPorts: Seq[Int] = hostPortsWithRole.map(_.port)
 }
@@ -32,8 +32,9 @@ case class PortsMatch(hostPortsWithRole: Seq[PortWithRole]) {
 class PortsMatcher(
     app: AppDefinition,
     offer: MesosProtos.Offer,
-    resourceSelector: ResourceSelector =
-      ResourceSelector(Set("*"), reserved = false),
+    resourceSelector: ResourceSelector = ResourceSelector(
+      Set("*"),
+      reserved = false),
     random: Random = Random)
     extends Logging {
 
@@ -42,12 +43,11 @@ class PortsMatcher(
   lazy val portsMatch: Option[PortsMatch] = portsWithRoles.map(PortsMatch(_))
 
   private[this] def portsWithRoles: Option[Seq[PortWithRole]] = {
-    val portMappings: Option[Seq[Container.Docker.PortMapping]] =
-      for {
-        c <- app.container
-        d <- c.docker
-        pms <- d.portMappings if pms.nonEmpty
-      } yield pms
+    val portMappings: Option[Seq[Container.Docker.PortMapping]] = for {
+      c <- app.container
+      d <- c.docker
+      pms <- d.portMappings if pms.nonEmpty
+    } yield pms
 
     (app.portNumbers, portMappings) match {
       case (Nil, None) => // optimization for empty special case

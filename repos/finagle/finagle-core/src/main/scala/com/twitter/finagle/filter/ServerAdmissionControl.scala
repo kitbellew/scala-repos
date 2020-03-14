@@ -83,8 +83,8 @@ private[twitter] object ServerAdmissionControl {
         if (!enabled || acs.isEmpty) { next }
         else {
           // assume the order of filters doesn't matter
-          val typeAgnosticFilters =
-            acs.values.asScala.foldLeft(Filter.TypeAgnostic.Identity) {
+          val typeAgnosticFilters = acs.values.asScala
+            .foldLeft(Filter.TypeAgnostic.Identity) {
               case (sum, f) =>
                 f.andThen(sum)
             }

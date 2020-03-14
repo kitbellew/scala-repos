@@ -77,8 +77,8 @@ private[opening] final class OpeningApi(
         Push
       }
 
-      val playedIdsGroup =
-        Group(BSONBoolean(true))("ids" -> Push(Attempt.BSONFields.openingId))
+      val playedIdsGroup = Group(BSONBoolean(true))(
+        "ids" -> Push(Attempt.BSONFields.openingId))
 
       col
         .aggregate(

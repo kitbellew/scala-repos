@@ -29,8 +29,9 @@ import kafka.message.{
 
 trait BaseMessageSetTestCases extends JUnitSuite {
 
-  val messages =
-    Array(new Message("abcd".getBytes()), new Message("efgh".getBytes()))
+  val messages = Array(
+    new Message("abcd".getBytes()),
+    new Message("efgh".getBytes()))
   def createMessageSet(
       messages: Seq[Message],
       compressed: CompressionCodec = NoCompressionCodec): MessageSet

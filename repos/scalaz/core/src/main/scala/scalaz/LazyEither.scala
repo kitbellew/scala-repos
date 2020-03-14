@@ -13,50 +13,36 @@ sealed abstract class LazyEither[+A, +B] {
     }
 
   /** Catamorphism of the constructor chosen. */
-  def ?[X](left: => X, right: => X): X =
-    fold(_ => left, _ => right)
+  def ?[X](left: => X, right: => X): X = fold(_ => left, _ => right)
 
-  def isLeft =
-    fold(_ => true, _ => false)
+  def isLeft = fold(_ => true, _ => false)
 
-  def isRight =
-    !isLeft
+  def isRight = !isLeft
 
-  def swap: LazyEither[B, A] =
-    fold(lazyRight(_), lazyLeft(_))
+  def swap: LazyEither[B, A] = fold(lazyRight(_), lazyLeft(_))
 
-  def toEither: Either[A, B] =
-    fold(Left(_), Right(_))
+  def toEither: Either[A, B] = fold(Left(_), Right(_))
 
-  def disjunction: (A \/ B) =
-    fold(-\/(_), \/-(_))
+  def disjunction: (A \/ B) = fold(-\/(_), \/-(_))
 
-  def getOrElse[BB >: B](default: => BB): BB =
-    fold(_ => default, z => z)
+  def getOrElse[BB >: B](default: => BB): BB = fold(_ => default, z => z)
 
-  def exists(f: (=> B) => Boolean): Boolean =
-    fold(_ => false, f)
+  def exists(f: (=> B) => Boolean): Boolean = fold(_ => false, f)
 
-  def forall(f: (=> B) => Boolean): Boolean =
-    fold(_ => true, f)
+  def forall(f: (=> B) => Boolean): Boolean = fold(_ => true, f)
 
   def orElse[AA >: A, BB >: B](x: => LazyEither[AA, BB]): LazyEither[AA, BB] =
     ?(x, this)
 
-  def toLazyOption: LazyOption[B] =
-    fold(_ => lazyNone, lazySome(_))
+  def toLazyOption: LazyOption[B] = fold(_ => lazyNone, lazySome(_))
 
-  def toOption: Option[B] =
-    fold(_ => None, Some(_))
+  def toOption: Option[B] = fold(_ => None, Some(_))
 
-  def toMaybe[BB >: B]: Maybe[BB] =
-    fold(_ => Maybe.empty, Maybe.just(_))
+  def toMaybe[BB >: B]: Maybe[BB] = fold(_ => Maybe.empty, Maybe.just(_))
 
-  def toList: List[B] =
-    fold(_ => Nil, _ :: Nil)
+  def toList: List[B] = fold(_ => Nil, _ :: Nil)
 
-  def toStream: Stream[B] =
-    fold(_ => Stream(), Stream(_))
+  def toStream: Stream[B] = fold(_ => Stream(), Stream(_))
 
   def map[C](f: (=> B) => C): LazyEither[A, C] =
     fold(lazyLeft(_), b => lazyRight(f(b)))
@@ -68,8 +54,7 @@ sealed abstract class LazyEither[+A, +B] {
   def leftMap[C](f: (=> A) => C): LazyEither[C, B] =
     fold(a => lazyLeft(f(a)), lazyRight(_))
 
-  def foreach(f: (=> B) => Unit): Unit =
-    fold(_ => (), f)
+  def foreach(f: (=> B) => Unit): Unit = fold(_ => (), f)
 
   def flatMap[AA >: A, C](f: (=> B) => LazyEither[AA, C]): LazyEither[AA, C] =
     fold(lazyLeft(_), f)
@@ -87,8 +72,7 @@ sealed abstract class LazyEither[+A, +B] {
   def ap[AA >: A, C](f: => LazyEither[AA, B => C]): LazyEither[AA, C] =
     f flatMap (k => map(k apply _))
 
-  def left: LeftProjection[A, B] =
-    new LeftProjection[A, B](this)
+  def left: LeftProjection[A, B] = new LeftProjection[A, B](this)
 
 }
 
@@ -127,35 +111,27 @@ object LazyEither extends LazyEitherInstances {
   final case class LeftProjection[+A, +B](e: LazyEither[A, B]) {
     import LazyOption._
 
-    def getOrElse[AA >: A](default: => AA): AA =
-      e.fold(z => z, _ => default)
+    def getOrElse[AA >: A](default: => AA): AA = e.fold(z => z, _ => default)
 
-    def exists(f: (=> A) => Boolean): Boolean =
-      e.fold(f, _ => false)
+    def exists(f: (=> A) => Boolean): Boolean = e.fold(f, _ => false)
 
-    def forall(f: (=> A) => Boolean): Boolean =
-      e.fold(f, _ => true)
+    def forall(f: (=> A) => Boolean): Boolean = e.fold(f, _ => true)
 
     def orElse[AA >: A, BB >: B](x: => LazyEither[AA, BB]): LazyEither[AA, BB] =
       e.?(e, x)
 
-    def toLazyOption: LazyOption[A] =
-      e.fold(lazySome(_), _ => lazyNone)
+    def toLazyOption: LazyOption[A] = e.fold(lazySome(_), _ => lazyNone)
 
-    def toOption: Option[A] =
-      e.fold(Some(_), _ => None)
+    def toOption: Option[A] = e.fold(Some(_), _ => None)
 
-    def toList: List[A] =
-      e.fold(_ :: Nil, _ => Nil)
+    def toList: List[A] = e.fold(_ :: Nil, _ => Nil)
 
-    def toStream: Stream[A] =
-      e.fold(Stream(_), _ => Stream())
+    def toStream: Stream[A] = e.fold(Stream(_), _ => Stream())
 
     def map[C](f: (=> A) => C): LazyEither[C, B] =
       e.fold(a => lazyLeft(f(a)), lazyRight(_))
 
-    def foreach(f: (=> A) => Unit): Unit =
-      e.fold(f, _ => ())
+    def foreach(f: (=> A) => Unit): Unit = e.fold(f, _ => ())
 
     def flatMap[BB >: B, C](f: (=> A) => LazyEither[C, BB]): LazyEither[C, BB] =
       e.fold(f, lazyRight(_))
@@ -179,23 +155,18 @@ sealed abstract class LazyEitherInstances {
       with MonadError[LazyEither[E, ?], E] {
 
       def traverseImpl[G[_]: Applicative, A, B](fa: LazyEither[E, A])(
-          f: A => G[B]): G[LazyEither[E, B]] =
-        fa traverse f
+          f: A => G[B]): G[LazyEither[E, B]] = fa traverse f
 
       override def foldRight[A, B](fa: LazyEither[E, A], z: => B)(
-          f: (A, => B) => B): B =
-        fa.foldRight(z)(f)
+          f: (A, => B) => B): B = fa.foldRight(z)(f)
 
       def bind[A, B](fa: LazyEither[E, A])(
-          f: A => LazyEither[E, B]): LazyEither[E, B] =
-        fa flatMap (a => f(a))
+          f: A => LazyEither[E, B]): LazyEither[E, B] = fa flatMap (a => f(a))
 
       override def ap[A, B](fa: => LazyEither[E, A])(
-          f: => LazyEither[E, A => B]): LazyEither[E, B] =
-        fa ap f
+          f: => LazyEither[E, A => B]): LazyEither[E, B] = fa ap f
 
-      def point[A](a: => A): LazyEither[E, A] =
-        LazyEither.lazyRight(a)
+      def point[A](a: => A): LazyEither[E, A] = LazyEither.lazyRight(a)
 
       def cozip[A, B](a: LazyEither[E, A \/ B]) =
         a.fold(
@@ -209,8 +180,7 @@ sealed abstract class LazyEitherInstances {
       def pextract[B, A](fa: LazyEither[E, A]): LazyEither[E, B] \/ A =
         fa.fold(e => -\/(LazyEither.lazyLeft(e)), a => \/-(a))
 
-      def raiseError[A](e: E): LazyEither[E, A] =
-        LazyEither.lazyLeft(e)
+      def raiseError[A](e: E): LazyEither[E, A] = LazyEither.lazyLeft(e)
 
       def handleError[A](fa: LazyEither[E, A])(
           f: E => LazyEither[E, A]): LazyEither[E, A] =

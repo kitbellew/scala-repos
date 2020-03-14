@@ -44,8 +44,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
 
   private val usedLocalNames = new ScopedVar[mutable.Set[String]]
   private val localSymbolNames = new ScopedVar[mutable.Map[Symbol, String]]
-  private val isReserved =
-    Set("arguments", "eval", ScalaJSEnvironmentName)
+  private val isReserved = Set("arguments", "eval", ScalaJSEnvironmentName)
 
   def withNewLocalNameScope[A](body: => A): A =
     withScopedVars(
@@ -136,8 +135,9 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
     require(sym.owner == definitions.StringClass)
     require(!sym.isClassConstructor && !sym.isPrivate)
 
-    val (encodedName, paramsString) =
-      encodeMethodNameInternal(sym, inRTClass = true)
+    val (encodedName, paramsString) = encodeMethodNameInternal(
+      sym,
+      inRTClass = true)
     val methodIdent = js.Ident(
       encodedName + paramsString,
       Some(sym.unexpandedName.decoded + paramsString))

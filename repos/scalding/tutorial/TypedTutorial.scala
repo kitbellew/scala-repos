@@ -34,8 +34,7 @@ class TypedTutorial(args: Args) extends Job(args) {
       val textSource = TextLine(args("input"))
 
       // Create a type-safe pipe from the TextLine.
-      val lines: TypedPipe[String] =
-        TypedPipe.from[String](textSource)
+      val lines: TypedPipe[String] = TypedPipe.from[String](textSource)
 
       // Write the typed pipe out to a tab-delimited file.
       lines.write(TypedTsv[String](args("output")))
@@ -138,48 +137,45 @@ class TypedTutorial(args: Args) extends Job(args) {
       // get the lines, this time from an 'OffsetTextLine' which is a
       // typed wrapper on 'TextLine' that contains the 'byte offset' and
       // text of each line in the file.
-      val lines: TypedPipe[(Long, String)] =
-        TypedPipe.from(OffsetTextLine(args("input")))
+      val lines: TypedPipe[(Long, String)] = TypedPipe.from(
+        OffsetTextLine(args("input")))
 
       // Split lines into words, but keep their original line offset with them.
-      val wordsWithLine: Grouped[String, Long] =
-        lines.flatMap {
-          case (offset, line) =>
-            // split into words
-            line
-              .split("\\s")
-              // keep the line offset with them
-              .map(word => (word.toLowerCase, offset))
-        }
-        // make the 'word' field the key
-        .group
+      val wordsWithLine: Grouped[String, Long] = lines.flatMap {
+        case (offset, line) =>
+          // split into words
+          line
+            .split("\\s")
+            // keep the line offset with them
+            .map(word => (word.toLowerCase, offset))
+      }
+      // make the 'word' field the key
+      .group
 
       // Associate scores with each word; merges the two value types into
       // a tuple: [String,Long] join [String,Double] -> [String,(Long,Double)]
       val scoredWords = wordsWithLine.join(scores)
 
       // get scores for each line (indexed by line number)
-      val scoredLinesByNumber =
-        scoredWords
-        // select the line offset and score fields
-          .map { case (word, (offset, score)) => (offset, score) }
-          // group by line offset (groups all the words for a line together)
-          .group
-          // compute total score per line
-          .sum
+      val scoredLinesByNumber = scoredWords
+      // select the line offset and score fields
+        .map { case (word, (offset, score)) => (offset, score) }
+        // group by line offset (groups all the words for a line together)
+        .group
+        // compute total score per line
+        .sum
       // Group and sum are often run together in this way.
       // The `sumByKey` operation performs performs both.
 
       // Associate the original line text with the computed score,
       // discard the 'offset' field
-      val scoredLines: TypedPipe[(String, Double)] =
-        lines
-        // index lines by 'offset'
-        .group
-        // associate scores with lines (by offset)
-          .join(scoredLinesByNumber)
-          // take just the value fields (discard the 'line offset')
-          .values
+      val scoredLines: TypedPipe[(String, Double)] = lines
+      // index lines by 'offset'
+      .group
+      // associate scores with lines (by offset)
+        .join(scoredLinesByNumber)
+        // take just the value fields (discard the 'line offset')
+        .values
 
       // write out the final result
       scoredLines.write(TypedTsv[(String, Double)](args("output")))
@@ -209,8 +205,8 @@ class TypedTutorial(args: Args) extends Job(args) {
 
       // To convert to a typed pipe, we must specify the fields we want
       // and their types:
-      val lines: TypedPipe[(Long, String)] =
-        TypedPipe.from[(Long, String)](rawPipe, ('offset, 'line))
+      val lines: TypedPipe[(Long, String)] = TypedPipe
+        .from[(Long, String)](rawPipe, ('offset, 'line))
 
       // We can operate on this typed pipe as above, and come up with a
       // different set of fields

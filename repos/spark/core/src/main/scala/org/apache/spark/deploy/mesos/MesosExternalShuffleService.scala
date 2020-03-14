@@ -133,8 +133,8 @@ private[mesos] class MesosExternalShuffleService(
 
   protected override def newShuffleBlockHandler(
       conf: TransportConf): ExternalShuffleBlockHandler = {
-    val cleanerIntervalS =
-      this.conf.getTimeAsSeconds("spark.shuffle.cleaner.interval", "30s")
+    val cleanerIntervalS = this.conf
+      .getTimeAsSeconds("spark.shuffle.cleaner.interval", "30s")
     new MesosExternalShuffleBlockHandler(conf, cleanerIntervalS)
   }
 }

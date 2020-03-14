@@ -204,8 +204,8 @@ private[spark] abstract class MemoryManager(
       case MemoryMode.ON_HEAP  => onHeapExecutionMemoryPool.poolSize
       case MemoryMode.OFF_HEAP => offHeapExecutionMemoryPool.poolSize
     }
-    val size =
-      ByteArrayMethods.nextPowerOf2(maxTungstenMemory / cores / safetyFactor)
+    val size = ByteArrayMethods.nextPowerOf2(
+      maxTungstenMemory / cores / safetyFactor)
     val default = math.min(maxPageSize, math.max(minPageSize, size))
     conf.getSizeAsBytes("spark.buffer.pageSize", default)
   }

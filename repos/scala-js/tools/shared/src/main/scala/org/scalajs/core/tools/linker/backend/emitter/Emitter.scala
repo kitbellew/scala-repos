@@ -42,8 +42,9 @@ final class Emitter private (
   private[this] var statsMethodsReused: Int = 0
   private[this] var statsMethodsInvalidated: Int = 0
 
-  val symbolRequirements: SymbolRequirement =
-    Emitter.symbolRequirements(semantics, outputMode.esLevel)
+  val symbolRequirements: SymbolRequirement = Emitter.symbolRequirements(
+    semantics,
+    outputMode.esLevel)
 
   // Private API for the Closure backend (could be opened if necessary)
   private[backend] def withOptimizeBracketSelects(
@@ -169,9 +170,9 @@ final class Emitter private (
           addTree(exportedMembers)
 
         case OutputMode.ECMAScript6 =>
-          val allMembersBlock =
-            js.Block(ctor :: memberMethods ::: exportedMembers :: Nil)(
-              Position.NoPosition)
+          val allMembersBlock = js.Block(
+            ctor :: memberMethods ::: exportedMembers :: Nil)(
+            Position.NoPosition)
           val allMembers = allMembersBlock match {
             case js.Block(members) => members
             case js.Skip()         => Nil

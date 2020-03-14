@@ -74,21 +74,20 @@ class StreamPartialFlowGraphDocSpec extends AkkaSpec {
 
   "build flow from partial flow graph" in {
     //#flow-from-partial-flow-graph
-    val pairUpWithToString =
-      Flow.fromGraph(GraphDSL.create() { implicit b =>
-        import GraphDSL.Implicits._
+    val pairUpWithToString = Flow.fromGraph(GraphDSL.create() { implicit b =>
+      import GraphDSL.Implicits._
 
-        // prepare graph elements
-        val broadcast = b.add(Broadcast[Int](2))
-        val zip = b.add(Zip[Int, String]())
+      // prepare graph elements
+      val broadcast = b.add(Broadcast[Int](2))
+      val zip = b.add(Zip[Int, String]())
 
-        // connect the graph
-        broadcast.out(0).map(identity) ~> zip.in0
-        broadcast.out(1).map(_.toString) ~> zip.in1
+      // connect the graph
+      broadcast.out(0).map(identity) ~> zip.in0
+      broadcast.out(1).map(_.toString) ~> zip.in1
 
-        // expose ports
-        FlowShape(broadcast.in, zip.out)
-      })
+      // expose ports
+      FlowShape(broadcast.in, zip.out)
+    })
 
     //#flow-from-partial-flow-graph
 

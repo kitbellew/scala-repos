@@ -97,9 +97,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     "SPARK-13651: generator outputs shouldn't be resolved from its child's output") {
     withTempTable("src") {
       Seq(("id1", "value1")).toDF("key", "value").registerTempTable("src")
-      val query =
-        sql("SELECT genoutput.* FROM src " +
-          "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
+      val query = sql("SELECT genoutput.* FROM src " +
+        "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
       checkAnswer(query, Row("key1", 100) :: Row("key2", 200) :: Nil)
     }
   }
@@ -289,9 +288,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("show functions") {
-    val allBuiltinFunctions =
-      (FunctionRegistry.builtin.listFunction().toSet[String] ++
-        org.apache.hadoop.hive.ql.exec.FunctionRegistry.getFunctionNames.asScala).toList.sorted
+    val allBuiltinFunctions = (FunctionRegistry.builtin
+      .listFunction()
+      .toSet[String] ++
+      org.apache.hadoop.hive.ql.exec.FunctionRegistry.getFunctionNames.asScala).toList.sorted
     // The TestContext is shared by all the test cases, some functions may be registered before
     // this, so we check that all the builtin functions are returned.
     val allFunctions = sql("SHOW functions").collect().map(r => r(0))
@@ -693,8 +693,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("SPARK-4825 save join to table") {
-    val testData =
-      sparkContext.parallelize(1 to 10).map(i => TestData(i, i.toString)).toDF()
+    val testData = sparkContext
+      .parallelize(1 to 10)
+      .map(i => TestData(i, i.toString))
+      .toDF()
     sql("CREATE TABLE test1 (key INT, value STRING)")
     testData.write.mode(SaveMode.Append).insertInto("test1")
     sql("CREATE TABLE test2 (key INT, value STRING)")
@@ -837,16 +839,16 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("resolve udtf in projection #1") {
-    val rdd =
-      sparkContext.makeRDD((1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext.makeRDD(
+      (1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     val df = sql("SELECT explode(a) AS val FROM data")
     val col = df("val")
   }
 
   test("resolve udtf in projection #2") {
-    val rdd =
-      sparkContext.makeRDD((1 to 2).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext.makeRDD(
+      (1 to 2).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     checkAnswer(
       sql("SELECT explode(map(1, 1)) FROM data LIMIT 1"),
@@ -880,8 +882,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     // is not in a valid state (cannot be executed). Because of this bug, the analysis rule of
     // PreInsertionCasts will actually start to work before ImplicitGenerate and then
     // generates an invalid query plan.
-    val rdd =
-      sparkContext.makeRDD((1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
+    val rdd = sparkContext.makeRDD(
+      (1 to 5).map(i => s"""{"a":[$i, ${i + 1}]}"""))
     read.json(rdd).registerTempTable("data")
     val originalConf = convertCTAS
     setConf(HiveContext.CONVERT_CTAS, false)
@@ -1283,8 +1285,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("window function: multiple window expressions in a single expression") {
-    val nums =
-      sparkContext.parallelize(1 to 10).map(x => (x, x % 2)).toDF("x", "y")
+    val nums = sparkContext
+      .parallelize(1 to 10)
+      .map(x => (x, x % 2))
+      .toDF("x", "y")
     nums.registerTempTable("nums")
 
     val expected =
@@ -1485,9 +1489,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   }
 
   test("SPARK-8588 HiveTypeCoercion.inConversion fires too early") {
-    val df =
-      createDataFrame(
-        Seq((1, "2014-01-01"), (2, "2015-01-01"), (3, "2016-01-01")))
+    val df = createDataFrame(
+      Seq((1, "2014-01-01"), (2, "2015-01-01"), (3, "2016-01-01")))
     df.toDF("id", "datef").registerTempTable("test_SPARK8588")
     checkAnswer(
       sql("""
@@ -1620,8 +1623,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .selectExpr("id AS a", "id AS b")
       .registerTempTable("test")
 
-    val df =
-      sql("""FROM test
+    val df = sql(
+      """FROM test
         |SELECT TRANSFORM(a, b)
         |ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
         |WITH SERDEPROPERTIES('field.delim' = '|')

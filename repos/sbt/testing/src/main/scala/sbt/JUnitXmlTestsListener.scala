@@ -30,22 +30,21 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   val targetDir = new File(outputDir + "/test-reports/")
 
   /**all system properties as XML*/
-  val properties =
-    <properties>
+  val properties = <properties>
       {
-      // create a clone, defending against [[ConcurrentModificationException]]
-      val clonedProperties =
-        System.getProperties.clone.asInstanceOf[Hashtable[AnyRef, AnyRef]]
-      val iter = clonedProperties.entrySet.iterator
-      val props: ListBuffer[XNode] = new ListBuffer()
-      while (iter.hasNext) {
-        val next = iter.next
-        props += <property name={next.getKey.toString} value={
-          next.getValue.toString
-        }/>
-      }
-      props
+    // create a clone, defending against [[ConcurrentModificationException]]
+    val clonedProperties = System.getProperties.clone
+      .asInstanceOf[Hashtable[AnyRef, AnyRef]]
+    val iter = clonedProperties.entrySet.iterator
+    val props: ListBuffer[XNode] = new ListBuffer()
+    while (iter.hasNext) {
+      val next = iter.next
+      props += <property name={next.getKey.toString} value={
+        next.getValue.toString
+      }/>
     }
+    props
+  }
     </properties>
 
   /**
@@ -85,13 +84,14 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
           }
         } time={(e.duration() / 1000.0).toString}>
                                                  {
-          val trace: String = if (e.throwable.isDefined) {
-            val stringWriter = new StringWriter()
-            val writer = new PrintWriter(stringWriter)
-            e.throwable.get.printStackTrace(writer)
-            writer.flush()
-            stringWriter.toString
-          } else { "" }
+          val trace: String =
+            if (e.throwable.isDefined) {
+              val stringWriter = new StringWriter()
+              val writer = new PrintWriter(stringWriter)
+              e.throwable.get.printStackTrace(writer)
+              writer.flush()
+              stringWriter.toString
+            } else { "" }
           e.status match {
             case TStatus.Error if (e.throwable.isDefined) =>
               <error message={e.throwable.get.getMessage} type={

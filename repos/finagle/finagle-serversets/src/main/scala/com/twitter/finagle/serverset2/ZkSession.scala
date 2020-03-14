@@ -190,8 +190,7 @@ private[serverset2] class ZkSession(
     * A persistent version of exists: existsOf returns an Activity representing
     * the current (best-effort) Stat for the given path.
     */
-  def existsOf(path: String): Activity[Option[Data.Stat]] =
-    existsWatchOp(path)
+  def existsOf(path: String): Activity[Option[Data.Stat]] = existsWatchOp(path)
 
   /**
     * A persistent version of glob: globOf returns an Activity

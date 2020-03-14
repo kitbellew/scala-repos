@@ -38,8 +38,7 @@ private class NameTreeParsers private (str: String) {
   private[this] def illegal(expected: Char, found: Char): Nothing =
     illegal(stringOfChar(expected), stringOfChar(found))
 
-  private[this] def peek: Char =
-    if (atEnd) EOI else str(idx)
+  private[this] def peek: Char = if (atEnd) EOI else str(idx)
 
   private[this] def next() { idx += 1 }
 

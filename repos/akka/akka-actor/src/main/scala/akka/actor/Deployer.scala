@@ -137,19 +137,18 @@ private[akka] class Deployer(
 
   import scala.collection.JavaConverters._
 
-  private val resizerEnabled: Config =
-    ConfigFactory.parseString("resizer.enabled=on")
+  private val resizerEnabled: Config = ConfigFactory.parseString(
+    "resizer.enabled=on")
   private val deployments = new AtomicReference(WildcardTree[Deploy]())
   private val config = settings.config.getConfig("akka.actor.deployment")
   protected val default = config.getConfig("default")
-  val routerTypeMapping: Map[String, String] =
-    settings.config
-      .getConfig("akka.actor.router.type-mapping")
-      .root
-      .unwrapped
-      .asScala
-      .collect { case (key, value: String) ⇒ (key -> value) }
-      .toMap
+  val routerTypeMapping: Map[String, String] = settings.config
+    .getConfig("akka.actor.router.type-mapping")
+    .root
+    .unwrapped
+    .asScala
+    .collect { case (key, value: String) ⇒ (key -> value) }
+    .toMap
 
   config.root.asScala flatMap {
     case ("default", _) ⇒ None

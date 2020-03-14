@@ -250,8 +250,9 @@ trait HtmlHelpers extends CssBindImplicits {
             case Some(id) => {
               if (ids.contains(id.text)) {
                 processElement(
-                  element.copy(attributes =
-                    removeAttribute("id", element.attributes)),
+                  element.copy(attributes = removeAttribute(
+                    "id",
+                    element.attributes)),
                   stripDuplicateId _
                 )
               } else {

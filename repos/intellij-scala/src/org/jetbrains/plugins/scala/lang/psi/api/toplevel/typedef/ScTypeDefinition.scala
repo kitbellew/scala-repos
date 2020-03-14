@@ -97,8 +97,8 @@ trait ScTypeDefinition
 
   @Cached(synchronized = true, ModCount.getBlockModificationCount, this)
   def calcFakeCompanionModule(): Option[ScObject] = {
-    val accessModifier =
-      getModifierList.accessModifier.fold("")(_.modifierFormattedText + " ")
+    val accessModifier = getModifierList.accessModifier.fold("")(
+      _.modifierFormattedText + " ")
     val objText = this match {
       case clazz: ScClass if clazz.isCase =>
         val texts = clazz.getSyntheticMethodsText
@@ -137,11 +137,10 @@ trait ScTypeDefinition
     }
 
     val next = ScalaPsiUtil.getNextStubOrPsiElement(this)
-    val obj: ScObject =
-      ScalaPsiElementFactory.createObjectWithContext(
-        objText,
-        getContext,
-        if (next != null) next else this)
+    val obj: ScObject = ScalaPsiElementFactory.createObjectWithContext(
+      objText,
+      getContext,
+      if (next != null) next else this)
     import org.jetbrains.plugins.scala.extensions._
     val objOption: Option[ScObject] = obj.toOption
     objOption.foreach { (obj: ScObject) =>

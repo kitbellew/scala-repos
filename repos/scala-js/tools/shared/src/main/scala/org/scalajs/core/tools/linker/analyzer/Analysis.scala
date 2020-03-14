@@ -101,16 +101,15 @@ object Analysis {
               "[" * dimensions + decodeClassName(base)
           }
 
-        val (simpleName, paramTypes, resultType) =
-          ir.Definitions.decodeMethodName(encodedName)
+        val (simpleName, paramTypes, resultType) = ir.Definitions
+          .decodeMethodName(encodedName)
 
         simpleName + "(" + paramTypes.map(typeDisplayName).mkString(",") + ")" +
           resultType.fold("")(typeDisplayName)
       }
     }
 
-    def fullDisplayName: String =
-      owner.displayName + "." + displayName
+    def fullDisplayName: String = owner.displayName + "." + displayName
   }
 
   sealed trait MethodSyntheticKind

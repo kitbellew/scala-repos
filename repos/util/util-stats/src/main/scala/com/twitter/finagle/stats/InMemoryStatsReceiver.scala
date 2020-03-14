@@ -32,10 +32,9 @@ class InMemoryStatsReceiver extends StatsReceiver {
   val stats: mutable.Map[Seq[String], Seq[Float]] =
     new ConcurrentHashMap[Seq[String], Seq[Float]]().asScala
 
-  val gauges: mutable.Map[Seq[String], () => Float] =
-    Collections
-      .synchronizedMap(new java.util.WeakHashMap[Seq[String], () => Float]())
-      .asScala
+  val gauges: mutable.Map[Seq[String], () => Float] = Collections
+    .synchronizedMap(new java.util.WeakHashMap[Seq[String], () => Float]())
+    .asScala
 
   /**
     * Creates a [[ReadableCounter]] of the given `name`.
@@ -68,13 +67,14 @@ class InMemoryStatsReceiver extends StatsReceiver {
 
       override def toString: String = {
         val vals = apply()
-        val valStr = if (vals.length <= 3) { vals.mkString("[", ",", "]") }
-        else {
-          val numOmitted = vals.length - 3
-          vals
-            .take(3)
-            .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
-        }
+        val valStr =
+          if (vals.length <= 3) { vals.mkString("[", ",", "]") }
+          else {
+            val numOmitted = vals.length - 3
+            vals
+              .take(3)
+              .mkString("[", ",", s"... (omitted $numOmitted value(s))]")
+          }
         s"Stat(${name.mkString("/")}=$valStr)"
       }
     }

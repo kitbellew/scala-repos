@@ -133,12 +133,11 @@ class ClusterClientTest
 
   test("Simple ClusterClient using finagle load balancing - many keys") {
     // create simple cluster client
-    val mycluster =
-      new ZookeeperServerSetCluster(
-        ServerSets.create(
-          zookeeperClient,
-          ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-          zkPath))
+    val mycluster = new ZookeeperServerSetCluster(
+      ServerSets.create(
+        zookeeperClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath))
     Await.result(
       mycluster.ready,
       TimeOut

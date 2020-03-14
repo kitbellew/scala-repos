@@ -98,8 +98,10 @@ object Broker {
                 (ep.protocolType, ep)
               }.toMap
             }
-          val rack =
-            brokerInfo.get("rack").filter(_ != null).map(_.asInstanceOf[String])
+          val rack = brokerInfo
+            .get("rack")
+            .filter(_ != null)
+            .map(_.asInstanceOf[String])
           new Broker(id, endpoints, rack)
         case None =>
           throw new BrokerNotAvailableException(s"Broker id $id does not exist")

@@ -32,8 +32,8 @@ trait PrecedenceHelper[T] {
   this: BaseProcessor =>
 
   protected def getPlace: PsiElement
-  protected lazy val placePackageName: String =
-    ResolveUtils.getPlacePackage(getPlace)
+  protected lazy val placePackageName: String = ResolveUtils.getPlacePackage(
+    getPlace)
   protected val levelSet: util.HashSet[ScalaResolveResult] = new util.HashSet
   protected val qualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]
   protected val levelQualifiedNamesSet: util.HashSet[T] = new util.HashSet[T]

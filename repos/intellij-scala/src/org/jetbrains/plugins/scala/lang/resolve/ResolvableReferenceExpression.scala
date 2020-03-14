@@ -267,8 +267,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                   if (!ScalaPsiUtil.memberNamesEquals(
                         param.name,
                         ref.refName)) {
-                    state =
-                      state.put(ResolverEnv.nameKey, param.deprecatedName.get)
+                    state = state.put(
+                      ResolverEnv.nameKey,
+                      param.deprecatedName.get)
                   }
                   processor.execute(param, state)
                 case None =>
@@ -483,8 +484,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
           .getType(TypingContext.empty)
           .getOrElse(return
           )
-        val typeArgs: Seq[ScTypeElement] =
-          constr.typeArgList.map(_.typeArgs).getOrElse(Seq())
+        val typeArgs: Seq[ScTypeElement] = constr.typeArgList
+          .map(_.typeArgs)
+          .getOrElse(Seq())
         val arguments = constr.arguments
         val secondaryConstructors = (clazz: ScClass) =>
           clazz.secondaryConstructors
@@ -691,8 +693,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             .put(CachesUtil.IMPLICIT_TYPE, res.tp)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state =
-                state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
+              state = state.put(
+                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
+                cl)
             case _ =>
           }
           processor.processType(res.tp, e, state)
@@ -705,16 +708,15 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       case rp: ResolveProcessor => rp.name // See SCL-2934.
       case _                    => refName
     }
-    val res =
-      ScalaPsiUtil.findImplicitConversion(
-        e,
-        name,
-        this,
-        processor,
-        noImplicitsForArgs) match {
-        case Some(a) => a
-        case None    => return
-      }
+    val res = ScalaPsiUtil.findImplicitConversion(
+      e,
+      name,
+      this,
+      processor,
+      noImplicitsForArgs) match {
+      case Some(a) => a
+      case None    => return
+    }
     ProgressManager.checkCanceled()
     var state = ResolveState.initial.put(ImportUsed.key, res.importUsed)
     state = state

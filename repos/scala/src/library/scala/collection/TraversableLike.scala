@@ -226,8 +226,7 @@ trait TraversableLike[+A, +Repr]
     *                of this $coll followed by all elements of `that`.
     */
   def ++:[B >: A, That](that: Traversable[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That =
-    (that ++ seq)(breakOut)
+      implicit bf: CanBuildFrom[Repr, B, That]): That = (that ++ seq)(breakOut)
 
   def map[B, That](f: A => B)(
       implicit bf: CanBuildFrom[Repr, B, That]): That = {
@@ -740,8 +739,7 @@ trait TraversableLike[+A, +Repr]
       *  @usecase def foreach(f: A => Unit): Unit
       *    @inheritdoc
       */
-    def foreach[U](f: A => U): Unit =
-      for (x <- self) if (p(x)) f(x)
+    def foreach[U](f: A => U): Unit = for (x <- self) if (p(x)) f(x)
 
     /** Further refines the filter for this $coll.
       *

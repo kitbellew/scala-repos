@@ -31,8 +31,9 @@ case class Arguments(
 
     val incrementalType = compilerData.incrementalType
 
-    val sbtIncOptions =
-      compilationData.sbtIncOptions.map(_.asString).getOrElse("")
+    val sbtIncOptions = compilationData.sbtIncOptions
+      .map(_.asString)
+      .getOrElse("")
 
     Seq(
       fileToPath(sbtData.interfaceJar),
@@ -85,8 +86,11 @@ object Arguments {
             PathsToFiles(outputDirs),
             StringToSequence(worksheetClass),
             sbtIncOptionsString) =>
-        val sbtData =
-          SbtData(interfaceJar, sourceJar, interfacesHome, javaClassVersion)
+        val sbtData = SbtData(
+          interfaceJar,
+          sourceJar,
+          interfacesHome,
+          javaClassVersion)
 
         val compilerJars = compilerJarPaths.map {
           case PathsToFiles(Seq(libraryJar, compilerJar, extraJars @ _*)) =>
@@ -103,8 +107,8 @@ object Arguments {
 
         val outputGroups = sourceRoots zip outputDirs
 
-        val sbtIncOptions =
-          SbtIncrementalOptions.fromString(sbtIncOptionsString)
+        val sbtIncOptions = SbtIncrementalOptions.fromString(
+          sbtIncOptionsString)
 
         val compilationData = CompilationData(
           sources,

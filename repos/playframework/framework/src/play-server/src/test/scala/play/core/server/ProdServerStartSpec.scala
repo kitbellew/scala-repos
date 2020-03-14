@@ -39,8 +39,8 @@ object ProdServerStartSpec extends Specification {
     try Right(f)
     catch {
       case ExitException(message, cause, _) =>
-        val causeMessage: Option[String] =
-          cause.flatMap(c => Option(c.getMessage))
+        val causeMessage: Option[String] = cause.flatMap(c =>
+          Option(c.getMessage))
         Left((message, causeMessage))
     }
 
@@ -97,8 +97,8 @@ object ProdServerStartSpec extends Specification {
       tempDir =>
         val process = new FakeServerProcess(
           args = Seq(tempDir.getAbsolutePath),
-          propertyMap =
-            Map("play.server.provider" -> classOf[FakeServerProvider].getName),
+          propertyMap = Map(
+            "play.server.provider" -> classOf[FakeServerProvider].getName),
           pid = Some("999")
         )
         val pidFile = new File(tempDir, "RUNNING_PID")

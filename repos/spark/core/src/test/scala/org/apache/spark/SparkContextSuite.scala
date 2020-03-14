@@ -52,8 +52,8 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
 
   test(
     "Can still construct a new SparkContext after failing to construct a previous one") {
-    val conf =
-      new SparkConf().set("spark.driver.allowMultipleContexts", "false")
+    val conf = new SparkConf()
+      .set("spark.driver.allowMultipleContexts", "false")
     // This is an invalid configuration (no app name or master URL)
     intercept[SparkException] { new SparkContext(conf) }
     // Even though those earlier calls failed, we should still be able to create a new context
@@ -220,8 +220,9 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     try {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
-      val future =
-        sc.parallelize(Seq(0)).foreachAsync(_ => { Thread.sleep(1000L) })
+      val future = sc
+        .parallelize(Seq(0))
+        .foreachAsync(_ => { Thread.sleep(1000L) })
       sc.cancelJobGroup("nonExistGroupId")
       Await.ready(future, Duration(2, TimeUnit.SECONDS))
 

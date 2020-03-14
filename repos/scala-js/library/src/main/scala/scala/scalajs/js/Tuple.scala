@@ -51,8 +51,7 @@ object Tuple2 {
   @inline def apply[T1, T2](_1: T1, _2: T2): Tuple2[T1, T2] =
     Array(_1, _2).asInstanceOf[Tuple2[T1, T2]]
 
-  @inline def unapply[T1, T2](t: Tuple2[T1, T2]): Option[(T1, T2)] =
-    Some(t)
+  @inline def unapply[T1, T2](t: Tuple2[T1, T2]): Option[(T1, T2)] = Some(t)
 
   @inline implicit def fromScalaTuple2[T1, T2](t: (T1, T2)): Tuple2[T1, T2] =
     apply(t._1, t._2)
@@ -81,12 +80,10 @@ object Tuple3 {
     Some(t)
 
   @inline implicit def fromScalaTuple3[T1, T2, T3](
-      t: (T1, T2, T3)): Tuple3[T1, T2, T3] =
-    apply(t._1, t._2, t._3)
+      t: (T1, T2, T3)): Tuple3[T1, T2, T3] = apply(t._1, t._2, t._3)
 
   @inline implicit def toScalaTuple3[T1, T2, T3](
-      t: Tuple3[T1, T2, T3]): (T1, T2, T3) =
-    (t._1, t._2, t._3)
+      t: Tuple3[T1, T2, T3]): (T1, T2, T3) = (t._1, t._2, t._3)
 }
 
 /**
@@ -111,16 +108,14 @@ object Tuple4 {
     Array(_1, _2, _3, _4).asInstanceOf[Tuple4[T1, T2, T3, T4]]
 
   @inline def unapply[T1, T2, T3, T4](
-      t: Tuple4[T1, T2, T3, T4]): Option[(T1, T2, T3, T4)] =
-    Some(t)
+      t: Tuple4[T1, T2, T3, T4]): Option[(T1, T2, T3, T4)] = Some(t)
 
   @inline implicit def fromScalaTuple4[T1, T2, T3, T4](
       t: (T1, T2, T3, T4)): Tuple4[T1, T2, T3, T4] =
     apply(t._1, t._2, t._3, t._4)
 
   @inline implicit def toScalaTuple4[T1, T2, T3, T4](
-      t: Tuple4[T1, T2, T3, T4]): (T1, T2, T3, T4) =
-    (t._1, t._2, t._3, t._4)
+      t: Tuple4[T1, T2, T3, T4]): (T1, T2, T3, T4) = (t._1, t._2, t._3, t._4)
 }
 
 /**
@@ -147,8 +142,7 @@ object Tuple5 {
     Array(_1, _2, _3, _4, _5).asInstanceOf[Tuple5[T1, T2, T3, T4, T5]]
 
   @inline def unapply[T1, T2, T3, T4, T5](
-      t: Tuple5[T1, T2, T3, T4, T5]): Option[(T1, T2, T3, T4, T5)] =
-    Some(t)
+      t: Tuple5[T1, T2, T3, T4, T5]): Option[(T1, T2, T3, T4, T5)] = Some(t)
 
   @inline implicit def fromScalaTuple5[T1, T2, T3, T4, T5](
       t: (T1, T2, T3, T4, T5)): Tuple5[T1, T2, T3, T4, T5] =
@@ -227,8 +221,7 @@ object Tuple7 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7](
       t: Tuple7[T1, T2, T3, T4, T5, T6, T7])
-      : Option[(T1, T2, T3, T4, T5, T6, T7)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7)] = Some(t)
 
   @inline implicit def fromScalaTuple7[T1, T2, T3, T4, T5, T6, T7](
       t: (T1, T2, T3, T4, T5, T6, T7)): Tuple7[T1, T2, T3, T4, T5, T6, T7] =
@@ -271,8 +264,7 @@ object Tuple8 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8](
       t: Tuple8[T1, T2, T3, T4, T5, T6, T7, T8])
-      : Option[(T1, T2, T3, T4, T5, T6, T7, T8)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8)] = Some(t)
 
   @inline implicit def fromScalaTuple8[T1, T2, T3, T4, T5, T6, T7, T8](
       t: (T1, T2, T3, T4, T5, T6, T7, T8))
@@ -320,8 +312,7 @@ object Tuple9 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9](
       t: Tuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9])
-      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9)] = Some(t)
 
   @inline implicit def fromScalaTuple9[T1, T2, T3, T4, T5, T6, T7, T8, T9](
       t: (T1, T2, T3, T4, T5, T6, T7, T8, T9))
@@ -371,8 +362,7 @@ object Tuple10 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
       t: Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10])
-      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] = Some(t)
 
   @inline implicit def fromScalaTuple10[
       T1,
@@ -433,8 +423,7 @@ object Tuple11 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11](
       t: Tuple11[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11])
-      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)] = Some(t)
 
   @inline implicit def fromScalaTuple11[
       T1,
@@ -509,8 +498,7 @@ object Tuple12 {
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12](
       t: Tuple12[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12])
-      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)] =
-    Some(t)
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)] = Some(t)
 
   @inline implicit def fromScalaTuple12[
       T1,
@@ -1523,8 +1511,7 @@ object Tuple17 {
         T14,
         T15,
         T16,
-        T17)] =
-    Some(t)
+        T17)] = Some(t)
 
   @inline implicit def fromScalaTuple17[
       T1,
@@ -1867,8 +1854,7 @@ object Tuple18 {
         T15,
         T16,
         T17,
-        T18)] =
-    Some(t)
+        T18)] = Some(t)
 
   @inline implicit def fromScalaTuple18[
       T1,
@@ -2229,8 +2215,7 @@ object Tuple19 {
         T16,
         T17,
         T18,
-        T19)] =
-    Some(t)
+        T19)] = Some(t)
 
   @inline implicit def fromScalaTuple19[
       T1,
@@ -2609,8 +2594,7 @@ object Tuple20 {
         T17,
         T18,
         T19,
-        T20)] =
-    Some(t)
+        T20)] = Some(t)
 
   @inline implicit def fromScalaTuple20[
       T1,
@@ -3007,8 +2991,7 @@ object Tuple21 {
         T18,
         T19,
         T20,
-        T21)] =
-    Some(t)
+        T21)] = Some(t)
 
   @inline implicit def fromScalaTuple21[
       T1,
@@ -3423,8 +3406,7 @@ object Tuple22 {
         T19,
         T20,
         T21,
-        T22)] =
-    Some(t)
+        T22)] = Some(t)
 
   @inline implicit def fromScalaTuple22[
       T1,

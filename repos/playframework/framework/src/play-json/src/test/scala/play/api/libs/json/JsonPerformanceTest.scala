@@ -76,8 +76,9 @@ object JsonPerformanceTest extends App {
 
   lazy val largeArrayJson = Json.stringify(largeArrayJsValue)
 
-  lazy val largeObjectJsValue =
-    (1 to 8192).map(i => Json.obj("f" + i -> "obj")).reduce(_ ++ _)
+  lazy val largeObjectJsValue = (1 to 8192)
+    .map(i => Json.obj("f" + i -> "obj"))
+    .reduce(_ ++ _)
 
   lazy val largeObjectJson = Json.stringify(largeObjectJsValue)
 

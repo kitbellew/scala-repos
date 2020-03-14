@@ -18,8 +18,8 @@ private[video] final class Youtube(
   private implicit val readStatistics = Json.reads[Statistics]
   private implicit val readContentDetails = Json.reads[ContentDetails]
   private implicit val readEntry = Json.reads[Entry]
-  private implicit val readEntries: Reads[Seq[Entry]] =
-    (__ \ "items").read(Reads seq readEntry)
+  private implicit val readEntries: Reads[Seq[Entry]] = (__ \ "items").read(
+    Reads seq readEntry)
 
   def updateAll: Funit =
     fetch flatMap { entries =>

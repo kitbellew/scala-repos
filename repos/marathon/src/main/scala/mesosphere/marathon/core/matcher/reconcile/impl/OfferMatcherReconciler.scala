@@ -73,12 +73,11 @@ private[reconcile] class OfferMatcherReconciler(
         val taskOps = resourcesByTaskId.iterator
           .collect {
             case (taskId, spuriousResources) if spurious(taskId) =>
-              val unreserveAndDestroy =
-                TaskOp.UnreserveAndDestroyVolumes(
-                  taskId = taskId,
-                  oldTask = tasksByApp.task(taskId),
-                  resources = spuriousResources.to[Seq]
-                )
+              val unreserveAndDestroy = TaskOp.UnreserveAndDestroyVolumes(
+                taskId = taskId,
+                oldTask = tasksByApp.task(taskId),
+                resources = spuriousResources.to[Seq]
+              )
               TaskOpWithSource(source(offer.getId), unreserveAndDestroy)
           }
           .to[Seq]

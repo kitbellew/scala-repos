@@ -107,8 +107,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           mode: Mode) =>
         val (inputWithTimeStamp, batcher, testStore) =
           inputWithTimeStampAndBatcherAndStore
-        val result =
-          testStore.readAfterLastBatch(diskPipeFactory)((interval, mode))
+        val result = testStore.readAfterLastBatch(diskPipeFactory)(
+          (interval, mode))
 
         result match {
           case Right(
@@ -120,8 +120,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                     _),
                   _)) => {
             //readInterval should start from the last written interval in the store
-            val start: Timestamp =
-              batcher.earliestTimeOf(testStore.initBatch.next)
+            val start: Timestamp = batcher.earliestTimeOf(
+              testStore.initBatch.next)
             implicitly[Ordering[Timestamp]].equiv(readIntervalLower, start)
           }
           case Right(_) => false
@@ -143,8 +143,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           mode: Mode) =>
         val (inputWithTimeStamp, batcher, testStore) =
           inputWithTimeStampAndBatcherAndStore
-        val result =
-          testStore.readAfterLastBatch(diskPipeFactory)((interval, mode))
+        val result = testStore.readAfterLastBatch(diskPipeFactory)(
+          (interval, mode))
 
         result match {
           case Right(

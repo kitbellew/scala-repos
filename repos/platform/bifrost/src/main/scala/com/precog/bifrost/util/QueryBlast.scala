@@ -158,8 +158,9 @@ verboseErrors - whether to print verbose error messages (default: false)
 
   def runTest(properties: Properties) {
     val sampleSet = new QuerySampler
-    val apiUrl =
-      properties.getProperty("baseUrl", "http://localhost:30070/query")
+    val apiUrl = properties.getProperty(
+      "baseUrl",
+      "http://localhost:30070/query")
     val threads = properties.getProperty("threads", "1").toInt
     val maxQuery = properties
       .getProperty("maxQuery", sampleSet.testQueries.size.toString)

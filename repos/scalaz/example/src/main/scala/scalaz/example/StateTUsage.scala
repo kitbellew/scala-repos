@@ -77,8 +77,9 @@ object LaunchburyInterpreter extends App {
   // \x.x
   val example1 = Lambda("x", Var("x"))
   // let z = \y.y in (\x.x) z
-  val example2 =
-    Let(HashMap("z" -> Lambda("y", Var("y"))), Apply(example1, "z"))
+  val example2 = Let(
+    HashMap("z" -> Lambda("y", Var("y"))),
+    Apply(example1, "z"))
 
   case class ReduceState(heap: Map[String, Expr], freshVars: Stream[String])
 

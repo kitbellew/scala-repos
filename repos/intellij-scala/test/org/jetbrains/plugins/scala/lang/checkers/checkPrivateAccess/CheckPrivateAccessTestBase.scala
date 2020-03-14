@@ -44,8 +44,10 @@ abstract class CheckPrivateAccessTestBase
     if (!elem.isInstanceOf[ScReferenceElement])
       assert(assertion = true, message = "Ref marker should point on reference")
     val ref = elem.asInstanceOf[ScReferenceElement]
-    val resolve: PsiMember =
-      PsiTreeUtil.getParentOfType(ref.resolve(), classOf[PsiMember], false)
+    val resolve: PsiMember = PsiTreeUtil.getParentOfType(
+      ref.resolve(),
+      classOf[PsiMember],
+      false)
 
     val res = "" + ResolveUtils.isAccessible(resolve, elem)
 

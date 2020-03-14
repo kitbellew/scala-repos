@@ -118,8 +118,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       flowDef: FlowDef,
       mode: Mode): Unit
 
-  @transient private val logger =
-    LoggerFactory.getLogger(classOf[BatchedStore[_, _]])
+  @transient private val logger = LoggerFactory.getLogger(
+    classOf[BatchedStore[_, _]])
 
   /** The writeLast method as a FlowProducer */
   private def writeFlow(
@@ -145,8 +145,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       capturedBatcher: Batcher,
       commutativity: Commutativity)
       : TypedPipe[(LTuple2[K1, BatchID], (Timestamp, V))] = {
-    implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
-      IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
+    implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] = IteratorSums
+      .optimizedPairSemigroup[Timestamp, V](1000)
 
     val inits = ins.map {
       case (t, (k, v)) =>
@@ -235,8 +235,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
             (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))] = {
 
       // Make sure to use sumOption on V
-      implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
-        IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
+      implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] = IteratorSums
+        .optimizedPairSemigroup[Timestamp, V](1000)
 
       val grouped = all.group.withReducers(reducers)
 
@@ -273,8 +273,8 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
         : TypedPipe[(BatchID, (K, V))] =
       res.flatMap {
         case (k, (batchid, (prev, v))) =>
-          val totalSum =
-            Semigroup.plus[Option[(Timestamp, V)]](flatOpt(prev), v)
+          val totalSum = Semigroup
+            .plus[Option[(Timestamp, V)]](flatOpt(prev), v)
           totalSum.map { case (_, sumv) => (batchid, (k, sumv)) }
       }
 

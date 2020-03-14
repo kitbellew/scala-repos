@@ -122,8 +122,9 @@ class ClientMergeable[K, V: Semigroup](
       .map {
         case (batch, kvs) =>
           val batchKeys: Set[K] = kvs.map { case ((k, _), _) => k }(breakOut)
-          val existing: Map[K, FOpt[V]] =
-            readable.multiGetBatch[K](batch.prev, batchKeys)
+          val existing: Map[K, FOpt[V]] = readable.multiGetBatch[K](
+            batch.prev,
+            batchKeys)
           // Now we merge into the current store:
           val preMerge: Map[K, FOpt[V]] = onlineStore
             .multiMerge(kvs)

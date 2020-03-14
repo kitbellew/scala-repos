@@ -26,8 +26,7 @@ object LineNumber {
 
   private[this] def getCurrent(
       depth: Int,
-      stack: Seq[StackTraceElement]): StackTraceElement =
-    stack(depth + 2)
+      stack: Seq[StackTraceElement]): StackTraceElement = stack(depth + 2)
 
   def ignorePath(classPrefix: String): Option[StackTraceElement] =
     ignorePath(Set(classPrefix))

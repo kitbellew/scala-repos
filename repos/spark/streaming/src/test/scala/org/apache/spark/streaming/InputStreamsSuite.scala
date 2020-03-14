@@ -187,8 +187,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         val expectedOutput = input.map(i => i.toByte)
-        val obtainedOutput =
-          outputQueue.asScala.flatten.toList.map(i => i(0).toByte)
+        val obtainedOutput = outputQueue.asScala.flatten.toList.map(i =>
+          i(0).toByte)
         assert(obtainedOutput.toSeq === expectedOutput)
       }
     } finally { if (testDir != null) Utils.deleteRecursively(testDir) }
@@ -352,10 +352,13 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       }
 
       // Register input streams
-      val receiverInputStreams =
-        Array(new TestReceiverInputDStream, new TestReceiverInputDStream)
-      val inputStreams =
-        Array(new TestInputDStream, new TestInputDStream, new TestInputDStream)
+      val receiverInputStreams = Array(
+        new TestReceiverInputDStream,
+        new TestReceiverInputDStream)
+      val inputStreams = Array(
+        new TestInputDStream,
+        new TestInputDStream,
+        new TestInputDStream)
 
       assert(
         ssc.graph.getInputStreams().length ==
@@ -421,8 +424,9 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
         }
 
         // Verify that all the files have been read
-        val expectedOutput = if (newFilesOnly) { input.map(_.toString).toSet }
-        else { (Seq(0) ++ input).map(_.toString).toSet }
+        val expectedOutput =
+          if (newFilesOnly) { input.map(_.toString).toSet }
+          else { (Seq(0) ++ input).map(_.toString).toSet }
         assert(outputQueue.asScala.flatten.toSet === expectedOutput)
       }
     } finally { if (testDir != null) Utils.deleteRecursively(testDir) }

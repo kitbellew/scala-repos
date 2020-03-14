@@ -57,8 +57,10 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
       )) {
       import com.jolbox.bonecp.BoneCPDataSource
       val db = app.injector.instanceOf[DBApi]
-      val bonecpDataSource: BoneCPDataSource =
-        db.database("default").dataSource.asInstanceOf[BoneCPDataSource]
+      val bonecpDataSource: BoneCPDataSource = db
+        .database("default")
+        .dataSource
+        .asInstanceOf[BoneCPDataSource]
       val bonecpConfig = bonecpDataSource.getConfig
       bonecpConfig.getMaxConnectionsPerPartition must be_==(50)
     }

@@ -25,24 +25,24 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
     val taskWithoutIp = new Task.LaunchedEphemeral(
       taskId = Task.Id("/foo/bar"),
-      agentInfo =
-        Task.AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
+      agentInfo = Task
+        .AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
       appVersion = time,
       status = Task.Status(time, None),
       networking = Task.NoNetworking)
 
     val taskWithMultipleIPs = new Task.LaunchedEphemeral(
       taskId = Task.Id("/foo/bar"),
-      agentInfo =
-        Task.AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
+      agentInfo = Task
+        .AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
       appVersion = time,
       status = Task.Status(time, None),
       networking = Task.NetworkInfoList(network))
 
     val taskWithLocalVolumes = new Task.LaunchedOnReservation(
       taskId = Task.Id("/foo/bar"),
-      agentInfo =
-        Task.AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
+      agentInfo = Task
+        .AgentInfo("agent1.mesos", Some("abcd-1234"), Iterable.empty),
       appVersion = time,
       status = Task.Status(time, Some(time)),
       networking = Task.NoNetworking,
@@ -53,8 +53,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
   test("JSON serialization of a Task without IPs") {
     val f = new Fixture()
-    val json =
-      """
+    val json = """
         |{
         |  "id": "/foo/bar",
         |  "host": "agent1.mesos",
@@ -73,8 +72,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
   test("JSON serialization of a Task with multiple IPs") {
     val f = new Fixture()
-    val json =
-      """
+    val json = """
         |{
         |  "id": "/foo/bar",
         |  "host": "agent1.mesos",
@@ -102,8 +100,7 @@ class MarathonTaskFormatTest extends MarathonSpec {
 
   test("JSON serialization of a Task with reserved local volumes") {
     val f = new Fixture()
-    val json =
-      """
+    val json = """
         |{
         |  "id": "/foo/bar",
         |  "host": "agent1.mesos",

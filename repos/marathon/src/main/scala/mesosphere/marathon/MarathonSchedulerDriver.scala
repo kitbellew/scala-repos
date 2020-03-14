@@ -51,16 +51,16 @@ object MarathonSchedulerDriver {
     config.mesosAuthenticationPrincipal.get
       .foreach(frameworkInfoBuilder.setPrincipal)
 
-    val credential: Option[Credential] =
-      config.mesosAuthenticationPrincipal.get.map { principal =>
+    val credential: Option[Credential] = config.mesosAuthenticationPrincipal.get
+      .map { principal =>
         val credentialBuilder = Credential
           .newBuilder()
           .setPrincipal(principal)
 
         config.mesosAuthenticationSecretFile.get.foreach { secretFile =>
           try {
-            val secretBytes =
-              ByteString.readFrom(new FileInputStream(secretFile))
+            val secretBytes = ByteString.readFrom(
+              new FileInputStream(secretFile))
             credentialBuilder.setSecret(secretBytes.toStringUtf8)
           } catch {
             case cause: Throwable =>

@@ -17,13 +17,11 @@ sealed trait MapSubSortedMap {
   protected final def ab_+[K: BuildKeyConstraint, V](
       m: XMap[K, V],
       k: K,
-      v: V): XMap[K, V] =
-    m updated (k, v)
+      v: V): XMap[K, V] = m updated (k, v)
 
   protected final def ab_-[K: BuildKeyConstraint, V](
       m: XMap[K, V],
-      k: K): XMap[K, V] =
-    m - k
+      k: K): XMap[K, V] = m - k
 }
 
 object sortedMap

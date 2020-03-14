@@ -46,8 +46,7 @@ import scala.util.control.NonFatal
 // Its supplied by the planning system usually to ensure its large enough to cover the space
 // used by the summers times some delta.
 private[summingbird] case class KeyValueShards(get: Int) {
-  def summerIdFor[K](k: K): Int =
-    math.abs(k.hashCode % get)
+  def summerIdFor[K](k: K): Int = math.abs(k.hashCode % get)
 }
 
 class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
@@ -91,8 +90,9 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
       outData.toIterator.foreach {
         case (k, (listS, v)) =>
           val newK = summerShards.summerIdFor(k)
-          val (buffer, mmap) =
-            mmMap.getOrElseUpdate(newK, (ListBuffer[S](), MMap[Key, Value]()))
+          val (buffer, mmap) = mmMap.getOrElseUpdate(
+            newK,
+            (ListBuffer[S](), MMap[Key, Value]()))
           buffer ++= listS
           mmap += k -> v
       }

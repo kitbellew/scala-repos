@@ -55,10 +55,12 @@ trait IntegrationTestHarness extends KafkaServerTestHarness {
 
   @Before
   override def setUp() {
-    val producerSecurityProps =
-      TestUtils.producerSecurityConfigs(securityProtocol, trustStoreFile)
-    val consumerSecurityProps =
-      TestUtils.consumerSecurityConfigs(securityProtocol, trustStoreFile)
+    val producerSecurityProps = TestUtils.producerSecurityConfigs(
+      securityProtocol,
+      trustStoreFile)
+    val consumerSecurityProps = TestUtils.consumerSecurityConfigs(
+      securityProtocol,
+      trustStoreFile)
     super.setUp()
     producerConfig.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,

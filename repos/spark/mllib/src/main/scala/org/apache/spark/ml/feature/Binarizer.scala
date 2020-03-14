@@ -50,11 +50,10 @@ final class Binarizer(override val uid: String)
     * Default: 0.0
     * @group param
     */
-  val threshold: DoubleParam =
-    new DoubleParam(
-      this,
-      "threshold",
-      "threshold used to binarize continuous features")
+  val threshold: DoubleParam = new DoubleParam(
+    this,
+    "threshold",
+    "threshold used to binarize continuous features")
 
   /** @group getParam */
   def getThreshold: Double = $(threshold)

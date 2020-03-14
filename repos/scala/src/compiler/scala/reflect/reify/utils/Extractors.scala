@@ -149,8 +149,11 @@ trait Extractors {
   }
 
   private def mkWrapper(universe: Tree, mirror: Tree, wrappee: Tree): Tree = {
-    val universeAlias =
-      ValDef(NoMods, nme.UNIVERSE_SHORT, SingletonTypeTree(universe), universe)
+    val universeAlias = ValDef(
+      NoMods,
+      nme.UNIVERSE_SHORT,
+      SingletonTypeTree(universe),
+      universe)
     val mirrorAlias = ValDef(
       NoMods,
       nme.MIRROR_SHORT,
@@ -340,8 +343,7 @@ trait Extractors {
   }
 
   object TreeSplice {
-    def apply(splicee: Tree): Tree =
-      Select(splicee, ExprSplice)
+    def apply(splicee: Tree): Tree = Select(splicee, ExprSplice)
 
     def unapply(tree: Tree): Option[Tree] =
       tree match {

@@ -21,8 +21,7 @@ object CacheUtils {
     loop(vs.toList)
   }
 
-  def joinVersions(vs: String*): String =
-    vs.map(mangleVersionString _).mkString
+  def joinVersions(vs: String*): String = vs.map(mangleVersionString _).mkString
 
   private def mangleVersionString(str: String) = s"${str.length}:$str"
 

@@ -97,10 +97,12 @@ trait NIHDBQueryExecutorConfig
   lazy val jobPollFrequency: Duration =
     config[Int]("precog.evaluator.poll.cancellation", 3) seconds
 
-  lazy val howManyChefsInTheKitchen: Int =
-    config[Int]("precog.storage.chef_count", 4)
-  lazy val cookThreshold: Int =
-    config[Int]("precog.storage.cook_threshold", 20000)
+  lazy val howManyChefsInTheKitchen: Int = config[Int](
+    "precog.storage.chef_count",
+    4)
+  lazy val cookThreshold: Int = config[Int](
+    "precog.storage.cook_threshold",
+    20000)
   def maxSliceSize = cookThreshold
   lazy val storageTimeout: Timeout = Timeout(
     config[Int]("precog.storage.timeout", 300) seconds)
@@ -148,14 +150,14 @@ trait NIHDBQueryExecutorComponent {
 
       val defaultTimeout = yggConfig.maxEvalDuration
 
-      protected lazy val queryLogger =
-        LoggerFactory.getLogger("com.precog.bifrost.ShardQueryExecutor")
+      protected lazy val queryLogger = LoggerFactory.getLogger(
+        "com.precog.bifrost.ShardQueryExecutor")
 
       private val threadPooling = new PerAccountThreadPooling(extAccountFinder)
 
       implicit val actorSystem = ActorSystem("nihdbExecutorActorSystem")
-      implicit val executionContext =
-        ExecutionContext.defaultExecutionContext(actorSystem)
+      implicit val executionContext = ExecutionContext.defaultExecutionContext(
+        actorSystem)
       implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
       val jobActorSystem = ActorSystem("jobPollingActorSystem")
@@ -167,8 +169,8 @@ trait NIHDBQueryExecutorComponent {
               VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
               VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
       }
-      val masterChef =
-        actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+      val masterChef = actorSystem.actorOf(
+        Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
       //val accessControl = extApiKeyFinder
       val storageTimeout = yggConfig.storageTimeout
@@ -255,8 +257,9 @@ trait NIHDBQueryExecutorComponent {
           val M = shardQueryMonad.M
           type YggConfig = NIHDBQueryExecutorConfig
           val yggConfig = platform.yggConfig
-          val queryReport =
-            errorReport[Option[FaultPosition]](shardQueryMonad, implicitly)
+          val queryReport = errorReport[Option[FaultPosition]](
+            shardQueryMonad,
+            implicitly)
           override def freshIdScanner = platform.freshIdScanner
         } map {
           case (faults, result) =>

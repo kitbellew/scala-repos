@@ -48,11 +48,10 @@ final class DummyTask(
     val fingerprint: Fingerprint = taskDef.fingerprint
     val selector: Selector = new SuiteSelector
 
-    val status: Status =
-      if (t.isDefined) Status.Error else Status.Success
+    val status: Status = if (t.isDefined) Status.Error else Status.Success
 
-    val throwable: OptionalThrowable =
-      t.fold(new OptionalThrowable)(new OptionalThrowable(_))
+    val throwable: OptionalThrowable = t.fold(new OptionalThrowable)(
+      new OptionalThrowable(_))
 
     val duration: Long = -1L
   }

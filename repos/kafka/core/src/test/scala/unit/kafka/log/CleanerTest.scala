@@ -61,8 +61,8 @@ class CleanerTest extends JUnitSuite {
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, 1024: java.lang.Integer)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // append messages to the log until we have four segments
     while (log.numberOfSegments < 4)
@@ -87,8 +87,8 @@ class CleanerTest extends JUnitSuite {
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, 1024: java.lang.Integer)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // append messages with the keys 0 through N
     while (log.numberOfSegments < 2)
@@ -114,8 +114,8 @@ class CleanerTest extends JUnitSuite {
     // create a log with small segment size
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, 100: java.lang.Integer)
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // create 6 segments with only one message in each segment
     val messageSet = TestUtils.singleMessageSet(
@@ -143,8 +143,8 @@ class CleanerTest extends JUnitSuite {
     logProps.put(LogConfig.SegmentBytesProp, 1024: java.lang.Integer)
     logProps.put(LogConfig.CleanupPolicyProp, LogConfig.Delete)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // append unkeyed messages
     while (log.numberOfSegments < 2)
@@ -200,8 +200,8 @@ class CleanerTest extends JUnitSuite {
     val logProps = new Properties()
     logProps.put(LogConfig.SegmentBytesProp, 1024: java.lang.Integer)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // append messages to the log until we have four segments
     while (log.numberOfSegments < 4)
@@ -225,8 +225,8 @@ class CleanerTest extends JUnitSuite {
     logProps.put(LogConfig.SegmentBytesProp, 300: java.lang.Integer)
     logProps.put(LogConfig.IndexIntervalBytesProp, 1: java.lang.Integer)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // append some messages to the log
     var i = 0
@@ -302,8 +302,8 @@ class CleanerTest extends JUnitSuite {
     logProps.put(LogConfig.SegmentBytesProp, 300: java.lang.Integer)
     logProps.put(LogConfig.IndexIntervalBytesProp, 1: java.lang.Integer)
 
-    val log =
-      makeLog(config = LogConfig.fromProps(logConfig.originals, logProps))
+    val log = makeLog(config = LogConfig
+      .fromProps(logConfig.originals, logProps))
 
     // fill up first segment
     while (log.numberOfSegments == 1)
@@ -574,8 +574,7 @@ class FakeOffsetMap(val slots: Int) extends OffsetMap {
   private def keyFor(key: ByteBuffer) =
     new String(Utils.readBytes(key.duplicate), "UTF-8")
 
-  def put(key: ByteBuffer, offset: Long): Unit =
-    map.put(keyFor(key), offset)
+  def put(key: ByteBuffer, offset: Long): Unit = map.put(keyFor(key), offset)
 
   def get(key: ByteBuffer): Long = {
     val k = keyFor(key)

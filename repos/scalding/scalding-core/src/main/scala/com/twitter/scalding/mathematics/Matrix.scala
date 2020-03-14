@@ -62,8 +62,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       mapfn: T => (RowT, ColT, ValT))(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ColT, ValT)]) = {
-    val matPipe =
-      RichPipe(pipe).mapTo(fields -> ('row, 'col, 'val))(mapfn)(conv, setter)
+    val matPipe = RichPipe(pipe)
+      .mapTo(fields -> ('row, 'col, 'val))(mapfn)(conv, setter)
     new Matrix[RowT, ColT, ValT]('row, 'col, 'val, matPipe)
   }
   def flatMapToMatrix[T, RowT, ColT, ValT](fields: Fields)(
@@ -131,8 +131,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
-    val vecPipe =
-      RichPipe(pipe).mapTo(fields -> ('row, 'val))(mapfn)(conv, setter)
+    val vecPipe = RichPipe(pipe)
+      .mapTo(fields -> ('row, 'val))(mapfn)(conv, setter)
     new ColVector[RowT, ValT]('row, 'val, vecPipe)
   }
 
@@ -140,8 +140,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       flatMapfn: T => Iterable[(RowT, ValT)])(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(RowT, ValT)]) = {
-    val vecPipe =
-      RichPipe(pipe).flatMapTo(fields -> ('row, 'val))(flatMapfn)(conv, setter)
+    val vecPipe = RichPipe(pipe)
+      .flatMapTo(fields -> ('row, 'val))(flatMapfn)(conv, setter)
     new ColVector[RowT, ValT]('row, 'val, vecPipe)
   }
 
@@ -157,8 +157,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
-    val vecPipe =
-      RichPipe(pipe).mapTo(fields -> ('col, 'val))(mapfn)(conv, setter)
+    val vecPipe = RichPipe(pipe)
+      .mapTo(fields -> ('col, 'val))(mapfn)(conv, setter)
     new RowVector[ColT, ValT]('col, 'val, vecPipe)
   }
 
@@ -166,8 +166,8 @@ class MatrixPipeExtensions(pipe: Pipe) {
       flatMapfn: T => Iterable[(ColT, ValT)])(implicit
       conv: TupleConverter[T],
       setter: TupleSetter[(ColT, ValT)]) = {
-    val vecPipe =
-      RichPipe(pipe).flatMapTo(fields -> ('col, 'val))(flatMapfn)(conv, setter)
+    val vecPipe = RichPipe(pipe)
+      .flatMapTo(fields -> ('col, 'val))(flatMapfn)(conv, setter)
     new RowVector[ColT, ValT]('col, 'val, vecPipe)
   }
 
@@ -727,8 +727,10 @@ class Matrix[RowT, ColT, ValT](
   // Similar to zip, but combine the scalar on the right with all non-zeros in this matrix:
   def nonZerosWith[ValU](
       that: Scalar[ValU]): Matrix[RowT, ColT, (ValT, ValU)] = {
-    val (newRFields, newRPipe) =
-      ensureUniqueFields(rowColValSymbols, that.valSym, that.pipe)
+    val (newRFields, newRPipe) = ensureUniqueFields(
+      rowColValSymbols,
+      that.valSym,
+      that.pipe)
     val newPipe = inPipe
       .crossWithTiny(newRPipe)
       .map(valSym.append(getField(newRFields, 0)) -> valSym) {
@@ -767,8 +769,10 @@ class Matrix[RowT, ColT, ValT](
   // Zip the given row with all the rows of the matrix
   def zip[ValU](that: ColVector[RowT, ValU])(implicit
       pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
-    val (newRFields, newRPipe) =
-      ensureUniqueFields(rowColValSymbols, (that.rowS, that.valS), that.pipe)
+    val (newRFields, newRPipe) = ensureUniqueFields(
+      rowColValSymbols,
+      (that.rowS, that.valS),
+      that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
     // joinWithTiny can't do outer.  And since the number
     // of values for each key is 1,2 it doesn't matter if we do joinWithSmaller or Larger:
@@ -793,8 +797,10 @@ class Matrix[RowT, ColT, ValT](
   // Zip the given row with all the rows of the matrix
   def zip[ValU](that: RowVector[ColT, ValU])(implicit
       pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
-    val (newRFields, newRPipe) =
-      ensureUniqueFields(rowColValSymbols, (that.colS, that.valS), that.pipe)
+    val (newRFields, newRPipe) = ensureUniqueFields(
+      rowColValSymbols,
+      (that.colS, that.valS),
+      that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
     // joinWithTiny can't do outer.  And since the number
     // of values for each key is 1,2 it doesn't matter if we do joinWithSmaller or Larger:
@@ -820,8 +826,10 @@ class Matrix[RowT, ColT, ValT](
   // This creates the matrix with pairs for the entries
   def zip[ValU](that: Matrix[RowT, ColT, ValU])(implicit
       pairMonoid: Monoid[(ValT, ValU)]): Matrix[RowT, ColT, (ValT, ValU)] = {
-    val (newRFields, newRPipe) =
-      ensureUniqueFields(rowColValSymbols, that.rowColValSymbols, that.pipe)
+    val (newRFields, newRPipe) = ensureUniqueFields(
+      rowColValSymbols,
+      that.rowColValSymbols,
+      that.pipe)
     // we must do an outer join to preserve zeros on one side or the other.
     // joinWithTiny can't do outer.  And since the number
     // of values for each key is 1,2 it doesn't matter if we do joinWithSmaller or Larger:
@@ -1202,8 +1210,10 @@ class RowVector[ColT, ValT](
   }
 
   def toMatrix[RowT](rowId: RowT): Matrix[RowT, ColT, ValT] = {
-    val rowSym =
-      newSymbol(Set(colS, valS), 'row) //Matrix.newSymbol(Set(colS, valS), 'row)
+    val rowSym = newSymbol(
+      Set(colS, valS),
+      'row
+    ) //Matrix.newSymbol(Set(colS, valS), 'row)
     val newPipe = inPipe
       .map(() -> rowSym) { u: Unit => rowId }
       .project(rowSym, colS, valS)
@@ -1340,8 +1350,10 @@ class ColVector[RowT, ValT](
   }
 
   def toMatrix[ColT](colIdx: ColT): Matrix[RowT, ColT, ValT] = {
-    val colSym =
-      newSymbol(Set(rowS, valS), 'col) //Matrix.newSymbol(Set(rowS, valS), 'col)
+    val colSym = newSymbol(
+      Set(rowS, valS),
+      'col
+    ) //Matrix.newSymbol(Set(rowS, valS), 'col)
     val newPipe = inPipe
       .map(() -> colSym) { u: Unit => colIdx }
       .project(rowS, colSym, valS)

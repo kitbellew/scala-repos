@@ -40,8 +40,8 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   def connectionIdentifier: ConnectionIdentifier
 
   // class name has a $ at the end.
-  private lazy val _collectionName =
-    getClass.getName.replaceAllLiterally("$", "")
+  private lazy val _collectionName = getClass.getName
+    .replaceAllLiterally("$", "")
 
   /*
    * Collection names should begin with letters or an underscore and may include
@@ -101,8 +101,7 @@ trait MongoMeta[BaseDocument] extends JsonFormats {
   /*
    * Delete documents by a DBObject query
    */
-  def delete(qry: DBObject): Unit =
-    useColl { coll => coll.remove(qry) }
+  def delete(qry: DBObject): Unit = useColl { coll => coll.remove(qry) }
 
   // delete a document
   def delete(k: String, v: Any) {

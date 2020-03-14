@@ -169,8 +169,8 @@ object OneVsRestExample {
     // compute the false positive rate per label
     val predictionColSchema = predictions.schema("prediction")
     val numClasses = MetadataUtils.getNumClasses(predictionColSchema).get
-    val fprs =
-      Range(0, numClasses).map(p => (p, metrics.falsePositiveRate(p.toDouble)))
+    val fprs = Range(0, numClasses).map(p =>
+      (p, metrics.falsePositiveRate(p.toDouble)))
 
     println(s" Training Time ${trainingDuration} sec\n")
 

@@ -59,10 +59,12 @@ object ScalaRenameUtil {
     }
 
   def findReferences(element: PsiElement): util.ArrayList[PsiReference] = {
-    val allRefs =
-      ReferencesSearch.search(element, element.getUseScope).findAll()
-    val filtered =
-      allRefs.filterNot(isAliased).filterNot(isIndirectReference(_, element))
+    val allRefs = ReferencesSearch
+      .search(element, element.getUseScope)
+      .findAll()
+    val filtered = allRefs
+      .filterNot(isAliased)
+      .filterNot(isIndirectReference(_, element))
     new util.ArrayList[PsiReference](filtered)
   }
 
@@ -209,8 +211,8 @@ object ScalaRenameUtil {
   }
 
   def sameElement(range: RangeMarker, element: PsiElement): Boolean = {
-    val newElemRange =
-      Option(ScalaRenameUtil.findSubstituteElement(element)).map(_.getTextRange)
+    val newElemRange = Option(ScalaRenameUtil.findSubstituteElement(element))
+      .map(_.getTextRange)
     newElemRange.exists(nr =>
       nr.getStartOffset == range.getStartOffset && nr.getEndOffset == range.getEndOffset)
   }

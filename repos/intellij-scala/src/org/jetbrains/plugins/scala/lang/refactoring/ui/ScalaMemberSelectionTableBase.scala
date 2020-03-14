@@ -39,8 +39,8 @@ abstract class ScalaMemberSelectionTableBase[
             memberInfo) != null =>
         myMemberInfoModel.isFixedAbstract(memberInfo)
       case _ if !myMemberInfoModel.isAbstractEnabled(memberInfo) =>
-        val res: java.lang.Boolean =
-          myMemberInfoModel.isAbstractWhenDisabled(memberInfo)
+        val res: java.lang.Boolean = myMemberInfoModel.isAbstractWhenDisabled(
+          memberInfo)
         res
       case _ if memberInfo.isToAbstract => java.lang.Boolean.TRUE
       case _                            => java.lang.Boolean.FALSE

@@ -48,8 +48,7 @@ private[ui] class EnvironmentPage(parent: EnvironmentTab)
       classPathRow,
       listener.classpathEntries,
       fixedWidth = true)
-    val content =
-      <span>
+    val content = <span>
         <h4>Runtime Information</h4> {runtimeInformationTable}
         <h4>Spark Properties</h4> {sparkPropertiesTable}
         <h4>System Properties</h4> {systemPropertiesTable}

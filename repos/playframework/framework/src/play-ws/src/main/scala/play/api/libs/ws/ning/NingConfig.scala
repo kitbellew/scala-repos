@@ -213,20 +213,21 @@ class NingAsyncHttpClientConfigBuilder(
   def configureSSL(sslConfig: SSLConfig) {
 
     // context!
-    val sslContext = if (sslConfig.default) {
-      logger.info(
-        "buildSSLContext: ws.ssl.default is true, using default SSLContext")
-      validateDefaultTrustManager(sslConfig)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = buildKeyManagerFactory(sslConfig)
-      val trustManagerFactory = buildTrustManagerFactory(sslConfig)
-      new ConfigSSLContextBuilder(
-        sslConfig,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+    val sslContext =
+      if (sslConfig.default) {
+        logger.info(
+          "buildSSLContext: ws.ssl.default is true, using default SSLContext")
+        validateDefaultTrustManager(sslConfig)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = buildKeyManagerFactory(sslConfig)
+        val trustManagerFactory = buildTrustManagerFactory(sslConfig)
+        new ConfigSSLContextBuilder(
+          sslConfig,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters
@@ -267,11 +268,12 @@ class NingAsyncHttpClientConfigBuilder(
     //
     // http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7-b147/sun/security/ssl/SSLContextImpl.java#79
 
-    val tmf =
-      TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
+    val tmf = TrustManagerFactory.getInstance(
+      TrustManagerFactory.getDefaultAlgorithm)
     tmf.init(null.asInstanceOf[KeyStore])
-    val trustManager: X509TrustManager =
-      tmf.getTrustManagers()(0).asInstanceOf[X509TrustManager]
+    val trustManager: X509TrustManager = tmf
+      .getTrustManagers()(0)
+      .asInstanceOf[X509TrustManager]
 
     val constraints = sslConfig.disabledKeyAlgorithms
       .map(a =>

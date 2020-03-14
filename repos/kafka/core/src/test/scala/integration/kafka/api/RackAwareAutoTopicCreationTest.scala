@@ -65,8 +65,9 @@ class RackAwareAutoTopicCreationTest
         case (topicPartition, replicas) =>
           topicPartition.partition -> replicas
       }
-      val brokerMetadatas =
-        AdminUtils.getBrokerMetadatas(zkUtils, RackAwareMode.Enforced)
+      val brokerMetadatas = AdminUtils.getBrokerMetadatas(
+        zkUtils,
+        RackAwareMode.Enforced)
       val expectedMap = Map(0 -> "0", 1 -> "0", 2 -> "1", 3 -> "1")
       assertEquals(
         expectedMap,

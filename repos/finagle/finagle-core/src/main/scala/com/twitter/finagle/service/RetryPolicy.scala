@@ -317,18 +317,17 @@ object RetryPolicy extends JavaSingleton {
       // stores the first matched backoff
       var backoffOpt: Option[Duration] = None
 
-      val policies2 =
-        policies.map { p =>
-          if (backoffOpt.nonEmpty) p
-          else {
-            p(e) match {
-              case None => p
-              case Some((backoff, p2)) =>
-                backoffOpt = Some(backoff)
-                p2
-            }
+      val policies2 = policies.map { p =>
+        if (backoffOpt.nonEmpty) p
+        else {
+          p(e) match {
+            case None => p
+            case Some((backoff, p2)) =>
+              backoffOpt = Some(backoff)
+              p2
           }
         }
+      }
 
       backoffOpt match {
         case None          => None

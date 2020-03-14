@@ -248,8 +248,7 @@ histogram
     "hw2 test 100K x 1" in {
       insert(bifrost, Path("/test/small3"), 1, 100000, 1)
 
-      val query =
-        """
+      val query = """
 tests := load(//test/small3)
 count(tests where tests.gender = "male")
 """
@@ -497,8 +496,8 @@ class TestQueryExecutor(config: Configuration, testShard: TestShard)
   override type Dataset[A] = IterableDataset[A]
 
   lazy val actorSystem = ActorSystem("testQueryExecutor")
-  implicit lazy val asyncContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit lazy val asyncContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   lazy val yggConfig = new JDBMQueryExecutorConfig {
     val config = TestQueryExecutor.this.config
     val sortWorkDir = scratchDir

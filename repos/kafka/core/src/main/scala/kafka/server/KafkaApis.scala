@@ -153,8 +153,8 @@ class KafkaApis(
           request.requestObj.handleError(e, requestChannel, request)
           error("Error when handling request %s".format(request.requestObj), e)
         } else {
-          val response =
-            request.body.getErrorResponse(request.header.apiVersion, e)
+          val response = request.body
+            .getErrorResponse(request.header.apiVersion, e)
           val respHeader = new ResponseHeader(request.header.correlationId)
 
           /* If request doesn't have a default error response, we just close the connection.
@@ -291,13 +291,13 @@ class KafkaApis(
     // ensureTopicExists is only for client facing requests
     // We can't have the ensureTopicExists check here since the controller sends it as an advisory to all brokers so they
     // stop serving data to clients for the topic being deleted
-    val controlledShutdownRequest =
-      request.requestObj.asInstanceOf[ControlledShutdownRequest]
+    val controlledShutdownRequest = request.requestObj
+      .asInstanceOf[ControlledShutdownRequest]
 
     authorizeClusterAction(request)
 
-    val partitionsRemaining =
-      controller.shutdownBroker(controlledShutdownRequest.brokerId)
+    val partitionsRemaining = controller.shutdownBroker(
+      controlledShutdownRequest.brokerId)
     val controlledShutdownResponse = new ControlledShutdownResponse(
       controlledShutdownRequest.correlationId,
       Errors.NONE.code,
@@ -341,8 +341,8 @@ class KafkaApis(
       val filteredRequestInfo =
         offsetCommitRequest.offsetData.asScala.toMap -- invalidRequestsInfo.keys
 
-      val (authorizedRequestInfo, unauthorizedRequestInfo) =
-        filteredRequestInfo.partition {
+      val (authorizedRequestInfo, unauthorizedRequestInfo) = filteredRequestInfo
+        .partition {
           case (topicPartition, offsetMetadata) =>
             authorize(
               request.session,
@@ -912,8 +912,9 @@ class KafkaApis(
       topics: Set[String],
       securityProtocol: SecurityProtocol)
       : Seq[MetadataResponse.TopicMetadata] = {
-    val topicResponses =
-      metadataCache.getTopicMetadata(topics, securityProtocol)
+    val topicResponses = metadataCache.getTopicMetadata(
+      topics,
+      securityProtocol)
     if (topics.isEmpty || topicResponses.size == topics.size) { topicResponses }
     else {
       val nonExistentTopics = topics -- topicResponses.map(_.topic).toSet
@@ -957,8 +958,8 @@ class KafkaApis(
       }
 
     if (authorizedTopics.nonEmpty) {
-      val nonExistingTopics =
-        metadataCache.getNonExistingTopics(authorizedTopics)
+      val nonExistingTopics = metadataCache.getNonExistingTopics(
+        authorizedTopics)
       if (config.autoCreateTopicsEnable && nonExistingTopics.nonEmpty) {
         authorizer.foreach { az =>
           if (!az.authorize(
@@ -1110,8 +1111,8 @@ class KafkaApis(
   }
 
   def handleGroupCoordinatorRequest(request: RequestChannel.Request) {
-    val groupCoordinatorRequest =
-      request.body.asInstanceOf[GroupCoordinatorRequest]
+    val groupCoordinatorRequest = request.body
+      .asInstanceOf[GroupCoordinatorRequest]
     val responseHeader = new ResponseHeader(request.header.correlationId)
 
     if (!authorize(
@@ -1132,26 +1133,27 @@ class KafkaApis(
       val offsetsTopicMetadata = getOrCreateGroupMetadataTopic(
         request.securityProtocol)
 
-      val responseBody = if (offsetsTopicMetadata.error != Errors.NONE) {
-        new GroupCoordinatorResponse(
-          Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-          Node.noNode)
-      } else {
-        val coordinatorEndpoint = offsetsTopicMetadata
-          .partitionMetadata()
-          .asScala
-          .find(_.partition == partition)
-          .map(_.leader())
+      val responseBody =
+        if (offsetsTopicMetadata.error != Errors.NONE) {
+          new GroupCoordinatorResponse(
+            Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+            Node.noNode)
+        } else {
+          val coordinatorEndpoint = offsetsTopicMetadata
+            .partitionMetadata()
+            .asScala
+            .find(_.partition == partition)
+            .map(_.leader())
 
-        coordinatorEndpoint match {
-          case Some(endpoint) if !endpoint.isEmpty =>
-            new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
-          case _ =>
-            new GroupCoordinatorResponse(
-              Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-              Node.noNode)
+          coordinatorEndpoint match {
+            case Some(endpoint) if !endpoint.isEmpty =>
+              new GroupCoordinatorResponse(Errors.NONE.code, endpoint)
+            case _ =>
+              new GroupCoordinatorResponse(
+                Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+                Node.noNode)
+          }
         }
-      }
 
       trace(
         "Sending consumer metadata %s for correlation id %d to client %s."

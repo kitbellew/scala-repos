@@ -256,8 +256,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
               if (x == goal) true
               else if (visited(x)) reachableImpl(xs, visited)
               else {
-                val callees =
-                  nonElidedRequests(x).map(_.callsite.callee.get.callee)
+                val callees = nonElidedRequests(x).map(
+                  _.callsite.callee.get.callee)
                 reachableImpl(xs ::: callees.toList, visited + x)
               }
 
@@ -289,8 +289,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       if (requests.isEmpty) Nil
       else {
         val (leaves, others) = requests.partition(r => {
-          val inlineRequestsForCallee =
-            nonElidedRequests(r.callsite.callee.get.callee)
+          val inlineRequestsForCallee = nonElidedRequests(
+            r.callsite.callee.get.callee)
           inlineRequestsForCallee.forall(visited)
         })
         assert(leaves.nonEmpty, requests)
@@ -414,8 +414,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val (
       clonedInstructions,
       instructionMap,
-      hasSerializableClosureInstantiation) =
-      cloneInstructions(callee, labelsMap)
+      hasSerializableClosureInstantiation) = cloneInstructions(
+      callee,
+      labelsMap)
     val keepLineNumbers = callsiteClass == calleeDeclarationClass
     if (!keepLineNumbers) { removeLineNumberNodes(clonedInstructions) }
 
@@ -448,10 +449,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val calleeParamTypes = calleAsmType.getArgumentTypes
 
     for (argTp <- calleeParamTypes) {
-      val opc =
-        argTp.getOpcode(
-          ISTORE
-        ) // returns the correct xSTORE instruction for argTp
+      val opc = argTp.getOpcode(
+        ISTORE
+      ) // returns the correct xSTORE instruction for argTp
       argStores.insert(
         new VarInsnNode(opc, nextLocalIndex)
       ) // "insert" is "prepend" - the last argument is on the top of the stack
@@ -599,9 +599,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     callGraph.closureInstantiations(callee).valuesIterator foreach {
       originalClosureInit =>
-        val newIndy =
-          instructionMap(originalClosureInit.lambdaMetaFactoryCall.indy)
-            .asInstanceOf[InvokeDynamicInsnNode]
+        val newIndy = instructionMap(
+          originalClosureInit.lambdaMetaFactoryCall.indy)
+          .asInstanceOf[InvokeDynamicInsnNode]
         val capturedArgInfos =
           originalClosureInit.capturedArgInfos flatMap mapArgInfo
         val newClosureInit = ClosureInstantiation(

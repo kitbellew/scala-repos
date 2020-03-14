@@ -133,8 +133,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     if (left == null) {
       return getSpacing(keepBlankLinesInCode, 0, 0) //todo:
     }
-    val scalaSettings: ScalaCodeStyleSettings =
-      left.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
+    val scalaSettings: ScalaCodeStyleSettings = left.getSettings
+      .getCustomSettings(classOf[ScalaCodeStyleSettings])
     def getDependentLFSpacing(x: Int, y: Int, range: TextRange) = {
       if (keepLineBreaks) Spacing.createDependentLFSpacing(y, y, range, true, x)
       else Spacing.createDependentLFSpacing(y, y, range, false, 0)
@@ -165,11 +165,18 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           left.getTextRange.substring(fileText),
           right.getTextRange.substring(fileText))
 
-    val spacesMin: Integer =
-      spacesToPreventNewIds(left, right, fileText, fileTextRange)
+    val spacesMin: Integer = spacesToPreventNewIds(
+      left,
+      right,
+      fileText,
+      fileTextRange)
     val WITHOUT_SPACING = getSpacing(keepBlankLinesInCode, spacesMin, 0)
-    val WITHOUT_SPACING_NO_KEEP =
-      Spacing.createSpacing(spacesMin, spacesMin, 0, false, 0)
+    val WITHOUT_SPACING_NO_KEEP = Spacing.createSpacing(
+      spacesMin,
+      spacesMin,
+      0,
+      false,
+      0)
     val WITHOUT_SPACING_DEPENDENT = (range: TextRange) =>
       getDependentLFSpacing(keepBlankLinesInCode, spacesMin, range)
     val WITH_SPACING = getSpacing(keepBlankLinesInCode, 1, 0)
@@ -240,11 +247,10 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
         return if (getText(rightNode, fileText).apply(0) == ' ') WITHOUT_SPACING
         else WITH_SPACING
       case (ScalaDocTokenType.DOC_TAG_NAME, _, _, _) =>
-        val rightText =
-          getText(
-            rightNode,
-            fileText
-          ) //rightString is not semantically equal for PsiError nodes
+        val rightText = getText(
+          rightNode,
+          fileText
+        ) //rightString is not semantically equal for PsiError nodes
         return if (rightText.nonEmpty && rightText.apply(0) == ' ')
           Spacing.getReadOnlySpacing
         else tagSpacing
@@ -975,8 +981,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     if (leftPsi.isInstanceOf[ScSelfTypeElement]) {
-      val c =
-        PsiTreeUtil.getParentOfType(leftPsi, classOf[ScTemplateDefinition])
+      val c = PsiTreeUtil.getParentOfType(
+        leftPsi,
+        classOf[ScTemplateDefinition])
       val setting =
         if (c.isInstanceOf[ScTypeDefinition])
           settings.BLANK_LINES_AFTER_CLASS_HEADER
@@ -995,8 +1002,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       if (rightElementType != tSEMICOLON) {
         leftPsi.getParent match {
           case b @ (_: ScEarlyDefinitions | _: ScTemplateBody) =>
-            val p =
-              PsiTreeUtil.getParentOfType(b, classOf[ScTemplateDefinition])
+            val p = PsiTreeUtil.getParentOfType(
+              b,
+              classOf[ScTemplateDefinition])
             val setting = leftPsi match {
               case _: ScFunction if p.isInstanceOf[ScTrait] =>
                 settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE
@@ -1042,8 +1050,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             .isInstanceOf[ScTypeAlias]) {
         pseudoRightPsi.getParent match {
           case b @ (_: ScEarlyDefinitions | _: ScTemplateBody) =>
-            val p =
-              PsiTreeUtil.getParentOfType(b, classOf[ScTemplateDefinition])
+            val p = PsiTreeUtil.getParentOfType(
+              b,
+              classOf[ScTemplateDefinition])
             val setting = (pseudoRightPsi, p) match {
               case (_: ScFunction, _: ScTrait) =>
                 settings.BLANK_LINES_AROUND_METHOD_IN_INTERFACE

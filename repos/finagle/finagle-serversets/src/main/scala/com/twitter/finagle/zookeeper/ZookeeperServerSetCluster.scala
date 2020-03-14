@@ -64,12 +64,11 @@ class ZookeeperServerSetCluster(
   private[this] def performChange(serverSet: ImmutableSet[ServiceInstance]) =
     synchronized {
       val newSet = serverSet flatMap { serviceInstance =>
-        val endpoint =
-          endpointName match {
-            case Some(name) =>
-              Option(serviceInstance.getAdditionalEndpoints.get(name))
-            case None => Some(serviceInstance.getServiceEndpoint)
-          }
+        val endpoint = endpointName match {
+          case Some(name) =>
+            Option(serviceInstance.getAdditionalEndpoints.get(name))
+          case None => Some(serviceInstance.getServiceEndpoint)
+        }
 
         endpoint map { endpoint =>
           new InetSocketAddress(
@@ -97,8 +96,9 @@ class ZookeeperServerSetCluster(
 
   def joinServerSet(
       address: SocketAddress,
-      endpoints: Map[String, InetSocketAddress] =
-        Map[String, InetSocketAddress]()
+      endpoints: Map[String, InetSocketAddress] = Map[
+        String,
+        InetSocketAddress]()
   ): EndpointStatus = {
     require(address.isInstanceOf[InetSocketAddress])
 
@@ -107,8 +107,9 @@ class ZookeeperServerSetCluster(
 
   def join(
       address: SocketAddress,
-      endpoints: Map[String, InetSocketAddress] =
-        Map[String, InetSocketAddress]()
+      endpoints: Map[String, InetSocketAddress] = Map[
+        String,
+        InetSocketAddress]()
   ): Unit = joinServerSet(address, endpoints)
 
   def snap: (Seq[SocketAddress], Future[Spool[Cluster.Change[SocketAddress]]]) =

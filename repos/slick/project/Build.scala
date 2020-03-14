@@ -434,8 +434,8 @@ object SlickBuild extends Build {
     )
   ) dependsOn (slickTestkitProject)
 
-  lazy val osgiBundleFiles =
-    taskKey[Seq[File]]("osgi-bundles that our tests rely on using.")
+  lazy val osgiBundleFiles = taskKey[Seq[File]](
+    "osgi-bundles that our tests rely on using.")
 
   lazy val osgiTestProject = (
     Project(id = "osgitests", base = file("osgi-tests"))
@@ -473,8 +473,8 @@ object SlickBuild extends Build {
   /* Test Configuration for running tests on doc sources */
   lazy val DocTest = config("doctest") extend (Test)
 
-  lazy val buildCapabilitiesTable =
-    taskKey[Unit]("Build the capabilities.csv table for the documentation")
+  lazy val buildCapabilitiesTable = taskKey[Unit](
+    "Build the capabilities.csv table for the documentation")
 
   /* FMPP Task */
   lazy val fmpp = TaskKey[Seq[File]]("fmpp")

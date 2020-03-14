@@ -177,8 +177,8 @@ final class PostApi(
           post.userId,
           post.author,
           post.ip,
-          text =
-            "%s / %s / %s".format(view.categ.name, view.topic.name, post.text))
+          text = "%s / %s / %s"
+            .format(view.categ.name, view.topic.name, post.text))
       } yield true.some)
     } yield ()).run.void
 

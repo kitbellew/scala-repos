@@ -12,8 +12,7 @@ object RetryStream {
 
   val DefaultStream = Backoff.decorrelatedJittered(10.milliseconds, 10.seconds)
 
-  def apply() =
-    new RetryStream(DefaultStream)
+  def apply() = new RetryStream(DefaultStream)
 }
 
 class RetryStream(underlying: Stream[Duration]) {

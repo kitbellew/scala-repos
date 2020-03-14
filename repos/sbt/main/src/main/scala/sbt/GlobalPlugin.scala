@@ -100,21 +100,24 @@ object GlobalPlugin {
         Project.extract(state),
         structure,
         state)
-      val (newS, result) =
-        runTask(t, state, str, structure.index.triggers, config)(nv)
+      val (newS, result) = runTask(
+        t,
+        state,
+        str,
+        structure.index.triggers,
+        config)(nv)
       (newS, processResult(result, newS.log))
     }
   }
-  val globalPluginSettings =
-    Project.inScope(Scope.GlobalScope in LocalRootProject)(
-      Seq(
-        organization := SbtArtifacts.Organization,
-        onLoadMessage <<= Keys.baseDirectory(
-          "Loading global plugins from " + _),
-        name := "global-plugin",
-        sbtPlugin := true,
-        version := "0.0"
-      ))
+  val globalPluginSettings = Project.inScope(
+    Scope.GlobalScope in LocalRootProject)(
+    Seq(
+      organization := SbtArtifacts.Organization,
+      onLoadMessage <<= Keys.baseDirectory("Loading global plugins from " + _),
+      name := "global-plugin",
+      sbtPlugin := true,
+      version := "0.0"
+    ))
 }
 final case class GlobalPluginData(
     projectID: ModuleID,

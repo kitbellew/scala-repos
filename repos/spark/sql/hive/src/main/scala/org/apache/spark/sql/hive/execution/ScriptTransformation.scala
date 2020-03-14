@@ -96,8 +96,9 @@ private[hive] case class ScriptTransformation(
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
-      @Nullable val (inputSerde, inputSoi) =
-        ioschema.initInputSerDe(input).getOrElse((null, null))
+      @Nullable val (inputSerde, inputSoi) = ioschema
+        .initInputSerDe(input)
+        .getOrElse((null, null))
 
       // This new thread will consume the ScriptTransformation's input rows and write them to the
       // external process. That process's output will be read by this current thread.
@@ -132,9 +133,10 @@ private[hive] case class ScriptTransformation(
           ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
 
         var scriptOutputWritable: Writable = null
-        val reusedWritableObject: Writable = if (null != outputSerde) {
-          outputSerde.getSerializedClass().newInstance
-        } else { null }
+        val reusedWritableObject: Writable =
+          if (null != outputSerde) {
+            outputSerde.getSerializedClass().newInstance
+          } else { null }
         val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
         override def hasNext: Boolean = {
@@ -263,20 +265,22 @@ private class ScriptTransformationWriterThread(
       try {
         iter.map(outputProjection).foreach { row =>
           if (inputSerde == null) {
-            val data = if (len == 0) {
-              ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
-            } else {
-              val sb = new StringBuilder
-              sb.append(row.get(0, inputSchema(0)))
-              var i = 1
-              while (i < len) {
-                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-                sb.append(row.get(i, inputSchema(i)))
-                i += 1
+            val data =
+              if (len == 0) {
+                ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES")
+              } else {
+                val sb = new StringBuilder
+                sb.append(row.get(0, inputSchema(0)))
+                var i = 1
+                while (i < len) {
+                  sb.append(
+                    ioschema.inputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                  sb.append(row.get(i, inputSchema(i)))
+                  i += 1
+                }
+                sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
+                sb.toString()
               }
-              sb.append(ioschema.inputRowFormatMap("TOK_TABLEROWFORMATLINES"))
-              sb.toString()
-            }
             outputStream.write(data.getBytes(StandardCharsets.UTF_8))
           } else {
             val writable = inputSerde
@@ -335,10 +339,10 @@ private[hive] case class HiveScriptIOSchema(
     ("TOK_TABLEROWFORMATLINES", "\n")
   )
 
-  val inputRowFormatMap =
-    inputRowFormat.toMap.withDefault((k) => defaultFormat(k))
-  val outputRowFormatMap =
-    outputRowFormat.toMap.withDefault((k) => defaultFormat(k))
+  val inputRowFormatMap = inputRowFormat.toMap.withDefault((k) =>
+    defaultFormat(k))
+  val outputRowFormatMap = outputRowFormat.toMap.withDefault((k) =>
+    defaultFormat(k))
 
   def initInputSerDe(
       input: Seq[Expression]): Option[(AbstractSerDe, ObjectInspector)] = {
@@ -360,8 +364,9 @@ private[hive] case class HiveScriptIOSchema(
     outputSerdeClass.map { serdeClass =>
       val (columns, columnTypes) = parseAttrs(output)
       val serde = initSerDe(serdeClass, columns, columnTypes, outputSerdeProps)
-      val structObjectInspector =
-        serde.getObjectInspector().asInstanceOf[StructObjectInspector]
+      val structObjectInspector = serde
+        .getObjectInspector()
+        .asInstanceOf[StructObjectInspector]
       (serde, structObjectInspector)
     }
   }
@@ -379,11 +384,14 @@ private[hive] case class HiveScriptIOSchema(
       columnTypes: Seq[DataType],
       serdeProps: Seq[(String, String)]): AbstractSerDe = {
 
-    val serde =
-      Utils.classForName(serdeClassName).newInstance.asInstanceOf[AbstractSerDe]
+    val serde = Utils
+      .classForName(serdeClassName)
+      .newInstance
+      .asInstanceOf[AbstractSerDe]
 
-    val columnTypesNames =
-      columnTypes.map(_.toTypeInfo.getTypeName()).mkString(",")
+    val columnTypesNames = columnTypes
+      .map(_.toTypeInfo.getTypeName())
+      .mkString(",")
 
     var propsMap =
       serdeProps.toMap + (serdeConstants.LIST_COLUMNS -> columns.mkString(","))
@@ -400,8 +408,10 @@ private[hive] case class HiveScriptIOSchema(
       inputStream: InputStream,
       conf: Configuration): Option[RecordReader] = {
     recordReaderClass.map { klass =>
-      val instance =
-        Utils.classForName(klass).newInstance().asInstanceOf[RecordReader]
+      val instance = Utils
+        .classForName(klass)
+        .newInstance()
+        .asInstanceOf[RecordReader]
       val props = new Properties()
       props.putAll(outputSerdeProps.toMap.asJava)
       instance.initialize(inputStream, conf, props)
@@ -413,8 +423,10 @@ private[hive] case class HiveScriptIOSchema(
       outputStream: OutputStream,
       conf: Configuration): Option[RecordWriter] = {
     recordWriterClass.map { klass =>
-      val instance =
-        Utils.classForName(klass).newInstance().asInstanceOf[RecordWriter]
+      val instance = Utils
+        .classForName(klass)
+        .newInstance()
+        .asInstanceOf[RecordWriter]
       instance.initialize(outputStream, conf)
       instance
     }
@@ -438,26 +450,26 @@ private[hive] case class HiveScriptIOSchema(
       serdeProps: Seq[(String, String)]): Option[String] = {
     if (schemaLess) return Some("")
 
-    val rowFormatDelimited =
-      rowFormat.map {
-        case ("TOK_TABLEROWFORMATFIELD", value) =>
-          "FIELDS TERMINATED BY " + value
-        case ("TOK_TABLEROWFORMATCOLLITEMS", value) =>
-          "COLLECTION ITEMS TERMINATED BY " + value
-        case ("TOK_TABLEROWFORMATMAPKEYS", value) =>
-          "MAP KEYS TERMINATED BY " + value
-        case ("TOK_TABLEROWFORMATLINES", value) =>
-          "LINES TERMINATED BY " + value
-        case ("TOK_TABLEROWFORMATNULL", value) =>
-          "NULL DEFINED AS " + value
-        case o => return None
-      }
+    val rowFormatDelimited = rowFormat.map {
+      case ("TOK_TABLEROWFORMATFIELD", value) =>
+        "FIELDS TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATCOLLITEMS", value) =>
+        "COLLECTION ITEMS TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATMAPKEYS", value) =>
+        "MAP KEYS TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATLINES", value) =>
+        "LINES TERMINATED BY " + value
+      case ("TOK_TABLEROWFORMATNULL", value) =>
+        "NULL DEFINED AS " + value
+      case o => return None
+    }
 
     val serdeClassSQL = serdeClass.map("'" + _ + "'").getOrElse("")
     val serdePropsSQL =
       if (serdeClass.nonEmpty) {
-        val props =
-          serdeProps.map { p => s"'${p._1}' = '${p._2}'" }.mkString(", ")
+        val props = serdeProps
+          .map { p => s"'${p._1}' = '${p._2}'" }
+          .mkString(", ")
         if (props.nonEmpty) " WITH SERDEPROPERTIES(" + props + ")" else ""
       } else { "" }
     if (rowFormat.nonEmpty) {

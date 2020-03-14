@@ -1241,8 +1241,7 @@ object Stream extends SeqFactory[Stream] {
     if (n <= 0) Empty else cons(elem, fill(n - 1)(elem))
 
   override def tabulate[A](n: Int)(f: Int => A): Stream[A] = {
-    def loop(i: Int): Stream[A] =
-      if (i >= n) Empty else cons(f(i), loop(i + 1))
+    def loop(i: Int): Stream[A] = if (i >= n) Empty else cons(f(i), loop(i + 1))
     loop(0)
   }
 
@@ -1286,15 +1285,13 @@ object Stream extends SeqFactory[Stream] {
     } // don't set to null if throw during filter
 
     def map[B, That](f: A => B)(
-        implicit bf: CanBuildFrom[Stream[A], B, That]): That =
-      filtered map f
+        implicit bf: CanBuildFrom[Stream[A], B, That]): That = filtered map f
 
     def flatMap[B, That](f: A => scala.collection.GenTraversableOnce[B])(
         implicit bf: CanBuildFrom[Stream[A], B, That]): That =
       filtered flatMap f
 
-    def foreach[U](f: A => U): Unit =
-      filtered foreach f
+    def foreach[U](f: A => U): Unit = filtered foreach f
 
     def withFilter(q: A => Boolean): FilterMonadic[A, Stream[A]] =
       new StreamWithFilter[A](filtered, q)

@@ -9,12 +9,9 @@ class StoreLogger extends Logger {
 
   private[this] val buf = new ListBuffer[LogElem]
 
-  def log(level: Level, message: => String): Unit =
-    buf += Log(level, message)
-  def success(message: => String): Unit =
-    buf += Success(message)
-  def trace(t: => Throwable): Unit =
-    buf += Trace(t)
+  def log(level: Level, message: => String): Unit = buf += Log(level, message)
+  def success(message: => String): Unit = buf += Success(message)
+  def trace(t: => Throwable): Unit = buf += Trace(t)
 
   def getLog: List[LogElem] = buf.toList
 }

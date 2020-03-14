@@ -514,16 +514,16 @@ private[akka] class LocalActorRefProvider private[akka] (
 
   override val rootPath: ActorPath = RootActorPath(Address("akka", _systemName))
 
-  private[akka] val log: LoggingAdapter =
-    Logging(eventStream, getClass.getName + "(" + rootPath.address + ")")
+  private[akka] val log: LoggingAdapter = Logging(
+    eventStream,
+    getClass.getName + "(" + rootPath.address + ")")
 
-  override val deadLetters: InternalActorRef =
-    _deadLetters
-      .getOrElse((p: ActorPath) ⇒ new DeadLetterActorRef(this, p, eventStream))
-      .apply(rootPath / "deadLetters")
+  override val deadLetters: InternalActorRef = _deadLetters
+    .getOrElse((p: ActorPath) ⇒ new DeadLetterActorRef(this, p, eventStream))
+    .apply(rootPath / "deadLetters")
 
-  private[this] final val terminationPromise: Promise[Terminated] =
-    Promise[Terminated]()
+  private[this] final val terminationPromise
+      : Promise[Terminated] = Promise[Terminated]()
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 
@@ -644,26 +644,25 @@ private[akka] class LocalActorRefProvider private[akka] (
   private lazy val defaultDispatcher =
     system.dispatchers.defaultGlobalDispatcher
 
-  private lazy val defaultMailbox =
-    system.mailboxes.lookup(Mailboxes.DefaultMailboxId)
+  private lazy val defaultMailbox = system.mailboxes.lookup(
+    Mailboxes.DefaultMailboxId)
 
-  override lazy val rootGuardian: LocalActorRef =
-    new LocalActorRef(
-      system,
-      Props(classOf[LocalActorRefProvider.Guardian], rootGuardianStrategy),
-      defaultDispatcher,
-      defaultMailbox,
-      theOneWhoWalksTheBubblesOfSpaceTime,
-      rootPath) {
-      override def getParent: InternalActorRef = this
-      override def getSingleChild(name: String): InternalActorRef =
-        name match {
-          case "temp" ⇒ tempContainer
-          case "deadLetters" ⇒ deadLetters
-          case other ⇒
-            extraNames.get(other).getOrElse(super.getSingleChild(other))
-        }
-    }
+  override lazy val rootGuardian: LocalActorRef = new LocalActorRef(
+    system,
+    Props(classOf[LocalActorRefProvider.Guardian], rootGuardianStrategy),
+    defaultDispatcher,
+    defaultMailbox,
+    theOneWhoWalksTheBubblesOfSpaceTime,
+    rootPath) {
+    override def getParent: InternalActorRef = this
+    override def getSingleChild(name: String): InternalActorRef =
+      name match {
+        case "temp" ⇒ tempContainer
+        case "deadLetters" ⇒ deadLetters
+        case other ⇒
+          extraNames.get(other).getOrElse(super.getSingleChild(other))
+      }
+  }
 
   override def rootGuardianAt(address: Address): ActorRef =
     if (address == rootPath.address) rootGuardian else deadLetters
@@ -896,8 +895,8 @@ private[akka] class LocalActorRefProvider private[akka] (
         val routeeProps = p.withRouter(NoRouter)
 
         try {
-          val routerDispatcher =
-            system.dispatchers.lookup(p.routerConfig.routerDispatcher)
+          val routerDispatcher = system.dispatchers.lookup(
+            p.routerConfig.routerDispatcher)
           val routerMailbox = system.mailboxes
             .getMailboxType(routerProps, routerDispatcher.configurator.config)
 

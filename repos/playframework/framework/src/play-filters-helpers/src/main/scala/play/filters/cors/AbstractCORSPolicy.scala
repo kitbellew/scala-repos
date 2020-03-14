@@ -147,8 +147,8 @@ private[cors] trait AbstractCORSPolicy {
 
       import play.api.libs.iteratee.Execution.Implicits.trampoline
 
-      val taggedRequest =
-        request.copy(tags = request.tags + (CORSFilter.RequestTag -> origin))
+      val taggedRequest = request.copy(tags =
+        request.tags + (CORSFilter.RequestTag -> origin))
       // We must recover any errors so that we can add the headers to them to allow clients to see the result
       val result =
         try {

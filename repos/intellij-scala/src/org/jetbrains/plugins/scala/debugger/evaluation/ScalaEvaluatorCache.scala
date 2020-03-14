@@ -21,8 +21,8 @@ import scala.collection.mutable
 class ScalaEvaluatorCache(project: Project)
     extends AbstractProjectComponent(project) {
 
-  private val cachedEvaluators =
-    mutable.HashMap[(PsiFile, Int), mutable.HashMap[PsiElement, Evaluator]]()
+  private val cachedEvaluators = mutable
+    .HashMap[(PsiFile, Int), mutable.HashMap[PsiElement, Evaluator]]()
   private val cachedStamp = mutable.HashMap[PsiFile, Long]()
 
   private val listener = new DebuggerManagerAdapter {

@@ -19,8 +19,8 @@ object kron extends UFunc {
     new Impl2[DenseMatrix[V1], M, DenseMatrix[RV]] {
       def apply(a: DenseMatrix[V1], b: M): DenseMatrix[RV] = {
 
-        val result: DenseMatrix[RV] =
-          DenseMatrix.zeros[RV](a.rows * b.rows, a.cols * b.cols)
+        val result: DenseMatrix[RV] = DenseMatrix
+          .zeros[RV](a.rows * b.rows, a.cols * b.cols)
 
         for (((r, c), av) <- a.activeIterator) {
           result(

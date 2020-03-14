@@ -90,8 +90,9 @@ object EventId {
 
   val schemaV1 = "producerId" :: "sequenceId" :: HNil
 
-  implicit val (decomposerV1, extractorV1) =
-    serializationV[EventId](schemaV1, Some("1.0".v))
+  implicit val (decomposerV1, extractorV1) = serializationV[EventId](
+    schemaV1,
+    Some("1.0".v))
 
   def fromLong(id: Long): EventId = EventId(producerId(id), sequenceId(id))
 
@@ -102,13 +103,15 @@ object EventId {
 case class IngestRecord(eventId: EventId, value: JValue)
 
 object IngestRecord {
-  implicit val ingestRecordIso =
-    Iso.hlist(IngestRecord.apply _, IngestRecord.unapply _)
+  implicit val ingestRecordIso = Iso.hlist(
+    IngestRecord.apply _,
+    IngestRecord.unapply _)
 
   val schemaV1 = "eventId" :: "jvalue" :: HNil
 
-  implicit val (decomposerV1, extractorV1) =
-    serializationV[IngestRecord](schemaV1, Some("1.0".v))
+  implicit val (decomposerV1, extractorV1) = serializationV[IngestRecord](
+    schemaV1,
+    Some("1.0".v))
 }
 
 /**
@@ -152,8 +155,9 @@ case class IngestMessage(
 object IngestMessage {
   import EventMessage._
 
-  implicit val ingestMessageIso =
-    Iso.hlist(IngestMessage.apply _, IngestMessage.unapply _)
+  implicit val ingestMessageIso = Iso.hlist(
+    IngestMessage.apply _,
+    IngestMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append
@@ -161,8 +165,9 @@ object IngestMessage {
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
-  val decomposerV1: Decomposer[IngestMessage] =
-    decomposerV[IngestMessage](schemaV1, Some("1.1".v))
+  val decomposerV1: Decomposer[IngestMessage] = decomposerV[IngestMessage](
+    schemaV1,
+    Some("1.1".v))
   val extractorV1: Extractor[EventMessageExtraction] =
     new Extractor[EventMessageExtraction] {
       private val extractor = extractorV[IngestMessage](schemaV1, Some("1.1".v))
@@ -231,16 +236,19 @@ case class ArchiveMessage(
 
 object ArchiveMessage {
   import EventMessage._
-  implicit val archiveMessageIso =
-    Iso.hlist(ArchiveMessage.apply _, ArchiveMessage.unapply _)
+  implicit val archiveMessageIso = Iso.hlist(
+    ArchiveMessage.apply _,
+    ArchiveMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "jobId" :: "eventId" :: "timestamp" :: HNil
 
-  val decomposerV1: Decomposer[ArchiveMessage] =
-    decomposerV[ArchiveMessage](schemaV1, Some("1.0".v))
-  val extractorV1: Extractor[ArchiveMessage] =
-    extractorV[ArchiveMessage](schemaV1, Some("1.0".v))
+  val decomposerV1: Decomposer[ArchiveMessage] = decomposerV[ArchiveMessage](
+    schemaV1,
+    Some("1.0".v))
+  val extractorV1: Extractor[ArchiveMessage] = extractorV[ArchiveMessage](
+    schemaV1,
+    Some("1.0".v))
   val extractorV0: Extractor[ArchiveMessage] = new Extractor[ArchiveMessage] {
     override def validated(obj: JValue): Validation[Error, ArchiveMessage] = {
       (obj.validated[Int]("producerId") |@|
@@ -279,15 +287,20 @@ case class StoreFileMessage(
 }
 
 object StoreFileMessage {
-  implicit val storeFileMessageIso =
-    Iso.hlist(StoreFileMessage.apply _, StoreFileMessage.unapply _)
+  implicit val storeFileMessageIso = Iso.hlist(
+    StoreFileMessage.apply _,
+    StoreFileMessage.unapply _)
 
   val schemaV1 =
     "apiKey" :: "path" :: "writeAs" :: "jobId" :: "eventId" :: "content" :: "timestamp" :: "streamRef" :: HNil
 
-  implicit val Decomposer: Decomposer[StoreFileMessage] =
-    decomposerV[StoreFileMessage](schemaV1, Some("1.0".v))
+  implicit val Decomposer
+      : Decomposer[StoreFileMessage] = decomposerV[StoreFileMessage](
+    schemaV1,
+    Some("1.0".v))
 
-  implicit val Extractor: Extractor[StoreFileMessage] =
-    extractorV[StoreFileMessage](schemaV1, Some("1.0".v))
+  implicit val Extractor
+      : Extractor[StoreFileMessage] = extractorV[StoreFileMessage](
+    schemaV1,
+    Some("1.0".v))
 }

@@ -17,50 +17,42 @@ object Arrays {
     }
   }
 
-  @noinline def sort(a: Array[Int]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Int]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Int], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Int](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Long]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Long]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Long], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Long](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Short]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Short]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Short], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Short](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Char]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Char]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Char], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Char](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Byte]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Byte]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Byte], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Byte](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Float]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Float]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Float], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Float](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[Double]): Unit =
-    sortImpl(a)
+  @noinline def sort(a: Array[Double]): Unit = sortImpl(a)
 
   @noinline def sort(a: Array[Double], fromIndex: Int, toIndex: Int): Unit =
     sortRangeImpl[Double](a, fromIndex, toIndex)
 
-  @noinline def sort(a: Array[AnyRef]): Unit =
-    sortAnyRefImpl(a)
+  @noinline def sort(a: Array[AnyRef]): Unit = sortAnyRefImpl(a)
 
   @noinline def sort(a: Array[AnyRef], fromIndex: Int, toIndex: Int): Unit =
     sortRangeAnyRefImpl(a, fromIndex, toIndex)
@@ -105,8 +97,7 @@ object Arrays {
 
   @inline
   private def sortAnyRefImpl(a: Array[AnyRef])(
-      implicit ord: Ordering[AnyRef]): Unit =
-    quickSortAnyRef(a, 0, a.length)
+      implicit ord: Ordering[AnyRef]): Unit = quickSortAnyRef(a, 0, a.length)
 
   // Implementation of sorting based on Scala 2.11.7 scala.util.Sorting
   private final val qSortThreshold = 16
@@ -537,8 +528,7 @@ object Arrays {
   @noinline def equals(a: Array[Long], b: Array[Long]): Boolean =
     equalsImpl(a, b)
 
-  @noinline def equals(a: Array[Int], b: Array[Int]): Boolean =
-    equalsImpl(a, b)
+  @noinline def equals(a: Array[Int], b: Array[Int]): Boolean = equalsImpl(a, b)
 
   @noinline def equals(a: Array[Short], b: Array[Short]): Boolean =
     equalsImpl(a, b)
@@ -574,8 +564,7 @@ object Arrays {
       a: Array[Long],
       fromIndex: Int,
       toIndex: Int,
-      value: Long): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Long): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Int], value: Int): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -584,8 +573,7 @@ object Arrays {
       a: Array[Int],
       fromIndex: Int,
       toIndex: Int,
-      value: Int): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Int): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Short], value: Short): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -594,8 +582,7 @@ object Arrays {
       a: Array[Short],
       fromIndex: Int,
       toIndex: Int,
-      value: Short): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Short): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Char], value: Char): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -604,8 +591,7 @@ object Arrays {
       a: Array[Char],
       fromIndex: Int,
       toIndex: Int,
-      value: Char): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Char): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Byte], value: Byte): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -614,8 +600,7 @@ object Arrays {
       a: Array[Byte],
       fromIndex: Int,
       toIndex: Int,
-      value: Byte): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Byte): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Boolean], value: Boolean): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -624,8 +609,7 @@ object Arrays {
       a: Array[Boolean],
       fromIndex: Int,
       toIndex: Int,
-      value: Boolean): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Boolean): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Double], value: Double): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -634,8 +618,7 @@ object Arrays {
       a: Array[Double],
       fromIndex: Int,
       toIndex: Int,
-      value: Double): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Double): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[Float], value: Float): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -644,8 +627,7 @@ object Arrays {
       a: Array[Float],
       fromIndex: Int,
       toIndex: Int,
-      value: Float): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: Float): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @noinline def fill(a: Array[AnyRef], value: AnyRef): Unit =
     fillImpl(a, 0, a.length, value, checkIndices = false)
@@ -654,8 +636,7 @@ object Arrays {
       a: Array[AnyRef],
       fromIndex: Int,
       toIndex: Int,
-      value: AnyRef): Unit =
-    fillImpl(a, fromIndex, toIndex, value)
+      value: AnyRef): Unit = fillImpl(a, fromIndex, toIndex, value)
 
   @inline
   private def fillImpl[T](
@@ -710,8 +691,7 @@ object Arrays {
 
   @noinline def copyOf(
       original: Array[Boolean],
-      newLength: Int): Array[Boolean] =
-    copyOfImpl(original, newLength)
+      newLength: Int): Array[Boolean] = copyOfImpl(original, newLength)
 
   @inline
   private def copyOfImpl[U, T: ClassTag](
@@ -744,50 +724,42 @@ object Arrays {
   @noinline def copyOfRange(
       original: Array[Byte],
       start: Int,
-      end: Int): Array[Byte] =
-    copyOfRangeImpl[Byte](original, start, end)
+      end: Int): Array[Byte] = copyOfRangeImpl[Byte](original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Short],
       start: Int,
-      end: Int): Array[Short] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Short] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Int],
       start: Int,
-      end: Int): Array[Int] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Int] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Long],
       start: Int,
-      end: Int): Array[Long] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Long] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Char],
       start: Int,
-      end: Int): Array[Char] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Char] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Float],
       start: Int,
-      end: Int): Array[Float] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Float] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Double],
       start: Int,
-      end: Int): Array[Double] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Double] = copyOfRangeImpl(original, start, end)
 
   @noinline def copyOfRange(
       original: Array[Boolean],
       start: Int,
-      end: Int): Array[Boolean] =
-    copyOfRangeImpl(original, start, end)
+      end: Int): Array[Boolean] = copyOfRangeImpl(original, start, end)
 
   @inline
   private def copyOfRangeImpl[T: ClassTag](
@@ -816,11 +788,9 @@ object Arrays {
 
   @noinline def asList[T](a: Array[T]): List[T] = {
     new AbstractList[T] with RandomAccess {
-      def size(): Int =
-        a.length
+      def size(): Int = a.length
 
-      def get(index: Int): T =
-        a(index)
+      def get(index: Int): T = a(index)
 
       override def set(index: Int, element: T): T = {
         val ret = a(index)
@@ -830,32 +800,23 @@ object Arrays {
     }
   }
 
-  @noinline def hashCode(a: Array[Long]): Int =
-    hashCodeImpl[Long](a)
+  @noinline def hashCode(a: Array[Long]): Int = hashCodeImpl[Long](a)
 
-  @noinline def hashCode(a: Array[Int]): Int =
-    hashCodeImpl[Int](a)
+  @noinline def hashCode(a: Array[Int]): Int = hashCodeImpl[Int](a)
 
-  @noinline def hashCode(a: Array[Short]): Int =
-    hashCodeImpl[Short](a)
+  @noinline def hashCode(a: Array[Short]): Int = hashCodeImpl[Short](a)
 
-  @noinline def hashCode(a: Array[Char]): Int =
-    hashCodeImpl[Char](a)
+  @noinline def hashCode(a: Array[Char]): Int = hashCodeImpl[Char](a)
 
-  @noinline def hashCode(a: Array[Byte]): Int =
-    hashCodeImpl[Byte](a)
+  @noinline def hashCode(a: Array[Byte]): Int = hashCodeImpl[Byte](a)
 
-  @noinline def hashCode(a: Array[Boolean]): Int =
-    hashCodeImpl[Boolean](a)
+  @noinline def hashCode(a: Array[Boolean]): Int = hashCodeImpl[Boolean](a)
 
-  @noinline def hashCode(a: Array[Float]): Int =
-    hashCodeImpl[Float](a)
+  @noinline def hashCode(a: Array[Float]): Int = hashCodeImpl[Float](a)
 
-  @noinline def hashCode(a: Array[Double]): Int =
-    hashCodeImpl[Double](a)
+  @noinline def hashCode(a: Array[Double]): Int = hashCodeImpl[Double](a)
 
-  @noinline def hashCode(a: Array[AnyRef]): Int =
-    hashCodeImpl[AnyRef](a)
+  @noinline def hashCode(a: Array[AnyRef]): Int = hashCodeImpl[AnyRef](a)
 
   @inline
   private def hashCodeImpl[T](
@@ -893,32 +854,23 @@ object Arrays {
     else a1.indices.forall(i => Objects.deepEquals(a1(i), a2(i)))
   }
 
-  @noinline def toString(a: Array[Long]): String =
-    toStringImpl[Long](a)
+  @noinline def toString(a: Array[Long]): String = toStringImpl[Long](a)
 
-  @noinline def toString(a: Array[Int]): String =
-    toStringImpl[Int](a)
+  @noinline def toString(a: Array[Int]): String = toStringImpl[Int](a)
 
-  @noinline def toString(a: Array[Short]): String =
-    toStringImpl[Short](a)
+  @noinline def toString(a: Array[Short]): String = toStringImpl[Short](a)
 
-  @noinline def toString(a: Array[Char]): String =
-    toStringImpl[Char](a)
+  @noinline def toString(a: Array[Char]): String = toStringImpl[Char](a)
 
-  @noinline def toString(a: Array[Byte]): String =
-    toStringImpl[Byte](a)
+  @noinline def toString(a: Array[Byte]): String = toStringImpl[Byte](a)
 
-  @noinline def toString(a: Array[Boolean]): String =
-    toStringImpl[Boolean](a)
+  @noinline def toString(a: Array[Boolean]): String = toStringImpl[Boolean](a)
 
-  @noinline def toString(a: Array[Float]): String =
-    toStringImpl[Float](a)
+  @noinline def toString(a: Array[Float]): String = toStringImpl[Float](a)
 
-  @noinline def toString(a: Array[Double]): String =
-    toStringImpl[Double](a)
+  @noinline def toString(a: Array[Double]): String = toStringImpl[Double](a)
 
-  @noinline def toString(a: Array[AnyRef]): String =
-    toStringImpl[AnyRef](a)
+  @noinline def toString(a: Array[AnyRef]): String = toStringImpl[AnyRef](a)
 
   @inline
   private def toStringImpl[T](a: Array[T]): String = {
@@ -975,8 +927,7 @@ object Arrays {
   }
 
   private final class AsRef(val inner: AnyRef) {
-    override def hashCode(): Int =
-      System.identityHashCode(inner)
+    override def hashCode(): Int = System.identityHashCode(inner)
 
     override def equals(obj: Any): Boolean = {
       obj match {

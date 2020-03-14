@@ -122,8 +122,9 @@ private[memory] class ExecutionMemoryPool(
         val minMemoryPerTask = poolSize / (2 * numActiveTasks)
 
         // How much we can grant this task; keep its share within 0 <= X <= 1 / numActiveTasks
-        val maxToGrant =
-          math.min(numBytes, math.max(0, maxMemoryPerTask - curMem))
+        val maxToGrant = math.min(
+          numBytes,
+          math.max(0, maxMemoryPerTask - curMem))
         // Only give it as much memory as is free, which might be none if it reached 1 / numTasks
         val toGrant = math.min(maxToGrant, memoryFree)
 
@@ -148,12 +149,13 @@ private[memory] class ExecutionMemoryPool(
   def releaseMemory(numBytes: Long, taskAttemptId: Long): Unit =
     lock.synchronized {
       val curMem = memoryForTask.getOrElse(taskAttemptId, 0L)
-      var memoryToFree = if (curMem < numBytes) {
-        logWarning(
-          s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
-            s"of memory from the $poolName pool")
-        curMem
-      } else { numBytes }
+      var memoryToFree =
+        if (curMem < numBytes) {
+          logWarning(
+            s"Internal error: release called on $numBytes bytes but task only has $curMem bytes " +
+              s"of memory from the $poolName pool")
+          curMem
+        } else { numBytes }
       if (memoryForTask.contains(taskAttemptId)) {
         memoryForTask(taskAttemptId) -= memoryToFree
         if (memoryForTask(taskAttemptId) <= 0) {

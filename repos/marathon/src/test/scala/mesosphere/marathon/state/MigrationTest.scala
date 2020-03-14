@@ -33,8 +33,8 @@ class MigrationTest
       .sortBy(_._1)
     all should have size f.migration.migrations.size.toLong
 
-    val none =
-      f.migration.migrations.filter(_._1 > StorageVersions(Int.MaxValue, 0, 0))
+    val none = f.migration.migrations
+      .filter(_._1 > StorageVersions(Int.MaxValue, 0, 0))
     none should have size 0
 
     val some = f.migration.migrations.filter(_._1 < StorageVersions(0, 10, 0))

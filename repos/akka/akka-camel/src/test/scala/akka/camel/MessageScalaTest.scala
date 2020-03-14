@@ -54,8 +54,9 @@ class MessageScalaTest extends FunSuite with Matchers with SharedCamelSystem {
   }
 
   test("mustBeAbleToReReadStreamCacheBody") {
-    val msg =
-      CamelMessage(new InputStreamCache("test1".getBytes("utf-8")), Map.empty)
+    val msg = CamelMessage(
+      new InputStreamCache("test1".getBytes("utf-8")),
+      Map.empty)
     msg.bodyAs[String] should ===("test1")
     // re-read
     msg.bodyAs[String] should ===("test1")

@@ -200,8 +200,8 @@ class GoToImplicitConversionAction
                   expr.getAdditionalExpression.get._1
                     .getImplicitConversions(
                       fromUnder = false,
-                      expectedOption =
-                        Some(expr.getAdditionalExpression.get._2))
+                      expectedOption = Some(
+                        expr.getAdditionalExpression.get._2))
                     ._2
                     .isDefined) =>
               res += expr
@@ -263,10 +263,13 @@ class GoToImplicitConversionAction
 
   class LightBulbHint(editor: Editor, project: Project, expr: ScExpression)
       extends JLabel {
-    private final val INACTIVE_BORDER: Border =
-      BorderFactory.createEmptyBorder(4, 4, 4, 4)
-    private final val ACTIVE_BORDER: Border =
-      BorderFactory.createCompoundBorder(
+    private final val INACTIVE_BORDER: Border = BorderFactory.createEmptyBorder(
+      4,
+      4,
+      4,
+      4)
+    private final val ACTIVE_BORDER: Border = BorderFactory
+      .createCompoundBorder(
         BorderFactory.createLineBorder(Color.BLACK, 1),
         BorderFactory.createEmptyBorder(3, 3, 3, 3))
     private final val INDENT = 20
@@ -296,11 +299,10 @@ class GoToImplicitConversionAction
           if (!e.isPopupTrigger && e.getButton == MouseEvent.BUTTON1) {
             val tuple = GoToImplicitConversionAction.getList.getSelectedValue
               .asInstanceOf[Parameters]
-            val function: ScFunction =
-              tuple.getNewExpression match {
-                case fun: ScFunction => fun
-                case _               => null
-              }
+            val function: ScFunction = tuple.getNewExpression match {
+              case fun: ScFunction => fun
+              case _               => null
+            }
             if (function == null) return
 
             IntentionUtils.showMakeExplicitPopup(
@@ -334,8 +336,8 @@ class GoToImplicitConversionAction
       if (index < 0) {
         throw new RuntimeException("Index = " + index + " is less than zero.")
       }
-      val itemBounds: Rectangle =
-        GoToImplicitConversionAction.getList.getCellBounds(index, index)
+      val itemBounds: Rectangle = GoToImplicitConversionAction.getList
+        .getCellBounds(index, index)
       if (itemBounds == null) {
         throw new RuntimeException("No bounds for index = " + index + ".")
       }

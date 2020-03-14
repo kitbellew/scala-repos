@@ -157,15 +157,16 @@ class HistoryServerSuite
         // the REST API returns the last modified time of EVENT LOG file for this field.
         // It is not applicable to hard-code this dynamic field in a static expected file,
         // so here we skip checking the lastUpdated field's value (setting it as "").
-        val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
-          val subStrings = jsonOrg.split(",")
-          for (i <- subStrings.indices) {
-            if (subStrings(i).indexOf("lastUpdated") >= 0) {
-              subStrings(i) = "\"lastUpdated\":\"\""
+        val json =
+          if (jsonOrg.indexOf("lastUpdated") >= 0) {
+            val subStrings = jsonOrg.split(",")
+            for (i <- subStrings.indices) {
+              if (subStrings(i).indexOf("lastUpdated") >= 0) {
+                subStrings(i) = "\"lastUpdated\":\"\""
+              }
             }
-          }
-          subStrings.mkString(",")
-        } else { jsonOrg }
+            subStrings.mkString(",")
+          } else { jsonOrg }
 
         val exp = IOUtils.toString(
           new FileInputStream(
@@ -201,8 +202,8 @@ class HistoryServerSuite
         new URL(s"${generateURL(s"applications/$appId")}/logs")
     }
 
-    val (code, inputStream, error) =
-      HistoryServerSuite.connectAndGetInputStream(url)
+    val (code, inputStream, error) = HistoryServerSuite
+      .connectAndGetInputStream(url)
     code should be(HttpServletResponse.SC_OK)
     inputStream should not be None
     error should be(None)
@@ -231,19 +232,19 @@ class HistoryServerSuite
     badAppId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badAppId._3 should be(Some("unknown app: foobar"))
 
-    val badStageId =
-      getContentAndCode("applications/local-1422981780767/stages/12345")
+    val badStageId = getContentAndCode(
+      "applications/local-1422981780767/stages/12345")
     badStageId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badStageId._3 should be(Some("unknown stage: 12345"))
 
-    val badStageAttemptId =
-      getContentAndCode("applications/local-1422981780767/stages/1/1")
+    val badStageAttemptId = getContentAndCode(
+      "applications/local-1422981780767/stages/1/1")
     badStageAttemptId._1 should be(HttpServletResponse.SC_NOT_FOUND)
     badStageAttemptId._3 should be(
       Some("unknown attempt for stage 1.  Found attempts: [0]"))
 
-    val badStageId2 =
-      getContentAndCode("applications/local-1422981780767/stages/flimflam")
+    val badStageId2 = getContentAndCode(
+      "applications/local-1422981780767/stages/flimflam")
     badStageId2._1 should be(HttpServletResponse.SC_NOT_FOUND)
     // will take some mucking w/ jersey to get a better error msg in this case
 
@@ -284,8 +285,8 @@ class HistoryServerSuite
 
     // this test dir is explicitly deleted on successful runs; retained for diagnostics when
     // not
-    val logDir =
-      Utils.createDirectory(System.getProperty("java.io.tmpdir", "logs"))
+    val logDir = Utils.createDirectory(
+      System.getProperty("java.io.tmpdir", "logs"))
 
     // a new conf is used with the background thread set and running at its fastest
     // allowed refresh rate (1Hz)
@@ -401,8 +402,8 @@ class HistoryServerSuite
             .filter(app => {
               (app \ "attempts") match {
                 case attempts: JArray =>
-                  val state =
-                    (attempts.children.head \ "completed").asInstanceOf[JBool]
+                  val state = (attempts.children.head \ "completed")
+                    .asInstanceOf[JBool]
                   state.value == completed
                 case _ => false
               }

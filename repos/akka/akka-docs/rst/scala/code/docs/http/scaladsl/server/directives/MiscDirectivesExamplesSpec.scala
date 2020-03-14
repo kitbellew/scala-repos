@@ -73,14 +73,13 @@ class MiscDirectivesExamplesSpec extends RoutingSpec {
     } ~> check { responseAs[String] shouldEqual "de-DE" }
   }
   "validate-example" in {
-    val route =
-      extractUri { uri =>
-        validate(
-          uri.path.toString.size < 5,
-          s"Path too long: '${uri.path.toString}'") {
-          complete(s"Full URI: $uri")
-        }
+    val route = extractUri { uri =>
+      validate(
+        uri.path.toString.size < 5,
+        s"Path too long: '${uri.path.toString}'") {
+        complete(s"Full URI: $uri")
       }
+    }
 
     // tests:
     Get("/234") ~> route ~> check {

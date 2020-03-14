@@ -111,8 +111,9 @@ trait TestAccountService
 
   val clock = Clock.System
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(0, Duration(1, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    0,
+    Duration(1, "second"))
 
   val shortFutureTimeouts = FutureTimeouts(5, Duration(50, "millis"))
 
@@ -143,8 +144,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
     HttpHeaders.Authorization("Basic " + encoded)
   }
 
-  def listAccounts(request: JValue) =
-    accounts.query("", "").post("")(request)
+  def listAccounts(request: JValue) = accounts.query("", "").post("")(request)
 
   def createAccount(email: String, password: String) = {
     val request: JValue = JObject(

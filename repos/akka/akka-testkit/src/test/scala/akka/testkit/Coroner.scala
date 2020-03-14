@@ -159,13 +159,16 @@ object Coroner {
     }
 
     def findDeadlockedThreads: (Seq[ThreadInfo], String) = {
-      val (ids, desc) = if (threadMx.isSynchronizerUsageSupported()) {
-        (threadMx.findDeadlockedThreads(), "monitors and ownable synchronizers")
-      } else {
-        (
-          threadMx.findMonitorDeadlockedThreads(),
-          "monitors, but NOT ownable synchronizers")
-      }
+      val (ids, desc) =
+        if (threadMx.isSynchronizerUsageSupported()) {
+          (
+            threadMx.findDeadlockedThreads(),
+            "monitors and ownable synchronizers")
+        } else {
+          (
+            threadMx.findMonitorDeadlockedThreads(),
+            "monitors, but NOT ownable synchronizers")
+        }
       if (ids == null) { (Seq.empty, desc) }
       else {
         val maxTraceDepth = 1000 // Seems deep enough

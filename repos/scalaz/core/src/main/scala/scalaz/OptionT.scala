@@ -93,8 +93,7 @@ final case class OptionT[F[_], A](run: F[Option[A]]) {
       case x @ Some(_) => F.point(x)
     })
 
-  def |||(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] =
-    orElse(a)
+  def |||(a: => OptionT[F, A])(implicit F: Monad[F]): OptionT[F, A] = orElse(a)
 
   /** @since 7.0.3 */
   def toRight[E](e: => E)(implicit F: Functor[F]): EitherT[F, E, A] =
@@ -307,8 +306,7 @@ private trait OptionTMonadTell[F[_], W]
 
   implicit def F = MT
 
-  def writer[A](w: W, v: A): OptionT[F, A] =
-    liftM[F, A](MT.writer(w, v))
+  def writer[A](w: W, v: A): OptionT[F, A] = liftM[F, A](MT.writer(w, v))
 }
 
 private trait OptionTMonadListen[F[_], W]

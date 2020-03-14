@@ -24,8 +24,7 @@ object Test {
     def plus[I](op: Op[I]): Op[I] = op;
   }
 
-  implicit def iToRich(x: Double) =
-    new Rich(x);
+  implicit def iToRich(x: Double) = new Rich(x);
 
   // fails to compile
   val x = 1.0 + new Op[Int]

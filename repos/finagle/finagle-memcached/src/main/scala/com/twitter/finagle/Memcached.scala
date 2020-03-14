@@ -176,8 +176,7 @@ object Memcached
     }
 
     case class KeyHasher(hasher: hashing.KeyHasher) {
-      def mk(): (KeyHasher, Stack.Param[KeyHasher]) =
-        (this, KeyHasher.param)
+      def mk(): (KeyHasher, Stack.Param[KeyHasher]) = (this, KeyHasher.param)
     }
 
     object KeyHasher {
@@ -185,13 +184,12 @@ object Memcached
     }
 
     case class NumReps(reps: Int) {
-      def mk(): (NumReps, Stack.Param[NumReps]) =
-        (this, NumReps.param)
+      def mk(): (NumReps, Stack.Param[NumReps]) = (this, NumReps.param)
     }
 
     object NumReps {
-      implicit val param =
-        Stack.Param(NumReps(KetamaPartitionedClient.DefaultNumReps))
+      implicit val param = Stack.Param(
+        NumReps(KetamaPartitionedClient.DefaultNumReps))
     }
   }
 
@@ -290,9 +288,10 @@ object Memcached
       )
 
     def newTwemcacheClient(dest: Name, label: String): TwemcacheClient = {
-      val _dest = if (LocalMemcached.enabled) {
-        Resolver.eval(mkDestination("localhost", LocalMemcached.port))
-      } else dest
+      val _dest =
+        if (LocalMemcached.enabled) {
+          Resolver.eval(mkDestination("localhost", LocalMemcached.port))
+        } else dest
 
       // Memcache only support Name.Bound names (TRFC-162).
       // See KetamaPartitionedClient for more details.
@@ -355,8 +354,7 @@ object Memcached
       * @see [[com.twitter.hashing.KetamaDistributor]] for more
       * details.
       */
-    def withNumReps(reps: Int): Client =
-      configured(param.NumReps(reps))
+    def withNumReps(reps: Int): Client = configured(param.NumReps(reps))
 
     // Java-friendly forwarders
     // See https://issues.scala-lang.org/browse/SI-8905
@@ -364,8 +362,7 @@ object Memcached
       new ConcurrentLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
       new ClientAdmissionControlParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =

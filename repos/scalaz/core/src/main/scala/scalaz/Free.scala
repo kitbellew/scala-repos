@@ -29,16 +29,14 @@ object Free extends FreeInstances {
 
   /** A version of `liftF` that infers the nested type constructor. */
   def liftFU[MA](value: => MA)(
-      implicit MA: Unapply[Functor, MA]): Free[MA.M, MA.A] =
-    liftF(MA(value))
+      implicit MA: Unapply[Functor, MA]): Free[MA.M, MA.A] = liftF(MA(value))
 
   /** Monadic join for the higher-order monad `Free` */
   def joinF[S[_], A](value: Free[Free[S, ?], A]): Free[S, A] =
     value.flatMapSuspension(NaturalTransformation.refl[Free[S, ?]])
 
   /** A trampoline step that doesn't do anything. */
-  def pause: Trampoline[Unit] =
-    return_(())
+  def pause: Trampoline[Unit] = return_(())
 
   /** A source that produces the given value. */
   def produce[A](a: A): Source[A, Unit] =
@@ -48,8 +46,7 @@ object Free extends FreeInstances {
   def await[A]: Sink[A, A] = liftF[(=> A) => ?, A](a => a)
 
   /** Absorb a step in `S` into the free monad for `S` */
-  def apply[S[_], A](s: S[Free[S, A]]): Free[S, A] =
-    roll(s)
+  def apply[S[_], A](s: S[Free[S, A]]): Free[S, A] = roll(s)
 
   /** Return from the computation with the given value. */
   private case class Return[S[_], A](a: A) extends Free[S, A]
@@ -84,8 +81,7 @@ object Free extends FreeInstances {
   type Sink[A, B] = Free[(=> A) => ?, B]
 
   /** Suspends a value within a functor in a single step. Monadic unit for a higher-order monad. */
-  def liftF[S[_], A](value: S[A]): Free[S, A] =
-    Suspend(value)
+  def liftF[S[_], A](value: S[A]): Free[S, A] = Suspend(value)
 
   /** Return the given value in the free monad. */
   def point[S[_], A](value: A): Free[S, A] = Return[S, A](value)
@@ -97,8 +93,7 @@ object Free extends FreeInstances {
   * Binding is done using the heap instead of the stack, allowing tail-call elimination.
   */
 sealed abstract class Free[S[_], A] {
-  final def map[B](f: A => B): Free[S, B] =
-    flatMap(a => Return(f(a)))
+  final def map[B](f: A => B): Free[S, B] = flatMap(a => Return(f(a)))
 
   /** Alias for `flatMap` */
   final def >>=[B](f: A => Free[S, B]): Free[S, B] = this flatMap f
@@ -108,8 +103,7 @@ sealed abstract class Free[S[_], A] {
 
   /** Catamorphism. Run the first given function if Return, otherwise, the second given function. */
   final def fold[B](r: A => B, s: S[Free[S, A]] => B)(
-      implicit S: Functor[S]): B =
-    resume.fold(s, r)
+      implicit S: Functor[S]): B = resume.fold(s, r)
 
   /** Evaluates a single layer of the free monad **/
   @tailrec final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
@@ -279,8 +273,7 @@ sealed abstract class Free[S[_], A] {
   }
 
   /** Runs a trampoline all the way to the end, tail-recursively. */
-  final def run(implicit ev: Free[S, A] =:= Trampoline[A]): A =
-    ev(this).go(_())
+  final def run(implicit ev: Free[S, A] =:= Trampoline[A]): A = ev(this).go(_())
 
   /** Interleave this computation with another, combining the results with the given function. */
   final def zipWith[B, C](tb: Free[S, B])(f: (A, B) => C): Free[S, C] = {
@@ -374,14 +367,11 @@ sealed abstract class Free[S[_], A] {
 
 object Trampoline extends TrampolineInstances {
 
-  def done[A](a: A): Trampoline[A] =
-    Free.pure[Function0, A](a)
+  def done[A](a: A): Trampoline[A] = Free.pure[Function0, A](a)
 
-  def delay[A](a: => A): Trampoline[A] =
-    suspend(done(a))
+  def delay[A](a: => A): Trampoline[A] = suspend(done(a))
 
-  def suspend[A](a: => Trampoline[A]): Trampoline[A] =
-    Free.suspend(a)
+  def suspend[A](a: => Trampoline[A]): Trampoline[A] = Free.suspend(a)
 }
 
 sealed trait TrampolineInstances {

@@ -50,14 +50,13 @@ abstract class ParquetReadSupport[T](val rootSchema: String)
     with Serializable {
   val tupleConverter: ParquetTupleConverter[T]
 
-  lazy val rootType: MessageType =
-    MessageTypeParser.parseMessageType(rootSchema)
+  lazy val rootType: MessageType = MessageTypeParser.parseMessageType(
+    rootSchema)
 
   override def init(
       configuration: Configuration,
       map: JMap[String, String],
-      messageType: MessageType): ReadContext =
-    new ReadContext(rootType)
+      messageType: MessageType): ReadContext = new ReadContext(rootType)
 
   override def prepareForRead(
       configuration: Configuration,
@@ -74,8 +73,8 @@ class ReadSupportInstanceProxy[T] extends ReadSupport[T] {
     require(
       readSupport != null && !readSupport.isEmpty,
       "no read support instance is configured")
-    val readSupportInstance =
-      ParquetInputOutputFormat.injection.invert(readSupport)
+    val readSupportInstance = ParquetInputOutputFormat.injection.invert(
+      readSupport)
 
     readSupportInstance match {
       case Success(obj) => obj.asInstanceOf[ReadSupport[T]]
@@ -116,8 +115,8 @@ abstract class ParquetWriteSupport[T](val rootSchema: String)
 
   var recordConsumer: RecordConsumer = null
 
-  lazy val rootType: MessageType =
-    MessageTypeParser.parseMessageType(rootSchema)
+  lazy val rootType: MessageType = MessageTypeParser.parseMessageType(
+    rootSchema)
 
   override def init(configuration: Configuration): WriteContext =
     new WriteSupport.WriteContext(rootType, new JHashMap[String, String])
@@ -144,8 +143,8 @@ class ParquetOutputFormatFromWriteSupportInstance[T]
     require(
       writeSupport != null && !writeSupport.isEmpty,
       "no write support instance is configured")
-    val writeSupportInstance =
-      ParquetInputOutputFormat.injection.invert(writeSupport)
+    val writeSupportInstance = ParquetInputOutputFormat.injection.invert(
+      writeSupport)
     writeSupportInstance match {
       case Success(obj) => obj.asInstanceOf[WriteSupport[T]]
       case Failure(e)   => throw e

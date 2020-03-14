@@ -157,8 +157,9 @@ private[expr] object ExpectedTypes {
         val throwableClass = ScalaPsiManager
           .instance(te.getProject)
           .getCachedClass(te.getResolveScope, "java.lang.Throwable")
-        val throwableType =
-          throwableClass.map(new ScDesignatorType(_)).getOrElse(Any)
+        val throwableType = throwableClass
+          .map(new ScDesignatorType(_))
+          .getOrElse(Any)
         Array((throwableType, None))
       //see SLS[8.4]
       case c: ScCaseClause =>
@@ -363,8 +364,10 @@ private[expr] object ExpectedTypes {
           case _ => Array.empty
         }
       case ret: ScReturnStmt =>
-        val fun: ScFunction =
-          PsiTreeUtil.getContextOfType(ret, true, classOf[ScFunction])
+        val fun: ScFunction = PsiTreeUtil.getContextOfType(
+          ret,
+          true,
+          classOf[ScFunction])
         if (fun == null) return Array.empty
         fun.returnTypeElement match {
           case Some(rte: ScTypeElement) =>
@@ -559,8 +562,8 @@ private[expr] object ExpectedTypes {
             t @ ScTypePolymorphicType(ScMethodType(_, params, _), typeParams),
             _) =>
         val subst = t.abstractTypeSubstitutor
-        val newParams =
-          params.map(p => p.copy(paramType = subst.subst(p.paramType)))
+        val newParams = params.map(p =>
+          p.copy(paramType = subst.subst(p.paramType)))
         if (newParams.length == 1 && !newParams.head.isRepeated && exprs.length > 1) {
           newParams.head.paramType match {
             case ScTupleType(args) =>
@@ -622,8 +625,9 @@ private[expr] object ExpectedTypes {
                   ResolvableReferenceExpression.getDynamicReturn(tp)
                 else tp
               }
-              var polyType: TypeResult[ScType] =
-                Success(update(subst.subst(fun.polymorphicType())), Some(expr))
+              var polyType: TypeResult[ScType] = Success(
+                update(subst.subst(fun.polymorphicType())),
+                Some(expr))
               call.foreach(call =>
                 polyType = call.updateAccordingToExpectedType(polyType))
               processArgsExpected(

@@ -27,8 +27,9 @@ trait WsTestClient {
     */
   def wsCall(call: Call)(implicit
       port: Port,
-      client: WSClient = WS.client(play.api.Play.privateMaybeApplication.get))
-      : WSRequest = wsUrl(call.url)
+      client: WSClient = WS
+        .client(play.api.Play.privateMaybeApplication.get)): WSRequest =
+    wsUrl(call.url)
 
   /**
     * Constructs a WS request holder for the given relative URL.  Optionally takes a port and WSClient.  Note that the WS client used
@@ -36,8 +37,8 @@ trait WsTestClient {
     */
   def wsUrl(url: String)(implicit
       port: Port,
-      client: WSClient =
-        WS.client(play.api.Play.privateMaybeApplication.get)) = {
+      client: WSClient = WS.client(
+        play.api.Play.privateMaybeApplication.get)) = {
     WS.clientUrl("http://localhost:" + port + url)
   }
 
@@ -69,8 +70,8 @@ trait WsTestClient {
     val system = ActorSystem(name)
     val materializer = ActorMaterializer(namePrefix = Some(name))(system)
     // Don't retry for tests
-    val client =
-      AhcWSClient(AhcWSClientConfig(maxRequestRetry = 0))(materializer)
+    val client = AhcWSClient(AhcWSClientConfig(maxRequestRetry = 0))(
+      materializer)
     val wrappedClient = new WSClient {
       def underlying[T] = client.underlying.asInstanceOf[T]
       def url(url: String) = {

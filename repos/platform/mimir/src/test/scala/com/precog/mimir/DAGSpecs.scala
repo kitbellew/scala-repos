@@ -122,8 +122,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "parse out distinct" in {
-      val result =
-        decorate(Vector(Line(1, 1, ""), PushNull, instructions.Distinct))
+      val result = decorate(
+        Vector(Line(1, 1, ""), PushNull, instructions.Distinct))
       result mustEqual Right(
         dag.Distinct(Const(CNull)(Line(1, 1, "")))(Line(1, 1, "")))
     }
@@ -650,8 +650,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       "assert" >> {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushTrue, PushNum("42"), instructions.Assert))
+        val result = decorate(
+          Vector(line, PushTrue, PushNum("42"), instructions.Assert))
         result mustEqual Right(
           dag.Assert(Const(CTrue)(line), Const(CLong(42))(line))(line))
       }
@@ -694,8 +694,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
     "continue processing beyond a filter" in {
       val line = Line(1, 1, "")
-      val result =
-        decorate(Vector(line, PushFalse, PushTrue, FilterMatch, Map1(Neg)))
+      val result = decorate(
+        Vector(line, PushFalse, PushTrue, FilterMatch, Map1(Neg)))
       result mustEqual Right(
         Operate(
           Neg,
@@ -713,8 +713,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushNum("42"), Map1(Neg), Dup, IUnion))
+        val result = decorate(
+          Vector(line, PushNum("42"), Map1(Neg), Dup, IUnion))
         result mustEqual Right(
           IUI(
             true,
@@ -726,8 +726,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse and factor a swap" in {
       "1" >> {
         val line = Line(1, 1, "")
-        val result =
-          decorate(Vector(line, PushFalse, PushTrue, Swap(1), IUnion))
+        val result = decorate(
+          Vector(line, PushFalse, PushTrue, Swap(1), IUnion))
         result mustEqual Right(
           IUI(true, Const(CTrue)(line), Const(CFalse)(line))(line))
       }

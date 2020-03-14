@@ -129,8 +129,9 @@ class RangePartitioner[K: Ordering: ClassTag, V](
       // Assume the input partitions are roughly balanced and over-sample a little bit.
       val sampleSizePerPartition =
         math.ceil(3.0 * sampleSize / rdd.partitions.length).toInt
-      val (numItems, sketched) =
-        RangePartitioner.sketch(rdd.map(_._1), sampleSizePerPartition)
+      val (numItems, sketched) = RangePartitioner.sketch(
+        rdd.map(_._1),
+        sampleSizePerPartition)
       if (numItems == 0L) { Array.empty }
       else {
         // If a partition contains much more than the average number of items, we re-sample from it
@@ -154,8 +155,9 @@ class RangePartitioner[K: Ordering: ClassTag, V](
             rdd.map(_._1),
             imbalancedPartitions.contains)
           val seed = byteswap32(-rdd.id - 1)
-          val reSampled =
-            imbalanced.sample(withReplacement = false, fraction, seed).collect()
+          val reSampled = imbalanced
+            .sample(withReplacement = false, fraction, seed)
+            .collect()
           val weight = (1.0 / fraction).toFloat
           candidates ++= reSampled.map(x => (x, weight))
         }
@@ -166,8 +168,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
 
   def numPartitions: Int = rangeBounds.length + 1
 
-  private var binarySearch: ((Array[K], K) => Int) =
-    CollectionsUtils.makeBinarySearch[K]
+  private var binarySearch: ((Array[K], K) => Int) = CollectionsUtils
+    .makeBinarySearch[K]
 
   def getPartition(key: Any): Int = {
     val k = key.asInstanceOf[K]

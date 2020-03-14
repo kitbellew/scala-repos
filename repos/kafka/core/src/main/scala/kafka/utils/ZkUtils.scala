@@ -71,8 +71,10 @@ object ZkUtils {
       sessionTimeout: Int,
       connectionTimeout: Int,
       isZkSecurityEnabled: Boolean): ZkUtils = {
-    val (zkClient, zkConnection) =
-      createZkClientAndConnection(zkUrl, sessionTimeout, connectionTimeout)
+    val (zkClient, zkConnection) = createZkClientAndConnection(
+      zkUrl,
+      sessionTimeout,
+      connectionTimeout)
     new ZkUtils(zkClient, zkConnection, isZkSecurityEnabled)
   }
 
@@ -145,8 +147,7 @@ object ZkUtils {
   def getEntityConfigPath(entityType: String, entity: String): String =
     getEntityConfigRootPath(entityType) + "/" + entity
 
-  def getDeleteTopicPath(topic: String): String =
-    DeleteTopicsPath + "/" + topic
+  def getDeleteTopicPath(topic: String): String = DeleteTopicsPath + "/" + topic
 }
 
 class ZkUtils(
@@ -410,9 +411,10 @@ class ZkUtils(
       path: String,
       acls: java.util.List[ACL] = DefaultAcls) {
     //Consumer path is kept open as different consumers will write under this node.
-    val acl = if (path == null || path.isEmpty || path.equals(ConsumersPath)) {
-      ZooDefs.Ids.OPEN_ACL_UNSAFE
-    } else acls
+    val acl =
+      if (path == null || path.isEmpty || path.equals(ConsumersPath)) {
+        ZooDefs.Ids.OPEN_ACL_UNSAFE
+      } else acls
 
     if (!zkClient.exists(path))
       ZkPath.createPersistent(
@@ -825,8 +827,8 @@ class ZkUtils(
       case Some(m) =>
         m.asInstanceOf[Map[String, Any]].get("topics") match {
           case Some(partitionsSeq) =>
-            val mapPartitionSeq =
-              partitionsSeq.asInstanceOf[Seq[Map[String, Any]]]
+            val mapPartitionSeq = partitionsSeq
+              .asInstanceOf[Seq[Map[String, Any]]]
             mapPartitionSeq.foreach(p => {
               val topic = p.get("topic").get.asInstanceOf[String]
               topics ++= List(topic)
@@ -962,8 +964,10 @@ class ZkUtils(
           0
         } catch {
           case e: ZkNodeExistsException =>
-            val stat =
-              zkClient.writeDataReturnStat(BrokerSequenceIdPath, "", -1)
+            val stat = zkClient.writeDataReturnStat(
+              BrokerSequenceIdPath,
+              "",
+              -1)
             stat.getVersion
         }
       }
@@ -1056,8 +1060,9 @@ class ZKConfig(props: VerifiableProperties) {
   val zkSessionTimeoutMs = props.getInt("zookeeper.session.timeout.ms", 6000)
 
   /** the max time that the client waits to establish a connection to zookeeper */
-  val zkConnectionTimeoutMs =
-    props.getInt("zookeeper.connection.timeout.ms", zkSessionTimeoutMs)
+  val zkConnectionTimeoutMs = props.getInt(
+    "zookeeper.connection.timeout.ms",
+    zkSessionTimeoutMs)
 
   /** how far a ZK follower can be behind a ZK leader */
   val zkSyncTimeMs = props.getInt("zookeeper.sync.time.ms", 2000)

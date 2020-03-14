@@ -96,8 +96,9 @@ object SynthBenchmark {
       sigma,
       seed)
     // Repartition the graph
-    val graph =
-      partitionStrategy.foldLeft(unpartitionedGraph)(_.partitionBy(_)).cache()
+    val graph = partitionStrategy
+      .foldLeft(unpartitionedGraph)(_.partitionBy(_))
+      .cache()
 
     var startTime = System.currentTimeMillis()
     val numEdges = graph.edges.count()
@@ -124,8 +125,10 @@ object SynthBenchmark {
       println(s"Total PageRank = $totalPR")
     } else if (app == "cc") {
       println("Running Connected Components")
-      val numComponents =
-        graph.connectedComponents.vertices.map(_._2).distinct().count()
+      val numComponents = graph.connectedComponents.vertices
+        .map(_._2)
+        .distinct()
+        .count()
       println(s"Number of components = $numComponents")
     }
     val runTime = System.currentTimeMillis() - startTime

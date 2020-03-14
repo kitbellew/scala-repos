@@ -70,8 +70,9 @@ private[cluster] class ClusterMetricsCollector(publisher: ActorRef)
   /**
     * The metrics collector that samples data on the node.
     */
-  val collector: MetricsCollector =
-    MetricsCollector(context.system.asInstanceOf[ExtendedActorSystem], settings)
+  val collector: MetricsCollector = MetricsCollector(
+    context.system.asInstanceOf[ExtendedActorSystem],
+    settings)
 
   /**
     * Start periodic gossip to random nodes in cluster
@@ -836,8 +837,9 @@ class SigarMetricsCollector(
   private val decayFactorOption = Some(decayFactor)
 
   private val EmptyClassArray: Array[(Class[_])] = Array.empty[(Class[_])]
-  private val LoadAverage: Option[Method] =
-    createMethodFrom(sigar, "getLoadAverage")
+  private val LoadAverage: Option[Method] = createMethodFrom(
+    sigar,
+    "getLoadAverage")
   private val Cpu: Option[Method] = createMethodFrom(sigar, "getCpuPerc")
   private val CombinedCpu: Option[Method] = Try(
     Cpu.get.getReturnType.getMethod("getCombined")).toOption
@@ -896,8 +898,8 @@ class SigarMetricsCollector(
   def cpuCombined: Option[Metric] =
     Metric.create(
       name = CpuCombined,
-      value =
-        Try(CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
+      value = Try(
+        CombinedCpu.get.invoke(Cpu.get.invoke(sigar)).asInstanceOf[Number]),
       decayFactor = decayFactorOption)
 
   /**

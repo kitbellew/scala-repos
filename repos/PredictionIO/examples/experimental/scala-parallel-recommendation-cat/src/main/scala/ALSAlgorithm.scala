@@ -152,8 +152,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert whiteList's string ID to integer index
-    val whiteList: Option[Set[Int]] =
-      query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
 
     val blackList: Set[String] = query.blackList.getOrElse(Set[String]())
 
@@ -163,50 +163,50 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val finalBlackList: Set[Int] =
       blackList.map(x => model.itemStringIntMap.get(x)).flatten
 
-    val userFeature =
-      model.userStringIntMap
-        .get(query.user)
-        .map { userIndex => userFeatures.get(userIndex) }
-        // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
-        .flatten
+    val userFeature = model.userStringIntMap
+      .get(query.user)
+      .map { userIndex => userFeatures.get(userIndex) }
+      // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
+      .flatten
 
-    val topScores = if (userFeature.isDefined) {
-      // the user has feature vector
-      val uf = userFeature.get
-      val indexScores: Map[Int, Double] =
-        productFeatures.par // convert to parallel collection
-          .filter {
-            case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = finalBlackList
-                )
-          }
-          .map {
-            case (i, (item, feature)) =>
-              // NOTE: feature must be defined, so can call .get
-              val s = dotProduct(uf, feature.get)
-              // Can adjust score here
-              (i, s)
-          }
-          .filter(_._2 > 0) // only keep items with score > 0
-          .seq // convert back to sequential collection
+    val topScores =
+      if (userFeature.isDefined) {
+        // the user has feature vector
+        val uf = userFeature.get
+        val indexScores: Map[Int, Double] =
+          productFeatures.par // convert to parallel collection
+            .filter {
+              case (i, (item, feature)) =>
+                feature.isDefined &&
+                  isCandidateItem(
+                    i = i,
+                    item = item,
+                    categories = query.categories,
+                    whiteList = whiteList,
+                    blackList = finalBlackList
+                  )
+            }
+            .map {
+              case (i, (item, feature)) =>
+                // NOTE: feature must be defined, so can call .get
+                val s = dotProduct(uf, feature.get)
+                // Can adjust score here
+                (i, s)
+            }
+            .filter(_._2 > 0) // only keep items with score > 0
+            .seq // convert back to sequential collection
 
-      val ord = Ordering.by[(Int, Double), Double](_._2).reverse
-      val topScores = getTopN(indexScores, query.num)(ord).toArray
+        val ord = Ordering.by[(Int, Double), Double](_._2).reverse
+        val topScores = getTopN(indexScores, query.num)(ord).toArray
 
-      topScores
+        topScores
 
-    } else {
-      // the user doesn't have feature vector.
-      // For example, new user is created after model is trained.
-      logger.info(s"No userFeature found for user ${query.user}.")
-      Array[(Int, Double)]()
-    }
+      } else {
+        // the user doesn't have feature vector.
+        // For example, new user is created after model is trained.
+        logger.info(s"No userFeature found for user ${query.user}.")
+        Array[(Int, Double)]()
+      }
 
     val itemScores = topScores.map {
       case (i, s) =>

@@ -196,8 +196,9 @@ trait Kinds {
             val declaredBounds = transform(
               hkparam.info.instantiateTypeParams(tparams, targs).bounds,
               paramowner)
-            val declaredBoundsInst =
-              transform(bindHKParams(declaredBounds), owner)
+            val declaredBoundsInst = transform(
+              bindHKParams(declaredBounds),
+              owner)
             val argumentBounds = transform(hkarg.info.bounds, owner)
 
             kindCheck(

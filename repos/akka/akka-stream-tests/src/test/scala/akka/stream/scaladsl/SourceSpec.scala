@@ -19,8 +19,9 @@ import akka.testkit.AkkaSpec
 class SourceSpec extends AkkaSpec with DefaultTimeout {
 
   implicit val materializer = ActorMaterializer()
-  implicit val config =
-    PatienceConfig(timeout = Span(timeout.duration.toMillis, Millis))
+  implicit val config = PatienceConfig(timeout = Span(
+    timeout.duration.toMillis,
+    Millis))
 
   "Single Source" must {
     "produce element" in {
@@ -103,8 +104,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         val neverSource = Source.maybe[Int].filter(_ ⇒ false)
         val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
-        val (neverPromise, counterFuture) =
-          neverSource.toMat(counterSink)(Keep.both).run()
+        val (neverPromise, counterFuture) = neverSource
+          .toMat(counterSink)(Keep.both)
+          .run()
 
         // external cancellation
         neverPromise.trySuccess(None) shouldEqual true
@@ -117,8 +119,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
         val neverSource = Source.maybe[Int]
         val counterSink = Sink.head[Int]
 
-        val (neverPromise, counterFuture) =
-          neverSource.toMat(counterSink)(Keep.both).run()
+        val (neverPromise, counterFuture) = neverSource
+          .toMat(counterSink)(Keep.both)
+          .run()
 
         // external cancellation
         neverPromise.trySuccess(Some(6)) shouldEqual true
@@ -130,8 +133,9 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val neverSource = Source.maybe[Int]
       val counterSink = Sink.fold[Int, Int](0) { (acc, _) ⇒ acc + 1 }
 
-      val (neverPromise, counterFuture) =
-        neverSource.toMat(counterSink)(Keep.both).run()
+      val (neverPromise, counterFuture) = neverSource
+        .toMat(counterSink)(Keep.both)
+        .run()
 
       // external cancellation
       neverPromise.failure(new Exception("Boom") with NoStackTrace)
@@ -305,8 +309,11 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
   "A Source" must {
     "suitably override attribute handling methods" in {
       import Attributes._
-      val s: Source[Int, NotUsed] =
-        Source.single(42).async.addAttributes(none).named("")
+      val s: Source[Int, NotUsed] = Source
+        .single(42)
+        .async
+        .addAttributes(none)
+        .named("")
     }
   }
 

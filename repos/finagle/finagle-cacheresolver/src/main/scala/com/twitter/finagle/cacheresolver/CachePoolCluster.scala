@@ -262,12 +262,11 @@ trait CachePoolCluster extends Cluster[CacheNode] {
   * Cache pool config data object
   */
 object CachePoolConfig {
-  val jsonCodec: Codec[CachePoolConfig] =
-    JsonCodec.create(
-      classOf[CachePoolConfig],
-      new GsonBuilder()
-        .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
-        .create())
+  val jsonCodec: Codec[CachePoolConfig] = JsonCodec.create(
+    classOf[CachePoolConfig],
+    new GsonBuilder()
+      .setExclusionStrategies(JsonCodec.getThriftExclusionStrategy())
+      .create())
 }
 
 /**
@@ -341,8 +340,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   }
 
   // continuously gauging underlying cluster size
-  private[this] val underlyingSizeGauge =
-    statsReceiver.addGauge("underlyingPoolSize") { underlyingSize }
+  private[this] val underlyingSizeGauge = statsReceiver.addGauge(
+    "underlyingPoolSize") { underlyingSize }
 
   // Falling back to use the backup pool (if provided) after a certain timeout.
   // Meanwhile, the first time invoke of updating pool will still proceed once it successfully
@@ -360,8 +359,8 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
 
   override def applyZKData(data: Array[Byte]): Unit = {
     if (data != null) {
-      val cachePoolConfig =
-        CachePoolConfig.jsonCodec.deserialize(new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
+        new ByteArrayInputStream(data))
 
       // apply the cache pool config to the cluster
       val expectedClusterSize = cachePoolConfig.cachePoolSize
@@ -441,13 +440,13 @@ class ZookeeperCacheNodeGroup(
         CacheNode(ep.getHost, ep.getPort, 1, shardInfo)
     }
 
-  private[this] val underlyingSizeGauge =
-    statsReceiver.addGauge("underlyingPoolSize") { zkGroup.members.size }
+  private[this] val underlyingSizeGauge = statsReceiver.addGauge(
+    "underlyingPoolSize") { zkGroup.members.size }
 
   def applyZKData(data: Array[Byte]) {
     if (data != null) {
-      val cachePoolConfig =
-        CachePoolConfig.jsonCodec.deserialize(new ByteArrayInputStream(data))
+      val cachePoolConfig = CachePoolConfig.jsonCodec.deserialize(
+        new ByteArrayInputStream(data))
 
       detectKeyRemapping = cachePoolConfig.detectKeyRemapping
 

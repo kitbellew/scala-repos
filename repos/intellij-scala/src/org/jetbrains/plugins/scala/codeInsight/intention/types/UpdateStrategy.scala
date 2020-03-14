@@ -136,8 +136,10 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
     val newClause = ScalaPsiElementFactory.createClauseForFunctionExprFromText(
       newParam.getText,
       param.getManager)
-    val expr: ScFunctionExpr =
-      PsiTreeUtil.getParentOfType(param, classOf[ScFunctionExpr], false)
+    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
+      param,
+      classOf[ScFunctionExpr],
+      false)
     if (expr != null) {
       val firstClause = expr.params.clauses.head
       val fcText = firstClause.getText
@@ -152,8 +154,8 @@ abstract class UpdateStrategy(editor: Option[Editor]) extends Strategy {
       val parent = anchor.getParent
       val added = parent.addAfter(annotation, anchor)
       val colon = ScalaPsiElementFactory.createColon(context.getManager)
-      val whitespace =
-        ScalaPsiElementFactory.createWhitespace(context.getManager)
+      val whitespace = ScalaPsiElementFactory.createWhitespace(
+        context.getManager)
       parent.addAfter(whitespace, anchor)
       parent.addAfter(colon, anchor)
       added

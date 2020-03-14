@@ -97,8 +97,10 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
     val activeApps = state.activeApps.sortBy(_.startTime).reverse
     val activeAppsTable = UIUtils.listingTable(appHeaders, appRow, activeApps)
     val completedApps = state.completedApps.sortBy(_.endTime).reverse
-    val completedAppsTable =
-      UIUtils.listingTable(appHeaders, appRow, completedApps)
+    val completedAppsTable = UIUtils.listingTable(
+      appHeaders,
+      appRow,
+      completedApps)
 
     val driverHeaders = Seq(
       "Submission ID",
@@ -109,32 +111,35 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
       "Memory",
       "Main Class")
     val activeDrivers = state.activeDrivers.sortBy(_.startTime).reverse
-    val activeDriversTable =
-      UIUtils.listingTable(driverHeaders, driverRow, activeDrivers)
+    val activeDriversTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      activeDrivers)
     val completedDrivers = state.completedDrivers.sortBy(_.startTime).reverse
-    val completedDriversTable =
-      UIUtils.listingTable(driverHeaders, driverRow, completedDrivers)
+    val completedDriversTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      completedDrivers)
 
     // For now we only show driver information if the user has submitted drivers to the cluster.
     // This is until we integrate the notion of drivers and applications in the UI.
     def hasDrivers: Boolean =
       activeDrivers.length > 0 || completedDrivers.length > 0
 
-    val content =
-      <div class="row-fluid">
+    val content = <div class="row-fluid">
           <div class="span12">
             <ul class="unstyled">
               <li><strong>URL:</strong> {state.uri}</li>
               {
-        state.restUri
-          .map { uri =>
-            <li>
+      state.restUri
+        .map { uri =>
+          <li>
                     <strong>REST URL:</strong> {uri}
                     <span class="rest-uri"> (cluster mode)</span>
                   </li>
-          }
-          .getOrElse { Seq.empty }
-      }
+        }
+        .getOrElse { Seq.empty }
+    }
               <li><strong>Alive Workers:</strong> {aliveWorkers.length}</li>
               <li><strong>Cores in use:</strong> {aliveWorkers.map(_.cores).sum} Total,
                 {aliveWorkers.map(_.coresUsed).sum} Used</li>
@@ -168,15 +173,15 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
 
         <div>
           {
-        if (hasDrivers) {
-          <div class="row-fluid">
+      if (hasDrivers) {
+        <div class="row-fluid">
                <div class="span12">
                  <h4> Running Drivers </h4>
                  {activeDriversTable}
                </div>
              </div>
-        }
       }
+    }
         </div>
 
         <div class="row-fluid">
@@ -188,15 +193,15 @@ private[ui] class MasterPage(parent: MasterWebUI) extends WebUIPage("") {
 
         <div>
           {
-        if (hasDrivers) {
-          <div class="row-fluid">
+      if (hasDrivers) {
+        <div class="row-fluid">
                 <div class="span12">
                   <h4> Completed Drivers </h4>
                   {completedDriversTable}
                 </div>
               </div>
-        }
       }
+    }
         </div>;
 
     UIUtils.basicSparkPage(content, "Spark Master at " + state.uri)

@@ -127,8 +127,9 @@ class VectorIndexer(override val uid: String)
       firstRow.length == 1,
       s"VectorIndexer cannot be fit on an empty dataset.")
     val numFeatures = firstRow(0).getAs[Vector](0).size
-    val vectorDataset =
-      dataset.select($(inputCol)).rdd.map { case Row(v: Vector) => v }
+    val vectorDataset = dataset.select($(inputCol)).rdd.map {
+      case Row(v: Vector) => v
+    }
     val maxCats = $(maxCategories)
     val categoryStats: VectorIndexer.CategoryStats = vectorDataset
       .mapPartitions { iter =>
@@ -181,8 +182,8 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       extends Serializable {
 
     /** featureValueSets[feature index] = set of unique values */
-    private val featureValueSets =
-      Array.fill[OpenHashSet[Double]](numFeatures)(new OpenHashSet[Double]())
+    private val featureValueSets = Array.fill[OpenHashSet[Double]](numFeatures)(
+      new OpenHashSet[Double]())
 
     /** Merge with another instance, modifying this instance. */
     def merge(other: CategoryStats): CategoryStats = {
@@ -315,11 +316,10 @@ class VectorIndexerModel private[ml] (
     while (featureIndex < numFeatures) {
       if (categoryMaps.contains(featureIndex)) {
         // categorical feature
-        val featureValues: Array[String] =
-          categoryMaps(featureIndex).toArray
-            .sortBy(_._1)
-            .map(_._1)
-            .map(_.toString)
+        val featureValues: Array[String] = categoryMaps(featureIndex).toArray
+          .sortBy(_._1)
+          .map(_._1)
+          .map(_.toString)
         if (featureValues.length == 2) {
           attrs(featureIndex) = new BinaryAttribute(
             index = Some(featureIndex),
@@ -412,9 +412,10 @@ class VectorIndexerModel private[ml] (
 
     // If the input metadata specifies numFeatures, compare with expected numFeatures.
     val origAttrGroup = AttributeGroup.fromStructField(schema($(inputCol)))
-    val origNumFeatures: Option[Int] = if (origAttrGroup.attributes.nonEmpty) {
-      Some(origAttrGroup.attributes.get.length)
-    } else { origAttrGroup.numAttributes }
+    val origNumFeatures: Option[Int] =
+      if (origAttrGroup.attributes.nonEmpty) {
+        Some(origAttrGroup.attributes.get.length)
+      } else { origAttrGroup.numAttributes }
     require(
       origNumFeatures.forall(_ == numFeatures),
       "VectorIndexerModel expected" +

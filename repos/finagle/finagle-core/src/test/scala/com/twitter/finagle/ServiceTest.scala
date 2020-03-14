@@ -145,12 +145,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService module delegates isAvailable / close to underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       factory.status
       factory.close()
@@ -162,12 +161,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService around module closes underlying service after request, does not close underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       val service = new FactoryToService(factory)
       Await.result(service(Unit))
@@ -179,12 +177,11 @@ class ServiceTest extends FunSuite with MockitoSugar {
   test(
     "FactoryToService around module delegates isAvailable / close to underlying factory")(
     new Ctx {
-      val stack =
-        FactoryToService.module.toStack(
-          Stack.Leaf(Stack.Role("role"), underlyingFactory))
+      val stack = FactoryToService.module.toStack(
+        Stack.Leaf(Stack.Role("role"), underlyingFactory))
 
-      val factory =
-        stack.make(Stack.Params.empty + FactoryToService.Enabled(true))
+      val factory = stack.make(
+        Stack.Params.empty + FactoryToService.Enabled(true))
 
       val service = new FactoryToService(factory)
       service.status

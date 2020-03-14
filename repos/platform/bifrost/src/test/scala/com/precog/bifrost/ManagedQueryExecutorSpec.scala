@@ -62,8 +62,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
 
   val actorSystem = ActorSystem("managedQueryModuleSpec")
   val jobActorSystem = ActorSystem("managedQueryModuleSpecJobActorSystem")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] with Comonad[Future] =
     new blueeyes.bkka.UnsafeFutureComonad(
       executionContext,

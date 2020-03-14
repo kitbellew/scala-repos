@@ -73,8 +73,8 @@ class ScalaUnusedImportPass(
         if (ScalaApplicationSettings
               .getInstance()
               .OPTIMIZE_IMPORTS_ON_THE_FLY) {
-          myOptimizeImportsRunnable =
-            new ScalaImportOptimizer().processFile(file, progress)
+          myOptimizeImportsRunnable = new ScalaImportOptimizer()
+            .processFile(file, progress)
         }
 
         myHighlights = list
@@ -102,15 +102,16 @@ class ScalaUnusedImportPass(
 }
 
 object ScalaUnusedImportPass {
-  private val SCALA_LAST_POST_PASS_TIMESTAMP: Key[java.lang.Long] =
-    Key.create("SCALA_LAST_POST_PASS_TIMESTAMP")
+  private val SCALA_LAST_POST_PASS_TIMESTAMP: Key[java.lang.Long] = Key.create(
+    "SCALA_LAST_POST_PASS_TIMESTAMP")
   private val LOG = Logger.getInstance(getClass)
 
   //todo: copy/paste from QuickFixFactoryImpl
   private def invokeOnTheFlyImportOptimizer(runnable: Runnable, file: PsiFile) {
     val project: Project = file.getProject
-    val document: Document =
-      PsiDocumentManager.getInstance(project).getDocument(file)
+    val document: Document = PsiDocumentManager
+      .getInstance(project)
+      .getDocument(file)
     if (document == null) return
     val stamp: Long = document.getModificationStamp
     ApplicationManager.getApplication.invokeLater(new Runnable {
@@ -157,8 +158,8 @@ object ScalaUnusedImportPass {
   private def timeToOptimizeImports(file: PsiFile): Boolean = {
     if (!ScalaApplicationSettings.getInstance.OPTIMIZE_IMPORTS_ON_THE_FLY)
       return false
-    val codeAnalyzer: DaemonCodeAnalyzerEx =
-      DaemonCodeAnalyzerEx.getInstanceEx(file.getProject)
+    val codeAnalyzer: DaemonCodeAnalyzerEx = DaemonCodeAnalyzerEx.getInstanceEx(
+      file.getProject)
     if (file == null || !codeAnalyzer.isHighlightingAvailable(file) || !file
           .isInstanceOf[ScalaFile]) return false
     if (!codeAnalyzer.isErrorAnalyzingFinished(file)) return false
@@ -167,8 +168,9 @@ object ScalaUnusedImportPass {
   }
 
   private def containsErrorsPreventingOptimize(file: PsiFile): Boolean = {
-    val document: Document =
-      PsiDocumentManager.getInstance(file.getProject).getDocument(file)
+    val document: Document = PsiDocumentManager
+      .getInstance(file.getProject)
+      .getDocument(file)
     if (document == null) return true
     val hasErrorsExceptUnresolvedImports: Boolean =
       !DaemonCodeAnalyzerEx.processHighlights(

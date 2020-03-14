@@ -214,11 +214,10 @@ private[ui] class StreamingPage(parent: StreamingTab)
   private def generateTimeMap(times: Seq[Long]): Seq[Node] = {
     val js = "var timeFormat = {};\n" + times
       .map { time =>
-        val formattedTime =
-          UIUtils.formatBatchTime(
-            time,
-            listener.batchDuration,
-            showYYYYMMSS = false)
+        val formattedTime = UIUtils.formatBatchTime(
+          time,
+          listener.batchDuration,
+          showYYYYMMSS = false)
         s"timeFormat[$time] = '$formattedTime';"
       }
       .mkString("\n")
@@ -263,62 +262,60 @@ private[ui] class StreamingPage(parent: StreamingTab)
 
     // Use the max input rate for all InputDStreams' graphs to make the Y axis ranges same.
     // If it's not an integral number, just use its ceil integral number.
-    val maxEventRate =
-      eventRateForAllStreams.max.map(_.ceil.toLong).getOrElse(0L)
+    val maxEventRate = eventRateForAllStreams.max
+      .map(_.ceil.toLong)
+      .getOrElse(0L)
     val minEventRate = 0L
 
-    val batchInterval =
-      UIUtils.convertToTimeUnit(listener.batchDuration, normalizedUnit)
+    val batchInterval = UIUtils.convertToTimeUnit(
+      listener.batchDuration,
+      normalizedUnit)
 
     val jsCollector = new JsCollector
 
-    val graphUIDataForEventRateOfAllStreams =
-      new GraphUIData(
-        "all-stream-events-timeline",
-        "all-stream-events-histogram",
-        eventRateForAllStreams.data,
-        minBatchTime,
-        maxBatchTime,
-        minEventRate,
-        maxEventRate,
-        "events/sec")
+    val graphUIDataForEventRateOfAllStreams = new GraphUIData(
+      "all-stream-events-timeline",
+      "all-stream-events-histogram",
+      eventRateForAllStreams.data,
+      minBatchTime,
+      maxBatchTime,
+      minEventRate,
+      maxEventRate,
+      "events/sec")
     graphUIDataForEventRateOfAllStreams.generateDataJs(jsCollector)
 
-    val graphUIDataForSchedulingDelay =
-      new GraphUIData(
-        "scheduling-delay-timeline",
-        "scheduling-delay-histogram",
-        schedulingDelay.timelineData(normalizedUnit),
-        minBatchTime,
-        maxBatchTime,
-        minTime,
-        maxTime,
-        formattedUnit)
+    val graphUIDataForSchedulingDelay = new GraphUIData(
+      "scheduling-delay-timeline",
+      "scheduling-delay-histogram",
+      schedulingDelay.timelineData(normalizedUnit),
+      minBatchTime,
+      maxBatchTime,
+      minTime,
+      maxTime,
+      formattedUnit)
     graphUIDataForSchedulingDelay.generateDataJs(jsCollector)
 
-    val graphUIDataForProcessingTime =
-      new GraphUIData(
-        "processing-time-timeline",
-        "processing-time-histogram",
-        processingTime.timelineData(normalizedUnit),
-        minBatchTime,
-        maxBatchTime,
-        minTime,
-        maxTime,
-        formattedUnit,
-        Some(batchInterval))
+    val graphUIDataForProcessingTime = new GraphUIData(
+      "processing-time-timeline",
+      "processing-time-histogram",
+      processingTime.timelineData(normalizedUnit),
+      minBatchTime,
+      maxBatchTime,
+      minTime,
+      maxTime,
+      formattedUnit,
+      Some(batchInterval))
     graphUIDataForProcessingTime.generateDataJs(jsCollector)
 
-    val graphUIDataForTotalDelay =
-      new GraphUIData(
-        "total-delay-timeline",
-        "total-delay-histogram",
-        totalDelay.timelineData(normalizedUnit),
-        minBatchTime,
-        maxBatchTime,
-        minTime,
-        maxTime,
-        formattedUnit)
+    val graphUIDataForTotalDelay = new GraphUIData(
+      "total-delay-timeline",
+      "total-delay-histogram",
+      totalDelay.timelineData(normalizedUnit),
+      minBatchTime,
+      maxBatchTime,
+      minTime,
+      maxTime,
+      formattedUnit)
     graphUIDataForTotalDelay.generateDataJs(jsCollector)
 
     // It's false before the user registers the first InputDStream
@@ -535,16 +532,15 @@ private[ui] class StreamingPage(parent: StreamingTab)
       .getOrElse(emptyCell)
     val receivedRecords = new EventRateUIData(eventRates)
 
-    val graphUIDataForEventRate =
-      new GraphUIData(
-        s"stream-$streamId-events-timeline",
-        s"stream-$streamId-events-histogram",
-        receivedRecords.data,
-        minX,
-        maxX,
-        minY,
-        maxY,
-        "events/sec")
+    val graphUIDataForEventRate = new GraphUIData(
+      s"stream-$streamId-events-timeline",
+      s"stream-$streamId-events-histogram",
+      receivedRecords.data,
+      minX,
+      maxX,
+      minY,
+      maxY,
+      "events/sec")
     graphUIDataForEventRate.generateDataJs(jsCollector)
 
     <tr>
@@ -651,8 +647,7 @@ private[ui] class JsCollector {
     * Generate a html snippet that will execute all scripts when the DOM has finished loading.
     */
   def toHtml: Seq[Node] = {
-    val js =
-      s"""
+    val js = s"""
          |$$(document).ready(function() {
          |    ${preparedStatements.mkString("\n")}
          |    ${statements.mkString("\n")}

@@ -9,8 +9,7 @@ import org.apache.thrift.protocol.{
 
 object ThriftCodec {
   def apply[T <: TBase[_, _]: Manifest, P <: TProtocolFactory: Manifest]
-      : ThriftCodec[T, P] =
-    new ThriftCodec[T, P]
+      : ThriftCodec[T, P] = new ThriftCodec[T, P]
 }
 
 class ThriftCodec[T <: TBase[_, _]: Manifest, P <: TProtocolFactory: Manifest]

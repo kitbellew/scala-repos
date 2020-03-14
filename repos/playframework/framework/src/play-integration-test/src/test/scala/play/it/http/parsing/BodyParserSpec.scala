@@ -39,15 +39,14 @@ object BodyParserSpec
   def simpleResult(s: Result): BodyParser[Any] =
     BodyParser("simple result") { request => Accumulator.done(Left(s)) }
 
-  implicit val arbResult: Arbitrary[Result] =
-    Arbitrary {
-      Gen.oneOf(
-        Results.Ok,
-        Results.BadRequest,
-        Results.NotFound,
-        Results.InternalServerError
-      )
-    }
+  implicit val arbResult: Arbitrary[Result] = Arbitrary {
+    Gen.oneOf(
+      Results.Ok,
+      Results.BadRequest,
+      Results.NotFound,
+      Results.InternalServerError
+    )
+  }
 
   /* map and mapM should satisfy the functor laws, namely,
    * preservation of identity and function composition.

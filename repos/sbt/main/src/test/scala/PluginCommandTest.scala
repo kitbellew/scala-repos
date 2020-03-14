@@ -89,12 +89,15 @@ object FakeState {
     val delegates: (Scope) => Seq[Scope] = _ => Nil
     val scopeLocal: Def.ScopeLocal = _ => Nil
 
-    val data: Settings[Scope] =
-      Def.make(settings)(delegates, scopeLocal, Def.showFullKey)
+    val data: Settings[Scope] = Def
+      .make(settings)(delegates, scopeLocal, Def.showFullKey)
     val extra: KeyIndex => BuildUtil[_] = (keyIndex) =>
       BuildUtil(base.toURI, Map.empty, keyIndex, data)
-    val structureIndex: StructureIndex =
-      Load.structureIndex(data, settings, extra, Map.empty)
+    val structureIndex: StructureIndex = Load.structureIndex(
+      data,
+      settings,
+      extra,
+      Map.empty)
     val streams: (State) => BuildStreams.Streams = null
 
     val loadedDefinitions: LoadedDefinitions = new LoadedDefinitions(
@@ -110,8 +113,8 @@ object FakeState {
     val detectedModules: DetectedModules[Plugin] = new DetectedModules(Nil)
     val builds: DetectedModules[Build] = new DetectedModules[Build](Nil)
 
-    val detectedAutoPlugins: Seq[DetectedAutoPlugin] =
-      plugins.map(p => DetectedAutoPlugin(p.label, p, hasAutoImport = false))
+    val detectedAutoPlugins: Seq[DetectedAutoPlugin] = plugins.map(p =>
+      DetectedAutoPlugin(p.label, p, hasAutoImport = false))
     val detectedPlugins =
       new DetectedPlugins(detectedModules, detectedAutoPlugins, builds)
     val loadedPlugins = new LoadedPlugins(
@@ -123,8 +126,10 @@ object FakeState {
       new BuildUnit(base.toURI, base, loadedDefinitions, loadedPlugins)
 
     val (partBuildUnit: PartBuildUnit, _) = Load.loaded(buildUnit)
-    val loadedBuildUnit =
-      Load.resolveProjects(base.toURI, partBuildUnit, _ => testProject.id)
+    val loadedBuildUnit = Load.resolveProjects(
+      base.toURI,
+      partBuildUnit,
+      _ => testProject.id)
 
     val units = Map(base.toURI -> loadedBuildUnit)
     val buildStructure = new BuildStructure(

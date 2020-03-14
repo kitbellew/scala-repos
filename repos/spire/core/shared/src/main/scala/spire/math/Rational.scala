@@ -99,11 +99,9 @@ sealed abstract class Rational
 
   def compareToOne: Int
 
-  def min(rhs: Rational): Rational =
-    if ((lhs compare rhs) < 0) lhs else rhs
+  def min(rhs: Rational): Rational = if ((lhs compare rhs) < 0) lhs else rhs
 
-  def max(rhs: Rational): Rational =
-    if ((lhs compare rhs) > 0) lhs else rhs
+  def max(rhs: Rational): Rational = if ((lhs compare rhs) > 0) lhs else rhs
 
   /**
     * Returns a `Rational` whose numerator and denominator both fit in an `Int`.
@@ -164,8 +162,9 @@ sealed abstract class Rational
 
     @tailrec
     def closest(l: Rational, u: Rational): Rational = {
-      val mediant =
-        Rational(l.numerator + u.numerator, l.denominator + u.denominator)
+      val mediant = Rational(
+        l.numerator + u.numerator,
+        l.denominator + u.denominator)
 
       if (mediant.denominator > limit) {
         if ((this - l).abs > (u - this).abs) u else l
@@ -235,8 +234,7 @@ object Rational extends RationalInstances {
         java.lang.Double.longBitsToDouble(bits)
     }
 
-  def apply(n: BigInt, d: BigInt): Rational =
-    apply(SafeLong(n), SafeLong(d))
+  def apply(n: BigInt, d: BigInt): Rational = apply(SafeLong(n), SafeLong(d))
 
   def apply(n: Long, d: Long): Rational = {
     def build0(n: Long, d: Long) =
@@ -633,8 +631,7 @@ object Rational extends RationalInstances {
           else (SafeLong(n) * (r.d / dgcd)) compare (r.n * (d / dgcd))
       }
 
-    override def longValue: Long =
-      if (d == 1L) n else n / d
+    override def longValue: Long = if (d == 1L) n else n / d
 
     override def equals(that: Any): Boolean =
       that match {
@@ -796,8 +793,7 @@ object Rational extends RationalInstances {
         case _                 => super.equals(that)
       }
 
-    override def hashCode: Int =
-      29 * (37 * n.## + d.##)
+    override def hashCode: Int = 29 * (37 * n.## + d.##)
 
     override def toString: String = if (isWhole) n.toString else s"$n/$d"
   }
@@ -819,8 +815,7 @@ trait RationalInstances {
   * These operations occur at Double precision.
   */
 private[math] trait RationalApproximateNRoot extends NRoot[Rational] {
-  def nroot(n: Rational, k: Int): Rational =
-    Rational(n.toDouble nroot k)
+  def nroot(n: Rational, k: Int): Rational = Rational(n.toDouble nroot k)
 
   def fpow(n: Rational, k: Rational): Rational =
     Rational(n.toDouble ** k.toDouble)

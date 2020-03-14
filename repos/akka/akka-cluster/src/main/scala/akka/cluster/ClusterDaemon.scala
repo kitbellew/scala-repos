@@ -243,17 +243,16 @@ private[cluster] final class ClusterCoreSupervisor
     context.parent ! PublisherCreated(publisher)
   }
 
-  override val supervisorStrategy =
-    OneForOneStrategy() {
-      case NonFatal(e) ⇒
-        log.error(
-          e,
-          "Cluster node [{}] crashed, [{}] - shutting down...",
-          Cluster(context.system).selfAddress,
-          e.getMessage)
-        self ! PoisonPill
-        Stop
-    }
+  override val supervisorStrategy = OneForOneStrategy() {
+    case NonFatal(e) ⇒
+      log.error(
+        e,
+        "Cluster node [{}] crashed, [{}] - shutting down...",
+        Cluster(context.system).selfAddress,
+        e.getMessage)
+      self ! PoisonPill
+      Stop
+  }
 
   override def postStop(): Unit = Cluster(context.system).shutdown()
 
@@ -456,26 +455,27 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     if (newSeedNodes.nonEmpty) {
       stopSeedNodeProcess()
       seedNodes = newSeedNodes // keep them for retry
-      seedNodeProcess = if (newSeedNodes == immutable.IndexedSeq(selfAddress)) {
-        self ! ClusterUserAction.JoinTo(selfAddress)
-        None
-      } else {
-        // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
-        seedNodeProcessCounter += 1
-        if (newSeedNodes.head == selfAddress) {
-          Some(
-            context.actorOf(
-              Props(classOf[FirstSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
-              name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
+      seedNodeProcess =
+        if (newSeedNodes == immutable.IndexedSeq(selfAddress)) {
+          self ! ClusterUserAction.JoinTo(selfAddress)
+          None
         } else {
-          Some(
-            context.actorOf(
-              Props(classOf[JoinSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
-              name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
+          // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
+          seedNodeProcessCounter += 1
+          if (newSeedNodes.head == selfAddress) {
+            Some(
+              context.actorOf(
+                Props(classOf[FirstSeedNodeProcess], newSeedNodes)
+                  .withDispatcher(UseDispatcher),
+                name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
+          } else {
+            Some(
+              context.actorOf(
+                Props(classOf[JoinSeedNodeProcess], newSeedNodes)
+                  .withDispatcher(UseDispatcher),
+                name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
+          }
         }
-      }
     }
   }
 
@@ -689,8 +689,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def quarantined(node: UniqueAddress): Unit = {
     val localGossip = latestGossip
     if (localGossip.hasMember(node)) {
-      val newReachability =
-        latestGossip.overview.reachability.terminated(selfUniqueAddress, node)
+      val newReachability = latestGossip.overview.reachability
+        .terminated(selfUniqueAddress, node)
       val newOverview =
         localGossip.overview copy (reachability = newReachability)
       val newGossip = localGossip copy (overview = newOverview)
@@ -874,8 +874,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     }
   }
 
-  def gossipSpeedupTick(): Unit =
-    if (isGossipSpeedupNeeded) gossip()
+  def gossipSpeedupTick(): Unit = if (isGossipSpeedupNeeded) gossip()
 
   def isGossipSpeedupNeeded: Boolean =
     (latestGossip.overview.seen.size < latestGossip.members.size / 2)
@@ -1189,8 +1188,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
           updateLatestGossip(newGossip)
 
-          val (exiting, nonExiting) =
-            newlyDetectedUnreachableMembers.partition(_.status == Exiting)
+          val (exiting, nonExiting) = newlyDetectedUnreachableMembers.partition(
+            _.status == Exiting)
           if (nonExiting.nonEmpty)
             log.warning(
               "Cluster Node [{}] - Marking node(s) as UNREACHABLE [{}]",
@@ -1313,8 +1312,11 @@ private[cluster] final class FirstSeedNodeProcess(
 
   // retry until one ack, or all nack, or timeout
   import context.dispatcher
-  val retryTask =
-    cluster.scheduler.schedule(1.second, 1.second, self, JoinSeedNode)
+  val retryTask = cluster.scheduler.schedule(
+    1.second,
+    1.second,
+    self,
+    JoinSeedNode)
   self ! JoinSeedNode
 
   override def postStop(): Unit = retryTask.cancel()
@@ -1429,8 +1431,7 @@ private[cluster] class OnMemberStatusChangedListener(
       classOf[MemberRemoved]
   }
 
-  override def preStart(): Unit =
-    cluster.subscribe(self, to)
+  override def preStart(): Unit = cluster.subscribe(self, to)
 
   override def postStop(): Unit = {
     if (status == Removed) done()

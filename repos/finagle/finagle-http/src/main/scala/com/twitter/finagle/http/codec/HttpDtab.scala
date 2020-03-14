@@ -29,14 +29,12 @@ object HttpDtab {
   private val indexstr: Int => String =
     ((0 until Maxsize) map (i => i -> "%02d".format(i))).toMap
 
-  private def b64Encode(v: String): String =
-    Base64.encode(v.getBytes(Utf8))
+  private def b64Encode(v: String): String = Base64.encode(v.getBytes(Utf8))
 
   private def b64Decode(v: String): Try[String] =
     Try { Base64.decode(v) } map (new String(_, Utf8))
 
-  private val unmatchedFailure =
-    Failure("Unmatched X-Dtab headers")
+  private val unmatchedFailure = Failure("Unmatched X-Dtab headers")
 
   private def decodingFailure(value: String) =
     Failure("Value not b64-encoded: " + value)
@@ -190,11 +188,10 @@ object HttpDtab {
 
       if (!validHeaderPair(prefix, dest)) return Throw(unmatchedFailure)
 
-      val tryDentry =
-        for {
-          path <- decodePath(msg.headerMap(prefix))
-          name <- decodeName(msg.headerMap(dest))
-        } yield Dentry(path, name)
+      val tryDentry = for {
+        path <- decodePath(msg.headerMap(prefix))
+        name <- decodeName(msg.headerMap(dest))
+      } yield Dentry(path, name)
 
       dentries(i) = tryDentry match {
         case Return(dentry) => dentry

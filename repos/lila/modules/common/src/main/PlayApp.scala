@@ -48,13 +48,12 @@ object PlayApp {
         .foldLeft(Map.empty[String, String]) { _ ++ _ }
     }
 
-  lazy val messages: Map[String, Map[String, String]] =
-    langs
-      .map(_.code)
-      .map { lang => (lang, loadMessages("messages." + lang)) }
-      .toMap
-      .+("default" -> loadMessages("messages"))
-      .+("default.play" -> loadMessages("messages.default"))
+  lazy val messages: Map[String, Map[String, String]] = langs
+    .map(_.code)
+    .map { lang => (lang, loadMessages("messages." + lang)) }
+    .toMap
+    .+("default" -> loadMessages("messages"))
+    .+("default.play" -> loadMessages("messages.default"))
 
   private def enableScheduler =
     !(loadConfig getBoolean "app.scheduler.disabled")

@@ -252,18 +252,17 @@ private[finagle] class BindingFactory[Req, Rep](
 
   private[this] val tree = NameTree.Leaf(path)
 
-  private[this] val nameCache =
-    new ServiceFactoryCache[Name.Bound, Req, Rep](
-      bound =>
-        new ServiceFactoryProxy(newFactory(bound)) {
-          private val boundShow = Showable.show(bound)
-          override def apply(conn: ClientConnection) = {
-            Trace.recordBinary("namer.name", boundShow)
-            super.apply(conn)
-          }
-        },
-      statsReceiver.scope("namecache"),
-      maxNameCacheSize)
+  private[this] val nameCache = new ServiceFactoryCache[Name.Bound, Req, Rep](
+    bound =>
+      new ServiceFactoryProxy(newFactory(bound)) {
+        private val boundShow = Showable.show(bound)
+        override def apply(conn: ClientConnection) = {
+          Trace.recordBinary("namer.name", boundShow)
+          super.apply(conn)
+        }
+      },
+    statsReceiver.scope("namecache"),
+    maxNameCacheSize)
 
   private[this] val nameTreeCache =
     new ServiceFactoryCache[NameTree[Name.Bound], Req, Rep](
@@ -330,8 +329,7 @@ object BindingFactory {
     * [[com.twitter.finagle.Name]] to bind.
     */
   case class Dest(dest: Name) {
-    def mk(): (Dest, Stack.Param[Dest]) =
-      (this, Dest.param)
+    def mk(): (Dest, Stack.Param[Dest]) = (this, Dest.param)
   }
   object Dest {
     implicit val param = Stack.Param(Dest(Name.Path(Path.read("/$/fail"))))
@@ -345,8 +343,7 @@ object BindingFactory {
     * [[com.twitter.finagle.Dtab]].
     */
   case class BaseDtab(baseDtab: () => Dtab) {
-    def mk(): (BaseDtab, Stack.Param[BaseDtab]) =
-      (this, BaseDtab.param)
+    def mk(): (BaseDtab, Stack.Param[BaseDtab]) = (this, BaseDtab.param)
   }
   object BaseDtab {
     implicit val param = Stack.Param(BaseDtab(DefaultBaseDtab))

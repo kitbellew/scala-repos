@@ -47,20 +47,21 @@ class JDBCPEvents(
     /** Change the default upper bound from +100 to +1 year because MySQL's
       * FROM_UNIXTIME(t) will return NULL if we use +100 years.
       */
-    val upper =
-      untilTime.map(_.getMillis).getOrElse((DateTime.now + 1.years).getMillis)
+    val upper = untilTime
+      .map(_.getMillis)
+      .getOrElse((DateTime.now + 1.years).getMillis)
     val par = scala.math
       .min(
         new Duration(upper - lower).getStandardDays,
         config.properties.getOrElse("PARTITIONS", "4").toLong)
       .toInt
-    val entityTypeClause =
-      entityType.map(x => s"and entityType = '$x'").getOrElse("")
+    val entityTypeClause = entityType
+      .map(x => s"and entityType = '$x'")
+      .getOrElse("")
     val entityIdClause = entityId.map(x => s"and entityId = '$x'").getOrElse("")
-    val eventNamesClause =
-      eventNames
-        .map("and (" + _.map(y => s"event = '$y'").mkString(" or ") + ")")
-        .getOrElse("")
+    val eventNamesClause = eventNames
+      .map("and (" + _.map(y => s"event = '$y'").mkString(" or ") + ")")
+      .getOrElse("")
     val targetEntityTypeClause = targetEntityType
       .map(
         _.map(x => s"and targetEntityType = '$x'")

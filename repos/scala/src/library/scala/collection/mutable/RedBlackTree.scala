@@ -467,8 +467,7 @@ private[collection] object RedBlackTree {
 
   private[this] def foreachNode[A, B, U](
       node: Node[A, B],
-      f: ((A, B)) => U): Unit =
-    if (node ne null) foreachNodeNonNull(node, f)
+      f: ((A, B)) => U): Unit = if (node ne null) foreachNodeNonNull(node, f)
 
   private[this] def foreachNodeNonNull[A, B, U](
       node: Node[A, B],
@@ -497,8 +496,7 @@ private[collection] object RedBlackTree {
 
   private[this] def transformNode[A, B, U](
       node: Node[A, B],
-      f: (A, B) => B): Unit =
-    if (node ne null) transformNodeNonNull(node, f)
+      f: (A, B) => B): Unit = if (node ne null) transformNodeNonNull(node, f)
 
   private[this] def transformNodeNonNull[A, B, U](
       node: Node[A, B],
@@ -517,14 +515,12 @@ private[collection] object RedBlackTree {
   def keysIterator[A: Ordering](
       tree: Tree[A, _],
       start: Option[A] = None,
-      end: Option[A] = None): Iterator[A] =
-    new KeysIterator(tree, start, end)
+      end: Option[A] = None): Iterator[A] = new KeysIterator(tree, start, end)
 
   def valuesIterator[A: Ordering, B](
       tree: Tree[A, B],
       start: Option[A] = None,
-      end: Option[A] = None): Iterator[B] =
-    new ValuesIterator(tree, start, end)
+      end: Option[A] = None): Iterator[B] = new ValuesIterator(tree, start, end)
 
   private[this] abstract class TreeIterator[A, B, R](
       tree: Tree[A, B],

@@ -58,25 +58,24 @@ trait TakeRangeSpec[M[+_]]
   }.set(minTestsOk -> 1000)
 
   def testTakeRange = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -98,25 +97,24 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeNegStart = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -127,25 +125,24 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeNegNumber = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -156,25 +153,24 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeNeg = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -185,25 +181,24 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeLarger = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -225,25 +220,24 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeEmpty = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -256,41 +250,40 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeAcrossSlices = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack1")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack2")) :: JField(
-            "key",
-            JArray(JNum(5) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack3")) :: JField(
-            "key",
-            JArray(JNum(6) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack4")) :: JField(
-            "key",
-            JArray(JNum(7) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack5")) :: JField(
-            "key",
-            JArray(JNum(8) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack1")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack2")) :: JField(
+          "key",
+          JArray(JNum(5) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack3")) :: JField(
+          "key",
+          JArray(JNum(6) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack4")) :: JField(
+          "key",
+          JArray(JNum(7) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack5")) :: JField(
+          "key",
+          JArray(JNum(8) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample, Some(5))
@@ -328,41 +321,40 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeSecondSlice = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack1")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack2")) :: JField(
-            "key",
-            JArray(JNum(5) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack3")) :: JField(
-            "key",
-            JArray(JNum(6) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack4")) :: JField(
-            "key",
-            JArray(JNum(7) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack5")) :: JField(
-            "key",
-            JArray(JNum(8) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack1")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack2")) :: JField(
+          "key",
+          JArray(JNum(5) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack3")) :: JField(
+          "key",
+          JArray(JNum(6) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack4")) :: JField(
+          "key",
+          JArray(JNum(7) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack5")) :: JField(
+          "key",
+          JArray(JNum(8) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample, Some(5))
@@ -384,41 +376,40 @@ trait TakeRangeSpec[M[+_]]
   }
 
   def testTakeRangeFirstSliceOnly = {
-    val data: Stream[JValue] =
-      Stream(
-        JObject(
-          JField("value", JString("foo")) :: JField(
-            "key",
-            JArray(JNum(1) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JNum(12)) :: JField(
-            "key",
-            JArray(JNum(2) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
-            "key",
-            JArray(JNum(3) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack1")) :: JField(
-            "key",
-            JArray(JNum(4) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack2")) :: JField(
-            "key",
-            JArray(JNum(5) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack3")) :: JField(
-            "key",
-            JArray(JNum(6) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack4")) :: JField(
-            "key",
-            JArray(JNum(7) :: Nil)) :: Nil),
-        JObject(
-          JField("value", JString("ack5")) :: JField(
-            "key",
-            JArray(JNum(8) :: Nil)) :: Nil)
-      )
+    val data: Stream[JValue] = Stream(
+      JObject(
+        JField("value", JString("foo")) :: JField(
+          "key",
+          JArray(JNum(1) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JNum(12)) :: JField(
+          "key",
+          JArray(JNum(2) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JObject(JField("baz", JBool(true)) :: Nil)) :: JField(
+          "key",
+          JArray(JNum(3) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack1")) :: JField(
+          "key",
+          JArray(JNum(4) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack2")) :: JField(
+          "key",
+          JArray(JNum(5) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack3")) :: JField(
+          "key",
+          JArray(JNum(6) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack4")) :: JField(
+          "key",
+          JArray(JNum(7) :: Nil)) :: Nil),
+      JObject(
+        JField("value", JString("ack5")) :: JField(
+          "key",
+          JArray(JNum(8) :: Nil)) :: Nil)
+    )
 
     val sample = SampleData(data)
     val table = fromSample(sample, Some(5))

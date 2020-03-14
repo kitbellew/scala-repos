@@ -139,12 +139,12 @@ private[serverset2] trait EventStats {
   private[this] lazy val createdCounter = stats.counter(Created.name)
   private[this] lazy val dataChangedCounter = stats.counter(DataChanged.name)
   private[this] lazy val deletedCounter = stats.counter(Deleted.name)
-  private[this] lazy val childrenChangedCounter =
-    stats.counter(ChildrenChanged.name)
-  private[this] lazy val dataWatchRemovedCounter =
-    stats.counter(DataWatchRemoved.name)
-  private[this] lazy val childWatchRemovedCounter =
-    stats.counter(ChildWatchRemoved.name)
+  private[this] lazy val childrenChangedCounter = stats.counter(
+    ChildrenChanged.name)
+  private[this] lazy val dataWatchRemovedCounter = stats.counter(
+    DataWatchRemoved.name)
+  private[this] lazy val childWatchRemovedCounter = stats.counter(
+    ChildWatchRemoved.name)
 
   protected def EventFilter(event: NodeEvent): NodeEvent = {
     event match {

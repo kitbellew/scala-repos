@@ -78,8 +78,8 @@ class LocalConcurrencySpec(_system: ActorSystem)
         "b" + _)).toSet
       awaitAssert {
         replicator ! Replicator.Get(Updater.key, Replicator.ReadLocal)
-        val ORSet(elements) =
-          expectMsgType[Replicator.GetSuccess[_]].get(Updater.key)
+        val ORSet(elements) = expectMsgType[Replicator.GetSuccess[_]]
+          .get(Updater.key)
         elements should be(expected)
       }
 

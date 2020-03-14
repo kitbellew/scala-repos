@@ -33,12 +33,12 @@ class ScalaCaseClassParametersNameContributer
           context: ProcessingContext,
           _result: CompletionResultSet) {
         val position = positionFromParameters(parameters)
-        val scope =
-          PsiTreeUtil.getContextOfType(position, classOf[ScCaseClause])
+        val scope = PsiTreeUtil
+          .getContextOfType(position, classOf[ScCaseClause])
         if (scope == null) return
 
-        val constructorPattern =
-          PsiTreeUtil.getContextOfType(position, classOf[ScConstructorPattern])
+        val constructorPattern = PsiTreeUtil
+          .getContextOfType(position, classOf[ScConstructorPattern])
         if (constructorPattern == null) return
 
         val classRef = constructorPattern.asInstanceOf[ScConstructorPattern].ref
@@ -54,14 +54,18 @@ class ScalaCaseClassParametersNameContributer
 
         if (caseClassParams.isEmpty) return
 
-        val parameterWithPosition =
-          getCorrespondedParameterForPosition(position, caseClassParams)
+        val parameterWithPosition = getCorrespondedParameterForPosition(
+          position,
+          caseClassParams)
 
         val corespondedParameter = parameterWithPosition.parameter
         val myPosition = parameterWithPosition.position
 
-        val result =
-          addByOrderSorter(parameters, _result, myPosition, caseClassParams)
+        val result = addByOrderSorter(
+          parameters,
+          _result,
+          myPosition,
+          caseClassParams)
 
         byClassParamCompletionsItems(caseClassParams, result)
         byTypeCompletionsItems(position, corespondedParameter, result)
@@ -74,10 +78,9 @@ class ScalaCaseClassParametersNameContributer
         position.getContext match {
           case pattern: ScPattern
               if pattern.expectedType.isDefined && parameter.isDefined =>
-            val lookups =
-              NameSuggester
-                .suggestNamesByType(pattern.expectedType.get)
-                .map(name => new ScalaLookupItem(parameter.get, name))
+            val lookups = NameSuggester
+              .suggestNamesByType(pattern.expectedType.get)
+              .map(name => new ScalaLookupItem(parameter.get, name))
             lookups.foreach(l => addLocalScalaLookUpItem(result, l))
           case _ =>
         }
@@ -115,8 +118,8 @@ class ScalaCaseClassParametersNameContributer
           }
         }
 
-        var sorter =
-          CompletionSorter.defaultSorter(parameters, result.getPrefixMatcher)
+        var sorter = CompletionSorter
+          .defaultSorter(parameters, result.getPrefixMatcher)
         sorter = sorter.weighAfter("prefix", new PreferByParamsOrder())
         result.withRelevanceSorter(sorter)
       }

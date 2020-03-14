@@ -50,8 +50,7 @@ class EventAdapters(
     }
   }
 
-  override def toString =
-    s"${getClass.getName}($map, $bindings)"
+  override def toString = s"${getClass.getName}($map, $bindings)"
 
 }
 

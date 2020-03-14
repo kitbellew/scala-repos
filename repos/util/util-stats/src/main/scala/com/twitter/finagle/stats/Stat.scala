@@ -73,8 +73,7 @@ object JStats {
   def timeFuture[A](
       stat: Stat,
       fn: Callable[Future[A]],
-      unit: TimeUnit): Future[A] =
-    Stat.timeFuture(stat, unit)(fn.call())
+      unit: TimeUnit): Future[A] = Stat.timeFuture(stat, unit)(fn.call())
 
   /**
     * Time a given asynchronous `fn` using milliseconds.

@@ -44,8 +44,7 @@ object SwaggerSupportSyntax {
         throw new ScalatraException(
           "Splats are not supported for swagger path inference")
 
-      def addNamed(name: String): Builder =
-        copy(path = path + "{" + name + "}")
+      def addNamed(name: String): Builder = copy(path = path + "{" + name + "}")
 
       def addOptional(name: String): Builder =
         copy(path = path + "{" + name + "}")
@@ -102,8 +101,7 @@ object SwaggerSupportSyntax {
 
       def addStatic(text: String): Builder = copy(path = path + text)
 
-      def addParam(name: String): Builder =
-        copy(path = path + "{" + name + "}")
+      def addParam(name: String): Builder = copy(path = path + "{" + name + "}")
 
       def optional(builder: Builder => Builder): Builder =
         try builder(this)
@@ -441,10 +439,9 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
 
   @deprecated("This implicit conversion will be removed in the future", "2.2")
   implicit protected def modelToSwagger(cls: Class[_]): (String, Model) = {
-    val mod =
-      Swagger
-        .modelToSwagger(Reflector.scalaTypeOf(cls))
-        .get // TODO: the use of .get is pretty dangerous, but it's deprecated
+    val mod = Swagger
+      .modelToSwagger(Reflector.scalaTypeOf(cls))
+      .get // TODO: the use of .get is pretty dangerous, but it's deprecated
     mod.id -> mod
   }
 

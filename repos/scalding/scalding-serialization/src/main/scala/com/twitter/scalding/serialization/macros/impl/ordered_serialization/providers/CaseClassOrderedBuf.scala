@@ -89,8 +89,9 @@ object CaseClassOrderedBuf {
           elementB: ctx.TermName): ctx.Tree =
         ProductLike.compare(c)(elementA, elementB)(elementData)
 
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        elementData.map(_._3.lazyOuterVariables).reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = elementData
+        .map(_._3.lazyOuterVariables)
+        .reduce(_ ++ _)
 
       override def length(element: Tree) =
         ProductLike.length(c)(element)(elementData)

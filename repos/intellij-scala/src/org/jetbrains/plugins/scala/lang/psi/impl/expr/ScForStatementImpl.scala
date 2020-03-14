@@ -114,22 +114,21 @@ class ScForStatementImpl(node: ASTNode)
           var filterText = "withFilter"
           var filterFound = false
           val tp = gen.rvalue.getType(TypingContext.empty).getOrAny
-          val processor =
-            new CompletionProcessor(
-              StdKinds.methodRef,
-              this,
-              collectImplicits = true,
-              forName = Some("withFilter")) {
-              override def execute(
-                  _element: PsiElement,
-                  state: ResolveState): Boolean = {
-                super.execute(_element, state)
-                if (!levelSet.isEmpty) {
-                  filterFound = true
-                  false
-                } else true
-              }
+          val processor = new CompletionProcessor(
+            StdKinds.methodRef,
+            this,
+            collectImplicits = true,
+            forName = Some("withFilter")) {
+            override def execute(
+                _element: PsiElement,
+                state: ResolveState): Boolean = {
+              super.execute(_element, state)
+              if (!levelSet.isEmpty) {
+                filterFound = true
+                false
+              } else true
             }
+          }
           processor.processType(tp, this)
           if (!filterFound) filterText = "filter"
           exprText
@@ -201,8 +200,9 @@ class ScForStatementImpl(node: ASTNode)
           gen.pattern.desugarizedPatternIndex = exprText.length
           exprText.append(gen.pattern.getText)
 
-          val (freshName1, freshName2) = if (forDisplay) { ("x$1", "x$2") }
-          else { ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2") }
+          val (freshName1, freshName2) =
+            if (forDisplay) { ("x$1", "x$2") }
+            else { ("freshNameForIntelliJIDEA1", "freshNameForIntelliJIDEA2") }
 
           exprText
             .append(") <- (for (")

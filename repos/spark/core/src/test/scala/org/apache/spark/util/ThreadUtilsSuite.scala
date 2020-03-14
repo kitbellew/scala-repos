@@ -30,8 +30,8 @@ import org.apache.spark.SparkFunSuite
 class ThreadUtilsSuite extends SparkFunSuite {
 
   test("newDaemonSingleThreadExecutor") {
-    val executor =
-      ThreadUtils.newDaemonSingleThreadExecutor("this-is-a-thread-name")
+    val executor = ThreadUtils.newDaemonSingleThreadExecutor(
+      "this-is-a-thread-name")
     @volatile var threadName = ""
     executor.submit(new Runnable {
       override def run(): Unit = {

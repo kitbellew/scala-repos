@@ -120,11 +120,10 @@ class LogOffsetTest extends ZooKeeperTestHarness {
           OffsetRequest.LatestTime,
           15)),
       replicaId = 0)
-    val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+    val consumerOffsets = simpleConsumer
+      .getOffsetsBefore(offsetRequest)
+      .partitionErrorAndOffsets(topicAndPartition)
+      .offsets
     assertEquals(
       Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L),
       consumerOffsets)
@@ -157,17 +156,15 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     var offsetChanged = false
     for (i <- 1 to 14) {
       val topicAndPartition = TopicAndPartition(topic, 0)
-      val offsetRequest =
-        OffsetRequest(
-          Map(
-            topicAndPartition -> PartitionOffsetRequestInfo(
-              OffsetRequest.EarliestTime,
-              1)))
-      val consumerOffsets =
-        simpleConsumer
-          .getOffsetsBefore(offsetRequest)
-          .partitionErrorAndOffsets(topicAndPartition)
-          .offsets
+      val offsetRequest = OffsetRequest(
+        Map(
+          topicAndPartition -> PartitionOffsetRequestInfo(
+            OffsetRequest.EarliestTime,
+            1)))
+      val consumerOffsets = simpleConsumer
+        .getOffsetsBefore(offsetRequest)
+        .partitionErrorAndOffsets(topicAndPartition)
+        .offsets
 
       if (consumerOffsets(0) == 1) { offsetChanged = true }
     }
@@ -209,11 +206,10 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     val offsetRequest = OffsetRequest(
       Map(topicAndPartition -> PartitionOffsetRequestInfo(now, 15)),
       replicaId = 0)
-    val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+    val consumerOffsets = simpleConsumer
+      .getOffsetsBefore(offsetRequest)
+      .partitionErrorAndOffsets(topicAndPartition)
+      .offsets
     assertEquals(
       Seq(20L, 18L, 16L, 14L, 12L, 10L, 8L, 6L, 4L, 2L, 0L),
       consumerOffsets)
@@ -249,17 +245,15 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       () => isLeaderLocalOnBroker(topic, part, server),
       "Leader should be elected")
     val topicAndPartition = TopicAndPartition(topic, part)
-    val offsetRequest =
-      OffsetRequest(
-        Map(
-          topicAndPartition -> PartitionOffsetRequestInfo(
-            OffsetRequest.EarliestTime,
-            10)))
-    val consumerOffsets =
-      simpleConsumer
-        .getOffsetsBefore(offsetRequest)
-        .partitionErrorAndOffsets(topicAndPartition)
-        .offsets
+    val offsetRequest = OffsetRequest(
+      Map(
+        topicAndPartition -> PartitionOffsetRequestInfo(
+          OffsetRequest.EarliestTime,
+          10)))
+    val consumerOffsets = simpleConsumer
+      .getOffsetsBefore(offsetRequest)
+      .partitionErrorAndOffsets(topicAndPartition)
+      .offsets
     assertEquals(Seq(0L), consumerOffsets)
   }
 

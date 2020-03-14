@@ -52,8 +52,7 @@ trait RouteDirectives {
     * Bubbles the given error up the response chain, where it is dealt with by the closest `handleExceptions`
     * directive and its ExceptionHandler.
     */
-  def failWith(error: Throwable): StandardRoute =
-    StandardRoute(_.fail(error))
+  def failWith(error: Throwable): StandardRoute = StandardRoute(_.fail(error))
 }
 
 object RouteDirectives extends RouteDirectives {

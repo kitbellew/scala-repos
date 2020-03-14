@@ -12,8 +12,7 @@ object SafeLongUtil {
   private def isBig(x: SafeLong) =
     x.getClass.getSimpleName.endsWith("BigInteger")
 
-  def classify(a: SafeLong): String =
-    if (isBig(a)) "b" else "l"
+  def classify(a: SafeLong): String = if (isBig(a)) "b" else "l"
 
   def classify(a: SafeLong, op_a: SafeLong): String =
     classify(a) + "_" + classify(op_a)

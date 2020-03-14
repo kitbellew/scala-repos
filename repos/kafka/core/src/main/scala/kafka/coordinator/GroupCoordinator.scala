@@ -142,8 +142,8 @@ class GroupCoordinator(
         if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID) {
           responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
         } else {
-          group =
-            groupManager.addGroup(new GroupMetadata(groupId, protocolType))
+          group = groupManager.addGroup(
+            new GroupMetadata(groupId, protocolType))
           doJoinGroup(
             group,
             memberId,
@@ -232,9 +232,10 @@ class GroupCoordinator(
                 // for the current generation.
                 responseCallback(
                   JoinGroupResult(
-                    members = if (memberId == group.leaderId) {
-                      group.currentMemberMetadata
-                    } else { Map.empty },
+                    members =
+                      if (memberId == group.leaderId) {
+                        group.currentMemberMetadata
+                      } else { Map.empty },
                     memberId = memberId,
                     generationId = group.generationId,
                     subProtocol = group.protocol,
@@ -831,9 +832,10 @@ class GroupCoordinator(
         for (member <- group.allMemberMetadata) {
           assert(member.awaitingJoinCallback != null)
           val joinResult = JoinGroupResult(
-            members = if (member.memberId == group.leaderId) {
-              group.currentMemberMetadata
-            } else { Map.empty },
+            members =
+              if (member.memberId == group.leaderId) {
+                group.currentMemberMetadata
+              } else { Map.empty },
             memberId = member.memberId,
             generationId = group.generationId,
             subProtocol = group.protocol,
@@ -899,8 +901,11 @@ object GroupCoordinator {
   val NoLeader = ""
   val NoMembers = List[MemberSummary]()
   val EmptyGroup = GroupSummary(NoState, NoProtocolType, NoProtocol, NoMembers)
-  val DeadGroup =
-    GroupSummary(Dead.toString, NoProtocolType, NoProtocol, NoMembers)
+  val DeadGroup = GroupSummary(
+    Dead.toString,
+    NoProtocolType,
+    NoProtocol,
+    NoMembers)
 
   def apply(
       config: KafkaConfig,

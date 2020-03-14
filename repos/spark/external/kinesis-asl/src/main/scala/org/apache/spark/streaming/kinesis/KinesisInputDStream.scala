@@ -47,8 +47,9 @@ private[kinesis] class KinesisInputDStream[T: ClassTag](
       blockInfos: Seq[ReceivedBlockInfo]): RDD[T] = {
 
     // This returns true even for when blockInfos is empty
-    val allBlocksHaveRanges =
-      blockInfos.map { _.metadataOption }.forall(_.nonEmpty)
+    val allBlocksHaveRanges = blockInfos
+      .map { _.metadataOption }
+      .forall(_.nonEmpty)
 
     if (allBlocksHaveRanges) {
       // Create a KinesisBackedBlockRDD, even when there are no blocks

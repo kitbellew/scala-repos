@@ -197,15 +197,15 @@ object ToHeadUsages extends Specification {
 
       def excludeBar(in: String): Boolean = in.startsWith("/bar")
 
-      val second =
-        LiftRules.excludePathFromContextPathRewriting.doWith(excludeBar _) {
-          Req.fixHtml(
-            "/wombat",
-            <span>
+      val second = LiftRules.excludePathFromContextPathRewriting.doWith(
+        excludeBar _) {
+        Req.fixHtml(
+          "/wombat",
+          <span>
             <a href="/foo" id="foo">foo</a>
             <a href="/bar" id="bar">bar</a>
           </span>)
-        }
+      }
 
       ((first \\ "a").filter(e =>
         (e \ "@id").text == "foo") \ "@href").text must be_==("/wombat/foo")

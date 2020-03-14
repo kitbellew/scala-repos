@@ -71,8 +71,9 @@ class WorksheetCompiler {
           false,
           false)
 
-        val worksheetPrinter =
-          WorksheetEditorPrinter.newWorksheetUiFor(editor, worksheetVirtual)
+        val worksheetPrinter = WorksheetEditorPrinter.newWorksheetUiFor(
+          editor,
+          worksheetVirtual)
         worksheetPrinter.scheduleWorksheetUpdate()
 
         val onError = (msg: String) => {
@@ -165,8 +166,8 @@ class WorksheetCompiler {
       new Runnable {
         override def run() {
           Disposer.register(content, treeView, null)
-          val messageView =
-            ServiceManager.getService(project, classOf[MessageView])
+          val messageView = ServiceManager
+            .getService(project, classOf[MessageView])
           messageView.getContentManager setSelectedContent content
 
           val toolWindow =

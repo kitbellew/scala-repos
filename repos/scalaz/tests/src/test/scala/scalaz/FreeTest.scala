@@ -135,10 +135,9 @@ object FreeTest extends SpecLite {
   "List" should {
     "not stack overflow with 50k binds" in {
       val expected = Applicative[FreeList].point(())
-      val result =
-        BindRec[FreeList].tailrecM((i: Int) =>
-          if (i < 50000) Applicative[FreeList].point(\/.left[Int, Unit](i + 1))
-          else Applicative[FreeList].point(\/.right[Int, Unit](())))(0)
+      val result = BindRec[FreeList].tailrecM((i: Int) =>
+        if (i < 50000) Applicative[FreeList].point(\/.left[Int, Unit](i + 1))
+        else Applicative[FreeList].point(\/.right[Int, Unit](())))(0)
 
       Equal[FreeList[Unit]].equal(expected, result)
     }

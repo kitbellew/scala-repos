@@ -98,12 +98,11 @@ class StreamLayoutSpec extends AkkaSpec {
         .compose(sink3, Keep.none)
         .wire(source012.outPorts.head, sink3.inPorts.head)
 
-      val runnable0123c =
-        source0
-          .compose(flow12, Keep.none)
-          .wire(source0.outPorts.head, flow12.inPorts.head)
-          .compose(sink3, Keep.none)
-          .wire(flow12.outPorts.head, sink3.inPorts.head)
+      val runnable0123c = source0
+        .compose(flow12, Keep.none)
+        .wire(source0.outPorts.head, flow12.inPorts.head)
+        .compose(sink3, Keep.none)
+        .wire(flow12.outPorts.head, sink3.inPorts.head)
 
       runnable0123a.inPorts.size should be(0)
       runnable0123a.outPorts.size should be(0)
@@ -153,10 +152,11 @@ class StreamLayoutSpec extends AkkaSpec {
       }
 
       "starting from a Flow" in {
-        val g =
-          (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒ f.map(identity))
-        val (mat, fut) =
-          g.runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
+        val g = (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒
+          f.map(identity))
+        val (mat, fut) = g.runWith(
+          Source.single(42).mapMaterializedValue(_ ⇒ 1),
+          Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }
@@ -186,8 +186,9 @@ class StreamLayoutSpec extends AkkaSpec {
       "starting from a Flow" in {
         val g = Flow fromGraph Fusing.aggressive(
           (1 to tooDeepForStack).foldLeft(Flow[Int])((f, i) ⇒ f.map(identity)))
-        val (mat, fut) =
-          g.runWith(Source.single(42).mapMaterializedValue(_ ⇒ 1), Sink.seq)
+        val (mat, fut) = g.runWith(
+          Source.single(42).mapMaterializedValue(_ ⇒ 1),
+          Sink.seq)
         mat should ===(1)
         fut.futureValue should ===(List(42))
       }

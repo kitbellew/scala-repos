@@ -174,8 +174,8 @@ private[sql] trait SQLTestData { self =>
   }
 
   protected lazy val repeatedData: RDD[StringData] = {
-    val rdd =
-      sqlContext.sparkContext.parallelize(List.fill(2)(StringData("test")))
+    val rdd = sqlContext.sparkContext.parallelize(
+      List.fill(2)(StringData("test")))
     rdd.toDF().registerTempTable("repeatedData")
     rdd
   }
@@ -224,8 +224,9 @@ private[sql] trait SQLTestData { self =>
   }
 
   protected lazy val tableName: DataFrame = {
-    val df =
-      sqlContext.sparkContext.parallelize(TableName("test") :: Nil).toDF()
+    val df = sqlContext.sparkContext
+      .parallelize(TableName("test") :: Nil)
+      .toDF()
     df.registerTempTable("tableName")
     df
   }

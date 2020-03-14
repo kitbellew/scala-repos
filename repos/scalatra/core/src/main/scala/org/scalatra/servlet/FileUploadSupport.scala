@@ -112,22 +112,21 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
         bodyParams
 
       case None => {
-        val bodyParams =
-          getParts(req).foldRight(BodyParams(FileMultiParams(), Map.empty)) {
-            (part, params) =>
-              val item = FileItem(part)
+        val bodyParams = getParts(req).foldRight(
+          BodyParams(FileMultiParams(), Map.empty)) { (part, params) =>
+          val item = FileItem(part)
 
-              if (!(item.isFormField)) {
-                BodyParams(
-                  params.fileParams + (
-                    (
-                      item.getFieldName,
-                      item +: params.fileParams
-                        .getOrElse(item.getFieldName, List[FileItem]())
-                    )),
-                  params.formParams)
-              } else { BodyParams(params.fileParams, params.formParams) }
-          }
+          if (!(item.isFormField)) {
+            BodyParams(
+              params.fileParams + (
+                (
+                  item.getFieldName,
+                  item +: params.fileParams
+                    .getOrElse(item.getFieldName, List[FileItem]())
+                )),
+              params.formParams)
+          } else { BodyParams(params.fileParams, params.formParams) }
+        }
 
         req.setAttribute(BodyParamsKey, bodyParams)
         bodyParams

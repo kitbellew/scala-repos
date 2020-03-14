@@ -49,9 +49,8 @@ class KetamaDistributorTest extends WordSpec {
         val hash = KeyHasher.KETAMA.hashKey(testcase(0).getBytes)
 
         val handle = ketamaDistributor.nodeForHash(hash)
-        val handle2 =
-          ketamaDistributorInoldLibMemcachedVersionComplianceMode.nodeForHash(
-            hash)
+        val handle2 = ketamaDistributorInoldLibMemcachedVersionComplianceMode
+          .nodeForHash(hash)
         val resultIp = handleToIp(handle)
         val resultIp2 = handleToIp(handle2)
         assert(testcase(3) == resultIp)

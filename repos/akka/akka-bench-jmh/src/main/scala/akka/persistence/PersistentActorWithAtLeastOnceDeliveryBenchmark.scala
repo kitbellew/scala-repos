@@ -38,8 +38,9 @@ class PersistentActorWithAtLeastOnceDeliveryBenchmark {
 
   @Setup
   def setup(): Unit = {
-    system =
-      ActorSystem("PersistentActorWithAtLeastOnceDeliveryBenchmark", config)
+    system = ActorSystem(
+      "PersistentActorWithAtLeastOnceDeliveryBenchmark",
+      config)
 
     probe = TestProbe()(system)
 

@@ -132,8 +132,9 @@ object FakeKeyStore {
 
     // Since the signature provider may have a different algorithm ID to what we think it should be,
     // we need to reset the algorithm ID, and resign the certificate
-    val actualAlgorithm =
-      cert.get(X509CertImpl.SIG_ALG).asInstanceOf[AlgorithmId]
+    val actualAlgorithm = cert
+      .get(X509CertImpl.SIG_ALG)
+      .asInstanceOf[AlgorithmId]
     certInfo.set(
       CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM,
       actualAlgorithm)

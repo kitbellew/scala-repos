@@ -413,8 +413,7 @@ object ConcurrentSkipListSetFactory extends ConcurrentSkipListSetFactory {
 }
 
 class ConcurrentSkipListSetFactory extends NavigableSetFactory {
-  def implementationName: String =
-    "java.util.concurrent.ConcurrentSkipListSet"
+  def implementationName: String = "java.util.concurrent.ConcurrentSkipListSet"
 
   def empty[E: ClassTag]: ju.concurrent.ConcurrentSkipListSet[E] =
     new ConcurrentSkipListSet[E]

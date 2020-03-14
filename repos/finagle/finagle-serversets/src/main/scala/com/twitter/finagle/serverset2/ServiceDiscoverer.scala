@@ -72,22 +72,24 @@ private[serverset2] class ServiceDiscoverer(
 ) {
   import ServiceDiscoverer._
 
-  private[this] val zkEntriesReadStat =
-    statsReceiver.scope("entries").stat("read_ms")
-  private[this] val zkVectorsReadStat =
-    statsReceiver.scope("vectors").stat("read_ms")
+  private[this] val zkEntriesReadStat = statsReceiver
+    .scope("entries")
+    .stat("read_ms")
+  private[this] val zkVectorsReadStat = statsReceiver
+    .scope("vectors")
+    .stat("read_ms")
 
   private[this] val actZkSession = Activity(varZkSession.map(Activity.Ok(_)))
   private[this] val log = Logger(getClass)
-  private[this] val retryJitter =
-    Duration.fromSeconds(20 + Rng.threadLocal.nextInt(120))
+  private[this] val retryJitter = Duration.fromSeconds(
+    20 + Rng.threadLocal.nextInt(120))
 
   /**
     * Monitor the session status of the ZkSession and expose to listeners whether
     * the connection is healthy or unhealthy. Exposed for testing
     */
-  private[serverset2] val rawHealth: Var[ClientHealth] =
-    Var.async[ClientHealth](ClientHealth.Healthy) { u =>
+  private[serverset2] val rawHealth: Var[ClientHealth] = Var
+    .async[ClientHealth](ClientHealth.Healthy) { u =>
       @volatile var stateListener = Closable.nop
 
       val sessionChanges = varZkSession.changes.dedup.respond { zk =>
@@ -113,8 +115,10 @@ private[serverset2] class ServiceDiscoverer(
     * which only reports unhealthy when the rawHealth has been unhealthy for
     * a long enough time (as defined by the stabilization epoch).
     */
-  private[serverset2] val health: Var[ClientHealth] =
-    HealthStabilizer(rawHealth, healthStabilizationEpoch, statsReceiver)
+  private[serverset2] val health: Var[ClientHealth] = HealthStabilizer(
+    rawHealth,
+    healthStabilizationEpoch,
+    statsReceiver)
 
   /**
     * Activity to keep a hydrated list of Entrys or Vectors for a given ZK path.
@@ -215,8 +219,9 @@ private[serverset2] class ServiceDiscoverer(
     val es = entriesOf(path)
     val vs = vectorsOf(path)
 
-    val raw =
-      es.join(vs).map { case (ents, vecs) => zipWithWeights(ents, vecs.toSet) }
+    val raw = es.join(vs).map {
+      case (ents, vecs) => zipWithWeights(ents, vecs.toSet)
+    }
 
     // Squash duplicate updates
     Activity(Var(Activity.Pending, raw.states.dedup))

@@ -217,8 +217,9 @@ object WorksheetFoldGroup {
       project: Project,
       splitter: WorksheetDiffSplitters.SimpleWorksheetSplitter,
       file: PsiFile) {
-    val bytes =
-      FileAttributeUtilCache.readAttribute(WORKSHEET_PERSISTENT_FOLD_KEY, file)
+    val bytes = FileAttributeUtilCache.readAttribute(
+      WORKSHEET_PERSISTENT_FOLD_KEY,
+      file)
     if (bytes == null) return
 
     lazy val group =

@@ -29,8 +29,7 @@ final class MongoCache[K, V: MongoCache.Handler] private (
       }
     }
 
-  def remove(k: K): Funit =
-    coll.remove(select(k)).void >>- (cache remove k)
+  def remove(k: K): Funit = coll.remove(select(k)).void >>- (cache remove k)
 
   private case class Entry(_id: String, v: V, e: DateTime)
 

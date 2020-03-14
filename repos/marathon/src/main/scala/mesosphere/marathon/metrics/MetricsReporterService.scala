@@ -144,8 +144,10 @@ class MetricsReporterService @Inject() (
     val interval = params.get("interval").map(_.toLong).getOrElse(10L)
     val prefix = params.getOrElse("prefix", "marathon_test")
 
-    val tags =
-      params.get("tags").map(_.split(",").toSeq).getOrElse(Seq.empty[String])
+    val tags = params
+      .get("tags")
+      .map(_.split(",").toSeq)
+      .getOrElse(Seq.empty[String])
 
     val reporter = DatadogReporter
       .forRegistry(registry)

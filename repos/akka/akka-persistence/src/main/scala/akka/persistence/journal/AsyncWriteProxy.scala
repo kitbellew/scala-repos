@@ -30,11 +30,10 @@ private[persistence] trait AsyncWriteProxy
   private var isInitialized = false
   private var isInitTimedOut = false
   protected var store: Option[ActorRef] = None
-  private val storeNotInitialized =
-    Future.failed(
-      new TimeoutException(
-        "Store not initialized. " +
-          "Use `SharedLeveldbJournal.setStore(sharedStore, system)`"))
+  private val storeNotInitialized = Future.failed(
+    new TimeoutException(
+      "Store not initialized. " +
+        "Use `SharedLeveldbJournal.setStore(sharedStore, system)`"))
 
   override protected[akka] def aroundPreStart(): Unit = {
     context.system.scheduler.scheduleOnce(timeout.duration, self, InitTimeout)

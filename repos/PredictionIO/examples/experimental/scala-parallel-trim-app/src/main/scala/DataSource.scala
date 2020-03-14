@@ -41,8 +41,9 @@ class DataSource(val dsp: DataSourceParams)
       untilTime = dsp.untilTime
     )(sc)
 
-    val dstEvents: Array[Event] =
-      eventsDb.find(appId = dsp.dstAppId)(sc).take(1)
+    val dstEvents: Array[Event] = eventsDb
+      .find(appId = dsp.dstAppId)(sc)
+      .take(1)
 
     if (dstEvents.size > 0) {
       throw new Exception(s"DstApp ${dsp.dstAppId} is not empty. Quitting.")

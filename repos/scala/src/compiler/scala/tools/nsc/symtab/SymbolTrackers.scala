@@ -65,8 +65,8 @@ trait SymbolTrackers {
     private def current = currentMap.keySet
     private def prev = prevMap.keySet
 
-    private var history =
-      List[Change](Change(Set(), Set(), Map(), Map(), Map()))
+    private var history = List[Change](
+      Change(Set(), Set(), Map(), Map(), Map()))
     private var prevFlags = Map[Symbol, Long]()
     private var prevOwners = Map[Symbol, Symbol]()
 

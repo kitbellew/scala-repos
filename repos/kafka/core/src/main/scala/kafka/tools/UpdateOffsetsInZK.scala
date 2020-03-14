@@ -64,8 +64,9 @@ object UpdateOffsetsInZK {
 
     var numParts = 0
     for (partition <- partitions) {
-      val brokerHostingPartition =
-        zkUtils.getLeaderForPartition(topic, partition)
+      val brokerHostingPartition = zkUtils.getLeaderForPartition(
+        topic,
+        partition)
 
       val broker = brokerHostingPartition match {
         case Some(b) => b

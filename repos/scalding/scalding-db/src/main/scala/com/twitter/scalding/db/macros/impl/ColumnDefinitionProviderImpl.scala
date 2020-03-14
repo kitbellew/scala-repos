@@ -264,8 +264,9 @@ object ColumnDefinitionProviderImpl {
         val nullableVal =
           if (cf.nullable) q"_root_.com.twitter.scalding.db.Nullable"
           else q"_root_.com.twitter.scalding.db.NotNullable"
-        val fieldTypeSelect =
-          Select(q"_root_.com.twitter.scalding.db", newTermName(cf.fieldType))
+        val fieldTypeSelect = Select(
+          q"_root_.com.twitter.scalding.db",
+          newTermName(cf.fieldType))
         val res = q"""new _root_.com.twitter.scalding.db.ColumnDefinition(
         $fieldTypeSelect,
         _root_.com.twitter.scalding.db.ColumnName(${cf.fieldName.toStr}),

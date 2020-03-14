@@ -101,8 +101,8 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
       readLast(coveringBatches.min, mode).right.flatMap {
         batchLastFlow =>
           val (startingBatch, init) = batchLastFlow
-          val streamBatches =
-            BatchID.range(startingBatch.next, coveringBatches.max)
+          val streamBatches = BatchID
+            .range(startingBatch.next, coveringBatches.max)
           val batchStreams = streamBatches.map { b => (b, readStream(b, mode)) }
           // only produce continuous output, so stop at the first none:
           val existing = batchStreams
@@ -114,13 +114,11 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
               "[ERROR] Could not load any batches of the service stream in: " + toString + " for: " + timeSpan.toString))
           } else {
             val inBatches = List(startingBatch) ++ existing.map { _._1 }
-            val bInt =
-              BatchID
-                .toInterval(inBatches)
-                .get // by construction this is an interval, so this can't throw
-            val toRead =
-              batchOps
-                .intersect(bInt, timeSpan) // No need to read more than this
+            val bInt = BatchID
+              .toInterval(inBatches)
+              .get // by construction this is an interval, so this can't throw
+            val toRead = batchOps
+              .intersect(bInt, timeSpan) // No need to read more than this
             getKeys((toRead, mode)).right
               .map {
                 case ((available, outM), getFlow) =>

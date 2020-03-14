@@ -102,10 +102,14 @@ class BLASSuite extends SparkFunSuite {
     assert(dot(sx, dx) ~== 5.0 absTol 1e-15)
     assert(dot(dx, sx) ~== 5.0 absTol 1e-15)
 
-    val sx1 =
-      Vectors.sparse(10, Array(0, 3, 5, 7, 8), Array(1.0, 2.0, 3.0, 4.0, 5.0))
-    val sx2 =
-      Vectors.sparse(10, Array(1, 3, 6, 7, 9), Array(1.0, 2.0, 3.0, 4.0, 5.0))
+    val sx1 = Vectors.sparse(
+      10,
+      Array(0, 3, 5, 7, 8),
+      Array(1.0, 2.0, 3.0, 4.0, 5.0))
+    val sx2 = Vectors.sparse(
+      10,
+      Array(1, 3, 6, 7, 9),
+      Array(1.0, 2.0, 3.0, 4.0, 5.0))
     assert(dot(sx1, sx2) ~== 20.0 absTol 1e-15)
     assert(dot(sx2, sx1) ~== 20.0 absTol 1e-15)
 
@@ -158,11 +162,10 @@ class BLASSuite extends SparkFunSuite {
 
     assert(dA ~== expected absTol 1e-15)
 
-    val dB =
-      new DenseMatrix(
-        3,
-        4,
-        Array(0.0, 1.2, 2.2, 3.1, 1.2, 3.2, 5.3, 4.6, 2.2, 5.3, 1.8, 3.0))
+    val dB = new DenseMatrix(
+      3,
+      4,
+      Array(0.0, 1.2, 2.2, 3.1, 1.2, 3.2, 5.3, 4.6, 2.2, 5.3, 1.8, 3.0))
 
     withClue("Matrix A must be a symmetric Matrix") {
       intercept[Exception] { syr(alpha, x, dB) }
@@ -197,11 +200,10 @@ class BLASSuite extends SparkFunSuite {
   }
 
   test("gemm") {
-    val dA =
-      new DenseMatrix(
-        4,
-        3,
-        Array(0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0))
+    val dA = new DenseMatrix(
+      4,
+      3,
+      Array(0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0))
     val sA = new SparseMatrix(
       4,
       3,
@@ -261,18 +263,16 @@ class BLASSuite extends SparkFunSuite {
       intercept[Exception] { gemm(1.0, dA.transpose, B, 2.0, C1) }
     }
 
-    val dATman =
-      new DenseMatrix(
-        3,
-        4,
-        Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0))
-    val sATman =
-      new SparseMatrix(
-        3,
-        4,
-        Array(0, 1, 2, 3, 4),
-        Array(1, 0, 1, 2),
-        Array(2.0, 1.0, 1.0, 3.0))
+    val dATman = new DenseMatrix(
+      3,
+      4,
+      Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0))
+    val sATman = new SparseMatrix(
+      3,
+      4,
+      Array(0, 1, 2, 3, 4),
+      Array(1, 0, 1, 2),
+      Array(2.0, 1.0, 1.0, 3.0))
 
     val dATT = dATman.transpose
     val sATT = sATman.transpose
@@ -313,11 +313,10 @@ class BLASSuite extends SparkFunSuite {
 
   test("gemv") {
 
-    val dA =
-      new DenseMatrix(
-        4,
-        3,
-        Array(0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0))
+    val dA = new DenseMatrix(
+      4,
+      3,
+      Array(0.0, 1.0, 0.0, 0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 3.0))
     val sA = new SparseMatrix(
       4,
       3,
@@ -325,20 +324,18 @@ class BLASSuite extends SparkFunSuite {
       Array(1, 0, 2, 3),
       Array(1.0, 2.0, 1.0, 3.0))
 
-    val dA2 =
-      new DenseMatrix(
-        4,
-        3,
-        Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0),
-        true)
-    val sA2 =
-      new SparseMatrix(
-        4,
-        3,
-        Array(0, 1, 2, 3, 4),
-        Array(1, 0, 1, 2),
-        Array(2.0, 1.0, 1.0, 3.0),
-        true)
+    val dA2 = new DenseMatrix(
+      4,
+      3,
+      Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0),
+      true)
+    val sA2 = new SparseMatrix(
+      4,
+      3,
+      Array(0, 1, 2, 3, 4),
+      Array(1, 0, 1, 2),
+      Array(2.0, 1.0, 1.0, 3.0),
+      true)
 
     val dx = new DenseVector(Array(1.0, 2.0, 3.0))
     val sx = dx.toSparse
@@ -416,18 +413,16 @@ class BLASSuite extends SparkFunSuite {
       intercept[Exception] { gemv(1.0, sA.transpose, sx, 2.0, y1) }
     }
 
-    val dAT =
-      new DenseMatrix(
-        3,
-        4,
-        Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0))
-    val sAT =
-      new SparseMatrix(
-        3,
-        4,
-        Array(0, 1, 2, 3, 4),
-        Array(1, 0, 1, 2),
-        Array(2.0, 1.0, 1.0, 3.0))
+    val dAT = new DenseMatrix(
+      3,
+      4,
+      Array(0.0, 2.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 3.0))
+    val sAT = new SparseMatrix(
+      3,
+      4,
+      Array(0, 1, 2, 3, 4),
+      Array(1, 0, 1, 2),
+      Array(2.0, 1.0, 1.0, 3.0))
 
     val dATT = dAT.transpose
     val sATT = sAT.transpose

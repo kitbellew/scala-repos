@@ -106,8 +106,8 @@ final class OneVsRestModel private[ml] (
     if (handlePersistence) { newDataset.persist(StorageLevel.MEMORY_AND_DISK) }
 
     // update the accumulator column with the result of prediction of models
-    val aggregatedDataset =
-      models.zipWithIndex.foldLeft[DataFrame](newDataset) {
+    val aggregatedDataset = models.zipWithIndex
+      .foldLeft[DataFrame](newDataset) {
         case (df, (model, index)) =>
           val rawPredictionCol = model.getRawPredictionCol
           val columns = origCols ++ List(col(rawPredictionCol), col(accColName))
@@ -223,8 +223,9 @@ final class OneVsRest @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val models = Range(0, numClasses).par
       .map { index =>
         // generate new label metadata for the binary problem.
-        val newLabelMeta =
-          BinaryAttribute.defaultAttr.withName("label").toMetadata()
+        val newLabelMeta = BinaryAttribute.defaultAttr
+          .withName("label")
+          .toMetadata()
         val labelColName = "mc2b$" + index
         val trainingDataset = multiclassLabeled.withColumn(
           labelColName,

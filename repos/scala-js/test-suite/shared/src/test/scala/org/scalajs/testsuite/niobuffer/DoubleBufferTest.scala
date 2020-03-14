@@ -22,8 +22,7 @@ abstract class DoubleBufferTest extends BaseBufferTest {
   class WrappedDoubleBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Double]): DoubleBuffer =
-      DoubleBuffer.wrap(array)
+    def baseWrap(array: Array[Double]): DoubleBuffer = DoubleBuffer.wrap(array)
 
     def baseWrap(array: Array[Double], offset: Int, length: Int): DoubleBuffer =
       DoubleBuffer.wrap(array, offset, length)
@@ -51,13 +50,13 @@ class WrappedDoubleBufferTest extends DoubleBufferTest {
 }
 
 class WrappedDoubleReadOnlyBufferTest extends DoubleBufferTest {
-  val factory: Factory =
-    new WrappedDoubleBufferFactory with BufferFactory.ReadOnlyBufferFactory
+  val factory: Factory = new WrappedDoubleBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocDoubleSlicedBufferTest extends DoubleBufferTest {
-  val factory: Factory =
-    new AllocDoubleBufferFactory with BufferFactory.SlicedBufferFactory
+  val factory: Factory = new AllocDoubleBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Double views of byte buffers

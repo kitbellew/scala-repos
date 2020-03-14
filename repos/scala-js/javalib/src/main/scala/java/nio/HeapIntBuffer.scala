@@ -19,32 +19,26 @@ private[nio] final class HeapIntBuffer private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): IntBuffer =
-    GenHeapBuffer(this).generic_slice()
+  def slice(): IntBuffer = GenHeapBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): IntBuffer =
-    GenHeapBuffer(this).generic_duplicate()
+  def duplicate(): IntBuffer = GenHeapBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): IntBuffer =
     GenHeapBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Int =
-    GenBuffer(this).generic_get()
+  def get(): Int = GenBuffer(this).generic_get()
 
   @noinline
-  def put(i: Int): IntBuffer =
-    GenBuffer(this).generic_put(i)
+  def put(i: Int): IntBuffer = GenBuffer(this).generic_put(i)
 
   @noinline
-  def get(index: Int): Int =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Int = GenBuffer(this).generic_get(index)
 
   @noinline
-  def put(index: Int, i: Int): IntBuffer =
-    GenBuffer(this).generic_put(index, i)
+  def put(index: Int, i: Int): IntBuffer = GenBuffer(this).generic_put(index, i)
 
   @noinline
   override def get(dst: Array[Int], offset: Int, length: Int): IntBuffer =
@@ -55,8 +49,7 @@ private[nio] final class HeapIntBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): IntBuffer =
-    GenHeapBuffer(this).generic_compact()
+  def compact(): IntBuffer = GenHeapBuffer(this).generic_compact()
 
   def order(): ByteOrder = ByteOrder.nativeOrder()
 

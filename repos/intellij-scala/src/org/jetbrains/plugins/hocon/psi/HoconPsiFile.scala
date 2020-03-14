@@ -16,11 +16,9 @@ import scala.annotation.tailrec
 
 class HoconPsiFile(provider: FileViewProvider)
     extends PsiFileImpl(HoconFileElementType, HoconFileElementType, provider) {
-  def accept(visitor: PsiElementVisitor): Unit =
-    visitor.visitFile(this)
+  def accept(visitor: PsiElementVisitor): Unit = visitor.visitFile(this)
 
-  def getFileType: FileType =
-    HoconFileType
+  def getFileType: FileType = HoconFileType
 
   def toplevelEntries = {
     @tailrec

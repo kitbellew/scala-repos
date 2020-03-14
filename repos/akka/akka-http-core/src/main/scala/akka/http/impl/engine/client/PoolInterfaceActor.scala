@@ -57,8 +57,9 @@ private class PoolInterfaceActor(
     with ActorLogging {
   import PoolInterfaceActor._
 
-  private[this] val inputBuffer =
-    Buffer[PoolRequest](hcps.setup.settings.maxOpenRequests, fm)
+  private[this] val inputBuffer = Buffer[PoolRequest](
+    hcps.setup.settings.maxOpenRequests,
+    fm)
   private[this] var activeIdleTimeout: Option[Cancellable] = None
 
   log.debug("(Re-)starting host connection pool to {}:{}", hcps.host, hcps.port)
@@ -187,12 +188,12 @@ private class PoolInterfaceActor(
 
   def dispatchRequest(pr: PoolRequest): Unit = {
     val scheme = Uri.httpScheme(hcps.setup.connectionContext.isSecure)
-    val hostHeader =
-      headers.Host(hcps.host, Uri.normalizePort(hcps.port, scheme))
-    val effectiveRequest =
-      pr.request
-        .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
-        .withDefaultHeaders(hostHeader)
+    val hostHeader = headers.Host(
+      hcps.host,
+      Uri.normalizePort(hcps.port, scheme))
+    val effectiveRequest = pr.request
+      .withUri(pr.request.uri.toHttpRequestTargetOriginForm)
+      .withDefaultHeaders(hostHeader)
     val retries =
       if (pr.request.method.isIdempotent) hcps.setup.settings.maxRetries else 0
     onNext(RequestContext(effectiveRequest, pr.responsePromise, retries))

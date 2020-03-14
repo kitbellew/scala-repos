@@ -425,8 +425,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
     // Used by Yarn in 1.1 and before
     sys.props.get("spark.driver.libraryPath").foreach { value =>
-      val warning =
-        s"""
+      val warning = s"""
           |spark.driver.libraryPath was detected (set to '$value').
           |This is deprecated in Spark 1.2+.
           |
@@ -491,8 +490,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
     // Check for legacy configs
     sys.env.get("SPARK_JAVA_OPTS").foreach { value =>
-      val warning =
-        s"""
+      val warning = s"""
           |SPARK_JAVA_OPTS was detected (set to '$value').
           |This is deprecated in Spark 1.0+.
           |
@@ -516,8 +514,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     }
 
     sys.env.get("SPARK_CLASSPATH").foreach { value =>
-      val warning =
-        s"""
+      val warning = s"""
           |SPARK_CLASSPATH was detected (set to '$value').
           |This is deprecated in Spark 1.0+.
           |
@@ -540,8 +537,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
 
     if (!contains(sparkExecutorInstances)) {
       sys.env.get("SPARK_WORKER_INSTANCES").foreach { value =>
-        val warning =
-          s"""
+        val warning = s"""
              |SPARK_WORKER_INSTANCES was detected (set to '$value').
              |This is deprecated in Spark 1.0+.
              |

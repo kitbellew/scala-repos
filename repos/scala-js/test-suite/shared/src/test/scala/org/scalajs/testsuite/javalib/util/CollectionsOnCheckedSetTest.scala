@@ -26,8 +26,7 @@ trait CollectionsOnCheckedSetTest extends CollectionsOnSetsTest {
           ct.runtimeClass.asInstanceOf[Class[E]])
       }
 
-      def allowsNullElement: Boolean =
-        originalFactory.allowsNullElement
+      def allowsNullElement: Boolean = originalFactory.allowsNullElement
     }
   }
 }
@@ -47,8 +46,7 @@ trait CollectionsOnCheckedSortedSetTest extends CollectionsOnSortedSetsTest {
           ct.runtimeClass.asInstanceOf[Class[E]])
       }
 
-      def allowsNullElement: Boolean =
-        originalFactory.allowsNullElement
+      def allowsNullElement: Boolean = originalFactory.allowsNullElement
     }
   }
 }

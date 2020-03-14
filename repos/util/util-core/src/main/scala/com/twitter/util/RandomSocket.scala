@@ -8,8 +8,7 @@ import java.net.{InetSocketAddress, Socket}
   * ephemeral ports.
   */
 object RandomSocket {
-  private[this] def localSocketOnPort(port: Int) =
-    new InetSocketAddress(port)
+  private[this] def localSocketOnPort(port: Int) = new InetSocketAddress(port)
   private[this] val ephemeralSocketAddress = localSocketOnPort(0)
 
   @deprecated(
@@ -20,8 +19,7 @@ object RandomSocket {
   @deprecated(
     "RandomSocket cannot ensure that the address is not in use.",
     "2014-11-13")
-  def nextAddress(): InetSocketAddress =
-    localSocketOnPort(nextPort())
+  def nextAddress(): InetSocketAddress = localSocketOnPort(nextPort())
 
   @deprecated(
     "RandomSocket cannot ensure that the address is not in use.",

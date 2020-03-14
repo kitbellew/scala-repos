@@ -44,8 +44,8 @@ object PlainSQL extends App {
       r.nextString,
       r.nextString,
       r.nextString))
-  implicit val getCoffeeResult =
-    GetResult(r => Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
+  implicit val getCoffeeResult = GetResult(r =>
+    Coffee(r.<<, r.<<, r.<<, r.<<, r.<<))
   //#getresult
 
   val db = Database.forConfig("h2mem1")
@@ -73,8 +73,7 @@ object PlainSQL extends App {
   out.foreach(Console.out.println)
 
   //#sqlu
-  def createCoffees: DBIO[Int] =
-    sqlu"""create table coffees(
+  def createCoffees: DBIO[Int] = sqlu"""create table coffees(
       name varchar not null,
       sup_id int not null,
       price double not null,
@@ -82,8 +81,7 @@ object PlainSQL extends App {
       total int not null,
       foreign key(sup_id) references suppliers(id))"""
 
-  def createSuppliers: DBIO[Int] =
-    sqlu"""create table suppliers(
+  def createSuppliers: DBIO[Int] = sqlu"""create table suppliers(
       id int not null primary key,
       name varchar not null,
       street varchar not null,

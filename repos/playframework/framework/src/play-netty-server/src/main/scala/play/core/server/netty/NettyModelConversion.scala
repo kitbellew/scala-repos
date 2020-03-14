@@ -192,8 +192,9 @@ private[server] class NettyModelConversion(
       case None         => HttpResponseStatus.valueOf(result.header.status)
     }
 
-    val connectionHeader =
-      ServerResultUtils.determineConnectionHeader(requestHeader, result)
+    val connectionHeader = ServerResultUtils.determineConnectionHeader(
+      requestHeader,
+      result)
     val skipEntity = requestHeader.method == HttpMethod.HEAD.name()
 
     val response: HttpResponse = result.body match {
@@ -299,8 +300,8 @@ private[server] class NettyModelConversion(
 
     val publisher = chunks.runWith(Sink.asPublisher(false))
 
-    val httpContentPublisher =
-      SynchronousMappedStreams.map[HttpChunk, HttpContent](
+    val httpContentPublisher = SynchronousMappedStreams
+      .map[HttpChunk, HttpContent](
         publisher,
         {
           case HttpChunk.Chunk(bytes) =>
@@ -358,8 +359,8 @@ private[server] class NettyModelConversion(
           if cachedSeconds == currentTimeSeconds =>
         dateHeaderString
       case _ =>
-        val dateHeaderString =
-          ResponseHeader.httpDateFormat.print(currentTimeMillis)
+        val dateHeaderString = ResponseHeader.httpDateFormat.print(
+          currentTimeMillis)
         cachedDateHeader = currentTimeSeconds -> dateHeaderString
         dateHeaderString
     }

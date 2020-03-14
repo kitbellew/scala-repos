@@ -89,14 +89,12 @@ object Font {
       family: String,
       weight: jfxst.FontWeight,
       posture: jfxst.FontPosture,
-      size: Double) =
-    new Font(jfxst.Font.font(family, weight, posture, size))
+      size: Double) = new Font(jfxst.Font.font(family, weight, posture, size))
   def apply(
       family: String,
       weight: jfxst.FontWeight,
       posture: jfxst.FontPosture,
-      size: Double) =
-    new Font(jfxst.Font.font(family, weight, posture, size))
+      size: Double) = new Font(jfxst.Font.font(family, weight, posture, size))
 
   /**
     * Gets the names of all fonts that are installed on the users system, including any application

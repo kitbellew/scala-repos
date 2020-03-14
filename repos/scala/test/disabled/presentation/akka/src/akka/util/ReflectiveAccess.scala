@@ -35,10 +35,9 @@ object ReflectiveAccess {
     val TRANSPORT = Config.config
       .getString("akka.remote.layer", "akka.remote.netty.NettyRemoteSupport")
 
-    private[akka] val configDefaultAddress =
-      new InetSocketAddress(
-        Config.config.getString("akka.remote.server.hostname", "localhost"),
-        Config.config.getInt("akka.remote.server.port", 2552))
+    private[akka] val configDefaultAddress = new InetSocketAddress(
+      Config.config.getString("akka.remote.server.hostname", "localhost"),
+      Config.config.getInt("akka.remote.server.port", 2552))
 
     lazy val isEnabled = remoteSupportClass.isDefined
 
@@ -139,13 +138,13 @@ object ReflectiveAccess {
           None
       }
 
-    val serializerClass: Option[Class[_]] =
-      getClassFor("akka.serialization.Serializer") match {
-        case Right(value) => Some(value)
-        case Left(exception) =>
-          EventHandler.debug(this, exception.toString)
-          None
-      }
+    val serializerClass: Option[Class[_]] = getClassFor(
+      "akka.serialization.Serializer") match {
+      case Right(value) => Some(value)
+      case Left(exception) =>
+        EventHandler.debug(this, exception.toString)
+        None
+    }
 
     def ensureEnabled =
       if (!isEnabled)

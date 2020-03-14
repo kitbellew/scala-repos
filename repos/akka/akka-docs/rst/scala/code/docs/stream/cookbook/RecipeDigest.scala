@@ -58,8 +58,8 @@ class RecipeDigest extends RecipeSpec {
 
           }
       }
-      val digest: Source[ByteString, NotUsed] =
-        data.via(new DigestCalculator("SHA-256"))
+      val digest: Source[ByteString, NotUsed] = data.via(
+        new DigestCalculator("SHA-256"))
       //#calculating-digest
 
       Await.result(digest.runWith(Sink.head), 3.seconds) should be(

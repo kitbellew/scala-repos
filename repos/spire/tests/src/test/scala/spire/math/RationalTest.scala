@@ -248,8 +248,8 @@ class RationalTest extends FunSuite {
 
   test("limitToInt makes rationals fit in Ints") {
     val rng = new Random(2919234)
-    val rationals =
-      List.fill(100)(Rational(BigInt(128, rng), BigInt(128, rng).abs + 1))
+    val rationals = List.fill(100)(
+      Rational(BigInt(128, rng), BigInt(128, rng).abs + 1))
     rationals foreach { a =>
       val b = a.limitToInt
       assert(

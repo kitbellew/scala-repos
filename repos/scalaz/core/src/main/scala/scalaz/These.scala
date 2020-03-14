@@ -88,14 +88,11 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
       case Both(a, b) => Both(b, a)
     }
 
-  def unary_~ : (B \&/ A) =
-    swap
+  def unary_~ : (B \&/ A) = swap
 
-  def swapped[AA, BB](k: (B \&/ A) => (BB \&/ AA)): (AA \&/ BB) =
-    k(swap).swap
+  def swapped[AA, BB](k: (B \&/ A) => (BB \&/ AA)): (AA \&/ BB) = k(swap).swap
 
-  def ~[AA, BB](k: (B \&/ A) => (BB \&/ AA)): (AA \&/ BB) =
-    swapped(k)
+  def ~[AA, BB](k: (B \&/ A) => (BB \&/ AA)): (AA \&/ BB) = swapped(k)
 
   def append[AA >: A, BB >: B](that: => (AA \&/ BB))(implicit
       SA: Semigroup[AA],
@@ -120,8 +117,7 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
       case Both(a, b) => Both(f(a), g(b))
     }
 
-  def leftMap[C](f: A => C): (C \&/ B) =
-    bimap(f, identity)
+  def leftMap[C](f: A => C): (C \&/ B) = bimap(f, identity)
 
   def bitraverse[F[_]: Apply, C, D](f: A => F[C], g: B => F[D]): F[C \&/ D] =
     this match {
@@ -133,8 +129,7 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
         Apply[F].apply2(f(a), g(b)) { case (c, d) => Both(c, d): C \&/ D }
     }
 
-  def map[D](g: B => D): (A \&/ D) =
-    bimap(identity, g)
+  def map[D](g: B => D): (A \&/ D) = bimap(identity, g)
 
   def traverse[F[_]: Applicative, AA >: A, D](g: B => F[D]): F[AA \&/ D] =
     this match {
@@ -146,8 +141,7 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
         Functor[F].map(g(b))(Both(a, _): A \&/ D)
     }
 
-  def foreach(g: B => Unit): Unit =
-    bimap(_ => (), g)
+  def foreach(g: B => Unit): Unit = bimap(_ => (), g)
 
   def flatMap[AA >: A, D](g: B => (AA \&/ D))(
       implicit M: Semigroup[AA]): (AA \&/ D) =
@@ -195,20 +189,15 @@ sealed abstract class \&/[+A, +B] extends Product with Serializable {
   def bifoldMap[M](f: A => M)(g: B => M)(implicit M: Semigroup[M]): M =
     fold(f, g, (a, b) => M.append(f(a), g(b)))
 
-  def exists(p: B => Boolean): Boolean =
-    b exists p
+  def exists(p: B => Boolean): Boolean = b exists p
 
-  def forall(p: B => Boolean): Boolean =
-    b forall p
+  def forall(p: B => Boolean): Boolean = b forall p
 
-  def toList: List[B] =
-    b.toList
+  def toList: List[B] = b.toList
 
-  def getOrElse[BB >: B](bb: => BB): BB =
-    b getOrElse bb
+  def getOrElse[BB >: B](bb: => BB): BB = b getOrElse bb
 
-  def |[BB >: B](bb: => BB): BB =
-    getOrElse(bb)
+  def |[BB >: B](bb: => BB): BB = getOrElse(bb)
 
   def valueOr[BB >: B](x: A => BB)(implicit M: Semigroup[BB]): BB =
     this match {
@@ -263,11 +252,9 @@ object \&/ extends TheseInstances {
   final case class That[B](bb: B) extends (Nothing \&/ B)
   final case class Both[A, B](aa: A, bb: B) extends (A \&/ B)
 
-  def apply[A, B](a: A, b: B): These[A, B] =
-    Both(a, b)
+  def apply[A, B](a: A, b: B): These[A, B] = Both(a, b)
 
-  def unapply[A, B](t: Both[A, B]): Some[(A, B)] =
-    Some((t.aa, t.bb))
+  def unapply[A, B](t: Both[A, B]): Some[(A, B)] = Some((t.aa, t.bb))
 
   import scalaz.std.list._
 
@@ -311,8 +298,7 @@ object \&/ extends TheseInstances {
     unalign[EphemeralStream, A, B](x)
 
   def unalign[F[_], A, B](x: F[A \&/ B])(
-      implicit M: MonadPlus[F]): (F[A], F[B]) =
-    (concatThis(x), concatThat(x))
+      implicit M: MonadPlus[F]): (F[A], F[B]) = (concatThis(x), concatThat(x))
 
   def merge[A](t: A \&/ A)(implicit S: Semigroup[A]): A =
     t match {
@@ -345,8 +331,7 @@ object \&/ extends TheseInstances {
 }
 
 sealed abstract class TheseInstances extends TheseInstances0 {
-  type These[A, B] =
-    A \&/ B
+  type These[A, B] = A \&/ B
 }
 
 sealed abstract class TheseInstances0 extends TheseInstances1 {
@@ -357,40 +342,32 @@ sealed abstract class TheseInstances0 extends TheseInstances1 {
       def tailrecM[A, B](f: A => L \&/ (A \/ B))(a: A): L \&/ B =
         \&/.tailrecM(f)(a)
 
-      override def map[A, B](x: L \&/ A)(f: A => B) =
-        x map f
+      override def map[A, B](x: L \&/ A)(f: A => B) = x map f
 
-      def bind[A, B](fa: L \&/ A)(f: A => L \&/ B) =
-        fa flatMap f
+      def bind[A, B](fa: L \&/ A)(f: A => L \&/ B) = fa flatMap f
 
-      def point[A](a: => A) =
-        \&/.That(a)
+      def point[A](a: => A) = \&/.That(a)
     }
 
-  implicit val TheseBitraverse: Bitraverse[\&/] =
-    new Bitraverse[\&/] {
-      override def bimap[A, B, C, D](fab: A \&/ B)(f: A => C, g: B => D) =
-        fab.bimap(f, g)
+  implicit val TheseBitraverse: Bitraverse[\&/] = new Bitraverse[\&/] {
+    override def bimap[A, B, C, D](fab: A \&/ B)(f: A => C, g: B => D) =
+      fab.bimap(f, g)
 
-      override def bifoldMap[A, B, M](fa: A \&/ B)(f: A => M)(g: B => M)(
-          implicit F: Monoid[M]) =
-        fa.bifoldMap(f)(g)
+    override def bifoldMap[A, B, M](fa: A \&/ B)(f: A => M)(g: B => M)(
+        implicit F: Monoid[M]) = fa.bifoldMap(f)(g)
 
-      override def bifoldRight[A, B, C](fa: A \&/ B, z: => C)(
-          f: (A, => C) => C)(g: (B, => C) => C) =
-        fa.bifoldRight(z)(f)(g)
+    override def bifoldRight[A, B, C](fa: A \&/ B, z: => C)(f: (A, => C) => C)(
+        g: (B, => C) => C) = fa.bifoldRight(z)(f)(g)
 
-      def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-          fab: A \&/ B)(f: A => G[C], g: B => G[D]) =
-        fab.bitraverse(f, g)
-    }
+    def bitraverseImpl[G[_]: Applicative, A, B, C, D](
+        fab: A \&/ B)(f: A => G[C], g: B => G[D]) = fab.bitraverse(f, g)
+  }
 
   implicit final def TheseOrder[A, B](implicit
       A: Order[A],
       B: Order[B]): Order[A \&/ B] =
     new Order[A \&/ B] {
-      override def equal(x: A \&/ B, y: A \&/ B) =
-        x === y
+      override def equal(x: A \&/ B, y: A \&/ B) = x === y
       override def order(x: A \&/ B, y: A \&/ B) =
         x match {
           case \&/.This(a1) =>
@@ -431,8 +408,7 @@ sealed abstract class TheseInstances1 {
         fa traverse f
 
       override def foldMap[A, B](fa: L \&/ A)(f: A => B)(
-          implicit F: Monoid[B]) =
-        fa foldMap f
+          implicit F: Monoid[B]) = fa foldMap f
 
       override def foldRight[A, B](fa: L \&/ A, z: => B)(f: (A, => B) => B) =
         fa.foldRight(z)(f)
@@ -443,16 +419,13 @@ sealed abstract class TheseInstances1 {
 
   implicit def TheseEqual[A, B](implicit
       EA: Equal[A],
-      EB: Equal[B]): Equal[A \&/ B] =
-    Equal.equal(_ === _)
+      EB: Equal[B]): Equal[A \&/ B] = Equal.equal(_ === _)
 
   implicit def TheseSemigroup[A, B](implicit
       SA: Semigroup[A],
-      SB: Semigroup[B]): Semigroup[A \&/ B] =
-    Semigroup.instance(_.append(_))
+      SB: Semigroup[B]): Semigroup[A \&/ B] = Semigroup.instance(_.append(_))
 
   implicit def TheseShow[A, B](implicit
       SA: Show[A],
-      SB: Show[B]): Show[A \&/ B] =
-    Show.show(_.show)
+      SB: Show[B]): Show[A \&/ B] = Show.show(_.show)
 }

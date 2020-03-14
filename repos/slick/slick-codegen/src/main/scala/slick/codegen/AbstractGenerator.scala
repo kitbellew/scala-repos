@@ -22,8 +22,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
   val ddlEnabled = true
 
   /** Table code generators. */
-  final lazy val tables: Seq[Table] =
-    model.tables.map(Table).sortBy(_.TableClass.rawName.toLowerCase)
+  final lazy val tables: Seq[Table] = model.tables
+    .map(Table)
+    .sortBy(_.TableClass.rawName.toLowerCase)
 
   /** Table code generators indexed by db table name. */
   final lazy val tablesByName: Map[m.QualifiedName, Table] =
@@ -68,20 +69,20 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     }
 
     /** Column code generators in the desired user-facing order. */
-    final lazy val columns: Seq[Column] =
-      desiredColumnOrder.map(columnsPositional)
+    final lazy val columns: Seq[Column] = desiredColumnOrder.map(
+      columnsPositional)
 
     /** Column code generators indexed by db column name */
     final lazy val columnsByName: Map[String, Column] =
       columns.map(c => c.model.name -> c).toMap
 
     /** Primary key code generator, if this table has one */
-    final lazy val primaryKey: Option[PrimaryKey] =
-      model.primaryKey.map(PrimaryKey)
+    final lazy val primaryKey: Option[PrimaryKey] = model.primaryKey.map(
+      PrimaryKey)
 
     /** Foreign key code generators */
-    final lazy val foreignKeys: Seq[ForeignKey] =
-      model.foreignKeys.map(ForeignKey)
+    final lazy val foreignKeys: Seq[ForeignKey] = model.foreignKeys.map(
+      ForeignKey)
 
     /** Index code generators */
     final lazy val indices: Seq[Index] = model.indices.map(Index)
@@ -351,8 +352,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     abstract case class PrimaryKeyDef(val model: m.PrimaryKey) extends TermDef {
 
       /** Columns code generators in correct order */
-      final lazy val columns: Seq[Column] =
-        model.columns.map(_.name).map(columnsByName)
+      final lazy val columns: Seq[Column] = model.columns
+        .map(_.name)
+        .map(columnsByName)
 
       /** Name used in the db or a default name */
       def dbName = model.name.getOrElse(table.model.name.table + "_PK")
@@ -386,8 +388,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final lazy val referencingTable = table
 
       /** Referencing columns code generators */
-      final lazy val referencingColumns: Seq[Column] =
-        model.referencingColumns.map(_.name).map(columnsByName)
+      final lazy val referencingColumns: Seq[Column] = model.referencingColumns
+        .map(_.name)
+        .map(columnsByName)
 
       /** Referenced Table code generator */
       final lazy val referencedTable: Table = tablesByName(
@@ -405,8 +408,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def onDelete: Code = actionCode(model.onDelete)
       def rawName: String =
         disambiguateTerm({
-          val fksToSameTable =
-            foreignKeys.filter(_.referencedTable == referencedTable)
+          val fksToSameTable = foreignKeys.filter(
+            _.referencedTable == referencedTable)
           require(
             fksToSameTable.filter(_.model.name.isEmpty).size <= 1,
             s"Found multiple unnamed foreign keys to same table, please manually provide names using overrides. ${referencingTable.model.name.table} -> ${referencedTable.model.name.table}"
@@ -441,8 +444,9 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       private val id = freshIdxId
 
       /** Columns code generators */
-      final lazy val columns: Seq[Column] =
-        model.columns.map(_.name).map(columnsByName)
+      final lazy val columns: Seq[Column] = model.columns
+        .map(_.name)
+        .map(columnsByName)
 
       /** Name used in the db or a default name */
       val dbName = model.name.getOrElse(table.model.name.table + "_INDEX_" + id)
@@ -587,28 +591,27 @@ trait GeneratorHelpers[Code, TermName, TypeName] {
   )
 
   /** Existing term member names in Table[_] that do not take parameters */
-  val slickTableTermMembersNoArgs =
+  val slickTableTermMembersNoArgs = Seq(
+    // Rep
+    Seq("toNode"),
+    // AbstractTable
     Seq(
-      // Rep
-      Seq("toNode"),
-      // AbstractTable
-      Seq(
-        "*",
-        "tableIdentitySymbol",
-        "create_*",
-        "foreignKeys",
-        "indexes",
-        "primaryKeys",
-        "schemaName",
-        "tableConstraints",
-        "tableName",
-        "tableNode",
-        "tableTag"),
-      // Table
-      Seq("O", "tableIdentitySymbol", "tableProvider"),
-      // generated code
-      Seq("_tableTag")
-    ).flatten
+      "*",
+      "tableIdentitySymbol",
+      "create_*",
+      "foreignKeys",
+      "indexes",
+      "primaryKeys",
+      "schemaName",
+      "tableConstraints",
+      "tableName",
+      "tableNode",
+      "tableTag"),
+    // Table
+    Seq("O", "tableIdentitySymbol", "tableProvider"),
+    // generated code
+    Seq("_tableTag")
+  ).flatten
   /* currently disambiguated using overloading
   /** Existing term member names in Table[_] that take parameters */
   val slickTableTermMembersHasArgs =

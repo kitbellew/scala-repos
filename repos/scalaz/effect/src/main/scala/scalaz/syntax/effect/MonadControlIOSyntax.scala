@@ -25,8 +25,7 @@ trait ToMonadControlIOOps
     with ToLiftControlIOOps
     with ToMonadOps {
   implicit def ToMonadControlIOOps[F[_], A](v: F[A])(
-      implicit F0: MonadControlIO[F]) =
-    new MonadControlIOOps[F, A](v)
+      implicit F0: MonadControlIO[F]) = new MonadControlIOOps[F, A](v)
 
   ////
 

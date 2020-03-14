@@ -19,8 +19,7 @@ import org.scalajs.testsuite.utils.AssertThrows._
 class ByteTest {
 
   @Test def compareTo(): Unit = {
-    def compare(x: Byte, y: Byte): Int =
-      new JByte(x).compareTo(new JByte(y))
+    def compare(x: Byte, y: Byte): Int = new JByte(x).compareTo(new JByte(y))
 
     assertTrue(compare(0.toByte, 5.toByte) < 0)
     assertTrue(compare(10.toByte, 9.toByte) > 0)

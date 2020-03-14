@@ -131,12 +131,18 @@ trait DocComments { self: Global =>
         // 2 - expanding explicit inheritance @inheritdoc tags
         // 3 - expanding variables like $COLL
         val useCaseCommentRaw = uc.comment.raw
-        val useCaseCommentMerged =
-          merge(fullSigComment, useCaseCommentRaw, defn)
-        val useCaseCommentInheritdoc =
-          expandInheritdoc(fullSigComment, useCaseCommentMerged, sym)
-        val useCaseCommentVariables =
-          expandVariables(useCaseCommentInheritdoc, sym, site)
+        val useCaseCommentMerged = merge(
+          fullSigComment,
+          useCaseCommentRaw,
+          defn)
+        val useCaseCommentInheritdoc = expandInheritdoc(
+          fullSigComment,
+          useCaseCommentMerged,
+          sym)
+        val useCaseCommentVariables = expandVariables(
+          useCaseCommentInheritdoc,
+          sym,
+          site)
         (defn, useCaseCommentVariables, uc.pos)
       }
     }

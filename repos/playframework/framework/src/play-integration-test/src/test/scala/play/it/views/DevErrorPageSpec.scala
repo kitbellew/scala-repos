@@ -23,8 +23,8 @@ object DevErrorPageSpec extends PlaySpecification {
     "link the error line if play.editor is configured" in new WithApplication(
       _.configure("play.editor" -> "someEditorLinkWith %s:%s")
     ) {
-      val result =
-        app.errorHandler.onServerError(FakeRequest(), testExceptionSource)
+      val result = app.errorHandler
+        .onServerError(FakeRequest(), testExceptionSource)
       contentAsString(result) must contain(
         """href="someEditorLinkWith someSourceFile:100" """)
     }
@@ -33,8 +33,9 @@ object DevErrorPageSpec extends PlaySpecification {
       val errorHandler = new DefaultHttpErrorHandler(
         Environment.simple(mode = Mode.Prod),
         Configuration.empty)
-      val result =
-        errorHandler.onServerError(FakeRequest(), testExceptionSource)
+      val result = errorHandler.onServerError(
+        FakeRequest(),
+        testExceptionSource)
       Helpers.contentAsString(result) must contain("Oops, an error occurred")
     }
   }

@@ -321,8 +321,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
                 } else whatBase == p(i)
               } contains true
             case ct: CollectionType =>
-              val (els, singleType) =
-                unwrapSingleColumn(whereV.asInstanceOf[Coll], ct)
+              val (els, singleType) = unwrapSingleColumn(
+                whereV.asInstanceOf[Coll],
+                ct)
               (if (singleType.isInstanceOf[OptionType])
                  els.map(_.asInstanceOf[Option[Any]] match {
                    case Some(v) => whatBase == v
@@ -575,8 +576,9 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
       reduce: (T, T) => T): Option[T] = {
     if (!it.hasNext) None
     else {
-      val it2 = if (opt) it.collect { case Some(b) => b }
-      else it
+      val it2 =
+        if (opt) it.collect { case Some(b) => b }
+        else it
       var res: T = null.asInstanceOf[T]
       var first = true
       it2.foreach { b =>

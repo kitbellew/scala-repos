@@ -88,27 +88,24 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   val endPoint = new EndPoint("localhost", 0, SecurityProtocol.PLAINTEXT)
 
-  val RequestKeyToResponseDeserializer: Map[Short, Class[_ <: Any]] =
-    Map(
-      ApiKeys.METADATA.id -> classOf[requests.MetadataResponse],
-      ApiKeys.PRODUCE.id -> classOf[requests.ProduceResponse],
-      ApiKeys.FETCH.id -> classOf[requests.FetchResponse],
-      ApiKeys.LIST_OFFSETS.id -> classOf[requests.ListOffsetResponse],
-      ApiKeys.OFFSET_COMMIT.id -> classOf[requests.OffsetCommitResponse],
-      ApiKeys.OFFSET_FETCH.id -> classOf[requests.OffsetFetchResponse],
-      ApiKeys.GROUP_COORDINATOR.id -> classOf[
-        requests.GroupCoordinatorResponse],
-      ApiKeys.UPDATE_METADATA_KEY.id -> classOf[
-        requests.UpdateMetadataResponse],
-      ApiKeys.JOIN_GROUP.id -> classOf[JoinGroupResponse],
-      ApiKeys.SYNC_GROUP.id -> classOf[SyncGroupResponse],
-      ApiKeys.HEARTBEAT.id -> classOf[HeartbeatResponse],
-      ApiKeys.LEAVE_GROUP.id -> classOf[LeaveGroupResponse],
-      ApiKeys.LEADER_AND_ISR.id -> classOf[requests.LeaderAndIsrResponse],
-      ApiKeys.STOP_REPLICA.id -> classOf[requests.StopReplicaResponse],
-      ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> classOf[
-        requests.ControlledShutdownResponse]
-    )
+  val RequestKeyToResponseDeserializer: Map[Short, Class[_ <: Any]] = Map(
+    ApiKeys.METADATA.id -> classOf[requests.MetadataResponse],
+    ApiKeys.PRODUCE.id -> classOf[requests.ProduceResponse],
+    ApiKeys.FETCH.id -> classOf[requests.FetchResponse],
+    ApiKeys.LIST_OFFSETS.id -> classOf[requests.ListOffsetResponse],
+    ApiKeys.OFFSET_COMMIT.id -> classOf[requests.OffsetCommitResponse],
+    ApiKeys.OFFSET_FETCH.id -> classOf[requests.OffsetFetchResponse],
+    ApiKeys.GROUP_COORDINATOR.id -> classOf[requests.GroupCoordinatorResponse],
+    ApiKeys.UPDATE_METADATA_KEY.id -> classOf[requests.UpdateMetadataResponse],
+    ApiKeys.JOIN_GROUP.id -> classOf[JoinGroupResponse],
+    ApiKeys.SYNC_GROUP.id -> classOf[SyncGroupResponse],
+    ApiKeys.HEARTBEAT.id -> classOf[HeartbeatResponse],
+    ApiKeys.LEAVE_GROUP.id -> classOf[LeaveGroupResponse],
+    ApiKeys.LEADER_AND_ISR.id -> classOf[requests.LeaderAndIsrResponse],
+    ApiKeys.STOP_REPLICA.id -> classOf[requests.StopReplicaResponse],
+    ApiKeys.CONTROLLED_SHUTDOWN_KEY.id -> classOf[
+      requests.ControlledShutdownResponse]
+  )
 
   val RequestKeyToErrorCode = Map[Short, (Nothing) => Short](
     ApiKeys.METADATA.id -> ((resp: requests.MetadataResponse) =>

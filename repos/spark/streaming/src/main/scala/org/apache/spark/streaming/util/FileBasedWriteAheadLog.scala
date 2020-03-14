@@ -65,8 +65,8 @@ private[streaming] class FileBasedWriteAheadLog(
     "WriteAheadLogManager" + callerName.map(c => s" for $c").getOrElse("")
   }
   private val forkJoinPool = ThreadUtils.newForkJoinPool(threadpoolName, 20)
-  private val executionContext =
-    ExecutionContext.fromExecutorService(forkJoinPool)
+  private val executionContext = ExecutionContext.fromExecutorService(
+    forkJoinPool)
 
   override protected def logName = {
     getClass.getName.stripSuffix("$") +
@@ -240,8 +240,9 @@ private[streaming] class FileBasedWriteAheadLog(
   private def initializeOrRecover(): Unit =
     synchronized {
       val logDirectoryPath = new Path(logDirectory)
-      val fileSystem =
-        HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
+      val fileSystem = HdfsUtils.getFileSystemForPath(
+        logDirectoryPath,
+        hadoopConf)
 
       if (fileSystem.exists(logDirectoryPath) &&
           fileSystem.getFileStatus(logDirectoryPath).isDirectory) {

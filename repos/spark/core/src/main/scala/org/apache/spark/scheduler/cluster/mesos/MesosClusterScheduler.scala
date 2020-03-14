@@ -128,17 +128,18 @@ private[spark] class MesosClusterScheduler(
     extends Scheduler
     with MesosSchedulerUtils {
   var frameworkUrl: String = _
-  private val metricsSystem =
-    MetricsSystem.createMetricsSystem(
-      "mesos_cluster",
-      conf,
-      new SecurityManager(conf))
+  private val metricsSystem = MetricsSystem.createMetricsSystem(
+    "mesos_cluster",
+    conf,
+    new SecurityManager(conf))
   private val master = conf.get("spark.master")
   private val appName = conf.get("spark.app.name")
   private val queuedCapacity = conf.getInt("spark.mesos.maxDrivers", 200)
   private val retainedDrivers = conf.getInt("spark.mesos.retainedDrivers", 200)
-  private val maxRetryWaitTime =
-    conf.getInt("spark.mesos.cluster.retry.wait.max", 60) // 1 minute
+  private val maxRetryWaitTime = conf.getInt(
+    "spark.mesos.cluster.retry.wait.max",
+    60
+  ) // 1 minute
   private val schedulerState = engineFactory.createEngine("scheduler")
   private val stateLock = new Object()
   private val finishedDrivers =
@@ -156,8 +157,8 @@ private[spark] class MesosClusterScheduler(
   // All supervised drivers that are waiting to retry after termination.
   private val pendingRetryDrivers = new ArrayBuffer[MesosDriverDescription]()
   private val queuedDriversState = engineFactory.createEngine("driverQueue")
-  private val launchedDriversState =
-    engineFactory.createEngine("launchedDrivers")
+  private val launchedDriversState = engineFactory.createEngine(
+    "launchedDrivers")
   private val pendingRetryDriversState = engineFactory.createEngine("retryList")
   // Flag to mark if the scheduler is ready to be called, which is until the scheduler
   // is registered with Mesos master.
@@ -402,9 +403,9 @@ private[spark] class MesosClusterScheduler(
       .map(path => Seq(path) ++ desc.command.libraryPathEntries)
       .getOrElse(desc.command.libraryPathEntries)
 
-    val prefixEnv = if (!entries.isEmpty) {
-      Utils.libraryPathEnvPrefix(entries)
-    } else { "" }
+    val prefixEnv =
+      if (!entries.isEmpty) { Utils.libraryPathEnvPrefix(entries) }
+      else { "" }
     val envBuilder = Environment.newBuilder()
     desc.command.environment.foreach {
       case (k, v) =>
@@ -412,46 +413,48 @@ private[spark] class MesosClusterScheduler(
           Variable.newBuilder().setName(k).setValue(v).build())
     }
     // Pass all spark properties to executor.
-    val executorOpts =
-      desc.schedulerProperties.map { case (k, v) => s"-D$k=$v" }.mkString(" ")
+    val executorOpts = desc.schedulerProperties
+      .map { case (k, v) => s"-D$k=$v" }
+      .mkString(" ")
     envBuilder.addVariables(
       Variable
         .newBuilder()
         .setName("SPARK_EXECUTOR_OPTS")
         .setValue(executorOpts))
-    val dockerDefined =
-      desc.schedulerProperties.contains("spark.mesos.executor.docker.image")
+    val dockerDefined = desc.schedulerProperties.contains(
+      "spark.mesos.executor.docker.image")
     val executorUri = desc.schedulerProperties
       .get("spark.executor.uri")
       .orElse(desc.command.environment.get("SPARK_EXECUTOR_URI"))
     // Gets the path to run spark-submit, and the path to the Mesos sandbox.
-    val (executable, sandboxPath) = if (dockerDefined) {
-      // Application jar is automatically downloaded in the mounted sandbox by Mesos,
-      // and the path to the mounted volume is stored in $MESOS_SANDBOX env variable.
-      ("./bin/spark-submit", "$MESOS_SANDBOX")
-    } else if (executorUri.isDefined) {
-      builder.addUris(
-        CommandInfo.URI.newBuilder().setValue(executorUri.get).build())
-      val folderBasename = executorUri.get.split('/').last.split('.').head
-      val cmdExecutable = s"cd $folderBasename*; $prefixEnv bin/spark-submit"
-      // Sandbox path points to the parent folder as we chdir into the folderBasename.
-      (cmdExecutable, "..")
-    } else {
-      val executorSparkHome = desc.schedulerProperties
-        .get("spark.mesos.executor.home")
-        .orElse(conf.getOption("spark.home"))
-        .orElse(Option(System.getenv("SPARK_HOME")))
-        .getOrElse {
-          throw new SparkException(
-            "Executor Spark home `spark.mesos.executor.home` is not set!")
-        }
-      val cmdExecutable =
-        new File(executorSparkHome, "./bin/spark-submit").getPath
-      // Sandbox points to the current directory by default with Mesos.
-      (cmdExecutable, ".")
-    }
-    val primaryResource =
-      new File(sandboxPath, desc.jarUrl.split("/").last).toString()
+    val (executable, sandboxPath) =
+      if (dockerDefined) {
+        // Application jar is automatically downloaded in the mounted sandbox by Mesos,
+        // and the path to the mounted volume is stored in $MESOS_SANDBOX env variable.
+        ("./bin/spark-submit", "$MESOS_SANDBOX")
+      } else if (executorUri.isDefined) {
+        builder.addUris(
+          CommandInfo.URI.newBuilder().setValue(executorUri.get).build())
+        val folderBasename = executorUri.get.split('/').last.split('.').head
+        val cmdExecutable = s"cd $folderBasename*; $prefixEnv bin/spark-submit"
+        // Sandbox path points to the parent folder as we chdir into the folderBasename.
+        (cmdExecutable, "..")
+      } else {
+        val executorSparkHome = desc.schedulerProperties
+          .get("spark.mesos.executor.home")
+          .orElse(conf.getOption("spark.home"))
+          .orElse(Option(System.getenv("SPARK_HOME")))
+          .getOrElse {
+            throw new SparkException(
+              "Executor Spark home `spark.mesos.executor.home` is not set!")
+          }
+        val cmdExecutable =
+          new File(executorSparkHome, "./bin/spark-submit").getPath
+        // Sandbox points to the current directory by default with Mesos.
+        (cmdExecutable, ".")
+      }
+    val primaryResource = new File(sandboxPath, desc.jarUrl.split("/").last)
+      .toString()
     val cmdOptions = generateCmdOption(desc, sandboxPath).mkString(" ")
     val appArguments = desc.command.arguments.mkString(" ")
     builder.setValue(s"$executable $cmdOptions $primaryResource $appArguments")
@@ -535,12 +538,18 @@ private[spark] class MesosClusterScheduler(
             s"cpu: $driverCpu, mem: $driverMem")
       } else {
         val offer = offerOption.get
-        val taskId =
-          TaskID.newBuilder().setValue(submission.submissionId).build()
-        val (remainingResources, cpuResourcesToUse) =
-          partitionResources(offer.resources, "cpus", driverCpu)
-        val (finalResources, memResourcesToUse) =
-          partitionResources(remainingResources.asJava, "mem", driverMem)
+        val taskId = TaskID
+          .newBuilder()
+          .setValue(submission.submissionId)
+          .build()
+        val (remainingResources, cpuResourcesToUse) = partitionResources(
+          offer.resources,
+          "cpus",
+          driverCpu)
+        val (finalResources, memResourcesToUse) = partitionResources(
+          remainingResources.asJava,
+          "mem",
+          driverMem)
         val commandInfo = buildDriverCommand(submission)
         val appName = submission.schedulerProperties("spark.app.name")
         val taskInfo = TaskInfo
@@ -569,8 +578,9 @@ private[spark] class MesosClusterScheduler(
               portmaps = portmaps)
             taskInfo.setContainer(container.build())
           }
-        val queuedTasks =
-          tasks.getOrElseUpdate(offer.offerId, new ArrayBuffer[TaskInfo])
+        val queuedTasks = tasks.getOrElseUpdate(
+          offer.offerId,
+          new ArrayBuffer[TaskInfo])
         queuedTasks += taskInfo.build()
         logTrace(
           s"Using offer ${offer.offerId.getValue} to launch driver " +

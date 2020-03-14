@@ -31,12 +31,12 @@ final class Cached(
 
   def countEnabled: Fu[Int] = countCache(true)
 
-  private implicit val LightUserBSONHandler =
-    reactivemongo.bson.Macros.handler[LightUser]
-  private implicit val LightPerfBSONHandler =
-    reactivemongo.bson.Macros.handler[LightPerf]
-  private implicit val LightCountBSONHandler =
-    reactivemongo.bson.Macros.handler[LightCount]
+  private implicit val LightUserBSONHandler = reactivemongo.bson.Macros
+    .handler[LightUser]
+  private implicit val LightPerfBSONHandler = reactivemongo.bson.Macros
+    .handler[LightPerf]
+  private implicit val LightCountBSONHandler = reactivemongo.bson.Macros
+    .handler[LightCount]
 
   def leaderboards: Fu[Perfs.Leaderboards] =
     for {

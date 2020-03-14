@@ -101,11 +101,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     def stackTop: Int = this.stackTop
     def peekStack(n: Int): V = this.peekStack(n)
 
-    val prodCons =
-      InstructionStackEffect.forAsmAnalysis(
-        insn,
-        this
-      ) // needs to be called before super.execute, see its doc
+    val prodCons = InstructionStackEffect.forAsmAnalysis(
+      insn,
+      this
+    ) // needs to be called before super.execute, see its doc
     val consumed = InstructionStackEffect.cons(prodCons)
     val produced = InstructionStackEffect.prod(prodCons)
 
@@ -323,8 +322,10 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
             // The iterator yields elements that are in `thisAliases` but not in `otherAliases`.
             // As a side-effect, for every index `i` that is in both alias sets, the iterator sets
             // `knownOk(i) = true`: the alias sets for these values don't need to be merged again.
-            val thisNotOtherIt =
-              AliasSet.andNotIterator(thisAliases, otherAliases, knownOk)
+            val thisNotOtherIt = AliasSet.andNotIterator(
+              thisAliases,
+              otherAliases,
+              knownOk)
             if (thisNotOtherIt.hasNext) {
               aliasesChanged = true
               val newSet = AliasSet.empty

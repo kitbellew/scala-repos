@@ -149,8 +149,9 @@ object GraphStages {
     case class FailAndCancel(ex: Throwable) extends Operation
 
     override val initialAttributes = Attributes.name("breaker")
-    override val shape =
-      FlowShape(Inlet[Any]("breaker.in"), Outlet[Any]("breaker.out"))
+    override val shape = FlowShape(
+      Inlet[Any]("breaker.in"),
+      Outlet[Any]("breaker.out"))
     override def toString: String = "Breaker"
 
     override def createLogicAndMaterializedValue(attr: Attributes) = {

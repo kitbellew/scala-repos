@@ -139,8 +139,7 @@ trait SetLike[A, +This <: SetLike[A, This] with Set[A]]
   /** Removes all elements from the set. After this operation is completed,
     *  the set will be empty.
     */
-  def clear(): Unit =
-    for (elem <- this.toList) this -= elem
+  def clear(): Unit = for (elem <- this.toList) this -= elem
 
   override def clone(): This = empty ++= repr.seq
 

@@ -111,8 +111,8 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     val brokerConfigs = TestUtils.createBrokerConfigs(4, zkConnect, false)
     brokerConfigs.foreach(p => p.setProperty("delete.topic.enable", "true"))
     // create brokers
-    val allServers =
-      brokerConfigs.map(b => TestUtils.createServer(KafkaConfig.fromProps(b)))
+    val allServers = brokerConfigs.map(b =>
+      TestUtils.createServer(KafkaConfig.fromProps(b)))
     val servers = allServers.filter(s =>
       expectedReplicaAssignment(0).contains(s.config.brokerId))
     // create the topic
@@ -148,8 +148,9 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     // wait until reassignment is completed
     TestUtils.waitUntilTrue(
       () => {
-        val partitionsBeingReassigned =
-          zkUtils.getPartitionsBeingReassigned().mapValues(_.newReplicas);
+        val partitionsBeingReassigned = zkUtils
+          .getPartitionsBeingReassigned()
+          .mapValues(_.newReplicas);
         ReassignPartitionsCommand.checkIfPartitionReassignmentSucceeded(
           zkUtils,
           topicAndPartition,
@@ -235,8 +236,11 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
       topic,
       expectedReplicaAssignment)
     // wait until leader is elected
-    val leaderIdOpt =
-      TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0, 1000)
+    val leaderIdOpt = TestUtils.waitUntilLeaderIsElectedOrChanged(
+      zkUtils,
+      topic,
+      0,
+      1000)
     assertTrue(
       "New leader should be elected after re-creating topic test",
       leaderIdOpt.isDefined)
@@ -267,8 +271,11 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
       "Topic test mistakenly deleted",
       zkUtils.pathExists(getTopicPath(topic)))
     // topic test should have a leader
-    val leaderIdOpt =
-      TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, 0, 1000)
+    val leaderIdOpt = TestUtils.waitUntilLeaderIsElectedOrChanged(
+      zkUtils,
+      topic,
+      0,
+      1000)
     assertTrue("Leader should exist for topic test", leaderIdOpt.isDefined)
     servers.foreach(_.shutdown())
   }
@@ -339,8 +346,8 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     val expectedReplicaAssignment = Map(0 -> List(0, 1, 2))
     val topicAndPartition = TopicAndPartition(topic, 0)
     // create brokers
-    val servers =
-      brokerConfigs.map(b => TestUtils.createServer(KafkaConfig.fromProps(b)))
+    val servers = brokerConfigs.map(b =>
+      TestUtils.createServer(KafkaConfig.fromProps(b)))
     // create the topic
     AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
       zkUtils,

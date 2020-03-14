@@ -21,8 +21,10 @@ class WrappedDictionaryTest {
   // Methods we actually implement
 
   @Test def get(): Unit = {
-    val map: mutable.Map[String, Any] =
-      js.Dictionary("a" -> "a", "b" -> 6, "e" -> js.undefined)
+    val map: mutable.Map[String, Any] = js.Dictionary(
+      "a" -> "a",
+      "b" -> 6,
+      "e" -> js.undefined)
     assertTrue(map.get("a") == Some("a"))
     assertTrue(map.get("b") == Some(6))
     assertTrue(map.get("e") == Some(()))

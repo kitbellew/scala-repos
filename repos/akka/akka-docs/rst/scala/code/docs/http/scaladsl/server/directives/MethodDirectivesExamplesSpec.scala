@@ -109,11 +109,10 @@ class MethodDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "overrideMethodWithParameter-0" in {
-    val route =
-      overrideMethodWithParameter("method") {
-        get { complete("This looks like a GET request.") } ~
-          post { complete("This looks like a POST request.") }
-      }
+    val route = overrideMethodWithParameter("method") {
+      get { complete("This looks like a GET request.") } ~
+        post { complete("This looks like a POST request.") }
+    }
 
     // tests:
     Get("/?method=POST") ~> route ~> check {

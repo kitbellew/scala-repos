@@ -56,8 +56,8 @@ class CompileServerLauncher extends ApplicationComponent {
 
     if (applicationSettings.COMPILE_SERVER_SDK == null) {
       // Try to find a suitable JDK
-      val choice =
-        Option(ProjectRootManager.getInstance(project).getProjectSdk).orElse {
+      val choice = Option(ProjectRootManager.getInstance(project).getProjectSdk)
+        .orElse {
           val all = ProjectJdkTable.getInstance
             .getSdksOfType(JavaSdk.getInstance())
             .asScala

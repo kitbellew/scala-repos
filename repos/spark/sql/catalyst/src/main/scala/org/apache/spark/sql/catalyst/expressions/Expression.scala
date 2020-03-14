@@ -337,8 +337,8 @@ abstract class UnaryExpression extends Expression {
     val resultCode = f(childGen.value)
 
     if (nullable) {
-      val nullSafeEval =
-        ctx.nullSafeExec(child.nullable, childGen.isNull)(resultCode)
+      val nullSafeEval = ctx.nullSafeExec(child.nullable, childGen.isNull)(
+        resultCode)
       s"""
         ${childGen.code}
         boolean ${ev.isNull} = ${childGen.isNull};

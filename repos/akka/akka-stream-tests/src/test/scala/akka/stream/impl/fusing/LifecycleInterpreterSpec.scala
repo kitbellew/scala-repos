@@ -193,8 +193,7 @@ class LifecycleInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
   private[akka] case class PreStartFailer[T](pleaseThrow: () ⇒ Unit)
       extends PushStage[T, T] {
 
-    override def preStart(ctx: LifecycleContext) =
-      pleaseThrow()
+    override def preStart(ctx: LifecycleContext) = pleaseThrow()
 
     override def onPush(elem: T, ctx: Context[T]) = ctx.push(elem)
   }
@@ -216,8 +215,7 @@ class LifecycleInterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     override def onUpstreamFinish(ctx: Context[Any]): TerminationDirective =
       ctx.fail(akka.stream.testkit.Utils.TE("Cannot happen"))
 
-    override def postStop(): Unit =
-      onPostStop()
+    override def postStop(): Unit = onPostStop()
   }
 
 }

@@ -39,8 +39,7 @@ class JSFileBuilder(val name: String, protected val outputWriter: Writer)
     outputWriter.write('\n')
   }
 
-  def addLines(lines: Seq[String]): Unit =
-    lines.foreach(addLine)
+  def addLines(lines: Seq[String]): Unit = lines.foreach(addLine)
 
   def addFile(file: VirtualJSFile): Unit =
     addPartsOfFile(file)(!_.startsWith("//# sourceMappingURL="))

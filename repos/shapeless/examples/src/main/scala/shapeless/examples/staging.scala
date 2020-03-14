@@ -43,8 +43,7 @@ object StagedTypeClassExample extends App {
     val tpt1 = mkTypeTree(rawTuple._1)
     val tpt2 = mkTypeTree(rawTuple._2)
 
-    val fnTree =
-      q"""
+    val fnTree = q"""
         (t: (Any, Any)) =>
           shapeless.examples.StagedTypeClassExample.consumeTuple(t.asInstanceOf[($tpt1, $tpt2)])
        """

@@ -122,6 +122,5 @@ trait NatMacroDefns {
     loop(i, _0Tpe)
   }
 
-  def mkNatValue(i: Int): Tree =
-    q""" new ${mkNatTpt(i)} """
+  def mkNatValue(i: Int): Tree = q""" new ${mkNatTpt(i)} """
 }

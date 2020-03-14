@@ -53,16 +53,18 @@ class RFormulaSuite
 
   test("features column already exists") {
     val formula = new RFormula().setFormula("y ~ x").setFeaturesCol("x")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "y")
     intercept[IllegalArgumentException] { formula.fit(original) }
     intercept[IllegalArgumentException] { formula.fit(original) }
   }
 
   test("label column already exists") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("y")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "y")
     val model = formula.fit(original)
     val resultSchema = model.transformSchema(original.schema)
     assert(resultSchema.length == 3)
@@ -71,8 +73,9 @@ class RFormulaSuite
 
   test("label column already exists but is not double type") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("y")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1), (2, 2))).toDF("x", "y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1), (2, 2)))
+      .toDF("x", "y")
     val model = formula.fit(original)
     intercept[IllegalArgumentException] {
       model.transformSchema(original.schema)
@@ -82,8 +85,9 @@ class RFormulaSuite
 
   test("allow missing label column for test datasets") {
     val formula = new RFormula().setFormula("y ~ x").setLabelCol("label")
-    val original =
-      sqlContext.createDataFrame(Seq((0, 1.0), (2, 2.0))).toDF("x", "_not_y")
+    val original = sqlContext
+      .createDataFrame(Seq((0, 1.0), (2, 2.0)))
+      .toDF("x", "_not_y")
     val model = formula.fit(original)
     val resultSchema = model.transformSchema(original.schema)
     assert(resultSchema.length == 3)
@@ -192,8 +196,9 @@ class RFormulaSuite
       Array[Attribute](
         NumericAttribute.defaultAttr,
         NumericAttribute.defaultAttr)).toMetadata
-    val original =
-      base.select(base.col("id"), base.col("vec").as("vec2", metadata))
+    val original = base.select(
+      base.col("id"),
+      base.col("vec").as("vec2", metadata))
     val model = formula.fit(original)
     val result = model.transform(original)
     val attrs = AttributeGroup.fromStructField(result.schema("features"))

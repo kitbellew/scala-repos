@@ -13,8 +13,8 @@ class JsonSupportTest extends json.JsonSupportTestBase {
       implicit protected def jsonFormats: Formats = DefaultFormats
 
       override protected lazy val jsonVulnerabilityGuard: Boolean = true
-      override val jsonpCallbackParameterNames: Iterable[String] =
-        Some("callback")
+      override val jsonpCallbackParameterNames: Iterable[String] = Some(
+        "callback")
       get("/json") {
         import org.json4s.JsonDSL._
         ("k1" -> "v1") ~

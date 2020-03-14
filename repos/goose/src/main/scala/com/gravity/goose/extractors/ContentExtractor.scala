@@ -43,12 +43,14 @@ trait ContentExtractor {
 
   // PRIVATE PROPERTIES BELOW
 
-  val MOTLEY_REPLACEMENT: StringReplacement =
-    StringReplacement.compile("&#65533;", string.empty)
-  val ESCAPED_FRAGMENT_REPLACEMENT: StringReplacement =
-    StringReplacement.compile("#!", "?_escaped_fragment_=")
-  val TITLE_REPLACEMENTS: ReplaceSequence =
-    ReplaceSequence.create("&raquo;").append("»")
+  val MOTLEY_REPLACEMENT: StringReplacement = StringReplacement.compile(
+    "&#65533;",
+    string.empty)
+  val ESCAPED_FRAGMENT_REPLACEMENT: StringReplacement = StringReplacement
+    .compile("#!", "?_escaped_fragment_=")
+  val TITLE_REPLACEMENTS: ReplaceSequence = ReplaceSequence
+    .create("&raquo;")
+    .append("»")
   val PIPE_SPLITTER: StringSplitter = new StringSplitter("\\|")
   val DASH_SPLITTER: StringSplitter = new StringSplitter(" - ")
   val ARROWS_SPLITTER: StringSplitter = new StringSplitter("»")
@@ -232,8 +234,8 @@ trait ContentExtractor {
 
       val nodeText: String = node.text
       val wordStats: WordStats = StopWords.getStopWordCount(nodeText)
-      val upscore: Int =
-        (wordStats.getStopWordCount + boostScore).asInstanceOf[Int]
+      val upscore: Int = (wordStats.getStopWordCount + boostScore)
+        .asInstanceOf[Int]
       updateScore(node.parent, upscore)
       updateScore(node.parent.parent, upscore / 2)
       updateNodeCount(node.parent, 1)

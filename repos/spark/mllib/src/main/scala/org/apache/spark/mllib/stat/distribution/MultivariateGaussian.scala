@@ -121,8 +121,9 @@ class MultivariateGaussian @Since("1.3.0") (
     * relation to the maximum singular value (same tolerance used by, e.g., Octave).
     */
   private def calculateCovarianceConstants: (DBM[Double], Double) = {
-    val eigSym.EigSym(d, u) =
-      eigSym(sigma.toBreeze.toDenseMatrix) // sigma = u * diag(d) * u.t
+    val eigSym.EigSym(d, u) = eigSym(
+      sigma.toBreeze.toDenseMatrix
+    ) // sigma = u * diag(d) * u.t
 
     // For numerical stability, values are considered to be non-zero only if they exceed tol.
     // This prevents any inverted value from exceeding (eps * n * max(d))^-1

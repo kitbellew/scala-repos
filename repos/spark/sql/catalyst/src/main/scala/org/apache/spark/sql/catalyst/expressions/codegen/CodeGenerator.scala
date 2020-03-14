@@ -129,8 +129,8 @@ class CodegenContext {
   /**
     * Holding all the functions those will be added into generated class.
     */
-  val addedFunctions: mutable.Map[String, String] =
-    mutable.Map.empty[String, String]
+  val addedFunctions: mutable.Map[String, String] = mutable.Map
+    .empty[String, String]
 
   def addNewFunction(funcName: String, funcCode: String): Unit = {
     addedFunctions += ((funcName, funcCode))
@@ -155,8 +155,8 @@ class CodegenContext {
   case class SubExprEliminationState(isNull: String, value: String)
 
   // Foreach expression that is participating in subexpression elimination, the state to use.
-  val subExprEliminationExprs =
-    mutable.HashMap.empty[Expression, SubExprEliminationState]
+  val subExprEliminationExprs = mutable.HashMap
+    .empty[Expression, SubExprEliminationState]
 
   // The collection of sub-expression result resetting methods that need to be called on each row.
   val subexprFunctions = mutable.ArrayBuffer.empty[String]
@@ -192,8 +192,9 @@ class CodegenContext {
     */
   def freshName(name: String): String =
     synchronized {
-      val fullName = if (freshNamePrefix == "") { name }
-      else { s"${freshNamePrefix}_$name" }
+      val fullName =
+        if (freshNamePrefix == "") { name }
+        else { s"${freshNamePrefix}_$name" }
       if (freshNameIds.contains(fullName)) {
         val id = freshNameIds(fullName)
         freshNameIds(fullName) = id + 1
@@ -394,8 +395,7 @@ class CodegenContext {
         val isNullB = freshName("isNullB")
         val compareFunc = freshName("compareArray")
         val minLength = freshName("minLength")
-        val funcCode: String =
-          s"""
+        val funcCode: String = s"""
           public int $compareFunc(ArrayData a, ArrayData b) {
             int lengthA = a.numElements();
             int lengthB = b.numElements();
@@ -411,13 +411,13 @@ class CodegenContext {
                 return 1;
               } else {
                 ${javaType(elementType)} $elementA = ${getValue(
-            "a",
-            elementType,
-            "i")};
+          "a",
+          elementType,
+          "i")};
                 ${javaType(elementType)} $elementB = ${getValue(
-            "b",
-            elementType,
-            "i")};
+          "b",
+          elementType,
+          "i")};
                 int comp = ${genComp(elementType, elementA, elementB)};
                 if (comp != 0) {
                   return comp;
@@ -438,8 +438,7 @@ class CodegenContext {
       case schema: StructType =>
         val comparisons = GenerateOrdering.genComparisons(this, schema)
         val compareFunc = freshName("compareStruct")
-        val funcCode: String =
-          s"""
+        val funcCode: String = s"""
           public int $compareFunc(InternalRow a, InternalRow b) {
             InternalRow i = null;
             $comparisons
@@ -490,15 +489,14 @@ class CodegenContext {
   /**
     * List of java data types that have special accessors and setters in [[InternalRow]].
     */
-  val primitiveTypes =
-    Seq(
-      JAVA_BOOLEAN,
-      JAVA_BYTE,
-      JAVA_SHORT,
-      JAVA_INT,
-      JAVA_LONG,
-      JAVA_FLOAT,
-      JAVA_DOUBLE)
+  val primitiveTypes = Seq(
+    JAVA_BOOLEAN,
+    JAVA_BYTE,
+    JAVA_SHORT,
+    JAVA_INT,
+    JAVA_LONG,
+    JAVA_FLOAT,
+    JAVA_DOUBLE)
 
   /**
     * Returns true if the Java type has a special accessor and setter in [[InternalRow]].
@@ -559,8 +557,8 @@ class CodegenContext {
 
     // Get all the expressions that appear at least twice and set up the state for subexpression
     // elimination.
-    val commonExprs =
-      equivalentExpressions.getAllEquivalentExprs.filter(_.size > 1)
+    val commonExprs = equivalentExpressions.getAllEquivalentExprs.filter(
+      _.size > 1)
     commonExprs.foreach(e => {
       val expr = e.head
       val fnName = freshName("evalExpr")
@@ -569,8 +567,7 @@ class CodegenContext {
 
       // Generate the code for this expression tree and wrap it in a function.
       val code = expr.gen(this)
-      val fn =
-        s"""
+      val fn = s"""
            |private void $fnName(InternalRow $INPUT_ROW) {
            |  ${code.code.trim}
            |  $isNull = ${code.isNull};

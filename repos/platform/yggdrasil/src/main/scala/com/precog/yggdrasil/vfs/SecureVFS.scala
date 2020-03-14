@@ -238,32 +238,33 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           logger.debug(
             "Found fresh cache entry (%s) for query on %s"
               .format(timestamp, path))
-          val recacheAction = (
-            recacheAfter
-              .exists(ms => timestamp.plus(ms) < clock.instant()))
-            .whenM[({ type l[a] = EitherT[M, EvaluationError, a] })#l, UUID] {
-              // if recacheAfter has expired since the head version was cached,
-              // then return the cached version and refresh the cache
-              for {
-                basePath <- pathPrefix
-                queryResource <- readResource(
-                  ctx.apiKey,
-                  path,
-                  Version.Current,
-                  AccessMode.Execute) leftMap storageError
-                taskId <- scheduler.addTask(
-                  None,
-                  ctx.apiKey,
-                  queryResource.authorities,
-                  ctx,
-                  path,
-                  cachePath,
-                  None) leftMap invalidState
-                _ = logger.debug(
-                  "Cache refresh scheduled for query %s, as id %s."
-                    .format(path.path, taskId))
-              } yield taskId
-            }
+          val recacheAction =
+            (
+              recacheAfter
+                .exists(ms => timestamp.plus(ms) < clock.instant()))
+              .whenM[({ type l[a] = EitherT[M, EvaluationError, a] })#l, UUID] {
+                // if recacheAfter has expired since the head version was cached,
+                // then return the cached version and refresh the cache
+                for {
+                  basePath <- pathPrefix
+                  queryResource <- readResource(
+                    ctx.apiKey,
+                    path,
+                    Version.Current,
+                    AccessMode.Execute) leftMap storageError
+                  taskId <- scheduler.addTask(
+                    None,
+                    ctx.apiKey,
+                    queryResource.authorities,
+                    ctx,
+                    path,
+                    cachePath,
+                    None) leftMap invalidState
+                  _ = logger.debug(
+                    "Cache refresh scheduled for query %s, as id %s."
+                      .format(path.path, taskId))
+                } yield taskId
+              }
 
           for {
             _ <- recacheAction

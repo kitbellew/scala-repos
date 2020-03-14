@@ -262,8 +262,8 @@ object ClusterSingletonManager {
       val cluster = Cluster(context.system)
       // sort by age, oldest first
       val ageOrdering = Member.ageOrdering
-      var membersByAge: immutable.SortedSet[Member] =
-        immutable.SortedSet.empty(ageOrdering)
+      var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
+        ageOrdering)
 
       var changes = Vector.empty[AnyRef]
 
@@ -463,8 +463,7 @@ class ClusterSingletonManager(
     removed = removed filter { case (address, deadline) ⇒ deadline.hasTimeLeft }
   }
 
-  def logInfo(message: String): Unit =
-    if (LogInfo) log.info(message)
+  def logInfo(message: String): Unit = if (LogInfo) log.info(message)
 
   def logInfo(template: String, arg1: Any): Unit =
     if (LogInfo) log.info(template, arg1)

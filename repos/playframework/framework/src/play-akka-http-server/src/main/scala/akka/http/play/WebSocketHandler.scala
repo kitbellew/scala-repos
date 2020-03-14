@@ -82,8 +82,9 @@ object WebSocketHandler {
             currentFrameData ++= data
             ctx.pull()
           case FrameData(data, true) =>
-            val message =
-              frameToRawMessage(currentFrameHeader, currentFrameData ++ data)
+            val message = frameToRawMessage(
+              currentFrameHeader,
+              currentFrameData ++ data)
             currentFrameHeader = null
             currentFrameData = null
             ctx.push(Right(message))

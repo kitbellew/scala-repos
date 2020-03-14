@@ -711,8 +711,7 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       } else {
         var value: Long = 0
         val divider = if (base == 10) 1 else 2
-        val limit: Long =
-          if (token == LONGLIT) Long.MaxValue else Int.MaxValue
+        val limit: Long = if (token == LONGLIT) Long.MaxValue else Int.MaxValue
         var i = 0
         val len = name.length
         while (i < len) {
@@ -741,8 +740,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
       val limit: Double =
         if (token == DOUBLELIT) Double.MaxValue else Float.MaxValue
       try {
-        val value: Double =
-          java.lang.Double.valueOf(name.toString).doubleValue()
+        val value: Double = java.lang.Double
+          .valueOf(name.toString)
+          .doubleValue()
         if (value > limit) syntaxError("floating point number too large")
         if (negated) -value else value
       } catch {

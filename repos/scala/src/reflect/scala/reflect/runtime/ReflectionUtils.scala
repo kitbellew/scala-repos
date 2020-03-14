@@ -89,8 +89,8 @@ object ReflectionUtils {
     def singletonAccessor(clazz: Class[_]): Option[Method] =
       if (clazz == null) None
       else {
-        val declaredAccessor =
-          clazz.getDeclaredMethods.find(_.getName == accessorName)
+        val declaredAccessor = clazz.getDeclaredMethods.find(
+          _.getName == accessorName)
         declaredAccessor orElse singletonAccessor(clazz.getSuperclass)
       }
 

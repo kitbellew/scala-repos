@@ -7,8 +7,7 @@ object Test {
     def *(newUnit: Unit): Measure = Measure(scalar, newUnit)
   }
 
-  implicit def double2Measure(scalar: Double) =
-    Measure(scalar, NoUnit)
+  implicit def double2Measure(scalar: Double) = Measure(scalar, NoUnit)
 
   def main(args: Array[String]): scala.Unit = {
     Console.println("3.0 * Hour = " + (3.0 * (Hour: Unit)))

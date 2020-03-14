@@ -195,10 +195,8 @@ object Test5 {
     @BeanProperty
     var count: Integer = 0
 
-    private val getter =
-      getClass().getMethod("getCount")
-    private val setter =
-      getClass().getMethod("setCount", classOf[Integer])
+    private val getter = getClass().getMethod("getCount")
+    private val setter = getClass().getMethod("setCount", classOf[Integer])
 
     def get = getter.invoke(this).asInstanceOf[Integer].intValue
     def set(n: Int) = setter.invoke(this, new Integer(n))

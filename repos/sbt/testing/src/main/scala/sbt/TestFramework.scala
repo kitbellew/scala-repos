@@ -272,8 +272,11 @@ object TestFramework {
       getClass.getClassLoader,
       interfaceFilter,
       x => false)
-    val main =
-      ClasspathUtilities.makeLoader(classpath, dual, scalaInstance, tempDir)
+    val main = ClasspathUtilities.makeLoader(
+      classpath,
+      dual,
+      scalaInstance,
+      tempDir)
     // TODO - There's actually an issue with the classpath facility such that unmanagedScalaInstances are not added
     // to the classpath correctly.  We have a temporary workaround here.
     val cp: Seq[File] =

@@ -169,8 +169,8 @@ class ContinuousQueryListenerSuite
   }
 
   private def addedListeners(): Array[ContinuousQueryListener] = {
-    val listenerBusMethod =
-      PrivateMethod[ContinuousQueryListenerBus]('listenerBus)
+    val listenerBusMethod = PrivateMethod[ContinuousQueryListenerBus](
+      'listenerBus)
     val listenerBus = sqlContext.streams invokePrivate listenerBusMethod()
     listenerBus.listeners.toArray.map(_.asInstanceOf[ContinuousQueryListener])
   }

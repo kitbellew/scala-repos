@@ -83,8 +83,7 @@ object OrderedSerialization {
     ord.compare(a, b)
 
   def compareBinary[T](a: InputStream, b: InputStream)(
-      implicit ord: OrderedSerialization[T]): Result =
-    ord.compareBinary(a, b)
+      implicit ord: OrderedSerialization[T]): Result = ord.compareBinary(a, b)
 
   def writeThenCompare[T](a: T, b: T)(
       implicit ordb: OrderedSerialization[T]): Result = {

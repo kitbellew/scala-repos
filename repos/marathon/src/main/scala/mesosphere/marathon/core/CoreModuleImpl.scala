@@ -60,19 +60,20 @@ class CoreModuleImpl @Inject() (
   private[this] lazy val actorsModule =
     new ActorsModule(shutdownHookModule, actorSystem)
 
-  override lazy val leadershipModule =
-    LeadershipModule(actorsModule.actorRefFactory, zk, leader)
+  override lazy val leadershipModule = LeadershipModule(
+    actorsModule.actorRefFactory,
+    zk,
+    leader)
 
   // TASKS
 
   override lazy val taskBusModule = new TaskBusModule()
-  override lazy val taskTrackerModule =
-    new TaskTrackerModule(
-      clock,
-      metrics,
-      marathonConf,
-      leadershipModule,
-      taskRepository)
+  override lazy val taskTrackerModule = new TaskTrackerModule(
+    clock,
+    metrics,
+    marathonConf,
+    leadershipModule,
+    taskRepository)
   override lazy val taskJobsModule =
     new TaskJobsModule(marathonConf, leadershipModule, clock)
 

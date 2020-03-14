@@ -35,11 +35,13 @@ trait ArbitrarySexp {
 
   // avoid stackoverflows with http://stackoverflow.com/questions/19829293
 
-  lazy val genSexpSymbol: Gen[SexpSymbol] =
-    alphaStr.filter(_.nonEmpty).map(SexpSymbol)
+  lazy val genSexpSymbol: Gen[SexpSymbol] = alphaStr
+    .filter(_.nonEmpty)
+    .map(SexpSymbol)
 
-  lazy val genSexpKey: Gen[SexpSymbol] =
-    alphaStr.filter(_.nonEmpty).map { s => SexpSymbol(":" + s) }
+  lazy val genSexpKey: Gen[SexpSymbol] = alphaStr.filter(_.nonEmpty).map { s =>
+    SexpSymbol(":" + s)
+  }
 
   // TODO: String/Char should be selected from a wider range
   // TODO: arbitrary[BigDecimal] but it freezes the tests

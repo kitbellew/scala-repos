@@ -28,12 +28,12 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
   private[this] var elapsed: () => Duration = null
 
   private[this] val connects = statsReceiver.counter("connects")
-  private[this] val connectionDuration =
-    statsReceiver.stat("connection_duration")
-  private[this] val connectionReceivedBytes =
-    statsReceiver.stat("connection_received_bytes")
-  private[this] val connectionSentBytes =
-    statsReceiver.stat("connection_sent_bytes")
+  private[this] val connectionDuration = statsReceiver.stat(
+    "connection_duration")
+  private[this] val connectionReceivedBytes = statsReceiver.stat(
+    "connection_received_bytes")
+  private[this] val connectionSentBytes = statsReceiver.stat(
+    "connection_sent_bytes")
   private[this] val receivedBytes = statsReceiver.counter("received_bytes")
   private[this] val sentBytes = statsReceiver.counter("sent_bytes")
   private[this] val closeChans = statsReceiver.counter("closechans")
@@ -58,8 +58,9 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
   override def writeComplete(
       ctx: ChannelHandlerContext,
       e: WriteCompletionEvent) {
-    val (_, channelWriteCount) =
-      ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
+    val (_, channelWriteCount) = ctx
+      .getAttachment()
+      .asInstanceOf[(AtomicLong, AtomicLong)]
 
     channelWriteCount.getAndAdd(e.getWrittenAmount)
     sentBytes.incr(e.getWrittenAmount.toInt)
@@ -70,8 +71,9 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     e.getMessage match {
       case buffer: ChannelBuffer =>
-        val (channelReadCount, _) =
-          ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
+        val (channelReadCount, _) = ctx
+          .getAttachment()
+          .asInstanceOf[(AtomicLong, AtomicLong)]
         val readableBytes = buffer.readableBytes
         channelReadCount.getAndAdd(readableBytes)
         receivedBytes.incr(readableBytes)
@@ -99,8 +101,9 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
 
     // guarded in case Netty calls channelClosed without calling channelOpen.
     if (elapsed != null) {
-      val (channelReadCount, channelWriteCount) =
-        ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
+      val (channelReadCount, channelWriteCount) = ctx
+        .getAttachment()
+        .asInstanceOf[(AtomicLong, AtomicLong)]
 
       connectionReceivedBytes.add(channelReadCount.get)
       connectionSentBytes.add(channelWriteCount.get)

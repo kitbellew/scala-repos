@@ -67,8 +67,7 @@ object Test extends App {
                c <- apply(a, b)) yield c
       }
 
-    def test(t: Term): String =
-      showM(interp(t, List()))
+    def test(t: Term): String = showM(interp(t, List()))
 
     val term0 = App(Lam("x", Add(Var("x"), Var("x"))), Add(Con(10), Con(11)))
     val term1 = App(Con(1), Con(2))

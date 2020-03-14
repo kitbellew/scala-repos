@@ -86,16 +86,14 @@ class SslTest extends FunSuite {
         }
     }
 
-    val codec =
-      Http().annotateCipherHeader("X-Transport-Cipher")
+    val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
-    val server =
-      ServerBuilder()
-        .codec(codec)
-        .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-        .tls(certChain.certPath, certChain.keyPath)
-        .name("SSLServer")
-        .build(service)
+    val server = ServerBuilder()
+      .codec(codec)
+      .bindTo(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
+      .tls(certChain.certPath, certChain.keyPath)
+      .name("SSLServer")
+      .build(service)
 
     def client =
       ClientBuilder()
@@ -159,8 +157,7 @@ class SslTest extends FunSuite {
         }
     }
 
-    val codec =
-      Http().annotateCipherHeader("X-Transport-Cipher")
+    val codec = Http().annotateCipherHeader("X-Transport-Cipher")
 
     val server = ServerBuilder()
       .codec(codec)
@@ -232,14 +229,22 @@ class CertChainInput(
     Resources.asByteSource(url).copyTo(GuavaFiles.asByteSink(newFile))
     newFile
   }
-  val setupCAFile =
-    writeResourceToDir(getClass, setupCAFilename, setupCADirPath)
-  val makeCertFile =
-    writeResourceToDir(getClass, makeCertFilename, setupCADirPath)
-  val openSSLIntConfFile =
-    writeResourceToDir(getClass, openSSLIntConfFilename, setupCADirPath)
-  val openSSLRootConfFile =
-    writeResourceToDir(getClass, openSSLRootConfFilename, setupCADirPath)
+  val setupCAFile = writeResourceToDir(
+    getClass,
+    setupCAFilename,
+    setupCADirPath)
+  val makeCertFile = writeResourceToDir(
+    getClass,
+    makeCertFilename,
+    setupCADirPath)
+  val openSSLIntConfFile = writeResourceToDir(
+    getClass,
+    openSSLIntConfFilename,
+    setupCADirPath)
+  val openSSLRootConfFile = writeResourceToDir(
+    getClass,
+    openSSLRootConfFilename,
+    setupCADirPath)
 
   val setupCAPath: String = setupCAFile.getAbsolutePath
   val makeCertPath: String = makeCertFile.getAbsolutePath

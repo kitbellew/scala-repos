@@ -83,8 +83,8 @@ class EventLoggingListenerSuite
 
   test("Basic event logging with compression") {
     CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
-      testEventLogging(compressionCodec =
-        Some(CompressionCodec.getShortName(codec)))
+      testEventLogging(compressionCodec = Some(
+        CompressionCodec.getShortName(codec)))
     }
   }
 
@@ -92,8 +92,8 @@ class EventLoggingListenerSuite
 
   test("End-to-end event logging with compression") {
     CompressionCodec.ALL_COMPRESSION_CODECS.foreach { codec =>
-      testApplicationEventLogging(compressionCodec =
-        Some(CompressionCodec.getShortName(codec)))
+      testApplicationEventLogging(compressionCodec = Some(
+        CompressionCodec.getShortName(codec)))
     }
   }
 

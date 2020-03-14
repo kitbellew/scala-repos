@@ -25,11 +25,13 @@ object RouterSpec extends PlaySpecification {
 
   "bind boolean parameters" in {
     "from the query string" in new WithApplication() {
-      val Some(result) =
-        route(implicitApp, FakeRequest(GET, "/take-bool?b=true"))
+      val Some(result) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-bool?b=true"))
       contentAsString(result) must equalTo("true")
-      val Some(result2) =
-        route(implicitApp, FakeRequest(GET, "/take-bool?b=false"))
+      val Some(result2) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-bool?b=false"))
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
@@ -42,11 +44,13 @@ object RouterSpec extends PlaySpecification {
           FakeRequest(GET, "/take-bool?b=0")).get) must equalTo("false")
     }
     "from the path" in new WithApplication() {
-      val Some(result) =
-        route(implicitApp, FakeRequest(GET, "/take-bool-2/true"))
+      val Some(result) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-bool-2/true"))
       contentAsString(result) must equalTo("true")
-      val Some(result2) =
-        route(implicitApp, FakeRequest(GET, "/take-bool-2/false"))
+      val Some(result2) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-bool-2/false"))
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
@@ -71,8 +75,9 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result) must equalTo("1,2,3")
     }
     "from a list of numbers and letters" in new WithApplication() {
-      val Some(result) =
-        route(implicitApp, FakeRequest(GET, "/take-list?x=1&x=a&x=2"))
+      val Some(result) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-list?x=1&x=a&x=2"))
       status(result) must equalTo(BAD_REQUEST)
     }
     "when there is no parameter at all" in new WithApplication() {
@@ -80,8 +85,9 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result) must equalTo("")
     }
     "using the Java API" in new WithApplication() {
-      val Some(result) =
-        route(implicitApp, FakeRequest(GET, "/take-java-list?x=1&x=2&x=3"))
+      val Some(result) = route(
+        implicitApp,
+        FakeRequest(GET, "/take-java-list?x=1&x=2&x=3"))
       contentAsString(result) must equalTo("1,2,3")
     }
     "using backticked names on route params" in new WithApplication() {

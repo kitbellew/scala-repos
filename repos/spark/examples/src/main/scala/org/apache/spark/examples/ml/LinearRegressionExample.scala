@@ -109,15 +109,15 @@ object LinearRegressionExample {
   }
 
   def run(params: Params) {
-    val conf =
-      new SparkConf().setAppName(s"LinearRegressionExample with $params")
+    val conf = new SparkConf()
+      .setAppName(s"LinearRegressionExample with $params")
     val sc = new SparkContext(conf)
 
     println(s"LinearRegressionExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      DecisionTreeExample.loadDatasets(
+    val (training: DataFrame, test: DataFrame) = DecisionTreeExample
+      .loadDatasets(
         sc,
         params.input,
         params.dataFormat,

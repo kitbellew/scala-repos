@@ -60,10 +60,10 @@ class DefaultEventHandler[K, V](
   private val topicMetadataToRefresh = Set.empty[String]
   private val sendPartitionPerTopicCache = HashMap.empty[String, Int]
 
-  private val producerStats =
-    ProducerStatsRegistry.getProducerStats(config.clientId)
-  private val producerTopicStats =
-    ProducerTopicStatsRegistry.getProducerTopicStats(config.clientId)
+  private val producerStats = ProducerStatsRegistry.getProducerStats(
+    config.clientId)
+  private val producerTopicStats = ProducerTopicStatsRegistry
+    .getProducerTopicStats(config.clientId)
 
   def handle(events: Seq[KeyedMessage[K, V]]) {
     val serializedData = serialize(events)
@@ -207,8 +207,10 @@ class DefaultEventHandler[K, V](
     try {
       for (message <- messages) {
         val topicPartitionsList = getPartitionListForTopic(message)
-        val partitionIndex =
-          getPartition(message.topic, message.partitionKey, topicPartitionsList)
+        val partitionIndex = getPartition(
+          message.topic,
+          message.partitionKey,
+          topicPartitionsList)
         val brokerPartition = topicPartitionsList(partitionIndex)
 
         // postpone the failure until the send operation, so that requests for other brokers are handled correctly
@@ -226,13 +228,14 @@ class DefaultEventHandler[K, V](
             ret.put(leaderBrokerId, dataPerBroker)
         }
 
-        val topicAndPartition =
-          TopicAndPartition(message.topic, brokerPartition.partitionId)
+        val topicAndPartition = TopicAndPartition(
+          message.topic,
+          brokerPartition.partitionId)
         var dataPerTopicPartition: ArrayBuffer[KeyedMessage[K, Message]] = null
         dataPerBroker.get(topicAndPartition) match {
           case Some(element) =>
-            dataPerTopicPartition =
-              element.asInstanceOf[ArrayBuffer[KeyedMessage[K, Message]]]
+            dataPerTopicPartition = element
+              .asInstanceOf[ArrayBuffer[KeyedMessage[K, Message]]]
           case None =>
             dataPerTopicPartition = new ArrayBuffer[KeyedMessage[K, Message]]
             dataPerBroker.put(topicAndPartition, dataPerTopicPartition)
@@ -299,8 +302,8 @@ class DefaultEventHandler[K, V](
             // since we want to postpone the failure until the send operation anyways
             partitionId
           case None =>
-            val availablePartitions =
-              topicPartitionList.filter(_.leaderBrokerIdOpt.isDefined)
+            val availablePartitions = topicPartitionList.filter(
+              _.leaderBrokerIdOpt.isDefined)
             if (availablePartitions.isEmpty)
               throw new LeaderNotAvailableException(
                 "No leader for any partition in topic " + topic)
@@ -371,8 +374,8 @@ class DefaultEventHandler[K, V](
               "Incomplete response (%s) for producer request (%s)"
                 .format(response, producerRequest))
           if (logger.isTraceEnabled) {
-            val successfullySentData =
-              response.status.filter(_._2.error == Errors.NONE.code)
+            val successfullySentData = response.status.filter(
+              _._2.error == Errors.NONE.code)
             successfullySentData.foreach(m =>
               messagesPerTopic(m._1).foreach(message =>
                 trace(
@@ -382,8 +385,8 @@ class DefaultEventHandler[K, V](
           }
           val failedPartitionsAndStatus =
             response.status.filter(_._2.error != Errors.NONE.code).toSeq
-          failedTopicPartitions =
-            failedPartitionsAndStatus.map(partitionStatus => partitionStatus._1)
+          failedTopicPartitions = failedPartitionsAndStatus.map(
+            partitionStatus => partitionStatus._1)
           if (failedTopicPartitions.size > 0) {
             val errorString = failedPartitionsAndStatus
               .sortWith((p1, p2) =>

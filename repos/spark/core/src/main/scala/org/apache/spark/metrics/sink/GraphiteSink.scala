@@ -67,8 +67,8 @@ private[spark] class GraphiteSink(
     case None    => TimeUnit.valueOf(GRAPHITE_DEFAULT_UNIT)
   }
 
-  val prefix =
-    propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(GRAPHITE_DEFAULT_PREFIX)
+  val prefix = propertyToOption(GRAPHITE_KEY_PREFIX).getOrElse(
+    GRAPHITE_DEFAULT_PREFIX)
 
   MetricsSystem.checkMinimalPollingPeriod(pollUnit, pollPeriod)
 

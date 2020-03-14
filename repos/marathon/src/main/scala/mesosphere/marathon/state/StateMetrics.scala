@@ -42,8 +42,8 @@ object StateMetrics {
 
     private[this] val requestMeter: Meter = metrics.meter(requestsMeterName)
     private[this] val errorMeter: Meter = metrics.meter(errorMeterName)
-    private[this] val durationHistogram: Histogram =
-      metrics.histogram(durationHistogramName)
+    private[this] val durationHistogram: Histogram = metrics.histogram(
+      durationHistogramName)
 
     private[this] def metricName(name: String): String =
       metrics.name(MetricPrefixes.SERVICE, metricsClass, name)

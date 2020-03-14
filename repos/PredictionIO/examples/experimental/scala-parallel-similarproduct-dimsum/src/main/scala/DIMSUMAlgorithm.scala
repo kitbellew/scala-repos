@@ -156,10 +156,10 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
 
   def predict(model: DIMSUMModel, query: Query): PredictedResult = {
     // convert the white and black list items to Int index
-    val whiteList: Option[Set[Int]] =
-      query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
-    val blackList: Option[Set[Int]] =
-      query.blackList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
+    val blackList: Option[Set[Int]] = query.blackList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
 
     val queryList: Set[Int] =
       query.items.map(model.itemStringIntMap.get(_)).flatten.toSet

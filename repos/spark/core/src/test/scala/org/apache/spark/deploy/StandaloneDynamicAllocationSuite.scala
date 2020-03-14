@@ -61,8 +61,12 @@ class StandaloneDynamicAllocationSuite
     */
   override def beforeAll(): Unit = {
     super.beforeAll()
-    masterRpcEnv =
-      RpcEnv.create(Master.SYSTEM_NAME, "localhost", 0, conf, securityManager)
+    masterRpcEnv = RpcEnv.create(
+      Master.SYSTEM_NAME,
+      "localhost",
+      0,
+      conf,
+      securityManager)
     workerRpcEnvs = (0 until numWorkers).map { i =>
       RpcEnv.create(
         Worker.SYSTEM_NAME + i,
@@ -441,8 +445,8 @@ class StandaloneDynamicAllocationSuite
     assert(executors.size === 2)
 
     // simulate running a task on the executor
-    val getMap =
-      PrivateMethod[mutable.HashMap[String, Int]]('executorIdToTaskCount)
+    val getMap = PrivateMethod[mutable.HashMap[String, Int]](
+      'executorIdToTaskCount)
     val taskScheduler = sc.taskScheduler.asInstanceOf[TaskSchedulerImpl]
     val executorIdToTaskCount = taskScheduler invokePrivate getMap()
     executorIdToTaskCount(executors.head) = 1
@@ -584,8 +588,8 @@ class StandaloneDynamicAllocationSuite
       val mockAddress = mock(classOf[RpcAddress])
       when(endpointRef.address).thenReturn(mockAddress)
       val message = RegisterExecutor(id, endpointRef, 10, Map.empty)
-      val backend =
-        sc.schedulerBackend.asInstanceOf[CoarseGrainedSchedulerBackend]
+      val backend = sc.schedulerBackend
+        .asInstanceOf[CoarseGrainedSchedulerBackend]
       backend.driverEndpoint.askWithRetry[CoarseGrainedClusterMessage](message)
     }
   }

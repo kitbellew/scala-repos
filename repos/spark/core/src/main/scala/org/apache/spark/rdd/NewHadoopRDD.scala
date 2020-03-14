@@ -82,8 +82,8 @@ class NewHadoopRDD[K, V](
 
   @transient protected val jobId = new JobID(jobTrackerId, id)
 
-  private val shouldCloneJobConf =
-    sparkContext.conf.getBoolean("spark.hadoop.cloneConf", false)
+  private val shouldCloneJobConf = sparkContext.conf
+    .getBoolean("spark.hadoop.cloneConf", false)
 
   def getConf: Configuration = {
     val conf: Configuration = confBroadcast.value.value
@@ -132,8 +132,9 @@ class NewHadoopRDD[K, V](
       logInfo("Input split: " + split.serializableHadoopSplit)
       val conf = getConf
 
-      val inputMetrics =
-        context.taskMetrics().registerInputMetrics(DataReadMethod.Hadoop)
+      val inputMetrics = context
+        .taskMetrics()
+        .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
       // Find a function that will return the FileSystem bytes read by this thread. Do this before
@@ -253,8 +254,9 @@ class NewHadoopRDD[K, V](
     val locs = HadoopRDD.SPLIT_INFO_REFLECTIONS match {
       case Some(c) =>
         try {
-          val infos =
-            c.newGetLocationInfo.invoke(split).asInstanceOf[Array[AnyRef]]
+          val infos = c.newGetLocationInfo
+            .invoke(split)
+            .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {
           case e: Exception =>

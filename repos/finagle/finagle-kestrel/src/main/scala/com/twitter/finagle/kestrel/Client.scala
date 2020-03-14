@@ -495,8 +495,7 @@ protected[kestrel] class ConnectedClient(
     }
 
   private def MemCommand(command: Command)(
-      service: Service[Command, Response]) =
-    service(command)
+      service: Service[Command, Response]) = service(command)
 
   def read(queueName: String): ReadHandle = {
     val queueBuffer: Buf = Buf.Utf8(queueName)

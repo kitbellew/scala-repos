@@ -63,9 +63,8 @@ private[deploy] class Worker(
   assert(port > 0)
 
   // A scheduled executor used to send messages at the specified time.
-  private val forwordMessageScheduler =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "worker-forward-message-scheduler")
+  private val forwordMessageScheduler = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("worker-forward-message-scheduler")
 
   // A separated thread to clean up the workDir. Used to provide the implicit parameter of `Future`
   // methods.
@@ -98,14 +97,16 @@ private[deploy] class Worker(
     60
       * REGISTRATION_RETRY_FUZZ_MULTIPLIER))
 
-  private val CLEANUP_ENABLED =
-    conf.getBoolean("spark.worker.cleanup.enabled", false)
+  private val CLEANUP_ENABLED = conf.getBoolean(
+    "spark.worker.cleanup.enabled",
+    false)
   // How often worker will clean up old app folders
   private val CLEANUP_INTERVAL_MILLIS =
     conf.getLong("spark.worker.cleanup.interval", 60 * 30) * 1000
   // TTL for app folders/data;  after TTL expires it will be cleaned up
-  private val APP_DATA_RETENTION_SECONDS =
-    conf.getLong("spark.worker.cleanup.appDataTtl", 7 * 24 * 3600)
+  private val APP_DATA_RETENTION_SECONDS = conf.getLong(
+    "spark.worker.cleanup.appDataTtl",
+    7 * 24 * 3600)
 
   private val testing: Boolean = sys.props.contains("spark.testing")
   private var master: Option[RpcEndpointRef] = None
@@ -151,8 +152,10 @@ private[deploy] class Worker(
 
   private var connectionAttemptCount = 0
 
-  private val metricsSystem =
-    MetricsSystem.createMetricsSystem("worker", conf, securityMgr)
+  private val metricsSystem = MetricsSystem.createMetricsSystem(
+    "worker",
+    conf,
+    securityMgr)
   private val workerSource = new WorkerSource(this)
 
   private var registerMasterFutures: Array[JFuture[_]] = null
@@ -230,8 +233,8 @@ private[deploy] class Worker(
         override def run(): Unit = {
           try {
             logInfo("Connecting to master " + masterAddress + "...")
-            val masterEndpoint =
-              rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+            val masterEndpoint = rpcEnv
+              .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
             registerWithMaster(masterEndpoint)
           } catch {
             case ie: InterruptedException => // Cancelled
@@ -285,8 +288,8 @@ private[deploy] class Worker(
               registerMasterFutures.foreach(_.cancel(true))
             }
             val masterAddress = masterRef.address
-            registerMasterFutures =
-              Array(registerMasterThreadPool.submit(new Runnable {
+            registerMasterFutures = Array(
+              registerMasterThreadPool.submit(new Runnable {
                 override def run(): Unit = {
                   try {
                     logInfo("Connecting to master " + masterAddress + "...")
@@ -517,8 +520,8 @@ private[deploy] class Worker(
               Utils
                 .getOrCreateLocalRootDirs(conf)
                 .map { dir =>
-                  val appDir =
-                    Utils.createDirectory(dir, namePrefix = "executor")
+                  val appDir = Utils
+                    .createDirectory(dir, namePrefix = "executor")
                   Utils.chmod700(appDir)
                   appDir.getAbsolutePath()
                 }
@@ -528,8 +531,8 @@ private[deploy] class Worker(
             val manager = new ExecutorRunner(
               appId,
               execId,
-              appDesc.copy(command =
-                Worker.maybeUpdateSSLSettings(appDesc.command, conf)),
+              appDesc.copy(command = Worker
+                .maybeUpdateSSLSettings(appDesc.command, conf)),
               cores_,
               memory_,
               self,
@@ -599,8 +602,8 @@ private[deploy] class Worker(
           driverId,
           workDir,
           sparkHome,
-          driverDesc.copy(command =
-            Worker.maybeUpdateSSLSettings(driverDesc.command, conf)),
+          driverDesc.copy(command = Worker
+            .maybeUpdateSSLSettings(driverDesc.command, conf)),
           self,
           workerUri,
           securityMgr)

@@ -226,8 +226,11 @@ class ExecutionTest extends WordSpec with Matchers {
 
       val sink = TypedTsv[Int](sinkF)
       val src = TypedTsv[Int](srcF)
-      val operationTP = (TypedPipe.from(src) ++ TypedPipe.from(
-        (1 until 100).toList)).writeExecution(sink).getCounters.map(_._2.toMap)
+      val operationTP =
+        (TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList))
+          .writeExecution(sink)
+          .getCounters
+          .map(_._2.toMap)
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 
@@ -255,8 +258,8 @@ class ExecutionTest extends WordSpec with Matchers {
       conf.get("mapred.reduce.tasks") should contain("100")
       conf.getArgs.boolean("local") shouldBe true
 
-      val (conf1, Hdfs(_, hconf)) =
-        parser.config(Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
+      val (conf1, Hdfs(_, hconf)) = parser.config(
+        Array("--test", "-Dmapred.reduce.tasks=110", "--hdfs"))
       conf1.get("mapred.reduce.tasks") should contain("110")
       conf1.getArgs.boolean("test") shouldBe true
       hconf.get("mapred.reduce.tasks") shouldBe "110"
@@ -410,8 +413,10 @@ class ExecutionTest extends WordSpec with Matchers {
       val fde1 = baseTp.map { _ * 3 }.forceToDiskExecution
       val fde2 = baseTp.map { _ * 5 }.forceToDiskExecution
 
-      val res =
-        fde1.zip(fde2).flatMap { _ => fde1 }.flatMap(_.toIterableExecution)
+      val res = fde1
+        .zip(fde2)
+        .flatMap { _ => fde1 }
+        .flatMap(_.toIterableExecution)
 
       res.shouldSucceed()
       assert(

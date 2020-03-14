@@ -114,8 +114,8 @@ class ProjectedQuasiNewton(
       relativeTolerance: Boolean = true)(
       implicit space: MutableInnerProductModule[DenseVector[Double], Double]) =
     this(
-      convergenceCheck =
-        FirstOrderMinimizer.defaultConvergenceCheck[DenseVector[Double]](
+      convergenceCheck = FirstOrderMinimizer
+        .defaultConvergenceCheck[DenseVector[Double]](
           maxIter,
           tolerance,
           relativeTolerance),

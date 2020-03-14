@@ -209,8 +209,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
 
         // ----------- hand over to pipeline-2
 
-        val item2 =
-          Item2(arrivalPos, mirrorC, plainC, beanC, outF)
+        val item2 = Item2(arrivalPos, mirrorC, plainC, beanC, outF)
 
         q2 add item2 // at the very end of this method so that no Worker2 thread starts mutating before we're done.
 
@@ -357,8 +356,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
       mirrorCodeGen = new JMirrorBuilder
       beanInfoCodeGen = new JBeanInfoBuilder
 
-      val needsOutfileForSymbol =
-        bytecodeWriter.isInstanceOf[ClassBytecodeWriter]
+      val needsOutfileForSymbol = bytecodeWriter
+        .isInstanceOf[ClassBytecodeWriter]
       buildAndSendToDisk(needsOutfileForSymbol)
 
       // closing output files.

@@ -26,17 +26,14 @@ case class Term[@sp(Float, Double) C](coeff: C, exp: Int) { lhs =>
   def eval(x: C)(implicit r: Semiring[C]): C =
     if (exp != 0) coeff * (x pow exp) else coeff
 
-  def isIndexZero: Boolean =
-    exp == 0
+  def isIndexZero: Boolean = exp == 0
 
   def isZero(implicit ring: Semiring[C], eq: Eq[C]): Boolean =
     coeff === ring.zero
 
-  def divideBy(x: C)(implicit f: Field[C]): Term[C] =
-    Term(coeff / x, exp)
+  def divideBy(x: C)(implicit f: Field[C]): Term[C] = Term(coeff / x, exp)
 
-  def der(implicit r: Ring[C]): Term[C] =
-    Term(coeff * r.fromInt(exp), exp - 1)
+  def der(implicit r: Ring[C]): Term[C] = Term(coeff * r.fromInt(exp), exp - 1)
 
   def int(implicit f: Field[C]): Term[C] =
     Term(coeff / f.fromInt(exp + 1), exp + 1)
@@ -82,8 +79,7 @@ object Term {
     Term(tpl._2, tpl._1)
   def zero[@sp(Float, Double) C](implicit r: Semiring[C]): Term[C] =
     Term(r.zero, 0)
-  def one[@sp(Float, Double) C](implicit r: Rig[C]): Term[C] =
-    Term(r.one, 0)
+  def one[@sp(Float, Double) C](implicit r: Rig[C]): Term[C] = Term(r.one, 0)
 
   private val IsZero = "0".r
   private val IsNegative = "-(.*)".r
@@ -107,9 +103,8 @@ object Term {
 
   // call Regex constructor directly to get rid of compiler warning
   // replace with "".r once SI-6723 is fixed
-  private val superscriptRegex =
-    new scala.util.matching.Regex(
-      "[\\u2070\\u2071\\u2072\\u2073\\u2074\\u2075\\u2076\\u2077\\u2078\\u2079\\u207B\\u00B9\\u00B2\\u00B3]+")
+  private val superscriptRegex = new scala.util.matching.Regex(
+    "[\\u2070\\u2071\\u2072\\u2073\\u2074\\u2075\\u2076\\u2077\\u2078\\u2079\\u207B\\u00B9\\u00B2\\u00B3]+")
 
   private[spire] def removeSuperscript(text: String): String =
     superscriptRegex.replaceAllIn(text, "^" + _.group(0).map(removeSuperscript))

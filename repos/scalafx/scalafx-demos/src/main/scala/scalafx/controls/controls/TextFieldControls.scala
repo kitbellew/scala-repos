@@ -50,8 +50,9 @@ class TextFieldControls(target: TextField)
           observable: ObservableValue[_],
           oldValue: Any,
           newValue: Any) {
-        target.prefColumnCount =
-          chbPrefColumnCount.items.get().get(newValue.toString.toInt)
+        target.prefColumnCount = chbPrefColumnCount.items
+          .get()
+          .get(newValue.toString.toInt)
       }
     })
 

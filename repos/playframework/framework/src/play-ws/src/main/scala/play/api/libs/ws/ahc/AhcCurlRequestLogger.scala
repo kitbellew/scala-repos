@@ -32,8 +32,8 @@ class AhcCurlRequestLogger(logger: org.slf4j.Logger)
 
 object AhcCurlRequestLogger {
 
-  private val logger =
-    LoggerFactory.getLogger("play.api.libs.ws.ahc.AhcCurlRequestLogger")
+  private val logger = LoggerFactory.getLogger(
+    "play.api.libs.ws.ahc.AhcCurlRequestLogger")
 
   private val instance = new AhcCurlRequestLogger(logger)
 

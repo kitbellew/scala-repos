@@ -42,8 +42,7 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   /** Write a natural number in big endian format, base 128.
     *  All but the last digits have bit 0x80 set.
     */
-  def writeNat(x: Int) =
-    writeLongNat(x.toLong & 0x00000000FFFFFFFFL)
+  def writeNat(x: Int) = writeLongNat(x.toLong & 0x00000000FFFFFFFFL)
 
   /**
     * Like writeNat, but for longs. This is not the same as

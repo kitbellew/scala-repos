@@ -85,8 +85,8 @@ case class Timer(
       if (continueRunning) {
         val listen: (T => Unit) => Unit = callback =>
           withWrite {
-            val waitTime =
-              alignTimeResolution(lastNow + (if (waitMs < 0) 0 else waitMs))
+            val waitTime = alignTimeResolution(
+              lastNow + (if (waitMs < 0) 0 else waitMs))
             val timedCallback = () => callback(value)
             // Lazy implementation for now.
             futures = futures + futures

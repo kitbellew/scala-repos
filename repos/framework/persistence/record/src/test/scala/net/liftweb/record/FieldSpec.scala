@@ -278,12 +278,13 @@ object FieldSpec extends Specification {
           val formXml = mandatory.toForm
           formXml must beLike {
             case Full(fprime) =>
-              val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-                ns.filter {
-                  case e: Elem =>
-                    e.attribute("selected").map(_.text) == Some("selected")
-                  case _ => false
-                }) andThen "* [value]" #> ".*"))(fprime)
+              val f =
+                ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+                  ns.filter {
+                    case e: Elem =>
+                      e.attribute("selected").map(_.text) == Some("selected")
+                    case _ => false
+                  }) andThen "* [value]" #> ".*"))(fprime)
               val ret: Boolean = Helpers.compareXml(f, fp)
               ret must_== true
           }
@@ -392,8 +393,8 @@ object FieldSpec extends Specification {
   "DateTimeField with custom format" should {
     val rec = CustomFormatDateTimeRecord.createRecord
     val dt = Calendar.getInstance
-    val dtStr =
-      rec.customFormatDateTimeField.formats.dateFormat.format(dt.getTime)
+    val dtStr = rec.customFormatDateTimeField.formats.dateFormat
+      .format(dt.getTime)
     passConversionTests(
       dt,
       rec.customFormatDateTimeField,

@@ -267,8 +267,7 @@ trait SeqInstances1 extends SeqInstances0 {
     new SeqVectorSpace[A, CC[A]]
 
   implicit def SeqEq[A, CC[A] <: SeqLike[A, CC[A]]](
-      implicit A0: Eq[A]): SeqEq[A, CC[A]] =
-    new SeqEq[A, CC[A]]
+      implicit A0: Eq[A]): SeqEq[A, CC[A]] = new SeqEq[A, CC[A]]
 }
 
 trait SeqInstances2 extends SeqInstances1 {
@@ -278,8 +277,7 @@ trait SeqInstances2 extends SeqInstances1 {
     new SeqInnerProductSpace[A, CC[A]]
 
   implicit def SeqOrder[A, CC[A] <: SeqLike[A, CC[A]]](
-      implicit A0: Order[A]): SeqOrder[A, CC[A]] =
-    new SeqOrder[A, CC[A]]
+      implicit A0: Order[A]): SeqOrder[A, CC[A]] = new SeqOrder[A, CC[A]]
 }
 
 trait SeqInstances3 extends SeqInstances2 {

@@ -563,8 +563,9 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     }
 
     val ss = server(sr, fi)
-    val cc =
-      client(sr, Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
+    val cc = client(
+      sr,
+      Address(ss.boundAddress.asInstanceOf[InetSocketAddress]))
 
     Await.ready(cc.echo("." * 10))
 

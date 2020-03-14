@@ -46,8 +46,8 @@ class NaiveBayesSuite
       Array(0.10, 0.10, 0.70, 0.10) // label 2
     ).map(_.map(math.log))
 
-    dataset =
-      sqlContext.createDataFrame(generateNaiveBayesInput(pi, theta, 100, 42))
+    dataset = sqlContext.createDataFrame(
+      generateNaiveBayesInput(pi, theta, 100, 42))
   }
 
   def validatePrediction(predictionAndLabels: DataFrame): Unit = {
@@ -156,8 +156,9 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 17, "multinomial"))
 
-    val predictionAndLabels =
-      model.transform(validationDataset).select("prediction", "label")
+    val predictionAndLabels = model
+      .transform(validationDataset)
+      .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
     val featureAndProbabilities = model
@@ -191,8 +192,9 @@ class NaiveBayesSuite
     val validationDataset = sqlContext.createDataFrame(
       generateNaiveBayesInput(piArray, thetaArray, nPoints, 20, "bernoulli"))
 
-    val predictionAndLabels =
-      model.transform(validationDataset).select("prediction", "label")
+    val predictionAndLabels = model
+      .transform(validationDataset)
+      .select("prediction", "label")
     validatePrediction(predictionAndLabels)
 
     val featureAndProbabilities = model

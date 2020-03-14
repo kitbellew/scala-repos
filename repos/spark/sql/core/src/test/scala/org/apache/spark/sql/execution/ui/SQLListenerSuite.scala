@@ -98,10 +98,9 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val listener = new SQLListener(sqlContext.sparkContext.conf)
     val executionId = 0
     val df = createTestDataFrame
-    val accumulatorIds =
-      SparkPlanGraph(
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
-        .flatMap(_.metrics.map(_.accumulatorId))
+    val accumulatorIds = SparkPlanGraph(
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan)).allNodes
+      .flatMap(_.metrics.map(_.accumulatorId))
     // Assume all accumulators are long
     var accumulatorValue = 0L
     val accumulatorUpdates = accumulatorIds.map { id =>
@@ -440,20 +439,29 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
       0)
     val stageInfo = createStageInfo(0, 0)
-    val jobStart =
-      SparkListenerJobStart(0, 0, Seq(stageInfo), createProperties(0))
+    val jobStart = SparkListenerJobStart(
+      0,
+      0,
+      Seq(stageInfo),
+      createProperties(0))
     val stageSubmitted = SparkListenerStageSubmitted(stageInfo)
     // This task has both accumulators that are SQL metrics and accumulators that are not.
     // The listener should only track the ones that are actually SQL metrics.
     val sqlMetric = SQLMetrics.createLongMetric(sparkContext, "beach umbrella")
     val nonSqlMetric = sparkContext.accumulator[Int](0, "baseball")
     val sqlMetricInfo = sqlMetric.toInfo(Some(sqlMetric.localValue), None)
-    val nonSqlMetricInfo =
-      nonSqlMetric.toInfo(Some(nonSqlMetric.localValue), None)
+    val nonSqlMetricInfo = nonSqlMetric.toInfo(
+      Some(nonSqlMetric.localValue),
+      None)
     val taskInfo = createTaskInfo(0, 0)
     taskInfo.accumulables ++= Seq(sqlMetricInfo, nonSqlMetricInfo)
-    val taskEnd =
-      SparkListenerTaskEnd(0, 0, "just-a-task", null, taskInfo, null)
+    val taskEnd = SparkListenerTaskEnd(
+      0,
+      0,
+      "just-a-task",
+      null,
+      taskInfo,
+      null)
     listener.onOtherEvent(executionStart)
     listener.onJobStart(jobStart)
     listener.onStageSubmitted(stageSubmitted)

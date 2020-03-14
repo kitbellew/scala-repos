@@ -12,18 +12,17 @@ trait StdTags {
   val u: ApiUniverse with Singleton
   val m: Mirror[u.type]
 
-  lazy val tagOfListOfString: u.TypeTag[List[String]] =
-    u.TypeTag[List[String]](
-      m,
-      new TypeCreator {
-        def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type = {
-          val u = m.universe
-          u.appliedType(
-            u.definitions.ListClass.toType,
-            List(u.definitions.StringClass.toType))
-        }
+  lazy val tagOfListOfString: u.TypeTag[List[String]] = u.TypeTag[List[String]](
+    m,
+    new TypeCreator {
+      def apply[U <: ApiUniverse with Singleton](m: Mirror[U]): U#Type = {
+        val u = m.universe
+        u.appliedType(
+          u.definitions.ListClass.toType,
+          List(u.definitions.StringClass.toType))
       }
-    )
+    }
+  )
 
   protected def tagOfStaticClass[T: ClassTag]: u.TypeTag[T] =
     u.TypeTag[T](

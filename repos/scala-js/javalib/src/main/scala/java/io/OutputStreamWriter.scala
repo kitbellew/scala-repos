@@ -32,17 +32,14 @@ class OutputStreamWriter(
         .onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE))
 
-  def this(out: OutputStream) =
-    this(out, Charset.defaultCharset)
+  def this(out: OutputStream) = this(out, Charset.defaultCharset)
 
   def this(out: OutputStream, charsetName: String) =
     this(out, Charset.forName(charsetName))
 
-  def getEncoding(): String =
-    if (closed) null else enc.charset.name
+  def getEncoding(): String = if (closed) null else enc.charset.name
 
-  override def write(c: Int): Unit =
-    write(c.toChar.toString, 0, 1)
+  override def write(c: Int): Unit = write(c.toChar.toString, 0, 1)
 
   override def write(cbuf: Array[Char], off: Int, len: Int): Unit =
     writeImpl(CharBuffer.wrap(cbuf, off, len))
@@ -53,11 +50,12 @@ class OutputStreamWriter(
   private def writeImpl(cbuf: CharBuffer): Unit = {
     ensureOpen()
 
-    val cbuf1 = if (inBuf != "") {
-      val fullInput = CharBuffer.wrap(inBuf + cbuf.toString)
-      inBuf = ""
-      fullInput
-    } else cbuf
+    val cbuf1 =
+      if (inBuf != "") {
+        val fullInput = CharBuffer.wrap(inBuf + cbuf.toString)
+        inBuf = ""
+        fullInput
+      } else cbuf
 
     @inline
     @tailrec

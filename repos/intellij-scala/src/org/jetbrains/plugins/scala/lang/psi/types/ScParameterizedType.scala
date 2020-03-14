@@ -36,8 +36,9 @@ case class JavaArrayType(arg: ScType) extends ValueType {
   def getParameterizedType(
       project: Project,
       scope: GlobalSearchScope): Option[ScType] = {
-    val arrayClasses =
-      ScalaPsiManager.instance(project).getCachedClasses(scope, "scala.Array")
+    val arrayClasses = ScalaPsiManager
+      .instance(project)
+      .getCachedClasses(scope, "scala.Array")
     var arrayClass: PsiClass = null
     for (clazz <- arrayClasses) {
       clazz match {
@@ -261,8 +262,11 @@ class ScParameterizedType private (
           }: _*),
           Map.empty,
           None)
-        var t: (Boolean, ScUndefinedSubstitutor) =
-          Conformance.conformsInner(subst.subst(upper), r, Set.empty, uSubst)
+        var t: (Boolean, ScUndefinedSubstitutor) = Conformance.conformsInner(
+          subst.subst(upper),
+          r,
+          Set.empty,
+          uSubst)
         if (!t._1) return (false, uSubst)
         t = Conformance.conformsInner(r, subst.subst(lower), Set.empty, t._2)
         if (!t._1) return (false, uSubst)

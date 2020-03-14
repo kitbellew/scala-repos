@@ -53,8 +53,7 @@ object Trace {
       override def initialValue() = new Array[Byte](32)
     }
 
-    def marshal(id: TraceId) =
-      Buf.ByteArray.Owned(TraceId.serialize(id))
+    def marshal(id: TraceId) = Buf.ByteArray.Owned(TraceId.serialize(id))
 
     /**
       * The wire format is (big-endian):
@@ -73,9 +72,10 @@ object Trace {
       val flags64 = ByteArrays.get64be(bytes, 24)
 
       val flags = Flags(flags64)
-      val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
-      } else None
+      val sampled =
+        if (flags.isFlagSet(Flags.SamplingKnown)) {
+          if (flags.isFlagSet(Flags.Sampled)) someTrue else someFalse
+        } else None
 
       val traceId = TraceId(
         if (trace64 == parent64) None else Some(SpanId(trace64)),
@@ -89,8 +89,12 @@ object Trace {
   }
 
   private[this] val rng = new Random
-  private[this] val defaultId =
-    TraceId(None, None, SpanId(rng.nextLong()), None, Flags())
+  private[this] val defaultId = TraceId(
+    None,
+    None,
+    SpanId(rng.nextLong()),
+    None,
+    Flags())
   @volatile private[this] var tracingEnabled = true
 
   private[this] val EmptyTraceCtxFn = () => TraceCtx.empty
@@ -109,14 +113,12 @@ object Trace {
     * Get the current trace identifier.  If no identifiers have been
     * pushed, a default one is provided.
     */
-  def id: TraceId =
-    Contexts.broadcast.getOrElse(idCtx, defaultIdFn)
+  def id: TraceId = Contexts.broadcast.getOrElse(idCtx, defaultIdFn)
 
   /**
     * Get the current identifier, if it exists.
     */
-  def idOption: Option[TraceId] =
-    Contexts.broadcast.get(idCtx)
+  def idOption: Option[TraceId] = Contexts.broadcast.get(idCtx)
 
   /**
     * @return true if the current trace id is terminal
@@ -195,8 +197,7 @@ object Trace {
     *                 attempts to set nextId will be ignored.
     */
   def letTracerAndNextId[R](tracer: Tracer, terminal: Boolean = false)(
-      f: => R): R =
-    letTracerAndId(tracer, nextId, terminal)(f)
+      f: => R): R = letTracerAndId(tracer, nextId, terminal)(f)
 
   /**
     * Run computation `f` with the given tracer and trace id.

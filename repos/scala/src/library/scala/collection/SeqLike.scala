@@ -425,8 +425,7 @@ trait SeqLike[+A, +Repr]
     *                  followed by all elements of `that`.
     */
   override def union[B >: A, That](that: GenSeq[B])(
-      implicit bf: CanBuildFrom[Repr, B, That]): That =
-    this ++ that
+      implicit bf: CanBuildFrom[Repr, B, That]): That = this ++ that
 
   /** Computes the multiset difference between this $coll and another sequence.
     *
@@ -647,10 +646,9 @@ trait SeqLike[+A, +Repr]
     if (len == 1) b ++= this
     else if (len > 1) {
       b.sizeHint(len)
-      val arr =
-        new Array[AnyRef](
-          len
-        ) // Previously used ArraySeq for more compact but slower code
+      val arr = new Array[AnyRef](
+        len
+      ) // Previously used ArraySeq for more compact but slower code
       var i = 0
       for (x <- this) {
         arr(i) = x.asInstanceOf[AnyRef]
@@ -836,10 +834,9 @@ object SeqLike {
           val iter = S.iterator.drop(m0)
           val Wopt = kmpOptimizeWord(W, n0, n1, forward = true)
           val T = kmpJumpTable(Wopt, n1 - n0)
-          val cache =
-            new Array[AnyRef](
-              n1 - n0
-            ) // Ring buffer--need a quick way to do a look-behind
+          val cache = new Array[AnyRef](
+            n1 - n0
+          ) // Ring buffer--need a quick way to do a look-behind
           var largest = 0
           var i, m = 0
           var answer = -1

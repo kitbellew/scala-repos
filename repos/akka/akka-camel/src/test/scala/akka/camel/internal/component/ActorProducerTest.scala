@@ -171,8 +171,9 @@ class ActorProducerTest
           "get a response and async callback as soon as it gets the response (but not before)" in {
             producer = given(outCapable = true)
 
-            val doneSync =
-              producer.processExchangeAdapter(exchange, asyncCallback)
+            val doneSync = producer.processExchangeAdapter(
+              exchange,
+              asyncCallback)
 
             asyncCallback.expectNoCallWithin(100 millis)
             info("no async callback before response")
@@ -243,8 +244,9 @@ class ActorProducerTest
           "get sync callback as soon as it sends a message" in {
 
             producer = given(outCapable = false, autoAck = true)
-            val doneSync =
-              producer.processExchangeAdapter(exchange, asyncCallback)
+            val doneSync = producer.processExchangeAdapter(
+              exchange,
+              asyncCallback)
 
             doneSync should ===(true)
             info("done sync")
@@ -262,8 +264,9 @@ class ActorProducerTest
             "get async callback" in {
               producer = given(outCapable = false, autoAck = false)
 
-              val doneSync =
-                producer.processExchangeAdapter(exchange, asyncCallback)
+              val doneSync = producer.processExchangeAdapter(
+                exchange,
+                asyncCallback)
 
               doneSync should ===(false)
               within(1 second) {
@@ -317,8 +320,9 @@ class ActorProducerTest
             "set an exception on exchange" in {
               producer = given(outCapable = false, autoAck = false)
 
-              val doneSync =
-                producer.processExchangeAdapter(exchange, asyncCallback)
+              val doneSync = producer.processExchangeAdapter(
+                exchange,
+                asyncCallback)
 
               doneSync should ===(false)
               within(1 second) {

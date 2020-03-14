@@ -166,8 +166,10 @@ object LinearDataGenerator {
           rnd.nextDouble() <= sparsity
         }
         val values = indices.map { rndElement(_) }
-        val features =
-          Vectors.sparse(weights.length, indices.toArray, values.toArray)
+        val features = Vectors.sparse(
+          weights.length,
+          indices.toArray,
+          values.toArray)
         val label = BLAS.dot(Vectors.dense(weights), features) +
           intercept + eps * rnd.nextGaussian()
         // Return LabeledPoints with SparseVector
@@ -200,8 +202,9 @@ object LinearDataGenerator {
     // Random values distributed uniformly in [-0.5, 0.5]
     val w = Array.fill(nfeatures)(random.nextDouble() - 0.5)
 
-    val data: RDD[LabeledPoint] =
-      sc.parallelize(0 until nparts, nparts).flatMap { p =>
+    val data: RDD[LabeledPoint] = sc
+      .parallelize(0 until nparts, nparts)
+      .flatMap { p =>
         val seed = 42 + p
         val examplesInPartition = nexamples / nparts
         generateLinearInput(

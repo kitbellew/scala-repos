@@ -302,8 +302,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
           val node = transformStat(t)(blockPos)
           if (nextIsCtor) {
             // The @constructor must be propagated through an ExprResult node
-            val trg =
-              if (node.isExprResult()) node.getChildAtIndex(0) else node
+            val trg = if (node.isExprResult()) node.getChildAtIndex(0) else node
 
             trg.setJSDocInfo(ctorDoc(trg))
           }
@@ -409,8 +408,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
   class TransformException private (msg: String, e: Throwable)
       extends RuntimeException(msg, e) {
 
-    def this(tree: Tree, e: Throwable) =
-      this(TransformException.mkMsg(tree), e)
+    def this(tree: Tree, e: Throwable) = this(TransformException.mkMsg(tree), e)
 
     def this(msg: String) = this(msg, null)
   }

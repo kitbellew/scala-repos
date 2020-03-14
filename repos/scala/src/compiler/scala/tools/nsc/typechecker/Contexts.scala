@@ -606,12 +606,14 @@ trait Contexts { self: Analyzer =>
       * accessible.
       */
     def makeConstructorContext = {
-      val baseContext =
-        enclClass.outer.nextEnclosing(!_.tree.isInstanceOf[Template])
+      val baseContext = enclClass.outer.nextEnclosing(
+        !_.tree.isInstanceOf[Template])
       // must propagate reporter!
       // (caught by neg/t3649 when refactoring reporting to be specified only by this.reporter and not also by this.contextMode)
-      val argContext =
-        baseContext.makeNewScope(tree, owner, reporter = this.reporter)
+      val argContext = baseContext.makeNewScope(
+        tree,
+        owner,
+        reporter = this.reporter)
       argContext.contextMode = contextMode
       argContext.inSelfSuperCall = true
       def enterElems(c: Context) {
@@ -724,8 +726,7 @@ trait Contexts { self: Analyzer =>
         case x => s"${tree.shortClass}${treeIdString}:${treeTruncated}"
       }
 
-    override def toString =
-      sm"""|Context($unit) {
+    override def toString = sm"""|Context($unit) {
            |   owner       = $owner
            |   tree        = $treeString
            |   scope       = ${scope.size} decls
@@ -1176,8 +1177,9 @@ trait Contexts { self: Analyzer =>
         val found0 = lookupInPrefix(name)
         val found1 = found0 filter accessibleInPrefix
         if (found0.exists && !found1.exists && inaccessible == null)
-          inaccessible =
-            LookupInaccessible(found0, analyzer.lastAccessCheckDetails)
+          inaccessible = LookupInaccessible(
+            found0,
+            analyzer.lastAccessCheckDetails)
 
         found1
       }

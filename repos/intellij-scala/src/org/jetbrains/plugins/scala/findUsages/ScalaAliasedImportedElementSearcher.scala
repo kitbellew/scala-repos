@@ -35,10 +35,9 @@ class ScalaAliasedImportedElementSearcher
       name <- Option(named.name)
       if !StringUtil.isEmptyOrSpaces(name)
     } {
-      val scope: SearchScope =
-        inReadAction(
-          parameters.getEffectiveSearchScope
-        ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
+      val scope: SearchScope = inReadAction(
+        parameters.getEffectiveSearchScope
+      ) // TODO PsiUtil.restrictScopeToGroovyFiles(parameters.getEffectiveSearchScope)
       val collector: SearchRequestCollector = parameters.getOptimizer
       val session: SearchSession = collector.getSearchSession
       collector.searchWord(
@@ -57,8 +56,8 @@ class ScalaAliasedImportedElementSearcher
       extends RequestResultProcessor(myTarget, prefix) {
     private def getAlias(element: PsiElement): String = {
       if (!element.getParent.isInstanceOf[ScImportSelector]) return null
-      val importStatement: ScImportSelector =
-        element.getParent.asInstanceOf[ScImportSelector]
+      val importStatement: ScImportSelector = element.getParent
+        .asInstanceOf[ScImportSelector]
       importStatement.importedName
     }
 

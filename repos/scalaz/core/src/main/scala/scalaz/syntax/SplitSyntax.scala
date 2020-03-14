@@ -6,8 +6,7 @@ final class SplitOps[F[_, _], A, B] private[syntax] (val self: F[A, B])(
     implicit val F: Split[F])
     extends Ops[F[A, B]] {
   ////
-  final def -*-[C, D](k: F[C, D]): F[(A, C), (B, D)] =
-    F.split(self, k)
+  final def -*-[C, D](k: F[C, D]): F[(A, C), (B, D)] = F.split(self, k)
   ////
 }
 

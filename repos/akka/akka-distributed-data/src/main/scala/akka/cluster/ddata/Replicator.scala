@@ -592,8 +592,8 @@ object Replicator {
             val prunedData = dataWithRemovedNodePruning.prune(from, to)
             copy(
               data = prunedData,
-              pruning =
-                pruning.updated(from, PruningState(to, PruningPerformed)))
+              pruning = pruning
+                .updated(from, PruningState(to, PruningPerformed)))
           case _ ⇒ this
         }
 
@@ -606,8 +606,9 @@ object Replicator {
           for ((key, thisValue) ← pruning) {
             mergedRemovedNodePruning.get(key) match {
               case None ⇒
-                mergedRemovedNodePruning =
-                  mergedRemovedNodePruning.updated(key, thisValue)
+                mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
+                  key,
+                  thisValue)
               case Some(thatValue) ⇒
                 mergedRemovedNodePruning = mergedRemovedNodePruning.updated(
                   key,
@@ -888,8 +889,8 @@ final class Replicator(settings: ReplicatorSettings)
     self,
     ClockTick)
 
-  val serializer =
-    SerializationExtension(context.system).serializerFor(classOf[DataEnvelope])
+  val serializer = SerializationExtension(context.system)
+    .serializerFor(classOf[DataEnvelope])
   val maxPruningDisseminationNanos = maxPruningDissemination.toNanos
 
   // cluster nodes, doesn't contain selfAddress
@@ -1325,8 +1326,9 @@ final class Replicator(settings: ReplicatorSettings)
     if (m.address == selfAddress) context stop self
     else if (matchingRole(m)) {
       nodes -= m.address
-      removedNodes =
-        removedNodes.updated(m.uniqueAddress, allReachableClockTime)
+      removedNodes = removedNodes.updated(
+        m.uniqueAddress,
+        allReachableClockTime)
       unreachable -= m.address
     }
   }
@@ -1366,8 +1368,9 @@ final class Replicator(settings: ReplicatorSettings)
       for ((key, (envelope, _)) ← dataEntries; removed ← removedSet) {
 
         def init(): Unit = {
-          val newEnvelope =
-            envelope.initRemovedNodePruning(removed, selfUniqueAddress)
+          val newEnvelope = envelope.initRemovedNodePruning(
+            removed,
+            selfUniqueAddress)
           log.debug("Initiated pruning of [{}] for data key [{}]", removed, key)
           setData(key, newEnvelope)
         }
@@ -1400,8 +1403,9 @@ final class Replicator(settings: ReplicatorSettings)
               if owner == selfUniqueAddress
                 && (nodes.isEmpty || nodes.forall(seen)) ⇒
             val newEnvelope = envelope.prune(removed)
-            pruningPerformed =
-              pruningPerformed.updated(removed, allReachableClockTime)
+            pruningPerformed = pruningPerformed.updated(
+              removed,
+              allReachableClockTime)
             log.debug(
               "Perform pruning of [{}] from [{}] to [{}]",
               key,
@@ -1506,10 +1510,10 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
   def nodes: Set[Address]
 
   import context.dispatcher
-  var sendToSecondarySchedule =
-    context.system.scheduler.scheduleOnce(timeout / 5, self, SendToSecondary)
-  var timeoutSchedule =
-    context.system.scheduler.scheduleOnce(timeout, self, ReceiveTimeout)
+  var sendToSecondarySchedule = context.system.scheduler
+    .scheduleOnce(timeout / 5, self, SendToSecondary)
+  var timeoutSchedule = context.system.scheduler
+    .scheduleOnce(timeout, self, ReceiveTimeout)
 
   var remaining = nodes
 
@@ -1519,8 +1523,9 @@ private[akka] abstract class ReadWriteAggregator extends Actor {
     val primarySize = nodes.size - doneWhenRemainingSize
     if (primarySize >= nodes.size) (nodes, Set.empty[Address])
     else {
-      val (p, s) =
-        scala.util.Random.shuffle(nodes.toVector).splitAt(primarySize)
+      val (p, s) = scala.util.Random
+        .shuffle(nodes.toVector)
+        .splitAt(primarySize)
       (p, s.take(MaxSecondaryNodes))
     }
   }

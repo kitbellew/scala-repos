@@ -32,8 +32,7 @@ object SizedExamples extends App {
 
   def csv[N <: Nat](
       hdrs: Sized[Seq[String], N],
-      rows: List[Sized[Seq[String], N]]) =
-    row(hdrs) :: rows.map(row(_))
+      rows: List[Sized[Seq[String], N]]) = row(hdrs) :: rows.map(row(_))
 
   def fullyStatic {
     val hdrs = Sized("Title", "Author") // Sized[IndexedSeq[String], _2]
@@ -51,8 +50,11 @@ object SizedExamples extends App {
     println
 
     // extendedHdrs has the wrong number of columns for rows
-    val extendedHdrs =
-      Sized("Title", "Author", "ISBN") // Sized[IndexedSeq[Int], _3]
+    val extendedHdrs = Sized(
+      "Title",
+      "Author",
+      "ISBN"
+    ) // Sized[IndexedSeq[Int], _3]
     //val badFormatted = csv(threeHdrs, rows)               // Does not compile
 
     // Extend the rows to match ...

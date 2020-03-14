@@ -22,10 +22,9 @@ trait HttpEventStreamHandle {
 }
 
 class HttpEventStreamActorMetrics @Inject() (metrics: Metrics) {
-  val numberOfStreams: AtomicIntGauge =
-    metrics.gauge(
-      metrics.name(MetricPrefixes.API, getClass, "number-of-streams"),
-      new AtomicIntGauge)
+  val numberOfStreams: AtomicIntGauge = metrics.gauge(
+    metrics.name(MetricPrefixes.API, getClass, "number-of-streams"),
+    new AtomicIntGauge)
 }
 
 /**
@@ -38,8 +37,8 @@ class HttpEventStreamActor(
     handleStreamProps: HttpEventStreamHandle => Props)
     extends Actor {
   //map from handle to actor
-  private[http] var streamHandleActors =
-    Map.empty[HttpEventStreamHandle, ActorRef]
+  private[http] var streamHandleActors = Map
+    .empty[HttpEventStreamHandle, ActorRef]
   private[this] val log = LoggerFactory.getLogger(getClass)
 
   override def preStart(): Unit = {

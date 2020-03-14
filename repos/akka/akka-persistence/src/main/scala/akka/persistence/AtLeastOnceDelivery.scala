@@ -137,8 +137,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     */
   def redeliverInterval: FiniteDuration = defaultRedeliverInterval
 
-  private val defaultRedeliverInterval: FiniteDuration =
-    Persistence(context.system).settings.atLeastOnceDelivery.redeliverInterval
+  private val defaultRedeliverInterval: FiniteDuration = Persistence(
+    context.system).settings.atLeastOnceDelivery.redeliverInterval
 
   /**
     * Maximum number of unconfirmed messages that will be sent at each redelivery burst
@@ -153,9 +153,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     */
   def redeliveryBurstLimit: Int = defaultRedeliveryBurstLimit
 
-  private val defaultRedeliveryBurstLimit: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.redeliveryBurstLimit
+  private val defaultRedeliveryBurstLimit: Int = Persistence(
+    context.system).settings.atLeastOnceDelivery.redeliveryBurstLimit
 
   /**
     * After this number of delivery attempts an [[AtLeastOnceDelivery.UnconfirmedWarning]] message
@@ -169,9 +168,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   def warnAfterNumberOfUnconfirmedAttempts: Int =
     defaultWarnAfterNumberOfUnconfirmedAttempts
 
-  private val defaultWarnAfterNumberOfUnconfirmedAttempts: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
+  private val defaultWarnAfterNumberOfUnconfirmedAttempts: Int = Persistence(
+    context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
 
   /**
     * Maximum number of unconfirmed messages that this actor is allowed to hold in memory.
@@ -185,9 +183,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     */
   def maxUnconfirmedMessages: Int = defaultMaxUnconfirmedMessages
 
-  private val defaultMaxUnconfirmedMessages: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.maxUnconfirmedMessages
+  private val defaultMaxUnconfirmedMessages: Int = Persistence(
+    context.system).settings.atLeastOnceDelivery.maxUnconfirmedMessages
 
   // will be started after recovery completed
   private var redeliverTask: Option[Cancellable] = None
@@ -233,11 +230,14 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
         s"Too many unconfirmed messages, maximum allowed is [$maxUnconfirmedMessages]")
 
     val deliveryId = nextDeliverySequenceNr()
-    val now = if (recoveryRunning) {
-      System.nanoTime() - redeliverInterval.toNanos
-    } else System.nanoTime()
-    val d =
-      Delivery(destination, deliveryIdToMessage(deliveryId), now, attempt = 0)
+    val now =
+      if (recoveryRunning) { System.nanoTime() - redeliverInterval.toNanos }
+      else System.nanoTime()
+    val d = Delivery(
+      destination,
+      deliveryIdToMessage(deliveryId),
+      now,
+      attempt = 0)
 
     if (recoveryRunning) unconfirmed = unconfirmed.updated(deliveryId, d)
     else send(deliveryId, d, now)

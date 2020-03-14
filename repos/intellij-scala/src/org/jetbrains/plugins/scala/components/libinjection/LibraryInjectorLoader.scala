@@ -354,8 +354,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   private def findMatchingPluginDescriptor(
       libraryManifest: JarManifest): Option[PluginDescriptor] = {
-    val curVer =
-      ScalaPluginVersionVerifier.getPluginVersion.getOrElse(Version.Snapshot)
+    val curVer = ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
+      Version.Snapshot)
     libraryManifest.pluginDescriptors
       .find(d => (curVer > d.since && curVer < d.until) || curVer.isSnapshot)
   }
@@ -400,8 +400,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   private def askUser(candidates: ManifestToDescriptors) = {
-    ackProvider.askGlobalInjectorEnable(acceptCallback =
-      compile(showReviewDialogAndFilter(candidates)))
+    ackProvider.askGlobalInjectorEnable(acceptCallback = compile(
+      showReviewDialogAndFilter(candidates)))
   }
 
   private def showReviewDialogAndFilter(
@@ -553,8 +553,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
 
   private def removeIdeaModule() = {
     val model = ModuleManager.getInstance(project).getModifiableModel
-    val module =
-      model.findModuleByName(INJECTOR_MODULE_NAME.replaceAll("\\.iml$", ""))
+    val module = model.findModuleByName(
+      INJECTOR_MODULE_NAME.replaceAll("\\.iml$", ""))
     if (module != null) {
       model.disposeModule(module)
       model.commit()

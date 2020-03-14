@@ -161,8 +161,8 @@ object CatalystTypeConverters {
           new GenericArrayData(s.map(elementConverter.toCatalyst).toArray)
         case i: JavaIterable[_] =>
           val iter = i.iterator
-          val convertedIterable =
-            scala.collection.mutable.ArrayBuffer.empty[Any]
+          val convertedIterable = scala.collection.mutable.ArrayBuffer
+            .empty[Any]
           while (iter.hasNext) {
             val item = iter.next()
             convertedIterable += elementConverter.toCatalyst(item)

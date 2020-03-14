@@ -54,8 +54,9 @@ private[gameSearch] final class DataForm {
 private[gameSearch] object DataForm {
 
   val DateDelta = """^(\d+)(\w)$""".r
-  private val dateConstraint =
-    Constraints.pattern(regex = DateDelta, error = "Invalid date.")
+  private val dateConstraint = Constraints.pattern(
+    regex = DateDelta,
+    error = "Invalid date.")
   val dateField = optional(nonEmptyText.verifying(dateConstraint))
 }
 
@@ -97,8 +98,11 @@ private[gameSearch] case class SearchData(
       hasAi = hasAi map (_ == 1),
       aiLevel = Range(aiLevelMin, aiLevelMax),
       duration = Range(durationMin, durationMax),
-      clock =
-        Clocking(clock.initMin, clock.initMax, clock.incMin, clock.incMax),
+      clock = Clocking(
+        clock.initMin,
+        clock.initMax,
+        clock.incMin,
+        clock.incMax),
       date = Range(dateMin flatMap toDate, dateMax flatMap toDate),
       status = status,
       analysed = analysed map (_ == 1),
@@ -120,8 +124,9 @@ private[gameSearch] case class SearchData(
       case DateDelta(n, "y") => parseIntOption(n) map DateTime.now.minusYears
       case _                 => None
     }
-  private val dateConstraint =
-    Constraints.pattern(regex = DateDelta, error = "Invalid date.")
+  private val dateConstraint = Constraints.pattern(
+    regex = DateDelta,
+    error = "Invalid date.")
 }
 
 private[gameSearch] case class SearchPlayer(

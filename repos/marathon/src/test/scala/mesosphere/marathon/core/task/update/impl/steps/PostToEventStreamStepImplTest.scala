@@ -63,8 +63,9 @@ class PostToEventStreamStepImplTest
   test("ignore running notification of already running task") {
     Given("an existing RUNNING task")
     val f = new Fixture
-    val existingTask =
-      MarathonTestHelper.runningTaskForApp(appId, startedAt = 100)
+    val existingTask = MarathonTestHelper.runningTaskForApp(
+      appId,
+      startedAt = 100)
 
     When("we receive a running update")
     val status = runningTaskStatus
@@ -151,21 +152,19 @@ class PostToEventStreamStepImplTest
   private[this] val updateTimestamp = Timestamp(100)
   private[this] val taskStatusMessage = "some update"
 
-  private[this] val runningTaskStatus =
-    TaskStatus
-      .newBuilder()
-      .setState(TaskState.TASK_RUNNING)
-      .setTaskId(taskId.mesosTaskId)
-      .setSlaveId(slaveId)
-      .setMessage(taskStatusMessage)
-      .build()
+  private[this] val runningTaskStatus = TaskStatus
+    .newBuilder()
+    .setState(TaskState.TASK_RUNNING)
+    .setTaskId(taskId.mesosTaskId)
+    .setSlaveId(slaveId)
+    .setMessage(taskStatusMessage)
+    .build()
 
   import MarathonTestHelper.Implicits._
-  private[this] val stagedMarathonTask =
-    MarathonTestHelper
-      .stagedTask(taskId.idString, appVersion = version)
-      .withAgentInfo(_.copy(host = host))
-      .withNetworking(Task.HostPorts(portsList))
+  private[this] val stagedMarathonTask = MarathonTestHelper
+    .stagedTask(taskId.idString, appVersion = version)
+    .withAgentInfo(_.copy(host = host))
+    .withNetworking(Task.HostPorts(portsList))
 
   class Fixture {
     val eventStream = new EventStream()

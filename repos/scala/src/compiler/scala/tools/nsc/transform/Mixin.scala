@@ -298,8 +298,9 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               s"Overridden concrete accessor: ${mixinMember.fullLocationString}")
           else {
             // mixin field accessors
-            val mixedInAccessor =
-              cloneAndAddMixinMember(mixinClass, mixinMember)
+            val mixedInAccessor = cloneAndAddMixinMember(
+              mixinClass,
+              mixinMember)
             if (mixinMember.isLazy) {
               initializer(mixedInAccessor) = (
                 mixinClass.info.decl(mixinMember.name)
@@ -434,8 +435,10 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   class MixinTransformer(unit: CompilationUnit) extends Transformer {
 
     /** The rootContext used for typing */
-    private val rootContext =
-      erasure.NoContext.make(EmptyTree, rootMirror.RootClass, newScope)
+    private val rootContext = erasure.NoContext.make(
+      EmptyTree,
+      rootMirror.RootClass,
+      newScope)
 
     /** The typer */
     private var localTyper: erasure.Typer = _
@@ -597,8 +600,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
                 vparams map (v => Ident(v.symbol))))
             val pt = stat.symbol.tpe.resultType
 
-            copyDefDef(stat)(rhs =
-              enteringMixin(transform(localTyper.typed(body, pt))))
+            copyDefDef(stat)(rhs = enteringMixin(
+              transform(localTyper.typed(body, pt))))
           case _ =>
             stat
         }
@@ -834,11 +837,11 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val kind = bitmapKind(sym)
         val mask = maskForOffset(offset, sym, kind)
         val msg = s"Uninitialized field: ${unit.source}: ${pos.line}"
-        val result =
-          IF(mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
-            .THEN(retVal)
-            .ELSE(Throw(
-              NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
+        val result = IF(
+          mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
+          .THEN(retVal)
+          .ELSE(
+            Throw(NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
 
         typedPos(pos)(BLOCK(result, retVal))
       }

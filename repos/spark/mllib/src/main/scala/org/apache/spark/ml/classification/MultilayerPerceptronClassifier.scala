@@ -220,8 +220,9 @@ class MultilayerPerceptronClassificationModel private[ml] (
   @Since("1.6.0")
   override val numFeatures: Int = layers.head
 
-  private val mlpModel =
-    FeedForwardTopology.multiLayerPerceptron(layers, true).getInstance(weights)
+  private val mlpModel = FeedForwardTopology
+    .multiLayerPerceptron(layers, true)
+    .getInstance(weights)
 
   /**
     * Returns layers in a Java List.

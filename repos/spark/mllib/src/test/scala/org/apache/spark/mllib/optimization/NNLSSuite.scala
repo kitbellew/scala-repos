@@ -37,8 +37,7 @@ class NNLSSuite extends SparkFunSuite {
   def computeObjectiveValue(
       ata: BDM[Double],
       atb: BDV[Double],
-      x: BDV[Double]): Double =
-    (x.t * ata * x) / 2.0 - atb.dot(x)
+      x: BDV[Double]): Double = (x.t * ata * x) / 2.0 - atb.dot(x)
 
   test("NNLS: exact solution cases") {
     val n = 20

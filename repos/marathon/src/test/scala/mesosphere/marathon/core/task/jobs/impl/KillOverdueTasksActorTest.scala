@@ -115,34 +115,29 @@ class KillOverdueTasksActorTest
       overdueUnstagedTask.getStartedAt == 0,
       "The startedAt property of an unstaged task has a value of 0")
 
-    val unconfirmedNotOverdueTask =
-      MarathonTestHelper.startingTaskProto(
-        "unconfirmed",
-        stagedAt = now - config.taskLaunchConfirmTimeout().millis)
+    val unconfirmedNotOverdueTask = MarathonTestHelper.startingTaskProto(
+      "unconfirmed",
+      stagedAt = now - config.taskLaunchConfirmTimeout().millis)
 
-    val unconfirmedOverdueTask =
-      MarathonTestHelper.startingTaskProto(
-        "unconfirmedOverdue",
-        stagedAt = now - config.taskLaunchConfirmTimeout().millis - 1.millis
-      )
+    val unconfirmedOverdueTask = MarathonTestHelper.startingTaskProto(
+      "unconfirmedOverdue",
+      stagedAt = now - config.taskLaunchConfirmTimeout().millis - 1.millis
+    )
 
-    val overdueStagedTask =
-      MarathonTestHelper.stagedTaskProto(
-        "overdueStagedTask",
-        stagedAt = now - 10.days
-      )
+    val overdueStagedTask = MarathonTestHelper.stagedTaskProto(
+      "overdueStagedTask",
+      stagedAt = now - 10.days
+    )
 
-    val stagedTask =
-      MarathonTestHelper.stagedTaskProto(
-        "staged",
-        stagedAt = now - 10.seconds
-      )
+    val stagedTask = MarathonTestHelper.stagedTaskProto(
+      "staged",
+      stagedAt = now - 10.seconds
+    )
 
-    val runningTask =
-      MarathonTestHelper.runningTaskProto(
-        "running",
-        stagedAt = now - 5.seconds,
-        startedAt = now - 2.seconds)
+    val runningTask = MarathonTestHelper.runningTaskProto(
+      "running",
+      stagedAt = now - 5.seconds,
+      startedAt = now - 2.seconds)
 
     Given("Several somehow overdue tasks plus some not overdue tasks")
     val appId = PathId("/ignored")

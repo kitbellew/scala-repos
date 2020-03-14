@@ -116,9 +116,10 @@ private[streaming] class PIDRateEstimator(
         // in elements/(second ^ 2)
         val dError = (error - latestError) / delaySinceUpdate
 
-        val newRate = (latestRate - proportional * error -
-          integral * historicalError -
-          derivative * dError).max(minRate)
+        val newRate =
+          (latestRate - proportional * error -
+            integral * historicalError -
+            derivative * dError).max(minRate)
         logTrace(s"""
             | latestRate = $latestRate, error = $error
             | latestError = $latestError, historicalError = $historicalError

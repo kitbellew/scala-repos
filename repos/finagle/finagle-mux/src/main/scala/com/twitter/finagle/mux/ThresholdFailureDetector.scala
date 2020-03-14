@@ -66,12 +66,11 @@ private class ThresholdFailureDetector(
   private[this] val state: AtomicReference[Status] = new AtomicReference(
     Status.Busy)
 
-  private[this] val onBusyTimeout: Throwable => Unit =
-    x =>
-      x match {
-        case _: TimeoutException => markBusy()
-        case _                   =>
-      }
+  private[this] val onBusyTimeout: Throwable => Unit = x =>
+    x match {
+      case _: TimeoutException => markBusy()
+      case _                   =>
+    }
 
   def status: Status = state.get
 

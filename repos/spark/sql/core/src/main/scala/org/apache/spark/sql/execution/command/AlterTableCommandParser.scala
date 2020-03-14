@@ -44,8 +44,8 @@ object AlterTableCommandParser {
     node.children match {
       case (tabName @ Token("TOK_TABNAME", _)) :: otherNodes =>
         val tableIdent = extractTableIdent(tabName)
-        val partSpec =
-          getClauseOption("TOK_PARTSPEC", node.children).map(parsePartitionSpec)
+        val partSpec = getClauseOption("TOK_PARTSPEC", node.children)
+          .map(parsePartitionSpec)
         matchAlterTableCommands(node, otherNodes, tableIdent, partSpec)
       case _ =>
         parseFailed("Could not parse ALTER TABLE command", node)
@@ -395,8 +395,9 @@ object AlterTableCommandParser {
 
       // ALTER TABLE table_name [PARTITION spec] SET FILEFORMAT file_format;
       case Token("TOK_ALTERTABLE_FILEFORMAT", args) :: _ =>
-        val Seq(fileFormat, genericFormat) =
-          getClauses(Seq("TOK_TABLEFILEFORMAT", "TOK_FILEFORMAT_GENERIC"), args)
+        val Seq(fileFormat, genericFormat) = getClauses(
+          Seq("TOK_TABLEFILEFORMAT", "TOK_FILEFORMAT_GENERIC"),
+          args)
         // Note: the AST doesn't contain information about which file format is being set here.
         // E.g. we can't differentiate between INPUTFORMAT and OUTPUTFORMAT if either is set.
         // Right now this just stores the values, but we should figure out how to get the keys.
@@ -441,14 +442,14 @@ object AlterTableCommandParser {
       case Token(
             "TOK_ALTERTABLE_RENAMECOL",
             oldName :: newName :: dataType :: args) :: _ =>
-        val afterColName: Option[String] =
-          getClauseOption("TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION", args).map {
-            ap =>
-              ap.children match {
-                case Token(col, Nil) :: Nil => col
-                case _                      => parseFailed("Invalid ALTER TABLE command", node)
-              }
+        val afterColName: Option[String] = getClauseOption(
+          "TOK_ALTERTABLE_CHANGECOL_AFTER_POSITION",
+          args).map { ap =>
+          ap.children match {
+            case Token(col, Nil) :: Nil => col
+            case _                      => parseFailed("Invalid ALTER TABLE command", node)
           }
+        }
         val restrict = getClauseOption("TOK_RESTRICT", args).isDefined
         val cascade = getClauseOption("TOK_CASCADE", args).isDefined
         val comment = args.headOption.map {

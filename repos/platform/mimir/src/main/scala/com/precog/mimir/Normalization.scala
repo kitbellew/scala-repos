@@ -46,8 +46,10 @@ trait NormalizationHelperModule[M[+_]]
     trait NormalizationHelper {
       import TransSpecModule._
 
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JType.JUniverseT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JType.JUniverseT)
 
       case class Stats(mean: BigDecimal, stdDev: BigDecimal)
       case class RowValueWithStats(rowValue: BigDecimal, stats: Stats)
@@ -175,10 +177,8 @@ trait NormalizationHelperModule[M[+_]]
                 ctype.isNumeric
             }
 
-            val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
-              numericCols.groupBy {
-                case (ColumnRef(selector, _), _) => selector
-              }
+            val groupedCols: Map[CPath, Map[ColumnRef, Column]] = numericCols
+              .groupBy { case (ColumnRef(selector, _), _) => selector }
 
             def continue: Map[ColumnRef, Column] = {
               val unifiedCols: Map[ColumnRef, Column] = {
@@ -235,8 +235,9 @@ trait NormalizationHelperModule[M[+_]]
           }
         }
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def morph1Apply(summary: Result): Morph1Apply
 

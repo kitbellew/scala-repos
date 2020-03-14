@@ -384,8 +384,7 @@ class FlagTest extends FunSuite {
       "why would you do this?")
     flagWithoutGlobal.parseArgs(Array("-set.local.flag=hi"))
 
-    val localOnly =
-      """|Set flags:
+    val localOnly = """|Set flags:
          |-set.local.flag='hi' \
          |Unset flags:
          |-flag.with.single.quote='i'"'"'m so cool' \

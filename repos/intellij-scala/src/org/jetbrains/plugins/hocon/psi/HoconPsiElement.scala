@@ -42,14 +42,12 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
       })
       .takeWhile(_ != null)
 
-  def elementType =
-    getNode.getElementType
+  def elementType = getNode.getElementType
 
   def getChild[T >: Null: ClassTag]: T =
     findChildByClass(classTag[T].runtimeClass.asInstanceOf[Class[T]])
 
-  def findChild[T >: Null: ClassTag] =
-    Option(getChild[T])
+  def findChild[T >: Null: ClassTag] = Option(getChild[T])
 
   def findLastChild[T >: Null: ClassTag] =
     allChildrenReverse.collectFirst({ case t: T => t })
@@ -60,14 +58,12 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
   def allChildrenReverse =
     Iterator.iterate(getLastChild)(_.getPrevSibling).takeWhile(_ != null)
 
-  def prevSibling =
-    Option(getPrevSibling)
+  def prevSibling = Option(getPrevSibling)
 
   def prevSiblings =
     Iterator.iterate(getPrevSibling)(_.getPrevSibling).takeWhile(_ != null)
 
-  def nextSibling =
-    Option(getNextSibling)
+  def nextSibling = Option(getNextSibling)
 
   def nextSiblings =
     Iterator.iterate(getNextSibling)(_.getNextSibling).takeWhile(_ != null)
@@ -195,8 +191,7 @@ sealed trait HKeyedField
       keyedParent => keyedParent.enclosingObjectField,
       objectField => objectField)
 
-  def enclosingEntries: HObjectEntries =
-    enclosingObjectField.parent.get
+  def enclosingEntries: HObjectEntries = enclosingObjectField.parent.get
 
   def fieldsInPathForward: Stream[HKeyedField]
 
@@ -205,8 +200,7 @@ sealed trait HKeyedField
       keyedField => this #:: keyedField.fieldsInPathBackward,
       of => Stream(this))
 
-  def startingField: HKeyedField =
-    forParent(_.startingField, _ => this)
+  def startingField: HKeyedField = forParent(_.startingField, _ => this)
 
   def endingField: HValuedField
 
@@ -238,15 +232,13 @@ final class HValuedField(ast: ASTNode)
     with HKeyedField {
   def value = findChild[HValue]
 
-  def isArrayAppend =
-    separator.contains(HoconTokenType.PlusEquals)
+  def isArrayAppend = separator.contains(HoconTokenType.PlusEquals)
 
   def separator =
     Option(findChildByType[PsiElement](HoconTokenSets.KeyValueSeparator))
       .map(_.getNode.getElementType.asInstanceOf[HoconTokenType])
 
-  def fieldsInPathForward: Stream[HKeyedField] =
-    Stream(this)
+  def fieldsInPathForward: Stream[HKeyedField] = Stream(this)
 
   def endingField = this
 

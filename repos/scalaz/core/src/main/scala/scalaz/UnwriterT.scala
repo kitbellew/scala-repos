@@ -11,25 +11,20 @@ import Id._
 final case class UnwriterT[F[_], U, A](run: F[(U, A)]) { self =>
   import UnwriterT._
 
-  def on: WriterT[F, U, A] =
-    WriterT(run)
+  def on: WriterT[F, U, A] = WriterT(run)
 
   /** alias for `on` */
-  def unary_+ : WriterT[F, U, A] =
-    WriterT(run)
+  def unary_+ : WriterT[F, U, A] = WriterT(run)
 
   def mapValue[X, B](f: ((U, A)) => (X, B))(
-      implicit F: Functor[F]): UnwriterT[F, X, B] =
-    unwriterT(F.map(run)(f))
+      implicit F: Functor[F]): UnwriterT[F, X, B] = unwriterT(F.map(run)(f))
 
   def mapUnwritten[X](f: U => X)(implicit F: Functor[F]): UnwriterT[F, X, A] =
     mapValue(wa => (f(wa._1), wa._2))
 
-  def unwritten(implicit F: Functor[F]): F[U] =
-    F.map(run)(_._1)
+  def unwritten(implicit F: Functor[F]): F[U] = F.map(run)(_._1)
 
-  def value(implicit F: Functor[F]): F[A] =
-    F.map(run)(_._2)
+  def value(implicit F: Functor[F]): F[A] = F.map(run)(_._2)
 
   def swap(implicit F: Functor[F]): UnwriterT[F, A, U] =
     mapValue(wa => (wa._2, wa._1))
@@ -147,8 +142,7 @@ sealed abstract class UnwriterTInstances extends UnwriterTInstances0 {
 trait UnwriterTFunctions {
   def unwriterT[F[_], W, A](v: F[(W, A)]): UnwriterT[F, W, A] = UnwriterT(v)
 
-  def unwriter[W, A](v: (W, A)): Unwriter[W, A] =
-    unwriterT[Id, W, A](v)
+  def unwriter[W, A](v: (W, A)): Unwriter[W, A] = unwriterT[Id, W, A](v)
 
   def tell[W](w: W): Unwriter[W, Unit] = unwriter((w, ()))
 
@@ -212,8 +206,7 @@ private trait UnwriterTBifunctor[F[_]] extends Bifunctor[UnwriterT[F, ?, ?]] {
   implicit def F: Functor[F]
 
   override def bimap[A, B, C, D](
-      fab: UnwriterT[F, A, B])(f: A => C, g: B => D) =
-    fab.bimap(f, g)
+      fab: UnwriterT[F, A, B])(f: A => C, g: B => D) = fab.bimap(f, g)
 }
 
 private trait UnwriterTBitraverse[F[_]]
@@ -234,7 +227,6 @@ private trait UnwriterComonad[W]
     Unwriter(fa.unwritten, fa)
 
   override def cobind[A, B](fa: Unwriter[W, A])(
-      f: (Unwriter[W, A]) => B): Unwriter[W, B] =
-    Unwriter(fa.unwritten, f(fa))
+      f: (Unwriter[W, A]) => B): Unwriter[W, B] = Unwriter(fa.unwritten, f(fa))
   def copoint[A](p: Unwriter[W, A]): A = p.value
 }

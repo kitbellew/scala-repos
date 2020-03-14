@@ -116,8 +116,8 @@ object KMeansExample extends App {
   // cluster each one, using the same k-means algorithm.
 
   val points0 = genPoints[List, Array[Double], Double](15, 5, 10000)(identity)
-  val points1 =
-    genPoints[List, Vector[Double], Double](5, 10, 10000)(_.toVector)
+  val points1 = genPoints[List, Vector[Double], Double](5, 10, 10000)(
+    _.toVector)
   val points2 = genPoints[List, Vector[BigDecimal], BigDecimal](7, 8, 2000)(
     _.map(BigDecimal(_)).toVector)
 

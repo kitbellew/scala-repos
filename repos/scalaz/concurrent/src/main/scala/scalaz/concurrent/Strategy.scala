@@ -49,8 +49,8 @@ trait Strategys extends StrategysLow {
   /**
     * Default scheduler used for scheduling the tasks like timeout.
     */
-  val DefaultTimeoutScheduler: ScheduledExecutorService =
-    Executors.newScheduledThreadPool(1, DefaultDaemonThreadFactory)
+  val DefaultTimeoutScheduler: ScheduledExecutorService = Executors
+    .newScheduledThreadPool(1, DefaultDaemonThreadFactory)
 
   /**
     * A strategy that executes its arguments on `DefaultExecutorService`

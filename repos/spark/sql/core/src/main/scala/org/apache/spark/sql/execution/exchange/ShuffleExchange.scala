@@ -171,11 +171,12 @@ object ShuffleExchange {
     val conf = SparkEnv.get.conf
     val shuffleManager = SparkEnv.get.shuffleManager
     val sortBasedShuffleOn = shuffleManager.isInstanceOf[SortShuffleManager]
-    val bypassMergeThreshold =
-      conf.getInt("spark.shuffle.sort.bypassMergeThreshold", 200)
+    val bypassMergeThreshold = conf.getInt(
+      "spark.shuffle.sort.bypassMergeThreshold",
+      200)
     if (sortBasedShuffleOn) {
-      val bypassIsSupported =
-        SparkEnv.get.shuffleManager.isInstanceOf[SortShuffleManager]
+      val bypassIsSupported = SparkEnv.get.shuffleManager
+        .isInstanceOf[SortShuffleManager]
       if (bypassIsSupported && partitioner.numPartitions <= bypassMergeThreshold) {
         // If we're using the original SortShuffleManager and the number of output partitions is
         // sufficiently small, then Spark will fall back to the hash-based shuffle write path, which
@@ -248,8 +249,8 @@ object ShuffleExchange {
       newPartitioning match {
         case RoundRobinPartitioning(numPartitions) =>
           // Distributes elements evenly across output partitions, starting from a random partition.
-          var position =
-            new Random(TaskContext.get().partitionId()).nextInt(numPartitions)
+          var position = new Random(TaskContext.get().partitionId())
+            .nextInt(numPartitions)
           (row: InternalRow) => {
             // The HashPartitioner will handle the `mod` by the number of partitions
             position += 1
@@ -285,11 +286,10 @@ object ShuffleExchange {
     // Now, we manually create a ShuffleDependency. Because pairs in rddWithPartitionIds
     // are in the form of (partitionId, row) and every partitionId is in the expected range
     // [0, part.numPartitions - 1]. The partitioner of this is a PartitionIdPassthrough.
-    val dependency =
-      new ShuffleDependency[Int, InternalRow, InternalRow](
-        rddWithPartitionIds,
-        new PartitionIdPassthrough(part.numPartitions),
-        serializer)
+    val dependency = new ShuffleDependency[Int, InternalRow, InternalRow](
+      rddWithPartitionIds,
+      new PartitionIdPassthrough(part.numPartitions),
+      serializer)
 
     dependency
   }

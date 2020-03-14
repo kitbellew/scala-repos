@@ -161,8 +161,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   private val regions: ConcurrentHashMap[String, ActorRef] =
     new ConcurrentHashMap
   private lazy val guardian = {
-    val guardianName: String =
-      system.settings.config.getString("akka.cluster.sharding.guardian-name")
+    val guardianName: String = system.settings.config
+      .getString("akka.cluster.sharding.guardian-name")
     val dispatcher = system.settings.config
       .getString("akka.cluster.sharding.use-dispatcher") match {
       case "" ⇒ Dispatchers.DefaultDispatcherId
@@ -219,8 +219,9 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-    val Started(shardRegion) =
-      Await.result(guardian ? startMsg, timeout.duration)
+    val Started(shardRegion) = Await.result(
+      guardian ? startMsg,
+      timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }
@@ -372,10 +373,14 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
     implicit val timeout = system.settings.CreationTimeout
     val settings = ClusterShardingSettings(system).withRole(role)
-    val startMsg =
-      StartProxy(typeName, settings, extractEntityId, extractShardId)
-    val Started(shardRegion) =
-      Await.result(guardian ? startMsg, timeout.duration)
+    val startMsg = StartProxy(
+      typeName,
+      settings,
+      extractEntityId,
+      extractShardId)
+    val Started(shardRegion) = Await.result(
+      guardian ? startMsg,
+      timeout.duration)
     regions.put(typeName, shardRegion)
     shardRegion
   }

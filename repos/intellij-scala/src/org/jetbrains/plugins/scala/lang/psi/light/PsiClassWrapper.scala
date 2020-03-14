@@ -259,12 +259,11 @@ class PsiClassWrapper(
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (!processor.isInstanceOf[BaseProcessor]) {
-      val languageLevel: LanguageLevel =
-        processor match {
-          case methodProcessor: MethodsProcessor =>
-            methodProcessor.getLanguageLevel
-          case _ => PsiUtil.getLanguageLevel(place)
-        }
+      val languageLevel: LanguageLevel = processor match {
+        case methodProcessor: MethodsProcessor =>
+          methodProcessor.getLanguageLevel
+        case _ => PsiUtil.getLanguageLevel(place)
+      }
       return PsiClassImplUtil.processDeclarationsInClass(
         this,
         processor,

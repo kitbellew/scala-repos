@@ -436,17 +436,16 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
   }
 
   test("grouped should be lazy") {
-    val gen =
-      for {
-        // We need items to be non-empty, because AsyncStream.empty ++
-        // <something> forces the future to be created.
-        items <- Gen.nonEmptyListOf(Arbitrary.arbitrary[Char])
+    val gen = for {
+      // We need items to be non-empty, because AsyncStream.empty ++
+      // <something> forces the future to be created.
+      items <- Gen.nonEmptyListOf(Arbitrary.arbitrary[Char])
 
-        // We need to make sure that the chunk size (1) is valid and (2)
-        // is short enough that forcing the first group does not force
-        // the exception.
-        groupSize <- Gen.chooseNum(1, items.size)
-      } yield (items, groupSize)
+      // We need to make sure that the chunk size (1) is valid and (2)
+      // is short enough that forcing the first group does not force
+      // the exception.
+      groupSize <- Gen.chooseNum(1, items.size)
+    } yield (items, groupSize)
 
     forAll(gen) {
       case (items, groupSize) =>
@@ -520,12 +519,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     forAll(Gen.choose(2, 10), Arbitrary.arbitrary[Seq[Int]]) { (conc, xs) =>
       val q = new scala.collection.mutable.Queue[Promise[Unit]]
 
-      val mapped =
-        AsyncStream.fromSeq(xs).mapConcurrent(conc) { _ =>
-          val p = new Promise[Unit]
-          q.enqueue(p)
-          p
-        }
+      val mapped = AsyncStream.fromSeq(xs).mapConcurrent(conc) { _ =>
+        val p = new Promise[Unit]
+        q.enqueue(p)
+        p
+      }
 
       // If there are at least `conc` items in the queue, then we should
       // have started exactly `conc` of them. Otherwise, we should have
@@ -565,12 +563,11 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
   test(
     "mapConcurrent makes progress, even with blocking streams and blocking work") {
-    val gen =
-      Gen.zip(
-        Gen.choose(0, 10).label("numActions"),
-        Gen.choose(0, 10).flatMap(Gen.listOfN(_, Arbitrary.arbitrary[Int])),
-        Gen.choose(1, 11).label("concurrency")
-      )
+    val gen = Gen.zip(
+      Gen.choose(0, 10).label("numActions"),
+      Gen.choose(0, 10).flatMap(Gen.listOfN(_, Arbitrary.arbitrary[Int])),
+      Gen.choose(1, 11).label("concurrency")
+    )
 
     forAll(gen) {
       case (numActions, items, concurrency) =>
@@ -579,18 +576,17 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
 
         var workStarted = 0
         var workFinished = 0
-        val result =
-          input.mapConcurrent(concurrency) { i =>
-            workStarted += 1
-            if (workFinished < numActions) {
-              workFinished += 1
-              Future.value(i)
-            } else {
-              // After numActions evaluations, return a Future that
-              // will never be satisfied.
-              Future.never
-            }
+        val result = input.mapConcurrent(concurrency) { i =>
+          workStarted += 1
+          if (workFinished < numActions) {
+            workFinished += 1
+            Future.value(i)
+          } else {
+            // After numActions evaluations, return a Future that
+            // will never be satisfied.
+            Future.never
           }
+        }
 
         // How much work should have been started by mapConcurrent.
         val expectedStarted = items.size.min(concurrency)

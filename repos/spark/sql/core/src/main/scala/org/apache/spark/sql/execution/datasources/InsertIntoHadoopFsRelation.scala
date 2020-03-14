@@ -83,8 +83,9 @@ private[sql] case class InsertIntoHadoopFsRelation(
 
     val hadoopConf = sqlContext.sparkContext.hadoopConfiguration
     val fs = outputPath.getFileSystem(hadoopConf)
-    val qualifiedOutputPath =
-      outputPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
+    val qualifiedOutputPath = outputPath.makeQualified(
+      fs.getUri,
+      fs.getWorkingDirectory)
 
     val pathExists = fs.exists(qualifiedOutputPath)
     val doInsertion = (mode, pathExists) match {
@@ -123,14 +124,13 @@ private[sql] case class InsertIntoHadoopFsRelation(
       val queryExecution =
         Dataset.newDataFrame(sqlContext, query).queryExecution
       SQLExecution.withNewExecutionId(sqlContext, queryExecution) {
-        val relation =
-          WriteRelation(
-            sqlContext,
-            dataColumns.toStructType,
-            qualifiedOutputPath.toString,
-            fileFormat
-              .prepareWrite(sqlContext, _, options, dataColumns.toStructType),
-            bucketSpec)
+        val relation = WriteRelation(
+          sqlContext,
+          dataColumns.toStructType,
+          qualifiedOutputPath.toString,
+          fileFormat
+            .prepareWrite(sqlContext, _, options, dataColumns.toStructType),
+          bucketSpec)
 
         val writerContainer =
           if (partitionColumns.isEmpty && bucketSpec.isEmpty) {

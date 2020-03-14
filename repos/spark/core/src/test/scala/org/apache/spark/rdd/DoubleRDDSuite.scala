@@ -290,10 +290,9 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     // Verify the basic case of one bucket and all elements in that bucket works
     val rdd = sc.parallelize(Seq(1, 2))
     val (histogramBuckets, histogramResults) = rdd.histogram(10)
-    val expectedHistogramResults =
-      Array(1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
-    val expectedHistogramBuckets =
-      Array(1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0)
+    val expectedHistogramResults = Array(1, 0, 0, 0, 0, 0, 0, 0, 0, 1)
+    val expectedHistogramBuckets = Array(1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7,
+      1.8, 1.9, 2.0)
     assert(histogramResults === expectedHistogramResults)
     assert(histogramBuckets === expectedHistogramBuckets)
   }
@@ -302,10 +301,9 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     // Verify the case of slightly larger datasets
     val rdd = sc.parallelize(6 to 99)
     val (histogramBuckets, histogramResults) = rdd.histogram(8)
-    val expectedHistogramResults =
-      Array(12, 12, 11, 12, 12, 11, 12, 12)
-    val expectedHistogramBuckets =
-      Array(6.0, 17.625, 29.25, 40.875, 52.5, 64.125, 75.75, 87.375, 99.0)
+    val expectedHistogramResults = Array(12, 12, 11, 12, 12, 11, 12, 12)
+    val expectedHistogramBuckets = Array(6.0, 17.625, 29.25, 40.875, 52.5,
+      64.125, 75.75, 87.375, 99.0)
     assert(histogramResults === expectedHistogramResults)
     assert(histogramBuckets === expectedHistogramBuckets)
   }
@@ -315,8 +313,7 @@ class DoubleRDDSuite extends SparkFunSuite with SharedSparkContext {
     val rdd = sc.parallelize(6 to 99)
     val (histogramBuckets, histogramResults) = rdd.histogram(9)
     // Buckets are 6.0, 16.333333333333336, 26.666666666666668, 37.0, 47.333333333333336 ...
-    val expectedHistogramResults =
-      Array(11, 10, 10, 11, 10, 10, 11, 10, 11)
+    val expectedHistogramResults = Array(11, 10, 10, 11, 10, 10, 11, 10, 11)
     assert(histogramResults === expectedHistogramResults)
     assert(histogramBuckets(0) === 6.0)
     assert(histogramBuckets(9) === 99.0)

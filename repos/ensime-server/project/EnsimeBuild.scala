@@ -222,14 +222,15 @@ object EnsimeBuild extends Build {
     libraryDependencies += "org.scalatest" %% "scalatest" % Sensible.scalatestVersion % "test" intransitive ()
   )
 
-  lazy val testingSimpleJar =
-    Project("testingSimpleJar", file("testing/simpleJar")).settings(
-      exportJars := true,
-      EnsimeKeys.useTarget in Compile := Some(
-        (artifactPath in (Compile, packageBin)).value),
-      EnsimeKeys.useTarget in Test := Some(
-        (artifactPath in (Test, packageBin)).value)
-    )
+  lazy val testingSimpleJar = Project(
+    "testingSimpleJar",
+    file("testing/simpleJar")).settings(
+    exportJars := true,
+    EnsimeKeys.useTarget in Compile := Some(
+      (artifactPath in (Compile, packageBin)).value),
+    EnsimeKeys.useTarget in Test := Some(
+      (artifactPath in (Test, packageBin)).value)
+  )
 
   lazy val testingImplicits = Project(
     "testingImplicits",
@@ -239,8 +240,8 @@ object EnsimeBuild extends Build {
 
   lazy val testingTiming = Project("testingTiming", file("testing/timing"))
 
-  lazy val testingDebug =
-    Project("testingDebug", file("testing/debug")).settings(
+  lazy val testingDebug = Project("testingDebug", file("testing/debug"))
+    .settings(
       scalacOptions in Compile := Seq()
     )
 

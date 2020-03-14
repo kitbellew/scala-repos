@@ -119,8 +119,7 @@ abstract class FormatInterpolator {
                 case _ => ""
               }
             }
-            val txt =
-              if ("" == suggest) "" else s", use $suggest instead"
+            val txt = if ("" == suggest) "" else s", use $suggest instead"
             txt
           }
           def badOctal = {
@@ -213,13 +212,12 @@ abstract class FormatInterpolator {
             TypeName("StringOps"))),
         termNames.CONSTRUCTOR
       )
-      val expr =
-        Apply(
-          Select(
-            Apply(newStringOps, List(Literal(Constant(format)))),
-            TermName("format")),
-          ids.toList
-        )
+      val expr = Apply(
+        Select(
+          Apply(newStringOps, List(Literal(Constant(format)))),
+          TermName("format")),
+        ids.toList
+      )
       val p = c.macroApplication.pos
       Block(evals.toList, atPos(p.focus)(expr)) setPos p.makeTransparent
     }

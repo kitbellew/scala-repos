@@ -16,8 +16,8 @@ class BinaryOutputStreamTest extends FunSuite {
     obj1.pickleTo(output)
     obj2.pickleTo(output)
 
-    val streamPickle =
-      BinaryPickle(new ByteArrayInputStream(stream.toByteArray))
+    val streamPickle = BinaryPickle(
+      new ByteArrayInputStream(stream.toByteArray))
     val readObj1 = streamPickle.unpickle[Employee]
     val readObj2 = streamPickle.unpickle[Employee]
 

@@ -149,8 +149,8 @@ trait OracleProfile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size =
-          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR2(254)")(l =>
           if (l.varying) s"VARCHAR2(${l.length})" else s"CHAR(${l.length})")
       case java.sql.Types.INTEGER  => "NUMBER(10)"

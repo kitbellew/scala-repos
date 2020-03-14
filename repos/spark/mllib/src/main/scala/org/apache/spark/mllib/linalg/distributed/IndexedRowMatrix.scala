@@ -161,13 +161,14 @@ class IndexedRowMatrix @Since("1.0.0") (
       s"Requested k singular values but got k=$k and numCols=$n.")
     val indices = rows.map(_.index)
     val svd = toRowMatrix().computeSVD(k, computeU, rCond)
-    val U = if (computeU) {
-      val indexedRows = indices.zip(svd.U.rows).map {
-        case (i, v) =>
-          IndexedRow(i, v)
-      }
-      new IndexedRowMatrix(indexedRows, nRows, svd.U.numCols().toInt)
-    } else { null }
+    val U =
+      if (computeU) {
+        val indexedRows = indices.zip(svd.U.rows).map {
+          case (i, v) =>
+            IndexedRow(i, v)
+        }
+        new IndexedRowMatrix(indexedRows, nRows, svd.U.numCols().toInt)
+      } else { null }
     SingularValueDecomposition(U, svd.s, svd.V)
   }
 

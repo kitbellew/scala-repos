@@ -81,8 +81,9 @@ private[spark] object JettyUtils extends Logging {
     // same origin, but allow framing for a specific named URI.
     // Example: spark.ui.allowFramingFrom = https://example.com/
     val allowFramingFrom = conf.getOption("spark.ui.allowFramingFrom")
-    val xFrameOptionsValue =
-      allowFramingFrom.map(uri => s"ALLOW-FROM $uri").getOrElse("SAMEORIGIN")
+    val xFrameOptionsValue = allowFramingFrom
+      .map(uri => s"ALLOW-FROM $uri")
+      .getOrElse("SAMEORIGIN")
 
     new HttpServlet {
       override def doGet(
@@ -145,8 +146,9 @@ private[spark] object JettyUtils extends Logging {
       path: String,
       servlet: HttpServlet,
       basePath: String): ServletContextHandler = {
-    val prefixedPath = if (basePath == "" && path == "/") { path }
-    else { (basePath + path).stripSuffix("/") }
+    val prefixedPath =
+      if (basePath == "" && path == "/") { path }
+      else { (basePath + path).stripSuffix("/") }
     val contextHandler = new ServletContextHandler
     val holder = new ServletHolder(servlet)
     contextHandler.setContextPath(prefixedPath)
@@ -219,8 +221,10 @@ private[spark] object JettyUtils extends Logging {
 
   /** Add filters, if any, to the given list of ServletContextHandlers */
   def addFilters(handlers: Seq[ServletContextHandler], conf: SparkConf) {
-    val filters: Array[String] =
-      conf.get("spark.ui.filters", "").split(',').map(_.trim())
+    val filters: Array[String] = conf
+      .get("spark.ui.filters", "")
+      .split(',')
+      .map(_.trim())
     filters.foreach {
       case filter: String =>
         if (!filter.isEmpty) {
@@ -349,8 +353,8 @@ private[spark] object JettyUtils extends Logging {
       }
     }
 
-    val (server, boundPort) =
-      Utils.startServiceOnPort[Server](port, connect, conf, serverName)
+    val (server, boundPort) = Utils
+      .startServiceOnPort[Server](port, connect, conf, serverName)
     ServerInfo(server, boundPort, collection)
   }
 
@@ -388,9 +392,9 @@ private[spark] object JettyUtils extends Logging {
       port: Int,
       path: String,
       query: String) = {
-    val redirectServer = if (server.contains(":") && !server.startsWith("[")) {
-      s"[${server}]"
-    } else { server }
+    val redirectServer =
+      if (server.contains(":") && !server.startsWith("[")) { s"[${server}]" }
+      else { server }
     val authority = s"$redirectServer:$port"
     new URI(scheme, authority, path, query, null).toString
   }

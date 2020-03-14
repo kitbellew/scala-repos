@@ -186,8 +186,12 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     val atb = DenseVector(-1.632, 2.115, 1.094, -1.025, -0.636)
 
-    val goodBounds =
-      DenseVector(0.0, 0.25000000000236045, 0.2499999999945758, 0.0, 0.0)
+    val goodBounds = DenseVector(
+      0.0,
+      0.25000000000236045,
+      0.2499999999945758,
+      0.0,
+      0.0)
 
     val lb = DenseVector.zeros[Double](5)
     val ub = DenseVector.ones[Double](5) :* 0.25
@@ -715,8 +719,8 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     val qpResultProject = new QuadraticMinimizer(25, proximal = projectL1)
       .minimizeAndReturnState(Hl1, fl1)
-    val qpResultProximal =
-      QuadraticMinimizer(25, SPARSE, 2.0).minimizeAndReturnState(Hl1, fl1)
+    val qpResultProximal = QuadraticMinimizer(25, SPARSE, 2.0)
+      .minimizeAndReturnState(Hl1, fl1)
 
     assert(norm(qpResultProximal.x - octaveL1, 2) < 1e-4)
     assert(norm(qpResultProject.x - octaveL1, 2) < 1e-4)
@@ -1345,8 +1349,10 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
 
     val directQpMl = QuadraticMinimizer(ml, EQUALITY, 0.0)
     val initialState = directQpMl.initialize
-    var directQpResult =
-      directQpMl.minimizeAndReturnState(Hml, fml, initialState)
+    var directQpResult = directQpMl.minimizeAndReturnState(
+      Hml,
+      fml,
+      initialState)
     directQpResult = directQpMl.minimizeAndReturnState(Hml, fml, initialState)
 
     val golden = DenseVector(0.3131862265452959, 0.0, 0.01129486116330884, 0.0,

@@ -116,8 +116,9 @@ class FakeTaskScheduler(
 
   def addExecutor(execId: String, host: String) {
     executors.put(execId, host)
-    val executorsOnHost =
-      executorsByHost.getOrElseUpdate(host, new mutable.HashSet[String])
+    val executorsOnHost = executorsByHost.getOrElseUpdate(
+      host,
+      new mutable.HashSet[String])
     executorsOnHost += execId
     executorIdToHost += execId -> host
     for (rack <- getRackForHost(host)) {
@@ -888,8 +889,8 @@ class TaskSetManagerSuite
 
   private def createTaskResult(
       id: Int,
-      accumUpdates: Seq[AccumulableInfo] = Seq.empty[AccumulableInfo])
-      : DirectTaskResult[Int] = {
+      accumUpdates: Seq[AccumulableInfo] = Seq
+        .empty[AccumulableInfo]): DirectTaskResult[Int] = {
     val valueSer = SparkEnv.get.serializer.newInstance()
     new DirectTaskResult[Int](valueSer.serialize(id), accumUpdates)
   }

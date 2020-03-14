@@ -51,8 +51,7 @@ abstract class HtmlPage extends Page { thisPage =>
 
   def writeFor(site: HtmlFactory) {
     val doctype = DocType("html")
-    val html =
-      <html>
+    val html = <html>
         <head>
           <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -60,8 +59,8 @@ abstract class HtmlPage extends Page { thisPage =>
           <meta name="description" content={description}/>
           <meta name="keywords" content={keywords}/>
           <meta http-equiv="content-type" content={
-        "text/html; charset=" + site.encoding
-      }/>
+      "text/html; charset=" + site.encoding
+    }/>
           {headers}
         </head>
         {body}
@@ -85,11 +84,9 @@ abstract class HtmlPage extends Page { thisPage =>
     (comment map (commentToHtml(_))) getOrElse NodeSeq.Empty
 
   /** Transforms a comment into an styled HTML tree representing its body. */
-  def commentToHtml(comment: Comment): NodeSeq =
-    bodyToHtml(comment.body)
+  def commentToHtml(comment: Comment): NodeSeq = bodyToHtml(comment.body)
 
-  def bodyToHtml(body: Body): NodeSeq =
-    body.blocks flatMap (blockToHtml(_))
+  def bodyToHtml(body: Body): NodeSeq = body.blocks flatMap (blockToHtml(_))
 
   def blockToHtml(block: Block): NodeSeq =
     block match {

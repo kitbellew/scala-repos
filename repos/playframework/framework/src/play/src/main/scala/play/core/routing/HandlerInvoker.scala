@@ -152,8 +152,8 @@ object HandlerInvokerFactory {
                 with RequestTaggingHandler {
                 val annotations = cachedAnnotations
                 val parser = {
-                  val javaParser =
-                    components.getBodyParser(cachedAnnotations.parser)
+                  val javaParser = components.getBodyParser(
+                    cachedAnnotations.parser)
                   javaBodyParserToScala(javaParser)
                 }
                 def invocation: CompletionStage[JResult] = resultCall(call)
@@ -168,8 +168,9 @@ object HandlerInvokerFactory {
   private[play] def javaBodyParserToScala(
       parser: play.mvc.BodyParser[_]): BodyParser[RequestBody] =
     BodyParser { request =>
-      val accumulator =
-        parser.apply(new play.core.j.RequestHeaderImpl(request)).asScala()
+      val accumulator = parser
+        .apply(new play.core.j.RequestHeaderImpl(request))
+        .asScala()
       import play.api.libs.iteratee.Execution.Implicits.trampoline
       accumulator.map { javaEither =>
         if (javaEither.left.isPresent) { Left(javaEither.left.get().asScala()) }

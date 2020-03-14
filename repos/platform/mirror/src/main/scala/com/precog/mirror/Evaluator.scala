@@ -168,8 +168,8 @@ trait EvaluatorModule
             }
           }
 
-          val resultOpt =
-            wrappedResults.reduceLeftOption[(Dataset, Provenance)]({
+          val resultOpt = wrappedResults
+            .reduceLeftOption[(Dataset, Provenance)]({
               case ((left, leftProv), (right, rightProv)) => {
                 val back = handleBinary(left, leftProv, right, rightProv) {
                   case (JObject(leftFields), JObject(rightFields)) =>
@@ -204,8 +204,8 @@ trait EvaluatorModule
             }
           }
 
-          val resultOpt =
-            wrappedValues.reduceLeftOption[(Dataset, Provenance)]({
+          val resultOpt = wrappedValues
+            .reduceLeftOption[(Dataset, Provenance)]({
               case ((left, leftProv), (right, rightProv)) => {
                 val back = handleBinary(left, leftProv, right, rightProv) {
                   case (JArray(leftValues), JArray(rightValues)) =>
@@ -339,19 +339,19 @@ trait EvaluatorModule
         }
 
         case Union(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           mergeAlign(leftSorted, rightSorted)(SEOrder.order)
         }
 
         case Intersect(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           zipAlign(leftSorted, rightSorted)(SEOrder.order) map {
             case (se, _) => se
@@ -359,10 +359,10 @@ trait EvaluatorModule
         }
 
         case Difference(_, left, right) => {
-          val leftSorted =
-            loop(env, restrict)(left).sorted(SEOrder.toScalaOrdering)
-          val rightSorted =
-            loop(env, restrict)(right).sorted(SEOrder.toScalaOrdering)
+          val leftSorted = loop(env, restrict)(left)
+            .sorted(SEOrder.toScalaOrdering)
+          val rightSorted = loop(env, restrict)(right)
+            .sorted(SEOrder.toScalaOrdering)
 
           biasLeftAlign(leftSorted, rightSorted)(SEOrder.order)
         }
@@ -640,11 +640,11 @@ trait EvaluatorModule
         case prov => prov :: Nil
       }
 
-    val (_, back) =
-      loop(prov).foldLeft((Set[Provenance](), List[Provenance]())) {
-        case ((acc, result), prov) if acc(prov) => (acc, result)
-        case ((acc, result), prov)              => (acc + prov, prov :: result)
-      }
+    val (_, back) = loop(prov).foldLeft(
+      (Set[Provenance](), List[Provenance]())) {
+      case ((acc, result), prov) if acc(prov) => (acc, result)
+      case ((acc, result), prov)              => (acc + prov, prov :: result)
+    }
 
     back.reverse
   }

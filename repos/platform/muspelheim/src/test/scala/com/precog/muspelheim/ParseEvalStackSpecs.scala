@@ -87,8 +87,8 @@ trait TestStackLike[M[+_]]
     with EvalStackLike { self =>
   import TestStack._
 
-  protected lazy val parseEvalLogger =
-    LoggerFactory.getLogger("com.precog.muspelheim.ParseEvalStackSpecs")
+  protected lazy val parseEvalLogger = LoggerFactory.getLogger(
+    "com.precog.muspelheim.ParseEvalStackSpecs")
 
   class ParseEvalStackSpecConfig extends BaseConfig with IdSourceConfig {
     parseEvalLogger.trace("Init yggConfig")
@@ -103,11 +103,10 @@ trait TestStackLike[M[+_]]
     val memoizationWorkDir = scratchDir
 
     val flatMapTimeout = Duration(100, "seconds")
-    val maxEvalDuration =
-      Duration(
-        5,
-        "minutes"
-      ) // it's just unreasonable to run tests longer than this
+    val maxEvalDuration = Duration(
+      5,
+      "minutes"
+    ) // it's just unreasonable to run tests longer than this
     val clock = blueeyes.util.Clock.System
 
     val maxSliceSize = 10

@@ -94,12 +94,12 @@ object SystemProperties {
     }
 
   lazy val headless: BooleanProp = BooleanProp.keyExists(HeadlessKey)
-  lazy val preferIPv4Stack: BooleanProp =
-    BooleanProp.keyExists(PreferIPv4StackKey)
-  lazy val preferIPv6Addresses: BooleanProp =
-    BooleanProp.keyExists(PreferIPv6AddressesKey)
-  lazy val noTraceSuppression: BooleanProp =
-    BooleanProp.valueIsTrue(NoTraceSuppressionKey)
+  lazy val preferIPv4Stack: BooleanProp = BooleanProp.keyExists(
+    PreferIPv4StackKey)
+  lazy val preferIPv6Addresses: BooleanProp = BooleanProp.keyExists(
+    PreferIPv6AddressesKey)
+  lazy val noTraceSuppression: BooleanProp = BooleanProp.valueIsTrue(
+    NoTraceSuppressionKey)
   @deprecated("Use noTraceSuppression", "2.12.0")
   def noTraceSupression = noTraceSuppression
 }

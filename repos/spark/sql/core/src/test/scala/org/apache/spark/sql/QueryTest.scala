@@ -117,8 +117,8 @@ abstract class QueryTest extends PlanTest {
         expectedAnswer.toSet.toSeq.map((a: Any) => a.toString).sorted
       val actual = decoded.toSet.toSeq.map((a: Any) => a.toString).sorted
 
-      val comparision =
-        sideBySide("expected" +: expected, "spark" +: actual).mkString("\n")
+      val comparision = sideBySide("expected" +: expected, "spark" +: actual)
+        .mkString("\n")
       fail(s"""Decoded objects do not match expected objects:
             |$comparision
             |${ds.resolvedTEncoder.fromRowExpression.treeString}
@@ -342,8 +342,7 @@ object QueryTest {
       try df.collect().toSeq
       catch {
         case e: Exception =>
-          val errorMessage =
-            s"""
+          val errorMessage = s"""
             |Exception thrown while executing query:
             |${df.queryExecution}
             |== Exception ==
@@ -392,15 +391,16 @@ object QueryTest {
     if (prepareAnswer(expectedAnswer, isSorted) != prepareAnswer(
           sparkAnswer,
           isSorted)) {
-      val errorMessage =
-        s"""
+      val errorMessage = s"""
          |== Results ==
          |${sideBySide(
-             s"== Correct Answer - ${expectedAnswer.size} ==" +:
-               prepareAnswer(expectedAnswer, isSorted).map(_.toString()),
-             s"== Spark Answer - ${sparkAnswer.size} ==" +:
-               prepareAnswer(sparkAnswer, isSorted).map(_.toString())
-           ).mkString("\n")}
+                              s"== Correct Answer - ${expectedAnswer.size} ==" +:
+                                prepareAnswer(expectedAnswer, isSorted).map(
+                                  _.toString()),
+                              s"== Spark Answer - ${sparkAnswer.size} ==" +:
+                                prepareAnswer(sparkAnswer, isSorted).map(
+                                  _.toString())
+                            ).mkString("\n")}
         """.stripMargin
       return Some(errorMessage)
     }

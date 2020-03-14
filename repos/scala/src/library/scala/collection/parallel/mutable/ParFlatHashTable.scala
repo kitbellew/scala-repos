@@ -58,8 +58,11 @@ trait ParFlatHashTable[T] extends scala.collection.mutable.FlatHashTable[T] {
 
         val fstidx = idx
         val fstuntil = divpt
-        val fsttotal =
-          calcNumElems(idx, divpt, itertable.length, sizeMapBucketSize)
+        val fsttotal = calcNumElems(
+          idx,
+          divpt,
+          itertable.length,
+          sizeMapBucketSize)
         val fstit = newIterator(fstidx, fstuntil, fsttotal)
 
         val sndidx = divpt

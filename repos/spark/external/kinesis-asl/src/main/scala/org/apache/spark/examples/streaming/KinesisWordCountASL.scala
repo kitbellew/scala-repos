@@ -156,8 +156,8 @@ object KinesisWordCountASL extends Logging {
     val unionStreams = ssc.union(kinesisStreams)
 
     // Convert each line of Array[Byte] to String, and split into words
-    val words =
-      unionStreams.flatMap(byteArray => new String(byteArray).split(" "))
+    val words = unionStreams.flatMap(byteArray =>
+      new String(byteArray).split(" "))
 
     // Map each word to a (word, 1) tuple so we can reduce by key to count the words
     val wordCounts = words.map(word => (word, 1)).reduceByKey(_ + _)
@@ -211,8 +211,11 @@ object KinesisWordProducerASL {
     val Array(stream, endpoint, recordsPerSecond, wordsPerRecord) = args
 
     // Generate the records and return the totals
-    val totals =
-      generate(stream, endpoint, recordsPerSecond.toInt, wordsPerRecord.toInt)
+    val totals = generate(
+      stream,
+      endpoint,
+      recordsPerSecond.toInt,
+      wordsPerRecord.toInt)
 
     // Print the array of (word, total) tuples
     println("Totals for the words sent")

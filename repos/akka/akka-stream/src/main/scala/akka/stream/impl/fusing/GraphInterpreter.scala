@@ -620,8 +620,7 @@ private[stream] final class GraphInterpreter(
 
   // Decodes and processes a single event for the given connection
   private def processEvent(connection: Int): Unit = {
-    def safeLogics(id: Int) =
-      if (id == Boundary) null else logics(id)
+    def safeLogics(id: Int) = if (id == Boundary) null else logics(id)
 
     def processElement(): Unit = {
       if (Debug)

@@ -32,8 +32,7 @@ object Deadline
   /**
     * Returns the current request's deadline, if set.
     */
-  def current: Option[Deadline] =
-    Contexts.broadcast.get(Deadline)
+  def current: Option[Deadline] = Contexts.broadcast.get(Deadline)
 
   /**
     * Construct a deadline from a timeout.

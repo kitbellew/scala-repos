@@ -203,8 +203,8 @@ class FileMessageSet private[kafka] (
       expectedMagicValue: Byte): Boolean = {
     var location = start
     val offsetAndSizeBuffer = ByteBuffer.allocate(MessageSet.LogOverhead)
-    val crcAndMagicByteBuffer =
-      ByteBuffer.allocate(Message.CrcLength + Message.MagicLength)
+    val crcAndMagicByteBuffer = ByteBuffer.allocate(
+      Message.CrcLength + Message.MagicLength)
     while (location < end) {
       offsetAndSizeBuffer.rewind()
       channel.read(offsetAndSizeBuffer, location)

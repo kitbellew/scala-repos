@@ -36,16 +36,15 @@ class ParserUtilsTest extends FunSuite {
     protected def unsafeByteArrayBuf = None
   }
 
-  val strings =
-    Seq(
-      "123" -> true,
-      "1" -> true,
-      "" -> false,
-      " " -> false,
-      "x" -> false,
-      " 9" -> false,
-      "9 " -> false
-    )
+  val strings = Seq(
+    "123" -> true,
+    "1" -> true,
+    "" -> false,
+    " " -> false,
+    "x" -> false,
+    " 9" -> false,
+    "9 " -> false
+  )
 
   test("isDigits: Buf") {
     strings foreach {

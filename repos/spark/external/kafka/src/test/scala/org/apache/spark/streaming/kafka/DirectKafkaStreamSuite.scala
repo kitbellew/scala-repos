@@ -323,8 +323,10 @@ class DirectKafkaStreamSuite
 
     // Recover context from checkpoints
     ssc = new StreamingContext(testDir.getAbsolutePath)
-    val recoveredStream =
-      ssc.graph.getInputStreams().head.asInstanceOf[DStream[(String, String)]]
+    val recoveredStream = ssc.graph
+      .getInputStreams()
+      .head
+      .asInstanceOf[DStream[(String, String)]]
 
     // Verify offset ranges have been recovered
     val recoveredOffsetRanges = getOffsetRanges(recoveredStream)
@@ -409,19 +411,20 @@ class DirectKafkaStreamSuite
 
   test("maxMessagesPerPartition with no lag") {
     val topic = "maxMessagesPerPartition"
-    val rateController =
-      Some(new ConstantRateController(0, new ConstantEstimator(100), 100))
+    val rateController = Some(
+      new ConstantRateController(0, new ConstantEstimator(100), 100))
     val kafkaStream = getDirectKafkaStream(topic, rateController)
 
-    val input =
-      Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
+    val input = Map(
+      TopicAndPartition(topic, 0) -> 0L,
+      TopicAndPartition(topic, 1) -> 0L)
     assert(kafkaStream.maxMessagesPerPartition(input).isEmpty)
   }
 
   test("maxMessagesPerPartition respects max rate") {
     val topic = "maxMessagesPerPartition"
-    val rateController =
-      Some(new ConstantRateController(0, new ConstantEstimator(100), 1000))
+    val rateController = Some(
+      new ConstantRateController(0, new ConstantEstimator(100), 1000))
     val kafkaStream = getDirectKafkaStream(topic, rateController)
 
     val input = Map(
@@ -436,8 +439,9 @@ class DirectKafkaStreamSuite
 
   test("using rate controller") {
     val topic = "backpressure"
-    val topicPartitions =
-      Set(TopicAndPartition(topic, 0), TopicAndPartition(topic, 1))
+    val topicPartitions = Set(
+      TopicAndPartition(topic, 0),
+      TopicAndPartition(topic, 1))
     kafkaTestUtils.createTopic(topic, 2)
     val kafkaParams = Map(
       "metadata.broker.list" -> kafkaTestUtils.brokerAddress,
@@ -476,8 +480,8 @@ class DirectKafkaStreamSuite
         StringDecoder,
         StringDecoder,
         (String, String)](ssc, kafkaParams, m, messageHandler) {
-        override protected[streaming] val rateController =
-          Some(new DirectKafkaRateController(id, estimator))
+        override protected[streaming] val rateController = Some(
+          new DirectKafkaRateController(id, estimator))
       }
     }
 
@@ -543,8 +547,9 @@ class DirectKafkaStreamSuite
     ssc =
       new StreamingContext(sparkConf, Milliseconds(batchIntervalMilliseconds))
 
-    val earliestOffsets =
-      Map(TopicAndPartition(topic, 0) -> 0L, TopicAndPartition(topic, 1) -> 0L)
+    val earliestOffsets = Map(
+      TopicAndPartition(topic, 0) -> 0L,
+      TopicAndPartition(topic, 1) -> 0L)
     val messageHandler = (mmd: MessageAndMetadata[String, String]) =>
       (mmd.key, mmd.message)
     new DirectKafkaInputDStream[

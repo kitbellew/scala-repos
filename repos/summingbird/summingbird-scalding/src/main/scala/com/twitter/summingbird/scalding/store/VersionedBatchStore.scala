@@ -132,8 +132,8 @@ class VersionedBatchStore[K, V, K2, V2](
     @transient injection: Injection[(K2, V2), (Array[Byte], Array[Byte])],
     override val ordering: Ordering[K])
     extends VersionedBatchStoreBase[K, V](rootPath) {
-  @transient private val logger =
-    LoggerFactory.getLogger(classOf[VersionedBatchStore[_, _, _, _]])
+  @transient private val logger = LoggerFactory.getLogger(
+    classOf[VersionedBatchStore[_, _, _, _]])
 
   override def toString: String =
     s"${this.getClass.getSimpleName}(rootPath=$rootPath, versionesToKeep=$versionsToKeep, batcher=$batcher)"
@@ -184,8 +184,9 @@ class VersionedBatchStore[K, V, K2, V2](
     */
   protected def readVersion(v: Long): FlowProducer[TypedPipe[(K, V)]] =
     Reader { (flowMode: (FlowDef, Mode)) =>
-      val mappable =
-        VersionedKeyValSource[K2, V2](rootPath, sourceVersion = Some(v))
+      val mappable = VersionedKeyValSource[K2, V2](
+        rootPath,
+        sourceVersion = Some(v))
       TypedPipe
         .from(mappable)
         .map(unpack)

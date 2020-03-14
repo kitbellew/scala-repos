@@ -51,16 +51,17 @@ class YarnShuffleIntegrationSuite extends BaseYarnClusterSuite {
     val shuffleServicePort = YarnTestAccessor.getShuffleServicePort
     val shuffleService = YarnTestAccessor.getShuffleServiceInstance
 
-    val registeredExecFile =
-      YarnTestAccessor.getRegisteredExecutorFile(shuffleService)
+    val registeredExecFile = YarnTestAccessor.getRegisteredExecutorFile(
+      shuffleService)
 
     logInfo("Shuffle service port = " + shuffleServicePort)
     val result = File.createTempFile("result", null, tempDir)
     val finalState = runSpark(
       false,
       mainClassName(YarnExternalShuffleDriver.getClass),
-      appArgs =
-        Seq(result.getAbsolutePath(), registeredExecFile.getAbsolutePath),
+      appArgs = Seq(
+        result.getAbsolutePath(),
+        registeredExecFile.getAbsolutePath),
       extraConf = Map(
         "spark.shuffle.service.enabled" -> "true",
         "spark.shuffle.service.port" -> shuffleServicePort.toString

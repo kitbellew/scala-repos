@@ -174,21 +174,19 @@ case class ScExistentialType(
           }: _*),
           Map.empty,
           None)
-        val upper: ScType =
-          subst.subst(a.upper) match {
-            case ScParameterizedType(u, _) =>
-              ScExistentialType(ScParameterizedType(u, args), wildcards)
-            case u => ScExistentialType(ScParameterizedType(u, args), wildcards)
-          }
+        val upper: ScType = subst.subst(a.upper) match {
+          case ScParameterizedType(u, _) =>
+            ScExistentialType(ScParameterizedType(u, args), wildcards)
+          case u => ScExistentialType(ScParameterizedType(u, args), wildcards)
+        }
         val t = Conformance.conformsInner(upper, r, Set.empty, undefinedSubst)
         if (!t._1) return t
 
-        val lower: ScType =
-          subst.subst(a.lower) match {
-            case ScParameterizedType(l, _) =>
-              ScExistentialType(ScParameterizedType(l, args), wildcards)
-            case l => ScExistentialType(ScParameterizedType(l, args), wildcards)
-          }
+        val lower: ScType = subst.subst(a.lower) match {
+          case ScParameterizedType(l, _) =>
+            ScExistentialType(ScParameterizedType(l, args), wildcards)
+          case l => ScExistentialType(ScParameterizedType(l, args), wildcards)
+        }
         return Conformance.conformsInner(r, lower, Set.empty, t._2)
       case ScParameterizedType(a: ScUndefinedType, args) if !falseUndef =>
         r match {
@@ -359,9 +357,8 @@ case class ScExistentialType(
           components,
           signatureMap.map {
             case (s, sctype) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f =>
-                  () => updateRecursive(f(), newSet, variance)))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
+                _.map(f => () => updateRecursive(f(), newSet, variance)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                 else s.typeParams.map(updateTypeParam)
@@ -492,8 +489,10 @@ case class ScExistentialType(
         ScMethodType(
           updateRecursive(returnType, rejected, variance),
           params.map(param =>
-            param.copy(paramType =
-              updateRecursive(param.paramType, rejected, -variance))),
+            param.copy(paramType = updateRecursive(
+              param.paramType,
+              rejected,
+              -variance))),
           isImplicit)(m.project, m.scope)
       case ScAbstractType(tpt, lower, upper) =>
         ScAbstractType(
@@ -600,8 +599,8 @@ case class ScExistentialType(
     def typeParamsDepth(typeParams: List[ScTypeParameterType]): Int = {
       typeParams.map {
         case typeParam =>
-          val boundsDepth =
-            typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
+          val boundsDepth = typeParam.lower.v.typeDepth
+            .max(typeParam.upper.v.typeDepth)
           if (typeParam.args.nonEmpty) {
             (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
           } else boundsDepth
@@ -611,8 +610,8 @@ case class ScExistentialType(
     val quantDepth = quantified.typeDepth
     if (wildcards.nonEmpty) {
       (wildcards.map { wildcard =>
-        val boundsDepth =
-          wildcard.lowerBound.typeDepth.max(wildcard.upperBound.typeDepth)
+        val boundsDepth = wildcard.lowerBound.typeDepth.max(
+          wildcard.upperBound.typeDepth)
         if (wildcard.args.nonEmpty) {
           (typeParamsDepth(wildcard.args) + 1).max(boundsDepth)
         } else boundsDepth

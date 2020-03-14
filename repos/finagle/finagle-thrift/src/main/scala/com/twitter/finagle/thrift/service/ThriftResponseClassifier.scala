@@ -53,16 +53,16 @@ object ThriftResponseClassifier {
     * Categorizes responses where the '''deserialized''' response is a
     * Thrift Exception as a [[ResponseClass.NonRetryableFailure]].
     */
-  val ThriftExceptionsAsFailures: ResponseClassifier =
-    ResponseClassifier.named("ThriftExceptionsAsFailures") {
-      case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
-    }
+  val ThriftExceptionsAsFailures: ResponseClassifier = ResponseClassifier.named(
+    "ThriftExceptionsAsFailures") {
+    case ReqRep(_, Throw(_)) => ResponseClass.NonRetryableFailure
+  }
 
   private[this] val NoDeserializeCtx: DeserializeCtx[Nothing] =
     new DeserializeCtx[Nothing](null, null)
 
-  private[this] val NoDeserializerFn: () => DeserializeCtx[_] =
-    () => NoDeserializeCtx
+  private[this] val NoDeserializerFn: () => DeserializeCtx[_] = () =>
+    NoDeserializeCtx
 
   /**
     * Thrift responses need to be deserialized from
@@ -96,8 +96,8 @@ object ThriftResponseClassifier {
         s"Thrift.usingDeserializeCtx(${classifier.toString})"
 
       def isDefinedAt(reqRep: ReqRep): Boolean = {
-        val deserCtx =
-          Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+        val deserCtx = Contexts.local
+          .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
         if (deserCtx eq NoDeserializeCtx) return false
 
         reqRep.response match {
@@ -111,8 +111,8 @@ object ThriftResponseClassifier {
       def apply(reqRep: ReqRep): ResponseClass =
         reqRep.response match {
           case Return(bytes: Array[Byte]) =>
-            val deserCtx =
-              Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+            val deserCtx = Contexts.local
+              .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx eq NoDeserializeCtx)
               throw new MatchError("No DeserializeCtx found")
             try { classifier(deserialized(deserCtx, bytes)) }
@@ -136,8 +136,8 @@ object ThriftResponseClassifier {
       private[this] def deserializeIfPossible(rep: Try[Any]): Unit = {
         rep match {
           case Return(bytes: Array[Byte]) =>
-            val deserCtx =
-              Contexts.local.getOrElse(DeserializeCtx.Key, NoDeserializerFn)
+            val deserCtx = Contexts.local
+              .getOrElse(DeserializeCtx.Key, NoDeserializerFn)
             if (deserCtx ne NoDeserializeCtx) {
               try { deserCtx.deserialize(bytes) }
               catch {

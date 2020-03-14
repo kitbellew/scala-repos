@@ -87,8 +87,10 @@ class MulticlassClassificationEvaluator @Since("1.5.0") (
     SchemaUtils.checkColumnType(schema, $(predictionCol), DoubleType)
     SchemaUtils.checkColumnType(schema, $(labelCol), DoubleType)
 
-    val predictionAndLabels =
-      dataset.select($(predictionCol), $(labelCol)).rdd.map {
+    val predictionAndLabels = dataset
+      .select($(predictionCol), $(labelCol))
+      .rdd
+      .map {
         case Row(prediction: Double, label: Double) =>
           (prediction, label)
       }

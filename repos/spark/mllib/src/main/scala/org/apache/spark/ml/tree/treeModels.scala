@@ -250,20 +250,22 @@ private[ml] object DecisionTreeModelReadWrite {
     val finalNodes = new Array[Node](nodes.length)
     nodes.reverseIterator.foreach {
       case n: NodeData =>
-        val impurityStats =
-          ImpurityCalculator.getCalculator(impurityType, n.impurityStats)
-        val node = if (n.leftChild != -1) {
-          val leftChild = finalNodes(n.leftChild)
-          val rightChild = finalNodes(n.rightChild)
-          new InternalNode(
-            n.prediction,
-            n.impurity,
-            n.gain,
-            leftChild,
-            rightChild,
-            n.split.getSplit,
-            impurityStats)
-        } else { new LeafNode(n.prediction, n.impurity, impurityStats) }
+        val impurityStats = ImpurityCalculator.getCalculator(
+          impurityType,
+          n.impurityStats)
+        val node =
+          if (n.leftChild != -1) {
+            val leftChild = finalNodes(n.leftChild)
+            val rightChild = finalNodes(n.rightChild)
+            new InternalNode(
+              n.prediction,
+              n.impurity,
+              n.gain,
+              leftChild,
+              rightChild,
+              n.split.getSplit,
+              impurityStats)
+          } else { new LeafNode(n.prediction, n.impurity, impurityStats) }
         finalNodes(n.id) = node
     }
     // Return the root node

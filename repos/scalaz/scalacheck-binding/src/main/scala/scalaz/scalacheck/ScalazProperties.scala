@@ -143,8 +143,7 @@ object ScalazProperties {
     def identity[F[_], X](implicit
         F: InvariantFunctor[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.invariantFunctorLaw.invariantIdentity[X] _)
+        ef: Equal[F[X]]) = forAll(F.invariantFunctorLaw.invariantIdentity[X] _)
 
     def composite[F[_], X, Y, Z](implicit
         F: InvariantFunctor[F],
@@ -171,16 +170,14 @@ object ScalazProperties {
     def identity[F[_], X](implicit
         F: Functor[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.functorLaw.identity[X] _)
+        ef: Equal[F[X]]) = forAll(F.functorLaw.identity[X] _)
 
     def composite[F[_], X, Y, Z](implicit
         F: Functor[F],
         af: Arbitrary[F[X]],
         axy: Arbitrary[(X => Y)],
         ayz: Arbitrary[(Y => Z)],
-        ef: Equal[F[Z]]) =
-      forAll(F.functorLaw.composite[X, Y, Z] _)
+        ef: Equal[F[Z]]) = forAll(F.functorLaw.composite[X, Y, Z] _)
 
     def laws[F[_]](implicit
         F: Functor[F],
@@ -198,8 +195,7 @@ object ScalazProperties {
     def collapse[F[_], A](implicit
         F: Align[F],
         E: Equal[F[A \&/ A]],
-        A: Arbitrary[F[A]]): Prop =
-      forAll(F.alignLaw.collapse[A] _)
+        A: Arbitrary[F[A]]): Prop = forAll(F.alignLaw.collapse[A] _)
     def laws[F[_]](implicit
         F: Align[F],
         af: Arbitrary[F[Int]],
@@ -234,29 +230,25 @@ object ScalazProperties {
     def identity[F[_], X](implicit
         f: Applicative[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(f.applicativeLaw.identityAp[X] _)
+        ef: Equal[F[X]]) = forAll(f.applicativeLaw.identityAp[X] _)
 
     def homomorphism[F[_], X, Y](implicit
         ap: Applicative[F],
         ax: Arbitrary[X],
         af: Arbitrary[X => Y],
-        e: Equal[F[Y]]) =
-      forAll(ap.applicativeLaw.homomorphism[X, Y] _)
+        e: Equal[F[Y]]) = forAll(ap.applicativeLaw.homomorphism[X, Y] _)
 
     def interchange[F[_], X, Y](implicit
         ap: Applicative[F],
         ax: Arbitrary[X],
         afx: Arbitrary[F[X => Y]],
-        e: Equal[F[Y]]) =
-      forAll(ap.applicativeLaw.interchange[X, Y] _)
+        e: Equal[F[Y]]) = forAll(ap.applicativeLaw.interchange[X, Y] _)
 
     def mapApConsistency[F[_], X, Y](implicit
         ap: Applicative[F],
         ax: Arbitrary[F[X]],
         afx: Arbitrary[X => Y],
-        e: Equal[F[Y]]) =
-      forAll(ap.applicativeLaw.mapLikeDerived[X, Y] _)
+        e: Equal[F[Y]]) = forAll(ap.applicativeLaw.mapLikeDerived[X, Y] _)
 
     def laws[F[_]](implicit
         F: Applicative[F],
@@ -268,8 +260,8 @@ object ScalazProperties {
         p.property("identity") = applicative.identity[F, Int]
         p.property("homomorphism") = applicative.homomorphism[F, Int, Int]
         p.property("interchange") = applicative.interchange[F, Int, Int]
-        p.property("map consistent with ap") =
-          applicative.mapApConsistency[F, Int, Int]
+        p.property("map consistent with ap") = applicative
+          .mapApConsistency[F, Int, Int]
       }
   }
 
@@ -279,15 +271,13 @@ object ScalazProperties {
         amx: Arbitrary[M[X]],
         af: Arbitrary[(X => M[Y])],
         ag: Arbitrary[(Y => M[Z])],
-        emz: Equal[M[Z]]) =
-      forAll(M.bindLaw.associativeBind[X, Y, Z] _)
+        emz: Equal[M[Z]]) = forAll(M.bindLaw.associativeBind[X, Y, Z] _)
 
     def bindApConsistency[M[_], X, Y](implicit
         M: Bind[M],
         amx: Arbitrary[M[X]],
         af: Arbitrary[M[X => Y]],
-        emy: Equal[M[Y]]) =
-      forAll(M.bindLaw.apLikeDerived[X, Y] _)
+        emy: Equal[M[Y]]) = forAll(M.bindLaw.apLikeDerived[X, Y] _)
 
     def laws[M[_]](implicit
         a: Bind[M],
@@ -299,8 +289,8 @@ object ScalazProperties {
         p.include(ScalazProperties.apply.laws[M])
 
         p.property("associativity") = bind.associativity[M, Int, Int, Int]
-        p.property("ap consistent with bind") =
-          bind.bindApConsistency[M, Int, Int]
+        p.property("ap consistent with bind") = bind
+          .bindApConsistency[M, Int, Int]
       }
   }
 
@@ -309,8 +299,7 @@ object ScalazProperties {
         M: BindRec[M],
         ax: Arbitrary[X],
         af: Arbitrary[X => M[X]],
-        emx: Equal[M[X]]) =
-      forAll(M.bindRecLaw.tailrecBindConsistency[X] _)
+        emx: Equal[M[X]]) = forAll(M.bindRecLaw.tailrecBindConsistency[X] _)
 
     def laws[M[_]](implicit
         a: BindRec[M],
@@ -319,8 +308,8 @@ object ScalazProperties {
         ag: Arbitrary[M[Int => Int]],
         e: Equal[M[Int]]): Properties =
       newProperties("bindRec") { p =>
-        p.property("tailrecM is consistent with bind") =
-          bindRec.tailrecBindConsistency[M, Int]
+        p.property("tailrecM is consistent with bind") = bindRec
+          .tailrecBindConsistency[M, Int]
       }
   }
 
@@ -328,15 +317,13 @@ object ScalazProperties {
     def rightIdentity[M[_], X](implicit
         M: Monad[M],
         e: Equal[M[X]],
-        a: Arbitrary[M[X]]) =
-      forAll(M.monadLaw.rightIdentity[X] _)
+        a: Arbitrary[M[X]]) = forAll(M.monadLaw.rightIdentity[X] _)
 
     def leftIdentity[M[_], X, Y](implicit
         am: Monad[M],
         emy: Equal[M[Y]],
         ax: Arbitrary[X],
-        af: Arbitrary[(X => M[Y])]) =
-      forAll(am.monadLaw.leftIdentity[X, Y] _)
+        af: Arbitrary[(X => M[Y])]) = forAll(am.monadLaw.leftIdentity[X, Y] _)
 
     def laws[M[_]](implicit
         a: Monad[M],
@@ -368,8 +355,12 @@ object ScalazProperties {
         e: Equal[F[Int]]): Properties =
       newProperties("cobind") { p =>
         p.include(functor.laws[F])
-        p.property("cobind associative") =
-          cobindAssociative[F, Int, Int, Int, Int]
+        p.property("cobind associative") = cobindAssociative[
+          F,
+          Int,
+          Int,
+          Int,
+          Int]
       }
   }
 
@@ -377,8 +368,7 @@ object ScalazProperties {
     def cobindLeftIdentity[F[_], A](implicit
         F: Comonad[F],
         F0: Equal[F[A]],
-        fa: Arbitrary[F[A]]) =
-      forAll(F.comonadLaw.cobindLeftIdentity[A] _)
+        fa: Arbitrary[F[A]]) = forAll(F.comonadLaw.cobindLeftIdentity[A] _)
 
     def cobindRightIdentity[F[_], A, B](implicit
         F: Comonad[F],
@@ -407,15 +397,13 @@ object ScalazProperties {
         f: Traverse[F],
         afx: Arbitrary[F[X]],
         axy: Arbitrary[X => Y],
-        ef: Equal[F[Y]]) =
-      forAll(f.traverseLaw.identityTraverse[X, Y] _)
+        ef: Equal[F[Y]]) = forAll(f.traverseLaw.identityTraverse[X, Y] _)
 
     def purity[F[_], G[_], X](implicit
         f: Traverse[F],
         afx: Arbitrary[F[X]],
         G: Applicative[G],
-        ef: Equal[G[F[X]]]) =
-      forAll(f.traverseLaw.purity[G, X] _)
+        ef: Equal[G[F[X]]]) = forAll(f.traverseLaw.purity[G, X] _)
 
     def sequentialFusion[F[_], N[_], M[_], A, B, C](implicit
         fa: Arbitrary[F[A]],
@@ -459,8 +447,9 @@ object ScalazProperties {
         p.property("purity.option") = purity[F, Option, Int]
         p.property("purity.stream") = purity[F, Stream, Int]
 
-        p.property("sequential fusion") =
-          resizeProp(sequentialFusion[F, Option, List, Int, Int, Int], 3)
+        p.property("sequential fusion") = resizeProp(
+          sequentialFusion[F, Option, List, Int, Int, Int],
+          3)
       // TODO naturality, parallelFusion
       }
   }
@@ -470,15 +459,13 @@ object ScalazProperties {
         F: Bifoldable[F],
         afa: Arbitrary[F[A, B]],
         ea: Equal[A],
-        eb: Equal[B]) =
-      forAll(F.bifoldableLaw.leftFMConsistent[A, B] _)
+        eb: Equal[B]) = forAll(F.bifoldableLaw.leftFMConsistent[A, B] _)
 
     def rightFMConsistent[F[_, _], A, B](implicit
         F: Bifoldable[F],
         afa: Arbitrary[F[A, B]],
         ea: Equal[A],
-        eb: Equal[B]) =
-      forAll(F.bifoldableLaw.rightFMConsistent[A, B] _)
+        eb: Equal[B]) = forAll(F.bifoldableLaw.rightFMConsistent[A, B] _)
 
     def laws[F[_, _]](implicit
         fa: Arbitrary[F[Int, Int]],
@@ -511,8 +498,7 @@ object ScalazProperties {
     def associative[F[_], X](implicit
         f: Plus[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(f.plusLaw.associative[X] _)
+        ef: Equal[F[X]]) = forAll(f.plusLaw.associative[X] _)
 
     def laws[F[_]](implicit
         F: Plus[F],
@@ -529,14 +515,12 @@ object ScalazProperties {
     def leftPlusIdentity[F[_], X](implicit
         f: PlusEmpty[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(f.plusEmptyLaw.leftPlusIdentity[X] _)
+        ef: Equal[F[X]]) = forAll(f.plusEmptyLaw.leftPlusIdentity[X] _)
 
     def rightPlusIdentity[F[_], X](implicit
         f: PlusEmpty[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(f.plusEmptyLaw.rightPlusIdentity[X] _)
+        ef: Equal[F[X]]) = forAll(f.plusEmptyLaw.rightPlusIdentity[X] _)
 
     def laws[F[_]](implicit
         F: PlusEmpty[F],
@@ -557,8 +541,7 @@ object ScalazProperties {
 
     def emptyPlusIdentity[F[_], X](implicit
         f: IsEmpty[F],
-        afx: Arbitrary[F[X]]) =
-      forAll(f.isEmptyLaw.emptyPlusIdentity[X] _)
+        afx: Arbitrary[F[X]]) = forAll(f.isEmptyLaw.emptyPlusIdentity[X] _)
 
     def laws[F[_]](implicit
         F: IsEmpty[F],
@@ -575,20 +558,17 @@ object ScalazProperties {
     def emptyMap[F[_], X](implicit
         f: MonadPlus[F],
         afx: Arbitrary[X => X],
-        ef: Equal[F[X]]) =
-      forAll(f.monadPlusLaw.emptyMap[X] _)
+        ef: Equal[F[X]]) = forAll(f.monadPlusLaw.emptyMap[X] _)
 
     def leftZero[F[_], X](implicit
         F: MonadPlus[F],
         afx: Arbitrary[X => F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.monadPlusLaw.leftZero[X] _)
+        ef: Equal[F[X]]) = forAll(F.monadPlusLaw.leftZero[X] _)
 
     def rightZero[F[_], X](implicit
         F: MonadPlus[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.strongMonadPlusLaw.rightZero[X] _)
+        ef: Equal[F[X]]) = forAll(F.strongMonadPlusLaw.rightZero[X] _)
 
     def laws[F[_]](implicit
         F: MonadPlus[F],
@@ -616,14 +596,12 @@ object ScalazProperties {
     def leftFMConsistent[F[_], A](implicit
         F: Foldable[F],
         afa: Arbitrary[F[A]],
-        ea: Equal[A]) =
-      forAll(F.foldableLaw.leftFMConsistent[A] _)
+        ea: Equal[A]) = forAll(F.foldableLaw.leftFMConsistent[A] _)
 
     def rightFMConsistent[F[_], A](implicit
         F: Foldable[F],
         afa: Arbitrary[F[A]],
-        ea: Equal[A]) =
-      forAll(F.foldableLaw.rightFMConsistent[A] _)
+        ea: Equal[A]) = forAll(F.foldableLaw.rightFMConsistent[A] _)
 
     def laws[F[_]](implicit
         fa: Arbitrary[F[Int]],
@@ -641,14 +619,12 @@ object ScalazProperties {
     def leftFM1Consistent[F[_], A](implicit
         F: Foldable1[F],
         fa: Arbitrary[F[A]],
-        ea: Equal[A]) =
-      forAll(F.foldable1Law.leftFM1Consistent[A] _)
+        ea: Equal[A]) = forAll(F.foldable1Law.leftFM1Consistent[A] _)
 
     def rightFM1Consistent[F[_], A](implicit
         F: Foldable1[F],
         fa: Arbitrary[F[A]],
-        ea: Equal[A]) =
-      forAll(F.foldable1Law.rightFM1Consistent[A] _)
+        ea: Equal[A]) = forAll(F.foldable1Law.rightFM1Consistent[A] _)
 
     def laws[F[_]](implicit
         fa: Arbitrary[F[Int]],
@@ -666,8 +642,7 @@ object ScalazProperties {
         f: Traverse1[F],
         afx: Arbitrary[F[X]],
         axy: Arbitrary[X => Y],
-        ef: Equal[F[Y]]) =
-      forAll(f.traverse1Law.identityTraverse1[X, Y] _)
+        ef: Equal[F[Y]]) = forAll(f.traverse1Law.identityTraverse1[X, Y] _)
 
     def sequentialFusion1[F[_], N[_], M[_], A, B, C](implicit
         fa: Arbitrary[F[A]],
@@ -708,8 +683,9 @@ object ScalazProperties {
 
         import std.list._, std.option._
 
-        p.property("sequential fusion (1)") =
-          resizeProp(sequentialFusion1[F, Option, List, Int, Int, Int], 3)
+        p.property("sequential fusion (1)") = resizeProp(
+          sequentialFusion1[F, Option, List, Int, Int, Int],
+          3)
       // TODO naturality1, parallelFusion1
       }
   }
@@ -719,16 +695,14 @@ object ScalazProperties {
         F: Zip[F],
         FF: Functor[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.zipLaw.zipPreservation[X] _)
+        ef: Equal[F[X]]) = forAll(F.zipLaw.zipPreservation[X] _)
 
     def zipSymmetric[F[_], X, Y](implicit
         F: Zip[F],
         FF: Functor[F],
         afx: Arbitrary[F[X]],
         afy: Arbitrary[F[Y]],
-        ef: Equal[F[X]]) =
-      forAll(F.zipLaw.zipSymmetric[X, Y] _)
+        ef: Equal[F[X]]) = forAll(F.zipLaw.zipSymmetric[X, Y] _)
 
     def laws[F[_]](implicit
         fa: Arbitrary[F[Int]],
@@ -745,16 +719,14 @@ object ScalazProperties {
     def identity[F[_], X](implicit
         F: Contravariant[F],
         afx: Arbitrary[F[X]],
-        ef: Equal[F[X]]) =
-      forAll(F.contravariantLaw.identity[X] _)
+        ef: Equal[F[X]]) = forAll(F.contravariantLaw.identity[X] _)
 
     def composite[F[_], X, Y, Z](implicit
         F: Contravariant[F],
         af: Arbitrary[F[Z]],
         axy: Arbitrary[(X => Y)],
         ayz: Arbitrary[(Y => Z)],
-        ef: Equal[F[X]]) =
-      forAll(F.contravariantLaw.composite[Z, Y, X] _)
+        ef: Equal[F[X]]) = forAll(F.contravariantLaw.composite[Z, Y, X] _)
 
     def laws[F[_]](implicit
         F: Contravariant[F],
@@ -772,8 +744,7 @@ object ScalazProperties {
     def composition[F[_], A](implicit
         F: Divide[F],
         A: Arbitrary[F[A]],
-        E: Equal[F[A]]) =
-      forAll(F.divideLaw.composition[A] _)
+        E: Equal[F[A]]) = forAll(F.divideLaw.composition[A] _)
 
     def laws[F[_]](implicit
         F: Divide[F],
@@ -790,14 +761,12 @@ object ScalazProperties {
     def rightIdentity[F[_], A](implicit
         F: Divisible[F],
         A: Arbitrary[F[A]],
-        E: Equal[F[A]]) =
-      forAll(F.divisibleLaw.rightIdentity[A] _)
+        E: Equal[F[A]]) = forAll(F.divisibleLaw.rightIdentity[A] _)
 
     def leftIdentity[F[_], A](implicit
         F: Divisible[F],
         A: Arbitrary[F[A]],
-        E: Equal[F[A]]) =
-      forAll(F.divisibleLaw.leftIdentity[A] _)
+        E: Equal[F[A]]) = forAll(F.divisibleLaw.leftIdentity[A] _)
 
     def laws[F[_]](implicit
         F: Divisible[F],
@@ -817,8 +786,7 @@ object ScalazProperties {
         bc: Arbitrary[B =>: C],
         cd: Arbitrary[C =>: D],
         C: Compose[=>:],
-        E: Equal[A =>: D]) =
-      forAll(C.composeLaw.associative[A, B, C, D] _)
+        E: Equal[A =>: D]) = forAll(C.composeLaw.associative[A, B, C, D] _)
 
     def laws[=>:[_, _]](implicit
         C: Compose[=>:],
@@ -835,14 +803,12 @@ object ScalazProperties {
     def leftIdentity[=>:[_, _], A, B](implicit
         ab: Arbitrary[A =>: B],
         C: Category[=>:],
-        E: Equal[A =>: B]) =
-      forAll(C.categoryLaw.leftIdentity[A, B] _)
+        E: Equal[A =>: B]) = forAll(C.categoryLaw.leftIdentity[A, B] _)
 
     def rightIdentity[=>:[_, _], A, B](implicit
         ab: Arbitrary[A =>: B],
         C: Category[=>:],
-        E: Equal[A =>: B]) =
-      forAll(C.categoryLaw.rightIdentity[A, B] _)
+        E: Equal[A =>: B]) = forAll(C.categoryLaw.rightIdentity[A, B] _)
 
     def laws[=>:[_, _]](implicit
         C: Category[=>:],
@@ -941,14 +907,12 @@ object ScalazProperties {
         me: MonadError[F, E],
         eq: Equal[F[A]],
         ae: Arbitrary[E],
-        aa: Arbitrary[A]) =
-      forAll(me.monadErrorLaw.errorsRaised[A] _)
+        aa: Arbitrary[A]) = forAll(me.monadErrorLaw.errorsRaised[A] _)
     def errorsStopComputation[F[_], E, A](implicit
         me: MonadError[F, E],
         eq: Equal[F[A]],
         ae: Arbitrary[E],
-        aa: Arbitrary[A]) =
-      forAll(me.monadErrorLaw.errorsStopComputation[A] _)
+        aa: Arbitrary[A]) = forAll(me.monadErrorLaw.errorsStopComputation[A] _)
 
     def laws[F[_], E](implicit
         me: MonadError[F, E],

@@ -37,8 +37,9 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
     if (element == null || element.getNode == null) return null
     element.getNode.getElementType match {
       case ScalaTokenTypes.kRETURN =>
-        val fun =
-          PsiTreeUtil.getParentOfType(element, classOf[ScFunctionDefinition])
+        val fun = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScFunctionDefinition])
         if (fun != null)
           return new ScalaHighlightExitPointsHandler(fun, editor, file, element)
       case ScalaTokenTypes.kDEF =>
@@ -88,8 +89,9 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
           }
         }
       case ScalaTokenTypes.kMATCH =>
-        val matchStmt =
-          PsiTreeUtil.getParentOfType(element, classOf[ScMatchStmt])
+        val matchStmt = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScMatchStmt])
         if (matchStmt != null) {
           return new ScalaHighlightExprResultHandler(
             matchStmt,
@@ -107,8 +109,9 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
             element)
         }
       case ScalaTokenTypes.kFOR =>
-        val forStmt =
-          PsiTreeUtil.getParentOfType(element, classOf[ScForStatement])
+        val forStmt = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScForStatement])
         if (forStmt != null && forStmt.isYield) {
           forStmt.body match {
             case Some(body) =>
@@ -130,8 +133,9 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
             element)
         }
       case ScalaTokenTypes.tFUNTYPE =>
-        val funcExpr =
-          PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr])
+        val funcExpr = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScFunctionExpr])
         if (funcExpr != null) {
           funcExpr.result match {
             case Some(resultExpr) =>
@@ -145,8 +149,9 @@ class ScalaHighlightUsagesHandlerFactory extends HighlightUsagesHandlerFactory {
         }
       case ScalaTokenTypes.kCLASS | ScalaTokenTypes.kTRAIT |
           ScalaTokenTypes.kOBJECT =>
-        val templateDef =
-          PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
+        val templateDef = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScTemplateDefinition])
         if (templateDef != null) {
           return new ScalaHighlightPrimaryConstructorExpressionsHandler(
             templateDef,

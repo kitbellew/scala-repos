@@ -225,22 +225,21 @@ private[http] object RenderVersion {
   def get: String = ver.is
 
   def doWith[T](v: String)(f: => T): T = {
-    val ret: Box[T] =
-      for {
-        sess <- S.session
-        func <- sess.findFunc(v).collect { case f: S.PageStateHolder => f }
-      } yield {
-        val tret = ver.doWith(v) {
-          val ret = func.runInContext(f)
+    val ret: Box[T] = for {
+      sess <- S.session
+      func <- sess.findFunc(v).collect { case f: S.PageStateHolder => f }
+    } yield {
+      val tret = ver.doWith(v) {
+        val ret = func.runInContext(f)
 
-          if (S.functionMap.size > 0) {
-            sess.updateFunctionMap(S.functionMap, this.get, millis)
-            S.clearFunctionMap
-          }
-          ret
+        if (S.functionMap.size > 0) {
+          sess.updateFunctionMap(S.functionMap, this.get, millis)
+          S.clearFunctionMap
         }
-        tret
+        ret
       }
+      tret
+    }
 
     ret openOr ver.doWith(v)(f)
   }
@@ -270,8 +269,7 @@ trait HowStateful {
     * to be stateless and not generate a session, but if a valid
     * session is presented, they have the scope of that session/User
     */
-  def doAsStateless[A](f: => A): A =
-    howStateful.doWith(false)(f)
+  def doAsStateless[A](f: => A): A = howStateful.doWith(false)(f)
 }
 
 /**
@@ -425,8 +423,8 @@ class LiftSession(
     * See LiftServlet.handleAjax for how we determine we no longer need
     * to hold a reference to an AJAX request.
     */
-  private var ajaxRequests =
-    scala.collection.mutable.Map[String, List[AjaxRequestInfo]]()
+  private var ajaxRequests = scala.collection.mutable
+    .Map[String, List[AjaxRequestInfo]]()
 
   private[http] def withAjaxRequests[T](
       fn: (
@@ -757,10 +755,9 @@ class LiftSession(
 
       withAjaxRequests { currentAjaxRequests =>
         for { (version, requestInfos) <- currentAjaxRequests } {
-          val remaining =
-            requestInfos.filter { info =>
-              (now - info.lastSeen) <= LiftRules.unusedFunctionsLifeTime
-            }
+          val remaining = requestInfos.filter { info =>
+            (now - info.lastSeen) <= LiftRules.unusedFunctionsLifeTime
+          }
 
           if (remaining.length > 0)
             currentAjaxRequests += (version -> remaining)
@@ -806,15 +803,14 @@ class LiftSession(
         // The page or cometactor that the functions are associated with
         val rv: String = RenderVersion.get
 
-        val old =
-          postPageFunctions.getOrElse(
+        val old = postPageFunctions.getOrElse(
+          rv,
+          PostPageFunctions(
             rv,
-            PostPageFunctions(
-              rv,
-              0,
-              S.currentCometActor.isDefined,
-              Helpers.millis,
-              Nil))
+            0,
+            S.currentCometActor.isDefined,
+            Helpers.millis,
+            Nil))
 
         val updated = PostPageFunctions(
           old.renderVersion,
@@ -1287,34 +1283,32 @@ class LiftSession(
         case x   => findField(x, cur)
       }
 
-      val func: NodeSeq => NodeSeq =
-        value match {
-          case n: scala.xml.Node    => xformRule #> n
-          case n: String            => xformRule #> n
-          case b: Bindable          => xformRule #> b
-          case n: java.lang.Number  => xformRule #> n
-          case d: Double            => xformRule #> d
-          case jc: ToJsCmd          => xformRule #> jc
-          case i: Int               => xformRule #> i
-          case sb: StringPromotable => xformRule #> sb
-          case sym: Symbol          => xformRule #> sym
-          case lng: Long            => xformRule #> lng
-          case b: Boolean           => xformRule #> b
-          case b: Box[_]            => runSourceContext(b.toList, retFunc _, _)
-          case b: Option[_]         => runSourceContext(b.toList, retFunc _, _)
-          case fut: LAFuture[_] =>
-            runSourceContext(fut.get(5.seconds).openOr(Empty), retFunc _, _)
-          case n: java.lang.Iterable[_] =>
-            runSourceContext(n.iterator(), retFunc _, _)
-          case n: java.util.Iterator[_] => runSourceContext(n, retFunc _, _)
-          case en: java.util.Enumeration[_] =>
-            runSourceContext(en, retFunc _, _)
-          case se: scala.collection.Iterable[_] =>
-            runSourceContext(se, retFunc _, _)
-          case se: scala.collection.Iterator[_] =>
-            runSourceContext(se, retFunc _, _)
-          case x => xformRule #> x.toString
-        }
+      val func: NodeSeq => NodeSeq = value match {
+        case n: scala.xml.Node    => xformRule #> n
+        case n: String            => xformRule #> n
+        case b: Bindable          => xformRule #> b
+        case n: java.lang.Number  => xformRule #> n
+        case d: Double            => xformRule #> d
+        case jc: ToJsCmd          => xformRule #> jc
+        case i: Int               => xformRule #> i
+        case sb: StringPromotable => xformRule #> sb
+        case sym: Symbol          => xformRule #> sym
+        case lng: Long            => xformRule #> lng
+        case b: Boolean           => xformRule #> b
+        case b: Box[_]            => runSourceContext(b.toList, retFunc _, _)
+        case b: Option[_]         => runSourceContext(b.toList, retFunc _, _)
+        case fut: LAFuture[_] =>
+          runSourceContext(fut.get(5.seconds).openOr(Empty), retFunc _, _)
+        case n: java.lang.Iterable[_] =>
+          runSourceContext(n.iterator(), retFunc _, _)
+        case n: java.util.Iterator[_]     => runSourceContext(n, retFunc _, _)
+        case en: java.util.Enumeration[_] => runSourceContext(en, retFunc _, _)
+        case se: scala.collection.Iterable[_] =>
+          runSourceContext(se, retFunc _, _)
+        case se: scala.collection.Iterator[_] =>
+          runSourceContext(se, retFunc _, _)
+        case x => xformRule #> x.toString
+      }
 
       func(ns)
     }
@@ -1598,8 +1592,8 @@ class LiftSession(
     val currentMap = snippetMap.is
     val curLoc = S.location
 
-    val requestVarFunc: Function1[Function0[Any], Any] =
-      RequestVarHandler.generateSnapshotRestorer()
+    val requestVarFunc: Function1[Function0[Any], Any] = RequestVarHandler
+      .generateSnapshotRestorer()
     new S.ProxyFuncHolder(f) {
       override def apply(in: List[String]): Any =
         requestVarFunc(() =>
@@ -1863,18 +1857,19 @@ class LiftSession(
                             .invokeMethod(inst.getClass, inst, method)) match {
                           case CheckNodeSeq(md) => md
                           case it =>
-                            val intersection = if (Props.devMode) {
-                              val methodNames = inst.getClass
-                                .getMethods()
-                                .map(_.getName)
-                                .toList
-                                .distinct
-                              val methodAlts = List(
-                                method,
-                                Helpers.camelify(method),
-                                Helpers.camelifyMethod(method))
-                              methodNames intersect methodAlts
-                            } else Nil
+                            val intersection =
+                              if (Props.devMode) {
+                                val methodNames = inst.getClass
+                                  .getMethods()
+                                  .map(_.getName)
+                                  .toList
+                                  .distinct
+                                val methodAlts = List(
+                                  method,
+                                  Helpers.camelify(method),
+                                  Helpers.camelifyMethod(method))
+                                methodNames intersect methodAlts
+                              } else Nil
 
                             reportSnippetError(
                               page,
@@ -2587,8 +2582,12 @@ class LiftSession(
     val castClass = cometManifest.runtimeClass.asInstanceOf[Class[T]]
     val typeName = castClass.getSimpleName
 
-    val creationInfo =
-      CometCreationInfo(typeName, cometName, cometHtml, cometAttributes, this)
+    val creationInfo = CometCreationInfo(
+      typeName,
+      cometName,
+      cometHtml,
+      cometAttributes,
+      this)
 
     findOrBuildComet(
       creationInfo,
@@ -2608,8 +2607,12 @@ class LiftSession(
       cometHtml: NodeSeq = NodeSeq.Empty,
       cometAttributes: Map[String, String] = Map.empty
   ): Box[LiftCometActor] = {
-    val creationInfo =
-      CometCreationInfo(cometType, cometName, cometHtml, cometAttributes, this)
+    val creationInfo = CometCreationInfo(
+      cometType,
+      cometName,
+      cometHtml,
+      cometAttributes,
+      this)
 
     findOrBuildComet(
       creationInfo,
@@ -2660,10 +2663,9 @@ class LiftSession(
       newCometFn: (CometCreationInfo) => Box[T])(
       creationInfo: CometCreationInfo): Box[T] = {
     newCometFn(creationInfo).map { comet =>
-      val initialRequest =
-        S.request
-          .filter(_ => comet.sendInitialReq_?)
-          .map(_.snapshot)
+      val initialRequest = S.request
+        .filter(_ => comet.sendInitialReq_?)
+        .map(_.snapshot)
       comet ! PerformSetupComet2(initialRequest)
       comet.setCometActorLocale(S.locale)
 
@@ -2686,11 +2688,10 @@ class LiftSession(
   private def buildCometByCreationInfo(
       creationInfo: CometCreationInfo): Box[LiftCometActor] = {
     LiftRules.cometCreationFactory.vend.apply(creationInfo) or {
-      val cometType =
-        findType[LiftCometActor](
-          creationInfo.cometType,
-          LiftRules.buildPackage("comet") ::: ("lift.app.comet" :: Nil)
-        )
+      val cometType = findType[LiftCometActor](
+        creationInfo.cometType,
+        LiftRules.buildPackage("comet") ::: ("lift.app.comet" :: Nil)
+      )
 
       cometType.flatMap { cometClass =>
         buildCometByClass(cometClass)(creationInfo)
@@ -3173,12 +3174,10 @@ sealed trait RoundTripInfo {
   */
 object RoundTripInfo {
   implicit def streamBuilder[T](in: (String, T => Stream[Any]))(
-      implicit m: Manifest[T]): RoundTripInfo =
-    StreamRoundTrip(in._1, in._2)(m)
+      implicit m: Manifest[T]): RoundTripInfo = StreamRoundTrip(in._1, in._2)(m)
 
   implicit def simpleBuilder[T](in: (String, T => Any))(
-      implicit m: Manifest[T]): RoundTripInfo =
-    SimpleRoundTrip(in._1, in._2)(m)
+      implicit m: Manifest[T]): RoundTripInfo = SimpleRoundTrip(in._1, in._2)(m)
 
   implicit def handledBuilder[T](
       in: (String, (T, RoundTripHandlerFunc) => Unit))(

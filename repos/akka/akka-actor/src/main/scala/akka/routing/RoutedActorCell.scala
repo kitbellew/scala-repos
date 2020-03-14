@@ -223,8 +223,8 @@ private[akka] class RouterPoolActor(
     ({
       case AdjustPoolSize(change: Int) ⇒
         if (change > 0) {
-          val newRoutees =
-            Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
+          val newRoutees = Vector.fill(change)(
+            pool.newRoutee(cell.routeeProps, context))
           cell.addRoutees(newRoutees)
         } else if (change < 0) {
           val currentRoutees = cell.router.routees

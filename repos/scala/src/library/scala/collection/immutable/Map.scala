@@ -130,15 +130,13 @@ object Map extends ImmutableMapFactory[Map] {
       if (key == key1) value1
       else throw new NoSuchElementException("key not found: " + key)
     override def contains(key: A) = key == key1
-    def get(key: A): Option[B] =
-      if (key == key1) Some(value1) else None
+    def get(key: A): Option[B] = if (key == key1) Some(value1) else None
     def iterator = Iterator((key1, value1))
     override def updated[B1 >: B](key: A, value: B1): Map[A, B1] =
       if (key == key1) new Map1(key1, value)
       else new Map2(key1, value1, key, value)
     def +[B1 >: B](kv: (A, B1)): Map[A, B1] = updated(kv._1, kv._2)
-    def -(key: A): Map[A, B] =
-      if (key == key1) Map.empty else this
+    def -(key: A): Map[A, B] = if (key == key1) Map.empty else this
     override def foreach[U](f: ((A, B)) => U): Unit = { f((key1, value1)) }
   }
 

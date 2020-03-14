@@ -122,8 +122,9 @@ object Pregel extends Logging {
       s"Maximum of iterations must be greater than 0," +
         s" but got ${maxIterations}")
 
-    var g =
-      graph.mapVertices((vid, vdata) => vprog(vid, vdata, initialMsg)).cache()
+    var g = graph
+      .mapVertices((vid, vdata) => vprog(vid, vdata, initialMsg))
+      .cache()
     // compute the messages
     var messages = GraphXUtils.mapReduceTriplets(g, sendMsg, mergeMsg)
     var activeMessages = messages.count()

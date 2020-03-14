@@ -184,8 +184,7 @@ class HeapBalancer[Req, Rep](
 
   private[this] class Wrapped(n: Node, underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {
-    override def close(deadline: Time) =
-      super.close(deadline) ensure { put(n) }
+    override def close(deadline: Time) = super.close(deadline) ensure { put(n) }
   }
 
   private[this] def updateGroup(newSnap: Set[ServiceFactory[Req, Rep]]): Unit =

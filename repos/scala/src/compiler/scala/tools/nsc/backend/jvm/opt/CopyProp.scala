@@ -118,8 +118,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       while (it.hasNext) it.next() match {
         case vi: VarInsnNode if isStore(vi) && hasNoCons(vi, vi.`var`) =>
           val canElim = vi.getOpcode != ASTORE || {
-            val currentFieldValueProds =
-              prodCons.initialProducersForValueAt(vi, vi.`var`)
+            val currentFieldValueProds = prodCons
+              .initialProducersForValueAt(vi, vi.`var`)
             currentFieldValueProds.size == 1 && (currentFieldValueProds.head match {
               case ParameterProducer(0) =>
                 !isStaticMethod(
@@ -132,8 +132,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           }
           if (canElim) storesToDrop += vi
           else {
-            val prods =
-              prodCons.producersForValueAt(vi, prodCons.frameAt(vi).stackTop)
+            val prods = prodCons
+              .producersForValueAt(vi, prodCons.frameAt(vi).stackTop)
             val isStoreNull =
               prods.size == 1 && prods.head.getOpcode == ACONST_NULL
             toNullOut += ((vi, isStoreNull))
@@ -194,8 +194,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
       // instruction (and its inputs) will be removed, otherwise a POP is inserted after
       val queue = mutable.Queue.empty[ProducedValue]
       // Contains constructor invocations for values that can be eliminated if unused.
-      val sideEffectFreeConstructorCalls =
-        mutable.ArrayBuffer.empty[MethodInsnNode]
+      val sideEffectFreeConstructorCalls = mutable.ArrayBuffer
+        .empty[MethodInsnNode]
 
       // instructions to remove (we don't change the bytecode while analyzing it. this allows
       // running the ProdConsAnalyzer only once.)
@@ -266,8 +266,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         * enqueue the producers.
         */
       def handleInitialPop(pop: AbstractInsnNode): Unit = {
-        val prods =
-          producersIfSingleConsumer(pop, prodCons.frameAt(pop).stackTop)
+        val prods = producersIfSingleConsumer(
+          pop,
+          prodCons.frameAt(pop).stackTop)
         if (prods.nonEmpty) {
           toRemove += pop
           val size = if (pop.getOpcode == POP2) 2 else 1
@@ -308,8 +309,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         val pops = mutable.ListBuffer.empty[InsnNode]
         @tailrec def handle(stackOffset: Int): Unit = {
           if (stackOffset >= 0) {
-            val prods =
-              producersIfSingleConsumer(prod, frame.stackTop - stackOffset)
+            val prods = producersIfSingleConsumer(
+              prod,
+              frame.stackTop - stackOffset)
             val nSize = frame.peekStack(stackOffset).getSize
             if (prods.isEmpty) pops append getPop(nSize)
             else queue ++= prods.map(ProducedValue(_, nSize))

@@ -136,8 +136,9 @@ abstract class CreateTypeDefinitionQuickFix(
           case f: PsiFile                            => "New file"
           case td: ScTypeDefinition if td.isTopLevel => "Top level in this file"
           case _ childOf (tb: ScTemplateBody) =>
-            val containingClass =
-              PsiTreeUtil.getParentOfType(tb, classOf[ScTemplateDefinition])
+            val containingClass = PsiTreeUtil.getParentOfType(
+              tb,
+              classOf[ScTemplateDefinition])
             s"Inner in ${containingClass.name}"
           case _ => "Local scope"
         }
@@ -240,8 +241,8 @@ abstract class CreateTypeDefinitionQuickFix(
             args.indices.map(i => s"T${i + 1}").mkString("[", ", ", "]")
         }
         val nameId = clazz.nameId
-        val clause =
-          ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
+        val clause = ScalaPsiElementFactory
+          .createTypeParameterClauseFromTextWithContext(
             paramsText,
             clazz,
             nameId)

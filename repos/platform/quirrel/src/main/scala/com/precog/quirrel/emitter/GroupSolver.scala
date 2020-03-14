@@ -89,8 +89,9 @@ trait GroupSolver
             }
           } reduceOption { _ ++ _ } getOrElse Map()
 
-          val (forestSpecM, forestErrors) =
-            solveForest(expr, findGroups(expr, dispatches))
+          val (forestSpecM, forestErrors) = solveForest(
+            expr,
+            findGroups(expr, dispatches))
 
           val filtered = constraints filter {
             case TicVar(_, _) => false
@@ -123,11 +124,12 @@ trait GroupSolver
             loopSpec(dispatches)(spec)
           } getOrElse Set()
 
-          val forestErrors2 = if (finalErrors.isEmpty) {
-            forestErrors filter {
-              case Error(tpe) => tpe == ConstraintsWithinInnerSolve
-            }
-          } else { forestErrors }
+          val forestErrors2 =
+            if (finalErrors.isEmpty) {
+              forestErrors filter {
+                case Error(tpe) => tpe == ConstraintsWithinInnerSolve
+              }
+            } else { forestErrors }
 
           childErrors ++ specErrors ++ forestErrors2 ++ constrErrors ++ finalErrors
         }
@@ -195,12 +197,18 @@ trait GroupSolver
           // 1. make coffee
           // 2. attempt to solve where.right
 
-          val (groupM, errors) =
-            solveGroupCondition(solve, where.right, false, sigma, dtrace)
+          val (groupM, errors) = solveGroupCondition(
+            solve,
+            where.right,
+            false,
+            sigma,
+            dtrace)
 
           groupM map { group =>
-            val commonalityM =
-              findCommonality(solve, group.exprs + where.left, sigma)
+            val commonalityM = findCommonality(
+              solve,
+              group.exprs + where.left,
+              sigma)
 
             if (commonalityM.isDefined)
               (
@@ -237,8 +245,12 @@ trait GroupSolver
       constraint: Expr,
       sigma: Sigma,
       dtrace: List[Dispatch]): (Option[BucketSpec], Set[Error]) = {
-    val (result, errors) =
-      solveGroupCondition(b, constraint, true, sigma, dtrace)
+    val (result, errors) = solveGroupCondition(
+      b,
+      constraint,
+      true,
+      sigma,
+      dtrace)
 
     val orderedSigma = orderTopologically(sigma)
     val commonality = result map listSolutionExprs flatMap {
@@ -248,14 +260,15 @@ trait GroupSolver
     val back =
       for (r <- result; c <- commonality) yield Group(None, c, r, List())
 
-    val contribErrors = if (!back.isDefined) {
-      val vars = listTicVars(Some(b), constraint, sigma) map { _._2 }
+    val contribErrors =
+      if (!back.isDefined) {
+        val vars = listTicVars(Some(b), constraint, sigma) map { _._2 }
 
-      if (vars.isEmpty) Set(Error(constraint, SolveLackingFreeVariables))
-      else if (vars.size == 1)
-        Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
-      else Set(Error(constraint, InseparablePairedTicVariables(vars)))
-    } else { Set() }
+        if (vars.isEmpty) Set(Error(constraint, SolveLackingFreeVariables))
+        else if (vars.size == 1)
+          Set(Error(constraint, UnableToSolveCriticalCondition(vars.head)))
+        else Set(Error(constraint, InseparablePairedTicVariables(vars)))
+      } else { Set() }
 
     (back, errors ++ contribErrors)
   }
@@ -289,10 +302,18 @@ trait GroupSolver
       dtrace: List[Dispatch]): (Option[BucketSpec], Set[Error]) =
     expr match {
       case And(_, left, right) => {
-        val (leftSpec, leftErrors) =
-          solveGroupCondition(b, left, free, sigma, dtrace)
-        val (rightSpec, rightErrors) =
-          solveGroupCondition(b, right, free, sigma, dtrace)
+        val (leftSpec, leftErrors) = solveGroupCondition(
+          b,
+          left,
+          free,
+          sigma,
+          dtrace)
+        val (rightSpec, rightErrors) = solveGroupCondition(
+          b,
+          right,
+          free,
+          sigma,
+          dtrace)
 
         val andSpec =
           for (ls <- leftSpec; rs <- rightSpec)
@@ -302,10 +323,18 @@ trait GroupSolver
       }
 
       case Or(_, left, right) => {
-        val (leftSpec, leftErrors) =
-          solveGroupCondition(b, left, free, sigma, dtrace)
-        val (rightSpec, rightErrors) =
-          solveGroupCondition(b, right, free, sigma, dtrace)
+        val (leftSpec, leftErrors) = solveGroupCondition(
+          b,
+          left,
+          free,
+          sigma,
+          dtrace)
+        val (rightSpec, rightErrors) = solveGroupCondition(
+          b,
+          right,
+          free,
+          sigma,
+          dtrace)
 
         val andSpec =
           for (ls <- leftSpec; rs <- rightSpec) yield UnionBucketSpec(ls, rs)

@@ -80,14 +80,13 @@ class ScalaChangeSignatureDialog(
 
   override def createRefactoringProcessor(): BaseRefactoringProcessor = {
     val parameters = splittedItems.map(_.map(_.parameter))
-    val changeInfo =
-      new ScalaChangeInfo(
-        getVisibility,
-        method.fun,
-        getMethodName,
-        returnType,
-        parameters,
-        isAddDefaultArgs)
+    val changeInfo = new ScalaChangeInfo(
+      getVisibility,
+      method.fun,
+      getMethodName,
+      returnType,
+      parameters,
+      isAddDefaultArgs)
 
     new ScalaChangeSignatureProcessor(project, changeInfo)
   }
@@ -497,13 +496,12 @@ class ScalaChangeSignatureDialog(
       ListSelectionModel.SINGLE_SELECTION)
     table.getSelectionModel.setSelectionInterval(0, 0)
     table.setSurrendersFocusOnKeystroke(true)
-    val buttonsPanel: JPanel =
-      ToolbarDecorator
-        .createDecorator(table)
-        .setMoveUpAction(upAction)
-        .setMoveDownAction(downAction)
-        .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
-        .createPanel
+    val buttonsPanel: JPanel = ToolbarDecorator
+      .createDecorator(table)
+      .setMoveUpAction(upAction)
+      .setMoveDownAction(downAction)
+      .addExtraActions(createAddClauseButton(), createRemoveClauseButton())
+      .createPanel
     myParametersTableModel.addTableModelListener(mySignatureUpdater)
     buttonsPanel
   }

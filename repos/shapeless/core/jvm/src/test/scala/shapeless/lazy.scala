@@ -34,8 +34,7 @@ class LazyStrictTestsJVM {
 
     def instance[T](repr0: Int => String): TC[T] =
       new TC[T] {
-        def repr(depth: Int) =
-          if (depth < 0) "…" else repr0(depth)
+        def repr(depth: Int) = if (depth < 0) "…" else repr0(depth)
       }
   }
 
@@ -51,8 +50,7 @@ class LazyStrictTestsJVM {
     implicit def listTC[T](implicit underlying: A[TC[T]]): TC[List[T]] =
       TC.instance(depth => s"List(${underlying.value.repr(depth - 1)})")
 
-    implicit def hnilTC: TC[HNil] =
-      TC.instance(_ => "HNil")
+    implicit def hnilTC: TC[HNil] = TC.instance(_ => "HNil")
 
     implicit def hconsTC[H, T <: HList](implicit
         headTC: B[TC[H]],

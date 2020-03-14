@@ -100,8 +100,9 @@ final class QuantileDiscretizer(override val uid: String)
     val samples = QuantileDiscretizer
       .getSampledInput(dataset.select($(inputCol)), $(numBuckets), $(seed))
       .map { case Row(feature: Double) => feature }
-    val candidates =
-      QuantileDiscretizer.findSplitCandidates(samples, $(numBuckets) - 1)
+    val candidates = QuantileDiscretizer.findSplitCandidates(
+      samples,
+      $(numBuckets) - 1)
     val splits = QuantileDiscretizer.getSplits(candidates)
     val bucketizer = new Bucketizer(uid).setSplits(splits)
     copyValues(bucketizer.setParent(this))
@@ -187,16 +188,17 @@ object QuantileDiscretizer
     * needed, and adding a default split value of 0 if no good candidates are found.
     */
   private[feature] def getSplits(candidates: Array[Double]): Array[Double] = {
-    val effectiveValues = if (candidates.nonEmpty) {
-      if (candidates.head == Double.NegativeInfinity
-          && candidates.last == Double.PositiveInfinity) {
-        candidates.drop(1).dropRight(1)
-      } else if (candidates.head == Double.NegativeInfinity) {
-        candidates.drop(1)
-      } else if (candidates.last == Double.PositiveInfinity) {
-        candidates.dropRight(1)
+    val effectiveValues =
+      if (candidates.nonEmpty) {
+        if (candidates.head == Double.NegativeInfinity
+            && candidates.last == Double.PositiveInfinity) {
+          candidates.drop(1).dropRight(1)
+        } else if (candidates.head == Double.NegativeInfinity) {
+          candidates.drop(1)
+        } else if (candidates.last == Double.PositiveInfinity) {
+          candidates.dropRight(1)
+        } else { candidates }
       } else { candidates }
-    } else { candidates }
 
     if (effectiveValues.isEmpty) {
       Array(Double.NegativeInfinity, 0, Double.PositiveInfinity)

@@ -214,8 +214,10 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def typeParamsDepth(typeParams: Array[TypeParameter]): Int = {
     typeParams.map {
       case typeParam =>
-        val boundsDepth =
-          typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
+        val boundsDepth = typeParam
+          .lowerType()
+          .typeDepth
+          .max(typeParam.upperType().typeDepth)
         if (typeParam.typeParams.nonEmpty) {
           (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
         } else boundsDepth
@@ -313,8 +315,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case None         => None
         }
       case std @ StdType(_, _) =>
-        val asClass =
-          std.asClass(project.getOrElse(DecompilerUtil.obtainProject))
+        val asClass = std.asClass(
+          project.getOrElse(DecompilerUtil.obtainProject))
         if (asClass.isEmpty) return None
         Some((asClass.get, ScSubstitutor.empty))
       case _ => None

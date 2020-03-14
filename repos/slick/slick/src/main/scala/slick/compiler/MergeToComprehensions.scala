@@ -37,14 +37,13 @@ class MergeToComprehensions extends Phase {
 
   def convert(tree: Node): Node = {
     // Find all references into tables so we can convert TableNodes to Comprehensions
-    val tableFields =
-      tree
-        .collect {
-          case Select(_ :@ NominalType(t: TableIdentitySymbol, _), f) => (t, f)
-        }
-        .toSeq
-        .groupBy(_._1)
-        .mapValues(_.map(_._2).distinct.toVector)
+    val tableFields = tree
+      .collect {
+        case Select(_ :@ NominalType(t: TableIdentitySymbol, _), f) => (t, f)
+      }
+      .toSeq
+      .groupBy(_._1)
+      .mapValues(_.map(_._2).distinct.toVector)
     logger.debug("Table fields: " + tableFields)
 
     /** Merge Take, Drop, Bind and CollectionCast into an existing Comprehension */
@@ -130,8 +129,8 @@ class MergeToComprehensions extends Phase {
             "Merging Distinct into Comprehension:",
             Ellipsis(n, List(0)))
           val o2 = applyReplacements(o1, replacements1a, c1a)
-          val c2 = c1a.copy(distinct =
-            Some(ProductNode(ConstArray(o2)).flatten.infer())) :@ c1a.nodeType
+          val c2 = c1a.copy(distinct = Some(
+            ProductNode(ConstArray(o2)).flatten.infer())) :@ c1a.nodeType
           logger.debug("Merged Distinct into Comprehension:", c2)
           (c2, replacements1a)
 
@@ -153,12 +152,11 @@ class MergeToComprehensions extends Phase {
             val b2 = applyReplacements(b1, replacements1, c1)
             // Check whether groupBy keys containing bind variables are returned for further use
             // and push the current Comprehension into a subquery if this is the case.
-            val leakedPaths =
-              str1.collect(
-                {
-                  case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 => rest
-                },
-                stopOnMatch = true)
+            val leakedPaths = str1.collect(
+              {
+                case FwdPath(s :: ElementSymbol(1) :: rest) if s == s1 => rest
+              },
+              stopOnMatch = true)
             val isParam = leakedPaths.nonEmpty && ({
               logger.debug(
                 "Leaked paths to GroupBy keys: " + leakedPaths
@@ -264,10 +262,10 @@ class MergeToComprehensions extends Phase {
           Some((p, mappings))
         case j @ Join(ls, rs, l1, r1, jt, on1) =>
           logger.debug(s"Creating source from Join $ls/$rs:", j)
-          val (l2 @ (_ :@ CollectionType(_, ltpe)), lmap) =
-            dealias(l1)(createSourceOrTopLevel)
-          val (r2 @ (_ :@ CollectionType(_, rtpe)), rmap) =
-            dealias(r1)(createSourceOrTopLevel)
+          val (l2 @ (_ :@ CollectionType(_, ltpe)), lmap) = dealias(l1)(
+            createSourceOrTopLevel)
+          val (r2 @ (_ :@ CollectionType(_, rtpe)), rmap) = dealias(r1)(
+            createSourceOrTopLevel)
           logger.debug(s"Converted left side of Join $ls/$rs:", l2)
           logger.debug(s"Converted right side of Join $ls/$rs:", r2)
           // Detect and remove empty join sides
@@ -445,11 +443,11 @@ class MergeToComprehensions extends Phase {
         val p2 = applyReplacements(p1, replacements1a, c1a)
         val c2 =
           if (c1a.groupBy.isEmpty)
-            c1a.copy(where =
-              Some(c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
+            c1a.copy(where = Some(
+              c1a.where.fold(p2)(and(_, p2)).infer())) :@ c1a.nodeType
           else
-            c1a.copy(having =
-              Some(c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
+            c1a.copy(having = Some(
+              c1a.having.fold(p2)(and(p2, _)).infer())) :@ c1a.nodeType
         logger.debug("Merged Filter into Comprehension:", c2)
         (c2, replacements1a)
 

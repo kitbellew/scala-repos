@@ -101,11 +101,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         }
       })
 
-    val anotherEnv =
-      createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
+    val anotherEnv = createRpcEnv(
+      new SparkConf(),
+      "remote",
+      0,
+      clientMode = true)
     // Use anotherEnv to find out the RpcEndpointRef
-    val rpcEndpointRef =
-      anotherEnv.setupEndpointRef(env.address, "send-remotely")
+    val rpcEndpointRef = anotherEnv.setupEndpointRef(
+      env.address,
+      "send-remotely")
     try {
       rpcEndpointRef.send("hello")
       eventually(timeout(5 seconds), interval(10 millis)) {
@@ -161,11 +165,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       }
     )
 
-    val anotherEnv =
-      createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
+    val anotherEnv = createRpcEnv(
+      new SparkConf(),
+      "remote",
+      0,
+      clientMode = true)
     // Use anotherEnv to find out the RpcEndpointRef
-    val rpcEndpointRef =
-      anotherEnv.setupEndpointRef(env.address, "ask-remotely")
+    val rpcEndpointRef = anotherEnv.setupEndpointRef(
+      env.address,
+      "ask-remotely")
     try {
       val reply = rpcEndpointRef.askWithRetry[String]("hello")
       assert("hello" === reply)
@@ -466,11 +474,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       }
     )
 
-    val anotherEnv =
-      createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
+    val anotherEnv = createRpcEnv(
+      new SparkConf(),
+      "remote",
+      0,
+      clientMode = true)
     // Use anotherEnv to find out the RpcEndpointRef
-    val rpcEndpointRef =
-      anotherEnv.setupEndpointRef(env.address, "sendWithReply-remotely")
+    val rpcEndpointRef = anotherEnv.setupEndpointRef(
+      env.address,
+      "sendWithReply-remotely")
     try {
       val f = rpcEndpointRef.ask[String]("hello")
       val ack = Await.result(f, 5 seconds)
@@ -514,11 +526,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       }
     )
 
-    val anotherEnv =
-      createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
+    val anotherEnv = createRpcEnv(
+      new SparkConf(),
+      "remote",
+      0,
+      clientMode = true)
     // Use anotherEnv to find out the RpcEndpointRef
-    val rpcEndpointRef =
-      anotherEnv.setupEndpointRef(env.address, "sendWithReply-remotely-error")
+    val rpcEndpointRef = anotherEnv.setupEndpointRef(
+      env.address,
+      "sendWithReply-remotely-error")
     try {
       val f = rpcEndpointRef.ask[String]("hello")
       val e = intercept[SparkException] { Await.result(f, 5 seconds) }
@@ -567,15 +583,22 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("network events in sever RpcEnv when another RpcEnv is in server mode") {
-    val serverEnv1 =
-      createRpcEnv(new SparkConf(), "server1", 0, clientMode = false)
-    val serverEnv2 =
-      createRpcEnv(new SparkConf(), "server2", 0, clientMode = false)
+    val serverEnv1 = createRpcEnv(
+      new SparkConf(),
+      "server1",
+      0,
+      clientMode = false)
+    val serverEnv2 = createRpcEnv(
+      new SparkConf(),
+      "server2",
+      0,
+      clientMode = false)
     val (_, events) = setupNetworkEndpoint(serverEnv1, "network-events")
     val (serverRef2, _) = setupNetworkEndpoint(serverEnv2, "network-events")
     try {
-      val serverRefInServer2 =
-        serverEnv1.setupEndpointRef(serverRef2.address, serverRef2.name)
+      val serverRefInServer2 = serverEnv1.setupEndpointRef(
+        serverRef2.address,
+        serverRef2.name)
       // Send a message to set up the connection
       serverRefInServer2.send("hello")
 
@@ -599,14 +622,21 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("network events in sever RpcEnv when another RpcEnv is in client mode") {
-    val serverEnv =
-      createRpcEnv(new SparkConf(), "server", 0, clientMode = false)
+    val serverEnv = createRpcEnv(
+      new SparkConf(),
+      "server",
+      0,
+      clientMode = false)
     val (serverRef, events) = setupNetworkEndpoint(serverEnv, "network-events")
-    val clientEnv =
-      createRpcEnv(new SparkConf(), "client", 0, clientMode = true)
+    val clientEnv = createRpcEnv(
+      new SparkConf(),
+      "client",
+      0,
+      clientMode = true)
     try {
-      val serverRefInClient =
-        clientEnv.setupEndpointRef(serverRef.address, serverRef.name)
+      val serverRefInClient = clientEnv.setupEndpointRef(
+        serverRef.address,
+        serverRef.name)
       // Send a message to set up the connection
       serverRefInClient.send("hello")
 
@@ -633,15 +663,22 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
   test(
     "network events in client RpcEnv when another RpcEnv is in server mode") {
-    val clientEnv =
-      createRpcEnv(new SparkConf(), "client", 0, clientMode = true)
-    val serverEnv =
-      createRpcEnv(new SparkConf(), "server", 0, clientMode = false)
+    val clientEnv = createRpcEnv(
+      new SparkConf(),
+      "client",
+      0,
+      clientMode = true)
+    val serverEnv = createRpcEnv(
+      new SparkConf(),
+      "server",
+      0,
+      clientMode = false)
     val (_, events) = setupNetworkEndpoint(clientEnv, "network-events")
     val (serverRef, _) = setupNetworkEndpoint(serverEnv, "network-events")
     try {
-      val serverRefInClient =
-        clientEnv.setupEndpointRef(serverRef.address, serverRef.name)
+      val serverRefInClient = clientEnv.setupEndpointRef(
+        serverRef.address,
+        serverRef.name)
       // Send a message to set up the connection
       serverRefInClient.send("hello")
 
@@ -677,13 +714,15 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       }
     )
 
-    val anotherEnv =
-      createRpcEnv(new SparkConf(), "remote", 0, clientMode = true)
+    val anotherEnv = createRpcEnv(
+      new SparkConf(),
+      "remote",
+      0,
+      clientMode = true)
     // Use anotherEnv to find out the RpcEndpointRef
-    val rpcEndpointRef =
-      anotherEnv.setupEndpointRef(
-        env.address,
-        "sendWithReply-unserializable-error")
+    val rpcEndpointRef = anotherEnv.setupEndpointRef(
+      env.address,
+      "sendWithReply-unserializable-error")
     try {
       val f = rpcEndpointRef.ask[String]("hello")
       val e = intercept[Exception] { Await.result(f, 1 seconds) }
@@ -705,8 +744,11 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.authenticate.secret", "good")
 
     val localEnv = createRpcEnv(conf, "authentication-local", 0)
-    val remoteEnv =
-      createRpcEnv(conf, "authentication-remote", 0, clientMode = true)
+    val remoteEnv = createRpcEnv(
+      conf,
+      "authentication-remote",
+      0,
+      clientMode = true)
 
     try {
       @volatile var message: String = null
@@ -719,8 +761,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
             case msg: String => message = msg
           }
         })
-      val rpcEndpointRef =
-        remoteEnv.setupEndpointRef(localEnv.address, "send-authentication")
+      val rpcEndpointRef = remoteEnv.setupEndpointRef(
+        localEnv.address,
+        "send-authentication")
       rpcEndpointRef.send("hello")
       eventually(timeout(5 seconds), interval(10 millis)) {
         assert("hello" === message)
@@ -739,8 +782,11 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     conf.set("spark.authenticate.secret", "good")
 
     val localEnv = createRpcEnv(conf, "authentication-local", 0)
-    val remoteEnv =
-      createRpcEnv(conf, "authentication-remote", 0, clientMode = true)
+    val remoteEnv = createRpcEnv(
+      conf,
+      "authentication-remote",
+      0,
+      clientMode = true)
 
     try {
       localEnv.setupEndpoint(
@@ -754,8 +800,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           }
         }
       )
-      val rpcEndpointRef =
-        remoteEnv.setupEndpointRef(localEnv.address, "ask-authentication")
+      val rpcEndpointRef = remoteEnv.setupEndpointRef(
+        localEnv.address,
+        "ask-authentication")
       val reply = rpcEndpointRef.askWithRetry[String]("hello")
       assert("hello" === reply)
     } finally {
@@ -790,8 +837,10 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
     // Construct RpcTimeout with default value,
     val defaultProp = "spark.ask.default.timeout"
     val defaultDurationSeconds = 1
-    val rt3 =
-      RpcTimeout(conf, Seq(defaultProp), defaultDurationSeconds.toString + "s")
+    val rt3 = RpcTimeout(
+      conf,
+      Seq(defaultProp),
+      defaultDurationSeconds.toString + "s")
     assert(defaultDurationSeconds === rt3.duration.toSeconds)
     assert(rt3.timeoutProp.contains(defaultProp))
 
@@ -827,10 +876,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     // Ask with a delayed response and wait for response immediately that should timeout
     val fut2 = rpcEndpointRef.ask[String](NeverReply("doh"), shortTimeout)
-    val reply2 =
-      intercept[RpcTimeoutException] {
-        shortTimeout.awaitResult(fut2)
-      }.getMessage
+    val reply2 = intercept[RpcTimeoutException] {
+      shortTimeout.awaitResult(fut2)
+    }.getMessage
 
     // RpcTimeout.awaitResult should have added the property to the TimeoutException message
     assert(reply2.contains(shortTimeout.timeoutProp))
@@ -840,10 +888,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     // Allow future to complete with failure using plain Await.result, this will return
     // once the future is complete to verify addMessageIfTimeout was invoked
-    val reply3 =
-      intercept[RpcTimeoutException] {
-        Await.result(fut3, 2000 millis)
-      }.getMessage
+    val reply3 = intercept[RpcTimeoutException] {
+      Await.result(fut3, 2000 millis)
+    }.getMessage
 
     // When the future timed out, the recover callback should have used
     // RpcTimeout.addMessageIfTimeout to add the property to the TimeoutException message
@@ -851,10 +898,9 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     // Use RpcTimeout.awaitResult to process Future, since it has already failed with
     // RpcTimeoutException, the same RpcTimeoutException should be thrown
-    val reply4 =
-      intercept[RpcTimeoutException] {
-        shortTimeout.awaitResult(fut3)
-      }.getMessage
+    val reply4 = intercept[RpcTimeoutException] {
+      shortTimeout.awaitResult(fut3)
+    }.getMessage
 
     // Ensure description is not in message twice after addMessageIfTimeout and awaitResult
     assert(shortTimeout.timeoutProp.r.findAllIn(reply4).length === 1)

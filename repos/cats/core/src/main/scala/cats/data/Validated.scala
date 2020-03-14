@@ -160,8 +160,7 @@ sealed abstract class Validated[+E, +A] extends Product with Serializable {
     * apply the given function to the value with the given B when
     * valid, otherwise return the given B
     */
-  def foldLeft[B](b: B)(f: (B, A) => B): B =
-    fold(_ => b, f(b, _))
+  def foldLeft[B](b: B)(f: (B, A) => B): B = fold(_ => b, f(b, _))
 
   /**
     * Lazily-apply the given function to the value with the given B
@@ -262,30 +261,25 @@ private[data] sealed abstract class ValidatedInstances
       : Traverse[Validated[E, ?]] with ApplicativeError[Validated[E, ?], E] =
     new Traverse[Validated[E, ?]] with ApplicativeError[Validated[E, ?], E] {
       def traverse[F[_]: Applicative, A, B](fa: Validated[E, A])(
-          f: A => F[B]): F[Validated[E, B]] =
-        fa.traverse(f)
+          f: A => F[B]): F[Validated[E, B]] = fa.traverse(f)
 
       def foldLeft[A, B](fa: Validated[E, A], b: B)(f: (B, A) => B): B =
         fa.foldLeft(b)(f)
 
       def foldRight[A, B](fa: Validated[E, A], lb: Eval[B])(
-          f: (A, Eval[B]) => Eval[B]): Eval[B] =
-        fa.foldRight(lb)(f)
+          f: (A, Eval[B]) => Eval[B]): Eval[B] = fa.foldRight(lb)(f)
 
-      def pure[A](a: A): Validated[E, A] =
-        Validated.valid(a)
+      def pure[A](a: A): Validated[E, A] = Validated.valid(a)
 
       override def map[A, B](fa: Validated[E, A])(f: A => B): Validated[E, B] =
         fa.map(f)
 
       def ap[A, B](f: Validated[E, A => B])(
-          fa: Validated[E, A]): Validated[E, B] =
-        fa.ap(f)(E)
+          fa: Validated[E, A]): Validated[E, B] = fa.ap(f)(E)
 
       def product[A, B](
           fa: Validated[E, A],
-          fb: Validated[E, B]): Validated[E, (A, B)] =
-        fa.product(fb)(E)
+          fb: Validated[E, B]): Validated[E, (A, B)] = fa.product(fb)(E)
 
       def handleErrorWith[A](fa: Validated[E, A])(
           f: E => Validated[E, A]): Validated[E, A] =

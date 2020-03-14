@@ -102,9 +102,8 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
   private def getSourceMapper(fileName: String, untilLine: Int) = {
     val linked = providers(fileName.stripSuffix(PseudoFileSuffix))
     val mapper = new Printers.ReverseSourceMapPrinter(untilLine)
-    val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
-        .genClassDef(linked)
+    val desugared = new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
+      .genClassDef(linked)
     mapper.reverseSourceMap(desugared)
     mapper
   }
@@ -151,8 +150,9 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
       val base = ScalaJS.get(name, ScalaJS)
       // Depending on the Semantics, some fields could be entirely absent
       if (base != Scriptable.NOT_FOUND) {
-        val lazified =
-          makeLazyScalaJSScope(base.asInstanceOf[Scriptable], isStatics)
+        val lazified = makeLazyScalaJSScope(
+          base.asInstanceOf[Scriptable],
+          isStatics)
         ScalaJS.put(name, ScalaJS, lazified)
       }
     }
@@ -163,9 +163,8 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
       encodedName,
       throw new RhinoJSEnv.ClassNotFoundException(encodedName))
 
-    val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
-        .genClassDef(linkedClass)
+    val desugared = new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
+      .genClassDef(linkedClass)
 
     // Write tree
     val codeWriter = new java.io.StringWriter

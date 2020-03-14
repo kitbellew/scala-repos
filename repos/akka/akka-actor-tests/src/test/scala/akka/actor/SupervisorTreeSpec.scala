@@ -22,19 +22,21 @@ class SupervisorTreeSpec
       EventFilter[ActorKilledException](occurrences = 1) intercept {
         within(5 seconds) {
           val p = Props(new Actor {
-            override val supervisorStrategy =
-              OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 1 second)(
-                List(classOf[Exception]))
+            override val supervisorStrategy = OneForOneStrategy(
+              maxNrOfRetries = 3,
+              withinTimeRange = 1 second)(List(classOf[Exception]))
             def receive = { case p: Props ⇒ sender() ! context.actorOf(p) }
             override def preRestart(cause: Throwable, msg: Option[Any]) {
               testActor ! self.path
             }
           })
           val headActor = system.actorOf(p)
-          val middleActor =
-            Await.result((headActor ? p).mapTo[ActorRef], timeout.duration)
-          val lastActor =
-            Await.result((middleActor ? p).mapTo[ActorRef], timeout.duration)
+          val middleActor = Await.result(
+            (headActor ? p).mapTo[ActorRef],
+            timeout.duration)
+          val lastActor = Await.result(
+            (middleActor ? p).mapTo[ActorRef],
+            timeout.duration)
 
           middleActor ! Kill
           expectMsg(middleActor.path)

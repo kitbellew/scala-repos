@@ -41,8 +41,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   //#
 
   //# pathPrefixTest-, rawPathPrefix-, rawPathPrefixTest-, pathSuffix-, pathSuffixTest-
-  val completeWithUnmatchedPath =
-    extractUnmatchedPath { p => complete(p.toString) }
+  val completeWithUnmatchedPath = extractUnmatchedPath { p =>
+    complete(p.toString)
+  }
 
   //#
 
@@ -72,11 +73,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "pathEnd-" in {
-    val route =
-      pathPrefix("foo") {
-        pathEnd { complete("/foo") } ~
-          path("bar") { complete("/foo/bar") }
-      }
+    val route = pathPrefix("foo") {
+      pathEnd { complete("/foo") } ~
+        path("bar") { complete("/foo/bar") }
+    }
 
     // tests:
     Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
@@ -89,11 +89,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "pathEndOrSingleSlash-" in {
-    val route =
-      pathPrefix("foo") {
-        pathEndOrSingleSlash { complete("/foo") } ~
-          path("bar") { complete("/foo/bar") }
-      }
+    val route = pathPrefix("foo") {
+      pathEndOrSingleSlash { complete("/foo") } ~
+        path("bar") { complete("/foo/bar") }
+    }
 
     // tests:
     Get("/foo") ~> route ~> check { responseAs[String] shouldEqual "/foo" }
@@ -106,13 +105,12 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "pathPrefix-" in {
-    val route =
-      pathPrefix("ball") {
-        pathEnd { complete("/ball") } ~
-          path(IntNumber) { int =>
-            complete(if (int % 2 == 0) "even ball" else "odd ball")
-          }
-      }
+    val route = pathPrefix("ball") {
+      pathEnd { complete("/ball") } ~
+        path(IntNumber) { int =>
+          complete(if (int % 2 == 0) "even ball" else "odd ball")
+        }
+    }
 
     // tests:
     Get("/") ~> route ~> check { handled shouldEqual false }
@@ -125,11 +123,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "pathPrefixTest-" in {
-    val route =
-      pathPrefixTest("foo" | "bar") {
-        pathPrefix("foo") { completeWithUnmatchedPath } ~
-          pathPrefix("bar") { completeWithUnmatchedPath }
-      }
+    val route = pathPrefixTest("foo" | "bar") {
+      pathPrefix("foo") { completeWithUnmatchedPath } ~
+        pathPrefix("bar") { completeWithUnmatchedPath }
+    }
 
     // tests:
     Get("/foo/doo") ~> route ~> check { responseAs[String] shouldEqual "/doo" }
@@ -160,11 +157,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "pathSuffix-" in {
-    val route =
-      pathPrefix("start") {
-        pathSuffix("end") { completeWithUnmatchedPath } ~
-          pathSuffix("foo" / "bar" ~ "baz") { completeWithUnmatchedPath }
-      }
+    val route = pathPrefix("start") {
+      pathSuffix("end") { completeWithUnmatchedPath } ~
+        pathSuffix("foo" / "bar" ~ "baz") { completeWithUnmatchedPath }
+    }
 
     // tests:
     Get("/start/middle/end") ~> route ~> check {
@@ -187,11 +183,10 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "rawPathPrefix-" in {
-    val route =
-      pathPrefix("foo") {
-        rawPathPrefix("bar") { completeWithUnmatchedPath } ~
-          rawPathPrefix("doo") { completeWithUnmatchedPath }
-      }
+    val route = pathPrefix("foo") {
+      rawPathPrefix("bar") { completeWithUnmatchedPath } ~
+        rawPathPrefix("doo") { completeWithUnmatchedPath }
+    }
 
     // tests:
     Get("/foobar/baz") ~> route ~> check {
@@ -204,10 +199,9 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "rawPathPrefixTest-" in {
-    val route =
-      pathPrefix("foo") {
-        rawPathPrefixTest("bar") { completeWithUnmatchedPath }
-      }
+    val route = pathPrefix("foo") {
+      rawPathPrefixTest("bar") { completeWithUnmatchedPath }
+    }
 
     // tests:
     Get("/foobar") ~> route ~> check { responseAs[String] shouldEqual "bar" }
@@ -218,25 +212,24 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "redirectToTrailingSlashIfMissing-0" in {
     import akka.http.scaladsl.model.StatusCodes
 
-    val route =
-      redirectToTrailingSlashIfMissing(StatusCodes.MovedPermanently) {
-        path("foo"./) {
-          // We require the explicit trailing slash in the path
-          complete("OK")
+    val route = redirectToTrailingSlashIfMissing(StatusCodes.MovedPermanently) {
+      path("foo"./) {
+        // We require the explicit trailing slash in the path
+        complete("OK")
+      } ~
+        path("bad-1") {
+          // MISTAKE!
+          // Missing `/` in path, causes this path to never match,
+          // because it is inside a `redirectToTrailingSlashIfMissing`
+          ???
         } ~
-          path("bad-1") {
-            // MISTAKE!
-            // Missing `/` in path, causes this path to never match,
-            // because it is inside a `redirectToTrailingSlashIfMissing`
-            ???
-          } ~
-          path("bad-2/") {
-            // MISTAKE!
-            // / should be explicit as path element separator and not *in* the path element
-            // So it should be: "bad-1" /
-            ???
-          }
-      }
+        path("bad-2/") {
+          // MISTAKE!
+          // / should be explicit as path element separator and not *in* the path element
+          // So it should be: "bad-1" /
+          ???
+        }
+    }
 
     // tests:
     // Redirected:
@@ -267,22 +260,22 @@ class PathDirectivesExamplesSpec extends RoutingSpec {
   "redirectToNoTrailingSlashIfPresent-0" in {
     import akka.http.scaladsl.model.StatusCodes
 
-    val route =
-      redirectToNoTrailingSlashIfPresent(StatusCodes.MovedPermanently) {
-        path("foo") {
-          // We require the explicit trailing slash in the path
-          complete("OK")
-        } ~
-          path("bad"./) {
-            // MISTAKE!
-            // Since inside a `redirectToNoTrailingSlashIfPresent` directive
-            // the matched path here will never contain a trailing slash,
-            // thus this path will never match.
-            //
-            // It should be `path("bad")` instead.
-            ???
-          }
-      }
+    val route = redirectToNoTrailingSlashIfPresent(
+      StatusCodes.MovedPermanently) {
+      path("foo") {
+        // We require the explicit trailing slash in the path
+        complete("OK")
+      } ~
+        path("bad"./) {
+          // MISTAKE!
+          // Since inside a `redirectToNoTrailingSlashIfPresent` directive
+          // the matched path here will never contain a trailing slash,
+          // thus this path will never match.
+          //
+          // It should be `path("bad")` instead.
+          ???
+        }
+    }
 
     // tests:
     // Redirected:

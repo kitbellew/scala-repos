@@ -80,8 +80,8 @@ object IterateeUsage extends App {
   } yield b tuple b2
   (m2 &= stream123).run assert_=== Some(1 -> 2)
 
-  val colc =
-    takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' ')).up[IO]
+  val colc = takeWhile[IoExceptionOr[Char], List](_.fold(_ => false, _ != ' '))
+    .up[IO]
   ((colc &= r)
     .map(_ flatMap (_.toOption))
     .run unsafePerformIO ()) assert_=== List('f', 'i', 'l', 'e')

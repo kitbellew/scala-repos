@@ -126,8 +126,7 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
         |class Implementation extends SyntheticMembersInjector { val foo = new Foo }
       """.stripMargin
 
-    val fooClass =
-      """
+    val fooClass = """
         |package com.foo.bar
         |class Foo
       """.stripMargin

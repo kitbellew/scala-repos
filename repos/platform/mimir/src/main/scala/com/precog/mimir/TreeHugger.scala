@@ -35,10 +35,10 @@ object Code {}
 class Code extends UsefulStuff {
   object sym {
     val Set: ClassSymbol = RootClass.newClass("Set")
-    val PartialFunction1: ClassSymbol =
-      RootClass.newClass("PartialFunction[SValue, SValue]")
-    val PartialFunction2: ClassSymbol =
-      RootClass.newClass("PartialFunction[(SValue, SValue), SValue]")
+    val PartialFunction1: ClassSymbol = RootClass.newClass(
+      "PartialFunction[SValue, SValue]")
+    val PartialFunction2: ClassSymbol = RootClass.newClass(
+      "PartialFunction[(SValue, SValue), SValue]")
     val BIF1: ClassSymbol = RootClass.newClass("Set[BIF1]")
     val BIF2: ClassSymbol = RootClass.newClass("Set[BIF2]")
   }
@@ -57,10 +57,12 @@ class Code extends UsefulStuff {
   val methodsOne = arityOne.keySet.toList diff List("equals")
   val methodsTwo = arityTwo.keySet.toList diff List("scalb", "wait")
 
-  val m1: String =
-    methodsOne.foldLeft("")((acc, e) => acc + e + ", ").dropRight(2)
-  val m2: String =
-    methodsTwo.foldLeft("")((acc, e) => acc + e + ", ").dropRight(2)
+  val m1: String = methodsOne
+    .foldLeft("")((acc, e) => acc + e + ", ")
+    .dropRight(2)
+  val m2: String = methodsTwo
+    .foldLeft("")((acc, e) => acc + e + ", ")
+    .dropRight(2)
 
   val trait1: Tree = {
     TRAITDEF("GenLibrary") withParents ("Library") := BLOCK(

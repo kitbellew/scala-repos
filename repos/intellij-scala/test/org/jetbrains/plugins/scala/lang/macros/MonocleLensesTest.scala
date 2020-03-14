@@ -133,8 +133,7 @@ class MonocleLensesTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
 
   def testRecursion() = {
     //SCL-9420
-    val fileText =
-      """
+    val fileText = """
         |object Main {
         |import monocle.macros.Lenses
         |import A.B

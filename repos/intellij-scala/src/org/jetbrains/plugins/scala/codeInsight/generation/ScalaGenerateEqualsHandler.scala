@@ -30,10 +30,10 @@ import org.jetbrains.plugins.scala.overrideImplement.ScalaOIUtil
   * 8/19/13
   */
 class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
-  private val myEqualsFields =
-    collection.mutable.LinkedHashSet[ScNamedElement]()
-  private val myHashCodeFields =
-    collection.mutable.LinkedHashSet[ScNamedElement]()
+  private val myEqualsFields = collection.mutable
+    .LinkedHashSet[ScNamedElement]()
+  private val myHashCodeFields = collection.mutable
+    .LinkedHashSet[ScNamedElement]()
 
   def chooseOriginalMembers(
       aClass: ScClass,
@@ -120,8 +120,7 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
     val arrow = ScalaPsiUtil.functionArrow(aClass.getProject)
     val calculationText =
       s"state.map(_.hashCode()).foldLeft(0)((a, b) $arrow 31 * a + b)"
-    val methodText =
-      s"""override $declText = {
+    val methodText = s"""override $declText = {
         |  $firstStmtText
         |  $calculationText
         |}""".stripMargin.replace("\r", "")
@@ -150,8 +149,9 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   }
 
   protected def createEquals(aClass: ScClass, project: Project): ScFunction = {
-    val fieldComparisons =
-      myEqualsFields.map(_.name).map(name => s"$name == that.$name")
+    val fieldComparisons = myEqualsFields
+      .map(_.name)
+      .map(name => s"$name == that.$name")
     val declText = "def equals(other: Any): Boolean"
     val signature = new PhysicalSignature(
       ScalaPsiElementFactory.createMethodWithContext(
@@ -194,17 +194,17 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
 
       extensions.inWriteAction {
         val needHashCode = hasHashCode(aClass).isEmpty
-        val hashCodeMethod =
-          Option(if (needHashCode) createHashCode(aClass) else null)
+        val hashCodeMethod = Option(
+          if (needHashCode) createHashCode(aClass) else null)
 
         val needEquals = hasEquals(aClass).isEmpty
-        val equalsMethod =
-          Option(if (needEquals) createEquals(aClass, project) else null)
+        val equalsMethod = Option(
+          if (needEquals) createEquals(aClass, project) else null)
 
         val needCanEqual =
           needEquals && hasCanEqual(aClass).isEmpty && !aClass.hasFinalModifier
-        val canEqualMethod =
-          Option(if (needCanEqual) createCanEqual(aClass, project) else null)
+        val canEqualMethod = Option(
+          if (needCanEqual) createCanEqual(aClass, project) else null)
 
         val newMethods =
           hashCodeMethod ++: equalsMethod ++: canEqualMethod ++: Nil
@@ -268,8 +268,9 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   private def overridesFromJavaObject(
       aClass: ScTemplateDefinition,
       signature: Signature): Boolean = {
-    val methodsToOverride =
-      ScalaOIUtil.methodSignaturesToOverride(aClass, withSelfType = false)
+    val methodsToOverride = ScalaOIUtil.methodSignaturesToOverride(
+      aClass,
+      withSelfType = false)
     methodsToOverride exists {
       case sign: PhysicalSignature if sign.equiv(signature) =>
         //used only for equals and hashcode methods

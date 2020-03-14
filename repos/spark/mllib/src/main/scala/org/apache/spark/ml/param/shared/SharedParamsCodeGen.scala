@@ -195,8 +195,9 @@ private[shared] object SharedParamsCodeGen {
     val T = param.valueTypeName
     val doc = param.doc
     val defaultValue = param.defaultValueStr
-    val defaultValueDoc =
-      defaultValue.map { v => s" (default: $v)" }.getOrElse("")
+    val defaultValueDoc = defaultValue
+      .map { v => s" (default: $v)" }
+      .getOrElse("")
     val setDefault = defaultValue
       .map { v =>
         s"""
@@ -204,10 +205,12 @@ private[shared] object SharedParamsCodeGen {
          |""".stripMargin
       }
       .getOrElse("")
-    val isValid = if (param.isValid != "") { ", " + param.isValid }
-    else { "" }
-    val methodStr = if (param.finalMethods) { "final def" }
-    else { "def" }
+    val isValid =
+      if (param.isValid != "") { ", " + param.isValid }
+      else { "" }
+    val methodStr =
+      if (param.finalMethods) { "final def" }
+      else { "def" }
 
     s"""
       |/**

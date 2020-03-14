@@ -125,8 +125,8 @@ package object util {
     result
   }
 
-  implicit val InstantOrdering: Ordering[Instant] =
-    Ordering.Long.on[Instant](_.getMillis)
+  implicit val InstantOrdering: Ordering[Instant] = Ordering.Long
+    .on[Instant](_.getMillis)
 
   implicit val FutureBind: Bind[Future] = new Bind[Future] {
     def map[A, B](fut: Future[A])(f: A => B) = fut.map(f)

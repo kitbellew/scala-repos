@@ -355,8 +355,7 @@ object StreamingTest {
           codec.prepareServiceFactory(sf)
         override def prepareConnFactory(
             sf: ServiceFactory[Request, Response],
-            ps: Stack.Params) =
-          codec.prepareConnFactory(sf)
+            ps: Stack.Params) = codec.prepareConnFactory(sf)
         override def newClientTransport(ch: Channel, sr: StatsReceiver) =
           codec.newClientTransport(ch, sr)
         override def newTraceInitializer = codec.newTraceInitializer

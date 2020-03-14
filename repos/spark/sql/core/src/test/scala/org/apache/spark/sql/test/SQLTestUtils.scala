@@ -98,8 +98,8 @@ private[sql] trait SQLTestUtils
     */
   protected def withSQLConf(pairs: (String, String)*)(f: => Unit): Unit = {
     val (keys, values) = pairs.unzip
-    val currentValues =
-      keys.map(key => Try(sqlContext.conf.getConfString(key)).toOption)
+    val currentValues = keys.map(key =>
+      Try(sqlContext.conf.getConfString(key)).toOption)
     (keys, values).zipped.foreach(sqlContext.conf.setConfString)
     try f
     finally {
@@ -257,15 +257,14 @@ private[sql] object SQLTestUtils {
       else { converted }
     }
     if (prepareAnswer(expectedAnswer) != prepareAnswer(sparkAnswer)) {
-      val errorMessage =
-        s"""
+      val errorMessage = s"""
            | == Results ==
            | ${sideBySide(
-             s"== Expected Answer - ${expectedAnswer.size} ==" +:
-               prepareAnswer(expectedAnswer).map(_.toString()),
-             s"== Actual Answer - ${sparkAnswer.size} ==" +:
-               prepareAnswer(sparkAnswer).map(_.toString())
-           ).mkString("\n")}
+                              s"== Expected Answer - ${expectedAnswer.size} ==" +:
+                                prepareAnswer(expectedAnswer).map(_.toString()),
+                              s"== Actual Answer - ${sparkAnswer.size} ==" +:
+                                prepareAnswer(sparkAnswer).map(_.toString())
+                            ).mkString("\n")}
       """.stripMargin
       Some(errorMessage)
     } else { None }

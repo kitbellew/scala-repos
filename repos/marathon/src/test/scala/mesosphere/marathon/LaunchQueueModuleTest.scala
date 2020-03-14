@@ -139,8 +139,11 @@ class LaunchQueueModuleTest
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")
-    val request =
-      TaskOpFactory.Request(app, offer, Iterable.empty, additionalLaunches = 1)
+    val request = TaskOpFactory.Request(
+      app,
+      offer,
+      Iterable.empty,
+      additionalLaunches = 1)
     verify(taskOpFactory).buildTaskOp(request)
     assert(matchedTasks.offerId == offer.getId)
     assert(matchedTasks.opsWithSource == Seq.empty)
@@ -173,8 +176,11 @@ class LaunchQueueModuleTest
     val matchedTasks = Await.result(matchFuture, 3.seconds)
 
     Then("the offer gets passed to the task factory and respects the answer")
-    val request =
-      TaskOpFactory.Request(app, offer, Iterable.empty, additionalLaunches = 1)
+    val request = TaskOpFactory.Request(
+      app,
+      offer,
+      Iterable.empty,
+      additionalLaunches = 1)
     verify(taskOpFactory).buildTaskOp(request)
     assert(matchedTasks.offerId == offer.getId)
     assert(matchedTasks.launchedTaskInfos == Seq(mesosTask))
@@ -182,8 +188,9 @@ class LaunchQueueModuleTest
     verify(taskTracker).tasksByAppSync
   }
 
-  private[this] val app =
-    MarathonTestHelper.makeBasicApp().copy(id = PathId("/app"))
+  private[this] val app = MarathonTestHelper
+    .makeBasicApp()
+    .copy(id = PathId("/app"))
 
   private[this] var clock: Clock = _
   private[this] var taskBusModule: TaskBusModule = _

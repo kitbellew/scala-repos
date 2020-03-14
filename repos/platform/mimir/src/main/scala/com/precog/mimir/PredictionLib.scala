@@ -75,8 +75,11 @@ trait PredictionLibModule[M[+_]]
                   val modelsResult: Set[Map[ColumnRef, Column]] =
                     modelSet.models map {
                       case model =>
-                        val scannerPrelims =
-                          Model.makePrelims(model, cols, range, trans)
+                        val scannerPrelims = Model.makePrelims(
+                          model,
+                          cols,
+                          range,
+                          trans)
                         val resultArray = scannerPrelims.resultArray
                         val definedModel = scannerPrelims.definedModel
 
@@ -125,15 +128,19 @@ trait PredictionLibModule[M[+_]]
                               Intervals(arrConf, arrPred)
                           }
 
-                        val confidenceUpper =
-                          arraySum(resultArray, res.confidence)
-                        val confidenceLower =
-                          arraySum(resultArray, res.confidence map { -_ })
+                        val confidenceUpper = arraySum(
+                          resultArray,
+                          res.confidence)
+                        val confidenceLower = arraySum(
+                          resultArray,
+                          res.confidence map { -_ })
 
-                        val predictionUpper =
-                          arraySum(resultArray, res.prediction)
-                        val predictionLower =
-                          arraySum(resultArray, res.prediction map { -_ })
+                        val predictionUpper = arraySum(
+                          resultArray,
+                          res.prediction)
+                        val predictionLower = arraySum(
+                          resultArray,
+                          res.prediction map { -_ })
 
                         def makeCPath(field: String, index: Int) = {
                           CPath(
@@ -186,8 +193,8 @@ trait PredictionLibModule[M[+_]]
 
                 implicit val semigroup = Column.unionRightSemigroup
                 val monoidCols = implicitly[Monoid[Map[ColumnRef, Column]]]
-                val reduced: Map[ColumnRef, Column] =
-                  result.toSet.suml(monoidCols)
+                val reduced: Map[ColumnRef, Column] = result.toSet.suml(
+                  monoidCols)
 
                 ((), reduced)
               }
@@ -231,8 +238,11 @@ trait PredictionLibModule[M[+_]]
                   val modelsResult: Set[Map[ColumnRef, Column]] =
                     modelSet.models map {
                       case model =>
-                        val scannerPrelims =
-                          Model.makePrelims(model, cols, range, trans)
+                        val scannerPrelims = Model.makePrelims(
+                          model,
+                          cols,
+                          range,
+                          trans)
 
                         // the correct model name gets added to the CPath here
                         val pathFit = CPath(
@@ -253,8 +263,8 @@ trait PredictionLibModule[M[+_]]
 
                 implicit val semigroup = Column.unionRightSemigroup
                 val monoidCols = implicitly[Monoid[Map[ColumnRef, Column]]]
-                val reduced: Map[ColumnRef, Column] =
-                  result.toSet.suml(monoidCols)
+                val reduced: Map[ColumnRef, Column] = result.toSet.suml(
+                  monoidCols)
 
                 ((), reduced)
               }

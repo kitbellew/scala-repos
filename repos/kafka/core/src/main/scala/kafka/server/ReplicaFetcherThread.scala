@@ -160,8 +160,8 @@ class ReplicaFetcherThread(
               replica.logEndOffset.messageOffset,
               messageSet.sizeInBytes,
               topicAndPartition))
-      val followerHighWatermark =
-        replica.logEndOffset.messageOffset.min(partitionData.highWatermark)
+      val followerHighWatermark = replica.logEndOffset.messageOffset
+        .min(partitionData.highWatermark)
       // for the follower replica, we do not need to keep
       // its segment base offset the physical position,
       // these values will be computed upon making the leader
@@ -285,8 +285,9 @@ class ReplicaFetcherThread(
             replica.logEndOffset.messageOffset,
             sourceBroker.id,
             leaderStartOffset))
-      val offsetToFetch =
-        Math.max(leaderStartOffset, replica.logEndOffset.messageOffset)
+      val offsetToFetch = Math.max(
+        leaderStartOffset,
+        replica.logEndOffset.messageOffset)
       // Only truncate log when current leader's log start offset is greater than follower's log end offset.
       if (leaderStartOffset > replica.logEndOffset.messageOffset)
         replicaMgr.logManager
@@ -365,8 +366,8 @@ class ReplicaFetcherThread(
   protected def buildFetchRequest(
       partitionMap: Map[TopicAndPartition, PartitionFetchState])
       : FetchRequest = {
-    val requestMap =
-      mutable.Map.empty[TopicPartition, JFetchRequest.PartitionData]
+    val requestMap = mutable.Map
+      .empty[TopicPartition, JFetchRequest.PartitionData]
 
     partitionMap.foreach {
       case ((TopicAndPartition(topic, partition), partitionFetchState)) =>

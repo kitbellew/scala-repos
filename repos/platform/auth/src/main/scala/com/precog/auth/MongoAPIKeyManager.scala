@@ -69,10 +69,12 @@ object MongoAPIKeyManager extends Logging {
     val dbName = config[String]("mongo.database", "auth_v1")
     val apiKeys = config[String]("mongo.tokens", "tokens")
     val grants = config[String]("mongo.grants", "grants")
-    val deletedAPIKeys =
-      config[String]("mongo.deleted_tokens", apiKeys + "_deleted")
-    val deletedGrants =
-      config[String]("mongo.deleted_grants", grants + "_deleted")
+    val deletedAPIKeys = config[String](
+      "mongo.deleted_tokens",
+      apiKeys + "_deleted")
+    val deletedGrants = config[String](
+      "mongo.deleted_grants",
+      grants + "_deleted")
     val timeoutMillis = config[Int]("mongo.query.timeout", 10000)
     val rootKeyId = config[String]("rootKey")
 
@@ -91,10 +93,8 @@ object MongoAPIKeyManager extends Logging {
 
     val cached = config[Boolean]("cached", false)
 
-    val dbStop =
-      Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ => mongo.close
-      })
+    val dbStop = Stoppable.fromFuture(
+      database.disconnect.fallbackTo(Future(())) flatMap { _ => mongo.close })
 
     (
       if (cached) new CachingAPIKeyManager(mongoAPIKeyManager)
@@ -177,8 +177,8 @@ class MongoAPIKeyManager(
   database(ensureIndex("apiKey_index").on(".apiKey").in(settings.apiKeys))
   database(ensureIndex("grantId_index").on(".grantId").in(settings.grants))
 
-  val rootAPIKeyRecord: Future[APIKeyRecord] =
-    findAPIKey(settings.rootKeyId).map {
+  val rootAPIKeyRecord: Future[APIKeyRecord] = findAPIKey(settings.rootKeyId)
+    .map {
       _.getOrElse {
         throw new Exception(
           "Could not locate root api key as specified in the configuration")

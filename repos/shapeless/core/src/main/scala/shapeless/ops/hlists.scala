@@ -278,10 +278,9 @@ object hlist {
 
     type Aux[L <: HList, Out0 <: Coproduct] = ToCoproduct[L] { type Out = Out0 }
 
-    implicit val hnilToCoproduct: Aux[HNil, CNil] =
-      new ToCoproduct[HNil] {
-        type Out = CNil
-      }
+    implicit val hnilToCoproduct: Aux[HNil, CNil] = new ToCoproduct[HNil] {
+      type Out = CNil
+    }
 
     implicit def hlistToCoproduct[H, T <: HList](
         implicit ut: ToCoproduct[T]): Aux[H :: T, H :+: ut.Out] =
@@ -311,10 +310,9 @@ object hlist {
 
     type Aux[L <: HList, Out0 <: Coproduct] = ToSum[L] { type Out = Out0 }
 
-    implicit val hnilToSum: Aux[HNil, CNil] =
-      new ToSum[HNil] {
-        type Out = CNil
-      }
+    implicit val hnilToSum: Aux[HNil, CNil] = new ToSum[HNil] {
+      type Out = CNil
+    }
 
     implicit def hlistToSum[H, T <: HList, OutL <: HList](implicit
         fn: FilterNot.Aux[T, H, OutL],
@@ -720,8 +718,7 @@ object hlist {
 
     implicit def hnilToTraversableNothing[L <: HNil, M[_]](
         implicit cbf: CanBuildFrom[M[Nothing], Nothing, M[Nothing]])
-        : Aux[L, M, Nothing] =
-      hnilToTraversable[L, M, Nothing]
+        : Aux[L, M, Nothing] = hnilToTraversable[L, M, Nothing]
 
     implicit def hsingleToTraversable[T, M[_], Lub0](implicit
         ev: T <:< Lub0,
@@ -929,11 +926,10 @@ object hlist {
     def apply[L <: HList](implicit tupler: Tupler[L]): Aux[L, tupler.Out] =
       tupler
 
-    implicit val hnilTupler: Aux[HNil, Unit] =
-      new Tupler[HNil] {
-        type Out = Unit
-        def apply(l: HNil): Out = ()
-      }
+    implicit val hnilTupler: Aux[HNil, Unit] = new Tupler[HNil] {
+      type Out = Unit
+      def apply(l: HNil): Out = ()
+    }
   }
 
   /**

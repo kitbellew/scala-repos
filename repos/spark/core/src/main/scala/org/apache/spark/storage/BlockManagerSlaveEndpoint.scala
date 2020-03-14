@@ -36,11 +36,10 @@ private[storage] class BlockManagerSlaveEndpoint(
     extends ThreadSafeRpcEndpoint
     with Logging {
 
-  private val asyncThreadPool =
-    ThreadUtils.newDaemonCachedThreadPool(
-      "block-manager-slave-async-thread-pool")
-  private implicit val asyncExecutionContext =
-    ExecutionContext.fromExecutorService(asyncThreadPool)
+  private val asyncThreadPool = ThreadUtils.newDaemonCachedThreadPool(
+    "block-manager-slave-async-thread-pool")
+  private implicit val asyncExecutionContext = ExecutionContext
+    .fromExecutorService(asyncThreadPool)
 
   // Operations that involve removing blocks may be slow and should be done asynchronously
   override def receiveAndReply(

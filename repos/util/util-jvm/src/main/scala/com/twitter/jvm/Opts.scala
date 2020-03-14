@@ -8,8 +8,8 @@ import javax.management.{ObjectName, RuntimeMBeanException}
   * Retrieve the named JVM option.
   */
 object Opt {
-  private[this] val DiagnosticName =
-    ObjectName.getInstance("com.sun.management:type=HotSpotDiagnostic")
+  private[this] val DiagnosticName = ObjectName.getInstance(
+    "com.sun.management:type=HotSpotDiagnostic")
 
   def apply(name: String): Option[String] =
     try Some {

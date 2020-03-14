@@ -74,8 +74,7 @@ class LongTest {
   }
 
   @Test def compareTo(): Unit = {
-    def compare(x: Long, y: Long): Int =
-      new JLong(x).compareTo(new JLong(y))
+    def compare(x: Long, y: Long): Int = new JLong(x).compareTo(new JLong(y))
 
     assertTrue(compare(0L, 5L) < 0)
     assertTrue(compare(10L, 9L) > 0)

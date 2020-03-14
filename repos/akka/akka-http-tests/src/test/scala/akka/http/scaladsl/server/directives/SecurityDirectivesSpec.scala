@@ -15,10 +15,12 @@ import akka.http.scaladsl.server.AuthenticationFailedRejection.{
 import akka.testkit.EventFilter
 
 class SecurityDirectivesSpec extends RoutingSpec {
-  val dontBasicAuth =
-    authenticateBasicAsync[String]("MyRealm", _ ⇒ Future.successful(None))
-  val dontOAuth2Auth =
-    authenticateOAuth2Async[String]("MyRealm", _ ⇒ Future.successful(None))
+  val dontBasicAuth = authenticateBasicAsync[String](
+    "MyRealm",
+    _ ⇒ Future.successful(None))
+  val dontOAuth2Auth = authenticateOAuth2Async[String](
+    "MyRealm",
+    _ ⇒ Future.successful(None))
   val doBasicAuth = authenticateBasicPF(
     "MyRealm",
     { case Credentials.Provided(identifier) ⇒ identifier })

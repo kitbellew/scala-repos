@@ -642,15 +642,14 @@ object DispatcherModelSpec {
 
     import akka.util.Helpers.ConfigOps
 
-    private val instance: MessageDispatcher =
-      new Dispatcher(
-        this,
-        config.getString("id"),
-        config.getInt("throughput"),
-        config.getNanosDuration("throughput-deadline-time"),
-        configureExecutor(),
-        config.getMillisDuration("shutdown-timeout"))
-        with MessageDispatcherInterceptor
+    private val instance: MessageDispatcher = new Dispatcher(
+      this,
+      config.getString("id"),
+      config.getInt("throughput"),
+      config.getNanosDuration("throughput-deadline-time"),
+      configureExecutor(),
+      config.getMillisDuration("shutdown-timeout"))
+      with MessageDispatcherInterceptor
 
     override def dispatcher(): MessageDispatcher = instance
   }

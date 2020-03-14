@@ -40,8 +40,9 @@ object TokenizerExample {
         ))
       .toDF("label", "sentence")
 
-    val tokenizer =
-      new Tokenizer().setInputCol("sentence").setOutputCol("words")
+    val tokenizer = new Tokenizer()
+      .setInputCol("sentence")
+      .setOutputCol("words")
     val regexTokenizer = new RegexTokenizer()
       .setInputCol("sentence")
       .setOutputCol("words")

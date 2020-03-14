@@ -30,8 +30,8 @@ private[internal] trait GlbLubs {
       }
     }
 
-    val sorted =
-      btsMap.toList.sortWith((x, y) => x._1.typeSymbol isLess y._1.typeSymbol)
+    val sorted = btsMap.toList.sortWith((x, y) =>
+      x._1.typeSymbol isLess y._1.typeSymbol)
     val maxSeqLength = sorted.map(_._2.size).max
     val padded = sorted map (_._2.padTo(maxSeqLength, NoType))
     val transposed = padded.transpose
@@ -162,12 +162,13 @@ private[internal] trait GlbLubs {
           val newtps =
             tsBts map (ts => if (ts.head.typeSymbol == sym) ts.tail else ts)
           if (printLubs) {
-            val str = (newtps.zipWithIndex map {
-              case (tps, idx) =>
-                tps
-                  .map("        " + _ + "\n")
-                  .mkString("   (" + idx + ")\n", "", "\n")
-            }).mkString("")
+            val str =
+              (newtps.zipWithIndex map {
+                case (tps, idx) =>
+                  tps
+                    .map("        " + _ + "\n")
+                    .mkString("   (" + idx + ")\n", "", "\n")
+              }).mkString("")
 
             println("Frontier(\n" + str + ")")
             printLubMatrix((ts zip tsBts).toMap, lubListDepth)
@@ -385,9 +386,8 @@ private[internal] trait GlbLubs {
 
             if (syms contains NoSymbol) NoSymbol
             else {
-              val symtypes =
-                map2(narrowts, syms)((t, sym) =>
-                  t.memberInfo(sym).substThis(t.typeSymbol, lubThisType))
+              val symtypes = map2(narrowts, syms)((t, sym) =>
+                t.memberInfo(sym).substThis(t.typeSymbol, lubThisType))
               if (proto.isTerm) // possible problem: owner of info is still the old one, instead of new refinement class
                 proto
                   .cloneSymbol(lubRefined.typeSymbol)

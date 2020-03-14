@@ -57,8 +57,7 @@ trait UniqueKeyedService[K, V] extends SimpleService[K, V] {
       covering: DateRange,
       input: TypedPipe[(Timestamp, (K, W))])(implicit
       flowDef: FlowDef,
-      mode: Mode) =
-    doJoin(input, readDateRange(covering))
+      mode: Mode) = doJoin(input, readDateRange(covering))
 }
 
 trait SourceUniqueKeyedService[S <: SSource, K, V]

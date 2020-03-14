@@ -53,8 +53,7 @@ class ThriftCall[A <: TBase[_, _], R <: TBase[_, _]](
   /**
     * Wrap a ReplyClass in a ThriftReply.
     */
-  def reply(reply: AnyRef) =
-    new ThriftReply[R](reply.asInstanceOf[R], this)
+  def reply(reply: AnyRef) = new ThriftReply[R](reply.asInstanceOf[R], this)
 
   /**
     * Read the argument list

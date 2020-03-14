@@ -37,10 +37,16 @@ object BubbleChartDemo extends JFXApp {
   stage = new JFXApp.PrimaryStage {
     title = "BubbleChartDemo"
     scene = new Scene {
-      val xAxis =
-        NumberAxis("X", lowerBound = 0, upperBound = 150, tickUnit = 20)
-      val yAxis =
-        NumberAxis("Y", lowerBound = 0, upperBound = 150, tickUnit = 20)
+      val xAxis = NumberAxis(
+        "X",
+        lowerBound = 0,
+        upperBound = 150,
+        tickUnit = 20)
+      val yAxis = NumberAxis(
+        "Y",
+        lowerBound = 0,
+        upperBound = 150,
+        tickUnit = 20)
       root = new BubbleChart(xAxis, yAxis) {
         title = "Bubble Chart"
         legendSide = Side.Right

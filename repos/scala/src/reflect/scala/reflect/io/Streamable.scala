@@ -142,6 +142,5 @@ object Streamable {
       def inputStream() = is
     } slurp codec
 
-  def slurp(url: URL)(implicit codec: Codec): String =
-    slurp(url.openStream())
+  def slurp(url: URL)(implicit codec: Codec): String = slurp(url.openStream())
 }

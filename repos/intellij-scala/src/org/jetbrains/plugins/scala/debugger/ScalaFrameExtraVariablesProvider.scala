@@ -107,8 +107,8 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
             .contains(srr.name))
         .filter(canEvaluate(_, elem))
     }
-    val candidates =
-      initialCandidates.filter(canEvaluateLong(_, elem, evaluationContext))
+    val candidates = initialCandidates.filter(
+      canEvaluateLong(_, elem, evaluationContext))
     val sorted = mutable.SortedSet()(
       Ordering.by[ScalaResolveResult, Int](
         _.getElement.getTextRange.getStartOffset))
@@ -132,8 +132,9 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
             elem,
             true)
         }
-        val funDef =
-          PsiTreeUtil.getParentOfType(place, classOf[ScFunctionDefinition])
+        val funDef = PsiTreeUtil.getParentOfType(
+          place,
+          classOf[ScFunctionDefinition])
         val lazyVal = PsiTreeUtil.getParentOfType(
           place,
           classOf[ScPatternDefinition]) match {
@@ -199,8 +200,9 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       named: PsiNamedElement,
       place: PsiElement): Boolean = {
     inReadAction {
-      val contextClass =
-        ScalaEvaluatorBuilderUtil.getContextClass(place, strict = false)
+      val contextClass = ScalaEvaluatorBuilderUtil.getContextClass(
+        place,
+        strict = false)
       val containingClass = ScalaEvaluatorBuilderUtil.getContextClass(named)
       if (contextClass == containingClass) return false
 

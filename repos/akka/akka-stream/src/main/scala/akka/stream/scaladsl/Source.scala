@@ -37,8 +37,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
   override type Closed = RunnableGraph[Mat @uncheckedVariance]
   override type ClosedMat[+M] = RunnableGraph[M]
 
-  override val shape: SourceShape[Out] =
-    module.shape.asInstanceOf[SourceShape[Out]]
+  override val shape: SourceShape[Out] = module.shape
+    .asInstanceOf[SourceShape[Out]]
 
   override def toString: String = s"Source($shape, $module)"
 
@@ -121,8 +121,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
     * if there is a failure signaled in the stream.
     */
   def runReduce[U >: Out](f: (U, U) ⇒ U)(
-      implicit materializer: Materializer): Future[U] =
-    runWith(Sink.reduce(f))
+      implicit materializer: Materializer): Future[U] = runWith(Sink.reduce(f))
 
   /**
     * Shortcut for running this `Source` with a foreach procedure. The given procedure is invoked
@@ -343,12 +342,11 @@ object Source {
     * A `Source` with no elements, i.e. an empty stream that is completed immediately for every connected `Sink`.
     */
   def empty[T]: Source[T, NotUsed] = _empty
-  private[this] val _empty: Source[Nothing, NotUsed] =
-    new Source(
-      new PublisherSource[Nothing](
-        EmptyPublisher,
-        DefaultAttributes.emptySource,
-        shape("EmptySource")))
+  private[this] val _empty: Source[Nothing, NotUsed] = new Source(
+    new PublisherSource[Nothing](
+      EmptyPublisher,
+      DefaultAttributes.emptySource,
+      shape("EmptySource")))
 
   /**
     * Create a `Source` which materializes a [[scala.concurrent.Promise]] which controls what element

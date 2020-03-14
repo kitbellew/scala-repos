@@ -78,13 +78,13 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
           0 -> StreamInputInfo(
             inputStreamId = 0,
             numRecords = 1000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
           1 -> StreamInputInfo(
             inputStreamId = 1,
             numRecords = 2000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
         ),
         submissionTime = 1001L,
         None,
@@ -118,13 +118,13 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
           0 -> StreamInputInfo(
             inputStreamId = 0,
             numRecords = 1000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
           1 -> StreamInputInfo(
             inputStreamId = 1,
             numRecords = 2000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
         ),
         submissionTime = 1001L,
         Some(1002L),
@@ -158,13 +158,13 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
           0 -> StreamInputInfo(
             inputStreamId = 0,
             numRecords = 1000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver1")),
           1 -> StreamInputInfo(
             inputStreamId = 1,
             numRecords = 2000,
-            metadata =
-              Map(StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
+            metadata = Map(
+              StreamInputInfo.METADATA_KEY_DESCRIPTION -> "receiver2"))
         ),
         submissionTime = 1001L,
         Some(1002L),

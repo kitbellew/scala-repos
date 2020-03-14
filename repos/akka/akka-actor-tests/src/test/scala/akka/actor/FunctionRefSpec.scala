@@ -18,8 +18,8 @@ object FunctionRefSpec {
     def receive = {
       case GetForwarder(replyTo) ⇒
         val cell = context.asInstanceOf[ActorCell]
-        val ref =
-          cell.addFunctionRef((sender, msg) ⇒ replyTo ! Forwarded(msg, sender))
+        val ref = cell.addFunctionRef((sender, msg) ⇒
+          replyTo ! Forwarded(msg, sender))
         replyTo ! ref
       case DropForwarder(ref) ⇒
         val cell = context.asInstanceOf[ActorCell]

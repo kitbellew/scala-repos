@@ -246,8 +246,9 @@ class StandardImageExtractor(
       case Some(goodImages) => {
         trace(
           logPrefix + "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
-        val scoredImages =
-          downloadImagesAndGetResults(goodImages, parentDepthLevel)
+        val scoredImages = downloadImagesAndGetResults(
+          goodImages,
+          parentDepthLevel)
         var highScoreImage: Element = null
         scoredImages.foreach {
           case (key, value) => {

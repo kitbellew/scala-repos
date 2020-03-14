@@ -47,8 +47,7 @@ private[scala] abstract class JSUniquenessCache[V] {
   protected def valueFromKey(k: String): V
   protected def keyFromValue(v: V): Option[String]
 
-  def apply(name: String): V =
-    cache.getOrElseUpdate(name, valueFromKey(name))
+  def apply(name: String): V = cache.getOrElseUpdate(name, valueFromKey(name))
 
   def unapply(other: V): Option[String] = keyFromValue(other)
 }

@@ -6,8 +6,10 @@ package object buffer {
   val broken =
     new ArrayVec2() // commenting out this line causes the file to compile.
 
-  val works =
-    Class.forName("buffer.ArrayVec2").newInstance().asInstanceOf[ArrayVec2]
+  val works = Class
+    .forName("buffer.ArrayVec2")
+    .newInstance()
+    .asInstanceOf[ArrayVec2]
 }
 
 package buffer {

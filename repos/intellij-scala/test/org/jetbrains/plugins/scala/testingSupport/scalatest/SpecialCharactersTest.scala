@@ -6,16 +6,31 @@ package org.jetbrains.plugins.scala.testingSupport.scalatest
   */
 trait SpecialCharactersTest extends ScalaTestTestCase {
 
-  val commaTestPath =
-    List("[root]", "TestComma", "Comma , test", "should contain , comma")
-  val exclamationTestPath =
-    List("[root]", "TestExclamation", "! test", "should contain !")
-  val tickTestPath =
-    List("[root]", "TestTick", "tick ' test", "should contain '")
-  val tildeTestPath =
-    List("[root]", "TestTilde", "tilde ~ test", "should contain ~")
-  val backtickTestPath =
-    List("[root]", "TestBacktick", "backtick ` test", "should contain `")
+  val commaTestPath = List(
+    "[root]",
+    "TestComma",
+    "Comma , test",
+    "should contain , comma")
+  val exclamationTestPath = List(
+    "[root]",
+    "TestExclamation",
+    "! test",
+    "should contain !")
+  val tickTestPath = List(
+    "[root]",
+    "TestTick",
+    "tick ' test",
+    "should contain '")
+  val tildeTestPath = List(
+    "[root]",
+    "TestTilde",
+    "tilde ~ test",
+    "should contain ~")
+  val backtickTestPath = List(
+    "[root]",
+    "TestBacktick",
+    "backtick ` test",
+    "should contain `")
 
   private def addSpecialCharactersTest(testName: String) =
     addFileToProject(

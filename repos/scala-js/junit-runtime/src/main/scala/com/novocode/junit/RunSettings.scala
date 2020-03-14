@@ -55,11 +55,9 @@ class RunSettings private (
     }
   }
 
-  def buildInfoMessage(t: Throwable): String =
-    buildColoredMessage(t, NNAME2)
+  def buildInfoMessage(t: Throwable): String = buildColoredMessage(t, NNAME2)
 
-  def buildErrorMessage(t: Throwable): String =
-    buildColoredMessage(t, ENAME2)
+  def buildErrorMessage(t: Throwable): String = buildColoredMessage(t, ENAME2)
 }
 
 object RunSettings {

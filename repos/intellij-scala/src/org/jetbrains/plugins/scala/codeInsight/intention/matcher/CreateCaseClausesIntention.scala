@@ -84,8 +84,8 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val enumConsts: Array[PsiEnumConstant] = cls.getFields.collect {
       case enumConstant: PsiEnumConstant => enumConstant
     }
-    val caseClauseTexts =
-      enumConsts.map(ec => "case %s.%s =>".format(cls.name, ec.name))
+    val caseClauseTexts = enumConsts.map(ec =>
+      "case %s.%s =>".format(cls.name, ec.name))
     val newMatchStmt = ScalaPsiElementFactory.createMatch(
       expr.getText,
       caseClauseTexts,

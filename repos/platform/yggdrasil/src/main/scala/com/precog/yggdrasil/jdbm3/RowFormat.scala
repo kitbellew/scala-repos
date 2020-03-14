@@ -426,10 +426,9 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
 
     //val decoders: Seq[(ColumnValueDecoder, Int)] = // Seq[((Int, ByteBuffer) => Unit, Int)] =
     //  (columnRefs zip cols map { case (ref, col) => getColumnDecoder(ref.ctype, col) }).zipWithIndex
-    val decoders: List[ColumnValueDecoder] =
-      (columnRefs zip cols).map {
-        case (ref, col) => getColumnDecoder(ref.ctype, col)
-      }(collection.breakOut)
+    val decoders: List[ColumnValueDecoder] = (columnRefs zip cols).map {
+      case (ref, col) => getColumnDecoder(ref.ctype, col)
+    }(collection.breakOut)
 
     new ColumnDecoder {
       def decodeToRow(row: Int, src: Array[Byte], offset: Int = 0) {
@@ -566,8 +565,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   override implicit def StringCodec = Codec.Utf8Codec
 
   @transient
-  abstract override implicit lazy val BigDecimalCodec: Codec[BigDecimal] =
-    Codec.CompositeCodec[Double, BigDecimal, BigDecimal](
+  abstract override implicit lazy val BigDecimalCodec: Codec[BigDecimal] = Codec
+    .CompositeCodec[Double, BigDecimal, BigDecimal](
       Codec[Double],
       super.BigDecimalCodec,
       bd => (bd.toDouble, bd),
@@ -599,8 +598,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
   def ColumnEncoder(cols: Seq[Column]) = {
     import ByteBufferPool._
 
-    val colValueEncoders: Array[ColumnValueEncoder] =
-      zipWithSelectors(cols).map({
+    val colValueEncoders: Array[ColumnValueEncoder] = zipWithSelectors(cols)
+      .map({
         case (_, colsAndTypes) =>
           val writers: Seq[ColumnValueEncoder] = colsAndTypes map {
             case (col, cType) =>

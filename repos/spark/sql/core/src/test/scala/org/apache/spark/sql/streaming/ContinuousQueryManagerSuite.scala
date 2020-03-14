@@ -111,8 +111,9 @@ class ContinuousQueryManagerSuite
       testAwaitAnyTermination(ExpectBlocked)
 
       // Stop a query asynchronously and see if it is reported through awaitAnyTermination
-      val q1 =
-        stopRandomQueryAsync(stopAfter = 100 milliseconds, withError = false)
+      val q1 = stopRandomQueryAsync(
+        stopAfter = 100 milliseconds,
+        withError = false)
       testAwaitAnyTermination(ExpectNotBlocked)
       require(
         !q1.isActive
@@ -172,8 +173,9 @@ class ContinuousQueryManagerSuite
         testBehaviorFor = 1 second)
 
       // Stop a query asynchronously within timeout and awaitAnyTerm should be unblocked
-      val q1 =
-        stopRandomQueryAsync(stopAfter = 100 milliseconds, withError = false)
+      val q1 = stopRandomQueryAsync(
+        stopAfter = 100 milliseconds,
+        withError = false)
       testAwaitAnyTermination(
         ExpectNotBlocked,
         awaitTimeout = 2 seconds,
@@ -289,8 +291,8 @@ class ContinuousQueryManagerSuite
 
     def awaitTermFunc(): Unit = {
       if (awaitTimeout != null && awaitTimeout.toMillis > 0) {
-        val returnedValue =
-          sqlContext.streams.awaitAnyTermination(awaitTimeout.toMillis)
+        val returnedValue = sqlContext.streams.awaitAnyTermination(
+          awaitTimeout.toMillis)
         assert(
           returnedValue === expectedReturnedValue,
           "Returned value does not match expected")

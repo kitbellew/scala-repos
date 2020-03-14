@@ -119,8 +119,9 @@ trait GenTrees {
               state.symtab ++= inlinedSymtab
               rtree
             case tree =>
-              val migrated =
-                Apply(Select(splicee, nme.in), List(Ident(nme.MIRROR_SHORT)))
+              val migrated = Apply(
+                Select(splicee, nme.in),
+                List(Ident(nme.MIRROR_SHORT)))
               Select(migrated, nme.tree)
           }
         }

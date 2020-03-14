@@ -40,8 +40,9 @@ class MigrationTo0_11Test
 
   val emptyGroup = Group.empty
 
-  implicit val patienceConfig: PatienceConfig =
-    PatienceConfig(timeout = Span(3, Seconds))
+  implicit val patienceConfig: PatienceConfig = PatienceConfig(timeout = Span(
+    3,
+    Seconds))
 
   test("empty migration does (nearly) nothing") {
     Given("no apps/groups")
@@ -66,8 +67,9 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("only an empty root Group is created")
-    val maybeGroup: Option[Group] =
-      Await.result(f.groupRepo.rootGroup(), 3.seconds)
+    val maybeGroup: Option[Group] = Await.result(
+      f.groupRepo.rootGroup(),
+      3.seconds)
     maybeGroup.map(_.copy(version = emptyGroup.version)) should be(
       Some(emptyGroup))
     f.appRepo.allPathIds().futureValue should be('empty)
@@ -77,8 +79,9 @@ class MigrationTo0_11Test
     Given("one app in appRepo, none in groupRepo")
     val f = new Fixture
     val versionInfo = AppDefinition.VersionInfo.OnlyVersion(Timestamp(10))
-    val app: AppDefinition =
-      AppDefinition(PathId("/test"), versionInfo = versionInfo)
+    val app: AppDefinition = AppDefinition(
+      PathId("/test"),
+      versionInfo = versionInfo)
     val groupWithApp = emptyGroup.copy(
       apps = Set(app),
       version = versionInfo.version
@@ -89,10 +92,11 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("the versionInfo has been updated in the group")
-    val maybeGroup: Option[Group] =
-      Await.result(f.groupRepo.rootGroup(), 3.seconds)
-    val appWithFullVersion =
-      app.copy(versionInfo = app.versionInfo.withConfigChange(app.version))
+    val maybeGroup: Option[Group] = Await.result(
+      f.groupRepo.rootGroup(),
+      3.seconds)
+    val appWithFullVersion = app
+      .copy(versionInfo = app.versionInfo.withConfigChange(app.version))
     maybeGroup should be(
       Some(groupWithApp.copy(apps = Set(appWithFullVersion))))
 
@@ -140,8 +144,8 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("the versionInfo is accurate in the group")
-    val correctedAppV1 = appV1.copy(versionInfo =
-      appV1.versionInfo.withConfigChange(appV1.version))
+    val correctedAppV1 = appV1
+      .copy(versionInfo = appV1.versionInfo.withConfigChange(appV1.version))
     val correctedAppV2 = appV2Upgrade.copy(versionInfo =
       correctedAppV1.versionInfo.withConfigChange(appV2Upgrade.version))
     val correctedAppV3 = appV3Scaling.copy(versionInfo =
@@ -202,8 +206,8 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("the versionInfo is accurate in the group")
-    val correctedAppV1 = appV1.copy(versionInfo =
-      appV1.versionInfo.withConfigChange(appV1.version))
+    val correctedAppV1 = appV1
+      .copy(versionInfo = appV1.versionInfo.withConfigChange(appV1.version))
     val correctedAppV2 = appV2Upgrade.copy(versionInfo =
       correctedAppV1.versionInfo.withConfigChange(appV2Upgrade.version))
     val correctedAppV3 = appV3Scaling.copy(versionInfo =

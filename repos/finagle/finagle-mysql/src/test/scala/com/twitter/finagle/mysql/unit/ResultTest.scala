@@ -13,38 +13,35 @@ trait HexDump {
       .split('|')
       .map(_.replace("\n", " "))
       .map(s => s.split(' ').filterNot(_ == ""))
-    val asBytes =
-      tokens.map(_.map(s => ((s(0).asDigit << 4) + s(1).asDigit).toByte))
+    val asBytes = tokens.map(
+      _.map(s => ((s(0).asDigit << 4) + s(1).asDigit).toByte))
     asBytes.map(arr => Packet(arr(3), Buffer(arr.drop(4))))
   }
 }
 
 @RunWith(classOf[JUnitRunner])
 class HandshakeInitTest extends FunSuite {
-  val authPluginHex =
-    test("decode protocol version 10")(new HexDump {
-      val hex =
-        """36 00 00 00 0a 35 2e 35    2e 32 2d 6d 32 00 0b 00
+  val authPluginHex = test("decode protocol version 10")(new HexDump {
+    val hex = """36 00 00 00 0a 35 2e 35    2e 32 2d 6d 32 00 0b 00
         |00 00 64 76 48 40 49 2d    43 4a 00 ff f7 21 02 00
         |00 00 00 00 00 00 00 00    00 00 00 00 00 2a 34 64
         |7c 63 5a 77 6b 34 5e 5d    3a 00"""
-      assert(packets.size > 0)
-      val h = HandshakeInit.decode(packets(0))
-      assert(h.protocol == 10)
-      assert(h.version == "5.5.2-m2")
-      assert(h.threadId == 11)
-      assert(h.serverCap.mask == 0xf7ff)
-      assert(h.charset == Charset.Utf8_general_ci)
-      assert(h.status == 2)
-      assert(h.salt.length == 20)
-      assert(
-        h.salt === Array[Byte](100, 118, 72, 64, 73, 45, 67, 74, 42, 52, 100,
-          124, 99, 90, 119, 107, 52, 94, 93, 58))
-    })
+    assert(packets.size > 0)
+    val h = HandshakeInit.decode(packets(0))
+    assert(h.protocol == 10)
+    assert(h.version == "5.5.2-m2")
+    assert(h.threadId == 11)
+    assert(h.serverCap.mask == 0xf7ff)
+    assert(h.charset == Charset.Utf8_general_ci)
+    assert(h.status == 2)
+    assert(h.salt.length == 20)
+    assert(
+      h.salt === Array[Byte](100, 118, 72, 64, 73, 45, 67, 74, 42, 52, 100, 124,
+        99, 90, 119, 107, 52, 94, 93, 58))
+  })
 
   test("decode protocol version 10 with auth plugin name")(new HexDump {
-    val hex =
-      """50 00 00 00 0a 35 2e 36    2e 34 2d 6d 37 2d 6c 6f
+    val hex = """50 00 00 00 0a 35 2e 36    2e 34 2d 6d 37 2d 6c 6f
         |67 00 56 0a 00 00 52 42    33 76 7a 26 47 72 00 ff
         |ff 08 02 00 0f c0 15 00    00 00 00 00 00 00 00 00
         |00 2b 79 44 26 2f 5a 5a    33 30 35 5a 47 00 6d 79
@@ -80,8 +77,7 @@ class OKTest extends FunSuite with HexDump {
 
 @RunWith(classOf[JUnitRunner])
 class ErrorTest extends FunSuite with HexDump {
-  val hex =
-    """17 00 00 01 ff 48 04 23    48 59 30 30 30 4e 6f 20
+  val hex = """17 00 00 01 ff 48 04 23    48 59 30 30 30 4e 6f 20
       |74 61 62 6c 65 73 20 75    73 65 64"""
   test("decode") {
     assert(packets.size > 0)
@@ -107,8 +103,7 @@ class EofTest extends FunSuite with HexDump {
 @RunWith(classOf[JUnitRunner])
 class PrepareOKTest extends FunSuite with HexDump {
   // SELECT CONCAT(?, ?) AS col1:
-  val hex =
-    """0c 00 00 01 00 01 00 00    00 01 00 02 00 00 00 00|
+  val hex = """0c 00 00 01 00 01 00 00    00 01 00 02 00 00 00 00|
       |17 00 00 02 03 64 65 66    00 00 00 01 3f 00 0c 3f
       |00 00 00 00 00 fd 80 00    00 00 00|17 00 00 03 03
       |64 65 66 00 00 00 01 3f    00 0c 3f 00 00 00 00 00
@@ -153,8 +148,7 @@ class PrepareOKTest extends FunSuite with HexDump {
 class BinaryResultSetTest extends FunSuite with HexDump {
   // SELECT CONCAT(?, ?) AS col1
   // execute("foo", "bar")
-  val hex =
-    """01 00 00 01 01|1a 00 00    02 03 64 65 66 00 00 00
+  val hex = """01 00 00 01 01|1a 00 00    02 03 64 65 66 00 00 00
       |04 63 6f 6c 31 00 0c 08    00 06 00 00 00 fd 00 00
       |1f 00 00|05 00 00 03 fe    00 00 02 00|09 00 00 04
       |00 00 06 66 6f 6f 62 61    72|05 00 00 05 fe 00 00

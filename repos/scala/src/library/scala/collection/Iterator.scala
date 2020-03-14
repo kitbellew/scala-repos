@@ -280,8 +280,7 @@ object Iterator {
     }
     override protected def sliceIterator(from: Int, until: Int): Iterator[A] = {
       val lo = from max 0
-      def adjustedBound =
-        if (unbounded) -1 else 0 max (remaining - lo)
+      def adjustedBound = if (unbounded) -1 else 0 max (remaining - lo)
       val rest =
         if (until < 0) adjustedBound // respect current bound, if any
         else if (until <= lo) 0 // empty
@@ -1105,8 +1104,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
         hd
       }
 
-      def hasNext =
-        hdDefined || self.hasNext
+      def hasNext = hdDefined || self.hasNext
 
       def next() =
         if (hdDefined) {
@@ -1212,8 +1210,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
         (howMany > 0 && (isFirst || len > gap)) && {
           if (!isFirst) buffer trimStart (step min prevSize)
 
-          val available =
-            if (isFirst) len else howMany min (len - gap)
+          val available = if (isFirst) len else howMany min (len - gap)
 
           buffer ++= (xs takeRight available)
           filled = true

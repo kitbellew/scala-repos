@@ -279,8 +279,9 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
     * @param rule the function use to transform this nodes children
     */
   def transformUp(rule: PartialFunction[BaseType, BaseType]): BaseType = {
-    val afterRuleOnChildren =
-      transformChildren(rule, (t, r) => t.transformUp(r))
+    val afterRuleOnChildren = transformChildren(
+      rule,
+      (t, r) => t.transformUp(r))
     if (this fastEquals afterRuleOnChildren) {
       CurrentOrigin.withOrigin(origin) {
         rule.applyOrElse(this, identity[BaseType])
@@ -686,8 +687,8 @@ object TreeNode {
         val numChildren =
           (nextNode \ "num-children").asInstanceOf[JInt].num.toInt
 
-        val children: Seq[TreeNode[_]] =
-          (1 to numChildren).map(_ => parseNextNode())
+        val children: Seq[TreeNode[_]] = (1 to numChildren).map(_ =>
+          parseNextNode())
         val fields = getConstructorParameters(cls)
 
         val parameters: Array[AnyRef] = fields.map {

@@ -66,10 +66,9 @@ private[repl] class SparkJLineReader(_completion: => Completion)
       this setBellEnabled false
 
       if (completion ne NoCompletion) {
-        val argCompletor: ArgumentCompleter =
-          new ArgumentCompleter(
-            new JLineDelimiter,
-            scalaToJline(completion.completer()))
+        val argCompletor: ArgumentCompleter = new ArgumentCompleter(
+          new JLineDelimiter,
+          scalaToJline(completion.completer()))
         argCompletor setStrict false
 
         this addCompleter argCompletor

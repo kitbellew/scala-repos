@@ -221,8 +221,8 @@ package com.twitter.scalding {
         operationCall: OperationCall[MapsideCache[Tuple, V]]) {
       // Docs say it is safe to do this cast:
       // http://docs.cascading.org/cascading/2.1/javadoc/cascading/operation/Operation.html#flush(cascading.flow.FlowProcess, cascading.operation.OperationCall)
-      val functionCall =
-        operationCall.asInstanceOf[FunctionCall[MapsideCache[Tuple, V]]]
+      val functionCall = operationCall
+        .asInstanceOf[FunctionCall[MapsideCache[Tuple, V]]]
       val cache = functionCall.getContext
       add(cache.flush, functionCall)
     }
@@ -296,9 +296,8 @@ package com.twitter.scalding {
     @SuppressWarnings(Array("org.brianmckenna.wartremover.warts.OptionPartial"))
     private[this] def mergeTraversableOnce[K, V: Semigroup](
         items: TraversableOnce[(K, V)]): Map[K, V] = {
-      val mutable =
-        scala.collection.mutable
-          .OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
+      val mutable = scala.collection.mutable
+        .OpenHashMap[K, V]() // Scala's OpenHashMap seems faster than Java and Scala's HashMap Impl's
       val innerIter = items.toIterator
       while (innerIter.hasNext) {
         val (k, v) = innerIter.next
@@ -326,8 +325,8 @@ package com.twitter.scalding {
         operationCall: OperationCall[MapsideCache[K, V]]) {
       // Docs say it is safe to do this cast:
       // http://docs.cascading.org/cascading/2.1/javadoc/cascading/operation/Operation.html#flush(cascading.flow.FlowProcess, cascading.operation.OperationCall)
-      val functionCall =
-        operationCall.asInstanceOf[FunctionCall[MapsideCache[K, V]]]
+      val functionCall = operationCall
+        .asInstanceOf[FunctionCall[MapsideCache[K, V]]]
       val cache = functionCall.getContext
       add(cache.flush, functionCall)
     }
@@ -375,10 +374,12 @@ package com.twitter.scalding {
       flowProcess: FlowProcess[_],
       summingCache: SummingWithHitsCache[K, V])
       extends MapsideCache[K, V] {
-    private[this] val misses =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "misses"))
-    private[this] val hits =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "hits"))
+    private[this] val misses = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "misses"))
+    private[this] val hits = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "hits"))
     private[this] val evictions = CounterImpl(
       flowProcess,
       StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
@@ -412,14 +413,18 @@ package com.twitter.scalding {
       flowProcess: FlowProcess[_],
       adaptiveCache: AdaptiveCache[K, V])
       extends MapsideCache[K, V] {
-    private[this] val misses =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "misses"))
-    private[this] val hits =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "hits"))
-    private[this] val capacity =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "capacity"))
-    private[this] val sentinel =
-      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "sentinel"))
+    private[this] val misses = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "misses"))
+    private[this] val hits = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "hits"))
+    private[this] val capacity = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "capacity"))
+    private[this] val sentinel = CounterImpl(
+      flowProcess,
+      StatKey(MapsideReduce.COUNTER_GROUP, "sentinel"))
     private[this] val evictions = CounterImpl(
       flowProcess,
       StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
@@ -655,16 +660,17 @@ package com.twitter.scalding {
         args: TupleEntry,
         context: Tuple) = {
       var nextContext: Tuple = null
-      val newContextObj = if (null == context) {
-        // First call, make a new mutable tuple to reduce allocations:
-        nextContext = Tuple.size(1)
-        first(args)
-      } else {
-        //We are updating
-        val oldValue = context.getObject(0).asInstanceOf[X]
-        nextContext = context
-        subsequent(oldValue, args)
-      }
+      val newContextObj =
+        if (null == context) {
+          // First call, make a new mutable tuple to reduce allocations:
+          nextContext = Tuple.size(1)
+          first(args)
+        } else {
+          //We are updating
+          val oldValue = context.getObject(0).asInstanceOf[X]
+          nextContext = context
+          subsequent(oldValue, args)
+        }
       nextContext.set(0, newContextObj.asInstanceOf[AnyRef])
       //Return context for reuse next time:
       nextContext

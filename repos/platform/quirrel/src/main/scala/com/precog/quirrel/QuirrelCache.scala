@@ -249,8 +249,10 @@ trait QuirrelCache extends AST { parser: Parser =>
       .map(_._1)
       .toList
 
-    val result =
-      replaceLiteralsS(expr, sortedBindings, locUpdates(bindings, slots))
+    val result = replaceLiteralsS(
+      expr,
+      sortedBindings,
+      locUpdates(bindings, slots))
     result
   }
 
@@ -485,8 +487,8 @@ trait QuirrelCache extends AST { parser: Parser =>
   }
 
   class ParseCache(maxSize: Long) {
-    private val cache: mutable.Map[CacheKey, CacheValue] =
-      Cache.simple(Cache.MaxSize(maxSize))
+    private val cache: mutable.Map[CacheKey, CacheValue] = Cache.simple(
+      Cache.MaxSize(maxSize))
 
     def getOrElseUpdate(query: LineStream)(
         f: LineStream => Set[Expr]): Set[Expr] = {

@@ -103,11 +103,9 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
 
   def underlying: Object = this
 
-  def isWhole: Boolean =
-    sillyIsReal && anyIsWhole(r)
+  def isWhole: Boolean = sillyIsReal && anyIsWhole(r)
 
-  override final def isValidInt: Boolean =
-    sillyIsReal && anyIsValidInt(r)
+  override final def isValidInt: Boolean = sillyIsReal && anyIsValidInt(r)
 
   // important to keep in sync with Complex[_]
   override def hashCode: Int =
@@ -127,8 +125,7 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
   def ===(that: Quaternion[_]): Boolean =
     r == that.r && i == that.i && j == that.j && k == that.k
 
-  def =!=(that: Quaternion[_]): Boolean =
-    !(this === that)
+  def =!=(that: Quaternion[_]): Boolean = !(this === that)
 
   def isZero(implicit o: IsReal[A]): Boolean =
     r.isSignZero && i.isSignZero && j.isSignZero && k.isSignZero
@@ -172,8 +169,7 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
   def quaternionSignum(implicit
       f: Field[A],
       o: IsReal[A],
-      n: NRoot[A]): Quaternion[A] =
-    if (isZero) this else this / abs
+      n: NRoot[A]): Quaternion[A] = if (isZero) this else this / abs
 
   def pureSignum(implicit
       f: Field[A],
@@ -181,11 +177,9 @@ final case class Quaternion[@sp(Float, Double) A](r: A, i: A, j: A, k: A)
       n: NRoot[A]): Quaternion[A] =
     if (isReal) Quaternion.zero[A] else (pure / pureAbs)
 
-  def unary_-(implicit s: Rng[A]): Quaternion[A] =
-    Quaternion(-r, -i, -j, -k)
+  def unary_-(implicit s: Rng[A]): Quaternion[A] = Quaternion(-r, -i, -j, -k)
 
-  def conjugate(implicit s: Rng[A]): Quaternion[A] =
-    Quaternion(r, -i, -j, -k)
+  def conjugate(implicit s: Rng[A]): Quaternion[A] = Quaternion(r, -i, -j, -k)
 
   def reciprocal(implicit f: Field[A]): Quaternion[A] =
     conjugate / (r.pow(2) + i.pow(2) + j.pow(2) + k.pow(2))

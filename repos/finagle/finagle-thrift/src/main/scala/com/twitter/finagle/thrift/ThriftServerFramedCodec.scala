@@ -57,8 +57,9 @@ class ThriftServerFramedCodec(
   def pipelineFactory: ChannelPipelineFactory =
     ThriftServerFramedPipelineFactory
 
-  private[this] val preparer =
-    ThriftServerPreparer(protocolFactory, config.serviceName)
+  private[this] val preparer = ThriftServerPreparer(
+    protocolFactory,
+    config.serviceName)
 
   override def prepareConnFactory(
       factory: ServiceFactory[Array[Byte], Array[Byte]],
@@ -74,8 +75,8 @@ class ThriftServerFramedCodec(
 private[finagle] case class ThriftServerPreparer(
     protocolFactory: TProtocolFactory,
     serviceName: String) {
-  private[this] val uncaughtExceptionsFilter =
-    new UncaughtAppExceptionFilter(protocolFactory)
+  private[this] val uncaughtExceptionsFilter = new UncaughtAppExceptionFilter(
+    protocolFactory)
 
   def prepare(
       factory: ServiceFactory[Array[Byte], Array[Byte]],

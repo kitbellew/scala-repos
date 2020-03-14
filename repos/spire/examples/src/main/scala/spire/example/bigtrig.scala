@@ -71,8 +71,7 @@ object TrigTest {
 
   def apfloatSqrt2(): Unit =
     aptest("sqrt(2)", i => ApfloatMath.sqrt(new Apfloat(2, i)), sqrt2String)
-  def apfloatPi(): Unit =
-    aptest("pi", i => ApfloatMath.pi(i), piString)
+  def apfloatPi(): Unit = aptest("pi", i => ApfloatMath.pi(i), piString)
   def apfloatExp1(): Unit =
     aptest("exp(1)", i => ApfloatMath.exp(new Apfloat(1, i)), eString)
   def apfloatSin1(): Unit =

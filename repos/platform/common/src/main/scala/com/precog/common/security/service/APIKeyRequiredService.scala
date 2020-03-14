@@ -56,8 +56,8 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
       convert: JValue => A,
       M: Monad[Future]): String => Future[HttpResponse[A]] = { (msg: String) =>
     M.point(
-      (forbidden(msg) map convert).copy(headers =
-        HttpHeaders(`Content-Type`(application / json))))
+      (forbidden(msg) map convert)
+        .copy(headers = HttpHeaders(`Content-Type`(application / json))))
   }
 
   // Convenience combinator for when we know our result is an `HttpResponse` and that

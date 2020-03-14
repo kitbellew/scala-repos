@@ -17,8 +17,9 @@ object SigarLoader {
   lazy val sigarTestEnabled =
     sys.props.get("akka.test.sigar").getOrElse("false").toBoolean
 
-  lazy val sigarArtifact =
-    TaskKey[File]("sigar-artifact", "Location of Sigar java agent jar.")
+  lazy val sigarArtifact = TaskKey[File](
+    "sigar-artifact",
+    "Location of Sigar java agent jar.")
 
   lazy val sigarOptions = TaskKey[String](
     "sigar-options",

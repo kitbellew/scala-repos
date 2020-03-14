@@ -57,8 +57,9 @@ private[spark] case class CoalescedRDDPartition(
     */
   def localFraction: Double = {
     val loc = parents.count { p =>
-      val parentPreferredLocations =
-        rdd.context.getPreferredLocs(rdd, p.index).map(_.host)
+      val parentPreferredLocations = rdd.context
+        .getPreferredLocs(rdd, p.index)
+        .map(_.host)
       preferredLocation.exists(parentPreferredLocations.contains)
     }
     if (parents.size == 0) 0.0 else (loc.toDouble / parents.size.toDouble)
@@ -305,10 +306,9 @@ private class PartitionCoalescer(
     * @return partition group (bin to be put in)
     */
   def pickBin(p: Partition): PartitionGroup = {
-    val pref =
-      currPrefLocs(p)
-        .map(getLeastGroupHash(_))
-        .sortWith(compare) // least loaded pref locs
+    val pref = currPrefLocs(p)
+      .map(getLeastGroupHash(_))
+      .sortWith(compare) // least loaded pref locs
     val prefPart = if (pref == Nil) None else pref.head
 
     val r1 = rnd.nextInt(groupArr.size)

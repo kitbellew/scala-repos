@@ -231,8 +231,7 @@ trait Solver extends parser.AST with typer.Binder {
       } else { const(None) }
     }
 
-    def simplify(tree: Expr) =
-      search(Set(tree :: Nil), Set(), Set())
+    def simplify(tree: Expr) = search(Set(tree :: Nil), Set(), Set())
 
     @tailrec
     def search(

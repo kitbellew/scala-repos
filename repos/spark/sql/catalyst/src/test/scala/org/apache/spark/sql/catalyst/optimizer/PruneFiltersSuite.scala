@@ -59,13 +59,12 @@ class PruneFiltersSuite extends PlanTest {
     val tr2 = LocalRelation('d.int, 'e.int, 'f.int)
     val tr3 = LocalRelation('g.int, 'h.int, 'i.int)
 
-    val query =
-      tr1
-        .where('a.attr > 10)
-        .unionAll(
-          tr2
-            .where('d.attr > 10)
-            .unionAll(tr3.where('g.attr > 10)))
+    val query = tr1
+      .where('a.attr > 10)
+      .unionAll(
+        tr2
+          .where('d.attr > 10)
+          .unionAll(tr3.where('g.attr > 10)))
     val queryWithUselessFilter = query.where('a.attr > 10)
 
     val optimized = Optimize.execute(queryWithUselessFilter.analyze)
@@ -85,11 +84,10 @@ class PruneFiltersSuite extends PlanTest {
         Inner,
         Some("tr1.a".attr === "tr2.a".attr))
     // different order of "tr2.a" and "tr1.a"
-    val queryWithUselessFilter =
-      query.where(
-        ("tr1.a".attr > 10 || "tr1.c".attr < 10) &&
-          'd.attr < 100 &&
-          "tr2.a".attr === "tr1.a".attr)
+    val queryWithUselessFilter = query.where(
+      ("tr1.a".attr > 10 || "tr1.c".attr < 10) &&
+        'd.attr < 100 &&
+        "tr2.a".attr === "tr1.a".attr)
 
     val optimized = Optimize.execute(queryWithUselessFilter.analyze)
     val correctAnswer = query.analyze
@@ -109,9 +107,8 @@ class PruneFiltersSuite extends PlanTest {
         tr2.where('d.attr < 100),
         Inner,
         Some("tr1.a".attr === "tr2.d".attr))
-    val queryWithExtraFilters =
-      query.where(
-        "tr1.a".attr > 10 && 'd.attr < 100 && "tr1.a".attr === "tr2.a".attr)
+    val queryWithExtraFilters = query.where(
+      "tr1.a".attr > 10 && 'd.attr < 100 && "tr1.a".attr === "tr2.a".attr)
 
     val optimized = Optimize.execute(queryWithExtraFilters.analyze)
     val correctAnswer = tr1
@@ -133,12 +130,11 @@ class PruneFiltersSuite extends PlanTest {
     val queryWithExtraFilters = query.where("x.b".attr.isNotNull)
 
     val optimized = Optimize.execute(queryWithExtraFilters.analyze)
-    val correctAnswer =
-      testRelation
-        .where("b".attr.isNull)
-        .where("b".attr.isNotNull)
-        .join(testRelation, LeftOuter)
-        .analyze
+    val correctAnswer = testRelation
+      .where("b".attr.isNull)
+      .where("b".attr.isNotNull)
+      .join(testRelation, LeftOuter)
+      .analyze
 
     comparePlans(optimized, correctAnswer)
   }

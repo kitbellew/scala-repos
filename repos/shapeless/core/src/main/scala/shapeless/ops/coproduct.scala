@@ -1425,10 +1425,9 @@ object coproduct {
 
     type Aux[L <: Coproduct, Out0 <: HList] = ToHList[L] { type Out = Out0 }
 
-    implicit val cnilToHList: Aux[CNil, HNil] =
-      new ToHList[CNil] {
-        type Out = HNil
-      }
+    implicit val cnilToHList: Aux[CNil, HNil] = new ToHList[CNil] {
+      type Out = HNil
+    }
 
     implicit def cconsToHList[H, T <: Coproduct](
         implicit ut: ToHList[T]): Aux[H :+: T, H :: ut.Out] =
@@ -1455,8 +1454,7 @@ object coproduct {
       Basis[Super, Sub] { type Rest = Rest0 }
 
     def apply[Super <: Coproduct, Sub <: Coproduct](
-        implicit basis: Basis[Super, Sub]): Aux[Super, Sub, basis.Rest] =
-      basis
+        implicit basis: Basis[Super, Sub]): Aux[Super, Sub, basis.Rest] = basis
 
     implicit def cnilBasis[Super <: Coproduct]: Aux[Super, CNil, Super] =
       new Basis[Super, CNil] {

@@ -84,12 +84,11 @@ class HttpClientDispatcherTest extends FunSuite {
   test("unchunked response") {
     val (clientT, serverT) = mkPair[Any, Any]
     val disp = new HttpClientDispatcher(clientT)
-    val httpRes =
-      new DefaultFullHttpResponse(
-        NettyHttp.HttpVersion.HTTP_1_1,
-        NettyHttp.HttpResponseStatus.OK,
-        Unpooled.wrappedBuffer("hello".getBytes("UTF-8"))
-      )
+    val httpRes = new DefaultFullHttpResponse(
+      NettyHttp.HttpVersion.HTTP_1_1,
+      NettyHttp.HttpResponseStatus.OK,
+      Unpooled.wrappedBuffer("hello".getBytes("UTF-8"))
+    )
     val req = Request()
     val f = disp(req)
     Await.result(serverT.read(), timeout)
@@ -154,8 +153,9 @@ class HttpClientDispatcherTest extends FunSuite {
     import OpTransport._
 
     val writep = new Promise[Unit]
-    val transport: OpTransport[Any, Any] =
-      OpTransport[Any, Any](Write(_ => true, writep), Close(Future.Done))
+    val transport: OpTransport[Any, Any] = OpTransport[Any, Any](
+      Write(_ => true, writep),
+      Close(Future.Done))
 
     val disp = new HttpClientDispatcher(transport)
     val req = Request()
@@ -258,8 +258,9 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq =
-      Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+    val recvNettyReq = Await
+      .result(out.read())
+      .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
     val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)
@@ -298,8 +299,9 @@ class HttpClientDispatcherTest extends FunSuite {
     val futureResult = dispatcher(sentRequest)
 
     // get the netty request out of the other end of the transporter
-    val recvNettyReq =
-      Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+    val recvNettyReq = Await
+      .result(out.read())
+      .asInstanceOf[NettyHttp.FullHttpRequest]
 
     // apply the bijection to convert the netty request to a finagle one
     val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)
@@ -339,8 +341,9 @@ class HttpClientDispatcherTest extends FunSuite {
       val futureResult = dispatcher(sentRequest)
 
       // get the netty request out of the other end of the transporter
-      val recvNettyReq =
-        Await.result(out.read()).asInstanceOf[NettyHttp.FullHttpRequest]
+      val recvNettyReq = Await
+        .result(out.read())
+        .asInstanceOf[NettyHttp.FullHttpRequest]
 
       // apply the bijection to convert the netty request to a finagle one
       val recvFinagleReq = Bijections.netty.requestToFinagle(recvNettyReq)

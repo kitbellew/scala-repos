@@ -26,8 +26,7 @@ sealed trait Bound[A] { lhs =>
       case (Open(a), Open(b))     => Open(f(a, b))
     }
 
-  def unary_-()(implicit ev: AdditiveGroup[A]): Bound[A] =
-    lhs.map(-_)
+  def unary_-()(implicit ev: AdditiveGroup[A]): Bound[A] = lhs.map(-_)
   def reciprocal()(implicit ev: MultiplicativeGroup[A]): Bound[A] =
     lhs.map(_.reciprocal)
 

@@ -121,8 +121,10 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
             (Some(param.getText.replace("?", name)), name)
           case (a, _) => (None, a.getText)
         }.unzip
-      val paramText =
-        paramOpt.flatten.mkString(start = "[", sep = ", ", end = "]")
+      val paramText = paramOpt.flatten.mkString(
+        start = "[",
+        sep = ", ",
+        end = "]")
       val bodyText = body.mkString(start = "[", sep = ", ", end = "]")
 
       val typeName = "Λ$"

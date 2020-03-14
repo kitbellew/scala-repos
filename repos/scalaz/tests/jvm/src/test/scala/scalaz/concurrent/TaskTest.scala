@@ -23,8 +23,10 @@ object TaskTest extends SpecLite {
       cur: (=> Int) => Task[Int]): Task[Int] =
     (0 to N).map(cur(_)).foldLeft(seed(0))(Task.taskInstance.lift2(_ + _))
 
-  val options =
-    List[(=> Int) => Task[Int]](n => Task.now(n), Task.delay _, Task.apply _)
+  val options = List[(=> Int) => Task[Int]](
+    n => Task.now(n),
+    Task.delay _,
+    Task.apply _)
   val combinations = (options tuple options)
 
   "left associated binds" ! check {
@@ -261,20 +263,18 @@ object TaskTest extends SpecLite {
       import ju.concurrent.CyclicBarrier
 
       //Ensure at least 6 different threads are available.
-      implicit val es6 =
-        Executors.newFixedThreadPool(6)
+      implicit val es6 = Executors.newFixedThreadPool(6)
       val barrier = new CyclicBarrier(6);
 
       val seenThreadNames = scala.collection.JavaConversions
         .asScalaSet(ju.Collections.synchronizedSet(new ju.HashSet[String]()))
-      val t =
-        for (i <- 0 to 5) yield fork {
-          seenThreadNames += currentThread().getName()
-          //Prevent the execution scheduler from reusing threads. This will only
-          //proceed after all 6 threads reached this point.
-          barrier.await(1, TimeUnit.SECONDS)
-          now(('a' + i).toChar)
-        }
+      val t = for (i <- 0 to 5) yield fork {
+        seenThreadNames += currentThread().getName()
+        //Prevent the execution scheduler from reusing threads. This will only
+        //proceed after all 6 threads reached this point.
+        barrier.await(1, TimeUnit.SECONDS)
+        now(('a' + i).toChar)
+      }
 
       val r = Nondeterminism[Task].nmap6(t(0), t(1), t(2), t(3), t(4), t(5))(
         List(_, _, _, _, _, _))

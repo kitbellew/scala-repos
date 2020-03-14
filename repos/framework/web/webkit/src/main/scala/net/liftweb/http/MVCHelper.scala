@@ -134,38 +134,35 @@ trait MVCHelper extends LiftRules.DispatchPF {
   object MVCResponse {
     implicit def unitToResponse(unit: Unit): MVCResponse =
       new MVCResponse {
-        val toResponse: Box[LiftResponse] =
-          for {
-            session <- S.session
-            req <- S.request
-            template <- templateForPath(req)
-            resp <- session.processTemplate(Full(template), req, req.path, 200)
-          } yield resp
+        val toResponse: Box[LiftResponse] = for {
+          session <- S.session
+          req <- S.request
+          template <- templateForPath(req)
+          resp <- session.processTemplate(Full(template), req, req.path, 200)
+        } yield resp
       }
 
     implicit def bindToResponse(bind: CssBindFunc): MVCResponse =
       new MVCResponse {
-        val toResponse: Box[LiftResponse] =
-          for {
-            session <- S.session
-            req <- S.request
-            template <- templateForPath(req)
-            resp <- session.processTemplate(
-              Full(bind(template)),
-              req,
-              req.path,
-              200)
-          } yield resp
+        val toResponse: Box[LiftResponse] = for {
+          session <- S.session
+          req <- S.request
+          template <- templateForPath(req)
+          resp <- session.processTemplate(
+            Full(bind(template)),
+            req,
+            req.path,
+            200)
+        } yield resp
       }
 
     implicit def nsToResponse(nodes: Seq[Node]): MVCResponse = {
       new MVCResponse {
-        val toResponse: Box[LiftResponse] =
-          for {
-            session <- S.session
-            req <- S.request
-            resp <- session.processTemplate(Full(nodes), req, req.path, 200)
-          } yield resp
+        val toResponse: Box[LiftResponse] = for {
+          session <- S.session
+          req <- S.request
+          resp <- session.processTemplate(Full(nodes), req, req.path, 200)
+        } yield resp
       }
     }
 

@@ -163,41 +163,42 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val productFeatures = model.productFeatures
 
     // convert whiteList's string ID to integer index
-    val whiteList: Option[Set[Int]] =
-      query.whiteList.map(set => set.map(model.itemStringIntMap.get).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
+      set.map(model.itemStringIntMap.get).flatten)
 
     val blackList: Set[String] = query.blackList.getOrElse(Set[String]())
 
     // if unseenOnly is True, get all seen items
-    val seenItems: Set[String] = if (ap.unseenOnly) {
+    val seenItems: Set[String] =
+      if (ap.unseenOnly) {
 
-      // get all user item events which are considered as "seen" events
-      val seenEvents: Iterator[Event] = lEventsDb.findSingleEntity(
-        appId = ap.appId,
-        entityType = "user",
-        entityId = query.user,
-        eventNames = Some(ap.seenEvents),
-        targetEntityType = Some(Some("item")),
-        // set time limit to avoid super long DB access
-        timeout = 200.millis
-      ) match {
-        case Right(x) => x
-        case Left(e) => {
-          logger.error(s"Error when read seen events: ${e}")
-          Iterator[Event]()
-        }
-      }
-
-      seenEvents.map { event =>
-        try { event.targetEntityId.get }
-        catch {
-          case e => {
-            logger.error(s"Can't get targetEntityId of event ${event}.")
-            throw e
+        // get all user item events which are considered as "seen" events
+        val seenEvents: Iterator[Event] = lEventsDb.findSingleEntity(
+          appId = ap.appId,
+          entityType = "user",
+          entityId = query.user,
+          eventNames = Some(ap.seenEvents),
+          targetEntityType = Some(Some("item")),
+          // set time limit to avoid super long DB access
+          timeout = 200.millis
+        ) match {
+          case Right(x) => x
+          case Left(e) => {
+            logger.error(s"Error when read seen events: ${e}")
+            Iterator[Event]()
           }
         }
-      }.toSet
-    } else { Set[String]() }
+
+        seenEvents.map { event =>
+          try { event.targetEntityId.get }
+          catch {
+            case e => {
+              logger.error(s"Can't get targetEntityId of event ${event}.")
+              throw e
+            }
+          }
+        }.toSet
+      } else { Set[String]() }
 
     // get the latest constraint unavailableItems $set event
     val unavailableItems: Set[String] = lEventsDb.findSingleEntity(
@@ -238,12 +239,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     }
 
     // Transform groupedWeights into a map of index -> weight that we can easily query
-    val weights: Map[Int, Double] = (for {
-      group <- groupedWeights
-      item <- group.items
-      index <- model.itemStringIntMap.get(item)
-    } yield (index, group.weight)).toMap
-      .withDefaultValue(1.0)
+    val weights: Map[Int, Double] =
+      (for {
+        group <- groupedWeights
+        item <- group.items
+        index <- model.itemStringIntMap.get(item)
+      } yield (index, group.weight)).toMap
+        .withDefaultValue(1.0)
 
     // combine query's blackList,seenItems and unavailableItems
     // into final blackList.
@@ -252,57 +254,57 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       .map(x => model.itemStringIntMap.get(x))
       .flatten
 
-    val userFeature =
-      model.userStringIntMap
-        .get(query.user)
-        .map { userIndex => userFeatures.get(userIndex) }
-        // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
-        .flatten
+    val userFeature = model.userStringIntMap
+      .get(query.user)
+      .map { userIndex => userFeatures.get(userIndex) }
+      // flatten Option[Option[Array[Double]]] to Option[Array[Double]]
+      .flatten
 
-    val topScores = if (userFeature.isDefined) {
-      // the user has feature vector
-      val uf = userFeature.get
-      val indexScores: Map[Int, Double] =
-        productFeatures.par // convert to parallel collection
-          .filter {
-            case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = finalBlackList
-                )
-          }
-          .map {
-            case (i, (item, feature)) =>
-              // NOTE: feature must be defined, so can call .get
-              val originalScore = dotProduct(uf, feature.get)
-              // Adjusting score according to given item weights
-              val adjustedScore = originalScore * weights(i)
-              (i, adjustedScore)
-          }
-          .filter(_._2 > 0) // only keep items with score > 0
-          .seq // convert back to sequential collection
+    val topScores =
+      if (userFeature.isDefined) {
+        // the user has feature vector
+        val uf = userFeature.get
+        val indexScores: Map[Int, Double] =
+          productFeatures.par // convert to parallel collection
+            .filter {
+              case (i, (item, feature)) =>
+                feature.isDefined &&
+                  isCandidateItem(
+                    i = i,
+                    item = item,
+                    categories = query.categories,
+                    whiteList = whiteList,
+                    blackList = finalBlackList
+                  )
+            }
+            .map {
+              case (i, (item, feature)) =>
+                // NOTE: feature must be defined, so can call .get
+                val originalScore = dotProduct(uf, feature.get)
+                // Adjusting score according to given item weights
+                val adjustedScore = originalScore * weights(i)
+                (i, adjustedScore)
+            }
+            .filter(_._2 > 0) // only keep items with score > 0
+            .seq // convert back to sequential collection
 
-      val ord = Ordering.by[(Int, Double), Double](_._2).reverse
-      val topScores = getTopN(indexScores, query.num)(ord).toArray
+        val ord = Ordering.by[(Int, Double), Double](_._2).reverse
+        val topScores = getTopN(indexScores, query.num)(ord).toArray
 
-      topScores
+        topScores
 
-    } else {
-      // the user doesn't have feature vector.
-      // For example, new user is created after model is trained.
-      logger.info(s"No userFeature found for user ${query.user}.")
-      predictNewUser(
-        model = model,
-        query = query,
-        whiteList = whiteList,
-        blackList = finalBlackList,
-        weights = weights
-      )
-    }
+      } else {
+        // the user doesn't have feature vector.
+        // For example, new user is created after model is trained.
+        logger.info(s"No userFeature found for user ${query.user}.")
+        predictNewUser(
+          model = model,
+          query = query,
+          whiteList = whiteList,
+          blackList = finalBlackList,
+          weights = weights
+        )
+      }
 
     val itemScores = topScores.map {
       case (i, s) =>
@@ -365,34 +367,36 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       productFeatures.get(i).map { case (item, f) => f }.flatten
     }.flatten
 
-    val indexScores: Map[Int, Double] = if (recentFeatures.isEmpty) {
-      logger.info(s"No productFeatures vector for recent items ${recentItems}.")
-      Map[Int, Double]()
-    } else {
-      productFeatures.par // convert to parallel collection
-        .filter {
-          case (i, (item, feature)) =>
-            feature.isDefined &&
-              isCandidateItem(
-                i = i,
-                item = item,
-                categories = query.categories,
-                whiteList = whiteList,
-                blackList = blackList
-              )
-        }
-        .map {
-          case (i, (item, feature)) =>
-            val originalScore = recentFeatures.map { rf =>
-              cosine(rf, feature.get) // feature is defined
-            }.sum
-            // Adjusting score according to given item weights
-            val adjustedScore = originalScore * weights(i)
-            (i, adjustedScore)
-        }
-        .filter(_._2 > 0) // keep items with score > 0
-        .seq // convert back to sequential collection
-    }
+    val indexScores: Map[Int, Double] =
+      if (recentFeatures.isEmpty) {
+        logger.info(
+          s"No productFeatures vector for recent items ${recentItems}.")
+        Map[Int, Double]()
+      } else {
+        productFeatures.par // convert to parallel collection
+          .filter {
+            case (i, (item, feature)) =>
+              feature.isDefined &&
+                isCandidateItem(
+                  i = i,
+                  item = item,
+                  categories = query.categories,
+                  whiteList = whiteList,
+                  blackList = blackList
+                )
+          }
+          .map {
+            case (i, (item, feature)) =>
+              val originalScore = recentFeatures.map { rf =>
+                cosine(rf, feature.get) // feature is defined
+              }.sum
+              // Adjusting score according to given item weights
+              val adjustedScore = originalScore * weights(i)
+              (i, adjustedScore)
+          }
+          .filter(_._2 > 0) // keep items with score > 0
+          .seq // convert back to sequential collection
+      }
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
     val topScores = getTopN(indexScores, query.num)(ord).toArray

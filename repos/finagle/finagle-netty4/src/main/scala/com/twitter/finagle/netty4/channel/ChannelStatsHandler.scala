@@ -20,14 +20,14 @@ private[channel] case class ChannelStats(
     bytesWritten: AtomicLong)
 
 private[netty4] object ChannelStatsHandler {
-  private[channel] val ConnectionStatsKey =
-    AttributeKey.valueOf[ChannelStats]("channel_stats")
-  private[channel] val ConnectionDurationKey =
-    AttributeKey.valueOf[Stopwatch.Elapsed]("connection_duration")
-  private[channel] val ChannelWasWritableKey =
-    AttributeKey.valueOf[Boolean]("channel_has_been_writable")
-  private[channel] val ChannelWritableDurationKey =
-    AttributeKey.valueOf[Stopwatch.Elapsed]("channel_writable_duration")
+  private[channel] val ConnectionStatsKey = AttributeKey.valueOf[ChannelStats](
+    "channel_stats")
+  private[channel] val ConnectionDurationKey = AttributeKey
+    .valueOf[Stopwatch.Elapsed]("connection_duration")
+  private[channel] val ChannelWasWritableKey = AttributeKey.valueOf[Boolean](
+    "channel_has_been_writable")
+  private[channel] val ChannelWritableDurationKey = AttributeKey
+    .valueOf[Stopwatch.Elapsed]("channel_writable_duration")
 }
 
 /**
@@ -45,12 +45,12 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
   private[this] val connectionCount: AtomicLong = new AtomicLong()
 
   private[this] val connects = statsReceiver.counter("connects")
-  private[this] val connectionDuration =
-    statsReceiver.stat("connection_duration")
-  private[this] val connectionReceivedBytes =
-    statsReceiver.stat("connection_received_bytes")
-  private[this] val connectionSentBytes =
-    statsReceiver.stat("connection_sent_bytes")
+  private[this] val connectionDuration = statsReceiver.stat(
+    "connection_duration")
+  private[this] val connectionReceivedBytes = statsReceiver.stat(
+    "connection_received_bytes")
+  private[this] val connectionSentBytes = statsReceiver.stat(
+    "connection_sent_bytes")
   private[this] val receivedBytes = statsReceiver.counter("received_bytes")
   private[this] val sentBytes = statsReceiver.counter("sent_bytes")
   private[this] val closeChans = statsReceiver.counter("closechans")

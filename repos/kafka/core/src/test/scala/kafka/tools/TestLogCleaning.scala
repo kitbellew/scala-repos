@@ -304,8 +304,9 @@ object TestLogCleaning {
     val producer = new KafkaProducer[Array[Byte], Array[Byte]](producerProps)
     val rand = new Random(1)
     val keyCount = (messages / dups).toInt
-    val producedFile =
-      File.createTempFile("kafka-log-cleaner-produced-", ".txt")
+    val producedFile = File.createTempFile(
+      "kafka-log-cleaner-produced-",
+      ".txt")
     println("Logging produce requests to " + producedFile.getAbsolutePath)
     val producedWriter =
       new BufferedWriter(new FileWriter(producedFile), 1024 * 1024)
@@ -352,8 +353,9 @@ object TestLogCleaning {
       topics.map(topic => (topic, 1)).toMap,
       new StringDecoder,
       new StringDecoder)
-    val consumedFile =
-      File.createTempFile("kafka-log-cleaner-consumed-", ".txt")
+    val consumedFile = File.createTempFile(
+      "kafka-log-cleaner-consumed-",
+      ".txt")
     println("Logging consumed messages to " + consumedFile.getAbsolutePath)
     val consumedWriter = new BufferedWriter(new FileWriter(consumedFile))
     for (topic <- topics) {

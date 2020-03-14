@@ -35,12 +35,10 @@ sealed trait MapSubMap extends MapSub {
   protected final def ab_+[K: BuildKeyConstraint, V](
       m: XMap[K, V],
       k: K,
-      v: V): XMap[K, V] =
-    m updated (k, v)
+      v: V): XMap[K, V] = m updated (k, v)
   protected final def ab_-[K: BuildKeyConstraint, V](
       m: XMap[K, V],
-      k: K): XMap[K, V] =
-    m - k
+      k: K): XMap[K, V] = m - k
 }
 
 trait MapSubInstances0 extends MapSub {
@@ -82,8 +80,7 @@ trait MapSubInstances0 extends MapSub {
       def OV = Equal[V]
     }
 
-  implicit def mapFoldable[K]: Foldable[XMap[K, ?]] =
-    new MapFoldable[K] {}
+  implicit def mapFoldable[K]: Foldable[XMap[K, ?]] = new MapFoldable[K] {}
 }
 
 trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
@@ -214,8 +211,7 @@ trait MapSubFunctions extends MapSub {
     * resulting associated value is an arbitrary choice.
     */
   final def mapKeys[K, K2: BuildKeyConstraint, A](m: XMap[K, A])(
-      f: K => K2): XMap[K2, A] =
-    m map { case (k, v) => f(k) -> v }
+      f: K => K2): XMap[K2, A] = m map { case (k, v) => f(k) -> v }
 
   /** Like `unionWith`, but telling `f` about the key. */
   final def unionWithKey[K: BuildKeyConstraint, A](
@@ -234,8 +230,7 @@ trait MapSubFunctions extends MapSub {
     * @note iff `f` gives rise to a [[scalaz.Semigroup]], so does
     *       `unionWith(_, _)(f)`.*/
   final def unionWith[K: BuildKeyConstraint, A](m1: XMap[K, A], m2: XMap[K, A])(
-      f: (A, A) => A): XMap[K, A] =
-    unionWithKey(m1, m2)((_, x, y) => f(x, y))
+      f: (A, A) => A): XMap[K, A] = unionWithKey(m1, m2)((_, x, y) => f(x, y))
 
   /** As with `Map.updated`, but resolve a collision with `f`.  The
     * first argument is guaranteed to be from `m1`.

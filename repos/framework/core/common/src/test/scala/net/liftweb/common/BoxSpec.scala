@@ -392,18 +392,22 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
     }
 
     "be convertable to a Box[List[T]] when some are Full and some are Empty" in {
-      val someBoxes: List[Box[String]] =
-        List(Full("bacon"), Full("sammich"), Empty)
+      val someBoxes: List[Box[String]] = List(
+        Full("bacon"),
+        Full("sammich"),
+        Empty)
       val singleBox = someBoxes.toSingleBox("Box failed!")
 
       singleBox must_== Full(List("bacon", "sammich"))
     }
 
     "be convertable to a ParamFailure[Box[List[T]]] when any are Failure" in {
-      val someBoxes: List[Box[String]] =
-        List(Full("bacon"), Full("sammich"), Failure("I HATE BACON"))
-      val singleBox =
-        someBoxes.toSingleBox("This should be in the param failure.")
+      val someBoxes: List[Box[String]] = List(
+        Full("bacon"),
+        Full("sammich"),
+        Failure("I HATE BACON"))
+      val singleBox = someBoxes.toSingleBox(
+        "This should be in the param failure.")
 
       singleBox must beLike {
         case ParamFailure(message, _, _, _) =>
@@ -421,15 +425,14 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
 
       val singleBox = someBoxes.toSingleBox("Failure.")
 
-      val expectedChain =
-        Failure(
-          "I HATE BACON",
-          Empty,
-          Full(
-            Failure(
-              "MORE BACON FAIL",
-              Empty,
-              Full(Failure("BACON WHY U BACON")))))
+      val expectedChain = Failure(
+        "I HATE BACON",
+        Empty,
+        Full(
+          Failure(
+            "MORE BACON FAIL",
+            Empty,
+            Full(Failure("BACON WHY U BACON")))))
 
       singleBox must beLike {
         case ParamFailure(_, _, chain, _) =>

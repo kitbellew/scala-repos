@@ -45,8 +45,7 @@ private[emitter] object TreeDSL {
 
     // Other constructs
 
-    def :=(that: Tree)(implicit pos: Position): Tree =
-      Assign(self, that)
+    def :=(that: Tree)(implicit pos: Position): Tree = Assign(self, that)
   }
 
   def typeof(expr: Tree)(implicit pos: Position): Tree =

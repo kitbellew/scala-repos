@@ -58,8 +58,10 @@ object CachedWithRecursionGuard {
 
         val provider = TypeName("MyProvider")
 
-        val cachedFunRHS =
-          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
+        val cachedFunRHS = transformRhsToAnalyzeCaches(c)(
+          cacheStatsName,
+          retTp,
+          rhs)
 
         val fun = q"def $cachedFunName(): $retTp = $cachedFunRHS"
         val builder =

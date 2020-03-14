@@ -529,8 +529,8 @@ private[log] class Cleaner(
         stats.readMessage(size)
         if (entry.message.compressionCodec == NoCompressionCodec) {
           if (shouldRetainMessage(source, map, retainDeletes, entry)) {
-            val convertedMessage =
-              entry.message.toFormatVersion(messageFormatVersion)
+            val convertedMessage = entry.message.toFormatVersion(
+              messageFormatVersion)
             ByteBufferMessageSet.writeMessage(
               writeBuffer,
               convertedMessage,

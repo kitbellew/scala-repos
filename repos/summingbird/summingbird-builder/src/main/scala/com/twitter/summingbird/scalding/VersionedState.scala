@@ -81,13 +81,12 @@ private[scalding] class VersionedState(
       * time.
       */
     lazy val requested: Interval[Timestamp] = {
-      val beginning: BatchID =
-        startDate
-          .map(batcher.batchOf(_))
-          .orElse(newestCompleted)
-          .getOrElse {
-            sys.error("You must supply a starting date on the job's first run!")
-          }
+      val beginning: BatchID = startDate
+        .map(batcher.batchOf(_))
+        .orElse(newestCompleted)
+        .getOrElse {
+          sys.error("You must supply a starting date on the job's first run!")
+        }
 
       val end = beginning + maxBatches
       Interval

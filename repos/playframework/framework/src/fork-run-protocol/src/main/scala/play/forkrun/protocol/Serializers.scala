@@ -54,11 +54,13 @@ object Serializers {
         reader.beginCollection()
         reader.hintStaticallyElidedType()
         reader.hintTag(aTag)
-        val a: A =
-          unpicklerA.unpickleEntry(reader.readElement()).asInstanceOf[A]
+        val a: A = unpicklerA
+          .unpickleEntry(reader.readElement())
+          .asInstanceOf[A]
         reader.hintTag(bTag)
-        val b: B =
-          unpicklerB.unpickleEntry(reader.readElement()).asInstanceOf[B]
+        val b: B = unpicklerB
+          .unpickleEntry(reader.readElement())
+          .asInstanceOf[B]
         reader.endCollection()
 
         reader.endEntry()
@@ -68,32 +70,32 @@ object Serializers {
     }
 
   implicit val defaultWatchServicePickler
-      : Pickler[ForkConfig.DefaultWatchService.type] =
-    genPickler[ForkConfig.DefaultWatchService.type]
+      : Pickler[ForkConfig.DefaultWatchService.type] = genPickler[
+    ForkConfig.DefaultWatchService.type]
   implicit val defaultWatchServiceUnpickler
-      : Unpickler[ForkConfig.DefaultWatchService.type] =
-    genUnpickler[ForkConfig.DefaultWatchService.type]
+      : Unpickler[ForkConfig.DefaultWatchService.type] = genUnpickler[
+    ForkConfig.DefaultWatchService.type]
 
   implicit val jDK7WatchServicePickler
-      : Pickler[ForkConfig.JDK7WatchService.type] =
-    genPickler[ForkConfig.JDK7WatchService.type]
+      : Pickler[ForkConfig.JDK7WatchService.type] = genPickler[
+    ForkConfig.JDK7WatchService.type]
   implicit val jDK7WatchServiceUnpickler
-      : Unpickler[ForkConfig.JDK7WatchService.type] =
-    genUnpickler[ForkConfig.JDK7WatchService.type]
+      : Unpickler[ForkConfig.JDK7WatchService.type] = genUnpickler[
+    ForkConfig.JDK7WatchService.type]
 
   implicit val jNotifyWatchServicePickler
-      : Pickler[ForkConfig.JNotifyWatchService.type] =
-    genPickler[ForkConfig.JNotifyWatchService.type]
+      : Pickler[ForkConfig.JNotifyWatchService.type] = genPickler[
+    ForkConfig.JNotifyWatchService.type]
   implicit val jNotifyWatchServiceUnpickler
-      : Unpickler[ForkConfig.JNotifyWatchService.type] =
-    genUnpickler[ForkConfig.JNotifyWatchService.type]
+      : Unpickler[ForkConfig.JNotifyWatchService.type] = genUnpickler[
+    ForkConfig.JNotifyWatchService.type]
 
   implicit val pollingWatchServicePickler
-      : Pickler[ForkConfig.PollingWatchService] =
-    genPickler[ForkConfig.PollingWatchService]
+      : Pickler[ForkConfig.PollingWatchService] = genPickler[
+    ForkConfig.PollingWatchService]
   implicit val pollingWatchServiceUnpickler
-      : Unpickler[ForkConfig.PollingWatchService] =
-    genUnpickler[ForkConfig.PollingWatchService]
+      : Unpickler[ForkConfig.PollingWatchService] = genUnpickler[
+    ForkConfig.PollingWatchService]
 
   implicit val watchServicePickler: Pickler[ForkConfig.WatchService] =
     genPickler[ForkConfig.WatchService]
@@ -101,8 +103,8 @@ object Serializers {
     genUnpickler[ForkConfig.WatchService]
 
   implicit val forkConfigPickler: Pickler[ForkConfig] = genPickler[ForkConfig]
-  implicit val forkConfigUnpickler: Unpickler[ForkConfig] =
-    genUnpickler[ForkConfig]
+  implicit val forkConfigUnpickler
+      : Unpickler[ForkConfig] = genUnpickler[ForkConfig]
 
   implicit val sourceFilePickler: Pickler[Source] = genPickler[Source]
   implicit val sourceFileUnpickler: Unpickler[Source] = genUnpickler[Source]
@@ -231,20 +233,20 @@ object Serializers {
     }
   }
 
-  implicit val compileFailurePickler: Pickler[CompileFailure] =
-    genPickler[CompileFailure]
+  implicit val compileFailurePickler
+      : Pickler[CompileFailure] = genPickler[CompileFailure]
   implicit val compileFailureUnpickler: Unpickler[CompileFailure] =
     genUnpickler[CompileFailure]
 
-  implicit val compileSuccessPickler: Pickler[CompileSuccess] =
-    genPickler[CompileSuccess]
+  implicit val compileSuccessPickler
+      : Pickler[CompileSuccess] = genPickler[CompileSuccess]
   implicit val compileSuccessUnpickler: Unpickler[CompileSuccess] =
     genUnpickler[CompileSuccess]
 
-  implicit val compileResultPickler: Pickler[CompileResult] =
-    genPickler[CompileResult]
-  implicit val compileResultUnpickler: Unpickler[CompileResult] =
-    genUnpickler[CompileResult]
+  implicit val compileResultPickler
+      : Pickler[CompileResult] = genPickler[CompileResult]
+  implicit val compileResultUnpickler
+      : Unpickler[CompileResult] = genUnpickler[CompileResult]
 
   implicit val playServerStartedPickler: Pickler[PlayServerStarted] =
     genPickler[PlayServerStarted]

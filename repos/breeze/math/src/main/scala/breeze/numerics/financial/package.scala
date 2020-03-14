@@ -153,29 +153,32 @@ package object financial {
     val nonZeroCoeffs = coeffs.slice(trailingZeros, tailZerosIdx + 1)
 
     val N = nonZeroCoeffs.length - 1;
-    val complexRoots = if (0 < N) {
-      val A = DenseMatrix.zeros[Double](N, N);
-      //fill the 1th diagnal below the main diagnal with ones
-      val downDiagIdxs = for (i <- (1 until N)) yield (i, i - 1)
-      A(downDiagIdxs) := 1.0
-      A(0 until 1, ::) := nonZeroCoeffs(1 to N) :/ -nonZeroCoeffs(0)
-      val rootEig = eig(A)
+    val complexRoots =
+      if (0 < N) {
+        val A = DenseMatrix.zeros[Double](N, N);
+        //fill the 1th diagnal below the main diagnal with ones
+        val downDiagIdxs = for (i <- (1 until N)) yield (i, i - 1)
+        A(downDiagIdxs) := 1.0
+        A(0 until 1, ::) := nonZeroCoeffs(1 to N) :/ -nonZeroCoeffs(0)
+        val rootEig = eig(A)
 
-      val nonZeroEigNum = rootEig.eigenvalues.length;
-      val complexEig = DenseVector.zeros[Complex](nonZeroEigNum)
-      for (i <- 0 until nonZeroEigNum) {
-        complexEig(i) =
-          Complex(rootEig.eigenvalues(i), rootEig.eigenvaluesComplex(i))
-      }
+        val nonZeroEigNum = rootEig.eigenvalues.length;
+        val complexEig = DenseVector.zeros[Complex](nonZeroEigNum)
+        for (i <- 0 until nonZeroEigNum) {
+          complexEig(i) = Complex(
+            rootEig.eigenvalues(i),
+            rootEig.eigenvaluesComplex(i))
+        }
 
-      complexEig
-    } else { DenseVector.zeros[Complex](N + 1) }
+        complexEig
+      } else { DenseVector.zeros[Complex](N + 1) }
     //pading 0 to the end
-    val fullRoots = if (0 < trailingZeros) {
-      DenseVector.vertcat(
-        complexRoots,
-        DenseVector.zeros[Complex](trailingZeros))
-    } else { complexRoots }
+    val fullRoots =
+      if (0 < trailingZeros) {
+        DenseVector.vertcat(
+          complexRoots,
+          DenseVector.zeros[Complex](trailingZeros))
+      } else { complexRoots }
     fullRoots
   }
 
@@ -192,8 +195,9 @@ package object financial {
     )
     val rates = realRes.mapValues(v => 1.0 / v - 1.0)
 
-    val rate = if (rates.length <= 0) { None }
-    else { Option[Double](rates(argmin(abs(rates)))) }
+    val rate =
+      if (rates.length <= 0) { None }
+      else { Option[Double](rates(argmin(abs(rates)))) }
     rate
   }
 
@@ -227,11 +231,12 @@ package object financial {
       when: PaymentTime = End) = {
     require(pmt != 0, "The payment of annuity(pmt) can not be zero!")
 
-    val nper = if (0 == rate) { (-fv + pv) / pmt; }
-    else {
-      val z = pmt * (1.0 + rate * when.t) / rate
-      log((z - fv) / (z + pv)) / log(1.0 + rate)
-    }
+    val nper =
+      if (0 == rate) { (-fv + pv) / pmt; }
+      else {
+        val z = pmt * (1.0 + rate * when.t) / rate
+        log((z - fv) / (z + pv)) / log(1.0 + rate)
+      }
     nper
   }
 

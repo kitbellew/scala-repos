@@ -17,8 +17,8 @@ class ScalaArrangementParseInfo {
     * All entries created from PSI tree by the moment.
     */
   private val myEntries = mutable.Buffer[ScalaArrangementEntry]()
-  private val methodToEntry =
-    mutable.HashMap[ScFunction, ScalaArrangementEntry]()
+  private val methodToEntry = mutable
+    .HashMap[ScFunction, ScalaArrangementEntry]()
 
   /**
     * Anchors for method dependencies. Any method may only have one root it is connected to. When rearranging with some
@@ -29,8 +29,8 @@ class ScalaArrangementParseInfo {
   /**
     * Maps dependency root to set of its dependent methods.
     */
-  private val methodDependencies =
-    mutable.HashMap[ScFunction, immutable.HashSet[ScFunction]]()
+  private val methodDependencies = mutable
+    .HashMap[ScFunction, immutable.HashSet[ScFunction]]()
   private val currentMethodDependencyRoots = mutable.HashSet[ScFunction]()
   private val currentDependentMethods = mutable.HashSet[ScFunction]()
   private var rebuildMethodDependencies = true
@@ -57,9 +57,10 @@ class ScalaArrangementParseInfo {
       currentMethodDependencyRoots += caller
     }
     currentDependentMethods += callee
-    var callerDependent = if (!methodDependencies.contains(caller)) {
-      immutable.HashSet[ScFunction]()
-    } else { methodDependencies(caller) }
+    var callerDependent =
+      if (!methodDependencies.contains(caller)) {
+        immutable.HashSet[ScFunction]()
+      } else { methodDependencies(caller) }
     if (!callerDependent.contains(callee)) {
       callerDependent = callerDependent + callee
     }
@@ -87,8 +88,9 @@ class ScalaArrangementParseInfo {
     val entry: ScalaArrangementEntry = methodToEntry(method)
     val result: ScalaArrangementDependency = new ScalaArrangementDependency(
       entry)
-    var toProcess: List[(ScFunction, ScalaArrangementDependency)] =
-      List[(ScFunction, ScalaArrangementDependency)]()
+    var toProcess: List[(ScFunction, ScalaArrangementDependency)] = List[(
+        ScFunction,
+        ScalaArrangementDependency)]()
     toProcess = (method, result) :: toProcess
     var usedMethods = HashSet[ScFunction]()
     while (toProcess.nonEmpty) {

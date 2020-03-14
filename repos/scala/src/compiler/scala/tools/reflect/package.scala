@@ -102,8 +102,7 @@ package object reflect {
             case NSC_ERROR   => API_ERROR
           })
 
-      def displayPrompt(): Unit =
-        frontEnd.interactive()
+      def displayPrompt(): Unit = frontEnd.interactive()
 
       override def flush(): Unit = {
         super.flush()

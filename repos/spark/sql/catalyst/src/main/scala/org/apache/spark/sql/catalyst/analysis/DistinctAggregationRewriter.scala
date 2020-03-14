@@ -127,8 +127,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
     // Aggregation strategy can handle the query with single distinct
     if (distinctAggGroups.size > 1) {
       // Create the attributes for the grouping id and the group by clause.
-      val gid =
-        new AttributeReference("gid", IntegerType, false)(isGenerated = true)
+      val gid = new AttributeReference("gid", IntegerType, false)(
+        isGenerated = true)
       val groupByMap = a.groupingExpressions.collect {
         case ne: NamedExpression => ne -> ne.toAttribute
         case e                   => e -> new AttributeReference(e.sql, e.dataType, e.nullable)()
@@ -146,8 +146,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
 
       // Setup unique distinct aggregate children.
       val distinctAggChildren = distinctAggGroups.keySet.flatten.toSeq.distinct
-      val distinctAggChildAttrMap =
-        distinctAggChildren.map(expressionAttributePair)
+      val distinctAggChildAttrMap = distinctAggChildren.map(
+        expressionAttributePair)
       val distinctAggChildAttrs = distinctAggChildAttrMap.map(_._2)
 
       // Setup expand & aggregate operators for distinct aggregate expressions.
@@ -178,8 +178,8 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       val regularAggExprs = aggExpressions.filter(!_.isDistinct)
       val regularAggChildren =
         regularAggExprs.flatMap(_.aggregateFunction.children).distinct
-      val regularAggChildAttrMap =
-        regularAggChildren.map(expressionAttributePair)
+      val regularAggChildAttrMap = regularAggChildren.map(
+        expressionAttributePair)
 
       // Setup aggregates for 'regular' aggregate expressions.
       val regularGroupId = Literal(0)
@@ -213,13 +213,14 @@ object DistinctAggregationRewriter extends Rule[LogicalPlan] {
       }
 
       // Construct the regular aggregate input projection only if we need one.
-      val regularAggProjection = if (regularAggExprs.nonEmpty) {
-        Seq(
-          a.groupingExpressions ++
-            distinctAggChildren.map(nullify) ++
-            Seq(regularGroupId) ++
-            regularAggChildren)
-      } else { Seq.empty[Seq[Expression]] }
+      val regularAggProjection =
+        if (regularAggExprs.nonEmpty) {
+          Seq(
+            a.groupingExpressions ++
+              distinctAggChildren.map(nullify) ++
+              Seq(regularGroupId) ++
+              regularAggChildren)
+        } else { Seq.empty[Seq[Expression]] }
 
       // Construct the distinct aggregate input projections.
       val regularAggNulls = regularAggChildren.map(nullify)

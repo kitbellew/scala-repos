@@ -13,8 +13,8 @@ private final class ApplePush(
     password: String,
     enabled: Boolean) {
 
-  private val actor =
-    system.actorOf(Props(classOf[ApnsActor], certificate, password))
+  private val actor = system.actorOf(
+    Props(classOf[ApnsActor], certificate, password))
 
   def apply(userId: String)(data: => PushApi.Data): Funit =
     getDevice(userId) map {

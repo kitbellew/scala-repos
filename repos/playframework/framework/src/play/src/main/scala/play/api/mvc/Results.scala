@@ -59,11 +59,10 @@ final class ResponseHeader(
 }
 object ResponseHeader {
   val basicDateFormatPattern = "EEE, dd MMM yyyy HH:mm:ss"
-  val httpDateFormat: DateTimeFormatter =
-    DateTimeFormat
-      .forPattern(basicDateFormatPattern + " 'GMT'")
-      .withLocale(java.util.Locale.ENGLISH)
-      .withZone(DateTimeZone.UTC)
+  val httpDateFormat: DateTimeFormatter = DateTimeFormat
+    .forPattern(basicDateFormatPattern + " 'GMT'")
+    .withLocale(java.util.Locale.ENGLISH)
+    .withZone(DateTimeZone.UTC)
 
   def apply(
       status: Int,
@@ -357,8 +356,7 @@ trait LegacyI18nSupport {
       * @param lang the language to store for the user
       * @return the new result
       */
-    def withLang(lang: Lang): Result =
-      messagesApi.setLang(result, lang)
+    def withLang(lang: Lang): Result = messagesApi.setLang(result, lang)
 
     /**
       * Clears the user's language by discarding the language cookie set by withLang
@@ -370,8 +368,7 @@ trait LegacyI18nSupport {
       *
       * @return the new result
       */
-    def clearingLang: Result =
-      messagesApi.clearLang(result)
+    def clearingLang: Result = messagesApi.clearLang(result)
 
   }
 
@@ -576,12 +573,14 @@ trait Results {
   val NonAuthoritativeInformation = new Status(NON_AUTHORITATIVE_INFORMATION)
 
   /** Generates a ‘204 NO_CONTENT’ result. */
-  val NoContent =
-    Result(header = ResponseHeader(NO_CONTENT), body = HttpEntity.NoEntity)
+  val NoContent = Result(
+    header = ResponseHeader(NO_CONTENT),
+    body = HttpEntity.NoEntity)
 
   /** Generates a ‘205 RESET_CONTENT’ result. */
-  val ResetContent =
-    Result(header = ResponseHeader(RESET_CONTENT), body = HttpEntity.NoEntity)
+  val ResetContent = Result(
+    header = ResponseHeader(RESET_CONTENT),
+    body = HttpEntity.NoEntity)
 
   /** Generates a ‘206 PARTIAL_CONTENT’ result. */
   val PartialContent = new Status(PARTIAL_CONTENT)
@@ -611,8 +610,9 @@ trait Results {
   def SeeOther(url: String): Result = Redirect(url, SEE_OTHER)
 
   /** Generates a ‘304 NOT_MODIFIED’ result. */
-  val NotModified =
-    Result(header = ResponseHeader(NOT_MODIFIED), body = HttpEntity.NoEntity)
+  val NotModified = Result(
+    header = ResponseHeader(NOT_MODIFIED),
+    body = HttpEntity.NoEntity)
 
   /**
     * Generates a ‘307 TEMPORARY_REDIRECT’ simple result.

@@ -55,8 +55,8 @@ case class BatchPythonEvaluation(
   protected override def doExecute(): RDD[InternalRow] = {
     val inputRDD = child.execute().map(_.copy())
     val bufferSize = inputRDD.conf.getInt("spark.buffer.size", 65536)
-    val reuseWorker =
-      inputRDD.conf.getBoolean("spark.python.worker.reuse", defaultValue = true)
+    val reuseWorker = inputRDD.conf
+      .getBoolean("spark.python.worker.reuse", defaultValue = true)
 
     inputRDD.mapPartitions { iter =>
       EvaluatePython.registerPicklers() // register pickler for Row
@@ -84,11 +84,12 @@ case class BatchPythonEvaluation(
       val context = TaskContext.get()
 
       // Output iterator for results from Python.
-      val outputIterator = new PythonRunner(
-        udf.func,
-        bufferSize,
-        reuseWorker
-      ).compute(inputIterator, context.partitionId(), context)
+      val outputIterator =
+        new PythonRunner(
+          udf.func,
+          bufferSize,
+          reuseWorker
+        ).compute(inputIterator, context.partitionId(), context)
 
       val unpickle = new Unpickler
       val row = new GenericMutableRow(1)

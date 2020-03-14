@@ -29,8 +29,10 @@ trait AccessTokenService {
       token = makeAccessTokenString
       hash = tokenToHash(token)
     } while (AccessTokens.filter(_.tokenHash === hash.bind).exists.run)
-    val newToken =
-      AccessToken(userName = userName, note = note, tokenHash = hash)
+    val newToken = AccessToken(
+      userName = userName,
+      note = note,
+      tokenHash = hash)
     val tokenId =
       (AccessTokens returning AccessTokens.map(_.accessTokenId)) += newToken
     (tokenId, token)

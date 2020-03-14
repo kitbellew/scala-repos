@@ -45,9 +45,11 @@ trait StaticInlinerSpecs[M[+_]]
     "detect and resolve addition" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Join(Add, Cross(None), Const(CLong(42))(line), Const(CNum(3.14))(line))(
-          line)
+      val input = Join(
+        Add,
+        Cross(None),
+        Const(CLong(42))(line),
+        Const(CNum(3.14))(line))(line)
 
       val expected = Const(CNum(45.14))(line)
 
@@ -72,9 +74,11 @@ trait StaticInlinerSpecs[M[+_]]
     "produce CUndefined in cases where the operation is undefined" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Join(Div, Cross(None), Const(CLong(42))(line), Const(CLong(0))(line))(
-          line)
+      val input = Join(
+        Div,
+        Cross(None),
+        Const(CLong(42))(line),
+        Const(CLong(0))(line))(line)
 
       val expected = Const(CUndefined)(line)
 

@@ -56,8 +56,9 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
       expectedNodeText: String): Seq[(String, String)] = {
     props.map {
       case Token(x, keysAndValue) if x == expectedNodeText =>
-        val key =
-          keysAndValue.init.map { x => unquoteString(x.text) }.mkString(".")
+        val key = keysAndValue.init
+          .map { x => unquoteString(x.text) }
+          .mkString(".")
         val value = unquoteString(keysAndValue.last.text)
         (key, value)
       case p =>
@@ -84,16 +85,16 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
 
       case Token("TOK_EXPLAIN", explainArgs)
           if "TOK_CREATETABLE" == explainArgs.head.text =>
-        val Some(crtTbl) :: _ :: extended :: Nil =
-          getClauses(
-            Seq("TOK_CREATETABLE", "FORMATTED", "EXTENDED"),
-            explainArgs)
+        val Some(crtTbl) :: _ :: extended :: Nil = getClauses(
+          Seq("TOK_CREATETABLE", "FORMATTED", "EXTENDED"),
+          explainArgs)
         ExplainCommand(nodeToPlan(crtTbl), extended = extended.isDefined)
 
       case Token("TOK_EXPLAIN", explainArgs) =>
         // Ignore FORMATTED if present.
-        val Some(query) :: _ :: extended :: Nil =
-          getClauses(Seq("TOK_QUERY", "FORMATTED", "EXTENDED"), explainArgs)
+        val Some(query) :: _ :: extended :: Nil = getClauses(
+          Seq("TOK_QUERY", "FORMATTED", "EXTENDED"),
+          explainArgs)
         ExplainCommand(nodeToPlan(query), extended = extended.isDefined)
 
       case Token("TOK_REFRESHTABLE", nameParts :: Nil) =>
@@ -180,8 +181,9 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
             parseFailed("Invalid CREATE FUNCTION command", node)
         }
         // Extract other keywords, if they exist
-        val Seq(rList, temp) =
-          getClauses(Seq("TOK_RESOURCE_LIST", "TOK_TEMPORARY"), otherArgs)
+        val Seq(rList, temp) = getClauses(
+          Seq("TOK_RESOURCE_LIST", "TOK_TEMPORARY"),
+          otherArgs)
         val resources: Seq[(String, String)] = rList.toSeq.flatMap {
           case Token("TOK_RESOURCE_LIST", resList) =>
             resList.map {
@@ -253,9 +255,10 @@ private[sql] class SparkQl(conf: ParserConf = SimpleParserConf())
               "a CREATE TABLE AS SELECT statement does not allow column definitions.")
           }
 
-          val mode = if (ifNotExists.isDefined) { SaveMode.Ignore }
-          else if (temp.isDefined) { SaveMode.Overwrite }
-          else { SaveMode.ErrorIfExists }
+          val mode =
+            if (ifNotExists.isDefined) { SaveMode.Ignore }
+            else if (temp.isDefined) { SaveMode.Overwrite }
+            else { SaveMode.ErrorIfExists }
 
           CreateTableUsingAsSelect(
             tableIdent,

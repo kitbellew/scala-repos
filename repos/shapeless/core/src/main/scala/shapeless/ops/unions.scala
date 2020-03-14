@@ -143,11 +143,10 @@ object union {
 
     type Aux[L <: Coproduct, Out0 <: Coproduct] = Fields[L] { type Out = Out0 }
 
-    implicit val cnilFields: Aux[CNil, CNil] =
-      new Fields[CNil] {
-        type Out = CNil
-        def apply(u: CNil) = u
-      }
+    implicit val cnilFields: Aux[CNil, CNil] = new Fields[CNil] {
+      type Out = CNil
+      def apply(u: CNil) = u
+    }
 
     implicit def cconsFields[K, V, T <: Coproduct](implicit
         key: Witness.Aux[K],
@@ -190,8 +189,8 @@ object union {
         def apply(l: CNil) = Map.empty
       }
 
-    implicit val cnilToMapAnyNothing: Aux[CNil, Any, Nothing] =
-      cnilToMap[Any, Nothing]
+    implicit val cnilToMapAnyNothing
+        : Aux[CNil, Any, Nothing] = cnilToMap[Any, Nothing]
 
     implicit def csingleToMap[K, V](implicit
         wk: Witness.Aux[K]

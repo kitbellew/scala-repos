@@ -107,8 +107,8 @@ object DevServerStart {
         // Create reloadable ApplicationProvider
         val appProvider = new ApplicationProvider {
 
-          var lastState: Try[Application] =
-            Failure(new PlayException("Not initialized", "?"))
+          var lastState: Try[Application] = Failure(
+            new PlayException("Not initialized", "?"))
           var currentWebCommands: Option[WebCommands] = None
 
           override def current: Option[Application] = lastState.toOption
@@ -152,8 +152,10 @@ object DevServerStart {
                               lastState.foreach(Play.stop)
 
                               // Create the new environment
-                              val environment =
-                                Environment(path, projectClassloader, Mode.Dev)
+                              val environment = Environment(
+                                path,
+                                projectClassloader,
+                                Mode.Dev)
                               val sourceMapper = new SourceMapper {
                                 def sourceOf(
                                     className: String,
@@ -178,9 +180,8 @@ object DevServerStart {
                               val webCommands = new DefaultWebCommands
                               currentWebCommands = Some(webCommands)
 
-                              val newApplication =
-                                Threads.withContextClassLoader(
-                                  projectClassloader) {
+                              val newApplication = Threads
+                                .withContextClassLoader(projectClassloader) {
                                   val context = ApplicationLoader.createContext(
                                     environment,
                                     dirAndDevSettings,
@@ -257,8 +258,8 @@ object DevServerStart {
         // config will lead to resource conflicts, for example, if the actor system is configured to open a remote port,
         // then both the dev mode and the application actor system will attempt to open that remote port, and one of
         // them will fail.
-        val devModeAkkaConfig =
-          serverConfig.configuration.underlying.getConfig("play.akka.dev-mode")
+        val devModeAkkaConfig = serverConfig.configuration.underlying
+          .getConfig("play.akka.dev-mode")
         val actorSystem = ActorSystem("play-dev-mode", devModeAkkaConfig)
 
         val serverContext = ServerProvider.Context(

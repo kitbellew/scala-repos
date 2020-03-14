@@ -39,8 +39,10 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
 
   override def beforeAll() {
     super.beforeAll()
-    val transportConf =
-      SparkTransportConf.fromSparkConf(conf, "shuffle", numUsableCores = 2)
+    val transportConf = SparkTransportConf.fromSparkConf(
+      conf,
+      "shuffle",
+      numUsableCores = 2)
     rpcHandler = new ExternalShuffleBlockHandler(transportConf, null)
     val transportContext = new TransportContext(transportConf, rpcHandler)
     server = transportContext.createServer()
@@ -70,8 +72,10 @@ class ExternalShuffleServiceSuite extends ShuffleSuite with BeforeAndAfterAll {
     // Therefore, we should wait until all slaves are up
     sc.jobProgressListener.waitUntilExecutorsUp(2, 60000)
 
-    val rdd =
-      sc.parallelize(0 until 1000, 10).map(i => (i, 1)).reduceByKey(_ + _)
+    val rdd = sc
+      .parallelize(0 until 1000, 10)
+      .map(i => (i, 1))
+      .reduceByKey(_ + _)
 
     rdd.count()
     rdd.count()

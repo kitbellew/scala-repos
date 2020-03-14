@@ -152,12 +152,14 @@ class StreamingLogisticRegressionSuite
       })
 
     // collect the output as (true, estimated) tuples
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
 
     // check that at least 60% of predictions are correct on all batches
-    val errors =
-      output.map(batch => batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
+    val errors = output.map(batch =>
+      batch.map(p => math.abs(p._1 - p._2)).sum / nPoints)
 
     assert(errors.forall(x => x <= 0.4))
   }
@@ -189,8 +191,10 @@ class StreamingLogisticRegressionSuite
         model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
       })
 
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
 
     // assert that prediction error improves, ensuring that the updated model is being used
     val error = output
@@ -213,7 +217,9 @@ class StreamingLogisticRegressionSuite
         model.trainOn(inputDStream)
         model.predictOnValues(inputDStream.map(x => (x.label, x.features)))
       })
-    val output: Seq[Seq[(Double, Double)]] =
-      runStreams(ssc, numBatches, numBatches)
+    val output: Seq[Seq[(Double, Double)]] = runStreams(
+      ssc,
+      numBatches,
+      numBatches)
   }
 }

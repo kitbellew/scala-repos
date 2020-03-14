@@ -82,8 +82,11 @@ class ThrottlerTransportAdapterSpec
   }
 
   def throttle(direction: Direction, mode: ThrottleMode): Boolean = {
-    val rootBAddress =
-      Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val rootBAddress = Address(
+      "akka",
+      "systemB",
+      "localhost",
+      rootB.address.port.get)
     val transport = system
       .asInstanceOf[ExtendedActorSystem]
       .provider
@@ -95,8 +98,11 @@ class ThrottlerTransportAdapterSpec
   }
 
   def disassociate(): Boolean = {
-    val rootBAddress =
-      Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val rootBAddress = Address(
+      "akka",
+      "systemB",
+      "localhost",
+      rootB.address.port.get)
     val transport = system
       .asInstanceOf[ExtendedActorSystem]
       .provider
@@ -113,8 +119,8 @@ class ThrottlerTransportAdapterSpec
       val tester =
         system.actorOf(Props(classOf[ThrottlingTester], here, self)) ! "start"
 
-      val time =
-        NANOSECONDS.toSeconds(expectMsgType[Long]((TotalTime + 3).seconds))
+      val time = NANOSECONDS.toSeconds(
+        expectMsgType[Long]((TotalTime + 3).seconds))
       log.warning("Total time of transmission: " + time)
       time should be > (TotalTime - 3)
       throttle(Direction.Send, Unthrottled) should ===(true)

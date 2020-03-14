@@ -54,8 +54,8 @@ trait RandomLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def reducer(ctx: MorphContext) =
         new Reducer[Result] {
           def reduce(schema: CSchema, range: Range): Result = {
-            val cols =
-              schema.columns(JObjectFixedT(Map(paths.Value.name -> JNumberT)))
+            val cols = schema.columns(
+              JObjectFixedT(Map(paths.Value.name -> JNumberT)))
 
             val result: Set[Result] = cols map {
               case (c: LongColumn) =>

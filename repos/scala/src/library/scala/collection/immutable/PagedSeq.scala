@@ -95,13 +95,11 @@ object PagedSeq {
 
   /** Constructs a paged character sequence from a file with given name
     */
-  def fromFile(source: String): PagedSeq[Char] =
-    fromFile(new File(source))
+  def fromFile(source: String): PagedSeq[Char] = fromFile(new File(source))
 
   /** Constructs a paged character sequence from a scala.io.Source value
     */
-  def fromSource(source: scala.io.Source) =
-    fromLines(source.getLines())
+  def fromSource(source: scala.io.Source) = fromLines(source.getLines())
 }
 
 import PagedSeq._

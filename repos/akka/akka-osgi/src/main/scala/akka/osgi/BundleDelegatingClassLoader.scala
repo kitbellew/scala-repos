@@ -88,11 +88,10 @@ class BundleDelegatingClassLoader(
           val direct: Set[Bundle] =
             if (wiring == null) Set.empty
             else {
-              val requiredWires: List[BundleWire] =
-                wiring
-                  .getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)
-                  .asScala
-                  .toList
+              val requiredWires: List[BundleWire] = wiring
+                .getRequiredWires(BundleRevision.PACKAGE_NAMESPACE)
+                .asScala
+                .toList
               requiredWires.flatMap { wire ⇒
                 Option(wire.getProviderWiring) map { _.getBundle }
               }.toSet

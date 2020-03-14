@@ -364,8 +364,10 @@ class SecurityServiceSpec
     }
 
     "create root-like API key with defaults" in {
-      val request =
-        v1.NewAPIKeyRequest(Some("root-like"), None, rootGrantRequests)
+      val request = v1.NewAPIKeyRequest(
+        Some("root-like"),
+        None,
+        rootGrantRequests)
       createAPIKey(rootAPIKey, request) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>

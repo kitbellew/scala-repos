@@ -216,8 +216,9 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
       (simplePlanCost, simplePlan) shouldBe result
     }
     "handle an example with 6 matrices" in {
-      val result =
-        optimizeProductChain(productSequence, Some(ring, MatrixJoiner2.default))
+      val result = optimizeProductChain(
+        productSequence,
+        Some(ring, MatrixJoiner2.default))
       (optimizedPlanCost, optimizedPlan) shouldBe result
     }
 

@@ -79,25 +79,26 @@ case class ScalaMethodEvaluator(
       if (result == FromLocalArgEvaluator.skipMarker) None else Some(result)
     }
     try {
-      val referenceType: ReferenceType =
-        obj match {
-          case o: ObjectReference =>
-            val qualifierType = o.referenceType()
-            debugProcess.findClass(
-              context,
-              qualifierType.name,
-              qualifierType.classLoader)
-          case obj: ClassType =>
-            debugProcess.findClass(context, obj.name, context.getClassLoader)
-          case _ =>
-            null
-        }
+      val referenceType: ReferenceType = obj match {
+        case o: ObjectReference =>
+          val qualifierType = o.referenceType()
+          debugProcess.findClass(
+            context,
+            qualifierType.name,
+            qualifierType.classLoader)
+        case obj: ClassType =>
+          debugProcess.findClass(context, obj.name, context.getClassLoader)
+        case _ =>
+          null
+      }
       val sign: String =
         if (signature != null && args.size == argumentEvaluators.size)
           signature.getName(debugProcess)
         else null
-      var mName: String =
-        DebuggerUtilsEx.methodName(referenceType.name, methodName, sign)
+      var mName: String = DebuggerUtilsEx.methodName(
+        referenceType.name,
+        methodName,
+        sign)
       def findMethod(referenceType: ReferenceType): Method = {
         import scala.collection.JavaConversions._
         def sortedMethodCandidates: List[Method] = {

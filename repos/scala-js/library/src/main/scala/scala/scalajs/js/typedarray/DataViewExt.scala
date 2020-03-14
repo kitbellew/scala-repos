@@ -18,10 +18,12 @@ object DataViewExt {
       */
     @inline
     def getInt64(index: Int, littleEndian: Boolean = false): Long = {
-      val high =
-        dataView.getInt32(index + (if (littleEndian) 4 else 0), littleEndian)
-      val low =
-        dataView.getInt32(index + (if (littleEndian) 0 else 4), littleEndian)
+      val high = dataView.getInt32(
+        index + (if (littleEndian) 4 else 0),
+        littleEndian)
+      val low = dataView.getInt32(
+        index + (if (littleEndian) 0 else 4),
+        littleEndian)
       (high.toLong << 32) | (low.toLong & 0xFFFFFFFFL)
     }
 

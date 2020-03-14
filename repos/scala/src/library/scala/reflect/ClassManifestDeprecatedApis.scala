@@ -90,8 +90,7 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   @deprecated(
     "Use scala.reflect.runtime.universe.TypeTag for subtype checking instead",
     "2.10.0")
-  def >:>(that: ClassManifest[_]): Boolean =
-    that <:< this
+  def >:>(that: ClassManifest[_]): Boolean = that <:< this
 
   override def canEqual(other: Any) =
     other match {

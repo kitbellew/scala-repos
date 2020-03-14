@@ -58,8 +58,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   // Binary compatibility for the old (l, m, h) encoding
 
   @deprecated("Use the constructor with (lo, hi) instead.", "0.6.6")
-  def this(l: Int, m: Int, h: Int) =
-    this(l | (m << 22), (m >> 10) | (h << 12))
+  def this(l: Int, m: Int, h: Int) = this(l | (m << 22), (m >> 10) | (h << 12))
 
   @deprecated("Use lo and hi instead.", "0.6.6")
   def l: Int = lo & ((1 << 22) - 1)
@@ -78,8 +77,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
       case _              => false
     }
 
-  override def hashCode(): Int =
-    lo ^ hi
+  override def hashCode(): Int = lo ^ hi
 
   // String operations
 
@@ -172,11 +170,9 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   private def inline_equals(b: RuntimeLong): Boolean =
     a.lo == b.lo && a.hi == b.hi
 
-  def equals(b: RuntimeLong): Boolean =
-    inline_equals(b)
+  def equals(b: RuntimeLong): Boolean = inline_equals(b)
 
-  def notEquals(b: RuntimeLong): Boolean =
-    !inline_equals(b)
+  def notEquals(b: RuntimeLong): Boolean = !inline_equals(b)
 
   def <(b: RuntimeLong): Boolean = {
     val ahi = a.hi
@@ -217,14 +213,11 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   def unary_~ : RuntimeLong = // scalastyle:ignore
     new RuntimeLong(~lo, ~hi)
 
-  def |(b: RuntimeLong): RuntimeLong =
-    new RuntimeLong(a.lo | b.lo, a.hi | b.hi)
+  def |(b: RuntimeLong): RuntimeLong = new RuntimeLong(a.lo | b.lo, a.hi | b.hi)
 
-  def &(b: RuntimeLong): RuntimeLong =
-    new RuntimeLong(a.lo & b.lo, a.hi & b.hi)
+  def &(b: RuntimeLong): RuntimeLong = new RuntimeLong(a.lo & b.lo, a.hi & b.hi)
 
-  def ^(b: RuntimeLong): RuntimeLong =
-    new RuntimeLong(a.lo ^ b.lo, a.hi ^ b.hi)
+  def ^(b: RuntimeLong): RuntimeLong = new RuntimeLong(a.lo ^ b.lo, a.hi ^ b.hi)
 
   // Shifts
 
@@ -621,8 +614,7 @@ final class RuntimeLong(val lo: Int, val hi: Int)
   }
 
   @deprecated("Use java.lang.Long.bitCount instead.", "0.6.6")
-  def bitCount: Int =
-    Integer.bitCount(lo) + Integer.bitCount(hi)
+  def bitCount: Int = Integer.bitCount(lo) + Integer.bitCount(hi)
 
   @deprecated("Use java.lang.Long.signum instead.", "0.6.6")
   def signum: RuntimeLong = {
@@ -694,16 +686,13 @@ object RuntimeLong {
   private object Utils {
 
     /** Tests whether the long (lo, hi) is 0. */
-    @inline def isZero(lo: Int, hi: Int): Boolean =
-      (lo | hi) == 0
+    @inline def isZero(lo: Int, hi: Int): Boolean = (lo | hi) == 0
 
     /** Tests whether the long (lo, hi)'s mathematic value fits in a signed Int. */
-    @inline def isInt32(lo: Int, hi: Int): Boolean =
-      hi == (lo >> 31)
+    @inline def isInt32(lo: Int, hi: Int): Boolean = hi == (lo >> 31)
 
     /** Tests whether the long (_, hi)'s mathematic value fits in an unsigned Int. */
-    @inline def isUInt32(hi: Int): Boolean =
-      hi == 0
+    @inline def isUInt32(hi: Int): Boolean = hi == 0
 
     /** Tests whether an unsigned long (lo, hi) is a safe Double.
       *  This test is in fact slightly stricter than necessary, as it tests
@@ -726,12 +715,10 @@ object RuntimeLong {
       new RuntimeLong(unsignedSafeDoubleLo(x), unsignedSafeDoubleHi(x))
 
     /** Computes the lo part of a long from an unsigned safe double. */
-    @inline def unsignedSafeDoubleLo(x: Double): Int =
-      rawToInt(x)
+    @inline def unsignedSafeDoubleLo(x: Double): Int = rawToInt(x)
 
     /** Computes the hi part of a long from an unsigned safe double. */
-    @inline def unsignedSafeDoubleHi(x: Double): Int =
-      rawToInt(x / TwoPow32)
+    @inline def unsignedSafeDoubleHi(x: Double): Int = rawToInt(x / TwoPow32)
 
     /** Performs the JavaScript operation `(x | 0)`. */
     @inline def rawToInt(x: Double): Int =
@@ -739,8 +726,7 @@ object RuntimeLong {
         .asInstanceOf[Int]
 
     /** Tests whether the given non-zero unsigned Int is an exact power of 2. */
-    @inline def isPowerOfTwo_IKnowItsNot0(i: Int): Boolean =
-      (i & (i - 1)) == 0
+    @inline def isPowerOfTwo_IKnowItsNot0(i: Int): Boolean = (i & (i - 1)) == 0
 
     /** Returns the log2 of the given unsigned Int assuming it is an exact power of 2. */
     @inline def log2OfPowerOfTwo(i: Int): Int =

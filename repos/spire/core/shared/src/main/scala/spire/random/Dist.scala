@@ -31,8 +31,7 @@ trait Dist[@sp A] extends Any { self =>
     }
   }
 
-  final def map[B](f: A => B): Dist[B] =
-    new DistFromGen(g => f(apply(g)))
+  final def map[B](f: A => B): Dist[B] = new DistFromGen(g => f(apply(g)))
 
   final def flatMap[B](f: A => Dist[B]): Dist[B] =
     new DistFromGen(g => f(apply(g))(g))
@@ -45,8 +44,7 @@ trait Dist[@sp A] extends Any { self =>
       }
     }
 
-  final def given(pred: A => Boolean): Dist[A] =
-    filter(pred)
+  final def given(pred: A => Boolean): Dist[A] = filter(pred)
 
   def until(pred: A => Boolean): Dist[Seq[A]] = {
     @tailrec def loop(gen: Generator, a: A, buf: ArrayBuffer[A]): Seq[A] = {
@@ -116,8 +114,7 @@ trait Dist[@sp A] extends Any { self =>
   final def toIterator(gen: Generator): Iterator[A] =
     new DistIterator(this, gen)
 
-  final def toStream(gen: Generator): Stream[A] =
-    this(gen) #:: toStream(gen)
+  final def toStream(gen: Generator): Stream[A] = this(gen) #:: toStream(gen)
 
   import scala.collection.generic.CanBuildFrom
 
@@ -256,15 +253,13 @@ trait DistInnerProductSpace[V, K]
 object Dist extends DistInstances8 {
   @inline final def apply[A](implicit na: Dist[A]): Dist[A] = na
 
-  final def apply[A, B](f: A => B)(implicit na: Dist[A]): Dist[B] =
-    na.map(f)
+  final def apply[A, B](f: A => B)(implicit na: Dist[A]): Dist[B] = na.map(f)
 
   final def apply[A, B, C](
       f: (A, B) => C)(implicit na: Dist[A], nb: Dist[B]): Dist[C] =
     na.zipWith(nb)(f)
 
-  final def gen[A](f: Generator => A): Dist[A] =
-    new DistFromGen(g => f(g))
+  final def gen[A](f: Generator => A): Dist[A] = new DistFromGen(g => f(g))
 
   def uniform[A: Uniform](low: A, high: A): Dist[A] =
     Uniform[A].apply(low, high)
@@ -284,8 +279,7 @@ object Dist extends DistInstances8 {
   def fromLongs[A](n: Int)(f: Array[Long] => A): Dist[A] =
     new DistFromGen(g => f(g.generateLongs(n)))
 
-  def mix[A](ds: Dist[A]*): Dist[A] =
-    Dist.oneOf(ds: _*).flatMap(identity)
+  def mix[A](ds: Dist[A]*): Dist[A] = Dist.oneOf(ds: _*).flatMap(identity)
 
   def weightedMix[A](tpls: (Double, Dist[A])*): Dist[A] = {
     val ds = new Array[Dist[A]](tpls.length)
@@ -346,8 +340,7 @@ object Dist extends DistInstances8 {
       nb: Dist[B]): Dist[Either[A, B]] =
     new DistFromGen[Either[A, B]](g => if (no(g)) Right(nb(g)) else Left(na(g)))
 
-  implicit def tuple2[A: Dist, B: Dist]: Dist[(A, B)] =
-    Dist((_: A, _: B))
+  implicit def tuple2[A: Dist, B: Dist]: Dist[(A, B)] = Dist((_: A, _: B))
 
   def intrange(from: Int, to: Int): Dist[Int] = {
     val d = to - from + 1
@@ -394,8 +387,7 @@ object Dist extends DistInstances8 {
   def longrational: Dist[Rational] =
     Dist(Rational(_: Long, _: Long))(Dist[Long], Dist[Long].filter(_ != 0))
 
-  def bigrational(maxBytes: Int): Dist[Rational] =
-    rational(bigint(maxBytes))
+  def bigrational(maxBytes: Int): Dist[Rational] = rational(bigint(maxBytes))
 
   def constant[A](a: A): Dist[A] = new DistFromGen[A](g => a)
   def always[A](a: A): Dist[A] = new DistFromGen[A](g => a)

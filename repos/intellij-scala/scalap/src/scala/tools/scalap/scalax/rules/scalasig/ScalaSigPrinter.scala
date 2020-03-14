@@ -517,15 +517,14 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         sep + "this.type"
       case ThisType(symbol) => sep + processName(symbol.name) + ".this.type"
       case SingleType(ThisType(thisSymbol: ClassSymbol), symbol) =>
-        val thisSymbolName: String =
-          thisSymbol.name match {
-            case "package" =>
-              thisSymbol.symbolInfo.owner match {
-                case ex: ExternalSymbol => processName(ex.name)
-                case _                  => "this"
-              }
-            case name => processName(name) + ".this"
-          }
+        val thisSymbolName: String = thisSymbol.name match {
+          case "package" =>
+            thisSymbol.symbolInfo.owner match {
+              case ex: ExternalSymbol => processName(ex.name)
+              case _                  => "this"
+            }
+          case name => processName(name) + ".this"
+        }
         sep + thisSymbolName + "." + processName(symbol.name) + ".type"
       case SingleType(ThisType(exSymbol: ExternalSymbol), symbol)
           if exSymbol.name == "<root>" =>
@@ -652,16 +651,17 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             val path = StringUtil.cutSubstring(prefixStr)(".`package`")
             val name = processName(symbol.name)
             val res = path + name
-            val typeBounds = if (name == "_") {
-              symbol match {
-                case ts: TypeSymbol =>
-                  ts.infoType match {
-                    case t: TypeBoundsType => toString(t)
-                    case _                 => ""
-                  }
-                case _ => ""
-              }
-            } else ""
+            val typeBounds =
+              if (name == "_") {
+                symbol match {
+                  case ts: TypeSymbol =>
+                    ts.infoType match {
+                      case t: TypeBoundsType => toString(t)
+                      case _                 => ""
+                    }
+                  case _ => ""
+                }
+              } else ""
             val ress = StringUtil.trimStart(res, "<empty>.") + typeArgString(
               typeArgs) + typeBounds
             ress
@@ -701,8 +701,10 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         toString(typeRef, sep)
       //case DeBruijnIndexType(typeLevel, typeIndex) =>
       case ExistentialType(typeRef, symbols) =>
-        val refs =
-          symbols.map(toString).filter(!_.startsWith("_")).map("type " + _)
+        val refs = symbols
+          .map(toString)
+          .filter(!_.startsWith("_"))
+          .map("type " + _)
         toString(typeRef, sep) + (if (refs.nonEmpty)
                                     refs.mkString(" forSome {", "; ", "}")
                                   else "")
@@ -716,8 +718,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
   def toString(symbol: Symbol): String =
     symbol match {
       case symbol: TypeSymbol =>
-        val attrs =
-          (for (a <- symbol.attributes) yield toString(a)).mkString(" ")
+        val attrs = (for (a <- symbol.attributes) yield toString(a))
+          .mkString(" ")
         val atrs = if (attrs.length > 0) attrs.trim + " " else ""
         val symbolType = symbol.infoType match {
           case PolyType(typeRef, symbols) =>
@@ -764,48 +766,47 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
     _syms.keys.foldLeft("")((x, y) => if (x == "") y else x + "|" + y))
   val placeholderPattern = "_\\$(\\d)+"
 
-  private val keywordList =
-    Set(
-      "true",
-      "false",
-      "null",
-      "abstract",
-      "case",
-      "catch",
-      "class",
-      "def",
-      "do",
-      "else",
-      "extends",
-      "final",
-      "finally",
-      "for",
-      "forSome",
-      "if",
-      "implicit",
-      "import",
-      "lazy",
-      "match",
-      "new",
-      "object",
-      "override",
-      "package",
-      "private",
-      "protected",
-      "return",
-      "sealed",
-      "super",
-      "this",
-      "throw",
-      "trait",
-      "try",
-      "type",
-      "val",
-      "var",
-      "while",
-      "with",
-      "yield"
-    )
+  private val keywordList = Set(
+    "true",
+    "false",
+    "null",
+    "abstract",
+    "case",
+    "catch",
+    "class",
+    "def",
+    "do",
+    "else",
+    "extends",
+    "final",
+    "finally",
+    "for",
+    "forSome",
+    "if",
+    "implicit",
+    "import",
+    "lazy",
+    "match",
+    "new",
+    "object",
+    "override",
+    "package",
+    "private",
+    "protected",
+    "return",
+    "sealed",
+    "super",
+    "this",
+    "throw",
+    "trait",
+    "try",
+    "type",
+    "val",
+    "var",
+    "while",
+    "with",
+    "yield"
+  )
 
   private def stripPrivatePrefix(name: String) = {
     val i = name.lastIndexOf("$$")

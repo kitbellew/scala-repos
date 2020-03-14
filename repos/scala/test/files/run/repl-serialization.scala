@@ -63,8 +63,8 @@ object Test {
     println("== evaluating lambda")
     extract.value.asInstanceOf[() => Any].apply()
     println("== reconstituting into a fresh classloader")
-    val reconstituted =
-      deserializeInNewLoader(serialize(extract.value)).asInstanceOf[() => Any]
+    val reconstituted = deserializeInNewLoader(serialize(extract.value))
+      .asInstanceOf[() => Any]
     println("== evaluating reconstituted lambda")
     reconstituted.apply() // should not print("evaluating x") a second time
   }

@@ -24,8 +24,7 @@ sealed abstract class ==>>[A, B] {
   def isEmpty: Boolean = this == empty
 
   /** tupled form of [[insert]] */
-  def +(a: (A, B))(implicit o: Order[A]): A ==>> B =
-    insert(a._1, a._2)
+  def +(a: (A, B))(implicit o: Order[A]): A ==>> B = insert(a._1, a._2)
 
   /** inserts a new key/value - O(log n).
     *
@@ -77,8 +76,7 @@ sealed abstract class ==>>[A, B] {
     }
 
   /** alias for [[delete]] */
-  def -(k: A)(implicit o: Order[A]) =
-    delete(k)
+  def -(k: A)(implicit o: Order[A]) = delete(k)
 
   /** removes a key/value pair - O(log n) */
   def delete(k: A)(implicit n: Order[A]): A ==>> B =
@@ -217,11 +215,9 @@ sealed abstract class ==>>[A, B] {
         }
     }
 
-  def values: List[B] =
-    foldrWithKey(List.empty[B])((_, x, xs) => x :: xs)
+  def values: List[B] = foldrWithKey(List.empty[B])((_, x, xs) => x :: xs)
 
-  def keys: List[A] =
-    foldrWithKey(List.empty[A])((x, _, xs) => x :: xs)
+  def keys: List[A] = foldrWithKey(List.empty[A])((x, _, xs) => x :: xs)
 
   def keySet: ISet[A] =
     this match {
@@ -229,8 +225,7 @@ sealed abstract class ==>>[A, B] {
       case Bin(k, v, l, r) => ISet.Bin(k, l.keySet, r.keySet)
     }
 
-  def toList =
-    toAscList
+  def toList = toAscList
 
   def toAscList: List[(A, B)] =
     foldrWithKey(List.empty[(A, B)])((k, x, xs) => (k, x) :: xs)
@@ -238,11 +233,9 @@ sealed abstract class ==>>[A, B] {
   def toDescList: List[(A, B)] =
     foldlWithKey(List.empty[(A, B)])((xs, k, x) => (k, x) :: xs)
 
-  def member(k: A)(implicit n: Order[A]) =
-    lookup(k)(n).isDefined
+  def member(k: A)(implicit n: Order[A]) = lookup(k)(n).isDefined
 
-  def notMember(k: A)(implicit n: Order[A]) =
-    !member(k)
+  def notMember(k: A)(implicit n: Order[A]) = !member(k)
 
   def lookupIndex(k: A)(implicit o: Order[A]): Option[Int] = {
     @tailrec
@@ -299,8 +292,7 @@ sealed abstract class ==>>[A, B] {
         }
     }
 
-  def deleteAt(i: Int) =
-    updateAt(i, (A, B) => None)
+  def deleteAt(i: Int) = updateAt(i, (A, B) => None)
 
   @tailrec
   final def findMin: Option[(A, B)] =
@@ -362,8 +354,7 @@ sealed abstract class ==>>[A, B] {
         empty
     }
 
-  def updateMax(f: B => Option[B]) =
-    updateMaxWithKey((_: A, b) => f(b))
+  def updateMax(f: B => Option[B]) = updateMaxWithKey((_: A, b) => f(b))
 
   def updateMaxWithKey(f: (A, B) => Option[B]): A ==>> B =
     this match {
@@ -466,8 +457,7 @@ sealed abstract class ==>>[A, B] {
     }
 
   /* Mappings */
-  def map[C](f: B => C): A ==>> C =
-    mapWithKey((_, x: B) => f(x))
+  def map[C](f: B => C): A ==>> C = mapWithKey((_, x: B) => f(x))
 
   def mapWithKey[C](f: (A, B) => C): A ==>> C =
     this match {
@@ -504,8 +494,7 @@ sealed abstract class ==>>[A, B] {
     fromListWith[C, B](toList.map(x => (f(x._1), x._2)))(f2)
 
   /* Folds */
-  def fold[C](z: C)(f: (A, B, C) => C): C =
-    foldrWithKey(z)(f)
+  def fold[C](z: C)(f: (A, B, C) => C): C = foldrWithKey(z)(f)
 
   def foldlWithKey[C](z: C)(f: (C, A, B) => C): C =
     this match {
@@ -585,8 +574,7 @@ sealed abstract class ==>>[A, B] {
     }
 
   // Difference functions
-  def \\(other: A ==>> B)(implicit o: Order[A]): A ==>> B =
-    difference(other)
+  def \\(other: A ==>> B)(implicit o: Order[A]): A ==>> B = difference(other)
 
   def difference(other: A ==>> B)(implicit o: Order[A]): A ==>> B = {
     def hedgeDiff(
@@ -706,8 +694,7 @@ sealed abstract class ==>>[A, B] {
     isSubmapOfBy(a, e.equal)
 
   def isSubmapOfBy(a: A ==>> B, f: (B, B) => Boolean)(
-      implicit o: Order[A]): Boolean =
-    size <= a.size && submap(a, f)
+      implicit o: Order[A]): Boolean = size <= a.size && submap(a, f)
 
   private[scalaz] def submap(a: A ==>> B, f: (B, B) => Boolean)(
       implicit o: Order[A]): Boolean =
@@ -894,8 +881,7 @@ sealed abstract class ==>>[A, B] {
         false
     }
 
-  override final def hashCode: Int =
-    toAscList.hashCode
+  override final def hashCode: Int = toAscList.hashCode
 
   // filters on keys
   private def filterGt(f: A => Ordering)(implicit o: Order[A]): A ==>> B =
@@ -963,8 +949,7 @@ sealed abstract class MapInstances0 {
   implicit def scalazMapInstance[S: Order]
       : Bind[S ==>> ?] with Align[S ==>> ?] with Zip[S ==>> ?] =
     new Bind[S ==>> ?] with Align[S ==>> ?] with Zip[S ==>> ?] {
-      override def map[A, B](fa: S ==>> A)(f: A => B) =
-        fa map f
+      override def map[A, B](fa: S ==>> A)(f: A => B) = fa map f
 
       def bind[A, B](fa: S ==>> A)(f: A => (S ==>> B)) =
         fa.mapOptionWithKey((k, v) => f(v).lookup(k))
@@ -1070,8 +1055,7 @@ sealed abstract class MapInstances extends MapInstances0 {
             None
         }
 
-      override def map[A, B](fa: S ==>> A)(f: A => B) =
-        fa map f
+      override def map[A, B](fa: S ==>> A)(f: A => B) = fa map f
 
       override def foldMap[A, B](fa: S ==>> A)(f: A => B)(
           implicit F: Monoid[B]): B =
@@ -1088,8 +1072,7 @@ sealed abstract class MapInstances extends MapInstances0 {
       override def foldLeft[A, B](fa: S ==>> A, z: B)(f: (B, A) => B) =
         fa.foldlWithKey(z)((acc, _, b) => f(acc, b))
 
-      override def index[A](fa: S ==>> A, i: Int) =
-        fa.elemAt(i).map(_._2)
+      override def index[A](fa: S ==>> A, i: Int) = fa.elemAt(i).map(_._2)
 
       def traverseImpl[F[_], A, B](fa: S ==>> A)(f: A => F[B])(
           implicit G: Applicative[F]): F[S ==>> B] =
@@ -1102,8 +1085,7 @@ sealed abstract class MapInstances extends MapInstances0 {
             }
         }
 
-      override def length[A](fa: S ==>> A) =
-        fa.size
+      override def length[A](fa: S ==>> A) = fa.size
 
       override def any[A](fa: S ==>> A)(f: A => Boolean) =
         fa match {
@@ -1134,12 +1116,10 @@ sealed abstract class MapInstances extends MapInstances0 {
       }
 
     def bifoldRight[A, B, C](fa: A ==>> B, z: => C)(f: (A, => C) => C)(
-        g: (B, => C) => C): C =
-      fa.foldrWithKey(z)((a, b, c) => f(a, g(b, c)))
+        g: (B, => C) => C): C = fa.foldrWithKey(z)((a, b, c) => f(a, g(b, c)))
 
     override def bifoldLeft[A, B, C](fa: A ==>> B, z: C)(f: (C, A) => C)(
-        g: (C, B) => C): C =
-      fa.foldlWithKey(z)((c, a, b) => g(f(c, a), b))
+        g: (C, B) => C): C = fa.foldlWithKey(z)((c, a, b) => g(f(c, a), b))
   }
 }
 
@@ -1175,19 +1155,16 @@ object ==>> extends MapInstances {
   final def apply[A: Order, B](x: (A, B)*): A ==>> B =
     x.foldLeft(empty[A, B])((a, c) => a.insert(c._1, c._2))
 
-  final def empty[A, B]: A ==>> B =
-    Tip[A, B]()
+  final def empty[A, B]: A ==>> B = Tip[A, B]()
 
-  final def singleton[A, B](k: A, x: B): A ==>> B =
-    Bin(k, x, Tip(), Tip())
+  final def singleton[A, B](k: A, x: B): A ==>> B = Bin(k, x, Tip(), Tip())
 
   /* List operations */
   final def fromList[A: Order, B](l: List[(A, B)]): A ==>> B =
     l.foldLeft(empty[A, B]) { (t, x) => t.insert(x._1, x._2) }
 
   final def fromListWith[A: Order, B](l: List[(A, B)])(
-      f: (B, B) => B): A ==>> B =
-    fromListWithKey(l)((_, x, y) => f(x, y))
+      f: (B, B) => B): A ==>> B = fromListWithKey(l)((_, x, y) => f(x, y))
 
   final def fromListWithKey[A: Order, B](l: List[(A, B)])(
       f: (A, B, B) => B): A ==>> B =
@@ -1198,8 +1175,7 @@ object ==>> extends MapInstances {
     Foldable[F].foldLeft(fa, empty[A, B]) { (t, x) => t.insert(x._1, x._2) }
 
   final def fromFoldableWith[F[_]: Foldable, A: Order, B](fa: F[(A, B)])(
-      f: (B, B) => B): A ==>> B =
-    fromFoldableWithKey(fa)((_, x, y) => f(x, y))
+      f: (B, B) => B): A ==>> B = fromFoldableWithKey(fa)((_, x, y) => f(x, y))
 
   final def fromFoldableWithKey[F[_]: Foldable, A: Order, B](fa: F[(A, B)])(
       f: (A, B, B) => B): A ==>> B =

@@ -266,8 +266,8 @@ object Samples {
     //#actor-json-frames
     import play.api.mvc.WebSocket.FrameFormatter
 
-    implicit val messageFlowTransformer =
-      MessageFlowTransformer.jsonMessageFlowTransformer[InEvent, OutEvent]
+    implicit val messageFlowTransformer = MessageFlowTransformer
+      .jsonMessageFlowTransformer[InEvent, OutEvent]
     //#actor-json-frames
 
     //#actor-json-in-out
@@ -293,8 +293,9 @@ object Samples {
     def socket =
       WebSocket.using[String] { request =>
         // Log events to the console
-        val in =
-          Iteratee.foreach[String](println).map { _ => println("Disconnected") }
+        val in = Iteratee.foreach[String](println).map { _ =>
+          println("Disconnected")
+        }
 
         // Send a single 'Hello!' message
         val out = Enumerator("Hello!")

@@ -99,10 +99,9 @@ private[streaming] object UIUtils {
       batchInterval: Long,
       showYYYYMMSS: Boolean = true,
       timezone: TimeZone = null): String = {
-    val oldTimezones =
-      (
-        batchTimeFormat.get.getTimeZone,
-        batchTimeFormatWithMilliseconds.get.getTimeZone)
+    val oldTimezones = (
+      batchTimeFormat.get.getTimeZone,
+      batchTimeFormatWithMilliseconds.get.getTimeZone)
     if (timezone != null) {
       batchTimeFormat.get.setTimeZone(timezone)
       batchTimeFormatWithMilliseconds.get.setTimeZone(timezone)
@@ -151,17 +150,18 @@ private[streaming] object UIUtils {
         // Skip the first line
         failureReason.substring(failureReason.indexOf('\n') + 1)
       } else { failureReason }
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline) {
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{failureDetails}</pre>
         </div>
-      // scalastyle:on
-    } else { "" }
+        // scalastyle:on
+      } else { "" }
 
     if (rowspan == 1) {
       <td valign="middle" style="max-width: 300px">{failureReasonSummary}{

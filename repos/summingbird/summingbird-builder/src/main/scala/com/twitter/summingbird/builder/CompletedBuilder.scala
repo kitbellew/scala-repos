@@ -64,12 +64,11 @@ case class CompletedBuilder[P <: Platform[P], K, V](
   import SourceBuilder.adjust
   import CompletedBuilder._
 
-  @transient val registrar =
-    new IterableRegistrar(
-      eventRegistrar,
-      injectionDefaultRegistrar(keyCodec),
-      injectionDefaultRegistrar(valCodec)
-    )
+  @transient val registrar = new IterableRegistrar(
+    eventRegistrar,
+    injectionDefaultRegistrar(keyCodec),
+    injectionDefaultRegistrar(valCodec)
+  )
 
   // Set any Option
   def set[T](opt: T)(implicit env: Env) = {

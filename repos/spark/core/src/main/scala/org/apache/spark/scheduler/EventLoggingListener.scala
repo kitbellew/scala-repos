@@ -69,10 +69,12 @@ private[spark] class EventLoggingListener(
       sparkConf,
       SparkHadoopUtil.get.newConfiguration(sparkConf))
 
-  private val shouldCompress =
-    sparkConf.getBoolean("spark.eventLog.compress", false)
-  private val shouldOverwrite =
-    sparkConf.getBoolean("spark.eventLog.overwrite", false)
+  private val shouldCompress = sparkConf.getBoolean(
+    "spark.eventLog.compress",
+    false)
+  private val shouldOverwrite = sparkConf.getBoolean(
+    "spark.eventLog.overwrite",
+    false)
   private val testing = sparkConf.getBoolean("spark.eventLog.testing", false)
   private val outputBufferSize =
     sparkConf.getInt("spark.eventLog.buffer.kb", 100) * 1024
@@ -93,8 +95,11 @@ private[spark] class EventLoggingListener(
   private[scheduler] val loggedEvents = new ArrayBuffer[JValue]
 
   // Visible for tests only.
-  private[scheduler] val logPath =
-    getLogPath(logBaseDir, appId, appAttemptId, compressionCodecName)
+  private[scheduler] val logPath = getLogPath(
+    logBaseDir,
+    appId,
+    appAttemptId,
+    compressionCodecName)
 
   /**
     * Creates the log file in the configured log directory.

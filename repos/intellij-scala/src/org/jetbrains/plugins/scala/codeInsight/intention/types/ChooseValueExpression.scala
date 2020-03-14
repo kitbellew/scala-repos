@@ -31,10 +31,10 @@ abstract class ChooseValueExpression[T](lookupItems: Seq[T], defaultItem: T)
           override def handleInsert(
               context: InsertionContext,
               item: LookupElement): Unit = {
-            val topLevelEditor =
-              InjectedLanguageUtil.getTopLevelEditor(context.getEditor)
-            val templateState =
-              TemplateManagerImpl.getTemplateState(topLevelEditor)
+            val topLevelEditor = InjectedLanguageUtil.getTopLevelEditor(
+              context.getEditor)
+            val templateState = TemplateManagerImpl.getTemplateState(
+              topLevelEditor)
             if (templateState != null) {
               val range = templateState.getCurrentVariableRange
               if (range != null) {

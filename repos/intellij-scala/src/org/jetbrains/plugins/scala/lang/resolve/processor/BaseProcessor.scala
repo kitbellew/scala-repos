@@ -43,14 +43,14 @@ object BaseProcessor {
 
   val FROM_TYPE_KEY: Key[ScType] = Key.create("from.type.key")
 
-  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] =
-    Key.create("unresolved.type.parameters.key")
+  val UNRESOLVED_TYPE_PARAMETERS_KEY: Key[Seq[TypeParameter]] = Key.create(
+    "unresolved.type.parameters.key")
 
-  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] =
-    Key.create("compound.type.this.type.key")
+  val COMPOUND_TYPE_THIS_TYPE_KEY: Key[Option[ScType]] = Key.create(
+    "compound.type.this.type.key")
 
-  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] =
-    Key.create("forward.reference.key")
+  val FORWARD_REFERENCE_KEY: Key[java.lang.Boolean] = Key.create(
+    "forward.reference.key")
 
   val guard = RecursionManager.createGuard("process.element.guard")
 
@@ -262,11 +262,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           visitedTypeParameter = visitedTypeParameter)
       case ScDesignatorType(e: ScTypedDefinition)
           if place.isInstanceOf[ScTypeProjection] =>
-        val result: TypeResult[ScType] =
-          e match {
-            case p: ScParameter => p.getRealParameterType(TypingContext.empty)
-            case _              => e.getType(TypingContext.empty)
-          }
+        val result: TypeResult[ScType] = e match {
+          case p: ScParameter => p.getRealParameterType(TypingContext.empty)
+          case _              => e.getType(TypingContext.empty)
+        }
         result match {
           case Success(tp, _) =>
             processType(
@@ -418,15 +417,13 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
       visitedAliases: HashSet[ScTypeAlias],
       visitedTypeParameter: HashSet[ScTypeParameterType]): Boolean = {
     val subst = state.get(ScSubstitutor.key)
-    val compound =
-      state.get(
-        BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
-      ) //todo: looks like ugly workaround
-    val newSubst =
-      compound match {
-        case Some(_) => subst
-        case _       => if (subst != null) subst followed s else s
-      }
+    val compound = state.get(
+      BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY
+    ) //todo: looks like ugly workaround
+    val newSubst = compound match {
+      case Some(_) => subst
+      case _       => if (subst != null) subst followed s else s
+    }
     e match {
       case ta: ScTypeAlias =>
         if (visitedAliases.contains(ta)) return true
@@ -446,11 +443,10 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
           null,
           place)
       case des: ScTypedDefinition =>
-        val typeResult: TypeResult[ScType] =
-          des match {
-            case p: ScParameter => p.getRealParameterType(TypingContext.empty)
-            case _              => des.getType(TypingContext.empty)
-          }
+        val typeResult: TypeResult[ScType] = des match {
+          case p: ScParameter => p.getRealParameterType(TypingContext.empty)
+          case _              => des.getType(TypingContext.empty)
+        }
         typeResult match {
           case Success(tp, _) =>
             processType(

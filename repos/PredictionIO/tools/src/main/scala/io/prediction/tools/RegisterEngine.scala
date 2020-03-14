@@ -60,8 +60,9 @@ object RegisterEngine extends Logging {
           sys.exit(1)
       }
     val fileEngineManifest = read[EngineManifest](jsonString)
-    val engineManifest =
-      engineManifests.get(fileEngineManifest.id, fileEngineManifest.version)
+    val engineManifest = engineManifests.get(
+      fileEngineManifest.id,
+      fileEngineManifest.version)
 
     engineManifest map { em =>
       val conf = new Configuration

@@ -124,8 +124,9 @@ class MessageWriterTest extends JUnitSuite {
   @Test
   def testWithCompressionAttribute(): Unit = {
     val bytes = mkRandomArray(4096)
-    val actual =
-      mkMessageWithWriter(bytes = bytes, codec = SnappyCompressionCodec)
+    val actual = mkMessageWithWriter(
+      bytes = bytes,
+      codec = SnappyCompressionCodec)
     val expected = new Message(
       compress(bytes, SnappyCompressionCodec),
       Message.NoTimestamp,
@@ -142,8 +143,10 @@ class MessageWriterTest extends JUnitSuite {
   def testWithKey(): Unit = {
     val key = mkRandomArray(123)
     val bytes = mkRandomArray(4096)
-    val actual =
-      mkMessageWithWriter(bytes = bytes, key = key, codec = NoCompressionCodec)
+    val actual = mkMessageWithWriter(
+      bytes = bytes,
+      key = key,
+      codec = NoCompressionCodec)
     val expected = new Message(
       bytes = bytes,
       key = key,

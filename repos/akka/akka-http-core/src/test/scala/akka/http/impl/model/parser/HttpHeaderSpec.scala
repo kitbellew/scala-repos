@@ -19,8 +19,9 @@ import HttpMethods._
 import java.net.InetAddress
 
 class HttpHeaderSpec extends FreeSpec with Matchers {
-  val `application/vnd.spray` =
-    MediaType.applicationBinary("vnd.spray", MediaType.Compressible)
+  val `application/vnd.spray` = MediaType.applicationBinary(
+    "vnd.spray",
+    MediaType.Compressible)
   val PROPFIND = HttpMethod.custom("PROPFIND")
 
   "The HTTP header model must correctly parse and render the headers" - {
@@ -1018,8 +1019,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     }
 
     "parse with custom uri parsing mode" in {
-      val targetUri =
-        Uri("http://example.org/?abc=def=ghi", Uri.ParsingMode.Relaxed)
+      val targetUri = Uri(
+        "http://example.org/?abc=def=ghi",
+        Uri.ParsingMode.Relaxed)
       HeaderParser.parseFull(
         "location",
         "http://example.org/?abc=def=ghi",
@@ -1033,8 +1035,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     def =!=(testHeader: TestExample) = testHeader(line)
     def =!=>(expectedRendering: String) = {
       val Array(name, value) = line.split(": ", 2)
-      val HttpHeader.ParsingResult.Ok(header, Nil) =
-        HttpHeader.parse(name, value)
+      val HttpHeader.ParsingResult
+        .Ok(header, Nil) = HttpHeader.parse(name, value)
       header.toString shouldEqual header
         .renderedTo(expectedRendering)
         .rendering("")
@@ -1074,8 +1076,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
   implicit class TestError(expectedError: ErrorInfo) extends TestExample {
     def apply(line: String) = {
       val Array(name, value) = line.split(": ", 2)
-      val HttpHeader.ParsingResult.Ok(_, error :: Nil) =
-        HttpHeader.parse(name, value)
+      val HttpHeader.ParsingResult
+        .Ok(_, error :: Nil) = HttpHeader.parse(name, value)
       error shouldEqual expectedError
     }
   }

@@ -221,8 +221,8 @@ class SolvingTest {
     }.toIterable
   }
 
-  implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] =
-    Ordering.by(_.model)
+  implicit val SolutionOrd: Ordering[TestSolver.TestSolver.Solution] = Ordering
+    .by(_.model)
 
   def formatSolution(solution: Solution): String = {
     formatModel(solution.model)

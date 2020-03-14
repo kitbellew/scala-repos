@@ -40,8 +40,11 @@ final class BuildStructure(
     }
   def allProjectRefs(build: URI): Seq[ProjectRef] =
     refs(build, allProjects(build))
-  val extra: BuildUtil[ResolvedProject] =
-    BuildUtil(root, units, index.keyIndex, data)
+  val extra: BuildUtil[ResolvedProject] = BuildUtil(
+    root,
+    units,
+    index.keyIndex,
+    data)
   private[this] def refs(
       build: URI,
       projects: Seq[ResolvedProject]): Seq[ProjectRef] =
@@ -184,18 +187,17 @@ final class DetectedPlugins(
 
   private[this] lazy val (
     autoPluginAutoImports,
-    topLevelAutoPluginAutoImports) =
-    autoPlugins
-      .flatMap {
-        case DetectedAutoPlugin(name, ap, hasAutoImport) =>
-          if (hasAutoImport) Some(name) else None
-      }
-      .partition(nonTopLevelPlugin)
+    topLevelAutoPluginAutoImports) = autoPlugins
+    .flatMap {
+      case DetectedAutoPlugin(name, ap, hasAutoImport) =>
+        if (hasAutoImport) Some(name) else None
+    }
+    .partition(nonTopLevelPlugin)
 
   /** A function to select the right [[AutoPlugin]]s from [[autoPlugins]] for a [[Project]]. */
   @deprecated("Use deducePluginsFromProject", "0.13.8")
-  lazy val deducePlugins: (Plugins, Logger) => Seq[AutoPlugin] =
-    Plugins.deducer(autoPlugins.toList map { _.value })
+  lazy val deducePlugins: (Plugins, Logger) => Seq[AutoPlugin] = Plugins
+    .deducer(autoPlugins.toList map { _.value })
 
   /** Selects the right [[AutoPlugin]]s from a [[Project]]. */
   def deducePluginsFromProject(p: Project, log: Logger): Seq[AutoPlugin] = {

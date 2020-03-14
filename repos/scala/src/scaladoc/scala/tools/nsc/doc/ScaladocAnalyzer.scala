@@ -83,10 +83,12 @@ trait ScaladocAnalyzer extends Analyzer {
               repl =>
                 silent(_.typedTypeConstructor(stringParser(repl).typ())) map {
                   tpt =>
-                    val alias =
-                      enclClass.newAliasType(name.toTypeName, useCase.pos)
-                    val tparams =
-                      cloneSymbolsAtOwner(tpt.tpe.typeSymbol.typeParams, alias)
+                    val alias = enclClass.newAliasType(
+                      name.toTypeName,
+                      useCase.pos)
+                    val tparams = cloneSymbolsAtOwner(
+                      tpt.tpe.typeSymbol.typeParams,
+                      alias)
                     val newInfo = genPolyType(
                       tparams,
                       appliedType(tpt.tpe, tparams map (_.tpe)))

@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory
 // https://github.com/twitter/scalding/issues/529
 object TimePathedSource extends java.io.Serializable {
 
-  @transient private val logger =
-    LoggerFactory.getLogger(TimePathedSource.getClass)
+  @transient private val logger = LoggerFactory.getLogger(
+    TimePathedSource.getClass)
 
   // Assumes linear expanders
   private def unexpander(
@@ -84,14 +84,13 @@ object TimePathedSource extends java.io.Serializable {
     def toPath(date: RichDate): String =
       String.format(pattern, date.toCalendar(tz))
 
-    val stepSize: Option[Duration] =
-      List(
-        "%1$tH" -> Hours(1),
-        "%1$td" -> Days(1)(tz),
-        "%1$tm" -> Months(1)(tz),
-        "%1$tY" -> Years(1)(tz))
-        .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
-        .map(_._2)
+    val stepSize: Option[Duration] = List(
+      "%1$tH" -> Hours(1),
+      "%1$td" -> Days(1)(tz),
+      "%1$tm" -> Months(1)(tz),
+      "%1$tY" -> Years(1)(tz))
+      .find { unitDur: (String, Duration) => pattern.contains(unitDur._1) }
+      .map(_._2)
 
     def allPaths(dateRange: DateRange): Iterable[(DateRange, String)] =
       stepSize

@@ -463,12 +463,14 @@ class StreamingContext private[streaming] (
       conf.setInt(
         FixedLengthBinaryInputFormat.RECORD_LENGTH_PROPERTY,
         recordLength)
-      val br =
-        fileStream[LongWritable, BytesWritable, FixedLengthBinaryInputFormat](
-          directory,
-          FileInputDStream.defaultFilter: Path => Boolean,
-          newFilesOnly = true,
-          conf)
+      val br = fileStream[
+        LongWritable,
+        BytesWritable,
+        FixedLengthBinaryInputFormat](
+        directory,
+        FileInputDStream.defaultFilter: Path => Boolean,
+        newFilesOnly = true,
+        conf)
       val data = br.map {
         case (k, v) =>
           val bytes = v.getBytes
@@ -671,8 +673,9 @@ class StreamingContext private[streaming] (
     *                         started.
     */
   def stop(
-      stopSparkContext: Boolean =
-        conf.getBoolean("spark.streaming.stopSparkContextByDefault", true)
+      stopSparkContext: Boolean = conf.getBoolean(
+        "spark.streaming.stopSparkContextByDefault",
+        true)
   ): Unit = synchronized { stop(stopSparkContext, false) }
 
   /**
@@ -732,8 +735,9 @@ class StreamingContext private[streaming] (
   }
 
   private def stopOnShutdown(): Unit = {
-    val stopGracefully =
-      conf.getBoolean("spark.streaming.stopGracefullyOnShutdown", false)
+    val stopGracefully = conf.getBoolean(
+      "spark.streaming.stopGracefullyOnShutdown",
+      false)
     logInfo(s"Invoking stop(stopGracefully=$stopGracefully) from shutdown hook")
     // Do not stop SparkContext, let its own shutdown hook stop it
     stop(stopSparkContext = false, stopGracefully = stopGracefully)

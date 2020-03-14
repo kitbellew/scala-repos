@@ -30,8 +30,8 @@ import org.saddle.scalar.ScalarTagDouble
 class IndexDouble(keys: Vec[Double]) extends Index[Double] {
   val scalarTag = ScalarTagDouble
 
-  private lazy val (kmap, IndexProperties(contiguous, monotonic)) =
-    IndexImpl.keys2map(this)
+  private lazy val (kmap, IndexProperties(contiguous, monotonic)) = IndexImpl
+    .keys2map(this)
 
   protected def locator: Locator[Double] = kmap
 
@@ -101,8 +101,7 @@ class IndexDouble(keys: Vec[Double]) extends Index[Double] {
   }
 
   def map[@spec(Boolean, Int, Long, Double) B: ST: ORD](
-      f: Double => B): Index[B] =
-    Index(VecImpl.map(keys)(f).toArray)
+      f: Double => B): Index[B] = Index(VecImpl.map(keys)(f).toArray)
 
   def toArray: Array[Double] = keys.toArray
 

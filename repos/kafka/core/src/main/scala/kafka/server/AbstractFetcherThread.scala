@@ -151,8 +151,8 @@ abstract class AbstractFetcherThread(
                           new PartitionFetchState(newOffset))
                         fetcherLagStats
                           .getFetcherLagStats(topic, partitionId)
-                          .lag =
-                          Math.max(0L, partitionData.highWatermark - newOffset)
+                          .lag = Math
+                          .max(0L, partitionData.highWatermark - newOffset)
                         fetcherStats.byteRate.mark(validBytes)
                         // Once we hand off the partition data to the subclass, we can't mess with it any more in this thread
                         processPartitionData(
@@ -178,8 +178,8 @@ abstract class AbstractFetcherThread(
                       }
                     case Errors.OFFSET_OUT_OF_RANGE =>
                       try {
-                        val newOffset =
-                          handleOffsetOutOfRange(topicAndPartition)
+                        val newOffset = handleOffsetOutOfRange(
+                          topicAndPartition)
                         partitionMap.put(
                           topicAndPartition,
                           new PartitionFetchState(newOffset))
@@ -322,8 +322,11 @@ class FetcherStats(metricId: ClientIdAndBroker) extends KafkaMetricsGroup {
     "brokerHost" -> metricId.brokerHost,
     "brokerPort" -> metricId.brokerPort.toString)
 
-  val requestRate =
-    newMeter("RequestsPerSec", "requests", TimeUnit.SECONDS, tags)
+  val requestRate = newMeter(
+    "RequestsPerSec",
+    "requests",
+    TimeUnit.SECONDS,
+    tags)
 
   val byteRate = newMeter("BytesPerSec", "bytes", TimeUnit.SECONDS, tags)
 }

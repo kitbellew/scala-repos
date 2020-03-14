@@ -42,8 +42,8 @@ case class ScCompoundType(
         } else rtDepth
     } ++ typesMap.map {
       case (s: String, sign: TypeAliasSignature) =>
-        val boundsDepth =
-          sign.lowerBound.typeDepth.max(sign.upperBound.typeDepth)
+        val boundsDepth = sign.lowerBound.typeDepth
+          .max(sign.upperBound.typeDepth)
         if (sign.typeParams.nonEmpty) {
           (ScType.typeParamsDepth(sign.typeParams.toArray) + 1).max(boundsDepth)
         } else boundsDepth
@@ -68,8 +68,8 @@ case class ScCompoundType(
               tp.ptp)
           }
 
-          val pTypes: List[Seq[() => ScType]] =
-            s.substitutedTypes.map(_.map(f => () => f().removeAbstracts))
+          val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
+            _.map(f => () => f().removeAbstracts))
           val tParams: Array[TypeParameter] =
             if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
             else s.typeParams.map(updateTypeParam)
@@ -131,9 +131,8 @@ case class ScCompoundType(
           components.map(_.recursiveUpdate(update, visited + this)),
           signatureMap.map {
             case (s: Signature, tp) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f =>
-                  () => f().recursiveUpdate(update, visited + this)))
+              val pTypes: List[Seq[() => ScType]] = s.substitutedTypes.map(
+                _.map(f => () => f().recursiveUpdate(update, visited + this)))
               val tParams: Array[TypeParameter] =
                 if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                 else s.typeParams.map(updateTypeParam)

@@ -221,8 +221,7 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
     }
 
     "a partial frame" in {
-      val header =
-        b"""0000       # flags
+      val header = b"""0000       # flags
                 xxxx=1 # opcode
             0          # mask?
              xxxxxxx=5 # length
@@ -233,8 +232,7 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         FrameStart(FrameHeader(Opcode.Text, None, 5, fin = false), data))
     }
     "a partial frame of total size > Int.MaxValue" in {
-      val header =
-        b"""0000          # flags
+      val header = b"""0000          # flags
                   xxxx=0    # opcode
               0             # mask?
                xxxxxxx=7f   # length
@@ -256,8 +254,7 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         FrameData(data, lastPart = false))
     }
     "a full frame" in {
-      val header =
-        b"""0000       # flags
+      val header = b"""0000       # flags
                 xxxx=0 # opcode
             0          # mask?
              xxxxxxx=5 # length
@@ -270,8 +267,7 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           data))
     }
     "a full frame in chunks" in {
-      val header =
-        b"""0000       # flags
+      val header = b"""0000       # flags
                 xxxx=1 # opcode
             0          # mask?
              xxxxxxx=5 # length
@@ -286,15 +282,13 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         FrameData(data2, lastPart = true))
     }
     "several frames" in {
-      val header1 =
-        b"""0000       # flags
+      val header1 = b"""0000       # flags
                 xxxx=0 # opcode
             0          # mask?
              xxxxxxx=5 # length
         """
 
-      val header2 =
-        b"""0000       # flags
+      val header2 = b"""0000       # flags
                 xxxx=0 # opcode
             0          # mask?
              xxxxxxx=7 # length

@@ -65,8 +65,7 @@ private[finagle] trait StringClient {
 
     protected def newDispatcher(
         transport: Transport[In, Out]
-    ): Service[String, String] =
-      new SerialClientDispatcher(transport)
+    ): Service[String, String] = new SerialClientDispatcher(transport)
   }
 
   val stringClient = Client()

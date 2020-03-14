@@ -56,12 +56,11 @@ private[regression] trait IsotonicRegressionBase
     * Default: true
     * @group param
     */
-  final val isotonic: BooleanParam =
-    new BooleanParam(
-      this,
-      "isotonic",
-      "whether the output sequence should be isotonic/increasing (true) or" +
-        "antitonic/decreasing (false)")
+  final val isotonic: BooleanParam = new BooleanParam(
+    this,
+    "isotonic",
+    "whether the output sequence should be isotonic/increasing (true) or" +
+      "antitonic/decreasing (false)")
 
   /** @group getParam */
   final def getIsotonic: Boolean = $(isotonic)
@@ -97,8 +96,9 @@ private[regression] trait IsotonicRegressionBase
         val extract = udf { v: Vector => v(idx) }
         extract(col($(featuresCol)))
       } else { col($(featuresCol)) }
-    val w = if (hasWeightCol) { col($(weightCol)) }
-    else { lit(1.0) }
+    val w =
+      if (hasWeightCol) { col($(weightCol)) }
+      else { lit(1.0) }
     dataset.select(col($(labelCol)), f, w).rdd.map {
       case Row(label: Double, feature: Double, weight: Double) =>
         (label, feature, weight)
@@ -184,8 +184,8 @@ class IsotonicRegression @Since("1.5.0") (
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
     if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val isotonicRegression =
-      new MLlibIsotonicRegression().setIsotonic($(isotonic))
+    val isotonicRegression = new MLlibIsotonicRegression()
+      .setIsotonic($(isotonic))
     val oldModel = isotonicRegression.run(instances)
 
     copyValues(new IsotonicRegressionModel(uid, oldModel).setParent(this))
@@ -270,8 +270,7 @@ class IsotonicRegressionModel private[ml] (
   }
 
   @Since("1.6.0")
-  override def write: MLWriter =
-    new IsotonicRegressionModelWriter(this)
+  override def write: MLWriter = new IsotonicRegressionModelWriter(this)
 }
 
 @Since("1.6.0")

@@ -130,8 +130,11 @@ class TasksResourceTest
       Some(AppDefinition(appId)))
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = true, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = true,
+      force = false,
+      body,
+      req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -151,8 +154,11 @@ class TasksResourceTest
     groupManager.app(appId) returns Future.successful(None)
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = true, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = true,
+      force = false,
+      body,
+      req)
     Then("we receive a NotAuthenticated response")
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -208,8 +214,11 @@ class TasksResourceTest
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.empty
 
     When(s"kill task is called")
-    val killTasks =
-      taskResource.killTasks(scale = false, force = false, body, req)
+    val killTasks = taskResource.killTasks(
+      scale = false,
+      force = false,
+      body,
+      req)
     Then("we receive a not authorized response")
     killTasks.getStatus should be(auth.UnauthorizedStatus)
   }

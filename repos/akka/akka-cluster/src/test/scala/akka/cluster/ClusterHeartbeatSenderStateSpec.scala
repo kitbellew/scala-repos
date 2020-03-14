@@ -135,8 +135,11 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
 
     "update failure detector in active set" in {
       val s1 = emptyState.addMember(bb).addMember(cc).addMember(dd)
-      val s2 =
-        s1.heartbeatRsp(bb).heartbeatRsp(cc).heartbeatRsp(dd).heartbeatRsp(ee)
+      val s2 = s1
+        .heartbeatRsp(bb)
+        .heartbeatRsp(cc)
+        .heartbeatRsp(dd)
+        .heartbeatRsp(ee)
       s2.failureDetector.isMonitoring(bb.address) should ===(true)
       s2.failureDetector.isMonitoring(cc.address) should ===(true)
       s2.failureDetector.isMonitoring(dd.address) should ===(true)
@@ -158,8 +161,11 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
       fd(s2, ee).markNodeAsUnavailable()
       val s3 = s2.addMember(bb)
       s3.activeReceivers should ===(Set(bb, cc, dd, ee))
-      val s4 =
-        s3.heartbeatRsp(bb).heartbeatRsp(cc).heartbeatRsp(dd).heartbeatRsp(ee)
+      val s4 = s3
+        .heartbeatRsp(bb)
+        .heartbeatRsp(cc)
+        .heartbeatRsp(dd)
+        .heartbeatRsp(ee)
       s4.activeReceivers should ===(Set(bb, cc, dd))
       s4.failureDetector.isMonitoring(ee.address) should ===(false)
     }

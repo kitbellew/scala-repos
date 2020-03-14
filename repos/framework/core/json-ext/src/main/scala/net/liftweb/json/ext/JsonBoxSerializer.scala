@@ -51,8 +51,8 @@ class JsonBoxSerializer extends Serializer[Box[_]] {
               JField("chain", chain) ::
               JField("paramType", JString(paramType)) ::
               JField("param", param) :: Nil) =>
-          val clazz =
-            Thread.currentThread.getContextClassLoader.loadClass(paramType)
+          val clazz = Thread.currentThread.getContextClassLoader
+            .loadClass(paramType)
           ParamFailure(
             msg,
             deserializeException(exception),

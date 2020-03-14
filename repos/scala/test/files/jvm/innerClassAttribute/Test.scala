@@ -420,12 +420,15 @@ object Test extends BytecodeTest {
           "n",
           "()Ljava/lang/Object;"))
 
-    val an14 =
-      assertAnonymous(_: InnerClassNode, "ImplClassesAreTopLevel$$anon$14")
-    val an15 =
-      assertAnonymous(_: InnerClassNode, "ImplClassesAreTopLevel$$anon$15")
-    val an16 =
-      assertAnonymous(_: InnerClassNode, "ImplClassesAreTopLevel$$anon$16")
+    val an14 = assertAnonymous(
+      _: InnerClassNode,
+      "ImplClassesAreTopLevel$$anon$14")
+    val an15 = assertAnonymous(
+      _: InnerClassNode,
+      "ImplClassesAreTopLevel$$anon$15")
+    val an16 = assertAnonymous(
+      _: InnerClassNode,
+      "ImplClassesAreTopLevel$$anon$16")
     val b1 = assertMember(
       _: InnerClassNode,
       "ImplClassesAreTopLevel",
@@ -475,10 +478,14 @@ object Test extends BytecodeTest {
       .flatMap(innerClassNodes)
       .foreach(icn => assert(!icn.name.endsWith("$sp"), icn))
 
-    val a =
-      assertMember(_: InnerClassNode, "SpecializedClassesAreTopLevel", "A")
-    val t =
-      assertMember(_: InnerClassNode, "SpecializedClassesAreTopLevel", "T$")
+    val a = assertMember(
+      _: InnerClassNode,
+      "SpecializedClassesAreTopLevel",
+      "A")
+    val t = assertMember(
+      _: InnerClassNode,
+      "SpecializedClassesAreTopLevel",
+      "T$")
     val b = assertMember(
       _: InnerClassNode,
       "SpecializedClassesAreTopLevel$T$",
@@ -515,8 +522,11 @@ object Test extends BytecodeTest {
       "NestedInValueClass",
       "A",
       flags = publicStatic | Flags.ACC_FINAL)
-    val am =
-      assertMember(_: I, "NestedInValueClass", "A$", flags = publicStatic)
+    val am = assertMember(
+      _: I,
+      "NestedInValueClass",
+      "A$",
+      flags = publicStatic)
     val b = assertMember(
       _: I,
       "NestedInValueClass$A$",

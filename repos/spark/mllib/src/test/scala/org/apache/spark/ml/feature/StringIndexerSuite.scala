@@ -69,8 +69,13 @@ class StringIndexerSuite
       .collect()
       .toSet
     // a -> 0, b -> 2, c -> 1
-    val expected =
-      Set((0, 0.0), (1, 2.0), (2, 1.0), (3, 0.0), (4, 0.0), (5, 1.0))
+    val expected = Set(
+      (0, 0.0),
+      (1, 2.0),
+      (2, 1.0),
+      (3, 0.0),
+      (4, 0.0),
+      (5, 1.0))
     assert(output === expected)
   }
 
@@ -128,8 +133,13 @@ class StringIndexerSuite
       .collect()
       .toSet
     // 100 -> 0, 200 -> 2, 300 -> 1
-    val expected =
-      Set((0, 0.0), (1, 2.0), (2, 1.0), (3, 0.0), (4, 0.0), (5, 1.0))
+    val expected = Set(
+      (0, 0.0),
+      (1, 2.0),
+      (2, 1.0),
+      (3, 0.0),
+      (4, 0.0),
+      (5, 1.0))
     assert(output === expected)
   }
 
@@ -143,8 +153,9 @@ class StringIndexerSuite
   }
 
   test("StringIndexerModel can't overwrite output column") {
-    val df =
-      sqlContext.createDataFrame(Seq((1, 2), (3, 4))).toDF("input", "output")
+    val df = sqlContext
+      .createDataFrame(Seq((1, 2), (3, 4)))
+      .toDF("input", "output")
     val indexer = new StringIndexer()
       .setInputCol("input")
       .setOutputCol("output")
@@ -235,8 +246,9 @@ class StringIndexerSuite
   }
 
   test("IndexToString.transformSchema (SPARK-10573)") {
-    val idxToStr =
-      new IndexToString().setInputCol("input").setOutputCol("output")
+    val idxToStr = new IndexToString()
+      .setInputCol("input")
+      .setOutputCol("output")
     val inSchema = StructType(Seq(StructField("input", DoubleType)))
     val outSchema = idxToStr.transformSchema(inSchema)
     assert(outSchema("output").dataType === StringType)

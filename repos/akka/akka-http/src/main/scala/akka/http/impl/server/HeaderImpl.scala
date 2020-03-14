@@ -33,8 +33,8 @@ private[http] object HeaderImpl {
     implicit def uClassTag: ClassTag[U] = tClassTag.asInstanceOf[ClassTag[U]]
 
     new Header[U] {
-      val instanceDirective: Directive1[U] =
-        optionalDirective(uClassTag).flatMap {
+      val instanceDirective: Directive1[U] = optionalDirective(uClassTag)
+        .flatMap {
           case Some(v) ⇒ provide(v)
           case None ⇒ reject(MissingHeaderRejection(name))
         }

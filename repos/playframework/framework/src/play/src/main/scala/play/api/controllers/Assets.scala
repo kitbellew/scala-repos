@@ -93,31 +93,29 @@ private[controllers] object AssetInfo {
       resource <- app.resource(name)
     } yield resource
 
-  lazy val defaultCharSet =
-    config(_.getString("default.charset")).getOrElse("utf-8")
+  lazy val defaultCharSet = config(_.getString("default.charset"))
+    .getOrElse("utf-8")
 
-  lazy val defaultCacheControl =
-    config(_.getString("assets.defaultCache")).getOrElse("public, max-age=3600")
+  lazy val defaultCacheControl = config(_.getString("assets.defaultCache"))
+    .getOrElse("public, max-age=3600")
 
   lazy val aggressiveCacheControl = config(
     _.getString("assets.aggressiveCache")).getOrElse("public, max-age=31536000")
 
-  lazy val digestAlgorithm =
-    config(_.getString("assets.digest.algorithm")).getOrElse("md5")
+  lazy val digestAlgorithm = config(_.getString("assets.digest.algorithm"))
+    .getOrElse("md5")
 
   import ResponseHeader.basicDateFormatPattern
 
-  val standardDateParserWithoutTZ: DateTimeFormatter =
-    DateTimeFormat
-      .forPattern(basicDateFormatPattern)
-      .withLocale(java.util.Locale.ENGLISH)
-      .withZone(DateTimeZone.UTC)
-  val alternativeDateFormatWithTZOffset: DateTimeFormatter =
-    DateTimeFormat
-      .forPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")
-      .withLocale(java.util.Locale.ENGLISH)
-      .withZone(DateTimeZone.UTC)
-      .withOffsetParsed
+  val standardDateParserWithoutTZ: DateTimeFormatter = DateTimeFormat
+    .forPattern(basicDateFormatPattern)
+    .withLocale(java.util.Locale.ENGLISH)
+    .withZone(DateTimeZone.UTC)
+  val alternativeDateFormatWithTZOffset: DateTimeFormatter = DateTimeFormat
+    .forPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z")
+    .withLocale(java.util.Locale.ENGLISH)
+    .withZone(DateTimeZone.UTC)
+    .withOffsetParsed
 
   /**
     * A regex to find two types of date format. This regex silently ignores any
@@ -142,8 +140,9 @@ private[controllers] object AssetInfo {
         if (standardDate != null) {
           Some(standardDateParserWithoutTZ.parseDateTime(standardDate).toDate)
         } else {
-          val alternativeDate =
-            matcher.group(6) // Cannot be null otherwise match would have failed
+          val alternativeDate = matcher.group(
+            6
+          ) // Cannot be null otherwise match would have failed
           Some(
             alternativeDateFormatWithTZOffset
               .parseDateTime(alternativeDate)
@@ -217,8 +216,9 @@ private[controllers] class AssetInfo(
       lastModified map (m => Codecs.sha1(m + " -> " + url.toExternalForm))
     } map ("\"" + _ + "\"")
 
-  val mimeType: String =
-    MimeTypes.forFileName(name).fold(ContentTypes.BINARY)(addCharsetIfNeeded)
+  val mimeType: String = MimeTypes
+    .forFileName(name)
+    .fold(ContentTypes.BINARY)(addCharsetIfNeeded)
 
   val parsedLastModified = lastModified flatMap parseModifiedDate
 
@@ -280,8 +280,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
     digestCache.getOrElse(
       path, {
         val maybeDigestUrl: Option[URL] = resource(path + "." + digestAlgorithm)
-        val maybeDigest: Option[String] =
-          maybeDigestUrl.map(Source.fromURL(_).mkString)
+        val maybeDigest: Option[String] = maybeDigestUrl.map(
+          Source.fromURL(_).mkString)
         if (!isDev && maybeDigest.isDefined) digestCache.put(path, maybeDigest)
         maybeDigest
       }
@@ -291,8 +291,8 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
   // Sames goes for the minified paths cache.
   val minifiedPathsCache = TrieMap[String, String]()
 
-  lazy val checkForMinified =
-    config(_.getBoolean("assets.checkForMinified")).getOrElse(true)
+  lazy val checkForMinified = config(_.getBoolean("assets.checkForMinified"))
+    .getOrElse(true)
 
   private[controllers] def minifiedPath(path: String): String = {
     minifiedPathsCache.getOrElse(
@@ -303,9 +303,10 @@ object Assets extends AssetsBuilder(LazyHttpErrorHandler) {
           val minPath = noextPath + delim + "min." + ext
           resource(minPath).map(_ => minPath)
         }
-        val maybeMinifiedPath = if (checkForMinified) {
-          minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
-        } else { path }
+        val maybeMinifiedPath =
+          if (checkForMinified) {
+            minifiedPathFor('.').orElse(minifiedPathFor('-')).getOrElse(path)
+          } else { path }
         if (!isDev) minifiedPathsCache.put(path, maybeMinifiedPath)
         maybeMinifiedPath
       }
@@ -443,18 +444,19 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       gzipRequested: Boolean,
       gzipAvailable: Boolean): Result = {
 
-    val response = if (length > 0) {
-      Ok.sendEntity(
-        HttpEntity.Streamed(
-          akka.stream.scaladsl.Source
-            .fromPublisher(Streams.enumeratorToPublisher(resourceData))
-            .map(ByteString.apply),
-          Some(length),
-          Some(mimeType)
-        ))
-    } else {
-      Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
-    }
+    val response =
+      if (length > 0) {
+        Ok.sendEntity(
+          HttpEntity.Streamed(
+            akka.stream.scaladsl.Source
+              .fromPublisher(Streams.enumeratorToPublisher(resourceData))
+              .map(ByteString.apply),
+            Some(length),
+            Some(mimeType)
+          ))
+      } else {
+        Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
+      }
     if (gzipRequested && gzipAvailable) {
       response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> "gzip")
     } else if (gzipAvailable) { response.withHeaders(VARY -> ACCEPT_ENCODING) }
@@ -471,9 +473,10 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
       // otherwise we can't.
       val requestedDigest = f.getName.takeWhile(_ != '-')
       if (!requestedDigest.isEmpty) {
-        val bareFile = new File(
-          f.getParent,
-          f.getName.drop(requestedDigest.size + 1)).getPath.replace('\\', '/')
+        val bareFile =
+          new File(
+            f.getParent,
+            f.getName.drop(requestedDigest.size + 1)).getPath.replace('\\', '/')
         val bareFullPath = path + "/" + bareFile
         blocking(digest(bareFullPath)) match {
           case Some(`requestedDigest`) =>
@@ -520,8 +523,8 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
         } else {
           val stream = connection.getInputStream
           val length = stream.available
-          val resourceData =
-            Enumerator.fromStream(stream)(Implicits.defaultExecutionContext)
+          val resourceData = Enumerator.fromStream(stream)(
+            Implicits.defaultExecutionContext)
 
           Future.successful(
             maybeNotModified(request, assetInfo, aggressiveCaching).getOrElse {

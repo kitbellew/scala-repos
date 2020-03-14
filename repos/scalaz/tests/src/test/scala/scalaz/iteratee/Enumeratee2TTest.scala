@@ -12,8 +12,8 @@ object Enumeratee2TTest extends SpecLite {
   implicit val ls = listShow[Either3[Int, (Int, Int), Int]]
   implicit val v = IterateeT.IterateeTMonad[Int, Id]
   implicit val vt = IterateeT.IterateeTMonadTrans[Int]
-  implicit val mpo =
-    MonadPartialOrder.transformer[Id, λ[(β[_], α) => IterateeT[Int, β, α]]]
+  implicit val mpo = MonadPartialOrder
+    .transformer[Id, λ[(β[_], α) => IterateeT[Int, β, α]]]
   implicit val intO = Order[Int].order _
 
   type StepM[A] = StepT[Int, Id, A]

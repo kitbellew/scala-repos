@@ -44,22 +44,22 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     * The in-degree of each vertex in the graph.
     * @note Vertices with no in-edges are not returned in the resulting RDD.
     */
-  @transient lazy val inDegrees: VertexRDD[Int] =
-    degreesRDD(EdgeDirection.In).setName("GraphOps.inDegrees")
+  @transient lazy val inDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.In)
+    .setName("GraphOps.inDegrees")
 
   /**
     * The out-degree of each vertex in the graph.
     * @note Vertices with no out-edges are not returned in the resulting RDD.
     */
-  @transient lazy val outDegrees: VertexRDD[Int] =
-    degreesRDD(EdgeDirection.Out).setName("GraphOps.outDegrees")
+  @transient lazy val outDegrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Out)
+    .setName("GraphOps.outDegrees")
 
   /**
     * The degree of each vertex in the graph.
     * @note Vertices with no edges are not returned in the resulting RDD.
     */
-  @transient lazy val degrees: VertexRDD[Int] =
-    degreesRDD(EdgeDirection.Either).setName("GraphOps.degrees")
+  @transient lazy val degrees: VertexRDD[Int] = degreesRDD(EdgeDirection.Either)
+    .setName("GraphOps.degrees")
 
   /**
     * Computes the neighboring vertex degrees.
@@ -320,14 +320,13 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     */
   def convertToCanonicalEdges(
       mergeFunc: (ED, ED) => ED = (e1, e2) => e1): Graph[VD, ED] = {
-    val newEdges =
-      graph.edges
-        .map {
-          case e if e.srcId < e.dstId => ((e.srcId, e.dstId), e.attr)
-          case e                      => ((e.dstId, e.srcId), e.attr)
-        }
-        .reduceByKey(mergeFunc)
-        .map(e => new Edge(e._1._1, e._1._2, e._2))
+    val newEdges = graph.edges
+      .map {
+        case e if e.srcId < e.dstId => ((e.srcId, e.dstId), e.attr)
+        case e                      => ((e.dstId, e.srcId), e.attr)
+      }
+      .reduceByKey(mergeFunc)
+      .map(e => new Edge(e._1._1, e._1._2, e._2))
     Graph(graph.vertices, newEdges)
   }
 

@@ -24,8 +24,7 @@ trait FamilyFormats {
   implicit def singletonFormat[T <: Singleton](implicit w: Witness.Aux[T]) =
     new SexpFormat[T] {
       def write(t: T) = SexpNil
-      def read(v: Sexp) =
-        if (v == SexpNil) w.value else deserializationError(v)
+      def read(v: Sexp) = if (v == SexpNil) w.value else deserializationError(v)
     }
 
   abstract class TraitFormat[T] extends SexpFormat[T] {

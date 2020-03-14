@@ -150,13 +150,14 @@ final class EMLDAOptimizer extends LDAOptimizer {
     // Create vertices.
     // Initially, we use random soft assignments of tokens to topics (random gamma).
     val docTermVertices: RDD[(VertexId, TopicCounts)] = {
-      val verticesTMP: RDD[(VertexId, TopicCounts)] =
-        edges.mapPartitionsWithIndex {
+      val verticesTMP: RDD[(VertexId, TopicCounts)] = edges
+        .mapPartitionsWithIndex {
           case (partIndex, partEdges) =>
             val random = new Random(partIndex + randomSeed)
             partEdges.flatMap { edge =>
-              val gamma =
-                normalize(BDV.fill[Double](k)(random.nextDouble()), 1.0)
+              val gamma = normalize(
+                BDV.fill[Double](k)(random.nextDouble()),
+                1.0)
               val sum = gamma * edge.attr
               Seq((edge.srcId, sum), (edge.dstId, sum))
             }
@@ -209,19 +210,17 @@ final class EMLDAOptimizer extends LDAOptimizer {
     // TODO: Add zero/seqOp/combOp option to aggregateMessages. (SPARK-5438)
     val mergeMsg: ((Boolean, TopicCounts), (Boolean, TopicCounts)) => (
         Boolean,
-        TopicCounts) =
-      (m0, m1) => {
-        val sum =
-          if (m0._1) { m0._2 += m1._2 }
-          else if (m1._1) { m1._2 += m0._2 }
-          else { m0._2 + m1._2 }
-        (true, sum)
-      }
+        TopicCounts) = (m0, m1) => {
+      val sum =
+        if (m0._1) { m0._2 += m1._2 }
+        else if (m1._1) { m1._2 += m0._2 }
+        else { m0._2 + m1._2 }
+      (true, sum)
+    }
     // M-STEP: Aggregation computes new N_{kj}, N_{wk} counts.
-    val docTopicDistributions: VertexRDD[TopicCounts] =
-      graph
-        .aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)
-        .mapValues(_._2)
+    val docTopicDistributions: VertexRDD[TopicCounts] = graph
+      .aggregateMessages[(Boolean, TopicCounts)](sendMsg, mergeMsg)
+      .mapValues(_._2)
     // Update the vertex descriptors with the new counts.
     val newGraph = Graph(docTopicDistributions, graph.edges)
     graph = newGraph
@@ -436,25 +435,26 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     this.k = lda.getK
     this.corpusSize = docs.count()
     this.vocabSize = docs.first()._2.size
-    this.alpha = if (lda.getAsymmetricDocConcentration.size == 1) {
-      if (lda.getAsymmetricDocConcentration(0) == -1)
-        Vectors.dense(Array.fill(k)(1.0 / k))
-      else {
+    this.alpha =
+      if (lda.getAsymmetricDocConcentration.size == 1) {
+        if (lda.getAsymmetricDocConcentration(0) == -1)
+          Vectors.dense(Array.fill(k)(1.0 / k))
+        else {
+          require(
+            lda.getAsymmetricDocConcentration(0) >= 0,
+            s"all entries in alpha must be >=0, got: $alpha")
+          Vectors.dense(Array.fill(k)(lda.getAsymmetricDocConcentration(0)))
+        }
+      } else {
         require(
-          lda.getAsymmetricDocConcentration(0) >= 0,
-          s"all entries in alpha must be >=0, got: $alpha")
-        Vectors.dense(Array.fill(k)(lda.getAsymmetricDocConcentration(0)))
+          lda.getAsymmetricDocConcentration.size == k,
+          s"alpha must have length k, got: $alpha")
+        lda.getAsymmetricDocConcentration.foreachActive {
+          case (_, x) =>
+            require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
+        }
+        lda.getAsymmetricDocConcentration
       }
-    } else {
-      require(
-        lda.getAsymmetricDocConcentration.size == k,
-        s"alpha must have length k, got: $alpha")
-      lda.getAsymmetricDocConcentration.foreachActive {
-        case (_, x) =>
-          require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
-      }
-      lda.getAsymmetricDocConcentration
-    }
     this.eta =
       if (lda.getTopicConcentration == -1) 1.0 / k
       else lda.getTopicConcentration
@@ -619,10 +619,11 @@ private[clustering] object OnlineLDAOptimizer {
       case v: SparseVector => (v.indices.toList, v.values)
     }
     // Initialize the variational distribution q(theta|gamma) for the mini-batch
-    val gammad: BDV[Double] =
-      new Gamma(gammaShape, 1.0 / gammaShape).samplesVector(k) // K
-    val expElogthetad: BDV[Double] =
-      exp(LDAUtils.dirichletExpectation(gammad)) // K
+    val gammad: BDV[Double] = new Gamma(gammaShape, 1.0 / gammaShape)
+      .samplesVector(k) // K
+    val expElogthetad: BDV[Double] = exp(
+      LDAUtils.dirichletExpectation(gammad)
+    ) // K
     val expElogbetad = expElogbeta(ids, ::).toDenseMatrix // ids * K
 
     val phiNorm: BDV[Double] = expElogbetad * expElogthetad :+ 1e-100 // ids

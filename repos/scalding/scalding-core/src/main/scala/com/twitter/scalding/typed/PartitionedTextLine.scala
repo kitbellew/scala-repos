@@ -67,18 +67,16 @@ case class PartitionedTextLine[P](
     with java.io.Serializable {
 
   // The partition fields, offset by the value arity.
-  val partitionFields =
-    PartitionUtil.toFields(
-      valueSetter.arity,
-      valueSetter.arity + partitionSetter.arity)
+  val partitionFields = PartitionUtil.toFields(
+    valueSetter.arity,
+    valueSetter.arity + partitionSetter.arity)
 
   // Create the underlying scheme and explicitly set the sink fields to be only the specified fields
   // see sinkFields in PartitionSchemed for other half of this work around.
   override def hdfsScheme = {
-    val scheme =
-      HadoopSchemeInstance(
-        new TextLine(TextLine.DEFAULT_SOURCE_FIELDS, encoding)
-          .asInstanceOf[Scheme[_, _, _, _, _]])
+    val scheme = HadoopSchemeInstance(
+      new TextLine(TextLine.DEFAULT_SOURCE_FIELDS, encoding)
+        .asInstanceOf[Scheme[_, _, _, _, _]])
     scheme.setSinkFields(PartitionUtil.toFields(0, valueSetter.arity))
     scheme
   }
@@ -86,9 +84,8 @@ case class PartitionedTextLine[P](
   // Create the underlying scheme and explicitly set the sink fields to be only the specified fields
   // see sinkFields in PartitionSchemed for other half of this work around.
   override def localScheme = {
-    val scheme =
-      new LocalTextLine(TextLine.DEFAULT_SOURCE_FIELDS, encoding)
-        .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
+    val scheme = new LocalTextLine(TextLine.DEFAULT_SOURCE_FIELDS, encoding)
+      .asInstanceOf[Scheme[Properties, InputStream, OutputStream, _, _]]
     scheme.setSinkFields(PartitionUtil.toFields(0, valueSetter.arity))
     scheme
   }

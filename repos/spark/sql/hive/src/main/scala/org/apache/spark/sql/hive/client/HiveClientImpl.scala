@@ -171,10 +171,10 @@ private[hive] class HiveClientImpl(
   }
 
   // We use hive's conf for compatibility.
-  private val retryLimit =
-    conf.getIntVar(HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
-  private val retryDelayMillis =
-    shim.getMetastoreClientConnectRetryDelayMillis(conf)
+  private val retryLimit = conf.getIntVar(
+    HiveConf.ConfVars.METASTORETHRIFTFAILURERETRIES)
+  private val retryDelayMillis = shim.getMetastoreClientConnectRetryDelayMillis(
+    conf)
 
   /**
     * Runs `f` with multiple retries in case the hive metastore is temporarily unreachable.
@@ -592,8 +592,8 @@ private[hive] class HiveClientImpl(
       oldName: String,
       newName: String): Unit =
     withHiveState {
-      val catalogFunc = getFunction(db, oldName).copy(name =
-        FunctionIdentifier(newName, Some(db)))
+      val catalogFunc = getFunction(db, oldName)
+        .copy(name = FunctionIdentifier(newName, Some(db)))
       val hiveFunc = toHiveFunction(catalogFunc, db)
       client.alterFunction(db, oldName, hiveFunc)
     }
@@ -613,13 +613,14 @@ private[hive] class HiveClientImpl(
 
   def addJar(path: String): Unit = {
     val uri = new Path(path).toUri
-    val jarURL = if (uri.getScheme == null) {
-      // `path` is a local file path without a URL scheme
-      new File(path).toURI.toURL
-    } else {
-      // `path` is a URL with a scheme
-      uri.toURL
-    }
+    val jarURL =
+      if (uri.getScheme == null) {
+        // `path` is a local file path without a URL scheme
+        new File(path).toURI.toURL
+      } else {
+        // `path` is a URL with a scheme
+        uri.toURL
+      }
     clientLoader.addJar(jarURL)
     runSqlHive(s"ADD JAR $path")
   }

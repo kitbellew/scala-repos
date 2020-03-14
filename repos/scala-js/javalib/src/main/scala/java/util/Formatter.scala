@@ -64,12 +64,13 @@ final class Formatter(private val dest: Appendable)
             def hasFlag(flag: String) = flags.indexOf(flag) >= 0
 
             val indexStr = matchResult(1).getOrElse("")
-            val index = if (!indexStr.isEmpty) { Integer.parseInt(indexStr) }
-            else if (hasFlag("<")) { lastIndex }
-            else {
-              lastImplicitIndex += 1
-              lastImplicitIndex
-            }
+            val index =
+              if (!indexStr.isEmpty) { Integer.parseInt(indexStr) }
+              else if (hasFlag("<")) { lastIndex }
+              else {
+                lastImplicitIndex += 1
+                lastImplicitIndex
+              }
             lastIndex = index
             if (index <= 0 || index > args.length)
               throw new MissingFormatArgumentException(matchResult(5).get)
@@ -92,8 +93,7 @@ final class Formatter(private val dest: Appendable)
             val conversion = matchResult(5).get.charAt(0)
 
             // Avoid using conversion.isUpper not to depend on the Unicode database
-            @inline def isConversionUpperCase: scala.Boolean =
-              conversion <= 'Z'
+            @inline def isConversionUpperCase: scala.Boolean = conversion <= 'Z'
 
             def intArg: Int =
               (arg: Any) match {

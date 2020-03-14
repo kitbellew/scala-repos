@@ -8,15 +8,13 @@ package refactoring.extractTrait
 class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
 
   def testSimpleParameterizedClass() {
-    val text =
-      """
+    val text = """
         |class Parameterized[T] {<caret>
         |  def foo(p: T) {}
         |}
       """.stripMargin
 
-    val result =
-      """
+    val result = """
         |class Parameterized[T] extends ExtractedTrait[T]
         |
         |trait ExtractedTrait[T] {
@@ -27,8 +25,7 @@ class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
 
     checkResult(text, result, onlyDeclarations = false)
 
-    val result2 =
-      """
+    val result2 = """
         |class Parameterized[T] extends ExtractedTrait[T] {
         |  override def foo(p: T) {}
         |}
@@ -43,8 +40,7 @@ class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
   }
 
   def testTypeParameterWithBound() {
-    val text =
-      """
+    val text = """
         |class Parameterized[T <: List[Int]] {<caret>
         |  def foo(t: T) {
         |    t.isEmpty
@@ -52,8 +48,7 @@ class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
         |}
       """.stripMargin
 
-    val result =
-      """
+    val result = """
         |class Parameterized[T <: List[Int]] extends ExtractedTrait[T]
         |
         |trait ExtractedTrait[T <: List[Int]] {
@@ -68,8 +63,7 @@ class ExtractTraitTestTypeParameters extends ExtractTraitTestBase {
   }
 
   def testChainedParameter() {
-    val text =
-      """
+    val text = """
         |class Parameterized[S, T <: List[S]] {<caret>
         |  def foo(t: T) {
         |    t.isEmpty

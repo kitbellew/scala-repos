@@ -121,30 +121,35 @@ class ConsumerConfig private (val props: VerifiableProperties)
   val socketTimeoutMs = props.getInt("socket.timeout.ms", SocketTimeout)
 
   /** the socket receive buffer for network requests */
-  val socketReceiveBufferBytes =
-    props.getInt("socket.receive.buffer.bytes", SocketBufferSize)
+  val socketReceiveBufferBytes = props.getInt(
+    "socket.receive.buffer.bytes",
+    SocketBufferSize)
 
   /** the number of bytes of messages to attempt to fetch */
   val fetchMessageMaxBytes = props.getInt("fetch.message.max.bytes", FetchSize)
 
   /** the number threads used to fetch data */
-  val numConsumerFetchers =
-    props.getInt("num.consumer.fetchers", NumConsumerFetchers)
+  val numConsumerFetchers = props.getInt(
+    "num.consumer.fetchers",
+    NumConsumerFetchers)
 
   /** if true, periodically commit to zookeeper the offset of messages already fetched by the consumer */
   val autoCommitEnable = props.getBoolean("auto.commit.enable", AutoCommit)
 
   /** the frequency in ms that the consumer offsets are committed to zookeeper */
-  val autoCommitIntervalMs =
-    props.getInt("auto.commit.interval.ms", AutoCommitInterval)
+  val autoCommitIntervalMs = props.getInt(
+    "auto.commit.interval.ms",
+    AutoCommitInterval)
 
   /** max number of message chunks buffered for consumption, each chunk can be up to fetch.message.max.bytes*/
-  val queuedMaxMessages =
-    props.getInt("queued.max.message.chunks", MaxQueuedChunks)
+  val queuedMaxMessages = props.getInt(
+    "queued.max.message.chunks",
+    MaxQueuedChunks)
 
   /** max number of retries during rebalance */
-  val rebalanceMaxRetries =
-    props.getInt("rebalance.max.retries", MaxRebalanceRetries)
+  val rebalanceMaxRetries = props.getInt(
+    "rebalance.max.retries",
+    MaxRebalanceRetries)
 
   /** the minimum amount of data the server should return for a fetch request. If insufficient data is available the request will block */
   val fetchMinBytes = props.getInt("fetch.min.bytes", MinFetchBytes)
@@ -160,12 +165,14 @@ class ConsumerConfig private (val props: VerifiableProperties)
   val rebalanceBackoffMs = props.getInt("rebalance.backoff.ms", zkSyncTimeMs)
 
   /** backoff time to refresh the leader of a partition after it loses the current leader */
-  val refreshLeaderBackoffMs =
-    props.getInt("refresh.leader.backoff.ms", RefreshMetadataBackoffMs)
+  val refreshLeaderBackoffMs = props.getInt(
+    "refresh.leader.backoff.ms",
+    RefreshMetadataBackoffMs)
 
   /** backoff time to reconnect the offsets channel or to retry offset fetches/commits */
-  val offsetsChannelBackoffMs =
-    props.getInt("offsets.channel.backoff.ms", OffsetsChannelBackoffMs)
+  val offsetsChannelBackoffMs = props.getInt(
+    "offsets.channel.backoff.ms",
+    OffsetsChannelBackoffMs)
 
   /** socket timeout to use when reading responses for Offset Fetch/Commit requests. This timeout will also be used for
     *  the ConsumerMetdata requests that are used to query for the offset coordinator. */
@@ -177,8 +184,9 @@ class ConsumerConfig private (val props: VerifiableProperties)
     * shut-down. It does not apply to commits from the auto-commit thread. It also does not apply to attempts to query
     * for the offset coordinator before committing offsets. i.e., if a consumer metadata request fails for any reason,
     * it is retried and that retry does not count toward this limit. */
-  val offsetsCommitMaxRetries =
-    props.getInt("offsets.commit.max.retries", OffsetsCommitMaxRetries)
+  val offsetsCommitMaxRetries = props.getInt(
+    "offsets.commit.max.retries",
+    OffsetsCommitMaxRetries)
 
   /** Specify whether offsets should be committed to "zookeeper" (default) or "kafka" */
   val offsetsStorage =
@@ -207,8 +215,9 @@ class ConsumerConfig private (val props: VerifiableProperties)
   val clientId = props.getString("client.id", groupId)
 
   /** Whether messages from internal topics (such as offsets) should be exposed to the consumer. */
-  val excludeInternalTopics =
-    props.getBoolean("exclude.internal.topics", ExcludeInternalTopics)
+  val excludeInternalTopics = props.getBoolean(
+    "exclude.internal.topics",
+    ExcludeInternalTopics)
 
   /** Select a strategy for assigning partitions to consumer streams. Possible values: range, roundrobin */
   val partitionAssignmentStrategy = props.getString(

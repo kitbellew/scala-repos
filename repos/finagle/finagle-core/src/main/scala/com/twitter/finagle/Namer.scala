@@ -31,8 +31,7 @@ trait Namer { self =>
 }
 
 private case class FailingNamer(exc: Throwable) extends Namer {
-  def lookup(path: Path): Activity[NameTree[Name]] =
-    Activity.exception(exc)
+  def lookup(path: Path): Activity[NameTree[Name]] = Activity.exception(exc)
 }
 
 object Namer {
@@ -91,15 +90,13 @@ object Namer {
     private[this] object FailPath {
       val prefix = Path.Utf8("$", "fail")
 
-      def unapply(path: Path): Boolean =
-        path startsWith prefix
+      def unapply(path: Path): Boolean = path startsWith prefix
     }
 
     private[this] object NilPath {
       val prefix = Path.Utf8("$", "nil")
 
-      def unapply(path: Path): Boolean =
-        path startsWith prefix
+      def unapply(path: Path): Boolean = path startsWith prefix
     }
 
     private[this] object NamerPath {
@@ -155,13 +152,11 @@ object Namer {
     }
 
   private object IntegerString {
-    def unapply(s: String): Option[Int] =
-      Try(s.toInt).toOption
+    def unapply(s: String): Option[Int] = Try(s.toInt).toOption
   }
 
   private object DoubleString {
-    def unapply(s: String): Option[Double] =
-      Try(s.toDouble).toOption
+    def unapply(s: String): Option[Double] = Try(s.toDouble).toOption
   }
 
   private val MaxDepth = 100
@@ -186,24 +181,26 @@ object Namer {
     val weightedTreeVars
         : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {
       case Weighted(w, t) =>
-        val treesAct: Activity[NameTree[Name.Bound]] =
-          bind(lookup, depth, Some(w))(t)
+        val treesAct: Activity[NameTree[Name.Bound]] = bind(
+          lookup,
+          depth,
+          Some(w))(t)
         treesAct.map(Weighted(w, _)).run
     }
 
-    val stateVar: Var[Activity.State[NameTree[Name.Bound]]] =
-      Var.collect(weightedTreeVars).map {
-        seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
-          // - if there's at least one activity in Ok state, return the union of them
-          // - if all activities are pending, the union is pending.
-          // - if no subtree is Ok, and there are failures, retain the first failure.
+    val stateVar: Var[Activity.State[NameTree[Name.Bound]]] = Var
+      .collect(weightedTreeVars)
+      .map { seq: Seq[Activity.State[NameTree.Weighted[Name.Bound]]] =>
+        // - if there's at least one activity in Ok state, return the union of them
+        // - if all activities are pending, the union is pending.
+        // - if no subtree is Ok, and there are failures, retain the first failure.
 
-          val oks = seq.collect { case Activity.Ok(t) => t }
-          if (oks.isEmpty) {
-            seq
-              .collectFirst { case f @ Activity.Failed(_) => f }
-              .getOrElse(Activity.Pending)
-          } else { Activity.Ok(Union.fromSeq(oks).simplified) }
+        val oks = seq.collect { case Activity.Ok(t) => t }
+        if (oks.isEmpty) {
+          seq
+            .collectFirst { case f @ Activity.Failed(_) => f }
+            .getOrElse(Activity.Pending)
+        } else { Activity.Ok(Union.fromSeq(oks).simplified) }
       }
     new Activity(stateVar)
   }

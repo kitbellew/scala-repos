@@ -20,8 +20,9 @@ object ActorTest extends SpecLite {
 
   "code errors are catched and can be handled" in {
     val latch = new CountDownLatch(1)
-    val actor =
-      Actor[Int]((i: Int) => 100 / i, (ex: Throwable) => latch.countDown())
+    val actor = Actor[Int](
+      (i: Int) => 100 / i,
+      (ex: Throwable) => latch.countDown())
     actor ! 0
     assertCountDown(latch, "Should catch an exception")
   }

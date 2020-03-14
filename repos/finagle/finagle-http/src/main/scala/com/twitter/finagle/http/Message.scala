@@ -250,11 +250,10 @@ abstract class Message extends HttpMessageProxy {
   /** Get media-type from Content-Type header */
   def mediaType: Option[String] =
     contentType.flatMap { contentType =>
-      val beforeSemi =
-        contentType.indexOf(";") match {
-          case -1 => contentType
-          case n  => contentType.substring(0, n)
-        }
+      val beforeSemi = contentType.indexOf(";") match {
+        case -1 => contentType
+        case n  => contentType.substring(0, n)
+      }
       val mediaType = beforeSemi.trim
       if (mediaType.nonEmpty) Some(mediaType.toLowerCase) else None
     }
@@ -364,8 +363,7 @@ abstract class Message extends HttpMessageProxy {
     * Get InputStream for content.  Caller must close.  (Java interface.  Scala
     * users should use withInputStream.)
     */
-  def getInputStream(): InputStream =
-    new ChannelBufferInputStream(getContent)
+  def getInputStream(): InputStream = new ChannelBufferInputStream(getContent)
 
   /** Use content as Reader.  (Scala interface.  Java usrs can use getReader().) */
   def withReader[T](f: Reader => T): T = {
@@ -376,8 +374,7 @@ abstract class Message extends HttpMessageProxy {
   }
 
   /** Get Reader for content.  (Java interface.  Scala users should use withReader.) */
-  def getReader(): Reader =
-    new InputStreamReader(getInputStream())
+  def getReader(): Reader = new InputStreamReader(getInputStream())
 
   /** Append string to content. */
   def write(string: String) { write(string.getBytes("UTF-8")) }
@@ -467,6 +464,5 @@ object Message {
   private val HttpDateFormat = FastDateFormat.getInstance(
     "EEE, dd MMM yyyy HH:mm:ss",
     TimeZone.getTimeZone("GMT"))
-  def httpDateFormat(date: Date): String =
-    HttpDateFormat.format(date) + " GMT"
+  def httpDateFormat(date: Date): String = HttpDateFormat.format(date) + " GMT"
 }

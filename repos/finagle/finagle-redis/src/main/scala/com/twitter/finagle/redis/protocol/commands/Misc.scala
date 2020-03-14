@@ -109,8 +109,10 @@ trait ConfigHelper {
 }
 
 object Config {
-  val subCommands: Seq[ConfigHelper] =
-    Seq(ConfigGet, ConfigSet, ConfigResetStat)
+  val subCommands: Seq[ConfigHelper] = Seq(
+    ConfigGet,
+    ConfigSet,
+    ConfigResetStat)
 
   def apply(args: Seq[Array[Byte]]): Config = {
     val subCommandString = new String(

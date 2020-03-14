@@ -50,8 +50,7 @@ object Exception {
     mkCatcher(isDef, f)
 
   implicit def throwableSubtypeToCatcher[Ex <: Throwable: ClassTag, T](
-      pf: PartialFunction[Ex, T]) =
-    mkCatcher(pf.isDefinedAt _, pf.apply _)
+      pf: PartialFunction[Ex, T]) = mkCatcher(pf.isDefinedAt _, pf.apply _)
 
   /** !!! Not at all sure of every factor which goes into this,
     *  and/or whether we need multiple standard variations.
@@ -149,8 +148,9 @@ object Exception {
     def toTry: Catch[scala.util.Try[T]] = withApply(x => Failure(x))
   }
 
-  final val nothingCatcher: Catcher[Nothing] =
-    mkThrowableCatcher(_ => false, throw _)
+  final val nothingCatcher: Catcher[Nothing] = mkThrowableCatcher(
+    _ => false,
+    throw _)
   final def nonFatalCatcher[T]: Catcher[T] =
     mkThrowableCatcher({ case NonFatal(_) => true; case _ => false }, throw _)
   final def allCatcher[T]: Catcher[T] = mkThrowableCatcher(_ => true, throw _)

@@ -26,8 +26,10 @@ object ComparingDiffCollectionKinds extends SimplificationType {
             if (leftSide) (rightKind, left, "left")
             else (leftKind, right, "right")
           if (otherKind == "Array") return Seq.empty
-          val convertText =
-            partConvertedExprText(expr, exprToConvert, "to" + otherKind)
+          val convertText = partConvertedExprText(
+            expr,
+            exprToConvert,
+            "to" + otherKind)
           Seq(
             replace(expr)
               .withText(convertText)

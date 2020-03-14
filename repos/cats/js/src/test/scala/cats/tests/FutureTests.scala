@@ -38,14 +38,13 @@ class FutureTests extends CatsSuite {
       }
     }
 
-  implicit val throwableEq: Eq[Throwable] =
-    Eq.fromUniversalEquals
+  implicit val throwableEq: Eq[Throwable] = Eq.fromUniversalEquals
 
   implicit val comonad: Comonad[Future] = futureComonad(timeout)
 
   // Need non-fatal Throwables for Future recoverWith/handleError
-  implicit val nonFatalArbitrary: Arbitrary[Throwable] =
-    Arbitrary(arbitrary[Exception].map(identity))
+  implicit val nonFatalArbitrary: Arbitrary[Throwable] = Arbitrary(
+    arbitrary[Exception].map(identity))
 
   checkAll(
     "Future[Int]",

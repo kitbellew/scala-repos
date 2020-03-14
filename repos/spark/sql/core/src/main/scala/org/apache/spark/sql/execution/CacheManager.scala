@@ -106,8 +106,8 @@ private[sql] class CacheManager extends Logging {
       blocking: Boolean = true): Unit =
     writeLock {
       val planToCache = query.queryExecution.analyzed
-      val dataIndex =
-        cachedData.indexWhere(cd => planToCache.sameResult(cd.plan))
+      val dataIndex = cachedData.indexWhere(cd =>
+        planToCache.sameResult(cd.plan))
       require(dataIndex >= 0, s"Table $query is not cached.")
       cachedData(dataIndex).cachedRepresentation.uncache(blocking)
       cachedData.remove(dataIndex)
@@ -121,8 +121,8 @@ private[sql] class CacheManager extends Logging {
       blocking: Boolean = true): Boolean =
     writeLock {
       val planToCache = query.queryExecution.analyzed
-      val dataIndex =
-        cachedData.indexWhere(cd => planToCache.sameResult(cd.plan))
+      val dataIndex = cachedData.indexWhere(cd =>
+        planToCache.sameResult(cd.plan))
       val found = dataIndex >= 0
       if (found) {
         cachedData(dataIndex).cachedRepresentation.cachedColumnBuffers

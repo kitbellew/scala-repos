@@ -110,28 +110,28 @@ class CachedSpec extends PlaySpecification {
 
     "use etags for values" in new WithApplication() {
       val invoked = new AtomicInteger()
-      val action =
-        Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action = Cached(_ => "foo")(
+        Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       status(result1) must_== 200
       invoked.get() must_== 1
       val etag = header(ETAG, result1)
       etag must beSome(matching("""([wW]/)?"([^"]|\\")*"""")) //"""
-      val result2 =
-        action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get)).run()
+      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> etag.get))
+        .run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }
 
     "support wildcard etags" in new WithApplication() {
       val invoked = new AtomicInteger()
-      val action =
-        Cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action = Cached(_ => "foo")(
+        Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       status(result1) must_== 200
       invoked.get() must_== 1
-      val result2 =
-        action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*")).run()
+      val result2 = action(FakeRequest().withHeaders(IF_NONE_MATCH -> "*"))
+        .run()
       status(result2) must_== NOT_MODIFIED
       invoked.get() must_== 1
     }
@@ -306,15 +306,15 @@ class SomeComponent @Inject() (@NamedCache("custom") cache: CacheApi) {
 
 class CachedController @Inject() (cached: Cached) {
   val invoked = new AtomicInteger()
-  val action =
-    cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+  val action = cached(_ => "foo")(
+    Action(Results.Ok("" + invoked.incrementAndGet())))
 }
 
 class NamedCachedController @Inject() (
     @NamedCache("custom") val cache: CacheApi,
     @NamedCache("custom") val cached: Cached) {
   val invoked = new AtomicInteger()
-  val action =
-    cached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
+  val action = cached(_ => "foo")(
+    Action(Results.Ok("" + invoked.incrementAndGet())))
   def isCached(key: String): Boolean = cache.get[String](key).isDefined
 }

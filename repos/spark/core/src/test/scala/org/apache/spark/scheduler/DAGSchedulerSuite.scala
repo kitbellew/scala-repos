@@ -407,8 +407,9 @@ class DAGSchedulerSuite
   test("cache location preferences w/ dependency") {
     val baseRdd = new MyRDD(sc, 1, Nil).cache()
     val finalRdd = new MyRDD(sc, 1, List(new OneToOneDependency(baseRdd)))
-    cacheLocations(baseRdd.id -> 0) =
-      Seq(makeBlockManagerId("hostA"), makeBlockManagerId("hostB"))
+    cacheLocations(baseRdd.id -> 0) = Seq(
+      makeBlockManagerId("hostA"),
+      makeBlockManagerId("hostB"))
     submit(finalRdd, Array(0))
     val taskSet = taskSets(0)
     assertLocations(taskSet, Seq(Seq("hostA", "hostB")))
@@ -419,12 +420,15 @@ class DAGSchedulerSuite
 
   test("regression test for getCacheLocs") {
     val rdd = new MyRDD(sc, 3, Nil).cache()
-    cacheLocations(rdd.id -> 0) =
-      Seq(makeBlockManagerId("hostA"), makeBlockManagerId("hostB"))
-    cacheLocations(rdd.id -> 1) =
-      Seq(makeBlockManagerId("hostB"), makeBlockManagerId("hostC"))
-    cacheLocations(rdd.id -> 2) =
-      Seq(makeBlockManagerId("hostC"), makeBlockManagerId("hostD"))
+    cacheLocations(rdd.id -> 0) = Seq(
+      makeBlockManagerId("hostA"),
+      makeBlockManagerId("hostB"))
+    cacheLocations(rdd.id -> 1) = Seq(
+      makeBlockManagerId("hostB"),
+      makeBlockManagerId("hostC"))
+    cacheLocations(rdd.id -> 2) = Seq(
+      makeBlockManagerId("hostC"),
+      makeBlockManagerId("hostD"))
     val locs = scheduler.getCacheLocs(rdd).map(_.map(_.host))
     assert(
       locs === Seq(
@@ -456,8 +460,9 @@ class DAGSchedulerSuite
       tracker = mapOutputTracker)
     val rddC = new MyRDD(sc, 1, List(new OneToOneDependency(rddB))).cache()
     val rddD = new MyRDD(sc, 1, List(new OneToOneDependency(rddC)))
-    cacheLocations(rddC.id -> 0) =
-      Seq(makeBlockManagerId("hostA"), makeBlockManagerId("hostB"))
+    cacheLocations(rddC.id -> 0) = Seq(
+      makeBlockManagerId("hostA"),
+      makeBlockManagerId("hostB"))
     submit(rddD, Array(0))
     assert(scheduler.runningStages.size === 1)
     // Make sure that the scheduler is running the final result stage.
@@ -1213,8 +1218,9 @@ class DAGSchedulerSuite
     // now start completing some tasks in the shuffle map stage, under different hosts
     // and epochs, and make sure scheduler updates its state correctly
     val taskSet = taskSets(0)
-    val shuffleStage =
-      scheduler.stageIdToStage(taskSet.stageId).asInstanceOf[ShuffleMapStage]
+    val shuffleStage = scheduler
+      .stageIdToStage(taskSet.stageId)
+      .asInstanceOf[ShuffleMapStage]
     assert(shuffleStage.numAvailableOutputs === 0)
 
     // should be ignored for being too old
@@ -1589,16 +1595,20 @@ class DAGSchedulerSuite
     val jobId1 = submit(finalRdd1, Array(0), properties = job1Properties)
     val jobId2 = submit(finalRdd2, Array(0), properties = job2Properties)
     assert(scheduler.activeJobs.nonEmpty)
-    val testProperty1 =
-      scheduler.jobIdToActiveJob(jobId1).properties.getProperty("testProperty")
+    val testProperty1 = scheduler
+      .jobIdToActiveJob(jobId1)
+      .properties
+      .getProperty("testProperty")
 
     // remove job1 as an ActiveJob
     cancel(jobId1)
 
     // job2 should still be running
     assert(scheduler.activeJobs.nonEmpty)
-    val testProperty2 =
-      scheduler.jobIdToActiveJob(jobId2).properties.getProperty("testProperty")
+    val testProperty2 = scheduler
+      .jobIdToActiveJob(jobId2)
+      .properties
+      .getProperty("testProperty")
     assert(testProperty1 != testProperty2)
     // NB: This next assert isn't necessarily the "desired" behavior; it's just to document
     // the current behavior.  We've already submitted the TaskSet for stage 0 based on job1, but
@@ -1955,8 +1965,10 @@ class DAGSchedulerSuite
     complete(taskSets(0), statuses)
 
     // Reducer should prefer the last 3 hosts as they have 20%, 30% and 40% of data
-    val hosts =
-      (1 to numMapTasks).map(i => "host" + i).reverse.take(numMapTasks - 1)
+    val hosts = (1 to numMapTasks)
+      .map(i => "host" + i)
+      .reverse
+      .take(numMapTasks - 1)
 
     val reduceTaskSet = taskSets(1)
     assertLocations(reduceTaskSet, Seq(hosts))

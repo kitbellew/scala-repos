@@ -208,8 +208,10 @@ class SecurityManagerSuite extends SparkFunSuite with ResetSystemProperties {
   }
 
   test("ssl off setup") {
-    val file =
-      File.createTempFile("SSLOptionsSuite", "conf", Utils.createTempDir())
+    val file = File.createTempFile(
+      "SSLOptionsSuite",
+      "conf",
+      Utils.createTempDir())
 
     System.setProperty("spark.ssl.configFile", file.getAbsolutePath)
     val conf = new SparkConf()

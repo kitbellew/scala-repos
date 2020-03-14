@@ -69,8 +69,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
           false
         case fun: ScFunction
             if fun.name == "unapply" || fun.name == "unapplySeq" =>
-          val message =
-            ScalaBundle.message("change.signature.not.supported.extractors")
+          val message = ScalaBundle.message(
+            "change.signature.not.supported.extractors")
           showErrorHint(message)
           false
         case _ => true
@@ -107,8 +107,8 @@ class ScalaChangeSignatureHandler extends ChangeSignatureHandler {
           case _ =>
         }
       case None =>
-        val message =
-          RefactoringBundle.getCannotRefactorMessage(getTargetNotFoundMessage)
+        val message = RefactoringBundle.getCannotRefactorMessage(
+          getTargetNotFoundMessage)
         showErrorHint(message)
     }
   }

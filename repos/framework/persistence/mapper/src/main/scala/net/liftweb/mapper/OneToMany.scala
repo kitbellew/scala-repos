@@ -90,8 +90,8 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
       qp: QueryParam[O]*)
       extends MappedOneToManyBase[O](
         () => {
-          val ret =
-            meta.findAll(By(foreign, primaryKeyField.get) :: qp.toList: _*)
+          val ret = meta.findAll(
+            By(foreign, primaryKeyField.get) :: qp.toList: _*)
           for (child <- ret) {
             foreign
               .actualField(child)

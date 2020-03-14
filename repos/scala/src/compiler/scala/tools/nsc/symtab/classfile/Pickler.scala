@@ -218,8 +218,7 @@ abstract class Pickler extends SubComponent {
       }
     }
 
-    private def putSymbols(syms: List[Symbol]) =
-      syms foreach putSymbol
+    private def putSymbols(syms: List[Symbol]) = syms foreach putSymbol
 
     /** Store type and everything it refers to in map index.
       */

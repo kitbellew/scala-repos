@@ -256,8 +256,7 @@ trait Erasure {
     /** In scala, calculate a useful parent.
       *  An intersection such as `Object with Trait` erases to Trait.
       */
-    def mergeParents(parents: List[Type]): Type =
-      intersectionDominator(parents)
+    def mergeParents(parents: List[Type]): Type = intersectionDominator(parents)
   }
 
   class JavaErasureMap extends ErasureMap {

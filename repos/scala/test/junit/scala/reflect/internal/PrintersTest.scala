@@ -486,8 +486,7 @@ trait ClassPrintTests {
     assertPrintedCode(
       "class X(var i: scala.Int)(implicit val d: scala.Double, var f: scala.Float)")
 
-  @Test def testClassWithEarly =
-    assertPrintedCode(sm"""
+  @Test def testClassWithEarly = assertPrintedCode(sm"""
     |class X(var i: scala.Int) extends {
     |  val a = i;
     |  type B

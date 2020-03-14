@@ -162,11 +162,9 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     )
   }
 
-  def testDate =
-    roundtrip("date_t1", Date.valueOf("2012-12-24"))
+  def testDate = roundtrip("date_t1", Date.valueOf("2012-12-24"))
 
-  def testTime =
-    roundtrip("time_t1", Time.valueOf("17:53:48"))
+  def testTime = roundtrip("time_t1", Time.valueOf("17:53:48"))
 
   def testTimestamp = {
     roundtrip[Timestamp](
@@ -181,8 +179,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
     }
   }
 
-  def testUUID =
-    roundtrip[UUID]("uuid_t1", UUID.randomUUID())
+  def testUUID = roundtrip[UUID]("uuid_t1", UUID.randomUUID())
 
   def testOverrideIdentityType = {
     class T1(tag: Tag) extends Table[Int](tag, "t1") {

@@ -158,8 +158,8 @@ object RandomForestExample {
     println(s"RandomForestExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      DecisionTreeExample.loadDatasets(
+    val (training: DataFrame, test: DataFrame) = DecisionTreeExample
+      .loadDatasets(
         sc,
         params.input,
         params.dataFormat,
@@ -233,8 +233,8 @@ object RandomForestExample {
           println(rfModel) // Print model summary.
         }
       case "regression" =>
-        val rfModel =
-          pipelineModel.stages.last.asInstanceOf[RandomForestRegressionModel]
+        val rfModel = pipelineModel.stages.last
+          .asInstanceOf[RandomForestRegressionModel]
         if (rfModel.totalNumNodes < 30) {
           println(rfModel.toDebugString) // Print full model.
         } else {

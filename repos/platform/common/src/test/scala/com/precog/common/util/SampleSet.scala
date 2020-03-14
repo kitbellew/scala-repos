@@ -50,12 +50,28 @@ object AdSamples {
     "1000-5000",
     "5000-10000",
     "10000+")
-  val revenue =
-    List("<500K", "500K-5M", "5-50M", "50-250M", "250-500M", "500M+")
-  val category =
-    List("electronics", "fashion", "travel", "media", "sundries", "magical")
-  val ageTuples =
-    List((0, 17), (18, 24), (25, 36), (37, 48), (49, 60), (61, 75), (76, 130))
+  val revenue = List(
+    "<500K",
+    "500K-5M",
+    "5-50M",
+    "50-250M",
+    "250-500M",
+    "500M+")
+  val category = List(
+    "electronics",
+    "fashion",
+    "travel",
+    "media",
+    "sundries",
+    "magical")
+  val ageTuples = List(
+    (0, 17),
+    (18, 24),
+    (25, 36),
+    (37, 48),
+    (49, 60),
+    (61, 75),
+    (76, 130))
   val ageRangeStrings = ageTuples map { case (l, h) => "%d-%d".format(l, h) }
   val ageRangeArrays = ageTuples map {
     case (l, h) => JArray(List(JNum(l), JNum(h)))
@@ -102,60 +118,59 @@ object AdSamples {
     "+14:00"
   )
 
-  val states =
-    List(
-      "AL",
-      "AK",
-      "AZ",
-      "AR",
-      "CA",
-      "CO",
-      "CT",
-      "DE",
-      "DC",
-      "FL",
-      "GA",
-      "HI",
-      "ID",
-      "IL",
-      "IN",
-      "IA",
-      "KS",
-      "KY",
-      "LA",
-      "ME",
-      "MT",
-      "NE",
-      "NV",
-      "NH",
-      "NJ",
-      "NM",
-      "NY",
-      "NC",
-      "ND",
-      "OH",
-      "OK",
-      "OR",
-      "MD",
-      "MA",
-      "MI",
-      "MN",
-      "MS",
-      "MO",
-      "PA",
-      "RI",
-      "SC",
-      "SD",
-      "TN",
-      "TX",
-      "UT",
-      "VT",
-      "VA",
-      "WA",
-      "WV",
-      "WI",
-      "WY"
-    )
+  val states = List(
+    "AL",
+    "AK",
+    "AZ",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "DC",
+    "FL",
+    "GA",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NM",
+    "NY",
+    "NC",
+    "ND",
+    "OH",
+    "OK",
+    "OR",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "PA",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY"
+  )
 
   val shippingRates = List(5.95, 6.95, 10.95, 24.95)
   val handlingCharges = List(5.00, 7.00, 10.00, 0)
@@ -415,8 +430,10 @@ object DistributedSampleSet {
       } else { (sampleSet, sampleData) }
     }
 
-    val (sampleSet, data) =
-      pull(DistributedSampleSet(queriableSamples, sampler), Vector(), 0)
+    val (sampleSet, data) = pull(
+      DistributedSampleSet(queriableSamples, sampler),
+      Vector(),
+      0)
     (data, sampleSet.queriableSamples)
   }
 }

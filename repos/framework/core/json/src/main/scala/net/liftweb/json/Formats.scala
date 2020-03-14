@@ -95,8 +95,8 @@ trait Formats { self: Formats =>
       clazz: Class[_]): Option[FieldSerializer[_]] = {
     import ClassDelta._
 
-    val ord =
-      Ordering[Int].on[(Class[_], FieldSerializer[_])](x => delta(x._1, clazz))
+    val ord = Ordering[Int].on[(Class[_], FieldSerializer[_])](x =>
+      delta(x._1, clazz))
     fieldSerializers filter (_._1.isAssignableFrom(clazz)) match {
       case Nil => None
       case xs  => Some((xs min ord)._2)

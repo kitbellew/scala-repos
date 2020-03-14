@@ -119,8 +119,8 @@ private[deploy] class SparkSubmitArguments(
     */
   private def mergeDefaultSparkProperties(): Unit = {
     // Use common defaults file, if not specified by user
-    propertiesFile =
-      Option(propertiesFile).getOrElse(Utils.getDefaultPropertiesFile(env))
+    propertiesFile = Option(propertiesFile).getOrElse(
+      Utils.getDefaultPropertiesFile(env))
     // Honor --conf before the defaults file
     defaultSparkProperties.foreach {
       case (k, v) =>

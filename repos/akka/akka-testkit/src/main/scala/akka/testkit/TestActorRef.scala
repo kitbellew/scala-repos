@@ -23,11 +23,10 @@ class TestActorRef[T <: Actor](
     _supervisor: ActorRef,
     name: String)
     extends {
-  val props =
-    _props.withDispatcher(
-      if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven)
-        CallingThreadDispatcher.Id
-      else _props.dispatcher)
+  val props = _props.withDispatcher(
+    if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven)
+      CallingThreadDispatcher.Id
+    else _props.dispatcher)
   val dispatcher = _system.dispatchers.lookup(props.dispatcher)
   private val disregard = _supervisor match {
     case l: LocalActorRef ⇒ l.underlying.reserveChild(name)

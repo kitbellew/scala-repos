@@ -312,8 +312,9 @@ object NonlinearMinimizer {
 
     val init = DenseVector.zeros[Double](problemSize)
     val owlqnStart = System.nanoTime()
-    val owlqnResult =
-      owlqn.minimizeAndReturnState(Cost(regularizedGram, q), init)
+    val owlqnResult = owlqn.minimizeAndReturnState(
+      Cost(regularizedGram, q),
+      init)
     val owlqnTime = System.nanoTime() - owlqnStart
 
     println("ElasticNet Formulation")
@@ -371,8 +372,9 @@ object NonlinearMinimizer {
       s"owlqnObj $owlqnObj sparseQpObj $sparseQpObj nlSparseObj $nlSparseObj nlProxObj $nlProxObj")
 
     val logisticLoss = LogisticGenerator(problemSize)
-    val elasticNetLoss =
-      DiffFunction.withL2Regularization(logisticLoss, lambdaL2)
+    val elasticNetLoss = DiffFunction.withL2Regularization(
+      logisticLoss,
+      lambdaL2)
 
     println("Linear Regression with Bounds")
 
@@ -388,8 +390,10 @@ object NonlinearMinimizer {
     val qpBoxStart = System.nanoTime()
     val qpBoxResult = qpBox.minimizeAndReturnState(regularizedGram, q)
     val qpBoxTime = System.nanoTime() - qpBoxStart
-    val qpBoxObj =
-      QuadraticMinimizer.computeObjective(regularizedGram, q, qpBoxResult.x)
+    val qpBoxObj = QuadraticMinimizer.computeObjective(
+      regularizedGram,
+      q,
+      qpBoxResult.x)
 
     println(s"qpBox ${qpBoxTime / 1e6} ms iters ${qpBoxResult.iter}")
     println(s"nlBox ${nlBoxTime / 1e6} ms iters ${nlBoxResult.iter}")
@@ -416,8 +420,8 @@ object NonlinearMinimizer {
     val nlSimplexObj = quadraticCost.calculate(nlSimplexResult.x)._1
 
     val qpSimplexStart = System.nanoTime()
-    val qpSimplexResult =
-      QuadraticMinimizer(problemSize, EQUALITY).minimizeAndReturnState(h, q)
+    val qpSimplexResult = QuadraticMinimizer(problemSize, EQUALITY)
+      .minimizeAndReturnState(h, q)
     val qpSimplexTime = System.nanoTime() - qpSimplexStart
     val qpSimplexObj = quadraticCost.calculate(qpSimplexResult.x)._1
 
@@ -430,8 +434,9 @@ object NonlinearMinimizer {
 
     init := 0.0
     val nlLogisticSimplexStart = System.nanoTime()
-    val nlLogisticSimplexResult =
-      nlSimplex.minimizeAndReturnState(elasticNetLoss, init)
+    val nlLogisticSimplexResult = nlSimplex.minimizeAndReturnState(
+      elasticNetLoss,
+      init)
     val nlLogisticSimplexTime = System.nanoTime() - nlLogisticSimplexStart
     val nlLogisticSimplexObj =
       elasticNetLoss.calculate(nlLogisticSimplexResult.x)._1
@@ -441,8 +446,9 @@ object NonlinearMinimizer {
     val nlProxSimplex = new NonlinearMinimizer(
       proximal = ProjectProbabilitySimplex(1.0))
     val nlProxLogisticSimplexStart = System.nanoTime()
-    val nlProxLogisticSimplexResult =
-      nlProxSimplex.minimizeAndReturnState(elasticNetLoss, init)
+    val nlProxLogisticSimplexResult = nlProxSimplex.minimizeAndReturnState(
+      elasticNetLoss,
+      init)
     val nlProxLogisticSimplexTime =
       System.nanoTime() - nlProxLogisticSimplexStart
     val nlProxLogisticSimplexObj =

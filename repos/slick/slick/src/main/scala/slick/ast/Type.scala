@@ -22,8 +22,7 @@ trait Type extends Dumpable {
   def mapChildren(f: Type => Type): Type
 
   /** Apply a side-effecting function to all children. */
-  def childrenForeach[R](f: Type => R): Unit =
-    children.foreach(f)
+  def childrenForeach[R](f: Type => R): Unit = children.foreach(f)
   def select(sym: TermSymbol): Type =
     throw new SlickException(s"No type for symbol $sym found in $this")
 
@@ -67,8 +66,9 @@ final case class StructType(elements: ConstArray[(TermSymbol, Type)])
     "{" + elements.iterator
       .map { case (s, t) => s + ": " + t }
       .mkString(", ") + "}"
-  lazy val symbolToIndex: Map[TermSymbol, Int] =
-    elements.zipWithIndex.map { case ((sym, _), idx) => (sym, idx) }.toMap
+  lazy val symbolToIndex: Map[TermSymbol, Int] = elements.zipWithIndex.map {
+    case ((sym, _), idx) => (sym, idx)
+  }.toMap
   def children: ConstArray[Type] = elements.map(_._2)
   def mapChildren(f: Type => Type): StructType = {
     val ch = elements.map(_._2)
@@ -219,10 +219,10 @@ class ErasedCollectionTypeConstructor[C[_]](
     canBuildFrom: CanBuild[Any, C[Any]],
     classTag: ClassTag[C[_]])
     extends TypedCollectionTypeConstructor[C](classTag) {
-  val isSequential =
-    classOf[scala.collection.Seq[_]].isAssignableFrom(classTag.runtimeClass)
-  val isUnique =
-    classOf[scala.collection.Set[_]].isAssignableFrom(classTag.runtimeClass)
+  val isSequential = classOf[scala.collection.Seq[_]]
+    .isAssignableFrom(classTag.runtimeClass)
+  val isUnique = classOf[scala.collection.Set[_]]
+    .isAssignableFrom(classTag.runtimeClass)
   def createBuilder[E: ClassTag] = canBuildFrom().asInstanceOf[Builder[E, C[E]]]
 }
 
@@ -476,20 +476,19 @@ object ScalaBaseType {
   implicit val stringType = new ScalaBaseType[String]
   implicit val optionDiscType = new ErasedScalaBaseType[OptionDisc, Int]
 
-  private[this] val all: Map[ClassTag[_], ScalaBaseType[_]] =
-    Seq(
-      booleanType,
-      bigDecimalType,
-      byteType,
-      charType,
-      doubleType,
-      floatType,
-      intType,
-      longType,
-      nullType,
-      shortType,
-      stringType,
-      optionDiscType).map(s => (s.classTag, s)).toMap
+  private[this] val all: Map[ClassTag[_], ScalaBaseType[_]] = Seq(
+    booleanType,
+    bigDecimalType,
+    byteType,
+    charType,
+    doubleType,
+    floatType,
+    intType,
+    longType,
+    nullType,
+    shortType,
+    stringType,
+    optionDiscType).map(s => (s.classTag, s)).toMap
 
   def apply[T](implicit
       classTag: ClassTag[T],

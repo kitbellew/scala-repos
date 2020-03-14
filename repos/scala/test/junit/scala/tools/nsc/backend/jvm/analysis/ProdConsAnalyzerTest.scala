@@ -131,8 +131,8 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   @Test
   def checkCast(): Unit = {
-    val List(m) =
-      compileMethods(noOptCompiler)("def f(o: Object) = o.asInstanceOf[String]")
+    val List(m) = compileMethods(noOptCompiler)(
+      "def f(o: Object) = o.asInstanceOf[String]")
     val a = new ProdConsAnalyzer(m, "C")
     assert(findInstr(m, "CHECKCAST java/lang/String").length == 1)
 
@@ -142,8 +142,8 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
 
   @Test
   def instanceOf(): Unit = {
-    val List(m) =
-      compileMethods(noOptCompiler)("def f(o: Object) = o.isInstanceOf[String]")
+    val List(m) = compileMethods(noOptCompiler)(
+      "def f(o: Object) = o.isInstanceOf[String]")
     val a = new ProdConsAnalyzer(m, "C")
     assert(findInstr(m, "INSTANCEOF java/lang/String").length == 1)
 

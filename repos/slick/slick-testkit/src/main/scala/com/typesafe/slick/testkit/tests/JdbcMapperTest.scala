@@ -418,12 +418,14 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
     }
     val bs = TableQuery[B]
 
-    val q1 = (for {
-      id :: b :: s :: HNil <- (for { b <- bs } yield b.id :: b.b :: b.s :: HNil)
-      if !b
-    } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
-      case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
-    }
+    val q1 =
+      (for {
+        id :: b :: s :: HNil <- (for {
+          b <- bs
+        } yield b.id :: b.b :: b.s :: HNil) if !b
+      } yield id :: b :: (s ++ s) :: HNil).sortBy(h => h(2)).map {
+        case id :: b :: ss :: HNil => id :: ss :: (42 :: HNil) :: HNil
+      }
     val q2 = bs
       .map { case b => b.id :: b.b :: (b.s ++ b.s) :: HNil }
       .filter { h => !h(1) }

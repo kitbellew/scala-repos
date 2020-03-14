@@ -33,8 +33,7 @@ import breeze.stats.mean
 @RunWith(classOf[JUnitRunner])
 class CounterTest extends FunSuite with Checkers {
   val TOLERANCE = 1e-4
-  def assertClose(a: Double, b: Double) =
-    assert(math.abs(a - b) < TOLERANCE)
+  def assertClose(a: Double, b: Double) = assert(math.abs(a - b) < TOLERANCE)
 
   test("Addition") {
     assert(

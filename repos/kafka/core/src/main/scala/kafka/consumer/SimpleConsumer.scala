@@ -141,8 +141,9 @@ class SimpleConsumer(
     aggregateTimer.time {
       specificTimer.time { response = sendRequest(request) }
     }
-    val fetchResponse =
-      FetchResponse.readFrom(response.payload(), request.versionId)
+    val fetchResponse = FetchResponse.readFrom(
+      response.payload(),
+      request.versionId)
     val fetchedSize = fetchResponse.sizeInBytes
     fetchRequestAndResponseStats
       .getFetchRequestAndResponseStats(host, port)
@@ -208,8 +209,8 @@ class SimpleConsumer(
         topicAndPartition -> PartitionOffsetRequestInfo(earliestOrLatest, 1)),
       clientId = clientId,
       replicaId = consumerId)
-    val partitionErrorAndOffset =
-      getOffsetsBefore(request).partitionErrorAndOffsets(topicAndPartition)
+    val partitionErrorAndOffset = getOffsetsBefore(request)
+      .partitionErrorAndOffsets(topicAndPartition)
     val offset = partitionErrorAndOffset.error match {
       case ErrorMapping.NoError => partitionErrorAndOffset.offsets.head
       case _                    => throw ErrorMapping.exceptionFor(partitionErrorAndOffset.error)

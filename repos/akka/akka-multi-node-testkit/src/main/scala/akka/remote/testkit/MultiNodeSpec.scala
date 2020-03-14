@@ -218,8 +218,8 @@ object MultiNodeSpec {
       "akka.remote.netty.tcp.hostname" -> selfName,
       "akka.remote.netty.tcp.port" -> selfPort))
 
-  private[testkit] val baseConfig: Config =
-    ConfigFactory.parseString("""
+  private[testkit] val baseConfig: Config = ConfigFactory.parseString(
+    """
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"

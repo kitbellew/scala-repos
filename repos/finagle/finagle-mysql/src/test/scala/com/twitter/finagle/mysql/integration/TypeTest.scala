@@ -307,8 +307,8 @@ class DateTimeTypeTest extends FunSuite with IntegrationClient {
       test("extract %s from %s in local time".format(repr, rowType)) {
         row(repr) match {
           case Some(timestampValueLocal(t)) =>
-            val timestamp =
-              java.sql.Timestamp.valueOf("2013-11-02 19:56:" + secs)
+            val timestamp = java.sql.Timestamp
+              .valueOf("2013-11-02 19:56:" + secs)
             assert(t == timestamp)
           case a => fail("Expected TimestampValue but got %s".format(a))
         }

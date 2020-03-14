@@ -24,12 +24,9 @@ trait IterablePicklers {
 
   // Register List runtime pickler
   locally {
-    val generator =
-      TravPickler.generate(
-        implicitly[CanBuildFrom[List[Any], Any, List[Any]]],
-        identity[List[Any]]) { tpe =>
-        TravPickler.oneArgumentTagExtractor(tpe)
-      } _
+    val generator = TravPickler.generate(
+      implicitly[CanBuildFrom[List[Any], Any, List[Any]]],
+      identity[List[Any]]) { tpe => TravPickler.oneArgumentTagExtractor(tpe) } _
     currentRuntime.picklers.registerPicklerUnpicklerGenerator(
       "scala.collection.immutable.List",
       generator)
@@ -43,12 +40,11 @@ trait IterablePicklers {
 
   // Register Iterable runtime pickler
   locally {
-    val generator =
-      TravPickler.generate(
-        implicitly[CanBuildFrom[Iterable[Any], Any, Iterable[Any]]],
-        identity[Iterable[Any]]) { tpe =>
-        TravPickler.oneArgumentTagExtractor(tpe)
-      } _
+    val generator = TravPickler.generate(
+      implicitly[CanBuildFrom[Iterable[Any], Any, Iterable[Any]]],
+      identity[Iterable[Any]]) { tpe =>
+      TravPickler.oneArgumentTagExtractor(tpe)
+    } _
     currentRuntime.picklers
       .registerPicklerUnpicklerGenerator("scala.collection.Iterable", generator)
   }

@@ -59,8 +59,7 @@ trait Foo {
 }
 
 trait Bar {
-  def doBar(str: String): Future[String] =
-    Future.successful(str.toUpperCase)
+  def doBar(str: String): Future[String] = Future.successful(str.toUpperCase)
 }
 
 class FooBar extends Foo with Bar
@@ -119,14 +118,13 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
   "create a typed actor" in {
     //#typed-actor-create1
-    val mySquarer: Squarer =
-      TypedActor(system).typedActorOf(TypedProps[SquarerImpl]())
+    val mySquarer: Squarer = TypedActor(system).typedActorOf(
+      TypedProps[SquarerImpl]())
     //#typed-actor-create1
     //#typed-actor-create2
-    val otherSquarer: Squarer =
-      TypedActor(system).typedActorOf(
-        TypedProps(classOf[Squarer], new SquarerImpl("foo")),
-        "name")
+    val otherSquarer: Squarer = TypedActor(system).typedActorOf(
+      TypedProps(classOf[Squarer], new SquarerImpl("foo")),
+      "name")
     //#typed-actor-create2
 
     //#typed-actor-calls
@@ -165,8 +163,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
   "proxy any ActorRef" in {
     val actorRefToRemoteActor: ActorRef = system.deadLetters
     //#typed-actor-remote
-    val typedActor: Foo with Bar =
-      TypedActor(system).typedActorOf(TypedProps[FooBar], actorRefToRemoteActor)
+    val typedActor: Foo with Bar = TypedActor(system)
+      .typedActorOf(TypedProps[FooBar], actorRefToRemoteActor)
     //Use "typedActor" as a FooBar
     //#typed-actor-remote
   }
@@ -175,8 +173,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
     try {
       //#typed-actor-hierarchy
       //Inside your Typed Actor
-      val childSquarer: Squarer =
-        TypedActor(TypedActor.context).typedActorOf(TypedProps[SquarerImpl]())
+      val childSquarer: Squarer = TypedActor(TypedActor.context)
+        .typedActorOf(TypedProps[SquarerImpl]())
       //Use "childSquarer" as a Squarer
       //#typed-actor-hierarchy
     } catch {
@@ -186,8 +184,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
 
   "supercharge" in {
     //#typed-actor-supercharge-usage
-    val awesomeFooBar: Foo with Bar =
-      TypedActor(system).typedActorOf(TypedProps[FooBar]())
+    val awesomeFooBar: Foo with Bar = TypedActor(system).typedActorOf(
+      TypedProps[FooBar]())
 
     awesomeFooBar.doFoo(10)
     val f = awesomeFooBar.doBar("yes")
@@ -212,8 +210,8 @@ class TypedActorDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
     val router: ActorRef = system.actorOf(RoundRobinGroup(routeePaths).props())
 
     // prepare typed proxy, forwarding MethodCall messages to `router`
-    val typedRouter: HasName =
-      TypedActor(system).typedActorOf(TypedProps[Named](), actorRef = router)
+    val typedRouter: HasName = TypedActor(system)
+      .typedActorOf(TypedProps[Named](), actorRef = router)
 
     println("actor was: " + typedRouter.name()) // name-184
     println("actor was: " + typedRouter.name()) // name-753

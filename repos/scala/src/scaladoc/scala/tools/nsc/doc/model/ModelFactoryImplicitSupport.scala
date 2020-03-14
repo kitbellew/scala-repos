@@ -94,8 +94,8 @@ trait ModelFactoryImplicitSupport {
     if (!(sym.isClass || sym.isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
       Nil
     else {
-      val context: global.analyzer.Context =
-        global.analyzer.rootContext(NoCompilationUnit)
+      val context: global.analyzer.Context = global.analyzer.rootContext(
+        NoCompilationUnit)
 
       val results =
         global.analyzer.allViewsFrom(sym.tpe_*, context, sym.typeParams) ++
@@ -128,8 +128,8 @@ trait ModelFactoryImplicitSupport {
             .valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
-      val (ownConversions, commonConversions) =
-        conversions.partition(!_.isHiddenConversion)
+      val (ownConversions, commonConversions) = conversions.partition(
+        !_.isHiddenConversion)
 
       ownConversions ::: commonConversions
     }
@@ -217,10 +217,15 @@ trait ModelFactoryImplicitSupport {
 
       try {
         // Transform bound constraints into scaladoc constraints
-        val implParamConstraints =
-          makeImplicitConstraints(viewImplicitTypes, sym, context, inTpl)
-        val boundsConstraints =
-          makeBoundedConstraints(sym.typeParams, constrs, inTpl)
+        val implParamConstraints = makeImplicitConstraints(
+          viewImplicitTypes,
+          sym,
+          context,
+          inTpl)
+        val boundsConstraints = makeBoundedConstraints(
+          sym.typeParams,
+          constrs,
+          inTpl)
         // TODO: no substitution constraints appear in the library and compiler scaladoc. Maybe they can be removed?
         val substConstraints = makeSubstitutionConstraints(result.subst, inTpl)
         val constraints =
@@ -276,8 +281,13 @@ trait ModelFactoryImplicitSupport {
           val silentContext = context
             .make(owner = sym.owner)
             .makeSilent(reportAmbiguousErrors = false)
-          val search =
-            inferImplicit(EmptyTree, tpe, false, false, silentContext, false)
+          val search = inferImplicit(
+            EmptyTree,
+            tpe,
+            false,
+            false,
+            silentContext,
+            false)
           available = Some(search.tree != EmptyTree)
         } catch {
           case _: TypeError =>
@@ -304,15 +314,17 @@ trait ModelFactoryImplicitSupport {
                     val typeParamName = targ.nameString
                     lazy val typeExplanation = explanation
                     lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity =
-                      makeType(implType, inTpl)
+                    lazy val implicitType: TypeEntity = makeType(
+                      implType,
+                      inTpl)
                   })
                 case None =>
                   List(new TypeClassConstraint {
                     val typeParamName = targ.nameString
                     lazy val typeClassEntity = makeTemplate(sym)
-                    lazy val implicitType: TypeEntity =
-                      makeType(implType, inTpl)
+                    lazy val implicitType: TypeEntity = makeType(
+                      implType,
+                      inTpl)
                   })
               }
             case _ =>

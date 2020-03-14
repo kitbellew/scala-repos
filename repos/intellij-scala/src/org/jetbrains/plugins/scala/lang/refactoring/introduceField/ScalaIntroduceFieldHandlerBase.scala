@@ -134,8 +134,8 @@ object ScalaIntroduceFieldHandlerBase {
     val parExpr: ScExpression = ScalaRefactoringUtil.findParentExpr(
       ScalaRefactoringUtil.commonParent(ifc.file, occurrences: _*))
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
-    val stmtsAndMmbrs =
-      ScalaRefactoringUtil.statementsAndMembersInClass(ifc.aClass)
+    val stmtsAndMmbrs = ScalaRefactoringUtil.statementsAndMembersInClass(
+      ifc.aClass)
     val containerIsLocal =
       (Iterator(container) ++ new ParentsIterator(container))
         .exists(stmtsAndMmbrs.contains(_))

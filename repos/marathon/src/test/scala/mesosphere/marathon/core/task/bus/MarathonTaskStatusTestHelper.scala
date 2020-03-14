@@ -16,22 +16,22 @@ object MarathonTaskStatusTestHelper {
     builder.build()
   }
 
-  val running = MarathonTaskStatus.Running(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_RUNNING)))
+  val running = MarathonTaskStatus
+    .Running(mesosStatus = Some(mesosStatus(TaskState.TASK_RUNNING)))
   val runningHealthy = MarathonTaskStatus.Running(
-    mesosStatus =
-      Some(mesosStatus(TaskState.TASK_RUNNING, maybeHealthy = Some(true))))
+    mesosStatus = Some(
+      mesosStatus(TaskState.TASK_RUNNING, maybeHealthy = Some(true))))
   val runningUnhealthy = MarathonTaskStatus.Running(
-    mesosStatus =
-      Some(mesosStatus(TaskState.TASK_RUNNING, maybeHealthy = Some(false))))
-  val staging = MarathonTaskStatus.Staging(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_STAGING)))
-  val finished = MarathonTaskStatus.Finished(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_FINISHED)))
-  val error = MarathonTaskStatus.Error(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_ERROR)))
-  val lost = MarathonTaskStatus.Lost(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_LOST)))
-  val killed = MarathonTaskStatus.Killed(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_KILLED)))
+    mesosStatus = Some(
+      mesosStatus(TaskState.TASK_RUNNING, maybeHealthy = Some(false))))
+  val staging = MarathonTaskStatus
+    .Staging(mesosStatus = Some(mesosStatus(TaskState.TASK_STAGING)))
+  val finished = MarathonTaskStatus
+    .Finished(mesosStatus = Some(mesosStatus(TaskState.TASK_FINISHED)))
+  val error = MarathonTaskStatus
+    .Error(mesosStatus = Some(mesosStatus(TaskState.TASK_ERROR)))
+  val lost = MarathonTaskStatus
+    .Lost(mesosStatus = Some(mesosStatus(TaskState.TASK_LOST)))
+  val killed = MarathonTaskStatus
+    .Killed(mesosStatus = Some(mesosStatus(TaskState.TASK_KILLED)))
 }

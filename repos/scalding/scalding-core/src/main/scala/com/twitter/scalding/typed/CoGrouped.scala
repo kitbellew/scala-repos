@@ -177,8 +177,7 @@ trait CoGrouped[K, +R]
     * but it is not clear how to generalize that for general cogrouping functions.
     * For now, just do a normal take.
     */
-  override def bufferedTake(n: Int): CoGrouped[K, R] =
-    take(n)
+  override def bufferedTake(n: Int): CoGrouped[K, R] = take(n)
 
   // Filter the keys before doing the join
   override def filterKeys(fn: K => Boolean): CoGrouped[K, R] = {

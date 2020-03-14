@@ -232,8 +232,9 @@ case class FetchResponse(
     case (topicAndPartition, fetchData) => topicAndPartition.topic
   }
   val headerSizeInBytes = FetchResponse.headerSize(requestVersion)
-  lazy val sizeInBytes =
-    FetchResponse.responseSize(dataGroupedByTopic, requestVersion)
+  lazy val sizeInBytes = FetchResponse.responseSize(
+    dataGroupedByTopic,
+    requestVersion)
 
   /*
    * Writes the header of the FetchResponse to the input buffer
@@ -301,8 +302,8 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
   override def destination = dest
 
   // The throttleTimeSize will be 0 if the request was made from a client sending a V0 style request
-  private val buffer =
-    ByteBuffer.allocate(4 /* for size */ + fetchResponse.headerSizeInBytes)
+  private val buffer = ByteBuffer.allocate(
+    4 /* for size */ + fetchResponse.headerSizeInBytes)
   fetchResponse.writeHeaderTo(buffer)
   buffer.rewind()
 

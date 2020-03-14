@@ -27,8 +27,7 @@ final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
      else "class ") + getName()
   }
 
-  def isInstance(obj: Object): scala.Boolean =
-    data.isInstance(obj)
+  def isInstance(obj: Object): scala.Boolean = data.isInstance(obj)
 
   def isAssignableFrom(that: Class[_]): scala.Boolean =
     if (this.isPrimitive || that.isPrimitive) {
@@ -49,32 +48,23 @@ final class Class[A] private (data: ScalaJSClassData[A]) extends Object {
       }
     } else { this.isInstance(that.getFakeInstance()) }
 
-  private def getFakeInstance(): Object =
-    data.getFakeInstance()
+  private def getFakeInstance(): Object = data.getFakeInstance()
 
-  def isInterface(): scala.Boolean =
-    data.isInterface
+  def isInterface(): scala.Boolean = data.isInterface
 
-  def isArray(): scala.Boolean =
-    data.isArrayClass
+  def isArray(): scala.Boolean = data.isArrayClass
 
-  def isPrimitive(): scala.Boolean =
-    data.isPrimitive
+  def isPrimitive(): scala.Boolean = data.isPrimitive
 
-  private def isRawJSType(): scala.Boolean =
-    data.isRawJSType
+  private def isRawJSType(): scala.Boolean = data.isRawJSType
 
-  def getName(): String =
-    data.name
+  def getName(): String = data.name
 
-  def getSimpleName(): String =
-    data.name.split('.').last.split('$').last
+  def getSimpleName(): String = data.name.split('.').last.split('$').last
 
-  def getSuperclass(): Class[_ >: A] =
-    data.getSuperclass()
+  def getSuperclass(): Class[_ >: A] = data.getSuperclass()
 
-  def getComponentType(): Class[_] =
-    data.getComponentType()
+  def getComponentType(): Class[_] = data.getComponentType()
 
   @inline // optimize for the Unchecked case, where this becomes identity()
   def cast(obj: Object): A = {

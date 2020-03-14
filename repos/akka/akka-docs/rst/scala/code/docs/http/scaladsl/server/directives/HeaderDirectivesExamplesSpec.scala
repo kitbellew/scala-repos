@@ -14,10 +14,9 @@ import org.scalatest.Inside
 
 class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
   "headerValueByName-0" in {
-    val route =
-      headerValueByName("X-User-Id") { userId =>
-        complete(s"The user is $userId")
-      }
+    val route = headerValueByName("X-User-Id") { userId =>
+      complete(s"The user is $userId")
+    }
 
     // tests:
     Get("/") ~> RawHeader("X-User-Id", "Joe42") ~> route ~> check {
@@ -35,8 +34,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       case x         => None
     }
 
-    val route =
-      headerValue(extractHostPort) { port => complete(s"The port was $port") }
+    val route = headerValue(extractHostPort) { port =>
+      complete(s"The port was $port")
+    }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {
@@ -104,8 +104,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
       case h: `Host` => h.port
     }
 
-    val route =
-      headerValuePF(extractHostPort) { port => complete(s"The port was $port") }
+    val route = headerValuePF(extractHostPort) { port =>
+      complete(s"The port was $port")
+    }
 
     // tests:
     Get("/") ~> Host("example.com", 5043) ~> route ~> check {
@@ -145,10 +146,9 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
   }
   "headerValueByType-0" in {
-    val route =
-      headerValueByType[Origin]() { origin ⇒
-        complete(s"The first origin was ${origin.origins.head}")
-      }
+    val route = headerValueByType[Origin]() { origin ⇒
+      complete(s"The first origin was ${origin.origins.head}")
+    }
 
     val originHeader = Origin(HttpOrigin("http://localhost:8080"))
 
@@ -165,12 +165,11 @@ class HeaderDirectivesExamplesSpec extends RoutingSpec with Inside {
     }
   }
   "optionalHeaderValueByType-0" in {
-    val route =
-      optionalHeaderValueByType[Origin]() {
-        case Some(origin) ⇒
-          complete(s"The first origin was ${origin.origins.head}")
-        case None ⇒ complete("No Origin header found.")
-      }
+    val route = optionalHeaderValueByType[Origin]() {
+      case Some(origin) ⇒
+        complete(s"The first origin was ${origin.origins.head}")
+      case None ⇒ complete("No Origin header found.")
+    }
 
     val originHeader = Origin(HttpOrigin("http://localhost:8080"))
 

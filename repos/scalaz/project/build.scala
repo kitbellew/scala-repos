@@ -382,19 +382,18 @@ object build extends Build {
     )
   )
 
-  lazy val scalacheckBinding =
-    CrossProject(
-      "scalacheck-binding",
-      file("scalacheck-binding"),
-      ScalazCrossType)
-      .settings(standardSettings: _*)
-      .settings(
-        name := "scalaz-scalacheck-binding",
-        libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
-        osgiExport("scalaz.scalacheck"))
-      .dependsOn(core, iteratee)
-      .jvmConfigure(_ dependsOn concurrent)
-      .jsSettings(scalajsProjectSettings: _*)
+  lazy val scalacheckBinding = CrossProject(
+    "scalacheck-binding",
+    file("scalacheck-binding"),
+    ScalazCrossType)
+    .settings(standardSettings: _*)
+    .settings(
+      name := "scalaz-scalacheck-binding",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalaCheckVersion.value,
+      osgiExport("scalaz.scalacheck"))
+    .dependsOn(core, iteratee)
+    .jvmConfigure(_ dependsOn concurrent)
+    .jsSettings(scalajsProjectSettings: _*)
 
   lazy val scalacheckBindingJVM = scalacheckBinding.jvm
   lazy val scalacheckBindingJS = scalacheckBinding.js

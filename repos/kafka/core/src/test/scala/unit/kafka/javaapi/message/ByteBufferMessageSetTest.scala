@@ -34,8 +34,9 @@ class ByteBufferMessageSetTest
     new ByteBufferMessageSet(
       new kafka.message.ByteBufferMessageSet(compressed, messages: _*).buffer)
 
-  val msgSeq: Seq[Message] =
-    Seq(new Message("hello".getBytes()), new Message("there".getBytes()))
+  val msgSeq: Seq[Message] = Seq(
+    new Message("hello".getBytes()),
+    new Message("there".getBytes()))
 
   @Test
   def testEquals() {

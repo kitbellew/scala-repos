@@ -44,13 +44,12 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
     val f = fixture()
     val proto = f.discoveryInfoWithPort.toProto
 
-    val portProto =
-      MesosProtos.Port
-        .newBuilder()
-        .setName("http")
-        .setNumber(80)
-        .setProtocol("tcp")
-        .build()
+    val portProto = MesosProtos.Port
+      .newBuilder()
+      .setName("http")
+      .setNumber(80)
+      .setProtocol("tcp")
+      .build()
 
     proto.getPortsList.asScala.head should equal(portProto)
   }
@@ -66,13 +65,12 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   test("ConstructFromProto with port") {
     val f = fixture()
 
-    val portProto =
-      MesosProtos.Port
-        .newBuilder()
-        .setName("http")
-        .setNumber(80)
-        .setProtocol("tcp")
-        .build()
+    val portProto = MesosProtos.Port
+      .newBuilder()
+      .setName("http")
+      .setNumber(80)
+      .setProtocol("tcp")
+      .build()
 
     val protoWithPort = Protos.DiscoveryInfo.newBuilder
       .addAllPorts(Seq(portProto).asJava)
@@ -97,8 +95,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read empty discovery info") {
-    val json =
-      """
+    val json = """
       {
         "ports": []
       }
@@ -111,8 +108,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with one port") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "http", "number": 80, "protocol": "tcp" }
@@ -127,8 +123,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with two ports") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "dns", "number": 53, "protocol": "udp" },
@@ -144,8 +139,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with two ports with the same port number") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "dnsudp", "number": 53, "protocol": "udp" },
@@ -161,8 +155,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with two ports with duplicate port/number") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "dns1", "number": 53, "protocol": "udp" },
@@ -179,8 +172,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with two ports with duplicate name") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "dns1", "number": 53, "protocol": "udp" },
@@ -195,8 +187,7 @@ class DiscoveryInfoTest extends MarathonSpec with Matchers {
   }
 
   test("Read discovery info with a port with an invalid protocol") {
-    val json =
-      """
+    val json = """
       {
         "ports": [
           { "name": "http", "number": 80, "protocol": "foo" }

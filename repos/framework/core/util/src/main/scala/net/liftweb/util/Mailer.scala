@@ -124,14 +124,13 @@ trait Mailer extends SimpleInjector {
     */
   var customProperties: Map[String, String] = Map()
 
-  lazy val jndiSession: Box[Session] =
-    for {
-      name <- jndiName
-      contextObj <- Helpers.tryo(new InitialContext().lookup("java:comp/env"))
-      context <- Box.asA[Context](contextObj)
-      sessionObj <- Helpers.tryo(context.lookup(name))
-      session <- Box.asA[Session](sessionObj)
-    } yield session
+  lazy val jndiSession: Box[Session] = for {
+    name <- jndiName
+    contextObj <- Helpers.tryo(new InitialContext().lookup("java:comp/env"))
+    context <- Box.asA[Context](contextObj)
+    sessionObj <- Helpers.tryo(context.lookup(name))
+    session <- Box.asA[Session](sessionObj)
+  } yield session
 
   lazy val properties: Properties = {
     val p = System.getProperties.clone.asInstanceOf[Properties]

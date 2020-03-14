@@ -21,8 +21,7 @@ private[optimizer] object ConcurrencyUtils {
   type AtomicAcc[T] = AtomicReference[List[T]]
 
   object AtomicAcc {
-    @inline final def empty[T]: AtomicAcc[T] =
-      new AtomicReference[List[T]](Nil)
+    @inline final def empty[T]: AtomicAcc[T] = new AtomicReference[List[T]](Nil)
     @inline final def apply[T](l: List[T]): AtomicAcc[T] =
       new AtomicReference(l)
   }

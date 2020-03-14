@@ -19,16 +19,14 @@ object build extends Build {
     checkTask(expectedInter)
   )
 
-  lazy val expectedMongo =
-    <dependency>
+  lazy val expectedMongo = <dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>casbah_2.9.2</artifactId>
 			<version>2.4.1</version>
 			<type>pom</type>
 		</dependency>
 
-  lazy val expectedInter =
-    <dependency>
+  lazy val expectedInter = <dependency>
 			<groupId>org.example</groupId>
 			<artifactId>p1_2.9.2</artifactId>
 			<version>1.0</version>

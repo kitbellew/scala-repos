@@ -331,8 +331,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 Constant(boostrapMethodRef: Symbol)) :: staticAndDynamicArgs) =>
           val numStaticArgs =
             boostrapMethodRef.paramss.head.size - 3 /*JVM provided args*/
-          val (staticArgs, dynamicArgs) =
-            staticAndDynamicArgs.splitAt(numStaticArgs)
+          val (staticArgs, dynamicArgs) = staticAndDynamicArgs.splitAt(
+            numStaticArgs)
           val boostrapDescriptor = staticHandleFromSymbol(boostrapMethodRef)
           val bootstrapArgs = staticArgs.map({
             case t @ Literal(c: Constant) => bootstrapMethodArg(c, t.pos)
@@ -739,10 +739,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
           genLoad(expr)
-          val boxType =
-            unboxResultType(
-              fun.symbol
-            ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
+          val boxType = unboxResultType(
+            fun.symbol
+          ) // was typeToBType(fun.symbol.owner.linkedClassOfClass.tpe)
           generatedType = boxType
           val MethodNameAndType(mname, methodType) =
             srBoxesRuntimeUnboxToMethods(boxType)
@@ -1498,8 +1497,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           genCZJUMP(success, failure, TestOp.NE, BOOL, targetIfNoJump)
         } else {
           // l == r -> if (l eq null) r eq null else l.equals(r)
-          val eqEqTempLocal =
-            locals.makeLocal(ObjectRef, nme.EQEQ_LOCAL_VAR.toString)
+          val eqEqTempLocal = locals.makeLocal(
+            ObjectRef,
+            nme.EQEQ_LOCAL_VAR.toString)
           val lNull = new asm.Label
           val lNonNull = new asm.Label
 
@@ -1542,14 +1542,13 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val isStaticMethod = lambdaTarget.hasFlag(Flags.STATIC)
       def asmType(sym: Symbol) = classBTypeFromSymbol(sym).toASMType
 
-      val implMethodHandle =
-        new asm.Handle(
-          if (lambdaTarget.hasFlag(Flags.STATIC)) asm.Opcodes.H_INVOKESTATIC
-          else if (lambdaTarget.owner.isTrait) asm.Opcodes.H_INVOKEINTERFACE
-          else asm.Opcodes.H_INVOKEVIRTUAL,
-          classBTypeFromSymbol(lambdaTarget.owner).internalName,
-          lambdaTarget.name.toString,
-          methodBTypeFromSymbol(lambdaTarget).descriptor)
+      val implMethodHandle = new asm.Handle(
+        if (lambdaTarget.hasFlag(Flags.STATIC)) asm.Opcodes.H_INVOKESTATIC
+        else if (lambdaTarget.owner.isTrait) asm.Opcodes.H_INVOKEINTERFACE
+        else asm.Opcodes.H_INVOKEVIRTUAL,
+        classBTypeFromSymbol(lambdaTarget.owner).internalName,
+        lambdaTarget.name.toString,
+        methodBTypeFromSymbol(lambdaTarget).descriptor)
       val receiver = if (isStaticMethod) Nil else lambdaTarget.owner :: Nil
       val (capturedParams, lambdaParams) = lambdaTarget.paramss.head
         .splitAt(lambdaTarget.paramss.head.length - arity)

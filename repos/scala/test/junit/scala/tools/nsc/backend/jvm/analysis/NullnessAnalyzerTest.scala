@@ -153,8 +153,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def explicitNull(): Unit = {
-    val List(m) =
-      compileMethods(noOptCompiler)("def f = { var a: Object = null; a }")
+    val List(m) = compileMethods(noOptCompiler)(
+      "def f = { var a: Object = null; a }")
     val a = newNullnessAnalyzer(m)
     for ((insn, index, nullness) <- List(
            ("+ACONST_NULL", 2, NullValue),
@@ -165,8 +165,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def stringLiteralsNotNull(): Unit = {
-    val List(m) =
-      compileMethods(noOptCompiler)("""def f = { val a = "hi"; a.trim }""")
+    val List(m) = compileMethods(noOptCompiler)(
+      """def f = { val a = "hi"; a.trim }""")
     val a = newNullnessAnalyzer(m)
     testNullness(a, m, "+ASTORE 1", 1, NotNullValue)
   }
@@ -182,8 +182,7 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def mergeNullNotNull(): Unit = {
-    val code =
-      """def f(o: Object) = {
+    val code = """def f(o: Object) = {
         |  var a: Object = o
         |  var c: Object = null
         |  if ("".trim eq "-") {

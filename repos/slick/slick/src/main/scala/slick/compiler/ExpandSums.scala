@@ -218,8 +218,9 @@ class ExpandSums extends Phase {
         extendGen,
         side,
         Pure(ProductNode(ConstArray(disc, Ref(extendGen))))).infer()
-      val sideInCondition =
-        Select(Ref(sym) :@ extendedElementType, ElementSymbol(2)).infer()
+      val sideInCondition = Select(
+        Ref(sym) :@ extendedElementType,
+        ElementSymbol(2)).infer()
       val on2 = on
         .replace(
           { case Ref(s) if s == sym => sideInCondition },
@@ -247,22 +248,28 @@ class ExpandSums extends Phase {
     }
 
     // Cast to translated Option type in outer bind
-    val join2 :@ CollectionType(_, elemType2) =
-      Join(lsym, rsym, left2, right2, jt2, on2).infer()
+    val join2 :@ CollectionType(_, elemType2) = Join(
+      lsym,
+      rsym,
+      left2,
+      right2,
+      jt2,
+      on2).infer()
     def optionCast(idx: Int, createDisc: Boolean): Node = {
       val ref = Select(Ref(bsym) :@ elemType2, ElementSymbol(idx + 1))
-      val v = if (createDisc) {
-        val protoDisc = Select(ref, ElementSymbol(1)).infer()
-        val rest = Select(ref, ElementSymbol(2))
-        val disc = IfThenElse(
-          ConstArray(
-            Library.==.typed[Boolean](
-              silentCast(OptionType(protoDisc.nodeType), protoDisc),
-              LiteralNode(null)),
-            DiscNone,
-            Disc1))
-        ProductNode(ConstArray(disc, rest))
-      } else ref
+      val v =
+        if (createDisc) {
+          val protoDisc = Select(ref, ElementSymbol(1)).infer()
+          val rest = Select(ref, ElementSymbol(2))
+          val disc = IfThenElse(
+            ConstArray(
+              Library.==.typed[Boolean](
+                silentCast(OptionType(protoDisc.nodeType), protoDisc),
+                LiteralNode(null)),
+              DiscNone,
+              Disc1))
+          ProductNode(ConstArray(disc, rest))
+        } else ref
       silentCast(trType(elemType.asInstanceOf[ProductType].children(idx)), v)
     }
     val ref = ProductNode(

@@ -43,6 +43,5 @@ class Specs2TestFramework extends AbstractTestFramework {
     }
 
   override protected def getAdditionalBuildCommands(
-      scalaVersion: Option[String]): Seq[String] =
-    Seq("\"-Yrangepos\"")
+      scalaVersion: Option[String]): Seq[String] = Seq("\"-Yrangepos\"")
 }

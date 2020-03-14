@@ -107,8 +107,8 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
       def compare(x: ArrayData, y: ArrayData): Int = {
         val leftArray = x
         val rightArray = y
-        val minLength =
-          scala.math.min(leftArray.numElements(), rightArray.numElements())
+        val minLength = scala.math
+          .min(leftArray.numElements(), rightArray.numElements())
         var i = 0
         while (i < minLength) {
           val isNullLeft = leftArray.isNullAt(i)
@@ -118,10 +118,9 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
           } else if (isNullLeft) { return -1 }
           else if (isNullRight) { return 1 }
           else {
-            val comp =
-              elementOrdering.compare(
-                leftArray.get(i, elementType),
-                rightArray.get(i, elementType))
+            val comp = elementOrdering.compare(
+              leftArray.get(i, elementType),
+              rightArray.get(i, elementType))
             if (comp != 0) { return comp }
           }
           i += 1

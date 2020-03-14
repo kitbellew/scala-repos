@@ -51,8 +51,9 @@ trait Aliases {
     LiftedCaseClass,
     PlainTuple,
     PlainCaseClass]
-  type ProductClassShape[E <: Product, C <: Product] =
-    lifted.ProductClassShape[E, C]
+  type ProductClassShape[E <: Product, C <: Product] = lifted.ProductClassShape[
+    E,
+    C]
   type ShapeLevel = lifted.ShapeLevel
   type NestedShapeLevel = lifted.NestedShapeLevel
   type FlatShapeLevel = lifted.FlatShapeLevel
@@ -64,8 +65,10 @@ trait Aliases {
 
   type DBIO[+R] = dbio.DBIO[R]
   type StreamingDBIO[+R, +T] = dbio.StreamingDBIO[R, T]
-  type DBIOAction[+R, +S <: dbio.NoStream, -E <: dbio.Effect] =
-    dbio.DBIOAction[R, S, E]
+  type DBIOAction[+R, +S <: dbio.NoStream, -E <: dbio.Effect] = dbio.DBIOAction[
+    R,
+    S,
+    E]
   val DBIO = dbio.DBIO
   type Effect = dbio.Effect
   val Effect = dbio.Effect

@@ -87,8 +87,10 @@ private[sql] trait Queryable {
     }
 
     // Create SeparateLine
-    val sep: String =
-      colWidths.map("-" * _).addString(sb, "+", "+", "+\n").toString()
+    val sep: String = colWidths
+      .map("-" * _)
+      .addString(sb, "+", "+", "+\n")
+      .toString()
 
     // column names
     rows.head.zipWithIndex

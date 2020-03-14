@@ -12,8 +12,7 @@ package scala
 object Product10 {
   def unapply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
       x: Product10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10])
-      : Option[Product10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]] =
-    Some(x)
+      : Option[Product10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]] = Some(x)
 }
 
 /** Product10 is a cartesian product of 10 components.

@@ -16,11 +16,10 @@ import mutable.ListBuffer
 
 trait Picklers { self: Global =>
 
-  lazy val freshRunReq =
-    unitPickler
-      .wrapped { _ => new FreshRunReq } { x => () }
-      .labelled("FreshRunReq")
-      .cond(_.isInstanceOf[FreshRunReq])
+  lazy val freshRunReq = unitPickler
+    .wrapped { _ => new FreshRunReq } { x => () }
+    .labelled("FreshRunReq")
+    .cond(_.isInstanceOf[FreshRunReq])
 
   lazy val shutdownReq = singletonPickler(ShutdownReq)
 
@@ -69,12 +68,9 @@ trait Picklers { self: Global =>
       } { f => f.file ~ delta(f.file, f.content) }
       .asClass(classOf[BatchSourceFile])
 
-  lazy val offsetPosition: CondPickler[Position] =
-    (pkl[SourceFile] ~ pkl[Int])
-      .wrapped { case x ~ y => Position.offset(x, y) } { p =>
-        p.source ~ p.point
-      }
-      .asClass(classOf[Position])
+  lazy val offsetPosition: CondPickler[Position] = (pkl[SourceFile] ~ pkl[Int])
+    .wrapped { case x ~ y => Position.offset(x, y) } { p => p.source ~ p.point }
+    .asClass(classOf[Position])
 
   lazy val rangePosition: CondPickler[Position] =
     (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
@@ -97,11 +93,11 @@ trait Picklers { self: Global =>
   implicit lazy val position: Pickler[Position] =
     transparentPosition | rangePosition | offsetPosition | noPosition
 
-  implicit lazy val namePickler: Pickler[Name] =
-    pkl[String].wrapped[Name] { str =>
+  implicit lazy val namePickler: Pickler[Name] = pkl[String].wrapped[Name] {
+    str =>
       if ((str.length > 1) && (str endsWith "!")) newTypeName(str.init)
       else newTermName(str)
-    } { name => if (name.isTypeName) name.toString + "!" else name.toString }
+  } { name => if (name.isTypeName) name.toString + "!" else name.toString }
 
   implicit lazy val symPickler: Pickler[Symbol] = {
     def ownerNames(sym: Symbol, buf: ListBuffer[Name]): ListBuffer[Name] = {

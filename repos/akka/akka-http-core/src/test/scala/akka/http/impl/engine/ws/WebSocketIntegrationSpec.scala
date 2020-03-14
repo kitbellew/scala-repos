@@ -91,22 +91,21 @@ class WebSocketIntegrationSpec
         val binding = Await.result(bindingFuture, 3.seconds)
         val myPort = binding.localAddress.getPort
 
-        val ((response, breaker), sink) =
-          Source.empty
-            .viaMat {
-              Http()
-                .webSocketClientLayer(
-                  WebSocketRequest("ws://localhost:" + myPort))
-                .atop(TLSPlacebo())
-                .joinMat(
-                  Flow
-                    .fromGraph(GraphStages.breaker[ByteString])
-                    .via(Tcp().outgoingConnection(
-                      new InetSocketAddress("localhost", myPort),
-                      halfClose = true)))(Keep.both)
-            }(Keep.right)
-            .toMat(TestSink.probe[Message])(Keep.both)
-            .run()
+        val ((response, breaker), sink) = Source.empty
+          .viaMat {
+            Http()
+              .webSocketClientLayer(
+                WebSocketRequest("ws://localhost:" + myPort))
+              .atop(TLSPlacebo())
+              .joinMat(
+                Flow
+                  .fromGraph(GraphStages.breaker[ByteString])
+                  .via(Tcp().outgoingConnection(
+                    new InetSocketAddress("localhost", myPort),
+                    halfClose = true)))(Keep.both)
+          }(Keep.right)
+          .toMat(TestSink.probe[Message])(Keep.both)
+          .run()
 
         response.futureValue.response.status.isSuccess should ===(true)
         sink
@@ -168,8 +167,8 @@ class WebSocketIntegrationSpec
 
           // convert to int so we can connect to merge
           val mapMsgToInt = b.add(Flow[Message].map(_ ⇒ -1))
-          val mapIntToMsg =
-            b.add(Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
+          val mapIntToMsg = b.add(
+            Flow[Int].map(x ⇒ TextMessage.Strict(s"Sending: $x")))
 
           // source we want to use to send message to the connected websocket sink
           val rangeSource = b.add(Source(1 to N))
@@ -195,22 +194,21 @@ class WebSocketIntegrationSpec
         val myPort = binding.localAddress.getPort
 
         @volatile var messages = 0
-        val (breaker, completion) =
-          Source.maybe
-            .viaMat {
-              Http()
-                .webSocketClientLayer(
-                  WebSocketRequest("ws://localhost:" + myPort))
-                .atop(TLSPlacebo())
-                // the resource leak of #19398 existed only for severed websocket connections
-                .atopMat(GraphStages.bidiBreaker[ByteString, ByteString])(
-                  Keep.right)
-                .join(Tcp().outgoingConnection(
-                  new InetSocketAddress("localhost", myPort),
-                  halfClose = true))
-            }(Keep.right)
-            .toMat(Sink.foreach(_ ⇒ messages += 1))(Keep.both)
-            .run()
+        val (breaker, completion) = Source.maybe
+          .viaMat {
+            Http()
+              .webSocketClientLayer(
+                WebSocketRequest("ws://localhost:" + myPort))
+              .atop(TLSPlacebo())
+              // the resource leak of #19398 existed only for severed websocket connections
+              .atopMat(GraphStages.bidiBreaker[ByteString, ByteString])(
+                Keep.right)
+              .join(Tcp().outgoingConnection(
+                new InetSocketAddress("localhost", myPort),
+                halfClose = true))
+          }(Keep.right)
+          .toMat(Sink.foreach(_ ⇒ messages += 1))(Keep.both)
+          .run()
         eventually(messages should ===(N))
         // breaker should have been fulfilled long ago
         breaker.value.get.get.completeAndCancel()

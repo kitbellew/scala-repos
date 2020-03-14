@@ -122,13 +122,11 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   // This converts an Iterable into a Pipe or RichPipe with index (int-based) fields
   implicit def toPipe[T](iter: Iterable[T])(implicit
       set: TupleSetter[T],
-      conv: TupleConverter[T]): Pipe =
-    IterableSource[T](iter)(set, conv).read
+      conv: TupleConverter[T]): Pipe = IterableSource[T](iter)(set, conv).read
 
   implicit def iterableToRichPipe[T](iter: Iterable[T])(implicit
       set: TupleSetter[T],
-      conv: TupleConverter[T]): RichPipe =
-    RichPipe(toPipe(iter)(set, conv))
+      conv: TupleConverter[T]): RichPipe = RichPipe(toPipe(iter)(set, conv))
 
   // Provide args as an implicit val for extensions such as the Checkpoint extension.
   implicit protected def _implicitJobArgs: Args = args
@@ -285,8 +283,9 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
     scaldingCascadingStats = Some(statsData)
     // TODO: Why the two ways to do stats? Answer: jank-den.
     if (args.boolean("scalding.flowstats")) {
-      val statsFilename =
-        args.getOrElse("scalding.flowstats", name + "._flowstats.json")
+      val statsFilename = args.getOrElse(
+        "scalding.flowstats",
+        name + "._flowstats.json")
       val br = new BufferedWriter(
         new OutputStreamWriter(new FileOutputStream(statsFilename), "utf-8"))
       br.write(JobStats(statsData).toJson)
@@ -365,9 +364,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
   /*
    * Need to be lazy to be used within pipes.
    */
-  private lazy val timeoutExecutor =
-    Executors.newSingleThreadExecutor(
-      new NamedPoolThreadFactory("job-timer", true))
+  private lazy val timeoutExecutor = Executors.newSingleThreadExecutor(
+    new NamedPoolThreadFactory("job-timer", true))
 
   /*
    * Safely execute some operation within a deadline.

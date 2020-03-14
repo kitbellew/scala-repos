@@ -66,8 +66,7 @@ class UnusedLocalVariablesTest extends ClearAfterClass {
     val m = convertMethod(cls.methods.asScala.toList.find(_.desc == "(I)V").get)
     assertTrue(m.localVars.length == 2) // this, a, but not y
 
-    val code2 =
-      """class C {
+    val code2 = """class C {
         |  {
         |    throw new Exception("")
         |    val a = 0

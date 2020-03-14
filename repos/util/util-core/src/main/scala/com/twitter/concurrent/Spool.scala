@@ -54,8 +54,7 @@ sealed trait Spool[+A] {
   /**
     * The first element of the spool if it is non-empty.
     */
-  def headOption: Option[A] =
-    if (isEmpty) None else Some(head)
+  def headOption: Option[A] = if (isEmpty) None else Some(head)
 
   /**
     * The (deferred) tail of the spool. Invalid for empty spools.

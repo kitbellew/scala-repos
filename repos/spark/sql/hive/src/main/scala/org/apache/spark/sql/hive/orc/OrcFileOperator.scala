@@ -82,8 +82,8 @@ private[orc] object OrcFileOperator extends Logging {
     // Take the first file where we can open a valid reader if we can find one.  Otherwise just
     // return None to indicate we can't infer the schema.
     paths.flatMap(getFileReader(_, conf)).headOption.map { reader =>
-      val readerInspector =
-        reader.getObjectInspector.asInstanceOf[StructObjectInspector]
+      val readerInspector = reader.getObjectInspector
+        .asInstanceOf[StructObjectInspector]
       val schema = readerInspector.getTypeName
       logDebug(
         s"Reading schema from file $paths, got Hive schema string: $schema")

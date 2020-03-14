@@ -47,8 +47,9 @@ trait TestJobService
     with AkkaDefaults {
   type JobResource = Unit
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(20, Duration(5, "seconds"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    20,
+    Duration(5, "seconds"))
   val validAPIKey = "secret"
 
   lazy val executionContext = defaultFutureDispatch

@@ -35,8 +35,8 @@ class ScalaCastPostfixTemplate
     document.deleteString(
       expression.getTextRange.getStartOffset,
       expression.getTextRange.getEndOffset)
-    val manager: TemplateManager =
-      TemplateManager.getInstance(expression.getProject)
+    val manager: TemplateManager = TemplateManager.getInstance(
+      expression.getProject)
 
     val templateString = getTemplateString(expression)
     if (templateString == null) {

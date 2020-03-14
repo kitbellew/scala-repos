@@ -106,8 +106,10 @@ class OneHotEncoderSuite
   }
 
   test("input column with ML attribute") {
-    val attr =
-      NominalAttribute.defaultAttr.withValues("small", "medium", "large")
+    val attr = NominalAttribute.defaultAttr.withValues(
+      "small",
+      "medium",
+      "large")
     val df = sqlContext
       .createDataFrame(Seq(0.0, 1.0, 2.0, 1.0).map(Tuple1.apply))
       .toDF("size")

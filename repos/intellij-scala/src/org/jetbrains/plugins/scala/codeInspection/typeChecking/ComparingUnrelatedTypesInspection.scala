@@ -27,8 +27,8 @@ import scala.annotation.tailrec
   * 5/30/13
   */
 object ComparingUnrelatedTypesInspection {
-  val inspectionName =
-    InspectionBundle.message("comparing.unrelated.types.name")
+  val inspectionName = InspectionBundle.message(
+    "comparing.unrelated.types.name")
   val inspectionId = "ComparingUnrelatedTypes"
 
   private val seqFunctions = Seq("contains", "indexOf", "lastIndexOf")
@@ -89,8 +89,8 @@ class ComparingUnrelatedTypesInspection
       }
       if (needHighlighting) {
         //getType() for the reference on the left side returns singleton type, little hack here
-        val leftOnTheRight =
-          ScalaPsiElementFactory.createExpressionWithContextFromText(
+        val leftOnTheRight = ScalaPsiElementFactory
+          .createExpressionWithContextFromText(
             left.getText,
             right.getParent,
             right)
@@ -116,8 +116,9 @@ class ComparingUnrelatedTypesInspection
         argType <- arg.getType()
         if cannotBeCompared(elemType, argType)
       } {
-        val (elemTypeText, argTypeText) =
-          ScTypePresentation.different(elemType, argType)
+        val (elemTypeText, argTypeText) = ScTypePresentation.different(
+          elemType,
+          argType)
         val message = InspectionBundle.message(
           "comparing.unrelated.types.hint",
           elemTypeText,

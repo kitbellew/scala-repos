@@ -9,8 +9,7 @@ trait FlagSets extends api.FlagSets { self: SymbolTable =>
   type FlagSet = Long
   implicit val FlagSetTag = ClassTag[FlagSet](classOf[FlagSet])
 
-  implicit def addFlagOps(left: FlagSet): FlagOps =
-    new FlagOpsImpl(left)
+  implicit def addFlagOps(left: FlagSet): FlagOps = new FlagOpsImpl(left)
 
   private class FlagOpsImpl(left: Long) extends FlagOps {
     def |(right: Long): Long = left | right

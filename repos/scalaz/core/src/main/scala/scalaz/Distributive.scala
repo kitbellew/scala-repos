@@ -28,8 +28,7 @@ trait Distributive[F[_]] extends Functor[F] { self =>
     def run[A, B](fa: G[A])(f: A => F[B]): F[G[B]] = distributeImpl(fa)(f)
   }
 
-  def distribution[G[_]: Functor]: Distribution[G] =
-    new Distribution[G]
+  def distribution[G[_]: Functor]: Distribution[G] = new Distribution[G]
 
   def distribute[G[_]: Functor, A, B](fa: G[A])(f: A => F[B]): F[G[B]] =
     distribution[G].run(fa)(f)
@@ -43,6 +42,5 @@ object Distributive {
   @inline def apply[F[_]](implicit F: Distributive[F]): Distributive[F] = F
 
   // Distributive is the dual of Traverse.
-  type Cotraverse[F[_]] =
-    Distributive[F]
+  type Cotraverse[F[_]] = Distributive[F]
 }

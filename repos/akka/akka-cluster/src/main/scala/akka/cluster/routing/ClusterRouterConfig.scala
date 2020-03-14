@@ -32,8 +32,8 @@ import scala.collection.immutable
 object ClusterRouterGroupSettings {
   def fromConfig(config: Config): ClusterRouterGroupSettings =
     ClusterRouterGroupSettings(
-      totalInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
+      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
       routeesPaths = immutableSeq(config.getStringList("routees.paths")),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
       useRole = ClusterRouterSettingsBase.useRoleOption(
@@ -85,10 +85,10 @@ final case class ClusterRouterGroupSettings(
 object ClusterRouterPoolSettings {
   def fromConfig(config: Config): ClusterRouterPoolSettings =
     ClusterRouterPoolSettings(
-      totalInstances =
-        ClusterRouterSettingsBase.getMaxTotalNrOfInstances(config),
-      maxInstancesPerNode =
-        config.getInt("cluster.max-nr-of-instances-per-node"),
+      totalInstances = ClusterRouterSettingsBase.getMaxTotalNrOfInstances(
+        config),
+      maxInstancesPerNode = config.getInt(
+        "cluster.max-nr-of-instances-per-node"),
       allowLocalRoutees = config.getBoolean("cluster.allow-local-routees"),
       useRole = ClusterRouterSettingsBase.useRoleOption(
         config.getString("cluster.use-role"))
@@ -339,12 +339,11 @@ private[akka] class ClusterRouterPoolActor(
       None
     } else {
       // find the node with least routees
-      val numberOfRouteesPerNode: Map[Address, Int] =
-        currentRoutees.foldLeft(
-          currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) { (acc, x) ⇒
-          val address = fullAddress(x)
-          acc + (address -> (acc(address) + 1))
-        }
+      val numberOfRouteesPerNode: Map[Address, Int] = currentRoutees.foldLeft(
+        currentNodes.map(_ -> 0).toMap.withDefaultValue(0)) { (acc, x) ⇒
+        val address = fullAddress(x)
+        acc + (address -> (acc(address) + 1))
+      }
 
       val (address, count) = numberOfRouteesPerNode.minBy(_._2)
       if (count < settings.maxInstancesPerNode) Some(address) else None

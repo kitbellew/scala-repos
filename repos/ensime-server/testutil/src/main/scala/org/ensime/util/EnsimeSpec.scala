@@ -33,8 +33,9 @@ trait EnsimeSpec
     .load()
     .getDuration("akka.test.default-timeout", TimeUnit.MILLISECONDS)
     .milliseconds
-  override val spanScaleFactor: Double =
-    ConfigFactory.load().getDouble("akka.test.timefactor")
+  override val spanScaleFactor: Double = ConfigFactory
+    .load()
+    .getDouble("akka.test.timefactor")
   implicit override val patienceConfig = PatienceConfig(
     timeout = scaled(akkaTimeout),
     interval = scaled(Span(5, Millis))

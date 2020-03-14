@@ -40,8 +40,7 @@ trait ArrayOps[T]
     with ArrayLike[T, Array[T]]
     with CustomParallelizable[T, ParArray[T]] {
 
-  private def elementClass: Class[_] =
-    arrayElementClass(repr.getClass)
+  private def elementClass: Class[_] = arrayElementClass(repr.getClass)
 
   override def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) {
     val l = len min repr.length min (xs.length - start)
@@ -96,8 +95,8 @@ trait ArrayOps[T]
     *  @return         An array obtained by replacing elements of this arrays with rows the represent.
     */
   def transpose[U](implicit asArray: T => Array[U]): Array[Array[U]] = {
-    val bb: Builder[Array[U], Array[Array[U]]] =
-      Array.newBuilder(ClassTag[Array[U]](elementClass))
+    val bb: Builder[Array[U], Array[Array[U]]] = Array.newBuilder(
+      ClassTag[Array[U]](elementClass))
     if (isEmpty) bb.result()
     else {
       def mkRowBuilder() =

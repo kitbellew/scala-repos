@@ -103,8 +103,8 @@ class ZookeeperConsumerConnectorTest
       header: String): List[String] = {
     var messages: List[String] = Nil
     for (server <- servers) {
-      val producer: kafka.producer.Producer[Int, String] =
-        TestUtils.createProducer(
+      val producer: kafka.producer.Producer[Int, String] = TestUtils
+        .createProducer(
           TestUtils.getBrokerListStrFromServers(servers),
           encoder = classOf[StringEncoder].getName,
           keyEncoder = classOf[IntEncoder].getName)

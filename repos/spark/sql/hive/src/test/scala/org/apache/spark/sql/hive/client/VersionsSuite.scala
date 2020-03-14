@@ -168,26 +168,24 @@ class VersionsSuite extends SparkFunSuite with Logging {
     }
 
     test(s"$version: createTable") {
-      val table =
-        CatalogTable(
-          name = TableIdentifier("src", Some("default")),
-          tableType = CatalogTableType.MANAGED_TABLE,
-          schema = Seq(CatalogColumn("key", "int")),
-          storage = CatalogStorageFormat(
-            locationUri = None,
-            inputFormat =
-              Some(classOf[org.apache.hadoop.mapred.TextInputFormat].getName),
-            outputFormat = Some(
-              classOf[
-                org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[
-                  _,
-                  _]].getName),
-            serde = Some(
-              classOf[org.apache.hadoop.hive.serde2.`lazy`.LazySimpleSerDe]
-                .getName()),
-            serdeProperties = Map.empty
-          )
+      val table = CatalogTable(
+        name = TableIdentifier("src", Some("default")),
+        tableType = CatalogTableType.MANAGED_TABLE,
+        schema = Seq(CatalogColumn("key", "int")),
+        storage = CatalogStorageFormat(
+          locationUri = None,
+          inputFormat = Some(
+            classOf[org.apache.hadoop.mapred.TextInputFormat].getName),
+          outputFormat = Some(
+            classOf[org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[
+              _,
+              _]].getName),
+          serde = Some(
+            classOf[org.apache.hadoop.hive.serde2.`lazy`.LazySimpleSerDe]
+              .getName()),
+          serdeProperties = Map.empty
         )
+      )
 
       client.createTable(table, ignoreIfExists = false)
     }

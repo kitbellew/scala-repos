@@ -32,8 +32,10 @@ object OperationOnCollectionInspectionBase {
   val inspectionId = InspectionBundle.message("operation.on.collection.id")
   val inspectionName = InspectionBundle.message("operation.on.collection.name")
 
-  val likeOptionClassesDefault =
-    Array("scala.Option", "scala.Some", "scala.None")
+  val likeOptionClassesDefault = Array(
+    "scala.Option",
+    "scala.Some",
+    "scala.None")
   val likeCollectionClassesDefault = Array(
     "scala.collection._",
     "scala.Array",

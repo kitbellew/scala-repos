@@ -209,14 +209,13 @@ private[stream] object AbstractStage {
         Directive,
         Directive,
         Context[Out],
-        LifecycleContext] =
-        stageAndMat._1.asInstanceOf[AbstractStage[
-          In,
-          Out,
-          Directive,
-          Directive,
-          Context[Out],
-          LifecycleContext]]
+        LifecycleContext] = stageAndMat._1.asInstanceOf[AbstractStage[
+        In,
+        Out,
+        Directive,
+        Directive,
+        Context[Out],
+        LifecycleContext]]
       (
         new PushPullGraphLogic(shape, inheritedAttributes, stage),
         stageAndMat._2)

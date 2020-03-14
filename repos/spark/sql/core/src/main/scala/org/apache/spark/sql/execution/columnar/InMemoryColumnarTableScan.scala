@@ -88,12 +88,11 @@ private[sql] case class InMemoryRelation(
   @transient val partitionStatistics = new PartitionStatistics(output)
 
   private def computeSizeInBytes = {
-    val sizeOfRow: Expression =
-      BindReferences.bindReference(
-        output
-          .map(a => partitionStatistics.forAttribute(a).sizeInBytes)
-          .reduce(Add),
-        partitionStatistics.schema)
+    val sizeOfRow: Expression = BindReferences.bindReference(
+      output
+        .map(a => partitionStatistics.forAttribute(a).sizeInBytes)
+        .reduce(Add),
+      partitionStatistics.schema)
 
     batchStats.value.map(row => sizeOfRow.eval(row).asInstanceOf[Long]).sum
   }
@@ -301,12 +300,11 @@ private[sql] case class InMemoryColumnarTableScan(
   val partitionFilters: Seq[Expression] = {
     predicates.flatMap { p =>
       val filter = buildFilter.lift(p)
-      val boundFilter =
-        filter.map(
-          BindReferences.bindReference(
-            _,
-            relation.partitionStatistics.schema,
-            allowFailures = true))
+      val boundFilter = filter.map(
+        BindReferences.bindReference(
+          _,
+          relation.partitionStatistics.schema,
+          allowFailures = true))
 
       boundFilter.foreach(_ =>
         filter.foreach(f =>
@@ -317,10 +315,9 @@ private[sql] case class InMemoryColumnarTableScan(
     }
   }
 
-  lazy val enableAccumulators: Boolean =
-    sqlContext
-      .getConf("spark.sql.inMemoryTableScanStatistics.enable", "false")
-      .toBoolean
+  lazy val enableAccumulators: Boolean = sqlContext
+    .getConf("spark.sql.inMemoryTableScanStatistics.enable", "false")
+    .toBoolean
 
   // Accumulators used for testing purposes
   lazy val readPartitions: Accumulator[Int] = sparkContext.accumulator(0)
@@ -350,10 +347,9 @@ private[sql] case class InMemoryColumnarTableScan(
         schema)
 
       // Find the ordinals and data types of the requested columns.
-      val (requestedColumnIndices, requestedColumnDataTypes) =
-        attributes.map { a =>
-          relOutput.indexWhere(_.exprId == a.exprId) -> a.dataType
-        }.unzip
+      val (requestedColumnIndices, requestedColumnDataTypes) = attributes.map {
+        a => relOutput.indexWhere(_.exprId == a.exprId) -> a.dataType
+      }.unzip
 
       // Do partition batch pruning if enabled
       val cachedBatchesToScan =

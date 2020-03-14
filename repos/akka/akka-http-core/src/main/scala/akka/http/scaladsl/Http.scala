@@ -383,8 +383,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
       : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
-    val cps =
-      ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
+    val cps = ConnectionPoolSetup(
+      settings,
+      ConnectionContext.noEncryption(),
+      log)
     newHostConnectionPool(HostConnectionPoolSetup(host, port, cps))
   }
 
@@ -457,8 +459,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
       log: LoggingAdapter = system.log)(implicit fm: Materializer)
       : Flow[(HttpRequest, T), (Try[HttpResponse], T), HostConnectionPool] = {
-    val cps =
-      ConnectionPoolSetup(settings, ConnectionContext.noEncryption(), log)
+    val cps = ConnectionPoolSetup(
+      settings,
+      ConnectionContext.noEncryption(),
+      log)
     val setup = HostConnectionPoolSetup(host, port, cps)
     cachedHostConnectionPool(setup)
   }
@@ -548,8 +552,11 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       log: LoggingAdapter = system.log)(
       implicit fm: Materializer): Future[HttpResponse] =
     try {
-      val gatewayFuture =
-        cachedGateway(request, settings, connectionContext, log)
+      val gatewayFuture = cachedGateway(
+        request,
+        settings,
+        connectionContext,
+        log)
       gatewayFuture.flatMap(_(request))(fm.executionContext)
     } catch { case e: IllegalUriException ⇒ FastFuture.failed(e) }
 
@@ -750,10 +757,9 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     Flow[(HttpRequest, T)].mapAsyncUnordered(parallelism) {
       case (request, userContext) ⇒
         val (effectiveRequest, gatewayFuture) = f(request)
-        val result =
-          Promise[
-            (Try[HttpResponse], T)
-          ]() // TODO: simplify to `transformWith` when on Scala 2.12
+        val result = Promise[
+          (Try[HttpResponse], T)
+        ]() // TODO: simplify to `transformWith` when on Scala 2.12
         gatewayFuture
           .flatMap(_(effectiveRequest))(fm.executionContext)
           .onComplete(responseTry ⇒ result.success(responseTry -> userContext))(
@@ -789,8 +795,12 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     *                +------+
     * }}}
     */
-  type ServerLayer =
-    BidiFlow[HttpResponse, SslTlsOutbound, SslTlsInbound, HttpRequest, NotUsed]
+  type ServerLayer = BidiFlow[
+    HttpResponse,
+    SslTlsOutbound,
+    SslTlsInbound,
+    HttpRequest,
+    NotUsed]
   //#
 
   //#client-layer
@@ -806,8 +816,12 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     *                +------+
     * }}}
     */
-  type ClientLayer =
-    BidiFlow[HttpRequest, SslTlsOutbound, SslTlsInbound, HttpResponse, NotUsed]
+  type ClientLayer = BidiFlow[
+    HttpRequest,
+    SslTlsOutbound,
+    SslTlsInbound,
+    HttpResponse,
+    NotUsed]
   //#
 
   /**
@@ -939,21 +953,22 @@ trait DefaultSSLContextCreation {
     val mkLogger = new AkkaLoggerFactory(system)
 
     // initial ssl context!
-    val sslContext = if (sslConfig.config.default) {
-      log.debug(
-        "buildSSLContext: ssl-config.default is true, using default SSLContext")
-      sslConfig.validateDefaultTrustManager(config)
-      SSLContext.getDefault
-    } else {
-      // break out the static methods as much as we can...
-      val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
-      val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
-      new ConfigSSLContextBuilder(
-        mkLogger,
-        config,
-        keyManagerFactory,
-        trustManagerFactory).build()
-    }
+    val sslContext =
+      if (sslConfig.config.default) {
+        log.debug(
+          "buildSSLContext: ssl-config.default is true, using default SSLContext")
+        sslConfig.validateDefaultTrustManager(config)
+        SSLContext.getDefault
+      } else {
+        // break out the static methods as much as we can...
+        val keyManagerFactory = sslConfig.buildKeyManagerFactory(config)
+        val trustManagerFactory = sslConfig.buildTrustManagerFactory(config)
+        new ConfigSSLContextBuilder(
+          mkLogger,
+          config,
+          keyManagerFactory,
+          trustManagerFactory).build()
+      }
 
     // protocols!
     val defaultParams = sslContext.getDefaultSSLParameters

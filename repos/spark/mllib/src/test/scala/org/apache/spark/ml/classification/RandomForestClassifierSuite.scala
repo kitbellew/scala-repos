@@ -154,8 +154,10 @@ class RandomForestClassifierSuite
     val categoricalFeatures = Map.empty[Int, Int]
     val numClasses = 2
 
-    val df: DataFrame =
-      TreeTests.setMetadata(rdd, categoricalFeatures, numClasses)
+    val df: DataFrame = TreeTests.setMetadata(
+      rdd,
+      categoricalFeatures,
+      numClasses)
     val model = rf.fit(df)
 
     // copied model must have the same parent.
@@ -195,8 +197,10 @@ class RandomForestClassifierSuite
     // In this data, feature 1 is very important.
     val data: RDD[LabeledPoint] = TreeTests.featureImportanceData(sc)
     val categoricalFeatures = Map.empty[Int, Int]
-    val df: DataFrame =
-      TreeTests.setMetadata(data, categoricalFeatures, numClasses)
+    val df: DataFrame = TreeTests.setMetadata(
+      data,
+      categoricalFeatures,
+      numClasses)
 
     val importances = rf.fit(df).featureImportances
     val mostImportantFeature = importances.argmax
@@ -244,20 +248,21 @@ private object RandomForestClassifierSuite extends SparkFunSuite {
       categoricalFeatures: Map[Int, Int],
       numClasses: Int): Unit = {
     val numFeatures = data.first().features.size
-    val oldStrategy =
-      rf.getOldStrategy(
-        categoricalFeatures,
-        numClasses,
-        OldAlgo.Classification,
-        rf.getOldImpurity)
+    val oldStrategy = rf.getOldStrategy(
+      categoricalFeatures,
+      numClasses,
+      OldAlgo.Classification,
+      rf.getOldImpurity)
     val oldModel = OldRandomForest.trainClassifier(
       data,
       oldStrategy,
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame =
-      TreeTests.setMetadata(data, categoricalFeatures, numClasses)
+    val newData: DataFrame = TreeTests.setMetadata(
+      data,
+      categoricalFeatures,
+      numClasses)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestClassificationModel.fromOld(

@@ -44,12 +44,11 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
   testSessionStatus[mux.transport.Message, mux.transport.Message](
     "mux-transport",
     { tr: Transport[mux.transport.Message, mux.transport.Message] =>
-      val session: mux.ClientSession =
-        new mux.ClientSession(
-          tr,
-          mux.FailureDetector.NullConfig,
-          "test",
-          NullStatsReceiver)
+      val session: mux.ClientSession = new mux.ClientSession(
+        tr,
+        mux.FailureDetector.NullConfig,
+        "test",
+        NullStatsReceiver)
       () => session.status
     }
   )

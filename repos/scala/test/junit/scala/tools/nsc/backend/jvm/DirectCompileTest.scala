@@ -34,8 +34,8 @@ class DirectCompileTest extends ClearAfterClass {
 
   @Test
   def testCompileClasses(): Unit = {
-    val List(cClass, cModuleClass) =
-      compileClasses(compiler)("class C; object C")
+    val List(cClass, cModuleClass) = compileClasses(compiler)(
+      "class C; object C")
 
     assertTrue(cClass.name == "C")
     assertTrue(cModuleClass.name == "C$")
@@ -69,8 +69,8 @@ class DirectCompileTest extends ClearAfterClass {
   @Test
   def testDropNonOpAliveLabels(): Unit = {
     // makes sure that dropNoOp doesn't drop labels that are being used
-    val List(f) =
-      compileMethods(compiler)("""def f(x: Int) = if (x == 0) "a" else "b"""")
+    val List(f) = compileMethods(compiler)(
+      """def f(x: Int) = if (x == 0) "a" else "b"""")
     assertSameCode(
       instructionsFromMethod(f).dropLinesFrames,
       List(

@@ -42,8 +42,7 @@ object ThreadPoolConfig {
   def linkedBlockingQueue(capacity: Int): QueueFactory =
     () => new LinkedBlockingQueue[Runnable](capacity)
 
-  def reusableQueue(queue: BlockingQueue[Runnable]): QueueFactory =
-    () => queue
+  def reusableQueue(queue: BlockingQueue[Runnable]): QueueFactory = () => queue
 
   def reusableQueue(queueFactory: QueueFactory): QueueFactory = {
     val queue = queueFactory()
@@ -59,8 +58,8 @@ case class ThreadPoolConfig(
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
     flowHandler: ThreadPoolConfig.FlowHandler =
       ThreadPoolConfig.defaultFlowHandler,
-    queueFactory: ThreadPoolConfig.QueueFactory =
-      ThreadPoolConfig.linkedBlockingQueue()) {
+    queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig
+      .linkedBlockingQueue()) {
 
   final def createLazyExecutorService(
       threadFactory: ThreadFactory): ExecutorService =

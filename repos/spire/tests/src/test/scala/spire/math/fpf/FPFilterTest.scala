@@ -98,8 +98,7 @@ class FpFilterTest extends FunSuite with Checkers {
       y <- genSimpleDouble
     } yield Point(x, y)
 
-  def genEpsilon: Gen[Double] =
-    genSimpleDouble map (_ * FpFilter.Eps)
+  def genEpsilon: Gen[Double] = genSimpleDouble map (_ * FpFilter.Eps)
 
   def genSimplex: Gen[Simplex] =
     for {
@@ -143,8 +142,7 @@ class FpFilterTest extends FunSuite with Checkers {
     ((qx - px) * (ry - py) - (rx - px) * (qy - py)).signum
   }
 
-  implicit def arbSimplex: Arbitrary[Simplex] =
-    Arbitrary(genSimplex)
+  implicit def arbSimplex: Arbitrary[Simplex] = Arbitrary(genSimplex)
 
   implicit def arbDegenerateSimplex: Arbitrary[Degenerate[Simplex]] =
     Arbitrary(genDegenerateSimplex map (new Degenerate(_)))

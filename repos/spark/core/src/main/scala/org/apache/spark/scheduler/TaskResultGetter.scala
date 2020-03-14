@@ -40,8 +40,8 @@ private[spark] class TaskResultGetter(
   private val THREADS = sparkEnv.conf.getInt("spark.resultGetter.threads", 4)
 
   // Exposed for testing.
-  protected val getTaskResultExecutor: ExecutorService =
-    ThreadUtils.newDaemonFixedThreadPool(THREADS, "task-result-getter")
+  protected val getTaskResultExecutor: ExecutorService = ThreadUtils
+    .newDaemonFixedThreadPool(THREADS, "task-result-getter")
 
   // Exposed for testing.
   protected val serializer = new ThreadLocal[SerializerInstance] {
@@ -77,8 +77,8 @@ private[spark] class TaskResultGetter(
                 }
                 logDebug("Fetching indirect task result for TID %s".format(tid))
                 scheduler.handleTaskGettingResult(taskSetManager, tid)
-                val serializedTaskResult =
-                  sparkEnv.blockManager.getRemoteBytes(blockId)
+                val serializedTaskResult = sparkEnv.blockManager.getRemoteBytes(
+                  blockId)
                 if (!serializedTaskResult.isDefined) {
                   /* We won't be able to get the task result if the machine that ran the task failed
                    * between when the task ended and when we tried to fetch the result, or if the

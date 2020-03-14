@@ -6,8 +6,7 @@ import cats.functor.Bifunctor
 trait BifunctorSyntax {
   // TODO: use simulacrum instances eventually
   implicit def bifunctorSyntax[F[_, _]: Bifunctor, A, B](
-      fab: F[A, B]): BifunctorOps[F, A, B] =
-    new BifunctorOps[F, A, B](fab)
+      fab: F[A, B]): BifunctorOps[F, A, B] = new BifunctorOps[F, A, B](fab)
 }
 
 final class BifunctorOps[F[_, _], A, B](fab: F[A, B])(

@@ -399,8 +399,7 @@ object Storage extends Logging {
   /** Obtains a data access object that returns [[Event]] related RDD data
     * structure.
     */
-  def getPEvents(): PEvents =
-    getPDataObject[PEvents](EventDataRepository)
+  def getPEvents(): PEvents = getPDataObject[PEvents](EventDataRepository)
 
   def config: Map[String, Map[String, Map[String, String]]] =
     Map(

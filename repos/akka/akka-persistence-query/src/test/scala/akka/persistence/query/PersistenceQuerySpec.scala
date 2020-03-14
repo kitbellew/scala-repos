@@ -18,8 +18,7 @@ class PersistenceQuerySpec
     with Matchers
     with BeforeAndAfterAll {
 
-  val eventAdaptersConfig =
-    s"""
+  val eventAdaptersConfig = s"""
       |akka.persistence.query.journal.dummy {
       |  event-adapters {
       |    adapt = ${classOf[PrefixStringWithPAdapter].getCanonicalName}
@@ -52,12 +51,11 @@ class PersistenceQuerySpec
   private val systemCounter = new AtomicInteger()
   private def withActorSystem(conf: String = "")(
       block: ActorSystem ⇒ Unit): Unit = {
-    val config =
-      DummyReadJournalProvider.config
-        .withFallback(DummyJavaReadJournalProvider.config)
-        .withFallback(ConfigFactory.parseString(conf))
-        .withFallback(ConfigFactory.parseString(eventAdaptersConfig))
-        .withFallback(ConfigFactory.load())
+    val config = DummyReadJournalProvider.config
+      .withFallback(DummyJavaReadJournalProvider.config)
+      .withFallback(ConfigFactory.parseString(conf))
+      .withFallback(ConfigFactory.parseString(eventAdaptersConfig))
+      .withFallback(ConfigFactory.load())
 
     val sys = ActorSystem(s"sys-${systemCounter.incrementAndGet()}", config)
     try block(sys)

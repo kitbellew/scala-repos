@@ -26,8 +26,8 @@ final class RemoteSettings(val config: Config) {
 
   val UntrustedMode: Boolean = getBoolean("akka.remote.untrusted-mode")
 
-  val TrustedSelectionPaths: Set[String] =
-    immutableSeq(getStringList("akka.remote.trusted-selection-paths")).toSet
+  val TrustedSelectionPaths: Set[String] = immutableSeq(
+    getStringList("akka.remote.trusted-selection-paths")).toSet
 
   val RemoteLifecycleEventsLogLevel: LogLevel = getString(
     "akka.remote.log-remote-lifecycle-events").toLowerCase(Locale.ROOT) match {

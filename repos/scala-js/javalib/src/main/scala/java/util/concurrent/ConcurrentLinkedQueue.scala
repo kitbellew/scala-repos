@@ -35,8 +35,7 @@ class ConcurrentLinkedQueue[E]()
     }
   }
 
-  override def offer(e: E): Boolean =
-    add(e)
+  override def offer(e: E): Boolean = add(e)
 
   override def poll(): E = {
     if (isEmpty()) null.asInstanceOf[E]
@@ -51,14 +50,11 @@ class ConcurrentLinkedQueue[E]()
     }
   }
 
-  override def peek(): E =
-    if (isEmpty()) null.asInstanceOf[E] else head.value
+  override def peek(): E = if (isEmpty()) null.asInstanceOf[E] else head.value
 
-  override def isEmpty(): Boolean =
-    _size == 0
+  override def isEmpty(): Boolean = _size == 0
 
-  override def size(): Int =
-    _size.toInt
+  override def size(): Int = _size.toInt
 
   private def getNodeAt(index: Int): Node[E] = {
     var current: Node[E] = head
@@ -109,8 +105,7 @@ class ConcurrentLinkedQueue[E]()
 
       private var lastNode: Node[Node[E]] = null
 
-      def hasNext(): Boolean =
-        nextNode ne null
+      def hasNext(): Boolean = nextNode ne null
 
       def next(): E = {
         if (nextNode eq null) throw new NoSuchElementException()

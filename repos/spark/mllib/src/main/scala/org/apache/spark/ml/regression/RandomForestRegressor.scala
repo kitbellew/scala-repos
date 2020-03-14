@@ -107,24 +107,17 @@ final class RandomForestRegressor @Since("1.4.0") (
 
   override protected def train(
       dataset: DataFrame): RandomForestRegressionModel = {
-    val categoricalFeatures: Map[Int, Int] =
-      MetadataUtils.getCategoricalFeatures(dataset.schema($(featuresCol)))
+    val categoricalFeatures: Map[Int, Int] = MetadataUtils
+      .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
-    val strategy =
-      super.getOldStrategy(
-        categoricalFeatures,
-        numClasses = 0,
-        OldAlgo.Regression,
-        getOldImpurity)
-    val trees =
-      RandomForest
-        .run(
-          oldDataset,
-          strategy,
-          getNumTrees,
-          getFeatureSubsetStrategy,
-          getSeed)
-        .map(_.asInstanceOf[DecisionTreeRegressionModel])
+    val strategy = super.getOldStrategy(
+      categoricalFeatures,
+      numClasses = 0,
+      OldAlgo.Regression,
+      getOldImpurity)
+    val trees = RandomForest
+      .run(oldDataset, strategy, getNumTrees, getFeatureSubsetStrategy, getSeed)
+      .map(_.asInstanceOf[DecisionTreeRegressionModel])
     val numFeatures = oldDataset.first().features.size
     new RandomForestRegressionModel(trees, numFeatures)
   }
@@ -181,8 +174,8 @@ final class RandomForestRegressionModel private[ml] (
     _trees.asInstanceOf[Array[DecisionTreeModel]]
 
   // Note: We may add support for weights (based on tree performance) later on.
-  private lazy val _treeWeights: Array[Double] =
-    Array.fill[Double](numTrees)(1.0)
+  private lazy val _treeWeights: Array[Double] = Array.fill[Double](numTrees)(
+    1.0)
 
   @Since("1.4.0")
   override def treeWeights: Array[Double] = _treeWeights
@@ -228,8 +221,9 @@ final class RandomForestRegressionModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector =
-    RandomForest.featureImportances(trees, numFeatures)
+  lazy val featureImportances: Vector = RandomForest.featureImportances(
+    trees,
+    numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {

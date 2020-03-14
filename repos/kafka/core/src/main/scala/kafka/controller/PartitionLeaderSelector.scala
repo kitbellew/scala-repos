@@ -119,8 +119,8 @@ class OfflinePartitionLeaderSelector(
                   currentLeaderIsrZkPathVersion + 1)
             }
           case false =>
-            val liveReplicasInIsr =
-              liveAssignedReplicas.filter(r => liveBrokersInIsr.contains(r))
+            val liveReplicasInIsr = liveAssignedReplicas.filter(r =>
+              liveBrokersInIsr.contains(r))
             val newLeader = liveReplicasInIsr.head
             debug(
               "Some broker in ISR is alive for %s. Select %d from ISR %s to be the leader."
@@ -210,8 +210,8 @@ class PreferredReplicaPartitionLeaderSelector(
   def selectLeader(
       topicAndPartition: TopicAndPartition,
       currentLeaderAndIsr: LeaderAndIsr): (LeaderAndIsr, Seq[Int]) = {
-    val assignedReplicas =
-      controllerContext.partitionReplicaAssignment(topicAndPartition)
+    val assignedReplicas = controllerContext.partitionReplicaAssignment(
+      topicAndPartition)
     val preferredReplica = assignedReplicas.head
     // check if preferred replica is the current leader
     val currentLeader = controllerContext
@@ -267,12 +267,12 @@ class ControlledShutdownLeaderSelector(controllerContext: ControllerContext)
 
     val currentLeader = currentLeaderAndIsr.leader
 
-    val assignedReplicas =
-      controllerContext.partitionReplicaAssignment(topicAndPartition)
+    val assignedReplicas = controllerContext.partitionReplicaAssignment(
+      topicAndPartition)
     val liveOrShuttingDownBrokerIds =
       controllerContext.liveOrShuttingDownBrokerIds
-    val liveAssignedReplicas =
-      assignedReplicas.filter(r => liveOrShuttingDownBrokerIds.contains(r))
+    val liveAssignedReplicas = assignedReplicas.filter(r =>
+      liveOrShuttingDownBrokerIds.contains(r))
 
     val newIsr = currentLeaderAndIsr.isr.filter(brokerId =>
       !controllerContext.shuttingDownBrokerIds.contains(brokerId))

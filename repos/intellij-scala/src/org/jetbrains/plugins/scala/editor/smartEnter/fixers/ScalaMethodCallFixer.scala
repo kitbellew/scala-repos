@@ -31,8 +31,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
     val methodCall = psiElement.asInstanceOf[ScMethodCall]
 
     if (args.lastChild.exists(_.getText == ")")) {
-      val ref =
-        Option(methodCall.deepestInvokedExpr).flatMap(_.getReference.toOption)
+      val ref = Option(methodCall.deepestInvokedExpr)
+        .flatMap(_.getReference.toOption)
 
       ref.map(_.resolve()) match {
         case Some(funDef: ScFunctionDefinition) =>

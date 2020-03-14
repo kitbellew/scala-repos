@@ -151,21 +151,17 @@ class C {
 class TailCall[S](s: S) {
   def getS: S = s;
 
-  final def f1(n: Int, v: Int): Int =
-    if (n == 0) v else f1(n - 1, v - 1);
-  final def f2[T](n: Int, v: Int): Int =
-    if (n == 0) v else f2[T](n - 1, v - 1);
+  final def f1(n: Int, v: Int): Int = if (n == 0) v else f1(n - 1, v - 1);
+  final def f2[T](n: Int, v: Int): Int = if (n == 0) v else f2[T](n - 1, v - 1);
   final def f3[T](n: Int, v: Int, ls: List[T]): Int =
     if (n == 0) v else f3(n - 1, v - 1, ls);
 
   final def g1(x: Int, y: Int): Int = {
-    def aux(n: Int, v: Int): Int =
-      if (n == 0) v else aux(n - 1, v - 1);
+    def aux(n: Int, v: Int): Int = if (n == 0) v else aux(n - 1, v - 1);
     aux(x, y);
   }
   final def g2[T](x: Int, y: Int): Int = {
-    def aux[U](n: Int, v: Int): Int =
-      if (n == 0) v else aux[U](n - 1, v - 1);
+    def aux[U](n: Int, v: Int): Int = if (n == 0) v else aux[U](n - 1, v - 1);
     aux[T](x, y);
   }
   final def g3[T](x: Int, y: Int, zs: List[T]): Int = {
@@ -174,10 +170,8 @@ class TailCall[S](s: S) {
     aux(x, y, Nil);
   }
 
-  final def b1(x: Int): Boolean =
-    (x == 1) || b1(x - 1)
-  final def b2(x: Int): Boolean =
-    (x > 0) && ((x == 1) || b1(x - 1))
+  final def b1(x: Int): Boolean = (x == 1) || b1(x - 1)
+  final def b2(x: Int): Boolean = (x > 0) && ((x == 1) || b1(x - 1))
 
   def h1(n: Int, v: Int): Int = hP(n, v);
   private def hP(n: Int, v: Int): Int = if (n == 0) v else hP(n - 1, v - 1);
@@ -194,8 +188,7 @@ object FancyTailCalls {
 }
 
 object PolyObject extends App {
-  def tramp[A](x: Int): Int =
-    if (x > 0) tramp[A](x - 1) else 0
+  def tramp[A](x: Int): Int = if (x > 0) tramp[A](x - 1) else 0
 }
 
 class FancyTailCalls {

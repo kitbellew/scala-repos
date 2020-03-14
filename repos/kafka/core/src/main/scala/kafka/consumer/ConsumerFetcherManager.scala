@@ -71,8 +71,8 @@ class ConsumerFetcherManager(
         }
 
         trace("Partitions without leader %s".format(noLeaderPartitionSet))
-        val brokers =
-          zkUtils.getAllBrokerEndPointsForChannel(SecurityProtocol.PLAINTEXT)
+        val brokers = zkUtils.getAllBrokerEndPointsForChannel(
+          SecurityProtocol.PLAINTEXT)
         val topicsMetadata = ClientUtils
           .fetchTopicMetadata(
             noLeaderPartitionSet.map(m => m.topic).toSet,

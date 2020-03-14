@@ -52,8 +52,8 @@ class ReassignPartitionsCommandTest
     kafka.admin.TopicCommand.createTopic(zkUtils, createOpts)
 
     val topicJson = """{"topics": [{"topic": "foo"}], "version":1}"""
-    val (proposedAssignment, currentAssignment) =
-      ReassignPartitionsCommand.generateAssignment(
+    val (proposedAssignment, currentAssignment) = ReassignPartitionsCommand
+      .generateAssignment(
         zkUtils,
         rackInfo.keys.toSeq.sorted,
         topicJson,

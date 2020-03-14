@@ -37,16 +37,16 @@ private[http4] class HttpClientDispatcher(
   import GenSerialClientDispatcher.wrapWriteException
   import HttpClientDispatcher._
 
-  def this(trans: Transport[Any, Any]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Any, Any]) = this(trans, NullStatsReceiver)
 
   def dispatch(req: Request, p: Promise[Response]): Future[Unit] = {
 
     val dtabHeaders = HttpDtab.strip(req)
     if (dtabHeaders.nonEmpty) {
       // Log an error immediately if we find any Dtab headers already in the request and report them
-      val headersString =
-        dtabHeaders.map({ case (k, v) => s"[$k: $v]" }).mkString(", ")
+      val headersString = dtabHeaders
+        .map({ case (k, v) => s"[$k: $v]" })
+        .mkString(", ")
       log.error(
         s"discarding manually set dtab headers in request: $headersString\n" +
           s"set Dtab.local instead to send Dtab information.")

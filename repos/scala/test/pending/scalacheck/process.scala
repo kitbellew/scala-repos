@@ -86,10 +86,10 @@ class ProcessSpecification extends Properties("Process I/O") {
 	property("#&& correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ #&& _)(_ && _))
 	property("#|| correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ #|| _)(_ || _))
 	property("### correct") = forAll( (exitCodes: Array[Byte]) => checkBinary(exitCodes)(_ ### _)( (x,latest) => latest))*/
-  property("Pipe to output file") =
-    forAll((data: Array[Byte]) => checkFileOut(data))
-  property("Pipe to input file") =
-    forAll((data: Array[Byte]) => checkFileIn(data))
+  property("Pipe to output file") = forAll((data: Array[Byte]) =>
+    checkFileOut(data))
+  property("Pipe to input file") = forAll((data: Array[Byte]) =>
+    checkFileIn(data))
   property("Pipe to process") = forAll((data: Array[Byte]) => checkPipe(data))
 
   private def checkBinary(codes: Array[Byte])(
@@ -111,8 +111,8 @@ class ProcessSpecification extends Properties("Process I/O") {
   }
   private def checkFileOut(data: Array[Byte]) = {
     withData(data) { (temporaryFile, temporaryFile2) =>
-      val catCommand =
-        process("processtest.cat " + temporaryFile.getAbsolutePath)
+      val catCommand = process(
+        "processtest.cat " + temporaryFile.getAbsolutePath)
       catCommand #> temporaryFile2
     }
   }
@@ -147,9 +147,10 @@ class ProcessSpecification extends Properties("Process I/O") {
   }
   private def unsigned(b: Byte): Int = ((b: Int) + 256) % 256
   private def process(command: String) = {
-    val thisClasspath =
-      List(getSource[ScalaObject], getSource[IO.type], getSource[SourceTag])
-        .mkString(File.pathSeparator)
+    val thisClasspath = List(
+      getSource[ScalaObject],
+      getSource[IO.type],
+      getSource[SourceTag]).mkString(File.pathSeparator)
     "java -cp " + thisClasspath + " " + command
   }
   private def getSource[T: Manifest]: String =

@@ -202,8 +202,8 @@ class LowLevelOutgoingConnectionSpec
             |
             |""")
 
-        val whenComplete =
-          expectResponse().entity.dataBytes.runWith(Sink.ignore)
+        val whenComplete = expectResponse().entity.dataBytes
+          .runWith(Sink.ignore)
         whenComplete.futureValue should be(akka.Done)
       }
     }
@@ -348,8 +348,8 @@ class LowLevelOutgoingConnectionSpec
             |""")
 
         responsesSub.request(1)
-        val HttpResponse(_, _, HttpEntity.Chunked(ct, chunks), _) =
-          responses.expectNext()
+        val HttpResponse(_, _, HttpEntity.Chunked(ct, chunks), _) = responses
+          .expectNext()
         ct shouldEqual ContentTypes.`application/octet-stream`
 
         val probe = TestSubscriber.manualProbe[ChunkStreamPart]()

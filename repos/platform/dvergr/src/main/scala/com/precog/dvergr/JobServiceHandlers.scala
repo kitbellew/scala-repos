@@ -111,8 +111,8 @@ class CreateJobHandler(
             Future(
               HttpResponse[JValue](
                 BadRequest,
-                content =
-                  Some(JString("Missing both `name` and `type` of job."))))
+                content = Some(
+                  JString("Missing both `name` and `type` of job."))))
 
           case (name, JUndefined, _) =>
             Future(
@@ -181,8 +181,8 @@ class GetJobStatusHandler(jobs: JobManager[Future])(
       } getOrElse {
         HttpResponse[JValue](
           NotFound,
-          content =
-            Some(JString("No status has been created for this job yet.")))
+          content = Some(
+            JString("No status has been created for this job yet.")))
       }))
     } getOrElse {
       Failure(DispatchError(BadRequest, "Missing 'jobId paramter."))

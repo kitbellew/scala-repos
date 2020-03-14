@@ -631,8 +631,11 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
 
 object ScalaTypedHandler {
   val wiki1LTagMatch = Set("^", "`")
-  val wiki2LTagMatch =
-    Map("__" -> "__", "''" -> "''", ",," -> ",,", "[[" -> "]]")
+  val wiki2LTagMatch = Map(
+    "__" -> "__",
+    "''" -> "''",
+    ",," -> ",,",
+    "[[" -> "]]")
 
   val unicodeCaseArrow = "⇒"
   val unicodeMapArrow = "→"

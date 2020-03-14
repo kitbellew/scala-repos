@@ -7,11 +7,9 @@ class AtomicReference[T <: AnyRef](private[this] var value: T)
 
   final def get(): T = value
 
-  final def set(newValue: T): Unit =
-    value = newValue
+  final def set(newValue: T): Unit = value = newValue
 
-  final def lazySet(newValue: T): Unit =
-    set(newValue)
+  final def lazySet(newValue: T): Unit = set(newValue)
 
   final def compareAndSet(expect: T, update: T): Boolean = {
     if (expect ne value) false
@@ -30,6 +28,5 @@ class AtomicReference[T <: AnyRef](private[this] var value: T)
     old
   }
 
-  override def toString(): String =
-    String.valueOf(value)
+  override def toString(): String = String.valueOf(value)
 }

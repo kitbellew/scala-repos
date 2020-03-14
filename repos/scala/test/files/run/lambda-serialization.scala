@@ -11,12 +11,12 @@ object Test {
   def roundTrip(): Unit = {
     val c = new Capture("Capture")
     val lambda = (p: Param) => ("a", p, c)
-    val reconstituted1 =
-      serializeDeserialize(lambda).asInstanceOf[Object => Any]
+    val reconstituted1 = serializeDeserialize(lambda)
+      .asInstanceOf[Object => Any]
     val p = new Param
     assert(reconstituted1.apply(p) == ("a", p, c))
-    val reconstituted2 =
-      serializeDeserialize(lambda).asInstanceOf[Object => Any]
+    val reconstituted2 = serializeDeserialize(lambda)
+      .asInstanceOf[Object => Any]
     assert(reconstituted1.getClass == reconstituted2.getClass)
 
     val reconstituted3 = serializeDeserialize(reconstituted1)

@@ -20,24 +20,23 @@ private object KeyValidation {
     -1
   }
 
-  private val KeyCheck: Buf => Unit =
-    key => {
-      if (key == null)
-        throw new IllegalArgumentException("Invalid keys: key cannot be null")
+  private val KeyCheck: Buf => Unit = key => {
+    if (key == null)
+      throw new IllegalArgumentException("Invalid keys: key cannot be null")
 
-      if (tooLong(key))
-        throw new IllegalArgumentException(
-          "Invalid keys: key cannot be longer than %d bytes (%d)"
-            .format(MaxKeyLength, key.length))
+    if (tooLong(key))
+      throw new IllegalArgumentException(
+        "Invalid keys: key cannot be longer than %d bytes (%d)"
+          .format(MaxKeyLength, key.length))
 
-      val index = invalidByteIndex(key)
-      if (index != -1) {
-        val ch = Buf.ByteArray.Owned.extract(key)(index)
-        throw new IllegalArgumentException(
-          "Invalid keys: key cannot have whitespace or control characters: '0x%d'"
-            .format(ch))
-      }
+    val index = invalidByteIndex(key)
+    if (index != -1) {
+      val ch = Buf.ByteArray.Owned.extract(key)(index)
+      throw new IllegalArgumentException(
+        "Invalid keys: key cannot have whitespace or control characters: '0x%d'"
+          .format(ch))
     }
+  }
 
 }
 

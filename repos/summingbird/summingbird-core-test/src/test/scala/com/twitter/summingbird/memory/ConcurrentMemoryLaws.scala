@@ -175,9 +175,10 @@ class ConcurrentMemoryLaws extends WordSpec {
     val source = sourceMaker(original)
     val store: ConcurrentMemory#Store[K, V] = new ConcurrentHashMap[K, V]()
 
-    val prod =
-      TestGraphs.jobWithStats[ConcurrentMemory, T, K, V](jobID, source, store)(
-        t => fn(t))
+    val prod = TestGraphs.jobWithStats[ConcurrentMemory, T, K, V](
+      jobID,
+      source,
+      store)(t => fn(t))
     Await.result(mem.plan(prod).run, Duration.Inf)
     //mem.run(mem.plan(prod))
 

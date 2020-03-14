@@ -47,8 +47,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTemplateDefinition])
     invokeOnClass(clazz, project, editor)
   }
 
@@ -84,8 +85,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     val offset: Int = editor.getCaretModel.getOffset
     editor.getScrollingModel.scrollToCaret(ScrollType.MAKE_VISIBLE)
     val element: PsiElement = file.findElementAt(offset)
-    val clazz =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTemplateDefinition])
     val allMembers = ExtractSuperUtil.possibleMembersToExtract(clazz).asScala
     val memberInfos = if (onlyFirstMember) Seq(allMembers.head) else allMembers
     if (onlyDeclarations) memberInfos.foreach(_.setToAbstract(true))
@@ -101,10 +103,13 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
         clazz)
       val newTrtAdded = clazz match {
         case anon: ScNewTemplateDefinition =>
-          val tBody =
-            PsiTreeUtil.getParentOfType(anon, classOf[ScTemplateBody], true)
-          val added =
-            tBody.addBefore(newTrt, tBody.getLastChild).asInstanceOf[ScTrait]
+          val tBody = PsiTreeUtil.getParentOfType(
+            anon,
+            classOf[ScTemplateBody],
+            true)
+          val added = tBody
+            .addBefore(newTrt, tBody.getLastChild)
+            .asInstanceOf[ScTrait]
           added
         case _ => clazz.getParent.addAfter(newTrt, clazz).asInstanceOf[ScTrait]
       }
@@ -182,8 +187,8 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
   private def addTypeParameters(trt: ScTrait, typeParamsText: String) {
     if (typeParamsText == null || typeParamsText.isEmpty) return
-    val clause =
-      ScalaPsiElementFactory.createTypeParameterClauseFromTextWithContext(
+    val clause = ScalaPsiElementFactory
+      .createTypeParameterClauseFromTextWithContext(
         typeParamsText,
         trt,
         trt.nameId)
@@ -199,8 +204,9 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       if (packageName == currentPackageName)
         clazz.getContainingFile.getContainingDirectory
       else {
-        val pckg =
-          JavaPsiFacade.getInstance(clazz.getProject).findPackage(packageName)
+        val pckg = JavaPsiFacade
+          .getInstance(clazz.getProject)
+          .findPackage(packageName)
         if (pckg == null || pckg.getDirectories.isEmpty)
           throw new IllegalArgumentException(
             "Cannot find directory for new trait")

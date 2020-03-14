@@ -13,8 +13,9 @@ class ParameterDirectivesExamplesSpec
     extends RoutingSpec
     with PredefinedFromStringUnmarshallers {
   "example-1" in {
-    val route =
-      parameter('color) { color => complete(s"The color is '$color'") }
+    val route = parameter('color) { color =>
+      complete(s"The color is '$color'")
+    }
 
     // tests:
     Get("/?color=blue") ~> route ~> check {
@@ -27,11 +28,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "required-1" in {
-    val route =
-      parameters('color, 'backgroundColor) { (color, backgroundColor) =>
+    val route = parameters('color, 'backgroundColor) {
+      (color, backgroundColor) =>
         complete(
           s"The color is '$color' and the background is '$backgroundColor'")
-      }
+    }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
@@ -44,12 +45,12 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "optional" in {
-    val route =
-      parameters('color, 'backgroundColor.?) { (color, backgroundColor) =>
+    val route = parameters('color, 'backgroundColor.?) {
+      (color, backgroundColor) =>
         val backgroundStr = backgroundColor.getOrElse("<undefined>")
         complete(
           s"The color is '$color' and the background is '$backgroundStr'")
-      }
+    }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
@@ -61,12 +62,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "optional-with-default" in {
-    val route =
-      parameters('color, 'backgroundColor ? "white") {
-        (color, backgroundColor) =>
-          complete(
-            s"The color is '$color' and the background is '$backgroundColor'")
-      }
+    val route = parameters('color, 'backgroundColor ? "white") {
+      (color, backgroundColor) =>
+        complete(
+          s"The color is '$color' and the background is '$backgroundColor'")
+    }
 
     // tests:
     Get("/?color=blue&backgroundColor=red") ~> route ~> check {
@@ -79,10 +79,9 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "required-value" in {
-    val route =
-      parameters('color, 'action ! "true") { (color) =>
-        complete(s"The color is '$color'.")
-      }
+    val route = parameters('color, 'action ! "true") { (color) =>
+      complete(s"The color is '$color'.")
+    }
 
     // tests:
     Get("/?color=blue&action=true") ~> route ~> check {
@@ -96,10 +95,9 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "mapped-value" in {
-    val route =
-      parameters('color, 'count.as[Int]) { (color, count) =>
-        complete(s"The color is '$color' and you have $count of it.")
-      }
+    val route = parameters('color, 'count.as[Int]) { (color, count) =>
+      complete(s"The color is '$color' and you have $count of it.")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -113,18 +111,16 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "repeated" in {
-    val route =
-      parameters('color, 'city.*) { (color, cities) =>
-        cities.toList match {
-          case Nil =>
-            complete(s"The color is '$color' and there are no cities.")
-          case city :: Nil =>
-            complete(s"The color is '$color' and the city is $city.")
-          case multiple =>
-            complete(
-              s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
-        }
+    val route = parameters('color, 'city.*) { (color, cities) =>
+      cities.toList match {
+        case Nil => complete(s"The color is '$color' and there are no cities.")
+        case city :: Nil =>
+          complete(s"The color is '$color' and the city is $city.")
+        case multiple =>
+          complete(
+            s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
       }
+    }
 
     // tests:
     Get("/?color=blue") ~> route ~> check {
@@ -141,18 +137,17 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "mapped-repeated" in {
-    val route =
-      parameters('color, 'distance.as[Int].*) { (color, cities) =>
-        cities.toList match {
-          case Nil =>
-            complete(s"The color is '$color' and there are no distances.")
-          case distance :: Nil =>
-            complete(s"The color is '$color' and the distance is $distance.")
-          case multiple =>
-            complete(
-              s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
-        }
+    val route = parameters('color, 'distance.as[Int].*) { (color, cities) =>
+      cities.toList match {
+        case Nil =>
+          complete(s"The color is '$color' and there are no distances.")
+        case distance :: Nil =>
+          complete(s"The color is '$color' and the distance is $distance.")
+        case multiple =>
+          complete(
+            s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
       }
+    }
 
     // tests:
     Get("/?color=blue") ~> route ~> check {
@@ -168,13 +163,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterMap" in {
-    val route =
-      parameterMap { params =>
-        def paramString(param: (String, String)): String =
-          s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
-      }
+    val route = parameterMap { params =>
+      def paramString(param: (String, String)): String =
+        s"""${param._1} = '${param._2}'"""
+      complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -186,11 +179,10 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterMultiMap" in {
-    val route =
-      parameterMultiMap { params =>
-        complete(
-          s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
-      }
+    val route = parameterMultiMap { params =>
+      complete(
+        s"There are parameters ${params.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -202,13 +194,11 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "parameterSeq" in {
-    val route =
-      parameterSeq { params =>
-        def paramString(param: (String, String)): String =
-          s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
-      }
+    val route = parameterSeq { params =>
+      def paramString(param: (String, String)): String =
+        s"""${param._1} = '${param._2}'"""
+      complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
+    }
 
     // tests:
     Get("/?color=blue&count=42") ~> route ~> check {
@@ -220,10 +210,9 @@ class ParameterDirectivesExamplesSpec
     }
   }
   "csv" in {
-    val route =
-      parameter("names".as(CsvSeq[String])) { names =>
-        complete(s"The parameters are ${names.mkString(", ")}")
-      }
+    val route = parameter("names".as(CsvSeq[String])) { names =>
+      complete(s"The parameters are ${names.mkString(", ")}")
+    }
 
     // tests:
     Get("/?names=") ~> route ~> check {

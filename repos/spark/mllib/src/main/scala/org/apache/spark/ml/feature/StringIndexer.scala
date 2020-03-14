@@ -264,8 +264,7 @@ class IndexToString private[ml] (override val uid: String)
     with HasOutputCol
     with DefaultParamsWritable {
 
-  def this() =
-    this(Identifiable.randomUID("idxToStr"))
+  def this() = this(Identifiable.randomUID("idxToStr"))
 
   /** @group setParam */
   def setInputCol(value: String): this.type = set(inputCol, value)
@@ -311,13 +310,14 @@ class IndexToString private[ml] (override val uid: String)
   override def transform(dataset: DataFrame): DataFrame = {
     val inputColSchema = dataset.schema($(inputCol))
     // If the labels array is empty use column metadata
-    val values = if ($(labels).isEmpty) {
-      Attribute
-        .fromStructField(inputColSchema)
-        .asInstanceOf[NominalAttribute]
-        .values
-        .get
-    } else { $(labels) }
+    val values =
+      if ($(labels).isEmpty) {
+        Attribute
+          .fromStructField(inputColSchema)
+          .asInstanceOf[NominalAttribute]
+          .values
+          .get
+      } else { $(labels) }
     val indexer = udf { index: Double =>
       val idx = index.toInt
       if (0 <= idx && idx < values.length) { values(idx) }

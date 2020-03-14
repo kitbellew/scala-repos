@@ -1,8 +1,7 @@
 package scalaz
 
 final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
-  def apply(fa: F[A]): B =
-    run(fa)
+  def apply(fa: F[A]): B = run(fa)
 
   def dimap[C, D](f: C => A, g: B => D)(
       implicit b: Functor[F]): Cokleisli[F, C, D] =
@@ -16,15 +15,13 @@ final case class Cokleisli[F[_], A, B](run: F[A] => B) { self =>
   def flatMap[C](f: B => Cokleisli[F, A, C]): Cokleisli[F, A, C] =
     Cokleisli(fa => f(self.run(fa)).run(fa))
 
-  def <<=(a: F[A])(implicit F: Cobind[F]): F[B] =
-    F.extend(a)(run)
+  def <<=(a: F[A])(implicit F: Cobind[F]): F[B] = F.extend(a)(run)
 
   def =>=[C](c: Cokleisli[F, B, C])(implicit F: Cobind[F]): Cokleisli[F, A, C] =
     Cokleisli(fa => c run (<<=(fa)))
 
   def compose[C](c: Cokleisli[F, C, A])(
-      implicit F: Cobind[F]): Cokleisli[F, C, B] =
-    c =>= this
+      implicit F: Cobind[F]): Cokleisli[F, C, B] = c =>= this
 
   def =<=[C](c: Cokleisli[F, C, A])(implicit F: Cobind[F]): Cokleisli[F, C, B] =
     compose(c)
@@ -94,8 +91,7 @@ private trait CokleisliProfunctor[F[_]] extends Profunctor[Cokleisli[F, ?, ?]] {
   implicit def F: Functor[F]
 
   override def dimap[A, B, C, D](fab: Cokleisli[F, A, B])(f: C => A)(
-      g: B => D) =
-    fab.dimap(f, g)
+      g: B => D) = fab.dimap(f, g)
 
   override final def mapfst[A, B, C](fa: Cokleisli[F, A, B])(f: C => A) =
     Cokleisli[F, C, B](fc => fa(F.map(fc)(f)))

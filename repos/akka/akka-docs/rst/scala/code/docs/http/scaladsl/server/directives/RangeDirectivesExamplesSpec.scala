@@ -21,8 +21,7 @@ class RangeDirectivesExamplesSpec extends RoutingSpec {
       .withFallback(super.testConfig)
 
   "withRangeSupport" in {
-    val route =
-      withRangeSupport { complete("ABCDEFGH") }
+    val route = withRangeSupport { complete("ABCDEFGH") }
 
     Get() ~> addHeader(Range(ByteRange(3, 4))) ~> route ~> check {
       headers should contain(`Content-Range`(ContentRange(3, 4, 8)))

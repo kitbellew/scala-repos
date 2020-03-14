@@ -43,8 +43,8 @@ object Sync {
 
       val updates = relation filter outofdate
 
-      val (cleanDirs, cleanFiles) =
-        (updates._2s ++ removeTargets).partition(_.isDirectory)
+      val (cleanDirs, cleanFiles) = (updates._2s ++ removeTargets)
+        .partition(_.isDirectory)
 
       IO.delete(cleanFiles)
       IO.deleteIfEmpty(cleanDirs)

@@ -73,8 +73,8 @@ object ScriptSourceFile {
     *  with "!#" or "::!#".
     */
   def headerLength(cs: Array[Char]): Int = {
-    val headerPattern =
-      Pattern.compile("""((?m)^(::)?!#.*|^.*/env .*)(\r|\n|\r\n)""")
+    val headerPattern = Pattern.compile(
+      """((?m)^(::)?!#.*|^.*/env .*)(\r|\n|\r\n)""")
     val headerStarts = List("#!", "::#!")
 
     if (headerStarts exists (cs startsWith _)) {

@@ -82,12 +82,10 @@ class ScalaTool extends ScalaMatchingTask {
 \*============================================================================*/
 
   /** Sets the file attribute. */
-  def setFile(input: File) =
-    file = Some(input)
+  def setFile(input: File) = file = Some(input)
 
   /** Sets the main class attribute. */
-  def setClass(input: String) =
-    mainClass = Some(input)
+  def setClass(input: String) = mainClass = Some(input)
 
   /** Sets the platforms attribute. */
   def setPlatforms(input: String) = {
@@ -141,12 +139,10 @@ class ScalaTool extends ScalaMatchingTask {
   }
 
   /** Sets flags to be passed to the Java interpreter. */
-  def setJavaflags(input: String) =
-    javaFlags = input.trim
+  def setJavaflags(input: String) = javaFlags = input.trim
 
   /** Sets flags to be passed to the tool. */
-  def setToolflags(input: String) =
-    toolFlags = input.trim
+  def setToolflags(input: String) = toolFlags = input.trim
 
   /*============================================================================*\
 **                             Properties getters                             **

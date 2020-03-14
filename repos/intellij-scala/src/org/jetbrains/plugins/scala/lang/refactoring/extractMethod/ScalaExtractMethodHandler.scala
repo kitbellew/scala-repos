@@ -51,8 +51,8 @@ import scala.collection.mutable.ArrayBuffer
   * Date: 11.01.2010
   */
 class ScalaExtractMethodHandler extends RefactoringActionHandler {
-  private val REFACTORING_NAME: String =
-    ScalaBundle.message("extract.method.title")
+  private val REFACTORING_NAME: String = ScalaBundle.message(
+    "extract.method.title")
 
   def invoke(
       project: Project,
@@ -94,8 +94,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       return
     }
     if (!editor.getSelectionModel.hasSelection) return
-    val elements: Seq[PsiElement] =
-      ScalaRefactoringUtil.selectedElements(editor, file, trimComments = false)
+    val elements: Seq[PsiElement] = ScalaRefactoringUtil.selectedElements(
+      editor,
+      file,
+      trimComments = false)
 
     val hasWarnings = ScalaRefactoringUtil.showNotPossibleWarnings(
       elements,
@@ -125,8 +127,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       var result: Option[ScType] = None
       val visitor = new ScalaRecursiveElementVisitor {
         override def visitReturnStatement(ret: ScReturnStmt) {
-          val newFun =
-            PsiTreeUtil.getParentOfType(ret, classOf[ScFunctionDefinition])
+          val newFun = PsiTreeUtil.getParentOfType(
+            ret,
+            classOf[ScFunctionDefinition])
           if (newFun == fun) {
             result = Some(fun.returnType.getOrElse(psi.types.Unit))
           }
@@ -304,8 +307,9 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       smallestScope: Boolean,
       lastExprType: Option[ScType]) {
 
-    val info =
-      ReachingDefintionsCollector.collectVariableInfo(elements, sibling)
+    val info = ReachingDefintionsCollector.collectVariableInfo(
+      elements,
+      sibling)
 
     val input = info.inputVariables
     val output = info.outputVariables

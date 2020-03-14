@@ -24,8 +24,7 @@ object SCL6854 {
     trait Level1 {
       implicit def FooAnyBuilder[T] =
         new Builder[T, FooAny[T]] {
-          def buildInstance(value: T) =
-            FooAny(value)
+          def buildInstance(value: T) = FooAny(value)
         }
     }
 
@@ -33,8 +32,7 @@ object SCL6854 {
     object Builder extends Level1 {
       implicit def FooNumberAnyBuilder[T](implicit p: Numeric[T]) =
         new Builder[T, FooNumberAny[T]] {
-          def buildInstance(value: T) =
-            FooNumberAny(value)
+          def buildInstance(value: T) = FooNumberAny(value)
         }
     }
 
@@ -48,17 +46,15 @@ object SCL6854 {
 
     // Implicits guided type inference does not work in IntelliJ IDEA:
 
-    val anyRef =
-      Foo(
-        "hello, world!"
-      ) // <-- ERROR HERE (View -> Type Info shows "Nothing", when it should be FooAny)
+    val anyRef = Foo(
+      "hello, world!"
+    ) // <-- ERROR HERE (View -> Type Info shows "Nothing", when it should be FooAny)
     log("anyRef", anyRef, anyRef.value)
     // <-- manifested here (syntax highlighting error)
 
-    val anyRefExp: FooAny[String] =
-      Foo(
-        "hello, world! (explicit)"
-      ) // <-- specifying the type explicitly works
+    val anyRefExp: FooAny[String] = Foo(
+      "hello, world! (explicit)"
+    ) // <-- specifying the type explicitly works
     log("anyRefExp", anyRefExp, anyRefExp.value)
 
     val someBoolean = Foo(true) // <-- ERROR here too

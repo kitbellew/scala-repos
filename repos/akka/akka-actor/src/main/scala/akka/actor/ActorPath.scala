@@ -382,8 +382,11 @@ final class ChildActorPath private[akka] (
 
   override def toSerializationFormat: String = {
     val length = toStringLength
-    val sb =
-      buildToString(new JStringBuilder(length + 12), length, 0, _.toString)
+    val sb = buildToString(
+      new JStringBuilder(length + 12),
+      length,
+      0,
+      _.toString)
     appendUidFragment(sb).toString
   }
 

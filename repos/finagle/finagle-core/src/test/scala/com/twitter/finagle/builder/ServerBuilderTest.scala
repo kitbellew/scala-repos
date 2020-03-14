@@ -49,8 +49,8 @@ class ServerBuilderTest
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified =
-          entries.count(_.key.startsWith(Seq("server", "not-specified")))
+        val unspecified = entries.count(
+          _.key.startsWith(Seq("server", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -69,8 +69,8 @@ class ServerBuilderTest
         val server = build
 
         val entries = GlobalRegistry.get.toSet
-        val specified =
-          entries.filter(_.key.startsWith(Seq("server", expected)))
+        val specified = entries.filter(
+          _.key.startsWith(Seq("server", expected)))
         // Entries are in the form: Entry(List(server, fancy, test, /127.0.0.1:58904, RequestStats, unit),MILLISECONDS)
         val entry =
           specified.head // data is repeated as entry.key, just take the first

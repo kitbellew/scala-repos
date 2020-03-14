@@ -18,14 +18,13 @@ import scalaz.syntax.std.string._
 
 object ContravariantCoyonedaUsage extends App {
   // Suppose I have some unstructured data.
-  val unstructuredData: List[Vector[String]] =
-    List(
-      Vector("Zürich", "807", "383,708"),
-      Vector("東京", "1868", "13,185,502"),
-      Vector("Brisbane", "1824-09-13", "2,189,878"),
-      Vector("München", "1158", "1,388,308"),
-      Vector("Boston", "1630-09-07", "636,479")
-    )
+  val unstructuredData: List[Vector[String]] = List(
+    Vector("Zürich", "807", "383,708"),
+    Vector("東京", "1868", "13,185,502"),
+    Vector("Brisbane", "1824-09-13", "2,189,878"),
+    Vector("München", "1158", "1,388,308"),
+    Vector("Boston", "1630-09-07", "636,479")
+  )
 
   // Or, really, maybe it has some structure.  That’s not important.
   // What matters is, I want to sort the data according to various
@@ -36,8 +35,7 @@ object ContravariantCoyonedaUsage extends App {
 
   // Which is a silly way to write this.  Let’s try again:
 
-  def numerically2: Order[String] =
-    Order orderBy parseCommaNum
+  def numerically2: Order[String] = Order orderBy parseCommaNum
 
   // Which is a shorthand way of writing
 
@@ -56,8 +54,7 @@ object ContravariantCoyonedaUsage extends App {
     ("""-?[0-9,]+""".r findFirstIn s
       flatMap (_.filter(_ != ',').parseLong.toOption)) <\/ s
 
-  def caseInsensitively(s: String): String =
-    s.toUpperCase.toLowerCase
+  def caseInsensitively(s: String): String = s.toUpperCase.toLowerCase
 
   def parseDate(s: String): (Int, Option[(Int, Int)]) \/ String =
     (for {
@@ -74,11 +71,9 @@ object ContravariantCoyonedaUsage extends App {
   // applying the sort key function to each argument and comparing the
   // result.
 
-  def caseInsensitivelyOrd: Order[String] =
-    Order orderBy caseInsensitively
+  def caseInsensitivelyOrd: Order[String] = Order orderBy caseInsensitively
 
-  def dateOrd: Order[String] =
-    Order orderBy parseDate
+  def dateOrd: Order[String] = Order orderBy parseDate
 
   // Schwartzian transform
   // ---------------------
@@ -116,12 +111,11 @@ object ContravariantCoyonedaUsage extends App {
   // It’s straightforward enough to use our sort key functions to sort
   // by particular elements of the data above.
 
-  val byDirectSorts: List[List[Vector[String]]] =
-    List(
-      schwartzian(unstructuredData)(v => caseInsensitively(v(0))),
-      schwartzian(unstructuredData)(v => parseDate(v(1))),
-      schwartzian(unstructuredData)(v => parseCommaNum(v(2)))
-    )
+  val byDirectSorts: List[List[Vector[String]]] = List(
+    schwartzian(unstructuredData)(v => caseInsensitively(v(0))),
+    schwartzian(unstructuredData)(v => parseDate(v(1))),
+    schwartzian(unstructuredData)(v => parseCommaNum(v(2)))
+  )
 
   // Something interesting happens when you try to abstract over the
   // sort key function, though:
@@ -141,8 +135,10 @@ object ContravariantCoyonedaUsage extends App {
   // Fails to compile with the given type error.  That’s because the
   // type of that list of sort key functions and indexes is:
 
-  val untypedSortKeys: List[(String => java.io.Serializable, Int)] =
-    List((caseInsensitively _, 0), (parseDate _, 1), (parseCommaNum _, 2))
+  val untypedSortKeys: List[(String => java.io.Serializable, Int)] = List(
+    (caseInsensitively _, 0),
+    (parseDate _, 1),
+    (parseCommaNum _, 2))
 
   // The problem is that the return type for each sort key is different,
   // and is an absolutely essential part of the sort process.  Check
@@ -173,8 +169,8 @@ object ContravariantCoyonedaUsage extends App {
   // contramap call as a type?  `ContravariantCoyoneda' can do that
   // for us.
 
-  val numerically4: CtCoyo[Order, String] =
-    CtCoyo(Order[Long \/ String])(parseCommaNum)
+  val numerically4: CtCoyo[Order, String] = CtCoyo(Order[Long \/ String])(
+    parseCommaNum)
 
   // This separates the sort key and the underlying order, but the
   // sort key’s result type no longer appears!  It’s been made
@@ -195,11 +191,10 @@ object ContravariantCoyonedaUsage extends App {
   // But see `numerically4' for the full version of the below CCOrder
   // calls.
 
-  val decomposedSortKeys: List[(CtCoyo[Order, String], Int)] =
-    List(
-      (CCOrder(caseInsensitively), 0),
-      (CCOrder(parseDate), 1),
-      (numerically4, 2))
+  val decomposedSortKeys: List[(CtCoyo[Order, String], Int)] = List(
+    (CCOrder(caseInsensitively), 0),
+    (CCOrder(parseDate), 1),
+    (numerically4, 2))
 
   // Now we’re ready.
 
@@ -248,8 +243,10 @@ object ContravariantCoyonedaUsage extends App {
   // With a sample specification that sorts the columns left-to-right,
   // with the sort key associations we’ve been using.
 
-  val mainLtoRsort: SortSpec =
-    List((SortType.CI, 0), (SortType.Dateish, 1), (SortType.Num, 2))
+  val mainLtoRsort: SortSpec = List(
+    (SortType.CI, 0),
+    (SortType.Dateish, 1),
+    (SortType.Num, 2))
 
   // It’s simple enough to “interpret” each `SortType' to a
   // contravariant co-Yoneda Order.
@@ -329,13 +326,15 @@ object ContravariantCoyonedaUsage extends App {
     schwartzian(xs)(coyo.k)(coyo.fi)
   }
 
-  val sortedBySpec: List[Vector[String]] =
-    sortDataBy(unstructuredData, mainLtoRsort)
+  val sortedBySpec: List[Vector[String]] = sortDataBy(
+    unstructuredData,
+    mainLtoRsort)
 
   println("sortedBySpec: " |+| sortedBySpec.shows)
 
-  val sortedByNonCity: List[Vector[String]] =
-    sortDataBy(unstructuredData, mainLtoRsort.tail)
+  val sortedByNonCity: List[Vector[String]] = sortDataBy(
+    unstructuredData,
+    mainLtoRsort.tail)
 
   println("sortedByNonCity: " |+| sortedByNonCity.shows)
 
@@ -368,11 +367,10 @@ object ContravariantCoyonedaUsage extends App {
   // `sortedBySpec' and `sortedByNonCity', via the unsafe `toString'
   // method.
 
-  val mainLtoRcoyo: CtCoyo[Order, Vector[String]] =
-    sortSpecOrd(mainLtoRsort)
+  val mainLtoRcoyo: CtCoyo[Order, Vector[String]] = sortSpecOrd(mainLtoRsort)
 
-  val mainLtoRtailcoyo: CtCoyo[Order, Vector[String]] =
-    sortSpecOrd(mainLtoRsort.tail)
+  val mainLtoRtailcoyo: CtCoyo[Order, Vector[String]] = sortSpecOrd(
+    mainLtoRsort.tail)
 
   println(
     "list of mainLtoRcoyo.I: " |+|
@@ -397,8 +395,7 @@ object ContravariantCoyonedaUsage extends App {
   // What does `I' look like then?  Let’s use the unsafe `toString'
   // again to see.
 
-  val mainLtoRcoyoL: CtCoyo[Order, Vector[String]] =
-    sortSpecOrdL(mainLtoRsort)
+  val mainLtoRcoyoL: CtCoyo[Order, Vector[String]] = sortSpecOrdL(mainLtoRsort)
 
   println(
     "list of mainLtoRcoyoL.I: " |+|

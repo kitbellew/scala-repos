@@ -127,14 +127,13 @@ private[hive] trait HiveStrategies {
               opts,
               allowExisting,
               managedIfNoPath) =>
-          val cmd =
-            CreateMetastoreDataSource(
-              tableIdent,
-              userSpecifiedSchema,
-              provider,
-              opts,
-              allowExisting,
-              managedIfNoPath)
+          val cmd = CreateMetastoreDataSource(
+            tableIdent,
+            userSpecifiedSchema,
+            provider,
+            opts,
+            allowExisting,
+            managedIfNoPath)
           ExecutedCommand(cmd) :: Nil
 
         case c: CreateTableUsingAsSelect =>

@@ -129,8 +129,8 @@ private object ScalaSdkData {
   }
 
   def languageLevelFrom(compilerClasspath: Seq[String]): String = {
-    val compilerJarVersions =
-      compilerClasspath.flatMap(path => versionOf(new File(path)).toSeq)
+    val compilerJarVersions = compilerClasspath.flatMap(path =>
+      versionOf(new File(path)).toSeq)
 
     compilerJarVersions.headOption
       .flatMap(languageLevelFrom)

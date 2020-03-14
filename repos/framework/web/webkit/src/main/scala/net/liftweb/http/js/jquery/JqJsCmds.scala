@@ -116,32 +116,29 @@ object JqWiringSupport {
 
       case AppendDelta(ci) =>
         new JsCmd {
-          val toJsCmd =
-            fixHtmlFunc("inline", calcNodeSeq(ci)) {
-              "jQuery('#'+" + id.encJs + ").append(" +
-                _ +
-                ");"
-            }
+          val toJsCmd = fixHtmlFunc("inline", calcNodeSeq(ci)) {
+            "jQuery('#'+" + id.encJs + ").append(" +
+              _ +
+              ");"
+          }
         }
 
       case InsertAtStartDelta(ci) =>
         new JsCmd {
-          val toJsCmd =
-            fixHtmlFunc("inline", calcNodeSeq(ci)) {
-              "jQuery('#'+" + id.encJs + ").prepend(" +
-                _ +
-                ");"
-            }
+          val toJsCmd = fixHtmlFunc("inline", calcNodeSeq(ci)) {
+            "jQuery('#'+" + id.encJs + ").prepend(" +
+              _ +
+              ");"
+          }
         }
 
       case InsertAfterDelta(ci, prior) =>
         new JsCmd {
-          val toJsCmd =
-            fixHtmlFunc("inline", calcNodeSeq(ci)) {
-              "jQuery('#'+" + calcId(prior).encJs + ").after(" +
-                _ +
-                ");"
-            }
+          val toJsCmd = fixHtmlFunc("inline", calcNodeSeq(ci)) {
+            "jQuery('#'+" + calcId(prior).encJs + ").after(" +
+              _ +
+              ");"
+          }
         }
     }
   }
@@ -432,8 +429,7 @@ object JqJE {
         def toJsCmd = "tabsClick(" + tab.toJsCmd + ")"
       }
 
-    def apply(tab: Int): JsExp with JsMember =
-      apply(Num(tab))
+    def apply(tab: Int): JsExp with JsMember = apply(Num(tab))
   }
 
   object JqTabs {
@@ -442,8 +438,7 @@ object JqJE {
         def toJsCmd = "tabs(" + in.toJsCmd + ")"
       }
 
-    def apply(): JsExp with JsMember =
-      apply(JsRaw(""))
+    def apply(): JsExp with JsMember = apply(JsRaw(""))
   }
 
 }

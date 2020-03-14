@@ -155,8 +155,10 @@ private[streaming] class ReliableKafkaReceiver[
       .newInstance(consumerConfig.props)
       .asInstanceOf[Decoder[V]]
 
-    val topicMessageStreams =
-      consumerConnector.createMessageStreams(topics, keyDecoder, valueDecoder)
+    val topicMessageStreams = consumerConnector.createMessageStreams(
+      topics,
+      keyDecoder,
+      valueDecoder)
 
     topicMessageStreams.values.foreach { streams =>
       streams.foreach { stream =>
@@ -200,8 +202,9 @@ private[streaming] class ReliableKafkaReceiver[
   /** Store a Kafka message and the associated metadata as a tuple. */
   private def storeMessageAndMetadata(
       msgAndMetadata: MessageAndMetadata[K, V]): Unit = {
-    val topicAndPartition =
-      TopicAndPartition(msgAndMetadata.topic, msgAndMetadata.partition)
+    val topicAndPartition = TopicAndPartition(
+      msgAndMetadata.topic,
+      msgAndMetadata.partition)
     val data = (msgAndMetadata.key, msgAndMetadata.message)
     val metadata = (topicAndPartition, msgAndMetadata.offset)
     blockGenerator.addDataWithCallback(data, metadata)
@@ -309,8 +312,8 @@ private[streaming] class ReliableKafkaReceiver[
     def onAddData(data: Any, metadata: Any): Unit = {
       // Update the offset of the data that was added to the generator
       if (metadata != null) {
-        val (topicAndPartition, offset) =
-          metadata.asInstanceOf[(TopicAndPartition, Long)]
+        val (topicAndPartition, offset) = metadata
+          .asInstanceOf[(TopicAndPartition, Long)]
         updateOffset(topicAndPartition, offset)
       }
     }

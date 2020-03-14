@@ -114,7 +114,6 @@ abstract class EventDispatchChain(
     *         handled / consumed
     * @see $URL0#dispatchEvent $ORIGINALDOC
     */
-  def dispatchEvent(event: Event): Event =
-    delegate.dispatchEvent(event)
+  def dispatchEvent(event: Event): Event = delegate.dispatchEvent(event)
 
 }

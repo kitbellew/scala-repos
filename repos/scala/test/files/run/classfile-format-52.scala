@@ -59,8 +59,7 @@ object Test extends DirectTest {
 
   }
 
-  def code =
-    """
+  def code = """
 class Driver extends HasDefaultMethod {
   println(publicMethod())
   println(HasDefaultMethod.staticMethod())

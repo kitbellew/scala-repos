@@ -189,9 +189,10 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
     */
   override def getPreferredLocations(split: Partition): Seq[String] = {
     val partition = split.asInstanceOf[WriteAheadLogBackedBlockRDDPartition]
-    val blockLocations = if (partition.isBlockIdValid) {
-      getBlockIdLocations().get(partition.blockId)
-    } else { None }
+    val blockLocations =
+      if (partition.isBlockIdValid) {
+        getBlockIdLocations().get(partition.blockId)
+      } else { None }
 
     blockLocations.getOrElse {
       partition.walRecordHandle match {

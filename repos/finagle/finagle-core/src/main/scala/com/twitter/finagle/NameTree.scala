@@ -28,8 +28,7 @@ sealed trait NameTree[+T] {
   /**
     * Use `f` to map a T-typed NameTree to a U-typed one.
     */
-  def map[U](f: T => U): NameTree[U] =
-    NameTree.map(f)(this)
+  def map[U](f: T => U): NameTree[U] = NameTree.map(f)(this)
 
   /**
     * A parseable representation of the name tree; a

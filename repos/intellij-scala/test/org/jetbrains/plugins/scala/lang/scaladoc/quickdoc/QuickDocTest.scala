@@ -20,8 +20,8 @@ import org.junit.Assert
   */
 class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   private def generateByElement(docElement: PsiElement, assumedText: String) {
-    val generatedText =
-      QuickDocTest.quickDocGenerator.generateDoc(docElement, docElement)
+    val generatedText = QuickDocTest.quickDocGenerator
+      .generateDoc(docElement, docElement)
     Assert.assertEquals(
       assumedText,
       generatedText.substring(
@@ -59,8 +59,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testSimpleSyntax() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&__xxx^yyy''zzz''yyy^xxx__&&
       |   */
@@ -72,8 +71,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testSimpleTags() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&aa
       |   * @see someting
@@ -91,8 +89,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testTagsWithParamsForMethod() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&aa
       |   * @param i aaa
@@ -113,8 +110,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testThrowsTagForMethod() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&
       |   * @throws Exception aaaaaaaaaaaaaaa&&
@@ -129,8 +125,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testTagsWithParamsForClass() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&
       |   * @param o
@@ -148,8 +143,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testTagsWithParamsForType() {
-    val fileText =
-      """
+    val fileText = """
       | /** &&
       |   * @tparam A
       |   * @tparam B dgjsdaf
@@ -184,8 +178,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }*/
 
   def testSyntaxInTags() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * aa&&
       |   * @note '''__THIS IS SPARTAAA!!!11__'''
@@ -225,8 +218,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testMalformedSyntax() {
-    val fileText =
-      """
+    val fileText = """
       | /** &&
       |   * ^blah-blah
       |   *
@@ -243,8 +235,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testMalformedTags() {
-    val fileText =
-      """
+    val fileText = """
       | /**
       |   * &&
       |   * @gmm
@@ -306,8 +297,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testMacroSimple() {
-    val fileText =
-      """
+    val fileText = """
         |/**
         | * @define THIS A
         | */
@@ -319,15 +309,13 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
         |  def boo()
         |}
       """.stripMargin
-    val test =
-      " Function defined in A "
+    val test = " Function defined in A "
 
     generateNested(fileText, "A", "boo", test)
   }
 
   def testMacroComplicated() {
-    val fileText =
-      """
+    val fileText = """
         |trait A {
         |  /**
         |   * @define THAT A
@@ -357,8 +345,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testMacroWiki(): Unit = {
-    val fileText =
-      """
+    val fileText = """
         |/**
         | * @define none `None`
         | */
@@ -375,8 +362,7 @@ class QuickDocTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
   }
 
   def testAnnotationArgs() {
-    val fileText =
-      """
+    val fileText = """
         | @deprecated("use 'foo' instead", "1.2.3")
         | @throws(classOf[Exception])
         | def boo() {} 

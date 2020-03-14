@@ -74,8 +74,10 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
-          val clientAlias =
-            extendedKeyManager.chooseEngineClientAlias(keyType, issuers, engine)
+          val clientAlias = extendedKeyManager.chooseEngineClientAlias(
+            keyType,
+            issuers,
+            engine)
           if (clientAlias != null) {
             logger.debug(
               s"chooseEngineClientAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
@@ -98,8 +100,10 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
-          val clientAlias =
-            extendedKeyManager.chooseEngineServerAlias(keyType, issuers, engine)
+          val clientAlias = extendedKeyManager.chooseEngineServerAlias(
+            keyType,
+            issuers,
+            engine)
           if (clientAlias != null) {
             logger.debug(
               s"chooseEngineServerAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")

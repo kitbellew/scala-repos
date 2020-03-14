@@ -39,10 +39,9 @@ class BucketizerSuite
     val splits = Array(-0.5, 0.0, 0.5)
     val validData = Array(-0.5, -0.3, 0.0, 0.2)
     val expectedBuckets = Array(0.0, 0.0, 1.0, 1.0)
-    val dataFrame: DataFrame =
-      sqlContext
-        .createDataFrame(validData.zip(expectedBuckets))
-        .toDF("feature", "expected")
+    val dataFrame: DataFrame = sqlContext
+      .createDataFrame(validData.zip(expectedBuckets))
+      .toDF("feature", "expected")
 
     val bucketizer: Bucketizer = new Bucketizer()
       .setInputCol("feature")
@@ -80,14 +79,17 @@ class BucketizerSuite
   }
 
   test("Bucket continuous features, with -inf,inf") {
-    val splits =
-      Array(Double.NegativeInfinity, -0.5, 0.0, 0.5, Double.PositiveInfinity)
+    val splits = Array(
+      Double.NegativeInfinity,
+      -0.5,
+      0.0,
+      0.5,
+      Double.PositiveInfinity)
     val validData = Array(-0.9, -0.5, -0.3, 0.0, 0.2, 0.5, 0.9)
     val expectedBuckets = Array(0.0, 1.0, 1.0, 2.0, 2.0, 3.0, 3.0)
-    val dataFrame: DataFrame =
-      sqlContext
-        .createDataFrame(validData.zip(expectedBuckets))
-        .toDF("feature", "expected")
+    val dataFrame: DataFrame = sqlContext
+      .createDataFrame(validData.zip(expectedBuckets))
+      .toDF("feature", "expected")
 
     val bucketizer: Bucketizer = new Bucketizer()
       .setInputCol("feature")
@@ -129,8 +131,8 @@ class BucketizerSuite
     val data = Array.fill(100)(Random.nextDouble())
     val splits: Array[Double] = Double.NegativeInfinity +:
       Array.fill(10)(Random.nextDouble()).sorted :+ Double.PositiveInfinity
-    val bsResult =
-      Vectors.dense(data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
+    val bsResult = Vectors.dense(
+      data.map(x => Bucketizer.binarySearchForBuckets(splits, x)))
     val lsResult = Vectors.dense(
       data.map(x => BucketizerSuite.linearSearchForBuckets(splits, x)))
     assert(bsResult ~== lsResult absTol 1e-5)

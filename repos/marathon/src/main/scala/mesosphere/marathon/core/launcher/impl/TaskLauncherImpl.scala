@@ -17,13 +17,12 @@ private[launcher] class TaskLauncherImpl(
     extends TaskLauncher {
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] val usedOffersMeter =
-    metrics.meter(metrics.name(MetricPrefixes.SERVICE, getClass, "usedOffers"))
+  private[this] val usedOffersMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "usedOffers"))
   private[this] val launchedTasksMeter = metrics.meter(
     metrics.name(MetricPrefixes.SERVICE, getClass, "launchedTasks"))
-  private[this] val declinedOffersMeter =
-    metrics.meter(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "declinedOffers"))
+  private[this] val declinedOffersMeter = metrics.meter(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "declinedOffers"))
 
   override def acceptOffer(offerID: OfferID, taskOps: Seq[TaskOp]): Boolean = {
     val accepted = withDriver(s"launchTasks($offerID)") { driver =>

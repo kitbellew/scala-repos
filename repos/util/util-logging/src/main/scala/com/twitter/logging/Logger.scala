@@ -40,8 +40,16 @@ object Level {
   case object TRACE extends Level("TRACE", 400)
   case object ALL extends Level("ALL", Int.MinValue)
 
-  private[logging] val AllLevels: Seq[Level] =
-    Seq(OFF, FATAL, CRITICAL, ERROR, WARNING, INFO, DEBUG, TRACE, ALL)
+  private[logging] val AllLevels: Seq[Level] = Seq(
+    OFF,
+    FATAL,
+    CRITICAL,
+    ERROR,
+    WARNING,
+    INFO,
+    DEBUG,
+    TRACE,
+    ALL)
 
   /**
     * Associate [[java.util.logging.Level]] and `Level` by their integer
@@ -242,11 +250,13 @@ object NullLogger
 
 object Logger extends Iterable[Logger] {
 
-  private[this] val levelNamesMap: Map[String, Level] =
-    Level.AllLevels.map { level => level.name -> level }.toMap
+  private[this] val levelNamesMap: Map[String, Level] = Level.AllLevels.map {
+    level => level.name -> level
+  }.toMap
 
-  private[this] val levelsMap: Map[Int, Level] =
-    Level.AllLevels.map { level => level.value -> level }.toMap
+  private[this] val levelsMap: Map[Int, Level] = Level.AllLevels.map { level =>
+    level.value -> level
+  }.toMap
 
   // A cache of scala Logger objects by name.
   // Using a low concurrencyLevel (2), with the assumption that we aren't ever creating too

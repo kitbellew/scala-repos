@@ -139,15 +139,14 @@ class ScParameterStubImpl[ParentPsi <: PsiElement](
       if (expression != null && (expression.isEmpty || (expression.get.getContext eq getPsi)))
         return expression
     }
-    val res: Option[ScExpression] =
-      getDefaultExprText match {
-        case None     => None
-        case Some("") => None
-        case Some(text) =>
-          Some(
-            ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, getPsi, null))
-      }
+    val res: Option[ScExpression] = getDefaultExprText match {
+      case None     => None
+      case Some("") => None
+      case Some(text) =>
+        Some(
+          ScalaPsiElementFactory
+            .createExpressionWithContextFromText(text, getPsi, null))
+    }
     myDefaultExpression = new SofterReference[Option[ScExpression]](res)
     res
   }

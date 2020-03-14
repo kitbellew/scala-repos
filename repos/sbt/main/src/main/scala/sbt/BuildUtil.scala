@@ -12,8 +12,7 @@ final class BuildUtil[Proj](
     val project: (URI, String) => Proj,
     val configurations: Proj => Seq[ConfigKey],
     val aggregates: Relation[ProjectRef, ProjectRef]) {
-  def rootProject(uri: URI): Proj =
-    project(uri, rootProjectID(uri))
+  def rootProject(uri: URI): Proj = project(uri, rootProjectID(uri))
 
   def resolveRef(ref: Reference): ResolvedReference =
     Scope.resolveReference(root, rootProjectID, ref)
@@ -50,8 +49,8 @@ object BuildUtil {
       data: Settings[Scope]): BuildUtil[ResolvedProject] = {
     val getp = (build: URI, project: String) =>
       Load.getProject(units, build, project)
-    val configs =
-      (_: ResolvedProject).configurations.map(c => ConfigKey(c.name))
+    val configs = (_: ResolvedProject).configurations.map(c =>
+      ConfigKey(c.name))
     val aggregates = aggregationRelation(units)
     new BuildUtil(
       keyIndex,
@@ -120,13 +119,12 @@ object BuildUtil {
 
   def aggregationRelation(
       units: Map[URI, LoadedBuildUnit]): Relation[ProjectRef, ProjectRef] = {
-    val depPairs =
-      for {
-        (uri, unit) <- units.toIterable
-        project <- unit.defined.values
-        ref = ProjectRef(uri, project.id)
-        agg <- project.aggregate
-      } yield (ref, agg)
+    val depPairs = for {
+      (uri, unit) <- units.toIterable
+      project <- unit.defined.values
+      ref = ProjectRef(uri, project.id)
+      agg <- project.aggregate
+    } yield (ref, agg)
     Relation.empty ++ depPairs
   }
 }

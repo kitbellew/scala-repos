@@ -813,8 +813,7 @@ trait ReallyRichPresentationCompilerFixture {
   // conveniences for accessing the fixtures
   final def withPresCompiler(
       testCode: (EnsimeConfig, RichPresentationCompiler) => Any
-  ): Any =
-    withRichPresentationCompiler { (_, c, cc) => testCode(c, cc) }
+  ): Any = withRichPresentationCompiler { (_, c, cc) => testCode(c, cc) }
 
   // final def withPosInCompiledSource(lines: String*)(testCode: (OffsetPosition, RichPresentationCompiler) => Any) =
   //   withPosInCompiledSource{ (p, _, pc) => testCode(p, pc) }

@@ -25,16 +25,15 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
 
     val projects = projectToModuleNode.keys.toSeq
 
-    val (sharedRoots, externalRoots) =
-      sharedAndExternalRootsIn(projects).partition(_.projects.length > 1)
+    val (sharedRoots, externalRoots) = sharedAndExternalRootsIn(projects)
+      .partition(_.projects.length > 1)
 
     if (externalRoots.nonEmpty) {
       val externalRootsStr = externalRoots
         .map(_.root.directory)
         .distinct
         .mkString("<ul><li>", "</li><li>", "</li></ul>")
-      val msg =
-        s"""
+      val msg = s"""
           | <p>
           | The following source roots are outside of the corresponding base directories:
           | $externalRootsStr
@@ -143,8 +142,9 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
       sourceRootsIn(project).map(ProjectRoot(project, _)))
 
     // TODO return the message about omitted directories
-    val internalSourceDirectories =
-      projectRoots.filter(_.isInternal).map(_.root.directory)
+    val internalSourceDirectories = projectRoots
+      .filter(_.isInternal)
+      .map(_.root.directory)
 
     projectRoots
       .filter(it =>
@@ -169,8 +169,8 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
   private def sourceRootsIn(project: sbtStructure.ProjectData): Seq[Root] = {
     val relevantScopes = Set("compile", "test", "it")
 
-    val relevantConfigurations =
-      project.configurations.filter(it => relevantScopes.contains(it.id))
+    val relevantConfigurations = project.configurations.filter(it =>
+      relevantScopes.contains(it.id))
 
     relevantConfigurations.flatMap { configuration =>
       def createRoot(kind: Root.Kind)(directory: sbtStructure.DirectoryData) = {
@@ -238,8 +238,9 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
     def nameFor(base: Option[File]) = {
       val namedDirectory =
         if (base.exists(_.getName == "shared")) base.flatMap(_.parent) else base
-      val prefix =
-        namedDirectory.map(_.getName + "-sources").getOrElse("shared-sources")
+      val prefix = namedDirectory
+        .map(_.getName + "-sources")
+        .getOrElse("shared-sources")
       if (usedNames.contains(prefix)) {
         val result = prefix + counter
         counter += 1

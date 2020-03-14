@@ -15,16 +15,15 @@ case class Ecopening(
 
   lazy val size = moveList.size
 
-  lazy val formattedMoves: String =
-    moveList
-      .grouped(2)
-      .zipWithIndex
-      .map {
-        case (List(w, b), i) => s"${i + 1}. $w $b"
-        case (List(w), i)    => s"${i + 1}. $w"
-        case _               => ""
-      }
-      .mkString(" ")
+  lazy val formattedMoves: String = moveList
+    .grouped(2)
+    .zipWithIndex
+    .map {
+      case (List(w, b), i) => s"${i + 1}. $w $b"
+      case (List(w), i)    => s"${i + 1}. $w"
+      case _               => ""
+    }
+    .mkString(" ")
 
   def ecoName = s"$eco $name"
 

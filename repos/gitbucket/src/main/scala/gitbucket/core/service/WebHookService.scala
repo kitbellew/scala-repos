@@ -159,8 +159,9 @@ trait WebHookService {
 
             if (!webHook.token.isEmpty) {
               // TODO find a better way and see how to extract content from postContent
-              val contentAsBytes =
-                URLEncodedUtils.format(params, "UTF-8").getBytes("UTF-8")
+              val contentAsBytes = URLEncodedUtils
+                .format(params, "UTF-8")
+                .getBytes("UTF-8")
               httpPost.addHeader(
                 "X-Hub-Signature",
                 XHub.generateHeaderXHubToken(
@@ -223,8 +224,10 @@ trait WebHookPullRequestService extends WebHookService {
           action = action,
           number = issue.issueId,
           repository = ApiRepository(repository, ApiUser(repoOwner)),
-          issue =
-            ApiIssue(issue, RepositoryName(repository), ApiUser(issueUser)),
+          issue = ApiIssue(
+            issue,
+            RepositoryName(repository),
+            ApiUser(issueUser)),
           sender = ApiUser(sender)
         )
       }

@@ -80,10 +80,8 @@ private[tracker] class TaskTrackerDelegate(
       implicit ec: ExecutionContext): Future[Option[Task]] =
     tasksByApp().map(_.task(taskId))
 
-  private[this] val tasksByAppTimer =
-    metrics.map(metrics =>
-      metrics.timer(
-        metrics.name(MetricPrefixes.SERVICE, getClass, "tasksByApp")))
+  private[this] val tasksByAppTimer = metrics.map(metrics =>
+    metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "tasksByApp")))
 
   private[this] implicit val taskTrackerQueryTimeout: Timeout =
     config.internalTaskTrackerRequestTimeout().milliseconds

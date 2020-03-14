@@ -83,8 +83,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         filter ! m1
         filter ! m2
         filter ! m3
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b // same seqNo as m3, but from writerB
         filter ! successMsg
 
@@ -108,8 +108,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         occurrences = 2) intercept {
         filter ! m1
         filter ! m2
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b
         filter ! m3
         filter ! m4
@@ -135,19 +135,19 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         start = "Invalid replayed event",
         occurrences = 3) intercept {
         filter ! m1
-        val m2b =
-          m2.copy(persistent = m2.persistent.update(writerUuid = writerB))
+        val m2b = m2
+          .copy(persistent = m2.persistent.update(writerUuid = writerB))
         filter ! m2b
-        val m3c =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerC))
+        val m3c = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerC))
         filter ! m3c
         filter ! m2
         filter ! m3
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b
-        val m4c =
-          m4.copy(persistent = m4.persistent.update(writerUuid = writerC))
+        val m4c = m4
+          .copy(persistent = m4.persistent.update(writerUuid = writerC))
         filter ! m4c
         filter ! successMsg
 
@@ -176,8 +176,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         filter ! m1
         filter ! m2
         filter ! m3
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b // same seqNo as m3, but from writerB
         filter ! successMsg
 
@@ -199,8 +199,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         occurrences = 1) intercept {
         filter ! m1
         filter ! m2
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b
         filter ! m3
         filter ! m4
@@ -227,8 +227,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         filter ! m1
         filter ! m2
         filter ! m3
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b // same seqNo as m3, but from writerB
         filter ! successMsg
 
@@ -253,8 +253,8 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         occurrences = 2) intercept {
         filter ! m1
         filter ! m2
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b
         filter ! m3
         filter ! m4
@@ -281,19 +281,19 @@ class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
         start = "Invalid replayed event",
         occurrences = 3) intercept {
         filter ! m1
-        val m2b =
-          m2.copy(persistent = m2.persistent.update(writerUuid = writerB))
+        val m2b = m2
+          .copy(persistent = m2.persistent.update(writerUuid = writerB))
         filter ! m2b
-        val m3c =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerC))
+        val m3c = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerC))
         filter ! m3c
         filter ! m2
         filter ! m3
-        val m3b =
-          m3.copy(persistent = m3.persistent.update(writerUuid = writerB))
+        val m3b = m3
+          .copy(persistent = m3.persistent.update(writerUuid = writerB))
         filter ! m3b
-        val m4c =
-          m4.copy(persistent = m4.persistent.update(writerUuid = writerC))
+        val m4c = m4
+          .copy(persistent = m4.persistent.update(writerUuid = writerC))
         filter ! m4c
         filter ! successMsg
 

@@ -137,16 +137,18 @@ class DelayedProduce(
     * Upon completion, return the current response status along with the error code per partition
     */
   override def onComplete() {
-    val responseStatus =
-      produceMetadata.produceStatus.mapValues(status => status.responseStatus)
+    val responseStatus = produceMetadata.produceStatus.mapValues(status =>
+      status.responseStatus)
     responseCallback(responseStatus)
   }
 }
 
 object DelayedProduceMetrics extends KafkaMetricsGroup {
 
-  private val aggregateExpirationMeter =
-    newMeter("ExpiresPerSec", "requests", TimeUnit.SECONDS)
+  private val aggregateExpirationMeter = newMeter(
+    "ExpiresPerSec",
+    "requests",
+    TimeUnit.SECONDS)
 
   private val partitionExpirationMeterFactory = (key: TopicPartition) =>
     newMeter(

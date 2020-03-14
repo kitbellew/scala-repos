@@ -129,8 +129,7 @@ private class LongSQLMetricParam(
 
   override def addInPlace(
       r1: LongSQLMetricValue,
-      r2: LongSQLMetricValue): LongSQLMetricValue =
-    r1.add(r2.value)
+      r2: LongSQLMetricValue): LongSQLMetricValue = r1.add(r2.value)
 
   override def zero(initialValue: LongSQLMetricValue): LongSQLMetricValue = zero
 
@@ -147,15 +146,16 @@ private object StaticsLongSQLMetricParam
         // it at the end of task and the value will be at least 0.
         val validValues = values.filter(_ >= 0)
         val Seq(sum, min, med, max) = {
-          val metric = if (validValues.length == 0) { Seq.fill(4)(0L) }
-          else {
-            val sorted = validValues.sorted
-            Seq(
-              sorted.sum,
-              sorted(0),
-              sorted(validValues.length / 2),
-              sorted(validValues.length - 1))
-          }
+          val metric =
+            if (validValues.length == 0) { Seq.fill(4)(0L) }
+            else {
+              val sorted = validValues.sorted
+              Seq(
+                sorted.sum,
+                sorted(0),
+                sorted(validValues.length / 2),
+                sorted(validValues.length - 1))
+            }
           metric.map(Utils.bytesToString)
         }
         s"\n$sum ($min, $med, $max)"
@@ -199,8 +199,8 @@ private[sql] object SQLMetrics {
   def getMetricParam(
       metricParamName: String): SQLMetricParam[SQLMetricValue[Any], Any] = {
     val longSQLMetricParam = Utils.getFormattedClassName(LongSQLMetricParam)
-    val staticsSQLMetricParam =
-      Utils.getFormattedClassName(StaticsLongSQLMetricParam)
+    val staticsSQLMetricParam = Utils.getFormattedClassName(
+      StaticsLongSQLMetricParam)
     val metricParam = metricParamName match {
       case `longSQLMetricParam`    => LongSQLMetricParam
       case `staticsSQLMetricParam` => StaticsLongSQLMetricParam

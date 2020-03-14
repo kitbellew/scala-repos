@@ -34,8 +34,8 @@ object LatentDirichletAllocationExample {
     // $example on$
     // Load and parse the data
     val data = sc.textFile("data/mllib/sample_lda_data.txt")
-    val parsedData =
-      data.map(s => Vectors.dense(s.trim.split(' ').map(_.toDouble)))
+    val parsedData = data.map(s =>
+      Vectors.dense(s.trim.split(' ').map(_.toDouble)))
     // Index documents with unique IDs
     val corpus = parsedData.zipWithIndex.map(_.swap).cache()
 

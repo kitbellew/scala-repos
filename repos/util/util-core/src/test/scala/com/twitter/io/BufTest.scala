@@ -237,16 +237,16 @@ class BufTest
 
   test("Buf.ByteBuffer.Shared.apply is safe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer.Owned(bb) =
-      Buf.ByteBuffer.Shared(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer
+      .Owned(bb) = Buf.ByteBuffer.Shared(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) !== 10)
   }
 
   test("Buf.ByteBuffer.Direct.apply is unsafe") {
     val bytes = Array.fill(10)(0.toByte)
-    val Buf.ByteBuffer.Owned(bb) =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(bytes))
+    val Buf.ByteBuffer
+      .Owned(bb) = Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(bytes))
     bytes(0) = 10.toByte
     assert(bb.get(0) == 10)
   }
@@ -283,8 +283,8 @@ class BufTest
   }
 
   test("ByteArray.coerce(ByteBuffer)") {
-    val orig =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf.ByteBuffer.Owned(
+      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteArray.coerce(orig)
     assert(coerced == orig)
   }
@@ -296,8 +296,8 @@ class BufTest
   }
 
   test("ByteBuffer.coerce(ByteBuffer)") {
-    val orig =
-      Buf.ByteBuffer.Owned(java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
+    val orig = Buf.ByteBuffer.Owned(
+      java.nio.ByteBuffer.wrap(Array.fill(10)(0.toByte)))
     val coerced = Buf.ByteBuffer.coerce(orig)
     assert(coerced eq orig)
   }

@@ -31,8 +31,9 @@ class BufBenchmark extends StdBenchAnnotations {
 
     byteArrayBuf = Buf.ByteArray.Owned(raw, start, end)
     byteBufferBuf = Buf.ByteBuffer.Owned(bb)
-    concatBuf =
-      byteArrayBuf.slice(0, size / 2).concat(byteArrayBuf.slice(size / 2, size))
+    concatBuf = byteArrayBuf
+      .slice(0, size / 2)
+      .concat(byteArrayBuf.slice(size / 2, size))
     all = Array(byteArrayBuf, byteBufferBuf, concatBuf)
 
     val rnd = new Random(120412421512L)
@@ -49,93 +50,74 @@ class BufBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def equalityByteArrayBuf(hole: Blackhole): Unit =
-    equality(byteArrayBuf, hole)
+  def equalityByteArrayBuf(hole: Blackhole): Unit = equality(byteArrayBuf, hole)
 
   @Benchmark
   def equalityByteBufferBuf(hole: Blackhole): Unit =
     equality(byteBufferBuf, hole)
 
   @Benchmark
-  def equalityConcatBuf(hole: Blackhole): Unit =
-    equality(concatBuf, hole)
+  def equalityConcatBuf(hole: Blackhole): Unit = equality(concatBuf, hole)
 
   private[this] def hash(buf: Buf): Int = buf.hashCode()
 
   @Benchmark
-  def hashCodeByteArrayBuf(): Int =
-    hash(byteArrayBuf)
+  def hashCodeByteArrayBuf(): Int = hash(byteArrayBuf)
 
   @Benchmark
-  def hashCodeByteBufferBuf(): Int =
-    hash(byteBufferBuf)
+  def hashCodeByteBufferBuf(): Int = hash(byteBufferBuf)
 
   @Benchmark
-  def hashCodeConcatBuf(): Int =
-    hash(concatBuf)
+  def hashCodeConcatBuf(): Int = hash(concatBuf)
 
   private[this] def slice(buf: Buf): Buf =
     buf.slice(size / 4, size / 4 + size / 2)
 
   @Benchmark
-  def sliceByteArrayBuf(): Buf =
-    slice(byteArrayBuf)
+  def sliceByteArrayBuf(): Buf = slice(byteArrayBuf)
 
   @Benchmark
-  def sliceByteBufferBuf(): Buf =
-    slice(byteBufferBuf)
+  def sliceByteBufferBuf(): Buf = slice(byteBufferBuf)
 
   @Benchmark
-  def sliceConcatBuf(): Buf =
-    slice(concatBuf)
+  def sliceConcatBuf(): Buf = slice(concatBuf)
 
-  private[this] def concat(buf: Buf): Buf =
-    buf.concat(buf)
+  private[this] def concat(buf: Buf): Buf = buf.concat(buf)
 
   @Benchmark
-  def concatByteArrayBuf(): Buf =
-    concat(byteArrayBuf)
+  def concatByteArrayBuf(): Buf = concat(byteArrayBuf)
 
   @Benchmark
-  def concatByteBufferBuf(): Buf =
-    concat(byteBufferBuf)
+  def concatByteBufferBuf(): Buf = concat(byteBufferBuf)
 
   @Benchmark
-  def concatConcatBuf(): Buf =
-    concat(concatBuf)
+  def concatConcatBuf(): Buf = concat(concatBuf)
 
   private[this] def asByteBuffer(buf: Buf): nio.ByteBuffer =
     Buf.ByteBuffer.Owned.extract(buf)
 
   @Benchmark
-  def asByteBufferByteArrayBuf(): nio.ByteBuffer =
-    asByteBuffer(byteArrayBuf)
+  def asByteBufferByteArrayBuf(): nio.ByteBuffer = asByteBuffer(byteArrayBuf)
 
   @Benchmark
-  def asByteBufferByteBufferBuf(): nio.ByteBuffer =
-    asByteBuffer(byteBufferBuf)
+  def asByteBufferByteBufferBuf(): nio.ByteBuffer = asByteBuffer(byteBufferBuf)
 
   @Benchmark
-  def asByteBufferConcatBuf(): nio.ByteBuffer =
-    asByteBuffer(concatBuf)
+  def asByteBufferConcatBuf(): nio.ByteBuffer = asByteBuffer(concatBuf)
 
   private[this] def asByteArray(buf: Buf): Array[Byte] =
     Buf.ByteArray.Owned.extract(buf)
 
   @Benchmark
-  def asByteArrayByteArrayBuf(): Array[Byte] =
-    asByteArray(byteArrayBuf)
+  def asByteArrayByteArrayBuf(): Array[Byte] = asByteArray(byteArrayBuf)
 
   @Benchmark
-  def asByteArrayByteBufferBuf(): Array[Byte] =
-    asByteArray(byteBufferBuf)
+  def asByteArrayByteBufferBuf(): Array[Byte] = asByteArray(byteBufferBuf)
 
   @Benchmark
-  def asByteArrayConcatBuf(): Array[Byte] =
-    asByteArray(concatBuf)
+  def asByteArrayConcatBuf(): Array[Byte] = asByteArray(concatBuf)
   @Benchmark
-  def stringToUtf8Buf(): Buf =
-    Buf.Utf8(string)
+  def stringToUtf8Buf(): Buf = Buf.Utf8(string)
 
   @Benchmark
   def utf8BufToString(): String = {

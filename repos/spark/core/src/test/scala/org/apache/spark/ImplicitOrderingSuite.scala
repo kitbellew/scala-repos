@@ -33,8 +33,8 @@ class ImplicitOrderingSuite extends SparkFunSuite with LocalSparkContext {
     basicMapExpectations.map({ case (met, explain) => assert(met, explain) })
 
     // Infer orderings for other RDD methods
-    val otherRDDMethodExpectations =
-      ImplicitOrderingSuite.otherRDDMethodExpectations(rdd)
+    val otherRDDMethodExpectations = ImplicitOrderingSuite
+      .otherRDDMethodExpectations(rdd)
     otherRDDMethodExpectations.map({
       case (met, explain) => assert(met, explain)
     })

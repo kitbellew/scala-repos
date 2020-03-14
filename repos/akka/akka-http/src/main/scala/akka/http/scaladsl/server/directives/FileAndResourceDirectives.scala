@@ -73,8 +73,8 @@ trait FileAndResourceDirectives {
       if (settings.fileGetConditional) {
         val tag = java.lang.Long
           .toHexString(lastModified ^ java.lang.Long.reverse(length))
-        val lastModifiedDateTime =
-          DateTime(math.min(lastModified, System.currentTimeMillis))
+        val lastModifiedDateTime = DateTime(
+          math.min(lastModified, System.currentTimeMillis))
         conditional(EntityTag(tag), lastModifiedDateTime)
       } else pass)
 
@@ -152,8 +152,8 @@ trait FileAndResourceDirectives {
         val matchedLength = fullPath.lastIndexOf(path.toString)
         require(matchedLength >= 0)
         val pathPrefix = fullPath.substring(0, matchedLength)
-        val pathString =
-          withTrailingSlash(fileSystemPath("/", path, ctx.log, '/'))
+        val pathString = withTrailingSlash(
+          fileSystemPath("/", path, ctx.log, '/'))
         val dirs = directories flatMap { dir ⇒
           fileSystemPath(withTrailingSlash(dir), path, ctx.log) match {
             case "" ⇒ None
@@ -162,8 +162,8 @@ trait FileAndResourceDirectives {
               if (file.isDirectory && file.canRead) Some(file) else None
           }
         }
-        implicit val marshaller: ToEntityMarshaller[DirectoryListing] =
-          renderer.marshaller(ctx.settings.renderVanityFooter)
+        implicit val marshaller: ToEntityMarshaller[DirectoryListing] = renderer
+          .marshaller(ctx.settings.renderVanityFooter)
 
         if (dirs.isEmpty) reject
         else
@@ -331,19 +331,20 @@ object ContentTypeResolver {
     new ContentTypeResolver {
       def apply(fileName: String) = {
         val lastDotIx = fileName.lastIndexOf('.')
-        val mediaType = if (lastDotIx >= 0) {
-          fileName.substring(lastDotIx + 1) match {
-            case "gz" ⇒
-              fileName.lastIndexOf('.', lastDotIx - 1) match {
-                case -1 ⇒ MediaTypes.`application/octet-stream`
-                case x ⇒
-                  MediaTypes
-                    .forExtension(fileName.substring(x + 1, lastDotIx))
-                    .withComp(MediaType.Gzipped)
-              }
-            case ext ⇒ MediaTypes.forExtension(ext)
-          }
-        } else MediaTypes.`application/octet-stream`
+        val mediaType =
+          if (lastDotIx >= 0) {
+            fileName.substring(lastDotIx + 1) match {
+              case "gz" ⇒
+                fileName.lastIndexOf('.', lastDotIx - 1) match {
+                  case -1 ⇒ MediaTypes.`application/octet-stream`
+                  case x ⇒
+                    MediaTypes
+                      .forExtension(fileName.substring(x + 1, lastDotIx))
+                      .withComp(MediaType.Gzipped)
+                }
+              case ext ⇒ MediaTypes.forExtension(ext)
+            }
+          } else MediaTypes.`application/octet-stream`
         ContentType(mediaType, () ⇒ charset)
       }
     }
@@ -384,8 +385,8 @@ object DirectoryListing {
           case (fan @ (file, name), ix) ⇒
             if (ix == 0 || filesAndNames(ix - 1)._2 != name) Some(fan) else None
         }
-        val (directoryFilesAndNames, fileFilesAndNames) =
-          deduped.partition(_._1.isDirectory)
+        val (directoryFilesAndNames, fileFilesAndNames) = deduped.partition(
+          _._1.isDirectory)
         def maxNameLength(seq: Seq[(File, String)]) =
           if (seq.isEmpty) 0 else seq.map(_._2.length).max
         val maxNameLen = math.max(
@@ -398,8 +399,9 @@ object DirectoryListing {
           .append(path)
           .append(html(2))
         if (!isRoot) {
-          val secondToLastSlash =
-            path.lastIndexOf('/', path.lastIndexOf('/', path.length - 1) - 1)
+          val secondToLastSlash = path.lastIndexOf(
+            '/',
+            path.lastIndexOf('/', path.length - 1) - 1)
           sb.append(
             "<a href=\"%s/\">../</a>\n" format path
               .substring(0, secondToLastSlash))
@@ -419,8 +421,8 @@ object DirectoryListing {
             .append(lastModified(file))
             .append('\n')
         def renderFile(file: File, name: String) = {
-          val size =
-            akka.http.impl.util.humanReadableByteCount(file.length, si = true)
+          val size = akka.http.impl.util
+            .humanReadableByteCount(file.length, si = true)
           start(name).append("        ").append(lastModified(file))
           sb.append("                ".substring(size.length))
             .append(size)

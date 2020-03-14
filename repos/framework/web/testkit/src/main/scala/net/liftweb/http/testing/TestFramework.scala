@@ -385,8 +385,7 @@ trait GetPosterHelper {
     */
   def get(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    get(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = get(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP DELETE with a newly minted httpClient
@@ -396,8 +395,7 @@ trait GetPosterHelper {
     */
   def delete(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    delete(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = delete(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP POST with a newly minted httpClient
@@ -407,8 +405,7 @@ trait GetPosterHelper {
     */
   def post(url: String, params: (String, Any)*)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    post(url, theHttpClient, Nil, params: _*)(capture)
+      : ResponseType = post(url, theHttpClient, Nil, params: _*)(capture)
 
   /**
     * Perform an HTTP POST with a newly minted httpClient
@@ -430,8 +427,7 @@ trait GetPosterHelper {
     */
   def post(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    post(url, theHttpClient, Nil, body, contentType)(capture)
+      : ResponseType = post(url, theHttpClient, Nil, body, contentType)(capture)
 
   /**
     * Perform an HTTP PUT with a newly minted httpClient
@@ -453,8 +449,7 @@ trait GetPosterHelper {
     */
   def put(url: String, body: Array[Byte], contentType: String)(
       implicit capture: (String, HttpClient, HttpMethodBase) => ResponseType)
-      : ResponseType =
-    put(url, theHttpClient, Nil, body, contentType)(capture)
+      : ResponseType = put(url, theHttpClient, Nil, body, contentType)(capture)
 
 }
 
@@ -486,8 +481,7 @@ trait ClientBuilder {
   /**
     * Create a new HTTP client that does not do any form of AUTH
     */
-  def buildNoAuthClient =
-    new HttpClient(new SimpleHttpConnectionManager(false))
+  def buildNoAuthClient = new HttpClient(new SimpleHttpConnectionManager(false))
 
   /**
     * Create a new HTTP client that does BASIC AUTH with username/pwd
@@ -567,8 +561,8 @@ object TestHelpers {
     * @return the name of the JSON function associated with the Comet actor
     */
   def jsonFuncForCometName(cometName: String, body: String): Box[String] = {
-    val p =
-      Pattern.compile("""JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
+    val p = Pattern.compile(
+      """JSON Func """ + cometName + """ \$\$ ([Ff][^ ]*)""")
     val m = p.matcher(body)
     if (m.find) Full(m.group(1)) else Empty
   }
@@ -885,25 +879,23 @@ abstract class BaseResponse(
   /**
     * Get the body of the response as XML
     */
-  override lazy val xml: Box[Elem] =
-    for {
-      b <- body
-      nodeSeq <- PCDataXmlParser(new java.io.ByteArrayInputStream(b))
-      xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ => Full(x)
-        case _              => Empty
-      }
-    } yield xml
+  override lazy val xml: Box[Elem] = for {
+    b <- body
+    nodeSeq <- PCDataXmlParser(new java.io.ByteArrayInputStream(b))
+    xml <- nodeSeq.toList match {
+      case (x: Elem) :: _ => Full(x)
+      case _              => Empty
+    }
+  } yield xml
 
-  lazy val html5AsXml: Box[Elem] =
-    for {
-      b <- body
-      nodeSeq <- Html5.parse(new java.io.ByteArrayInputStream(b))
-      xml <- nodeSeq.toList match {
-        case (x: Elem) :: _ => Full(x)
-        case _              => Empty
-      }
-    } yield xml
+  lazy val html5AsXml: Box[Elem] = for {
+    b <- body
+    nodeSeq <- Html5.parse(new java.io.ByteArrayInputStream(b))
+    xml <- nodeSeq.toList match {
+      case (x: Elem) :: _ => Full(x)
+      case _              => Empty
+    }
+  } yield xml
 
   /**
     * The content type header of the response
@@ -917,8 +909,7 @@ abstract class BaseResponse(
   /**
     * The response body as a UTF-8 encoded String
     */
-  lazy val bodyAsString =
-    for { b <- body } yield new String(b, "UTF-8")
+  lazy val bodyAsString = for { b <- body } yield new String(b, "UTF-8")
 
   def !@(msg: => String)(implicit errorFunc: ReportFailure): SelfType =
     if (code == 200) this.asInstanceOf[SelfType] else { errorFunc.fail(msg) }

@@ -7,8 +7,7 @@ import org.junit.Test
 
 class JSExportTest extends DirectTest with TestHelpers {
 
-  override def preamble: String =
-    """import scala.scalajs.js, js.annotation._
+  override def preamble: String = """import scala.scalajs.js, js.annotation._
     """
 
   @Test

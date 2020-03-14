@@ -64,8 +64,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     // test maximum size with unit of KiB
     newKryoInstance(conf, "2097151k", "2097151k")
     // should throw exception with bufferSize out of bound
-    val thrown1 =
-      intercept[IllegalArgumentException](newKryoInstance(conf, "2048m"))
+    val thrown1 = intercept[IllegalArgumentException](
+      newKryoInstance(conf, "2048m"))
     assert(thrown1.getMessage.contains(kryoBufferProperty))
     // should throw exception with maxBufferSize out of bound
     val thrown2 = intercept[IllegalArgumentException](
@@ -73,8 +73,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     assert(thrown2.getMessage.contains(kryoBufferMaxProperty))
     // should throw exception when both bufferSize and maxBufferSize out of bound
     // exception should only contain "spark.kryoserializer.buffer"
-    val thrown3 =
-      intercept[IllegalArgumentException](newKryoInstance(conf, "2g", "3g"))
+    val thrown3 = intercept[IllegalArgumentException](
+      newKryoInstance(conf, "2g", "3g"))
     assert(thrown3.getMessage.contains(kryoBufferProperty))
     assert(!thrown3.getMessage.contains(kryoBufferMaxProperty))
     // test configuration with mb is supported properly
@@ -166,9 +166,10 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("Bug: SPARK-10251") {
-    val ser = new KryoSerializer(
-      conf.clone.set("spark.kryo.registrationRequired", "true"))
-      .newInstance()
+    val ser =
+      new KryoSerializer(
+        conf.clone.set("spark.kryo.registrationRequired", "true"))
+        .newInstance()
     def check[T: ClassTag](t: T) {
       assert(ser.deserialize[T](ser.serialize(t)) === t)
     }
@@ -330,8 +331,8 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     val conf = new SparkConf(false)
     conf.set("spark.kryo.registrator", "this.class.does.not.exist")
 
-    val thrown =
-      intercept[SparkException](new KryoSerializer(conf).newInstance())
+    val thrown = intercept[SparkException](
+      new KryoSerializer(conf).newInstance())
     assert(thrown.getMessage.contains("Failed to register classes with Kryo"))
   }
 
@@ -524,8 +525,8 @@ class KryoSerializerAutoResetDisabledSuite
       serStream.close()
       baos.toByteArray
     }
-    val deserializationStream =
-      serInstance.deserializeStream(new ByteArrayInputStream(worldWorld))
+    val deserializationStream = serInstance.deserializeStream(
+      new ByteArrayInputStream(worldWorld))
     assert(deserializationStream.readValue[Any]() === world)
     deserializationStream.close()
     assert(serInstance.deserialize[Any](helloHello) === (hello, hello))

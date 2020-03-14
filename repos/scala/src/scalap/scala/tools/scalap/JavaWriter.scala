@@ -45,8 +45,7 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     NameTransformer.decode(name)
   }
 
-  def sigToType(str: String): String =
-    sigToType(str, 0)._1
+  def sigToType(str: String): String = sigToType(str, 0)._1
 
   def sigToType(str: String, i: Int): (String, Int) =
     str.charAt(i) match {

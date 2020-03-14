@@ -89,8 +89,10 @@ object OAuthRequestVerifier {
           case Some(formUrlEncoded)
               if formUrlEncoded.startsWith(
                 "application/x-www-form-urlencoded") =>
-            val form =
-              FormUrlEncodedParser.parse(body.utf8String).toSeq.flatMap {
+            val form = FormUrlEncodedParser
+              .parse(body.utf8String)
+              .toSeq
+              .flatMap {
                 case (key, values) => values.map(value => key -> value)
               }
             collectedParams ++ form

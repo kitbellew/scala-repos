@@ -68,12 +68,11 @@ object DotGraph {
         keyString,
         new HashSet[String]) += valueToString(value)
 
-    val mappings =
-      for {
-        (dependsOn, dependants) <- mappedGraph.toSeq
-        dependant <- dependants
-        if dependant != dependsOn && !dependsOn.isEmpty && !dependant.isEmpty
-      } yield "\"" + dependant + "\" -> \"" + dependsOn + "\""
+    val mappings = for {
+      (dependsOn, dependants) <- mappedGraph.toSeq
+      dependant <- dependants
+      if dependant != dependsOn && !dependsOn.isEmpty && !dependant.isEmpty
+    } yield "\"" + dependant + "\" -> \"" + dependsOn + "\""
 
     val lines =
       ("digraph " + graphName + " {") +:

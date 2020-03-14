@@ -66,30 +66,27 @@ class HDFSCheckpointStore(val config: HDFSState.Config)(
 
   @transient private val logger = LoggerFactory.getLogger(classOf[HDFSState])
 
-  protected lazy val versionedStore =
-    new FileVersionTracking(
-      config.rootPath,
-      FileSystem.get(new URI(config.rootPath), config.conf))
+  protected lazy val versionedStore = new FileVersionTracking(
+    config.rootPath,
+    FileSystem.get(new URI(config.rootPath), config.conf))
 
-  private def version(b: BatchID) =
-    batcher.earliestTimeOf(b).milliSinceEpoch
+  private def version(b: BatchID) = batcher.earliestTimeOf(b).milliSinceEpoch
 
-  val startBatch: InclusiveLower[BatchID] =
-    config.startTime
-      .map(batcher.batchOf(_))
-      .orElse {
-        val mostRecentB = versionedStore.mostRecentVersion
-          .map(t => batcher.batchOf(Timestamp(t)).next)
-        logger.info("Most recent batch found on disk: " + mostRecentB.toString)
-        mostRecentB
+  val startBatch: InclusiveLower[BatchID] = config.startTime
+    .map(batcher.batchOf(_))
+    .orElse {
+      val mostRecentB = versionedStore.mostRecentVersion
+        .map(t => batcher.batchOf(Timestamp(t)).next)
+      logger.info("Most recent batch found on disk: " + mostRecentB.toString)
+      mostRecentB
+    }
+    .map(InclusiveLower(_))
+    .getOrElse {
+      sys.error {
+        "You must provide startTime in config " +
+          "at least for the first run!"
       }
-      .map(InclusiveLower(_))
-      .getOrElse {
-        sys.error {
-          "You must provide startTime in config " +
-            "at least for the first run!"
-        }
-      }
+    }
 
   val endBatch: ExclusiveUpper[BatchID] = ExclusiveUpper(
     startBatch.lower + config.numBatches)

@@ -53,8 +53,8 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     BlockingChannel.UseDefaultBufferSize,
     config.sendBufferBytes,
     config.requestTimeoutMs)
-  val producerRequestStats =
-    ProducerRequestStatsRegistry.getProducerRequestStats(config.clientId)
+  val producerRequestStats = ProducerRequestStatsRegistry
+    .getProducerRequestStats(config.clientId)
 
   trace(
     "Instantiating Scala Sync Producer with properties: %s".format(

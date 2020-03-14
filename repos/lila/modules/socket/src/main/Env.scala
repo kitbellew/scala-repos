@@ -21,8 +21,9 @@ final class Env(
 
   private val socketHub = system.actorOf(Props[SocketHub], name = HubName)
 
-  private val population =
-    system.actorOf(Props[Population], name = PopulationName)
+  private val population = system.actorOf(
+    Props[Population],
+    name = PopulationName)
 
   system.actorOf(Props[MoveBroadcast], name = MoveBroadcastName)
 

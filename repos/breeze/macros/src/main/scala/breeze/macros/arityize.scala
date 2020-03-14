@@ -30,8 +30,8 @@ object arityize {
             impl.parents,
             impl.self,
             impl.body.flatMap(x => expandArity(c, order, bindings)(x)))
-          val newTargs =
-            targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+          val newTargs = targs.flatMap(arg =>
+            expandTypeDef(c, order, bindings)(arg))
           ClassDef(
             mods,
             newTypeName(name.encoded + order),
@@ -48,10 +48,10 @@ object arityize {
           val bindings = Map(name.encoded -> order)
 
           val newImpl = expandArity(c, order, bindings)(impl).head
-          val newVargs =
-            vargs.map(_.flatMap(arg => expandValDef(c, order, bindings)(arg)))
-          val newTargs =
-            targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+          val newVargs = vargs.map(
+            _.flatMap(arg => expandValDef(c, order, bindings)(arg)))
+          val newTargs = targs.flatMap(arg =>
+            expandTypeDef(c, order, bindings)(arg))
           val newRet = expandArity(c, order, bindings)(tpt).head
           DefDef(
             mods,
@@ -76,22 +76,22 @@ object arityize {
     tree match {
       case x @ DefDef(mods, name, targs, vargs, ret, impl) =>
         val newImpl = expandArity(c, order, bindings)(impl).head
-        val newVargs =
-          vargs.map(_.flatMap(arg => expandValDef(c, order, bindings)(arg)))
-        val newTargs =
-          targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+        val newVargs = vargs.map(
+          _.flatMap(arg => expandValDef(c, order, bindings)(arg)))
+        val newTargs = targs.flatMap(arg =>
+          expandTypeDef(c, order, bindings)(arg))
 //        println(name + " "+  ret + " " + newVargs)
         val newRet = expandArity(c, order, bindings)(ret).head
         Seq(DefDef(mods, name, newTargs, newVargs, newRet, newImpl))
       case x @ ClassDef(mods, name, targs, impl) =>
-        val newParents =
-          impl.parents.flatMap(tree => expandArity(c, order, bindings)(tree))
+        val newParents = impl.parents.flatMap(tree =>
+          expandArity(c, order, bindings)(tree))
         val newTemplate = Template(
           newParents,
           impl.self,
           impl.body.flatMap(x => expandArity(c, order, bindings)(x)))
-        val newTargs =
-          targs.flatMap(arg => expandTypeDef(c, order, bindings)(arg))
+        val newTargs = targs.flatMap(arg =>
+          expandTypeDef(c, order, bindings)(arg))
         Seq(ClassDef(mods, name, newTargs, newTemplate))
       case vdef @ ValDef(mods, name, tpt, rhs) =>
         expandValDef(c, order, bindings)(vdef)
@@ -108,8 +108,8 @@ object arityize {
               case AppliedTypeTree(Ident(nme), targs) =>
                 val newName = Ident(
                   newTypeName(nme.encoded + bindings(sym.toString)))
-                val newTargs =
-                  targs.flatMap(arg => expandArity(c, order, bindings)(arg))
+                val newTargs = targs.flatMap(arg =>
+                  expandArity(c, order, bindings)(arg))
                 Seq(AppliedTypeTree(newName, newTargs))
               case _ =>
 //                println(tree + " " + tree.getClass); ???
@@ -159,8 +159,8 @@ object arityize {
       case AppliedTypeTree(lhs, targs) =>
         val newLHS = expandArity(c, order, bindings)(lhs).head
 
-        val newTargs =
-          targs.flatMap(arg => expandArity(c, order, bindings)(arg))
+        val newTargs = targs.flatMap(arg =>
+          expandArity(c, order, bindings)(arg))
         Seq(AppliedTypeTree(newLHS, newTargs))
       case New(tree) =>
         Seq(New(expandArity(c, order, bindings)(tree).head))

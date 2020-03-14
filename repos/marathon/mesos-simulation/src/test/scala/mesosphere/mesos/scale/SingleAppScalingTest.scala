@@ -36,8 +36,8 @@ class SingleAppScalingTest
   override def startMarathon(port: Int, args: String*): Unit = {
     val cwd = new File(".")
 
-    val maxTasksPerOffer =
-      Option(System.getenv("MARATHON_MAX_TASKS_PER_OFFER")).getOrElse("1")
+    val maxTasksPerOffer = Option(System.getenv("MARATHON_MAX_TASKS_PER_OFFER"))
+      .getOrElse("1")
 
     ProcessKeeper.startMarathon(
       cwd,
@@ -61,8 +61,11 @@ class SingleAppScalingTest
   private[this] def createStopApp(instances: Int): Unit = {
     Given("a new app")
     val appIdPath: PathId = testBasePath / "/test/app"
-    val app =
-      appProxy(appIdPath, "v1", instances = instances, withHealth = false)
+    val app = appProxy(
+      appIdPath,
+      "v1",
+      instances = instances,
+      withHealth = false)
 
     When("the app gets posted")
     val createdApp: RestResult[AppDefinition] = marathon.createAppV2(app)
@@ -75,8 +78,9 @@ class SingleAppScalingTest
     waitForDeploymentId(deploymentId, (30 + instances).seconds)
 
     When("deleting the app")
-    val deleteResult: RestResult[ITDeploymentResult] =
-      marathon.deleteApp(appIdPath, force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteApp(
+      appIdPath,
+      force = true)
 
     Then("the delete should finish eventually")
     waitForChange(deleteResult)
@@ -91,8 +95,11 @@ class SingleAppScalingTest
     // for better grepability.
 
     val appIdPath = testBasePath / "/test/app"
-    val appWithManyInstances =
-      appProxy(appIdPath, "v1", instances = 100000, withHealth = false)
+    val appWithManyInstances = appProxy(
+      appIdPath,
+      "v1",
+      instances = 100000,
+      withHealth = false)
     val response = marathon.createAppV2(appWithManyInstances)
     log.info(
       s"XXX ${response.originalResponse.status}: ${response.originalResponse.entity}")
@@ -105,13 +112,10 @@ class SingleAppScalingTest
       val waitTime: Long = startTime + i * 1000 - System.currentTimeMillis()
       if (waitTime > 0) { Thread.sleep(waitTime) }
       //      val currentApp = marathon.app(appIdPath)
-      val appJson =
-        (marathon.listAppsInBaseGroup.entityJson \ "apps")
-          .as[Seq[JsObject]]
-          .filter { appJson =>
-            (appJson \ "id").as[String] == appIdPath.toString
-          }
-          .head
+      val appJson = (marathon.listAppsInBaseGroup.entityJson \ "apps")
+        .as[Seq[JsObject]]
+        .filter { appJson => (appJson \ "id").as[String] == appIdPath.toString }
+        .head
 
       val instances = (appJson \ "instances").as[Int]
       val tasksRunning = (appJson \ "tasksRunning").as[Int]
@@ -145,8 +149,8 @@ class SingleAppScalingTest
       val currentApp = marathon.app(appIdPath)
 
       val instances = (currentApp.entityJson \ "app" \ "instances").as[Int]
-      val tasksRunning =
-        (currentApp.entityJson \ "app" \ "tasksRunning").as[Int]
+      val tasksRunning = (currentApp.entityJson \ "app" \ "tasksRunning")
+        .as[Int]
       val tasksStaged = (currentApp.entityJson \ "app" \ "tasksStaged").as[Int]
 
       log.info(
@@ -161,8 +165,9 @@ class SingleAppScalingTest
     }
 
     log.info("XXX deleting")
-    val deleteResult: RestResult[ITDeploymentResult] =
-      marathon.deleteApp(appWithManyInstances.id, force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteApp(
+      appWithManyInstances.id,
+      force = true)
     waitForChange(deleteResult)
   }
 }

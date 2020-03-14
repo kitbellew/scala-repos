@@ -495,9 +495,9 @@ trait EntityPage extends HtmlPage {
       indentation: Int = 0
   ): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
-    val sig = if (mbr.signature == mbr.signatureCompat) {
-      <a id={mbr.signature}/>
-    } else { <a id={mbr.signature}/><a id={mbr.signatureCompat}/> }
+    val sig =
+      if (mbr.signature == mbr.signatureCompat) { <a id={mbr.signature}/> }
+      else { <a id={mbr.signature}/><a id={mbr.signatureCompat}/> }
 
     val memberComment = memberToCommentHtml(mbr, inTpl, isSelf = false)
     <li name={mbr.definitionName} visbl={
@@ -652,10 +652,11 @@ trait EntityPage extends HtmlPage {
           }
 
           // strip off the package object endings, they make things harder to follow
-          val conversionOwnerQualifiedNane =
-            conv.convertorOwner.qualifiedName.stripSuffix(".package")
-          val conversionOwner =
-            templateToHtml(conv.convertorOwner, conversionOwnerQualifiedNane)
+          val conversionOwnerQualifiedNane = conv.convertorOwner.qualifiedName
+            .stripSuffix(".package")
+          val conversionOwner = templateToHtml(
+            conv.convertorOwner,
+            conversionOwnerQualifiedNane)
 
           val constraintText = conv.constraints match {
             case Nil =>
@@ -777,8 +778,10 @@ trait EntityPage extends HtmlPage {
 
     val annotations: NodeSeq = {
       // A list of annotations which don't show their arguments, e. g. because they are shown separately.
-      val annotationsWithHiddenArguments =
-        List("deprecated", "Deprecated", "migration")
+      val annotationsWithHiddenArguments = List(
+        "deprecated",
+        "Deprecated",
+        "migration")
 
       def showArguments(annotation: Annotation) =
         !(annotationsWithHiddenArguments.contains(annotation.qualifiedName))
@@ -814,102 +817,91 @@ trait EntityPage extends HtmlPage {
       case _ => NodeSeq.Empty
     }
 
-    val deprecation: NodeSeq =
-      mbr.deprecation match {
-        case Some(deprecation) if !isReduced =>
-          <dt>Deprecated</dt>
+    val deprecation: NodeSeq = mbr.deprecation match {
+      case Some(deprecation) if !isReduced =>
+        <dt>Deprecated</dt>
           <dd class="cmt">{bodyToHtml(deprecation)}</dd>
-        case _ => NodeSeq.Empty
-      }
+      case _ => NodeSeq.Empty
+    }
 
-    val migration: NodeSeq =
-      mbr.migration match {
-        case Some(migration) if !isReduced =>
-          <dt>Migration</dt>
+    val migration: NodeSeq = mbr.migration match {
+      case Some(migration) if !isReduced =>
+        <dt>Migration</dt>
           <dd class="cmt">{bodyToHtml(migration)}</dd>
-        case _ => NodeSeq.Empty
-      }
+      case _ => NodeSeq.Empty
+    }
 
     val mainComment: NodeSeq = mbr.comment match {
       case Some(comment) if (!isReduced) =>
         def orEmpty[T](it: Iterable[T])(gen: => NodeSeq): NodeSeq =
           if (it.isEmpty) NodeSeq.Empty else gen
 
-        val example =
-          orEmpty(comment.example) {
-            <div class="block">Example{
-              if (comment.example.length > 1) "s" else ""
-            }:
+        val example = orEmpty(comment.example) {
+          <div class="block">Example{if (comment.example.length > 1) "s" else ""}:
                <ol>{
-              val exampleXml: List[NodeSeq] =
-                for (ex <- comment.example) yield <li class="cmt">{
-                  bodyToHtml(ex)
-                }</li>
-              exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
-            }</ol>
+            val exampleXml: List[NodeSeq] =
+              for (ex <- comment.example) yield <li class="cmt">{
+                bodyToHtml(ex)
+              }</li>
+            exampleXml.reduceLeft(_ ++ Text(", ") ++ _)
+          }</ol>
             </div>
-          }
+        }
 
-        val version: NodeSeq =
-          orEmpty(comment.version) {
-            <dt>Version</dt>
+        val version: NodeSeq = orEmpty(comment.version) {
+          <dt>Version</dt>
             <dd>{
-              for (body <- comment.version.toList) yield bodyToHtml(body)
-            }</dd>
-          }
+            for (body <- comment.version.toList) yield bodyToHtml(body)
+          }</dd>
+        }
 
-        val sinceVersion: NodeSeq =
-          orEmpty(comment.since) {
-            <dt>Since</dt>
+        val sinceVersion: NodeSeq = orEmpty(comment.since) {
+          <dt>Since</dt>
             <dd>{for (body <- comment.since.toList) yield bodyToHtml(body)}</dd>
-          }
+        }
 
-        val note: NodeSeq =
-          orEmpty(comment.note) {
-            <dt>Note</dt>
+        val note: NodeSeq = orEmpty(comment.note) {
+          <dt>Note</dt>
             <dd>{
-              val noteXml: List[NodeSeq] =
-                for (note <- comment.note) yield <span class="cmt">{
-                  bodyToHtml(note)
-                }</span>
-              noteXml.reduceLeft(_ ++ Text(", ") ++ _)
-            }</dd>
-          }
+            val noteXml: List[NodeSeq] =
+              for (note <- comment.note) yield <span class="cmt">{
+                bodyToHtml(note)
+              }</span>
+            noteXml.reduceLeft(_ ++ Text(", ") ++ _)
+          }</dd>
+        }
 
-        val seeAlso: NodeSeq =
-          orEmpty(comment.see) {
-            <dt>See also</dt>
+        val seeAlso: NodeSeq = orEmpty(comment.see) {
+          <dt>See also</dt>
             <dd>{
-              val seeXml: List[NodeSeq] =
-                for (see <- comment.see) yield <span class="cmt">{
-                  bodyToHtml(see)
-                }</span>
-              seeXml.reduceLeft(_ ++ _)
-            }</dd>
-          }
+            val seeXml: List[NodeSeq] =
+              for (see <- comment.see) yield <span class="cmt">{
+                bodyToHtml(see)
+              }</span>
+            seeXml.reduceLeft(_ ++ _)
+          }</dd>
+        }
 
-        val exceptions: NodeSeq =
-          orEmpty(comment.throws) {
-            <dt>Exceptions thrown</dt>
+        val exceptions: NodeSeq = orEmpty(comment.throws) {
+          <dt>Exceptions thrown</dt>
             <dd>{
-              val exceptionsXml: List[NodeSeq] =
-                for ((name, body) <- comment.throws.toList.sortBy(_._1))
-                  yield <span class="cmt">{bodyToHtml(body)}</span>
-              exceptionsXml.reduceLeft(_ ++ Text("") ++ _)
-            }</dd>
-          }
+            val exceptionsXml: List[NodeSeq] =
+              for ((name, body) <- comment.throws.toList.sortBy(_._1))
+                yield <span class="cmt">{bodyToHtml(body)}</span>
+            exceptionsXml.reduceLeft(_ ++ Text("") ++ _)
+          }</dd>
+        }
 
-        val todo: NodeSeq =
-          orEmpty(comment.todo) {
-            <dt>To do</dt>
+        val todo: NodeSeq = orEmpty(comment.todo) {
+          <dt>To do</dt>
             <dd>{
-              val todoXml: List[NodeSeq] =
-                (for (todo <- comment.todo) yield <span class="cmt">{
-                  bodyToHtml(todo)
-                }</span>)
-              todoXml.reduceLeft(_ ++ _)
-            }</dd>
-          }
+            val todoXml: List[NodeSeq] =
+              (for (todo <- comment.todo) yield <span class="cmt">{
+                bodyToHtml(todo)
+              }</span>)
+            todoXml.reduceLeft(_ ++ _)
+          }</dd>
+        }
 
         example ++ version ++ sinceVersion ++ exceptions ++ todo ++ note ++ seeAlso
 
@@ -997,8 +989,10 @@ trait EntityPage extends HtmlPage {
       _.inheritanceDiagram,
       "Type Hierarchy",
       "inheritance-diagram")
-    val contentHierarchy =
-      createDiagram(_.contentDiagram, "Content Hierarchy", "content-diagram")
+    val contentHierarchy = createDiagram(
+      _.contentDiagram,
+      "Content Hierarchy",
+      "content-diagram")
 
     memberComment ++ authorComment ++ paramComments ++ attributesBlock ++ linearization ++ subclasses ++ typeHierarchy ++ contentHierarchy
   }

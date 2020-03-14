@@ -44,8 +44,9 @@ private[stat] trait Correlation {
   def computeCorrelationWithMatrixImpl(
       x: RDD[Double],
       y: RDD[Double]): Double = {
-    val mat: RDD[Vector] =
-      x.zip(y).map { case (xi, yi) => new DenseVector(Array(xi, yi)) }
+    val mat: RDD[Vector] = x.zip(y).map {
+      case (xi, yi) => new DenseVector(Array(xi, yi))
+    }
     computeCorrelationMatrix(mat)(0, 1)
   }
 
@@ -95,8 +96,9 @@ private[stat] object Correlations {
 private[mllib] object CorrelationNames {
 
   // Note: after new types of correlations are implemented, please update this map.
-  val nameToObjectMap =
-    Map(("pearson", PearsonCorrelation), ("spearman", SpearmanCorrelation))
+  val nameToObjectMap = Map(
+    ("pearson", PearsonCorrelation),
+    ("spearman", SpearmanCorrelation))
   val defaultCorrName: String = "pearson"
 
 }

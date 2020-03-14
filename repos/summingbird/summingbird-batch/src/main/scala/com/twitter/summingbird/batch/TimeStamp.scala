@@ -49,18 +49,18 @@ object Timestamp {
   def now: Timestamp = Timestamp(System.currentTimeMillis)
 
   implicit def fromDate(d: Date) = Timestamp(d.getTime)
-  implicit val orderingOnTimestamp: Ordering[Timestamp] =
-    Ordering.by(_.milliSinceEpoch)
-  implicit val maxTSMonoid: Monoid[Timestamp] =
-    Monoid.from(Timestamp.Min)(orderingOnTimestamp.max(_, _))
+  implicit val orderingOnTimestamp: Ordering[Timestamp] = Ordering.by(
+    _.milliSinceEpoch)
+  implicit val maxTSMonoid: Monoid[Timestamp] = Monoid.from(Timestamp.Min)(
+    orderingOnTimestamp.max(_, _))
 
-  implicit val timestamp2Date: Bijection[Timestamp, Date] =
-    Bijection.build[Timestamp, Date] { ts => new Date(ts.milliSinceEpoch) } {
+  implicit val timestamp2Date: Bijection[Timestamp, Date] = Bijection
+    .build[Timestamp, Date] { ts => new Date(ts.milliSinceEpoch) } {
       fromDate(_)
     }
 
-  implicit val timestamp2Long: Bijection[Timestamp, Long] =
-    Bijection.build[Timestamp, Long] { _.milliSinceEpoch } { Timestamp(_) }
+  implicit val timestamp2Long: Bijection[Timestamp, Long] = Bijection
+    .build[Timestamp, Long] { _.milliSinceEpoch } { Timestamp(_) }
 
   implicit val timestampSuccessible: Successible[Timestamp] =
     new Successible[Timestamp] {

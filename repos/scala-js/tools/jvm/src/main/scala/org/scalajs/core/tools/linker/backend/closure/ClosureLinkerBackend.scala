@@ -78,8 +78,8 @@ final class ClosureLinkerBackend(
     module.add(new CompilerInput(ast, ast.getInputId(), false))
 
     // Compile the module
-    val closureExterns =
-      toClosureSource(ClosureLinkerBackend.ScalaJSExternsFile)
+    val closureExterns = toClosureSource(
+      ClosureLinkerBackend.ScalaJSExternsFile)
     val options = closureOptions(output.name)
     val compiler = closureCompiler(logger)
 
@@ -174,6 +174,6 @@ private object ClosureLinkerBackend {
     var NaN = 0.0/0.0, Infinity = 1.0/0.0, undefined = void 0;
     """
 
-  private val ScalaJSExternsFile =
-    new MemVirtualJSFile("ScalaJSExterns.js").withContent(ScalaJSExterns)
+  private val ScalaJSExternsFile = new MemVirtualJSFile("ScalaJSExterns.js")
+    .withContent(ScalaJSExterns)
 }

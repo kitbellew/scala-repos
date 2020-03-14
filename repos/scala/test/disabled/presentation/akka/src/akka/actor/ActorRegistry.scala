@@ -185,8 +185,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
       implicit classTag: ClassTag[T]): Option[AnyRef] = {
     TypedActorModule.ensureEnabled
     def predicate(proxy: AnyRef): Boolean = {
-      val actorRef =
-        TypedActorModule.typedActorObjectInstance.get.actorFor(proxy)
+      val actorRef = TypedActorModule.typedActorObjectInstance.get
+        .actorFor(proxy)
       actorRef.isDefined && classTag.erasure.isAssignableFrom(
         actorRef.get.actor.getClass)
     }
@@ -199,8 +199,8 @@ final class ActorRegistry private[actor] () extends ListenerManagement {
   def typedActorsFor[T <: AnyRef](clazz: Class[T]): Array[AnyRef] = {
     TypedActorModule.ensureEnabled
     def predicate(proxy: AnyRef): Boolean = {
-      val actorRef =
-        TypedActorModule.typedActorObjectInstance.get.actorFor(proxy)
+      val actorRef = TypedActorModule.typedActorObjectInstance.get
+        .actorFor(proxy)
       actorRef.isDefined && clazz.isAssignableFrom(actorRef.get.actor.getClass)
     }
     filterTypedActors(predicate)

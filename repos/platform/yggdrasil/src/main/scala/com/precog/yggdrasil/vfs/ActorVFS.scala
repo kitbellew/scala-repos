@@ -238,8 +238,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         blobResult <- IOT {
           writeResult traverse { size =>
             logger.debug("Write complete on " + file)
-            val metadata =
-              BlobMetadata(mimeType, size, clock.now(), authorities)
+            val metadata = BlobMetadata(
+              mimeType,
+              size,
+              clock.now(),
+              authorities)
             //val metadataStore = PersistentJValue(versionDir, blobMetadataFilename)
             //metadataStore.json = metadata.serialize
             IOUtils.writeToFile(
@@ -548,8 +551,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               } map { perms =>
                 val allPerms: Map[APIKey, Set[WritePermission]] =
                   perms.map(Map(_)).suml
-                val (totalArchives, totalEvents, totalStoreFiles) =
-                  pathMessages.foldLeft((0, 0, 0)) {
+                val (totalArchives, totalEvents, totalStoreFiles) = pathMessages
+                  .foldLeft((0, 0, 0)) {
                     case (
                           (archived, events, storeFiles),
                           (_, IngestMessage(_, _, _, data, _, _, _))) =>
@@ -642,9 +645,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         versionLog.find(version) map {
           case VersionEntry(v, _, _) =>
             val dir = versionDir(v)
-            val openf = if (NIHDB.hasProjection(dir)) {
-              resourceBuilder.openNIHDB _
-            } else { resourceBuilder.openBlob _ }
+            val openf =
+              if (NIHDB.hasProjection(dir)) { resourceBuilder.openNIHDB _ }
+              else { resourceBuilder.openBlob _ }
 
             for {
               resource <- EitherT {
@@ -874,8 +877,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
             case StreamRef.Append =>
               logger.trace("Received append for %s".format(path.path))
-              val streamId =
-                versionLog.current.map(_.id).getOrElse(UUID.randomUUID())
+              val streamId = versionLog.current
+                .map(_.id)
+                .getOrElse(UUID.randomUUID())
               for {
                 _ <- persistNIHDB(
                   canCreate(msg.path, permissions(apiKey), msg.writeAs),

@@ -329,9 +329,8 @@ class Word2Vec extends Serializable with Logging {
           "which is " + vocabSize + "*" + vectorSize + " for now, less than `Int.MaxValue`.")
     }
 
-    val syn0Global =
-      Array.fill[Float](vocabSize * vectorSize)(
-        (initRandom.nextFloat() - 0.5f) / vectorSize)
+    val syn0Global = Array.fill[Float](vocabSize * vectorSize)(
+      (initRandom.nextFloat() - 0.5f) / vectorSize)
     val syn1Global = new Array[Float](vocabSize * vectorSize)
     var alpha = learningRate
 
@@ -344,65 +343,63 @@ class Word2Vec extends Serializable with Logging {
             new XORShiftRandom(seed ^ ((idx + 1) << 16) ^ ((-k - 1) << 8))
           val syn0Modify = new Array[Int](vocabSize)
           val syn1Modify = new Array[Int](vocabSize)
-          val model =
-            iter.foldLeft((bcSyn0Global.value, bcSyn1Global.value, 0L, 0L)) {
-              case ((syn0, syn1, lastWordCount, wordCount), sentence) =>
-                var lwc = lastWordCount
-                var wc = wordCount
-                if (wordCount - lastWordCount > 10000) {
-                  lwc = wordCount
-                  // TODO: discount by iteration?
-                  alpha =
-                    learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
-                  if (alpha < learningRate * 0.0001)
-                    alpha = learningRate * 0.0001
-                  logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
-                }
-                wc += sentence.length
-                var pos = 0
-                while (pos < sentence.length) {
-                  val word = sentence(pos)
-                  val b = random.nextInt(window)
-                  // Train Skip-gram
-                  var a = b
-                  while (a < window * 2 + 1 - b) {
-                    if (a != window) {
-                      val c = pos - window + a
-                      if (c >= 0 && c < sentence.length) {
-                        val lastWord = sentence(c)
-                        val l1 = lastWord * vectorSize
-                        val neu1e = new Array[Float](vectorSize)
-                        // Hierarchical softmax
-                        var d = 0
-                        while (d < bcVocab.value(word).codeLen) {
-                          val inner = bcVocab.value(word).point(d)
-                          val l2 = inner * vectorSize
-                          // Propagate hidden -> output
-                          var f =
-                            blas.sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
-                          if (f > -MAX_EXP && f < MAX_EXP) {
-                            val ind =
-                              ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
-                            f = expTable.value(ind)
-                            val g = ((1 - bcVocab
-                              .value(word)
-                              .code(d) - f) * alpha).toFloat
-                            blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
-                            blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
-                            syn1Modify(inner) += 1
-                          }
-                          d += 1
+          val model = iter.foldLeft(
+            (bcSyn0Global.value, bcSyn1Global.value, 0L, 0L)) {
+            case ((syn0, syn1, lastWordCount, wordCount), sentence) =>
+              var lwc = lastWordCount
+              var wc = wordCount
+              if (wordCount - lastWordCount > 10000) {
+                lwc = wordCount
+                // TODO: discount by iteration?
+                alpha =
+                  learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
+                if (alpha < learningRate * 0.0001) alpha = learningRate * 0.0001
+                logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
+              }
+              wc += sentence.length
+              var pos = 0
+              while (pos < sentence.length) {
+                val word = sentence(pos)
+                val b = random.nextInt(window)
+                // Train Skip-gram
+                var a = b
+                while (a < window * 2 + 1 - b) {
+                  if (a != window) {
+                    val c = pos - window + a
+                    if (c >= 0 && c < sentence.length) {
+                      val lastWord = sentence(c)
+                      val l1 = lastWord * vectorSize
+                      val neu1e = new Array[Float](vectorSize)
+                      // Hierarchical softmax
+                      var d = 0
+                      while (d < bcVocab.value(word).codeLen) {
+                        val inner = bcVocab.value(word).point(d)
+                        val l2 = inner * vectorSize
+                        // Propagate hidden -> output
+                        var f = blas.sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
+                        if (f > -MAX_EXP && f < MAX_EXP) {
+                          val ind =
+                            ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
+                          f = expTable.value(ind)
+                          val g = ((1 - bcVocab
+                            .value(word)
+                            .code(d) - f) * alpha).toFloat
+                          blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
+                          blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
+                          syn1Modify(inner) += 1
                         }
-                        blas.saxpy(vectorSize, 1.0f, neu1e, 0, 1, syn0, l1, 1)
-                        syn0Modify(lastWord) += 1
+                        d += 1
                       }
+                      blas.saxpy(vectorSize, 1.0f, neu1e, 0, 1, syn0, l1, 1)
+                      syn0Modify(lastWord) += 1
                     }
-                    a += 1
                   }
-                  pos += 1
+                  a += 1
                 }
-                (syn0, syn1, lwc, wc)
-            }
+                pos += 1
+              }
+              (syn0, syn1, lwc, wc)
+          }
           val syn0Local = model._1
           val syn1Local = model._2
           // Only output modified vectors.
@@ -536,8 +533,9 @@ class Word2VecModel private[spark] (
   def transform(word: String): Vector = {
     wordIndex.get(word) match {
       case Some(ind) =>
-        val vec =
-          wordVectors.slice(ind * vectorSize, ind * vectorSize + vectorSize)
+        val vec = wordVectors.slice(
+          ind * vectorSize,
+          ind * vectorSize + vectorSize)
         Vectors.dense(vec.map(_.toDouble))
       case None =>
         throw new IllegalStateException(s"$word not in vocabulary")
@@ -702,8 +700,9 @@ object Word2VecModel extends Loader[Word2VecModel] {
   @Since("1.4.0")
   override def load(sc: SparkContext, path: String): Word2VecModel = {
 
-    val (loadedClassName, loadedVersion, metadata) =
-      Loader.loadMetadata(sc, path)
+    val (loadedClassName, loadedVersion, metadata) = Loader.loadMetadata(
+      sc,
+      path)
     implicit val formats = DefaultFormats
     val expectedVectorSize = (metadata \ "vectorSize").extract[Int]
     val expectedNumWords = (metadata \ "numWords").extract[Int]

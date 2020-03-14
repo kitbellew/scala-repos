@@ -217,10 +217,9 @@ class GroupManager @Singleton @Inject() (
             val resolved = app.copy(
               fetch = app.fetch ++ storageUrls.map(FetchUri.apply(_)),
               storeUrls = Seq.empty)
-            val appDownloads: Map[URL, String] =
-              app.storeUrls.flatMap { url =>
-                downloads.remove(url).map { path => new URL(url) -> path }
-              }.toMap
+            val appDownloads: Map[URL, String] = app.storeUrls.flatMap { url =>
+              downloads.remove(url).map { path => new URL(url) -> path }
+            }.toMap
             if (appDownloads.nonEmpty)
               actions += ResolveArtifacts(resolved, appDownloads)
             resolved
@@ -307,17 +306,16 @@ class GroupManager @Singleton @Inject() (
       )
     }
 
-    val dynamicApps: Set[AppDefinition] =
-      to.transitiveApps.map {
-        case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
-        case app: AppDefinition                       =>
-          // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
-          app.copy(
-            portDefinitions = mergeServicePortsAndPortDefinitions(
-              app.portDefinitions,
-              app.servicePorts)
-          )
-      }
+    val dynamicApps: Set[AppDefinition] = to.transitiveApps.map {
+      case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
+      case app: AppDefinition                       =>
+        // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
+        app.copy(
+          portDefinitions = mergeServicePortsAndPortDefinitions(
+            app.portDefinitions,
+            app.servicePorts)
+        )
+    }
 
     dynamicApps.foldLeft(to) { (group, app) =>
       group.updateApp(app.id, _ => app, app.version)

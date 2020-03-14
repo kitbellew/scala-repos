@@ -35,8 +35,9 @@ import org.apache.spark.util.Utils
   */
 class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   def binaryClassificationTestWithContinuousFeatures(strategy: Strategy) {
-    val arr =
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000)
+    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
+      numFeatures = 50,
+      1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -86,8 +87,9 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   def regressionTestWithContinuousFeatures(strategy: Strategy) {
-    val arr =
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000)
+    val arr = EnsembleTestHelper.generateOrderedLabeledPoints(
+      numFeatures = 50,
+      1000)
     val rdd = sc.parallelize(arr)
     val numTrees = 1
 
@@ -151,12 +153,11 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         numFeaturesPerNode: Int): Unit = {
       val seeds = Array(123, 5354, 230, 349867, 23987)
       val maxMemoryUsage: Long = 128 * 1024L * 1024L
-      val metadata =
-        DecisionTreeMetadata.buildMetadata(
-          rdd,
-          strategy,
-          numTrees,
-          featureSubsetStrategy)
+      val metadata = DecisionTreeMetadata.buildMetadata(
+        rdd,
+        strategy,
+        numTrees,
+        featureSubsetStrategy)
       seeds.foreach { seed =>
         val failString = s"Failed on test with:" +
           s"numTrees=$numTrees, featureSubsetStrategy=$featureSubsetStrategy," +
@@ -172,12 +173,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
           nodesForGroup: Map[Int, Array[Node]],
           treeToNodeToIndexInfo: Map[
             Int,
-            Map[Int, RandomForest.NodeIndexInfo]]) =
-          RandomForest.selectNodesToSplit(
-            nodeQueue,
-            maxMemoryUsage,
-            metadata,
-            rng)
+            Map[Int, RandomForest.NodeIndexInfo]]) = RandomForest
+          .selectNodesToSplit(nodeQueue, maxMemoryUsage, metadata, rng)
 
         assert(nodesForGroup.size === numTrees, failString)
         assert(

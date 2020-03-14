@@ -48,10 +48,9 @@ class StreamTest {
       Try {
         op(ref(), gcAndThrowIfCollected)
       }.failed // success is indicated by an
-    val msg =
-      res
-        .map(_.getMessage)
-        .getOrElse(msgFailureGC) // exception with expected message
+    val msg = res
+      .map(_.getMessage)
+      .getOrElse(msgFailureGC) // exception with expected message
     // failure is indicated by no
     assertTrue(msg == msgSuccessGC) // exception, or one with different message
   }

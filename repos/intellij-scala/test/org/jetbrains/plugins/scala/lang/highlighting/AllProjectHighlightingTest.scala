@@ -94,19 +94,20 @@ class AllProjectHighlightingTest
   }
 
   def doRunHighlighting(): Unit = {
-    val inspectionManagerEx: InspectionManagerEx =
-      InspectionManager.getInstance(myProject).asInstanceOf[InspectionManagerEx]
+    val inspectionManagerEx: InspectionManagerEx = InspectionManager
+      .getInstance(myProject)
+      .asInstanceOf[InspectionManagerEx]
 
-    val searchScope =
-      new SourceFilterScope(
-        GlobalSearchScope.getScopeRestrictedByFileTypes(
-          GlobalSearchScope.projectScope(myProject),
-          ScalaFileType.SCALA_FILE_TYPE,
-          JavaFileType.INSTANCE),
-        myProject)
+    val searchScope = new SourceFilterScope(
+      GlobalSearchScope.getScopeRestrictedByFileTypes(
+        GlobalSearchScope.projectScope(myProject),
+        ScalaFileType.SCALA_FILE_TYPE,
+        JavaFileType.INSTANCE),
+      myProject)
 
-    val files: util.Collection[VirtualFile] =
-      FileTypeIndex.getFiles(ScalaFileType.SCALA_FILE_TYPE, searchScope)
+    val files: util.Collection[VirtualFile] = FileTypeIndex.getFiles(
+      ScalaFileType.SCALA_FILE_TYPE,
+      searchScope)
 
     LocalFileSystem.getInstance().refreshFiles(files)
 
@@ -172,8 +173,8 @@ class AllProjectHighlightingTest
     super.setUpInWriteAction()
     val projectDir: File = new File(getRootDir, getTestName(false))
     if (!projectDir.exists()) return
-    myProjectRoot =
-      LocalFileSystem.getInstance.refreshAndFindFileByIoFile(projectDir)
+    myProjectRoot = LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
+      projectDir)
     setUpSbtLauncherAndStructure(myProject)
   }
 }

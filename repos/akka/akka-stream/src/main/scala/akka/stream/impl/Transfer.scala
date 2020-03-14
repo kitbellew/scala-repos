@@ -160,10 +160,9 @@ private[akka] final case class TransferPhase(precondition: TransferState)(
   */
 private[akka] trait Pump {
   private var transferState: TransferState = NotInitialized
-  private var currentAction: () ⇒ Unit =
-    () ⇒
-      throw new IllegalStateException(
-        "Pump has been not initialized with a phase")
+  private var currentAction: () ⇒ Unit = () ⇒
+    throw new IllegalStateException(
+      "Pump has been not initialized with a phase")
 
   final def initialPhase(waitForUpstream: Int, andThen: TransferPhase): Unit = {
     require(

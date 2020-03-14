@@ -52,8 +52,8 @@ class JavaApiTestCaseSpecs extends FreeSpec with MustMatchers {
           BasicHttpCredentials("username", "password")))))
     }
     "removeCookies" in {
-      val testRequest = model.HttpRequest(headers =
-        immutable.Seq(Cookie.create("test", "blub")))
+      val testRequest = model
+        .HttpRequest(headers = immutable.Seq(Cookie.create("test", "blub")))
       JavaApiTestCases.removeCookies(testRequest) must be(model.HttpRequest())
     }
     "createUriForOrder" in {

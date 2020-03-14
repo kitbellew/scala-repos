@@ -76,21 +76,21 @@ abstract class ParallelSeqCheck[T](collName: String)
     coll.patch(updateStart, coll, howMany)
   }
 
-  property("segmentLengths must be equal") =
-    forAll(collectionPairsWithLengths) {
-      case (s, coll, len) =>
-        (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex) yield {
-          val slen = s.segmentLength(pred, if (len < 0) 0 else len)
-          val clen = coll.segmentLength(pred, len)
-          if (slen != clen) {
-            println("from: " + s)
-            println("and: " + coll)
-            println(slen)
-            println(clen)
-          }
-          ("operator " + ind) |: slen == clen
-        }).reduceLeft(_ && _)
-    }
+  property("segmentLengths must be equal") = forAll(
+    collectionPairsWithLengths) {
+    case (s, coll, len) =>
+      (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex) yield {
+        val slen = s.segmentLength(pred, if (len < 0) 0 else len)
+        val clen = coll.segmentLength(pred, len)
+        if (slen != clen) {
+          println("from: " + s)
+          println("and: " + coll)
+          println(slen)
+          println(clen)
+        }
+        ("operator " + ind) |: slen == clen
+      }).reduceLeft(_ && _)
+  }
 
   property("prefixLengths must be equal") = forAll(collectionPairs) {
     case (s, coll) =>
@@ -115,16 +115,16 @@ abstract class ParallelSeqCheck[T](collName: String)
       }).reduceLeft(_ && _)
   }
 
-  property("lastIndexWheres must be equal") =
-    forAll(collectionPairsWithLengths) {
-      case (s, coll, len) =>
-        (for ((pred, ind) <- lastIndexWherePredicates.zipWithIndex) yield {
-          val end = if (len >= s.size) s.size - 1 else len
-          val sind = s.lastIndexWhere(pred, end)
-          val cind = coll.lastIndexWhere(pred, end)
-          ("operator " + ind) |: sind == cind
-        }).reduceLeft(_ && _)
-    }
+  property("lastIndexWheres must be equal") = forAll(
+    collectionPairsWithLengths) {
+    case (s, coll, len) =>
+      (for ((pred, ind) <- lastIndexWherePredicates.zipWithIndex) yield {
+        val end = if (len >= s.size) s.size - 1 else len
+        val sind = s.lastIndexWhere(pred, end)
+        val cind = coll.lastIndexWhere(pred, end)
+        ("operator " + ind) |: sind == cind
+      }).reduceLeft(_ && _)
+  }
 
   property("reverses must be equal") = forAll(collectionPairs) {
     case (s, coll) =>
@@ -148,67 +148,67 @@ abstract class ParallelSeqCheck[T](collName: String)
       }).reduceLeft(_ && _)
   }
 
-  property("sameElements must be equal") =
-    forAll(collectionPairsWithModifiedWithLengths) {
-      case (s, coll, collmodif, len) =>
-        val pos = if (len < 0) 0 else len
-        val scm = s.sameElements(collmodif)
-        val ccm = coll.sameElements(collmodif)
-        if (scm != ccm) {
+  property("sameElements must be equal") = forAll(
+    collectionPairsWithModifiedWithLengths) {
+    case (s, coll, collmodif, len) =>
+      val pos = if (len < 0) 0 else len
+      val scm = s.sameElements(collmodif)
+      val ccm = coll.sameElements(collmodif)
+      if (scm != ccm) {
+        println("Comparing: " + s)
+        println("and: " + coll)
+        println("with: " + collmodif)
+        println(scm)
+        println(ccm)
+      }
+      ("Nil" |: s.sameElements(Nil) == coll.sameElements(Nil)) &&
+      ("toList" |: s.sameElements(s.toList) == coll.sameElements(
+        coll.toList)) &&
+      ("identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
+        coll.map(e => e))) &&
+      ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
+      ("equal" |: s.sameElements(coll)) &&
+      ("modified" |: scm == ccm) &&
+      (for ((it, ind) <- sameElementsSeqs.zipWithIndex) yield {
+        val sres = s.sameElements(it)
+        val pres = coll.sameElements(it)
+        if (sres != pres) {
           println("Comparing: " + s)
           println("and: " + coll)
-          println("with: " + collmodif)
-          println(scm)
-          println(ccm)
+          println("with: " + it)
+          println(sres)
+          println(pres)
         }
-        ("Nil" |: s.sameElements(Nil) == coll.sameElements(Nil)) &&
-        ("toList" |: s.sameElements(s.toList) == coll.sameElements(
-          coll.toList)) &&
-        ("identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
-          coll.map(e => e))) &&
-        ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
-        ("equal" |: s.sameElements(coll)) &&
-        ("modified" |: scm == ccm) &&
-        (for ((it, ind) <- sameElementsSeqs.zipWithIndex) yield {
-          val sres = s.sameElements(it)
-          val pres = coll.sameElements(it)
-          if (sres != pres) {
-            println("Comparing: " + s)
-            println("and: " + coll)
-            println("with: " + it)
-            println(sres)
-            println(pres)
-          }
-          ("collection " + ind) |: sres == pres
-        }).reduceLeft(_ && _)
-    }
+        ("collection " + ind) |: sres == pres
+      }).reduceLeft(_ && _)
+  }
 
-  property("startsWiths must be equal") =
-    forAll(collectionPairsWithModifiedWithLengths) {
-      case (s, coll, collmodif, len) =>
-        val pos = if (len < 0) 0 else len
-        ("start with self" |: s.startsWith(s) == coll.startsWith(coll)) &&
-        ("tails correspond" |: (s.length == 0 || s.startsWith(s.tail, 1) == coll
-          .startsWith(coll.tail, 1))) &&
-        ("with each other" |: coll.startsWith(s)) &&
-        ("modified" |: s.startsWith(collmodif) == coll.startsWith(collmodif)) &&
-        ("modified2" |: s
-          .startsWith(collmodif, pos) == coll.startsWith(collmodif, pos)) &&
-        (for (sq <- startEndSeqs) yield {
-          val ss = s.startsWith(sq, pos)
-          val cs = coll.startsWith(fromSeq(sq), pos)
-          if (ss != cs) {
-            println("from: " + s)
-            println("and: " + coll)
-            println("test seq: " + sq)
-            println("from pos: " + pos)
-            println(ss)
-            println(cs)
-            println(coll.iterator.psplit(pos, coll.length - pos)(1).toList)
-          }
-          ("seq " + sq) |: ss == cs
-        }).reduceLeft(_ && _)
-    }
+  property("startsWiths must be equal") = forAll(
+    collectionPairsWithModifiedWithLengths) {
+    case (s, coll, collmodif, len) =>
+      val pos = if (len < 0) 0 else len
+      ("start with self" |: s.startsWith(s) == coll.startsWith(coll)) &&
+      ("tails correspond" |: (s.length == 0 || s.startsWith(s.tail, 1) == coll
+        .startsWith(coll.tail, 1))) &&
+      ("with each other" |: coll.startsWith(s)) &&
+      ("modified" |: s.startsWith(collmodif) == coll.startsWith(collmodif)) &&
+      ("modified2" |: s
+        .startsWith(collmodif, pos) == coll.startsWith(collmodif, pos)) &&
+      (for (sq <- startEndSeqs) yield {
+        val ss = s.startsWith(sq, pos)
+        val cs = coll.startsWith(fromSeq(sq), pos)
+        if (ss != cs) {
+          println("from: " + s)
+          println("and: " + coll)
+          println("test seq: " + sq)
+          println("from pos: " + pos)
+          println(ss)
+          println(cs)
+          println(coll.iterator.psplit(pos, coll.length - pos)(1).toList)
+        }
+        ("seq " + sq) |: ss == cs
+      }).reduceLeft(_ && _)
+  }
 
   property("endsWiths must be equal") = forAll(collectionPairsWithModified) {
     case (s, coll, collmodif) =>

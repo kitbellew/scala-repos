@@ -119,8 +119,8 @@ class SbtProjectResolver
         sbtVersion,
         root))
 
-    val newPlay2Data =
-      projects.flatMap(p => p.play2.map(d => (p.id, p.base, d)))
+    val newPlay2Data = projects.flatMap(p =>
+      p.play2.map(d => (p.id, p.base, d)))
     projectNode.add(
       new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
 
@@ -128,8 +128,10 @@ class SbtProjectResolver
     projectNode.addAll(libraryNodes)
 
     val moduleFilesDirectory = new File(root + "/" + Sbt.ModulesDirectory)
-    val moduleNodes =
-      createModules(projects, libraryNodes, moduleFilesDirectory)
+    val moduleNodes = createModules(
+      projects,
+      libraryNodes,
+      moduleFilesDirectory)
     projectNode.addAll(moduleNodes)
 
     createModuleDependencies(projects, moduleNodes)
@@ -201,8 +203,8 @@ class SbtProjectResolver
       data: sbtStructure.StructureData,
       projects: Seq[sbtStructure.ProjectData]): Seq[LibraryNode] = {
     val repositoryModules = data.repository.map(_.modules).getOrElse(Seq.empty)
-    val (modulesWithoutBinaries, modulesWithBinaries) =
-      repositoryModules.partition(_.binaries.isEmpty)
+    val (modulesWithoutBinaries, modulesWithBinaries) = repositoryModules
+      .partition(_.binaries.isEmpty)
     val otherModuleIds =
       projects.flatMap(_.dependencies.modules.map(_.id)).toSet --
         repositoryModules.map(_.id).toSet
@@ -211,8 +213,8 @@ class SbtProjectResolver
       modulesWithBinaries.map(createResolvedLibrary) ++ otherModuleIds.map(
         createUnresolvedLibrary)
 
-    val modulesWithDocumentation =
-      modulesWithoutBinaries.filter(m => m.docs.nonEmpty || m.sources.nonEmpty)
+    val modulesWithDocumentation = modulesWithoutBinaries.filter(m =>
+      m.docs.nonEmpty || m.sources.nonEmpty)
     if (modulesWithDocumentation.isEmpty) return libs
 
     val unmanagedSourceLibrary =
@@ -261,8 +263,11 @@ class SbtProjectResolver
 
   private def createUnresolvedLibrary(
       moduleId: sbtStructure.ModuleIdentifier): LibraryNode = {
-    val module =
-      sbtStructure.ModuleData(moduleId, Set.empty, Set.empty, Set.empty)
+    val module = sbtStructure.ModuleData(
+      moduleId,
+      Set.empty,
+      Set.empty,
+      Set.empty)
     createLibrary(module, resolved = false)
   }
 

@@ -317,8 +317,10 @@ trait IssuesControllerBase extends ControllerBase {
                     enableAnchor = true,
                     enableLineBreaks = true,
                     enableTaskList = true,
-                    hasWritePermission =
-                      isEditable(x.userName, x.repositoryName, x.openedUserName)
+                    hasWritePermission = isEditable(
+                      x.userName,
+                      x.repositoryName,
+                      x.openedUserName)
                   )
                 )
               )

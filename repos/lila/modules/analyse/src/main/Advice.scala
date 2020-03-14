@@ -58,8 +58,10 @@ private[analyse] object CpAdvice {
   //   nag ← cpNags find { case (d, n) => d <= delta } map (_._2)
   // } yield CpAdvice(nag, info, prev)
 
-  private val cpNags =
-    List(300 -> Nag.Blunder, 100 -> Nag.Mistake, 50 -> Nag.Inaccuracy)
+  private val cpNags = List(
+    300 -> Nag.Blunder,
+    100 -> Nag.Mistake,
+    50 -> Nag.Inaccuracy)
 
   def apply(prev: Info, info: Info): Option[CpAdvice] =
     for {

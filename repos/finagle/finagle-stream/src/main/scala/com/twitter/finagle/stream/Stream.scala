@@ -37,8 +37,7 @@ private[stream] class DelayedReleaseService[Req](
     }
   }
 
-  override def close(deadline: Time) =
-    done ensure { self.close(deadline) }
+  override def close(deadline: Time) = done ensure { self.close(deadline) }
 }
 
 object Stream {

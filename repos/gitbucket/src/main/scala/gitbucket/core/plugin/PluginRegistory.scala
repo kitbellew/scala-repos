@@ -160,8 +160,10 @@ object PluginRegistry {
             Array(pluginJar.toURI.toURL),
             Thread.currentThread.getContextClassLoader)
           try {
-            val plugin =
-              classLoader.loadClass("Plugin").newInstance().asInstanceOf[Plugin]
+            val plugin = classLoader
+              .loadClass("Plugin")
+              .newInstance()
+              .asInstanceOf[Plugin]
 
             // Migration
             val headVersion = plugin.versions.head

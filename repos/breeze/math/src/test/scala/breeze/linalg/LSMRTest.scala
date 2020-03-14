@@ -54,8 +54,11 @@ class LSMRTest extends FunSuite {
     val matrix = DenseMatrix.rand(100, 100, g)
     val b = DenseVector.rand(100, g)
     val bfgsSolved = lbfgsSolve(matrix, b, 2.0)
-    val lsmrSolved =
-      LSMR.solve(matrix, b, regularization = 2.0, tolerance = 1e-9)
+    val lsmrSolved = LSMR.solve(
+      matrix,
+      b,
+      regularization = 2.0,
+      tolerance = 1e-9)
 
     assert(norm(bfgsSolved - lsmrSolved) < 1e-2, s"$bfgsSolved $lsmrSolved")
   }

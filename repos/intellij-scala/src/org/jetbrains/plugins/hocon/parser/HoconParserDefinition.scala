@@ -28,21 +28,15 @@ class HoconParserDefinition extends ParserDefinition {
   def createElement(node: ASTNode): PsiElement =
     HoconPsiCreator.createElement(node)
 
-  def getStringLiteralElements: TokenSet =
-    HoconTokenSets.StringLiteral
+  def getStringLiteralElements: TokenSet = HoconTokenSets.StringLiteral
 
-  def getCommentTokens: TokenSet =
-    HoconTokenSets.Comment
+  def getCommentTokens: TokenSet = HoconTokenSets.Comment
 
-  def getWhitespaceTokens: TokenSet =
-    HoconTokenSets.Whitespace
+  def getWhitespaceTokens: TokenSet = HoconTokenSets.Whitespace
 
-  def getFileNodeType: IFileElementType =
-    HoconElementType.HoconFileElementType
+  def getFileNodeType: IFileElementType = HoconElementType.HoconFileElementType
 
-  def createParser(project: Project): PsiParser =
-    new HoconPsiParser
+  def createParser(project: Project): PsiParser = new HoconPsiParser
 
-  def createLexer(project: Project): Lexer =
-    new HoconLexer
+  def createLexer(project: Project): Lexer = new HoconLexer
 }

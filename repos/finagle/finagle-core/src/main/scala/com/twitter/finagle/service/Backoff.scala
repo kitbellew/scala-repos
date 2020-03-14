@@ -72,8 +72,8 @@ object Backoff {
     def next(attempt: Int): Stream[Duration] = {
       val shift = math.min(attempt, MaxBitShift)
       val maxBackoff = maximum.min(start * (1L << shift))
-      val random =
-        Duration.fromNanoseconds(rng.nextLong(maxBackoff.inNanoseconds))
+      val random = Duration.fromNanoseconds(
+        rng.nextLong(maxBackoff.inNanoseconds))
       random #:: next(attempt + 1)
     }
     start #:: next(1)

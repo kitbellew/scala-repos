@@ -436,12 +436,9 @@ class SessionCatalogSuite extends SparkFunSuite {
     val alias = "monster"
     val tableMetadata = catalog.getTable(TableIdentifier("tbl1", Some("db2")))
     val relation = SubqueryAlias("tbl1", CatalogRelation("db2", tableMetadata))
-    val relationWithAlias =
-      SubqueryAlias(
-        alias,
-        SubqueryAlias(
-          "tbl1",
-          CatalogRelation("db2", tableMetadata, Some(alias))))
+    val relationWithAlias = SubqueryAlias(
+      alias,
+      SubqueryAlias("tbl1", CatalogRelation("db2", tableMetadata, Some(alias))))
     assert(
       catalog.lookupRelation(
         TableIdentifier("tbl1", Some("db2")),
@@ -717,22 +714,26 @@ class SessionCatalogSuite extends SparkFunSuite {
     val catalog = new SessionCatalog(newBasicCatalog())
     val newLocation = newUriForDatabase()
     // Alter but keep spec the same
-    val oldPart1 =
-      catalog.getPartition(TableIdentifier("tbl2", Some("db2")), part1.spec)
-    val oldPart2 =
-      catalog.getPartition(TableIdentifier("tbl2", Some("db2")), part2.spec)
+    val oldPart1 = catalog.getPartition(
+      TableIdentifier("tbl2", Some("db2")),
+      part1.spec)
+    val oldPart2 = catalog.getPartition(
+      TableIdentifier("tbl2", Some("db2")),
+      part2.spec)
     catalog.alterPartitions(
       TableIdentifier("tbl2", Some("db2")),
       Seq(
-        oldPart1.copy(storage =
-          storageFormat.copy(locationUri = Some(newLocation))),
-        oldPart2.copy(storage =
-          storageFormat.copy(locationUri = Some(newLocation))))
+        oldPart1
+          .copy(storage = storageFormat.copy(locationUri = Some(newLocation))),
+        oldPart2
+          .copy(storage = storageFormat.copy(locationUri = Some(newLocation))))
     )
-    val newPart1 =
-      catalog.getPartition(TableIdentifier("tbl2", Some("db2")), part1.spec)
-    val newPart2 =
-      catalog.getPartition(TableIdentifier("tbl2", Some("db2")), part2.spec)
+    val newPart1 = catalog.getPartition(
+      TableIdentifier("tbl2", Some("db2")),
+      part1.spec)
+    val newPart2 = catalog.getPartition(
+      TableIdentifier("tbl2", Some("db2")),
+      part2.spec)
     assert(newPart1.storage.locationUri == Some(newLocation))
     assert(newPart2.storage.locationUri == Some(newLocation))
     assert(oldPart1.storage.locationUri != Some(newLocation))
@@ -874,8 +875,9 @@ class SessionCatalogSuite extends SparkFunSuite {
 
   test("get function") {
     val catalog = new SessionCatalog(newBasicCatalog())
-    val expected =
-      CatalogFunction(FunctionIdentifier("func1", Some("db2")), funcClass)
+    val expected = CatalogFunction(
+      FunctionIdentifier("func1", Some("db2")),
+      funcClass)
     assert(
       catalog.getFunction(FunctionIdentifier("func1", Some("db2"))) == expected)
     // Get function without explicitly specifying database

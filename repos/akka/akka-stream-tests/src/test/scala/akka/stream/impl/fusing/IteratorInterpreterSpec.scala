@@ -116,10 +116,9 @@ class IteratorInterpreterSpec extends AkkaSpec {
       }
       itr3.hasNext should be(false)
 
-      val itr4 =
-        new IteratorInterpreter[ByteString, ByteString](
-          Iterator.empty,
-          Seq(ByteStringBatcher(10))).iterator
+      val itr4 = new IteratorInterpreter[ByteString, ByteString](
+        Iterator.empty,
+        Seq(ByteStringBatcher(10))).iterator
 
       itr4.hasNext should be(false)
     }

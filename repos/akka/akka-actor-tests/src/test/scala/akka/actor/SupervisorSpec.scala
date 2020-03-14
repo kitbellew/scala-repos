@@ -57,8 +57,8 @@ object SupervisorSpec {
 
     var s: ActorRef = _
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 0)(List(classOf[Exception]))
+    override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries = 0)(
+      List(classOf[Exception]))
 
     def receive = {
       case Die ⇒ temp forward Die
@@ -87,12 +87,11 @@ object SupervisorSpec {
       extends MailboxType {
     override def create(
         owner: Option[ActorRef],
-        system: Option[ActorSystem]): MessageQueue =
-      throw failure
+        system: Option[ActorSystem]): MessageQueue = throw failure
   }
 
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
 akka.actor.serialize-messages = off
 error-mailbox {
   mailbox-type = "akka.actor.SupervisorSpec$Mailbox"
@@ -153,8 +152,8 @@ class SupervisorSpec
       Props(new Supervisor(
         AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           List(classOf[Exception])))))
-    val pingpong1, pingpong2, pingpong3 =
-      child(supervisor, Props(new PingPongActor(testActor)))
+    val pingpong1, pingpong2,
+        pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, supervisor)
   }
@@ -164,8 +163,8 @@ class SupervisorSpec
       Props(new Supervisor(
         OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           List(classOf[Exception])))))
-    val pingpong1, pingpong2, pingpong3 =
-      child(supervisor, Props(new PingPongActor(testActor)))
+    val pingpong1, pingpong2,
+        pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, supervisor)
   }
@@ -182,8 +181,8 @@ class SupervisorSpec
       Props(new Supervisor(
         AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
           Nil))))
-    val pingpong2, pingpong3 =
-      child(middleSupervisor, Props(new PingPongActor(testActor)))
+    val pingpong2,
+        pingpong3 = child(middleSupervisor, Props(new PingPongActor(testActor)))
 
     (pingpong1, pingpong2, pingpong3, topSupervisor)
   }
@@ -245,8 +244,8 @@ class SupervisorSpec
         }
       }
       val master = system.actorOf(Props(new Actor {
-        override val supervisorStrategy =
-          OneForOneStrategy(maxNrOfRetries = restarts)(List(classOf[Exception]))
+        override val supervisorStrategy = OneForOneStrategy(maxNrOfRetries =
+          restarts)(List(classOf[Exception]))
         val child = context.actorOf(Props(childInstance))
         def receive = { case msg ⇒ child forward msg }
       }))

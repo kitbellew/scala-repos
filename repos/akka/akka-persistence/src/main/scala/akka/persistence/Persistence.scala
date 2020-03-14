@@ -22,33 +22,30 @@ import scala.util.control.NonFatal
 final class PersistenceSettings(config: Config) {
 
   object view {
-    val autoUpdate: Boolean =
-      config.getBoolean("view.auto-update")
+    val autoUpdate: Boolean = config.getBoolean("view.auto-update")
 
-    val autoUpdateInterval: FiniteDuration =
-      config.getMillisDuration("view.auto-update-interval")
+    val autoUpdateInterval: FiniteDuration = config.getMillisDuration(
+      "view.auto-update-interval")
 
-    val autoUpdateReplayMax: Long =
-      posMax(config.getLong("view.auto-update-replay-max"))
+    val autoUpdateReplayMax: Long = posMax(
+      config.getLong("view.auto-update-replay-max"))
 
-    private def posMax(v: Long) =
-      if (v < 0) Long.MaxValue else v
+    private def posMax(v: Long) = if (v < 0) Long.MaxValue else v
   }
 
   object atLeastOnceDelivery {
 
-    val redeliverInterval: FiniteDuration =
-      config.getMillisDuration("at-least-once-delivery.redeliver-interval")
+    val redeliverInterval: FiniteDuration = config.getMillisDuration(
+      "at-least-once-delivery.redeliver-interval")
 
-    val redeliveryBurstLimit: Int =
-      config.getInt("at-least-once-delivery.redelivery-burst-limit")
+    val redeliveryBurstLimit: Int = config.getInt(
+      "at-least-once-delivery.redelivery-burst-limit")
 
-    val warnAfterNumberOfUnconfirmedAttempts: Int =
-      config.getInt(
-        "at-least-once-delivery.warn-after-number-of-unconfirmed-attempts")
+    val warnAfterNumberOfUnconfirmedAttempts: Int = config.getInt(
+      "at-least-once-delivery.warn-after-number-of-unconfirmed-attempts")
 
-    val maxUnconfirmedMessages: Int =
-      config.getInt("at-least-once-delivery.max-unconfirmed-messages")
+    val maxUnconfirmedMessages: Int = config.getInt(
+      "at-least-once-delivery.max-unconfirmed-messages")
   }
 
   /**

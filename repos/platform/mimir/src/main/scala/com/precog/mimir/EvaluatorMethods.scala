@@ -134,14 +134,16 @@ trait EvaluatorMethodsModule[M[+_]]
         if (derefs.isEmpty) trans.ConstLiteral(CEmptyArray, Leaf(SourceLeft))
         else derefs reduceLeft { trans.InnerArrayConcat(_, _) }
 
-      val wrappedIdentitySpec =
-        trans.WrapObject(newIdentitySpec, paths.Key.name)
+      val wrappedIdentitySpec = trans.WrapObject(
+        newIdentitySpec,
+        paths.Key.name)
 
       val leftValueSpec = DerefObjectStatic(Leaf(SourceLeft), paths.Value)
       val rightValueSpec = DerefObjectStatic(Leaf(SourceRight), paths.Value)
 
-      val wrappedValueSpec =
-        trans.WrapObject(spec(leftValueSpec, rightValueSpec), paths.Value.name)
+      val wrappedValueSpec = trans.WrapObject(
+        spec(leftValueSpec, rightValueSpec),
+        paths.Value.name)
 
       val valueKeySpecs = valueKeys map { key =>
         trans.WrapObject(
@@ -149,8 +151,9 @@ trait EvaluatorMethodsModule[M[+_]]
           "sort-" + key)
       }
 
-      val keyValueSpec =
-        InnerObjectConcat(wrappedValueSpec, wrappedIdentitySpec)
+      val keyValueSpec = InnerObjectConcat(
+        wrappedValueSpec,
+        wrappedIdentitySpec)
 
       if (valueKeySpecs.isEmpty) { keyValueSpec }
       else {
@@ -165,11 +168,13 @@ trait EvaluatorMethodsModule[M[+_]]
       val leftIdentitySpec = DerefObjectStatic(Leaf(SourceLeft), paths.Key)
       val rightIdentitySpec = DerefObjectStatic(Leaf(SourceRight), paths.Key)
 
-      val newIdentitySpec =
-        InnerArrayConcat(leftIdentitySpec, rightIdentitySpec)
+      val newIdentitySpec = InnerArrayConcat(
+        leftIdentitySpec,
+        rightIdentitySpec)
 
-      val wrappedIdentitySpec =
-        trans.WrapObject(newIdentitySpec, paths.Key.name)
+      val wrappedIdentitySpec = trans.WrapObject(
+        newIdentitySpec,
+        paths.Key.name)
 
       val leftValueSpec = DerefObjectStatic(Leaf(SourceLeft), paths.Value)
       val rightValueSpec = DerefObjectStatic(Leaf(SourceRight), paths.Value)

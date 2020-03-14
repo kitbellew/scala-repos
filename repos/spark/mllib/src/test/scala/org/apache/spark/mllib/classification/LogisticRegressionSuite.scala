@@ -208,8 +208,12 @@ class LogisticRegressionSuite
      */
     binaryDataset = {
       val nPoints = 10000
-      val coefficients =
-        Array(-0.57997, 0.912083, -0.371077, -0.819866, 2.688191)
+      val coefficients = Array(
+        -0.57997,
+        0.912083,
+        -0.371077,
+        -0.819866,
+        2.688191)
       val xMean = Array(5.843, 3.057, 3.758, 1.199)
       val xVariance = Array(0.6856, 0.1899, 3.116, 0.581)
 
@@ -243,8 +247,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
@@ -261,8 +268,11 @@ class LogisticRegressionSuite
     assert(model.weights(0) ~== B relTol 0.02)
     assert(model.intercept ~== A relTol 0.02)
 
-    val validationData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 17)
+    val validationData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      17)
     val validationRDD = sc.parallelize(validationData, 2)
     // Test prediction on RDD.
     validatePrediction(
@@ -286,8 +296,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
@@ -295,8 +308,7 @@ class LogisticRegressionSuite
     // Override the updater
     class LogisticRegressionWithLBFGSCustomUpdater
         extends LogisticRegressionWithLBFGS {
-      override val optimizer =
-        new LBFGS(new LogisticGradient, myUpdater)
+      override val optimizer = new LBFGS(new LogisticGradient, myUpdater)
     }
 
     val lr = new LogisticRegressionWithLBFGSCustomUpdater().setIntercept(true)
@@ -307,8 +319,11 @@ class LogisticRegressionSuite
     assert(model.weights(0) ~== B relTol 0.02)
     assert(model.intercept ~== A relTol 0.02)
 
-    val validationData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 17)
+    val validationData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      17)
     val validationRDD = sc.parallelize(validationData, 2)
     // Test prediction on RDD.
     validatePrediction(
@@ -326,8 +341,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val initialB = -1.0
     val initialWeights = Vectors.dense(initialB)
@@ -348,8 +366,11 @@ class LogisticRegressionSuite
     assert(model.weights(0) ~== B relTol 0.02)
     assert(model.intercept ~== A relTol 0.02)
 
-    val validationData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 17)
+    val validationData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      17)
     val validationRDD = sc.parallelize(validationData, 2)
     // Test prediction on RDD.
     validatePrediction(
@@ -368,8 +389,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val initialB = -1.0
     val initialWeights = Vectors.dense(initialB)
@@ -388,8 +412,11 @@ class LogisticRegressionSuite
     assert(model.weights(0) ~== -0.14 relTol 0.02)
     assert(model.intercept ~== 0.25 relTol 0.02)
 
-    val validationData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 17)
+    val validationData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      17)
     val validationRDD = sc.parallelize(validationData, 2)
     // Test prediction on RDD.
     validatePrediction(
@@ -409,8 +436,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val initialB = -1.0
     val initialWeights = Vectors.dense(initialB)
@@ -427,8 +457,11 @@ class LogisticRegressionSuite
     assert(model.weights(0) ~== B relTol 0.02)
     assert(model.intercept ~== A relTol 0.02)
 
-    val validationData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 17)
+    val validationData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      17)
     val validationRDD = sc.parallelize(validationData, 2)
     // Test prediction on RDD.
     validatePrediction(
@@ -458,8 +491,11 @@ class LogisticRegressionSuite
     val A = 2.0
     val B = -1.5
 
-    val testData =
-      LogisticRegressionSuite.generateLogisticInput(A, B, nPoints, 42)
+    val testData = LogisticRegressionSuite.generateLogisticInput(
+      A,
+      B,
+      nPoints,
+      42)
 
     val initialWeights = Vectors.dense(0.0)
 
@@ -534,8 +570,9 @@ class LogisticRegressionSuite
     val testRDD = sc.parallelize(testData, 2)
     testRDD.cache()
 
-    val lr =
-      new LogisticRegressionWithLBFGS().setIntercept(true).setNumClasses(3)
+    val lr = new LogisticRegressionWithLBFGS()
+      .setIntercept(true)
+      .setNumClasses(3)
     lr.optimizer.setConvergenceTol(1e-15).setNumIterations(200)
 
     val model = lr.run(testRDD)
@@ -595,8 +632,8 @@ class LogisticRegressionSuite
 
     assert(model.weights ~== weightsR relTol 0.05)
 
-    val validationData =
-      LogisticRegressionSuite.generateMultinomialLogisticInput(
+    val validationData = LogisticRegressionSuite
+      .generateMultinomialLogisticInput(
         weights,
         xMean,
         xVariance,
@@ -690,8 +727,11 @@ class LogisticRegressionSuite
        data.V5     -0.7996864
      */
     val interceptR = 2.8366423
-    val coefficientsR =
-      Vectors.dense(-0.5895848, 0.8931147, -0.3925051, -0.7996864)
+    val coefficientsR = Vectors.dense(
+      -0.5895848,
+      0.8931147,
+      -0.3925051,
+      -0.7996864)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.weights ~= coefficientsR relTol 1e-3)
@@ -732,8 +772,11 @@ class LogisticRegressionSuite
        data.V5     -0.7407946
      */
     val interceptR = 0.0
-    val coefficientsR =
-      Vectors.dense(-0.3534996, 1.2964482, -0.3571741, -0.7407946)
+    val coefficientsR = Vectors.dense(
+      -0.3534996,
+      1.2964482,
+      -0.3571741,
+      -0.7407946)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.weights ~= coefficientsR relTol 1e-2)
@@ -902,8 +945,11 @@ class LogisticRegressionSuite
        data.V5     -0.10062872
      */
     val interceptR1 = 0.15021751
-    val coefficientsR1 =
-      Vectors.dense(-0.07251837, 0.10724191, -0.04865309, -0.10062872)
+    val coefficientsR1 = Vectors.dense(
+      -0.07251837,
+      0.10724191,
+      -0.04865309,
+      -0.10062872)
 
     assert(model1.intercept ~== interceptR1 relTol 1e-3)
     assert(model1.weights ~= coefficientsR1 relTol 1e-3)
@@ -928,8 +974,11 @@ class LogisticRegressionSuite
        data.V5     -0.06266838
      */
     val interceptR2 = 0.48657516
-    val coefficientsR2 =
-      Vectors.dense(-0.05155371, 0.02301057, -0.11482896, -0.06266838)
+    val coefficientsR2 = Vectors.dense(
+      -0.05155371,
+      0.02301057,
+      -0.11482896,
+      -0.06266838)
 
     assert(model2.intercept ~== interceptR2 relTol 1e-3)
     assert(model2.weights ~= coefficientsR2 relTol 1e-3)
@@ -968,8 +1017,11 @@ class LogisticRegressionSuite
        data.V5     -0.09799775
      */
     val interceptR1 = 0.0
-    val coefficientsR1 =
-      Vectors.dense(-0.06099165, 0.12857058, -0.04708770, -0.09799775)
+    val coefficientsR1 = Vectors.dense(
+      -0.06099165,
+      0.12857058,
+      -0.04708770,
+      -0.09799775)
 
     assert(model1.intercept ~== interceptR1 absTol 1e-3)
     assert(model1.weights ~= coefficientsR1 relTol 1e-2)
@@ -994,8 +1046,11 @@ class LogisticRegressionSuite
        data.V5     -0.053314311
      */
     val interceptR2 = 0.0
-    val coefficientsR2 =
-      Vectors.dense(-0.005679651, 0.048967094, -0.093714016, -0.053314311)
+    val coefficientsR2 = Vectors.dense(
+      -0.005679651,
+      0.048967094,
+      -0.093714016,
+      -0.053314311)
 
     assert(model2.intercept ~== interceptR2 absTol 1e-3)
     assert(model2.weights ~= coefficientsR2 relTol 1e-2)

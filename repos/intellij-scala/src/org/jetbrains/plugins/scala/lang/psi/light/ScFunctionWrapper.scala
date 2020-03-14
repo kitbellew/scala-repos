@@ -78,8 +78,10 @@ with LightScalaMethod {
       case Some(i) if returnType == null =>
         val param = constr.parameters(i - 1)
         val scalaType = param.getType(TypingContext.empty).getOrAny
-        returnType =
-          ScType.toPsi(scalaType, constr.getProject, constr.getResolveScope)
+        returnType = ScType.toPsi(
+          scalaType,
+          constr.getProject,
+          constr.getResolveScope)
       case _ =>
     }
     returnType
@@ -187,13 +189,12 @@ with LightScalaMethod {
         if (typeParameters.nonEmpty) {
           val methodTypeParameters = getTypeParameters
           if (typeParameters.length == methodTypeParameters.length) {
-            val tvs =
-              typeParameters.zip(methodTypeParameters).map {
-                case (param: ScTypeParam, parameter: PsiTypeParameter) =>
-                  (
-                    (param.name, ScalaPsiUtil.getPsiElementId(param)),
-                    ScDesignatorType(parameter))
-              }
+            val tvs = typeParameters.zip(methodTypeParameters).map {
+              case (param: ScTypeParam, parameter: PsiTypeParameter) =>
+                (
+                  (param.name, ScalaPsiUtil.getPsiElementId(param)),
+                  ScDesignatorType(parameter))
+            }
             new ScSubstitutor(tvs.toMap, Map.empty, None)
           } else ScSubstitutor.empty
         } else ScSubstitutor.empty
@@ -297,8 +298,8 @@ object ScFunctionWrapper {
       case _ =>
     }
 
-    val params =
-      function.effectiveParameterClauses.flatMap(_.effectiveParameters)
+    val params = function.effectiveParameterClauses.flatMap(
+      _.effectiveParameters)
 
     val defaultParam = forDefault match {
       case Some(i) => Some(params(i - 1))
@@ -349,8 +350,9 @@ object ScFunctionWrapper {
           case param =>
             val builder = new StringBuilder
             val varargs: Boolean = param.isRepeatedParameter && isJavaVarargs
-            val paramAnnotations =
-              JavaConversionUtil.annotations(param).mkString(" ")
+            val paramAnnotations = JavaConversionUtil
+              .annotations(param)
+              .mkString(" ")
             if (!paramAnnotations.isEmpty)
               builder.append(paramAnnotations).append(" ")
             val tt =

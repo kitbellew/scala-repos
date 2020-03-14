@@ -118,13 +118,14 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
 
     // The number of containers to allocate, divided into two groups, one with preferred locality,
     // and the other without locality preference.
-    val requiredLocalityFreeContainerNum =
-      math.max(0, numContainer - updatedLocalityAwareContainerNum)
+    val requiredLocalityFreeContainerNum = math.max(
+      0,
+      numContainer - updatedLocalityAwareContainerNum)
     val requiredLocalityAwareContainerNum =
       numContainer - requiredLocalityFreeContainerNum
 
-    val containerLocalityPreferences =
-      ArrayBuffer[ContainerLocalityPreferences]()
+    val containerLocalityPreferences = ArrayBuffer[
+      ContainerLocalityPreferences]()
     if (requiredLocalityFreeContainerNum > 0) {
       for (i <- 0 until requiredLocalityFreeContainerNum) {
         containerLocalityPreferences += ContainerLocalityPreferences(

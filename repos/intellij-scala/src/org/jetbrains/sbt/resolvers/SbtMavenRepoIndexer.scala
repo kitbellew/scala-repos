@@ -177,8 +177,9 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       val maxDoc = reader.maxDoc()
       1.to(maxDoc) foreach { i =>
         progressIndicator foreach { _.checkCanceled() }
-        val info =
-          IndexUtils.constructArtifactInfo(reader.document(i - 1), context)
+        val info = IndexUtils.constructArtifactInfo(
+          reader.document(i - 1),
+          context)
         if (info != null) f(info)
         progressIndicator foreach (_.setFraction(
           0.5 + 0.5 * (i.toFloat / maxDoc)))

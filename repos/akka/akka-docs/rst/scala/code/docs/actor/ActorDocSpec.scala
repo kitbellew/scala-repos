@@ -275,8 +275,9 @@ class ActorDocSpec extends AkkaSpec("""
       }
       //#import-context
 
-      val first =
-        system.actorOf(Props(classOf[FirstActor], this), name = "first")
+      val first = system.actorOf(
+        Props(classOf[FirstActor], this),
+        name = "first")
       system.stop(first)
     }
   }
@@ -558,8 +559,10 @@ class ActorDocSpec extends AkkaSpec("""
     import scala.concurrent.Await
 
     try {
-      val stopped: Future[Boolean] =
-        gracefulStop(actorRef, 5 seconds, Manager.Shutdown)
+      val stopped: Future[Boolean] = gracefulStop(
+        actorRef,
+        5 seconds,
+        Manager.Shutdown)
       Await.result(stopped, 6 seconds)
       // the actor has been stopped
     } catch {
@@ -579,12 +582,11 @@ class ActorDocSpec extends AkkaSpec("""
 
     implicit val timeout = Timeout(5 seconds) // needed for `?` below
 
-    val f: Future[Result] =
-      for {
-        x <- ask(actorA, Request).mapTo[Int] // call pattern directly
-        s <- (actorB ask Request).mapTo[String] // call by implicit conversion
-        d <- (actorC ? Request).mapTo[Double] // call by symbolic name
-      } yield Result(x, s, d)
+    val f: Future[Result] = for {
+      x <- ask(actorA, Request).mapTo[Int] // call pattern directly
+      s <- (actorB ask Request).mapTo[String] // call by implicit conversion
+      d <- (actorC ? Request).mapTo[Double] // call by symbolic name
+    } yield Result(x, s, d)
 
     f pipeTo actorD // .. or ..
     pipe(f) to actorD

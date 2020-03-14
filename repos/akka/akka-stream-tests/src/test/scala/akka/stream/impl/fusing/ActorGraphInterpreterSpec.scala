@@ -84,8 +84,9 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
         override def toString = "IdentityBidi"
       }
 
-      val identity =
-        BidiFlow.fromGraph(identityBidi).join(Flow[Int].map { x ⇒ x })
+      val identity = BidiFlow
+        .fromGraph(identityBidi)
+        .join(Flow[Int].map { x ⇒ x })
 
       Await.result(
         Source(1 to 10).via(identity).grouped(100).runWith(Sink.head),
@@ -316,8 +317,8 @@ class ActorGraphInterpreterSpec extends AkkaSpec {
 
       // Fuzzing needs to be off, so that the failure can propagate to the output boundary before the ExposedPublisher
       // message.
-      val noFuzzMat =
-        ActorMaterializer(ActorMaterializerSettings(system).withFuzzing(false))
+      val noFuzzMat = ActorMaterializer(
+        ActorMaterializerSettings(system).withFuzzing(false))
 
       val te = TE("Test failure in preStart")
 

@@ -150,17 +150,16 @@ class RemoteRoundRobinSpec
         // initial nrOfInstances 1 + initial resize => 2
         expectMsgType[Routees].routees.size should ===(2)
 
-        val repliesFrom: Set[ActorRef] =
-          (for (n ← 3 to 9) yield {
-            // each message trigger a resize, incrementing number of routees with 1
-            actor ! "hit"
-            Await
-              .result(actor ? GetRoutees, timeout.duration)
-              .asInstanceOf[Routees]
-              .routees
-              .size should ===(n)
-            expectMsgType[ActorRef]
-          }).toSet
+        val repliesFrom: Set[ActorRef] = (for (n ← 3 to 9) yield {
+          // each message trigger a resize, incrementing number of routees with 1
+          actor ! "hit"
+          Await
+            .result(actor ? GetRoutees, timeout.duration)
+            .asInstanceOf[Routees]
+            .routees
+            .size should ===(n)
+          expectMsgType[ActorRef]
+        }).toSet
 
         enterBarrier("broadcast-end")
         actor ! Broadcast(PoisonPill)

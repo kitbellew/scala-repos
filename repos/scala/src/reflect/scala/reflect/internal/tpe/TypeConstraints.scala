@@ -62,8 +62,9 @@ private[internal] trait TypeConstraints {
     *  in every TypeConstraint, I lifted them out.
     */
   private lazy val numericLoBound = IntTpe
-  private lazy val numericHiBound =
-    intersectionType(List(ByteTpe, CharTpe), ScalaPackageClass)
+  private lazy val numericHiBound = intersectionType(
+    List(ByteTpe, CharTpe),
+    ScalaPackageClass)
 
   /** A class expressing upper and lower bounds constraints of type variables,
     * as well as their instantiations.

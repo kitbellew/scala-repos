@@ -27,13 +27,11 @@ trait Profunctor[=>:[_, _]] { self =>
         mapsnd(mapfst(ma)(g))(f)
     }
 
-  def covariantInstance[C]: Functor[C =>: ?] =
-    new SndCovariant[C] {}
+  def covariantInstance[C]: Functor[C =>: ?] = new SndCovariant[C] {}
 
   def contravariantInstance[C]: Contravariant[? =>: C] =
     new Contravariant[? =>: C] {
-      def contramap[A, B](fa: A =>: C)(f: B => A): (B =>: C) =
-        mapfst(fa)(f)
+      def contramap[A, B](fa: A =>: C)(f: B => A): (B =>: C) = mapfst(fa)(f)
     }
 
   ////

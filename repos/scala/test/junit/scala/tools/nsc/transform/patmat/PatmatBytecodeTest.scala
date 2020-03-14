@@ -31,8 +31,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def t6956(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  private[this] final val ONE = 1
         |
         |  def s1(i: Byte): Int = i match {
@@ -94,8 +93,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def optNoPrimitiveTypetest(): Unit = {
-    val code =
-      """case class Foo(x: Int, y: String)
+    val code = """case class Foo(x: Int, y: String)
         |class C {
         |  def a = Foo(1, "a") match {
         |    case Foo(_: Int, y) => y
@@ -111,8 +109,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def optNoNullCheck(): Unit = {
-    val code =
-      """case class Foo(x: Any)
+    val code = """case class Foo(x: Any)
         |class C {
         |  def a = (Foo(1): Any) match {
         |    case Foo(_: String) =>
@@ -128,8 +125,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def optNoLoacalForUnderscore(): Unit = {
-    val code =
-      """case class Foo(x: Any, y: String)
+    val code = """case class Foo(x: Any, y: String)
         |class C {
         |  def a = (Foo(1, "a"): @unchecked) match {
         |    case Foo(_: String, y) => y
@@ -168,8 +164,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def t6941(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def a(xs: List[Int]) = xs match {
         |    case x :: _ => x
         |  }
@@ -209,8 +204,7 @@ class PatmatBytecodeTest extends ClearAfterClass {
 
   @Test
   def valPatterns(): Unit = {
-    val code =
-      """case class C(a: Any, b: Int) {
+    val code = """case class C(a: Any, b: Int) {
         |  def tplCall = ("hi", 3)
         |  @inline final def tplInline = (true, 'z')
         |

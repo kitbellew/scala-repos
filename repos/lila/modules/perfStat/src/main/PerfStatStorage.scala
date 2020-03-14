@@ -41,6 +41,5 @@ final class PerfStatStorage(coll: Coll) {
   def update(perfStat: PerfStat): Funit =
     coll.update(BSONDocument("_id" -> perfStat.id), perfStat).void
 
-  def insert(perfStat: PerfStat): Funit =
-    coll.insert(perfStat).void
+  def insert(perfStat: PerfStat): Funit = coll.insert(perfStat).void
 }

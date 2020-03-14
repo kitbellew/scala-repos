@@ -77,8 +77,8 @@ class Analyzer(
       case None =>
         log.warning("scala-library.jar not present, enabling Odersky mode")
     }
-    settings.classpath.value =
-      config.compileClasspath.mkString(JFile.pathSeparator)
+    settings.classpath.value = config.compileClasspath.mkString(
+      JFile.pathSeparator)
     settings.processArguments(config.compilerArgs, processAll = false)
     presCompLog.debug("Presentation Compiler settings:\n" + settings)
 
@@ -298,8 +298,9 @@ class Analyzer(
   def handleReloadFiles(files: List[SourceFileInfo]): RpcResponse = {
     val (existing, missingFiles) = files.partition(FileUtils.exists)
     if (missingFiles.nonEmpty) {
-      val missingFilePaths =
-        missingFiles.map { f => "\"" + f.file + "\"" }.mkString(",")
+      val missingFilePaths = missingFiles
+        .map { f => "\"" + f.file + "\"" }
+        .mkString(",")
       EnsimeServerError(s"file(s): $missingFilePaths do not exist")
     } else {
       val (javas, scalas) = existing.partition(_.file.getName.endsWith(".java"))

@@ -291,8 +291,9 @@ private[kafka] class ZookeeperConsumerConnector(
     if (topicCountMap == null)
       throw new RuntimeException("topicCountMap is null")
 
-    val topicCount =
-      TopicCount.constructTopicCount(consumerIdString, topicCountMap)
+    val topicCount = TopicCount.constructTopicCount(
+      consumerIdString,
+      topicCountMap)
 
     val topicThreadIds = topicCount.getConsumerThreadIdsPerTopic
 
@@ -385,16 +386,15 @@ private[kafka] class ZookeeperConsumerConnector(
 
   def commitOffsets(isAutoCommit: Boolean) {
 
-    val offsetsToCommit =
-      immutable.Map(topicRegistry.flatMap {
-        case (topic, partitionTopicInfos) =>
-          partitionTopicInfos.map {
-            case (partition, info) =>
-              TopicAndPartition(
-                info.topic,
-                info.partitionId) -> OffsetAndMetadata(info.getConsumeOffset())
-          }
-      }.toSeq: _*)
+    val offsetsToCommit = immutable.Map(topicRegistry.flatMap {
+      case (topic, partitionTopicInfos) =>
+        partitionTopicInfos.map {
+          case (partition, info) =>
+            TopicAndPartition(
+              info.topic,
+              info.partitionId) -> OffsetAndMetadata(info.getConsumeOffset())
+        }
+    }.toSeq: _*)
 
     commitOffsets(offsetsToCommit, isAutoCommit)
 
@@ -527,8 +527,8 @@ private[kafka] class ZookeeperConsumerConnector(
           ensureOffsetManagerConnected()
           try {
             offsetsChannel.send(offsetFetchRequest)
-            val offsetFetchResponse =
-              OffsetFetchResponse.readFrom(offsetsChannel.receive().payload())
+            val offsetFetchResponse = OffsetFetchResponse.readFrom(
+              offsetsChannel.receive().payload())
             trace("Offset fetch response: %s.".format(offsetFetchResponse))
 
             val (leaderChanged, loadInProgress) =
@@ -666,8 +666,8 @@ private[kafka] class ZookeeperConsumerConnector(
         List[KafkaStream[_, _]]])
       extends IZkChildListener {
 
-    private val partitionAssignor =
-      PartitionAssignor.createInstance(config.partitionAssignmentStrategy)
+    private val partitionAssignor = PartitionAssignor.createInstance(
+      config.partitionAssignmentStrategy)
 
     private var isWatcherTriggered = false
     private val lock = new ReentrantLock
@@ -845,10 +845,10 @@ private[kafka] class ZookeeperConsumerConnector(
           consumerIdString,
           config.excludeInternalTopics,
           zkUtils)
-        val globalPartitionAssignment =
-          partitionAssignor.assign(assignmentContext)
-        val partitionAssignment =
-          globalPartitionAssignment.get(assignmentContext.consumerId)
+        val globalPartitionAssignment = partitionAssignor.assign(
+          assignmentContext)
+        val partitionAssignment = globalPartitionAssignment.get(
+          assignmentContext.consumerId)
         val currentTopicRegistry =
           new Pool[String, Pool[Int, PartitionTopicInfo]](
             valueFactory = Some((topic: String) =>
@@ -910,18 +910,18 @@ private[kafka] class ZookeeperConsumerConnector(
                 }
               val partitionAssigmentMapForCallback =
                 partitionAssginmentGroupByTopic.map({
-                  case (topic, partitionOwnerShips) =>
-                    val partitionOwnershipForTopicScalaMap =
-                      partitionOwnerShips.map({
-                        case (topicAndPartition, consumerThreadId) =>
-                          topicAndPartition.partition -> consumerThreadId
-                      })
-                    topic -> mapAsJavaMap(
-                      collection.mutable.Map(
-                        partitionOwnershipForTopicScalaMap.toSeq: _*))
-                      .asInstanceOf[
-                        java.util.Map[java.lang.Integer, ConsumerThreadId]]
-                })
+                    case (topic, partitionOwnerShips) =>
+                      val partitionOwnershipForTopicScalaMap =
+                        partitionOwnerShips.map({
+                          case (topicAndPartition, consumerThreadId) =>
+                            topicAndPartition.partition -> consumerThreadId
+                        })
+                      topic -> mapAsJavaMap(
+                        collection.mutable.Map(
+                          partitionOwnershipForTopicScalaMap.toSeq: _*))
+                        .asInstanceOf[
+                          java.util.Map[java.lang.Integer, ConsumerThreadId]]
+                  })
               consumerRebalanceListener.beforeStartingFetchers(
                 consumerIdString,
                 mapAsJavaMap(
@@ -1024,8 +1024,10 @@ private[kafka] class ZookeeperConsumerConnector(
           val topic = partitionOwner._1.topic
           val partition = partitionOwner._1.partition
           val consumerThreadId = partitionOwner._2
-          val partitionOwnerPath =
-            zkUtils.getConsumerPartitionOwnerPath(group, topic, partition)
+          val partitionOwnerPath = zkUtils.getConsumerPartitionOwnerPath(
+            group,
+            topic,
+            partition)
           try {
             zkUtils.createEphemeralPathExpectConflict(
               partitionOwnerPath,
@@ -1043,9 +1045,8 @@ private[kafka] class ZookeeperConsumerConnector(
             case e2: Throwable => throw e2
           }
       }
-      val hasPartitionOwnershipFailed =
-        partitionOwnershipSuccessful.foldLeft(0)((sum, decision) =>
-          sum + (if (decision) 0 else 1))
+      val hasPartitionOwnershipFailed = partitionOwnershipSuccessful.foldLeft(
+        0)((sum, decision) => sum + (if (decision) 0 else 1))
       /* even if one of the partition ownership attempt has failed, return false */
       if (hasPartitionOwnershipFailed > 0) {
         // remove all paths that we have owned in ZK
@@ -1215,11 +1216,10 @@ private[kafka] class ZookeeperConsumerConnector(
       .toList
 
     // bootstrap with existing topics
-    private var wildcardTopics =
-      zkUtils
-        .getChildrenParentMayNotExist(BrokerTopicsPath)
-        .filter(topic =>
-          topicFilter.isTopicAllowed(topic, config.excludeInternalTopics))
+    private var wildcardTopics = zkUtils
+      .getChildrenParentMayNotExist(BrokerTopicsPath)
+      .filter(topic =>
+        topicFilter.isTopicAllowed(topic, config.excludeInternalTopics))
 
     private val wildcardTopicCount = TopicCount.constructTopicCount(
       consumerIdString,
@@ -1268,7 +1268,6 @@ private[kafka] class ZookeeperConsumerConnector(
         reinitializeConsumer(wildcardTopicCount, wildcardQueuesAndStreams)
     }
 
-    def streams: Seq[KafkaStream[K, V]] =
-      wildcardQueuesAndStreams.map(_._2)
+    def streams: Seq[KafkaStream[K, V]] = wildcardQueuesAndStreams.map(_._2)
   }
 }

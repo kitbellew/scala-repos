@@ -21,8 +21,7 @@ class RequestBuilderTest extends FunSuite {
     "k3" -> "v3"
   )
 
-  val MULTIPART0 =
-    """--Boundary
+  val MULTIPART0 = """--Boundary
 Content-Disposition: form-data; name="k1"
 Content-Type: text/plain; charset=UTF-8
 

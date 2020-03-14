@@ -173,10 +173,14 @@ class SimpleFetchTest {
     */
   @Test
   def testReadFromLog() {
-    val initialTopicCount =
-      BrokerTopicStats.getBrokerTopicStats(topic).totalFetchRequestRate.count();
-    val initialAllTopicsCount =
-      BrokerTopicStats.getBrokerAllTopicsStats().totalFetchRequestRate.count();
+    val initialTopicCount = BrokerTopicStats
+      .getBrokerTopicStats(topic)
+      .totalFetchRequestRate
+      .count();
+    val initialAllTopicsCount = BrokerTopicStats
+      .getBrokerAllTopicsStats()
+      .totalFetchRequestRate
+      .count();
 
     assertEquals(
       "Reading committed data should return messages only up to high watermark",

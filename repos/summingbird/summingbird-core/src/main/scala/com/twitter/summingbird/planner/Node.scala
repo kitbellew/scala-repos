@@ -102,10 +102,12 @@ case class Dag[P <: Platform[P]](
     nodes: List[Node[P]],
     nodeToName: Map[Node[P], String] = Map[Node[P], String](),
     nameToNode: Map[String, Node[P]] = Map[String, Node[P]](),
-    dependenciesOfM: Map[Node[P], List[Node[P]]] =
-      Map[Node[P], List[Node[P]]](),
-    dependantsOfM: Map[Node[P], List[Node[P]]] =
-      Map[Node[P], List[Node[P]]]()) {
+    dependenciesOfM: Map[Node[P], List[Node[P]]] = Map[
+      Node[P],
+      List[Node[P]]](),
+    dependantsOfM: Map[Node[P], List[Node[P]]] = Map[
+      Node[P],
+      List[Node[P]]]()) {
 
   lazy val producerDependants = Dependants(tail)
 
@@ -244,8 +246,9 @@ object Dag {
         usedNames: Set[String]): (Map[Node[P], String], Set[String]) = {
       dag.dependenciesOf(dep).foldLeft((outerNodeToName, usedNames)) {
         case ((nodeToName, taken), n) =>
-          val name =
-            tryGetName(nodeToName(dep) + "-" + n.shortName(sanitizeName), taken)
+          val name = tryGetName(
+            nodeToName(dep) + "-" + n.shortName(sanitizeName),
+            taken)
           val useName = nodeToName.get(n) match {
             case None => name
             case Some(otherName) =>

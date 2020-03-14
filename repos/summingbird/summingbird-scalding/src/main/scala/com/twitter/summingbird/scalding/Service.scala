@@ -93,12 +93,11 @@ private[scalding] object InternalService {
      * 1) There is only one dependant path from join to store.
      * 2) After the join, there are only flatMapValues (later we can handle merges as well)
      */
-    val summerToStore =
-      getSummer[K, V](dag, store)
-        .getOrElse(sys.error("Could not find the Summer for store."))
+    val summerToStore = getSummer[K, V](dag, store)
+      .getOrElse(sys.error("Could not find the Summer for store."))
 
-    val depsOfSummer: List[Producer[Scalding, Any]] =
-      Producer.transitiveDependenciesOf(summerToStore)
+    val depsOfSummer: List[Producer[Scalding, Any]] = Producer
+      .transitiveDependenciesOf(summerToStore)
 
     def recurse(p: Producer[Scalding, Any]): Boolean = {
       p match {
@@ -267,8 +266,9 @@ private[scalding] object InternalService {
           /*
            * This is a lookup, and there is an existing value
            */
-          val currentU =
-            Some(sum(optu, u)) // isn't u already a sum and optu prev value?
+          val currentU = Some(
+            sum(optu, u)
+          ) // isn't u already a sum and optu prev value?
           val joinResult = Some((time, (v, currentU)))
           val sumResult = Semigroup
             .sumOption(valueExpansion((v, currentU)))

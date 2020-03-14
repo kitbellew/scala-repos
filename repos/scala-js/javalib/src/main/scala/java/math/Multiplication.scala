@@ -90,8 +90,11 @@ private[math] object Multiplication {
     } else {
       val resLength = aNumberLength + 1
       val resDigits = new Array[Int](resLength)
-      resDigits(aNumberLength) =
-        multiplyByInt(resDigits, aDigits, aNumberLength, factor)
+      resDigits(aNumberLength) = multiplyByInt(
+        resDigits,
+        aDigits,
+        aNumberLength,
+        factor)
       val result = new BigInteger(resSign, resLength, resDigits)
       result.cutOffLeadingZeroes()
       result
@@ -191,8 +194,9 @@ private[math] object Multiplication {
 
       var upper = karatsuba(upperOp1, upperOp2)
       val lower = karatsuba(lowerOp1, lowerOp2)
-      var middle =
-        karatsuba(upperOp1.subtract(lowerOp1), lowerOp2.subtract(upperOp2))
+      var middle = karatsuba(
+        upperOp1.subtract(lowerOp1),
+        lowerOp2.subtract(upperOp2))
       middle = middle.add(upper).add(lower)
       middle = middle.shiftLeft(ndiv2)
       upper = upper.shiftLeft(ndiv2 << 1)
@@ -309,8 +313,7 @@ private[math] object Multiplication {
     val aLen = a.numberLength
     val bLen = b.numberLength
     val resLength = aLen + bLen
-    val resSign =
-      if (a.sign != b.sign) -1 else 1
+    val resSign = if (a.sign != b.sign) -1 else 1
 
     if (resLength == 2) {
       val v = unsignedMultAddAdd(a.digits(0), b.digits(0), 0, 0)
@@ -334,8 +337,7 @@ private[math] object Multiplication {
     @tailrec
     def loop(exp: Int, res: BigInteger, acc: BigInteger): BigInteger = {
       if (exp > 1) {
-        val res2 =
-          if ((exp & 1) != 0) res.multiply(acc) else res
+        val res2 = if ((exp & 1) != 0) res.multiply(acc) else res
         val acc2 = {
           if (acc.numberLength == 1) { acc.multiply(acc) }
           else {

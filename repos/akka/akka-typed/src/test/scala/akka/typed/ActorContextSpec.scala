@@ -208,13 +208,12 @@ class ActorContextSpec
         StepWise.Steps[Event, ActorRef[Command]]) ⇒ StepWise.Steps[Event, _])
         : Future[TypedSpec.Status] =
       runTest(s"$suite-$name")(StepWise[Event] { (ctx, startWith) ⇒
-        val steps =
-          startWith
-            .withKeepTraces(true)(ctx.spawn(Props(behavior(ctx)), "subject"))
-            .expectMessage(500.millis) { (msg, ref) ⇒
-              msg should ===(GotSignal(PreStart))
-              ref
-            }
+        val steps = startWith
+          .withKeepTraces(true)(ctx.spawn(Props(behavior(ctx)), "subject"))
+          .expectMessage(500.millis) { (msg, ref) ⇒
+            msg should ===(GotSignal(PreStart))
+            ref
+          }
         proc(ctx, steps)
       })
 
@@ -232,18 +231,17 @@ class ActorContextSpec
           self: ActorRef[Event],
           inert: Boolean = false)
           : StepWise.Steps[Event, (ActorRef[Command], ActorRef[Command])] = {
-        val s =
-          startWith
-            .keep { subj ⇒ subj ! MkChild(name, monitor, self) }
-            .expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
-              val child = msgs match {
-                case Created(child) :: ChildEvent(GotSignal(PreStart)) :: Nil ⇒
-                  child
-                case ChildEvent(GotSignal(PreStart)) :: Created(child) :: Nil ⇒
-                  child
-              }
-              (subj, child)
+        val s = startWith
+          .keep { subj ⇒ subj ! MkChild(name, monitor, self) }
+          .expectMultipleMessages(500.millis, 2) { (msgs, subj) ⇒
+            val child = msgs match {
+              case Created(child) :: ChildEvent(GotSignal(PreStart)) :: Nil ⇒
+                child
+              case ChildEvent(GotSignal(PreStart)) :: Created(child) :: Nil ⇒
+                child
             }
+            (subj, child)
+          }
 
         if (!inert) s
         else
@@ -336,8 +334,9 @@ class ActorContextSpec
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self) {
             case (subj, child) ⇒
-              val log =
-                muteExpectedException[Exception]("KABOOM2", occurrences = 1)
+              val log = muteExpectedException[Exception](
+                "KABOOM2",
+                occurrences = 1)
               child ! Throw(ex)
               (subj, child, log)
           }

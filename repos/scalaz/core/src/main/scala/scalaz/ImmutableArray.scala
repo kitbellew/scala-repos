@@ -61,10 +61,8 @@ sealed abstract class ImmutableArrayInstances {
       }
       override def index[A](fa: ImmutableArray[A], i: Int) =
         if (0 <= i && i < fa.length) Some(fa(i)) else None
-      override def length[A](fa: ImmutableArray[A]) =
-        fa.length
-      override def empty[A](fa: ImmutableArray[A]) =
-        fa.isEmpty
+      override def length[A](fa: ImmutableArray[A]) = fa.length
+      override def empty[A](fa: ImmutableArray[A]) = fa.isEmpty
       override def all[A](fa: ImmutableArray[A])(f: A => Boolean) = {
         val len = fa.length
         @annotation.tailrec

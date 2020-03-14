@@ -17,15 +17,14 @@ final class MediaTypeNegotiator(requestHeaders: Seq[HttpHeader]) {
     * 2. decreasing q-value (only for ranges targeting a single MediaType)
     * 3. order of appearance in the `Accept` header(s)
     */
-  val acceptedMediaRanges: List[MediaRange] =
-    (for {
-      Accept(mediaRanges) ← requestHeaders
-      range ← mediaRanges
-    } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case x if x.isWildcard ⇒ 2f // most general, needs to come last
-      case MediaRange.One(_, qv) ⇒ -qv // most specific, needs to come first
-      case _ ⇒ 1f // simple range like `image/*`
-    }.toList
+  val acceptedMediaRanges: List[MediaRange] = (for {
+    Accept(mediaRanges) ← requestHeaders
+    range ← mediaRanges
+  } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    case x if x.isWildcard ⇒ 2f // most general, needs to come last
+    case MediaRange.One(_, qv) ⇒ -qv // most specific, needs to come first
+    case _ ⇒ 1f // simple range like `image/*`
+  }.toList
 
   /**
     * Returns the q-value that the client (implicitly or explicitly) attaches to the given media-type.
@@ -52,14 +51,13 @@ final class CharsetNegotiator(requestHeaders: Seq[HttpHeader]) {
     * 2. decreasing q-value (only for ranges targeting a single HttpCharset)
     * 3. order of appearance in the `Accept-Charset` header(s)
     */
-  val acceptedCharsetRanges: List[HttpCharsetRange] =
-    (for {
-      `Accept-Charset`(charsetRanges) ← requestHeaders
-      range ← charsetRanges
-    } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: HttpCharsetRange.`*` ⇒ 1f // most general, needs to come last
-      case x ⇒ -x.qValue // all others come first
-    }.toList
+  val acceptedCharsetRanges: List[HttpCharsetRange] = (for {
+    `Accept-Charset`(charsetRanges) ← requestHeaders
+    range ← charsetRanges
+  } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    case _: HttpCharsetRange.`*` ⇒ 1f // most general, needs to come last
+    case x ⇒ -x.qValue // all others come first
+  }.toList
 
   /**
     * Returns the q-value that the client (implicitly or explicitly) attaches to the given charset.
@@ -164,14 +162,13 @@ final class EncodingNegotiator(requestHeaders: Seq[HttpHeader]) {
     * 2. decreasing q-value (only for ranges targeting a single HttpEncoding)
     * 3. order of appearance in the `Accept-Encoding` header(s)
     */
-  val acceptedEncodingRanges: List[HttpEncodingRange] =
-    (for {
-      `Accept-Encoding`(encodingRanges) ← requestHeaders
-      range ← encodingRanges
-    } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: HttpEncodingRange.`*` ⇒ 1f // most general, needs to come last
-      case x ⇒ -x.qValue // all others come first
-    }.toList
+  val acceptedEncodingRanges: List[HttpEncodingRange] = (for {
+    `Accept-Encoding`(encodingRanges) ← requestHeaders
+    range ← encodingRanges
+  } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    case _: HttpEncodingRange.`*` ⇒ 1f // most general, needs to come last
+    case x ⇒ -x.qValue // all others come first
+  }.toList
 
   /**
     * Returns the q-value that the client (implicitly or explicitly) attaches to the given encoding.
@@ -225,15 +222,14 @@ final class LanguageNegotiator(requestHeaders: Seq[HttpHeader]) {
     * 2. decreasing q-value (only for ranges targeting a single Language)
     * 3. order of appearance in the `Accept-Language` header(s)
     */
-  val acceptedLanguageRanges: List[LanguageRange] =
-    (for {
-      `Accept-Language`(languageRanges) ← requestHeaders
-      range ← languageRanges
-    } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
-      case _: LanguageRange.`*` ⇒ 1f // most general, needs to come last
-      case x ⇒
-        -(2 * x.subTags.size + x.qValue) // more subtags -> more specific -> go first
-    }.toList
+  val acceptedLanguageRanges: List[LanguageRange] = (for {
+    `Accept-Language`(languageRanges) ← requestHeaders
+    range ← languageRanges
+  } yield range).sortBy { // `sortBy` is stable, i.e. upholds the original order on identical keys
+    case _: LanguageRange.`*` ⇒ 1f // most general, needs to come last
+    case x ⇒
+      -(2 * x.subTags.size + x.qValue) // more subtags -> more specific -> go first
+  }.toList
 
   /**
     * Returns the q-value that the client (implicitly or explicitly) attaches to the given language.

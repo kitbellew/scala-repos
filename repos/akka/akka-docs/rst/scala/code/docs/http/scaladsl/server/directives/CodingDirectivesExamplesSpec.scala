@@ -61,12 +61,11 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
   val helloGzipped = compress("Hello", Gzip)
   val helloDeflated = compress("Hello", Deflate)
   "decodeRequest" in {
-    val route =
-      decodeRequest {
-        entity(as[String]) { content: String =>
-          complete(s"Request content: '$content'")
-        }
+    val route = decodeRequest {
+      entity(as[String]) { content: String =>
+        complete(s"Request content: '$content'")
       }
+    }
 
     // tests:
     Post("/", helloGzipped) ~> `Content-Encoding`(gzip) ~> route ~> check {
@@ -81,12 +80,11 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "decodeRequestWith-0" in {
-    val route =
-      decodeRequestWith(Gzip) {
-        entity(as[String]) { content: String =>
-          complete(s"Request content: '$content'")
-        }
+    val route = decodeRequestWith(Gzip) {
+      entity(as[String]) { content: String =>
+        complete(s"Request content: '$content'")
       }
+    }
 
     // tests:
     Post("/", helloGzipped) ~> `Content-Encoding`(gzip) ~> route ~> check {
@@ -100,12 +98,11 @@ class CodingDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "decodeRequestWith-1" in {
-    val route =
-      decodeRequestWith(Gzip, NoCoding) {
-        entity(as[String]) { content: String =>
-          complete(s"Request content: '$content'")
-        }
+    val route = decodeRequestWith(Gzip, NoCoding) {
+      entity(as[String]) { content: String =>
+        complete(s"Request content: '$content'")
       }
+    }
 
     // tests:
     Post("/", helloGzipped) ~> `Content-Encoding`(gzip) ~> route ~> check {

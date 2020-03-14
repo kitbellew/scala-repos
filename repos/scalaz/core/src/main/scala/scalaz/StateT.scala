@@ -21,12 +21,10 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
     F.bind[S1 => F[(S2, A)], A](getF(F))(sf => F.map(sf(initial))(_._2))
 
   /** Calls `eval` using `Monoid[S].zero` as the initial state */
-  def evalZero[S <: S1](implicit F: Monad[F], S: Monoid[S]): F[A] =
-    eval(S.zero)
+  def evalZero[S <: S1](implicit F: Monad[F], S: Monoid[S]): F[A] = eval(S.zero)
 
   /** Run, discard the final value, and return the final state in the context of `F` */
-  def exec(initial: S1)(implicit F: Monad[F]): F[S2] =
-    F.map(run(initial))(_._1)
+  def exec(initial: S1)(implicit F: Monad[F]): F[S2] = F.map(run(initial))(_._1)
 
   /** Calls `exec` using `Monoid[S].zero` as the initial state */
   def execZero[S <: S1](implicit F: Monad[F], S: Monoid[S]): F[S2] =
@@ -49,8 +47,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
   def bmap[X, S >: S2 <: S1](b: Bijection[S, X]): StateT[F, X, A] =
     xmap(b to _)(b from _)
 
-  def contramap[X](g: X => S1): IndexedStateT[F, X, S2, A] =
-    mapsf(_ compose g)
+  def contramap[X](g: X => S1): IndexedStateT[F, X, S2, A] = mapsf(_ compose g)
 
   def imap[X](f: S2 => X)(implicit F: Functor[F]): IndexedStateT[F, S1, X, A] =
     bimap(f)(a => a)
@@ -60,8 +57,7 @@ sealed abstract class IndexedStateT[F[_], -S1, S2, A] { self =>
     mapsf(sf => (s: S1) => F.map(sf(s))(t => (f(t._1), g(t._2))))
 
   def leftMap[X](f: S2 => X)(
-      implicit F: Functor[F]): IndexedStateT[F, S1, X, A] =
-    imap(f)
+      implicit F: Functor[F]): IndexedStateT[F, S1, X, A] = imap(f)
 
   def flatMap[S3, B](f: A => IndexedStateT[F, S2, S3, B])(
       implicit F: Monad[F]): IndexedStateT[F, S1, S3, B] =
@@ -211,8 +207,7 @@ trait IndexedStateTFunctions {
 
 trait StateTFunctions extends IndexedStateTFunctions {
   def constantStateT[F[_], S, A](a: A)(s: => S)(
-      implicit F: Monad[F]): StateT[F, S, A] =
-    StateT((_: S) => F.point((s, a)))
+      implicit F: Monad[F]): StateT[F, S, A] = StateT((_: S) => F.point((s, a)))
 
   def stateT[F[_], S, A](a: A)(implicit F: Monad[F]): StateT[F, S, A] =
     StateT(s => F.point((s, a)))

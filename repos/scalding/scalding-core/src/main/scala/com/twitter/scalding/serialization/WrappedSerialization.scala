@@ -100,8 +100,7 @@ object WrappedSerialization {
     Injection.connect[Externalizer[U], Array[Byte], Base64String, String]
   }
 
-  private def serialize[T](b: T): String =
-    getSerializer[T](Externalizer(b))
+  private def serialize[T](b: T): String = getSerializer[T](Externalizer(b))
 
   private def deserialize[T](str: String): T =
     getSerializer[T].invert(str).get.get

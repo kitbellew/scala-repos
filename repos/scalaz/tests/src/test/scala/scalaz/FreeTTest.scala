@@ -32,8 +32,7 @@ object FreeTListOption {
       def plus[A](a: FreeTListOption[A], b: => FreeTListOption[A]) =
         FreeTListOption(Plus[FreeT[List, Option, ?]].plus(a.f, b.f))
 
-      def empty[A] =
-        FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
+      def empty[A] = FreeTListOption(PlusEmpty[FreeT[List, Option, ?]].empty[A])
 
       def traverseImpl[G[_]: Applicative, A, B](fa: FreeTListOption[A])(
           f: A => G[B]) =
@@ -86,30 +85,28 @@ object FreeTTest extends SpecLite {
 
     "not stack overflow with 50k binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result =
-        BindRec[FreeTListOption].tailrecM((i: Int) =>
-          if (i < 50000)
-            Applicative[FreeTListOption].point(\/.left[Int, Unit](i + 1))
-          else Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
+      val result = BindRec[FreeTListOption].tailrecM((i: Int) =>
+        if (i < 50000)
+          Applicative[FreeTListOption].point(\/.left[Int, Unit](i + 1))
+        else Applicative[FreeTListOption].point(\/.right[Int, Unit](())))(0)
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
 
     "not stack overflow with 50k left-associated binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result =
-        (0 until 50000).foldLeft(Applicative[FreeTListOption].point(()))(
-          (fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u)))
+      val result = (0 until 50000).foldLeft(
+        Applicative[FreeTListOption].point(()))((fu, i) =>
+        fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
 
     "not stack overflow with bind followed by 50k maps" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result =
-        (0 until 50000).foldLeft(
-          ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
-          (fu, i) => fu.map(u => u))
+      val result = (0 until 50000).foldLeft(
+        ().point[FreeTListOption].flatMap(u => u.point[FreeTListOption]))(
+        (fu, i) => fu.map(u => u))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }

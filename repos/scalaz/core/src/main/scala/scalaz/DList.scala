@@ -57,8 +57,7 @@ final class DList[A] private[scalaz] (f: IList[A] => Trampoline[IList[A]]) {
     toIList.foldRight(z)((a, b) => f(a, b))
 
   /** Map over a difference list. */
-  def map[B](f: A => B): DList[B] =
-    DL(dl => (toIList.map(f)) ++ dl)
+  def map[B](f: A => B): DList[B] = DL(dl => (toIList.map(f)) ++ dl)
 
   /** Map over a difference list, then flatten. */
   def flatMap[B](f: A => DList[B]): DList[B] =
@@ -78,11 +77,9 @@ object DList extends DListInstances {
   def DL[A](f: (=> IList[A]) => IList[A]): DList[A] =
     mkDList(xs => return_(f(xs)))
 
-  def fromList[A](as: => List[A]): DList[A] =
-    fromIList(IList.fromList(as))
+  def fromList[A](as: => List[A]): DList[A] = fromIList(IList.fromList(as))
 
-  def fromIList[A](as: => IList[A]): DList[A] =
-    DL(bs => as ++ bs)
+  def fromIList[A](as: => IList[A]): DList[A] = DL(bs => as ++ bs)
 
   def concat[A](xs: IList[DList[A]]): DList[A] =
     xs.foldRight(DList[A]())(_ ++ _)

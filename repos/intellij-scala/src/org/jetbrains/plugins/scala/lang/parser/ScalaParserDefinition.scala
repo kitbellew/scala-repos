@@ -52,8 +52,9 @@ class ScalaParserDefinition extends ScalaParserDefinitionWrapper {
     import com.intellij.lang.ParserDefinition._
     if (rightNode.getElementType != ScalaTokenTypes.tWHITE_SPACE_IN_LINE || !rightNode.getText
           .contains("\n")) {
-      val imp: ScImportStmt =
-        PsiTreeUtil.getParentOfType(leftNode.getPsi, classOf[ScImportStmt])
+      val imp: ScImportStmt = PsiTreeUtil.getParentOfType(
+        leftNode.getPsi,
+        classOf[ScImportStmt])
       if (imp != null && rightNode.getTextRange.getStartOffset == imp.getTextRange.getEndOffset)
         return SpaceRequirements.MUST_LINE_BREAK
     }

@@ -131,8 +131,9 @@ class IntroduceExplicitParameterIntention
         case _ =>
       }
 
-      val newParam =
-        ScalaPsiElementFactory.createParameterFromText(un, element.getManager)
+      val newParam = ScalaPsiElementFactory.createParameterFromText(
+        un,
+        element.getManager)
       underscoreToParam.put(u, newParam)
     }
 
@@ -190,8 +191,8 @@ class IntroduceExplicitParameterIntention
               lookupExpr,
               true)
 
-            val dependantParam =
-              file.findElementAt(offsets(parameter.name) + diff)
+            val dependantParam = file.findElementAt(
+              offsets(parameter.name) + diff)
             builder.replaceElement(
               dependantParam,
               parameter.name + "_1",
@@ -266,8 +267,8 @@ class IntroduceExplicitParameterIntention
             private def markCurrentVariables(index: Int) {
               val colorsManager: EditorColorsManager =
                 EditorColorsManager.getInstance
-              val templateState: TemplateState =
-                TemplateManagerImpl.getTemplateState(editor)
+              val templateState: TemplateState = TemplateManagerImpl
+                .getTemplateState(editor)
               var i: Int = 0
 
               while (i < templateState.getSegmentsCount) {

@@ -50,19 +50,19 @@ object HttpEventActor {
     private val pre = MetricPrefixes.SERVICE
     private val clazz = classOf[HttpEventActor]
     // the number of requests that are open without response
-    val outstandingCallbacks =
-      metrics.counter(metrics.name(pre, clazz, "outstanding-callbacks"))
+    val outstandingCallbacks = metrics.counter(
+      metrics.name(pre, clazz, "outstanding-callbacks"))
     // the number of events that are broadcast
     val eventMeter = metrics.meter(metrics.name(pre, clazz, "events"))
     // the number of events that are not send to callback listeners due to backoff
-    val skippedCallbacks =
-      metrics.meter(metrics.name(pre, clazz, "skipped-callbacks"))
+    val skippedCallbacks = metrics.meter(
+      metrics.name(pre, clazz, "skipped-callbacks"))
     // the number of callbacks that have failed during delivery
-    val failedCallbacks =
-      metrics.meter(metrics.name(pre, clazz, "failed-callbacks"))
+    val failedCallbacks = metrics.meter(
+      metrics.name(pre, clazz, "failed-callbacks"))
     // the response time of the callback listeners
-    val callbackResponseTime =
-      metrics.timer(metrics.name(pre, clazz, "callback-response-time"))
+    val callbackResponseTime = metrics.timer(
+      metrics.name(pre, clazz, "callback-response-time"))
   }
 }
 
@@ -80,8 +80,9 @@ class HttpEventActor(
       implicit ec: ExecutionContext): HttpRequest => Future[HttpResponse] = {
     addHeader("Accept", "application/json") ~> sendReceive
   }
-  var limiter =
-    Map.empty[String, EventNotificationLimit].withDefaultValue(NoLimit)
+  var limiter = Map
+    .empty[String, EventNotificationLimit]
+    .withDefaultValue(NoLimit)
 
   def receive: Receive = {
     case event: MarathonEvent          => resolveSubscribersForEventAndBroadcast(event)

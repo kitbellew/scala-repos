@@ -31,21 +31,22 @@ object CompilerData {
     val target = chunk.representativeTarget
     val module = target.getModule
 
-    val compilerJars = if (SettingsManager.hasScalaSdk(module)) {
-      compilerJarsIn(module).flatMap {
-        case jars: CompilerJars =>
-          val absentJars = jars.files.filter(!_.exists)
-          Either.cond(
-            absentJars.isEmpty,
-            Some(jars),
-            "Scala compiler JARs not found (module '" + chunk
-              .representativeTarget()
-              .getModule
-              .getName + "'): "
-              + absentJars.map(_.getPath).mkString(", ")
-          )
-      }
-    } else { Right(None) }
+    val compilerJars =
+      if (SettingsManager.hasScalaSdk(module)) {
+        compilerJarsIn(module).flatMap {
+          case jars: CompilerJars =>
+            val absentJars = jars.files.filter(!_.exists)
+            Either.cond(
+              absentJars.isEmpty,
+              Some(jars),
+              "Scala compiler JARs not found (module '" + chunk
+                .representativeTarget()
+                .getModule
+                .getName + "'): "
+                + absentJars.map(_.getPath).mkString(", ")
+            )
+        }
+      } else { Right(None) }
 
     compilerJars.flatMap { jars =>
       val incrementalityType = SettingsManager
@@ -129,8 +130,8 @@ object CompilerData {
       }
 
       compiler.flatMap { compilerJar =>
-        val extraJars =
-          files.filterNot(file => file == libraryJar || file == compilerJar)
+        val extraJars = files.filterNot(file =>
+          file == libraryJar || file == compilerJar)
 
         val reflectJarError = {
           readProperty(compilerJar, "compiler.properties", "version.number")

@@ -273,11 +273,15 @@ object ScalaRefactoringUtil {
               val document = editor.getDocument
               document.insertString(endOffset, ")")
               document.insertString(startOffset, "(")
-              val documentManager: PsiDocumentManager =
-                PsiDocumentManager.getInstance(project)
+              val documentManager: PsiDocumentManager = PsiDocumentManager
+                .getInstance(project)
               documentManager.commitDocument(document)
-              val newOpt =
-                getExpression(project, editor, file, startOffset, endOffset + 2)
+              val newOpt = getExpression(
+                project,
+                editor,
+                file,
+                startOffset,
+                endOffset + 2)
               newOpt match {
                 case Some((expression: ScExpression, typez)) =>
                   expression.getParent match {
@@ -521,8 +525,8 @@ object ScalaRefactoringUtil {
       project: Project,
       editor: Editor): (Array[ScTypeElement], Array[ScalaTypeValidator]) = {
 
-    val scope: GlobalSearchScope =
-      GlobalSearchScope.allScope(currentElement.getProject)
+    val scope: GlobalSearchScope = GlobalSearchScope.allScope(
+      currentElement.getProject)
     val inheritors = ScalaStubsUtil.getClassInheritors(currentElement, scope)
 
     def helper(
@@ -543,14 +547,14 @@ object ScalaRefactoringUtil {
 
     val collectedOccurrences: mutable.MutableList[Array[ScTypeElement]] =
       mutable.MutableList()
-    val collectedValidators: mutable.MutableList[ScalaTypeValidator] =
-      mutable.MutableList()
+    val collectedValidators: mutable.MutableList[ScalaTypeValidator] = mutable
+      .MutableList()
 
     inheritors.foreach((x: ScTemplateDefinition) =>
       helper(x, collectedOccurrences, collectedValidators))
 
-    val occurrences: Array[ScTypeElement] =
-      collectedOccurrences.foldLeft(Array[ScTypeElement]())((a, b) => a ++ b)
+    val occurrences: Array[ScTypeElement] = collectedOccurrences.foldLeft(
+      Array[ScTypeElement]())((a, b) => a ++ b)
     val validators: Array[ScalaTypeValidator] = collectedValidators.toArray
 
     (occurrences, validators)
@@ -842,14 +846,14 @@ object ScalaRefactoringUtil {
   }
 
   private[refactoring] def getLineText(editor: Editor): String = {
-    val lineNumber =
-      Option(editor.getSelectionModel.getSelectionEndPosition.getLine)
-        .getOrElse(editor.getCaretModel.getLogicalPosition.line)
+    val lineNumber = Option(
+      editor.getSelectionModel.getSelectionEndPosition.getLine)
+      .getOrElse(editor.getCaretModel.getLogicalPosition.line)
     if (lineNumber >= editor.getDocument.getLineCount) return ""
-    val lineStart =
-      editor.visualToLogicalPosition(new VisualPosition(lineNumber, 0))
-    val nextLineStart =
-      editor.visualToLogicalPosition(new VisualPosition(lineNumber + 1, 0))
+    val lineStart = editor.visualToLogicalPosition(
+      new VisualPosition(lineNumber, 0))
+    val nextLineStart = editor.visualToLogicalPosition(
+      new VisualPosition(lineNumber + 1, 0))
     val start = editor.logicalPositionToOffset(lineStart)
     val end = editor.logicalPositionToOffset(nextLineStart)
     editor.getDocument.getText.substring(start, end)
@@ -1029,8 +1033,9 @@ object ScalaRefactoringUtil {
 
   def isLiteralPattern(file: PsiFile, textRange: TextRange): Boolean = {
     val parent = ScalaRefactoringUtil.commonParent(file, textRange)
-    val literalPattern =
-      PsiTreeUtil.getParentOfType(parent, classOf[ScLiteralPattern])
+    val literalPattern = PsiTreeUtil.getParentOfType(
+      parent,
+      classOf[ScLiteralPattern])
     literalPattern != null && literalPattern.getTextRange == textRange
   }
 
@@ -1101,8 +1106,8 @@ object ScalaRefactoringUtil {
 
     val guard: ScGuard = PsiTreeUtil.getParentOfType(expr, classOf[ScGuard])
     if (guard != null && guard.getParent.isInstanceOf[ScCaseClause])
-      errorMessage =
-        ScalaBundle.message("refactoring.is.not.supported.in.guard")
+      errorMessage = ScalaBundle.message(
+        "refactoring.is.not.supported.in.guard")
 
     expr match {
       case block: ScBlock if !block.hasRBrace && block.statements.size != 1 =>
@@ -1247,8 +1252,8 @@ object ScalaRefactoringUtil {
       occurences: Array[TextRange],
       newString: String,
       file: PsiFile): Array[TextRange] = {
-    val revercedRangeMarkers =
-      occurences.reverseMap(replaceOccurence(_, newString, file))
+    val revercedRangeMarkers = occurences.reverseMap(
+      replaceOccurence(_, newString, file))
     revercedRangeMarkers.reverseMap(rm =>
       new TextRange(rm.getStartOffset, rm.getEndOffset))
   }
@@ -1384,8 +1389,9 @@ object ScalaRefactoringUtil {
         classOf[ScCaseClause],
         classOf[ScEarlyDefinitions])
 
-      val funDef =
-        PsiTreeUtil.getParentOfType(element, classOf[ScFunctionDefinition])
+      val funDef = PsiTreeUtil.getParentOfType(
+        element,
+        classOf[ScFunctionDefinition])
 
       val isCaseClausesBlock = candidate match {
         case b: ScBlock if b.hasCaseClauses => true
@@ -1415,10 +1421,10 @@ object ScalaRefactoringUtil {
       file: ScalaFile,
       trimComments: Boolean): Seq[PsiElement] = {
     trimSpacesAndComments(editor, file, trimComments = trimComments)
-    val startElement: PsiElement =
-      file.findElementAt(editor.getSelectionModel.getSelectionStart)
-    val endElement: PsiElement =
-      file.findElementAt(editor.getSelectionModel.getSelectionEnd - 1)
+    val startElement: PsiElement = file.findElementAt(
+      editor.getSelectionModel.getSelectionStart)
+    val endElement: PsiElement = file.findElementAt(
+      editor.getSelectionModel.getSelectionEnd - 1)
     val elements =
       ScalaPsiUtil.getElementsRange(startElement, endElement) match {
         case Seq(b: ScBlock) if !b.hasRBrace => b.children.toSeq

@@ -386,10 +386,18 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
 
     // build a TstCollection
     val info = TCInfo(203, 102, UUID.randomUUID)
-    val tc =
-      TstCollection(ObjectId.get.toString, "MongoDB", "database", 1, info)
-    val tc2 =
-      TstCollection(ObjectId.get.toString, "OtherDB", "database", 1, info)
+    val tc = TstCollection(
+      ObjectId.get.toString,
+      "MongoDB",
+      "database",
+      1,
+      info)
+    val tc2 = TstCollection(
+      ObjectId.get.toString,
+      "OtherDB",
+      "database",
+      1,
+      info)
 
     // save to db
     tc.save
@@ -405,14 +413,13 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     tc2FromDb.get must_== tc2
 
     // update
-    val tc3 =
-      TstCollection(
-        tc._id,
-        "MongoDB",
-        "document",
-        2,
-        info
-      ) // the new object to update with, replaces the entire document, except possibly _id
+    val tc3 = TstCollection(
+      tc._id,
+      "MongoDB",
+      "document",
+      2,
+      info
+    ) // the new object to update with, replaces the entire document, except possibly _id
     val q =
       ("name" -> "MongoDB") // the query to select the document(s) to update
     TstCollection.update(q, tc3)
@@ -420,8 +427,12 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     tcFromDb.get must_== tc3
 
     // Upsert - this should add a new row
-    val tc4 =
-      TstCollection(ObjectId.get.toString, "nothing", "document", 1, info)
+    val tc4 = TstCollection(
+      ObjectId.get.toString,
+      "nothing",
+      "document",
+      1,
+      info)
     TstCollection.update(("name" -> "nothing"), tc4, Upsert)
     TstCollection.findAll.length must_== 3
 
@@ -491,8 +502,11 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     }
 
     // skip and limit (get first 10, skipping the first 5, where i > 50)
-    val list5 =
-      IDoc.findAll(("i" -> ("$gt" -> 50)), ("i" -> 1), Limit(10), Skip(5))
+    val list5 = IDoc.findAll(
+      ("i" -> ("$gt" -> 50)),
+      ("i" -> 1),
+      Limit(10),
+      Skip(5))
     var cntr5 = 0
     for (idoc <- list5) {
       cntr5 += 1
@@ -680,8 +694,9 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
 
     checkMongoIsRunning
 
-    val pdoc1 =
-      PatternDoc(ObjectId.get, Pattern.compile("^Mo", Pattern.CASE_INSENSITIVE))
+    val pdoc1 = PatternDoc(
+      ObjectId.get,
+      Pattern.compile("^Mo", Pattern.CASE_INSENSITIVE))
     pdoc1.save
 
     PatternDoc.find(pdoc1._id) must beLike {

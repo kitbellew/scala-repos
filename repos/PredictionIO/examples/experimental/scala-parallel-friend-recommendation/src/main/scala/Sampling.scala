@@ -69,8 +69,10 @@ object Sampling {
           .parallelize(edgeCandidates)
           .filter((e: Edge[Int]) => { !sampledVertices.contains(e.dstId) })
         val burnFraction = numToSample.toDouble / burnCandidate.count.toDouble
-        val burnEdges =
-          burnCandidate.sample(false, burnFraction, Random.nextLong)
+        val burnEdges = burnCandidate.sample(
+          false,
+          burnFraction,
+          Random.nextLong)
         val neighborVertexIds = burnEdges.map((e: Edge[Int]) => e.dstId)
         sampledVertices = sampledVertices ++ neighborVertexIds.toArray
         burnQueue = burnQueue ++ neighborVertexIds.toArray

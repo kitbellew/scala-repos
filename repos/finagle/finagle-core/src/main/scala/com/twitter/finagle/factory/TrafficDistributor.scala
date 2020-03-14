@@ -164,8 +164,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
         // Note, if an update contains multiple `Address` instances
         // with duplicate `weight` metadata, only one of the instances and its associated
         // factory is cached. Last write wins.
-        val weightedAddrs: Set[(Address, Double)] =
-          addrs.map(WeightedAddress.extract)
+        val weightedAddrs: Set[(Address, Double)] = addrs.map(
+          WeightedAddress.extract)
         val merged = weightedAddrs.foldLeft(active) {
           case (cache, (addr, weight)) =>
             cache.get(addr) match {
@@ -232,18 +232,19 @@ private[finagle] class TrafficDistributor[Req, Rep](
             val unweighted = factories.map {
               case WeightedFactory(f, _, _) => f
             }
-            val newCacheEntry = if (cache.contains(weight)) {
-              // an update that contains an existing weight class updates
-              // the balancers backing collection.
-              val cached = cache(weight)
-              cached.endpoints.update(Activity.Ok(unweighted))
-              cached.copy(size = unweighted.size)
-            } else {
-              val endpoints: BalancerEndpoints[Req, Rep] =
-                Var(Activity.Ok(unweighted))
-              val lb = newBalancer(Activity(endpoints))
-              CachedBalancer(lb, endpoints, unweighted.size)
-            }
+            val newCacheEntry =
+              if (cache.contains(weight)) {
+                // an update that contains an existing weight class updates
+                // the balancers backing collection.
+                val cached = cache(weight)
+                cached.endpoints.update(Activity.Ok(unweighted))
+                cached.copy(size = unweighted.size)
+              } else {
+                val endpoints: BalancerEndpoints[Req, Rep] = Var(
+                  Activity.Ok(unweighted))
+                val lb = newBalancer(Activity(endpoints))
+                CachedBalancer(lb, endpoints, unweighted.size)
+              }
             cache + (weight -> newCacheEntry)
         }
 
@@ -291,8 +292,8 @@ private[finagle] class TrafficDistributor[Req, Rep](
 
   // Translate the stream of weightClasses into a stream of underlying
   // ServiceFactories that can service requests.
-  private[this] val underlying: Event[ServiceFactory[Req, Rep]] =
-    weightClasses.foldLeft(init) {
+  private[this] val underlying: Event[ServiceFactory[Req, Rep]] = weightClasses
+    .foldLeft(init) {
       case (_, Activity.Ok(wcs)) if wcs.isEmpty =>
         // Defer the handling of an empty destination set to `newBalancer`
         val emptyBal = newBalancer(

@@ -30,8 +30,9 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
   import SbtClient._
 
   val connector = SbtConnector("play-fork-run", "Play Fork Run", baseDirectory)
-  val connection =
-    context.actorOf(SbtConnectionProxy.props(connector), "sbt-connection")
+  val connection = context.actorOf(
+    SbtConnectionProxy.props(connector),
+    "sbt-connection")
 
   def receive: Receive = init
 

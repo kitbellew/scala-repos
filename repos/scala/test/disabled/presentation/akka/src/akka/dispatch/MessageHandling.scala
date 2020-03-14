@@ -112,25 +112,24 @@ trait MessageDispatcher {
     }
   }
 
-  private val futureCleanup: () => Unit =
-    () =>
-      if (futures.decrementAndGet() == 0) {
-        guard withGuard {
-          if (futures.get == 0 && uuids.isEmpty) {
-            shutdownSchedule match {
-              case UNSCHEDULED =>
-                shutdownSchedule = SCHEDULED
-                Scheduler.scheduleOnce(
-                  shutdownAction,
-                  timeoutMs,
-                  TimeUnit.MILLISECONDS)
-              case SCHEDULED =>
-                shutdownSchedule = RESCHEDULED
-              case RESCHEDULED => //Already marked for reschedule
-            }
+  private val futureCleanup: () => Unit = () =>
+    if (futures.decrementAndGet() == 0) {
+      guard withGuard {
+        if (futures.get == 0 && uuids.isEmpty) {
+          shutdownSchedule match {
+            case UNSCHEDULED =>
+              shutdownSchedule = SCHEDULED
+              Scheduler.scheduleOnce(
+                shutdownAction,
+                timeoutMs,
+                TimeUnit.MILLISECONDS)
+            case SCHEDULED =>
+              shutdownSchedule = RESCHEDULED
+            case RESCHEDULED => //Already marked for reschedule
           }
         }
       }
+    }
 
   private[akka] def register(actorRef: ActorRef) {
     if (actorRef.mailbox eq null) actorRef.mailbox = createMailbox(actorRef)
@@ -247,8 +246,9 @@ abstract class MessageDispatcherConfigurator {
   def configure(config: Configuration): MessageDispatcher
 
   def mailboxType(config: Configuration): MailboxType = {
-    val capacity =
-      config.getInt("mailbox-capacity", Dispatchers.MAILBOX_CAPACITY)
+    val capacity = config.getInt(
+      "mailbox-capacity",
+      Dispatchers.MAILBOX_CAPACITY)
     if (capacity < 1) UnboundedMailbox()
     else
       BoundedMailbox(

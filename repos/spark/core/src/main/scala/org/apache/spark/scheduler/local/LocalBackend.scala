@@ -150,8 +150,9 @@ private[spark] class LocalBackend(
     val rpcEnv = SparkEnv.get.rpcEnv
     val executorEndpoint =
       new LocalEndpoint(rpcEnv, userClassPath, scheduler, this, totalCores)
-    localEndpoint =
-      rpcEnv.setupEndpoint("LocalBackendEndpoint", executorEndpoint)
+    localEndpoint = rpcEnv.setupEndpoint(
+      "LocalBackendEndpoint",
+      executorEndpoint)
     listenerBus.post(
       SparkListenerExecutorAdded(
         System.currentTimeMillis,

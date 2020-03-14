@@ -25,11 +25,12 @@ class ScalaMethodFilter(
     callingExpressionLines: Range[Integer])
     extends MethodFilter {
   private val unknownName: String = "!unknownName!"
-  private val myTargetMethodSignature =
-    DebuggerUtil.getFunctionJVMSignature(function)
+  private val myTargetMethodSignature = DebuggerUtil.getFunctionJVMSignature(
+    function)
   private val myDeclaringClassName = {
-    val clazz =
-      PsiTreeUtil.getParentOfType(function, classOf[ScTemplateDefinition])
+    val clazz = PsiTreeUtil.getParentOfType(
+      function,
+      classOf[ScTemplateDefinition])
     if (clazz == null) JVMNameUtil.getJVMRawText(unknownName)
     else
       DebuggerUtil.getClassJVMName(

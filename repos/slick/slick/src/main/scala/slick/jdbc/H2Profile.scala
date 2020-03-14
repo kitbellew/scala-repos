@@ -106,8 +106,8 @@ trait H2Profile extends JdbcProfile {
       sym: Option[FieldSymbol]): String =
     tmd.sqlType match {
       case java.sql.Types.VARCHAR =>
-        val size =
-          sym.flatMap(_.findColumnOption[RelationalProfile.ColumnOption.Length])
+        val size = sym.flatMap(
+          _.findColumnOption[RelationalProfile.ColumnOption.Length])
         size.fold("VARCHAR")(l =>
           if (l.varying) s"VARCHAR(${l.length})" else s"CHAR(${l.length})")
       case _ => super.defaultSqlTypeName(tmd, sym)
@@ -159,9 +159,8 @@ trait H2Profile extends JdbcProfile {
       extends super.CountingInsertActionComposerImpl[U](compiled) {
     // H2 cannot perform server-side insert-or-update with soft insert semantics. We don't have to do
     // the same in ReturningInsertInvoker because H2 does not allow returning non-AutoInc keys anyway.
-    override protected val useServerSideUpsert =
-      compiled.upsert.fields.forall(fs =>
-        !fs.options.contains(ColumnOption.AutoInc))
+    override protected val useServerSideUpsert = compiled.upsert.fields.forall(
+      fs => !fs.options.contains(ColumnOption.AutoInc))
     override protected def useTransactionForUpsert = !useServerSideUpsert
   }
 }

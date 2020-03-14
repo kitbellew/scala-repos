@@ -79,8 +79,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         request,
         channel.remoteAddress().asInstanceOf[InetSocketAddress],
         Option(channel.pipeline().get(classOf[SslHandler])))
-      val result =
-        errorHandler(server.applicationProvider.current).onClientError(
+      val result = errorHandler(server.applicationProvider.current)
+        .onClientError(
           requestHeader,
           statusCode,
           if (message == null) "" else message)
@@ -147,8 +147,9 @@ private[play] class PlayRequestHandler(val server: NettyServer)
               handleAction(action, requestHeader, request, Some(app))
             case Right(flow) =>
               import app.materializer
-              val processor =
-                WebSocketHandler.messageFlowToFrameProcessor(flow, bufferLimit)
+              val processor = WebSocketHandler.messageFlowToFrameProcessor(
+                flow,
+                bufferLimit)
               Future.successful(
                 new DefaultWebSocketHttpResponse(
                   request.getProtocolVersion,
@@ -282,8 +283,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       requestHeader: RequestHeader,
       request: HttpRequest,
       app: Option[Application]): Future[HttpResponse] = {
-    implicit val mat: Materializer =
-      app.fold(server.materializer)(_.materializer)
+    implicit val mat: Materializer = app.fold(server.materializer)(
+      _.materializer)
     import play.api.libs.iteratee.Execution.Implicits.trampoline
 
     val body = modelConversion.convertRequestBody(request)
@@ -303,10 +304,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
       }
       .map {
         case result =>
-          val cleanedResult =
-            ServerResultUtils.cleanFlashCookie(requestHeader, result)
-          val validated =
-            ServerResultUtils.validateResult(requestHeader, cleanedResult)
+          val cleanedResult = ServerResultUtils.cleanFlashCookie(
+            requestHeader,
+            result)
+          val validated = ServerResultUtils.validateResult(
+            requestHeader,
+            cleanedResult)
           modelConversion.convertResult(
             validated,
             requestHeader,

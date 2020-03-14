@@ -87,8 +87,8 @@ private class MyTaskResultGetter(env: SparkEnv, scheduler: TaskSchedulerImpl)
     extends TaskResultGetter(env, scheduler) {
 
   // Use the current thread so we can access its results synchronously
-  protected override val getTaskResultExecutor =
-    MoreExecutors.sameThreadExecutor()
+  protected override val getTaskResultExecutor = MoreExecutors
+    .sameThreadExecutor()
 
   // DirectTaskResults that we receive from the executors
   private val _taskResults = new ArrayBuffer[DirectTaskResult[_]]
@@ -129,10 +129,10 @@ class TaskResultGetterSuite
   test("handling results larger than max RPC message size") {
     sc = new SparkContext("local", "test", conf)
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+    val result = sc
+      .parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray)
+      .reduce((x, y) => x)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
     val RESULT_BLOCK_ID = TaskResultBlockId(0)
@@ -157,10 +157,10 @@ class TaskResultGetterSuite
     val resultGetter = new ResultDeletingTaskResultGetter(sc.env, scheduler)
     scheduler.taskResultGetter = resultGetter
     val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
-    val result =
-      sc.parallelize(Seq(1), 1)
-        .map(x => 1.to(maxRpcMessageSize).toArray)
-        .reduce((x, y) => x)
+    val result = sc
+      .parallelize(Seq(1), 1)
+      .map(x => 1.to(maxRpcMessageSize).toArray)
+      .reduce((x, y) => x)
     assert(resultGetter.removeBlockSuccessfully)
     assert(result === 1.to(maxRpcMessageSize).toArray)
 
@@ -191,8 +191,11 @@ class TaskResultGetterSuite
         |public class MyException extends Exception {
         |}
       """.stripMargin)
-    val excFile =
-      TestUtils.createCompiledClass("MyException", srcDir, excSource, Seq.empty)
+    val excFile = TestUtils.createCompiledClass(
+      "MyException",
+      srcDir,
+      excSource,
+      Seq.empty)
     val jarFile =
       new File(tempDir, "testJar-%s.jar".format(System.currentTimeMillis()))
     TestUtils.createJar(Seq(excFile), jarFile, directoryPrefix = Some("repro"))
@@ -259,10 +262,12 @@ class TaskResultGetterSuite
     assert(resultGetter.taskResults.size === 1)
     val resBefore = resultGetter.taskResults.head
     val resAfter = captor.getValue
-    val resSizeBefore =
-      resBefore.accumUpdates.find(_.name == Some(RESULT_SIZE)).flatMap(_.update)
-    val resSizeAfter =
-      resAfter.accumUpdates.find(_.name == Some(RESULT_SIZE)).flatMap(_.update)
+    val resSizeBefore = resBefore.accumUpdates
+      .find(_.name == Some(RESULT_SIZE))
+      .flatMap(_.update)
+    val resSizeAfter = resAfter.accumUpdates
+      .find(_.name == Some(RESULT_SIZE))
+      .flatMap(_.update)
     assert(resSizeBefore.exists(_ == 0L))
     assert(resSizeAfter.exists(_.toString.toLong > 0L))
   }

@@ -122,8 +122,7 @@ trait NumericColumnExtensionMethods[B1, P1]
   def abs = Library.Abs.column[P1](n)
   def ceil = Library.Ceiling.column[P1](n)
   def floor = Library.Floor.column[P1](n)
-  def sign[R](implicit om: o#to[Int, R]) =
-    om.column(Library.Sign, n)
+  def sign[R](implicit om: o#to[Int, R]) = om.column(Library.Sign, n)
   def toDegrees = Library.Degrees.column[P1](n)
   def toRadians = Library.Radians.column[P1](n)
 }
@@ -157,8 +156,7 @@ final class StringColumnExtensionMethods[P1](val c: Rep[P1])
     with ExtensionMethods[String, P1] {
   protected[this] implicit def b1Type = implicitly[TypedType[String]]
 
-  def length[R](implicit om: o#to[Int, R]) =
-    om.column(Library.Length, n)
+  def length[R](implicit om: o#to[Int, R]) = om.column(Library.Length, n)
   def like[P2, R](e: Rep[P2], esc: Char = '\u0000')(
       implicit om: o#arg[String, P2]#to[Boolean, R]) =
     if (esc == '\u0000') om.column(Library.Like, n, e.toNode)

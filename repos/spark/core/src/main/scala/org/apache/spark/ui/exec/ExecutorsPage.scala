@@ -110,8 +110,7 @@ private[ui] class ExecutorsPage(
       </table>
     }
 
-    val content =
-      <div class="row">
+    val content = <div class="row">
         <div class="span12">
           <h4>Summary</h4>
           {execSummary(activeExecutorInfo, deadExecutorInfo)}
@@ -306,25 +305,24 @@ private[ui] class ExecutorsPage(
         math.min(totalGCTime.toDouble / totalDuration + 0.5, 1)
       } else { 1 }
 
-    val tableData =
-      <td style={
-        if (activeTasks > 0) {
-          "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
-        } else { "" }
-      }>{activeTasks}</td>
+    val tableData = <td style={
+      if (activeTasks > 0) {
+        "background:hsla(240, 100%, 50%, " + activeTasksAlpha + ");color:white"
+      } else { "" }
+    }>{activeTasks}</td>
     <td style={
-        if (failedTasks > 0) {
-          "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
-        } else { "" }
-      }>{failedTasks}</td>
+      if (failedTasks > 0) {
+        "background:hsla(0, 100%, 50%, " + failedTasksAlpha + ");color:white"
+      } else { "" }
+    }>{failedTasks}</td>
     <td>{completedTasks}</td>
     <td>{totalTasks}</td>
     <td sorttable_customkey={totalDuration.toString} style={
-        // Red if GC time over GCTimePercent of total time
-        if (totalGCTime > GCTimePercent * totalDuration) {
-          "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
-        } else { "" }
-      }>
+      // Red if GC time over GCTimePercent of total time
+      if (totalGCTime > GCTimePercent * totalDuration) {
+        "background:hsla(0, 100%, 50%, " + totalDurationAlpha + ");color:white"
+      } else { "" }
+    }>
       {Utils.msDurationToString(totalDuration)}
       ({Utils.msDurationToString(totalGCTime)})
     </td>;
@@ -340,8 +338,9 @@ private[spark] object ExecutorsPage {
       listener: ExecutorsListener,
       statusId: Int,
       isActive: Boolean): ExecutorSummary = {
-    val status = if (isActive) { listener.activeStorageStatusList(statusId) }
-    else { listener.deadStorageStatusList(statusId) }
+    val status =
+      if (isActive) { listener.activeStorageStatusList(statusId) }
+      else { listener.deadStorageStatusList(statusId) }
     val execId = status.blockManagerId.executorId
     val hostPort = status.blockManagerId.hostPort
     val rddBlocks = status.numBlocks
@@ -358,8 +357,8 @@ private[spark] object ExecutorsPage {
     val totalGCTime = listener.executorToJvmGCTime.getOrElse(execId, 0L)
     val totalInputBytes = listener.executorToInputBytes.getOrElse(execId, 0L)
     val totalShuffleRead = listener.executorToShuffleRead.getOrElse(execId, 0L)
-    val totalShuffleWrite =
-      listener.executorToShuffleWrite.getOrElse(execId, 0L)
+    val totalShuffleWrite = listener.executorToShuffleWrite
+      .getOrElse(execId, 0L)
     val executorLogs = listener.executorToLogUrls.getOrElse(execId, Map.empty)
 
     new ExecutorSummary(

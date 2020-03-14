@@ -160,14 +160,16 @@ private[kinesis] class KinesisSequenceRangeIterator(
 
         // If the internal iterator has not been initialized,
         // then fetch records from starting sequence number
-        internalIterator =
-          getRecords(ShardIteratorType.AT_SEQUENCE_NUMBER, range.fromSeqNumber)
+        internalIterator = getRecords(
+          ShardIteratorType.AT_SEQUENCE_NUMBER,
+          range.fromSeqNumber)
       } else if (!internalIterator.hasNext) {
 
         // If the internal iterator does not have any more records,
         // then fetch more records after the last consumed sequence number
-        internalIterator =
-          getRecords(ShardIteratorType.AFTER_SEQUENCE_NUMBER, lastSeqNumber)
+        internalIterator = getRecords(
+          ShardIteratorType.AFTER_SEQUENCE_NUMBER,
+          lastSeqNumber)
       }
 
       if (!internalIterator.hasNext) {

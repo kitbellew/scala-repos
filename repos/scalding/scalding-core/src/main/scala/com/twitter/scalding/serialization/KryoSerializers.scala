@@ -64,8 +64,7 @@ class ArgsSerializer extends KSerializer[Args] {
   // Args are immutable, no need to copy them
   setImmutable(true)
   def write(kser: Kryo, out: Output, a: Args) { out.writeString(a.toString) }
-  def read(kser: Kryo, in: Input, cls: Class[Args]): Args =
-    Args(in.readString)
+  def read(kser: Kryo, in: Input, cls: Class[Args]): Args = Args(in.readString)
 }
 
 class IntFieldSerializer extends KSerializer[IntField[_]] {

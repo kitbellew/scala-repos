@@ -173,8 +173,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
   //SCL-3258
   def testOverrideVarWithFunctions(): Unit = {
-    val code =
-      """
+    val code = """
         |
         |abstract class Parent {
         |  var id: Int
@@ -193,8 +192,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
   //SCL-4036
   def testDefOverrideValVar(): Unit = {
-    val code =
-      """
+    val code = """
       |object ppp {
       |class A(val oof = 42, var rab = 24) {
       |  val foo = 42

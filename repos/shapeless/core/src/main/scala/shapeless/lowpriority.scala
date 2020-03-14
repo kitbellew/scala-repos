@@ -107,8 +107,7 @@ trait LowPriorityTypes {
 
   import c.universe._
 
-  def lowPriorityForTpe: Type =
-    typeOf[LowPriority.For[_]].typeConstructor
+  def lowPriorityForTpe: Type = typeOf[LowPriority.For[_]].typeConstructor
   def lowPriorityForIgnoringTpe: Type =
     typeOf[LowPriority.ForIgnoring[_, _]].typeConstructor
 

@@ -100,11 +100,13 @@ package scalaguide.cache {
         running() { app =>
           implicit val mat = ActorMaterializer()(app.actorSystem)
           val cachedApp = app.injector.instanceOf[cachedaction.Application1]
-          val result0 =
-            cachedApp.get(1)(FakeRequest("GET", "/resource/1")).run()
+          val result0 = cachedApp
+            .get(1)(FakeRequest("GET", "/resource/1"))
+            .run()
           status(result0) must_== 200
-          val result1 =
-            cachedApp.get(-1)(FakeRequest("GET", "/resource/-1")).run()
+          val result1 = cachedApp
+            .get(-1)(FakeRequest("GET", "/resource/-1"))
+            .run()
           status(result1) must_== 404
         }
 
@@ -114,11 +116,13 @@ package scalaguide.cache {
         running() { app =>
           implicit val mat = ActorMaterializer()(app.actorSystem)
           val cachedApp = app.injector.instanceOf[cachedaction.Application2]
-          val result0 =
-            cachedApp.get(1)(FakeRequest("GET", "/resource/1")).run()
+          val result0 = cachedApp
+            .get(1)(FakeRequest("GET", "/resource/1"))
+            .run()
           status(result0) must_== 200
-          val result1 =
-            cachedApp.get(2)(FakeRequest("GET", "/resource/2")).run()
+          val result1 = cachedApp
+            .get(2)(FakeRequest("GET", "/resource/2"))
+            .run()
           status(result1) must_== 404
         }
       }

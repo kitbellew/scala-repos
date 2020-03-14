@@ -268,8 +268,8 @@ abstract class RefChecks
           log(s"Considering $member for java varargs bridge in $clazz")
           if (!member.isDeferred && member.isMethod && hasRepeatedParam(
                 member.info)) {
-            val inherited =
-              clazz.info.nonPrivateMemberAdmitting(member.name, VBRIDGE)
+            val inherited = clazz.info
+              .nonPrivateMemberAdmitting(member.name, VBRIDGE)
 
             // Delaying calling memberType as long as possible
             if (inherited.exists) {
@@ -1467,8 +1467,9 @@ abstract class RefChecks
           }
         case ModuleDef(_, _, _) => eliminateModuleDefs(tree)
         case ValDef(_, _, _, _) =>
-          val tree1 =
-            transform(tree) // important to do before forward reference check
+          val tree1 = transform(
+            tree
+          ) // important to do before forward reference check
           if (tree1.symbol.isLazy) tree1 :: Nil
           else {
             val lazySym = tree.symbol.lazyAccessorOrSelf
@@ -1676,9 +1677,8 @@ abstract class RefChecks
     private def checkDeprecatedOvers(tree: Tree) {
       val symbol = tree.symbol
       if (symbol.isDeprecated) {
-        val concrOvers =
-          symbol.allOverriddenSymbols.filter(sym =>
-            !sym.isDeprecated && !sym.isDeferred && !sym.hasDeprecatedOverridingAnnotation && !sym.enclClass.hasDeprecatedInheritanceAnnotation)
+        val concrOvers = symbol.allOverriddenSymbols.filter(sym =>
+          !sym.isDeprecated && !sym.isDeferred && !sym.hasDeprecatedOverridingAnnotation && !sym.enclClass.hasDeprecatedInheritanceAnnotation)
         if (!concrOvers.isEmpty)
           currentRun.reporting.deprecationWarning(
             tree.pos,
@@ -2012,8 +2012,8 @@ abstract class RefChecks
                 // which might not conform to the constraints.
                 skipBounds = true
               case tp: TypeRef =>
-                val tpWithWildcards =
-                  deriveTypeWithWildcards(existentialParams.toList)(tp)
+                val tpWithWildcards = deriveTypeWithWildcards(
+                  existentialParams.toList)(tp)
                 checkTypeRef(tpWithWildcards, tree, skipBounds)
               case _ =>
             }

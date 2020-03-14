@@ -138,15 +138,16 @@ class ParquetQuerySuite
   }
 
   test("SPARK-6917 DecimalType should work with non-native types") {
-    val data =
-      (1 to 10).map(i => Row(Decimal(i, 18, 0), new java.sql.Timestamp(i)))
+    val data = (1 to 10).map(i =>
+      Row(Decimal(i, 18, 0), new java.sql.Timestamp(i)))
     val schema = StructType(
       List(
         StructField("d", DecimalType(18, 0), false),
         StructField("time", TimestampType, false)).toArray)
     withTempPath { file =>
-      val df =
-        sqlContext.createDataFrame(sparkContext.parallelize(data), schema)
+      val df = sqlContext.createDataFrame(
+        sparkContext.parallelize(data),
+        schema)
       df.write.parquet(file.getCanonicalPath)
       val df2 = sqlContext.read.parquet(file.getCanonicalPath)
       checkAnswer(df2, df.collect().toSeq)
@@ -263,8 +264,8 @@ class ParquetQuerySuite
   test("SPARK-9119 Decimal should be correctly written into parquet") {
     withTempPath { dir =>
       val basePath = dir.getCanonicalPath
-      val schema =
-        StructType(Array(StructField("name", DecimalType(10, 5), false)))
+      val schema = StructType(
+        Array(StructField("name", DecimalType(10, 5), false)))
       val rowRDD = sparkContext.parallelize(Array(Row(Decimal("67123.45"))))
       val df = sqlContext.createDataFrame(rowRDD, schema)
       df.write.parquet(basePath)
@@ -308,14 +309,13 @@ class ParquetQuerySuite
         .coalesce(1)
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("a", LongType, nullable = true)
-              .add("b", LongType, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("a", LongType, nullable = true)
+            .add("b", LongType, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -350,14 +350,13 @@ class ParquetQuerySuite
         .coalesce(1)
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("c", LongType, nullable = true)
-              .add("d", LongType, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("c", LongType, nullable = true)
+            .add("d", LongType, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -375,17 +374,16 @@ class ParquetQuerySuite
         .coalesce(1)
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("a", LongType, nullable = true)
-              .add("b", LongType, nullable = true)
-              .add("c", LongType, nullable = true)
-              .add("d", LongType, nullable = true),
-            nullable = true
-          )
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("a", LongType, nullable = true)
+            .add("b", LongType, nullable = true)
+            .add("c", LongType, nullable = true)
+            .add("d", LongType, nullable = true),
+          nullable = true
+        )
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -400,17 +398,16 @@ class ParquetQuerySuite
         .coalesce(1)
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("a", LongType, nullable = true)
-              .add("b", LongType, nullable = true)
-              .add("c", LongType, nullable = true)
-              .add("d", LongType, nullable = true),
-            nullable = true
-          )
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("a", LongType, nullable = true)
+            .add("b", LongType, nullable = true)
+            .add("c", LongType, nullable = true)
+            .add("d", LongType, nullable = true),
+          nullable = true
+        )
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -430,14 +427,13 @@ class ParquetQuerySuite
 
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("a", LongType, nullable = true)
-              .add("b", LongType, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("a", LongType, nullable = true)
+            .add("b", LongType, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -454,14 +450,13 @@ class ParquetQuerySuite
 
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("a", LongType, nullable = true)
-              .add("d", LongType, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("a", LongType, nullable = true)
+            .add("d", LongType, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -480,15 +475,14 @@ class ParquetQuerySuite
 
       df.write.parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("b", LongType, nullable = true)
-              .add("c", LongType, nullable = true)
-              .add("d", LongType, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("b", LongType, nullable = true)
+            .add("c", LongType, nullable = true)
+            .add("d", LongType, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -606,13 +600,12 @@ class ParquetQuerySuite
 
       df.write.mode(SaveMode.Append).parquet(path)
 
-      val userDefinedSchema =
-        new StructType()
-          .add(
-            "s",
-            new StructType()
-              .add("f1", new NestedStructUDT, nullable = true),
-            nullable = true)
+      val userDefinedSchema = new StructType()
+        .add(
+          "s",
+          new StructType()
+            .add("f1", new NestedStructUDT, nullable = true),
+          nullable = true)
 
       checkAnswer(
         sqlContext.read.schema(userDefinedSchema).parquet(path),
@@ -622,8 +615,8 @@ class ParquetQuerySuite
 
   test("expand UDT in StructType") {
     val schema = new StructType().add("n", new NestedStructUDT, nullable = true)
-    val expected =
-      new StructType().add("n", new NestedStructUDT().sqlType, nullable = true)
+    val expected = new StructType()
+      .add("n", new NestedStructUDT().sqlType, nullable = true)
     assert(CatalystReadSupport.expandUDT(schema) === expected)
   }
 

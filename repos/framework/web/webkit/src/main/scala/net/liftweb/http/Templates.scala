@@ -85,8 +85,7 @@ object Templates {
     *
     * @return the template if it can be found
     */
-  def apply(places: List[String]): Box[NodeSeq] =
-    apply(places, S.locale)
+  def apply(places: List[String]): Box[NodeSeq] = apply(places, S.locale)
 
   /**
     * Given a list of paths (e.g. List("foo", "index")),

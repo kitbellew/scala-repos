@@ -205,18 +205,16 @@ object PathMatcher extends ImplicitPathMatcherConstruction {
       def apply[T](value: T, more: M[T]): M[T]
     }
     object MOps {
-      implicit val OptionMOps: MOps[Option] =
-        new MOps[Option] {
-          def apply(): Option[Nothing] = None
-          def apply[T](value: T): Option[T] = Some(value)
-          def apply[T](value: T, more: Option[T]): Option[T] = Some(value)
-        }
-      implicit val ListMOps: MOps[List] =
-        new MOps[List] {
-          def apply(): List[Nothing] = Nil
-          def apply[T](value: T): List[T] = value :: Nil
-          def apply[T](value: T, more: List[T]): List[T] = value :: more
-        }
+      implicit val OptionMOps: MOps[Option] = new MOps[Option] {
+        def apply(): Option[Nothing] = None
+        def apply[T](value: T): Option[T] = Some(value)
+        def apply[T](value: T, more: Option[T]): Option[T] = Some(value)
+      }
+      implicit val ListMOps: MOps[List] = new MOps[List] {
+        def apply(): List[Nothing] = Nil
+        def apply[T](value: T): List[T] = value :: Nil
+        def apply[T](value: T, more: List[T]): List[T] = value :: more
+      }
     }
     implicit def liftUnit[M[+_]]: Lift[Unit, M] { type Out = Unit } =
       new Lift[Unit, M] {
@@ -270,8 +268,7 @@ trait ImplicitPathMatcherConstruction {
     PathMatcher(segment :: Path.Empty, ())
 
   implicit def stringNameOptionReceptacle2PathMatcher(
-      nr: NameOptionReceptacle[String]): PathMatcher0 =
-    PathMatcher(nr.name).?
+      nr: NameOptionReceptacle[String]): PathMatcher0 = PathMatcher(nr.name).?
 
   /**
     * Creates a PathMatcher that consumes (a prefix of) the first path segment

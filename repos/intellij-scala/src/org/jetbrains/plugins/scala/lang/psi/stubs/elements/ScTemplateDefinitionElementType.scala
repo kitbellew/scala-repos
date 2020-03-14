@@ -184,8 +184,7 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
         JavaStubIndexKeys.CLASS_FQN,
         javaFqn.hashCode)
       val i = javaFqn.lastIndexOf(".")
-      val pack =
-        if (i == -1) "" else javaFqn.substring(0, i)
+      val pack = if (i == -1) "" else javaFqn.substring(0, i)
       sink.occurrence(ScalaIndexKeys.JAVA_CLASS_NAME_IN_PACKAGE_KEY, pack)
     }
     val fqn = stub.qualName
@@ -194,8 +193,7 @@ abstract class ScTemplateDefinitionElementType[TypeDef <: ScTemplateDefinition](
         ScalaIndexKeys.FQN_KEY,
         fqn.hashCode)
       val i = fqn.lastIndexOf(".")
-      val pack =
-        if (i == -1) "" else fqn.substring(0, i)
+      val pack = if (i == -1) "" else fqn.substring(0, i)
       sink.occurrence(ScalaIndexKeys.CLASS_NAME_IN_PACKAGE_KEY, pack)
       if (stub.isImplicitObject) {
         sink.occurrence(ScalaIndexKeys.IMPLICIT_OBJECT_KEY, pack)

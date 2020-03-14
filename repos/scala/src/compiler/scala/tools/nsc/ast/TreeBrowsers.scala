@@ -84,8 +84,7 @@ abstract class TreeBrowsers {
       packChildren(parent)(index)
 
     /** Return the number of children this 'parent' has */
-    def getChildCount(parent: AnyRef): Int =
-      packChildren(parent).length
+    def getChildCount(parent: AnyRef): Int = packChildren(parent).length
 
     /** Return the index of the given child */
     def getIndexOfChild(parent: AnyRef, child: AnyRef): Int =
@@ -557,8 +556,7 @@ abstract class TreeBrowsers {
 
     implicit def view(n: String): Document = DocText(n)
 
-    def toDocument(sym: Symbol): Document =
-      toDocument(sym.info)
+    def toDocument(sym: Symbol): Document = toDocument(sym.info)
 
     def symsToDocument(syms: List[Symbol]): Document =
       syms match {

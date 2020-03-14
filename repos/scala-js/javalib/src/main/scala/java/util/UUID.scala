@@ -51,8 +51,7 @@ final class UUID private (
     l1.longValue
   }
 
-  def version(): Int =
-    (i2 & 0xf000) >> 12
+  def version(): Int = (i2 & 0xf000) >> 12
 
   def variant(): Int = {
     if ((i3 & 0x80000000) == 0) {
@@ -101,8 +100,7 @@ final class UUID private (
       paddedHex4(i3 >>> 16) + "-" + paddedHex4(i3 & 0xffff) + paddedHex8(i4)
   }
 
-  override def hashCode(): Int =
-    i1 ^ i2 ^ i3 ^ i4
+  override def hashCode(): Int = i1 ^ i2 ^ i3 ^ i4
 
   override def equals(that: Any): Boolean =
     that match {

@@ -40,12 +40,11 @@ object Policy {
   case object SigHup extends Policy
   case class MaxSize(size: StorageUnit) extends Policy
 
-  private[this] val singletonPolicyNames: Map[String, Policy] =
-    Map(
-      "never" -> Never,
-      "hourly" -> Hourly,
-      "daily" -> Daily,
-      "sighup" -> SigHup)
+  private[this] val singletonPolicyNames: Map[String, Policy] = Map(
+    "never" -> Never,
+    "hourly" -> Hourly,
+    "daily" -> Daily,
+    "sighup" -> SigHup)
 
   // Regex object that matches "Weekly(n)" and extracts the `dayOfWeek` number.
   private[this] val weeklyRegex = """(?i)weekly\(([1-7]+)\)""".r
@@ -246,17 +245,16 @@ class FileHandler(
     if (rotateCount >= 0) {
       // collect files which are not `filename`, but which share the prefix/suffix
       val prefixName = new File(filenamePrefix).getName
-      val rotatedFiles =
-        new File(filename)
-          .getParentFile()
-          .listFiles(
-            new FilenameFilter {
-              def accept(f: File, fname: String): Boolean =
-                fname != name && fname.startsWith(prefixName) && fname.endsWith(
-                  filenameSuffix)
-            }
-          )
-          .sortBy(_.getName)
+      val rotatedFiles = new File(filename)
+        .getParentFile()
+        .listFiles(
+          new FilenameFilter {
+            def accept(f: File, fname: String): Boolean =
+              fname != name && fname.startsWith(prefixName) && fname.endsWith(
+                filenameSuffix)
+          }
+        )
+        .sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)
       rotatedFiles.take(toDeleteCount).foreach(_.delete())

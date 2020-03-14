@@ -104,25 +104,24 @@ class YahooDataSource(val params: YahooDataSource.Params)
     // Add data either
     // 1. timeIndex exists and t is in timeIndex, or
     // 2. timeIndex is None.
-    val newDailyMap: Map[DateTime, YahooDataSource.Daily] =
-      tList.zipWithIndex
-        .drop(1)
-        .filter { case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true) }
-        .map {
-          case (t, idx) =>
-            val adjReturn = (adjCloseList(idx) / adjCloseList(idx - 1)) - 1
+    val newDailyMap: Map[DateTime, YahooDataSource.Daily] = tList.zipWithIndex
+      .drop(1)
+      .filter { case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true) }
+      .map {
+        case (t, idx) =>
+          val adjReturn = (adjCloseList(idx) / adjCloseList(idx - 1)) - 1
 
-            val daily = YahooDataSource.Daily(
-              close = closeList(idx),
-              adjClose = adjCloseList(idx),
-              adjReturn = adjReturn,
-              volume = volumeList(idx),
-              active = true,
-              prevDate = tList(idx - 1))
+          val daily = YahooDataSource.Daily(
+            close = closeList(idx),
+            adjClose = adjCloseList(idx),
+            adjReturn = adjReturn,
+            volume = volumeList(idx),
+            active = true,
+            prevDate = tList(idx - 1))
 
-            (t -> daily)
-        }
-        .toMap
+          (t -> daily)
+      }
+      .toMap
 
     YahooDataSource.Intermediate(
       ticker = e.entityId,
@@ -303,23 +302,26 @@ class YahooDataSource(val params: YahooDataSource.Params)
 
     val dsp: DataSourceParams = windowParams
 
-    val dataSet: Seq[(TrainingData, Seq[(QueryDate, AnyRef)])] =
-      Range(dsp.fromIdx, dsp.untilIdx, dsp.maxTestingWindowSize).map { idx =>
-        {
-          val trainingData = TrainingData(
-            untilIdx = idx,
-            maxWindowSize = dsp.trainingWindowSize,
-            rawDataB = rawDataB)
+    val dataSet: Seq[(TrainingData, Seq[(QueryDate, AnyRef)])] = Range(
+      dsp.fromIdx,
+      dsp.untilIdx,
+      dsp.maxTestingWindowSize).map { idx =>
+      {
+        val trainingData = TrainingData(
+          untilIdx = idx,
+          maxWindowSize = dsp.trainingWindowSize,
+          rawDataB = rawDataB)
 
-          // cannot evaluate the last item as data view only last until untilIdx.
-          val testingUntilIdx =
-            math.min(idx + dsp.maxTestingWindowSize, dsp.untilIdx - 1)
+        // cannot evaluate the last item as data view only last until untilIdx.
+        val testingUntilIdx = math.min(
+          idx + dsp.maxTestingWindowSize,
+          dsp.untilIdx - 1)
 
-          val queries = (idx until testingUntilIdx)
-            .map { idx => (QueryDate(idx), None) }
-          (trainingData, queries)
-        }
+        val queries = (idx until testingUntilIdx)
+          .map { idx => (QueryDate(idx), None) }
+        (trainingData, queries)
       }
+    }
 
     dataSet.map {
       case (trainingData, queries) =>

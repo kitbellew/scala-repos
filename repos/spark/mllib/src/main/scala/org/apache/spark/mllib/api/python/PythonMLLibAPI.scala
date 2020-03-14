@@ -407,8 +407,9 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setMaxIterations(maxIterations)
 
     if (initialModelWeights != null && initialModelMu != null && initialModelSigma != null) {
-      val gaussians =
-        initialModelMu.asScala.toSeq.zip(initialModelSigma.asScala.toSeq).map {
+      val gaussians = initialModelMu.asScala.toSeq
+        .zip(initialModelSigma.asScala.toSeq)
+        .map {
           case (x, y) =>
             new MultivariateGaussian(
               x.asInstanceOf[Vector],
@@ -703,8 +704,8 @@ private[python] class PythonMLLibAPI extends Serializable {
       .setSeed(seed)
       .setMinCount(minCount)
     try {
-      val model =
-        word2vec.fit(dataJRDD.rdd.persist(StorageLevel.MEMORY_AND_DISK_SER))
+      val model = word2vec.fit(
+        dataJRDD.rdd.persist(StorageLevel.MEMORY_AND_DISK_SER))
       new Word2VecModelWrapper(model)
     } finally { dataJRDD.rdd.unpersist(blocking = false) }
   }
@@ -1106,10 +1107,11 @@ private[python] class PythonMLLibAPI extends Serializable {
       data: JavaRDD[Vector],
       decayFactor: Double,
       timeUnit: String): JList[Object] = {
-    val model = new StreamingKMeansModel(
-      clusterCenters.asScala.toArray,
-      clusterWeights.asScala.toArray)
-      .update(data, decayFactor, timeUnit)
+    val model =
+      new StreamingKMeansModel(
+        clusterCenters.asScala.toArray,
+        clusterWeights.asScala.toArray)
+        .update(data, decayFactor, timeUnit)
     List[AnyRef](
       model.clusterCenters,
       Vectors.dense(model.clusterWeights)).asJava
@@ -1245,8 +1247,8 @@ private[python] class PythonMLLibAPI extends Serializable {
   def getMatrixEntries(coordinateMatrix: CoordinateMatrix): DataFrame = {
     // We use DataFrames for serialization of MatrixEntry entries to
     // Python, so return a DataFrame.
-    val sqlContext =
-      SQLContext.getOrCreate(coordinateMatrix.entries.sparkContext)
+    val sqlContext = SQLContext.getOrCreate(
+      coordinateMatrix.entries.sparkContext)
     sqlContext.createDataFrame(coordinateMatrix.entries)
   }
 

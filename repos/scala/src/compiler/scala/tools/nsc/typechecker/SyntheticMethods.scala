@@ -58,8 +58,8 @@ trait SyntheticMethods extends ast.TreeDSL {
     } else if (clazz.isDerivedValueClass) valueSymbols
     else Nil
   }
-  private lazy val renamedCaseAccessors =
-    perRunCaches.newMap[Symbol, mutable.Map[TermName, TermName]]()
+  private lazy val renamedCaseAccessors = perRunCaches
+    .newMap[Symbol, mutable.Map[TermName, TermName]]()
 
   /** Does not force the info of `caseclazz` */
   final def caseAccessorName(caseclazz: Symbol, paramName: TermName) =
@@ -95,8 +95,9 @@ trait SyntheticMethods extends ast.TreeDSL {
     if (clazz0 == AnyValClass || isPrimitiveValueClass(clazz0)) return {
       if ((clazz0.info member nme.getClass_).isDeferred) {
         // XXX dummy implementation for now
-        val getClassMethod =
-          createMethod(nme.getClass_, getClassReturnType(clazz.tpe))(_ => NULL)
+        val getClassMethod = createMethod(
+          nme.getClass_,
+          getClassReturnType(clazz.tpe))(_ => NULL)
         deriveTemplate(templ)(_ :+ getClassMethod)
       } else templ
     }

@@ -73,8 +73,9 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     }
     input.rewind()
 
-    val compressedSize = if (encoder.compressedSize == 0) { input.remaining() }
-    else { encoder.compressedSize }
+    val compressedSize =
+      if (encoder.compressedSize == 0) { input.remaining() }
+      else { encoder.compressedSize }
 
     (
       encoder.compress,
@@ -91,8 +92,11 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val benchmark = new Benchmark(name, iters * count)
 
     schemes.filter(_.supports(tpe)).map { scheme =>
-      val (compressFunc, compressionRatio, buf) =
-        prepareEncodeInternal(count, tpe, scheme, input)
+      val (compressFunc, compressionRatio, buf) = prepareEncodeInternal(
+        count,
+        tpe,
+        scheme,
+        input)
       val label =
         s"${getFormattedClassName(scheme)}(${compressionRatio.formatted("%.3f")})"
 
@@ -117,8 +121,11 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val benchmark = new Benchmark(name, iters * count)
 
     schemes.filter(_.supports(tpe)).map { scheme =>
-      val (compressFunc, _, buf) =
-        prepareEncodeInternal(count, tpe, scheme, input)
+      val (compressFunc, _, buf) = prepareEncodeInternal(
+        count,
+        tpe,
+        scheme,
+        input)
       val compressedBuf = compressFunc(input, buf)
       val label = s"${getFormattedClassName(scheme)}"
 
@@ -347,8 +354,8 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     val testData = allocateLocal(count * (4 + strLen))
 
     val g = {
-      val dataTable =
-        (0 until tableSize).map(_ => RandomStringUtils.randomAlphabetic(strLen))
+      val dataTable = (0 until tableSize).map(_ =>
+        RandomStringUtils.randomAlphabetic(strLen))
       val rng = genHigherSkewData()
       () => dataTable(rng().toInt % tableSize)
     }

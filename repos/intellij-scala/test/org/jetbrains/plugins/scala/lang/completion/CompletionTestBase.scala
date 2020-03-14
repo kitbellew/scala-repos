@@ -72,8 +72,9 @@ abstract class CompletionTestBase
       else CompletionType.BASIC
     new CodeCompletionHandlerBase(completionType, false, false, true)
       .invokeCompletion(getProjectAdapter, editor)
-    val lookup: LookupImpl =
-      LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
+    val lookup: LookupImpl = LookupManager
+      .getActiveLookup(editor)
+      .asInstanceOf[LookupImpl]
 
     if (lookup == null) Array.empty
     else

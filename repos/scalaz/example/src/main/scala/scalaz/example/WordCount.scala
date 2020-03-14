@@ -39,8 +39,8 @@ object WordCount {
       .product[λ[α => State[Boolean, Int]]](WordCount)
 
     // ... and execute them in a single traversal
-    val ((charCount, lineCount), wordCountState) =
-      A.traverse(text)((c: Char) => ((1, test(c == '\n')), atWordStart(c)))
+    val ((charCount, lineCount), wordCountState) = A.traverse(text)((c: Char) =>
+      ((1, test(c == '\n')), atWordStart(c)))
     val wordCount = wordCountState.eval(false)
 
     println("%d\t%d\t%d\t".format(lineCount, wordCount, charCount)) // 2	9	35

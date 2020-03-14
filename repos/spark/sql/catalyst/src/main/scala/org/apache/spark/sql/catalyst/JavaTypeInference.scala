@@ -117,8 +117,8 @@ object JavaTypeInference {
         // TODO: we should only collect properties that have getter and setter. However, some tests
         // pass in scala case class as java bean class which doesn't have getter and setter.
         val beanInfo = Introspector.getBeanInfo(typeToken.getRawType)
-        val properties =
-          beanInfo.getPropertyDescriptors.filterNot(_.getName == "class")
+        val properties = beanInfo.getPropertyDescriptors.filterNot(
+          _.getName == "class")
         val fields = properties.map { property =>
           val returnType =
             typeToken.method(property.getReadMethod).getReturnType
@@ -266,14 +266,13 @@ object JavaTypeInference {
 
       case c if listType.isAssignableFrom(typeToken) =>
         val et = elementType(typeToken)
-        val array =
-          Invoke(
-            MapObjects(
-              p => constructorFor(et, Some(p)),
-              getPath,
-              inferDataType(et)._1),
-            "array",
-            ObjectType(classOf[Array[Any]]))
+        val array = Invoke(
+          MapObjects(
+            p => constructorFor(et, Some(p)),
+            getPath,
+            inferDataType(et)._1),
+          "array",
+          ObjectType(classOf[Array[Any]]))
 
         StaticInvoke(
           classOf[java.util.Arrays],
@@ -286,24 +285,22 @@ object JavaTypeInference {
         val keyDataType = inferDataType(keyType)._1
         val valueDataType = inferDataType(valueType)._1
 
-        val keyData =
-          Invoke(
-            MapObjects(
-              p => constructorFor(keyType, Some(p)),
-              Invoke(getPath, "keyArray", ArrayType(keyDataType)),
-              keyDataType),
-            "array",
-            ObjectType(classOf[Array[Any]]))
+        val keyData = Invoke(
+          MapObjects(
+            p => constructorFor(keyType, Some(p)),
+            Invoke(getPath, "keyArray", ArrayType(keyDataType)),
+            keyDataType),
+          "array",
+          ObjectType(classOf[Array[Any]]))
 
-        val valueData =
-          Invoke(
-            MapObjects(
-              p => constructorFor(valueType, Some(p)),
-              Invoke(getPath, "valueArray", ArrayType(valueDataType)),
-              valueDataType),
-            "array",
-            ObjectType(classOf[Array[Any]])
-          )
+        val valueData = Invoke(
+          MapObjects(
+            p => constructorFor(valueType, Some(p)),
+            Invoke(getPath, "valueArray", ArrayType(valueDataType)),
+            valueDataType),
+          "array",
+          ObjectType(classOf[Array[Any]])
+        )
 
         StaticInvoke(
           ArrayBasedMapData.getClass,
@@ -319,19 +316,24 @@ object JavaTypeInference {
           val fieldName = p.getName
           val fieldType = typeToken.method(p.getReadMethod).getReturnType
           val (_, nullable) = inferDataType(fieldType)
-          val constructor =
-            constructorFor(fieldType, Some(addToPath(fieldName)))
-          val setter = if (nullable) { constructor }
-          else {
-            AssertNotNull(
-              constructor,
-              Seq("currently no type path record in java"))
-          }
+          val constructor = constructorFor(
+            fieldType,
+            Some(addToPath(fieldName)))
+          val setter =
+            if (nullable) { constructor }
+            else {
+              AssertNotNull(
+                constructor,
+                Seq("currently no type path record in java"))
+            }
           p.getWriteMethod.getName -> setter
         }.toMap
 
-        val newInstance =
-          NewInstance(other, Nil, ObjectType(other), propagateNull = false)
+        val newInstance = NewInstance(
+          other,
+          Nil,
+          ObjectType(other),
+          propagateNull = false)
         val result = InitializeJavaBean(newInstance, setters)
 
         if (path.nonEmpty) {

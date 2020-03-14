@@ -46,8 +46,9 @@ class RunLengthEncodingSuite extends SparkFunSuite {
         columnStats,
         columnType,
         RunLengthEncoding)
-      val (values, rows) =
-        makeUniqueValuesAndSingleValueRows(columnType, uniqueValueCount)
+      val (values, rows) = makeUniqueValuesAndSingleValueRows(
+        columnType,
+        uniqueValueCount)
       val inputSeq = inputRuns.flatMap {
         case (index, run) =>
           Seq.fill(run)(index)

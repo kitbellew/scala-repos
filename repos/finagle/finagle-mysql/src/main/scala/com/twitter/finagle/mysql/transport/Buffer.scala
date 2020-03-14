@@ -204,8 +204,7 @@ object BufferReader {
     new Netty3BufferReader(buf.underlying)
   }
 
-  def apply(bytes: Array[Byte]): BufferReader =
-    apply(Buffer(bytes), 0)
+  def apply(bytes: Array[Byte]): BufferReader = apply(Buffer(bytes), 0)
 
   /**
     * BufferReader implementation backed by a Netty ChannelBuffer.
@@ -359,8 +358,7 @@ object BufferWriter {
     new Netty3BufferWriter(buf.underlying)
   }
 
-  def apply(bytes: Array[Byte]): BufferWriter =
-    apply(Buffer(bytes), 0)
+  def apply(bytes: Array[Byte]): BufferWriter = apply(Buffer(bytes), 0)
 
   /**
     * BufferWriter implementation backed by a Netty ChannelBuffer.

@@ -56,8 +56,7 @@ trait EnumeratorT[E, F[_]] { self =>
   def drainTo[M[_]](implicit
       M: Monad[F],
       P: PlusEmpty[M],
-      Z: Applicative[M]): F[M[E]] =
-    (IterateeT.consume[E, F, M] &= self).run
+      Z: Applicative[M]): F[M[E]] = (IterateeT.consume[E, F, M] &= self).run
 
   def reduced[B](b: B)(f: (B, E) => B)(
       implicit M: Monad[F]): EnumeratorT[B, F] =
@@ -246,8 +245,7 @@ trait EnumeratorTFunctions {
   def enumArray[E, F[_]: Monad](
       a: Array[E],
       min: Int = 0,
-      max: Option[Int] = None): EnumeratorT[E, F] =
-    enumIndexedSeq(a, min, max)
+      max: Option[Int] = None): EnumeratorT[E, F] = enumIndexedSeq(a, min, max)
 
   def repeat[E, F[_]: Monad](e: E): EnumeratorT[E, F] =
     new EnumeratorT[E, F] {

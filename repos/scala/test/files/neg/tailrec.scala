@@ -40,8 +40,7 @@ class Winners {
 
 object Failures {
   @tailrec
-  def facfail(n: Int): Int =
-    if (n == 0) 1 else n * facfail(n - 1)
+  def facfail(n: Int): Int = if (n == 0) 1 else n * facfail(n - 1)
 }
 
 class Failures {

@@ -117,8 +117,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
     private[this] implicit val executor = context.dispatcher
 
     // Although PriorityQueue is mutable, we're going to treat it as immutable since most methods on it act that way
-    private[this] var scheduleQueue =
-      PriorityQueue.empty[(DateTime, ScheduledTask)]
+    private[this] var scheduleQueue = PriorityQueue
+      .empty[(DateTime, ScheduledTask)]
 
     private[this] var scheduledAwake: Option[Cancellable] = None
 
@@ -148,8 +148,8 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           new JodaDuration(new DateTime, head._1).getMillis,
           TimeUnit.MILLISECONDS)
 
-        scheduledAwake =
-          Some(context.system.scheduler.scheduleOnce(delay, self, WakeForRun))
+        scheduledAwake = Some(
+          context.system.scheduler.scheduleOnce(delay, self, WakeForRun))
       }
     }
 

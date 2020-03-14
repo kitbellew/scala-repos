@@ -31,15 +31,11 @@ object RootFinder {
         new BigDecimalRelativeRoots(poly, mc)
     }
 
-  implicit val RealRootFinder: RootFinder[Real] =
-    new RootFinder[Real] {
-      def findRoots(p: Polynomial[Real]): Roots[Real] =
-        new FixedRealRoots(p)
-    }
+  implicit val RealRootFinder: RootFinder[Real] = new RootFinder[Real] {
+    def findRoots(p: Polynomial[Real]): Roots[Real] = new FixedRealRoots(p)
+  }
 
-  implicit val NumberRootFinder: RootFinder[Number] =
-    new RootFinder[Number] {
-      def findRoots(p: Polynomial[Number]): Roots[Number] =
-        new NumberRoots(p)
-    }
+  implicit val NumberRootFinder: RootFinder[Number] = new RootFinder[Number] {
+    def findRoots(p: Polynomial[Number]): Roots[Number] = new NumberRoots(p)
+  }
 }

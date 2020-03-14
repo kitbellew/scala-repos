@@ -21,6 +21,5 @@ object IvyPlugin extends AutoPlugin {
 
   override lazy val projectSettings: Seq[Setting[_]] =
     Classpaths.ivyPublishSettings ++ Classpaths.ivyBaseSettings
-  override lazy val globalSettings: Seq[Setting[_]] =
-    Defaults.globalIvyCore
+  override lazy val globalSettings: Seq[Setting[_]] = Defaults.globalIvyCore
 }

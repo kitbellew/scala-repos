@@ -223,8 +223,8 @@ object ResolveUtils {
     if (forCompletion && place != null) {
       val originalFile: PsiFile = place.getContainingFile.getOriginalFile
       if (originalFile == member.getContainingFile) {
-        val newPlace =
-          originalFile.findElementAt(place.getTextRange.getStartOffset)
+        val newPlace = originalFile.findElementAt(
+          place.getTextRange.getStartOffset)
         place = newPlace
       }
     }
@@ -404,8 +404,8 @@ object ResolveUtils {
                       case packaging: ScPackaging => packaging.getPackageName
                       case _                      => ""
                     }
-                    val placeEnclosing: PsiElement =
-                      ScalaPsiUtil.getContextOfType(
+                    val placeEnclosing: PsiElement = ScalaPsiUtil
+                      .getContextOfType(
                         place,
                         true,
                         classOf[ScPackaging],
@@ -525,8 +525,8 @@ object ResolveUtils {
                     case file: ScalaFile        => ""
                     case packaging: ScPackaging => packaging.fullPackageName
                   }
-                  val placeEnclosing: PsiElement =
-                    ScalaPsiUtil.getContextOfType(
+                  val placeEnclosing: PsiElement = ScalaPsiUtil
+                    .getContextOfType(
                       place,
                       true,
                       classOf[ScPackaging],
@@ -678,8 +678,9 @@ object ResolveUtils {
                   case r: ResolveProcessor => r.getResolveScope
                   case _                   => place.getResolveScope
                 }
-                var classes: Array[PsiClass] =
-                  manager.getCachedClasses(scope, fqn)
+                var classes: Array[PsiClass] = manager.getCachedClasses(
+                  scope,
+                  fqn)
                 if (classes.isEmpty) {
                   //todo: fast fix for the problem with classes, should be fixed in indexes
                   val improvedFqn = fqn

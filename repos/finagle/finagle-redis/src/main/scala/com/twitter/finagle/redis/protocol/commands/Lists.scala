@@ -98,8 +98,11 @@ case class LRem(key: ChannelBuffer, count: Long, value: ChannelBuffer)
     with StrictValueCommand {
   val command = Commands.LREM
   override def toChannelBuffer = {
-    val commandArgs =
-      Seq(CommandBytes.LREM, key, StringToChannelBuffer(count.toString), value)
+    val commandArgs = Seq(
+      CommandBytes.LREM,
+      key,
+      StringToChannelBuffer(count.toString),
+      value)
     RedisCodec.toUnifiedFormat(commandArgs)
   }
 }
@@ -122,8 +125,11 @@ case class LSet(key: ChannelBuffer, index: Long, value: ChannelBuffer)
     with StrictValueCommand {
   val command = Commands.LSET
   override def toChannelBuffer = {
-    val commandArgs =
-      List(CommandBytes.LSET, key, StringToChannelBuffer(index.toString), value)
+    val commandArgs = List(
+      CommandBytes.LSET,
+      key,
+      StringToChannelBuffer(index.toString),
+      value)
     RedisCodec.toUnifiedFormat(commandArgs)
   }
 }

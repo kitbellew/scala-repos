@@ -92,8 +92,9 @@ class VectorAssemblerSuite
   }
 
   test("transform should throw an exception in case of unsupported type") {
-    val df =
-      sqlContext.createDataFrame(Seq(("a", "b", "c"))).toDF("a", "b", "c")
+    val df = sqlContext
+      .createDataFrame(Seq(("a", "b", "c")))
+      .toDF("a", "b", "c")
     val assembler = new VectorAssembler()
       .setInputCols(Array("a", "b", "c"))
       .setOutputCol("features")
@@ -103,8 +104,10 @@ class VectorAssemblerSuite
   }
 
   test("ML attributes") {
-    val browser =
-      NominalAttribute.defaultAttr.withValues("chrome", "firefox", "safari")
+    val browser = NominalAttribute.defaultAttr.withValues(
+      "chrome",
+      "firefox",
+      "safari")
     val hour = NumericAttribute.defaultAttr.withMin(0.0).withMax(24.0)
     val user = new AttributeGroup(
       "user",

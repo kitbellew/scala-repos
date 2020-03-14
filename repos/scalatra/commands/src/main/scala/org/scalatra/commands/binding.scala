@@ -208,8 +208,7 @@ trait BindingImplicits
 
   implicit def stringToSeqDateTime(
       implicit df: DateParser = JodaDateFormats.Web)
-      : TypeConverter[String, Seq[DateTime]] =
-    stringToSeq(stringToDateTime)
+      : TypeConverter[String, Seq[DateTime]] = stringToSeq(stringToDateTime)
 
   implicit def stringToSeqDate(implicit
       df: DateParser = JodaDateFormats.Web): TypeConverter[String, Seq[Date]] =

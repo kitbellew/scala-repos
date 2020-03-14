@@ -263,8 +263,8 @@ object StandardTestDBs {
     override def dropUserArtifacts(
         implicit session: profile.Backend#Session) = {
       session.close()
-      val a =
-        DBIO.sequence(Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
+      val a = DBIO.sequence(
+        Seq(drop(0), create(1), create(2)).map(s => sqlu"#$s"))
       await(databaseFor("adminConn").run(a))
     }
   }

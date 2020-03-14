@@ -13,15 +13,13 @@ package object data {
 
   def NonEmptyVector[A](
       head: A,
-      tail: Vector[A] = Vector.empty): NonEmptyVector[A] =
-    OneAnd(head, tail)
+      tail: Vector[A] = Vector.empty): NonEmptyVector[A] = OneAnd(head, tail)
   def NonEmptyVector[A](head: A, tail: A*): NonEmptyVector[A] =
     OneAnd(head, tail.toVector)
 
   def NonEmptyStream[A](
       head: A,
-      tail: Stream[A] = Stream.empty): NonEmptyStream[A] =
-    OneAnd(head, tail)
+      tail: Stream[A] = Stream.empty): NonEmptyStream[A] = OneAnd(head, tail)
   def NonEmptyStream[A](head: A, tail: A*): NonEmptyStream[A] =
     OneAnd(head, tail.toStream)
 

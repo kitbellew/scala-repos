@@ -419,18 +419,16 @@ class DoubleStats(r: Vec[Double]) extends VecStats[Double] {
   def min: Option[Double] =
     if (r.count == 0) None
     else {
-      val res =
-        r.filterFoldLeft(sd.notMissing)(sd.inf)((x: Double, y: Double) =>
-          if (x < y) x else y)
+      val res = r.filterFoldLeft(sd.notMissing)(sd.inf)(
+        (x: Double, y: Double) => if (x < y) x else y)
       Some(res)
     }
 
   def max: Option[Double] =
     if (r.count == 0) None
     else {
-      val res: Double =
-        r.filterFoldLeft(sd.notMissing)(sd.negInf)((x: Double, y: Double) =>
-          if (x > y) x else y)
+      val res: Double = r.filterFoldLeft(sd.notMissing)(sd.negInf)(
+        (x: Double, y: Double) => if (x > y) x else y)
       Some(res)
     }
 
@@ -470,9 +468,8 @@ class IntStats(r: Vec[Int]) extends VecStats[Int] {
   def max: Option[Int] =
     if (r.count == 0) None
     else {
-      val res: Int =
-        r.filterFoldLeft(si.notMissing)(si.negInf)((x: Int, y: Int) =>
-          if (x > y) x else y)
+      val res: Int = r.filterFoldLeft(si.notMissing)(si.negInf)(
+        (x: Int, y: Int) => if (x > y) x else y)
       Some(res)
     }
 
@@ -507,18 +504,16 @@ class LongStats(r: Vec[Long]) extends VecStats[Long] {
   def min: Option[Long] =
     if (r.count == 0) None
     else {
-      val res: Long =
-        r.filterFoldLeft(sl.notMissing)(sl.inf)((x: Long, y: Long) =>
-          if (x < y) x else y)
+      val res: Long = r.filterFoldLeft(sl.notMissing)(sl.inf)(
+        (x: Long, y: Long) => if (x < y) x else y)
       Some(res)
     }
 
   def max: Option[Long] =
     if (r.count == 0) None
     else {
-      val res: Long =
-        r.filterFoldLeft(sl.notMissing)(sl.negInf)((x: Long, y: Long) =>
-          if (x > y) x else y)
+      val res: Long = r.filterFoldLeft(sl.notMissing)(sl.negInf)(
+        (x: Long, y: Long) => if (x > y) x else y)
       Some(res)
     }
 

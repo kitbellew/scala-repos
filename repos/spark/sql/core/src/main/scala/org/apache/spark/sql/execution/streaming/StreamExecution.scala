@@ -58,8 +58,9 @@ class StreamExecution(
   private[sql] val streamProgress = new StreamProgress
 
   /** All stream sources present the query plan. */
-  private val sources =
-    logicalPlan.collect { case s: StreamingRelation => s.source }
+  private val sources = logicalPlan.collect {
+    case s: StreamingRelation => s.source
+  }
 
   /** Defines the internal state of execution */
   @volatile
@@ -302,9 +303,10 @@ class StreamExecution(
   }
 
   def toDebugString: String = {
-    val deathCauseStr = if (streamDeathCause != null) {
-      "Error:\n" + stackTraceToString(streamDeathCause.cause)
-    } else ""
+    val deathCauseStr =
+      if (streamDeathCause != null) {
+        "Error:\n" + stackTraceToString(streamDeathCause.cause)
+      } else ""
     s"""
        |=== Continuous Query ===
        |Name: $name

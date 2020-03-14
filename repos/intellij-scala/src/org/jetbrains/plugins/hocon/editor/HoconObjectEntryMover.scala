@@ -130,8 +130,7 @@ class HoconObjectEntryMover extends LineMover {
     def lineRange(el: PsiElement) =
       new LineRange(startLine(el), endLine(el) + 1)
 
-    def singleLineRange(line: Int) =
-      new LineRange(line, line + 1)
+    def singleLineRange(line: Int) = new LineRange(line, line + 1)
 
     def adjacentMovableEntry(entry: HObjectEntry) =
       if (down) entry.nextEntry.filter(canInsertAfter)

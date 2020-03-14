@@ -135,8 +135,8 @@ class AtmosphereSpec extends MutableScalatraSpec {
       val client: Client[
         DefaultOptions,
         DefaultOptionsBuilder,
-        DefaultRequestBuilder] =
-        ClientFactory.getDefault.newClient.asInstanceOf[Client[
+        DefaultRequestBuilder] = ClientFactory.getDefault.newClient
+        .asInstanceOf[Client[
           DefaultOptions,
           DefaultOptionsBuilder,
           DefaultRequestBuilder]]

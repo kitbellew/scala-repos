@@ -211,8 +211,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         .setTimestamp(nodeMetrics.timestamp)
         .addAllMetrics(nodeMetrics.metrics.map(metricToProto(_).build).asJava)
 
-    val nodeMetrics: Iterable[cm.NodeMetrics] =
-      allNodeMetrics.map(nodeMetricsToProto(_).build)
+    val nodeMetrics: Iterable[cm.NodeMetrics] = allNodeMetrics.map(
+      nodeMetricsToProto(_).build)
 
     cm.MetricsGossipEnvelope
       .newBuilder()
@@ -235,8 +235,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
       envelope: cm.MetricsGossipEnvelope): MetricsGossipEnvelope = {
     import scala.collection.breakOut
     val mgossip = envelope.getGossip
-    val addressMapping: Vector[Address] =
-      mgossip.getAllAddressesList.asScala.map(addressFromProto)(breakOut)
+    val addressMapping: Vector[Address] = mgossip.getAllAddressesList.asScala
+      .map(addressFromProto)(breakOut)
     val metricNameMapping: Vector[String] =
       mgossip.getAllMetricNamesList.asScala.toVector
 
@@ -273,8 +273,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         nodeMetrics.getTimestamp,
         nodeMetrics.getMetricsList.asScala.map(metricFromProto)(breakOut))
 
-    val nodeMetrics: Set[NodeMetrics] =
-      mgossip.getNodeMetricsList.asScala.map(nodeMetricsFromProto)(breakOut)
+    val nodeMetrics: Set[NodeMetrics] = mgossip.getNodeMetricsList.asScala
+      .map(nodeMetricsFromProto)(breakOut)
 
     MetricsGossipEnvelope(
       addressFromProto(envelope.getFrom),

@@ -34,8 +34,8 @@ class PartitionTopicInfo(
   debug("initial consumer offset of " + this + " is " + consumedOffset.get)
   debug("initial fetch offset of " + this + " is " + fetchedOffset.get)
 
-  private val consumerTopicStats =
-    ConsumerTopicStatsRegistry.getConsumerTopicStat(clientId)
+  private val consumerTopicStats = ConsumerTopicStatsRegistry
+    .getConsumerTopicStat(clientId)
 
   def getConsumeOffset() = consumedOffset.get
 

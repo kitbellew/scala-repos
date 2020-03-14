@@ -366,12 +366,11 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         case s: ScalaStubBasedElementImpl[_] => s.getLastChildStub
         case _                               => this.getLastChild
       }
-      val languageLevel: LanguageLevel =
-        processor match {
-          case methodProcessor: MethodsProcessor =>
-            methodProcessor.getLanguageLevel
-          case _ => PsiUtil.getLanguageLevel(place)
-        }
+      val languageLevel: LanguageLevel = processor match {
+        case methodProcessor: MethodsProcessor =>
+          methodProcessor.getLanguageLevel
+        case _ => PsiUtil.getLanguageLevel(place)
+      }
       return PsiClassImplUtil.processDeclarationsInClass(
         this,
         processor,

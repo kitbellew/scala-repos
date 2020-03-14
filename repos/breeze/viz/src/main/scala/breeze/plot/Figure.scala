@@ -169,13 +169,14 @@ class Figure(
       plots += None
       j += 1
     }
-    val plot = if (i >= plots.length) {
-      plots += Some(new Plot)
-      plots.last.get
-    } else {
-      if (plots(i) == None) { plots(i) = Some(new Plot) }
-      plots(i).get
-    }
+    val plot =
+      if (i >= plots.length) {
+        plots += Some(new Plot)
+        plots.last.get
+      } else {
+        if (plots(i) == None) { plots(i) = Some(new Plot) }
+        plots(i).get
+      }
 
     plot listen new Plot.Listener {
       def refresh(pl: Plot) { Figure.this.refresh() }

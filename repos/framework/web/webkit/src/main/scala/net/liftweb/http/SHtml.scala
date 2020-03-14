@@ -74,8 +74,7 @@ trait SHtml extends Loggable {
     implicit def enumToStrValPromo[EnumerationTypeWorkaround]
         : SHtml.PairStringPromoter[EnumerationTypeWorkaround] =
       new SHtml.PairStringPromoter[EnumerationTypeWorkaround] {
-        def apply(in: EnumerationTypeWorkaround): String =
-          in.toString
+        def apply(in: EnumerationTypeWorkaround): String = in.toString
       }
   }
 
@@ -121,8 +120,7 @@ trait SHtml extends Loggable {
     def %(attr: ElemAttr): Elem = attr.apply(in)
   }
 
-  implicit def elemToApplicable(e: Elem): ApplicableElem =
-    new ApplicableElem(e)
+  implicit def elemToApplicable(e: Elem): ApplicableElem = new ApplicableElem(e)
 
   /**
     * Any old attribute.  You should not explicitly construct one of these,
@@ -406,8 +404,7 @@ trait SHtml extends Loggable {
           .map(ignore => applyAgain())
           .openOr(NodeSeq.Empty)
 
-      def applyAgain(): NodeSeq =
-        latestElem.copy(child = f(this)(latestKids))
+      def applyAgain(): NodeSeq = latestElem.copy(child = f(this)(latestKids))
 
       def setHtml(): JsCmd = SetHtml(latestId, f(this)(latestKids))
     }
@@ -535,8 +532,7 @@ trait SHtml extends Loggable {
       text: String,
       jsFunc: Call,
       func: () => JsCmd,
-      attrs: ElemAttr*): Elem =
-    ajaxButton(Text(text), jsFunc, func, attrs: _*)
+      attrs: ElemAttr*): Elem = ajaxButton(Text(text), jsFunc, func, attrs: _*)
 
   /**
     * This method generates an AJAX editable field.
@@ -1341,8 +1337,7 @@ trait SHtml extends Loggable {
       value: String,
       func: AFuncHolder,
       ajaxTest: String => JsCmd,
-      attrs: ElemAttr*): Elem =
-    text_*(value, func, Full(ajaxTest), attrs: _*)
+      attrs: ElemAttr*): Elem = text_*(value, func, Full(ajaxTest), attrs: _*)
 
   private def buildOnBlur(bf: Box[String => JsCmd]): MetaData =
     bf match {
@@ -1373,8 +1368,7 @@ trait SHtml extends Loggable {
       value: String,
       func: AFuncHolder,
       ajaxTest: Box[String => JsCmd],
-      attrs: ElemAttr*): Elem =
-    text_*(value, false, func, ajaxTest, attrs: _*)
+      attrs: ElemAttr*): Elem = text_*(value, false, func, ajaxTest, attrs: _*)
 
   def password_*(value: String, func: AFuncHolder, attrs: ElemAttr*): Elem =
     makeFormElement("password", func, attrs: _*) % ("value" -> value)
@@ -1426,9 +1420,8 @@ trait SHtml extends Loggable {
           case Group(g) => runNodes(g)
           // button
           case e: Elem => {
-            val oldAttr: Map[String, String] =
-              Map(allEvent.flatMap(a =>
-                e.attribute(a).map(v => a -> (v.text))): _*)
+            val oldAttr: Map[String, String] = Map(
+              allEvent.flatMap(a => e.attribute(a).map(v => a -> (v.text))): _*)
 
             val newAttr = e.attributes.filter {
               case up: UnprefixedAttribute => !oldAttr.contains(up.key)
@@ -1499,9 +1492,8 @@ trait SHtml extends Loggable {
           case Group(g) => runNodes(g)
           // button
           case e: Elem => {
-            val oldAttr: Map[String, String] =
-              Map(allEvent.flatMap(a =>
-                e.attribute(a).map(v => a -> (v.text + "; "))): _*)
+            val oldAttr: Map[String, String] = Map(allEvent.flatMap(a =>
+              e.attribute(a).map(v => a -> (v.text + "; "))): _*)
 
             val newAttr = e.attributes.filter {
               case up: UnprefixedAttribute => !oldAttr.contains(up.key)
@@ -1987,12 +1979,11 @@ trait SHtml extends Loggable {
     *  <pre>"type=submit" #> ajaxOnSubmit(() => Alert("Done!"))</pre>
     */
   def ajaxOnSubmit(func: () => JsCmd): (NodeSeq) => NodeSeq = {
-    val functionId =
-      _formGroup.is match {
-        case Empty =>
-          formGroup(1)(fmapFunc(func)(id => id))
-        case _ => fmapFunc(func)(id => id)
-      }
+    val functionId = _formGroup.is match {
+      case Empty =>
+        formGroup(1)(fmapFunc(func)(id => id))
+      case _ => fmapFunc(func)(id => id)
+    }
 
     (in: NodeSeq) => {
       def runNodes(ns: NodeSeq): NodeSeq = {
@@ -2242,8 +2233,10 @@ trait SHtml extends Loggable {
       default: Box[T],
       onSubmit: T => Any,
       attrs: ElemAttr*): Elem = {
-    val (nonces, defaultNonce, secureOnSubmit) =
-      secureOptions(options, default, onSubmit)
+    val (nonces, defaultNonce, secureOnSubmit) = secureOptions(
+      options,
+      default,
+      onSubmit)
 
     select_*(nonces, defaultNonce, secureOnSubmit, attrs: _*)
   }
@@ -2494,8 +2487,10 @@ trait SHtml extends Loggable {
       default: Seq[T],
       onSubmit: List[T] => Any,
       attrs: ElemAttr*): Elem = {
-    val (nonces, defaultNonce, secureOnSubmit) =
-      secureMultiOptions(options, default, onSubmit)
+    val (nonces, defaultNonce, secureOnSubmit) = secureMultiOptions(
+      options,
+      default,
+      onSubmit)
 
     multiSelect_*(nonces, defaultNonce, secureOnSubmit, attrs: _*)
   }
@@ -2592,9 +2587,10 @@ trait SHtml extends Loggable {
                              name={name} value={id}/>)(_ % _) %
                 checked(deflt.filter(_ == value).isDefined)
 
-            val elem = if (idx == 0) {
-              radio ++ <input type="hidden" value={hiddenId} name={name}/>
-            } else { radio }
+            val elem =
+              if (idx == 0) {
+                radio ++ <input type="hidden" value={hiddenId} name={name}/>
+              } else { radio }
 
             ChoiceItem(value, elem)
           }
@@ -2757,8 +2753,9 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): ChoiceHolder[T] = {
     fmapFunc {
       LFuncHolder((selectedChoiceValues: List[String]) => {
-        val validSelectedIndicies =
-          selectedChoiceValues.map(_.toInt).filter(possible.isDefinedAt(_))
+        val validSelectedIndicies = selectedChoiceValues
+          .map(_.toInt)
+          .filter(possible.isDefinedAt(_))
         val selectedValues = validSelectedIndicies.map(possible(_))
 
         func(selectedValues)
@@ -2964,8 +2961,7 @@ sealed trait NodeSeqFuncOrSeqNodeSeqFunc extends Function1[NodeSeq, NodeSeq]
 
 object NodeSeqFuncOrSeqNodeSeqFunc {
   implicit def promoteNodeSeq(
-      in: NodeSeq => NodeSeq): NodeSeqFuncOrSeqNodeSeqFunc =
-    NodeSeqFunc(in)
+      in: NodeSeq => NodeSeq): NodeSeqFuncOrSeqNodeSeqFunc = NodeSeqFunc(in)
 
   implicit def promoteSeqNodeSeq(
       in: Seq[NodeSeq => NodeSeq]): NodeSeqFuncOrSeqNodeSeqFunc =

@@ -19,8 +19,9 @@ private[cluster] object Gossip {
 
   private val leaderMemberStatus = Set[MemberStatus](Up, Leaving)
   private val convergenceMemberStatus = Set[MemberStatus](Up, Leaving)
-  val convergenceSkipUnreachableWithMemberStatus =
-    Set[MemberStatus](Down, Exiting)
+  val convergenceSkipUnreachableWithMemberStatus = Set[MemberStatus](
+    Down,
+    Exiting)
   val removeUnreachableWithMemberStatus = Set[MemberStatus](Down, Exiting)
 
 }
@@ -89,8 +90,8 @@ private[cluster] final case class Gossip(
           format seenButNotMember.mkString(", "))
   }
 
-  @transient private lazy val membersMap: Map[UniqueAddress, Member] =
-    members.map(m ⇒ m.uniqueAddress -> m)(collection.breakOut)
+  @transient private lazy val membersMap: Map[UniqueAddress, Member] = members
+    .map(m ⇒ m.uniqueAddress -> m)(collection.breakOut)
 
   /**
     * Increments the version for this 'Node'.

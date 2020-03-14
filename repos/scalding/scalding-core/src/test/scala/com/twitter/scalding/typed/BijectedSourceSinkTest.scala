@@ -32,8 +32,8 @@ class MutatedSourceJob(args: Args) extends Job(args) {
     override def invert(y: (Int, Int)) = LongIntPacker.lr(y._1, y._2)
   }
 
-  val in0: TypedPipe[(Int, Int)] =
-    TypedPipe.from(BijectedSourceSink(TypedTsv[Long]("input0")))
+  val in0: TypedPipe[(Int, Int)] = TypedPipe.from(
+    BijectedSourceSink(TypedTsv[Long]("input0")))
 
   in0
     .map { tup: (Int, Int) => (tup._1 * 2, tup._2 * 2) }
@@ -55,8 +55,9 @@ class MutatedSourceTest extends WordSpec with Matchers {
           unordered should contain(16L)
           // Big one that should be in both the high and low 4 bytes of the Long
           val big = 4123423431L
-          val newBig =
-            LongIntPacker.lr(LongIntPacker.l(big) * 2, LongIntPacker.r(big) * 2)
+          val newBig = LongIntPacker.lr(
+            LongIntPacker.l(big) * 2,
+            LongIntPacker.r(big) * 2)
           unordered should contain(newBig)
         }
         .run
@@ -92,8 +93,9 @@ class ContraMappedAndThenSourceTest extends WordSpec with Matchers {
           unordered should contain(16L)
           // Big one that should be in both the high and low 4 bytes of the Long
           val big = 4123423431L
-          val newBig =
-            LongIntPacker.lr(LongIntPacker.l(big) * 2, LongIntPacker.r(big) * 2)
+          val newBig = LongIntPacker.lr(
+            LongIntPacker.l(big) * 2,
+            LongIntPacker.r(big) * 2)
           unordered should contain(newBig)
         }
         .run

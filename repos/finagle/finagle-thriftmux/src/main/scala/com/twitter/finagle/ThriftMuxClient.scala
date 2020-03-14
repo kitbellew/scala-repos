@@ -34,8 +34,8 @@ class ThriftMuxClientLike private[finagle] (client: ThriftMux.Client)
     */
   def params: Stack.Params = client.params
 
-  protected val Thrift.param.ProtocolFactory(protocolFactory) =
-    client.params[Thrift.param.ProtocolFactory]
+  protected val Thrift.param.ProtocolFactory(protocolFactory) = client
+    .params[Thrift.param.ProtocolFactory]
 
   protected lazy val Label(defaultClientName) = params[Label]
 

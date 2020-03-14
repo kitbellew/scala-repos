@@ -76,8 +76,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
       context: ConfigurationContext,
       location: Location[_ <: PsiElement],
       configuration: T): Unit = {
-    configuration.MAIN_CLASS_NAME =
-      JavaExecutionUtil.getRuntimeQualifiedName(aClass)
+    configuration.MAIN_CLASS_NAME = JavaExecutionUtil.getRuntimeQualifiedName(
+      aClass)
     configuration.setName(configuration.suggestedName())
     setupConfigurationModule(context, configuration)
     JavaRunConfigurationExtensionManager.getInstance

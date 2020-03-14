@@ -72,8 +72,8 @@ class PartitioningSuite
     // We have different behaviour of getPartition for partitions with less than 1000 and more than
     // 1000 partitions.
     val partitionSizes = List(1, 2, 10, 100, 500, 1000, 1500)
-    val partitioners =
-      partitionSizes.map(p => (p, new RangePartitioner(p, rdd)))
+    val partitioners = partitionSizes.map(p =>
+      (p, new RangePartitioner(p, rdd)))
     val decoratedRangeBounds = PrivateMethod[Array[Int]]('rangeBounds)
     partitioners.map {
       case (numPartitions, partitioner) =>
@@ -242,10 +242,12 @@ class PartitioningSuite
   }
 
   test("partitioning Java arrays should fail") {
-    val arrs: RDD[Array[Int]] =
-      sc.parallelize(Array(1, 2, 3, 4), 2).map(x => Array(x))
-    val arrPairs: RDD[(Array[Int], Int)] =
-      sc.parallelize(Array(1, 2, 3, 4), 2).map(x => (Array(x), x))
+    val arrs: RDD[Array[Int]] = sc
+      .parallelize(Array(1, 2, 3, 4), 2)
+      .map(x => Array(x))
+    val arrPairs: RDD[(Array[Int], Int)] = sc
+      .parallelize(Array(1, 2, 3, 4), 2)
+      .map(x => (Array(x), x))
 
     def verify(testFun: => Unit): Unit = {
       intercept[SparkException](testFun).getMessage.contains("array")

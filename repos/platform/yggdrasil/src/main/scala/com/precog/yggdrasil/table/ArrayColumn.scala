@@ -95,8 +95,7 @@ object ArrayBoolColumn {
     new ArrayBoolColumn(d, v)
   }
 
-  def empty(): ArrayBoolColumn =
-    new ArrayBoolColumn(new BitSet, new BitSet)
+  def empty(): ArrayBoolColumn = new ArrayBoolColumn(new BitSet, new BitSet)
 }
 
 class ArrayLongColumn(val defined: BitSet, val values: Array[Long])

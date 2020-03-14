@@ -173,8 +173,8 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
   }
 
   private def launchConnectTask(): Unit = {
-    connectFuture =
-      nettyEnv.clientConnectionExecutor.submit(new Callable[Unit] {
+    connectFuture = nettyEnv.clientConnectionExecutor.submit(
+      new Callable[Unit] {
 
         override def call(): Unit = {
           try {

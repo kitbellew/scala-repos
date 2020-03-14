@@ -22,8 +22,9 @@ class FlattenProjections extends Phase {
         n match {
           case Pure(v, ts) =>
             logger.debug(s"Flattening projection $ts")
-            val (newV, newTranslations) =
-              flattenProjection(tr(v, false), !topLevel)
+            val (newV, newTranslations) = flattenProjection(
+              tr(v, false),
+              !topLevel)
             translations += ts -> newTranslations
             logger.debug(
               s"Adding translation for $ts: ($newTranslations, ${newV.nodeType})")

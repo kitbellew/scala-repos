@@ -286,8 +286,9 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
           Option(uri.getScheme) getOrElse schemeForPort(uri.getPort)
         def path(path: String) = if (null == path || path.isEmpty) "/" else path
 
-        val uri = (if (url.matches("^(http|HTTP)(s|S)?:.*")) new URI(url)
-                   else new URI("http://" + url)).normalize()
+        val uri =
+          (if (url.matches("^(http|HTTP)(s|S)?:.*")) new URI(url)
+           else new URI("http://" + url)).normalize()
         new URI(
           scheme(uri),
           uri.getUserInfo,

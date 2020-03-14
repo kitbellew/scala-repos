@@ -87,12 +87,15 @@ private[spark] class ExecutorAllocationManager(
   import ExecutorAllocationManager._
 
   // Lower and upper bounds on the number of executors.
-  private val minNumExecutors =
-    conf.getInt("spark.dynamicAllocation.minExecutors", 0)
-  private val maxNumExecutors =
-    conf.getInt("spark.dynamicAllocation.maxExecutors", Integer.MAX_VALUE)
-  private val initialNumExecutors =
-    conf.getInt("spark.dynamicAllocation.initialExecutors", minNumExecutors)
+  private val minNumExecutors = conf.getInt(
+    "spark.dynamicAllocation.minExecutors",
+    0)
+  private val maxNumExecutors = conf.getInt(
+    "spark.dynamicAllocation.maxExecutors",
+    Integer.MAX_VALUE)
+  private val initialNumExecutors = conf.getInt(
+    "spark.dynamicAllocation.initialExecutors",
+    minNumExecutors)
 
   // How long there must be backlogged tasks for before an addition is triggered (seconds)
   private val schedulerBacklogTimeoutS = conf.getTimeAsSeconds(
@@ -105,16 +108,18 @@ private[spark] class ExecutorAllocationManager(
     s"${schedulerBacklogTimeoutS}s")
 
   // How long an executor must be idle for before it is removed (seconds)
-  private val executorIdleTimeoutS =
-    conf.getTimeAsSeconds("spark.dynamicAllocation.executorIdleTimeout", "60s")
+  private val executorIdleTimeoutS = conf.getTimeAsSeconds(
+    "spark.dynamicAllocation.executorIdleTimeout",
+    "60s")
 
   private val cachedExecutorIdleTimeoutS = conf.getTimeAsSeconds(
     "spark.dynamicAllocation.cachedExecutorIdleTimeout",
     s"${Integer.MAX_VALUE}s")
 
   // During testing, the methods to actually kill and add executors are mocked out
-  private val testing =
-    conf.getBoolean("spark.dynamicAllocation.testing", false)
+  private val testing = conf.getBoolean(
+    "spark.dynamicAllocation.testing",
+    false)
 
   // TODO: The default value of 1 for spark.executor.cores works right now because dynamic
   // allocation is only supported for YARN and the default number of cores per executor in YARN is
@@ -155,9 +160,8 @@ private[spark] class ExecutorAllocationManager(
   private val listener = new ExecutorAllocationListener
 
   // Executor that handles the scheduling task.
-  private val executor =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "spark-dynamic-executor-allocation")
+  private val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+    "spark-dynamic-executor-allocation")
 
   // Metric source for ExecutorAllocationManager to expose internal status to MetricsSystem.
   val executorAllocationManagerSource = new ExecutorAllocationManagerSource
@@ -389,8 +393,9 @@ private[spark] class ExecutorAllocationManager(
     // Ensure that our target doesn't exceed what we need at the present moment:
     numExecutorsTarget = math.min(numExecutorsTarget, maxNumExecutorsNeeded)
     // Ensure that our target fits within configured bounds:
-    numExecutorsTarget =
-      math.max(math.min(numExecutorsTarget, maxNumExecutors), minNumExecutors)
+    numExecutorsTarget = math.max(
+      math.min(numExecutorsTarget, maxNumExecutors),
+      minNumExecutors)
 
     val delta = numExecutorsTarget - oldNumExecutorsTarget
 
@@ -411,9 +416,9 @@ private[spark] class ExecutorAllocationManager(
       logInfo(
         s"Requesting $delta new $executorsString because tasks are backlogged" +
           s" (new desired total will be $numExecutorsTarget)")
-      numExecutorsToAdd = if (delta == numExecutorsToAdd) {
-        numExecutorsToAdd * 2
-      } else { 1 }
+      numExecutorsToAdd =
+        if (delta == numExecutorsToAdd) { numExecutorsToAdd * 2 }
+        else { 1 }
       delta
     } else {
       logWarning(
@@ -544,8 +549,8 @@ private[spark] class ExecutorAllocationManager(
           // Note that it is not necessary to query the executors since all the cached
           // blocks we are concerned with are reported to the driver. Note that this
           // does not include broadcast blocks.
-          val hasCachedBlocks =
-            SparkEnv.get.blockManager.master.hasCachedBlocks(executorId)
+          val hasCachedBlocks = SparkEnv.get.blockManager.master
+            .hasCachedBlocks(executorId)
           val now = clock.getTimeMillis()
           val timeout = {
             if (hasCachedBlocks) {

@@ -65,8 +65,13 @@ case class MemcacheResponse(
 object MemcacheCodec {
   import Stages._
 
-  val STORAGE_COMMANDS =
-    List("set", "add", "replace", "append", "prepend", "cas")
+  val STORAGE_COMMANDS = List(
+    "set",
+    "add",
+    "replace",
+    "append",
+    "prepend",
+    "cas")
   val END = "\r\nEND\r\n".getBytes
   val CRLF = "\r\n".getBytes
 

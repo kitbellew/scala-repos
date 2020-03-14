@@ -39,8 +39,8 @@ private class P2CBalancer[Req, Rep](
     with P2C[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted =
-    statsReceiver.counter("max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver.counter(
+    "max_effort_exhausted")
 
 }
 
@@ -83,8 +83,8 @@ private class P2CBalancerPeakEwma[Req, Rep](
     with P2C[Req, Rep]
     with Updating[Req, Rep] {
 
-  protected[this] val maxEffortExhausted =
-    statsReceiver.counter("max_effort_exhausted")
+  protected[this] val maxEffortExhausted = statsReceiver.counter(
+    "max_effort_exhausted")
 
 }
 

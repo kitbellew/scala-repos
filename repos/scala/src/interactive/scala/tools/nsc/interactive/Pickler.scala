@@ -323,8 +323,9 @@ object Pickler {
     }
 
   /** A pickler for values of type `Long`, represented as integer literals */
-  implicit val longPickler: Pickler[Long] =
-    tokenPickler("integer literal") { case IntLit(s) => s.toLong }
+  implicit val longPickler: Pickler[Long] = tokenPickler("integer literal") {
+    case IntLit(s) => s.toLong
+  }
 
   /** A pickler for values of type `Int`, represented as integer literals */
   implicit val intPickler: Pickler[Int] = longPickler.wrapped { _.toInt } {

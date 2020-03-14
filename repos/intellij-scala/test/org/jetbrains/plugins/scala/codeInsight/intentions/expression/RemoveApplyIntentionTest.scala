@@ -26,16 +26,14 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveApply3() {
-    val text =
-      """
+    val text = """
         |object D {
         |  def foo() = B
         |
         |  foo.ap<caret>ply(1)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |object D {
         |  def foo() = B
         |
@@ -47,16 +45,14 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveApply4() {
-    val text =
-      """
+    val text = """
         |object D {
         |  def foo() = B
         |
         |  foo().ap<caret>ply(1)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |object D {
         |  def foo() = B
         |
@@ -75,16 +71,14 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveApply6() {
-    val text =
-      """
+    val text = """
         |object D {
         |  def foo()(implicit x: String) = B
         |  implicit val s: String = ""
         |  foo().<caret>apply(1)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |object D {
         |  def foo()(implicit x: String) = B
         |  implicit val s: String = ""
@@ -99,8 +93,7 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveApply7() {
-    val text =
-      """
+    val text = """
         |object P {
         |  class AAAA()(implicit s: String) extends (Int => Int) {
         |    def this(x: Int) {
@@ -112,8 +105,7 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
         |  (new AAAA()).ap<caret>ply(1)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |object P {
         |  class AAAA()(implicit s: String) extends (Int => Int) {
         |    def this(x: Int) {
@@ -133,16 +125,14 @@ class RemoveApplyIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveApply8() {
-    val text =
-      """
+    val text = """
         |object A {
         |  def foo = B
         |  def foo(x: Int) = B
         |  foo.a<caret>pply(1)
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |object A {
         |  def foo = B
         |  def foo(x: Int) = B

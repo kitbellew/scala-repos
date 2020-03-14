@@ -8,19 +8,16 @@ class TryBenchmark extends StdBenchAnnotations {
 
   private[this] val retHello = Return("hello")
 
-  private[this] val mapFn: String => Int =
-    str => str.length
+  private[this] val mapFn: String => Int = str => str.length
 
   private[this] val rescuePf: PartialFunction[Throwable, Try[String]] = {
     case _: IllegalArgumentException => Return("bye")
   }
 
   @Benchmark
-  def returnMap(): Try[Int] =
-    retHello.map(mapFn)
+  def returnMap(): Try[Int] = retHello.map(mapFn)
 
   @Benchmark
-  def returnRescue(): Try[String] =
-    retHello.rescue(rescuePf)
+  def returnRescue(): Try[String] = retHello.rescue(rescuePf)
 
 }

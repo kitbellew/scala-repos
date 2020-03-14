@@ -148,8 +148,9 @@ object Actor extends ListenerManagement {
 
   private[akka] val TIMEOUT =
     Duration(config.getInt("akka.actor.timeout", 5), TIME_UNIT).toMillis
-  private[akka] val SERIALIZE_MESSAGES =
-    config.getBool("akka.actor.serialize-messages", false)
+  private[akka] val SERIALIZE_MESSAGES = config.getBool(
+    "akka.actor.serialize-messages",
+    false)
 
   /** A Receive is a convenience type that defines actor message behavior currently modeled as
     *  a PartialFunction[Any, Unit].

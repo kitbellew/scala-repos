@@ -93,8 +93,8 @@ class TFinagleBinaryProtocolTest
   }
 
   test("writeString larger than threadlocal out buffer") {
-    val longStr =
-      new Random(214566).nextString(TFinagleBinaryProtocol.OutBufferSize + 1)
+    val longStr = new Random(214566)
+      .nextString(TFinagleBinaryProtocol.OutBufferSize + 1)
 
     val trans = new TMemoryBuffer(128)
     val stats = new InMemoryStatsReceiver

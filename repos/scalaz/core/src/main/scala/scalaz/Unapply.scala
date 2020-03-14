@@ -476,8 +476,7 @@ object UnapplyProduct {
 
   object SingletonOf {
     implicit def mkSingletonOf[T <: { type A; type M[_] }](
-        implicit t: T): SingletonOf[T, t.type] =
-      SingletonOf(t)
+        implicit t: T): SingletonOf[T, t.type] = SingletonOf(t)
   }
 
   implicit def unapply[

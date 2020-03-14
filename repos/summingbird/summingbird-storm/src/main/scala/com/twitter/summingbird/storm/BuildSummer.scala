@@ -85,8 +85,10 @@ object BuildSummer {
         }
       }
     } else {
-      val softMemoryFlush =
-        storm.getOrElse(dag, node, DEFAULT_SOFT_MEMORY_FLUSH_PERCENT)
+      val softMemoryFlush = storm.getOrElse(
+        dag,
+        node,
+        DEFAULT_SOFT_MEMORY_FLUSH_PERCENT)
       logger.info(s"[$nodeName] softMemoryFlush : ${softMemoryFlush.get}")
 
       val flushFrequency = storm.getOrElse(dag, node, DEFAULT_FLUSH_FREQUENCY)
@@ -117,8 +119,10 @@ object BuildSummer {
         val asyncPoolSize = storm.getOrElse(dag, node, DEFAULT_ASYNC_POOL_SIZE)
         logger.info(s"[$nodeName] asyncPoolSize : ${asyncPoolSize.get}")
 
-        val valueCombinerCrushSize =
-          storm.getOrElse(dag, node, DEFAULT_VALUE_COMBINER_CACHE_SIZE)
+        val valueCombinerCrushSize = storm.getOrElse(
+          dag,
+          node,
+          DEFAULT_VALUE_COMBINER_CACHE_SIZE)
         logger.info(
           s"[$nodeName] valueCombinerCrushSize : ${valueCombinerCrushSize.get}")
 

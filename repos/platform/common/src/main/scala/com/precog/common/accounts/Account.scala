@@ -55,8 +55,9 @@ object AccountPlan {
 
   implicit val iso = Iso.hlist(AccountPlan.apply _, AccountPlan.unapply _)
   val schema = "type" :: HNil
-  implicit val (decomposer, extractor) =
-    serializationV[AccountPlan](schema, None)
+  implicit val (decomposer, extractor) = serializationV[AccountPlan](
+    schema,
+    None)
 }
 
 case class Account(
@@ -128,8 +129,9 @@ object Account {
 case class WrappedAccountId(accountId: AccountId)
 
 object WrappedAccountId {
-  implicit val wrappedAccountIdIso =
-    Iso.hlist(WrappedAccountId.apply _, WrappedAccountId.unapply _)
+  implicit val wrappedAccountIdIso = Iso.hlist(
+    WrappedAccountId.apply _,
+    WrappedAccountId.unapply _)
 
   val schema = "accountId" :: HNil
 

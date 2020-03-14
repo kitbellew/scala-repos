@@ -243,9 +243,8 @@ class ScalaGlobalMembersCompletionContributor
     def showHint(shouldImport: Boolean) {
       if (!hintShown && !shouldImport && CompletionService.getCompletionService.getAdvertisementText == null) {
         val actionId = IdeActions.ACTION_SHOW_INTENTION_ACTIONS
-        val shortcut: String =
-          KeymapUtil.getFirstKeyboardShortcutText(
-            ActionManager.getInstance.getAction(actionId))
+        val shortcut: String = KeymapUtil.getFirstKeyboardShortcutText(
+          ActionManager.getInstance.getAction(actionId))
         if (shortcut != null) {
           result.addLookupAdvertisement(
             s"To import a method statically, press $shortcut")

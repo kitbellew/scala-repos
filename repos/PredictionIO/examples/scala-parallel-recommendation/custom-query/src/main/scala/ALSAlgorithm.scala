@@ -92,18 +92,19 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
-    val queryFeatures =
-      model.items.keys.flatMap(model.productFeatures.lookup(_).headOption)
+    val queryFeatures = model.items.keys
+      .flatMap(model.productFeatures.lookup(_).headOption)
 
-    val indexScores = if (queryFeatures.isEmpty) {
-      logger.info(s"No productFeatures found for query ${query}.")
-      Array[(Int, Double)]()
-    } else {
-      model.productFeatures
-        .mapValues { f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _) }
-        .filter(_._2 > 0) // keep items with score > 0
-        .collect()
-    }
+    val indexScores =
+      if (queryFeatures.isEmpty) {
+        logger.info(s"No productFeatures found for query ${query}.")
+        Array[(Int, Double)]()
+      } else {
+        model.productFeatures
+          .mapValues { f ⇒ queryFeatures.map(cosine(_, f)).reduce(_ + _) }
+          .filter(_._2 > 0) // keep items with score > 0
+          .collect()
+      }
 
     // HOWTO: filter predicted results by query.
     val filteredScores = filterItems(indexScores, model.items, query)

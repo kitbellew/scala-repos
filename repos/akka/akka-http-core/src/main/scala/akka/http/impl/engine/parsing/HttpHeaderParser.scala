@@ -203,8 +203,11 @@ private[engine] final class HttpHeaderParser private (
       cursor: Int = valueStart,
       nodeIx: Int = branch.branchRootNodeIx): Int = {
     def parseAndInsertHeader() = {
-      val (header, endIx) =
-        branch.parser(this, input, valueStart, onIllegalHeader)
+      val (header, endIx) = branch.parser(
+        this,
+        input,
+        valueStart,
+        onIllegalHeader)
       if (branch.spaceLeft) try {
         insert(input, header)(cursor, endIx, nodeIx, colonIx = 0)
         values(branch.valueIx) = branch.withValueCountIncreased
@@ -426,8 +429,11 @@ private[engine] final class HttpHeaderParser private (
               val postLines = branchLines(rix + 2, "| ", "└─", "  ")
               val p1 = if (preLines.nonEmpty) "| " else "  "
               val p3 = if (postLines.nonEmpty) "| " else "  "
-              val (matchLines, mainLineIx) =
-                recurseAndPrefixLines(branchData(rix + 1), p1, char + '-', p3)
+              val (matchLines, mainLineIx) = recurseAndPrefixLines(
+                branchData(rix + 1),
+                p1,
+                char + '-',
+                p3)
               (preLines ++ matchLines ++ postLines, mainLineIx + preLines.size)
           }
       }
@@ -549,14 +555,14 @@ private[http] object HttpHeaderParser {
     new HttpHeaderParser(settings, warnOnIllegalHeader)
 
   def prime(parser: HttpHeaderParser): HttpHeaderParser = {
-    val valueParsers: Seq[HeaderValueParser] =
-      HeaderParser.ruleNames.map { name ⇒
+    val valueParsers: Seq[HeaderValueParser] = HeaderParser.ruleNames.map {
+      name ⇒
         new ModeledHeaderValueParser(
           name,
           parser.settings.maxHeaderValueLength,
           parser.settings.headerValueCacheLimit(name),
           parser.settings)
-      }(collection.breakOut)
+    }(collection.breakOut)
     def insertInGoodOrder(
         items: Seq[Any])(startIx: Int = 0, endIx: Int = items.size): Unit =
       if (endIx - startIx > 0) {

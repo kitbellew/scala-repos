@@ -21,14 +21,15 @@ class AlgebraInvariantTests extends CatsSuite {
     def combine(x: Int, y: Int): Int = if (x > y) x else y
   }
 
-  val genMonoidInt: Gen[Monoid[Int]] =
-    Gen.oneOf(implicitly[Monoid[Int]], intMultiplication, maxInt)
+  val genMonoidInt: Gen[Monoid[Int]] = Gen.oneOf(
+    implicitly[Monoid[Int]],
+    intMultiplication,
+    maxInt)
 
-  implicit val arbMonoidInt: Arbitrary[Monoid[Int]] =
-    Arbitrary(genMonoidInt)
+  implicit val arbMonoidInt: Arbitrary[Monoid[Int]] = Arbitrary(genMonoidInt)
 
-  implicit val arbSemigoupInt: Arbitrary[Semigroup[Int]] =
-    Arbitrary(genMonoidInt)
+  implicit val arbSemigoupInt: Arbitrary[Semigroup[Int]] = Arbitrary(
+    genMonoidInt)
 
   checkAll(
     "Invariant[Semigroup]",

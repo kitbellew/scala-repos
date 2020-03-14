@@ -57,8 +57,8 @@ object HelpersSpec extends Specification {
 
   "@checkboxGroup" should {
     "allow to check more than one checkbox" in {
-      val form =
-        Form(single("hobbies" -> Forms.list(Forms.text))).fill(List("S", "B"))
+      val form = Form(single("hobbies" -> Forms.list(Forms.text)))
+        .fill(List("S", "B"))
       val body = inputCheckboxGroup
         .apply(form("hobbies"), Seq(("S", "Surfing"), ("B", "Biking")))
         .body
@@ -123,8 +123,8 @@ object HelpersSpec extends Specification {
     }
 
     "Work as a multiple select" in {
-      val form =
-        Form(single("foo" -> Forms.list(Forms.text))).fill(List("0", "1"))
+      val form = Form(single("foo" -> Forms.list(Forms.text)))
+        .fill(List("0", "1"))
       val body = select
         .apply(
           form("foo"),
@@ -141,8 +141,8 @@ object HelpersSpec extends Specification {
     }
 
     "allow disabled options" in {
-      val form =
-        Form(single("foo" -> Forms.list(Forms.text))).fill(List("0", "1"))
+      val form = Form(single("foo" -> Forms.list(Forms.text)))
+        .fill(List("0", "1"))
       val body = select
         .apply(
           form("foo"),

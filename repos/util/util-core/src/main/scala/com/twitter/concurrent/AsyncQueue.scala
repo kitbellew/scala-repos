@@ -48,8 +48,7 @@ class AsyncQueue[T](maxPendingOffers: Int) {
       case _           => 0
     }
 
-  private[this] def queueOf[E](e: E): Queue[E] =
-    Queue.empty.enqueue(e)
+  private[this] def queueOf[E](e: E): Queue[E] = Queue.empty.enqueue(e)
 
   private[this] def pollExcepting(s: Excepting[T]): Future[T] = {
     val q = s.q

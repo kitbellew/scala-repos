@@ -20,8 +20,7 @@ class ScalaBugsTest extends AbstractScalaFormatterTestBase {
    */
 
   def testSCL2424() {
-    val before =
-      """
+    val before = """
 someMethod(new Something, abc, def)
 """.replace("\r", "")
 
@@ -29,8 +28,7 @@ someMethod(new Something, abc, def)
   }
 
   def testSCL2425() {
-    val before =
-      """
+    val before = """
 import foo.{Foo, Bar}
 """.replace("\r", "")
 
@@ -38,8 +36,7 @@ import foo.{Foo, Bar}
   }
 
   def testSCL2477() {
-    val before =
-      """
+    val before = """
 class Foo {
   //some comment
 	private val i = 0;
@@ -52,8 +49,7 @@ class Foo {
   def foo = 1
 }
 """.replace("\r", "")
-    val after =
-      """
+    val after = """
 class Foo {
   //some comment
   private val i = 0;
@@ -71,16 +67,14 @@ class Foo {
   }
 
   def testSCL1875() {
-    val before =
-      """
+    val before = """
 /**
  * something{@link Foo}
  *something
  */
 class A
 """.replace("\r", "")
-    val after =
-      """
+    val after = """
 /**
   * something{@link Foo}
   * something
@@ -93,8 +87,7 @@ class A
   def testSCL2066FromDiscussion() {
     val settings = getCommonSettings
     settings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE
-    val before =
-      """
+    val before = """
 val n = Seq(1,2,3)
 n.foreach
 {
@@ -104,8 +97,7 @@ n.foreach
   }
 }
 """.replace("\r", "")
-    val after =
-      """
+    val after = """
 val n = Seq(1, 2, 3)
 n.foreach
 {
@@ -148,8 +140,7 @@ List((1, 2), (2, 3), (3, 4)).map {case (k: Int, n: Int) => k + n}
 Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter{ case (1, "aa") => true; case _ => false}
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 Set(1, 2, 3).filter {
   a => a % 2 == 0
 }
@@ -169,16 +160,14 @@ Map(1 -> "aa", 2 -> "bb", 3 -> "cc").filter {
     getScalaSettings.SPACES_IN_ONE_LINE_BLOCKS = true
     getCommonSettings.KEEP_SIMPLE_METHODS_IN_ONE_LINE = true
 
-    val before =
-      """
+    val before = """
 def func() {println("test")}
 
 def func2() {
   println("test")}
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def func() { println("test") }
 
 def func2() {
@@ -192,16 +181,14 @@ def func2() {
   def testSCL2839sFalse() {
     getCommonSettings.KEEP_SIMPLE_METHODS_IN_ONE_LINE = false
 
-    val before =
-      """
+    val before = """
 def func() {  println()}
 
 def func2() { println()
 }
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def func() {
   println()
 }
@@ -217,8 +204,7 @@ def func2() {
   def testSCL2470() {
     getScalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS = true
 
-    val before =
-      """
+    val before = """
 def m = {
   () => 123
 }
@@ -236,8 +222,7 @@ def f[T](i: Int) {
 (a: Int, b: Int, c: Int) => a + b + c
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def m = {
   () => 123
 }
@@ -263,8 +248,7 @@ def f[T](i: Int) {
     getScalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME = true
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
-    val before =
-      """
+    val before = """
 def f() {
   println()
 }
@@ -286,8 +270,7 @@ def +++(s: StringBuilder): StringBuilder = {
 def ::= (o: Any) {}
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f () {
   println()
 }
@@ -317,8 +300,7 @@ def ::= (o: Any) {}
     getScalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME = true
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
-    val before =
-      """
+    val before = """
 def f() {
   println()
 }
@@ -340,8 +322,7 @@ def +++(s: StringBuilder): StringBuilder = {
 def ::= (o: Any) {}
       """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f () {
   println()
 }
@@ -371,8 +352,7 @@ def ::= (o: Any) {}
     getScalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME = true
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
-    val before =
-      """
+    val before = """
 def f() {
   println()
 }
@@ -394,8 +374,7 @@ def +++(s: StringBuilder): StringBuilder = {
 def ::= (o: Any) {}
       """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f() {
   println()
 }
@@ -425,8 +404,7 @@ def ::= (o: Any) {}
     getScalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME = false
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
-    val before =
-      """
+    val before = """
 def f() {
   println()
 }
@@ -448,8 +426,7 @@ def +++(s: StringBuilder): StringBuilder = {
 def ::= (o: Any) {}
       """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f() {
   println()
 }
@@ -478,8 +455,7 @@ def ::= (o: Any) {}
     getScalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME = false
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
 
-    val before =
-      """
+    val before = """
 def f() {
   println()
 }
@@ -501,8 +477,7 @@ def +++(s: StringBuilder): StringBuilder = {
 def ::= (o: Any) {}
       """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f() {
   println()
 }
@@ -531,15 +506,13 @@ def ::=(o: Any) {}
     getCommonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES = true
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = true
 
-    val before =
-      """
+    val before = """
 def f(i: Int)(j: Int) {}
 
 f(1)(2)
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 def f (i: Int)(j: Int) {}
 
 f (1)(2)
@@ -552,8 +525,7 @@ f (1)(2)
     getCommonSettings.SPACE_BEFORE_METHOD_PARENTHESES = false
     getCommonSettings.SPACE_BEFORE_METHOD_CALL_PARENTHESES = false
 
-    val before =
-      """
+    val before = """
 class A(i: Int) {
   def this(s: String) {
     this (s.length)
@@ -575,8 +547,7 @@ class B(i: Int)(s: String) {
 }
 """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 class A(i: Int) {
   def this(s: String) {
     this(s.length)
@@ -607,8 +578,7 @@ class B(i: Int)(s: String) {
     getScalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST = true
     getScalaSettings.PLACE_CLOSURE_PARAMETERS_ON_NEW_LINE = false
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
-    val before =
-      """
+    val before = """
 Array.fill(34){scala.util.Random.nextInt(12)  }
 
 foos map{ t=>getCounts(t).toSeq sortBy {-_._2 }   map {_._1 }}
@@ -652,8 +622,7 @@ bars foreach { case (x, y) => list.add(x + y) }
     getScalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST = true
     getScalaSettings.PLACE_CLOSURE_PARAMETERS_ON_NEW_LINE = false
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
-    val before =
-      """
+    val before = """
 Array.fill(34){scala.util.Random.nextInt(12)  }
 
 foos map{ t=>getCounts(t).toSeq sortBy {-_._2 }   map {_._1 }}
@@ -670,8 +639,7 @@ bars foreach{ case (x,y) =>   list.add(x + y) }
 
       """.replace("\r", "")
 
-    val after =
-      """
+    val after = """
 Array.fill(34) {scala.util.Random.nextInt(12)}
 
 foos map {t => getCounts(t).toSeq sortBy {-_._2} map {_._1}}
@@ -692,8 +660,7 @@ bars foreach {case (x, y) => list.add(x + y)}
 
   def testSCL6702() {
     getCurrentCodeStyleSettings.FORMATTER_TAGS_ENABLED = true
-    val before =
-      """
+    val before = """
       |//@formatter:off
       |class SCL6702 {
       |  def foo(p: String ) {
@@ -707,8 +674,7 @@ bars foreach {case (x, y) => list.add(x + y)}
       |}
     """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
       |//@formatter:off
       |class SCL6702 {
       |  def foo(p: String ) {
@@ -730,8 +696,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.SPACE_INSIDE_CLOSURE_BRACES = false
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
 
-    val before =
-      """
+    val before = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map {t => t.toSeq sortBy {-_ } map { _ * 2} }
@@ -740,8 +705,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map {t => t.toSeq sortBy {-_} map {_ * 2}}
@@ -758,8 +722,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.SPACE_INSIDE_CLOSURE_BRACES = false
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
 
-    val before =
-      """
+    val before = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map {t => t.toSeq sortBy {-_ } map { _ * 2} }
@@ -768,8 +731,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map { t => t.toSeq sortBy { -_ } map { _ * 2 } }
@@ -786,8 +748,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.SPACE_INSIDE_CLOSURE_BRACES = true
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
 
-    val before =
-      """
+    val before = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map {t => t.toSeq sortBy {-_ } map { _ * 2} }
@@ -796,8 +757,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map { t => t.toSeq sortBy {-_} map {_ * 2} }
@@ -814,8 +774,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.SPACE_INSIDE_CLOSURE_BRACES = true
     getCommonSettings.KEEP_SIMPLE_BLOCKS_IN_ONE_LINE = true
 
-    val before =
-      """
+    val before = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map {t => t.toSeq sortBy {-_ } map { _ * 2} }
@@ -824,8 +783,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class SCL5488 {
         |  val foos = List[List[Integer]]()
         |  foos map { t => t.toSeq sortBy { -_ } map { _ * 2 } }
@@ -839,8 +797,7 @@ bars foreach {case (x, y) => list.add(x + y)}
 
   def testSCL9243() {
     getScalaSettings.INDENT_BRACED_FUNCTION_ARGS = false
-    val before =
-      """
+    val before = """
         |class a {
         |  foo(
         |  {
@@ -856,16 +813,14 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL5427(): Unit = {
     getScalaSettings.USE_SCALADOC2_FORMATTING = false
 
-    val before =
-      """
+    val before = """
         |/**
         |  * Some comments
         |  */
         |class A
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |/**
         | * Some comments
         | */
@@ -876,8 +831,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   }
 
   def testSCL9264(): Unit = {
-    val before =
-      """
+    val before = """
         |class X {
         |  (for {
         |    i <- 1 to 10
@@ -887,8 +841,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class X {
         |  (for {
         |    i <- 1 to 10
@@ -904,8 +857,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL7898(): Unit = {
     getCommonSettings.KEEP_FIRST_COLUMN_COMMENT = true
 
-    val before =
-      """
+    val before = """
         |class Test {
         |  println(a)
         |//  println(b)
@@ -916,8 +868,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   }
 
   def testSCL9387(): Unit = {
-    val before =
-      """
+    val before = """
         |val x = for {
         |//Comment
         |  x <- Nil
@@ -926,8 +877,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |  }
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |val x = for {
         |//Comment
         |  x <- Nil
@@ -953,8 +903,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL5028_1(): Unit = {
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE
 
-    val before =
-      """
+    val before = """
         |try {
         |  expr
         |} catch
@@ -963,8 +912,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |try
         |{
         |  expr
@@ -981,8 +929,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE_SHIFTED2
     getCommonSettings.CATCH_ON_NEW_LINE = true
 
-    val before =
-      """
+    val before = """
         |try {
         |  expr
         |} catch
@@ -991,8 +938,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |try
         |  {
         |    expr
@@ -1009,8 +955,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL8825(): Unit = {
     getScalaSettings.DO_NOT_INDENT_CASE_CLAUSE_BODY = true
 
-    val before =
-      """
+    val before = """
         |{
         |  case (i) =>
         |  testExpr
@@ -1023,15 +968,13 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL2454(): Unit = {
     getCommonSettings.KEEP_LINE_BREAKS = false
 
-    val before =
-      """
+    val before = """
         |val v
         |    =
         |    "smth"
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |val v = "smth"
       """.stripMargin.replace("\r", "")
 
@@ -1041,13 +984,11 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL2468(): Unit = {
     getScalaSettings.NEWLINE_AFTER_ANNOTATIONS = true
 
-    val before =
-      """
+    val before = """
         |@throws(classOf[IOException]) @deprecated def doSmth() {}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |@throws(classOf[IOException])
         |@deprecated
         |def doSmth() {}
@@ -1060,8 +1001,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getCommonSettings.VARIABLE_ANNOTATION_WRAP =
       CommonCodeStyleSettings.WRAP_ALWAYS
 
-    val before =
-      """
+    val before = """
         |class Test {
         |  def foo(): Unit = {
         |    @deprecated @deprecated
@@ -1070,8 +1010,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Test {
         |  def foo(): Unit = {
         |    @deprecated
@@ -1087,8 +1026,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL2571(): Unit = {
     getCommonSettings.EXTENDS_LIST_WRAP = CommonCodeStyleSettings.WRAP_ALWAYS
 
-    val before =
-      """
+    val before = """
         |class Foo extends Object with Thread with Serializable {
         |  def foo(x: Int = 0,
         |          y: Int = 1,
@@ -1096,8 +1034,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Foo extends Object with
         |  Thread with
         |  Serializable {
@@ -1113,8 +1050,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL2571_1(): Unit = {
     getCommonSettings.EXTENDS_KEYWORD_WRAP = CommonCodeStyleSettings.WRAP_ALWAYS
 
-    val before =
-      """
+    val before = """
         |class Foo extends Object with Thread {
         |  def foo(x: Int = 0,
         |          y: Int = 1,
@@ -1122,8 +1058,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Foo
         |  extends Object with Thread {
         |  def foo(x: Int = 0,
@@ -1139,8 +1074,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getCommonSettings.EXTENDS_KEYWORD_WRAP = CommonCodeStyleSettings.WRAP_ALWAYS
     getCommonSettings.EXTENDS_LIST_WRAP = CommonCodeStyleSettings.WRAP_ALWAYS
 
-    val before =
-      """
+    val before = """
         |class Foo extends Object with Thread with Serializable {
         |  def foo(x: Int = 0,
         |          y: Int = 1,
@@ -1148,8 +1082,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Foo
         |  extends Object with
         |    Thread with
@@ -1191,8 +1124,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL3140_disabled(): Unit = {
     getScalaSettings.ENABLE_SCALADOC_FORMATTING = false
 
-    val before =
-      """
+    val before = """
         |/**
         |  *    Pooly formatted scalaDoc.
         |    *Will still be formatted poorly.
@@ -1203,8 +1135,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |   */
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |/**
         |  *    Pooly formatted scalaDoc.
         |  *Will still be formatted poorly.
@@ -1348,8 +1279,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS = true
     getCommonSettings.ALIGN_MULTILINE_PARAMETERS = false
 
-    val before =
-      """
+    val before = """
         |class Foo(
         |  foo: Int,
         |  bar: Int) {
@@ -1359,8 +1289,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Foo(
         |    foo: Int,
         |    bar: Int) {
@@ -1379,8 +1308,7 @@ bars foreach {case (x, y) => list.add(x + y)}
     getScalaSettings.USE_ALTERNATE_CONTINUATION_INDENT_FOR_PARAMS = true
     getCommonSettings.ALIGN_MULTILINE_PARAMETERS = false
 
-    val before =
-      """
+    val before = """
         |class Foo
         |  (
         |  foo: Int,
@@ -1394,8 +1322,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |class Foo
         |(
         |    foo: Int,
@@ -1415,8 +1342,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL9136_1(): Unit = {
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE
 
-    val before =
-      """
+    val before = """
         |package outer {
         |
         |  class OuterClass {
@@ -1434,8 +1360,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |package outer
         |{
         |
@@ -1461,8 +1386,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testSCL9136_2(): Unit = {
     getCommonSettings.BRACE_STYLE = CommonCodeStyleSettings.NEXT_LINE_SHIFTED2
 
-    val before =
-      """
+    val before = """
         |package outer {
         |
         |  class OuterClass {
@@ -1480,8 +1404,7 @@ bars foreach {case (x, y) => list.add(x + y)}
         |}
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |package outer
         |  {
         |
@@ -1505,8 +1428,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   }
 
   def testParameterlessScalaDocTag(): Unit = {
-    val before =
-      """
+    val before = """
         |/**
         |  * @inheritdoc
         |  * @param resource The photo resource.
@@ -1522,8 +1444,7 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testDisabledScalaDocTagsNewline(): Unit = {
     getScalaSettings.ENABLE_SCALADOC_FORMATTING = false
 
-    val before =
-      """
+    val before = """
         |/**
         |  * @param foo is foo
         |  *
@@ -1537,16 +1458,14 @@ bars foreach {case (x, y) => list.add(x + y)}
   def testScalaDocBlankLineBetweenParameters(): Unit = {
     getScalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS = true
 
-    val before =
-      """
+    val before = """
         |/**
         |  * @param foo is foo
         |  * @param bar is bar
         |  */
       """.stripMargin.replace("\r", "")
 
-    val after =
-      """
+    val after = """
         |/**
         |  * @param foo is foo
         |  *

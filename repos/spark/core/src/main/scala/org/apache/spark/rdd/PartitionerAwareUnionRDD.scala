@@ -92,11 +92,12 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
         parentLocations
       }
     }
-    val location = if (locations.isEmpty) { None }
-    else {
-      // Find the location that maximum number of parent partitions prefer
-      Some(locations.groupBy(x => x).maxBy(_._2.length)._1)
-    }
+    val location =
+      if (locations.isEmpty) { None }
+      else {
+        // Find the location that maximum number of parent partitions prefer
+        Some(locations.groupBy(x => x).maxBy(_._2.length)._1)
+      }
     logDebug(
       "Selected location for " + this + ", partition " + s.index + " = " + location)
     location.toSeq

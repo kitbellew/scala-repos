@@ -97,8 +97,9 @@ class StopOnFirstMatchingOfferMatcherTest
   }
 
   class Fixture {
-    lazy val offer: MesosProtos.Offer =
-      MarathonTestHelper.makeBasicOffer().build()
+    lazy val offer: MesosProtos.Offer = MarathonTestHelper
+      .makeBasicOffer()
+      .build()
     lazy val deadline = Timestamp.now() + 30.seconds
 
     lazy val someMatch: OfferMatcher.MatchedTaskOps = {

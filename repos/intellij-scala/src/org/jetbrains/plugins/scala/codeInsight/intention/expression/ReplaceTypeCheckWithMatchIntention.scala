@@ -56,8 +56,10 @@ class ReplaceTypeCheckWithMatchIntention extends PsiElementBaseIntentionAction {
       condition <- ifStmt.condition
       if findIsInstanceOfCalls(condition, onlyFirst = false) contains iioCall
     } {
-      val (matchStmtOption, renameData) =
-        buildMatchStmt(ifStmt, iioCall, onlyFirst = false)
+      val (matchStmtOption, renameData) = buildMatchStmt(
+        ifStmt,
+        iioCall,
+        onlyFirst = false)
       for (matchStmt <- matchStmtOption) {
         val newMatch = inWriteAction {
           ifStmt

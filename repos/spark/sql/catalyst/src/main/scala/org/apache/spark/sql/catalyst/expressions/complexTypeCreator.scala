@@ -144,12 +144,11 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
   def flatten: Seq[NamedExpression] =
     valExprs.zip(names).map { case (v, n) => Alias(v, n.toString)() }
 
-  private lazy val (nameExprs, valExprs) =
-    children
-      .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
-      .toList
-      .unzip
+  private lazy val (nameExprs, valExprs) = children
+    .grouped(2)
+    .map { case Seq(name, value) => (name, value) }
+    .toList
+    .unzip
 
   private lazy val names = nameExprs.map(_.eval(EmptyRow))
 
@@ -174,8 +173,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName expects an even number of arguments.")
     } else {
-      val invalidNames =
-        nameExprs.filterNot(e => e.foldable && e.dataType == StringType)
+      val invalidNames = nameExprs.filterNot(e =>
+        e.foldable && e.dataType == StringType)
       if (invalidNames.nonEmpty) {
         TypeCheckResult.TypeCheckFailure(
           s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
@@ -269,12 +268,11 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
 case class CreateNamedStructUnsafe(children: Seq[Expression])
     extends Expression {
 
-  private lazy val (nameExprs, valExprs) =
-    children
-      .grouped(2)
-      .map { case Seq(name, value) => (name, value) }
-      .toList
-      .unzip
+  private lazy val (nameExprs, valExprs) = children
+    .grouped(2)
+    .map { case Seq(name, value) => (name, value) }
+    .toList
+    .unzip
 
   private lazy val names = nameExprs.map(_.eval(EmptyRow).toString)
 

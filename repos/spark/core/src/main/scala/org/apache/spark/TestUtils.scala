@@ -144,11 +144,12 @@ private[spark] object TestUtils {
 
     // Calling this outputs a class file in pwd. It's easier to just rename the files than
     // build a custom FileManager that controls the output location.
-    val options = if (classpathUrls.nonEmpty) {
-      Seq(
-        "-classpath",
-        classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
-    } else { Seq() }
+    val options =
+      if (classpathUrls.nonEmpty) {
+        Seq(
+          "-classpath",
+          classpathUrls.map { _.getFile }.mkString(File.pathSeparator))
+      } else { Seq() }
     compiler
       .getTask(
         null,
@@ -181,8 +182,9 @@ private[spark] object TestUtils {
       toStringValue: String = "",
       baseClass: String = null,
       classpathUrls: Seq[URL] = Seq()): File = {
-    val extendsText =
-      Option(baseClass).map { c => s" extends ${c}" }.getOrElse("")
+    val extendsText = Option(baseClass)
+      .map { c => s" extends ${c}" }
+      .getOrElse("")
     val sourceFile = new JavaSourceFromString(
       className,
       "public class " + className + extendsText + " implements java.io.Serializable {" +

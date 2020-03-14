@@ -65,8 +65,10 @@ trait ColumnarTableModuleTestSupport[M[+_]]
 
     val (prefix, suffix) = sampleData.splitAt(sliceSize)
     val slice = new Slice {
-      val (columns, size) =
-        buildColArrays(prefix.toStream, Map.empty[ColumnRef, ArrayColumn[_]], 0)
+      val (columns, size) = buildColArrays(
+        prefix.toStream,
+        Map.empty[ColumnRef, ArrayColumn[_]],
+        0)
     }
 
     (slice, suffix)
@@ -134,27 +136,27 @@ trait ColumnarTableModuleTestSupport[M[+_]]
             prioritized exists { _ isDefinedAt i }
           }
 
-          val (a2, arr) =
-            mask.toList.foldLeft((a, new Array[BigDecimal](range.end))) {
-              case ((acc, arr), i) => {
-                val col = prioritized find { _ isDefinedAt i }
+          val (a2, arr) = mask.toList.foldLeft(
+            (a, new Array[BigDecimal](range.end))) {
+            case ((acc, arr), i) => {
+              val col = prioritized find { _ isDefinedAt i }
 
-                val acc2 = col map {
-                  case lc: LongColumn =>
-                    acc + lc(i)
+              val acc2 = col map {
+                case lc: LongColumn =>
+                  acc + lc(i)
 
-                  case dc: DoubleColumn =>
-                    acc + dc(i)
+                case dc: DoubleColumn =>
+                  acc + dc(i)
 
-                  case nc: NumColumn =>
-                    acc + nc(i)
-                }
-
-                acc2 foreach { arr(i) = _ }
-
-                (acc2 getOrElse acc, arr)
+                case nc: NumColumn =>
+                  acc + nc(i)
               }
+
+              acc2 foreach { arr(i) = _ }
+
+              (acc2 getOrElse acc, arr)
             }
+          }
 
           (
             a2,

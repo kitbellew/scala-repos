@@ -75,16 +75,17 @@ class WebJobManagerSpec extends TestJobService { self =>
     implicit val M: Monad[Future] with Comonad[Future] =
       new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
 
-    val jobs = (new WebJobManager {
-      val executionContext = self.executionContext
-      val M = self.M
-      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-        f(client.path("/jobs/v1/"))
-    }).withM[Future](
-      ResponseAsFuture(M),
-      FutureAsResponse(M),
-      Monad[Response],
-      M)
+    val jobs =
+      (new WebJobManager {
+        val executionContext = self.executionContext
+        val M = self.M
+        protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
+          f(client.path("/jobs/v1/"))
+      }).withM[Future](
+        ResponseAsFuture(M),
+        FutureAsResponse(M),
+        Monad[Response],
+        M)
   })
 }
 
@@ -472,8 +473,9 @@ trait JobManagerSpec[M[+_]] extends Specification {
 
       val job = jobs.createJob(validAPIKey, "b", "c", None, None).copoint
       jobs.start(job.id).copoint
-      val result =
-        JobResult(List(MimeTypes.text / plain), "Hello, world!".getBytes())
+      val result = JobResult(
+        List(MimeTypes.text / plain),
+        "Hello, world!".getBytes())
       jobs.finish(job.id).copoint must beLike {
         case Right(Job(_, _, _, _, _, Finished(_, _))) => ok
       }

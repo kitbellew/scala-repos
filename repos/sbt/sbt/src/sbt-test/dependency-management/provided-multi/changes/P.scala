@@ -8,8 +8,7 @@ object P extends Build {
       scalaBinaryVersion in update := "2.9.0"
     )
 
-  def configIvyScala =
-    ivyScala ~= { _.map(_.copy(checkExplicit = false)) }
+  def configIvyScala = ivyScala ~= { _.map(_.copy(checkExplicit = false)) }
 
   val declared = SettingKey[Boolean]("declared")
   lazy val a = Project("A", file("a")) settings (

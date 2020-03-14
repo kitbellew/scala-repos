@@ -1,8 +1,7 @@
 package java.nio
 
 private[nio] object GenHeapBuffer {
-  def apply[B <: Buffer](self: B): GenHeapBuffer[B] =
-    new GenHeapBuffer(self)
+  def apply[B <: Buffer](self: B): GenHeapBuffer[B] = new GenHeapBuffer(self)
 
   trait NewHeapBuffer[BufferType <: Buffer, ElementType] {
     def apply(
@@ -59,8 +58,13 @@ private[nio] final class GenHeapBuffer[B <: Buffer](val self: B)
   @inline
   def generic_duplicate()(
       implicit newHeapBuffer: NewThisHeapBuffer): BufferType = {
-    val result =
-      newHeapBuffer(capacity, _array, _arrayOffset, position, limit, isReadOnly)
+    val result = newHeapBuffer(
+      capacity,
+      _array,
+      _arrayOffset,
+      position,
+      limit,
+      isReadOnly)
     result._mark = _mark
     result
   }
@@ -68,8 +72,13 @@ private[nio] final class GenHeapBuffer[B <: Buffer](val self: B)
   @inline
   def generic_asReadOnlyBuffer()(
       implicit newHeapBuffer: NewThisHeapBuffer): BufferType = {
-    val result =
-      newHeapBuffer(capacity, _array, _arrayOffset, position, limit, true)
+    val result = newHeapBuffer(
+      capacity,
+      _array,
+      _arrayOffset,
+      position,
+      limit,
+      true)
     result._mark = _mark
     result
   }
@@ -87,8 +96,7 @@ private[nio] final class GenHeapBuffer[B <: Buffer](val self: B)
   }
 
   @inline
-  def generic_load(index: Int): ElementType =
-    _array(_arrayOffset + index)
+  def generic_load(index: Int): ElementType = _array(_arrayOffset + index)
 
   @inline
   def generic_store(index: Int, elem: ElementType): Unit =

@@ -71,8 +71,9 @@ object MacroInferUtil {
               if (tpt.length == 0) return None
               val undef = new ScUndefinedType(
                 new ScTypeParameterType(tpt(0), ScSubstitutor.empty))
-              val genericType =
-                ScParameterizedType(ScDesignatorType(c), Seq(undef))
+              val genericType = ScParameterizedType(
+                ScDesignatorType(c),
+                Seq(undef))
               val (res, undefSubst) = Conformance.conformsInner(
                 genericType,
                 tp,
@@ -82,8 +83,9 @@ object MacroInferUtil {
               undefSubst.getSubstitutor match {
                 case Some(subst) =>
                   val productLikeType = subst.subst(undef)
-                  val parts =
-                    ScPattern.extractProductParts(productLikeType, place)
+                  val parts = ScPattern.extractProductParts(
+                    productLikeType,
+                    place)
                   if (parts.length == 0) return None
                   val coloncolon = manager.getCachedClass(
                     "shapeless.::",

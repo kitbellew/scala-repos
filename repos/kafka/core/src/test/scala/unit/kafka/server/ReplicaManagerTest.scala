@@ -49,8 +49,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -81,8 +81,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -112,8 +112,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -156,8 +156,8 @@ class ReplicaManagerTest {
     val config = KafkaConfig.fromProps(props)
     val zkClient = EasyMock.createMock(classOf[ZkClient])
     val zkUtils = ZkUtils(zkClient, isZkSecurityEnabled = false)
-    val mockLogMgr =
-      TestUtils.createLogManager(config.logDirs.map(new File(_)).toArray)
+    val mockLogMgr = TestUtils.createLogManager(
+      config.logDirs.map(new File(_)).toArray)
     val time = new MockTime()
     val jTime = new JMockTime
     val metrics = new Metrics
@@ -194,8 +194,9 @@ class ReplicaManagerTest {
         fetchCallbackFired = true
       }
 
-      val aliveBrokers =
-        Seq(new Broker(0, "host0", 0), new Broker(1, "host1", 1))
+      val aliveBrokers = Seq(
+        new Broker(0, "host0", 0),
+        new Broker(1, "host1", 1))
       val metadataCache = EasyMock.createMock(classOf[MetadataCache])
       EasyMock
         .expect(metadataCache.getAliveBrokers)

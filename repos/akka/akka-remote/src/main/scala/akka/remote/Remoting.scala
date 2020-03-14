@@ -211,8 +211,9 @@ private[remote] class Remoting(
             Promise()
           manager ! Listen(addressesPromise)
 
-          val transports: Seq[(AkkaProtocolTransport, Address)] =
-            Await.result(addressesPromise.future, StartupTimeout.duration)
+          val transports: Seq[(AkkaProtocolTransport, Address)] = Await.result(
+            addressesPromise.future,
+            StartupTimeout.duration)
           if (transports.isEmpty)
             throw new RemoteTransportException(
               "No transport drivers were loaded.",
@@ -480,8 +481,7 @@ private[remote] object EndpointManager {
         timeOfRelease: Deadline): Unit =
       addressToWritable += address -> Quarantined(uid, timeOfRelease)
 
-    def removePolicy(address: Address): Unit =
-      addressToWritable -= address
+    def removePolicy(address: Address): Unit = addressToWritable -= address
 
     def allEndpoints: collection.Iterable[ActorRef] =
       writableToAddress.keys ++ readonlyToAddress.keys
@@ -521,11 +521,15 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   // Mapping between transports and the local addresses they listen to
   var transportMapping: Map[Address, AkkaProtocolTransport] = Map()
 
-  val pruneInterval: FiniteDuration =
-    (settings.RetryGateClosedFor * 2).max(1.second).min(10.seconds)
+  val pruneInterval: FiniteDuration = (settings.RetryGateClosedFor * 2)
+    .max(1.second)
+    .min(10.seconds)
 
-  val pruneTimerCancellable: Cancellable =
-    context.system.scheduler.schedule(pruneInterval, pruneInterval, self, Prune)
+  val pruneTimerCancellable: Cancellable = context.system.scheduler.schedule(
+    pruneInterval,
+    pruneInterval,
+    self,
+    Prune)
 
   var pendingReadHandoffs = Map[ActorRef, AkkaProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
@@ -550,91 +554,90 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       case None ⇒ body
     }
 
-  override val supervisorStrategy =
-    OneForOneStrategy(loggingEnabled = false) {
-      case e @ InvalidAssociation(
-            localAddress,
-            remoteAddress,
-            reason,
-            disassiciationInfo) ⇒
-        keepQuarantinedOr(remoteAddress) {
-          val causedBy =
-            if (reason.getCause == null) ""
-            else s"Caused by: [${reason.getCause.getMessage}]"
-          log.warning(
-            "Tried to associate with unreachable remote address [{}]. " +
-              "Address is now gated for {} ms, all messages to this address will be delivered to dead letters. " +
-              "Reason: [{}] {}",
-            remoteAddress,
-            settings.RetryGateClosedFor.toMillis,
-            reason.getMessage,
-            causedBy
-          )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
-        }
-        disassiciationInfo.foreach {
-          case AssociationHandle.Quarantined ⇒
-            context.system.eventStream.publish(
-              ThisActorSystemQuarantinedEvent(localAddress, remoteAddress))
-          case _ ⇒ // do nothing
-        }
-        Stop
-
-      case ShutDownAssociation(localAddress, remoteAddress, _) ⇒
-        keepQuarantinedOr(remoteAddress) {
-          log.debug(
-            "Remote system with address [{}] has shut down. " +
-              "Address is now gated for {} ms, all messages to this address will be delivered to dead letters.",
-            remoteAddress,
-            settings.RetryGateClosedFor.toMillis
-          )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
-        }
-        Stop
-
-      case HopelessAssociation(localAddress, remoteAddress, Some(uid), reason) ⇒
-        log.error(
-          reason,
-          "Association to [{}] with UID [{}] irrecoverably failed. Quarantining address.",
+  override val supervisorStrategy = OneForOneStrategy(loggingEnabled = false) {
+    case e @ InvalidAssociation(
+          localAddress,
           remoteAddress,
-          uid)
-        settings.QuarantineDuration match {
-          case d: FiniteDuration ⇒
-            endpoints.markAsQuarantined(remoteAddress, uid, Deadline.now + d)
-            eventPublisher.notifyListeners(QuarantinedEvent(remoteAddress, uid))
-          case _ ⇒ // disabled
-        }
-        Stop
-
-      case HopelessAssociation(localAddress, remoteAddress, None, _) ⇒
-        keepQuarantinedOr(remoteAddress) {
-          log.warning(
-            "Association to [{}] with unknown UID is irrecoverably failed. " +
-              "Address cannot be quarantined without knowing the UID, gating instead for {} ms.",
-            remoteAddress,
-            settings.RetryGateClosedFor.toMillis
-          )
-          endpoints.markAsFailed(
-            sender(),
-            Deadline.now + settings.RetryGateClosedFor)
-        }
-        Stop
-
-      case NonFatal(e) ⇒
-        e match {
-          case _: EndpointDisassociatedException |
-              _: EndpointAssociationException ⇒ // no logging
-          case _ ⇒ log.error(e, e.getMessage)
-        }
+          reason,
+          disassiciationInfo) ⇒
+      keepQuarantinedOr(remoteAddress) {
+        val causedBy =
+          if (reason.getCause == null) ""
+          else s"Caused by: [${reason.getCause.getMessage}]"
+        log.warning(
+          "Tried to associate with unreachable remote address [{}]. " +
+            "Address is now gated for {} ms, all messages to this address will be delivered to dead letters. " +
+            "Reason: [{}] {}",
+          remoteAddress,
+          settings.RetryGateClosedFor.toMillis,
+          reason.getMessage,
+          causedBy
+        )
         endpoints.markAsFailed(
           sender(),
           Deadline.now + settings.RetryGateClosedFor)
-        Stop
-    }
+      }
+      disassiciationInfo.foreach {
+        case AssociationHandle.Quarantined ⇒
+          context.system.eventStream.publish(
+            ThisActorSystemQuarantinedEvent(localAddress, remoteAddress))
+        case _ ⇒ // do nothing
+      }
+      Stop
+
+    case ShutDownAssociation(localAddress, remoteAddress, _) ⇒
+      keepQuarantinedOr(remoteAddress) {
+        log.debug(
+          "Remote system with address [{}] has shut down. " +
+            "Address is now gated for {} ms, all messages to this address will be delivered to dead letters.",
+          remoteAddress,
+          settings.RetryGateClosedFor.toMillis
+        )
+        endpoints.markAsFailed(
+          sender(),
+          Deadline.now + settings.RetryGateClosedFor)
+      }
+      Stop
+
+    case HopelessAssociation(localAddress, remoteAddress, Some(uid), reason) ⇒
+      log.error(
+        reason,
+        "Association to [{}] with UID [{}] irrecoverably failed. Quarantining address.",
+        remoteAddress,
+        uid)
+      settings.QuarantineDuration match {
+        case d: FiniteDuration ⇒
+          endpoints.markAsQuarantined(remoteAddress, uid, Deadline.now + d)
+          eventPublisher.notifyListeners(QuarantinedEvent(remoteAddress, uid))
+        case _ ⇒ // disabled
+      }
+      Stop
+
+    case HopelessAssociation(localAddress, remoteAddress, None, _) ⇒
+      keepQuarantinedOr(remoteAddress) {
+        log.warning(
+          "Association to [{}] with unknown UID is irrecoverably failed. " +
+            "Address cannot be quarantined without knowing the UID, gating instead for {} ms.",
+          remoteAddress,
+          settings.RetryGateClosedFor.toMillis
+        )
+        endpoints.markAsFailed(
+          sender(),
+          Deadline.now + settings.RetryGateClosedFor)
+      }
+      Stop
+
+    case NonFatal(e) ⇒
+      e match {
+        case _: EndpointDisassociatedException |
+            _: EndpointAssociationException ⇒ // no logging
+        case _ ⇒ log.error(e, e.getMessage)
+      }
+      endpoints.markAsFailed(
+        sender(),
+        Deadline.now + settings.RetryGateClosedFor)
+      Stop
+  }
 
   // Structure for saving reliable delivery state across restarts of Endpoints
   val receiveBuffers = new ConcurrentHashMap[Link, ResendState]()
@@ -962,17 +965,16 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         // Iteratively decorates the bottom level driver with a list of adapters.
         // The chain at this point:
         //   Adapter <- ... <- Adapter <- Driver
-        val wrappedTransport =
-          adapters
-            .map {
-              TransportAdaptersExtension.get(context.system).getAdapterProvider
-            }
-            .foldLeft(driver) {
-              (t: Transport, provider: TransportAdapterProvider) ⇒
-                // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
-                provider
-                  .create(t, context.system.asInstanceOf[ExtendedActorSystem])
-            }
+        val wrappedTransport = adapters
+          .map {
+            TransportAdaptersExtension.get(context.system).getAdapterProvider
+          }
+          .foldLeft(driver) {
+            (t: Transport, provider: TransportAdapterProvider) ⇒
+              // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
+              provider
+                .create(t, context.system.asInstanceOf[ExtendedActorSystem])
+          }
 
         // Apply AkkaProtocolTransport wrapper to the end of the chain
         // The chain at this point:

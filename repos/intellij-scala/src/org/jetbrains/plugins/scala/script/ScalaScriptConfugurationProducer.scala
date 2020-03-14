@@ -57,8 +57,8 @@ class ScalaScriptConfugurationProducer extends {
         val settings = RunManager
           .getInstance(location.getProject)
           .createRunConfiguration(scalaFile.name, confFactory)
-        val conf: ScalaScriptRunConfiguration =
-          settings.getConfiguration.asInstanceOf[ScalaScriptRunConfiguration]
+        val conf: ScalaScriptRunConfiguration = settings.getConfiguration
+          .asInstanceOf[ScalaScriptRunConfiguration]
         val module = ModuleUtilCore.findModuleForFile(
           scalaFile.getVirtualFile,
           scalaFile.getProject)

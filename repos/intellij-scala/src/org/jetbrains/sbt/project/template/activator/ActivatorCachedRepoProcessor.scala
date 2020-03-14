@@ -116,8 +116,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
         reader = DirectoryReader.open(FSDirectory.open(extracted))
         val searcher = new IndexSearcher(reader)
-        val docs =
-          searcher.search(new lucene.search.MatchAllDocsQuery, reader.maxDoc())
+        val docs = searcher.search(
+          new lucene.search.MatchAllDocsQuery,
+          reader.maxDoc())
         val data = docs.scoreDocs.map { case doc => reader document doc.doc }
 
         data.map { case docData => Keys.from(docData) }.toMap
@@ -163,8 +164,10 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
       templateId: String,
       extractTo: File,
       onError: String => Unit) {
-    val contentDir =
-      FileUtilRt.createTempDirectory(s"$templateId-template-content", "", true)
+    val contentDir = FileUtilRt.createTempDirectory(
+      s"$templateId-template-content",
+      "",
+      true)
     val contentFile = new File(contentDir, "content.zip")
 
     contentFile.createNewFile()

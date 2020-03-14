@@ -377,8 +377,8 @@ object Set {
                 case Some(bytes) =>
                   run(
                     args.tail.tail,
-                    set.copy(ttl =
-                      Some(InMilliseconds(RequireClientProtocol.safe {
+                    set.copy(ttl = Some(
+                      InMilliseconds(RequireClientProtocol.safe {
                         NumberFormat.toLong(BytesToString(bytes))
                       }))))
               }

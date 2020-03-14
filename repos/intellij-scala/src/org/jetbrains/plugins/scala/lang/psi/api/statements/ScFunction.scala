@@ -273,16 +273,17 @@ trait ScFunction
       case Some(x) => x
     }
     if (!hasParameterClause) return resultType
-    val res = if (clauses.nonEmpty) clauses.foldRight[ScType](resultType) {
-      (clause: ScParameterClause, tp: ScType) =>
-        new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
+    val res =
+      if (clauses.nonEmpty) clauses.foldRight[ScType](resultType) {
+        (clause: ScParameterClause, tp: ScType) =>
+          new ScMethodType(tp, clause.getSmartParameters, clause.isImplicit)(
+            getProject,
+            getResolveScope)
+      }
+      else
+        new ScMethodType(resultType, Seq.empty, false)(
           getProject,
           getResolveScope)
-    }
-    else
-      new ScMethodType(resultType, Seq.empty, false)(
-        getProject,
-        getResolveScope)
     res.asInstanceOf[ScMethodType]
   }
 
@@ -318,8 +319,8 @@ trait ScFunction
   def hasExplicitType = returnTypeElement.isDefined
 
   def removeExplicitType() {
-    val colon =
-      children.find(_.getNode.getElementType == ScalaTokenTypes.tCOLON)
+    val colon = children.find(
+      _.getNode.getElementType == ScalaTokenTypes.tCOLON)
     (colon, returnTypeElement) match {
       case (Some(first), Some(last)) => deleteChildRange(first, last)
       case _                         =>
@@ -780,8 +781,8 @@ trait ScFunction
   override def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
     if (ccontainingClass == null) return this
-    val originalClass: PsiClass =
-      ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
+    val originalClass: PsiClass = ccontainingClass.getOriginalElement
+      .asInstanceOf[PsiClass]
     if (ccontainingClass eq originalClass) return this
     if (!originalClass.isInstanceOf[ScTypeDefinition]) return this
     val c = originalClass.asInstanceOf[ScTypeDefinition]
@@ -795,8 +796,8 @@ trait ScFunction
     if (buf.isEmpty) this
     else if (buf.length == 1) buf(0)
     else {
-      val filter =
-        buf.filter(isSimilarMemberForNavigation(_, strictCheck = true))
+      val filter = buf.filter(
+        isSimilarMemberForNavigation(_, strictCheck = true))
       if (filter.isEmpty) buf(0) else filter(0)
     }
   }
@@ -825,8 +826,8 @@ trait ScFunction
     while (i >= 0) {
       val cl = paramClauses.clauses.apply(i)
       if (!cl.isImplicit) {
-        val paramTypes: Seq[TypeResult[ScType]] =
-          cl.parameters.map(_.getType(TypingContext.empty))
+        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters.map(
+          _.getType(TypingContext.empty))
         if (paramTypes.exists(_.isEmpty)) return None
         res += paramTypes.map(_.get)
       }
@@ -853,8 +854,12 @@ object ScFunction {
     val WithFilter = "withFilter"
 
     val Unapplies: Set[String] = Set(Unapply, UnapplySeq)
-    val ForComprehensions: Set[String] =
-      Set(Foreach, Map, FlatMap, Filter, WithFilter)
+    val ForComprehensions: Set[String] = Set(
+      Foreach,
+      Map,
+      FlatMap,
+      Filter,
+      WithFilter)
     val Special: Set[String] =
       Set(Apply, Update) ++ Unapplies ++ ForComprehensions
   }
@@ -862,8 +867,8 @@ object ScFunction {
   /** Is this function sometimes invoked without it's name appearing at the call site? */
   def isSpecial(name: String): Boolean = Name.Special(name)
 
-  private val calculatedBlockKey: Key[java.lang.Boolean] =
-    Key.create("calculated.function.returns.block")
+  private val calculatedBlockKey: Key[java.lang.Boolean] = Key.create(
+    "calculated.function.returns.block")
 
   @tailrec
   def getCompoundCopy(

@@ -41,8 +41,10 @@ object TupleSetterImpl {
     import c.universe._
 
     val tupTerm = newTermName(c.fresh("tup"))
-    val (finalIdx, set) =
-      CaseClassBasedSetterImpl(c)(tupTerm, allowUnknownTypes, TupleFieldSetter)
+    val (finalIdx, set) = CaseClassBasedSetterImpl(c)(
+      tupTerm,
+      allowUnknownTypes,
+      TupleFieldSetter)
 
     val res = q"""
     new _root_.com.twitter.scalding.TupleSetter[$T] with _root_.com.twitter.bijection.macros.MacroGenerated {

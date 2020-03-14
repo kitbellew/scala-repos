@@ -211,14 +211,14 @@ trait LogisticRegressionLibModule[M[+_]]
               val thetas = Seq.fill(100)(
                 Array.fill(thetaLength - 1)(Random.nextGaussian * 10))
 
-              val (result, _) =
-                (thetas.tail).foldLeft((thetas.head, cost(seq, thetas.head))) {
-                  case ((theta0, cost0), theta) => {
-                    val costnew = cost(seq, theta)
+              val (result, _) = (thetas.tail).foldLeft(
+                (thetas.head, cost(seq, thetas.head))) {
+                case ((theta0, cost0), theta) => {
+                  val costnew = cost(seq, theta)
 
-                    if (costnew < cost0) (theta, costnew) else (theta0, cost0)
-                  }
+                  if (costnew < cost0) (theta, costnew) else (theta0, cost0)
                 }
+              }
 
               result
             }
@@ -227,8 +227,9 @@ trait LogisticRegressionLibModule[M[+_]]
 
             val finalTheta: Theta = gradloop(seq, initialTheta, initialAlpha)
 
-            val tree =
-              CPath.makeTree(cpaths, Range(1, finalTheta.length).toSeq :+ 0)
+            val tree = CPath.makeTree(
+              cpaths,
+              Range(1, finalTheta.length).toSeq :+ 0)
 
             val spec = TransSpec.concatChildren(tree)
 
@@ -240,8 +241,8 @@ trait LogisticRegressionLibModule[M[+_]]
 
             val result = theta.transform(spec)
 
-            val coeffsTable =
-              result.transform(trans.WrapObject(Leaf(Source), "coefficients"))
+            val coeffsTable = result.transform(
+              trans.WrapObject(Leaf(Source), "coefficients"))
 
             val valueTable = coeffsTable.transform(
               trans.WrapObject(Leaf(Source), paths.Value.name))
@@ -263,8 +264,9 @@ trait LogisticRegressionLibModule[M[+_]]
           val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
 
           // `arraySpec` generates the schema in which the Coefficients will be returned
-          val arraySpec =
-            InnerArrayConcat(trans.WrapArray(xsSpec), trans.WrapArray(ySpec))
+          val arraySpec = InnerArrayConcat(
+            trans.WrapArray(xsSpec),
+            trans.WrapArray(ySpec))
           val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
           val table = table0.transform(valueSpec).transform(arraySpec)
 
@@ -287,12 +289,11 @@ trait LogisticRegressionLibModule[M[+_]]
             jtypes <- schemas
           } yield { samples zip jtypes }
 
-          val tableReducer: (Table, JType) => M[Table] =
-            (table, jtype) =>
-              table
-                .toArray[Double]
-                .reduce(reducer)
-                .map(res => extract(res, jtype))
+          val tableReducer: (Table, JType) => M[Table] = (table, jtype) =>
+            table
+              .toArray[Double]
+              .reduce(reducer)
+              .map(res => extract(res, jtype))
 
           val reducedTables: M[Seq[Table]] = tablesWithType flatMap {
             _.map {
@@ -325,13 +326,16 @@ trait LogisticRegressionLibModule[M[+_]]
     object LogisticPrediction
         extends Morphism2(Stats2Namespace, "predictLogistic")
         with LogisticPredictionBase {
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JObjectUnfixedT)
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

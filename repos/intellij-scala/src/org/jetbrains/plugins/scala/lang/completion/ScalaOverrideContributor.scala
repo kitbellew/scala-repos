@@ -102,8 +102,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       false)
     if (clazz == null) return
 
-    val classMembers =
-      ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
+    val classMembers = ScalaOIUtil.getMembersToOverride(
+      clazz,
+      withSelfType = true)
     if (classMembers.isEmpty) return
 
     handleMembers(
@@ -128,8 +129,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     if (mlo.isEmpty) return
     else if (mlo.isDefined && !mlo.get.hasModifierProperty("override")) return
 
-    val classMembers =
-      ScalaOIUtil.getMembersToOverride(clazz, withSelfType = true)
+    val classMembers = ScalaOIUtil.getMembersToOverride(
+      clazz,
+      withSelfType = true)
     if (classMembers.isEmpty) return
 
     def membersToRender =
@@ -179,8 +181,10 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
     val needsInferType = ScalaGenerationInfo.needsInferType
     val text: String = classMember match {
       case mm: ScMethodMember =>
-        val mBody =
-          ScalaGenerationInfo.getMethodBody(mm, td, isImplement = false)
+        val mBody = ScalaGenerationInfo.getMethodBody(
+          mm,
+          td,
+          isImplement = false)
         val fun =
           if (full)
             ScalaPsiElementFactory.createOverrideImplementMethod(

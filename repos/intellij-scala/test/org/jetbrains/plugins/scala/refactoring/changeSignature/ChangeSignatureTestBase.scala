@@ -59,10 +59,11 @@ abstract class ChangeSignatureTestBase
     val secondName = secondFileName(testName)
     val checkSecond = secondName != null
 
-    val secondFile = if (checkSecond) {
-      val secondFileText = getTextFromTestData(secondName)
-      addFileToProject(secondName, secondFileText)
-    } else null
+    val secondFile =
+      if (checkSecond) {
+        val secondFileText = getTextFromTestData(secondName)
+        addFileToProject(secondName, secondFileText)
+      } else null
 
     val fileName = mainFileName(testName)
     configureByFile(fileName)
@@ -85,8 +86,8 @@ abstract class ChangeSignatureTestBase
 
   protected def addFileToProject(fileName: String, text: String): PsiFile = {
     inWriteAction {
-      val vFile =
-        LightPlatformTestCase.getSourceRoot.createChildData(null, fileName)
+      val vFile = LightPlatformTestCase.getSourceRoot
+        .createChildData(null, fileName)
       VfsUtil.saveText(vFile, text)
       val psiFile = LightPlatformTestCase.getPsiManager.findFile(vFile)
       assertNotNull(
@@ -107,8 +108,8 @@ abstract class ChangeSignatureTestBase
   protected def getPsiTypeFromText(
       typeText: String,
       context: PsiElement): PsiType = {
-    val factory: JavaCodeFragmentFactory =
-      JavaCodeFragmentFactory.getInstance(getProjectAdapter)
+    val factory: JavaCodeFragmentFactory = JavaCodeFragmentFactory.getInstance(
+      getProjectAdapter)
     factory.createTypeCodeFragment(typeText, context, false).getType
   }
 
@@ -152,14 +153,13 @@ abstract class ChangeSignatureTestBase
 
     val params = newParams.map(_.map(_.asInstanceOf[ScalaParameterInfo]))
 
-    val changeInfo =
-      new ScalaChangeInfo(
-        newVisibility,
-        targetMethod.asInstanceOf[ScMethodLike],
-        newName,
-        retType,
-        params,
-        isAddDefaultValue)
+    val changeInfo = new ScalaChangeInfo(
+      newVisibility,
+      targetMethod.asInstanceOf[ScMethodLike],
+      newName,
+      retType,
+      params,
+      isAddDefaultValue)
 
     new ScalaChangeSignatureProcessor(getProjectAdapter, changeInfo)
   }

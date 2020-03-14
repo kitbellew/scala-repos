@@ -112,8 +112,9 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     cleaner.logs.remove(topics(0))
 
     cleaner.updateCheckpoints(logDir)
-    val checkpoints = new OffsetCheckpoint(
-      new File(logDir, cleaner.cleanerManager.offsetCheckpointFile)).read()
+    val checkpoints =
+      new OffsetCheckpoint(
+        new File(logDir, cleaner.cleanerManager.offsetCheckpointFile)).read()
 
     // we expect partition 0 to be gone
     assert(!checkpoints.contains(topics(0)))

@@ -53,46 +53,36 @@ class Trilean(val value: Int) extends AnyVal { lhs =>
   def fold[A](f: Boolean => A)(unknown: => A): A =
     if (value == 1) unknown else f(value == -1)
 
-  def assumeTrue: Boolean =
-    value != 0
+  def assumeTrue: Boolean = value != 0
 
-  def assumeFalse: Boolean =
-    value == -1
+  def assumeFalse: Boolean = value == -1
 
-  def assume(b: Boolean): Boolean =
-    if (value == 1) b else value == -1
+  def assume(b: Boolean): Boolean = if (value == 1) b else value == -1
 
-  def toBoolean(b: => Boolean): Boolean =
-    if (value == 1) b else value == -1
+  def toBoolean(b: => Boolean): Boolean = if (value == 1) b else value == -1
 
-  def toOption: Option[Boolean] =
-    if (value == 1) None else Some(value == -1)
+  def toOption: Option[Boolean] = if (value == 1) None else Some(value == -1)
 
   override def toString: String =
     if (value == -1) "true" else if (value == 0) "false" else "unknown"
 
-  def &&(rhs: => Trilean): Trilean =
-    if (lhs.value == 0) lhs else lhs & rhs
+  def &&(rhs: => Trilean): Trilean = if (lhs.value == 0) lhs else lhs & rhs
 
-  def ||(rhs: => Trilean): Trilean =
-    if (lhs.value == -1) lhs else lhs | rhs
+  def ||(rhs: => Trilean): Trilean = if (lhs.value == -1) lhs else lhs | rhs
 
-  def unary_! : Trilean =
-    if (value == 1) lhs else new Trilean(~lhs.value)
+  def unary_! : Trilean = if (value == 1) lhs else new Trilean(~lhs.value)
 
   //   T U F
   // T T U F
   // U U U F
   // F F F F
-  def &(rhs: Trilean): Trilean =
-    new Trilean(lhs.value & rhs.value)
+  def &(rhs: Trilean): Trilean = new Trilean(lhs.value & rhs.value)
 
   //   T U F
   // T T T T
   // U T U U
   // F T U F
-  def |(rhs: Trilean): Trilean =
-    new Trilean(lhs.value | rhs.value)
+  def |(rhs: Trilean): Trilean = new Trilean(lhs.value | rhs.value)
 
   //   T U F
   // T F U T
@@ -107,14 +97,11 @@ class Trilean(val value: Int) extends AnyVal { lhs =>
   // T T U F
   // U T U U
   // F T T T
-  def imp(rhs: Trilean): Trilean =
-    (!lhs) | rhs
+  def imp(rhs: Trilean): Trilean = (!lhs) | rhs
 
-  def nand(rhs: Trilean): Trilean =
-    !(lhs & rhs)
+  def nand(rhs: Trilean): Trilean = !(lhs & rhs)
 
-  def nor(rhs: Trilean): Trilean =
-    !(lhs | rhs)
+  def nor(rhs: Trilean): Trilean = !(lhs | rhs)
 
   //   T U F
   // T T U F
@@ -131,8 +118,7 @@ object Trilean {
   final val False: Trilean = new Trilean(0)
   final val Unknown: Trilean = new Trilean(1)
 
-  final def apply(b: Boolean): Trilean =
-    if (b) True else False
+  final def apply(b: Boolean): Trilean = if (b) True else False
 
   final def apply(o: Option[Boolean]): Trilean =
     o.map(Trilean(_)).getOrElse(Unknown)

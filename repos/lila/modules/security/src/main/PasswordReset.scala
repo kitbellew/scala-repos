@@ -73,7 +73,6 @@ Please do not reply to this message; it was sent from an unmonitored email addre
     import java.nio.charset.StandardCharsets
     def encode(txt: String) =
       Base64.getEncoder.encodeToString(txt getBytes StandardCharsets.UTF_8)
-    def decode(txt: String) =
-      new String(Base64.getDecoder decode txt)
+    def decode(txt: String) = new String(Base64.getDecoder decode txt)
   }
 }

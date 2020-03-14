@@ -25,10 +25,9 @@ class Philosopher {
 @RunWith(classOf[JUnitRunner])
 class ContentionTest extends FunSuite with Eventually {
 
-  implicit override val patienceConfig =
-    PatienceConfig(
-      timeout = scaled(Span(15, Seconds)),
-      interval = scaled(Span(5, Millis)))
+  implicit override val patienceConfig = PatienceConfig(
+    timeout = scaled(Span(15, Seconds)),
+    interval = scaled(Span(5, Millis)))
 
   test("Deadlocks") {
     val c = new ContentionSnapshot()

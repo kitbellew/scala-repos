@@ -135,8 +135,9 @@ trait ProdConsAnalyzerImpl {
             // prevent infinite recursion if an instruction is its own producer or consumer
             // see cyclicProdCons in ProdConsAnalyzerTest
             _initialProducersCache(key) = Set.empty
-            val (sourceValue, sourceValueSlot) =
-              copyOperationSourceValue(insn, producedSlot)
+            val (sourceValue, sourceValueSlot) = copyOperationSourceValue(
+              insn,
+              producedSlot)
             sourceValue.insns.iterator.asScala
               .flatMap(initialProducers(_, sourceValueSlot))
               .toSet

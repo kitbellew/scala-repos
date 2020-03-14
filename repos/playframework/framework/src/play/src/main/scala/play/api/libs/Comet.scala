@@ -52,8 +52,8 @@ object Comet {
       val cb: ByteString = ByteString.fromString(callback)
       def applyOn[A](
           inner: Iteratee[Html, A]): Iteratee[E, Iteratee[Html, A]] = {
-        val fedWithInitialChunk =
-          Iteratee.flatten(Enumerator(initialChunk) |>> inner)
+        val fedWithInitialChunk = Iteratee.flatten(
+          Enumerator(initialChunk) |>> inner)
         val eToScript = Enumeratee.map[E](toHtml(callback, _))
         eToScript.applyOn(fedWithInitialChunk)
       }

@@ -24,8 +24,9 @@ class ScalaArrayAccessEvaluator(
     myEvaluatedIndex = 0
     myEvaluatedArrayReference = null
     val indexValue: Value = indexEvaluator.evaluate(context).asInstanceOf[Value]
-    val arrayValue: Value =
-      arrayReferenceEvaluator.evaluate(context).asInstanceOf[Value]
+    val arrayValue: Value = arrayReferenceEvaluator
+      .evaluate(context)
+      .asInstanceOf[Value]
     if (!arrayValue.isInstanceOf[ArrayReference]) {
       throw EvaluationException(
         DebuggerBundle.message("evaluation.error.array.reference.expected"))
@@ -54,8 +55,8 @@ class ScalaArrayAccessEvaluator(
         }
         def getExpectedType: Type = {
           try {
-            val tp: ArrayType =
-              myEvaluatedArrayReference.referenceType.asInstanceOf[ArrayType]
+            val tp: ArrayType = myEvaluatedArrayReference.referenceType
+              .asInstanceOf[ArrayType]
             tp.componentType
           } catch {
             case e: ClassNotLoadedException =>

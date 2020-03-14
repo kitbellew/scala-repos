@@ -173,8 +173,8 @@ object PlayRun {
       (System.in.available > 0) && (isEOF(System.in.read()) || shouldTerminate)
 
     val sourcesFinder = PathFinder { watched watchPaths state }
-    val watchState =
-      ws.getOrElse(state get ContinuousState getOrElse WatchState.empty)
+    val watchState = ws.getOrElse(
+      state get ContinuousState getOrElse WatchState.empty)
 
     val (triggered, newWatchState, newState) =
       try {
@@ -262,8 +262,8 @@ object PlayRun {
 
     val filter = Set("--no-exit-sbt")
     val filtered = args.filterNot(filter)
-    val devSettings =
-      Seq.empty[(String, String)] // there are no dev settings in a prod website
+    val devSettings = Seq
+      .empty[(String, String)] // there are no dev settings in a prod website
 
     // Parse HTTP port argument
     val (properties, httpPort, httpsPort, httpAddress) = Reloader.filterArgs(

@@ -47,8 +47,12 @@ final case class Extracted(
     import EvaluateTask._
     val rkey = resolve(key.scopedKey)
     val config = extractedTaskConfig(this, structure, state)
-    val value: Option[(State, Result[T])] =
-      apply(structure, key.scopedKey, state, currentRef, config)
+    val value: Option[(State, Result[T])] = apply(
+      structure,
+      key.scopedKey,
+      state,
+      currentRef,
+      config)
     val (newS, result) = getOrError(rkey.scope, rkey.key, value)
     (newS, processResult(result, newS.log))
   }
@@ -131,8 +135,9 @@ final case class Extracted(
       currentRef.build,
       rootProject,
       settings)
-    val newStructure =
-      Load.reapply(session.original ++ appendSettings, structure)
+    val newStructure = Load.reapply(
+      session.original ++ appendSettings,
+      structure)
     Project.setProject(session, newStructure, state)
   }
 }

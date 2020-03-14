@@ -180,8 +180,9 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       Some(handshakeInfo))
   }
 
-  private val DISASSOCIATE =
-    constructControlMessagePdu(WireFormats.CommandType.DISASSOCIATE, None)
+  private val DISASSOCIATE = constructControlMessagePdu(
+    WireFormats.CommandType.DISASSOCIATE,
+    None)
   private val DISASSOCIATE_SHUTTING_DOWN = constructControlMessagePdu(
     WireFormats.CommandType.DISASSOCIATE_SHUTTING_DOWN,
     None)
@@ -197,8 +198,9 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       case AssociationHandle.Quarantined ⇒ DISASSOCIATE_QUARANTINED
     }
 
-  override val constructHeartbeat: ByteString =
-    constructControlMessagePdu(WireFormats.CommandType.HEARTBEAT, None)
+  override val constructHeartbeat: ByteString = constructControlMessagePdu(
+    WireFormats.CommandType.HEARTBEAT,
+    None)
 
   override def decodePdu(raw: ByteString): AkkaPdu = {
     try {
@@ -222,33 +224,36 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
       localAddress: Address): (Option[Ack], Option[Message]) = {
     val ackAndEnvelope = AckAndEnvelopeContainer.parseFrom(raw.toArray)
 
-    val ackOption = if (ackAndEnvelope.hasAck) {
-      import scala.collection.JavaConverters._
-      Some(
-        Ack(
-          SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
-          ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
-    } else None
+    val ackOption =
+      if (ackAndEnvelope.hasAck) {
+        import scala.collection.JavaConverters._
+        Some(
+          Ack(
+            SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
+            ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
+      } else None
 
-    val messageOption = if (ackAndEnvelope.hasEnvelope) {
-      val msgPdu = ackAndEnvelope.getEnvelope
-      Some(
-        Message(
-          recipient = provider.resolveActorRefWithLocalAddress(
-            msgPdu.getRecipient.getPath,
-            localAddress),
-          recipientAddress = AddressFromURIString(msgPdu.getRecipient.getPath),
-          serializedMessage = msgPdu.getMessage,
-          senderOption =
-            if (msgPdu.hasSender)
-              Some(
-                provider.resolveActorRefWithLocalAddress(
-                  msgPdu.getSender.getPath,
-                  localAddress))
-            else None,
-          seqOption = if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq)) else None
-        ))
-    } else None
+    val messageOption =
+      if (ackAndEnvelope.hasEnvelope) {
+        val msgPdu = ackAndEnvelope.getEnvelope
+        Some(
+          Message(
+            recipient = provider.resolveActorRefWithLocalAddress(
+              msgPdu.getRecipient.getPath,
+              localAddress),
+            recipientAddress = AddressFromURIString(
+              msgPdu.getRecipient.getPath),
+            serializedMessage = msgPdu.getMessage,
+            senderOption =
+              if (msgPdu.hasSender)
+                Some(
+                  provider.resolveActorRefWithLocalAddress(
+                    msgPdu.getSender.getPath,
+                    localAddress))
+              else None,
+            seqOption = if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq)) else None
+          ))
+      } else None
 
     (ackOption, messageOption)
   }

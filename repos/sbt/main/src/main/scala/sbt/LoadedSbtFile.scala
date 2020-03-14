@@ -43,8 +43,7 @@ private[sbt] final class LoadedSbtFile(
 private[sbt] final class DefinedSbtValues(
     val sbtFiles: Seq[compiler.EvalDefinitions]) {
 
-  def values(parent: ClassLoader): Seq[Any] =
-    sbtFiles flatMap (_ values parent)
+  def values(parent: ClassLoader): Seq[Any] = sbtFiles flatMap (_ values parent)
 
   def classloader(parent: ClassLoader): ClassLoader =
     sbtFiles.foldLeft(parent) { (cl, e) => e.loader(cl) }
@@ -58,12 +57,10 @@ private[sbt] final class DefinedSbtValues(
       v <- file.valNames
     } yield s"import ${m}.${v}"
   }
-  def generated: Seq[File] =
-    sbtFiles flatMap (_.generated)
+  def generated: Seq[File] = sbtFiles flatMap (_.generated)
 
   // Returns a classpath for the generated .sbt files.
-  def classpath: Seq[File] =
-    generated.map(_.getParentFile).distinct
+  def classpath: Seq[File] = generated.map(_.getParentFile).distinct
 
   /**
     * Joins the defines of this build.sbt with another.

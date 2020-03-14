@@ -150,8 +150,14 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       new Resource(resource.resourceType, Resource.WildCardResource))
 
     //check if there is any Deny acl match that would disallow this operation.
-    val denyMatch =
-      aclMatch(session, operation, resource, principal, host, Deny, acls)
+    val denyMatch = aclMatch(
+      session,
+      operation,
+      resource,
+      principal,
+      host,
+      Deny,
+      acls)
 
     //if principal is allowed to read or write we allow describe by default, the reverse does not apply to Deny.
     val ops =
@@ -284,8 +290,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
           SimpleAclAuthorizer.AclZkPath + "/" + resourceType.name
         val resourceNames = zkUtils.getChildren(resourceTypePath)
         for (resourceName <- resourceNames) {
-          val versionedAcls =
-            getAclsFromZk(Resource(resourceType, resourceName.toString))
+          val versionedAcls = getAclsFromZk(
+            Resource(resourceType, resourceName.toString))
           updateCache(new Resource(resourceType, resourceName), versionedAcls)
         }
       }

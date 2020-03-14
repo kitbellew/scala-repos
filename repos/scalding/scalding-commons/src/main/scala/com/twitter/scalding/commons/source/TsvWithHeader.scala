@@ -50,8 +50,9 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
     new Fields(names: _*)
   }
 
-  override val fields = if (f == Fields.UNKNOWN) { fieldsFromHeaderFile }
-  else { f }
+  override val fields =
+    if (f == Fields.UNKNOWN) { fieldsFromHeaderFile }
+    else { f }
 
   // TODO: move this method to make it a util function.
   def readFromFile(filename: String)(implicit mode: Mode) = {

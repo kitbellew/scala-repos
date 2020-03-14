@@ -27,8 +27,7 @@ class DefaultPoolTest extends FunSuite {
       Future.Done
     }
 
-    override def status: Status =
-      if (closed) Status.Closed else Status.Open
+    override def status: Status = if (closed) Status.Closed else Status.Open
   }
 
   trait DefaultPoolHelper {

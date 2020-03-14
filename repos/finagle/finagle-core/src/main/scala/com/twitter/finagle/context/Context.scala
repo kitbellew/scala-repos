@@ -97,14 +97,12 @@ trait Context {
     def apply[B](key: Key[B]) =
       if (key == this.key) throw new NoSuchElementException else next(key)
 
-    def get[B](key: Key[B]) =
-      if (key == this.key) None else next.get(key)
+    def get[B](key: Key[B]) = if (key == this.key) None else next.get(key)
 
     def getOrElse[B](key: Key[B], orElse: () => B): B =
       if (key == this.key) orElse() else next.getOrElse(key, orElse)
 
-    def contains[B](key: Key[B]) =
-      key != this.key && next.contains(key)
+    def contains[B](key: Key[B]) = key != this.key && next.contains(key)
 
     override def toString = s"Clear($key) :: $next"
   }
@@ -122,8 +120,7 @@ trait Context {
     def getOrElse[A](key: Key[A], orElse: () => A): A =
       left.getOrElse(key, () => right.getOrElse(key, orElse))
 
-    def contains[A](key: Key[A]) =
-      left.contains(key) || right.contains(key)
+    def contains[A](key: Key[A]) = left.contains(key) || right.contains(key)
 
     override def toString = s"OrElse($left, $right)"
   }
@@ -155,8 +152,7 @@ trait Context {
     * Retrieve the current definition of a key if it is defined.
     * If it is not defined, `orElse` is evaluated and returned.
     */
-  def getOrElse[A](key: Key[A], orElse: () => A): A =
-    env.getOrElse(key, orElse)
+  def getOrElse[A](key: Key[A], orElse: () => A): A = env.getOrElse(key, orElse)
 
   /**
     * Tells whether `key` is defined in the current request-local
@@ -174,8 +170,7 @@ trait Context {
     * Bind two keys and values in the scope of `fn`.
     */
   def let[A, B, R](key1: Key[A], value1: A, key2: Key[B], value2: B)(
-      fn: => R): R =
-    local.let(env.bound(key1, value1).bound(key2, value2))(fn)
+      fn: => R): R = local.let(env.bound(key1, value1).bound(key2, value2))(fn)
 
   /**
     * Bind the given environment.
@@ -208,8 +203,7 @@ trait Context {
     *   }
     * }}}
     */
-  def letClear[R]()(fn: => R): R =
-    local.let(Empty) { fn }
+  def letClear[R]()(fn: => R): R = local.let(Empty) { fn }
 
 }
 
@@ -324,8 +318,7 @@ final class MarshalledContext extends Context {
   /**
     * Marshal the current environment into a set of (id, value) pairs.
     */
-  def marshal(): Iterable[(Buf, Buf)] =
-    marshal(env)
+  def marshal(): Iterable[(Buf, Buf)] = marshal(env)
 
   /**
     * Produce an environment consisting of the given marshalled

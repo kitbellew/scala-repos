@@ -102,8 +102,10 @@ package object reify {
 
     tpe.dealiasWiden match {
       case TypeRef(_, ArrayClass, componentTpe :: Nil) =>
-        val componentErasure =
-          reifyRuntimeClass(global)(typer0, componentTpe, concrete)
+        val componentErasure = reifyRuntimeClass(global)(
+          typer0,
+          componentTpe,
+          concrete)
         gen.mkMethodCall(
           currentRun.runDefinitions.arrayClassMethod,
           List(componentErasure))

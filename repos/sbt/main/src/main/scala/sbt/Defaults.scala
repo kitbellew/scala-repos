@@ -155,63 +155,61 @@ object Defaults extends BuildCommon {
       excludeFilter :== HiddenFileFilter
     ) ++ globalIvyCore ++ globalJvmCore) ++ globalSbtCore
 
-  private[sbt] lazy val globalJvmCore: Seq[Setting[_]] =
-    Seq(
-      compilerCache := state.value get Keys.stateCompilerCache getOrElse CompilerCache.fresh,
-      sourcesInBase :== true,
-      autoAPIMappings := false,
-      apiMappings := Map.empty,
-      autoScalaLibrary :== true,
-      managedScalaInstance :== true,
-      definesClass :== FileValueCache(Locate.definesClass _).get,
-      traceLevel in run :== 0,
-      traceLevel in runMain :== 0,
-      traceLevel in console :== Int.MaxValue,
-      traceLevel in consoleProject :== Int.MaxValue,
-      autoCompilerPlugins :== true,
-      scalaHome :== None,
-      apiURL := None,
-      javaHome :== None,
-      testForkedParallel :== false,
-      javaOptions :== Nil,
-      sbtPlugin :== false,
-      crossPaths :== true,
-      sourcePositionMappers :== Nil,
-      artifactClassifier in packageSrc :== Some(SourceClassifier),
-      artifactClassifier in packageDoc :== Some(DocClassifier),
-      includeFilter :== NothingFilter,
-      includeFilter in unmanagedSources :== "*.java" | "*.scala",
-      includeFilter in unmanagedJars :== "*.jar" | "*.so" | "*.dll" | "*.jnilib" | "*.zip",
-      includeFilter in unmanagedResources :== AllPassFilter
-    )
+  private[sbt] lazy val globalJvmCore: Seq[Setting[_]] = Seq(
+    compilerCache := state.value get Keys.stateCompilerCache getOrElse CompilerCache.fresh,
+    sourcesInBase :== true,
+    autoAPIMappings := false,
+    apiMappings := Map.empty,
+    autoScalaLibrary :== true,
+    managedScalaInstance :== true,
+    definesClass :== FileValueCache(Locate.definesClass _).get,
+    traceLevel in run :== 0,
+    traceLevel in runMain :== 0,
+    traceLevel in console :== Int.MaxValue,
+    traceLevel in consoleProject :== Int.MaxValue,
+    autoCompilerPlugins :== true,
+    scalaHome :== None,
+    apiURL := None,
+    javaHome :== None,
+    testForkedParallel :== false,
+    javaOptions :== Nil,
+    sbtPlugin :== false,
+    crossPaths :== true,
+    sourcePositionMappers :== Nil,
+    artifactClassifier in packageSrc :== Some(SourceClassifier),
+    artifactClassifier in packageDoc :== Some(DocClassifier),
+    includeFilter :== NothingFilter,
+    includeFilter in unmanagedSources :== "*.java" | "*.scala",
+    includeFilter in unmanagedJars :== "*.jar" | "*.so" | "*.dll" | "*.jnilib" | "*.zip",
+    includeFilter in unmanagedResources :== AllPassFilter
+  )
 
-  private[sbt] lazy val globalIvyCore: Seq[Setting[_]] =
-    Seq(
-      internalConfigurationMap :== Configurations.internalMap _,
-      credentials :== Nil,
-      exportJars :== false,
-      retrieveManaged :== false,
-      retrieveManagedSync :== false,
-      configurationsToRetrieve :== None,
-      scalaOrganization :== ScalaArtifacts.Organization,
-      sbtResolver := {
-        if (sbtVersion.value endsWith "-SNAPSHOT") Classpaths.typesafeSnapshots
-        else Classpaths.typesafeReleases
-      },
-      crossVersion :== CrossVersion.Disabled,
-      buildDependencies <<= Classpaths.constructBuildDependencies,
-      version :== "0.1-SNAPSHOT",
-      classpathTypes :== Set("jar", "bundle") ++ CustomPomParser.JarPackagings,
-      artifactClassifier :== None,
-      checksums := Classpaths.bootChecksums(appConfiguration.value),
-      conflictManager := ConflictManager.default,
-      pomExtra :== NodeSeq.Empty,
-      pomPostProcess :== idFun,
-      pomAllRepositories :== false,
-      pomIncludeRepository :== Classpaths.defaultRepositoryFilter,
-      updateOptions := UpdateOptions(),
-      forceUpdatePeriod :== None
-    )
+  private[sbt] lazy val globalIvyCore: Seq[Setting[_]] = Seq(
+    internalConfigurationMap :== Configurations.internalMap _,
+    credentials :== Nil,
+    exportJars :== false,
+    retrieveManaged :== false,
+    retrieveManagedSync :== false,
+    configurationsToRetrieve :== None,
+    scalaOrganization :== ScalaArtifacts.Organization,
+    sbtResolver := {
+      if (sbtVersion.value endsWith "-SNAPSHOT") Classpaths.typesafeSnapshots
+      else Classpaths.typesafeReleases
+    },
+    crossVersion :== CrossVersion.Disabled,
+    buildDependencies <<= Classpaths.constructBuildDependencies,
+    version :== "0.1-SNAPSHOT",
+    classpathTypes :== Set("jar", "bundle") ++ CustomPomParser.JarPackagings,
+    artifactClassifier :== None,
+    checksums := Classpaths.bootChecksums(appConfiguration.value),
+    conflictManager := ConflictManager.default,
+    pomExtra :== NodeSeq.Empty,
+    pomPostProcess :== idFun,
+    pomAllRepositories :== false,
+    pomIncludeRepository :== Classpaths.defaultRepositoryFilter,
+    updateOptions := UpdateOptions(),
+    forceUpdatePeriod :== None
+  )
 
   /** Core non-plugin settings for sbt builds.  These *must* be on every build or the sbt engine will fail to run at all. */
   private[sbt] lazy val globalSbtCore: Seq[Setting[_]] = globalDefaults(
@@ -436,8 +434,7 @@ object Defaults extends BuildCommon {
     compileAnalysisFilename := {
       // Here, if the user wants cross-scala-versioning, we also append it
       // to the analysis cache, so we keep the scala versions separated.
-      val extra =
-        if (crossPaths.value) s"_${scalaBinaryVersion.value}" else ""
+      val extra = if (crossPaths.value) s"_${scalaBinaryVersion.value}" else ""
       s"inc_compile${extra}"
     },
     compileIncSetup <<= compileIncSetupTask,
@@ -479,8 +476,10 @@ object Defaults extends BuildCommon {
   def inAllConfigurations[T](key: TaskKey[T]): Initialize[Task[Seq[T]]] =
     (state, thisProjectRef) flatMap { (state, ref) =>
       val structure = Project structure state
-      val configurations =
-        Project.getProject(ref, structure).toList.flatMap(_.configurations)
+      val configurations = Project
+        .getProject(ref, structure)
+        .toList
+        .flatMap(_.configurations)
       configurations.flatMap { conf =>
         key in (ref, conf) get structure.data
       } join
@@ -572,8 +571,8 @@ object Defaults extends BuildCommon {
         if (ScalaInstance.isDotty(scalaVersion.value))
           file(ScalaArtifacts.dottyID(scalaBinaryVersion.value))
         else file(ScalaArtifacts.CompilerID)
-      val otherJars =
-        allFiles.filterNot(x => x == libraryJar || x == compilerJar)
+      val otherJars = allFiles.filterNot(x =>
+        x == libraryJar || x == compilerJar)
       new ScalaInstance(
         scalaVersion.value,
         makeClassLoader(state.value)(
@@ -666,8 +665,9 @@ object Defaults extends BuildCommon {
     val extra = scope.extra match {
       case Select(x) => x; case _ => AttributeMap.empty
     }
-    val key =
-      ScopedKey(scope.copy(extra = Select(testExtra(extra, tdef))), baseKey.key)
+    val key = ScopedKey(
+      scope.copy(extra = Select(testExtra(extra, tdef))),
+      baseKey.key)
     manager(key).log
   }
   private[this] def closeableTestLogger(
@@ -678,8 +678,9 @@ object Defaults extends BuildCommon {
     val extra = scope.extra match {
       case Select(x) => x; case _ => AttributeMap.empty
     }
-    val key =
-      ScopedKey(scope.copy(extra = Select(testExtra(extra, tdef))), baseKey.key)
+    val key = ScopedKey(
+      scope.copy(extra = Select(testExtra(extra, tdef))),
+      baseKey.key)
     val s = manager(key)
     new TestLogger.PerTest(s.log, () => s.close(), buffered)
   }
@@ -873,8 +874,8 @@ object Defaults extends BuildCommon {
         runPolicy match {
           case Tests.SubProcess(opts) =>
             s.log.debug(s"javaOptions: ${opts.runJVMOptions}")
-            val forkedConfig =
-              config.copy(parallel = config.parallel && forkedParallelExecution)
+            val forkedConfig = config.copy(parallel =
+              config.parallel && forkedParallelExecution)
             s.log.debug(
               s"Forking tests - parallelism = ${forkedConfig.parallel}")
             ForkTests(
@@ -1553,8 +1554,8 @@ object Defaults extends BuildCommon {
 
   def noAggregation: Seq[Scoped] =
     Seq(run, runMain, console, consoleQuick, consoleProject)
-  lazy val disableAggregation =
-    Defaults.globalDefaults(noAggregation map disableAggregate)
+  lazy val disableAggregation = Defaults.globalDefaults(
+    noAggregation map disableAggregate)
   def disableAggregate(k: Scoped) = aggregate in k :== false
 
   lazy val runnerSettings: Seq[Setting[_]] = Seq(runnerTask)
@@ -1774,8 +1775,8 @@ object Classpaths {
 
   val ivyBaseSettings: Seq[Setting[_]] =
     baseGlobalDefaults ++ sbtClassifiersTasks ++ Seq(
-      conflictWarning := conflictWarning.value.copy(label =
-        Reference.display(thisProjectRef.value)),
+      conflictWarning := conflictWarning.value
+        .copy(label = Reference.display(thisProjectRef.value)),
       unmanagedBase := baseDirectory.value / "lib",
       normalizedName := Project.normalizeModuleID(name.value),
       isSnapshot <<= isSnapshot or version(_ endsWith "-SNAPSHOT"),
@@ -1976,8 +1977,8 @@ object Classpaths {
         import language.implicitConversions
         implicit val key = (m: ModuleID) => (m.organization, m.name, m.revision)
         val projectDeps = projectDependencies.value.iterator.map(key).toSet
-        val externalModules =
-          update.value.allModules.filterNot(m => projectDeps contains key(m))
+        val externalModules = update.value.allModules.filterNot(m =>
+          projectDeps contains key(m))
         GetClassifiersModule(
           projectID.value,
           externalModules,
@@ -2134,10 +2135,9 @@ object Classpaths {
           loadedBuild,
           thisProjectRef) map { (pid, sbtDep, classifiers, lb, ref) =>
           val pluginClasspath = lb.units(ref.build).unit.plugins.fullClasspath
-          val pluginJars =
-            pluginClasspath.filter(
-              _.data.isFile
-            ) // exclude directories: an approximation to whether they've been published
+          val pluginJars = pluginClasspath.filter(
+            _.data.isFile
+          ) // exclude directories: an approximation to whether they've been published
           val pluginIDs: Seq[ModuleID] = pluginJars.flatMap(_ get moduleID.key)
           GetClassifiersModule(
             pid,
@@ -2158,8 +2158,8 @@ object Classpaths {
           val depDir = dependencyCacheDirectory.value
           withExcludes(out, mod.classifiers, lock(app)) {
             excludes =>
-              val noExplicitCheck =
-                ivyScala.value.map(_.copy(checkExplicit = false))
+              val noExplicitCheck = ivyScala.value.map(
+                _.copy(checkExplicit = false))
               IvyActions.transitiveScratch(
                 is,
                 "sbt",
@@ -2371,8 +2371,11 @@ object Classpaths {
           val ew = EvictionWarning(module, ewo, result, log)
           ew.lines foreach { log.warn(_) }
           ew.infoAllTheThings foreach { log.info(_) }
-          val cw =
-            CompatibilityWarning.run(compatWarning, module, mavenStyle, log)
+          val cw = CompatibilityWarning.run(
+            compatWarning,
+            module,
+            mavenStyle,
+            log)
           result
       }
     def uptodate(inChanged: Boolean, out: UpdateReport): Boolean =
@@ -2447,8 +2450,8 @@ object Classpaths {
       val outCacheFile = cacheFile / "output_dsp"
       val f = Tracked.inputChanged(cacheFile / "input_dsp") {
         (inChanged: Boolean, in: Seq[ModuleID]) =>
-          val outCache =
-            Tracked.lastOutput[Seq[ModuleID], Map[ModuleID, SourcePosition]](
+          val outCache = Tracked
+            .lastOutput[Seq[ModuleID], Map[ModuleID, SourcePosition]](
               outCacheFile) {
               case (_, Some(out)) if !inChanged => out
               case _                            => modulePositions
@@ -2685,8 +2688,11 @@ object Classpaths {
       depConfs: Seq[String],
       default: String,
       defaultMapping: String): String => Seq[String] = {
-    lazy val defaultMap =
-      parseMapping(defaultMapping, masterConfs, depConfs, _ :: Nil)
+    lazy val defaultMap = parseMapping(
+      defaultMapping,
+      masterConfs,
+      depConfs,
+      _ :: Nil)
     parseMapping(
       confString getOrElse default,
       masterConfs,
@@ -2706,18 +2712,17 @@ object Classpaths {
       depConfs: Seq[String],
       default: String => Seq[String])(
       confString: String): String => Seq[String] = {
-    val ms: Seq[(String, Seq[String])] =
-      trim(confString.split("->", 2)) match {
-        case x :: Nil =>
-          for (a <- parseList(x, masterConfs)) yield (a, default(a))
-        case x :: y :: Nil =>
-          val target = parseList(y, depConfs);
-          for (a <- parseList(x, masterConfs)) yield (a, target)
-        case _ =>
-          sys.error(
-            "Invalid configuration '" + confString + "'"
-          ) // shouldn't get here
-      }
+    val ms: Seq[(String, Seq[String])] = trim(confString.split("->", 2)) match {
+      case x :: Nil =>
+        for (a <- parseList(x, masterConfs)) yield (a, default(a))
+      case x :: y :: Nil =>
+        val target = parseList(y, depConfs);
+        for (a <- parseList(x, masterConfs)) yield (a, target)
+      case _ =>
+        sys.error(
+          "Invalid configuration '" + confString + "'"
+        ) // shouldn't get here
+    }
     val m = ms.toMap
     s => m.getOrElse(s, Nil)
   }
@@ -2742,8 +2747,7 @@ object Classpaths {
     ivyConfigurations in p get data getOrElse Nil
   def confOpt(
       configurations: Seq[Configuration],
-      conf: String): Option[Configuration] =
-    configurations.find(_.name == conf)
+      conf: String): Option[Configuration] = configurations.find(_.name == conf)
   def productsTask(
       dep: ResolvedReference,
       conf: String,
@@ -2861,8 +2865,9 @@ object Classpaths {
   lazy val compilerPluginConfig = Seq(
     scalacOptions := {
       val options = scalacOptions.value
-      val newPlugins =
-        autoPlugins(update.value, internalCompilerPluginClasspath.value.files)
+      val newPlugins = autoPlugins(
+        update.value,
+        internalCompilerPluginClasspath.value.files)
       val existing = options.toSet
       if (autoCompilerPlugins.value) options ++ newPlugins.filterNot(existing)
       else options

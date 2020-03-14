@@ -20,28 +20,23 @@ private[nio] final class HeapDoubleBuffer private (
   def isDirect(): Boolean = false
 
   @noinline
-  def slice(): DoubleBuffer =
-    GenHeapBuffer(this).generic_slice()
+  def slice(): DoubleBuffer = GenHeapBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): DoubleBuffer =
-    GenHeapBuffer(this).generic_duplicate()
+  def duplicate(): DoubleBuffer = GenHeapBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): DoubleBuffer =
     GenHeapBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Double =
-    GenBuffer(this).generic_get()
+  def get(): Double = GenBuffer(this).generic_get()
 
   @noinline
-  def put(d: Double): DoubleBuffer =
-    GenBuffer(this).generic_put(d)
+  def put(d: Double): DoubleBuffer = GenBuffer(this).generic_put(d)
 
   @noinline
-  def get(index: Int): Double =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Double = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, d: Double): DoubleBuffer =
@@ -56,8 +51,7 @@ private[nio] final class HeapDoubleBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): DoubleBuffer =
-    GenHeapBuffer(this).generic_compact()
+  def compact(): DoubleBuffer = GenHeapBuffer(this).generic_compact()
 
   def order(): ByteOrder = ByteOrder.nativeOrder()
 

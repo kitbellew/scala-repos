@@ -15,9 +15,9 @@ import akka.actor._
 
 object LoggingReceiveSpec {
   class TestLogActor extends Actor {
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 5 seconds)(
-        List(classOf[Throwable]))
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 5,
+      withinTimeRange = 5 seconds)(List(classOf[Throwable]))
     def receive = { case _ ⇒ }
   }
 }
@@ -209,8 +209,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         within(3 seconds) {
           val supervisor = TestActorRef[TestLogActor](Props[TestLogActor])
           val sclass = classOf[TestLogActor]
-          val actor =
-            TestActorRef[TestLogActor](Props[TestLogActor], supervisor, "none")
+          val actor = TestActorRef[TestLogActor](
+            Props[TestLogActor],
+            supervisor,
+            "none")
           val aname = actor.path.toString
 
           supervisor watch actor
@@ -246,8 +248,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
             case _ ⇒ false
           }
 
-          val actor =
-            TestActorRef[TestLogActor](Props[TestLogActor], supervisor, "none")
+          val actor = TestActorRef[TestLogActor](
+            Props[TestLogActor],
+            supervisor,
+            "none")
           val aname = actor.path.toString
           val aclass = classOf[TestLogActor]
 

@@ -51,8 +51,10 @@ object CachedInsidePsiElement {
         val analyzeCaches = analyzeCachesEnabled(c)
         val provider = TypeName("MyProvider")
 
-        val actualCalculation =
-          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
+        val actualCalculation = transformRhsToAnalyzeCaches(c)(
+          cacheStatsName,
+          retTp,
+          rhs)
 
         val analyzeCachesEnterCacheArea =
           if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
@@ -63,8 +65,13 @@ object CachedInsidePsiElement {
           ..$analyzeCachesEnterCacheArea
           $cachesUtilFQN.get($elem, $key, new $cachesUtilFQN.$provider[Any, $retTp]($elem, _ => $cachedFunName())($dependencyItem))
           """
-        val updatedDef =
-          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
+        val updatedDef = DefDef(
+          mods,
+          name,
+          tpParams,
+          paramss,
+          retTp,
+          updatedRhs)
         val res = q"""
           private val $key = $cachesUtilFQN.getOrCreateKey[$keyTypeFQN[$cachedValueTypeFQN[$retTp]]]($keyId)
           ${if (analyzeCaches)

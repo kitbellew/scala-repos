@@ -36,8 +36,9 @@ class CreateExtractorObjectQuickFix(ref: ScReferenceElement, p: ScPattern)
 
   private def addUnapplyMethod(clazz: ScTypeDefinition): Unit = {
     val methodText = unapplyMethodText(p)
-    val method =
-      ScalaPsiElementFactory.createMethodFromText(methodText, clazz.getManager)
+    val method = ScalaPsiElementFactory.createMethodFromText(
+      methodText,
+      clazz.getManager)
     clazz.addMember(method, None)
   }
 }

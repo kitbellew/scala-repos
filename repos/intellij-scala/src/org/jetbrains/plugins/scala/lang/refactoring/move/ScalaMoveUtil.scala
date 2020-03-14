@@ -31,8 +31,8 @@ import scala.collection.JavaConverters._
   * 10/24/13
   */
 object ScalaMoveUtil {
-  val MOVE_DESTINATION: Key[PsiDirectory] =
-    Key.create[PsiDirectory]("MoveDestination")
+  val MOVE_DESTINATION: Key[PsiDirectory] = Key.create[PsiDirectory](
+    "MoveDestination")
   val MOVE_SOURCE: Key[PsiFile] = Key.create("MoveSource")
   private val PROCESSOR: ScalaCopyPastePostProcessor =
     new ScalaCopyPastePostProcessor
@@ -52,10 +52,11 @@ object ScalaMoveUtil {
   }
 
   def classCanBeAdded(file: PsiFile, aClass: PsiClass): Boolean = {
-    val allClasses =
-      PsiTreeUtil.findChildrenOfType(file, classOf[ScTypeDefinition])
-    val withSameName =
-      allClasses.asScala.filter(_.name == ScalaNamesUtil.scalaName(aClass))
+    val allClasses = PsiTreeUtil.findChildrenOfType(
+      file,
+      classOf[ScTypeDefinition])
+    val withSameName = allClasses.asScala.filter(
+      _.name == ScalaNamesUtil.scalaName(aClass))
     withSameName.size == 1 && canBeCompanions(
       withSameName.head,
       aClass) || withSameName.isEmpty
@@ -109,8 +110,8 @@ object ScalaMoveUtil {
               case _: ScTrait  => ScalaFileTemplateUtil.SCALA_TRAIT
               case _: ScObject => ScalaFileTemplateUtil.SCALA_OBJECT
             }
-            val created: PsiClass =
-              ScalaDirectoryService.createClassFromTemplate(
+            val created: PsiClass = ScalaDirectoryService
+              .createClassFromTemplate(
                 moveDestination,
                 td.name,
                 template,
@@ -166,8 +167,8 @@ object ScalaMoveUtil {
 
   def restoreAssociations(@NotNull aClass: PsiClass, withCompanion: Boolean) {
     def restoreInner(clazz: PsiClass) {
-      val associations: Associations =
-        clazz.getCopyableUserData(ASSOCIATIONS_KEY)
+      val associations: Associations = clazz.getCopyableUserData(
+        ASSOCIATIONS_KEY)
       if (associations != null) {
         try {
           PROCESSOR.restoreAssociations(

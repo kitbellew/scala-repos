@@ -381,8 +381,9 @@ abstract class UnixTime extends BinaryExpression with ExpectsInputTypes {
   override def dataType: DataType = LongType
   override def nullable: Boolean = true
 
-  private lazy val constFormat: UTF8String =
-    right.eval().asInstanceOf[UTF8String]
+  private lazy val constFormat: UTF8String = right
+    .eval()
+    .asInstanceOf[UTF8String]
 
   override def eval(input: InternalRow): Any = {
     val t = left.eval(input)
@@ -509,8 +510,9 @@ case class FromUnixTime(sec: Expression, format: Expression)
 
   override def inputTypes: Seq[AbstractDataType] = Seq(LongType, StringType)
 
-  private lazy val constFormat: UTF8String =
-    right.eval().asInstanceOf[UTF8String]
+  private lazy val constFormat: UTF8String = right
+    .eval()
+    .asInstanceOf[UTF8String]
 
   override def eval(input: InternalRow): Any = {
     val time = left.eval(input)
@@ -624,8 +626,8 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
   override def nullable: Boolean = true
 
   override def nullSafeEval(start: Any, dayOfW: Any): Any = {
-    val dow =
-      DateTimeUtils.getDayOfWeekFromString(dayOfW.asInstanceOf[UTF8String])
+    val dow = DateTimeUtils.getDayOfWeekFromString(
+      dayOfW.asInstanceOf[UTF8String])
     if (dow == -1) { null }
     else {
       val sd = start.asInstanceOf[Int]
@@ -943,14 +945,15 @@ case class TruncDate(date: Expression, format: Expression)
   override def nullable: Boolean = true
   override def prettyName: String = "trunc"
 
-  private lazy val truncLevel: Int =
-    DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
+  private lazy val truncLevel: Int = DateTimeUtils.parseTruncLevel(
+    format.eval().asInstanceOf[UTF8String])
 
   override def eval(input: InternalRow): Any = {
-    val level = if (format.foldable) { truncLevel }
-    else {
-      DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
-    }
+    val level =
+      if (format.foldable) { truncLevel }
+      else {
+        DateTimeUtils.parseTruncLevel(format.eval().asInstanceOf[UTF8String])
+      }
     if (level == -1) {
       // unknown format
       null

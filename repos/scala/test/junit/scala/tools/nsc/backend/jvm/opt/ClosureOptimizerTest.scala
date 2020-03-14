@@ -50,8 +50,9 @@ class ClosureOptimizerTest extends ClearAfterClass {
 
     val List(c) = compileClasses(compiler)(code)
     val t = findAsmMethod(c, "t")
-    val List(bodyCall) =
-      findInstr(t, "INVOKESTATIC C.C$$$anonfun$1 ()Lscala/runtime/Nothing$")
+    val List(bodyCall) = findInstr(
+      t,
+      "INVOKESTATIC C.C$$$anonfun$1 ()Lscala/runtime/Nothing$")
     assert(bodyCall.getNext.getOpcode == ATHROW)
   }
 
@@ -67,16 +68,16 @@ class ClosureOptimizerTest extends ClearAfterClass {
 
     val List(c) = compileClasses(compiler)(code)
     val t = findAsmMethod(c, "t")
-    val List(bodyCall) =
-      findInstr(t, "INVOKESTATIC C.C$$$anonfun$1 ()Lscala/runtime/Null$")
+    val List(bodyCall) = findInstr(
+      t,
+      "INVOKESTATIC C.C$$$anonfun$1 ()Lscala/runtime/Null$")
     assert(bodyCall.getNext.getOpcode == POP)
     assert(bodyCall.getNext.getNext.getOpcode == ACONST_NULL)
   }
 
   @Test
   def makeLMFCastExplicit(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(l: List[String]) = {
         |    val fun: String => String = s => s
         |    fun(l.head)
@@ -110,8 +111,7 @@ class ClosureOptimizerTest extends ClearAfterClass {
   def closureOptWithUnreachableCode(): Unit = {
     // this example used to crash the ProdCons analysis in the closure optimizer - ProdCons
     // expects no unreachable code.
-    val code =
-      """class C {
+    val code = """class C {
         |  @inline final def m = throw new Error("")
         |  def t = {
         |    val f = (x: Int) => x + 1

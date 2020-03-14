@@ -46,8 +46,8 @@ class JavaUniverse
   protected def PerRunReporting = new PerRunReporting
 
   type TreeCopier = InternalTreeCopierOps
-  implicit val TreeCopierTag: ClassTag[TreeCopier] =
-    ClassTag[TreeCopier](classOf[TreeCopier])
+  implicit val TreeCopierTag: ClassTag[TreeCopier] = ClassTag[TreeCopier](
+    classOf[TreeCopier])
   def newStrictTreeCopier: TreeCopier = new StrictTreeCopier
   def newLazyTreeCopier: TreeCopier = new LazyTreeCopier
 

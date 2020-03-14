@@ -116,8 +116,8 @@ class SpectralProjectedGradientTest
     val x = H \ f
 
     init := 0.0
-    val spgResult =
-      new SpectralProjectedGradient[DenseVector[Double]]().minimize(cost, init)
+    val spgResult = new SpectralProjectedGradient[DenseVector[Double]]()
+      .minimize(cost, init)
     assert(norm(x - spgResult, inf) < 1e-4, s"$x $spgResult")
   }
 
@@ -245,9 +245,10 @@ class SpectralProjectedGradientTest
 
     val s = octaveL1.foldLeft(0.0) { case (agg, entry) => agg + abs(entry) }
     val projectL1 = ProjectL1(s)
-    val spgResult = new SpectralProjectedGradient[DenseVector[Double]](
-      Projection(projectL1).project)
-      .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
+    val spgResult =
+      new SpectralProjectedGradient[DenseVector[Double]](
+        Projection(projectL1).project)
+        .minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
     println(s"SpectralProjectedGradient L1 projection iters ${spgResult.iter}")
     assert(norm(spgResult.x - octaveL1, 2) < 1e-4)
   }

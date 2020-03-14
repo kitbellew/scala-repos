@@ -46,8 +46,7 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
   def foldMap1[B](f: A => B)(implicit
       F: Foldable1[F],
       G: Foldable1[G],
-      M: Semigroup[B]): B =
-    run.fold(F.foldMap1(_)(f), G.foldMap1(_)(f))
+      M: Semigroup[B]): B = run.fold(F.foldMap1(_)(f), G.foldMap1(_)(f))
 
   def foldMapRight1[B](z: A => B)(
       f: (A, => B) => B)(implicit F: Foldable1[F], G: Foldable1[G]): B =
@@ -71,17 +70,13 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       x => A.map(G.traverse1(x)(g))(rightc(_))
     )
 
-  def isLeft: Boolean =
-    run.isLeft
+  def isLeft: Boolean = run.isLeft
 
-  def isRight: Boolean =
-    run.isRight
+  def isRight: Boolean = run.isRight
 
-  def unary_~ : Coproduct[G, F, A] =
-    Coproduct(~run)
+  def unary_~ : Coproduct[G, F, A] = Coproduct(~run)
 
-  def validation: Validation[F[A], G[A]] =
-    run.validation
+  def validation: Validation[F[A], G[A]] = run.validation
 
 }
 
@@ -102,11 +97,9 @@ object Coproduct extends CoproductInstances {
       def to[A](fa: Coproduct[F, G, A]) = fa.run
     }
 
-  def leftc[F[_], G[_], A](x: F[A]): Coproduct[F, G, A] =
-    Coproduct(-\/(x))
+  def leftc[F[_], G[_], A](x: F[A]): Coproduct[F, G, A] = Coproduct(-\/(x))
 
-  def rightc[F[_], G[_], A](x: G[A]): Coproduct[F, G, A] =
-    Coproduct(\/-(x))
+  def rightc[F[_], G[_], A](x: G[A]): Coproduct[F, G, A] = Coproduct(\/-(x))
 
   final class CoproductLeft[G[_]] private[Coproduct] {
     def apply[F[_], A](fa: F[A]): Coproduct[F, G, A] = Coproduct(-\/(fa))
@@ -128,8 +121,7 @@ object Coproduct extends CoproductInstances {
 }
 
 sealed abstract class CoproductInstances3 {
-  type TupleCoglorified[F[_], G[_], A] =
-    Coproduct[F, G, A]
+  type TupleCoglorified[F[_], G[_], A] = Coproduct[F, G, A]
 
   implicit def coproductEqual[F[_], G[_], A](
       implicit E: Equal[F[A] \/ G[A]]): Equal[Coproduct[F, G, A]] =
@@ -204,8 +196,7 @@ private trait CoproductFunctor[F[_], G[_]] extends Functor[Coproduct[F, G, ?]] {
   implicit def F: Functor[F]
   implicit def G: Functor[G]
 
-  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) =
-    a map f
+  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) = a map f
 }
 
 private trait CoproductContravariant[F[_], G[_]]
@@ -213,8 +204,7 @@ private trait CoproductContravariant[F[_], G[_]]
   implicit def F: Contravariant[F]
   implicit def G: Contravariant[G]
 
-  override def contramap[A, B](a: Coproduct[F, G, A])(f: B => A) =
-    a contramap f
+  override def contramap[A, B](a: Coproduct[F, G, A])(f: B => A) = a contramap f
 }
 
 private trait CoproductFoldable[F[_], G[_]]
@@ -223,12 +213,10 @@ private trait CoproductFoldable[F[_], G[_]]
   implicit def G: Foldable[G]
 
   override def foldRight[A, B](fa: Coproduct[F, G, A], z: => B)(
-      f: (A, => B) => B): B =
-    fa.foldRight(z)(f)
+      f: (A, => B) => B): B = fa.foldRight(z)(f)
 
   override def foldMap[A, B](fa: Coproduct[F, G, A])(f: A => B)(
-      implicit M: Monoid[B]) =
-    fa foldMap f
+      implicit M: Monoid[B]) = fa foldMap f
 }
 
 private trait CoproductFoldable1[F[_], G[_]]
@@ -237,12 +225,10 @@ private trait CoproductFoldable1[F[_], G[_]]
   implicit def G: Foldable1[G]
 
   override final def foldMap1[A, B: Semigroup](fa: Coproduct[F, G, A])(
-      f: A => B): B =
-    fa.foldMap1(f)
+      f: A => B): B = fa.foldMap1(f)
 
   override final def foldMapRight1[A, B](fa: Coproduct[F, G, A])(z: A => B)(
-      f: (A, => B) => B): B =
-    fa.foldMapRight1(z)(f)
+      f: (A, => B) => B): B = fa.foldMapRight1(z)(f)
 }
 
 private trait CoproductTraverse[F[_], G[_]]
@@ -250,12 +236,10 @@ private trait CoproductTraverse[F[_], G[_]]
   implicit def F: Traverse[F]
   implicit def G: Traverse[G]
 
-  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) =
-    a map f
+  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) = a map f
 
   override def traverseImpl[X[_]: Applicative, A, B](fa: Coproduct[F, G, A])(
-      f: A => X[B]): X[Coproduct[F, G, B]] =
-    fa traverse f
+      f: A => X[B]): X[Coproduct[F, G, B]] = fa traverse f
 }
 
 private trait CoproductTraverse1[F[_], G[_]]
@@ -265,19 +249,16 @@ private trait CoproductTraverse1[F[_], G[_]]
   implicit def G: Traverse1[G]
 
   override final def traverse1Impl[X[_]: Apply, A, B](fa: Coproduct[F, G, A])(
-      f: A => X[B]): X[Coproduct[F, G, B]] =
-    fa traverse1 f
+      f: A => X[B]): X[Coproduct[F, G, B]] = fa traverse1 f
 
-  override final def map[A, B](a: Coproduct[F, G, A])(f: A => B) =
-    a map f
+  override final def map[A, B](a: Coproduct[F, G, A])(f: A => B) = a map f
 }
 
 private trait CoproductCobind[F[_], G[_]] extends Cobind[Coproduct[F, G, ?]] {
   implicit def F: Cobind[F]
   implicit def G: Cobind[G]
 
-  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) =
-    a map f
+  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) = a map f
 
   override def cobind[A, B](a: Coproduct[F, G, A])(f: Coproduct[F, G, A] => B) =
     a cobind f
@@ -288,15 +269,12 @@ private trait CoproductComonad[F[_], G[_]] extends Comonad[Coproduct[F, G, ?]] {
   implicit def F: Comonad[F]
   implicit def G: Comonad[G]
 
-  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) =
-    a map f
+  override def map[A, B](a: Coproduct[F, G, A])(f: A => B) = a map f
 
-  override def copoint[A](p: Coproduct[F, G, A]) =
-    p.copoint
+  override def copoint[A](p: Coproduct[F, G, A]) = p.copoint
 
   override def cobind[A, B](a: Coproduct[F, G, A])(f: Coproduct[F, G, A] => B) =
     a cobind f
 
-  override def cojoin[A](a: Coproduct[F, G, A]) =
-    a.duplicate
+  override def cojoin[A](a: Coproduct[F, G, A]) = a.duplicate
 }

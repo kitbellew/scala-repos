@@ -52,8 +52,8 @@ class ContainerPlacementStrategySuite
     handler.handleAllocatedContainers(
       Array(createContainer("host1"), createContainer("host2")))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         3,
         15,
         Map("host3" -> 15, "host4" -> 15, "host5" -> 10),
@@ -82,8 +82,8 @@ class ContainerPlacementStrategySuite
         createContainer("host2")
       ))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         3,
         15,
         Map("host1" -> 15, "host2" -> 15, "host3" -> 10),
@@ -110,8 +110,8 @@ class ContainerPlacementStrategySuite
         createContainer("host2")
       ))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         1,
         15,
         Map("host1" -> 15, "host2" -> 15, "host3" -> 10),
@@ -135,8 +135,8 @@ class ContainerPlacementStrategySuite
         createContainer("host3")
       ))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         3,
         15,
         Map("host1" -> 15, "host2" -> 15, "host3" -> 10),
@@ -154,8 +154,8 @@ class ContainerPlacementStrategySuite
     handler.handleAllocatedContainers(
       Array(createContainer("host1"), createContainer("host2")))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         1,
         0,
         Map.empty,
@@ -180,8 +180,8 @@ class ContainerPlacementStrategySuite
       createContainerRequest(Array("host2", "host3")),
       createContainerRequest(Array("host1", "host4")))
 
-    val localities =
-      handler.containerPlacementStrategy.localityOfRequestedContainers(
+    val localities = handler.containerPlacementStrategy
+      .localityOfRequestedContainers(
         1,
         15,
         Map("host1" -> 15, "host2" -> 15, "host3" -> 10),

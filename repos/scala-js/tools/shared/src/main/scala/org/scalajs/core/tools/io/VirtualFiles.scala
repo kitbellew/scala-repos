@@ -80,8 +80,7 @@ trait VirtualTextFile extends VirtualFile {
 }
 
 object VirtualTextFile {
-  def empty(path: String): VirtualTextFile =
-    new MemVirtualTextFile(path)
+  def empty(path: String): VirtualTextFile = new MemVirtualTextFile(path)
 }
 
 trait WritableVirtualTextFile extends VirtualTextFile {
@@ -129,12 +128,10 @@ trait WritableVirtualJSFile extends WritableVirtualTextFile with VirtualJSFile {
 trait VirtualScalaJSIRFile extends VirtualFile {
 
   /** Class info of this file. */
-  def info: ir.Infos.ClassInfo =
-    infoAndTree._1
+  def info: ir.Infos.ClassInfo = infoAndTree._1
 
   /** IR Tree of this file. */
-  def tree: ir.Trees.ClassDef =
-    infoAndTree._2
+  def tree: ir.Trees.ClassDef = infoAndTree._2
 
   /** Class info and IR tree of this file. */
   def infoAndTree: (ir.Infos.ClassInfo, ir.Trees.ClassDef)

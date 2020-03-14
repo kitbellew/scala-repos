@@ -65,8 +65,9 @@ object OSGi {
     Seq("akka.parboiled2.*", "akka.shapeless.*"),
     imports = Seq(optionalResolution("scala.quasiquotes")))
 
-  val httpCore =
-    exports(Seq("akka.http.*"), imports = Seq(scalaJava8CompatImport()))
+  val httpCore = exports(
+    Seq("akka.http.*"),
+    imports = Seq(scalaJava8CompatImport()))
 
   val http = exports(
     Seq(
@@ -94,8 +95,9 @@ object OSGi {
 
   val httpJackson = exports(Seq("akka.http.javadsl.marshallers.jackson"))
 
-  val stream =
-    exports(Seq("akka.stream.*"), imports = Seq(scalaJava8CompatImport()))
+  val stream = exports(
+    Seq("akka.stream.*"),
+    imports = Seq(scalaJava8CompatImport()))
 
   val streamTestkit = exports(Seq("akka.stream.testkit.*"))
 

@@ -5,8 +5,9 @@ object Test extends App {
 
     zeroTo9.foreach(println _)
 
-    val zeroTo1 =
-      Iterator.range(0, 20).takeWhile(x => { println("p(" + x + ")"); x < 2 })
+    val zeroTo1 = Iterator
+      .range(0, 20)
+      .takeWhile(x => { println("p(" + x + ")"); x < 2 })
 
     println(zeroTo1.hasNext)
     println(zeroTo1.hasNext)

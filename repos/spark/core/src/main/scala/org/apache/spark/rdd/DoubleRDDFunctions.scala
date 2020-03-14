@@ -123,12 +123,13 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
         throw new UnsupportedOperationException(
           "Histogram on either an empty RDD or RDD containing +/-infinity or NaN")
       }
-      val range = if (min != max) {
-        // Range.Double.inclusive(min, max, increment)
-        // The above code doesn't always work. See Scala bug #SI-8782.
-        // https://issues.scala-lang.org/browse/SI-8782
-        customRange(min, max, bucketCount)
-      } else { List(min, min) }
+      val range =
+        if (min != max) {
+          // Range.Double.inclusive(min, max, increment)
+          // The above code doesn't always work. See Scala bug #SI-8782.
+          // https://issues.scala-lang.org/browse/SI-8782
+          customRange(min, max, bucketCount)
+        } else { List(min, min) }
       val buckets = range.toArray
       (buckets, histogram(buckets, true))
     }
@@ -218,9 +219,10 @@ class DoubleRDDFunctions(self: RDD[Double]) extends Logging with Serializable {
       // Decide which bucket function to pass to histogramPartition. We decide here
       // rather than having a general function so that the decision need only be made
       // once rather than once per shard
-      val bucketFunction = if (evenBuckets) {
-        fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
-      } else { basicBucketFunction _ }
+      val bucketFunction =
+        if (evenBuckets) {
+          fastBucketFunction(buckets.head, buckets.last, buckets.length - 1) _
+        } else { basicBucketFunction _ }
       if (self.partitions.length == 0) { new Array[Long](buckets.length - 1) }
       else {
         // reduce() requires a non-empty RDD. This works because the mapPartitions will make

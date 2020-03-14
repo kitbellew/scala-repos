@@ -45,8 +45,9 @@ import org.jetbrains.plugins.scala.lang.resolve.{
   */
 class SbtCompletionContributor extends ScalaCompletionContributor {
 
-  val afterInfixOperator =
-    PlatformPatterns.psiElement().withSuperParent(2, classOf[ScInfixExpr])
+  val afterInfixOperator = PlatformPatterns
+    .psiElement()
+    .withSuperParent(2, classOf[ScInfixExpr])
 
   extend(
     CompletionType.BASIC,

@@ -691,8 +691,10 @@ private[parquet] class CatalystRowConverter(
 
     val updater: ParentContainerUpdater = newArrayUpdater(parentUpdater)
 
-    private val elementConverter: PrimitiveConverter =
-      newConverter(parquetType, catalystType, updater).asPrimitiveConverter()
+    private val elementConverter: PrimitiveConverter = newConverter(
+      parquetType,
+      catalystType,
+      updater).asPrimitiveConverter()
 
     override def addBoolean(value: Boolean): Unit =
       elementConverter.addBoolean(value)
@@ -726,8 +728,10 @@ private[parquet] class CatalystRowConverter(
 
     val updater: ParentContainerUpdater = newArrayUpdater(parentUpdater)
 
-    private val elementConverter: GroupConverter =
-      newConverter(parquetType, catalystType, updater).asGroupConverter()
+    private val elementConverter: GroupConverter = newConverter(
+      parquetType,
+      catalystType,
+      updater).asGroupConverter()
 
     override def getConverter(field: Int): Converter =
       elementConverter.getConverter(field)

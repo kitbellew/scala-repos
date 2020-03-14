@@ -61,8 +61,7 @@ class BitSet(protected final var elems: Array[Long])
   @deprecatedOverriding(
     "Internal implementation does not admit sensible overriding of this method.",
     "2.11.0")
-  protected def word(idx: Int): Long =
-    if (idx < nwords) elems(idx) else 0L
+  protected def word(idx: Int): Long = if (idx < nwords) elems(idx) else 0L
 
   protected final def updateWord(idx: Int, w: Long) {
     ensureCapacity(idx)

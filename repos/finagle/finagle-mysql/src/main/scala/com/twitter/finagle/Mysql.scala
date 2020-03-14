@@ -153,8 +153,7 @@ object Mysql
       new DefaultLoadBalancingParams(this)
     override val withTransport: ClientTransportParams[Client] =
       new ClientTransportParams(this)
-    override val withSession: SessionParams[Client] =
-      new SessionParams(this)
+    override val withSession: SessionParams[Client] = new SessionParams(this)
     override val withSessionQualifier: SessionQualificationParams[Client] =
       new SessionQualificationParams(this)
     override val withAdmissionControl: ClientAdmissionControlParams[Client] =
@@ -220,6 +219,5 @@ object Mysql
     * A client configured with parameter p.
     */
   @deprecated("Use client.configured", "6.22.0")
-  def configured[P: Stack.Param](p: P): Client =
-    client.configured(p)
+  def configured[P: Stack.Param](p: P): Client = client.configured(p)
 }

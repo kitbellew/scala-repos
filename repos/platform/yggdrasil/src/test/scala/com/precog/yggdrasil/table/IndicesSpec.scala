@@ -140,8 +140,8 @@ trait IndicesSpec[M[+_]]
 {"a": 1, "c": [666]}
 """
 
-    val table =
-      fromJson(JParser.parseManyFromString(json).valueOr(throw _).toStream)
+    val table = fromJson(
+      JParser.parseManyFromString(json).valueOr(throw _).toStream)
 
     val keySpecs = Array(groupkey("a"), groupkey("b"))
     val valSpec = valuekey("c")

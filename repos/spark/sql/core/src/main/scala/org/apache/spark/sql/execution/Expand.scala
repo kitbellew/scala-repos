@@ -57,8 +57,8 @@ case class Expand(
   override def references: AttributeSet =
     AttributeSet(projections.flatten.flatMap(_.references))
 
-  private[this] val projection =
-    (exprs: Seq[Expression]) => UnsafeProjection.create(exprs, child.output)
+  private[this] val projection = (exprs: Seq[Expression]) =>
+    UnsafeProjection.create(exprs, child.output)
 
   protected override def doExecute(): RDD[InternalRow] =
     attachTree(this, "execute") {
@@ -179,8 +179,9 @@ case class Expand(
         var updateCode = ""
         for (col <- exprs.indices) {
           if (!sameOutput(col)) {
-            val ev =
-              BindReferences.bindReference(exprs(col), child.output).gen(ctx)
+            val ev = BindReferences
+              .bindReference(exprs(col), child.output)
+              .gen(ctx)
             updateCode +=
               s"""
                |${ev.code}

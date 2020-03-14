@@ -20,8 +20,9 @@ object TaskLabels {
       resource: MesosProtos.Resource): Option[Task.Id] = {
     val labels = ResourceLabels(resource)
 
-    val maybeMatchingFrameworkId =
-      labels.get(FRAMEWORK_ID_LABEL).filter(_ == frameworkId.id)
+    val maybeMatchingFrameworkId = labels
+      .get(FRAMEWORK_ID_LABEL)
+      .filter(_ == frameworkId.id)
     def maybeTaskId = labels.get(TASK_ID_LABEL).map(Task.Id(_))
 
     maybeMatchingFrameworkId.flatMap(_ => maybeTaskId)

@@ -276,8 +276,8 @@ object ConsumerGroupCommand {
         channelSocketTimeoutMs,
         channelRetryBackoffMs)
       channel.send(OffsetFetchRequest(group, topicPartitions))
-      val offsetFetchResponse =
-        OffsetFetchResponse.readFrom(channel.receive().payload())
+      val offsetFetchResponse = OffsetFetchResponse.readFrom(
+        channel.receive().payload())
 
       offsetFetchResponse.requestInfo.foreach {
         case (topicAndPartition, offsetAndMetadata) =>
@@ -565,8 +565,10 @@ object ConsumerGroupCommand {
       .ofType(classOf[String])
     val options = parser.parse(args: _*)
 
-    val allConsumerGroupLevelOpts: Set[OptionSpec[_]] =
-      Set(listOpt, describeOpt, deleteOpt)
+    val allConsumerGroupLevelOpts: Set[OptionSpec[_]] = Set(
+      listOpt,
+      describeOpt,
+      deleteOpt)
 
     def checkArgs() {
       // check required args

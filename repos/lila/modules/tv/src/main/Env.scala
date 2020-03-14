@@ -24,10 +24,9 @@ final class Env(
 
   lazy val tv = new Tv(tvActor)
 
-  private val tvActor =
-    system.actorOf(
-      Props(classOf[TvActor], hub.actor.renderer, hub.socket.round, lightUser),
-      name = "tv")
+  private val tvActor = system.actorOf(
+    Props(classOf[TvActor], hub.actor.renderer, hub.socket.round, lightUser),
+    name = "tv")
 
   private lazy val streaming = new Streaming(
     system = system,

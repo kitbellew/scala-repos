@@ -62,8 +62,8 @@ class MarathonHealthCheckManagerTest
     val config = new ScallopConf(Seq("--master", "foo")) with MarathonConf
     config.afterInit()
 
-    val taskTrackerModule =
-      MarathonTestHelper.createTaskTrackerModule(leadershipModule)
+    val taskTrackerModule = MarathonTestHelper.createTaskTrackerModule(
+      leadershipModule)
     taskTracker = taskTrackerModule.taskTracker
     taskCreationHandler = taskTrackerModule.taskCreationHandler
     taskUpdater = taskTrackerModule.taskUpdater
@@ -100,8 +100,9 @@ class MarathonHealthCheckManagerTest
       .status
       .mesosStatus
       .get
-    val marathonTask =
-      MarathonTestHelper.stagedTask(taskId.idString, appVersion = version)
+    val marathonTask = MarathonTestHelper.stagedTask(
+      taskId.idString,
+      appVersion = version)
 
     taskCreationHandler.created(marathonTask).futureValue
     taskUpdater.statusUpdate(appId, taskStatus).futureValue
@@ -147,11 +148,13 @@ class MarathonHealthCheckManagerTest
       .mesosStatus
       .get
 
-    val marathonTask =
-      MarathonTestHelper.stagedTask(taskId.idString, appVersion = app.version)
+    val marathonTask = MarathonTestHelper.stagedTask(
+      taskId.idString,
+      appVersion = app.version)
 
-    val healthCheck =
-      HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds)
+    val healthCheck = HealthCheck(
+      protocol = Protocol.COMMAND,
+      gracePeriod = 0.seconds)
 
     taskCreationHandler.created(marathonTask).futureValue
     taskUpdater.statusUpdate(appId, taskStatus).futureValue
@@ -194,8 +197,9 @@ class MarathonHealthCheckManagerTest
     appRepository.store(app).futureValue
     val version = app.version
 
-    val healthCheck =
-      HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds)
+    val healthCheck = HealthCheck(
+      protocol = Protocol.COMMAND,
+      gracePeriod = 0.seconds)
     hcManager.add(appId, version, healthCheck)
 
     val task1 = makeRunningTask(appId, version)
@@ -291,10 +295,11 @@ class MarathonHealthCheckManagerTest
 
     // one other task of another app
     val otherAppId = "other".toRootPath
-    val otherTask =
-      MarathonTestHelper.stagedTaskForApp(appId, appVersion = Timestamp(0))
-    val otherHealthChecks =
-      Set(HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds))
+    val otherTask = MarathonTestHelper.stagedTaskForApp(
+      appId,
+      appVersion = Timestamp(0))
+    val otherHealthChecks = Set(
+      HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds))
     startTask(otherAppId, otherTask, Timestamp(42), otherHealthChecks)
     hcManager.addAllFor(
       appRepository.currentVersion(otherAppId).futureValue.get)

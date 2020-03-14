@@ -102,8 +102,9 @@ private class ScalaGenerateEqualsWizardBuilder(
   protected def updateHashCodeMemberInfos(
       equalsMemberInfos: util.Collection[ScalaMemberInfo]) {
     if (hashCodePanel == null) return
-    val hashCodeFields =
-      equalsMemberInfos.map(_.getMember).map(fieldsToHashCode.get(_))
+    val hashCodeFields = equalsMemberInfos
+      .map(_.getMember)
+      .map(fieldsToHashCode.get(_))
     hashCodePanel.getTable.setMemberInfos(hashCodeFields)
   }
 

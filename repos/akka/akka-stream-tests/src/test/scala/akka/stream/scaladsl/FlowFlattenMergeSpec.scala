@@ -155,10 +155,10 @@ class FlowFlattenMergeSpec extends AkkaSpec {
     "cancel substreams when being cancelled" in {
       val p1, p2 = TestPublisher.probe[Int]()
       val ex = new Exception("buh")
-      val sink =
-        Source(List(Source.fromPublisher(p1), Source.fromPublisher(p2)))
-          .flatMapMerge(5, identity)
-          .runWith(TestSink.probe)
+      val sink = Source(
+        List(Source.fromPublisher(p1), Source.fromPublisher(p2)))
+        .flatMapMerge(5, identity)
+        .runWith(TestSink.probe)
       sink.request(1)
       p1.expectRequest()
       p2.expectRequest()

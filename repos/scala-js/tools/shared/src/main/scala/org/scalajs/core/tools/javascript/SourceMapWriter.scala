@@ -43,14 +43,11 @@ private object SourceMapWriter {
     private var posStack: Array[Position] = new Array(128)
     private var nameStack: Array[String] = new Array(128)
 
-    def pop(): Unit =
-      topIndex -= 1
+    def pop(): Unit = topIndex -= 1
 
-    def topPos: Position =
-      posStack(topIndex)
+    def topPos: Position = posStack(topIndex)
 
-    def topName: String =
-      nameStack(topIndex)
+    def topName: String = nameStack(topIndex)
 
     def push(pos: Position, originalName: String): Unit = {
       val newTopIdx = topIndex + 1
@@ -296,6 +293,5 @@ class SourceMapWriter(
     }
   }
 
-  private def writeBase64VLQ0(): Unit =
-    out.write('A')
+  private def writeBase64VLQ0(): Unit = out.write('A')
 }

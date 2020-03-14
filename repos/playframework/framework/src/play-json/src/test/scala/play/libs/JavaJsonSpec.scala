@@ -17,8 +17,7 @@ class JavaJsonSpec extends Specification {
 
   private class JsonScope(val mapper: ObjectMapper = new ObjectMapper())
       extends Scope {
-    val testJsonString =
-      """{
+    val testJsonString = """{
         |  "foo" : "bar",
         |  "bar" : "baz",
         |  "instant" : 1425435861,

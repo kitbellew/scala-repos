@@ -237,8 +237,8 @@ class GroupManagerTest
           "/app1".toPath,
           portDefinitions = PortDefinitions(0, 0, 0))
       ))
-    val result =
-      manager(10, 20).assignDynamicServicePorts(originalGroup, updatedGroup)
+    val result = manager(10, 20)
+      .assignDynamicServicePorts(originalGroup, updatedGroup)
 
     val assignedPorts: Set[Int] = result.transitiveApps.flatMap(_.portNumbers)
     assignedPorts should have size 3
@@ -320,10 +320,10 @@ class GroupManagerTest
     when(f.groupRepo.group(GroupRepository.zkRootName))
       .thenReturn(Future.successful(None))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
-    val appWithVersionInfo = app.copy(versionInfo =
-      AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
-    val groupWithVersionInfo =
-      Group(PathId.empty, Set(appWithVersionInfo)).copy(version = Timestamp(1))
+    val appWithVersionInfo = app
+      .copy(versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
+    val groupWithVersionInfo = Group(PathId.empty, Set(appWithVersionInfo))
+      .copy(version = Timestamp(1))
     when(f.appRepo.store(any()))
       .thenReturn(Future.successful(appWithVersionInfo))
     when(f.groupRepo.store(any(), any()))

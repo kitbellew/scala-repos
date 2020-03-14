@@ -276,8 +276,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
   def copyToArray[B >: A](xs: Array[B], start: Int): Unit =
     copyToArray(xs, start, xs.length - start)
 
-  def copyToArray[B >: A](xs: Array[B]): Unit =
-    copyToArray(xs, 0, xs.length)
+  def copyToArray[B >: A](xs: Array[B]): Unit = copyToArray(xs, 0, xs.length)
 
   def toArray[B >: A: ClassTag]: Array[B] = {
     if (isTraversableAgain) {

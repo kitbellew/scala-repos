@@ -471,8 +471,9 @@ abstract class ClassfileParser {
         ) // dummy superclass, will be replaced by pickled information
       } else
         raiseLoaderLevel {
-          val superType = if (jflags.isAnnotation) { u2; AnnotationClass.tpe }
-          else pool.getSuperClass(u2).tpe_*
+          val superType =
+            if (jflags.isAnnotation) { u2; AnnotationClass.tpe }
+            else pool.getSuperClass(u2).tpe_*
           val ifaceCount = u2
           var ifaces =
             for (i <- List.range(0, ifaceCount))
@@ -566,8 +567,10 @@ abstract class ClassfileParser {
     else {
       val name = readName()
       val info = readType()
-      val sym =
-        ownerForFlags(jflags).newValue(name.toTermName, NoPosition, sflags)
+      val sym = ownerForFlags(jflags).newValue(
+        name.toTermName,
+        NoPosition,
+        sflags)
 
       // Note: the info may be overwritten later with a generic signature
       // parsed from SignatureATTR
@@ -606,8 +609,10 @@ abstract class ClassfileParser {
         in.skip(4); skipAttributes()
       } else {
         val name = readName()
-        val sym =
-          ownerForFlags(jflags).newMethod(name.toTermName, NoPosition, sflags)
+        val sym = ownerForFlags(jflags).newMethod(
+          name.toTermName,
+          NoPosition,
+          sflags)
         var info = pool.getType(sym, u2)
         if (name == nme.CONSTRUCTOR) info match {
           case MethodType(params, restpe) =>
@@ -785,10 +790,11 @@ abstract class ClassfileParser {
             paramtypes += objToAny(sig2type(tparams, skiptvs))
           }
           index += 1
-          val restype = if (sym != null && sym.isClassConstructor) {
-            accept('V')
-            clazz.tpe_*
-          } else sig2type(tparams, skiptvs)
+          val restype =
+            if (sym != null && sym.isClassConstructor) {
+              accept('V')
+              clazz.tpe_*
+            } else sig2type(tparams, skiptvs)
           JavaMethodType(
             sym.newSyntheticValueParams(paramtypes.toList),
             restype)
@@ -919,13 +925,12 @@ abstract class ClassfileParser {
             val scalaSigAnnot = parseAnnotations(attrLen)
             if (isScalaAnnot) scalaSigAnnot match {
               case Some(san: AnnotationInfo) =>
-                val bytes =
-                  san.assocs
-                    .find({ _._1 == nme.bytes })
-                    .get
-                    ._2
-                    .asInstanceOf[ScalaSigBytes]
-                    .bytes
+                val bytes = san.assocs
+                  .find({ _._1 == nme.bytes })
+                  .get
+                  ._2
+                  .asInstanceOf[ScalaSigBytes]
+                  .bytes
                 unpickler.unpickle(bytes, 0, clazz, staticModule, in.file.name)
               case None =>
                 throw new RuntimeException(
@@ -951,8 +956,9 @@ abstract class ClassfileParser {
             case pkg =>
               pkg.fullName(File.separatorChar) + File.separator + srcfileLeaf
           }
-          srcfile0 =
-            settings.outputDirs.srcFilesFor(in.file, srcpath).find(_.exists)
+          srcfile0 = settings.outputDirs
+            .srcFilesFor(in.file, srcpath)
+            .find(_.exists)
         case tpnme.CodeATTR =>
           if (sym.owner.isInterface) {
             sym setFlag JAVA_DEFAULTMETHOD
@@ -1010,12 +1016,11 @@ abstract class ClassfileParser {
       val tag = u1
       assert(tag == ARRAY_TAG, tag)
       val stringCount = u2
-      val entries =
-        for (i <- 0 until stringCount) yield {
-          val stag = u1
-          assert(stag == STRING_TAG, stag)
-          u2
-        }
+      val entries = for (i <- 0 until stringCount) yield {
+        val stag = u1
+        assert(stag == STRING_TAG, stag)
+        u2
+      }
       Some(ScalaSigBytes(pool.getBytes(entries.toList)))
     }
 
@@ -1128,17 +1133,22 @@ abstract class ClassfileParser {
             s"Class file for ${entry.externalName} not found")
           .setFlag(JAVA)
 
-      val (innerClass, innerModule) = if (file == NoAbstractFile) {
-        (newStub(name.toTypeName), newStub(name.toTermName))
-      } else {
-        val cls =
-          owner.newClass(name.toTypeName, NoPosition, sflags) setInfo completer
-        val mod =
-          owner.newModule(name.toTermName, NoPosition, sflags) setInfo completer
-        mod.moduleClass setInfo loaders.moduleClassLoader
-        List(cls, mod.moduleClass) foreach (_.associatedFile = file)
-        (cls, mod)
-      }
+      val (innerClass, innerModule) =
+        if (file == NoAbstractFile) {
+          (newStub(name.toTypeName), newStub(name.toTermName))
+        } else {
+          val cls = owner.newClass(
+            name.toTypeName,
+            NoPosition,
+            sflags) setInfo completer
+          val mod = owner.newModule(
+            name.toTermName,
+            NoPosition,
+            sflags) setInfo completer
+          mod.moduleClass setInfo loaders.moduleClassLoader
+          List(cls, mod.moduleClass) foreach (_.associatedFile = file)
+          (cls, mod)
+        }
 
       scope enter innerClass
       scope enter innerModule

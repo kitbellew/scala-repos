@@ -21,8 +21,7 @@ trait InfoTransform extends Transform {
 
   def transformInfo(sym: Symbol, tpe: Type): Type
 
-  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase =
-    new Phase(prev)
+  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new Phase(prev)
 
   protected def changesBaseClasses = true
   protected def keepsTypeParams = true

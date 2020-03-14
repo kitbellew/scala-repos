@@ -175,8 +175,9 @@ class ActorWithStashSpec
           super.preRestart(reason, message)
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! "hello"
       slave ! "crash"

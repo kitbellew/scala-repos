@@ -91,8 +91,8 @@ trait MergeService {
         val remoteRefName = s"refs/heads/${remoteBranch}"
         val tmpRefName =
           s"refs/remote-temp/${remoteUserName}/${remoteRepositoryName}/${remoteBranch}"
-        val refSpec =
-          new RefSpec(s"${remoteRefName}:${tmpRefName}").setForceUpdate(true)
+        val refSpec = new RefSpec(s"${remoteRefName}:${tmpRefName}")
+          .setForceUpdate(true)
         try {
           // fetch objects from origin repository branch
           git.fetch
@@ -103,10 +103,10 @@ trait MergeService {
             .setRefSpecs(refSpec)
             .call
           // merge conflict check
-          val merger =
-            MergeStrategy.RECURSIVE.newMerger(git.getRepository, true)
-          val mergeBaseTip =
-            git.getRepository.resolve(s"refs/heads/${localBranch}")
+          val merger = MergeStrategy.RECURSIVE
+            .newMerger(git.getRepository, true)
+          val mergeBaseTip = git.getRepository.resolve(
+            s"refs/heads/${localBranch}")
           val mergeTip = git.getRepository.resolve(tmpRefName)
           try {
             if (merger.merge(mergeBaseTip, mergeTip)) {
@@ -251,8 +251,8 @@ object MergeService {
       val conflicted =
         try { !merger.merge(mergeBaseTip, mergeTip) }
         catch { case e: NoMergeBaseException => true }
-      val mergeTipCommit =
-        using(new RevWalk(repository))(_.parseCommit(mergeTip))
+      val mergeTipCommit = using(new RevWalk(repository))(
+        _.parseCommit(mergeTip))
       val committer = mergeTipCommit.getCommitterIdent;
       def updateBranch(treeId: ObjectId, message: String, branchName: String) {
         // creates merge commit

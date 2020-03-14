@@ -49,10 +49,10 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
       val tomorrow = rightNow plusDays 1
       val lastDayOfMonth = today.dayOfMonth.withMaximumValue
       val firstDayOfMonth = today.dayOfMonth.withMinimumValue
-      val lastSundayOfCurrentMonth =
-        lastDayOfMonth.minusDays(lastDayOfMonth.getDayOfWeek % 7)
-      val firstSundayOfCurrentMonth =
-        firstDayOfMonth.plusDays(7 - firstDayOfMonth.getDayOfWeek)
+      val lastSundayOfCurrentMonth = lastDayOfMonth.minusDays(
+        lastDayOfMonth.getDayOfWeek % 7)
+      val firstSundayOfCurrentMonth = firstDayOfMonth.plusDays(
+        7 - firstDayOfMonth.getDayOfWeek)
       val nextSaturday = today.plusDays((13 - today.getDayOfWeek) % 7)
 
       def orTomorrow(date: DateTime) =
@@ -231,8 +231,8 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
         (0 to 6).toList.flatMap { hourDelta =>
           val date = rightNow plusHours hourDelta
           val hour = date.getHourOfDay
-          val bulletType =
-            Set(1, 7, 13, 19)(hour).fold[Schedule.Speed](HyperBullet, Bullet)
+          val bulletType = Set(1, 7, 13, 19)(hour)
+            .fold[Schedule.Speed](HyperBullet, Bullet)
           List(
             Schedule(Hourly, Bullet, Standard, std, at(date, hour)).some,
             Schedule(

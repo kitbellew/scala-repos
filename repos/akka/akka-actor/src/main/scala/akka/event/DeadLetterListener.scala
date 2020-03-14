@@ -22,8 +22,7 @@ class DeadLetterListener extends Actor {
   // don't remove subscription, skip call to postStop, no children to stop
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = ()
 
-  override def postStop(): Unit =
-    eventStream.unsubscribe(self)
+  override def postStop(): Unit = eventStream.unsubscribe(self)
 
   def receive = {
     case DeadLetter(message, snd, rcp) ⇒

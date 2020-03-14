@@ -22,8 +22,7 @@ class HoconBraceMatcher extends PairedBraceMatcher {
 
   def isPairedBracesAllowedBeforeType(
       lbraceType: IElementType,
-      contextType: IElementType) =
-    AllowsPairedBraceBefore.contains(contextType)
+      contextType: IElementType) = AllowsPairedBraceBefore.contains(contextType)
 
   def getCodeConstructStart(file: PsiFile, openingBraceOffset: Int) =
     openingBraceOffset

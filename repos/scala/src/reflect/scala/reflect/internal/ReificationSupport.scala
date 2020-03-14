@@ -67,8 +67,7 @@ trait ReificationSupport { self: SymbolTable =>
         .newNestedSymbol(name, pos, flags, isClass)
         .markFlagsCompleted(mask = AllFlags)
 
-    def newScopeWith(elems: Symbol*): Scope =
-      self.newScopeWith(elems: _*)
+    def newScopeWith(elems: Symbol*): Scope = self.newScopeWith(elems: _*)
 
     def setAnnotations[S <: Symbol](sym: S, annots: List[AnnotationInfo]): S =
       sym.setAnnotations(annots)
@@ -408,8 +407,8 @@ trait ReificationSupport { self: SymbolTable =>
         else {
           val (rawEdefs, rest) = tbody.span(treeInfo.isEarlyDef)
           val (gvdefs, etdefs) = rawEdefs.partition(treeInfo.isEarlyValDef)
-          val (fieldDefs, UnCtor(ctorMods, ctorVparamss, lvdefs) :: body) =
-            rest.splitAt(indexOfCtor(rest))
+          val (fieldDefs, UnCtor(ctorMods, ctorVparamss, lvdefs) :: body) = rest
+            .splitAt(indexOfCtor(rest))
           val evdefs = gvdefs.zip(lvdefs).map {
             case (
                   gvdef @ ValDef(_, _, tpt: TypeTree, _),
@@ -470,8 +469,10 @@ trait ReificationSupport { self: SymbolTable =>
           selfType: Tree,
           body: List[Tree]): ClassDef = {
         val extraFlags = PARAMACCESSOR | (if (mods.isCase) CASEACCESSOR else 0L)
-        val vparamss0 =
-          mkParam(vparamss, extraFlags, excludeFlags = DEFERRED | PARAM)
+        val vparamss0 = mkParam(
+          vparamss,
+          extraFlags,
+          excludeFlags = DEFERRED | PARAM)
         val tparams0 = mkTparams(tparams)
         val parents0 = gen.mkParents(
           mods,
@@ -483,8 +484,12 @@ trait ReificationSupport { self: SymbolTable =>
           else parents)
         val body0 = earlyDefs ::: body
         val selfType0 = mkSelfType(selfType)
-        val templ =
-          gen.mkTemplate(parents0, selfType0, constrMods, vparamss0, body0)
+        val templ = gen.mkTemplate(
+          parents0,
+          selfType0,
+          constrMods,
+          vparamss0,
+          body0)
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
@@ -1643,8 +1648,7 @@ trait ReificationSupport { self: SymbolTable =>
     }
 
     object SyntacticAnnotatedType extends SyntacticAnnotatedTypeExtractor {
-      def apply(tpt: Tree, annot: Tree): Annotated =
-        Annotated(annot, tpt)
+      def apply(tpt: Tree, annot: Tree): Annotated = Annotated(annot, tpt)
       def unapply(tree: Tree): Option[(Tree, Tree)] =
         tree match {
           case MaybeTypeTreeOriginal(Annotated(annot, tpt)) =>

@@ -31,8 +31,8 @@ class FreeApplicativeTests extends CatsSuite {
       }
     }
 
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[FreeApplicative[Option, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[FreeApplicative[Option, ?]]
 
   checkAll(
     "FreeApplicative[Option, ?]",
@@ -69,10 +69,9 @@ class FreeApplicativeTests extends CatsSuite {
     val f = x.map(i => (j: Int) => i + j)
     val r1 = y.ap(f)
     val r2 = r1.monad
-    val nt =
-      new NaturalTransformation[Id, Id] {
-        def apply[A](fa: Id[A]): Id[A] = fa
-      }
+    val nt = new NaturalTransformation[Id, Id] {
+      def apply[A](fa: Id[A]): Id[A] = fa
+    }
     r1.foldMap(nt) should ===(r2.foldMap(nt))
   }
 

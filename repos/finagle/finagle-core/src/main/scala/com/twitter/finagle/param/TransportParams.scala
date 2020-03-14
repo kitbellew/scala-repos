@@ -65,6 +65,5 @@ abstract class TransportParams[A <: Stack.Parameterized[A]](
     * A verbose transport logs its activity onto a configured logger (by default,
     * standard output).
     */
-  def verbose: A =
-    self.configured(Transport.Verbose(enabled = true))
+  def verbose: A = self.configured(Transport.Verbose(enabled = true))
 }

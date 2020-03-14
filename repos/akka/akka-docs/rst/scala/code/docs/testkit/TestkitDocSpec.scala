@@ -258,8 +258,8 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate calling thread dispatcher" in {
     //#calling-thread-dispatcher
     import akka.testkit.CallingThreadDispatcher
-    val ref =
-      system.actorOf(Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
+    val ref = system.actorOf(
+      Props[MyActor].withDispatcher(CallingThreadDispatcher.Id))
     //#calling-thread-dispatcher
   }
 

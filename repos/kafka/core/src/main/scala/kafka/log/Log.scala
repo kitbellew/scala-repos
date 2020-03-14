@@ -268,8 +268,9 @@ class Log(
         "Found log file %s from interrupted swap operation, repairing.".format(
           swapFile.getPath))
       swapSegment.recover(config.maxMessageSize)
-      val oldSegments =
-        logSegments(swapSegment.baseOffset, swapSegment.nextOffset)
+      val oldSegments = logSegments(
+        swapSegment.baseOffset,
+        swapSegment.nextOffset)
       replaceSegments(
         swapSegment,
         oldSegments.toSeq,
@@ -630,8 +631,11 @@ class Log(
           else exposedPos
         } else { entry.getValue.size }
       }
-      val fetchInfo =
-        entry.getValue.read(startOffset, maxOffset, maxLength, maxPosition)
+      val fetchInfo = entry.getValue.read(
+        startOffset,
+        maxOffset,
+        maxLength,
+        maxPosition)
       if (fetchInfo == null) { entry = segments.higherEntry(entry.getKey) }
       else { return fetchInfo }
     }
@@ -844,8 +848,8 @@ class Log(
       if (segments.firstEntry.getValue.baseOffset > targetOffset) {
         truncateFullyAndStartAt(targetOffset)
       } else {
-        val deletable =
-          logSegments.filter(segment => segment.baseOffset > targetOffset)
+        val deletable = logSegments.filter(segment =>
+          segment.baseOffset > targetOffset)
         deletable.foreach(deleteSegment(_))
         activeSegment.truncateTo(targetOffset)
         updateLogEndOffset(targetOffset)

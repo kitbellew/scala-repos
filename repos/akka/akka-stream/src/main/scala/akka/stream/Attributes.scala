@@ -134,8 +134,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
   /**
     * Adds given attribute to the end of these attributes.
     */
-  def and(other: Attribute): Attributes =
-    Attributes(attributeList :+ other)
+  def and(other: Attribute): Attributes = Attributes(attributeList :+ other)
 
   /**
     * Extracts Name attributes and concatenates them.
@@ -288,8 +287,7 @@ object ActorAttributes {
     */
   def withSupervisionStrategy(
       decider: function.Function[Throwable, Supervision.Directive])
-      : Attributes =
-    ActorAttributes.supervisionStrategy(decider.apply _)
+      : Attributes = ActorAttributes.supervisionStrategy(decider.apply _)
 
   /**
     * Java API

@@ -274,8 +274,8 @@ class ScalaResolveResult(
         return OTHER_MEMBERS
       }
       val importsUsedSeq = importsUsed.toSeq
-      val importUsed: ImportUsed =
-        importsUsedSeq.apply(importsUsedSeq.length - 1)
+      val importUsed: ImportUsed = importsUsedSeq.apply(
+        importsUsedSeq.length - 1)
       // TODO this conflates imported functions and imported implicit views. ScalaResolveResult should really store
       //      these separately.
       importUsed match {

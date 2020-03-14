@@ -199,8 +199,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
 
   class AccountManager extends After {
     val defaultActorSystem = ActorSystem("AccountManagerTest")
-    implicit val execContext =
-      ExecutionContext.defaultExecutionContext(defaultActorSystem)
+    implicit val execContext = ExecutionContext.defaultExecutionContext(
+      defaultActorSystem)
     implicit val M =
       new UnsafeFutureComonad(execContext, Duration(60, "seconds"))
 

@@ -44,8 +44,7 @@ private[ui] class HistoryNotFoundPage(parent: MasterWebUI)
 
     // If no parameters are specified, assume the user did not enable event logging
     val defaultTitle = "Event logging is not enabled"
-    val defaultContent =
-      <div class="row-fluid">
+    val defaultContent = <div class="row-fluid">
         <div class="span12" style="font-size:14px">
           No event logs were found for this application! To
           <a href="http://spark.apache.org/docs/latest/monitoring.html">enable event logging</a>,

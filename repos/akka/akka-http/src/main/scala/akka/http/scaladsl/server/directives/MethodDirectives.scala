@@ -86,8 +86,8 @@ trait MethodDirectives {
 }
 
 object MethodDirectives extends MethodDirectives {
-  private val _extractMethod: Directive1[HttpMethod] =
-    BasicDirectives.extract(_.request.method)
+  private val _extractMethod: Directive1[HttpMethod] = BasicDirectives.extract(
+    _.request.method)
 
   // format: OFF
   private val _delete : Directive0 = method(DELETE)

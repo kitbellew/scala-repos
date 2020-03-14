@@ -475,11 +475,12 @@ trait PersistentFSMBase[S, D, E]
 
   private[akka] def processEvent(event: Event, source: AnyRef): Unit = {
     val stateFunc = stateFunctions(currentState.stateName)
-    val nextState = if (stateFunc isDefinedAt event) { stateFunc(event) }
-    else {
-      // handleEventDefault ensures that this is always defined
-      handleEvent(event)
-    }
+    val nextState =
+      if (stateFunc isDefinedAt event) { stateFunc(event) }
+      else {
+        // handleEventDefault ensures that this is always defined
+        handleEvent(event)
+      }
     applyState(nextState)
   }
 
@@ -552,8 +553,10 @@ trait PersistentFSMBase[S, D, E]
       timers.clear()
       currentState = nextState
 
-      val stopEvent =
-        StopEvent(reason, currentState.stateName, currentState.stateData)
+      val stopEvent = StopEvent(
+        reason,
+        currentState.stateName,
+        currentState.stateData)
       if (terminateEvent.isDefinedAt(stopEvent)) terminateEvent(stopEvent)
     }
   }

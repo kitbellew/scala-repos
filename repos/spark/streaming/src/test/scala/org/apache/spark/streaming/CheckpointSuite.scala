@@ -155,8 +155,9 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
 
   protected def createContextForCheckpointOperation(
       batchDuration: Duration): StreamingContext = {
-    val conf =
-      new SparkConf().setMaster("local").setAppName(this.getClass.getSimpleName)
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName(this.getClass.getSimpleName)
     conf.set("spark.streaming.clock", classOf[ManualClock].getName())
     new StreamingContext(SparkContext.getOrCreate(conf), batchDuration)
   }
@@ -196,10 +197,9 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       }
 
       eventually(timeout(10 seconds)) {
-        val checkpointFilesOfLatestTime =
-          Checkpoint.getCheckpointFiles(checkpointDir).filter {
-            _.toString.contains(clock.getTimeMillis.toString)
-          }
+        val checkpointFilesOfLatestTime = Checkpoint
+          .getCheckpointFiles(checkpointDir)
+          .filter { _.toString.contains(clock.getTimeMillis.toString) }
         // Checkpoint files are written twice for every batch interval. So assert that both
         // are written to make sure that both of them have been written.
         assert(checkpointFilesOfLatestTime.size === 2)
@@ -213,9 +213,9 @@ trait DStreamCheckpointTester { self: SparkFunSuite =>
       output: Seq[Seq[V]],
       expectedOutput: Seq[Seq[V]],
       beforeRestart: Boolean): Unit = {
-    val expectedPartialOutput = if (beforeRestart) {
-      expectedOutput.take(output.size)
-    } else { expectedOutput.takeRight(output.size) }
+    val expectedPartialOutput =
+      if (beforeRestart) { expectedOutput.take(output.size) }
+      else { expectedOutput.takeRight(output.size) }
     val setComparison = output.zip(expectedPartialOutput).forall {
       case (o, e) => o.toSet === e.toSet
     }
@@ -303,8 +303,8 @@ class CheckpointSuite
 
     // Run till a further time such that previous checkpoint files in the stream would be deleted
     // and check whether the earlier checkpoint files are deleted
-    val checkpointFiles =
-      stateStream.checkpointData.currentCheckpointFiles.map(x => new File(x._2))
+    val checkpointFiles = stateStream.checkpointData.currentCheckpointFiles.map(
+      x => new File(x._2))
     advanceTimeWithRealDelay(ssc, secondNumBatches)
     checkpointFiles.foreach(file =>
       assert(!file.exists, "Checkpoint file '" + file + "' was not deleted"))
@@ -412,8 +412,9 @@ class CheckpointSuite
   // This tests if "spark.driver.host" and "spark.driver.port" is set by user, can be recovered
   // with correct value.
   test("get correct spark.driver.[host|port] from checkpoint") {
-    val conf =
-      Map("spark.driver.host" -> "localhost", "spark.driver.port" -> "9999")
+    val conf = Map(
+      "spark.driver.host" -> "localhost",
+      "spark.driver.port" -> "9999")
     conf.foreach(kv => System.setProperty(kv._1, kv._2))
     ssc = new StreamingContext(master, framework, batchDuration)
     val originalConf = ssc.conf
@@ -635,8 +636,8 @@ class CheckpointSuite
     ssc.checkpoint(checkpointDir)
 
     val dstream = new RateTestInputDStream(ssc) {
-      override val rateController =
-        Some(new ReceiverRateController(id, new ConstantEstimator(200)))
+      override val rateController = Some(
+        new ReceiverRateController(id, new ConstantEstimator(200)))
     }
 
     val output =
@@ -669,10 +670,9 @@ class CheckpointSuite
   // failure, are re-processed or not.
   test("recovery with file input stream") {
     // Set up the streaming context and input streams
-    val batchDuration =
-      Seconds(
-        2
-      ) // Due to 1-second resolution of setLastModified() on some OS's.
+    val batchDuration = Seconds(
+      2
+    ) // Due to 1-second resolution of setLastModified() on some OS's.
     val testDir = Utils.createTempDir()
     val outputBuffer = new ConcurrentLinkedQueue[Seq[Int]]
 
@@ -693,8 +693,10 @@ class CheckpointSuite
       * Returns ids that identify which files which have been recorded by the file input stream.
       */
     def recordedFiles(ssc: StreamingContext): Seq[Int] = {
-      val fileInputDStream =
-        ssc.graph.getInputStreams().head.asInstanceOf[FileInputDStream[_, _, _]]
+      val fileInputDStream = ssc.graph
+        .getInputStreams()
+        .head
+        .asInstanceOf[FileInputDStream[_, _, _]]
       val filenames = fileInputDStream.batchTimeToSelectedFiles.synchronized {
         fileInputDStream.batchTimeToSelectedFiles.values.flatten
       }
@@ -724,8 +726,10 @@ class CheckpointSuite
 
         // Reducing over a large window to ensure that recovery from driver failure
         // requires reprocessing of all the files seen before the failure
-        val reducedStream =
-          mappedStream.reduceByWindow(_ + _, batchDuration * 30, batchDuration)
+        val reducedStream = mappedStream.reduceByWindow(
+          _ + _,
+          batchDuration * 30,
+          batchDuration)
         val outputStream = new TestOutputStream(reducedStream, outputBuffer)
         outputStream.register()
         ssc.start()
@@ -788,8 +792,10 @@ class CheckpointSuite
         val oldClockTime = clock.getTimeMillis() // 15000ms
         clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
         val batchCounter = new BatchCounter(ssc)
-        val outputStream =
-          ssc.graph.getOutputStreams().head.asInstanceOf[TestOutputStream[Int]]
+        val outputStream = ssc.graph
+          .getOutputStreams()
+          .head
+          .asInstanceOf[TestOutputStream[Int]]
         // Check that we remember files that were recorded before the restart
         assert(recordedFiles(ssc) === Seq(1, 2, 3))
 
@@ -856,12 +862,11 @@ class CheckpointSuite
     }
     logInfo("*********** RESTARTING ************")
     withStreamingContext(new StreamingContext(checkpointDir)) { ssc =>
-      val checkpointData =
-        ssc.graph
-          .getInputStreams()
-          .head
-          .asInstanceOf[CheckpointInputDStream]
-          .checkpointData
+      val checkpointData = ssc.graph
+        .getInputStreams()
+        .head
+        .asInstanceOf[CheckpointInputDStream]
+        .checkpointData
       assert(checkpointData.restoredTimes === 1)
       ssc.start()
       ssc.stop()
@@ -904,12 +909,11 @@ class CheckpointSuite
   test("SPARK-11267: the race condition of two checkpoints in a batch") {
     val jobGenerator = mock(classOf[JobGenerator])
     val checkpointDir = Utils.createTempDir().toString
-    val checkpointWriter =
-      new CheckpointWriter(
-        jobGenerator,
-        conf,
-        checkpointDir,
-        new Configuration())
+    val checkpointWriter = new CheckpointWriter(
+      jobGenerator,
+      conf,
+      checkpointDir,
+      new Configuration())
     val bytes1 = Array.fill[Byte](10)(1)
     new checkpointWriter.CheckpointWriteHandler(
       Time(2000),
@@ -920,10 +924,10 @@ class CheckpointSuite
       Time(1000),
       bytes2,
       clearCheckpointDataLater = true).run()
-    val checkpointFiles =
-      Checkpoint.getCheckpointFiles(checkpointDir).reverse.map { path =>
-        new File(path.toUri)
-      }
+    val checkpointFiles = Checkpoint
+      .getCheckpointFiles(checkpointDir)
+      .reverse
+      .map { path => new File(path.toUri) }
     assert(checkpointFiles.size === 2)
     // Although bytes2 was written with an old time, it contains the latest status, so we should
     // try to read from it at first.

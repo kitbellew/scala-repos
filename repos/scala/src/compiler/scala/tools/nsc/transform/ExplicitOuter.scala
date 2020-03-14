@@ -569,8 +569,7 @@ abstract class ExplicitOuter
     }
   }
 
-  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase =
-    new Phase(prev)
+  override def newPhase(prev: scala.tools.nsc.Phase): StdPhase = new Phase(prev)
 
   class Phase(prev: scala.tools.nsc.Phase) extends super.Phase(prev) {
     override val checkable = false

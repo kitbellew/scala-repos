@@ -94,8 +94,8 @@ object SbtExternalSystemManager {
     val customSbtStructureFile = settings.customSbtStructurePath.nonEmpty
       .option(settings.customSbtStructurePath.toFile)
 
-    val realProjectPath =
-      Option(projectSettings.getExternalProjectPath).getOrElse(path)
+    val realProjectPath = Option(projectSettings.getExternalProjectPath)
+      .getOrElse(path)
     val projectJdkName = getProjectJdkName(project, projectSettings)
     val vmExecutable = getVmExecutable(projectJdkName, settings)
     val vmOptions = getVmOptions(settings)
@@ -178,8 +178,8 @@ object SbtExternalSystemManager {
 
   private def getVmOptions(settings: SbtSystemSettings): Seq[String] = {
     val userOptions = settings.getVmParameters.split("\\s+").toSeq
-    val ideaProxyOptions =
-      proxyOptionsFor(HttpConfigurable.getInstance).filterNot { opt =>
+    val ideaProxyOptions = proxyOptionsFor(HttpConfigurable.getInstance)
+      .filterNot { opt =>
         val optName = opt.split('=').head + "="
         userOptions.exists(_.startsWith(optName))
       }

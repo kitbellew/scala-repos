@@ -67,8 +67,7 @@ class ObjectsTestOnJDK7 {
   @Test def compare(): Unit = {
     val cmp1: ju.Comparator[Int] = Ordering[Int]
     val cmp2: ju.Comparator[AnyRef] = new Ordering[AnyRef] {
-      def compare(x: AnyRef, y: AnyRef): Int =
-        x.hashCode.compareTo(y.hashCode)
+      def compare(x: AnyRef, y: AnyRef): Int = x.hashCode.compareTo(y.hashCode)
     }
     assertEquals(0, ju.Objects.compare(null, null, cmp2))
     assertEquals(0, ju.Objects.compare(1, 1, cmp1))

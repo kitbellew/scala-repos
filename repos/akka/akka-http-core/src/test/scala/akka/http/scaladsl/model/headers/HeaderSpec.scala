@@ -25,8 +25,8 @@ class HeaderSpec extends FreeSpec with Matchers {
             ))
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) =
-          headers.`Last-Modified`.parseFromValueString("abc")
+        val Left(List(ErrorInfo(summary, detail))) = headers.`Last-Modified`
+          .parseFromValueString("abc")
         summary shouldEqual "Illegal HTTP header 'Last-Modified': Invalid input 'a', expected IMF-fixdate, asctime-date or '0' (line 1, column 1)"
         detail shouldEqual
           """abc
@@ -43,8 +43,8 @@ class HeaderSpec extends FreeSpec with Matchers {
           MediaTypes.`application/gnutar`)
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) =
-          MediaType.parse("application//gnutar")
+        val Left(List(ErrorInfo(summary, detail))) = MediaType.parse(
+          "application//gnutar")
         summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input '/', expected subtype (line 1, column 13)"
         detail shouldEqual
           """application//gnutar
@@ -60,8 +60,8 @@ class HeaderSpec extends FreeSpec with Matchers {
           MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`))
       }
       "failing parse run" in {
-        val Left(List(ErrorInfo(summary, detail))) =
-          ContentType.parse("text/plain, charset=UTF8")
+        val Left(List(ErrorInfo(summary, detail))) = ContentType.parse(
+          "text/plain, charset=UTF8")
         summary shouldEqual "Illegal HTTP header 'Content-Type': Invalid input ',', expected tchar, OWS, ws or 'EOI' (line 1, column 11)"
         detail shouldEqual
           """text/plain, charset=UTF8

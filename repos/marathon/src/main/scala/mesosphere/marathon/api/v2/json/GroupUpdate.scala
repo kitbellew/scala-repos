@@ -39,8 +39,9 @@ case class GroupUpdate(
           update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
       groupUpdates.toSet ++ groupAdditions
     }
-    val effectiveApps: Set[AppDefinition] =
-      apps.getOrElse(current.apps).map(toApp(current.id, _, timestamp))
+    val effectiveApps: Set[AppDefinition] = apps
+      .getOrElse(current.apps)
+      .map(toApp(current.id, _, timestamp))
     val effectiveDependencies = dependencies.fold(current.dependencies)(
       _.map(_.canonicalPath(current.id)))
     Group(
@@ -89,15 +90,15 @@ object GroupUpdate {
   }
   def empty(id: PathId): GroupUpdate = GroupUpdate(Some(id))
 
-  implicit val GroupUpdateValidator: Validator[GroupUpdate] =
-    validator[GroupUpdate] { group =>
-      group is notNull
+  implicit val GroupUpdateValidator
+      : Validator[GroupUpdate] = validator[GroupUpdate] { group =>
+    group is notNull
 
-      group.version is theOnlyDefinedOptionIn(group)
-      group.scaleBy is theOnlyDefinedOptionIn(group)
+    group.version is theOnlyDefinedOptionIn(group)
+    group.scaleBy is theOnlyDefinedOptionIn(group)
 
-      group.id is valid
-      group.apps is valid
-      group.groups is valid
-    }
+    group.id is valid
+    group.apps is valid
+    group.groups is valid
+  }
 }

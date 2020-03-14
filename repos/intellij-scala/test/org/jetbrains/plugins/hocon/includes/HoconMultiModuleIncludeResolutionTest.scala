@@ -36,14 +36,16 @@ class HoconMultiModuleIncludeResolutionTest
   override def setUp(): Unit = {
     super.setUp()
 
-    val fixtureBuilder =
-      IdeaTestFixtureFactory.getFixtureFactory.createFixtureBuilder(getName)
+    val fixtureBuilder = IdeaTestFixtureFactory.getFixtureFactory
+      .createFixtureBuilder(getName)
     fixture = JavaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
       fixtureBuilder.getFixture)
 
     val baseDir = new File(testdataPath)
-    val moduleDirs =
-      baseDir.listFiles.sortBy(_.getName).iterator.filter(_.isDirectory)
+    val moduleDirs = baseDir.listFiles
+      .sortBy(_.getName)
+      .iterator
+      .filter(_.isDirectory)
     val moduleFixtures = moduleDirs.map { dir =>
       val builder = fixtureBuilder.addModule(
         classOf[JavaModuleFixtureBuilder[ModuleFixture]])

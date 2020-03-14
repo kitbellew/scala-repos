@@ -40,8 +40,9 @@ object MenuDslSpec extends Specification {
 
     "handle LocParams" in {
       import Loc._
-      val worthlessTest =
-        If(() => System.currentTimeMillis % 2 == 0, "So sad for you!")
+      val worthlessTest = If(
+        () => System.currentTimeMillis % 2 == 0,
+        "So sad for you!")
 
       val menu1 = Menu("Test") / "foo" >> worthlessTest
       val menu2 = Menu("Test") / "foo" rule worthlessTest

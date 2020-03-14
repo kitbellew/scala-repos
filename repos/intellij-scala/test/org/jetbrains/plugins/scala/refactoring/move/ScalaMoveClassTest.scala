@@ -144,10 +144,11 @@ class ScalaMoveClassTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
           case _                                        => true
         }
     }
-    val aPackage: PsiPackage =
-      JavaPsiFacade.getInstance(getProjectAdapter).findPackage(newPackageName)
-    val dirs: Array[PsiDirectory] =
-      aPackage.getDirectories(GlobalSearchScope.moduleScope(getModuleAdapter))
+    val aPackage: PsiPackage = JavaPsiFacade
+      .getInstance(getProjectAdapter)
+      .findPackage(newPackageName)
+    val dirs: Array[PsiDirectory] = aPackage.getDirectories(
+      GlobalSearchScope.moduleScope(getModuleAdapter))
     assert(dirs.length == 1)
     ScalaFileImpl.performMoveRefactoring {
       new ScalaMoveClassesOrPackagesProcessor(

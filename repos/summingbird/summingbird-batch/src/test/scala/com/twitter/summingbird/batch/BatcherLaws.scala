@@ -73,8 +73,9 @@ object BatcherLaws extends Properties("Batcher") {
       val (tsLower, tsUpper) = if (tsA < tsB) (tsA, tsB) else (tsB, tsA)
 
       val deltaBounded = Milliseconds(deltaMs % 1000 * 86000 * 365L)
-      val int =
-        intervalGenerator(batcher.batchOf(tsLower), batcher.batchOf(tsUpper))
+      val int = intervalGenerator(
+        batcher.batchOf(tsLower),
+        batcher.batchOf(tsUpper))
 
       val tsInterval = batcher.toTimestamp(int)
 

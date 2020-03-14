@@ -182,10 +182,12 @@ class AppInfoBaseDataTest
     val f = new Fixture
     Given("One related and one unrelated deployment")
     val emptyGroup = Group.empty
-    val relatedDeployment =
-      DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(app)))
-    val unrelatedDeployment =
-      DeploymentPlan(emptyGroup, emptyGroup.copy(apps = Set(other)))
+    val relatedDeployment = DeploymentPlan(
+      emptyGroup,
+      emptyGroup.copy(apps = Set(app)))
+    val unrelatedDeployment = DeploymentPlan(
+      emptyGroup,
+      emptyGroup.copy(apps = Set(other)))
     f.marathonSchedulerService.listRunningDeployments() returns Future
       .successful(
         Seq[DeploymentStepInfo](

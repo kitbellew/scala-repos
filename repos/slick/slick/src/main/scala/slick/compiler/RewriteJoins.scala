@@ -74,8 +74,8 @@ class RewriteJoins extends Phase {
           Ellipsis(n, List(0), List(1, 0)))
         val sn, sj1, sj2 = new AnonSymbol
         val j2 = j.replace { case Ref(s) :@ tpe if s == s1 => Ref(sj1) :@ tpe }
-        val oj =
-          Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true)).infer()
+        val oj = Join(sj1, sj2, f1, j2, JoinType.Inner, LiteralNode(true))
+          .infer()
         val refSn = Ref(sn) :@ oj.nodeType.asCollectionType.elementType
         val ref1 = Select(refSn, ElementSymbol(1))
         val ref2 = Select(refSn, ElementSymbol(2))
@@ -259,8 +259,8 @@ class RewriteJoins extends Phase {
         sn: StructNode,
         ok: TermSymbol,
         illegal: Set[TermSymbol]): (StructNode, Map[TermSymbol, Node]) = {
-      val (illegalDefs, legalDefs) =
-        sn.elements.toSeq.partition(t => hasRefTo(t._2, illegal))
+      val (illegalDefs, legalDefs) = sn.elements.toSeq.partition(t =>
+        hasRefTo(t._2, illegal))
       if (illegalDefs.isEmpty) (sn, Map.empty)
       else {
         logger.debug(
@@ -382,8 +382,8 @@ class RewriteJoins extends Phase {
         val j2b = rearrangeJoinConditions(j2a, pull)
         val (on1Down, on1Keep) = splitConjunctions(on1).partition(p =>
           hasRefTo(p, Set(s2)) && !hasRefTo(p, pull))
-        val (on2Up, on2Keep) =
-          splitConjunctions(j2b.on).partition(p => hasRefTo(p, pull))
+        val (on2Up, on2Keep) = splitConjunctions(j2b.on).partition(p =>
+          hasRefTo(p, pull))
         if (on1Down.nonEmpty || on2Up.nonEmpty) {
           val refS2 = Ref(s2) :@ j2b.nodeType.asCollectionType.elementType
           val on1b = and(

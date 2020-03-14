@@ -177,8 +177,9 @@ object ProcessKeeper {
       cwd: File = new File("."),
       env: Map[String, String] = Map.empty,
       upWhen: String => Boolean): Process = {
-    val javaExecutable =
-      sys.props.get("java.home").fold("java")(_ + "/bin/java")
+    val javaExecutable = sys.props
+      .get("java.home")
+      .fold("java")(_ + "/bin/java")
     val classPath = sys.props.getOrElse("java.class.path", "target/classes")
     val memSettings = s"-Xmx${heapInMegs}m"
     // Omit the classpath in order to avoid cluttering the tests output

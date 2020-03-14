@@ -27,8 +27,9 @@ class ScalaMemberChooser[T <: ClassMember: scala.reflect.ClassTag](
     ScalaBundle.message("specify.return.type.explicitly"))
   val addOverrideModifierChb = new NonFocusableCheckBox(
     ScalaBundle.message("add.override.modifier"))
-  private val checkboxes =
-    Array[JComponent](specifyRetTypeChb, addOverrideModifierChb)
+  private val checkboxes = Array[JComponent](
+    specifyRetTypeChb,
+    addOverrideModifierChb)
   private val sortedElements = ScalaMemberChooser.sorted(elements, targetClass)
 } with MemberChooser[T](
   sortedElements.toArray[T],

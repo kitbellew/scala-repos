@@ -5,8 +5,7 @@ object Test {
   def main(args: Array[String]) { test() }
 
   def test() = {
-    def await(f: Future[Any]) =
-      Await.result(f, duration.Duration.Inf)
+    def await(f: Future[Any]) = Await.result(f, duration.Duration.Inf)
 
     val ec = new TestExecutionContext(ExecutionContext.Implicits.global)
 

@@ -32,8 +32,12 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("get ports from multiple ranges") {
-    val app =
-      AppDefinition(portDefinitions = PortDefinitions(80, 81, 82, 83, 84))
+    val app = AppDefinition(portDefinitions = PortDefinitions(
+      80,
+      81,
+      82,
+      83,
+      84))
     val portsResource = RangesResource(
       Resource.PORTS,
       Seq(protos.Range(30000, 30003), protos.Range(31000, 31000))
@@ -88,8 +92,12 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("get ports from multiple resources, preserving role") {
-    val app =
-      AppDefinition(portDefinitions = PortDefinitions(80, 81, 82, 83, 84))
+    val app = AppDefinition(portDefinitions = PortDefinitions(
+      80,
+      81,
+      82,
+      83,
+      84))
     val portsResource = RangesResource(
       Resource.PORTS,
       Seq(protos.Range(30000, 30003))
@@ -110,8 +118,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     val matcher = new PortsMatcher(
       app,
       offer,
-      resourceSelector =
-        ResourceSelector(Set("*", "marathon"), reserved = false))
+      resourceSelector = ResourceSelector(
+        Set("*", "marathon"),
+        reserved = false))
 
     assert(matcher.portsMatch.isDefined)
     assert(5 == matcher.portsMatch.get.hostPorts.size)
@@ -122,8 +131,12 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("get ports from multiple ranges, ignore ranges with unwanted roles") {
-    val app =
-      AppDefinition(portDefinitions = PortDefinitions(80, 81, 82, 83, 84))
+    val app = AppDefinition(portDefinitions = PortDefinitions(
+      80,
+      81,
+      82,
+      83,
+      84))
     val portsResource = RangesResource(
       Resource.PORTS,
       Seq(protos.Range(30000, 30003), protos.Range(31000, 31009)),
@@ -377,8 +390,9 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     val matcher = new PortsMatcher(
       app,
       offer,
-      resourceSelector =
-        ResourceSelector(Set("*", "marathon"), reserved = false))
+      resourceSelector = ResourceSelector(
+        Set("*", "marathon"),
+        reserved = false))
 
     assert(matcher.portsMatch.isDefined)
     assert(matcher.portsMatch.get.hostPorts.toSet == Set(31000, 31001))

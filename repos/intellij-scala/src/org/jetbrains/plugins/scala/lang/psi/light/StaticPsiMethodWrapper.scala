@@ -47,8 +47,8 @@ class StaticPsiMethodWrapper private (
 }
 
 object StaticPsiMethodWrapper {
-  private val KEY: Key[HashMap[PsiClass, (StaticPsiMethodWrapper, Long)]] =
-    Key.create("static.psi.method.wrapper.key")
+  private val KEY: Key[HashMap[PsiClass, (StaticPsiMethodWrapper, Long)]] = Key
+    .create("static.psi.method.wrapper.key")
 
   def getWrapper(
       method: PsiMethod,

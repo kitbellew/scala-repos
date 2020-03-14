@@ -96,29 +96,28 @@ class FlowStageSpec
     }
 
     "produce one-to-several transformation with state change" in {
-      val p =
-        Source(List(3, 2, 1, 0, 1, 12))
-          .transform(() ⇒
-            new StatefulStage[Int, Int] {
-              // a transformer that
-              //  - for the first element, returns n times 42
-              //  - echos the remaining elements (can be reset to the duplication state by getting `0`)
+      val p = Source(List(3, 2, 1, 0, 1, 12))
+        .transform(() ⇒
+          new StatefulStage[Int, Int] {
+            // a transformer that
+            //  - for the first element, returns n times 42
+            //  - echos the remaining elements (can be reset to the duplication state by getting `0`)
 
-              override def initial = inflate
-              lazy val inflate: State = new State {
-                override def onPush(elem: Int, ctx: Context[Int]) = {
-                  emit(Iterator.fill(elem)(42), ctx, echo)
-                }
+            override def initial = inflate
+            lazy val inflate: State = new State {
+              override def onPush(elem: Int, ctx: Context[Int]) = {
+                emit(Iterator.fill(elem)(42), ctx, echo)
               }
-              lazy val echo: State = new State {
-                def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
-                  if (elem == 0) {
-                    become(inflate)
-                    ctx.pull()
-                  } else ctx.push(elem)
-              }
-            })
-          .runWith(Sink.asPublisher(false))
+            }
+            lazy val echo: State = new State {
+              def onPush(elem: Int, ctx: Context[Int]): SyncDirective =
+                if (elem == 0) {
+                  become(inflate)
+                  ctx.pull()
+                } else ctx.push(elem)
+            }
+          })
+        .runWith(Sink.asPublisher(false))
 
       val subscriber = TestSubscriber.manualProbe[Int]()
       p.subscribe(subscriber)
@@ -427,8 +426,7 @@ class FlowStageSpec
         .asSubscriber[Int]
         .transform(() ⇒
           new PushStage[Int, Int] {
-            override def onPush(elem: Int, ctx: Context[Int]) =
-              ctx.push(elem)
+            override def onPush(elem: Int, ctx: Context[Int]) = ctx.push(elem)
             override def onDownstreamFinish(
                 ctx: Context[Int]): TerminationDirective = {
               onDownstreamFinishProbe.ref ! "onDownstreamFinish"
@@ -450,22 +448,21 @@ class FlowStageSpec
 
     "not trigger onUpstreamFinished after pushAndFinish" in assertAllStagesStopped {
       val in = TestPublisher.manualProbe[Int]()
-      val flow =
-        Source
-          .fromPublisher(in)
-          .transform(() ⇒
-            new StatefulStage[Int, Int] {
+      val flow = Source
+        .fromPublisher(in)
+        .transform(() ⇒
+          new StatefulStage[Int, Int] {
 
-              def initial: StageState[Int, Int] =
-                new State {
-                  override def onPush(element: Int, ctx: Context[Int]) =
-                    ctx.pushAndFinish(element)
-                }
-              override def onUpstreamFinish(
-                  ctx: Context[Int]): TerminationDirective =
-                terminationEmit(Iterator(42), ctx)
-            })
-          .runWith(Sink.asPublisher(false))
+            def initial: StageState[Int, Int] =
+              new State {
+                override def onPush(element: Int, ctx: Context[Int]) =
+                  ctx.pushAndFinish(element)
+              }
+            override def onUpstreamFinish(
+                ctx: Context[Int]): TerminationDirective =
+              terminationEmit(Iterator(42), ctx)
+          })
+        .runWith(Sink.asPublisher(false))
 
       val inSub = in.expectSubscription()
 

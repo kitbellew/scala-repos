@@ -291,13 +291,16 @@ private[yarn] class ExecutorRunnable(
     val localResources = HashMap[String, LocalResource]()
 
     if (System.getenv("SPARK_YARN_CACHE_FILES") != null) {
-      val timeStamps =
-        System.getenv("SPARK_YARN_CACHE_FILES_TIME_STAMPS").split(',')
-      val fileSizes =
-        System.getenv("SPARK_YARN_CACHE_FILES_FILE_SIZES").split(',')
+      val timeStamps = System
+        .getenv("SPARK_YARN_CACHE_FILES_TIME_STAMPS")
+        .split(',')
+      val fileSizes = System
+        .getenv("SPARK_YARN_CACHE_FILES_FILE_SIZES")
+        .split(',')
       val distFiles = System.getenv("SPARK_YARN_CACHE_FILES").split(',')
-      val visibilities =
-        System.getenv("SPARK_YARN_CACHE_FILES_VISIBILITIES").split(',')
+      val visibilities = System
+        .getenv("SPARK_YARN_CACHE_FILES_VISIBILITIES")
+        .split(',')
       for (i <- 0 to distFiles.length - 1) {
         setupDistributedCache(
           distFiles(i),
@@ -310,13 +313,16 @@ private[yarn] class ExecutorRunnable(
     }
 
     if (System.getenv("SPARK_YARN_CACHE_ARCHIVES") != null) {
-      val timeStamps =
-        System.getenv("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS").split(',')
-      val fileSizes =
-        System.getenv("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES").split(',')
+      val timeStamps = System
+        .getenv("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS")
+        .split(',')
+      val fileSizes = System
+        .getenv("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES")
+        .split(',')
       val distArchives = System.getenv("SPARK_YARN_CACHE_ARCHIVES").split(',')
-      val visibilities =
-        System.getenv("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES").split(',')
+      val visibilities = System
+        .getenv("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES")
+        .split(',')
       for (i <- 0 to distArchives.length - 1) {
         setupDistributedCache(
           distArchives(i),

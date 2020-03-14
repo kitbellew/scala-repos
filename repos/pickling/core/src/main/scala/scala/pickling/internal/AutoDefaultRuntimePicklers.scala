@@ -55,16 +55,14 @@ trait RuntimePicklerRegistryHelper extends PicklerRegistry {
 
   def tupleUnpicklerGenerator: AppliedType => Unpickler[(Any, Any)] = {
     case AppliedType(_, List(left, right)) =>
-      val lhs =
-        currentRuntime.picklers
-          .lookupUnpickler(left.toString)
-          .getOrElse(AnyUnpickler)
-          .asInstanceOf[Unpickler[Any]]
-      val rhs =
-        currentRuntime.picklers
-          .lookupUnpickler(right.toString)
-          .getOrElse(AnyUnpickler)
-          .asInstanceOf[Unpickler[Any]]
+      val lhs = currentRuntime.picklers
+        .lookupUnpickler(left.toString)
+        .getOrElse(AnyUnpickler)
+        .asInstanceOf[Unpickler[Any]]
+      val rhs = currentRuntime.picklers
+        .lookupUnpickler(right.toString)
+        .getOrElse(AnyUnpickler)
+        .asInstanceOf[Unpickler[Any]]
       new Tuple2RTKnownTagUnpickler(lhs, rhs)
     case tpe => new Tuple2RTPickler()
   }

@@ -72,8 +72,8 @@ object TestResultLogger {
   /** Transforms the input to be completely silent when the subject module doesn't contain any tests. */
   def silenceWhenNoTests(d: Defaults.Main) =
     d.copy(
-      printStandard =
-        d.printStandard.unless((results, _) => results.events.isEmpty),
+      printStandard = d.printStandard.unless((results, _) =>
+        results.events.isEmpty),
       printNoTests = Null
     )
 
@@ -116,11 +116,10 @@ object TestResultLogger {
         }
     })
 
-    val printStandard_? : Output => Boolean =
-      results =>
-        // Print the standard one-liner statistic if no framework summary is defined, or when > 1 framework is in used.
-        results.summaries.size > 1 || results.summaries.headOption
-          .forall(_.summaryText.isEmpty)
+    val printStandard_? : Output => Boolean = results =>
+      // Print the standard one-liner statistic if no framework summary is defined, or when > 1 framework is in used.
+      results.summaries.size > 1 || results.summaries.headOption
+        .forall(_.summaryText.isEmpty)
 
     val printStandard = TestResultLogger((log, results, _) => {
       val (
@@ -130,27 +129,26 @@ object TestResultLogger {
         failuresCount,
         ignoredCount,
         canceledCount,
-        pendingCount) =
-        results.events.foldLeft((0, 0, 0, 0, 0, 0, 0)) {
-          case (
-                (
-                  skippedAcc,
-                  errorAcc,
-                  passedAcc,
-                  failureAcc,
-                  ignoredAcc,
-                  canceledAcc,
-                  pendingAcc),
-                (name, testEvent)) =>
-            (
-              skippedAcc + testEvent.skippedCount,
-              errorAcc + testEvent.errorCount,
-              passedAcc + testEvent.passedCount,
-              failureAcc + testEvent.failureCount,
-              ignoredAcc + testEvent.ignoredCount,
-              canceledAcc + testEvent.canceledCount,
-              pendingAcc + testEvent.pendingCount)
-        }
+        pendingCount) = results.events.foldLeft((0, 0, 0, 0, 0, 0, 0)) {
+        case (
+              (
+                skippedAcc,
+                errorAcc,
+                passedAcc,
+                failureAcc,
+                ignoredAcc,
+                canceledAcc,
+                pendingAcc),
+              (name, testEvent)) =>
+          (
+            skippedAcc + testEvent.skippedCount,
+            errorAcc + testEvent.errorCount,
+            passedAcc + testEvent.passedCount,
+            failureAcc + testEvent.failureCount,
+            ignoredAcc + testEvent.ignoredCount,
+            canceledAcc + testEvent.canceledCount,
+            pendingAcc + testEvent.pendingCount)
+      }
       val totalCount = failuresCount + errorsCount + skippedCount + passedCount
       val base =
         s"Total $totalCount, Failed $failuresCount, Errors $errorsCount, Passed $passedCount"

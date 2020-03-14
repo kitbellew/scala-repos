@@ -269,8 +269,9 @@ class FutureTests extends MinimalScalaTest {
     "report uncaught exceptions" in {
       val p = Promise[Throwable]()
       val logThrowable: Throwable => Unit = p.trySuccess(_)
-      val ec: ExecutionContext =
-        ExecutionContext.fromExecutor(null, logThrowable)
+      val ec: ExecutionContext = ExecutionContext.fromExecutor(
+        null,
+        logThrowable)
 
       val t = new InterruptedException()
       val f = Future(throw t)(ec)
@@ -592,25 +593,29 @@ class FutureTests extends MinimalScalaTest {
       val timeout = 10000 millis
       val f = new IllegalStateException("test")
       intercept[IllegalStateException] {
-        val failed =
-          Future.failed[String](f).zipWith(Future.successful("foo")) { _ -> _ }
+        val failed = Future
+          .failed[String](f)
+          .zipWith(Future.successful("foo")) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
-        val failed =
-          Future.successful("foo").zipWith(Future.failed[String](f)) { _ -> _ }
+        val failed = Future
+          .successful("foo")
+          .zipWith(Future.failed[String](f)) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
       intercept[IllegalStateException] {
-        val failed =
-          Future.failed[String](f).zipWith(Future.failed[String](f)) { _ -> _ }
+        val failed = Future
+          .failed[String](f)
+          .zipWith(Future.failed[String](f)) { _ -> _ }
         Await.result(failed, timeout)
       } mustBe (f)
 
-      val successful =
-        Future.successful("foo").zipWith(Future.successful("foo")) { _ -> _ }
+      val successful = Future
+        .successful("foo")
+        .zipWith(Future.successful("foo")) { _ -> _ }
       Await.result(successful, timeout) mustBe (("foo", "foo"))
 
       val failure = Future.successful("foo").zipWith(Future.successful("foo")) {

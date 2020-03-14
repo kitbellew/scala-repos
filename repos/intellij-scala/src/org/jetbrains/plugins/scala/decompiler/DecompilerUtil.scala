@@ -18,8 +18,8 @@ import scala.tools.scalap.Decompiler
   * @author ilyas
   */
 object DecompilerUtil {
-  protected val LOG: Logger =
-    Logger.getInstance("#org.jetbrains.plugins.scala.decompiler.DecompilerUtil")
+  protected val LOG: Logger = Logger.getInstance(
+    "#org.jetbrains.plugins.scala.decompiler.DecompilerUtil")
 
   val DECOMPILER_VERSION = 270
   private val SCALA_DECOMPILER_FILE_ATTRIBUTE =
@@ -79,8 +79,8 @@ object DecompilerUtil {
       def updateAttributeAndData() {
         val decompilationResult = decompileInner(file, bytes)
         if (attributesSupported) {
-          val writeAttribute =
-            SCALA_DECOMPILER_FILE_ATTRIBUTE.writeAttribute(file)
+          val writeAttribute = SCALA_DECOMPILER_FILE_ATTRIBUTE.writeAttribute(
+            file)
           try {
             writeAttribute.writeBoolean(decompilationResult.isScala)
             writeAttribute.writeUTF(decompilationResult.sourceName)

@@ -53,8 +53,8 @@ case class CreatedResponse(
 
   def code = 201
 
-  val headers: List[(String, String)] =
-    S.getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S.getResponseHeaders(
+    ("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -738,8 +738,10 @@ trait NodeResponse extends LiftResponse {
     }
   }
 
-  protected lazy val _encoding: String =
-    LiftRules.calculateXmlHeader(this, out, headers.ciGet("Content-Type"))
+  protected lazy val _encoding: String = LiftRules.calculateXmlHeader(
+    this,
+    out,
+    headers.ciGet("Content-Type"))
 
   def toResponse = {
     val bos = new ByteArrayOutputStream(64000)
@@ -861,8 +863,8 @@ case class XmlMimeResponse(
 
   def code = 200
 
-  val headers: List[(String, String)] =
-    S.getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S.getResponseHeaders(
+    ("Content-Type" -> mime) :: addlHeaders)
 
   def cookies: List[HTTPCookie] = Nil
 
@@ -878,8 +880,8 @@ class XmlResponse(
     extends XmlNodeResponse {
   def docType = Empty
 
-  val headers: List[(String, String)] =
-    S.getResponseHeaders(("Content-Type" -> mime) :: addlHeaders)
+  val headers: List[(String, String)] = S.getResponseHeaders(
+    ("Content-Type" -> mime) :: addlHeaders)
 
   def out: Node = xml
 }

@@ -311,8 +311,7 @@ trait ContextErrors {
           tree,
           "lower bound " + lowB + " does not conform to upper bound " + highB)
 
-      def HiddenSymbolWithError[T <: Tree](tree: T): T =
-        setError(tree)
+      def HiddenSymbolWithError[T <: Tree](tree: T): T = setError(tree)
 
       def SymbolEscapesScopeError[T <: Tree](tree: T, badSymbol: Symbol): T = {
         val modifierString = if (badSymbol.isPrivate) "private " else ""
@@ -1011,8 +1010,9 @@ trait ContextErrors {
               .indexWhere(_.getMethodName endsWith "macroExpandWithRuntime")
             if (relevancyThreshold == -1) None
             else {
-              var relevantElements =
-                realex.getStackTrace().take(relevancyThreshold + 1)
+              var relevantElements = realex
+                .getStackTrace()
+                .take(relevancyThreshold + 1)
               def isMacroInvoker(este: StackTraceElement) =
                 este.isNativeMethod || (este.getClassName != null && (este.getClassName contains "fastTrack"))
               var threshold =
@@ -1399,17 +1399,16 @@ trait ContextErrors {
           sym: Symbol,
           err: PolyAlternativeErrorKind.ErrorType) = {
         import PolyAlternativeErrorKind._
-        val msg =
-          err match {
-            case WrongNumber =>
-              "wrong number of type parameters for " + treeSymTypeMsg(tree)
-            case NoParams =>
-              treeSymTypeMsg(tree) + " does not take type parameters"
-            case ArgsDoNotConform =>
-              "type arguments " + argtypes.mkString("[", ",", "]") +
-                " conform to the bounds of none of the overloaded alternatives of\n " + sym +
-                ": " + sym.info
-          }
+        val msg = err match {
+          case WrongNumber =>
+            "wrong number of type parameters for " + treeSymTypeMsg(tree)
+          case NoParams =>
+            treeSymTypeMsg(tree) + " does not take type parameters"
+          case ArgsDoNotConform =>
+            "type arguments " + argtypes.mkString("[", ",", "]") +
+              " conform to the bounds of none of the overloaded alternatives of\n " + sym +
+              ": " + sym.info
+        }
         issueNormalTypeError(tree, msg)
         ()
       }
@@ -1495,12 +1494,13 @@ trait ContextErrors {
         val s2 = if (prevSym.isSynthetic) "(compiler-generated) " + s1 else ""
         val s3 =
           if (prevSym.isCase) "case class " + prevSym.name else "" + prevSym
-        val where = if (currentSym.isTopLevel != prevSym.isTopLevel) {
-          val inOrOut = if (prevSym.isTopLevel) "outside of" else "in"
-          " %s package object %s".format(
-            inOrOut,
-            "" + prevSym.effectiveOwner.name)
-        } else ""
+        val where =
+          if (currentSym.isTopLevel != prevSym.isTopLevel) {
+            val inOrOut = if (prevSym.isTopLevel) "outside of" else "in"
+            " %s package object %s".format(
+              inOrOut,
+              "" + prevSym.effectiveOwner.name)
+          } else ""
 
         issueSymbolTypeError(
           currentSym,

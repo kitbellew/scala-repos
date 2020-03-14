@@ -40,8 +40,9 @@ class ActorMaterializerSpec extends AkkaSpec with ImplicitSender {
     }
 
     "shut down the supervisor actor it encapsulates" in {
-      val m =
-        ActorMaterializer.create(system).asInstanceOf[ActorMaterializerImpl]
+      val m = ActorMaterializer
+        .create(system)
+        .asInstanceOf[ActorMaterializerImpl]
 
       Source.maybe[Any].to(Sink.ignore).run()(m)
       m.supervisor ! StreamSupervisor.GetChildren

@@ -328,8 +328,9 @@ class SparkListenerSuite
     sc.addSparkListener(listener)
 
     // Make a task whose result is larger than the RPC message size
-    val result =
-      sc.parallelize(Seq(1), 1).map(2 * _).reduce { case (x, y) => x }
+    val result = sc.parallelize(Seq(1), 1).map(2 * _).reduce {
+      case (x, y) => x
+    }
     assert(result === 2)
 
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)

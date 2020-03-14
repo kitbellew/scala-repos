@@ -13,8 +13,7 @@ private[stream] object Bijections {
   /**
     * Convert an A to a B.
     */
-  def from[A, B](a: A)(implicit ev: From[A, B]): B =
-    ev.apply(a)
+  def from[A, B](a: A)(implicit ev: From[A, B]): B = ev.apply(a)
 
   // Version
 
@@ -39,8 +38,7 @@ private[stream] object Bijections {
   }
 
   implicit val fromNettyMethod = new From[HttpMethod, StreamRequest.Method] {
-    def apply(method: HttpMethod) =
-      StreamRequest.Method(method.getName)
+    def apply(method: HttpMethod) = StreamRequest.Method(method.getName)
   }
 
   // Headers

@@ -73,8 +73,8 @@ trait ScBindingPattern
   def getOriginalElement: PsiElement = {
     val ccontainingClass = containingClass
     if (ccontainingClass == null) return this
-    val originalClass: PsiClass =
-      ccontainingClass.getOriginalElement.asInstanceOf[PsiClass]
+    val originalClass: PsiClass = ccontainingClass.getOriginalElement
+      .asInstanceOf[PsiClass]
     if (ccontainingClass eq originalClass) return this
     if (!originalClass.isInstanceOf[ScTypeDefinition]) return this
     val c = originalClass.asInstanceOf[ScTypeDefinition]

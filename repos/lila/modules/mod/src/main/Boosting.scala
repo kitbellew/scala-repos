@@ -16,8 +16,8 @@ final class BoostingApi(
     ratioGamesToMark: Double) {
   import BoostingApi._
 
-  private implicit val boostingRecordBSONHandler =
-    Macros.handler[BoostingRecord]
+  private implicit val boostingRecordBSONHandler = Macros
+    .handler[BoostingRecord]
 
   private val variants = Set[variant.Variant](
     variant.Standard,

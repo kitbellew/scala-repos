@@ -47,8 +47,8 @@ class AttributeSuite extends SparkFunSuite {
     val name = "age"
     val index = 0
     val metadata = Metadata.fromJson("""{"name":"age","idx":0}""")
-    val metadataWithType =
-      Metadata.fromJson("""{"type":"numeric","name":"age","idx":0}""")
+    val metadataWithType = Metadata.fromJson(
+      """{"type":"numeric","name":"age","idx":0}""")
     val attr: NumericAttribute = NumericAttribute.defaultAttr
       .withName(name)
       .withIndex(index)
@@ -75,12 +75,11 @@ class AttributeSuite extends SparkFunSuite {
         .metadata
         .getString("name") === "test")
 
-    val attr2 =
-      attr.withoutName.withoutIndex
-        .withMin(0.0)
-        .withMax(1.0)
-        .withStd(0.5)
-        .withSparsity(0.3)
+    val attr2 = attr.withoutName.withoutIndex
+      .withMin(0.0)
+      .withMax(1.0)
+      .withStd(0.5)
+      .withSparsity(0.3)
     assert(attr2.name.isEmpty)
     assert(attr2.index.isEmpty)
     assert(attr2.min === Some(0.0))
@@ -147,8 +146,8 @@ class AttributeSuite extends SparkFunSuite {
     assert(
       attr.withoutIndex === Attribute.fromStructField(attr.toStructField()))
 
-    val attr2 =
-      attr.withoutName.withoutIndex.withValues(attr.values.get :+ "x-large")
+    val attr2 = attr.withoutName.withoutIndex
+      .withValues(attr.values.get :+ "x-large")
     assert(attr2.name.isEmpty)
     assert(attr2.index.isEmpty)
     assert(attr2.values.get === Array("small", "medium", "large", "x-large"))
@@ -190,8 +189,8 @@ class AttributeSuite extends SparkFunSuite {
     val values = Array("no", "yes")
     val metadata = Metadata.fromJson(
       """{"type":"binary","name":"clicked","idx":2,"vals":["no","yes"]}""")
-    val metadataWithoutType =
-      Metadata.fromJson("""{"name":"clicked","idx":2,"vals":["no","yes"]}""")
+    val metadataWithoutType = Metadata.fromJson(
+      """{"name":"clicked","idx":2,"vals":["no","yes"]}""")
     val attr = BinaryAttribute.defaultAttr
       .withName(name)
       .withIndex(index)

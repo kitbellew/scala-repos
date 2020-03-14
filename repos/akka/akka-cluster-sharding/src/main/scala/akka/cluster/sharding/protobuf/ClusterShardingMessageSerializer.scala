@@ -65,8 +65,8 @@ private[akka] class ClusterShardingMessageSerializer(
   private val GetShardStatsManifest = "DA"
   private val ShardStatsManifest = "DB"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       EntityStateManifest -> entityStateFromBinary,
       EntityStartedManifest -> entityStartedFromBinary,
       EntityStoppedManifest -> entityStoppedFromBinary,
@@ -238,19 +238,17 @@ private[akka] class ClusterShardingMessageSerializer(
     coordinatorStateFromProto(sm.CoordinatorState.parseFrom(decompress(bytes)))
 
   private def coordinatorStateFromProto(state: sm.CoordinatorState): State = {
-    val shards: Map[String, ActorRef] =
-      state.getShardsList.asScala.toVector.map { entry ⇒
-        entry.getShardId -> resolveActorRef(entry.getRegionRef)
-      }(breakOut)
+    val shards: Map[String, ActorRef] = state.getShardsList.asScala.toVector
+      .map { entry ⇒ entry.getShardId -> resolveActorRef(entry.getRegionRef) }(
+        breakOut)
 
     val regionsZero: Map[ActorRef, Vector[String]] =
       state.getRegionsList.asScala.toVector
         .map(resolveActorRef(_) -> Vector.empty[String])(breakOut)
-    val regions: Map[ActorRef, Vector[String]] =
-      shards.foldLeft(regionsZero) {
-        case (acc, (shardId, regionRef)) ⇒
-          acc.updated(regionRef, acc(regionRef) :+ shardId)
-      }
+    val regions: Map[ActorRef, Vector[String]] = shards.foldLeft(regionsZero) {
+      case (acc, (shardId, regionRef)) ⇒
+        acc.updated(regionRef, acc(regionRef) :+ shardId)
+    }
 
     val proxies: Set[ActorRef] = state.getRegionProxiesList.asScala.map {
       resolveActorRef

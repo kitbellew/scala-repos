@@ -36,8 +36,8 @@ object CORSFilterSpec extends CORSCommonSpec {
 
   "The CORSFilter" should {
 
-    val restrictPaths =
-      Map("play.filters.cors.pathPrefixes" -> Seq("/foo", "/bar"))
+    val restrictPaths = Map(
+      "play.filters.cors.pathPrefixes" -> Seq("/foo", "/bar"))
 
     "pass through a cors request that doesn't match the path prefixes" in withApplication(
       conf = restrictPaths) {

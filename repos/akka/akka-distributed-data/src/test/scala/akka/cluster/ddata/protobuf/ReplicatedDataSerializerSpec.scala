@@ -42,12 +42,15 @@ class ReplicatedDataSerializerSpec
   val serializer = new ReplicatedDataSerializer(
     system.asInstanceOf[ExtendedActorSystem])
 
-  val address1 =
-    UniqueAddress(Address("akka.tcp", system.name, "some.host.org", 4711), 1)
-  val address2 =
-    UniqueAddress(Address("akka.tcp", system.name, "other.host.org", 4711), 2)
-  val address3 =
-    UniqueAddress(Address("akka.tcp", system.name, "some.host.org", 4712), 3)
+  val address1 = UniqueAddress(
+    Address("akka.tcp", system.name, "some.host.org", 4711),
+    1)
+  val address2 = UniqueAddress(
+    Address("akka.tcp", system.name, "other.host.org", 4711),
+    2)
+  val address3 = UniqueAddress(
+    Address("akka.tcp", system.name, "some.host.org", 4712),
+    3)
 
   override def afterAll { shutdown() }
 
@@ -219,8 +222,9 @@ class ReplicatedDataSerializerSpec
         .empty[String]
         .addBinding(address1, "a", "A1")
         .addBinding(address2, "a", "A2")
-      val m2 =
-        ORMultiMap.empty[String].put(address2, "b", Set("B1", "B2", "B3"))
+      val m2 = ORMultiMap
+        .empty[String]
+        .put(address2, "b", Set("B1", "B2", "B3"))
       checkSameContent(m1.merge(m2), m2.merge(m1))
     }
 

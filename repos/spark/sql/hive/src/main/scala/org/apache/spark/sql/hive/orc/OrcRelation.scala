@@ -77,8 +77,8 @@ private[sql] class DefaultSource extends FileFormat with DataSourceRegister {
         val shortOrcCompressionCodecNames =
           OrcRelation.shortOrcCompressionCodecNames
         if (!shortOrcCompressionCodecNames.contains(codecName.toLowerCase)) {
-          val availableCodecs =
-            shortOrcCompressionCodecNames.keys.map(_.toLowerCase)
+          val availableCodecs = shortOrcCompressionCodecNames.keys.map(
+            _.toLowerCase)
           throw new IllegalArgumentException(s"Codec [$codecName] " +
             s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
@@ -153,9 +153,8 @@ private[orc] class OrcOutputWriter(
 
   // Object inspector converted from the schema of the relation to be written.
   private val structOI = {
-    val typeInfo =
-      TypeInfoUtils.getTypeInfoFromTypeString(
-        HiveMetastoreTypes.toMetastoreType(dataSchema))
+    val typeInfo = TypeInfoUtils.getTypeInfoFromTypeString(
+      HiveMetastoreTypes.toMetastoreType(dataSchema))
 
     OrcStruct
       .createObjectInspector(typeInfo.asInstanceOf[StructTypeInfo])
@@ -173,8 +172,9 @@ private[orc] class OrcOutputWriter(
     val uniqueWriteJobId = conf.get("spark.sql.sources.writeJobUUID")
     val taskAttemptId = context.getTaskAttemptID
     val partition = taskAttemptId.getTaskID.getId
-    val bucketString =
-      bucketId.map(BucketingUtils.bucketIdToString).getOrElse("")
+    val bucketString = bucketId
+      .map(BucketingUtils.bucketIdToString)
+      .getOrElse("")
     val compressionExtension = {
       val name = conf.get(OrcTableProperties.COMPRESSION.getPropName)
       OrcRelation.extensionsForCompressionCodecNames.getOrElse(name, "")
@@ -258,8 +258,8 @@ private[orc] case class OrcTableScan(
     val deserializer = new OrcSerde
     val maybeStructOI = OrcFileOperator.getObjectInspector(path, Some(conf))
     val mutableRow = new SpecificMutableRow(attributes.map(_.dataType))
-    val unsafeProjection =
-      UnsafeProjection.create(StructType.fromAttributes(nonPartitionKeyAttrs))
+    val unsafeProjection = UnsafeProjection.create(
+      StructType.fromAttributes(nonPartitionKeyAttrs))
 
     // SPARK-8501: ORC writes an empty schema ("struct<>") to an ORC file if the file contains zero
     // rows, and thus couldn't give a proper ObjectInspector.  In this case we just return an empty
@@ -302,10 +302,9 @@ private[orc] case class OrcTableScan(
     // Figure out the actual schema from the ORC source (without partition columns) so that we
     // can pick the correct ordinals.  Note that this assumes that all files have the same schema.
     val orcFormat = new DefaultSource
-    val dataSchema =
-      orcFormat
-        .inferSchema(sqlContext, Map.empty, inputPaths)
-        .getOrElse(sys.error("Failed to read schema from target ORC files."))
+    val dataSchema = orcFormat
+      .inferSchema(sqlContext, Map.empty, inputPaths)
+      .getOrElse(sys.error("Failed to read schema from target ORC files."))
     // Sets requested columns
     addColumnIds(dataSchema, attributes, conf)
 
@@ -315,9 +314,8 @@ private[orc] case class OrcTableScan(
     }
     FileInputFormat.setInputPaths(job, inputPaths.map(_.getPath): _*)
 
-    val inputFormatClass =
-      classOf[OrcInputFormat]
-        .asInstanceOf[Class[_ <: MapRedInputFormat[NullWritable, Writable]]]
+    val inputFormatClass = classOf[OrcInputFormat]
+      .asInstanceOf[Class[_ <: MapRedInputFormat[NullWritable, Writable]]]
 
     val rdd = sqlContext.sparkContext
       .hadoopRDD(

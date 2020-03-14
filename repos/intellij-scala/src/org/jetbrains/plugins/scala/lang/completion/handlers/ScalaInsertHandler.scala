@@ -87,12 +87,14 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
         val literal =
           context.getFile.findElementAt(contextStartOffset).getParent
         if (!literal.isInstanceOf[ScInterpolated]) return
-        val index =
-          literal.asInstanceOf[ScInterpolated].getInjections.lastIndexWhere {
-            expr => expr.getTextRange.getEndOffset <= contextStartOffset
+        val index = literal
+          .asInstanceOf[ScInterpolated]
+          .getInjections
+          .lastIndexWhere { expr =>
+            expr.getTextRange.getEndOffset <= contextStartOffset
           }
-        val res =
-          ScalaBasicCompletionContributor.getStartEndPointForInterpolatedString(
+        val res = ScalaBasicCompletionContributor
+          .getStartEndPointForInterpolatedString(
             literal.asInstanceOf[ScInterpolated],
             index,
             contextStartOffset - literal.getTextRange.getStartOffset)
@@ -118,8 +120,9 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
     val some = item.someSmartCompletion
     val someNum = if (some) 1 else 0
     //val file = context.getFile //returns wrong file in evaluate expression in debugger (runtime type completion)
-    val file =
-      PsiDocumentManager.getInstance(context.getProject).getPsiFile(document)
+    val file = PsiDocumentManager
+      .getInstance(context.getProject)
+      .getPsiFile(document)
     val element =
       if (completionChar == '\t') {
         file.findElementAt(startOffset) match {

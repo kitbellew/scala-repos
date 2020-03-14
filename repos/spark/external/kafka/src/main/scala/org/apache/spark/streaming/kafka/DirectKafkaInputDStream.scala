@@ -64,8 +64,8 @@ private[streaming] class DirectKafkaInputDStream[
     messageHandler: MessageAndMetadata[K, V] => R
 ) extends InputDStream[R](_ssc)
     with Logging {
-  val maxRetries =
-    context.sparkContext.getConf.getInt("spark.streaming.kafka.maxRetries", 1)
+  val maxRetries = context.sparkContext.getConf
+    .getInt("spark.streaming.kafka.maxRetries", 1)
 
   // Keep this consistent with how other streams are named (e.g. "Flume polling stream [2]")
   private[streaming] override def name: String = s"Kafka direct stream [$id]"
@@ -153,8 +153,8 @@ private[streaming] class DirectKafkaInputDStream[
         mmp.map {
           case (tp, messages) =>
             val lo = leaderOffsets(tp)
-            tp -> lo.copy(offset =
-              Math.min(currentOffsets(tp) + messages, lo.offset))
+            tp -> lo
+              .copy(offset = Math.min(currentOffsets(tp) + messages, lo.offset))
         }
       }
       .getOrElse(leaderOffsets)

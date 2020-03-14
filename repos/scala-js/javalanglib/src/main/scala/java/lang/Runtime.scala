@@ -3,8 +3,7 @@ package java.lang
 import scala.scalajs.js
 
 class Runtime private {
-  def exit(status: Int): Unit =
-    halt(status)
+  def exit(status: Int): Unit = halt(status)
 
   //def addShutdownHook(hook: Thread): Unit
   //def removeShutdownHook(hook: Thread): Unit

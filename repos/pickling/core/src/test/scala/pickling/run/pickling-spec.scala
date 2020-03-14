@@ -33,8 +33,9 @@ object PicklingSpec {
 
   case class WithIntArray(a: Array[Int])
 
-  implicit val arbitraryWithIntArray: Arbitrary[WithIntArray] =
-    Arbitrary[WithIntArray](arbitrary[Array[Int]].map(WithIntArray(_)))
+  implicit
+  val arbitraryWithIntArray: Arbitrary[WithIntArray] = Arbitrary[WithIntArray](
+    arbitrary[Array[Int]].map(WithIntArray(_)))
 
   case class Person(name: String, age: Int)
 
@@ -84,8 +85,7 @@ object PicklingJsonSpec extends Properties("pickling-json") {
     x1 == x
   }
 
-  def emptyOrUnicode(s: String) =
-    s == "" || s.exists(_.toInt > 255)
+  def emptyOrUnicode(s: String) = s == "" || s.exists(_.toInt > 255)
 
   /* The following two tests subsume test tuple2-primitive.scala */
 
@@ -332,8 +332,7 @@ object PicklingBinarySpec extends Properties("pickling-binary") {
     x1 == x
   }
 
-  def emptyOrUnicode(s: String) =
-    s == "" || s.exists(_.toInt > 255)
+  def emptyOrUnicode(s: String) = s == "" || s.exists(_.toInt > 255)
 
   /* The following two tests subsume test tuple2-primitive.scala */
 

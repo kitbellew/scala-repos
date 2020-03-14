@@ -79,11 +79,10 @@ private[scala] trait PropertiesTrait {
     *  it is an RC, Beta, etc. or was built from source, or if the version
     *  cannot be read.
     */
-  val releaseVersion =
-    for {
-      v <- scalaPropOrNone("maven.version.number")
-      if !(v endsWith "-SNAPSHOT")
-    } yield v
+  val releaseVersion = for {
+    v <- scalaPropOrNone("maven.version.number")
+    if !(v endsWith "-SNAPSHOT")
+  } yield v
 
   /** The development Scala version, if this is not a final release.
     *  The precise contents are not guaranteed, but it aims to provide a
@@ -93,12 +92,11 @@ private[scala] trait PropertiesTrait {
     *  @return Some(version) if this is a non-final version, None if this
     *  is a final release or the version cannot be read.
     */
-  val developmentVersion =
-    for {
-      v <- scalaPropOrNone("maven.version.number")
-      if v endsWith "-SNAPSHOT"
-      ov <- scalaPropOrNone("version.number")
-    } yield ov
+  val developmentVersion = for {
+    v <- scalaPropOrNone("maven.version.number")
+    if v endsWith "-SNAPSHOT"
+    ov <- scalaPropOrNone("version.number")
+  } yield ov
 
   /** Either the development or release version if known, otherwise
     *  the empty string.
@@ -110,8 +108,9 @@ private[scala] trait PropertiesTrait {
     */
   val versionString =
     "version " + scalaPropOrElse("version.number", "(unknown)")
-  val copyrightString =
-    scalaPropOrElse("copyright.string", "Copyright 2002-2016, LAMP/EPFL")
+  val copyrightString = scalaPropOrElse(
+    "copyright.string",
+    "Copyright 2002-2016, LAMP/EPFL")
 
   /** This is the encoding to use reading in source files, overridden with -encoding.
     *  Note that it uses "prop" i.e. looks in the scala jar, not the system properties.

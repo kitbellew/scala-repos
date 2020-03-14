@@ -52,8 +52,9 @@ class OffsetIndexTest extends JUnitSuite {
     // append some random values
     val base = idx.baseOffset.toInt + 1
     val size = idx.maxEntries
-    val vals: Seq[(Long, Int)] =
-      monotonicSeq(base, size).map(_.toLong).zip(monotonicSeq(0, size))
+    val vals: Seq[(Long, Int)] = monotonicSeq(base, size)
+      .map(_.toLong)
+      .zip(monotonicSeq(0, size))
     vals.foreach { x => idx.append(x._1, x._2) }
 
     // should be able to find all those values

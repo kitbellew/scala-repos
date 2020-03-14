@@ -32,8 +32,7 @@ object $find {
       ids.flatMap(docsMap.get).toList
     }
   def byOrderedIds[A <: Identified[String]: TubeInColl](
-      ids: Iterable[String]): Fu[List[A]] =
-    byOrderedIds[String, A](ids)
+      ids: Iterable[String]): Fu[List[A]] = byOrderedIds[String, A](ids)
 
   def optionsByOrderedIds[ID: Writes, A <: Identified[ID]: TubeInColl](
       ids: Iterable[ID]): Fu[List[Option[A]]] =

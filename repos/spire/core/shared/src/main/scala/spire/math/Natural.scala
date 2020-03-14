@@ -249,11 +249,9 @@ sealed abstract class Natural
       case that               => unifiedPrimitiveEquals(that)
     }
 
-  def ===(rhs: Natural): Boolean =
-    (lhs compare rhs) == 0
+  def ===(rhs: Natural): Boolean = (lhs compare rhs) == 0
 
-  def =!=(rhs: Natural): Boolean =
-    !(this === rhs)
+  def =!=(rhs: Natural): Boolean = !(this === rhs)
 
   def <(rhs: Natural): Boolean = (lhs compare rhs) < 0
   def <=(rhs: Natural): Boolean = (lhs compare rhs) <= 0

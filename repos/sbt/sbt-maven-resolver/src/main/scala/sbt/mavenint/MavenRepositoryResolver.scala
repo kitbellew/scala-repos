@@ -61,8 +61,13 @@ object MavenRepositoryResolver {
   val MAVEN_METADATA_XML = "maven-metadata.xml"
   val CLASSIFIER_ATTRIBUTE = "e:classifier"
   // TODO - This may be duplciated in more than one location.  We need to consolidate.
-  val JarPackagings =
-    Set("eclipse-plugin", "hk2-jar", "orbit", "scala-jar", "jar", "bundle")
+  val JarPackagings = Set(
+    "eclipse-plugin",
+    "hk2-jar",
+    "orbit",
+    "scala-jar",
+    "jar",
+    "bundle")
   object JarPackaging {
     def unapply(in: String): Boolean = JarPackagings.contains(in)
   }
@@ -340,13 +345,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           // THere we have to attempt to download the JAR and see if it comes, if not, we can punt.
           // This is because sometimes pom-packaging attaches a JAR.
           if (checkJarArtifactExists(drid)) {
-            val defaultArt =
-              new DefaultArtifact(
-                md.getModuleRevisionId,
-                new Date(lastModifiedTime),
-                artifactId,
-                packaging,
-                "jar")
+            val defaultArt = new DefaultArtifact(
+              md.getModuleRevisionId,
+              new Date(lastModifiedTime),
+              artifactId,
+              packaging,
+              "jar")
             md.addArtifact(
               MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION,
               defaultArt)
@@ -358,13 +362,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             throw new MavenResolutionException(
               s"Failed to find JAR file associated with $dd")
           // Assume for now everything else is a jar.
-          val defaultArt =
-            new DefaultArtifact(
-              md.getModuleRevisionId,
-              new Date(lastModifiedTime),
-              artifactId,
-              packaging,
-              "jar")
+          val defaultArt = new DefaultArtifact(
+            md.getModuleRevisionId,
+            new Date(lastModifiedTime),
+            artifactId,
+            packaging,
+            "jar")
           // TODO - Unfortunately we have to try to download the JAR file HERE and then fail resolution if we cannot find it.
           //       This is because sometime a pom.xml exists with no JARs.
           md.addArtifact(
@@ -387,13 +390,12 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         getClassifier(requestedArt) match {
           case None =>
             // This is the default artifact.  We do need to add this, and to the default configuration.
-            val defaultArt =
-              new DefaultArtifact(
-                md.getModuleRevisionId,
-                new Date(lastModifiedTime),
-                requestedArt.getName,
-                requestedArt.getType,
-                requestedArt.getExt)
+            val defaultArt = new DefaultArtifact(
+              md.getModuleRevisionId,
+              new Date(lastModifiedTime),
+              requestedArt.getName,
+              requestedArt.getType,
+              requestedArt.getExt)
             md.addArtifact(
               MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION,
               defaultArt)
@@ -401,14 +403,13 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             Message.debug(
               s"Adding additional artifact in $scope, $requestedArt")
             // TODO - more Extra attributes?
-            val mda =
-              new MDArtifact(
-                md,
-                requestedArt.getName,
-                requestedArt.getType,
-                requestedArt.getExt,
-                requestedArt.getUrl,
-                requestedArt.getExtraAttributes)
+            val mda = new MDArtifact(
+              md,
+              requestedArt.getName,
+              requestedArt.getType,
+              requestedArt.getExt,
+              requestedArt.getUrl,
+              requestedArt.getExtraAttributes)
             md.addArtifact(getConfiguration(scope), mda)
         }
       }
@@ -446,8 +447,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     // This is necessary for transitive maven-based sbt plugin dependencies, where we need to
     // attach the sbtVersion/scalaVersion to the dependency id otherwise we'll fail to resolve the
     // dependency correctly.
-    val extraAttributes =
-      PomExtraDependencyAttributes.readFromAether(result.getProperties)
+    val extraAttributes = PomExtraDependencyAttributes.readFromAether(
+      result.getProperties)
     for (d <- result.getDependencies.asScala) {
       // TODO - Is this correct for changing detection.  We should use the Ivy mechanism configured...
       val isChanging = d.getArtifact.getVersion.endsWith("-SNAPSHOT")
@@ -481,8 +482,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
       // TODO - Configuration mappings (are we grabbing scope correctly, or should the default not always be compile?)
       val scope = Option(d.getScope).filterNot(_.isEmpty).getOrElse("compile")
-      val mapping =
-        ReplaceMavenConfigurationMappings.addMappings(dd, scope, d.isOptional)
+      val mapping = ReplaceMavenConfigurationMappings.addMappings(
+        dd,
+        scope,
+        d.isOptional)
       Message.debug(
         s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
@@ -555,25 +558,23 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       dopts: DownloadOptions): DownloadReport = {
     // TODO - Status reports on download and possibly parallel downloads
     val report = new DownloadReport
-    val requests =
-      for (a <- artifacts) yield {
-        val request = new AetherArtifactRequest
-        val aetherArt =
-          getClassifier(a) match {
-            case None | Some("") =>
-              new AetherArtifact(
-                aetherCoordsFromMrid(a.getModuleRevisionId),
-                getArtifactProperties(a.getModuleRevisionId))
-            case Some(other) =>
-              new AetherArtifact(
-                aetherCoordsFromMrid(a.getModuleRevisionId, other, a.getExt),
-                getArtifactProperties(a.getModuleRevisionId))
-          }
-        Message.debug(s"Requesting download of [$aetherArt]")
-        request.setArtifact(aetherArt)
-        addRepositories(request)
-        request
+    val requests = for (a <- artifacts) yield {
+      val request = new AetherArtifactRequest
+      val aetherArt = getClassifier(a) match {
+        case None | Some("") =>
+          new AetherArtifact(
+            aetherCoordsFromMrid(a.getModuleRevisionId),
+            getArtifactProperties(a.getModuleRevisionId))
+        case Some(other) =>
+          new AetherArtifact(
+            aetherCoordsFromMrid(a.getModuleRevisionId, other, a.getExt),
+            getArtifactProperties(a.getModuleRevisionId))
       }
+      Message.debug(s"Requesting download of [$aetherArt]")
+      request.setArtifact(aetherArt)
+      addRepositories(request)
+      request
+    }
     val (aetherResults, failed) =
       try {
         (
@@ -667,21 +668,20 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       case Some(t) =>
         Message.debug(
           s"Publishing module ${t.module}, with artifact count = ${t.artifacts.size}")
-        val artifacts =
-          for ((art, file) <- t.artifacts) yield {
-            Message.debug(
-              s" - Publishing $art (${art.getType})(${art.getExtraAttribute(
-                "classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
-            new AetherArtifact(
-              t.module.getOrganisation,
-              aetherArtifactIdFromMrid(t.module),
-              getClassifier(art).orNull,
-              art.getExt,
-              t.module.getRevision,
-              getArtifactProperties(t.module),
-              file
-            )
-          }
+        val artifacts = for ((art, file) <- t.artifacts) yield {
+          Message.debug(
+            s" - Publishing $art (${art.getType})(${art.getExtraAttribute(
+              "classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
+          new AetherArtifact(
+            t.module.getOrganisation,
+            aetherArtifactIdFromMrid(t.module),
+            getClassifier(art).orNull,
+            art.getExt,
+            t.module.getRevision,
+            getArtifactProperties(t.module),
+            file
+          )
+        }
         publishArtifacts(artifacts)
         // TODO - Any kind of validity checking?
         currentTransaction = None

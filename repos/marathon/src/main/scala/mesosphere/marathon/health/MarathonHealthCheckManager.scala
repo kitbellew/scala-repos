@@ -115,10 +115,11 @@ class MarathonHealthCheckManager @Inject() (
       appVersion: Timestamp,
       healthCheck: HealthCheck): Unit =
     appHealthChecks.writeLock { ahcs =>
-      val healthChecksForVersion: Set[ActiveHealthCheck] =
-        listActive(appId, appVersion)
-      val toRemove: Set[ActiveHealthCheck] =
-        healthChecksForVersion.filter(_.healthCheck == healthCheck)
+      val healthChecksForVersion: Set[ActiveHealthCheck] = listActive(
+        appId,
+        appVersion)
+      val toRemove: Set[ActiveHealthCheck] = healthChecksForVersion.filter(
+        _.healthCheck == healthCheck)
       for (ahc <- toRemove) {
         log.info(
           s"Removing health check for app [$appId] and version [$appVersion]: [$healthCheck]")
@@ -127,11 +128,12 @@ class MarathonHealthCheckManager @Inject() (
       }
       val newHealthChecksForVersion = healthChecksForVersion -- toRemove
       val currentHealthChecksForApp = ahcs(appId)
-      val newHealthChecksForApp = if (newHealthChecksForVersion.isEmpty) {
-        currentHealthChecksForApp - appVersion
-      } else {
-        currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
-      }
+      val newHealthChecksForApp =
+        if (newHealthChecksForVersion.isEmpty) {
+          currentHealthChecksForApp - appVersion
+        } else {
+          currentHealthChecksForApp + (appVersion -> newHealthChecksForVersion)
+        }
 
       if (newHealthChecksForApp.isEmpty) ahcs -= appId
       else ahcs += (appId -> newHealthChecksForApp)
@@ -216,8 +218,8 @@ class MarathonHealthCheckManager @Inject() (
       val appId = Task.Id(taskStatus.getTaskId).appId
 
       // collect health check actors for the associated app's command checks.
-      val healthCheckActors: Iterable[ActorRef] =
-        listActive(appId, version).collect {
+      val healthCheckActors: Iterable[ActorRef] = listActive(appId, version)
+        .collect {
           case ActiveHealthCheck(hc, ref) if hc.protocol == Protocol.COMMAND =>
             ref
         }

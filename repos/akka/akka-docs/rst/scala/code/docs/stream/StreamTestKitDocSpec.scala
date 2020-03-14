@@ -19,8 +19,9 @@ class StreamTestKitDocSpec extends AkkaSpec {
 
   "strict collection" in {
     //#strict-collection
-    val sinkUnderTest =
-      Flow[Int].map(_ * 2).toMat(Sink.fold(0)(_ + _))(Keep.right)
+    val sinkUnderTest = Flow[Int]
+      .map(_ * 2)
+      .toMat(Sink.fold(0)(_ + _))(Keep.right)
 
     val future = Source(1 to 4).runWith(sinkUnderTest)
     val result = Await.result(future, 100.millis)
@@ -72,8 +73,9 @@ class StreamTestKitDocSpec extends AkkaSpec {
     val sourceUnderTest = Source.tick(0.seconds, 200.millis, Tick)
 
     val probe = TestProbe()
-    val cancellable =
-      sourceUnderTest.to(Sink.actorRef(probe.ref, "completed")).run()
+    val cancellable = sourceUnderTest
+      .to(Sink.actorRef(probe.ref, "completed"))
+      .run()
 
     probe.expectMsg(1.second, Tick)
     probe.expectNoMsg(100.millis)
@@ -85,8 +87,9 @@ class StreamTestKitDocSpec extends AkkaSpec {
 
   "source actor ref" in {
     //#source-actorref
-    val sinkUnderTest =
-      Flow[Int].map(_.toString).toMat(Sink.fold("")(_ + _))(Keep.right)
+    val sinkUnderTest = Flow[Int]
+      .map(_.toString)
+      .toMat(Sink.fold("")(_ + _))(Keep.right)
 
     val (ref, future) = Source
       .actorRef(8, OverflowStrategy.fail)

@@ -107,8 +107,7 @@ object ActorMaterializer {
     * Defaults the actor name prefix used to name actors running the processing steps to `"flow"`.
     * The actor names are built up of `namePrefix-flowNumber-flowStepNumber-stepName`.
     */
-  def create(context: ActorRefFactory): ActorMaterializer =
-    apply()(context)
+  def create(context: ActorRefFactory): ActorMaterializer = apply()(context)
 
   /**
     * Java API: Creates a ActorMaterializer which will execute every step of a transformation
@@ -308,14 +307,12 @@ object ActorMaterializerSettings {
   /**
     * Create [[ActorMaterializerSettings]] from the settings of an [[akka.actor.ActorSystem]] (Java).
     */
-  def create(system: ActorSystem): ActorMaterializerSettings =
-    apply(system)
+  def create(system: ActorSystem): ActorMaterializerSettings = apply(system)
 
   /**
     * Create [[ActorMaterializerSettings]] from a Config subsection (Java).
     */
-  def create(config: Config): ActorMaterializerSettings =
-    apply(config)
+  def create(config: Config): ActorMaterializerSettings = apply(config)
 
   private val defaultMaxFixedBufferSize = 1000
 }
@@ -549,8 +546,7 @@ object StreamSubscriptionTimeoutSettings {
   /**
     * Create settings from a Config subsection (Java).
     */
-  def create(config: Config): StreamSubscriptionTimeoutSettings =
-    apply(config)
+  def create(config: Config): StreamSubscriptionTimeoutSettings = apply(config)
 
   /**
     * Create settings from a Config subsection (Scala).

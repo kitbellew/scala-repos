@@ -75,8 +75,7 @@ object Name {
     def apply(
         addr: Var[Addr],
         id: Any,
-        path: com.twitter.finagle.Path): Name.Bound =
-      new Bound(addr, id, path)
+        path: com.twitter.finagle.Path): Name.Bound = new Bound(addr, id, path)
 
     def apply(addr: Var[Addr], id: Any): Name.Bound =
       apply(addr, id, com.twitter.finagle.Path.empty)
@@ -154,15 +153,13 @@ object Name {
     * Create a path-based Name which is interpreted vis-à-vis
     * the current request-local delegation table.
     */
-  def apply(path: com.twitter.finagle.Path): Name =
-    Name.Path(path)
+  def apply(path: com.twitter.finagle.Path): Name = Name.Path(path)
 
   /**
     * Create a path-based Name which is interpreted vis-à-vis
     * the current request-local delegation table.
     */
-  def apply(path: String): Name =
-    Name.Path(com.twitter.finagle.Path.read(path))
+  def apply(path: String): Name = Name.Path(com.twitter.finagle.Path.read(path))
 
   // Create a name representing the union of the passed-in names.
   // Metadata is not preserved on bound addresses.

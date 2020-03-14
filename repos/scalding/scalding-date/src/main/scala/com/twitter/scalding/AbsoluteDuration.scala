@@ -70,10 +70,11 @@ object AbsoluteDuration extends java.io.Serializable {
           val thisDiff =
             diffInMs % nextSize // Keep only this amount of millis for this unit
           val theseUnits = thisDiff / tc0._2
-          val (newDiff, newAcc) = if (theseUnits != 0L) {
-            val dur = tc0._1(theseUnits.toInt)
-            (diffInMs - dur.toMillisecs, dur :: acc)
-          } else { (diffInMs, acc) }
+          val (newDiff, newAcc) =
+            if (theseUnits != 0L) {
+              val dur = tc0._1(theseUnits.toInt)
+              (diffInMs - dur.toMillisecs, dur :: acc)
+            } else { (diffInMs, acc) }
           fromMillisecs(newDiff, (tc1 :: tail), newAcc)
         }
         case (tc :: Nil) => {

@@ -107,13 +107,16 @@ class RemoteWatcherSpec
 
       val fd = createFailureDetector()
       val monitorA = system.actorOf(Props[TestRemoteWatcher], "monitor1")
-      val monitorB =
-        createRemoteActor(Props(classOf[TestActorProxy], testActor), "monitor1")
+      val monitorB = createRemoteActor(
+        Props(classOf[TestActorProxy], testActor),
+        "monitor1")
 
-      val a1 =
-        system.actorOf(Props[MyActor], "a1").asInstanceOf[InternalActorRef]
-      val a2 =
-        system.actorOf(Props[MyActor], "a2").asInstanceOf[InternalActorRef]
+      val a1 = system
+        .actorOf(Props[MyActor], "a1")
+        .asInstanceOf[InternalActorRef]
+      val a2 = system
+        .actorOf(Props[MyActor], "a2")
+        .asInstanceOf[InternalActorRef]
       val b1 = createRemoteActor(Props[MyActor], "b1")
       val b2 = createRemoteActor(Props[MyActor], "b2")
 
@@ -176,11 +179,13 @@ class RemoteWatcherSpec
         .subscribe(q.ref, classOf[TestRemoteWatcher.Quarantined])
 
       val monitorA = system.actorOf(Props[TestRemoteWatcher], "monitor4")
-      val monitorB =
-        createRemoteActor(Props(classOf[TestActorProxy], testActor), "monitor4")
+      val monitorB = createRemoteActor(
+        Props(classOf[TestActorProxy], testActor),
+        "monitor4")
 
-      val a =
-        system.actorOf(Props[MyActor], "a4").asInstanceOf[InternalActorRef]
+      val a = system
+        .actorOf(Props[MyActor], "a4")
+        .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b4")
 
       monitorA ! WatchRemote(b, a)
@@ -224,11 +229,13 @@ class RemoteWatcherSpec
       val monitorA = system.actorOf(
         Props(classOf[TestRemoteWatcher], heartbeatExpectedResponseAfter),
         "monitor5")
-      val monitorB =
-        createRemoteActor(Props(classOf[TestActorProxy], testActor), "monitor5")
+      val monitorB = createRemoteActor(
+        Props(classOf[TestActorProxy], testActor),
+        "monitor5")
 
-      val a =
-        system.actorOf(Props[MyActor], "a5").asInstanceOf[InternalActorRef]
+      val a = system
+        .actorOf(Props[MyActor], "a5")
+        .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b5")
 
       monitorA ! WatchRemote(b, a)
@@ -264,11 +271,13 @@ class RemoteWatcherSpec
         .subscribe(q.ref, classOf[TestRemoteWatcher.Quarantined])
 
       val monitorA = system.actorOf(Props[TestRemoteWatcher], "monitor6")
-      val monitorB =
-        createRemoteActor(Props(classOf[TestActorProxy], testActor), "monitor6")
+      val monitorB = createRemoteActor(
+        Props(classOf[TestActorProxy], testActor),
+        "monitor6")
 
-      val a =
-        system.actorOf(Props[MyActor], "a6").asInstanceOf[InternalActorRef]
+      val a = system
+        .actorOf(Props[MyActor], "a6")
+        .asInstanceOf[InternalActorRef]
       val b = createRemoteActor(Props[MyActor], "b6")
 
       monitorA ! WatchRemote(b, a)

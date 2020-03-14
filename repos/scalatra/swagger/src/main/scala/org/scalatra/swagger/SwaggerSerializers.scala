@@ -15,18 +15,17 @@ import org.scalatra.util.RicherString._
 
 object SwaggerSerializers {
   import org.scalatra.swagger.AllowableValues._
-  private val simpleTypes =
-    Set(
-      "int32",
-      "int64",
-      "float",
-      "double",
-      "string",
-      "byte",
-      "boolean",
-      "date",
-      "date-time",
-      "array")
+  private val simpleTypes = Set(
+    "int32",
+    "int64",
+    "float",
+    "double",
+    "string",
+    "byte",
+    "boolean",
+    "date",
+    "date-time",
+    "array")
   private def isSimpleType(name: String) = simpleTypes contains name
 
   private def str(jv: JValue): Option[String] =
@@ -308,8 +307,9 @@ object SwaggerSerializers {
                   case JBool(value) => value
                   case _            => false
                 },
-                description =
-                  (json \ "description").getAs[String].flatMap(_.blankOption),
+                description = (json \ "description")
+                  .getAs[String]
+                  .flatMap(_.blankOption),
                 allowableValues = json.extract[AllowableValues],
                 items = None
               )

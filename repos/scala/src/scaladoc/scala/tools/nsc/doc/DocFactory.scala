@@ -116,8 +116,9 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   def document(files: List[String]) {
     def generate() = {
       import doclet._
-      val docletClass =
-        Class.forName(settings.docgenerator.value) // default is html.Doclet
+      val docletClass = Class.forName(
+        settings.docgenerator.value
+      ) // default is html.Doclet
       val docletInstance = docletClass.newInstance().asInstanceOf[Generator]
 
       docletInstance match {

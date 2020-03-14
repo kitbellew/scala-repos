@@ -163,14 +163,15 @@ final class GBTRegressor @Since("1.4.0") (
   }
 
   override protected def train(dataset: DataFrame): GBTRegressionModel = {
-    val categoricalFeatures: Map[Int, Int] =
-      MetadataUtils.getCategoricalFeatures(dataset.schema($(featuresCol)))
+    val categoricalFeatures: Map[Int, Int] = MetadataUtils
+      .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
     val numFeatures = oldDataset.first().features.size
-    val boostingStrategy =
-      super.getOldBoostingStrategy(categoricalFeatures, OldAlgo.Regression)
-    val (baseLearners, learnerWeights) =
-      GradientBoostedTrees.run(oldDataset, boostingStrategy)
+    val boostingStrategy = super
+      .getOldBoostingStrategy(categoricalFeatures, OldAlgo.Regression)
+    val (baseLearners, learnerWeights) = GradientBoostedTrees.run(
+      oldDataset,
+      boostingStrategy)
     new GBTRegressionModel(uid, baseLearners, learnerWeights, numFeatures)
   }
 
@@ -184,8 +185,8 @@ object GBTRegressor {
   // The losses below should be lowercase.
   /** Accessor for supported loss settings: squared (L2), absolute (L1) */
   @Since("1.4.0")
-  final val supportedLossTypes: Array[String] =
-    Array("squared", "absolute").map(_.toLowerCase)
+  final val supportedLossTypes: Array[String] = Array("squared", "absolute")
+    .map(_.toLowerCase)
 }
 
 /**
@@ -224,8 +225,7 @@ final class GBTRegressionModel private[ml] (
   def this(
       uid: String,
       _trees: Array[DecisionTreeRegressionModel],
-      _treeWeights: Array[Double]) =
-    this(uid, _trees, _treeWeights, -1)
+      _treeWeights: Array[Double]) = this(uid, _trees, _treeWeights, -1)
 
   @Since("1.4.0")
   override def trees: Array[DecisionTreeModel] =
@@ -245,8 +245,8 @@ final class GBTRegressionModel private[ml] (
   override protected def predict(features: Vector): Double = {
     // TODO: When we add a generic Boosting class, handle transform there?  SPARK-7129
     // Classifies by thresholding sum of weighted tree predictions
-    val treePredictions =
-      _trees.map(_.rootNode.predictImpl(features).prediction)
+    val treePredictions = _trees.map(
+      _.rootNode.predictImpl(features).prediction)
     blas.ddot(numTrees, treePredictions, 1, _treeWeights, 1)
   }
 

@@ -56,8 +56,7 @@ case class Multinomial[T, I](params: T)(implicit
   def draw(): I = {
     // if this is the first sample, use linear-time sampling algorithm
     // otherwise, set up and use the alias method
-    val result =
-      if (haveSampled) aliasTable.draw() else drawNaive()
+    val result = if (haveSampled) aliasTable.draw() else drawNaive()
     haveSampled = true
     result
   }

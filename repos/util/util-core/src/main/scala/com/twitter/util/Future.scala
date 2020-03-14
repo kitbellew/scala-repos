@@ -62,8 +62,8 @@ object Future {
   /**
     * A failed `Future` analogous to `Predef.???`.
     */
-  val ??? : Future[Nothing] =
-    Future.exception(new NotImplementedError("an implementation is missing"))
+  val ??? : Future[Nothing] = Future.exception(
+    new NotImplementedError("an implementation is missing"))
 
   private val SomeReturnUnit = Some(Return.Unit)
   private val NotApplied: Future[Nothing] = new NoFuture
@@ -1526,8 +1526,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * ''Note'': On timeout, the underlying future is interrupted.
     */
   def raiseWithin(timeout: Duration, exc: Throwable)(
-      implicit timer: Timer): Future[A] =
-    raiseWithin(timer, timeout, exc)
+      implicit timer: Timer): Future[A] = raiseWithin(timer, timeout, exc)
 
   /**
     * Returns a new Future that will error if this Future does not return in time.

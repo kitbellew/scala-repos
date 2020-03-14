@@ -122,8 +122,7 @@ private[simul] final class SimulRepo(simulColl: Coll) {
       .cursor[Simul]()
       .collect[List]()
 
-  def create(simul: Simul): Funit =
-    simulColl insert simul void
+  def create(simul: Simul): Funit = simulColl insert simul void
 
   def update(simul: Simul) =
     simulColl.update(BSONDocument("_id" -> simul.id), simul).void

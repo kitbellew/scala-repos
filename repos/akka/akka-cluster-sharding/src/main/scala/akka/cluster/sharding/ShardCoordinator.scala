@@ -185,8 +185,8 @@ object ShardCoordinator {
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
-        val (regionWithLeastShards, leastShards) =
-          currentShardAllocations.minBy { case (_, v) ⇒ v.size }
+        val (regionWithLeastShards, leastShards) = currentShardAllocations
+          .minBy { case (_, v) ⇒ v.size }
         val mostShards = currentShardAllocations
           .collect { case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s)) }
           .maxBy(_.size)
@@ -400,8 +400,8 @@ object ShardCoordinator {
               else unallocatedShards
             copy(
               shards = shards - shard,
-              regions =
-                regions.updated(region, regions(region).filterNot(_ == shard)),
+              regions = regions
+                .updated(region, regions(region).filterNot(_ == shard)),
               unallocatedShards = newUnallocatedShards)
         }
     }
@@ -635,8 +635,9 @@ abstract class ShardCoordinator(
 
       case RebalanceTick ⇒
         if (state.regions.nonEmpty) {
-          val shardsFuture =
-            allocationStrategy.rebalance(state.regions, rebalanceInProgress)
+          val shardsFuture = allocationStrategy.rebalance(
+            state.regions,
+            rebalanceInProgress)
           shardsFuture.value match {
             case Some(Success(shards)) ⇒
               continueRebalance(shards)
@@ -982,10 +983,10 @@ class DDataShardCoordinator(
   val updatingStateTimeout = settings.tuningParameters.updatingStateTimeout
 
   implicit val node = Cluster(context.system)
-  val CoordinatorStateKey =
-    LWWRegisterKey[State](s"${typeName}CoordinatorState")
-  val initEmptyState =
-    State.empty.withRememberEntities(settings.rememberEntities)
+  val CoordinatorStateKey = LWWRegisterKey[State](
+    s"${typeName}CoordinatorState")
+  val initEmptyState = State.empty.withRememberEntities(
+    settings.rememberEntities)
 
   node.subscribe(self, ClusterShuttingDown.getClass)
 

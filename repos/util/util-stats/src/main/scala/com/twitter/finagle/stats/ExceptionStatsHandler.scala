@@ -26,8 +26,9 @@ object ExceptionStatsHandler {
   ): Seq[Seq[String]] = {
     val exceptionChain = Throwables.mkString(t)
 
-    val suffixes = if (rollup) { exceptionChain.inits.toSeq }
-    else { Seq(exceptionChain, Nil) }
+    val suffixes =
+      if (rollup) { exceptionChain.inits.toSeq }
+      else { Seq(exceptionChain, Nil) }
 
     labels.flatMap { prefix => suffixes.map { suffix => prefix ++ suffix } }
   }
@@ -56,8 +57,7 @@ class CategorizingExceptionStatsHandler(
   import ExceptionStatsHandler._
 
   private[this] val underlying: ExceptionStatsHandler = {
-    val mkLabel: Throwable => String =
-      t => categorizer(t).getOrElse(Failures)
+    val mkLabel: Throwable => String = t => categorizer(t).getOrElse(Failures)
     new MultiCategorizingExceptionStatsHandler(
       mkLabel,
       _ => Set.empty,

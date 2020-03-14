@@ -136,8 +136,7 @@ class ThreadStoppingTimer(underlying: Timer, executor: ExecutorService)
     underlying.schedule(when)(f)
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    underlying.schedule(when, period)(f)
+      f: => Unit): TimerTask = underlying.schedule(when, period)(f)
 
   def stop(): Unit = {
     executor.submit(new Runnable {
@@ -180,8 +179,7 @@ class ReferenceCountingTimer(factory: () => Timer)
     underlying.schedule(when)(f)
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    underlying.schedule(when, period)(f)
+      f: => Unit): TimerTask = underlying.schedule(when, period)(f)
 }
 
 /**
@@ -305,8 +303,7 @@ class ScheduledThreadPoolTimer(
   }
 
   protected def schedulePeriodically(when: Time, period: Duration)(
-      f: => Unit): TimerTask =
-    schedule(when.sinceNow, period)(f)
+      f: => Unit): TimerTask = schedule(when.sinceNow, period)(f)
 
   def schedule(wait: Duration, period: Duration)(f: => Unit): TimerTask = {
     val runnable = toRunnable(f)
@@ -323,12 +320,10 @@ class ScheduledThreadPoolTimer(
     }
   }
 
-  def stop(): Unit =
-    underlying.shutdown()
+  def stop(): Unit = underlying.shutdown()
 
   /** exposed for testing, stops and cancels any pending tasks */
-  private[util] def stopWithPending(): Unit =
-    underlying.shutdownNow()
+  private[util] def stopWithPending(): Unit = underlying.shutdownNow()
 
 }
 

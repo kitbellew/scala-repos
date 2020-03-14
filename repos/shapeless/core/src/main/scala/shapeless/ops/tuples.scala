@@ -1119,8 +1119,7 @@ object tuple {
 
     implicit def toListNothing[T](
         implicit toTraversable: ToTraversable.Aux[T, List, Nothing])
-        : Aux[T, Nothing, List[Nothing]] =
-      toList[T, Nothing]
+        : Aux[T, Nothing, List[Nothing]] = toList[T, Nothing]
   }
 
   /**
@@ -1149,8 +1148,7 @@ object tuple {
 
     implicit def toArrayNothing[T](
         implicit toTraversable: ToTraversable.Aux[T, Array, Nothing])
-        : Aux[T, Nothing, Array[Nothing]] =
-      toArray[T, Nothing]
+        : Aux[T, Nothing, Array[Nothing]] = toArray[T, Nothing]
   }
 
   /**
@@ -1190,10 +1188,9 @@ object tuple {
 
     type Aux[T, Out0 <: Coproduct] = ToCoproduct[T] { type Out = Out0 }
 
-    implicit val hnilToCoproduct: Aux[HNil, CNil] =
-      new ToCoproduct[HNil] {
-        type Out = CNil
-      }
+    implicit val hnilToCoproduct: Aux[HNil, CNil] = new ToCoproduct[HNil] {
+      type Out = CNil
+    }
 
     implicit def hlistToCoproduct[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
@@ -1218,10 +1215,9 @@ object tuple {
 
     type Aux[T, Out0 <: Coproduct] = ToSum[T] { type Out = Out0 }
 
-    implicit val hnilToSum: Aux[HNil, CNil] =
-      new ToSum[HNil] {
-        type Out = CNil
-      }
+    implicit val hnilToSum: Aux[HNil, CNil] = new ToSum[HNil] {
+      type Out = CNil
+    }
 
     implicit def hlistToSum[T, L <: HList](implicit
         gen: Generic.Aux[T, L],

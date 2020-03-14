@@ -140,8 +140,8 @@ private[finagle] case class ThriftClientPreparer(
       _.message.length,
       _.length
     )
-    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) =
-      params[Thrift.param.AttemptTTwitterUpgrade]
+    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
+      Thrift.param.AttemptTTwitterUpgrade]
     val payloadSizeService = payloadSize.andThen(service)
     val upgradedService =
       if (attemptUpgrade) { upgrade(payloadSizeService) }
@@ -157,8 +157,8 @@ private[finagle] case class ThriftClientPreparer(
       params: Stack.Params
   ): ServiceFactory[ThriftClientRequest, Array[Byte]] = {
     val param.Stats(stats) = params[param.Stats]
-    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) =
-      params[Thrift.param.AttemptTTwitterUpgrade]
+    val Thrift.param.AttemptTTwitterUpgrade(attemptUpgrade) = params[
+      Thrift.param.AttemptTTwitterUpgrade]
     val preparingFactory = underlying.flatMap(prepareService(params))
 
     if (attemptUpgrade) {

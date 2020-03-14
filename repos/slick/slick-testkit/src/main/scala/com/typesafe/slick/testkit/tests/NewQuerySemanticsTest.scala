@@ -446,14 +446,14 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val q3 = for (u <- users filter (_.id === 42)) yield u.first ~ u.last
 
-    val q4 = (for { (u, o) <- users join orders on (_.id === _.userID) } yield (
-      u.last,
-      u.first ~ o.orderID)).sortBy(_._1).map(_._2)
+    val q4 =
+      (for { (u, o) <- users join orders on (_.id === _.userID) } yield (
+        u.last,
+        u.first ~ o.orderID)).sortBy(_._1).map(_._2)
 
-    val q6a =
-      (for (o <- orders if o.orderID === (for {
-              o2 <- orders if o.userID === o2.userID
-            } yield o2.orderID).max) yield o.orderID).sorted
+    val q6a = (for (o <- orders if o.orderID === (for {
+                      o2 <- orders if o.userID === o2.userID
+                    } yield o2.orderID).max) yield o.orderID).sorted
 
     val q6b =
       (for (o <- orders if o.orderID === (for {
@@ -615,12 +615,14 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
     val q12 = as.filter(_.id <= as.map(_.id).max - 1).map(_.a)
     val q13 = (as.filter(_.id < 2) union as.filter(_.id > 2)).map(_.id)
     val q14 = q13.to[Set]
-    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.get).to[Set]
-    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
+    val q15 =
+      (as.map(a => a.id.?).filter(_ < 2) unionAll as
+        .map(a => a.id.?)
+        .filter(_ > 2)).map(_.get).to[Set]
+    val q16 =
+      (as.map(a => a.id.?).filter(_ < 2) unionAll as
+        .map(a => a.id.?)
+        .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
     val q17 = as.sortBy(_.id).zipWithIndex.filter(_._2 < 2L).map {
       case (a, i) => (a.id, i)
     }

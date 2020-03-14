@@ -95,8 +95,10 @@ private[sql] object StatFunctions extends Logging {
         sum2: Array[QuantileSummaries]): Array[QuantileSummaries] = {
       sum1.zip(sum2).map { case (s1, s2) => s1.compress().merge(s2.compress()) }
     }
-    val summaries =
-      df.select(columns: _*).rdd.aggregate(emptySummaries)(apply, merge)
+    val summaries = df
+      .select(columns: _*)
+      .rdd
+      .aggregate(emptySummaries)(apply, merge)
 
     summaries.map { summary => probabilities.map(summary.query) }
   }
@@ -206,10 +208,9 @@ private[sql] object StatFunctions extends Logging {
       val inserted = this.withHeadBufferInserted
       assert(inserted.headSampled.isEmpty)
       assert(inserted.count == count + headSampled.size)
-      val compressed =
-        compressImmut(
-          inserted.sampled,
-          mergeThreshold = 2 * relativeError * inserted.count)
+      val compressed = compressImmut(
+        inserted.sampled,
+        mergeThreshold = 2 * relativeError * inserted.count)
       new QuantileSummaries(
         compressThreshold,
         relativeError,
@@ -247,8 +248,9 @@ private[sql] object StatFunctions extends Logging {
         // TODO: could replace full sort by ordered merge, the two lists are known to be sorted
         // already.
         val res = (sampled ++ other.sampled).sortBy(_.value)
-        val comp =
-          compressImmut(res, mergeThreshold = 2 * relativeError * count)
+        val comp = compressImmut(
+          res,
+          mergeThreshold = 2 * relativeError * count)
         new QuantileSummaries(
           other.compressThreshold,
           other.relativeError,

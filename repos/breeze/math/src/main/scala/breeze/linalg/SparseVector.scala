@@ -230,8 +230,9 @@ object SparseVector
   }
 
   def vertcat[V: Zero: ClassTag](vectors: SparseVector[V]*): SparseVector[V] = {
-    val resultArray =
-      vectors.map(_.array).foldLeft(new SparseArray[V](0))(_ concatenate _)
+    val resultArray = vectors
+      .map(_.array)
+      .foldLeft(new SparseArray[V](0))(_ concatenate _)
     new SparseVector(resultArray)
   }
 
@@ -448,8 +449,8 @@ object SparseVector
       : CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] = {
     new CanTranspose[SparseVector[Complex], CSCMatrix[Complex]] {
       def apply(from: SparseVector[Complex]) = {
-        val transposedMtx: CSCMatrix[Complex] =
-          CSCMatrix.zeros[Complex](1, from.length)
+        val transposedMtx: CSCMatrix[Complex] = CSCMatrix
+          .zeros[Complex](1, from.length)
         var i = 0
         while (i < from.activeSize) {
           val c = from.index(i)

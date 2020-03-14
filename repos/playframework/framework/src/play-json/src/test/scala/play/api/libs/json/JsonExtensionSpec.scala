@@ -74,10 +74,10 @@ object Person {
 
 package foreign { case class Foreigner(name: String) }
 object ForeignTest {
-  implicit val foreignerReads: Reads[foreign.Foreigner] =
-    Json.reads[foreign.Foreigner]
-  implicit val foreignerWrites: OWrites[foreign.Foreigner] =
-    Json.writes[foreign.Foreigner]
+  implicit val foreignerReads: Reads[foreign.Foreigner] = Json
+    .reads[foreign.Foreigner]
+  implicit val foreignerWrites: OWrites[foreign.Foreigner] = Json
+    .writes[foreign.Foreigner]
 }
 
 import play.api.libs.json._

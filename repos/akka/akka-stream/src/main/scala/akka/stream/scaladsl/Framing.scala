@@ -192,8 +192,9 @@ object Framing {
 
     @tailrec
     private def doParse(ctx: Context[ByteString]): SyncDirective = {
-      val possibleMatchPos =
-        buffer.indexOf(firstSeparatorByte, from = nextPossibleMatch)
+      val possibleMatchPos = buffer.indexOf(
+        firstSeparatorByte,
+        from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
         ctx.fail(new FramingException(s"Read ${buffer.size} bytes " +
           s"which is more than $maximumLineBytes without seeing a line terminator"))
@@ -275,8 +276,9 @@ object Framing {
       val bufSize = buffer.size
       if (bufSize >= frameSize) emitFrame(ctx)
       else if (bufSize >= minimumChunkSize) {
-        val parsedLength =
-          intDecoder(buffer.iterator.drop(lengthFieldOffset), lengthFieldLength)
+        val parsedLength = intDecoder(
+          buffer.iterator.drop(lengthFieldOffset),
+          lengthFieldLength)
         frameSize = parsedLength + minimumChunkSize
         if (frameSize > maximumFrameLength)
           ctx.fail(new FramingException(

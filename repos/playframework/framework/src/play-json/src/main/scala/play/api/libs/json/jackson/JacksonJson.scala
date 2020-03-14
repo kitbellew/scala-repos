@@ -250,8 +250,7 @@ private[json] object JacksonJson {
   private def stringJsonGenerator(out: java.io.StringWriter) =
     jsonFactory.createGenerator(out)
 
-  private def jsonParser(c: String): JsonParser =
-    jsonFactory.createParser(c)
+  private def jsonParser(c: String): JsonParser = jsonFactory.createParser(c)
 
   private def jsonParser(data: Array[Byte]): JsonParser =
     jsonFactory.createParser(data)

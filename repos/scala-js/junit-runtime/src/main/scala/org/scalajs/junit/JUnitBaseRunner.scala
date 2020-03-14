@@ -10,8 +10,7 @@ abstract class JUnitBaseRunner(
     private[junit] val runSettings: RunSettings)
     extends Runner {
 
-  protected def newTask(taskDef: TaskDef): Task =
-    new JUnitTask(taskDef, this)
+  protected def newTask(taskDef: TaskDef): Task = new JUnitTask(taskDef, this)
 
   protected var doneCount = 0
   protected var passedCount = 0

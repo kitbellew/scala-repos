@@ -69,14 +69,13 @@ class TestStore[K, V](
     BatchID.range(initBatch, lastBatch).map { b => (b, mockFor(b)) }.toMap
 
   // Needed to init the Test mode:
-  val sourceToBuffer: Map[ScaldingSource, Buffer[Tuple]] =
-    BatchID
-      .range(initBatch, lastBatch)
-      .map { b =>
-        if (initBatch == b) (batches(b), initStore.map { tset(_) }.toBuffer)
-        else (batches(b), Buffer.empty[Tuple])
-      }
-      .toMap
+  val sourceToBuffer: Map[ScaldingSource, Buffer[Tuple]] = BatchID
+    .range(initBatch, lastBatch)
+    .map { b =>
+      if (initBatch == b) (batches(b), initStore.map { tset(_) }.toBuffer)
+      else (batches(b), Buffer.empty[Tuple])
+    }
+    .toMap
 
   // Call this after you compute to check the results of the
   def lastToIterable: Iterable[(K, V)] =

@@ -234,8 +234,9 @@ class ScalaTypeParameterInfoHandler
     val (file, offset) = (context.getFile, context.getOffset)
     val element = file.findElementAt(offset)
     if (element == null) return null
-    val args: ScTypeArgs =
-      PsiTreeUtil.getParentOfType(element, getArgumentListClass)
+    val args: ScTypeArgs = PsiTreeUtil.getParentOfType(
+      element,
+      getArgumentListClass)
     if (args != null) {
       context match {
         case context: CreateParameterInfoContext =>

@@ -66,13 +66,13 @@ class RetryPolicyTest extends FunSpec {
     }
 
     it("RetryableWriteException matches retryable exception") {
-      val retryable =
-        Seq(Failure.rejected("test"), WriteException(new Exception))
-      val nonRetryable =
-        Seq(
-          Failure("test", Failure.Interrupted),
-          new Exception,
-          new ChannelClosedException)
+      val retryable = Seq(
+        Failure.rejected("test"),
+        WriteException(new Exception))
+      val nonRetryable = Seq(
+        Failure("test", Failure.Interrupted),
+        new Exception,
+        new ChannelClosedException)
 
       retryable.foreach {
         case RetryPolicy.RetryableWriteException(_) =>
@@ -100,8 +100,9 @@ class RetryPolicyTest extends FunSpec {
 
   describe("RetryPolicy.filter/filterEach") {
     val backoffs = Stream(10.milliseconds, 20.milliseconds, 30.milliseconds)
-    val policy =
-      RetryPolicy.backoff(backoffs)(iExceptionsOnly).filter(iGreaterThan1)
+    val policy = RetryPolicy
+      .backoff(backoffs)(iExceptionsOnly)
+      .filter(iGreaterThan1)
 
     it("returns None if filter rejects") {
       val actual = getBackoffs(policy, Stream(IException(0), IException(1)))
@@ -116,8 +117,9 @@ class RetryPolicyTest extends FunSpec {
 
   describe("RetryPolicy.filterEach") {
     val backoffs = Stream(10.milliseconds, 20.milliseconds, 30.milliseconds)
-    val policy =
-      RetryPolicy.backoff(backoffs)(iExceptionsOnly).filterEach(iGreaterThan1)
+    val policy = RetryPolicy
+      .backoff(backoffs)(iExceptionsOnly)
+      .filterEach(iGreaterThan1)
 
     it("returns None if filterEach rejects") {
       val actual = getBackoffs(policy, Stream(IException(0), IException(1)))
@@ -125,8 +127,9 @@ class RetryPolicyTest extends FunSpec {
     }
 
     it("returns underlying result if filterEach accepts") {
-      val actual =
-        getBackoffs(policy, Stream(IException(2), IException(2), IException(0)))
+      val actual = getBackoffs(
+        policy,
+        Stream(IException(2), IException(2), IException(0)))
       assert(actual == backoffs.take(2))
     }
   }
@@ -134,16 +137,16 @@ class RetryPolicyTest extends FunSpec {
   describe("RetryPolicy.limit") {
     var currentMaxRetries: Int = 0
     val maxBackoffs = Stream.fill(3)(10.milliseconds)
-    val policy =
-      RetryPolicy
-        .backoff(maxBackoffs)(RetryPolicy.ChannelClosedExceptionsOnly)
-        .limit(currentMaxRetries)
+    val policy = RetryPolicy
+      .backoff(maxBackoffs)(RetryPolicy.ChannelClosedExceptionsOnly)
+      .limit(currentMaxRetries)
 
     it("limits retries dynamically") {
       for (i <- 0 until 5) {
         currentMaxRetries = i
-        val backoffs =
-          getBackoffs(policy, Stream.fill(3)(new ChannelClosedException()))
+        val backoffs = getBackoffs(
+          policy,
+          Stream.fill(3)(new ChannelClosedException()))
         assert(backoffs == maxBackoffs.take(i min 3))
       }
     }
@@ -153,17 +156,17 @@ class RetryPolicyTest extends FunSpec {
     val channelClosedBackoff = 10.milliseconds
     val writeExceptionBackoff = 0.milliseconds
 
-    val combinedPolicy =
-      RetryPolicy.combine(
-        RetryPolicy.backoff(Backoff.const(Duration.Zero).take(2))(
-          RetryPolicy.WriteExceptionsOnly),
-        RetryPolicy.backoff(Stream.fill(3)(channelClosedBackoff))(
-          RetryPolicy.ChannelClosedExceptionsOnly)
-      )
+    val combinedPolicy = RetryPolicy.combine(
+      RetryPolicy.backoff(Backoff.const(Duration.Zero).take(2))(
+        RetryPolicy.WriteExceptionsOnly),
+      RetryPolicy.backoff(Stream.fill(3)(channelClosedBackoff))(
+        RetryPolicy.ChannelClosedExceptionsOnly)
+    )
 
     it("return None for unmatched exception") {
-      val backoffs =
-        getBackoffs(combinedPolicy, Stream(new UnsupportedOperationException))
+      val backoffs = getBackoffs(
+        combinedPolicy,
+        Stream(new UnsupportedOperationException))
       assert(backoffs == Stream.empty)
     }
 

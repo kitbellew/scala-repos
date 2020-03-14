@@ -56,8 +56,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     catch {
       case e: ClassNotFoundException
           if clockClass.startsWith("org.apache.spark.streaming") =>
-        val newClockClass =
-          clockClass.replace("org.apache.spark.streaming", "org.apache.spark")
+        val newClockClass = clockClass.replace(
+          "org.apache.spark.streaming",
+          "org.apache.spark")
         Utils.classForName(newClockClass).newInstance().asInstanceOf[Clock]
     }
   }
@@ -73,13 +74,14 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   private lazy val shouldCheckpoint =
     ssc.checkpointDuration != null && ssc.checkpointDir != null
 
-  private lazy val checkpointWriter = if (shouldCheckpoint) {
-    new CheckpointWriter(
-      this,
-      ssc.conf,
-      ssc.checkpointDir,
-      ssc.sparkContext.hadoopConfiguration)
-  } else { null }
+  private lazy val checkpointWriter =
+    if (shouldCheckpoint) {
+      new CheckpointWriter(
+        this,
+        ssc.conf,
+        ssc.checkpointDir,
+        ssc.sparkContext.hadoopConfiguration)
+    } else { null }
 
   // eventLoop is created when generator starts.
   // This not being null means the scheduler has been started and not stopped

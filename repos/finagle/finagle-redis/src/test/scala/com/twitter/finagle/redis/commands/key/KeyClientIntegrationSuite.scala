@@ -24,8 +24,8 @@ final class KeyClientIntegrationSuite extends RedisClientTest {
     withRedisClient { client =>
       val k = StringToChannelBuffer("mykey")
       val v = StringToChannelBuffer("10")
-      val expectedBytes: Array[Byte] =
-        Array(0, -64, 10, 6, 0, -8, 114, 63, -59, -5, -5, 95, 40)
+      val expectedBytes: Array[Byte] = Array(0, -64, 10, 6, 0, -8, 114, 63, -59,
+        -5, -5, 95, 40)
 
       Await.result(client.set(k, v))
       assert(

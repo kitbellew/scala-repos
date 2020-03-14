@@ -71,8 +71,9 @@ object CodeGenTools {
     val settings = new Settings(showError)
     val args =
       (CommandLineParser tokenize defaultArgs) ++ (CommandLineParser tokenize extraArgs)
-    val (_, nonSettingsArgs) =
-      settings.processArguments(args, processAll = true)
+    val (_, nonSettingsArgs) = settings.processArguments(
+      args,
+      processAll = true)
     if (nonSettingsArgs.nonEmpty)
       showError("invalid compiler flags: " + nonSettingsArgs.mkString(" "))
     new Global(settings, new StoreReporter)
@@ -105,10 +106,9 @@ object CodeGenTools {
   def checkReport(
       compiler: Global,
       allowMessage: StoreReporter#Info => Boolean = _ => false): Unit = {
-    val disallowed =
-      reporter(compiler).infos.toList.filter(
-        !allowMessage(_)
-      ) // toList prevents an infer-non-wildcard-existential warning.
+    val disallowed = reporter(compiler).infos.toList.filter(
+      !allowMessage(_)
+    ) // toList prevents an infer-non-wildcard-existential warning.
     if (disallowed.nonEmpty) {
       val msg = disallowed.mkString("\n")
       assert(

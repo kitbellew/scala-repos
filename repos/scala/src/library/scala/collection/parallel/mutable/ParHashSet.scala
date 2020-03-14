@@ -274,8 +274,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
         else (0, UnrolledBuffer[AnyRef]())
 
       // store the leftovers
-      val (leftoversIn, leftoversLeft) =
-        insertAll(blockStart(block), beforePos, leftovers)
+      val (leftoversIn, leftoversLeft) = insertAll(
+        blockStart(block),
+        beforePos,
+        leftovers)
 
       // return the no. of stored elements tupled with leftovers
       (elemsIn + leftoversIn, elemsLeft concat leftoversLeft)
@@ -324,8 +326,10 @@ private[mutable] abstract class ParHashSetCombiner[T](
       // take the leftovers from the left task, store them into the block of the right task
       val atPos = blockStart(that.offset)
       val beforePos = blockStart(that.offset + that.howmany)
-      val (inserted, remainingLeftovers) =
-        insertAll(atPos, beforePos, this.result._2)
+      val (inserted, remainingLeftovers) = insertAll(
+        atPos,
+        beforePos,
+        this.result._2)
 
       // anything left after trying the store the left leftovers is added to the right task leftovers
       // and a new leftovers set is produced in this way

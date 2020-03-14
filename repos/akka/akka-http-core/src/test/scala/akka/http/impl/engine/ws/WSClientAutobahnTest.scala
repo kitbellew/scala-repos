@@ -32,8 +32,7 @@ object WSClientAutobahnTest extends App {
   val Agent = "akka-http"
   val Parallelism = 4
 
-  val getCaseCountUri: Uri =
-    s"ws://localhost:9001/getCaseCount"
+  val getCaseCountUri: Uri = s"ws://localhost:9001/getCaseCount"
 
   def runCaseUri(caseIndex: Int, agent: String): Uri =
     s"ws://localhost:9001/runCase?case=$caseIndex&agent=$agent"
@@ -94,13 +93,12 @@ object WSClientAutobahnTest extends App {
     * @return
     */
   def getCaseMap(): Future[Map[String, IndexedCaseInfo]] = {
-    val res =
-      getCaseCount().flatMap { count ⇒
-        println(s"Retrieving case info for $count cases...")
-        Future
-          .traverse(1 to count)(getCaseInfo)
-          .map(_.map(e ⇒ e.caseInfo.id -> e).toMap)
-      }
+    val res = getCaseCount().flatMap { count ⇒
+      println(s"Retrieving case info for $count cases...")
+      Future
+        .traverse(1 to count)(getCaseInfo)
+        .map(_.map(e ⇒ e.caseInfo.id -> e).toMap)
+    }
     res.foreach { res ⇒ println(s"Received info for ${res.size} cases") }
     res
   }
@@ -137,8 +135,7 @@ object WSClientAutobahnTest extends App {
           .runWith(Sink.head)
       }
       .map { results ⇒
-        val grouped =
-          results.groupBy(_.status.behavior)
+        val grouped = results.groupBy(_.status.behavior)
 
         println(s"${results.size} tests run.")
         println()
@@ -186,26 +183,24 @@ object WSClientAutobahnTest extends App {
   def completionSignal[T]: Flow[T, T, Future[Unit]] =
     Flow[T].transformMaterializing { () ⇒
       val p = Promise[Unit]()
-      val stage =
-        new PushStage[T, T] {
-          def onPush(elem: T, ctx: Context[T]): SyncDirective = ctx.push(elem)
-          override def onUpstreamFinish(
-              ctx: Context[T]): TerminationDirective = {
-            p.success(())
-            super.onUpstreamFinish(ctx)
-          }
-          override def onDownstreamFinish(
-              ctx: Context[T]): TerminationDirective = {
-            p.success(()) // should this be failure as well?
-            super.onDownstreamFinish(ctx)
-          }
-          override def onUpstreamFailure(
-              cause: Throwable,
-              ctx: Context[T]): TerminationDirective = {
-            p.failure(cause)
-            super.onUpstreamFailure(cause, ctx)
-          }
+      val stage = new PushStage[T, T] {
+        def onPush(elem: T, ctx: Context[T]): SyncDirective = ctx.push(elem)
+        override def onUpstreamFinish(ctx: Context[T]): TerminationDirective = {
+          p.success(())
+          super.onUpstreamFinish(ctx)
         }
+        override def onDownstreamFinish(
+            ctx: Context[T]): TerminationDirective = {
+          p.success(()) // should this be failure as well?
+          super.onDownstreamFinish(ctx)
+        }
+        override def onUpstreamFailure(
+            cause: Throwable,
+            ctx: Context[T]): TerminationDirective = {
+          p.failure(cause)
+          super.onUpstreamFailure(cause, ctx)
+        }
+      }
 
       (stage, p.future)
     }

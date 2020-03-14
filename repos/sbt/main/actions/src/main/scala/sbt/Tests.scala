@@ -243,14 +243,13 @@ object Tests {
     def partApp(actions: Iterable[ClassLoader => Unit]) =
       actions.toSeq map { a => () => a(loader) }
 
-    val (frameworkSetup, runnables, frameworkCleanup) =
-      TestFramework.testTasks(
-        frameworks,
-        runners,
-        loader,
-        tests,
-        log,
-        testListeners)
+    val (frameworkSetup, runnables, frameworkCleanup) = TestFramework.testTasks(
+      frameworks,
+      runners,
+      loader,
+      tests,
+      log,
+      testListeners)
 
     val setupTasks = fj(partApp(userSetup) :+ frameworkSetup)
     val mainTasks =
@@ -259,8 +258,8 @@ object Tests {
       else makeSerial(loader, runnables, setupTasks, config.tags)
     val taggedMainTasks = mainTasks.tagw(config.tags: _*)
     taggedMainTasks map processResults flatMap { results =>
-      val cleanupTasks =
-        fj(partApp(userCleanup) :+ frameworkCleanup(results.overall))
+      val cleanupTasks = fj(
+        partApp(userCleanup) :+ frameworkCleanup(results.overall))
       cleanupTasks map { _ => results }
     }
   }
@@ -316,17 +315,17 @@ object Tests {
       fun: TestFunction,
       tags: Seq[(Tag, Int)]): Task[Map[String, SuiteResult]] = {
     val base = task { (name, fun.apply()) }
-    val taggedBase =
-      base.tagw(tags: _*).tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
+    val taggedBase = base
+      .tagw(tags: _*)
+      .tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
     taggedBase flatMap {
       case (name, (result, nested)) =>
         val nestedRunnables = createNestedRunnables(loader, fun, nested)
         toTasks(loader, nestedRunnables, tags).map { currentResultMap =>
-          val newResult =
-            currentResultMap.get(name) match {
-              case Some(currentResult) => currentResult + result
-              case None                => result
-            }
+          val newResult = currentResultMap.get(name) match {
+            case Some(currentResult) => currentResult + result
+            case None                => result
+          }
           currentResultMap.updated(name, newResult)
         }
     }
@@ -345,8 +344,10 @@ object Tests {
         case hd :: rst =>
           val testFun = hd._2
           val (result, nestedTasks) = testFun.apply()
-          val nestedRunnables =
-            createNestedRunnables(loader, testFun, nestedTasks)
+          val nestedRunnables = createNestedRunnables(
+            loader,
+            testFun,
+            nestedTasks)
           processRunnable(
             nestedRunnables.toList ::: rst,
             (hd._1, result) :: acc)
@@ -424,8 +425,8 @@ object Tests {
       defined(subclasses, d.baseClasses, d.isModule) ++
         defined(annotations, d.annotations, d.isModule)
 
-    val discovered =
-      Discovery(firsts(subclasses), firsts(annotations))(definitions)
+    val discovered = Discovery(firsts(subclasses), firsts(annotations))(
+      definitions)
     // TODO: To pass in correct explicitlySpecified and selectors
     val tests =
       for ((df, di) <- discovered; fingerprint <- toFingerprints(di))

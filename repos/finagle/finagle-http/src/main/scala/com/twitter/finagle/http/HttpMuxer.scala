@@ -87,8 +87,7 @@ class HttpMuxer(
 object HttpMuxer extends Service[Request, Response] {
   @volatile private[this] var underlying = new HttpMuxer()
 
-  override def apply(request: Request): Future[Response] =
-    underlying(request)
+  override def apply(request: Request): Future[Response] = underlying(request)
 
   /**
     * add handlers to mutate dispatching strategies.
@@ -98,8 +97,7 @@ object HttpMuxer extends Service[Request, Response] {
 
   def addRichHandler(
       pattern: String,
-      service: Service[Request, Response]): Unit =
-    addHandler(pattern, service)
+      service: Service[Request, Response]): Unit = addHandler(pattern, service)
 
   def patterns: Seq[String] = underlying.patterns
 

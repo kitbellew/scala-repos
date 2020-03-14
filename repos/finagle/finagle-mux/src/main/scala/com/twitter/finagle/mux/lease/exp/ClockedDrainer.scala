@@ -53,8 +53,8 @@ private[finagle] class ClockedDrainer(
 ) extends Thread("GcDrainer")
     with Lessor {
 
-  private[this] val lessees =
-    Collections.newSetFromMap(new ConcurrentHashMap[Lessee, java.lang.Boolean])
+  private[this] val lessees = Collections.newSetFromMap(
+    new ConcurrentHashMap[Lessee, java.lang.Boolean])
 
   private[this] val requestCount = new AtomicInteger(0)
   private[this] val narrival = new AtomicInteger(0)
@@ -296,43 +296,44 @@ private[finagle] object ClockedDrainer {
   private[this] val lr =
     if (drainerDebug()) new DedupingLogsReceiver(log) else NullLogsReceiver
 
-  lazy val flagged: Lessor = if (drainerEnabled()) {
-    Coordinator.create() match {
-      case None =>
-        log.warning(
-          "Failed to acquire a ParNew+CMS Coordinator; cannot " +
-            "construct drainer")
-        Lessor.nil
-      case Some(coord) =>
-        val rSnooper = new RequestSnooper(
-          coord.counter,
-          drainerPercentile().toDouble / 100.0,
-          lr
-        )
+  lazy val flagged: Lessor =
+    if (drainerEnabled()) {
+      Coordinator.create() match {
+        case None =>
+          log.warning(
+            "Failed to acquire a ParNew+CMS Coordinator; cannot " +
+              "construct drainer")
+          Lessor.nil
+        case Some(coord) =>
+          val rSnooper = new RequestSnooper(
+            coord.counter,
+            drainerPercentile().toDouble / 100.0,
+            lr
+          )
 
-        val (min, max) = drainerDiscountRange()
-        assert(min < max)
+          val (min, max) = drainerDiscountRange()
+          assert(min < max)
 
-        val space = new MemorySpace(
-          coord.counter.info,
-          min,
-          max,
-          rSnooper,
-          lr
-        )
+          val space = new MemorySpace(
+            coord.counter.info,
+            min,
+            max,
+            rSnooper,
+            lr
+          )
 
-        new ClockedDrainer(
-          coord,
-          GarbageCollector.forceNewGc,
-          space,
-          rSnooper,
-          log,
-          lr,
-          DefaultStatsReceiver.scope("gcdrainer")
-        )
+          new ClockedDrainer(
+            coord,
+            GarbageCollector.forceNewGc,
+            space,
+            rSnooper,
+            log,
+            lr,
+            DefaultStatsReceiver.scope("gcdrainer")
+          )
+      }
+    } else {
+      log.info("Drainer is disabled; bypassing")
+      Lessor.nil
     }
-  } else {
-    log.info("Drainer is disabled; bypassing")
-    Lessor.nil
-  }
 }

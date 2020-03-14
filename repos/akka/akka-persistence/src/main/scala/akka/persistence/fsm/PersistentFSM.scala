@@ -395,8 +395,7 @@ abstract class AbstractPersistentFSM[S <: FSMState, D, E]
     * @param action - Java 8 lambda expression defining the action
     * @return action represented as a Scala Functin
     */
-  final def exec(action: Consumer[D]): D ⇒ Unit =
-    data ⇒ action.accept(data)
+  final def exec(action: Consumer[D]): D ⇒ Unit = data ⇒ action.accept(data)
 
   /**
     * Adapter from Java [[Class]] to [[scala.reflect.ClassTag]]

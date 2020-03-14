@@ -130,8 +130,10 @@ trait CodegenSupport extends SparkPlan {
     * them to be evaluated twice.
     */
   protected def evaluateVariables(variables: Seq[ExprCode]): String = {
-    val evaluate =
-      variables.filter(_.code != "").map(_.code.trim).mkString("\n")
+    val evaluate = variables
+      .filter(_.code != "")
+      .map(_.code.trim)
+      .mkString("\n")
     variables.foreach(_.code = "")
     evaluate
   }
@@ -349,8 +351,9 @@ case class WholeStageCodegen(child: SparkPlan)
     if (rdds.length == 1) {
       rdds.head.mapPartitions { iter =>
         val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer =
-          clazz.generate(references).asInstanceOf[BufferedRowIterator]
+        val buffer = clazz
+          .generate(references)
+          .asInstanceOf[BufferedRowIterator]
         buffer.init(Array(iter))
         new Iterator[InternalRow] {
           override def hasNext: Boolean = buffer.hasNext
@@ -361,8 +364,9 @@ case class WholeStageCodegen(child: SparkPlan)
       // Right now, we support up to two upstreams.
       rdds.head.zipPartitions(rdds(1)) { (leftIter, rightIter) =>
         val clazz = CodeGenerator.compile(cleanedSource)
-        val buffer =
-          clazz.generate(references).asInstanceOf[BufferedRowIterator]
+        val buffer = clazz
+          .generate(references)
+          .asInstanceOf[BufferedRowIterator]
         buffer.init(Array(leftIter, rightIter))
         new Iterator[InternalRow] {
           override def hasNext: Boolean = buffer.hasNext
@@ -386,8 +390,9 @@ case class WholeStageCodegen(child: SparkPlan)
       input: Seq[ExprCode],
       row: String = null): String = {
 
-    val doCopy = if (ctx.copyResult) { ".copy()" }
-    else { "" }
+    val doCopy =
+      if (ctx.copyResult) { ".copy()" }
+      else { "" }
     if (row != null) {
       // There is an UnsafeRow already
       s"""
@@ -448,8 +453,8 @@ case class CollapseCodegenStages(conf: SQLConf) extends Rule[SparkPlan] {
   private def supportCodegen(plan: SparkPlan): Boolean =
     plan match {
       case plan: CodegenSupport if plan.supportCodegen =>
-        val willFallback =
-          plan.expressions.exists(_.find(e => !supportCodegen(e)).isDefined)
+        val willFallback = plan.expressions.exists(_.find(e =>
+          !supportCodegen(e)).isDefined)
         // the generated code will be huge if there are too many columns
         val haveManyColumns = plan.output.length > 200
         !willFallback && !haveManyColumns

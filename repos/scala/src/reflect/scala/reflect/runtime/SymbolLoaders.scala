@@ -62,8 +62,7 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
   protected def initClassAndModule(
       clazz: Symbol,
       module: Symbol,
-      completer: LazyType) =
-    setAllInfos(clazz, module, completer)
+      completer: LazyType) = setAllInfos(clazz, module, completer)
 
   /** The type completer for packages.
     */
@@ -148,8 +147,8 @@ private[reflect] trait SymbolLoaders { self: SymbolTable =>
                     name.toTypeName,
                     new TopClassCompleter(_, _))
                 } else {
-                  val origOwner =
-                    loadingMirror.packageNameToScala(pkgClass.fullName)
+                  val origOwner = loadingMirror.packageNameToScala(
+                    pkgClass.fullName)
                   val clazz = origOwner.info decl name.toTypeName
                   val module = origOwner.info decl name.toTermName
                   assert(clazz != NoSymbol)

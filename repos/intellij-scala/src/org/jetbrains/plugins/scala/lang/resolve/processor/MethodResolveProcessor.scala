@@ -274,9 +274,10 @@ object MethodResolveProcessor {
       case _ => element //do not
     }
 
-    val substitutor: ScSubstitutor =
-      undefinedSubstitutor(elementForUndefining, s, proc).followed(
-        InferUtil.undefineSubstitutor(prevTypeInfo))
+    val substitutor: ScSubstitutor = undefinedSubstitutor(
+      elementForUndefining,
+      s,
+      proc).followed(InferUtil.undefineSubstitutor(prevTypeInfo))
 
     val typeParameters: Seq[TypeParameter] = prevTypeInfo ++ (element match {
       case fun: ScFunction => fun.typeParameters.map(new TypeParameter(_))
@@ -377,17 +378,17 @@ object MethodResolveProcessor {
 
     def constructorCompatibility(
         constr: ScMethodLike with PsiNamedElement): ConformanceExtResult = {
-      val classTypeParameters: Seq[ScTypeParam] =
-        constr.getClassTypeParameters.map(_.typeParameters).getOrElse(Seq())
+      val classTypeParameters: Seq[ScTypeParam] = constr.getClassTypeParameters
+        .map(_.typeParameters)
+        .getOrElse(Seq())
       if (typeArgElements.isEmpty || typeArgElements.length == classTypeParameters.length) {
-        val result =
-          Compatibility.compatible(
-            constr,
-            substitutor,
-            argumentClauses,
-            checkWithImplicits,
-            ref.getResolveScope,
-            isShapeResolve)
+        val result = Compatibility.compatible(
+          constr,
+          substitutor,
+          argumentClauses,
+          checkWithImplicits,
+          ref.getResolveScope,
+          isShapeResolve)
         problems ++= result.problems
         result.copy(problems)
       } else {
@@ -400,14 +401,13 @@ object MethodResolveProcessor {
         constr: PsiMethod): ConformanceExtResult = {
       val classTypeParmeters = constr.containingClass.getTypeParameters
       if (typeArgElements.isEmpty || typeArgElements.length == classTypeParmeters.length) {
-        val result =
-          Compatibility.compatible(
-            constr,
-            substitutor,
-            argumentClauses,
-            checkWithImplicits,
-            ref.getResolveScope,
-            isShapeResolve)
+        val result = Compatibility.compatible(
+          constr,
+          substitutor,
+          argumentClauses,
+          checkWithImplicits,
+          ref.getResolveScope,
+          isShapeResolve)
         problems ++= result.problems
         result.copy(problems)
       } else {
@@ -478,14 +478,13 @@ object MethodResolveProcessor {
           addExpectedTypeProblems()
           new ConformanceExtResult(problems)
         } else {
-          val result =
-            Compatibility.compatible(
-              tp.asInstanceOf[PsiNamedElement],
-              substitutor,
-              args,
-              checkWithImplicits,
-              ref.getResolveScope,
-              isShapeResolve)
+          val result = Compatibility.compatible(
+            tp.asInstanceOf[PsiNamedElement],
+            substitutor,
+            args,
+            checkWithImplicits,
+            ref.getResolveScope,
+            isShapeResolve)
           problems ++= result.problems
           addExpectedTypeProblems()
           result.copy(problems)
@@ -508,14 +507,13 @@ object MethodResolveProcessor {
           new ConformanceExtResult(problems)
         } else {
           val args = argumentClauses.headOption.toList
-          val result =
-            Compatibility.compatible(
-              tp,
-              substitutor,
-              args,
-              checkWithImplicits,
-              ref.getResolveScope,
-              isShapeResolve)
+          val result = Compatibility.compatible(
+            tp,
+            substitutor,
+            args,
+            checkWithImplicits,
+            ref.getResolveScope,
+            isShapeResolve)
           problems ++= result.problems
           addExpectedTypeProblems()
           result.copy(problems)
@@ -764,8 +762,8 @@ object MethodResolveProcessor {
         })
     }
     var mapped = mapper(applicationImplicits = false)
-    var filtered =
-      mapped.filter(_.isApplicableInternal(withExpectedType = true))
+    var filtered = mapped.filter(
+      _.isApplicableInternal(withExpectedType = true))
     if (filtered.isEmpty)
       filtered = mapped.filter(_.isApplicableInternal(withExpectedType = false))
 
@@ -774,8 +772,8 @@ object MethodResolveProcessor {
       mapped = mapper(applicationImplicits = true)
       filtered = mapped.filter(_.isApplicableInternal(withExpectedType = true))
       if (filtered.isEmpty)
-        filtered =
-          mapped.filter(_.isApplicableInternal(withExpectedType = false))
+        filtered = mapped.filter(
+          _.isApplicableInternal(withExpectedType = false))
     }
 
     val onlyValues = mapped.forall(_.isApplicable())

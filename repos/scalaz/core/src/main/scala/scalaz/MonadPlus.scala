@@ -23,10 +23,10 @@ trait MonadPlus[F[_]] extends Monad[F] with ApplicativePlus[F] { self =>
   /** Generalized version of Haskell's `partitionEithers` */
   def separate[G[_, _], A, B](value: F[G[A, B]])(
       implicit G: Bifoldable[G]): (F[A], F[B]) = {
-    val lefts =
-      bind(value)((aa) => G.leftFoldable.foldMap(aa)(a => point(a))(monoid[A]))
-    val rights =
-      bind(value)((bb) => G.rightFoldable.foldMap(bb)(b => point(b))(monoid[B]))
+    val lefts = bind(value)((aa) =>
+      G.leftFoldable.foldMap(aa)(a => point(a))(monoid[A]))
+    val rights = bind(value)((bb) =>
+      G.rightFoldable.foldMap(bb)(b => point(b))(monoid[B]))
     (lefts, rights)
   }
 

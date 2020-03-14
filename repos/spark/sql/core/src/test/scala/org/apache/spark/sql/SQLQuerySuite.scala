@@ -52,8 +52,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-8010: promote numeric to string") {
     val df = Seq((1, 1)).toDF("key", "value")
     df.registerTempTable("src")
-    val queryCaseWhen =
-      sql("select case when true then 1.0 else '1' end from src ")
+    val queryCaseWhen = sql(
+      "select case when true then 1.0 else '1' end from src ")
     val queryCoalesce = sql("select coalesce(null, 1, '1') from src ")
 
     checkAnswer(queryCaseWhen, Row("1.0") :: Nil)
@@ -188,8 +188,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     val df = Seq(Tuple1(1), Tuple1(2), Tuple1(3)).toDF("index")
     // we except the id is materialized once
-    val idUDF =
-      org.apache.spark.sql.functions.udf(() => UUID.randomUUID().toString)
+    val idUDF = org.apache.spark.sql.functions.udf(() =>
+      UUID.randomUUID().toString)
 
     val dfWithId = df.withColumn("id", idUDF())
     // Make a new DataFrame (actually the same reference to the old one)
@@ -1674,8 +1674,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     import org.apache.spark.unsafe.types.CalendarInterval
     import org.apache.spark.unsafe.types.CalendarInterval.MICROS_PER_WEEK
 
-    val df =
-      sql("select interval 3 years -3 month 7 week 123 microseconds as i")
+    val df = sql(
+      "select interval 3 years -3 month 7 week 123 microseconds as i")
     checkAnswer(
       df,
       Row(new CalendarInterval(12 * 3 - 3, 7L * MICROS_PER_WEEK + 123)))
@@ -1774,11 +1774,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("specifying database name for a temporary table is not allowed") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
-      val df =
-        sparkContext
-          .parallelize(1 to 10)
-          .map(i => (i, i.toString))
-          .toDF("num", "str")
+      val df = sparkContext
+        .parallelize(1 to 10)
+        .map(i => (i, i.toString))
+        .toDF("num", "str")
       df.write
         .format("parquet")
         .save(path)
@@ -1867,17 +1866,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val confs = SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "1" :: Nil
     withSQLConf(confs: _*) {
       val df1 = (1 to 50).map(i => (s"str_$i", i)).toDF("i", "j")
-      val df2 =
-        df1
-          .join(df1.select(df1("i")), "i")
-          .select(df1("i"), df1("j"))
+      val df2 = df1
+        .join(df1.select(df1("i")), "i")
+        .select(df1("i"), df1("j"))
 
       val df3 = df2.withColumnRenamed("i", "i1").withColumnRenamed("j", "j1")
-      val df4 =
-        df2
-          .join(df3, df2("i") === df3("i1"))
-          .withColumn("diff", $"j" - $"j1")
-          .select(df2("i"), df2("j"), $"diff")
+      val df4 = df2
+        .join(df3, df2("i") === df3("i1"))
+        .withColumn("diff", $"j" - $"j1")
+        .select(df2("i"), df2("j"), $"diff")
 
       checkAnswer(df4, df1.withColumn("diff", lit(0)))
     }
@@ -1995,8 +1992,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     // Create a data set that contains nested structs.
-    val nestedStructData =
-      sql("""
+    val nestedStructData = sql(
+      """
         | SELECT struct(r1, r2) as record FROM
         |   (SELECT struct(a, b) as r1, struct(b, a) as r2 FROM testData2) tmp
       """.stripMargin)
@@ -2070,8 +2067,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("Struct Star Expansion - Name conflict") {
     // Create a data set that contains a naming conflict
-    val nameConflict =
-      sql("SELECT struct(a, b) as nameConflict, a as a FROM testData2")
+    val nameConflict = sql(
+      "SELECT struct(a, b) as nameConflict, a as a FROM testData2")
     withTempTable("nameConflict") {
       nameConflict.registerTempTable("nameConflict")
       // Unqualified should resolve to table.
@@ -2328,8 +2325,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-13056: Null in map value causes NPE") {
-    val df =
-      Seq(1 -> Map("abc" -> "somestring", "cba" -> null)).toDF("key", "value")
+    val df = Seq(1 -> Map("abc" -> "somestring", "cba" -> null))
+      .toDF("key", "value")
     withTempTable("maptest") {
       df.registerTempTable("maptest")
       // local optimization will by pass codegen code, so we should keep the filter `key=1`

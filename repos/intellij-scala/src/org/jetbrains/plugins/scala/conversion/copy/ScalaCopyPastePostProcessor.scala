@@ -127,8 +127,9 @@ class ScalaCopyPastePostProcessor
           .getInstance()
           .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO) return
 
-    val file =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val file = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
 
     if (!file.isInstanceOf[ScalaFile]) return
 

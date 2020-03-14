@@ -52,8 +52,7 @@ final class ClearableLinker(newLinker: () => GenLinker, batchMode: Boolean)
       output: WritableVirtualJSFile,
       logger: Logger): Unit = { linkerOp(_.link(irFiles, output, logger)) }
 
-  def clear(): Unit =
-    _linker = null
+  def clear(): Unit = _linker = null
 
   @inline
   private[this] def linkerOp[T](op: GenLinker => T): T = {

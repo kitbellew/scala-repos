@@ -299,8 +299,7 @@ private[stream] object Fusing {
     }
     if (Debug) log(s"entering ${m.getClass} (hash=${struct.hash(
       m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
-    val localGroup =
-      if (async) struct.newGroup(indent) else openGroup
+    val localGroup = if (async) struct.newGroup(indent) else openGroup
 
     if (m.isAtomic) {
       m match {
@@ -413,8 +412,8 @@ private[stream] object Fusing {
           // computation context (i.e. that need the same value).
           struct.enterMatCtx()
           // now descend into submodules and collect their computations (plus updates to `struct`)
-          val subMatBuilder =
-            Predef.Map.newBuilder[Module, MaterializedValueNode]
+          val subMatBuilder = Predef.Map
+            .newBuilder[Module, MaterializedValueNode]
           val subIterator = m.subModules.iterator
           while (subIterator.hasNext) {
             val sub = subIterator.next()
@@ -444,8 +443,10 @@ private[stream] object Fusing {
           val matNodeMapping
               : ju.Map[MaterializedValueNode, MaterializedValueNode] =
             new ju.HashMap
-          val newMat =
-            rewriteMat(subMat, m.materializedValueComputation, matNodeMapping)
+          val newMat = rewriteMat(
+            subMat,
+            m.materializedValueComputation,
+            matNodeMapping)
           if (Debug)
             log(
               matNodeMapping.asScala

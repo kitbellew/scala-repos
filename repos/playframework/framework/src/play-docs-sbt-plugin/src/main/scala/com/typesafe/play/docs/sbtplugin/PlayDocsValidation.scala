@@ -59,8 +59,8 @@ object PlayDocsValidation {
       .filterNot(_.name.endsWith("_Sidebar.md"))
       .map { file =>
         val filename = file.name
-        val name =
-          filename.takeRight(filename.length - filename.lastIndexOf('/'))
+        val name = filename.takeRight(
+          filename.length - filename.lastIndexOf('/'))
         name -> file
       }
       .toMap
@@ -205,17 +205,19 @@ object PlayDocsValidation {
               }
 
               // The file is either relative to current page page or absolute, under the root
-              val sourceFile = if (source.startsWith("/")) { source.drop(1) }
-              else {
-                markdownFile.getParentFile.getCanonicalPath
-                  .stripPrefix(base.getCanonicalPath)
-                  .stripPrefix("/") + "/" + source
-              }
+              val sourceFile =
+                if (source.startsWith("/")) { source.drop(1) }
+                else {
+                  markdownFile.getParentFile.getCanonicalPath
+                    .stripPrefix(base.getCanonicalPath)
+                    .stripPrefix("/") + "/" + source
+                }
 
               val sourcePos = code.getStartIndex + code.getLabel.length + 4
-              val labelPos = if (code.getSource.contains("#")) {
-                sourcePos + source.length + 1
-              } else { code.getStartIndex + 2 }
+              val labelPos =
+                if (code.getSource.contains("#")) {
+                  sourcePos + source.length + 1
+                } else { code.getStartIndex + 2 }
 
               codeSamples += CodeSampleRef(
                 sourceFile,
@@ -273,16 +275,18 @@ object PlayDocsValidation {
             }
 
             // The file is either relative to current page page or absolute, under the root
-            val sourceFile = if (source.startsWith("/")) { source.drop(1) }
-            else {
-              filename.dropRight(
-                filename.length - filename.lastIndexOf('/') + 1) + source
-            }
+            val sourceFile =
+              if (source.startsWith("/")) { source.drop(1) }
+              else {
+                filename.dropRight(
+                  filename.length - filename.lastIndexOf('/') + 1) + source
+              }
 
             val sourcePos = code.getStartIndex + code.getLabel.length + 4
-            val labelPos = if (code.getSource.contains("#")) {
-              sourcePos + source.length + 1
-            } else { code.getStartIndex + 2 }
+            val labelPos =
+              if (code.getSource.contains("#")) {
+                sourcePos + source.length + 1
+              } else { code.getStartIndex + 2 }
 
             codeSamples += CodeSample(sourceFile, label, sourcePos, labelPos)
             true
@@ -351,12 +355,10 @@ object PlayDocsValidation {
       (upstream.byFile.keySet -- report.byFile.keySet).toList.sorted
     val introducedFiles =
       (report.byFile.keySet -- upstream.byFile.keySet).toList.sorted
-    val matchingFilesByName =
-      (report.byName.keySet & upstream.byName.keySet).map { name =>
-        report.byName(name) -> upstream.byName(name)
-      }
-    val (matchingFiles, changedPathFiles) =
-      matchingFilesByName.partition(f => f._1.name == f._2.name)
+    val matchingFilesByName = (report.byName.keySet & upstream.byName.keySet)
+      .map { name => report.byName(name) -> upstream.byName(name) }
+    val (matchingFiles, changedPathFiles) = matchingFilesByName.partition(f =>
+      f._1.name == f._2.name)
     val (codeSampleIssues, okFiles) = matchingFiles
       .map {
         case (actualFile, upstreamFile) =>
@@ -511,8 +513,8 @@ object PlayDocsValidation {
       },
       "Could not find resource")
 
-    val (existing, nonExisting) =
-      report.codeSamples.partition(sample => fileExists(sample.source))
+    val (existing, nonExisting) = report.codeSamples.partition(sample =>
+      fileExists(sample.source))
 
     assertLinksNotMissing(
       "Missing source files test",
@@ -578,14 +580,15 @@ object PlayDocsValidation {
       .toSeq
       .sortBy { _._1 }
 
-    implicit val ec =
-      ExecutionContext.fromExecutorService(Executors.newFixedThreadPool(50))
+    implicit val ec = ExecutionContext.fromExecutorService(
+      Executors.newFixedThreadPool(50))
 
     val futures = grouped.map { entry =>
       Future {
         val (url, refs) = entry
-        val connection =
-          new URL(url).openConnection().asInstanceOf[HttpURLConnection]
+        val connection = new URL(url)
+          .openConnection()
+          .asInstanceOf[HttpURLConnection]
         try {
           connection.setRequestProperty(
             "User-Agent",
@@ -649,17 +652,17 @@ object PlayDocsValidation {
       val lines = IO.readLines(file)
       // Calculate the line and col
       // Tuple is (total chars seen, line no, col no, Option[line])
-      val (_, lineNo, colNo, line) =
-        lines.foldLeft((0, 0, 0, None: Option[String])) { (state, line) =>
-          state match {
-            case (_, _, _, Some(_)) => state
-            case (total, l, c, None) => {
-              if (total + line.length < position) {
-                (total + line.length + 1, l + 1, c, None)
-              } else { (0, l + 1, position - total + 1, Some(line)) }
-            }
+      val (_, lineNo, colNo, line) = lines.foldLeft(
+        (0, 0, 0, None: Option[String])) { (state, line) =>
+        state match {
+          case (_, _, _, Some(_)) => state
+          case (total, l, c, None) => {
+            if (total + line.length < position) {
+              (total + line.length + 1, l + 1, c, None)
+            } else { (0, l + 1, position - total + 1, Some(line)) }
           }
         }
+      }
       log.error(errorMessage + " at " + file.getAbsolutePath + ":" + lineNo)
       line.foreach { l =>
         log.error(l)

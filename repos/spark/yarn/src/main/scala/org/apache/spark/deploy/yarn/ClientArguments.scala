@@ -53,8 +53,8 @@ private[spark] class ClientArguments(
 
   private var driverMemory: Int = Utils.DEFAULT_DRIVER_MEM_MB // MB
   private var driverCores: Int = 1
-  private val isDynamicAllocationEnabled =
-    Utils.isDynamicAllocationEnabled(sparkConf)
+  private val isDynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(
+    sparkConf)
 
   parseArgs(args.toList)
   loadEnvironmentArgs()

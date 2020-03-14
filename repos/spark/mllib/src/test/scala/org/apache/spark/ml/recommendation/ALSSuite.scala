@@ -184,13 +184,12 @@ class ALSSuite
           uncompressed.ratings(i))
       }
       .toSet
-    val expected =
-      Set(
-        (1, 0, 0, 1.0f),
-        (0, 0, 1, 2.0f),
-        (2, 0, 4, 3.0f),
-        (3, 1, 2, 4.0f),
-        (0, 1, 5, 5.0f))
+    val expected = Set(
+      (1, 0, 0, 1.0f),
+      (0, 0, 1, 2.0f),
+      (2, 0, 4, 3.0f),
+      (3, 1, 2, 4.0f),
+      (0, 1, 5, 5.0f))
     assert(records === expected)
 
     val compressed = uncompressed.compress()
@@ -363,8 +362,11 @@ class ALSSuite
       .setSeed(0)
     val alpha = als.getAlpha
     val model = als.fit(training.toDF())
-    val predictions =
-      model.transform(test.toDF()).select("rating", "prediction").rdd.map {
+    val predictions = model
+      .transform(test.toDF())
+      .select("rating", "prediction")
+      .rdd
+      .map {
         case Row(rating: Float, prediction: Float) =>
           (rating.toDouble, prediction.toDouble)
       }
@@ -405,8 +407,10 @@ class ALSSuite
   }
 
   test("exact rank-1 matrix") {
-    val (training, test) =
-      genExplicitTestData(numUsers = 20, numItems = 40, rank = 1)
+    val (training, test) = genExplicitTestData(
+      numUsers = 20,
+      numItems = 40,
+      rank = 1)
     testALS(
       training,
       test,
@@ -424,12 +428,11 @@ class ALSSuite
   }
 
   test("approximate rank-1 matrix") {
-    val (training, test) =
-      genExplicitTestData(
-        numUsers = 20,
-        numItems = 40,
-        rank = 1,
-        noiseStd = 0.01)
+    val (training, test) = genExplicitTestData(
+      numUsers = 20,
+      numItems = 40,
+      rank = 1,
+      noiseStd = 0.01)
     testALS(
       training,
       test,
@@ -447,12 +450,11 @@ class ALSSuite
   }
 
   test("approximate rank-2 matrix") {
-    val (training, test) =
-      genExplicitTestData(
-        numUsers = 20,
-        numItems = 40,
-        rank = 2,
-        noiseStd = 0.01)
+    val (training, test) = genExplicitTestData(
+      numUsers = 20,
+      numItems = 40,
+      rank = 2,
+      noiseStd = 0.01)
     testALS(
       training,
       test,
@@ -470,12 +472,11 @@ class ALSSuite
   }
 
   test("different block settings") {
-    val (training, test) =
-      genExplicitTestData(
-        numUsers = 20,
-        numItems = 40,
-        rank = 2,
-        noiseStd = 0.01)
+    val (training, test) = genExplicitTestData(
+      numUsers = 20,
+      numItems = 40,
+      rank = 2,
+      noiseStd = 0.01)
     for ((numUserBlocks, numItemBlocks) <- Seq(
            (1, 1),
            (1, 2),
@@ -494,8 +495,10 @@ class ALSSuite
   }
 
   test("more blocks than ratings") {
-    val (training, test) =
-      genExplicitTestData(numUsers = 4, numItems = 4, rank = 1)
+    val (training, test) = genExplicitTestData(
+      numUsers = 4,
+      numItems = 4,
+      rank = 1)
     testALS(
       training,
       test,
@@ -508,12 +511,11 @@ class ALSSuite
   }
 
   test("implicit feedback") {
-    val (training, test) =
-      genImplicitTestData(
-        numUsers = 20,
-        numItems = 40,
-        rank = 2,
-        noiseStd = 0.01)
+    val (training, test) = genImplicitTestData(
+      numUsers = 20,
+      numItems = 40,
+      rank = 2,
+      noiseStd = 0.01)
     testALS(
       training,
       test,
@@ -531,16 +533,22 @@ class ALSSuite
       rank = 2,
       noiseStd = 0.01)
 
-    val longRatings =
-      ratings.map(r => Rating(r.user.toLong, r.item.toLong, r.rating))
-    val (longUserFactors, _) =
-      ALS.train(longRatings, rank = 2, maxIter = 4, seed = 0)
+    val longRatings = ratings.map(r =>
+      Rating(r.user.toLong, r.item.toLong, r.rating))
+    val (longUserFactors, _) = ALS.train(
+      longRatings,
+      rank = 2,
+      maxIter = 4,
+      seed = 0)
     assert(longUserFactors.first()._1.getClass === classOf[Long])
 
-    val strRatings =
-      ratings.map(r => Rating(r.user.toString, r.item.toString, r.rating))
-    val (strUserFactors, _) =
-      ALS.train(strRatings, rank = 2, maxIter = 4, seed = 0)
+    val strRatings = ratings.map(r =>
+      Rating(r.user.toString, r.item.toString, r.rating))
+    val (strUserFactors, _) = ALS.train(
+      strRatings,
+      rank = 2,
+      maxIter = 4,
+      seed = 0)
     assert(strUserFactors.first()._1.getClass === classOf[String])
   }
 
@@ -550,8 +558,12 @@ class ALSSuite
       numItems = 40,
       rank = 2,
       noiseStd = 0.01)
-    val (userFactors, itemFactors) =
-      ALS.train(ratings, rank = 2, maxIter = 4, nonnegative = true, seed = 0)
+    val (userFactors, itemFactors) = ALS.train(
+      ratings,
+      rank = 2,
+      maxIter = 4,
+      nonnegative = true,
+      seed = 0)
     def isNonnegative(factors: RDD[(Int, Array[Float])]): Boolean = {
       factors.values.map { _.forall(_ >= 0.0) }.reduce(_ && _)
     }

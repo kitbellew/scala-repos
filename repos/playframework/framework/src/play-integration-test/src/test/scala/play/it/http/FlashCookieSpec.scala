@@ -52,8 +52,8 @@ trait FlashCookieSpec
 
   "the flash cookie" should {
     "can be set for one request" in withClientAndServer { ws =>
-      val response =
-        await(ws.url("/flash").withFollowRedirects(follow = false).get())
+      val response = await(
+        ws.url("/flash").withFollowRedirects(follow = false).get())
       response.status must equalTo(SEE_OTHER)
       val flashCookie = readFlashCookie(response)
       flashCookie must beSome.like {

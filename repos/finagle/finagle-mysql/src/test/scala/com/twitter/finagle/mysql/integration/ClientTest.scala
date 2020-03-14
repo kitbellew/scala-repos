@@ -109,8 +109,8 @@ class ClientTest extends FunSuite with IntegrationClient {
     }
 
     test("query: select values") {
-      val selectResult =
-        Await.result(c.select("SELECT * FROM `finagle-mysql-test`") { row =>
+      val selectResult = Await.result(
+        c.select("SELECT * FROM `finagle-mysql-test`") { row =>
           val StringValue(event) = row("event").get
           val FloatValue(time) = row("time").get
           val StringValue(name) = row("name").get
@@ -134,8 +134,8 @@ class ClientTest extends FunSuite with IntegrationClient {
       for (i <- 0 to 10) {
         val randomIdx = math.floor(math.random * (allRecords.size - 1)).toInt
         val recordName = allRecords(randomIdx).name
-        val expectedRes =
-          LongValue(allRecords.filter(_.name == recordName).size)
+        val expectedRes = LongValue(
+          allRecords.filter(_.name == recordName).size)
         val res = ps.select(recordName)(identity)
         val row = Await.result(res)(0)
         assert(row("numRecords").get == expectedRes)

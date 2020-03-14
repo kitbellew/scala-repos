@@ -11,8 +11,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
   def divide[A, B, C](fa: F[A], fb: F[B])(f: C => (A, B)): F[C]
 
   /** alias for `contramap` */
-  final def divide1[A1, Z](a1: F[A1])(f: Z => A1): F[Z] =
-    contramap(a1)(f)
+  final def divide1[A1, Z](a1: F[A1])(f: Z => A1): F[Z] = contramap(a1)(f)
 
   /** alias for `divide` */
   final def divide2[A1, A2, Z](a1: F[A1], a2: F[A2])(f: Z => (A1, A2)): F[Z] =
@@ -819,8 +818,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a1: F[A1],
       a2: F[A2],
       a3: F[A3],
-      a4: F[A4]): F[(A1, A2, A3, A4)] =
-    divide4(a1, a2, a3, a4)(identity)
+      a4: F[A4]): F[(A1, A2, A3, A4)] = divide4(a1, a2, a3, a4)(identity)
 
   def tuple5[A1, A2, A3, A4, A5](
       a1: F[A1],
@@ -1526,16 +1524,14 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a1: F[A1],
       a2: F[A2],
       a3: F[A3],
-      a4: F[A4]): F[Z] =
-    divide4(a1, a2, a3, a4)(f)
+      a4: F[A4]): F[Z] = divide4(a1, a2, a3, a4)(f)
 
   def deriving5[A1, A2, A3, A4, A5, Z](f: Z => (A1, A2, A3, A4, A5))(implicit
       a1: F[A1],
       a2: F[A2],
       a3: F[A3],
       a4: F[A4],
-      a5: F[A5]): F[Z] =
-    divide5(a1, a2, a3, a4, a5)(f)
+      a5: F[A5]): F[Z] = divide5(a1, a2, a3, a4, a5)(f)
 
   def deriving6[A1, A2, A3, A4, A5, A6, Z](f: Z => (A1, A2, A3, A4, A5, A6))(
       implicit
@@ -1544,8 +1540,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a3: F[A3],
       a4: F[A4],
       a5: F[A5],
-      a6: F[A6]): F[Z] =
-    divide6(a1, a2, a3, a4, a5, a6)(f)
+      a6: F[A6]): F[Z] = divide6(a1, a2, a3, a4, a5, a6)(f)
 
   def deriving7[A1, A2, A3, A4, A5, A6, A7, Z](
       f: Z => (A1, A2, A3, A4, A5, A6, A7))(implicit
@@ -1555,8 +1550,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a4: F[A4],
       a5: F[A5],
       a6: F[A6],
-      a7: F[A7]): F[Z] =
-    divide7(a1, a2, a3, a4, a5, a6, a7)(f)
+      a7: F[A7]): F[Z] = divide7(a1, a2, a3, a4, a5, a6, a7)(f)
 
   def deriving8[A1, A2, A3, A4, A5, A6, A7, A8, Z](
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8))(implicit
@@ -1567,8 +1561,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a5: F[A5],
       a6: F[A6],
       a7: F[A7],
-      a8: F[A8]): F[Z] =
-    divide8(a1, a2, a3, a4, a5, a6, a7, a8)(f)
+      a8: F[A8]): F[Z] = divide8(a1, a2, a3, a4, a5, a6, a7, a8)(f)
 
   def deriving9[A1, A2, A3, A4, A5, A6, A7, A8, A9, Z](
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9))(implicit
@@ -1580,8 +1573,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a6: F[A6],
       a7: F[A7],
       a8: F[A8],
-      a9: F[A9]): F[Z] =
-    divide9(a1, a2, a3, a4, a5, a6, a7, a8, a9)(f)
+      a9: F[A9]): F[Z] = divide9(a1, a2, a3, a4, a5, a6, a7, a8, a9)(f)
 
   def deriving10[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, Z](
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10))(implicit
@@ -1594,8 +1586,7 @@ trait Divide[F[_]] extends Contravariant[F] { self =>
       a7: F[A7],
       a8: F[A8],
       a9: F[A9],
-      a10: F[A10]): F[Z] =
-    divide10(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)(f)
+      a10: F[A10]): F[Z] = divide10(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)(f)
 
   def deriving11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, Z](
       f: Z => (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11))(implicit

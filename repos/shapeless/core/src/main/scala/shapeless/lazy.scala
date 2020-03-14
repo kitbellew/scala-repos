@@ -128,8 +128,7 @@ object Lazy {
     implicit val hnilValues: Values[HNil] = new Values(HNil)
     implicit def hconsValues[H, T <: HList](implicit
         lh: Lazy[H],
-        t: Values[T]): Values[H :: T] =
-      new Values(lh.value :: t.values)
+        t: Values[T]): Values[H :: T] = new Values(lh.value :: t.values)
   }
 
   def values[T <: HList](implicit lv: Lazy[Values[T]]): T = lv.value.values
@@ -173,8 +172,7 @@ trait OpenImplicitMacros {
 
   import c.universe._
 
-  def openImplicitTpe: Option[Type] =
-    c.openImplicits.headOption.map(_.pt)
+  def openImplicitTpe: Option[Type] = c.openImplicits.headOption.map(_.pt)
 
   def openImplicitTpeParam: Option[Type] =
     openImplicitTpe.map {
@@ -227,13 +225,12 @@ class LazyMacros(val c: whitebox.Context)
   }
 
   def setAnnotation(msg: String): Unit = {
-    val tree0 =
-      c.typecheck(
-        q"""
+    val tree0 = c.typecheck(
+      q"""
           new _root_.scala.annotation.implicitNotFound("dummy")
         """,
-        silent = false
-      )
+      silent = false
+    )
 
     class SubstMessage extends Transformer {
       val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
@@ -272,8 +269,8 @@ class LazyMacros(val c: whitebox.Context)
     object Instance {
       def apply(instTpe: Type) = {
         val nme = TermName(c.freshName("inst"))
-        val sym =
-          c.internal.setInfo(c.internal.newTermSymbol(NoSymbol, nme), instTpe)
+        val sym = c.internal
+          .setInfo(c.internal.newTermSymbol(NoSymbol, nme), instTpe)
 
         new Instance(instTpe, nme, sym, None, instTpe, Nil)
       }
@@ -400,8 +397,10 @@ class LazyMacros(val c: whitebox.Context)
         assert(open.head.instTpe =:= tpe)
         val instance = open.head
         val sym = c.internal.setInfo(instance.symbol, actualTpe)
-        val instance0 =
-          instance.copy(inst = Some(tree), actualTpe = actualTpe, symbol = sym)
+        val instance0 = instance.copy(
+          inst = Some(tree),
+          actualTpe = actualTpe,
+          symbol = sym)
         (copy(open = open.tail).update(instance0), instance0)
       }
 
@@ -447,12 +446,11 @@ class LazyMacros(val c: whitebox.Context)
         }
 
     def resolve0(state: State)(tpe: Type): Option[(State, Tree, Type)] = {
-      val extInstOpt =
-        State
-          .resolveInstance(state)(tpe)
-          .orElse(
-            stripRefinements(tpe).flatMap(State.resolveInstance(state))
-          )
+      val extInstOpt = State
+        .resolveInstance(state)(tpe)
+        .orElse(
+          stripRefinements(tpe).flatMap(State.resolveInstance(state))
+        )
 
       extInstOpt.map {
         case (state0, extInst) =>
@@ -472,11 +470,11 @@ class LazyMacros(val c: whitebox.Context)
           ignoring: String
       ): (State, Instance) = {
 
-        val tmpState =
-          state.copy(prevent = state.prevent :+ TypeWrapper(wrappedTpe))
+        val tmpState = state.copy(prevent =
+          state.prevent :+ TypeWrapper(wrappedTpe))
 
-        val existingInstOpt =
-          derive(tmpState)(innerTpe).right.toOption.flatMap {
+        val existingInstOpt = derive(tmpState)(innerTpe).right.toOption
+          .flatMap {
             case (state2, inst) =>
               if (inst.inst.isEmpty) resolve0(state2)(innerTpe).map {
                 case (_, tree, _) => tree
@@ -567,8 +565,8 @@ class LazyMacros(val c: whitebox.Context)
       val (from, to) = instances.map { d => (d.symbol, NoSymbol) }.unzip
 
       def clean(inst: Tree) = {
-        val cleanInst =
-          c.untypecheck(c.internal.substituteSymbols(inst, from, to))
+        val cleanInst = c.untypecheck(
+          c.internal.substituteSymbols(inst, from, to))
         new StripUnApplyNodes().transform(cleanInst)
       }
 
@@ -583,24 +581,22 @@ class LazyMacros(val c: whitebox.Context)
             abort(s"Uninitialized $instTpe lazy implicit")
         }
       } else {
-        val instTrees =
-          instances.map { instance =>
-            import instance._
-            inst match {
-              case Some(inst) =>
-                val cleanInst = clean(inst)
-                q"""lazy val $name: $actualTpe = $cleanInst.asInstanceOf[$actualTpe]"""
-              case None =>
-                abort(s"Uninitialized $instTpe lazy implicit")
-            }
+        val instTrees = instances.map { instance =>
+          import instance._
+          inst match {
+            case Some(inst) =>
+              val cleanInst = clean(inst)
+              q"""lazy val $name: $actualTpe = $cleanInst.asInstanceOf[$actualTpe]"""
+            case None =>
+              abort(s"Uninitialized $instTpe lazy implicit")
           }
+        }
 
         val primaryInstance = state.lookup(primaryTpe).right.get._2
         val primaryNme = primaryInstance.name
         val clsName = TypeName(c.freshName(state.name))
 
-        val tree =
-          q"""
+        val tree = q"""
             final class $clsName extends _root_.scala.Serializable {
               ..$instTrees
             }
@@ -620,16 +616,15 @@ object LazyMacros {
   def deriveInstance(lm: LazyMacros)(
       tpe: lm.c.Type,
       mkInst: (lm.c.Tree, lm.c.Type) => lm.c.Tree): lm.c.Tree = {
-    val (dc, root) =
-      dcRef match {
-        case None =>
-          lm.resetAnnotation
-          val dc = new lm.DerivationContext
-          dcRef = Some(dc)
-          (dc, true)
-        case Some(dc) =>
-          (dc.asInstanceOf[lm.DerivationContext], false)
-      }
+    val (dc, root) = dcRef match {
+      case None =>
+        lm.resetAnnotation
+        val dc = new lm.DerivationContext
+        dcRef = Some(dc)
+        (dc, true)
+      case Some(dc) =>
+        (dc.asInstanceOf[lm.DerivationContext], false)
+    }
 
     if (root)
       // Sometimes corrupted, and slows things too

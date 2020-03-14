@@ -183,8 +183,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListString") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -201,8 +202,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToListInt") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -219,8 +221,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToStringIntMap") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -238,8 +241,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("UDFToIntIntMap") {
-    val testData =
-      hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
+    val testData = hiveContext.sparkContext
+      .parallelize(StringCaseClass("") :: Nil)
+      .toDF()
     testData.registerTempTable("inputTable")
 
     sql(
@@ -435,12 +439,14 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$tempDir'
       """)
 
-      val answer1 =
-        sql("SELECT input_file_name() FROM csv_table").head().getString(0)
+      val answer1 = sql("SELECT input_file_name() FROM csv_table")
+        .head()
+        .getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
-      val count1 =
-        sql("SELECT input_file_name() FROM csv_table").distinct().count()
+      val count1 = sql("SELECT input_file_name() FROM csv_table")
+        .distinct()
+        .count()
       assert(count1 == 2)
       sql("DROP TABLE csv_table")
 
@@ -451,10 +457,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$tempDir'
       """)
 
-      val answer2 =
-        sql("SELECT input_file_name() as file FROM external_t5")
-          .head()
-          .getString(0)
+      val answer2 = sql("SELECT input_file_name() as file FROM external_t5")
+        .head()
+        .getString(0)
       assert(answer1.contains("data1") || answer1.contains("data2"))
 
       val count2 = sql("SELECT input_file_name() as file FROM external_t5")
@@ -475,10 +480,10 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         LOCATION '$parquetLocation'
       """)
 
-      val answer3 =
-        sql("SELECT input_file_name() as file FROM external_parquet")
-          .head()
-          .getString(0)
+      val answer3 = sql(
+        "SELECT input_file_name() as file FROM external_parquet")
+        .head()
+        .getString(0)
       assert(answer3.contains("external_parquet"))
 
       val count3 = sql("SELECT input_file_name() as file FROM external_parquet")
@@ -495,10 +500,9 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
         " STORED AS parquet " +
         " AS SELECT 1, 2")
 
-    val answer4 =
-      sql("SELECT input_file_name() as file FROM parquet_tmp")
-        .head()
-        .getString(0)
+    val answer4 = sql("SELECT input_file_name() as file FROM parquet_tmp")
+      .head()
+      .getString(0)
     assert(answer4.contains("parquet_tmp"))
 
     val count4 =

@@ -65,8 +65,8 @@ object Crypto {
 
   type CryptoException = play.api.libs.crypto.CryptoException
 
-  private val cryptoCache: (Application) => Crypto =
-    Application.instanceCache[Crypto]
+  private val cryptoCache: (Application) => Crypto = Application
+    .instanceCache[Crypto]
 
   def crypto: Crypto = {
     Play.privateMaybeApplication.fold {

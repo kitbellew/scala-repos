@@ -12,8 +12,9 @@ object Template {
       url: String => String = identity _,
       head: Seq[Node] = Nil,
       scripts: Seq[String] = Seq.empty,
-      defaultScripts: Seq[String] =
-        Seq("/assets/js/jquery.min.js", "/assets/js/bootstrap.min.js")) = {
+      defaultScripts: Seq[String] = Seq(
+        "/assets/js/jquery.min.js",
+        "/assets/js/bootstrap.min.js")) = {
     <html lang="en">
       <head>
         <title>{title}</title>

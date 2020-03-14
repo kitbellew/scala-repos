@@ -28,21 +28,18 @@ class BackupRequestFilterBenchmark extends StdBenchAnnotations {
     1.minute
   )
 
-  private[this] val svc =
-    backupReqFilter.andThen(Service.const(Response))
+  private[this] val svc = backupReqFilter.andThen(Service.const(Response))
 
-  private[this] val sometimesSleepySvc =
-    backupReqFilter.andThen(Service.mk[String, Int] { _ =>
+  private[this] val sometimesSleepySvc = backupReqFilter.andThen(
+    Service.mk[String, Int] { _ =>
       if (i.incrementAndGet() % 100 == 0) Thread.sleep(2)
       Response
     })
 
   @Benchmark
-  def noBackups(): Int =
-    Await.result(svc(""))
+  def noBackups(): Int = Await.result(svc(""))
 
   @Benchmark
-  def onePercentBackups(): Int =
-    Await.result(sometimesSleepySvc(""))
+  def onePercentBackups(): Int = Await.result(sometimesSleepySvc(""))
 
 }

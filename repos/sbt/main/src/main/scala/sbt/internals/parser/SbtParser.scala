@@ -84,8 +84,9 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
           }
           val errorMessage = seq.mkString(EOL)
 
-          val error = if (errorMessage.contains(XML_ERROR)) {
-            s"""
+          val error =
+            if (errorMessage.contains(XML_ERROR)) {
+              s"""
                |$errorMessage
                |Probably problem with parsing xml group, please add parens or semicolons:
                |Replace:
@@ -96,7 +97,7 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
                |val xmlGroup = <a/><b/>;
                |
              """.stripMargin
-          } else { errorMessage }
+            } else { errorMessage }
           throw new MessageOnlyException(error)
       }
     val parsedTrees = parsed match {
@@ -135,8 +136,12 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     def parseStatementAgain(t: Tree, originalStatement: String): String = {
       val statement = scala.util.Try(toolbox.parse(originalStatement)) match {
         case scala.util.Failure(th) =>
-          val missingText =
-            findMissingText(content, t.pos.end, t.pos.line, fileName, th)
+          val missingText = findMissingText(
+            content,
+            t.pos.end,
+            t.pos.line,
+            fileName,
+            th)
           originalStatement + missingText
         case _ =>
           originalStatement
@@ -149,8 +154,9 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
         case NoPosition =>
           None
         case position =>
-          val originalStatement =
-            content.substring(position.start, position.end)
+          val originalStatement = content.substring(
+            position.start,
+            position.end)
           val statement = parseStatementAgain(t, originalStatement)
           val numberLines = countLines(statement)
           Some(

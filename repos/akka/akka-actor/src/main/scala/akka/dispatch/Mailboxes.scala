@@ -291,10 +291,9 @@ private[akka] class Mailboxes(
 
   private val stashCapacityCache =
     new AtomicReference[Map[String, Int]](Map.empty[String, Int])
-  private val defaultStashCapacity: Int =
-    stashCapacityFromConfig(
-      Dispatchers.DefaultDispatcherId,
-      Mailboxes.DefaultMailboxId)
+  private val defaultStashCapacity: Int = stashCapacityFromConfig(
+    Dispatchers.DefaultDispatcherId,
+    Mailboxes.DefaultMailboxId)
 
   /**
     * INTERNAL API: The capacity of the stash. Configured in the actor's mailbox or dispatcher config.
@@ -330,8 +329,8 @@ private[akka] class Mailboxes(
       dispatcher: String,
       mailbox: String): Int = {
     val disp = settings.config.getConfig(dispatcher)
-    val fallback =
-      disp.withFallback(settings.config.getConfig(Mailboxes.DefaultMailboxId))
+    val fallback = disp.withFallback(
+      settings.config.getConfig(Mailboxes.DefaultMailboxId))
     val config =
       if (mailbox == Mailboxes.DefaultMailboxId) fallback
       else settings.config.getConfig(mailbox).withFallback(fallback)

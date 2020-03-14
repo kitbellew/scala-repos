@@ -55,8 +55,8 @@ class JsonExporterTest
   test("samples can be filtered") {
     val registry = Metrics.createDetached()
     val exporter = new JsonExporter(registry) {
-      override lazy val statsFilterRegex: Option[Regex] =
-        mkRegex("abc,ill_be_partially_matched.*")
+      override lazy val statsFilterRegex: Option[Regex] = mkRegex(
+        "abc,ill_be_partially_matched.*")
     }
     val sample = Map[String, Number](
       "jvm_uptime" -> 15.0,

@@ -202,8 +202,8 @@ class StreamingContextSuite
     addInputStream(ssc).foreachRDD { rdd =>
       jobGroupFound = sc.getLocalProperty(SparkContext.SPARK_JOB_GROUP_ID)
       jobDescFound = sc.getLocalProperty(SparkContext.SPARK_JOB_DESCRIPTION)
-      jobInterruptFound =
-        sc.getLocalProperty(SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL)
+      jobInterruptFound = sc.getLocalProperty(
+        SparkContext.SPARK_JOB_INTERRUPT_ON_CANCEL)
       allFound = true
     }
     ssc.start()
@@ -385,8 +385,8 @@ class StreamingContextSuite
     assert(ssc.getState() === StreamingContextState.ACTIVE)
 
     ssc.stop()
-    val sourcesAfterStop =
-      StreamingContextSuite.getSources(ssc.env.metricsSystem)
+    val sourcesAfterStop = StreamingContextSuite.getSources(
+      ssc.env.metricsSystem)
     val streamingSourceAfterStop = StreamingContextSuite.getStreamingSource(ssc)
     assert(ssc.getState() === StreamingContextState.STOPPED)
     assert(!sourcesAfterStop.contains(streamingSourceAfterStop))
@@ -681,8 +681,9 @@ class StreamingContextSuite
         batchDuration)
       addInputStream(ssc).register()
       ssc.start()
-      val returnedSsc =
-        StreamingContext.getActiveOrCreate(checkpointPath, creatingFunction _)
+      val returnedSsc = StreamingContext.getActiveOrCreate(
+        checkpointPath,
+        creatingFunction _)
       assert(!newContextCreated, "new context created instead of returning")
       assert(
         returnedSsc.eq(ssc),
@@ -724,8 +725,9 @@ class StreamingContextSuite
 
     // getActiveOrCreate should recover context with checkpoint path, and recover old configuration
     testGetActiveOrCreate {
-      ssc =
-        StreamingContext.getActiveOrCreate(checkpointPath, creatingFunction _)
+      ssc = StreamingContext.getActiveOrCreate(
+        checkpointPath,
+        creatingFunction _)
       assert(ssc != null, "no context created")
       assert(!newContextCreated, "old context not recovered")
       assert(ssc.conf.get("someKey") === "someValue")
@@ -814,8 +816,9 @@ class StreamingContextSuite
     }
     ssc.stop()
     val e = intercept[SparkException] {
-      ssc =
-        StreamingContext.getOrCreate(checkpointDirectory, creatingFunction _)
+      ssc = StreamingContext.getOrCreate(
+        checkpointDirectory,
+        creatingFunction _)
     }
     // StreamingContext.validate changes the message, so use "contains" here
     assert(
@@ -864,8 +867,9 @@ class StreamingContextSuite
 
   def createCorruptedCheckpoint(): String = {
     val checkpointDirectory = Utils.createTempDir().getAbsolutePath()
-    val fakeCheckpointFile =
-      Checkpoint.checkpointFile(checkpointDirectory, Time(1000))
+    val fakeCheckpointFile = Checkpoint.checkpointFile(
+      checkpointDirectory,
+      Time(1000))
     FileUtils.write(new File(fakeCheckpointFile.toString()), "blablabla")
     assert(Checkpoint.getCheckpointFiles(checkpointDirectory).nonEmpty)
     checkpointDirectory
@@ -941,8 +945,9 @@ object SlowTestReceiver {
 /** Streaming application for testing DStream and RDD creation sites */
 package object testPackage extends Assertions {
   def test() {
-    val conf =
-      new SparkConf().setMaster("local").setAppName("CreationSite test")
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName("CreationSite test")
     val ssc = new StreamingContext(conf, Milliseconds(100))
     try {
       val inputStream = ssc.receiverStream(new TestReceiver)
@@ -990,8 +995,8 @@ private object StreamingContextSuite extends PrivateMethodTester {
   private def getSources(metricsSystem: MetricsSystem): ArrayBuffer[Source] = {
     metricsSystem.invokePrivate(_sources())
   }
-  private val _streamingSource =
-    PrivateMethod[StreamingSource]('streamingSource)
+  private val _streamingSource = PrivateMethod[StreamingSource](
+    'streamingSource)
   private def getStreamingSource(
       streamingContext: StreamingContext): StreamingSource = {
     streamingContext.invokePrivate(_streamingSource())

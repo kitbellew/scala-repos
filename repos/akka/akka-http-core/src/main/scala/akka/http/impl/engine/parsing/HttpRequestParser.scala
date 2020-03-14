@@ -203,8 +203,9 @@ private[http] class HttpRequestParser(
             s"${method.name} requests must not have an entity")
 
         case Some(te) ⇒
-          val completedHeaders =
-            addTransferEncodingWithChunkedPeeled(headers, te)
+          val completedHeaders = addTransferEncodingWithChunkedPeeled(
+            headers,
+            te)
           if (te.isChunked) {
             if (clh.isEmpty) {
               emitRequestStart(chunkedEntity(cth), completedHeaders)

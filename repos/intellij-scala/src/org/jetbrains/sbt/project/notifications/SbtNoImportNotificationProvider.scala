@@ -25,8 +25,7 @@ class SbtNoImportNotificationProvider(
 
   override def shouldShowPanel(
       file: VirtualFile,
-      fileEditor: FileEditor): Boolean =
-    getProjectSettings(file).isEmpty
+      fileEditor: FileEditor): Boolean = getProjectSettings(file).isEmpty
 
   override def createPanel(file: VirtualFile): EditorNotificationPanel = {
     val panel = new EditorNotificationPanel()

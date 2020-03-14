@@ -79,19 +79,16 @@ class LinkedList[E]()
     if (oldLast ne null) oldLast.next = last else head = last
   }
 
-  override def contains(o: Any): Boolean =
-    iterator().exists(_ === o)
+  override def contains(o: Any): Boolean = iterator().exists(_ === o)
 
-  override def size(): Int =
-    _size.toInt
+  override def size(): Int = _size.toInt
 
   override def add(e: E): Boolean = {
     addLast(e)
     true
   }
 
-  override def remove(o: Any): Boolean =
-    _removeOccurrence(listIterator, o)
+  override def remove(o: Any): Boolean = _removeOccurrence(listIterator, o)
 
   override def addAll(c: Collection[_ <: E]): Boolean = {
     val iter = c.iterator
@@ -171,20 +168,15 @@ class LinkedList[E]()
     removeNode(getNodeAt(index))
   }
 
-  def peek(): E =
-    peekFirst()
+  def peek(): E = peekFirst()
 
-  def element(): E =
-    getFirst()
+  def element(): E = getFirst()
 
-  def poll(): E =
-    pollFirst()
+  def poll(): E = pollFirst()
 
-  def remove(): E =
-    removeFirst()
+  def remove(): E = removeFirst()
 
-  def offer(e: E): Boolean =
-    offerLast(e)
+  def offer(e: E): Boolean = offerLast(e)
 
   def offerFirst(e: E): Boolean = {
     addFirst(e)
@@ -196,23 +188,17 @@ class LinkedList[E]()
     true
   }
 
-  def peekFirst(): E =
-    if (head eq null) null.asInstanceOf[E] else head.value
+  def peekFirst(): E = if (head eq null) null.asInstanceOf[E] else head.value
 
-  def peekLast(): E =
-    if (last eq null) null.asInstanceOf[E] else last.value
+  def peekLast(): E = if (last eq null) null.asInstanceOf[E] else last.value
 
-  def pollFirst(): E =
-    if (isEmpty()) null.asInstanceOf[E] else removeFirst()
+  def pollFirst(): E = if (isEmpty()) null.asInstanceOf[E] else removeFirst()
 
-  def pollLast(): E =
-    if (isEmpty) null.asInstanceOf[E] else removeLast()
+  def pollLast(): E = if (isEmpty) null.asInstanceOf[E] else removeLast()
 
-  def push(e: E): Unit =
-    addFirst(e)
+  def push(e: E): Unit = addFirst(e)
 
-  def pop(): E =
-    removeFirst()
+  def pop(): E = removeFirst()
 
   private def _removeOccurrence(iter: Iterator[E], o: Any): Boolean = {
     var changed = false
@@ -226,8 +212,7 @@ class LinkedList[E]()
     changed
   }
 
-  def removeFirstOccurrence(o: Any): Boolean =
-    _removeOccurrence(iterator(), o)
+  def removeFirstOccurrence(o: Any): Boolean = _removeOccurrence(iterator(), o)
 
   def removeLastOccurrence(o: Any): Boolean =
     _removeOccurrence(descendingIterator(), o)
@@ -245,8 +230,7 @@ class LinkedList[E]()
       private var lastNode: Node[E] =
         if (currentNode ne null) null else LinkedList.this.last
 
-      def hasNext(): Boolean =
-        i < size
+      def hasNext(): Boolean = i < size
 
       def next(): E = {
         if (i >= size) throw new NoSuchElementException()
@@ -260,8 +244,7 @@ class LinkedList[E]()
         lastNode.value
       }
 
-      def hasPrevious(): Boolean =
-        i > 0
+      def hasPrevious(): Boolean = i > 0
 
       def previous(): E = {
         if (!hasPrevious) throw new NoSuchElementException()
@@ -319,11 +302,9 @@ class LinkedList[E]()
     new Iterator[E] {
 
       private var removeEnabled = false
-      private var nextNode: Node[E] =
-        LinkedList.this.last
+      private var nextNode: Node[E] = LinkedList.this.last
 
-      def hasNext(): Boolean =
-        nextNode ne null
+      def hasNext(): Boolean = nextNode ne null
 
       def next(): E = {
         if (!hasNext()) throw new NoSuchElementException()
@@ -343,8 +324,7 @@ class LinkedList[E]()
     }
   }
 
-  override def clone(): AnyRef =
-    new LinkedList[E](this)
+  override def clone(): AnyRef = new LinkedList[E](this)
 
 }
 

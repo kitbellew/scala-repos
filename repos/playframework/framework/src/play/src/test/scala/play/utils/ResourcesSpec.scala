@@ -28,8 +28,10 @@ object ResourcesSpec extends Specification {
   lazy val tmpResourcesDir = createTempDir("test-bundle-", ".tmp", resourcesDir)
   lazy val fileBundle = File.createTempFile("file-", ".tmp", tmpResourcesDir)
   lazy val dirBundle = createTempDir("dir-", ".tmp", tmpResourcesDir)
-  lazy val spacesDirBundle =
-    createTempDir("dir spaces ", ".tmp", tmpResourcesDir)
+  lazy val spacesDirBundle = createTempDir(
+    "dir spaces ",
+    ".tmp",
+    tmpResourcesDir)
   lazy val classloader = app.classloader
   lazy val osgiClassloader =
     new OsgiClassLoaderSimulator(app.classloader, resourcesDir)
@@ -103,8 +105,8 @@ object ResourcesSpec extends Specification {
     }
 
     "return true for a directory resource URL that contains spaces with the 'bundle' protocol" in {
-      val relativeIndex =
-        spacesDirBundle.getAbsolutePath.indexOf("test-bundle-")
+      val relativeIndex = spacesDirBundle.getAbsolutePath.indexOf(
+        "test-bundle-")
       val dir = spacesDirBundle.getAbsolutePath.substring(relativeIndex)
       val url = new URL("bundle", "325.0", 25, dir, new BundleStreamHandler)
       isDirectory(osgiClassloader, url) must beTrue
@@ -196,8 +198,7 @@ object ResourcesSpec extends Specification {
   }
 
   private def addFileToZip(zip: ZipOutputStream, file: File) = {
-    val entryName =
-      if (file.isDirectory) file.getName + "/" else file.getName
+    val entryName = if (file.isDirectory) file.getName + "/" else file.getName
 
     zip.putNextEntry(new ZipEntry(entryName))
 

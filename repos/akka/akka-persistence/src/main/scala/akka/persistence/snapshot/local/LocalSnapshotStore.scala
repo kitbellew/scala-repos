@@ -35,13 +35,13 @@ private[persistence] class LocalSnapshotStore
     .getInt("max-load-attempts")
     .requiring(_ > 1, "max-load-attempts must be >= 1")
 
-  private val streamDispatcher =
-    context.system.dispatchers.lookup(config.getString("stream-dispatcher"))
+  private val streamDispatcher = context.system.dispatchers
+    .lookup(config.getString("stream-dispatcher"))
   private val dir = new File(config.getString("dir"))
 
   private val serializationExtension = SerializationExtension(context.system)
-  private var saving =
-    immutable.Set.empty[SnapshotMetadata] // saving in progress
+  private var saving = immutable.Set
+    .empty[SnapshotMetadata] // saving in progress
 
   override def loadAsync(
       persistenceId: String,

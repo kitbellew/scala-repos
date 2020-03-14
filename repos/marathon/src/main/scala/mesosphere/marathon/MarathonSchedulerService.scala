@@ -98,20 +98,22 @@ class MarathonSchedulerService @Inject() (
   val latch = new CountDownLatch(1)
 
   // Time to wait before trying to reconcile app tasks after driver starts
-  val reconciliationInitialDelay =
-    Duration(config.reconciliationInitialDelay(), MILLISECONDS)
+  val reconciliationInitialDelay = Duration(
+    config.reconciliationInitialDelay(),
+    MILLISECONDS)
 
   // Interval between task reconciliation operations
-  val reconciliationInterval =
-    Duration(config.reconciliationInterval(), MILLISECONDS)
+  val reconciliationInterval = Duration(
+    config.reconciliationInterval(),
+    MILLISECONDS)
 
   // Time to wait before trying to scale apps after driver starts
-  val scaleAppsInitialDelay =
-    Duration(config.scaleAppsInitialDelay(), MILLISECONDS)
+  val scaleAppsInitialDelay = Duration(
+    config.scaleAppsInitialDelay(),
+    MILLISECONDS)
 
   // Interval between attempts to scale apps
-  val scaleAppsInterval =
-    Duration(config.scaleAppsInterval(), MILLISECONDS)
+  val scaleAppsInterval = Duration(config.scaleAppsInterval(), MILLISECONDS)
 
   private[mesosphere] var timer = newTimer()
 
@@ -141,8 +143,7 @@ class MarathonSchedulerService @Inject() (
     }
   }
 
-  def cancelDeployment(id: String): Unit =
-    schedulerActor ! CancelDeployment(id)
+  def cancelDeployment(id: String): Unit = schedulerActor ! CancelDeployment(id)
 
   def listAppVersions(appId: PathId): Iterable[Timestamp] =
     Await.result(appRepository.listVersions(appId), config.zkTimeoutDuration)

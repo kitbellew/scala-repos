@@ -11,8 +11,7 @@ import scala.scalajs.js.annotation.JSExport
 object DemoMain {
   @JSExport
   def scalaparser(container: html.Div) = {
-    val example =
-      """
+    val example = """
         |package scalaparser
         |
         |/**

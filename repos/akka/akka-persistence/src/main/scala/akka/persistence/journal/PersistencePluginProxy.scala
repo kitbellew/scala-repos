@@ -97,8 +97,8 @@ final class PersistencePluginProxy(config: Config)
     val key = s"target-${pluginType.qualifier}-plugin"
     config.getString(key).requiring(_ != "", s"$pluginId.$key must be defined")
   }
-  private val startTarget: Boolean =
-    config.getBoolean(s"start-target-${pluginType.qualifier}")
+  private val startTarget: Boolean = config.getBoolean(
+    s"start-target-${pluginType.qualifier}")
 
   override def preStart(): Unit = {
     if (startTarget) {
@@ -169,8 +169,8 @@ final class PersistencePluginProxy(config: Config)
   }
 
   def sendIdentify(address: Address): Unit = {
-    val sel =
-      context.actorSelection(RootActorPath(address) / "system" / targetPluginId)
+    val sel = context.actorSelection(
+      RootActorPath(address) / "system" / targetPluginId)
     log.info("Trying to identify target {} at {}", pluginType.qualifier, sel)
     sel ! Identify(targetPluginId)
   }

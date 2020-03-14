@@ -72,8 +72,9 @@ object JavaStreamEnrichmentsProperties
     { (i: Int, os) => os.writePosVarInt(i) },
     { _.readPosVarInt })
 
-  property("Can (read/write)Float") =
-    writeRead({ (i: Float, os) => os.writeFloat(i) }, { _.readFloat })
+  property("Can (read/write)Float") = writeRead(
+    { (i: Float, os) => os.writeFloat(i) },
+    { _.readFloat })
 
   property("Can (read/write)Array[Byte]") = writeRead(
     // Use list because Array has a shitty toString
@@ -87,11 +88,13 @@ object JavaStreamEnrichmentsProperties
     }
   )
 
-  property("Can (read/write)Boolean") =
-    writeRead({ (i: Boolean, os) => os.writeBoolean(i) }, { _.readBoolean })
+  property("Can (read/write)Boolean") = writeRead(
+    { (i: Boolean, os) => os.writeBoolean(i) },
+    { _.readBoolean })
 
-  property("Can (read/write)Double") =
-    writeRead({ (i: Double, os) => os.writeDouble(i) }, { _.readDouble })
+  property("Can (read/write)Double") = writeRead(
+    { (i: Double, os) => os.writeDouble(i) },
+    { _.readDouble })
 
   property("Can (read/write)Int") = writeRead(
     Gen.chooseNum(Int.MinValue, Int.MaxValue),

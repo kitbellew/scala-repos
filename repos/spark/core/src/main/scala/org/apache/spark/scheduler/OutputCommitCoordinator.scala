@@ -68,8 +68,8 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
     *
     * Access to this map should be guarded by synchronizing on the OutputCommitCoordinator instance.
     */
-  private val authorizedCommittersByStage =
-    mutable.Map[StageId, Array[TaskAttemptNumber]]()
+  private val authorizedCommittersByStage = mutable
+    .Map[StageId, Array[TaskAttemptNumber]]()
 
   /**
     * Returns whether the OutputCommitCoordinator's internal data structures are all empty.

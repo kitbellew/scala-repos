@@ -45,8 +45,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null) return false
 
     methodCallExpr.getInvokedExpr match {
@@ -77,8 +79,10 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
       } else { HintManager.getInstance().showErrorHint(editor, hint) }
     }
 
-    val expr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val expr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (expr == null || !expr.isValid) return
 
     var start = expr.getInvokedExpr

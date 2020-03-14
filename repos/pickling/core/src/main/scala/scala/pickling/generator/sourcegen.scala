@@ -97,13 +97,14 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     def genSubclassDispatch(x: SubclassDispatch): c.Tree = {
       val tpe = x.parent.tpe[c.universe.type](c.universe)
       val clazzName = newTermName("clazz")
-      val compileTimeDispatch: List[CaseDef] = (x.subClasses map { subtpe =>
-        val tpe = subtpe.tpe[c.universe.type](c.universe)
-        CaseDef(
-          Bind(clazzName, Ident(nme.WILDCARD)),
-          q"clazz == classOf[$tpe]",
-          createPickler(tpe, q"builder"))
-      })(collection.breakOut)
+      val compileTimeDispatch: List[CaseDef] =
+        (x.subClasses map { subtpe =>
+          val tpe = subtpe.tpe[c.universe.type](c.universe)
+          CaseDef(
+            Bind(clazzName, Ident(nme.WILDCARD)),
+            q"clazz == classOf[$tpe]",
+            createPickler(tpe, q"builder"))
+        })(collection.breakOut)
 
       val failDispatch = {
         val dispatcheeNames = x.subClasses.map(_.className).mkString(", ")
@@ -127,8 +128,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         val clazz = if (picklee != null) picklee.getClass else null
         ${Match(q"clazz", compileTimeDispatch ++ unknownDispatch)}
       """
-      val subclasses =
-        q"""
+      val subclasses = q"""
           val pickler: _root_.scala.pickling.Pickler[_] = $picklerLookup
           pickler.asInstanceOf[_root_.scala.pickling.Pickler[$tpe]].pickle(picklee, builder)
         """
@@ -192,8 +192,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     pickler
   """
 
-  def checkNullPickle(pickleLogic: c.Tree): c.Tree =
-    q"""
+  def checkNullPickle(pickleLogic: c.Tree): c.Tree = q"""
         if(null == picklee) {
           _root_.scala.pickling.Defaults.nullPickler.pickle(null, builder)
         } else $pickleLogic"""
@@ -462,8 +461,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   def generateUnpicklerClass[T: c.WeakTypeTag](
       unpicklerAst: UnpicklerAst): c.Tree = {
     val tpe = computeType[T]
-    val unpicklerName =
-      c.fresh((syntheticBaseName(tpe) + "Unpickler"): TermName)
+    val unpicklerName = c.fresh(
+      (syntheticBaseName(tpe) + "Unpickler"): TermName)
     val createTagTree = super[FastTypeTagMacros].impl[T]
     val unpickleLogic = genUnpicklerLogic[T](unpicklerAst)
     q"""
@@ -565,35 +564,34 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
     // TODO - We should attempt to SAVE the reflective methods/fields somewhere so we aren't
     //        looking them up all the time.
     // TODO - We should handle `owner` and Declared vs. inherited Fields/Methods.
-    val valueTree =
-      value match {
-        case field: IrField =>
-          val get = q"""
+    val valueTree = value match {
+      case field: IrField =>
+        val get = q"""
               _root_.scala.Predef.locally {
                 val cls = $target.getClass
                 val field = _root_.scala.pickling.internal.Reflect.getField(cls, ${field.javaReflectionName})
                 field.setAccessible(true)
                 field.get($target)
              }"""
-          get
+        get
 
-        // Private scala methods may not encode normally for case classes.  This is a hack which goes after the field.
-        // TODO - We should update this to look for the accessor method which scala generally exposes for the deconstructor.
-        case mthd: IrMethod if mthd.isScala && mthd.isPrivate =>
-          val fieldName = mthd.javaReflectionName
-          // TODO - We may need to do a specialied lookup for magic named methods.
-          q"""_root_.scala.Predef.locally {
+      // Private scala methods may not encode normally for case classes.  This is a hack which goes after the field.
+      // TODO - We should update this to look for the accessor method which scala generally exposes for the deconstructor.
+      case mthd: IrMethod if mthd.isScala && mthd.isPrivate =>
+        val fieldName = mthd.javaReflectionName
+        // TODO - We may need to do a specialied lookup for magic named methods.
+        q"""_root_.scala.Predef.locally {
                   val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd.javaReflectionName}, Array())
                   mthd.setAccessible(true)
                   mthd.invoke($target)
                 }"""
-        case mthd: IrMethod =>
-          q"""_root_.scala.Predef.locally {
+      case mthd: IrMethod =>
+        q"""_root_.scala.Predef.locally {
                   val mthd = _root_.scala.pickling.internal.Reflect.getMethod($target.getClass, ${mthd.javaReflectionName}, Array())
                   mthd.setAccessible(true)
                   mthd.invoke($target)
                 }"""
-      }
+    }
     List(body(valueTree))
   }
   def reflectivelySet(

@@ -150,10 +150,9 @@ class MatchToPartialFunctionQuickFix(
       fExpr.getParent match {
         case (argList: ScArgumentExprList) childOf (call: ScMethodCall)
             if argList.exprs.size == 1 =>
-          val newMethCall =
-            ScalaPsiElementFactory.createExpressionFromText(
-              call.getInvokedExpr.getText + " " + newBlock.getText,
-              fExpr.getManager)
+          val newMethCall = ScalaPsiElementFactory.createExpressionFromText(
+            call.getInvokedExpr.getText + " " + newBlock.getText,
+            fExpr.getManager)
           call.replace(newMethCall)
         case block @ ScBlock(`fExpr`) =>
           block.replace(newBlock)

@@ -80,8 +80,9 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
       myOpenMarkers.isEmpty,
       s"Unbalanced fold markers #3: ${myOpenMarkers.mkString}")
 
-    val assumedRegionRanges =
-      myRegions.result().sortWith((x, y) => x.getStartOffset < y.getStartOffset)
+    val assumedRegionRanges = myRegions
+      .result()
+      .sortWith((x, y) => x.getStartOffset < y.getStartOffset)
 
     myFixture.configureByText("dummy.scala", myFileText.result())
 
@@ -108,8 +109,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testNested() {
-    val text =
-      s""" class A $ST{
+    val text = s""" class A $ST{
         |  1 match $ST{
         |    case 1 => $ST{
         |      //azaza
@@ -134,8 +134,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testMatchBody() {
-    val text =
-      s"""
+    val text = s"""
          | 1 match $ST{
          |   case 1 =>
          | }$END
@@ -145,8 +144,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testClassBody() {
-    val text =
-      s"""
+    val text = s"""
          | class A $ST{
          |   //azaza
          | }$END
@@ -156,8 +154,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testMethodBody() {
-    val text =
-      s"""
+    val text = s"""
          | def boo() $ST{
          |
          | }$END
@@ -167,8 +164,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testIfBody() {
-    val text =
-      s"""
+    val text = s"""
          | if (true) $ST{
          |   println("")
          | }$END
@@ -178,8 +174,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testMatchInner() {
-    val text =
-      s"""
+    val text = s"""
          |1 match $ST{
          |    case 1 => $ST{
          |
@@ -191,8 +186,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testLambdaArgs() {
-    val text =
-      s"""
+    val text = s"""
          | def foo(i: Int => Int, j: Int) = i(j)
          |
          | foo$ST(
@@ -204,8 +198,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testSelectorImport() {
-    val text =
-      s"""
+    val text = s"""
          |  import ${ST}scala.collection.mutable.{
          |    AbstractSeq, ArrayOps, Buffer
          |  }$END
@@ -219,8 +212,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testBlockComment() {
-    val text =
-      s"""
+    val text = s"""
          |  $ST/*
          |   * Marker trait
          |   */$END
@@ -231,8 +223,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testDocComment() {
-    val text =
-      s"""
+    val text = s"""
          |  $ST/**
          |   * Marker trait
          |   */$END
@@ -243,8 +234,7 @@ class ScalaEditorFoldingTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testMlString() {
-    val text =
-      s"""
+    val text = s"""
          | val tratata =
          |   $ST${MultilineStringUtil.multilineQuotes}
          |     aaaaaa

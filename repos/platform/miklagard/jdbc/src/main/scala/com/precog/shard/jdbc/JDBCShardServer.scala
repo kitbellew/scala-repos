@@ -52,8 +52,8 @@ Please note that path globs are not yet supported in Precog for PostgreSQL
 """)
 
   val actorSystem = ActorSystem("ExecutorSystem")
-  implicit val executionContext =
-    ExecutionContext.defaultExecutionContext(actorSystem)
+  implicit val executionContext = ExecutionContext.defaultExecutionContext(
+    actorSystem)
   implicit val M: Monad[Future] = new FutureMonad(executionContext)
 
   def platformFor(

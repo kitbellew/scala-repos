@@ -35,8 +35,8 @@ import scala.language.existentials
 object CoreWorkflow {
   @transient lazy val logger = Logger[this.type]
   @transient lazy val engineInstances = Storage.getMetaDataEngineInstances
-  @transient lazy val evaluationInstances =
-    Storage.getMetaDataEvaluationInstances()
+  @transient lazy val evaluationInstances = Storage
+    .getMetaDataEvaluationInstances()
 
   def runTrain[EI, Q, P, A](
       engine: BaseEngine[EI, Q, P, A],
@@ -48,9 +48,10 @@ object CoreWorkflow {
     val mode = "training"
     WorkflowUtils.checkUpgrade(mode, engineInstance.engineFactory)
 
-    val batch = if (params.batch.nonEmpty) {
-      s"{engineInstance.engineFactory} (${params.batch}})"
-    } else { engineInstance.engineFactory }
+    val batch =
+      if (params.batch.nonEmpty) {
+        s"{engineInstance.engineFactory} (${params.batch}})"
+      } else { engineInstance.engineFactory }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
 
     try {
@@ -105,9 +106,10 @@ object CoreWorkflow {
 
     WorkflowUtils.checkUpgrade(mode, engine.getClass.getName)
 
-    val batch = if (params.batch.nonEmpty) {
-      s"{evaluation.getClass.getName} (${params.batch}})"
-    } else { evaluation.getClass.getName }
+    val batch =
+      if (params.batch.nonEmpty) {
+        s"{evaluation.getClass.getName} (${params.batch}})"
+      } else { evaluation.getClass.getName }
     val sc = WorkflowContext(batch, env, params.sparkEnv, mode.capitalize)
     val evaluationInstanceId = evaluationInstances.insert(evaluationInstance)
 

@@ -37,8 +37,8 @@ trait MockSbt {
       TestUtils.getScalaCompilerPath(scala210),
       TestUtils.getScalaReflectPath(scala210)
     ).map(new File(_))
-    val classesPath =
-      (sbtLibraries ++ scalaLibraryJars).map(VfsUtil.getUrlForLibraryRoot)
+    val classesPath = (sbtLibraries ++ scalaLibraryJars).map(
+      VfsUtil.getUrlForLibraryRoot)
     ModuleRootModificationUtil.addModuleLibrary(
       module,
       "sbt",

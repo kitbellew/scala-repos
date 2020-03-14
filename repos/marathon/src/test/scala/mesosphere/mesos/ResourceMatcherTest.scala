@@ -15,8 +15,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
     "match with app.disk == 0, even if no disk resource is contained in the offer") {
     import scala.collection.JavaConverters._
     val offerBuilder = MarathonTestHelper.makeBasicOffer()
-    val diskResourceIndex =
-      offerBuilder.getResourcesList.asScala.indexWhere(_.getName == "disk")
+    val diskResourceIndex = offerBuilder.getResourcesList.asScala
+      .indexWhere(_.getName == "disk")
     offerBuilder.removeResources(diskResourceIndex)
     val offer = offerBuilder.build()
 
@@ -90,33 +90,28 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       principal = "portPrincipal",
       labels = Map("resource" -> "ports"))
 
-    val offer =
-      MarathonTestHelper
-        .makeBasicOffer(role = "marathon")
-        .clearResources()
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "cpus",
-            1.0,
-            "marathon",
-            reservation = Some(cpuReservation)))
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "cpus",
-            1.0,
-            "marathon",
-            reservation = Some(cpuReservation2)))
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "mem",
-            128.0,
-            "*",
-            reservation = Some(memReservation)))
-        .addResources(MarathonTestHelper
-          .scalarResource("disk", 2, "*", reservation = Some(diskReservation)))
-        .addResources(MarathonTestHelper
-          .portsResource(80, 80, reservation = Some(portsReservation)))
-        .build()
+    val offer = MarathonTestHelper
+      .makeBasicOffer(role = "marathon")
+      .clearResources()
+      .addResources(
+        MarathonTestHelper.scalarResource(
+          "cpus",
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation)))
+      .addResources(
+        MarathonTestHelper.scalarResource(
+          "cpus",
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation2)))
+      .addResources(MarathonTestHelper
+        .scalarResource("mem", 128.0, "*", reservation = Some(memReservation)))
+      .addResources(MarathonTestHelper
+        .scalarResource("disk", 2, "*", reservation = Some(diskReservation)))
+      .addResources(MarathonTestHelper
+        .portsResource(80, 80, reservation = Some(portsReservation)))
+      .build()
 
     val app = AppDefinition(
       id = "/test".toRootPath,
@@ -178,25 +173,19 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
       principal = "memPrincipal",
       labels = Map("resource" -> "mem"))
 
-    val offer =
-      MarathonTestHelper
-        .makeBasicOffer(role = "marathon")
-        .clearResources()
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "cpus",
-            1.0,
-            "marathon",
-            reservation = Some(cpuReservation)))
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "mem",
-            128.0,
-            "*",
-            reservation = Some(memReservation)))
-        .addResources(
-          MarathonTestHelper.reservedDisk(id = "disk", size = 1024.0))
-        .build()
+    val offer = MarathonTestHelper
+      .makeBasicOffer(role = "marathon")
+      .clearResources()
+      .addResources(
+        MarathonTestHelper.scalarResource(
+          "cpus",
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation)))
+      .addResources(MarathonTestHelper
+        .scalarResource("mem", 128.0, "*", reservation = Some(memReservation)))
+      .addResources(MarathonTestHelper.reservedDisk(id = "disk", size = 1024.0))
+      .build()
 
     val app = AppDefinition(
       id = "/test".toRootPath,
@@ -373,8 +362,9 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
   }
 
   test("match resources fail on ports") {
-    val offer =
-      MarathonTestHelper.makeBasicOffer(beginPort = 0, endPort = 0).build()
+    val offer = MarathonTestHelper
+      .makeBasicOffer(beginPort = 0, endPort = 0)
+      .build()
     val app = AppDefinition(
       id = "/test".toRootPath,
       cpus = 1.0,

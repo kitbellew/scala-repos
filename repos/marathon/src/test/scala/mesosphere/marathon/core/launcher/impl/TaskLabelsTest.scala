@@ -25,8 +25,8 @@ class TaskLabelsTest extends FunSuite with GivenWhenThen with Matchers {
 
     Given("correctly labeled resources")
     When("checking for taskIds")
-    val taskIds =
-      f.labeledResources.flatMap(TaskLabels.taskIdForResource(f.frameworkId, _))
+    val taskIds = f.labeledResources.flatMap(
+      TaskLabels.taskIdForResource(f.frameworkId, _))
 
     Then("we get as many taskIds as resources")
     taskIds should be(Iterable.fill(f.labeledResources.size)(f.taskId))

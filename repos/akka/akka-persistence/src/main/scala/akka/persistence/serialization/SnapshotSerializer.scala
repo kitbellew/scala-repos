@@ -187,8 +187,8 @@ object SnapshotSerializer {
   // The offset of the serialVersionUID in the above.
   val offset = 16
   // This is the new serialVersionUID from Scala 2.11 onwards.
-  val replacement: Array[Byte] =
-    Array(0xfe, 0x69, 0x37, 0xfd, 0xdb, 0x0e, 0x66, 0x74).map(_.toByte)
+  val replacement: Array[Byte] = Array(0xfe, 0x69, 0x37, 0xfd, 0xdb, 0x0e, 0x66,
+    0x74).map(_.toByte)
   val doPatch: Boolean = {
     /*
      * The only way to obtain the serialVersionUID for the Option[_] class is
@@ -203,8 +203,8 @@ object SnapshotSerializer {
     val uidOffset = superOffset + offset
     val clazz: Seq[Byte] = baus.toByteArray.slice(superOffset, uidOffset)
     val knownClazz: Seq[Byte] = key.take(offset)
-    val uid: Seq[Byte] =
-      baus.toByteArray.slice(uidOffset, uidOffset + replacement.length)
+    val uid: Seq[Byte] = baus.toByteArray
+      .slice(uidOffset, uidOffset + replacement.length)
     // only attempt to patch if we know the target class
     if (clazz == knownClazz) {
       if (uid == replacement.toSeq) {

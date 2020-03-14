@@ -172,10 +172,9 @@ case class AppDefinition(
         v.getName -> v.getValue
       }.toMap
 
-    val resourcesMap: Map[String, Double] =
-      proto.getResourcesList.asScala.map { r =>
-        r.getName -> (r.getScalar.getValue: Double)
-      }.toMap
+    val resourcesMap: Map[String, Double] = proto.getResourcesList.asScala.map {
+      r => r.getName -> (r.getScalar.getValue: Double)
+    }.toMap
 
     val argsOption =
       if (proto.getCmd.getArgumentsCount > 0)
@@ -433,8 +432,11 @@ object AppDefinition {
   }
 
   val RandomPortValue: Int = 0
-  val RandomPortDefinition: PortDefinition =
-    PortDefinition(RandomPortValue, "tcp", None, Map.empty[String, String])
+  val RandomPortDefinition: PortDefinition = PortDefinition(
+    RandomPortValue,
+    "tcp",
+    None,
+    Map.empty[String, String])
 
   // App defaults
   val DefaultId: PathId = PathId.empty
@@ -544,15 +546,14 @@ object AppDefinition {
       app => !(app.residency.isDefined ^ app.persistentVolumes.nonEmpty)
     }
 
-  private val containsCmdArgsOrContainer: Validator[AppDefinition] =
-    isTrue(
-      "AppDefinition must either contain one of 'cmd' or 'args', and/or a 'container'.") {
-      app =>
-        val cmd = app.cmd.nonEmpty
-        val args = app.args.nonEmpty
-        val container = app.container.exists(_ != Container.Empty)
-        (cmd ^ args) || (!(cmd || args) && container)
-    }
+  private val containsCmdArgsOrContainer: Validator[AppDefinition] = isTrue(
+    "AppDefinition must either contain one of 'cmd' or 'args', and/or a 'container'.") {
+    app =>
+      val cmd = app.cmd.nonEmpty
+      val args = app.args.nonEmpty
+      val container = app.container.exists(_ != Container.Empty)
+      (cmd ^ args) || (!(cmd || args) && container)
+  }
 
   private def portIndexIsValid(
       hostPortsIndices: Range): Validator[HealthCheck] =
@@ -567,28 +568,27 @@ object AppDefinition {
     }
 
   def residentUpdateIsValid(from: AppDefinition): Validator[AppDefinition] = {
-    val changeNoVolumes =
-      isTrue[AppDefinition]("Persistent volumes can not be changed!") { to =>
-        val fromVolumes = from.persistentVolumes
-        val toVolumes = to.persistentVolumes
-        def sameSize = fromVolumes.size == toVolumes.size
-        def noChange =
-          from.persistentVolumes.forall { fromVolume =>
-            toVolumes
-              .find(_.containerPath == fromVolume.containerPath)
-              .contains(fromVolume)
-          }
-        sameSize && noChange
-      }
+    val changeNoVolumes = isTrue[AppDefinition](
+      "Persistent volumes can not be changed!") { to =>
+      val fromVolumes = from.persistentVolumes
+      val toVolumes = to.persistentVolumes
+      def sameSize = fromVolumes.size == toVolumes.size
+      def noChange =
+        from.persistentVolumes.forall { fromVolume =>
+          toVolumes
+            .find(_.containerPath == fromVolume.containerPath)
+            .contains(fromVolume)
+        }
+      sameSize && noChange
+    }
 
-    val changeNoResources =
-      isTrue[AppDefinition](
-        "Resident Tasks may not change resource requirements!") { to =>
-        from.cpus == to.cpus &&
-        from.mem == to.mem &&
-        from.disk == to.disk &&
-        from.portDefinitions == to.portDefinitions
-      }
+    val changeNoResources = isTrue[AppDefinition](
+      "Resident Tasks may not change resource requirements!") { to =>
+      from.cpus == to.cpus &&
+      from.mem == to.mem &&
+      from.disk == to.disk &&
+      from.portDefinitions == to.portDefinitions
+    }
 
     validator[AppDefinition] { app =>
       app should changeNoVolumes

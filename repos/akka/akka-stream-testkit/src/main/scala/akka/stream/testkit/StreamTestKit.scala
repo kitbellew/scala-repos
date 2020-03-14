@@ -262,8 +262,7 @@ object TestSubscriber {
     /**
       * Expect and return [[SubscriberEvent]] (any of: `OnSubscribe`, `OnNext`, `OnError` or `OnComplete`).
       */
-    def expectEvent(): SubscriberEvent =
-      probe.expectMsgType[SubscriberEvent]
+    def expectEvent(): SubscriberEvent = probe.expectMsgType[SubscriberEvent]
 
     /**
       * Expect and return [[SubscriberEvent]] (any of: `OnSubscribe`, `OnNext`, `OnError` or `OnComplete`).

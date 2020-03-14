@@ -1362,8 +1362,8 @@ trait ParIterableLike[
       extends Transformer[Combiner[U, That], Copy[U, That]] {
     @volatile var result: Combiner[U, That] = null
     def leaf(prev: Option[Combiner[U, That]]) =
-      result =
-        pit.copy2builder[U, That, Combiner[U, That]](reuse(prev, cfactory()))
+      result = pit.copy2builder[U, That, Combiner[U, That]](
+        reuse(prev, cfactory()))
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       new Copy[U, That](cfactory, p)
     override def merge(that: Copy[U, That]) =
@@ -1582,11 +1582,12 @@ trait ParIterableLike[
         yield new Span(pos + untilp, pred, cbfBefore, cbfAfter, p)
     }
     override def merge(that: Span[U, This]) =
-      result = if (result._2.size == 0) {
-        (result._1 combine that.result._1, that.result._2)
-      } else {
-        (result._1, result._2 combine that.result._1 combine that.result._2)
-      }
+      result =
+        if (result._2.size == 0) {
+          (result._1 combine that.result._1, that.result._2)
+        } else {
+          (result._1, result._2 combine that.result._1 combine that.result._2)
+        }
     override def requiresStrictSplitters = true
   }
 
@@ -1621,8 +1622,11 @@ trait ParIterableLike[
       extends Transformer[Combiner[(U, S), That], ZipAll[U, S, That]] {
     @volatile var result: Result = null
     def leaf(prev: Option[Result]) =
-      result =
-        pit.zipAll2combiner[U, S, That](othpit, thiselem, thatelem, pbf())
+      result = pit.zipAll2combiner[U, S, That](
+        othpit,
+        thiselem,
+        thatelem,
+        pbf())
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       throw new UnsupportedOperationException
     override def split =

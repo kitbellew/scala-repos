@@ -46,59 +46,58 @@ private[sql] class ExecutionPage(parent: SQLTab)
             executionUIData.completionTime.getOrElse(
               currentTime) - executionUIData.submissionTime
 
-          val summary =
-            <div>
+          val summary = <div>
           <ul class="unstyled">
             <li>
               <strong>Submitted Time: </strong>{
-              UIUtils.formatDate(executionUIData.submissionTime)
-            }
+            UIUtils.formatDate(executionUIData.submissionTime)
+          }
             </li>
             <li>
               <strong>Duration: </strong>{UIUtils.formatDuration(duration)}
             </li>
             {
-              if (executionUIData.runningJobs.nonEmpty) {
-                <li>
+            if (executionUIData.runningJobs.nonEmpty) {
+              <li>
                 <strong>Running Jobs: </strong>
                 {
-                  executionUIData.runningJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.runningJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
             {
-              if (executionUIData.succeededJobs.nonEmpty) {
-                <li>
+            if (executionUIData.succeededJobs.nonEmpty) {
+              <li>
                 <strong>Succeeded Jobs: </strong>
                 {
-                  executionUIData.succeededJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.succeededJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
             {
-              if (executionUIData.failedJobs.nonEmpty) {
-                <li>
+            if (executionUIData.failedJobs.nonEmpty) {
+              <li>
                 <strong>Failed Jobs: </strong>
                 {
-                  executionUIData.failedJobs.sorted.map { jobId =>
-                    <a href={jobURL(jobId)}>{
-                      jobId.toString
-                    }</a><span>&nbsp;</span>
-                  }
+                executionUIData.failedJobs.sorted.map { jobId =>
+                  <a href={jobURL(jobId)}>{
+                    jobId.toString
+                  }</a><span>&nbsp;</span>
                 }
-              </li>
               }
+              </li>
             }
+          }
           </ul>
         </div>
 

@@ -45,8 +45,7 @@ class AssumptionViolatedException protected (
   //    initCause(e)
   //  }
 
-  override def getMessage(): String =
-    StringDescription.asString(this)
+  override def getMessage(): String = StringDescription.asString(this)
 
   def describeTo(description: Description): Unit = {
     if (fAssumption != null) description.appendText(fAssumption)

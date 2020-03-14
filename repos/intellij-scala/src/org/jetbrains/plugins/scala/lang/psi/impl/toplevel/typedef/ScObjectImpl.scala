@@ -137,8 +137,9 @@ class ScObjectImpl protected (
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
       val facade = JavaPsiFacade.getInstance(getProject)
-      val pack =
-        facade.findPackage(qual) //do not wrap into ScPackage to avoid SOE
+      val pack = facade.findPackage(
+        qual
+      ) //do not wrap into ScPackage to avoid SOE
       if (pack != null && !ResolveUtils.packageProcessDeclarations(
             pack,
             processor,
@@ -307,10 +308,9 @@ class ScObjectImpl protected (
 
   private val hardParameterlessSignatures: mutable.WeakHashMap[
     Project,
-    TypeDefinitionMembers.ParameterlessNodes.Map] =
-    new mutable.WeakHashMap[
-      Project,
-      TypeDefinitionMembers.ParameterlessNodes.Map]
+    TypeDefinitionMembers.ParameterlessNodes.Map] = new mutable.WeakHashMap[
+    Project,
+    TypeDefinitionMembers.ParameterlessNodes.Map]
   def getHardParameterlessSignatures
       : TypeDefinitionMembers.ParameterlessNodes.Map = {
     hardParameterlessSignatures.getOrElseUpdate(

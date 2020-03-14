@@ -24,8 +24,8 @@ class StatsFactoryWrapperTest extends FunSuite with MockitoSugar {
 
     intercept[Throwable] { Await.result(statsFac(ClientConnection.nil)) }
 
-    val expected =
-      Map(List("failures", t.getClass.getName, rex.getClass.getName) -> 1)
+    val expected = Map(
+      List("failures", t.getClass.getName, rex.getClass.getName) -> 1)
     assert(receiver.counters == expected)
     verify(underlying)(ClientConnection.nil)
   }

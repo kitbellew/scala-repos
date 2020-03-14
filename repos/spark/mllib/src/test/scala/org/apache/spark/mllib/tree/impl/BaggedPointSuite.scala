@@ -45,10 +45,15 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
     val arr = EnsembleTestHelper.generateOrderedLabeledPoints(1, 1000)
     val rdd = sc.parallelize(arr)
     seeds.foreach { seed =>
-      val baggedRDD =
-        BaggedPoint.convertToBaggedRDD(rdd, 1.0, numSubsamples, true, seed)
-      val subsampleCounts: Array[Array[Double]] =
-        baggedRDD.map(_.subsampleWeights).collect()
+      val baggedRDD = BaggedPoint.convertToBaggedRDD(
+        rdd,
+        1.0,
+        numSubsamples,
+        true,
+        seed)
+      val subsampleCounts: Array[Array[Double]] = baggedRDD
+        .map(_.subsampleWeights)
+        .collect()
       EnsembleTestHelper.testRandomArrays(
         subsampleCounts,
         numSubsamples,
@@ -73,8 +78,9 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
         numSubsamples,
         true,
         seed)
-      val subsampleCounts: Array[Array[Double]] =
-        baggedRDD.map(_.subsampleWeights).collect()
+      val subsampleCounts: Array[Array[Double]] = baggedRDD
+        .map(_.subsampleWeights)
+        .collect()
       EnsembleTestHelper.testRandomArrays(
         subsampleCounts,
         numSubsamples,
@@ -93,10 +99,15 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
     val arr = EnsembleTestHelper.generateOrderedLabeledPoints(1, 1000)
     val rdd = sc.parallelize(arr)
     seeds.foreach { seed =>
-      val baggedRDD =
-        BaggedPoint.convertToBaggedRDD(rdd, 1.0, numSubsamples, false, seed)
-      val subsampleCounts: Array[Array[Double]] =
-        baggedRDD.map(_.subsampleWeights).collect()
+      val baggedRDD = BaggedPoint.convertToBaggedRDD(
+        rdd,
+        1.0,
+        numSubsamples,
+        false,
+        seed)
+      val subsampleCounts: Array[Array[Double]] = baggedRDD
+        .map(_.subsampleWeights)
+        .collect()
       EnsembleTestHelper.testRandomArrays(
         subsampleCounts,
         numSubsamples,
@@ -123,8 +134,9 @@ class BaggedPointSuite extends SparkFunSuite with MLlibTestSparkContext {
         numSubsamples,
         false,
         seed)
-      val subsampleCounts: Array[Array[Double]] =
-        baggedRDD.map(_.subsampleWeights).collect()
+      val subsampleCounts: Array[Array[Double]] = baggedRDD
+        .map(_.subsampleWeights)
+        .collect()
       EnsembleTestHelper.testRandomArrays(
         subsampleCounts,
         numSubsamples,

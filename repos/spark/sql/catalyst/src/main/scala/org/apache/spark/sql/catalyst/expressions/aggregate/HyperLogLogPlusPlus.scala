@@ -152,8 +152,8 @@ case class HyperLogLogPlusPlus(
     StructType.fromAttributes(aggBufferAttributes)
 
   /** Allocate enough words to store all registers. */
-  override val aggBufferAttributes: Seq[AttributeReference] =
-    Seq.tabulate(numWords) { i => AttributeReference(s"MS[$i]", LongType)() }
+  override val aggBufferAttributes: Seq[AttributeReference] = Seq.tabulate(
+    numWords) { i => AttributeReference(s"MS[$i]", LongType)() }
 
   // Note: although this simply copies aggBufferAttributes, this common code can not be placed
   // in the superclass because that will lead to initialization ordering issues.
@@ -311,12 +311,13 @@ case class HyperLogLogPlusPlus(
       }
 
     // Estimate the cardinality.
-    val estimate = if (V > 0) {
-      // Use linear counting for small cardinality estimates.
-      val H = m * Math.log(m / V)
-      if (H <= THRESHOLDS(p - 4)) { H }
-      else { EBiasCorrected }
-    } else { EBiasCorrected }
+    val estimate =
+      if (V > 0) {
+        // Use linear counting for small cardinality estimates.
+        val H = m * Math.log(m / V)
+        if (H <= THRESHOLDS(p - 4)) { H }
+        else { EBiasCorrected }
+      } else { EBiasCorrected }
 
     // Round to the nearest long value.
     Math.round(estimate)

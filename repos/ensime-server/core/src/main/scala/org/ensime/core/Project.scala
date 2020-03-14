@@ -99,10 +99,12 @@ class Project(
         }
       }))
 
-      scalac =
-        context.actorOf(Analyzer(merger, indexer, searchService), "scalac")
-      javac =
-        context.actorOf(JavaAnalyzer(merger, indexer, searchService), "javac")
+      scalac = context.actorOf(
+        Analyzer(merger, indexer, searchService),
+        "scalac")
+      javac = context.actorOf(
+        JavaAnalyzer(merger, indexer, searchService),
+        "javac")
     } else {
       log.warning(
         "Detected a pure Java project. Scala queries are not available.")

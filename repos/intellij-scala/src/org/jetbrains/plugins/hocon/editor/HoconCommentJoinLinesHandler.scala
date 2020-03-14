@@ -26,8 +26,8 @@ class HoconCommentJoinLinesHandler extends JoinLinesHandlerDelegate {
         val element = file.findElementAt(start)
         if (element != null && HoconTokenSets.Comment.contains(
               element.getNode.getElementType)) {
-          val joinedSequence =
-            document.getCharsSequence.subSequence(end, document.getTextLength)
+          val joinedSequence = document.getCharsSequence
+            .subSequence(end, document.getTextLength)
           List("#", "//").find(joinedSequence.startsWith).map { nextPrefix =>
             val toRemoveEnd = CharArrayUtil.shiftForward(
               document.getCharsSequence,

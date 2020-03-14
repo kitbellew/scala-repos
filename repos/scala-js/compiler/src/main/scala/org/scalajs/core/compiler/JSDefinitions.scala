@@ -26,22 +26,27 @@ trait JSDefinitions { self: JSGlobalAddons =>
     lazy val ScalaJSJSPackage = getPackage(
       newTermNameCached("scala.scalajs.js")
     ) // compat 2.10/2.11
-    lazy val JSPackage_typeOf =
-      getMemberMethod(ScalaJSJSPackage, newTermName("typeOf"))
-    lazy val JSPackage_constructorOf =
-      getMemberMethod(ScalaJSJSPackage, newTermName("constructorOf"))
-    lazy val JSPackage_debugger =
-      getMemberMethod(ScalaJSJSPackage, newTermName("debugger"))
-    lazy val JSPackage_native =
-      getMemberMethod(ScalaJSJSPackage, newTermName("native"))
+    lazy val JSPackage_typeOf = getMemberMethod(
+      ScalaJSJSPackage,
+      newTermName("typeOf"))
+    lazy val JSPackage_constructorOf = getMemberMethod(
+      ScalaJSJSPackage,
+      newTermName("constructorOf"))
+    lazy val JSPackage_debugger = getMemberMethod(
+      ScalaJSJSPackage,
+      newTermName("debugger"))
+    lazy val JSPackage_native = getMemberMethod(
+      ScalaJSJSPackage,
+      newTermName("native"))
 
     lazy val JSNativeAnnotation = getRequiredClass("scala.scalajs.js.native")
 
     lazy val JSAnyClass = getRequiredClass("scala.scalajs.js.Any")
     lazy val JSDynamicClass = getRequiredClass("scala.scalajs.js.Dynamic")
     lazy val JSDictionaryClass = getRequiredClass("scala.scalajs.js.Dictionary")
-    lazy val JSDictionary_delete =
-      getMemberMethod(JSDictionaryClass, newTermName("delete"))
+    lazy val JSDictionary_delete = getMemberMethod(
+      JSDictionaryClass,
+      newTermName("delete"))
     lazy val JSObjectClass = getRequiredClass("scala.scalajs.js.Object")
     lazy val JSThisFunctionClass = getRequiredClass(
       "scala.scalajs.js.ThisFunction")
@@ -53,8 +58,9 @@ trait JSDefinitions { self: JSGlobalAddons =>
 
     lazy val JSArrayClass = getRequiredClass("scala.scalajs.js.Array")
     lazy val JSArray_apply = getMemberMethod(JSArrayClass, newTermName("apply"))
-    lazy val JSArray_update =
-      getMemberMethod(JSArrayClass, newTermName("update"))
+    lazy val JSArray_update = getMemberMethod(
+      JSArrayClass,
+      newTermName("update"))
 
     lazy val JSFunctionClasses =
       (0 to 22) map (n => getRequiredClass("scala.scalajs.js.Function" + n))
@@ -102,24 +108,31 @@ trait JSDefinitions { self: JSGlobalAddons =>
       getMemberMethod(JSAnyModule, newTermName("fromFunction" + arity))
 
     lazy val JSDynamicModule = JSDynamicClass.companionModule
-    lazy val JSDynamic_newInstance =
-      getMemberMethod(JSDynamicModule, newTermName("newInstance"))
-    lazy val JSDynamicLiteral =
-      getMemberModule(JSDynamicModule, newTermName("literal"))
-    lazy val JSDynamicLiteral_applyDynamicNamed =
-      getMemberMethod(JSDynamicLiteral, newTermName("applyDynamicNamed"))
-    lazy val JSDynamicLiteral_applyDynamic =
-      getMemberMethod(JSDynamicLiteral, newTermName("applyDynamic"))
+    lazy val JSDynamic_newInstance = getMemberMethod(
+      JSDynamicModule,
+      newTermName("newInstance"))
+    lazy val JSDynamicLiteral = getMemberModule(
+      JSDynamicModule,
+      newTermName("literal"))
+    lazy val JSDynamicLiteral_applyDynamicNamed = getMemberMethod(
+      JSDynamicLiteral,
+      newTermName("applyDynamicNamed"))
+    lazy val JSDynamicLiteral_applyDynamic = getMemberMethod(
+      JSDynamicLiteral,
+      newTermName("applyDynamic"))
 
     lazy val JSObjectModule = JSObjectClass.companionModule
-    lazy val JSObject_hasProperty =
-      getMemberMethod(JSObjectModule, newTermName("hasProperty"))
-    lazy val JSObject_properties =
-      getMemberMethod(JSObjectModule, newTermName("properties"))
+    lazy val JSObject_hasProperty = getMemberMethod(
+      JSObjectModule,
+      newTermName("hasProperty"))
+    lazy val JSObject_properties = getMemberMethod(
+      JSObjectModule,
+      newTermName("properties"))
 
     lazy val JSArrayModule = JSArrayClass.companionModule
-    lazy val JSArray_create =
-      getMemberMethod(JSArrayModule, newTermName("apply"))
+    lazy val JSArray_create = getMemberMethod(
+      JSArrayModule,
+      newTermName("apply"))
 
     lazy val JSThisFunctionModule = JSThisFunctionClass.companionModule
     def JSThisFunction_fromFunction(arity: Int): TermSymbol =
@@ -127,8 +140,9 @@ trait JSDefinitions { self: JSGlobalAddons =>
 
     lazy val JSConstructorTagModule = getRequiredModule(
       "scala.scalajs.js.ConstructorTag")
-    lazy val JSConstructorTag_materialize =
-      getMemberMethod(JSConstructorTagModule, newTermName("materialize"))
+    lazy val JSConstructorTag_materialize = getMemberMethod(
+      JSConstructorTagModule,
+      newTermName("materialize"))
 
     lazy val RawJSTypeAnnot = getRequiredClass(
       "scala.scalajs.js.annotation.RawJSType")
@@ -161,14 +175,18 @@ trait JSDefinitions { self: JSGlobalAddons =>
     lazy val Runtime_jsTupleArray2jsObject = getMemberMethod(
       RuntimePackageModule,
       newTermName("jsTupleArray2jsObject"))
-    lazy val Runtime_constructorOf =
-      getMemberMethod(RuntimePackageModule, newTermName("constructorOf"))
-    lazy val Runtime_newConstructorTag =
-      getMemberMethod(RuntimePackageModule, newTermName("newConstructorTag"))
-    lazy val Runtime_propertiesOf =
-      getMemberMethod(RuntimePackageModule, newTermName("propertiesOf"))
-    lazy val Runtime_linkingInfo =
-      getMemberMethod(RuntimePackageModule, newTermName("linkingInfo"))
+    lazy val Runtime_constructorOf = getMemberMethod(
+      RuntimePackageModule,
+      newTermName("constructorOf"))
+    lazy val Runtime_newConstructorTag = getMemberMethod(
+      RuntimePackageModule,
+      newTermName("newConstructorTag"))
+    lazy val Runtime_propertiesOf = getMemberMethod(
+      RuntimePackageModule,
+      newTermName("propertiesOf"))
+    lazy val Runtime_linkingInfo = getMemberMethod(
+      RuntimePackageModule,
+      newTermName("linkingInfo"))
 
     lazy val WrappedArrayClass = getRequiredClass(
       "scala.scalajs.js.WrappedArray")
@@ -180,10 +198,12 @@ trait JSDefinitions { self: JSGlobalAddons =>
       getMemberMethod(ScalaRunTimeModule, newTermName("isArray"))
         .suchThat(_.tpe.params.size == 2)
 
-    lazy val BoxesRunTime_boxToCharacter =
-      getMemberMethod(BoxesRunTimeModule, newTermName("boxToCharacter"))
-    lazy val BoxesRunTime_unboxToChar =
-      getMemberMethod(BoxesRunTimeModule, newTermName("unboxToChar"))
+    lazy val BoxesRunTime_boxToCharacter = getMemberMethod(
+      BoxesRunTimeModule,
+      newTermName("boxToCharacter"))
+    lazy val BoxesRunTime_unboxToChar = getMemberMethod(
+      BoxesRunTimeModule,
+      newTermName("unboxToChar"))
 
   }
 

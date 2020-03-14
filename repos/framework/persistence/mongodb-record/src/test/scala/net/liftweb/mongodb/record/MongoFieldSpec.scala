@@ -212,12 +212,13 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
           val formXml = mandatory.toForm
           formXml.isDefined must_== true
           formXml foreach { fprime =>
-            val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-              ns.filter {
-                case e: Elem =>
-                  e.attribute("selected").map(_.text) == Some("selected")
-                case _ => false
-              }) andThen "* [value]" #> ".*"))(fprime)
+            val f =
+              ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+                ns.filter {
+                  case e: Elem =>
+                    e.attribute("selected").map(_.text) == Some("selected")
+                  case _ => false
+                }) andThen "* [value]" #> ".*"))(fprime)
             val ret: Boolean = Helpers.compareXml(f, fp)
 
             ret must_== true

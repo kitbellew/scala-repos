@@ -113,10 +113,10 @@ class ScalaStatementMover extends LineMover {
       line: Int): Option[PsiElement] = {
     val edges = edgeLeafsOf(line, editor, file)
 
-    val left =
-      edges._1.flatMap(PsiTreeUtil.getParentOfType(_, cl, false).toOption)
-    val right =
-      edges._2.flatMap(PsiTreeUtil.getParentOfType(_, cl, false).toOption)
+    val left = edges._1.flatMap(
+      PsiTreeUtil.getParentOfType(_, cl, false).toOption)
+    val right = edges._2.flatMap(
+      PsiTreeUtil.getParentOfType(_, cl, false).toOption)
 
     left
       .zip(right)

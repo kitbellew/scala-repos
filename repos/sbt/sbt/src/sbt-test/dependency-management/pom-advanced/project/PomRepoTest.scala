@@ -14,8 +14,9 @@ object PomRepoTest extends Build {
     },
     makePomConfiguration <<= (makePomConfiguration, baseDirectory) {
       (conf, base) =>
-        conf.copy(filterRepositories =
-          pomIncludeRepository(base, conf.filterRepositories))
+        conf.copy(filterRepositories = pomIncludeRepository(
+          base,
+          conf.filterRepositories))
     },
     ivyPaths <<= baseDirectory(dir => new IvyPaths(dir, Some(dir / "ivy-home")))
   )

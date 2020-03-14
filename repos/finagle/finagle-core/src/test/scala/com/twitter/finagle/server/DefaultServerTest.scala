@@ -37,11 +37,11 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           service
       }
 
-      val server: Server[Try[Int], Try[Int]] =
-        DefaultServer[Try[Int], Try[Int], Try[Int], Try[Int]](
-          name,
-          listener,
-          serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[
+        Try[Int],
+        Try[Int],
+        Try[Int],
+        Try[Int]](name, listener, serviceTransport)
 
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
       val factory = ServiceFactory.const(Service.mk[Try[Int], Try[Int]] { num =>
@@ -68,14 +68,13 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
 
       val serviceTransport: (
           Transport[Try[Int], Try[Int]],
-          Service[Try[Int], Try[Int]]) => Closable =
-        (_, _) => mockConnHandle
+          Service[Try[Int], Try[Int]]) => Closable = (_, _) => mockConnHandle
 
-      val server: Server[Try[Int], Try[Int]] =
-        DefaultServer[Try[Int], Try[Int], Try[Int], Try[Int]](
-          name,
-          listener,
-          serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[
+        Try[Int],
+        Try[Int],
+        Try[Int],
+        Try[Int]](name, listener, serviceTransport)
 
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
       val factory = mock[ServiceFactory[Try[Int], Try[Int]]]
@@ -106,11 +105,11 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           Service[Try[Int], Try[Int]]) => Closable =
         new SerialServerDispatcher(_, _)
 
-      val server: Server[Try[Int], Try[Int]] =
-        DefaultServer[Try[Int], Try[Int], Try[Int], Try[Int]](
-          name,
-          listener,
-          serviceTransport)
+      val server: Server[Try[Int], Try[Int]] = DefaultServer[
+        Try[Int],
+        Try[Int],
+        Try[Int],
+        Try[Int]](name, listener, serviceTransport)
       val socket = new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
 
       val p = Promise[Try[Int]]
@@ -130,8 +129,9 @@ class DefaultServerTest extends FunSpec with MockitoSugar {
           (t: Transport[Try[Int], Try[Int]]) => new SerialClientDispatcher(t))
 
       val client: Client[Try[Int], Try[Int]] = DefaultClient("name", endpointer)
-      val clientService: Service[Try[Int], Try[Int]] =
-        client.newService(Name.fromGroup(listeningServer), "")
+      val clientService: Service[Try[Int], Try[Int]] = client.newService(
+        Name.fromGroup(listeningServer),
+        "")
 
       val f = clientService(Return(4))
       val closed = listeningServer.close(1.second.fromNow)

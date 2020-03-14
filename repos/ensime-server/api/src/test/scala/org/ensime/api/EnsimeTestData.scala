@@ -107,8 +107,10 @@ trait EnsimeTestData {
     sourcePos1,
     DebugObjectId(7))
 
-  val debugBacktrace =
-    DebugBacktrace(List(debugStackFrame), DebugThreadId(17), "thread1")
+  val debugBacktrace = DebugBacktrace(
+    List(debugStackFrame),
+    DebugThreadId(17),
+    "thread1")
 
   val analyzerFile = canon("Analyzer.scala")
   val fooFile = canon("Foo.scala")
@@ -146,13 +148,19 @@ trait EnsimeTestData {
 
   val debugNullValue = DebugNullValue("typeNameStr")
 
-  val debugArrayInstValue =
-    DebugArrayInstance(3, "typeName", "elementType", DebugObjectId(5L))
+  val debugArrayInstValue = DebugArrayInstance(
+    3,
+    "typeName",
+    "elementType",
+    DebugObjectId(5L))
 
   val debugPrimitiveValue = DebugPrimitiveValue("summaryStr", "typeNameStr")
 
-  val debugClassField =
-    DebugClassField(19, "nameStr", "typeNameStr", "summaryStr")
+  val debugClassField = DebugClassField(
+    19,
+    "nameStr",
+    "typeNameStr",
+    "summaryStr")
 
   val debugStringValue = DebugStringInstance(
     "summaryStr",
@@ -168,8 +176,10 @@ trait EnsimeTestData {
   val entityInfo: TypeInfo =
     new ArrowTypeInfo("Arrow1", typeInfo, List(paramSectionInfo))
 
-  val sourceFileInfo =
-    SourceFileInfo(file1, Some("{/* code here */}"), Some(file2))
+  val sourceFileInfo = SourceFileInfo(
+    file1,
+    Some("{/* code here */}"),
+    Some(file2))
   val dtid = DebugThreadId(13)
   val debugLocationArray = DebugArrayElement(DebugObjectId(13), 14)
 

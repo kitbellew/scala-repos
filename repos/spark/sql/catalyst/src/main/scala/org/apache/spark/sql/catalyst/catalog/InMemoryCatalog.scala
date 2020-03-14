@@ -200,8 +200,8 @@ class InMemoryCatalog extends ExternalCatalog {
     synchronized {
       requireTableExists(db, oldName)
       val oldDesc = catalog(db).tables(oldName)
-      oldDesc.table =
-        oldDesc.table.copy(name = TableIdentifier(newName, Some(db)))
+      oldDesc.table = oldDesc.table
+        .copy(name = TableIdentifier(newName, Some(db)))
       catalog(db).tables.put(newName, oldDesc)
       catalog(db).tables.remove(oldName)
     }
@@ -349,8 +349,8 @@ class InMemoryCatalog extends ExternalCatalog {
       newName: String): Unit =
     synchronized {
       requireFunctionExists(db, oldName)
-      val newFunc = getFunction(db, oldName).copy(name =
-        FunctionIdentifier(newName, Some(db)))
+      val newFunc = getFunction(db, oldName)
+        .copy(name = FunctionIdentifier(newName, Some(db)))
       catalog(db).functions.remove(oldName)
       catalog(db).functions.put(newName, newFunc)
     }

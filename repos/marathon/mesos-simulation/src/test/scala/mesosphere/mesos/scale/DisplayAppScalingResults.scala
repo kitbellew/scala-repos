@@ -9,8 +9,8 @@ import play.api.libs.json.Reads._
 object DisplayAppScalingResults {
 
   def displayAppInfoScaling(fileName: String): Unit = {
-    val appInfos: Seq[JsObject] =
-      ScalingTestResultFiles.readJson[Seq[JsObject]](fileName)
+    val appInfos: Seq[JsObject] = ScalingTestResultFiles
+      .readJson[Seq[JsObject]](fileName)
 
     val header = IndexedSeq(
       "relative time (ms)",
@@ -46,8 +46,8 @@ object DisplayAppScalingResults {
   }
 
   def displayMetrics(fileName: String): Unit = {
-    val allMetrics: Seq[JsObject] =
-      ScalingTestResultFiles.readJson[Seq[JsObject]](fileName)
+    val allMetrics: Seq[JsObject] = ScalingTestResultFiles
+      .readJson[Seq[JsObject]](fileName)
 
     def subMetric(name: String): Map[String, JsObject] = {
       (allMetrics.last \ name)
@@ -187,8 +187,9 @@ object DisplayAppScalingResults {
         def dFull(fieldName: String): Any =
           (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
 
-        val rateUnits: String =
-          (jsObject \ "rate_units").asOpt[String].getOrElse("-")
+        val rateUnits: String = (jsObject \ "rate_units")
+          .asOpt[String]
+          .getOrElse("-")
         IndexedSeq[Any](
           shortenName(timer),
           dFull("count"),

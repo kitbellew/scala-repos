@@ -73,8 +73,11 @@ object IntroduceVariableTestUtil {
 
     val container: PsiElement = ScalaRefactoringUtil.enclosingContainer(
       ScalaRefactoringUtil.commonParent(file, occurrences: _*))
-    val containerOne =
-      getContainerOne(startOffset, endOffset, file, occurrences.length)
+    val containerOne = getContainerOne(
+      startOffset,
+      endOffset,
+      file,
+      occurrences.length)
     new ScalaVariableValidator(
       new ScalaIntroduceVariableHandler,
       project,
@@ -95,13 +98,17 @@ object IntroduceVariableTestUtil {
       .get
 
     val fileEncloser = ScalaRefactoringUtil.fileEncloser(startOffset, file)
-    val occurrences =
-      ScalaRefactoringUtil.getTypeElementOccurrences(typeElement, fileEncloser)
+    val occurrences = ScalaRefactoringUtil.getTypeElementOccurrences(
+      typeElement,
+      fileEncloser)
     val container = ScalaRefactoringUtil.enclosingContainer(
       PsiTreeUtil.findCommonParent(occurrences: _*))
 
-    val containerOne =
-      getContainerOne(startOffset, endOffset, file, occurrences.length)
+    val containerOne = getContainerOne(
+      startOffset,
+      endOffset,
+      file,
+      occurrences.length)
     new ScalaTypeValidator(
       new ScalaIntroduceVariableHandler,
       project,

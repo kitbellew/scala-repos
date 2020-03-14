@@ -31,8 +31,7 @@ class HeartbeatNodeRingPerfSpec extends WordSpec with Matchers {
   private def checkThunkForRing(
       ring: HeartbeatNodeRing,
       thunk: HeartbeatNodeRing ⇒ Unit,
-      times: Int): Unit =
-    for (i ← 1 to times) thunk(ring)
+      times: Int): Unit = for (i ← 1 to times) thunk(ring)
 
   private def myReceivers(ring: HeartbeatNodeRing): Unit = {
     val r = HeartbeatNodeRing(

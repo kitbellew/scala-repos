@@ -97,12 +97,14 @@ case class IdSequenceBlock(
 }
 
 object IdSequenceBlock {
-  implicit val iso =
-    Iso.hlist(IdSequenceBlock.apply _, IdSequenceBlock.unapply _)
+  implicit val iso = Iso.hlist(
+    IdSequenceBlock.apply _,
+    IdSequenceBlock.unapply _)
   val schemaV1 = "producerId" :: "firstSequenceId" :: "lastSequenceId" :: HNil
   val extractorPreV = extractorV[IdSequenceBlock](schemaV1, None)
-  val (decomposerV1, extractorV1) =
-    serializationV[IdSequenceBlock](schemaV1, Some("1.0".v))
+  val (decomposerV1, extractorV1) = serializationV[IdSequenceBlock](
+    schemaV1,
+    Some("1.0".v))
   implicit val decomposer = decomposerV1
   implicit val extractor = extractorV1 <+> extractorPreV
 }
@@ -122,12 +124,14 @@ case class EventRelayState(
 }
 
 object EventRelayState {
-  implicit val iso =
-    Iso.hlist(EventRelayState.apply _, EventRelayState.unapply _)
+  implicit val iso = Iso.hlist(
+    EventRelayState.apply _,
+    EventRelayState.unapply _)
   val schemaV1 = "offset" :: "nextSequenceId" :: "idSequenceBlock" :: HNil
   val extractorPreV = extractorV[EventRelayState](schemaV1, None)
-  val (decomposerV1, extractorV1) =
-    serializationV[EventRelayState](schemaV1, Some("1.0".v))
+  val (decomposerV1, extractorV1) = serializationV[EventRelayState](
+    schemaV1,
+    Some("1.0".v))
   implicit val decomposer = decomposerV1
   implicit val extractor = extractorV1 <+> extractorPreV
 }
@@ -135,10 +139,10 @@ object EventRelayState {
 case class ProducerState(lastSequenceId: Int)
 
 object ProducerState {
-  implicit val ProducerStateDecomposer =
-    implicitly[Decomposer[Int]].contramap((_: ProducerState).lastSequenceId)
-  implicit val ProducerStateExtractor =
-    implicitly[Extractor[Int]].map(ProducerState.apply _)
+  implicit val ProducerStateDecomposer = implicitly[Decomposer[Int]]
+    .contramap((_: ProducerState).lastSequenceId)
+  implicit val ProducerStateExtractor = implicitly[Extractor[Int]]
+    .map(ProducerState.apply _)
 }
 
 case class YggCheckpoint(offset: Long, messageClock: VectorClock) {
@@ -158,8 +162,9 @@ object YggCheckpoint {
   val schemaV1 = "offset" :: "messageClock" :: HNil
 
   val extractorPreV = extractorV[YggCheckpoint](schemaV1, None)
-  val (decomposerV1, extractorV1) =
-    serializationV[YggCheckpoint](schemaV1, Some("1.0".v))
+  val (decomposerV1, extractorV1) = serializationV[YggCheckpoint](
+    schemaV1,
+    Some("1.0".v))
 
   implicit val decomposer = decomposerV1
   implicit val extractor = extractorV1 <+> extractorPreV

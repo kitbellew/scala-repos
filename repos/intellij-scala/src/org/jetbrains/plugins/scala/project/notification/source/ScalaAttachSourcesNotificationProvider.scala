@@ -136,8 +136,8 @@ class ScalaAttachSourcesNotificationProvider(
                 })
               }
             }
-            val callback: ActionCallback =
-              each.perform(findOrderEntriesContainingFile(file))
+            val callback: ActionCallback = each.perform(
+              findOrderEntriesContainingFile(file))
             callback.doWhenRejected(onFinish)
             callback.doWhenDone(onFinish)
           }

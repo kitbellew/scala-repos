@@ -671,8 +671,9 @@ trait ColumnarTableModule[M[+_]]
 
           allSourceDNF(indicesGroupedBySource).foldLeft(Set.empty[Key]) {
             case (acc, intersection) =>
-              val hd =
-                normalizedKeys(intersection.head._1, intersection.head._2)
+              val hd = normalizedKeys(
+                intersection.head._1,
+                intersection.head._2)
               acc | intersection.tail.foldLeft(hd) {
                 case (keys0, (index1, schema1)) =>
                   val keys1 = normalizedKeys(index1, schema1)
@@ -1673,8 +1674,9 @@ trait ColumnarTableModule[M[+_]]
               case (accM, offset) =>
                 accM flatMap {
                   case (a, acc) =>
-                    val rows =
-                      math.min(sliceSize, (lhead.size - offset) * rhead.size)
+                    val rows = math.min(
+                      sliceSize,
+                      (lhead.size - offset) * rhead.size)
 
                     val lslice = new Slice {
                       val size = rows
@@ -1903,8 +1905,9 @@ trait ColumnarTableModule[M[+_]]
           sliceStartIndex: Int): M[StreamT[M, Slice]] =
         stream.uncons flatMap {
           case Some((head, tail)) if takenSoFar < numberToTake => {
-            val needed =
-              head.takeRange(sliceStartIndex, (numberToTake - takenSoFar).toInt)
+            val needed = head.takeRange(
+              sliceStartIndex,
+              (numberToTake - takenSoFar).toInt)
             inner(tail, takenSoFar + (head.size - (sliceStartIndex)), 0)
               .map(needed :: _)
           }
@@ -2016,8 +2019,8 @@ trait ColumnarTableModule[M[+_]]
         val groupedM = groupTable
           .map(_.transform(DerefObjectStatic(Leaf(Source), CPathField("1"))))
           .flatMap(f)
-        val groupedStream: StreamT[M, Slice] =
-          StreamT.wrapEffect(groupedM.map(_.slices))
+        val groupedStream: StreamT[M, Slice] = StreamT.wrapEffect(
+          groupedM.map(_.slices))
 
         groupedStream ++ dropAndSplit(comparatorGen, head :: tail, spanStart)
       }
@@ -2215,10 +2218,11 @@ trait ColumnarTableModule[M[+_]]
             logger.debug(logPrefix + " " + appendix); StreamT.empty[M, Slice]
           })
           .point[M])
-      val sliceEffect = if (logger.isTraceEnabled) slices map { s =>
-        logger.trace(logPrefix + " " + f(s)); s
-      }
-      else slices
+      val sliceEffect =
+        if (logger.isTraceEnabled) slices map { s =>
+          logger.trace(logPrefix + " " + f(s)); s
+        }
+        else slices
       Table(preludeEffect ++ sliceEffect ++ appendixEffect, size)
     }
 

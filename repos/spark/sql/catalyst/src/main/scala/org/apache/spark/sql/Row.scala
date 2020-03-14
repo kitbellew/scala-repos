@@ -282,8 +282,7 @@ trait Row extends Serializable {
     *
     * @throws ClassCastException when data type does not match.
     */
-  def getList[T](i: Int): java.util.List[T] =
-    getSeq[T](i).asJava
+  def getList[T](i: Int): java.util.List[T] = getSeq[T](i).asJava
 
   /**
     * Returns the value at position i of map type as a Scala Map.
@@ -297,8 +296,7 @@ trait Row extends Serializable {
     *
     * @throws ClassCastException when data type does not match.
     */
-  def getJavaMap[K, V](i: Int): java.util.Map[K, V] =
-    getMap[K, V](i).asJava
+  def getJavaMap[K, V](i: Int): java.util.Map[K, V] = getMap[K, V](i).asJava
 
   /**
     * Returns the value at position i of struct type as an [[Row]] object.

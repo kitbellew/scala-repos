@@ -11,8 +11,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   val familyName = RemoveRedundantElseIntention.familyName
 
   def testRemoveElse() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int) {
         |    if (i == 0) {
@@ -23,8 +22,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int) {
         |    if (i == 0) {
@@ -39,8 +37,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveElse2() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) {
@@ -52,8 +49,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) {
@@ -69,8 +65,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveElse3() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) {
@@ -84,8 +79,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) {
@@ -103,8 +97,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveElse4() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) return true
@@ -116,8 +109,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0) return true<caret>
@@ -132,8 +124,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveElse5() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0)
@@ -144,8 +135,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0)
@@ -160,8 +150,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testRemoveElse6() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0)
@@ -172,8 +161,7 @@ class RemoveRedundantElseIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(i: Int): Boolean = {
         |    if (i == 0)

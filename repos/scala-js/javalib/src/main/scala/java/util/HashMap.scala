@@ -10,8 +10,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
     with Cloneable {
   self =>
 
-  def this() =
-    this(mutable.HashMap.empty[Box[K], V])
+  def this() = this(mutable.HashMap.empty[Box[K], V])
 
   def this(initialCapacity: Int, loadFactor: Float) = {
     this()
@@ -29,8 +28,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
     putAll(m)
   }
 
-  override def clear(): Unit =
-    inner.clear()
+  override def clear(): Unit = inner.clear()
 
   override def clone(): AnyRef = { new HashMap(inner.clone()) }
 
@@ -40,17 +38,14 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
   override def containsValue(value: Any): Boolean =
     inner.valuesIterator.contains(value.asInstanceOf[V])
 
-  override def entrySet(): Set[Map.Entry[K, V]] =
-    new EntrySet
+  override def entrySet(): Set[Map.Entry[K, V]] = new EntrySet
 
   override def get(key: Any): V =
     inner.get(Box(key.asInstanceOf[K])).getOrElse(null.asInstanceOf[V])
 
-  override def isEmpty(): Boolean =
-    inner.isEmpty
+  override def isEmpty(): Boolean = inner.isEmpty
 
-  override def keySet(): Set[K] =
-    new KeySet
+  override def keySet(): Set[K] = new KeySet
 
   override def put(key: K, value: V): V =
     inner.put(Box(key), value).getOrElse(null.asInstanceOf[V])
@@ -63,11 +58,9 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
     }
   }
 
-  override def size(): Int =
-    inner.size
+  override def size(): Int = inner.size
 
-  override def values(): Collection[V] =
-    new ValuesView
+  override def values(): Collection[V] = new ValuesView
 
   private class EntrySet
       extends AbstractSet[Map.Entry[K, V]]
@@ -96,15 +89,13 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
 
     override def iterator(): Iterator[K] = {
       new AbstractMapViewIterator[K] {
-        protected def getNextForm(key: Box[K]): K =
-          key.inner
+        protected def getNextForm(key: Box[K]): K = key.inner
       }
     }
   }
 
   private class ValuesView extends AbstractMapView[V] {
-    override def size(): Int =
-      inner.size
+    override def size(): Int = inner.size
 
     override def iterator(): Iterator[V] = {
       new AbstractMapViewIterator[V] {
@@ -114,11 +105,9 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
   }
 
   private trait AbstractMapView[E] extends AbstractCollection[E] {
-    override def size(): Int =
-      inner.size
+    override def size(): Int = inner.size
 
-    override def clear(): Unit =
-      inner.clear()
+    override def clear(): Unit = inner.clear()
   }
 
   private abstract class AbstractMapViewIterator[E] extends Iterator[E] {
@@ -133,8 +122,7 @@ class HashMap[K, V] protected (inner: mutable.Map[Box[K], V])
       getNextForm(lastKey.get)
     }
 
-    final override def hasNext: Boolean =
-      innerIterator.hasNext
+    final override def hasNext: Boolean = innerIterator.hasNext
 
     final override def remove(): Unit = {
       lastKey match {

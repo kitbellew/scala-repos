@@ -46,8 +46,12 @@ class JDBCSuite
   val urlWithUserAndPass = "jdbc:h2:mem:testdb0;user=testUser;password=testPass"
   var conn: java.sql.Connection = null
 
-  val testBytes =
-    Array[Byte](99.toByte, 134.toByte, 135.toByte, 200.toByte, 205.toByte)
+  val testBytes = Array[Byte](
+    99.toByte,
+    134.toByte,
+    135.toByte,
+    200.toByte,
+    205.toByte)
 
   val testH2Dialect = new JdbcDialect {
     override def canHandle(url: String): Boolean = url.startsWith("jdbc:h2")
@@ -55,8 +59,7 @@ class JDBCSuite
         sqlType: Int,
         typeName: String,
         size: Int,
-        md: MetadataBuilder): Option[DataType] =
-      Some(StringType)
+        md: MetadataBuilder): Option[DataType] = Some(StringType)
   }
 
   before {
@@ -323,10 +326,10 @@ class JDBCSuite
 
     // This is a test to reflect discussion in SPARK-12218.
     // The older versions of spark have this kind of bugs in parquet data source.
-    val df1 =
-      sql("SELECT * FROM foobar WHERE NOT (THEID != 2 AND NAME != 'mary')")
-    val df2 =
-      sql("SELECT * FROM foobar WHERE NOT (THEID != 2) OR NOT (NAME != 'mary')")
+    val df1 = sql(
+      "SELECT * FROM foobar WHERE NOT (THEID != 2 AND NAME != 'mary')")
+    val df2 = sql(
+      "SELECT * FROM foobar WHERE NOT (THEID != 2) OR NOT (NAME != 'mary')")
     assert(df1.collect.toSet === Set(Row("mary", 2)))
     assert(df2.collect.toSet === Set(Row("mary", 2)))
 
@@ -648,8 +651,10 @@ class JDBCSuite
 
   test("Remap types via JdbcDialects") {
     JdbcDialects.registerDialect(testH2Dialect)
-    val df =
-      sqlContext.read.jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
+    val df = sqlContext.read.jdbc(
+      urlWithUserAndPass,
+      "TEST.PEOPLE",
+      new Properties)
     assert(
       df.schema
         .filter(_.dataType != org.apache.spark.sql.types.StringType)
@@ -829,8 +834,10 @@ class JDBCSuite
     // Regression test for bug SPARK-11788
     val timestamp = java.sql.Timestamp.valueOf("2001-02-20 11:22:33.543543");
     val date = java.sql.Date.valueOf("1995-01-01")
-    val jdbcDf =
-      sqlContext.read.jdbc(urlWithUserAndPass, "TEST.TIMETYPES", new Properties)
+    val jdbcDf = sqlContext.read.jdbc(
+      urlWithUserAndPass,
+      "TEST.TIMETYPES",
+      new Properties)
     val rows = jdbcDf.where($"B" > date && $"C" > timestamp).collect()
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
@@ -853,8 +860,10 @@ class JDBCSuite
   }
 
   test("test credentials in the connection url are not in the plan output") {
-    val df =
-      sqlContext.read.jdbc(urlWithUserAndPass, "TEST.PEOPLE", new Properties)
+    val df = sqlContext.read.jdbc(
+      urlWithUserAndPass,
+      "TEST.PEOPLE",
+      new Properties)
     val explain = ExplainCommand(df.queryExecution.logical, extended = true)
     sqlContext.executePlan(explain).executedPlan.executeCollect().foreach { r =>
       assert(!List("testPass", "testUser").exists(r.toString.contains))

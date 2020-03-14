@@ -89,8 +89,8 @@ private[streaming] class InputInfoTracker(ssc: StreamingContext)
   /** Cleanup the tracked input information older than threshold batch time */
   def cleanup(batchThreshTime: Time): Unit =
     synchronized {
-      val timesToCleanup =
-        batchTimeToInputInfos.keys.filter(_ < batchThreshTime)
+      val timesToCleanup = batchTimeToInputInfos.keys.filter(
+        _ < batchThreshTime)
       logInfo(s"remove old batch metadata: ${timesToCleanup.mkString(" ")}")
       batchTimeToInputInfos --= timesToCleanup
     }

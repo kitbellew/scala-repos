@@ -653,8 +653,12 @@ object H5Store {
 
     H5Reg.save(space_id, H5S)
 
-    val dataset_id =
-      writeArray(node_id, space_id, name, data, Array[Long](data.length))
+    val dataset_id = writeArray(
+      node_id,
+      space_id,
+      name,
+      data,
+      Array[Long](data.length))
 
     H5Reg.save(dataset_id, H5D)
 
@@ -683,8 +687,12 @@ object H5Store {
 
     H5Reg.save(space_id, H5S)
 
-    val dataset_id =
-      writeArray(node_id, space_id, name, data, Array[Long](dim1, dim2))
+    val dataset_id = writeArray(
+      node_id,
+      space_id,
+      name,
+      data,
+      Array[Long](dim1, dim2))
 
     H5Reg.save(dataset_id, H5D)
 
@@ -1089,9 +1097,10 @@ object H5Store {
       index: Index[X],
       values: Array[T]): Int = {
 
-    val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
-      openFile(file, readOnly = false) -> false
-    } else { createFile(file) -> true }
+    val (fileid, writeHeader) =
+      if (Files.exists(Paths.get(file))) {
+        openFile(file, readOnly = false) -> false
+      } else { createFile(file) -> true }
 
     assertException(
       fileid >= 0,
@@ -1211,9 +1220,10 @@ object H5Store {
       name: String,
       frame: Frame[R, C, T]): Int = {
 
-    val (fileid, writeHeader) = if (Files.exists(Paths.get(file))) {
-      openFile(file, readOnly = false) -> false
-    } else { createFile(file) -> true }
+    val (fileid, writeHeader) =
+      if (Files.exists(Paths.get(file))) {
+        openFile(file, readOnly = false) -> false
+      } else { createFile(file) -> true }
 
     assertException(
       fileid >= 0,
@@ -1419,18 +1429,30 @@ object H5Store {
     }
 
     val colidx = H5.H5Dopen(nodeid, "axis0", HDF5Constants.H5P_DEFAULT)
-    val dblColIdx =
-      H5.H5Dopen(nodeid, "block0_items", HDF5Constants.H5P_DEFAULT)
-    val intColIdx =
-      H5.H5Dopen(nodeid, "block1_items", HDF5Constants.H5P_DEFAULT)
-    val lngColIdx =
-      H5.H5Dopen(nodeid, "block2_items", HDF5Constants.H5P_DEFAULT)
-    val strColIdx =
-      H5.H5Dopen(nodeid, "block3_items", HDF5Constants.H5P_DEFAULT)
-    val fltColIdx =
-      H5.H5Dopen(nodeid, "block4_items", HDF5Constants.H5P_DEFAULT)
-    val datColIdx =
-      H5.H5Dopen(nodeid, "block5_items", HDF5Constants.H5P_DEFAULT)
+    val dblColIdx = H5.H5Dopen(
+      nodeid,
+      "block0_items",
+      HDF5Constants.H5P_DEFAULT)
+    val intColIdx = H5.H5Dopen(
+      nodeid,
+      "block1_items",
+      HDF5Constants.H5P_DEFAULT)
+    val lngColIdx = H5.H5Dopen(
+      nodeid,
+      "block2_items",
+      HDF5Constants.H5P_DEFAULT)
+    val strColIdx = H5.H5Dopen(
+      nodeid,
+      "block3_items",
+      HDF5Constants.H5P_DEFAULT)
+    val fltColIdx = H5.H5Dopen(
+      nodeid,
+      "block4_items",
+      HDF5Constants.H5P_DEFAULT)
+    val datColIdx = H5.H5Dopen(
+      nodeid,
+      "block5_items",
+      HDF5Constants.H5P_DEFAULT)
     assertException(colidx >= 0, "column index group is not valid")
 
     H5Reg.save(colidx, H5D)

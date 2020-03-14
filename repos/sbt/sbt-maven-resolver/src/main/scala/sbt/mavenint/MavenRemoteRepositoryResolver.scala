@@ -41,8 +41,9 @@ class MavenRemoteRepositoryResolver(
   private val localRepo =
     new java.io.File(settings.getDefaultIvyUserDir, s"maven-cache")
   sbt.io.IO.createDirectory(localRepo)
-  protected val session =
-    MavenRepositorySystemFactory.newSessionImpl(system, localRepo)
+  protected val session = MavenRepositorySystemFactory.newSessionImpl(
+    system,
+    localRepo)
   private val aetherRepository = {
     new org.eclipse.aether.repository.RemoteRepository.Builder(
       repo.name,
@@ -104,19 +105,17 @@ class MavenRemoteRepositoryResolver(
           try new MetadataXpp3Reader().read(reader, false)
           finally reader.close()
         }
-        val timestampOpt =
-          for {
-            v <- Option(readMetadata.getVersioning)
-            sp <- Option(v.getSnapshot)
-            ts <- Option(sp.getTimestamp)
-            t <- MavenRepositoryResolver.parseTimeString(ts)
-          } yield t
-        val lastUpdatedOpt =
-          for {
-            v <- Option(readMetadata.getVersioning)
-            lu <- Option(v.getLastUpdated)
-            d <- MavenRepositoryResolver.parseTimeString(lu)
-          } yield d
+        val timestampOpt = for {
+          v <- Option(readMetadata.getVersioning)
+          sp <- Option(v.getSnapshot)
+          ts <- Option(sp.getTimestamp)
+          t <- MavenRepositoryResolver.parseTimeString(ts)
+        } yield t
+        val lastUpdatedOpt = for {
+          v <- Option(readMetadata.getVersioning)
+          lu <- Option(v.getLastUpdated)
+          d <- MavenRepositoryResolver.parseTimeString(lu)
+        } yield d
         // TODO - Only look at timestamp *IF* the version is for a snapshot.
         timestampOpt orElse lastUpdatedOpt
       case _ => None

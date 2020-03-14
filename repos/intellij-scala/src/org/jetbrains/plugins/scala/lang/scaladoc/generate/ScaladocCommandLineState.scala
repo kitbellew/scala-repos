@@ -64,8 +64,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   def setOutputDir(dir: String) { outputDir = dir }
 
   override protected def startProcess: OSProcessHandler = {
-    val handler: OSProcessHandler =
-      JavaCommandLineStateUtil.startProcess(createCommandLine)
+    val handler: OSProcessHandler = JavaCommandLineStateUtil.startProcess(
+      createCommandLine)
     if (showInBrowser) {
       handler.addProcessListener(new ProcessAdapter {
         override def processTerminated(event: ProcessEvent) {
@@ -82,8 +82,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
   private def visitAll(
       file: VirtualFile,
       scope: AnalysisScope,
-      acc: mutable.MutableList[VirtualFile] =
-        mutable.MutableList[VirtualFile]()): List[VirtualFile] = {
+      acc: mutable.MutableList[VirtualFile] = mutable
+        .MutableList[VirtualFile]()): List[VirtualFile] = {
 
     def visitInner(
         file: VirtualFile,
@@ -286,8 +286,9 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
 
     if (JdkUtil.useDynamicClasspath(project)) {
       try {
-        val tempParamsFile: File =
-          File.createTempFile("scaladocfileargs", ".tmp")
+        val tempParamsFile: File = File.createTempFile(
+          "scaladocfileargs",
+          ".tmp")
         val pw: PrintStream = new PrintStream(
           new FileOutputStream(tempParamsFile))
 

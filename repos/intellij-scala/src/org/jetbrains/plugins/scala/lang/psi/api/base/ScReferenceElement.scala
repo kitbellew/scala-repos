@@ -315,8 +315,9 @@ trait ScReferenceElement
             else {
               val result: ResolveResult = resolve(0)
               def smartCheck: Boolean = {
-                val holder =
-                  ScalaImportTypeFix.getImportHolder(this, getProject)
+                val holder = ScalaImportTypeFix.getImportHolder(
+                  this,
+                  getProject)
                 var res = true
                 holder.accept(new ScalaRecursiveElementVisitor {
                   //Override also visitReferenceExpression! and visitTypeProjection!
@@ -367,8 +368,9 @@ trait ScReferenceElement
     extensions.inWriteAction {
       val refText =
         if (addImport) {
-          val importHolder =
-            ScalaImportTypeFix.getImportHolder(ref = this, project = getProject)
+          val importHolder = ScalaImportTypeFix.getImportHolder(
+            ref = this,
+            project = getProject)
           val imported = importHolder.getAllImportUsed.exists {
             case ImportExprUsed(expr) =>
               expr.reference.exists { ref =>

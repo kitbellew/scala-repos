@@ -80,8 +80,9 @@ class ScParametersImpl private (
           case Some(clause) =>
             clause.addParameter(param).parameters.last
           case _ =>
-            val clause =
-              ScalaPsiElementFactory.createClauseFromText("()", getManager)
+            val clause = ScalaPsiElementFactory.createClauseFromText(
+              "()",
+              getManager)
             val newClause = clause.addParameter(param)
             super.add(clause)
             newClause.parameters.last

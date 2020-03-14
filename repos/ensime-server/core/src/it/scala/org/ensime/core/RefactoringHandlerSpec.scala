@@ -115,8 +115,8 @@ class RefactoringHandlerSpec
 
       val analyzer = analyzerRef.underlyingActor
 
-      val formatted =
-        analyzer.handleFormatFile(SourceFileInfo(new File(file.path)))
+      val formatted = analyzer.handleFormatFile(
+        SourceFileInfo(new File(file.path)))
       val expectedContents = contents(
         "package blah",
         "class Something {}",

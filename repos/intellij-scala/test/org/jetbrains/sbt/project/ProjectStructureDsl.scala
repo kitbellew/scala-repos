@@ -20,33 +20,26 @@ object ProjectStructureDsl {
   trait LibraryAttribute
   trait DependencyAttribute
 
-  val libraries =
-    new Attribute[Seq[library]]("libraries")
-      with ProjectAttribute
-      with ModuleAttribute
-  val modules =
-    new Attribute[Seq[module]]("modules") with ProjectAttribute
-  val sdk =
-    new Attribute[Sdk]("sdk") with ProjectAttribute with ModuleAttribute
-  val languageLevel =
-    new Attribute[LanguageLevel]("languageLevel")
-      with ProjectAttribute
-      with ModuleAttribute
+  val libraries = new Attribute[Seq[library]]("libraries")
+    with ProjectAttribute
+    with ModuleAttribute
+  val modules = new Attribute[Seq[module]]("modules") with ProjectAttribute
+  val sdk = new Attribute[Sdk]("sdk") with ProjectAttribute with ModuleAttribute
+  val languageLevel = new Attribute[LanguageLevel]("languageLevel")
+    with ProjectAttribute
+    with ModuleAttribute
 
-  val contentRoots =
-    new Attribute[Seq[String]]("contentRoots") with ModuleAttribute
-  val sources =
-    new Attribute[Seq[String]]("sources")
-      with ModuleAttribute
-      with LibraryAttribute
-  val testSources =
-    new Attribute[Seq[String]]("testSources") with ModuleAttribute
-  val resources =
-    new Attribute[Seq[String]]("resources") with ModuleAttribute
-  val testResources =
-    new Attribute[Seq[String]]("testResources") with ModuleAttribute
-  val excluded =
-    new Attribute[Seq[String]]("excluded") with ModuleAttribute
+  val contentRoots = new Attribute[Seq[String]]("contentRoots")
+    with ModuleAttribute
+  val sources = new Attribute[Seq[String]]("sources")
+    with ModuleAttribute
+    with LibraryAttribute
+  val testSources = new Attribute[Seq[String]]("testSources")
+    with ModuleAttribute
+  val resources = new Attribute[Seq[String]]("resources") with ModuleAttribute
+  val testResources = new Attribute[Seq[String]]("testResources")
+    with ModuleAttribute
+  val excluded = new Attribute[Seq[String]]("excluded") with ModuleAttribute
   val moduleDependencies =
     new Attribute[Seq[dependency[module]]]("moduleDependencies")
       with ModuleAttribute
@@ -54,15 +47,11 @@ object ProjectStructureDsl {
     new Attribute[Seq[dependency[library]]]("libraryDependencies")
       with ModuleAttribute
 
-  val classes =
-    new Attribute[Seq[String]]("classes") with LibraryAttribute
-  val javadocs =
-    new Attribute[Seq[String]]("javadocs") with LibraryAttribute
+  val classes = new Attribute[Seq[String]]("classes") with LibraryAttribute
+  val javadocs = new Attribute[Seq[String]]("javadocs") with LibraryAttribute
 
-  val isExported =
-    new Attribute[Boolean]("isExported") with DependencyAttribute
-  val scope =
-    new Attribute[DependencyScope]("scope") with DependencyAttribute
+  val isExported = new Attribute[Boolean]("isExported") with DependencyAttribute
+  val scope = new Attribute[DependencyScope]("scope") with DependencyAttribute
 
   sealed trait Attributed {
     protected val attributes = new AttributeMap
@@ -116,6 +105,5 @@ object ProjectStructureDsl {
     new dependency(module)
 
   implicit def library2libraryDependency(
-      library: library): dependency[library] =
-    new dependency(library)
+      library: library): dependency[library] = new dependency(library)
 }

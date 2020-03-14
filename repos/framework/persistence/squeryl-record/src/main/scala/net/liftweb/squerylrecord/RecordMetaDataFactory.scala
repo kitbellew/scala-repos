@@ -87,8 +87,9 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
         isOptimisticCounter)
     }
 
-    val metaField =
-      findMetaField(parentMetaData.clasz.asInstanceOf[Class[Rec]], name)
+    val metaField = findMetaField(
+      parentMetaData.clasz.asInstanceOf[Class[Rec]],
+      name)
 
     val (field, getter, setter, annotations) = property
 
@@ -134,31 +135,28 @@ class RecordMetaDataFactory extends FieldMetaDataFactory {
 
       override def length = {
         import java.math.MathContext
-        val fieldLength =
-          metaField match {
-            case (stringTypedField: StringTypedField) =>
-              Some(stringTypedField.maxLength)
-            case decimalField: DecimalField[_] => {
-              val precision = decimalField.context.getPrecision();
-              if (precision != 0) Some(precision) else None
-            }
-            case decimalField: OptionalDecimalField[_] => {
-              val precision = decimalField.context.getPrecision();
-              if (precision != 0) Some(precision) else None
-            }
-            case _ => None
+        val fieldLength = metaField match {
+          case (stringTypedField: StringTypedField) =>
+            Some(stringTypedField.maxLength)
+          case decimalField: DecimalField[_] => {
+            val precision = decimalField.context.getPrecision();
+            if (precision != 0) Some(precision) else None
           }
+          case decimalField: OptionalDecimalField[_] => {
+            val precision = decimalField.context.getPrecision();
+            if (precision != 0) Some(precision) else None
+          }
+          case _ => None
+        }
         fieldLength getOrElse super.length
       }
 
       override def scale = {
-        val fieldScale =
-          metaField match {
-            case decimalField: DecimalField[_] => Some(decimalField.scale)
-            case decimalField: OptionalDecimalField[_] =>
-              Some(decimalField.scale)
-            case _ => None
-          }
+        val fieldScale = metaField match {
+          case decimalField: DecimalField[_]         => Some(decimalField.scale)
+          case decimalField: OptionalDecimalField[_] => Some(decimalField.scale)
+          case _                                     => None
+        }
         fieldScale getOrElse super.scale
       }
 

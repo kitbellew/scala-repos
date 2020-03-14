@@ -110,23 +110,22 @@ private[http] object RouteImplementation
           authenticateBasicAsync(
             authenticator.realm,
             { creds ⇒
-              val javaCreds =
-                creds match {
-                  case Credentials.Missing ⇒
-                    new BasicCredentials {
-                      def available: Boolean = false
-                      def identifier: String =
-                        throw new IllegalStateException("Credentials missing")
-                      def verify(secret: String): Boolean =
-                        throw new IllegalStateException("Credentials missing")
-                    }
-                  case p @ Credentials.Provided(name) ⇒
-                    new BasicCredentials {
-                      def available: Boolean = true
-                      def identifier: String = name
-                      def verify(secret: String): Boolean = p.verify(secret)
-                    }
-                }
+              val javaCreds = creds match {
+                case Credentials.Missing ⇒
+                  new BasicCredentials {
+                    def available: Boolean = false
+                    def identifier: String =
+                      throw new IllegalStateException("Credentials missing")
+                    def verify(secret: String): Boolean =
+                      throw new IllegalStateException("Credentials missing")
+                  }
+                case p @ Credentials.Provided(name) ⇒
+                  new BasicCredentials {
+                    def available: Boolean = true
+                    def identifier: String = name
+                    def verify(secret: String): Boolean = p.verify(secret)
+                  }
+              }
 
               authenticator
                 .authenticate(javaCreds)
@@ -142,23 +141,22 @@ private[http] object RouteImplementation
           authenticateOAuth2Async(
             authenticator.realm,
             { creds ⇒
-              val javaCreds =
-                creds match {
-                  case Credentials.Missing ⇒
-                    new OAuth2Credentials {
-                      def available: Boolean = false
-                      def identifier: String =
-                        throw new IllegalStateException("Credentials missing")
-                      def verify(secret: String): Boolean =
-                        throw new IllegalStateException("Credentials missing")
-                    }
-                  case p @ Credentials.Provided(name) ⇒
-                    new OAuth2Credentials {
-                      def available: Boolean = true
-                      def identifier: String = name
-                      def verify(secret: String): Boolean = p.verify(secret)
-                    }
-                }
+              val javaCreds = creds match {
+                case Credentials.Missing ⇒
+                  new OAuth2Credentials {
+                    def available: Boolean = false
+                    def identifier: String =
+                      throw new IllegalStateException("Credentials missing")
+                    def verify(secret: String): Boolean =
+                      throw new IllegalStateException("Credentials missing")
+                  }
+                case p @ Credentials.Provided(name) ⇒
+                  new OAuth2Credentials {
+                    def available: Boolean = true
+                    def identifier: String = name
+                    def verify(secret: String): Boolean = p.verify(secret)
+                  }
+              }
 
               authenticator
                 .authenticate(javaCreds)
@@ -283,8 +281,9 @@ private[http] object RouteImplementation
     def addExtractions(valMap: T): Directive0 =
       transformExtractionMap(
         _.addAll(valMap.asInstanceOf[Map[RequestVal[_], Any]]))
-    val reduced: ScalaPathMatcher[ValMap] =
-      matchers.map(toScala).reduce(_.~(_)(AddToMapJoin))
+    val reduced: ScalaPathMatcher[ValMap] = matchers
+      .map(toScala)
+      .reduce(_.~(_)(AddToMapJoin))
     directive(reduced.asInstanceOf[PathMatcher1[T]]).flatMap(addExtractions)
   }
 

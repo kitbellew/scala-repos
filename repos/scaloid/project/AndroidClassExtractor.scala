@@ -11,8 +11,10 @@ import scala.collection.JavaConversions._
 
 object AndroidClassExtractor extends JavaConversionHelpers {
 
-  private val sourceJars: List[JarFile] =
-    getClass.getClassLoader.getResources("android").toList.map { binUrl =>
+  private val sourceJars: List[JarFile] = getClass.getClassLoader
+    .getResources("android")
+    .toList
+    .map { binUrl =>
       val binFile = new File(
         binUrl.toString.split("/|!").tail.dropRight(2).mkString("/", "/", ""))
       val basePath = binFile.getParentFile.getParentFile
@@ -63,21 +65,19 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       .map(toScalaType)
       .filter(_.name.startsWith("android"))
 
-    val superProps: Set[String] =
-      superClass
-        .map {
-          Introspector
-            .getBeanInfo(_)
-            .getPropertyDescriptors
-            .map(propDescSignature)
-            .toSet[String]
-        }
-        .getOrElse(Set())
+    val superProps: Set[String] = superClass
+      .map {
+        Introspector
+          .getBeanInfo(_)
+          .getPropertyDescriptors
+          .map(propDescSignature)
+          .toSet[String]
+      }
+      .getOrElse(Set())
 
-    val superMethods: Set[String] =
-      superClass
-        .map { _.getMethods.map(methodSignature).toSet }
-        .getOrElse(Set())
+    val superMethods: Set[String] = superClass
+      .map { _.getMethods.map(methodSignature).toSet }
+      .getOrElse(Set())
 
     def toAndroidMethod(m: Method): AndroidMethod = {
       val name = m.getName
@@ -171,8 +171,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                   .startsWith("is"))) None
             else {
               val nameClashes = allMethodNames(name) || superGetterExists
-              val tpe =
-                getter.map(_.retType).getOrElse(setters.head.argTypes.head)
+              val tpe = getter
+                .map(_.retType)
+                .getOrElse(setters.head.argTypes.head)
               val switch =
                 if (name.endsWith("Enabled"))
                   Some(name.replace("Enabled", "").capitalize)
@@ -217,16 +218,15 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         case None    => classOf[Any] // Failed to find listener argument by type
       }
       val callbackMethods = extractMethodsFromListener(listenerCls)
-      val androidCallbackMethods =
-        callbackMethods.map { cm =>
-          AndroidCallbackMethod(
-            cm.name,
-            cm.retType,
-            cm.argTypes,
-            false,
-            cm.isDeprecated
-          )
-        }
+      val androidCallbackMethods = callbackMethods.map { cm =>
+        AndroidCallbackMethod(
+          cm.name,
+          cm.retType,
+          cm.argTypes,
+          false,
+          cm.isDeprecated
+        )
+      }
 
       def listenerName(
           am: AndroidMethod,
@@ -401,10 +401,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       else {
         s.log.info("Extracting class info from Android...")
 
-        val classLoaders =
-          List(
-            ClasspathHelper.contextClassLoader(),
-            ClasspathHelper.staticClassLoader())
+        val classLoaders = List(
+          ClasspathHelper.contextClassLoader(),
+          ClasspathHelper.staticClassLoader())
 
         val inputFilter = new FilterBuilder()
           .include(FilterBuilder.prefix("android"))

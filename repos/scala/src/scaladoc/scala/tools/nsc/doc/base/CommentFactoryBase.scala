@@ -68,13 +68,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       val inheritDiagram = inheritDiagram0
       val contentDiagram = contentDiagram0
       val groupDesc = groupDesc0
-      val group =
-        group0 match {
-          case Some(
-                Body(List(Paragraph(Chain(List(Summary(Text(groupId)))))))) =>
-            Some(groupId.toString.trim)
-          case _ => None
-        }
+      val group = group0 match {
+        case Some(Body(List(Paragraph(Chain(List(Summary(Text(groupId)))))))) =>
+          Some(groupId.toString.trim)
+        case _ => None
+      }
       val groupPrio = groupPrio0 flatMap {
         case (group, body) =>
           try {
@@ -120,13 +118,12 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
   /** The body of a line, dropping the (optional) start star-marker,
     * one leading whitespace and all trailing whitespace. */
-  private val CleanCommentLine =
-    new Regex("""(?:\s*\*\s?)?(.*)""")
+  private val CleanCommentLine = new Regex("""(?:\s*\*\s?)?(.*)""")
 
   /** Dangerous HTML tags that should be replaced by something safer,
     * such as wiki syntax, or that should be dropped. */
-  private val DangerousTags =
-    new Regex("""<(/?(div|ol|ul|li|h[1-6]|p))( [^>]*)?/?>|<!--.*-->""")
+  private val DangerousTags = new Regex(
+    """<(/?(div|ol|ul|li|h[1-6]|p))( [^>]*)?/?>|<!--.*-->""")
 
   /** Maps a dangerous HTML tag to a safe wiki replacement, or an empty string
     * if it cannot be salvaged. */
@@ -147,9 +144,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
   /** Javadoc tags that should be replaced by something useful, such as wiki
     * syntax, or that should be dropped. */
-  private val JavadocTags =
-    new Regex(
-      """\{\@(code|docRoot|linkplain|link|literal|value)\p{Zs}*([^}]*)\}""")
+  private val JavadocTags = new Regex(
+    """\{\@(code|docRoot|linkplain|link|literal|value)\p{Zs}*([^}]*)\}""")
 
   /** Maps a javadoc tag to a useful wiki replacement, or an empty string if it cannot be salvaged. */
   private def javadocReplacement(mtch: Regex.Match): String = {
@@ -165,33 +161,29 @@ trait CommentFactoryBase { this: MemberLookupBase =>
   }
 
   /** Safe HTML tags that can be kept. */
-  private val SafeTags =
-    new Regex(
-      """((&\w+;)|(&#\d+;)|(</?(abbr|acronym|address|area|a|bdo|big|blockquote|br|button|b|caption|cite|code|col|colgroup|dd|del|dfn|em|fieldset|form|hr|img|input|ins|i|kbd|label|legend|link|map|object|optgroup|option|param|pre|q|samp|select|small|span|strong|sub|sup|table|tbody|td|textarea|tfoot|th|thead|tr|tt|var)( [^>]*)?/?>))""")
+  private val SafeTags = new Regex(
+    """((&\w+;)|(&#\d+;)|(</?(abbr|acronym|address|area|a|bdo|big|blockquote|br|button|b|caption|cite|code|col|colgroup|dd|del|dfn|em|fieldset|form|hr|img|input|ins|i|kbd|label|legend|link|map|object|optgroup|option|param|pre|q|samp|select|small|span|strong|sub|sup|table|tbody|td|textarea|tfoot|th|thead|tr|tt|var)( [^>]*)?/?>))""")
 
   private val safeTagMarker = '\u000E'
 
   /** A Scaladoc tag not linked to a symbol and not followed by text */
-  private val SingleTagRegex =
-    new Regex("""\s*@(\S+)\s*""")
+  private val SingleTagRegex = new Regex("""\s*@(\S+)\s*""")
 
   /** A Scaladoc tag not linked to a symbol. Returns the name of the tag, and the rest of the line. */
-  private val SimpleTagRegex =
-    new Regex("""\s*@(\S+)\s+(.*)""")
+  private val SimpleTagRegex = new Regex("""\s*@(\S+)\s+(.*)""")
 
   /** A Scaladoc tag linked to a symbol. Returns the name of the tag, the name
     * of the symbol, and the rest of the line. */
-  private val SymbolTagRegex =
-    new Regex(
-      """\s*@(param|tparam|throws|groupdesc|groupname|groupprio)\s+(\S*)\s*(.*)""")
+  private val SymbolTagRegex = new Regex(
+    """\s*@(param|tparam|throws|groupdesc|groupname|groupprio)\s+(\S*)\s*(.*)""")
 
   /** The start of a Scaladoc code block */
-  private val CodeBlockStartRegex =
-    new Regex("""(.*?)((?:\{\{\{)|(?:\u000E<pre(?: [^>]*)?>\u000E))(.*)""")
+  private val CodeBlockStartRegex = new Regex(
+    """(.*?)((?:\{\{\{)|(?:\u000E<pre(?: [^>]*)?>\u000E))(.*)""")
 
   /** The end of a Scaladoc code block */
-  private val CodeBlockEndRegex =
-    new Regex("""(.*?)((?:\}\}\})|(?:\u000E</pre>\u000E))(.*)""")
+  private val CodeBlockEndRegex = new Regex(
+    """(.*?)((?:\}\}\})|(?:\u000E</pre>\u000E))(.*)""")
 
   /** A key used for a tag map. The key is built from the name of the tag and
     * from the linked symbol if the tag has one.
@@ -227,17 +219,18 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
       }
       val strippedComment = comment.trim.stripPrefix("/*").stripSuffix("*/")
-      val safeComment =
-        DangerousTags.replaceAllIn(strippedComment, { htmlReplacement(_) })
-      val javadoclessComment =
-        JavadocTags.replaceAllIn(safeComment, { javadocReplacement(_) })
-      val markedTagComment =
-        SafeTags.replaceAllIn(
-          javadoclessComment,
-          { mtch =>
-            java.util.regex.Matcher
-              .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
-          })
+      val safeComment = DangerousTags.replaceAllIn(
+        strippedComment,
+        { htmlReplacement(_) })
+      val javadoclessComment = JavadocTags.replaceAllIn(
+        safeComment,
+        { javadocReplacement(_) })
+      val markedTagComment = SafeTags.replaceAllIn(
+        javadoclessComment,
+        { mtch =>
+          java.util.regex.Matcher
+            .quoteReplacement(safeTagMarker + mtch.matched + safeTagMarker)
+        })
       markedTagComment.lines.toList map (cleanLine(_))
     }
 
@@ -287,12 +280,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           else
             lastTagKey match {
               case Some(key) =>
-                val value =
-                  ((tags get key): @unchecked) match {
-                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
-                    case None =>
-                      oops("lastTagKey set when no tag exists for key")
-                  }
+                val value = ((tags get key): @unchecked) match {
+                  case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                  case None          => oops("lastTagKey set when no tag exists for key")
+                }
                 parse0(
                   docBody,
                   tags + (key -> value),
@@ -333,12 +324,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           else
             lastTagKey match {
               case Some(key) =>
-                val value =
-                  ((tags get key): @unchecked) match {
-                    case Some(b :: bs) => (b + endOfLine + marker) :: bs
-                    case None =>
-                      oops("lastTagKey set when no tag exists for key")
-                  }
+                val value = ((tags get key): @unchecked) match {
+                  case Some(b :: bs) => (b + endOfLine + marker) :: bs
+                  case None          => oops("lastTagKey set when no tag exists for key")
+                }
                 parse0(
                   docBody,
                   tags + (key -> value),
@@ -374,15 +363,15 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
 
         case line :: ls if (lastTagKey.isDefined) => {
-          val newtags = if (!line.isEmpty) {
-            val key = lastTagKey.get
-            val value =
-              ((tags get key): @unchecked) match {
+          val newtags =
+            if (!line.isEmpty) {
+              val key = lastTagKey.get
+              val value = ((tags get key): @unchecked) match {
                 case Some(b :: bs) => (b + endOfLine + line) :: bs
                 case None          => oops("lastTagKey set when no tag exists for key")
               }
-            tags + (key -> value)
-          } else tags
+              tags + (key -> value)
+            } else tags
           parse0(docBody, newtags, lastTagKey, ls, inCodeBlock)
         }
 
@@ -414,11 +403,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             contentDiagramTag,
             SimpleTagKey("template"),
             SimpleTagKey("documentable"))
-          val tagsWithoutDiagram =
-            tags.filterNot(pair => stripTags.contains(pair._1))
+          val tagsWithoutDiagram = tags.filterNot(pair =>
+            stripTags.contains(pair._1))
 
-          val bodyTags: mutable.Map[TagKey, List[Body]] =
-            mutable.Map(tagsWithoutDiagram mapValues { tag =>
+          val bodyTags: mutable.Map[TagKey, List[Body]] = mutable.Map(
+            tagsWithoutDiagram mapValues { tag =>
               tag map (parseWikiAtSymbol(_, pos, site))
             } toSeq: _*)
 
@@ -451,15 +440,14 @@ trait CommentFactoryBase { this: MemberLookupBase =>
                   None
                 case _ => None
               }
-            val pairs: Seq[(String, Body)] =
-              for (key <- keys) yield {
-                val bs = (bodyTags remove key).get
-                if (bs.length > 1)
-                  reporter.warning(
-                    pos,
-                    s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
-                (key.symbol, bs.head)
-              }
+            val pairs: Seq[(String, Body)] = for (key <- keys) yield {
+              val bs = (bodyTags remove key).get
+              if (bs.length > 1)
+                reporter.warning(
+                  pos,
+                  s"Only one '@${key.name}' tag for symbol ${key.symbol} is allowed")
+              (key.symbol, bs.head)
+            }
             Map.empty[String, Body] ++ (if (filterEmpty)
                                           pairs.filterNot(_._2.blocks.isEmpty)
                                         else pairs)
@@ -493,8 +481,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             version0 = oneTag(SimpleTagKey("version")),
             since0 = oneTag(SimpleTagKey("since")),
             todo0 = allTags(SimpleTagKey("todo")),
-            deprecated0 =
-              oneTag(SimpleTagKey("deprecated"), filterEmpty = false),
+            deprecated0 = oneTag(
+              SimpleTagKey("deprecated"),
+              filterEmpty = false),
             note0 = allTags(SimpleTagKey("note")),
             example0 = allTags(SimpleTagKey("example")),
             constructor0 = oneTag(SimpleTagKey("constructor")),
@@ -505,8 +494,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             groupDesc0 = allSymsOneTag(SimpleTagKey("groupdesc")),
             groupNames0 = allSymsOneTag(SimpleTagKey("groupname")),
             groupPrio0 = allSymsOneTag(SimpleTagKey("groupprio")),
-            hideImplicitConversions0 =
-              allTags(SimpleTagKey("hideImplicitConversion")),
+            hideImplicitConversions0 = allTags(
+              SimpleTagKey("hideImplicitConversion")),
             shortDescription0 = allTags(SimpleTagKey("shortDescription"))
           )
 
@@ -730,10 +719,11 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         val iss = mutable.ListBuffer.empty[Inline]
         iss += inline0()
         while (!isInlineEnd && !checkParaEnded) {
-          val skipEndOfLine = if (char == endOfLine) {
-            nextChar()
-            true
-          } else { false }
+          val skipEndOfLine =
+            if (char == endOfLine) {
+              nextChar()
+              true
+            } else { false }
 
           val current = inline0()
           (iss.last, current) match {
@@ -859,10 +849,9 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       */
     def normalizeIndentation(_code: String): String = {
 
-      val code =
-        _code
-          .replaceAll("\\s+$", "")
-          .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
+      val code = _code
+        .replaceAll("\\s+$", "")
+        .dropWhile(_ == '\n') // right-trim + remove all leading '\n'
       val lines = code.split("\n")
 
       // maxSkip - size of the longest common whitespace prefix of non-empty lines

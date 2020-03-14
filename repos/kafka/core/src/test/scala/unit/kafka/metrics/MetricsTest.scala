@@ -117,8 +117,10 @@ class MetricsTest extends KafkaServerTestHarness with Logging {
 
   private def checkTopicMetricsExists(topic: String): Boolean = {
     val topicMetricRegex = new Regex(".*(" + topic + ")$")
-    val metricGroups =
-      Metrics.defaultRegistry().groupedMetrics(MetricPredicate.ALL).entrySet()
+    val metricGroups = Metrics
+      .defaultRegistry()
+      .groupedMetrics(MetricPredicate.ALL)
+      .entrySet()
     for (metricGroup <- metricGroups) {
       if (topicMetricRegex.pattern.matcher(metricGroup.getKey()).matches)
         return true

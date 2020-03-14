@@ -291,11 +291,10 @@ object TaskMacro {
   private[this] def transformMacroImpl(c: Context)(init: c.Tree)(
       newName: String): c.Tree = {
     import c.universe.{Apply, ApplyTag, newTermName, Select, SelectTag}
-    val target =
-      c.macroApplication match {
-        case Apply(Select(prefix, _), _) => prefix
-        case x                           => ContextUtil.unexpectedTree(x)
-      }
+    val target = c.macroApplication match {
+      case Apply(Select(prefix, _), _) => prefix
+      case x                           => ContextUtil.unexpectedTree(x)
+    }
     Apply.apply(
       Select(target, newTermName(newName).encodedName),
       init :: sourcePosition(c).tree :: Nil)
@@ -329,8 +328,7 @@ object TaskMacro {
   }
 
   def inputTaskMacroImpl[T: c.WeakTypeTag](c: Context)(
-      t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] =
-    inputTaskMacro0[T](c)(t)
+      t: c.Expr[T]): c.Expr[Initialize[InputTask[T]]] = inputTaskMacro0[T](c)(t)
   def inputTaskDynMacroImpl[T: c.WeakTypeTag](c: Context)(
       t: c.Expr[Initialize[Task[T]]]): c.Expr[Initialize[InputTask[T]]] =
     inputTaskDynMacro0[T](c)(t)
@@ -375,8 +373,8 @@ object TaskMacro {
     }
     def wrapInput[T: c.WeakTypeTag](tree: Tree) = {
       val e = c.Expr[InputTask[T]](tree)
-      val p =
-        ParserInput.wrap[Task[T]](c)(ParserInput.inputParser(c)(e), tree.pos)
+      val p = ParserInput
+        .wrap[Task[T]](c)(ParserInput.inputParser(c)(e), tree.pos)
       wrapTask[T](c)(p, tree.pos).tree
     }
 
@@ -451,8 +449,11 @@ object TaskMacro {
         EmptyTree
       } else {
         qual.foreach(checkQual)
-        val vd =
-          util.freshValDef(tpe, qual.symbol.pos, functionSym) // val $x: <tpe>
+        val vd = util.freshValDef(
+          tpe,
+          qual.symbol.pos,
+          functionSym
+        ) // val $x: <tpe>
         result = Some((qual, tpe, vd))
         val tree = util.refVal(original, vd) // $x
         tree.setPos(
@@ -509,8 +510,9 @@ object TaskMacro {
         val fCore = util.createFunction(param :: Nil, tx, functionSym)
         val bodyTpe = wrapTag(tag).tpe
         val fTpe = util.functionType(tpe :: Nil, bodyTpe)
-        val fTag =
-          c.WeakTypeTag[Any](fTpe) // don't know the actual type yet, so use Any
+        val fTag = c.WeakTypeTag[Any](
+          fTpe
+        ) // don't know the actual type yet, so use Any
         val fInit = expandTask(false, fCore)(fTag).tree
         inputTaskCreate(InputTaskCreateDynName, tpe, tag.tpe, p, fInit)
       case None =>

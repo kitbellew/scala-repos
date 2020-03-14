@@ -55,8 +55,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Check: describeTopics() with some terms
     val smallNumTerms = 3
-    val smallTopicSummary =
-      model.describeTopics(maxTermsPerTopic = smallNumTerms)
+    val smallTopicSummary = model.describeTopics(maxTermsPerTopic =
+      smallNumTerms)
     smallTopicSummary.zip(tinyTopicDescription).foreach {
       case ((algTerms, algTermWeights), (terms, termWeights)) =>
         assert(algTerms === terms.slice(0, smallNumTerms))
@@ -80,8 +80,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       .setSeed(12345)
     val corpus = sc.parallelize(tinyCorpus, 2)
 
-    val model: DistributedLDAModel =
-      lda.run(corpus).asInstanceOf[DistributedLDAModel]
+    val model: DistributedLDAModel = lda
+      .run(corpus)
+      .asInstanceOf[DistributedLDAModel]
 
     // Check: basic parameters
     val localModel = model.toLocal
@@ -128,8 +129,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
         assert(topicDistribution.toArray.sum ~== 1.0 absTol 1e-5)
     }
 
-    val top2TopicsPerDoc =
-      model.topTopicsPerDocument(2).map(t => (t._1, (t._2, t._3)))
+    val top2TopicsPerDoc = model
+      .topTopicsPerDocument(2)
+      .map(t => (t._1, (t._2, t._3)))
     model.topicDistributions.join(top2TopicsPerDoc).collect().foreach {
       case (docId, (topicDistribution, (indices, weights))) =>
         assert(indices.length == 2)
@@ -264,8 +266,11 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       .setKappa(0.51)
       .setGammaShape(1e40)
       .setMiniBatchFraction(1)
-    val lda =
-      new LDA().setK(k).setMaxIterations(1).setOptimizer(op).setSeed(12345)
+    val lda = new LDA()
+      .setK(k)
+      .setMaxIterations(1)
+      .setOptimizer(op)
+      .setSeed(12345)
 
     val state = op.initialize(corpus, lda)
     // override lambda to simulate an intermediate state
@@ -284,10 +289,10 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // [[https://github.com/Blei-Lab/onlineldavb]]
     val topic1: Vector = Vectors.fromBreeze(op.getLambda(0, ::).t)
     val topic2: Vector = Vectors.fromBreeze(op.getLambda(1, ::).t)
-    val expectedTopic1 =
-      Vectors.dense(1.1101, 1.2076, 1.3050, 0.8899, 0.7924, 0.6950)
-    val expectedTopic2 =
-      Vectors.dense(0.8899, 0.7924, 0.6950, 1.1101, 1.2076, 1.3050)
+    val expectedTopic1 = Vectors.dense(1.1101, 1.2076, 1.3050, 0.8899, 0.7924,
+      0.6950)
+    val expectedTopic2 = Vectors.dense(0.8899, 0.7924, 0.6950, 1.1101, 1.2076,
+      1.3050)
     assert(topic1 ~== expectedTopic1 absTol 0.01)
     assert(topic2 ~== expectedTopic2 absTol 0.01)
   }
@@ -554,8 +559,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
       .setMaxIterations(5)
       .setSeed(12345)
     val corpus = sc.parallelize(tinyCorpus, 2)
-    val distributedModel: DistributedLDAModel =
-      lda.run(corpus).asInstanceOf[DistributedLDAModel]
+    val distributedModel: DistributedLDAModel = lda
+      .run(corpus)
+      .asInstanceOf[DistributedLDAModel]
     val tempDir2 = Utils.createTempDir()
     val path2 = tempDir2.toURI.toString
 
@@ -609,8 +615,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("EMLDAOptimizer with empty docs") {
     val vocabSize = 6
-    val emptyDocsArray =
-      Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
+    val emptyDocsArray = Array.fill(6)(
+      Vectors.sparse(vocabSize, Array.empty, Array.empty))
     val emptyDocs = emptyDocsArray.zipWithIndex.map {
       case (wordCounts, docId) =>
         (docId.toLong, wordCounts)
@@ -630,8 +636,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("OnlineLDAOptimizer with empty docs") {
     val vocabSize = 6
-    val emptyDocsArray =
-      Array.fill(6)(Vectors.sparse(vocabSize, Array.empty, Array.empty))
+    val emptyDocsArray = Array.fill(6)(
+      Vectors.sparse(vocabSize, Array.empty, Array.empty))
     val emptyDocs = emptyDocsArray.zipWithIndex.map {
       case (wordCounts, docId) =>
         (docId.toLong, wordCounts)

@@ -314,8 +314,8 @@ class ConnectionPoolSpec
     }
 
     "support absolute request URIs with a double slash path component" in new LocalTestSetup {
-      val request =
-        HttpRequest(uri = s"http://$serverHostName:$serverPort//foo")
+      val request = HttpRequest(uri =
+        s"http://$serverHostName:$serverPort//foo")
       val responseFuture = Http().singleRequest(request)
       val responseHeaders = Await.result(responseFuture, 1.second).headers
       responseHeaders should contain(
@@ -336,8 +336,8 @@ class ConnectionPoolSpec
 
     "route incoming requests to the right cached host connection pool" in new TestSetup(
       autoAccept = true) {
-      val (serverEndpoint2, serverHostName2, serverPort2) =
-        TestUtils.temporaryServerHostnameAndPort()
+      val (serverEndpoint2, serverHostName2, serverPort2) = TestUtils
+        .temporaryServerHostnameAndPort()
       Http().bindAndHandleSync(
         testServerHandler(0),
         serverHostName2,
@@ -364,8 +364,8 @@ class ConnectionPoolSpec
   class TestSetup(
       serverSettings: ServerSettings = ServerSettings(system),
       autoAccept: Boolean = false) {
-    val (serverEndpoint, serverHostName, serverPort) =
-      TestUtils.temporaryServerHostnameAndPort()
+    val (serverEndpoint, serverHostName, serverPort) = TestUtils
+      .temporaryServerHostnameAndPort()
 
     def testServerHandler(connNr: Int): HttpRequest ⇒ HttpResponse = {
       case r: HttpRequest ⇒
@@ -379,8 +379,8 @@ class ConnectionPoolSpec
     def mapServerSideOutboundRawBytes(bytes: ByteString): ByteString = bytes
 
     val incomingConnectionCounter = new AtomicInteger
-    val incomingConnections =
-      TestSubscriber.manualProbe[Http.IncomingConnection]
+    val incomingConnections = TestSubscriber
+      .manualProbe[Http.IncomingConnection]
     val incomingConnectionsSub = {
       val rawBytesInjection = BidiFlow.fromFlows(
         Flow[SslTlsOutbound]
@@ -427,8 +427,8 @@ class ConnectionPoolSpec
         maxOpenRequests: Int = 8,
         pipeliningLimit: Int = 1,
         idleTimeout: Duration = 5.seconds,
-        ccSettings: ClientConnectionSettings =
-          ClientConnectionSettings(system)) = {
+        ccSettings: ClientConnectionSettings = ClientConnectionSettings(
+          system)) = {
       val settings = new ConnectionPoolSettingsImpl(
         maxConnections,
         maxRetries,
@@ -447,8 +447,8 @@ class ConnectionPoolSpec
         maxOpenRequests: Int = 8,
         pipeliningLimit: Int = 1,
         idleTimeout: Duration = 5.seconds,
-        ccSettings: ClientConnectionSettings =
-          ClientConnectionSettings(system)) = {
+        ccSettings: ClientConnectionSettings = ClientConnectionSettings(
+          system)) = {
       val settings = new ConnectionPoolSettingsImpl(
         maxConnections,
         maxRetries,

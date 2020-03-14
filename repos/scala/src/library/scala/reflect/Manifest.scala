@@ -209,8 +209,8 @@ object ManifestFactory {
       private def readResolve(): Any = Manifest.Object
     }
 
-  val AnyRef: Manifest[scala.AnyRef] =
-    Object.asInstanceOf[Manifest[scala.AnyRef]]
+  val AnyRef: Manifest[scala.AnyRef] = Object
+    .asInstanceOf[Manifest[scala.AnyRef]]
 
   val AnyVal: Manifest[scala.AnyVal] =
     new PhantomManifest[scala.AnyVal](ObjectTYPE, "AnyVal") {

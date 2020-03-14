@@ -99,12 +99,11 @@ class OfferOperationFactory(
           .setVolume(volume)
       }
 
-      val reservation =
-        Mesos.Resource.ReservationInfo
-          .newBuilder()
-          .setPrincipal(principal)
-          .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
-          .build()
+      val reservation = Mesos.Resource.ReservationInfo
+        .newBuilder()
+        .setPrincipal(principal)
+        .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
+        .build()
 
       Mesos.Resource
         .newBuilder()

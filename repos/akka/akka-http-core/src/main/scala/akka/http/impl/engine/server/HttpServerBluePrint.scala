@@ -79,18 +79,16 @@ private[http] object HttpServerBluePrint {
     SslTlsOutbound,
     SslTlsInbound,
     SessionBytes,
-    NotUsed] =
-    BidiFlow.fromFlows(
-      Flow[ByteString].map(SendBytes),
-      Flow[SslTlsInbound].collect { case x: SessionBytes ⇒ x })
+    NotUsed] = BidiFlow.fromFlows(
+    Flow[ByteString].map(SendBytes),
+    Flow[SslTlsInbound].collect { case x: SessionBytes ⇒ x })
 
   def websocketSupport(settings: ServerSettings, log: LoggingAdapter): BidiFlow[
     ResponseRenderingOutput,
     ByteString,
     SessionBytes,
     SessionBytes,
-    NotUsed] =
-    BidiFlow.fromGraph(new ProtocolSwitchStage(settings, log))
+    NotUsed] = BidiFlow.fromGraph(new ProtocolSwitchStage(settings, log))
 
   def parsingRendering(settings: ServerSettings, log: LoggingAdapter): BidiFlow[
     ResponseRenderingContext,
@@ -105,8 +103,7 @@ private[http] object HttpServerBluePrint {
     ResponseRenderingContext,
     RequestOutput,
     RequestOutput,
-    NotUsed] =
-    BidiFlow.fromGraph(new ControllerStage(settings, log)).reversed
+    NotUsed] = BidiFlow.fromGraph(new ControllerStage(settings, log)).reversed
 
   def requestPreparation(settings: ServerSettings): BidiFlow[
     HttpResponse,
@@ -138,8 +135,9 @@ private[http] object HttpServerBluePrint {
       extends GraphStage[FlowShape[RequestOutput, HttpRequest]] {
     val in = Inlet[RequestOutput]("PrepareRequests.in")
     val out = Outlet[HttpRequest]("PrepareRequests.out")
-    override val shape: FlowShape[RequestOutput, HttpRequest] =
-      FlowShape.of(in, out)
+    override val shape: FlowShape[RequestOutput, HttpRequest] = FlowShape.of(
+      in,
+      out)
 
     override def createLogic(inheritedAttributes: Attributes) =
       new GraphStageLogic(shape) with InHandler with OutHandler {
@@ -360,8 +358,8 @@ private[http] object HttpServerBluePrint {
           new InHandler {
             def onPush(): Unit = {
               val request = grab(requestIn)
-              val (entity, requestEnd) =
-                HttpEntity.captureTermination(request.entity)
+              val (entity, requestEnd) = HttpEntity.captureTermination(
+                request.entity)
               val access = new TimeoutAccessImpl(
                 request,
                 initialTimeout,
@@ -507,8 +505,8 @@ private[http] object HttpServerBluePrint {
     private val requestParsingIn = Inlet[RequestOutput]("requestParsingIn")
     private val requestPrepOut = Outlet[RequestOutput]("requestPrepOut")
     private val httpResponseIn = Inlet[HttpResponse]("httpResponseIn")
-    private val responseCtxOut =
-      Outlet[ResponseRenderingContext]("responseCtxOut")
+    private val responseCtxOut = Outlet[ResponseRenderingContext](
+      "responseCtxOut")
 
     override def initialAttributes = Attributes.name("ControllerStage")
 
@@ -533,13 +531,14 @@ private[http] object HttpServerBluePrint {
               grab(requestParsingIn) match {
                 case r: RequestStart ⇒
                   openRequests = openRequests.enqueue(r)
-                  messageEndPending =
-                    r.createEntity.isInstanceOf[StreamedEntityCreator[_, _]]
-                  val rs = if (r.expect100Continue) {
-                    oneHundredContinueResponsePending = true
-                    r.copy(createEntity =
-                      with100ContinueTrigger(r.createEntity))
-                  } else r
+                  messageEndPending = r.createEntity
+                    .isInstanceOf[StreamedEntityCreator[_, _]]
+                  val rs =
+                    if (r.expect100Continue) {
+                      oneHundredContinueResponsePending = true
+                      r.copy(createEntity = with100ContinueTrigger(
+                        r.createEntity))
+                    } else r
                   push(requestPrepOut, rs)
                 case MessageEnd ⇒
                   messageEndPending = false
@@ -695,17 +694,16 @@ private[http] object HttpServerBluePrint {
           * If the user adds a `Expect: 100-continue` header to the request we need to hold back sending the entity until
           * we've received a `100 Continue` response.
           */
-        val emit100ContinueResponse =
-          getAsyncCallback[Unit] { _ ⇒
-            oneHundredContinueResponsePending = false
-            emit(
-              responseCtxOut,
-              ResponseRenderingContext(HttpResponse(StatusCodes.Continue)))
-            if (pullSuppressed) {
-              pullSuppressed = false
-              pull(requestParsingIn)
-            }
+        val emit100ContinueResponse = getAsyncCallback[Unit] { _ ⇒
+          oneHundredContinueResponsePending = false
+          emit(
+            responseCtxOut,
+            ResponseRenderingContext(HttpResponse(StatusCodes.Continue)))
+          if (pullSuppressed) {
+            pullSuppressed = false
+            pull(requestParsingIn)
           }
+        }
 
         def with100ContinueTrigger[T <: ParserOutput](
             createEntity: EntityCreator[T, RequestEntity]) =

@@ -45,8 +45,8 @@ class ThriftMuxServerLike private[finagle] (server: ThriftMux.Server)
     */
   def params = server.params
 
-  protected val Thrift.param.ProtocolFactory(protocolFactory) =
-    server.params[Thrift.param.ProtocolFactory]
+  protected val Thrift.param.ProtocolFactory(protocolFactory) = server
+    .params[Thrift.param.ProtocolFactory]
 
   /**
     * Create a new ThriftMuxServerLike with `params` used to configure the

@@ -82,10 +82,9 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
   def genPickler: Pickler[_] = {
     // build "interpreted" runtime pickler
     new Pickler[Any] with PickleTools {
-      val fields: List[(irs.FieldIR, Boolean)] =
-        cir.fields
-          .filter(_.hasGetter)
-          .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
+      val fields: List[(irs.FieldIR, Boolean)] = cir.fields
+        .filter(_.hasGetter)
+        .map(fir => (fir, fir.tpe.typeSymbol.isEffectivelyFinal))
 
       def tag: FastTypeTag[Any] =
         FastTypeTag.mkRaw(clazz, mirror).asInstanceOf[FastTypeTag[Any]]
@@ -265,8 +264,8 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+            val inst = scala.concurrent.util.Unsafe.instance
+              .allocateInstance(clazz)
             if (shouldBotherAboutSharing(tpe))
               registerUnpicklee(inst, preregisterUnpicklee())
             val im = mirror.reflect(inst)
@@ -370,8 +369,8 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
 
             // TODO: need to support modules and other special guys here
             // TODO: in principle, we could invoke a constructor here
-            val inst =
-              scala.concurrent.util.Unsafe.instance.allocateInstance(clazz)
+            val inst = scala.concurrent.util.Unsafe.instance
+              .allocateInstance(clazz)
             val im = mirror.reflect(inst)
 
             //debug(s"pendingFields: ${pendingFields.size}")

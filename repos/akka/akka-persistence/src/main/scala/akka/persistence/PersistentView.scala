@@ -33,20 +33,17 @@ object Update {
   /**
     * Java API.
     */
-  def create() =
-    Update()
+  def create() = Update()
 
   /**
     * Java API.
     */
-  def create(await: Boolean) =
-    Update(await)
+  def create(await: Boolean) = Update(await)
 
   /**
     * Java API.
     */
-  def create(await: Boolean, replayMax: Long) =
-    Update(await, replayMax)
+  def create(await: Boolean, replayMax: Long) = Update(await, replayMax)
 }
 
 /**
@@ -98,8 +95,8 @@ trait PersistentView
   private val viewSettings = extension.settings.view
 
   private[persistence] lazy val journal = extension.journalFor(journalPluginId)
-  private[persistence] lazy val snapshotStore =
-    extension.snapshotStoreFor(snapshotPluginId)
+  private[persistence] lazy val snapshotStore = extension.snapshotStoreFor(
+    snapshotPluginId)
 
   private var schedule: Option[Cancellable] = None
 
@@ -146,16 +143,14 @@ trait PersistentView
     * value can be configured with the `akka.persistence.view.auto-update` configuration key. This method
     * can be overridden by implementation classes to return non-default values.
     */
-  def autoUpdate: Boolean =
-    viewSettings.autoUpdate
+  def autoUpdate: Boolean = viewSettings.autoUpdate
 
   /**
     * The interval for automated updates. The default value can be configured with the
     * `akka.persistence.view.auto-update-interval` configuration key. This method can be
     * overridden by implementation classes to return non-default values.
     */
-  def autoUpdateInterval: FiniteDuration =
-    viewSettings.autoUpdateInterval
+  def autoUpdateInterval: FiniteDuration = viewSettings.autoUpdateInterval
 
   /**
     * The maximum number of messages to replay per update. The default value can be configured with the
@@ -179,8 +174,7 @@ trait PersistentView
     */
   def snapshotSequenceNr: Long = lastSequenceNr
 
-  private def setLastSequenceNr(value: Long): Unit =
-    _lastSequenceNr = value
+  private def setLastSequenceNr(value: Long): Unit = _lastSequenceNr = value
 
   private def updateLastSequenceNr(persistent: PersistentRepr): Unit =
     if (persistent.sequenceNr > _lastSequenceNr)
@@ -211,8 +205,7 @@ trait PersistentView
   /** INTERNAL API. */
   override protected[akka] def aroundReceive(
       receive: Receive,
-      message: Any): Unit =
-    currentState.stateReceive(receive, message)
+      message: Any): Unit = currentState.stateReceive(receive, message)
 
   /** INTERNAL API. */
   override protected[akka] def aroundPreStart(): Unit = {

@@ -22,8 +22,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
 
   // TODO: test different optional fields
 
-  val commonFields =
-    s"""
+  val commonFields = s"""
        |  "anonymous_id": "id",
        |  "sent_at": "sendAt",
        |  "version": "2",
@@ -93,8 +92,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |  }
         """.stripMargin
 
-      val group =
-        s"""
+      val group = s"""
            |{ $commonFields
             |  "type": "group",
             |  "group_id": "groupId",
@@ -108,8 +106,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
             |}
         """.stripMargin
 
-      val expected =
-        s"""
+      val expected = s"""
           |{
           |  "event": "group",
           |  "entityType": "user",
@@ -130,8 +127,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
     }
 
     "convert group to event JSON" in {
-      val group =
-        s"""
+      val group = s"""
           |{ $commonFields
           |  "type": "group",
           |  "group_id": "groupId",
@@ -144,8 +140,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |}
         """.stripMargin
 
-      val expected =
-        """
+      val expected = """
           |{
           |  "event": "group",
           |  "entityType": "user",
@@ -165,8 +160,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
     }
 
     "convert screen to event JSON" in {
-      val screen =
-        s"""
+      val screen = s"""
           |{ $commonFields
           |  "type": "screen",
           |  "name": "screenName",
@@ -178,8 +172,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |}
         """.stripMargin
 
-      val expected =
-        """
+      val expected = """
           |{
           |  "event": "screen",
           |  "entityType": "user",
@@ -198,8 +191,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
     }
 
     "convert page to event JSON" in {
-      val page =
-        s"""
+      val page = s"""
           |{ $commonFields
           |  "type": "page",
           |  "name": "pageName",
@@ -212,8 +204,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |}
         """.stripMargin
 
-      val expected =
-        """
+      val expected = """
           |{
           |  "event": "page",
           |  "entityType": "user",
@@ -233,8 +224,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
     }
 
     "convert alias to event JSON" in {
-      val alias =
-        s"""
+      val alias = s"""
           |{ $commonFields
           |  "type": "alias",
           |  "previous_id": "previousIdValue",
@@ -243,8 +233,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |}
         """.stripMargin
 
-      val expected =
-        """
+      val expected = """
           |{
           |  "event": "alias",
           |  "entityType": "user",
@@ -260,8 +249,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
     }
 
     "convert track to event JSON" in {
-      val track =
-        s"""
+      val track = s"""
           |{ $commonFields
           |  "user_id": "some_user_id",
           |  "type": "track",
@@ -274,8 +262,7 @@ class SegmentIOConnectorSpec extends Specification with ConnectorTestUtil {
           |}
         """.stripMargin
 
-      val expected =
-        """
+      val expected = """
           |{
           |  "event": "track",
           |  "entityType": "user",

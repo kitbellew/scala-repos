@@ -109,8 +109,8 @@ private[hive] class SparkExecuteStatementOperation(
       case TimestampType =>
         to += from.getAs[Timestamp](ordinal)
       case BinaryType | _: ArrayType | _: StructType | _: MapType =>
-        val hiveString =
-          HiveContext.toHiveString((from.get(ordinal), dataTypes(ordinal)))
+        val hiveString = HiveContext.toHiveString(
+          (from.get(ordinal), dataTypes(ordinal)))
         to += hiveString
     }
   }
@@ -119,8 +119,9 @@ private[hive] class SparkExecuteStatementOperation(
     validateDefaultFetchOrientation(order)
     assertState(OperationState.FINISHED)
     setHasResultSet(true)
-    val resultRowSet: RowSet =
-      RowSetFactory.create(getResultSetSchema, getProtocolVersion)
+    val resultRowSet: RowSet = RowSetFactory.create(
+      getResultSetSchema,
+      getProtocolVersion)
     if (!iter.hasNext) { resultRowSet }
     else {
       // maxRowsL here typically maps to java.sql.Statement.getFetchSize, which is an int
@@ -181,10 +182,9 @@ private[hive] class SparkExecuteStatementOperation(
       }
       try {
         // This submit blocks if no background threads are available to run this operation
-        val backgroundHandle =
-          parentSession
-            .getSessionManager()
-            .submitBackgroundOperation(backgroundOperation)
+        val backgroundHandle = parentSession
+          .getSessionManager()
+          .submitBackgroundOperation(backgroundOperation)
         setBackgroundHandle(backgroundHandle)
       } catch {
         case rejected: RejectedExecutionException =>
@@ -233,10 +233,9 @@ private[hive] class SparkExecuteStatementOperation(
       HiveThriftServer2.listener
         .onStatementParsed(statementId, result.queryExecution.toString())
       iter = {
-        val useIncrementalCollect =
-          hiveContext
-            .getConf("spark.sql.thriftServer.incrementalCollect", "false")
-            .toBoolean
+        val useIncrementalCollect = hiveContext
+          .getConf("spark.sql.thriftServer.incrementalCollect", "false")
+          .toBoolean
         if (useIncrementalCollect) { result.rdd.toLocalIterator }
         else { result.collect().iterator }
       }

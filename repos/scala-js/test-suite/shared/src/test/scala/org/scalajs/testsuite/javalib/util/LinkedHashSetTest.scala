@@ -62,8 +62,7 @@ object LinkedHashSetFactory extends HashSetFactory {
 }
 
 class LinkedHashSetFactory extends HashSetFactory {
-  override def implementationName: String =
-    "java.util.LinkedHashSet"
+  override def implementationName: String = "java.util.LinkedHashSet"
 
   override def empty[E: ClassTag]: ju.LinkedHashSet[E] =
     new ju.LinkedHashSet[E]()

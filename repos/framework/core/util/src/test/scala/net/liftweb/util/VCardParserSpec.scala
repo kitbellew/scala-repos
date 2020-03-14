@@ -29,8 +29,7 @@ object VCardParserSpec extends Specification with XmlMatchers {
   "VCard" should {
     "parse correctly" in {
 
-      val vcard =
-        """BEGIN:VCARD
+      val vcard = """BEGIN:VCARD
         |VERSION:2.1
         |N:Gump;Forrest
         |FN:Forrest Gump

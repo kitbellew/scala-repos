@@ -45,13 +45,13 @@ object ThriftServiceIfaceExample {
     import LoggerService._
 
     //#thriftclientapi
-    val clientServiceIface: LoggerService.ServiceIface =
-      Thrift.newServiceIface[LoggerService.ServiceIface]("localhost:1234")
+    val clientServiceIface: LoggerService.ServiceIface = Thrift
+      .newServiceIface[LoggerService.ServiceIface]("localhost:1234")
     //#thriftclientapi
 
     //#thriftclientapi-call
-    val result: Future[Log.Result] =
-      clientServiceIface.log(Log.Args("hello", 1))
+    val result: Future[Log.Result] = clientServiceIface.log(
+      Log.Args("hello", 1))
     //#thriftclientapi-call
 
     Await.result(result)
@@ -92,16 +92,16 @@ object ThriftServiceIfaceExample {
     //#thriftclientapi-retries
 
     //#thriftclientapi-methodiface
-    val client: LoggerService.FutureIface =
-      Thrift.newIface[LoggerService.FutureIface]("localhost:1234")
+    val client: LoggerService.FutureIface = Thrift
+      .newIface[LoggerService.FutureIface]("localhost:1234")
     client.log("message", 4) onSuccess { response =>
       println("Client received response: " + response)
     }
     //#thriftclientapi-methodiface
 
     //#thriftclientapi-method-adapter
-    val filteredMethodIface: LoggerService[Future] =
-      Thrift.newMethodIface(clientServiceIface.copy(log = filteredLog))
+    val filteredMethodIface: LoggerService[Future] = Thrift.newMethodIface(
+      clientServiceIface.copy(log = filteredLog))
     Await.result(filteredMethodIface.log("ping", 3).map(println))
     //#thriftclientapi-method-adapter
   }

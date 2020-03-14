@@ -6,8 +6,7 @@ trait GenUtils {
 
   import global._
 
-  def reifyList(xs: List[Any]): Tree =
-    mkList(xs map reify)
+  def reifyList(xs: List[Any]): Tree = mkList(xs map reify)
 
   def reifyProduct(x: Product): Tree =
     reifyProduct(x.productPrefix, x.productIterator.toList)
@@ -22,11 +21,9 @@ trait GenUtils {
   // helper functions
 
   /** Reify a case object defined in Mirror */
-  def reifyMirrorObject(name: String): Tree =
-    mirrorSelect(name)
+  def reifyMirrorObject(name: String): Tree = mirrorSelect(name)
 
-  def reifyMirrorObject(x: Product): Tree =
-    reifyMirrorObject(x.productPrefix)
+  def reifyMirrorObject(x: Product): Tree = reifyMirrorObject(x.productPrefix)
 
   def call(fname: String, args: Tree*): Tree =
     Apply(termPath(fname), args.toList)
@@ -77,8 +74,8 @@ trait GenUtils {
     val lastName = mkName(parts.last)
     if (prefixParts.isEmpty) Ident(lastName)
     else {
-      val prefixTree =
-        ((Ident(prefixParts.head): Tree) /: prefixParts.tail)(Select(_, _))
+      val prefixTree = ((Ident(prefixParts.head): Tree) /: prefixParts.tail)(
+        Select(_, _))
       Select(prefixTree, lastName)
     }
   }

@@ -62,12 +62,10 @@ trait IndexedSeqOptimized[+A, +Repr] extends Any with IndexedSeqLike[A, Repr] {
     if (start == end) z else foldr(start, end - 1, op(this(end - 1), z), op)
 
   override /*TraversableLike*/
-  def foldLeft[B](z: B)(op: (B, A) => B): B =
-    foldl(0, length, z, op)
+  def foldLeft[B](z: B)(op: (B, A) => B): B = foldl(0, length, z, op)
 
   override /*IterableLike*/
-  def foldRight[B](z: B)(op: (A, B) => B): B =
-    foldr(0, length, z, op)
+  def foldRight[B](z: B)(op: (A, B) => B): B = foldr(0, length, z, op)
 
   override /*TraversableLike*/
   def reduceLeft[B >: A](op: (B, A) => B): B =

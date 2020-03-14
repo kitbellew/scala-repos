@@ -34,14 +34,21 @@ abstract class Covariance(x: Expression, y: Expression)
   override def inputTypes: Seq[AbstractDataType] = Seq(DoubleType, DoubleType)
 
   protected val n = AttributeReference("n", DoubleType, nullable = false)()
-  protected val xAvg =
-    AttributeReference("xAvg", DoubleType, nullable = false)()
-  protected val yAvg =
-    AttributeReference("yAvg", DoubleType, nullable = false)()
+  protected val xAvg = AttributeReference(
+    "xAvg",
+    DoubleType,
+    nullable = false)()
+  protected val yAvg = AttributeReference(
+    "yAvg",
+    DoubleType,
+    nullable = false)()
   protected val ck = AttributeReference("ck", DoubleType, nullable = false)()
 
-  override val aggBufferAttributes: Seq[AttributeReference] =
-    Seq(n, xAvg, yAvg, ck)
+  override val aggBufferAttributes: Seq[AttributeReference] = Seq(
+    n,
+    xAvg,
+    yAvg,
+    ck)
 
   override val initialValues: Seq[Expression] = Array.fill(4)(Literal(0.0))
 

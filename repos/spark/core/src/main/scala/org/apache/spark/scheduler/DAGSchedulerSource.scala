@@ -57,6 +57,6 @@ private[scheduler] class DAGSchedulerSource(val dagScheduler: DAGScheduler)
     })
 
   /** Timer that tracks the time to process messages in the DAGScheduler's event loop */
-  val messageProcessingTimer: Timer =
-    metricRegistry.timer(MetricRegistry.name("messageProcessingTime"))
+  val messageProcessingTimer: Timer = metricRegistry.timer(
+    MetricRegistry.name("messageProcessingTime"))
 }

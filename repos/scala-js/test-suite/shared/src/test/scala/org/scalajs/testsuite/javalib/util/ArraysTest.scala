@@ -1114,8 +1114,9 @@ class ArraysTest {
     assertEquals("[[...], null]", Arrays.deepToString(recArr))
     assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
     assertEquals("[[[...], null]]", Arrays.deepToString(Array[AnyRef](recArr)))
-    recArr(1) =
-      Array[AnyRef](null, Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
+    recArr(1) = Array[AnyRef](
+      null,
+      Array[AnyRef](null, recArr, Array[AnyRef](recArr)))
     assertEquals(
       "[[...], [null, [null, [...], [[...]]]]]",
       Arrays.deepToString(recArr))

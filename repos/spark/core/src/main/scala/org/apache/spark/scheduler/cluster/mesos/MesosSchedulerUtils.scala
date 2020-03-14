@@ -71,8 +71,10 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
       checkpoint: Option[Boolean] = None,
       failoverTimeout: Option[Double] = None,
       frameworkId: Option[String] = None): SchedulerDriver = {
-    val fwInfoBuilder =
-      FrameworkInfo.newBuilder().setUser(sparkUser).setName(appName)
+    val fwInfoBuilder = FrameworkInfo
+      .newBuilder()
+      .setUser(sparkUser)
+      .setName(appName)
     val credBuilder = Credential.newBuilder()
     webuiUrl.foreach { url => fwInfoBuilder.setWebuiUrl(url) }
     checkpoint.foreach { checkpoint => fwInfoBuilder.setCheckpoint(checkpoint) }
@@ -216,9 +218,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     }
 
     // Filter any resource that has depleted.
-    val filteredResources =
-      remainingResources.filter(r =>
-        r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
+    val filteredResources = remainingResources.filter(r =>
+      r.getType != Value.Type.SCALAR || r.getScalar.getValue > 0.0)
 
     (filteredResources.toList, requestedResources.toList)
   }

@@ -459,21 +459,21 @@ trait ApiControllerBase extends ControllerBase {
     *
     * ref is Ref to list the statuses from. It can be a SHA, a branch name, or a tag name.
     */
-  val listStatusesRoute =
-    get("/api/v3/repos/:owner/:repo/commits/:ref/statuses")(referrersOnly {
-      repository =>
-        (for {
-          ref <- params.get("ref")
-          sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
-        } yield {
-          JsonFormat(
-            getCommitStatuesWithCreator(repository.owner, repository.name, sha)
-              .map {
-                case (status, creator) =>
-                  ApiCommitStatus(status, ApiUser(creator))
-              })
-        }) getOrElse NotFound
-    })
+  val listStatusesRoute = get(
+    "/api/v3/repos/:owner/:repo/commits/:ref/statuses")(referrersOnly {
+    repository =>
+      (for {
+        ref <- params.get("ref")
+        sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
+      } yield {
+        JsonFormat(
+          getCommitStatuesWithCreator(repository.owner, repository.name, sha)
+            .map {
+              case (status, creator) =>
+                ApiCommitStatus(status, ApiUser(creator))
+            })
+      }) getOrElse NotFound
+  })
 
   /**
     * https://developer.github.com/v3/repos/statuses/#list-statuses-for-a-specific-ref
@@ -494,8 +494,10 @@ trait ApiControllerBase extends ControllerBase {
         owner <- getAccountByUserName(repository.owner)
         sha <- JGitUtil.getShaByRef(repository.owner, repository.name, ref)
       } yield {
-        val statuses =
-          getCommitStatuesWithCreator(repository.owner, repository.name, sha)
+        val statuses = getCommitStatuesWithCreator(
+          repository.owner,
+          repository.name,
+          sha)
         JsonFormat(
           ApiCombinedCommitStatus(
             sha,

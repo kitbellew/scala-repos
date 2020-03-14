@@ -127,8 +127,9 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
 
   def plan[T](prod: TailProducer[Memory, T]): Stream[T] = {
 
-    val registeredCounters: Seq[(Group, Name)] =
-      JobCounters.getCountersForJob(jobID).getOrElse(Nil)
+    val registeredCounters: Seq[(Group, Name)] = JobCounters
+      .getCountersForJob(jobID)
+      .getOrElse(Nil)
 
     if (!registeredCounters.isEmpty) {
       MemoryStatProvider.registerCounters(jobID, registeredCounters)
@@ -136,8 +137,9 @@ class Memory(implicit jobID: JobId = JobId("default.memory.jobId"))
     }
 
     val dagOptimizer = new DagOptimizer[Memory] {}
-    val memoryTail =
-      dagOptimizer.optimize(prod, dagOptimizer.ValueFlatMapToFlatMap)
+    val memoryTail = dagOptimizer.optimize(
+      prod,
+      dagOptimizer.ValueFlatMapToFlatMap)
     val memoryDag = memoryTail.asInstanceOf[TailProducer[Memory, T]]
 
     toStream(memoryDag, HMap.empty)._1

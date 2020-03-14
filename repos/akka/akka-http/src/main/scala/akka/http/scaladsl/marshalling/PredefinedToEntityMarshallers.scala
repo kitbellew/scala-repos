@@ -52,8 +52,8 @@ trait PredefinedToEntityMarshallers extends MultipartMarshallers {
       HttpEntity(contentType, array)
     } else HttpEntity.Empty
 
-  implicit val DoneMarshaller: ToEntityMarshaller[akka.Done] =
-    Marshaller.withFixedContentType(`text/plain(UTF-8)`) { done ⇒
+  implicit val DoneMarshaller: ToEntityMarshaller[akka.Done] = Marshaller
+    .withFixedContentType(`text/plain(UTF-8)`) { done ⇒
       HttpEntity(`text/plain(UTF-8)`, "")
     }
 
@@ -68,10 +68,8 @@ trait PredefinedToEntityMarshallers extends MultipartMarshallers {
       mediaType: MediaType.WithFixedCharset): ToEntityMarshaller[String] =
     Marshaller.withFixedContentType(mediaType) { s ⇒ HttpEntity(mediaType, s) }
 
-  implicit val FormDataMarshaller: ToEntityMarshaller[FormData] =
-    Marshaller.withOpenCharset(`application/x-www-form-urlencoded`) {
-      _ toEntity _
-    }
+  implicit val FormDataMarshaller: ToEntityMarshaller[FormData] = Marshaller
+    .withOpenCharset(`application/x-www-form-urlencoded`) { _ toEntity _ }
 
   implicit val MessageEntityMarshaller: ToEntityMarshaller[MessageEntity] =
     Marshaller strict { value ⇒

@@ -23,8 +23,7 @@ class minkowskiDistanceTest extends FunSuite {
     assertClose(minkowskiDistance(v1, v2, 3.0), 11.477587096634332)
   }
 
-  def assertClose(a: Double, b: Double) =
-    assert(math.abs(a - b) < 1e-8)
+  def assertClose(a: Double, b: Double) = assert(math.abs(a - b) < 1e-8)
 
   /* Not robust to gc pauses, etc.
   test("big sparse vectors shouldn't be insanely inefficient") {

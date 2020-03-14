@@ -61,8 +61,7 @@ class Random(seed_in: Long) extends AnyRef with java.io.Serializable {
       oldSeedLo.toDouble * mulHi.toDouble + oldSeedHi.toDouble * mulLo.toDouble
     val newSeedHi =
       (_24msbOf(loProd) + _24lsbOf(hiProd)) & ((1 << 24) - 1)
-    val newSeedLo =
-      _24lsbOf(loProd)
+    val newSeedLo = _24lsbOf(loProd)
 
     seedHi = newSeedHi
     seedLo = newSeedLo

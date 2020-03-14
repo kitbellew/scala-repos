@@ -50,8 +50,11 @@ object ColorSelector extends JFXApp {
 
   // VAL'S DEFINITION - BEGIN
 
-  lazy val allControls =
-    List(controlRed, controlGreen, controlBlue, controlAlpha)
+  lazy val allControls = List(
+    controlRed,
+    controlGreen,
+    controlBlue,
+    controlAlpha)
 
   val currentColor = ObjectProperty(this, "Color", Color.White)
   currentColor.onChange(colorChanged())
@@ -224,8 +227,8 @@ object ColorSelector extends JFXApp {
 
   val cmbColorFormat = new ComboBox[Formatter](Formatter.formatters) {
     promptText = "Color Format"
-    converter =
-      StringConverter.toStringConverter((f: Formatter) => f.description)
+    converter = StringConverter.toStringConverter((f: Formatter) =>
+      f.description)
     value = RgbFormatter
     onAction = (event: ActionEvent) => formatColor()
   }

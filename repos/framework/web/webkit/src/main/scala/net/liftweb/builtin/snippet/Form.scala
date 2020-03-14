@@ -56,18 +56,17 @@ object Form extends DispatchSnippet {
           (kids(0).prefix eq null) &&
           kids(0).label == "form") {
         val e = kids(0).asInstanceOf[Elem]
-        val meta =
+        val meta = new UnprefixedAttribute(
+          "method",
+          "post",
           new UnprefixedAttribute(
-            "method",
-            "post",
-            new UnprefixedAttribute(
-              "action",
-              S.uri,
-              e.attributes.filter {
-                case up: UnprefixedAttribute =>
-                  up.key != "method" && up.key != "action"
-                case x => true
-              }))
+            "action",
+            S.uri,
+            e.attributes.filter {
+              case up: UnprefixedAttribute =>
+                up.key != "method" && up.key != "action"
+              case x => true
+            }))
         new Elem(null, "form", meta, e.scope, e.minimizeEmpty, e.child: _*)
       } else { <form method="post" action={S.uri}>{kids}</form> }
 

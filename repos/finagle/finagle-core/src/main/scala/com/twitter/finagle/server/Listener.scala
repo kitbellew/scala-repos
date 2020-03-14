@@ -40,8 +40,7 @@ object Listener {
     * the implementation default is used.
     */
   case class Backlog(value: Option[Int]) {
-    def mk(): (Backlog, Stack.Param[Backlog]) =
-      (this, Backlog.param)
+    def mk(): (Backlog, Stack.Param[Backlog]) = (this, Backlog.param)
   }
   object Backlog {
     implicit val param = Stack.Param(Backlog(None))

@@ -12,8 +12,8 @@ import scala.collection.mutable
   * Date: 30.07.14.
   */
 object FileAttributeUtilCache {
-  private val lightKeys =
-    mutable.WeakHashMap[VirtualFile, mutable.HashMap[FileAttribute, String]]()
+  private val lightKeys = mutable
+    .WeakHashMap[VirtualFile, mutable.HashMap[FileAttribute, String]]()
 
   def readAttribute(attribute: FileAttribute, file: PsiFile): Option[String] = {
     file.getVirtualFile match {

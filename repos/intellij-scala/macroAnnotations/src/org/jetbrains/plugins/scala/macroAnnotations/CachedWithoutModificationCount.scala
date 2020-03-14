@@ -96,23 +96,23 @@ object CachedWithoutModificationCount {
         val addToBuffers = buffersToAddTo.map { buffer =>
           q"$buffer += $mapName"
         }
-        val fields = if (hasParameters) {
-          q"""
+        val fields =
+          if (hasParameters) {
+            q"""
             private val $mapName = new java.util.concurrent.ConcurrentHashMap[(..${flatParams
-            .map(_.tpt)}), $wrappedRetTp]()
+              .map(_.tpt)}), $wrappedRetTp]()
             ..$analyzeCachesField
             ..$addToBuffers
           """
-        } else {
-          q"""
+          } else {
+            q"""
             new _root_.scala.volatile()
             private var $cacheVarName: $wrappedRetTp = null.asInstanceOf[$wrappedRetTp]
             ..$analyzeCachesField
           """
-        }
+          }
 
-        def getValuesFromMap: c.universe.Tree =
-          q"""
+        def getValuesFromMap: c.universe.Tree = q"""
             var $cacheVarName = _root_.scala.Option($mapName.get(..$paramNames)).getOrElse(null.asInstanceOf[$wrappedRetTp])
           """
         def putValuesIntoMap: c.universe.Tree =
@@ -137,10 +137,9 @@ object CachedWithoutModificationCount {
             q"new _root_.com.intellij.util.SofterReference(cacheFunResult)"
         }
 
-        val functionContents =
-          q"""
+        val functionContents = q"""
             ${if (analyzeCaches) q"$cacheStatsName.aboutToEnterCachedArea()"
-          else EmptyTree}
+        else EmptyTree}
             ..${if (hasParameters) getValuesFromMap else EmptyTree}
             val cacheHasExpired = $hasCacheExpired
             if (cacheHasExpired) {
@@ -149,7 +148,7 @@ object CachedWithoutModificationCount {
               ..${if (hasParameters) putValuesIntoMap else EmptyTree}
             }
             ${if (valueWrapper == ValueWrapper.None) q"$cacheVarName"
-          else q"$cacheVarName.get"}
+        else q"$cacheVarName.get"}
           """
         val getValuesIfHasParams =
           if (hasParameters) {
@@ -174,20 +173,25 @@ object CachedWithoutModificationCount {
               $functionContents
             """
           }
-        val actualCalculation =
-          transformRhsToAnalyzeCaches(c)(cacheStatsName, retTp, rhs)
-        val updatedRhs =
-          q"""
+        val actualCalculation = transformRhsToAnalyzeCaches(c)(
+          cacheStatsName,
+          retTp,
+          rhs)
+        val updatedRhs = q"""
           def $cachedFunName(): $retTp = {
             $actualCalculation
           }
           $cachesUtilFQN.incrementModCountForFunsWithModifiedReturn()
           $functionContentsInSynchronizedBlock
         """
-        val updatedDef =
-          DefDef(mods, name, tpParams, paramss, retTp, updatedRhs)
-        val res =
-          q"""
+        val updatedDef = DefDef(
+          mods,
+          name,
+          tpParams,
+          paramss,
+          retTp,
+          updatedRhs)
+        val res = q"""
           ..$fields
           $updatedDef
           """

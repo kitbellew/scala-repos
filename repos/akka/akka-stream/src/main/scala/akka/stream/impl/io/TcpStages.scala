@@ -110,18 +110,17 @@ private[stream] class ConnectionSourceStage(
           connection: ActorRef): StreamTcp.IncomingConnection = {
         connectionFlowsAwaitingInitialization.incrementAndGet()
 
-        val tcpFlow =
-          Flow
-            .fromGraph(
-              new IncomingConnectionStage(
-                connection,
-                connected.remoteAddress,
-                halfClose))
-            .via(detacher[ByteString]) // must read ahead for proper completions
-            .mapMaterializedValue { m ⇒
-              connectionFlowsAwaitingInitialization.decrementAndGet()
-              m
-            }
+        val tcpFlow = Flow
+          .fromGraph(
+            new IncomingConnectionStage(
+              connection,
+              connected.remoteAddress,
+              halfClose))
+          .via(detacher[ByteString]) // must read ahead for proper completions
+          .mapMaterializedValue { m ⇒
+            connectionFlowsAwaitingInitialization.decrementAndGet()
+            m
+          }
 
         // FIXME: Previous code was wrong, must add new tests
         val handler = idleTimeout match {

@@ -48,8 +48,9 @@ abstract class KeywordCompletionTestBase
     val myType = CompletionType.BASIC
     new CodeCompletionHandlerBase(myType, false, false, true)
       .invokeCompletion(getProjectAdapter, editor)
-    val lookup: LookupImpl =
-      LookupManager.getActiveLookup(editor).asInstanceOf[LookupImpl]
+    val lookup: LookupImpl = LookupManager
+      .getActiveLookup(editor)
+      .asInstanceOf[LookupImpl]
     val items: Array[String] =
       if (lookup == null) Array.empty
       else

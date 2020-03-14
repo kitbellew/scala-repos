@@ -247,8 +247,8 @@ package parallel {
         other match {
           case _: BucketCombiner[_, _, _, _] =>
             beforeCombine(other)
-            val that =
-              other.asInstanceOf[BucketCombiner[Elem, To, Buck, CombinerType]]
+            val that = other
+              .asInstanceOf[BucketCombiner[Elem, To, Buck, CombinerType]]
 
             var i = 0
             while (i < bucketnumber) {

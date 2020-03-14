@@ -239,8 +239,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank, denseRank, indexedRank" in {
       val line = Line(1, 1, "")
 
-      val data =
-        dag.AbsoluteLoad(Const(CString("/het/numbersDoubleLong"))(line))(line)
+      val data = dag.AbsoluteLoad(
+        Const(CString("/het/numbersDoubleLong"))(line))(line)
 
       def wrapper(d: DepGraph, name: String) =
         Join(WrapObject, Cross(None), Const(CString(name))(line), d)(line)
@@ -351,8 +351,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank, denseRank, indexedRank on heterogenous numbers" in {
       val line = Line(1, 1, "")
 
-      val data =
-        dag.AbsoluteLoad(Const(CString("/het/numbersDoubleLong"))(line))(line)
+      val data = dag.AbsoluteLoad(
+        Const(CString("/het/numbersDoubleLong"))(line))(line)
 
       def wrapper(d: DepGraph, name: String) =
         Join(WrapObject, Cross(None), Const(CString(name))(line), d)(line)
@@ -481,8 +481,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank within a filter" in {
       val line = Line(1, 1, "")
 
-      val numbers =
-        dag.AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line)
+      val numbers = dag
+        .AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line)
 
       val input = Filter(
         IdentitySort,
@@ -620,8 +620,8 @@ trait StatsLibSpecs[M[+_]]
 
     "compute linear correlation" in {
       val line = Line(1, 1, "")
-      val heightWeight =
-        dag.AbsoluteLoad(Const(CString("hom/heightWeight"))(line))(line)
+      val heightWeight = dag.AbsoluteLoad(
+        Const(CString("hom/heightWeight"))(line))(line)
 
       val input = dag.Morph2(
         LinearCorrelation,
@@ -1595,8 +1595,8 @@ trait StatsLibSpecs[M[+_]]
 
         val result = testEval(input)
 
-        val input2 =
-          dag.AbsoluteLoad(Const(CString("hom/heightWeight"))(line))(line)
+        val input2 = dag
+          .AbsoluteLoad(Const(CString("hom/heightWeight"))(line))(line)
 
         val result2 = testEval(input2)
 
@@ -1780,8 +1780,8 @@ trait StatsLibSpecs[M[+_]]
     "compute rank within a filter" in {
       val line = Line(1, 1, "")
 
-      val numbers =
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line)
+      val numbers = dag.AbsoluteLoad(
+        Const(CString("/hom/numbersAcrossSlices"))(line))(line)
 
       val input = Filter(
         IdentitySort,

@@ -13,8 +13,9 @@ class EmptyPrivateConstructor(o: PsiClass) extends {
       o.getName
     case _ => "METHOD_NAME_IS_NOT_AN_IDENTIFIER"
   }.get + "() {}"
-  val method: PsiMethod =
-    elementFactory.createMethodFromText(constructorText, o)
+  val method: PsiMethod = elementFactory.createMethodFromText(
+    constructorText,
+    o)
 } with LightMethodAdapter(o.getManager, method, o) {
   override def getParent: PsiElement = o
 }

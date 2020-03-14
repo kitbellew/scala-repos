@@ -30,8 +30,7 @@ case class FlowState(
   def addConfigSetting(k: String, v: String): FlowState =
     copy(flowConfigUpdates = flowConfigUpdates + ((k, v)))
 
-  def getSourceNamed(name: String): Option[Source] =
-    sourceMap.get(name)
+  def getSourceNamed(name: String): Option[Source] = sourceMap.get(name)
 
   def validateSources(mode: Mode): Unit =
     // This can throw a InvalidSourceException
@@ -64,8 +63,7 @@ object FlowStateMap {
   def get(fd: FlowDef): Option[FlowState] =
     flowMap.synchronized { Option(flowMap.get(fd)) }
 
-  def clear(fd: FlowDef): Unit =
-    flowMap.synchronized { flowMap.remove(fd) }
+  def clear(fd: FlowDef): Unit = flowMap.synchronized { flowMap.remove(fd) }
 
   def validateSources(flowDef: FlowDef, mode: Mode): Unit =
     /*

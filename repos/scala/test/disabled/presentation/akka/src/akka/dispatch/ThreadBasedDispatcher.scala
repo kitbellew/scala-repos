@@ -32,8 +32,7 @@ class ThreadBasedDispatcher(_actor: ActorRef, _mailboxType: MailboxType)
 
   private[akka] val owner = new AtomicReference[ActorRef](_actor)
 
-  def this(actor: ActorRef) =
-    this(actor, UnboundedMailbox()) // For Java API
+  def this(actor: ActorRef) = this(actor, UnboundedMailbox()) // For Java API
 
   def this(actor: ActorRef, capacity: Int) =
     this(actor, BoundedMailbox(capacity)) //For Java API

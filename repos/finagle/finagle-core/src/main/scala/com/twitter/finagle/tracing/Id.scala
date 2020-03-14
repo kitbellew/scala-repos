@@ -60,8 +60,7 @@ object TraceId {
       parentId: Option[SpanId],
       spanId: SpanId,
       sampled: Option[Boolean]
-  ): TraceId =
-    TraceId(traceId, parentId, spanId, sampled, Flags())
+  ): TraceId = TraceId(traceId, parentId, spanId, sampled, Flags())
 
   /**
     * Serialize a TraceId into an array of bytes.
@@ -97,9 +96,10 @@ object TraceId {
       val flags64 = ByteArrays.get64be(bytes, 24)
 
       val flags = Flags(flags64)
-      val sampled = if (flags.isFlagSet(Flags.SamplingKnown)) {
-        Some(flags.isFlagSet(Flags.Sampled))
-      } else None
+      val sampled =
+        if (flags.isFlagSet(Flags.SamplingKnown)) {
+          Some(flags.isFlagSet(Flags.Sampled))
+        } else None
 
       val traceId = TraceId(
         if (trace64 == parent64) None else Some(SpanId(trace64)),
@@ -151,8 +151,7 @@ final case class TraceId(
       case _              => false
     }
 
-  override def hashCode(): Int =
-    ids.hashCode()
+  override def hashCode(): Int = ids.hashCode()
 
   override def toString = s"$traceId.$spanId<:$parentId"
 }

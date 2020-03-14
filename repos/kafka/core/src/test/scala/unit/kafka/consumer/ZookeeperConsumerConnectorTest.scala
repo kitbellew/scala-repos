@@ -126,8 +126,9 @@ class ZookeeperConsumerConnectorTest
 
     // also check partition ownership
     val actual_1 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_1 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer1-0"))
+    val expected_1 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer1-0"))
     assertEquals(expected_1, actual_1)
 
     // commit consumed offsets
@@ -158,8 +159,9 @@ class ZookeeperConsumerConnectorTest
 
     // also check partition ownership
     val actual_2 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_2 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer2-0"))
+    val expected_2 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer2-0"))
     assertEquals(expected_2, actual_2)
 
     // create a consumer with empty map
@@ -203,8 +205,8 @@ class ZookeeperConsumerConnectorTest
 
   @Test
   def testCompression() {
-    val requestHandlerLogger =
-      Logger.getLogger(classOf[kafka.server.KafkaRequestHandler])
+    val requestHandlerLogger = Logger.getLogger(
+      classOf[kafka.server.KafkaRequestHandler])
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
@@ -232,8 +234,9 @@ class ZookeeperConsumerConnectorTest
 
     // also check partition ownership
     val actual_1 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_1 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer1-0"))
+    val expected_1 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer1-0"))
     assertEquals(expected_1, actual_1)
 
     // commit consumed offsets
@@ -265,8 +268,9 @@ class ZookeeperConsumerConnectorTest
 
     // also check partition ownership
     val actual_2 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_2 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer2-0"))
+    val expected_2 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer2-0"))
     assertEquals(expected_2, actual_2)
 
     // create a consumer with empty map
@@ -325,8 +329,9 @@ class ZookeeperConsumerConnectorTest
 
     // also check partition ownership
     val actual_2 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_2 =
-      List(("0", "group1_consumer0-0"), ("1", "group1_consumer0-0"))
+    val expected_2 = List(
+      ("0", "group1_consumer0-0"),
+      ("1", "group1_consumer0-0"))
     assertEquals(expected_2, actual_2)
 
     zkConsumerConnector1.shutdown
@@ -334,8 +339,8 @@ class ZookeeperConsumerConnectorTest
 
   @Test
   def testConsumerDecoder() {
-    val requestHandlerLogger =
-      Logger.getLogger(classOf[kafka.server.KafkaRequestHandler])
+    val requestHandlerLogger = Logger.getLogger(
+      classOf[kafka.server.KafkaRequestHandler])
     requestHandlerLogger.setLevel(Level.FATAL)
 
     // send some messages to each broker
@@ -354,11 +359,10 @@ class ZookeeperConsumerConnectorTest
 
     val zkConsumerConnector =
       new ZookeeperConsumerConnector(consumerConfig, true)
-    val topicMessageStreams =
-      zkConsumerConnector.createMessageStreams(
-        Map(topic -> 1),
-        new StringDecoder(),
-        new StringDecoder())
+    val topicMessageStreams = zkConsumerConnector.createMessageStreams(
+      Map(topic -> 1),
+      new StringDecoder(),
+      new StringDecoder())
 
     var receivedMessages: List[String] = Nil
     for ((topic, messageStreams) <- topicMessageStreams) {
@@ -405,8 +409,8 @@ class ZookeeperConsumerConnectorTest
     val topicRegistry = zkConsumerConnector1.getTopicRegistry
     assertEquals(1, topicRegistry.map(r => r._1).size)
     assertEquals(topic, topicRegistry.map(r => r._1).head)
-    val topicsAndPartitionsInRegistry =
-      topicRegistry.map(r => (r._1, r._2.map(p => p._2)))
+    val topicsAndPartitionsInRegistry = topicRegistry.map(r =>
+      (r._1, r._2.map(p => p._2)))
     val brokerPartition = topicsAndPartitionsInRegistry.head._2.head
     assertEquals(0, brokerPartition.partitionId)
 
@@ -462,8 +466,9 @@ class ZookeeperConsumerConnectorTest
     rebalanceListener1.beforeStartingFetchersCalled = false
 
     val actual_1 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_1 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer1-0"))
+    val expected_1 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer1-0"))
     assertEquals(expected_1, actual_1)
 
     val consumerConfig2 = new ConsumerConfig(
@@ -482,8 +487,9 @@ class ZookeeperConsumerConnectorTest
     getMessages(topicMessageStreams1, nMessages)
 
     val actual_2 = getZKChildrenValues(dirs.consumerOwnerDir)
-    val expected_2 =
-      List(("0", "group1_consumer1-0"), ("1", "group1_consumer2-0"))
+    val expected_2 = List(
+      ("0", "group1_consumer1-0"),
+      ("1", "group1_consumer2-0"))
     assertEquals(expected_2, actual_2)
 
     // Check if rebalance listener is fired

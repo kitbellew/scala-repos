@@ -99,11 +99,13 @@ case class WindowSpecDefinition(
   override def dataType: DataType = throw new UnsupportedOperationException
 
   override def sql: String = {
-    val partition = if (partitionSpec.isEmpty) { "" }
-    else { "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ") }
+    val partition =
+      if (partitionSpec.isEmpty) { "" }
+      else { "PARTITION BY " + partitionSpec.map(_.sql).mkString(", ") }
 
-    val order = if (orderSpec.isEmpty) { "" }
-    else { "ORDER BY " + orderSpec.map(_.sql).mkString(", ") }
+    val order =
+      if (orderSpec.isEmpty) { "" }
+      else { "ORDER BY " + orderSpec.map(_.sql).mkString(", ") }
 
     s"($partition $order ${frameSpecification.toString})"
   }
@@ -472,14 +474,15 @@ abstract class AggregateWindowFunction
     extends DeclarativeAggregate
     with WindowFunction {
   self: Product =>
-  override val frame =
-    SpecifiedWindowFrame(RowFrame, UnboundedPreceding, CurrentRow)
+  override val frame = SpecifiedWindowFrame(
+    RowFrame,
+    UnboundedPreceding,
+    CurrentRow)
   override def dataType: DataType = IntegerType
   override def nullable: Boolean = true
   override def supportsPartial: Boolean = false
-  override lazy val mergeExpressions =
-    throw new UnsupportedOperationException(
-      "Window Functions do not support merging.")
+  override lazy val mergeExpressions = throw new UnsupportedOperationException(
+    "Window Functions do not support merging.")
 }
 
 abstract class RowNumberLike extends AggregateWindowFunction {
@@ -487,8 +490,10 @@ abstract class RowNumberLike extends AggregateWindowFunction {
   override def inputTypes: Seq[AbstractDataType] = Nil
   protected val zero = Literal(0)
   protected val one = Literal(1)
-  protected val rowNumber =
-    AttributeReference("rowNumber", IntegerType, nullable = false)()
+  protected val rowNumber = AttributeReference(
+    "rowNumber",
+    IntegerType,
+    nullable = false)()
   override val aggBufferAttributes: Seq[AttributeReference] = rowNumber :: Nil
   override val initialValues: Seq[Expression] = zero :: Nil
   override val updateExpressions: Seq[Expression] = Add(rowNumber, one) :: Nil
@@ -539,10 +544,13 @@ case class CumeDist() extends RowNumberLike with SizeBasedWindowFunction {
   override def dataType: DataType = DoubleType
   // The frame for CUME_DIST is Range based instead of Row based, because CUME_DIST must
   // return the same value for equal values in the partition.
-  override val frame =
-    SpecifiedWindowFrame(RangeFrame, UnboundedPreceding, CurrentRow)
-  override val evaluateExpression =
-    Divide(Cast(rowNumber, DoubleType), Cast(n, DoubleType))
+  override val frame = SpecifiedWindowFrame(
+    RangeFrame,
+    UnboundedPreceding,
+    CurrentRow)
+  override val evaluateExpression = Divide(
+    Cast(rowNumber, DoubleType),
+    Cast(n, DoubleType))
   override def sql: String = "CUME_DIST()"
 }
 
@@ -598,14 +606,22 @@ case class NTile(buckets: Expression)
     }
   }
 
-  private val bucket =
-    AttributeReference("bucket", IntegerType, nullable = false)()
-  private val bucketThreshold =
-    AttributeReference("bucketThreshold", IntegerType, nullable = false)()
-  private val bucketSize =
-    AttributeReference("bucketSize", IntegerType, nullable = false)()
-  private val bucketsWithPadding =
-    AttributeReference("bucketsWithPadding", IntegerType, nullable = false)()
+  private val bucket = AttributeReference(
+    "bucket",
+    IntegerType,
+    nullable = false)()
+  private val bucketThreshold = AttributeReference(
+    "bucketThreshold",
+    IntegerType,
+    nullable = false)()
+  private val bucketSize = AttributeReference(
+    "bucketSize",
+    IntegerType,
+    nullable = false)()
+  private val bucketsWithPadding = AttributeReference(
+    "bucketsWithPadding",
+    IntegerType,
+    nullable = false)()
   private def bucketOverflow(e: Expression) =
     If(GreaterThanOrEqual(rowNumber, bucketThreshold), e, zero)
 
@@ -664,10 +680,14 @@ abstract class RankLike extends AggregateWindowFunction {
     .getOrElse(Literal(true))
 
   protected val orderInit = children.map(e => Literal.create(null, e.dataType))
-  protected val rank =
-    AttributeReference("rank", IntegerType, nullable = false)()
-  protected val rowNumber =
-    AttributeReference("rowNumber", IntegerType, nullable = false)()
+  protected val rank = AttributeReference(
+    "rank",
+    IntegerType,
+    nullable = false)()
+  protected val rowNumber = AttributeReference(
+    "rowNumber",
+    IntegerType,
+    nullable = false)()
   protected val zero = Literal(0)
   protected val one = Literal(1)
   protected val increaseRowNumber = Add(rowNumber, one)
@@ -679,8 +699,10 @@ abstract class RankLike extends AggregateWindowFunction {
   protected def rankSource: Expression = rowNumber
 
   /** Increase the rank when the current rank == 0 or when the one of order attributes changes. */
-  protected val increaseRank =
-    If(And(orderEquals, Not(EqualTo(rank, zero))), rank, rankSource)
+  protected val increaseRank = If(
+    And(orderEquals, Not(EqualTo(rank, zero))),
+    rank,
+    rankSource)
 
   override val aggBufferAttributes: Seq[AttributeReference] =
     rank +: rowNumber +: orderAttrs

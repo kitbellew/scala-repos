@@ -293,8 +293,7 @@ object Menu extends DispatchSnippet {
           )
       }
 
-    def buildItems(in: Seq[MenuItem]): JsExp =
-      JsArray(in.map(buildItem): _*)
+    def buildItems(in: Seq[MenuItem]): JsExp = JsArray(in.map(buildItem): _*)
 
     Script(
       JsCrVar(
@@ -338,9 +337,10 @@ object Menu extends DispatchSnippet {
           {
             val rts = rt.text
             val idx = str.indexOf("%*%")
-            val bodyStr = if (idx >= 0) {
-              str.substring(0, idx) + rts + str.substring(idx + 3)
-            } else { str + " " + rts }
+            val bodyStr =
+              if (idx >= 0) {
+                str.substring(0, idx) + rts + str.substring(idx + 3)
+              } else { str + " " + rts }
 
             <title>{bodyStr}</title> % attrs
           }
@@ -479,11 +479,12 @@ object Menu extends DispatchSnippet {
     val linkToSelf = (S.attr("linkToSelf") or S.attr("linktoself"))
       .map(Helpers.toBoolean) openOr false
 
-    val text = ("a" #> ((n: NodeSeq) =>
-      n match {
-        case e: Elem => e.child
-        case xs      => xs
-      })).apply(_text)
+    val text =
+      ("a" #> ((n: NodeSeq) =>
+        n match {
+          case e: Elem => e.child
+          case xs      => xs
+        })).apply(_text)
 
     for { name <- S.attr("name").toList } yield {
       type T = Q forSome { type Q }

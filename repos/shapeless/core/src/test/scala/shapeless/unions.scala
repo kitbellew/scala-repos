@@ -361,11 +361,10 @@ class UnionTests {
 
   @Test
   def testAltSyntax: Unit = {
-    type U0 =
-      Witness.`"foo"`.->>[String] :+:
-        Witness.`"bar"`.->>[Boolean] :+:
-        Witness.`"baz"`.->>[Double] :+:
-        CNil
+    type U0 = Witness.`"foo"`.->>[String] :+:
+      Witness.`"bar"`.->>[Boolean] :+:
+      Witness.`"baz"`.->>[Double] :+:
+      CNil
 
     type U = Union.`"foo" -> String, "bar" -> Boolean, "baz" -> Double`.T
 

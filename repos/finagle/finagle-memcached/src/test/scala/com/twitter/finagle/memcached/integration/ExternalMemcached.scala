@@ -29,8 +29,10 @@ private[memcached] object InternalMemcached {
           new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
       )
       Some(new TestMemcachedServer {
-        val address =
-          server.start().boundAddress.asInstanceOf[InetSocketAddress]
+        val address = server
+          .start()
+          .boundAddress
+          .asInstanceOf[InetSocketAddress]
         def stop() { server.stop(true) }
       })
     } catch { case NonFatal(_) => None }

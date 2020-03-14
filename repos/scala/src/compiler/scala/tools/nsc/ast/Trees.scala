@@ -117,8 +117,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
     def InjectDerivedValue(tree: Tree, arg: Tree): InjectDerivedValue
     def TypeTreeWithDeferredRefCheck(tree: Tree): TypeTreeWithDeferredRefCheck
   }
-  implicit val TreeCopierTag: ClassTag[TreeCopier] =
-    ClassTag[TreeCopier](classOf[TreeCopier])
+  implicit val TreeCopierTag: ClassTag[TreeCopier] = ClassTag[TreeCopier](
+    classOf[TreeCopier])
 
   def newStrictTreeCopier: TreeCopier = new StrictTreeCopier
   def newLazyTreeCopier: TreeCopier = new LazyTreeCopier

@@ -16,8 +16,7 @@ class HKeyManipulator extends AbstractElementManipulator[HKey] {
     val psiManager = PsiManager.getInstance(key.getProject)
     val allStringTypes = key.keyParts.map(_.stringType).toSet
 
-    lazy val escapedContent =
-      StringUtil.escapeStringCharacters(newContent)
+    lazy val escapedContent = StringUtil.escapeStringCharacters(newContent)
 
     lazy val needsQuoting =
       newContent.isEmpty || newContent.startsWith(" ") || newContent.endsWith(
@@ -32,8 +31,9 @@ class HKeyManipulator extends AbstractElementManipulator[HKey] {
         "\"" + StringUtil.escapeStringCharacters(newContent) + "\""
       else newContent
 
-    val newKey =
-      HoconPsiElementFactory.createKey(quotedEscapedContent, psiManager)
+    val newKey = HoconPsiElementFactory.createKey(
+      quotedEscapedContent,
+      psiManager)
     key.replace(newKey)
     newKey
   }

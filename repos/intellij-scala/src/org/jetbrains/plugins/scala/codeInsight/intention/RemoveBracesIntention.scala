@@ -71,10 +71,10 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
         funDef.body.filter(isAncestorOfElement)
       case tryBlock: ScTryBlock if tryBlock.hasRBrace =>
         // special handling for try block, which itself is parent to the (optional) pair of braces.
-        val lBrace =
-          tryBlock.getNode.getChildren(TokenSet.create(ScalaTokenTypes.tLBRACE))
-        val rBrace =
-          tryBlock.getNode.getChildren(TokenSet.create(ScalaTokenTypes.tRBRACE))
+        val lBrace = tryBlock.getNode.getChildren(
+          TokenSet.create(ScalaTokenTypes.tLBRACE))
+        val rBrace = tryBlock.getNode.getChildren(
+          TokenSet.create(ScalaTokenTypes.tRBRACE))
         (lBrace, rBrace) match {
           case (Array(lBraceNode), Array(rBraceNode))
               if tryBlock.statements.length == 1 =>
@@ -124,13 +124,14 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
 
     // Is the expression a block containing a single expression?
     val oneLinerBlock
-        : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] =
-      expr.flatMap {
+        : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] = expr
+      .flatMap {
         case blk: ScBlockExpr =>
           blk.statements match {
             case Seq(x: ScExpression) =>
-              val comments =
-                IntentionUtil.collectComments(x, onElementLine = true)
+              val comments = IntentionUtil.collectComments(
+                x,
+                onElementLine = true)
               if (!IntentionUtil.hasOtherComments(blk, comments))
                 Some((blk, x, comments))
               else None

@@ -82,8 +82,8 @@ final case class ThreadPoolConfig(
     corePoolSize: Int = ThreadPoolConfig.defaultCorePoolSize,
     maxPoolSize: Int = ThreadPoolConfig.defaultMaxPoolSize,
     threadTimeout: Duration = ThreadPoolConfig.defaultTimeout,
-    queueFactory: ThreadPoolConfig.QueueFactory =
-      ThreadPoolConfig.linkedBlockingQueue(),
+    queueFactory: ThreadPoolConfig.QueueFactory = ThreadPoolConfig
+      .linkedBlockingQueue(),
     rejectionPolicy: RejectedExecutionHandler =
       ThreadPoolConfig.defaultRejectionPolicy)
     extends ExecutorServiceFactoryProvider {
@@ -147,8 +147,8 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
   def withNewThreadPoolWithArrayBlockingQueueWithCapacityAndFairness(
       capacity: Int,
       fair: Boolean): ThreadPoolConfigBuilder =
-    this.copy(config =
-      config.copy(queueFactory = arrayBlockingQueue(capacity, fair)))
+    this.copy(config = config
+      .copy(queueFactory = arrayBlockingQueue(capacity, fair)))
 
   def setFixedPoolSize(size: Int): ThreadPoolConfigBuilder =
     this.copy(config = config.copy(corePoolSize = size, maxPoolSize = size))
@@ -159,8 +159,8 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
       maxPoolSize = math.max(size, config.maxPoolSize)))
 
   def setMaxPoolSize(size: Int): ThreadPoolConfigBuilder =
-    this.copy(config =
-      config.copy(maxPoolSize = math.max(size, config.corePoolSize)))
+    this.copy(config = config
+      .copy(maxPoolSize = math.max(size, config.corePoolSize)))
 
   def setCorePoolSizeFromFactor(
       min: Int,

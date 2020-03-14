@@ -107,8 +107,17 @@ class PEventsSpec extends Specification with TestEvents {
   /* setup */
 
   // events from TestEvents trait
-  val listOfEvents =
-    List(u1e5, u2e2, u1e3, u1e1, u2e3, u2e1, u1e4, u1e2, r1, r2)
+  val listOfEvents = List(
+    u1e5,
+    u2e2,
+    u1e3,
+    u1e1,
+    u2e3,
+    u2e1,
+    u1e4,
+    u1e2,
+    r1,
+    r2)
   val listOfEventsChannel = List(u3e1, u3e2, u3e3, r3, r4)
 
   def initTest(localEventClient: LEvents) = {
@@ -149,8 +158,8 @@ class PEventsSpec extends Specification with TestEvents {
   }
 
   def aggregateUserProperties(parEventClient: PEvents) = {
-    val resultRDD: RDD[(String, PropertyMap)] =
-      parEventClient.aggregateProperties(
+    val resultRDD: RDD[(String, PropertyMap)] = parEventClient
+      .aggregateProperties(
         appId = appId,
         entityType = "user"
       )(sc)
@@ -165,8 +174,8 @@ class PEventsSpec extends Specification with TestEvents {
   }
 
   def aggregateUserPropertiesChannel(parEventClient: PEvents) = {
-    val resultRDD: RDD[(String, PropertyMap)] =
-      parEventClient.aggregateProperties(
+    val resultRDD: RDD[(String, PropertyMap)] = parEventClient
+      .aggregateProperties(
         appId = appId,
         channelId = Some(channelId),
         entityType = "user"

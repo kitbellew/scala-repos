@@ -67,8 +67,8 @@ private[akka] object SubclassifiedIndex {
 
   private[SubclassifiedIndex] def emptyMergeMap[K, V] =
     internalEmptyMergeMap.asInstanceOf[Map[K, Set[V]]]
-  private[this] val internalEmptyMergeMap =
-    Map[AnyRef, Set[AnyRef]]().withDefaultValue(Set[AnyRef]())
+  private[this] val internalEmptyMergeMap = Map[AnyRef, Set[AnyRef]]()
+    .withDefaultValue(Set[AnyRef]())
 }
 
 /**

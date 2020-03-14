@@ -13,16 +13,14 @@ import org.junit.Assert
   */
 class ScalaLookupRenderingTest extends ScalaCodeInsightTestBase {
   def testJavaVarargs() {
-    val javaFileText =
-      """
+    val javaFileText = """
       |package a;
       |
       |public class Java {
       |  public static void foo(int... x) {}
       |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val fileText =
-      """
+    val fileText = """
       |import a.Java
       |class A {
       |  Java.fo<caret>
@@ -39,8 +37,7 @@ class ScalaLookupRenderingTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |foo(x: Int*)
       """.stripMargin('|').replaceAll("\r", "").trim()
 

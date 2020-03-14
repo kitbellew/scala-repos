@@ -101,21 +101,21 @@ class MatrixFactorizationModel @Since("0.8.0") (
       usersProducts: RDD[(Int, Int)]): (Long, Long) = {
     val zeroCounterUser = new HyperLogLogPlus(4, 0)
     val zeroCounterProduct = new HyperLogLogPlus(4, 0)
-    val aggregated =
-      usersProducts.aggregate((zeroCounterUser, zeroCounterProduct))(
-        (hllTuple: (HyperLogLogPlus, HyperLogLogPlus), v: (Int, Int)) => {
-          hllTuple._1.offer(v._1)
-          hllTuple._2.offer(v._2)
-          hllTuple
-        },
-        (
-            h1: (HyperLogLogPlus, HyperLogLogPlus),
-            h2: (HyperLogLogPlus, HyperLogLogPlus)) => {
-          h1._1.addAll(h2._1)
-          h1._2.addAll(h2._2)
-          h1
-        }
-      )
+    val aggregated = usersProducts.aggregate(
+      (zeroCounterUser, zeroCounterProduct))(
+      (hllTuple: (HyperLogLogPlus, HyperLogLogPlus), v: (Int, Int)) => {
+        hllTuple._1.offer(v._1)
+        hllTuple._2.offer(v._2)
+        hllTuple
+      },
+      (
+          h1: (HyperLogLogPlus, HyperLogLogPlus),
+          h2: (HyperLogLogPlus, HyperLogLogPlus)) => {
+        h1._1.addAll(h2._1)
+        h1._2.addAll(h2._2)
+        h1
+      }
+    )
     (aggregated._1.cardinality(), aggregated._2.cardinality())
   }
 

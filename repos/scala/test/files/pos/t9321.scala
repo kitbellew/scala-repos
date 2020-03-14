@@ -3,8 +3,7 @@ object p {
     private[p] val qualifiedPrivateMember = 1
   }
 
-  def useQualifiedPrivate(b: Mix) =
-    b.qualifiedPrivateMember // allowed
+  def useQualifiedPrivate(b: Mix) = b.qualifiedPrivateMember // allowed
 }
 
 trait Mix extends p.A

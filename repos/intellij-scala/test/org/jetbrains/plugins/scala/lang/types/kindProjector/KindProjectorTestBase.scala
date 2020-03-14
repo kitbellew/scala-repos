@@ -54,8 +54,8 @@ abstract class KindProjectorTestBase
       endOffset != -1,
       "Not specified end marker in test case. Use /*end*/ in scala file for this.")
 
-    val expr: ScParameterizedTypeElement =
-      PsiTreeUtil.findElementOfClassAtRange(
+    val expr: ScParameterizedTypeElement = PsiTreeUtil
+      .findElementOfClassAtRange(
         scalaFile,
         startOffset,
         endOffset,

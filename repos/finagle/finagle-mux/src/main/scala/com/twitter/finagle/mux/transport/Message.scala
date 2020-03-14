@@ -419,8 +419,9 @@ private[twitter] object Message {
 
   object Tlease {
     val MinLease = Duration.Zero
-    val MaxLease =
-      Duration.fromMilliseconds((1L << 32) - 1) // Unsigned Int max value
+    val MaxLease = Duration.fromMilliseconds(
+      (1L << 32) - 1
+    ) // Unsigned Int max value
 
     val MillisDuration: Byte = 0
 
@@ -442,13 +443,11 @@ private[twitter] object Message {
   }
 
   object Tmessage {
-    def unapply(m: Message): Option[Int] =
-      if (m.typ > 0) Some(m.tag) else None
+    def unapply(m: Message): Option[Int] = if (m.typ > 0) Some(m.tag) else None
   }
 
   object Rmessage {
-    def unapply(m: Message): Option[Int] =
-      if (m.typ < 0) Some(m.tag) else None
+    def unapply(m: Message): Option[Int] = if (m.typ < 0) Some(m.tag) else None
   }
 
   object ControlMessage {

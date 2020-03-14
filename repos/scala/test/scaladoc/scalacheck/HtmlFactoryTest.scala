@@ -36,8 +36,8 @@ object Test extends Properties("HtmlFactory") {
     // does partest actually guarantee this? to quote Leonard Nimoy: The answer, of course, is no.
     // this test _will_ fail again some time in the future.
     // Footnote: java.lang.ClassCastException: org.apache.tools.ant.loader.AntClassLoader5 cannot be cast to java.net.URLClassLoader
-    val loader =
-      Thread.currentThread.getContextClassLoader.asInstanceOf[URLClassLoader]
+    val loader = Thread.currentThread.getContextClassLoader
+      .asInstanceOf[URLClassLoader]
     val paths = loader.getURLs.map(u => URLDecoder.decode(u.getPath))
     paths mkString java.io.File.pathSeparator
   }
@@ -109,8 +109,9 @@ object Test extends Properties("HtmlFactory") {
         case None =>
           htmlFile
       }
-      val fileTextPretty =
-        htmlAllFiles(fileName).text.replace('→', ' ').replaceAll("\\s+", " ")
+      val fileTextPretty = htmlAllFiles(fileName).text
+        .replace('→', ' ')
+        .replaceAll("\\s+", " ")
       val fileText = fileTextPretty.replaceAll(" ", "")
 
       val checkTextPretty = check.replace('→', ' ').replaceAll("\\s+", " ")
@@ -399,28 +400,28 @@ object Test extends Properties("HtmlFactory") {
     "SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q6.scala")((None, """abstract def test(): Int""", true))
 
-  property("SI-5054: Use case individual signature test") =
-    checkText("SI_5054_q7.scala")(
-      (
-        None,
-        """abstract def test2(explicit: Int): Int [use case] This takes the explicit value passed.""",
-        true),
-      (
-        None,
-        """abstract def test1(): Int [use case] This takes the implicit value in scope.""",
-        true)
-    )
+  property("SI-5054: Use case individual signature test") = checkText(
+    "SI_5054_q7.scala")(
+    (
+      None,
+      """abstract def test2(explicit: Int): Int [use case] This takes the explicit value passed.""",
+      true),
+    (
+      None,
+      """abstract def test1(): Int [use case] This takes the implicit value in scope.""",
+      true)
+  )
 
-  property("SI-5287: Display correct \"Definition classes\"") =
-    checkText("SI_5287.scala")(
-      (
-        None,
-        """def method(): Int
+  property("SI-5287: Display correct \"Definition classes\"") = checkText(
+    "SI_5287.scala")(
+    (
+      None,
+      """def method(): Int
            [use case] The usecase explanation
            [use case] The usecase explanation
            Definition Classes SI_5287 SI_5287_B SI_5287_A""",
-        true)
-    ) // the explanation appears twice, as small comment and full comment
+      true)
+  ) // the explanation appears twice, as small comment and full comment
 
   property("Comment inheritance: Correct comment inheritance for overriding") =
     checkText("implicit-inheritance-override.scala")(
@@ -785,8 +786,7 @@ object Test extends Properties("HtmlFactory") {
   {
     implicit class AttributesAwareNode(val node: NodeSeq) {
 
-      def \@(attrName: String): String =
-        node \ ("@" + attrName) text
+      def \@(attrName: String): String = node \ ("@" + attrName) text
 
       def \@(attrName: String, attrValue: String): NodeSeq =
         node filter { _ \ ("@" + attrName) exists (_.text == attrValue) }
@@ -824,42 +824,41 @@ object Test extends Properties("HtmlFactory") {
         case _                    => false
       }
 
-    property("SI-8144: Members' permalink - inner package") =
-      check("some/pack/index.html") { node =>
-        ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
-        ("member: SomeType (object)" |: node.assertValuesLink(
-          "some.pack.SomeType",
-          "../../some/pack/index.html#SomeType")) &&
-        ("member: SomeType (class)" |: node.assertMemberLink("types")(
-          "some.pack.SomeType",
-          "../../some/pack/index.html#SomeTypeextendsAnyRef"))
-      }
+    property("SI-8144: Members' permalink - inner package") = check(
+      "some/pack/index.html") { node =>
+      ("type link" |: node.assertTypeLink("../../some/pack/index.html")) &&
+      ("member: SomeType (object)" |: node.assertValuesLink(
+        "some.pack.SomeType",
+        "../../some/pack/index.html#SomeType")) &&
+      ("member: SomeType (class)" |: node.assertMemberLink("types")(
+        "some.pack.SomeType",
+        "../../some/pack/index.html#SomeTypeextendsAnyRef"))
+    }
 
-    property("SI-8144: Members' permalink - companion object") =
-      check("some/pack/SomeType$.html") { node =>
-        ("type link" |: node.assertTypeLink(
-          "../../some/pack/SomeType$.html")) &&
-        ("member: someVal" |: node.assertMemberLink("allMembers")(
-          "some.pack.SomeType#someVal",
-          "../../some/pack/SomeType$.html#someVal:String"))
-      }
+    property("SI-8144: Members' permalink - companion object") = check(
+      "some/pack/SomeType$.html") { node =>
+      ("type link" |: node.assertTypeLink("../../some/pack/SomeType$.html")) &&
+      ("member: someVal" |: node.assertMemberLink("allMembers")(
+        "some.pack.SomeType#someVal",
+        "../../some/pack/SomeType$.html#someVal:String"))
+    }
 
-    property("SI-8144: Members' permalink - class") =
-      check("some/pack/SomeType.html") { node =>
-        ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
-        ("constructor " |: node.assertMemberLink("constructors")(
-          "some.pack.SomeType#<init>",
-          "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
-        ("member: type TypeAlias" |: node.assertMemberLink("types")(
-          "some.pack.SomeType.TypeAlias",
-          "../../some/pack/SomeType.html#TypeAlias=String")) &&
-        ("member: def >#<():Int " |: node.assertValuesLink(
-          "some.pack.SomeType#>#<",
-          "../../some/pack/SomeType.html#>#<():Int")) &&
-        ("member: def >@<():TypeAlias " |: node.assertValuesLink(
-          "some.pack.SomeType#>@<",
-          "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
-      }
+    property("SI-8144: Members' permalink - class") = check(
+      "some/pack/SomeType.html") { node =>
+      ("type link" |: node.assertTypeLink("../../some/pack/SomeType.html")) &&
+      ("constructor " |: node.assertMemberLink("constructors")(
+        "some.pack.SomeType#<init>",
+        "../../some/pack/SomeType.html#<init>(arg:String):some.pack.SomeType")) &&
+      ("member: type TypeAlias" |: node.assertMemberLink("types")(
+        "some.pack.SomeType.TypeAlias",
+        "../../some/pack/SomeType.html#TypeAlias=String")) &&
+      ("member: def >#<():Int " |: node.assertValuesLink(
+        "some.pack.SomeType#>#<",
+        "../../some/pack/SomeType.html#>#<():Int")) &&
+      ("member: def >@<():TypeAlias " |: node.assertValuesLink(
+        "some.pack.SomeType#>@<",
+        "../../some/pack/SomeType.html#>@<():SomeType.this.TypeAlias"))
+    }
 
   }
 

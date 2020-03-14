@@ -68,8 +68,8 @@ private[akka] abstract class AbstractEventsByTagPublisher(
     with ActorLogging {
   import EventsByTagPublisher._
 
-  val journal: ActorRef =
-    Persistence(context.system).journalFor(writeJournalPluginId)
+  val journal: ActorRef = Persistence(context.system)
+    .journalFor(writeJournalPluginId)
 
   var currOffset = fromOffset
 
@@ -167,15 +167,13 @@ private[akka] class LiveEventsByTagPublisher(
       writeJournalPluginId) {
   import EventsByTagPublisher._
 
-  val tickTask =
-    context.system.scheduler.schedule(
-      refreshInterval,
-      refreshInterval,
-      self,
-      Continue)(context.dispatcher)
+  val tickTask = context.system.scheduler.schedule(
+    refreshInterval,
+    refreshInterval,
+    self,
+    Continue)(context.dispatcher)
 
-  override def postStop(): Unit =
-    tickTask.cancel()
+  override def postStop(): Unit = tickTask.cancel()
 
   override def receiveInitialRequest(): Unit = {
     journal ! LeveldbJournal.SubscribeTag(tag)
@@ -213,8 +211,7 @@ private[akka] class CurrentEventsByTagPublisher(
 
   override def toOffset: Long = _toOffset
 
-  override def receiveInitialRequest(): Unit =
-    replay()
+  override def receiveInitialRequest(): Unit = replay()
 
   override def receiveIdleRequest(): Unit = {
     deliverBuf()

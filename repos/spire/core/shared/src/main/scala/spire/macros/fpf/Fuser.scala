@@ -247,8 +247,9 @@ private[spire] trait Fuser[C <: Context, A] {
       case (
             Approx(lapx, lmes, lind, lexact),
             Approx(rapx, rmes, rind, rexact)) =>
-        val ind =
-          zipInd(lind, rind)((l, r) => q"$l + $r + 1", (l, r) => l + r + 1)
+        val ind = zipInd(lind, rind)(
+          (l, r) => q"$l + $r + 1",
+          (l, r) => l + r + 1)
         Approx(
           q"$lapx * $rapx",
           q"$lmes * $rmes",

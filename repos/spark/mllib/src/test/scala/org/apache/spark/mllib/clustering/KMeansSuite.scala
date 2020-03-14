@@ -305,8 +305,12 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     for (initMode <- Seq(RANDOM, K_MEANS_PARALLEL)) {
       // Two iterations are sufficient no matter where the initial centers are.
-      val model =
-        KMeans.train(rdd, k = 2, maxIterations = 2, runs = 1, initMode)
+      val model = KMeans.train(
+        rdd,
+        k = 2,
+        maxIterations = 2,
+        runs = 1,
+        initMode)
 
       val predicts = model.predict(rdd).collect()
 

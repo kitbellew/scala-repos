@@ -38,8 +38,9 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
 
     def print(result: Result) = {
       val offset = result.preambleLength
-      val pos1 =
-        result.unit.source.position(offset).withEnd(offset + buf.length)
+      val pos1 = result.unit.source
+        .position(offset)
+        .withEnd(offset + buf.length)
       import result.compiler._
       val tree = new Locator(pos1) locateIn result.unit.body match {
         case Template(_, _, constructor :: (rest :+ last)) =>

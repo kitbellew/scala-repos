@@ -196,8 +196,7 @@ private[akka] final class BoundedBuffer[T](val capacity: Int)
     override def peek(): T =
       if (tail == head) null.asInstanceOf[T]
       else queue(head & FixedQueueMask).asInstanceOf[T]
-    override def clear(): Unit =
-      while (nonEmpty) { dequeue() }
+    override def clear(): Unit = while (nonEmpty) { dequeue() }
     override def dropHead(): Unit = dequeue()
     override def dropTail(): Unit = {
       tail -= 1

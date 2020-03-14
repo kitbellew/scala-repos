@@ -31,8 +31,8 @@ private[akka] class ClusterSingletonMessageSerializer(
 
   private val emptyByteArray = Array.empty[Byte]
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       HandOverToMeManifest -> { _ ⇒ HandOverToMe },
       HandOverInProgressManifest -> { _ ⇒ HandOverInProgress },
       HandOverDoneManifest -> { _ ⇒ HandOverDone },

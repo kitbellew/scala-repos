@@ -59,8 +59,8 @@ object ScalaCsrf extends PlaySpecification {
         //#get-token
         Ok(token.map(_.value).getOrElse(""))
       })
-      val result =
-        addAndGetToken(FakeRequest().withSession("csrfToken" -> originalToken))
+      val result = addAndGetToken(
+        FakeRequest().withSession("csrfToken" -> originalToken))
       contentAsString(result) must be like {
         case t => Crypto.compareSignedTokens(originalToken, t) must_== true
       }
@@ -123,8 +123,8 @@ object ScalaCsrf extends PlaySpecification {
         }
       //#csrf-add-token
 
-      val body =
-        await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
+      val body = await(
+        form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome
     }
 
@@ -171,8 +171,8 @@ object ScalaCsrf extends PlaySpecification {
           .withCookies(Cookie("foo", "bar"))
           .withHeaders(
             CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
-      val body =
-        await(form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
+      val body = await(
+        form(FakeRequest("GET", "/")).flatMap(_.body.consumeData))
       Crypto.extractSignedToken(body.utf8String) must beSome
     }
 

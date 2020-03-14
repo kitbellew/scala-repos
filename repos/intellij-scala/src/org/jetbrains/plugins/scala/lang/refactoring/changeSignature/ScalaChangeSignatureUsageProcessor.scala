@@ -66,8 +66,8 @@ class ScalaChangeSignatureUsageProcessor
             val inExistingClasses =
               (clazz +: ScalaPsiUtil.getBaseCompanionModule(clazz).toSeq)
                 .flatMap(_.allSynthetics)
-            val inFakeCompanion =
-              clazz.fakeCompanionModule.toSeq.flatMap(_.members)
+            val inFakeCompanion = clazz.fakeCompanionModule.toSeq
+              .flatMap(_.members)
             inExistingClasses ++ inFakeCompanion
           case _ => Nil
         }

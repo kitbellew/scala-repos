@@ -38,8 +38,9 @@ object ForkRun {
     val sbt = system.actorOf(
       SbtClient.props(new File(baseDirectory), log, logEvents),
       "sbt")
-    val forkRun =
-      system.actorOf(props(sbt, configKey, runArgs, log), "fork-run")
+    val forkRun = system.actorOf(
+      props(sbt, configKey, runArgs, log),
+      "fork-run")
 
     log.info("Setting up Play fork run ... (use Ctrl+D to cancel)")
     registerShutdownHook(log, system, forkRun)
@@ -107,8 +108,8 @@ object ForkRun {
       reloadCompile = reloadCompile,
       reloaderClassLoader = Reloader.createDelegatedResourcesClassLoader,
       assetsClassLoader = Reloader.assetsClassLoader(config.allAssets),
-      commonClassLoader =
-        Reloader.commonClassLoader(config.dependencyClasspath),
+      commonClassLoader = Reloader.commonClassLoader(
+        config.dependencyClasspath),
       monitoredFiles = config.monitoredFiles,
       fileWatchService = watchService,
       docsClasspath = config.docsClasspath,
@@ -219,10 +220,14 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
   def run(config: ForkConfig): Unit = {
     try {
       val notifyStart = ForkRun.sendStart(sbt, config, args)
-      val reloadCompile =
-        ForkRun.askForReload(self)(Timeout(config.compileTimeout.millis))
-      val server =
-        ForkRun.startServer(config, args, notifyStart, reloadCompile, log)
+      val reloadCompile = ForkRun.askForReload(self)(
+        Timeout(config.compileTimeout.millis))
+      val server = ForkRun.startServer(
+        config,
+        args,
+        notifyStart,
+        reloadCompile,
+        log)
       context become running(server, config.reloadKey)
     } catch { case e: Exception => fail(e) }
   }

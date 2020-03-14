@@ -75,8 +75,9 @@ object SVDPlusPlus {
 
     // calculate global rating mean
     edges.cache()
-    val (rs, rc) =
-      edges.map(e => (e.attr, 1L)).reduce((a, b) => (a._1 + b._1, a._2 + b._2))
+    val (rs, rc) = edges
+      .map(e => (e.attr, 1L))
+      .reduce((a, b) => (a._1 + b._1, a._2 + b._2))
     val u = rs / rc
 
     // construct graph
@@ -228,8 +229,8 @@ object SVDPlusPlus {
     g = gJoinT3
 
     // Convert DoubleMatrix to Array[Double]:
-    val newVertices =
-      g.vertices.mapValues(v => (v._1.toArray, v._2.toArray, v._3, v._4))
+    val newVertices = g.vertices.mapValues(v =>
+      (v._1.toArray, v._2.toArray, v._3, v._4))
     (Graph(newVertices, g.edges), u)
   }
 

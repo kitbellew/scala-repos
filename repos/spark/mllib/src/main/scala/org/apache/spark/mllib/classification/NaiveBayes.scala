@@ -233,8 +233,9 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       val dataRDD = sqlContext.read.parquet(dataPath(path))
       // Check schema explicitly since erasure makes it hard to use match-case for checking.
       checkSchema[Data](dataRDD.schema)
-      val dataArray =
-        dataRDD.select("labels", "pi", "theta", "modelType").take(1)
+      val dataArray = dataRDD
+        .select("labels", "pi", "theta", "modelType")
+        .take(1)
       assert(
         dataArray.length == 1,
         s"Unable to load NaiveBayesModel data from: ${dataPath(path)}")
@@ -304,13 +305,13 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
     val classNameV2_0 = SaveLoadV2_0.thisClassName
     val (model, numFeatures, numClasses) = (loadedClassName, version) match {
       case (className, "1.0") if className == classNameV1_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
+        val (numFeatures, numClasses) = ClassificationModel
+          .getNumFeaturesClasses(metadata)
         val model = SaveLoadV1_0.load(sc, path)
         (model, numFeatures, numClasses)
       case (className, "2.0") if className == classNameV2_0 =>
-        val (numFeatures, numClasses) =
-          ClassificationModel.getNumFeaturesClasses(metadata)
+        val (numFeatures, numClasses) = ClassificationModel
+          .getNumFeaturesClasses(metadata)
         val model = SaveLoadV2_0.load(sc, path)
         (model, numFeatures, numClasses)
       case _ =>

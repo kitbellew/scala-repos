@@ -89,8 +89,8 @@ trait BuildFileModifier {
       filesToWorkingCopies: mutable.Map[VirtualFile, LightVirtualFile])
       : Option[List[VirtualFile]] = {
     //first, create changes and set their initial status
-    val fileStatusMap =
-      mutable.Map[VirtualFile, (BuildFileModifiedStatus, Long)]()
+    val fileStatusMap = mutable
+      .Map[VirtualFile, (BuildFileModifiedStatus, Long)]()
     val documentManager = FileDocumentManager.getInstance()
     val vcsChanges = filesToWorkingCopies.toSeq.map {
       case (original, copy) =>
@@ -113,8 +113,10 @@ trait BuildFileModifier {
         new BuildFileChange(originalRevision, copyRevision, buildFileStatus)
     }
     val changesToWorkingCopies = (vcsChanges zip changes).toMap
-    val dialog =
-      ChangesConfirmationDialog(project, vcsChanges.toList, fileStatusMap)
+    val dialog = ChangesConfirmationDialog(
+      project,
+      vcsChanges.toList,
+      fileStatusMap)
     dialog.setModal(true)
     val isOk = dialog.showAndGet()
     if (isOk) {

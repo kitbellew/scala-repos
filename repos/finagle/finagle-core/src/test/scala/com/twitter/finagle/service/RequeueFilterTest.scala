@@ -67,13 +67,15 @@ class RequeueFilterTest extends FunSuite {
 
   test("tracks requeues_per_request") {
     val stats = new InMemoryStatsReceiver()
-    def perReqRequeues: Seq[Float] =
-      stats.stat("requeues_per_request")()
+    def perReqRequeues: Seq[Float] = stats.stat("requeues_per_request")()
 
     val minRetries = 10
     val percentRequeues = 0.5 // allow only 50% to be used
-    val retryBudget =
-      RetryBudget(1.second, minRetries, 0.0, Stopwatch.timeMillis)
+    val retryBudget = RetryBudget(
+      1.second,
+      minRetries,
+      0.0,
+      Stopwatch.timeMillis)
     val filter = new RequeueFilter[String, Int](
       retryBudget,
       Backoff.constant(Duration.Zero),

@@ -802,10 +802,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     "SELECT srcalias.KEY, SRCALIAS.value FROM sRc SrCAlias WHERE SrCAlias.kEy < 15")
 
   test("case sensitivity: registered table") {
-    val testData =
-      TestHive.sparkContext.parallelize(
-        TestData(1, "str1") ::
-          TestData(2, "str2") :: Nil)
+    val testData = TestHive.sparkContext.parallelize(
+      TestData(1, "str1") ::
+        TestData(2, "str2") :: Nil)
     testData.toDF().registerTempTable("REGisteredTABle")
 
     assertResult(Array(Row(2, "str2"))) {
@@ -816,8 +815,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   def isExplanation(result: DataFrame): Boolean = {
-    val explanation =
-      result.select('plan).collect().map { case Row(plan: String) => plan }
+    val explanation = result.select('plan).collect().map {
+      case Row(plan: String) => plan
+    }
     explanation.contains("== Physical Plan ==")
   }
 
@@ -831,19 +831,21 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
   }
 
   test("SPARK-2180: HAVING support in GROUP BY clauses (positive)") {
-    val fixture =
-      List(("foo", 2), ("bar", 1), ("foo", 4), ("bar", 3)).zipWithIndex.map {
-        case ((value, attr), key) => HavingRow(key, value, attr)
-      }
+    val fixture = List(
+      ("foo", 2),
+      ("bar", 1),
+      ("foo", 4),
+      ("bar", 3)).zipWithIndex.map {
+      case ((value, attr), key) => HavingRow(key, value, attr)
+    }
     TestHive.sparkContext
       .parallelize(fixture)
       .toDF()
       .registerTempTable("having_test")
-    val results =
-      sql(
-        "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
-        .collect()
-        .map(x => (x.getString(0), x.getInt(1)))
+    val results = sql(
+      "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
+      .collect()
+      .map(x => (x.getString(0), x.getInt(1)))
 
     assert(results === Array(("foo", 4)))
     TestHive.reset()
@@ -1002,10 +1004,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     // Describe a registered temporary table.
-    val testData =
-      TestHive.sparkContext.parallelize(
-        TestData(1, "str1") ::
-          TestData(1, "str2") :: Nil)
+    val testData = TestHive.sparkContext.parallelize(
+      TestData(1, "str1") ::
+        TestData(1, "str2") :: Nil)
     testData.toDF().registerTempTable("test_describe_commands2")
 
     assertResult(

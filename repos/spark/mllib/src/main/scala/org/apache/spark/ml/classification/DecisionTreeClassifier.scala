@@ -101,8 +101,8 @@ final class DecisionTreeClassifier @Since("1.4.0") (
 
   override protected def train(
       dataset: DataFrame): DecisionTreeClassificationModel = {
-    val categoricalFeatures: Map[Int, Int] =
-      MetadataUtils.getCategoricalFeatures(dataset.schema($(featuresCol)))
+    val categoricalFeatures: Map[Int, Int] = MetadataUtils
+      .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val numClasses: Int =
       MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
         case Some(n: Int) => n
@@ -257,8 +257,9 @@ final class DecisionTreeClassificationModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector =
-    RandomForest.featureImportances(this, numFeatures)
+  lazy val featureImportances: Vector = RandomForest.featureImportances(
+    this,
+    numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

@@ -368,8 +368,7 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
 
   def take(n: Int) = slice(0, math.min(n, length))
 
-  def drop(n: Int) =
-    if (n >= length) ConstArray.empty else slice(n, length - n)
+  def drop(n: Int) = if (n >= length) ConstArray.empty else slice(n, length - n)
 
   ///////////////////////////////////////////////////////// Equals
 
@@ -447,8 +446,7 @@ object ConstArray {
   def from[T](o: Option[T]): ConstArray[T] =
     if (o.isDefined) apply(o.get) else empty
 
-  def unsafeWrap[T](values: Array[Any]): ConstArray[T] =
-    new ConstArray(values)
+  def unsafeWrap[T](values: Array[Any]): ConstArray[T] = new ConstArray(values)
 
   //def unapplySeq[T](a: ConstArray[T]) = new ConstArrayExtract[T](a) // Requires Scala 2.11
   def unapplySeq[T](a: ConstArray[T]): Some[IndexedSeq[T]] = Some(a.toSeq)
@@ -522,8 +520,7 @@ final class ConstArrayBuilder[T](
     vs.foreach(self += _)
   }
 
-  def ++=(vs: Option[T]): Unit =
-    if (vs.isDefined) this += vs.get
+  def ++=(vs: Option[T]): Unit = if (vs.isDefined) this += vs.get
 
   private[this] def ensure(i: Int): Unit = {
     val total = len + i

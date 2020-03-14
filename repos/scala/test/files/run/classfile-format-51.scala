@@ -167,8 +167,7 @@ object Test extends DirectTest {
 
   }
 
-  def code =
-    """
+  def code = """
 object Driver {
   val invoker = new DynamicInvoker()
   println(invoker.test())

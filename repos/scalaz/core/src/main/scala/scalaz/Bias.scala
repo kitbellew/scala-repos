@@ -17,8 +17,7 @@ private trait RightFunctor[F[_, _], X] extends Functor[F[X, ?]] {
 private trait UFunctor[F[_, _]] extends Functor[λ[α => F[α, α]]] {
   implicit def F: Bifunctor[F]
 
-  override def map[A, C](fax: F[A, A])(f: A => C): F[C, C] =
-    F.bimap(fax)(f, f)
+  override def map[A, C](fax: F[A, A])(f: A => C): F[C, C] = F.bimap(fax)(f, f)
 }
 
 private trait LeftFoldable[F[_, _], X] extends Foldable[F[?, X]] {
@@ -89,6 +88,5 @@ private trait UTraverse[F[_, _]]
   implicit def F: Bitraverse[F]
 
   def traverseImpl[G[_]: Applicative, A, B](fa: F[A, A])(
-      f: A => G[B]): G[F[B, B]] =
-    F.bitraverseImpl(fa)(f, f)
+      f: A => G[B]): G[F[B, B]] = F.bitraverseImpl(fa)(f, f)
 }

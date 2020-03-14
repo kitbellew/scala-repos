@@ -54,8 +54,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying for one App")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectApp(id = app1.id, embed = embed, selector = AppSelector.all)
       .futureValue
@@ -102,8 +103,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectAppsBy(AppSelector(_ => true), embed = embed)
       .futureValue
@@ -170,8 +172,9 @@ class DefaultInfoServiceTest
     }
 
     When("querying all apps in that group")
-    val embed: Set[AppInfo.Embed] =
-      Set(AppInfo.Embed.Tasks, AppInfo.Embed.Counts)
+    val embed: Set[AppInfo.Embed] = Set(
+      AppInfo.Embed.Tasks,
+      AppInfo.Embed.Counts)
     f.infoService
       .selectAppsInGroup(PathId("/nested"), AppSelector.all, embed)
       .futureValue

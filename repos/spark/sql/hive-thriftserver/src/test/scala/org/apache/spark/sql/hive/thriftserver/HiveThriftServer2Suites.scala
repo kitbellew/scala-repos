@@ -65,8 +65,10 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
     // Transport creation logic below mimics HiveConnection.createBinaryTransport
     val rawTransport = new TSocket("localhost", serverPort)
     val user = System.getProperty("user.name")
-    val transport =
-      PlainSaslHelper.getPlainTransport(user, "anonymous", rawTransport)
+    val transport = PlainSaslHelper.getPlainTransport(
+      user,
+      "anonymous",
+      rawTransport)
     val protocol = new TBinaryProtocol(transport)
     val client = new ThriftCLIServiceClient(new Client(protocol))
 
@@ -138,8 +140,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
 
       queries.foreach(statement.execute)
 
-      val resultSet =
-        statement.executeQuery("SELECT * FROM test_null WHERE key IS NULL")
+      val resultSet = statement.executeQuery(
+        "SELECT * FROM test_null WHERE key IS NULL")
 
       (0 until 5).foreach { _ =>
         resultSet.next()
@@ -202,8 +204,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       queries.foreach(statement.execute)
 
       assertResult("""{238:"val_238"}""") {
-        val resultSet =
-          statement.executeQuery("SELECT MAP(key, value) FROM test_map LIMIT 1")
+        val resultSet = statement.executeQuery(
+          "SELECT MAP(key, value) FROM test_map LIMIT 1")
         resultSet.next()
         resultSet.getString(1)
       }
@@ -241,14 +243,14 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         plan.next()
         assert(plan.getString(1).contains("InMemoryColumnarTableScan"))
 
-        val rs1 =
-          statement.executeQuery("SELECT key FROM test_table ORDER BY KEY DESC")
+        val rs1 = statement.executeQuery(
+          "SELECT key FROM test_table ORDER BY KEY DESC")
         val buf1 = new collection.mutable.ArrayBuffer[Int]()
         while (rs1.next()) { buf1 += rs1.getInt(1) }
         rs1.close()
 
-        val rs2 =
-          statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
+        val rs2 = statement.executeQuery(
+          "SELECT key FROM test_map ORDER BY KEY DESC")
         val buf2 = new collection.mutable.ArrayBuffer[Int]()
         while (rs2.next()) { buf2 += rs2.getInt(1) }
         rs2.close()
@@ -259,8 +261,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       },
       // first session, we get the default value of the session status
       { statement =>
-        val rs1 =
-          statement.executeQuery(s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
+        val rs1 = statement.executeQuery(
+          s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
         rs1.next()
         defaultV1 = rs1.getString(1)
         assert(defaultV1 != "200")
@@ -281,8 +283,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         )
 
         queries.map(statement.execute)
-        val rs1 =
-          statement.executeQuery(s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
+        val rs1 = statement.executeQuery(
+          s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
         rs1.next()
         assert("spark.sql.shuffle.partitions" === rs1.getString(1))
         assert("291" === rs1.getString(2))
@@ -297,8 +299,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
       // third session, we get the latest session status, supposed to be the
       // default value
       { statement =>
-        val rs1 =
-          statement.executeQuery(s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
+        val rs1 = statement.executeQuery(
+          s"SET ${SQLConf.SHUFFLE_PARTITIONS.key}")
         rs1.next()
         assert(defaultV1 === rs1.getString(1))
         rs1.close()
@@ -321,8 +323,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         plan.next()
         assert(plan.getString(1).contains("InMemoryColumnarTableScan"))
 
-        val rs =
-          statement.executeQuery("SELECT key FROM test_map ORDER BY KEY DESC")
+        val rs = statement.executeQuery(
+          "SELECT key FROM test_map ORDER BY KEY DESC")
         val buf = new collection.mutable.ArrayBuffer[Int]()
         while (rs.next()) { buf += rs.getInt(1) }
         rs.close()
@@ -414,10 +416,9 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
   test("test add jar") {
     withMultipleConnectionJdbcStatement(
       { statement =>
-        val jarFile =
-          "../hive/src/test/resources/hive-hcatalog-core-0.13.1.jar"
-            .split("/")
-            .mkString(File.separator)
+        val jarFile = "../hive/src/test/resources/hive-hcatalog-core-0.13.1.jar"
+          .split("/")
+          .mkString(File.separator)
 
         statement.executeQuery(s"ADD JAR $jarFile")
       },
@@ -439,16 +440,14 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
               |INSERT INTO TABLE addJar SELECT 'k1' as key FROM smallKV limit 1
             """.stripMargin)
 
-        val actualResult =
-          statement.executeQuery("SELECT key FROM addJar")
+        val actualResult = statement.executeQuery("SELECT key FROM addJar")
         val actualResultBuffer = new collection.mutable.ArrayBuffer[String]()
         while (actualResult.next()) {
           actualResultBuffer += actualResult.getString(1)
         }
         actualResult.close()
 
-        val expectedResult =
-          statement.executeQuery("SELECT 'k1'")
+        val expectedResult = statement.executeQuery("SELECT 'k1'")
         val expectedResultBuffer = new collection.mutable.ArrayBuffer[String]()
         while (expectedResult.next()) {
           expectedResultBuffer += expectedResult.getString(1)
@@ -663,14 +662,16 @@ abstract class HiveThriftServer2Test
     with Logging {
   def mode: ServerMode.Value
 
-  private val CLASS_NAME =
-    HiveThriftServer2.getClass.getCanonicalName.stripSuffix("$")
+  private val CLASS_NAME = HiveThriftServer2.getClass.getCanonicalName
+    .stripSuffix("$")
   private val LOG_FILE_MARK = s"starting $CLASS_NAME, logging to "
 
-  protected val startScript =
-    "../../sbin/start-thriftserver.sh".split("/").mkString(File.separator)
-  protected val stopScript =
-    "../../sbin/stop-thriftserver.sh".split("/").mkString(File.separator)
+  protected val startScript = "../../sbin/start-thriftserver.sh"
+    .split("/")
+    .mkString(File.separator)
+  protected val stopScript = "../../sbin/stop-thriftserver.sh"
+    .split("/")
+    .mkString(File.separator)
 
   private var listeningPort: Int = _
   protected def serverPort: Int = listeningPort
@@ -691,9 +692,9 @@ abstract class HiveThriftServer2Test
   protected def extraConf: Seq[String] = Nil
 
   protected def serverStartCommand(port: Int) = {
-    val portConf = if (mode == ServerMode.binary) {
-      ConfVars.HIVE_SERVER2_THRIFT_PORT
-    } else { ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT }
+    val portConf =
+      if (mode == ServerMode.binary) { ConfVars.HIVE_SERVER2_THRIFT_PORT }
+      else { ConfVars.HIVE_SERVER2_THRIFT_HTTP_PORT }
 
     val driverClassPath = {
       // Writes a temporary log4j.properties and prepend it to driver classpath, so that it
@@ -798,8 +799,8 @@ abstract class HiveThriftServer2Test
     val successLines = Seq(THRIFT_BINARY_SERVICE_LIVE, THRIFT_HTTP_SERVICE_LIVE)
 
     logTailingProcess = {
-      val command =
-        s"/usr/bin/env tail -n +0 -f ${logPath.getCanonicalPath}".split(" ")
+      val command = s"/usr/bin/env tail -n +0 -f ${logPath.getCanonicalPath}"
+        .split(" ")
       // Using "-n +0" to make sure all lines in the log file are checked.
       val builder = new ProcessBuilder(command: _*)
       val captureOutput = (line: String) =>

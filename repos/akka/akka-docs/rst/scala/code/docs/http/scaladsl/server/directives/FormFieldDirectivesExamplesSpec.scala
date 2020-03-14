@@ -10,11 +10,10 @@ import docs.http.scaladsl.server.RoutingSpec
 
 class FormFieldDirectivesExamplesSpec extends RoutingSpec {
   "formFields" in {
-    val route =
-      formFields('color, 'age.as[Int]) { (color, age) =>
-        complete(
-          s"The color is '$color' and the age ten years ago was ${age - 10}")
-      }
+    val route = formFields('color, 'age.as[Int]) { (color, age) =>
+      complete(
+        s"The color is '$color' and the age ten years ago was ${age - 10}")
+    }
 
     // tests:
     Post("/", FormData("color" -> "blue", "age" -> "68")) ~> route ~> check {
@@ -44,13 +43,12 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "formFieldMap" in {
-    val route =
-      formFieldMap { fields =>
-        def formFieldString(formField: (String, String)): String =
-          s"""${formField._1} = '${formField._2}'"""
-        complete(
-          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
-      }
+    val route = formFieldMap { fields =>
+      def formFieldString(formField: (String, String)): String =
+        s"""${formField._1} = '${formField._2}'"""
+      complete(
+        s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+    }
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
@@ -62,11 +60,10 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "formFieldMultiMap" in {
-    val route =
-      formFieldMultiMap { fields =>
-        complete("There are " +
-          s"form fields ${fields.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
-      }
+    val route = formFieldMultiMap { fields =>
+      complete("There are " +
+        s"form fields ${fields.map(x => x._1 + " -> " + x._2.size).mkString(", ")}")
+    }
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {
@@ -80,13 +77,12 @@ class FormFieldDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "formFieldSeq" in {
-    val route =
-      formFieldSeq { fields =>
-        def formFieldString(formField: (String, String)): String =
-          s"""${formField._1} = '${formField._2}'"""
-        complete(
-          s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
-      }
+    val route = formFieldSeq { fields =>
+      def formFieldString(formField: (String, String)): String =
+        s"""${formField._1} = '${formField._2}'"""
+      complete(
+        s"The form fields are ${fields.map(formFieldString).mkString(", ")}")
+    }
 
     // tests:
     Post("/", FormData("color" -> "blue", "count" -> "42")) ~> route ~> check {

@@ -56,35 +56,25 @@ trait Any extends scala.AnyRef
 
 /** Provides implicit conversions from Scala values to JavaScript values. */
 object Any extends LowPrioAnyImplicits {
-  @inline implicit def fromUnit(value: Unit): Any =
-    value.asInstanceOf[Any]
+  @inline implicit def fromUnit(value: Unit): Any = value.asInstanceOf[Any]
   @inline implicit def fromBoolean(value: Boolean): Any =
     value.asInstanceOf[Any]
-  @inline implicit def fromByte(value: Byte): Any =
-    value.asInstanceOf[Any]
-  @inline implicit def fromShort(value: Short): Any =
-    value.asInstanceOf[Any]
-  @inline implicit def fromInt(value: Int): Any =
-    value.asInstanceOf[Any]
+  @inline implicit def fromByte(value: Byte): Any = value.asInstanceOf[Any]
+  @inline implicit def fromShort(value: Short): Any = value.asInstanceOf[Any]
+  @inline implicit def fromInt(value: Int): Any = value.asInstanceOf[Any]
   @inline implicit def fromLong(value: Long): Any =
     value.toDouble.asInstanceOf[Any]
-  @inline implicit def fromFloat(value: Float): Any =
-    value.asInstanceOf[Any]
-  @inline implicit def fromDouble(value: Double): Any =
-    value.asInstanceOf[Any]
-  @inline implicit def fromString(s: String): Any =
-    s.asInstanceOf[Any]
+  @inline implicit def fromFloat(value: Float): Any = value.asInstanceOf[Any]
+  @inline implicit def fromDouble(value: Double): Any = value.asInstanceOf[Any]
+  @inline implicit def fromString(s: String): Any = s.asInstanceOf[Any]
 
-  implicit def jsArrayOps[A](array: Array[A]): ArrayOps[A] =
-    new ArrayOps(array)
+  implicit def jsArrayOps[A](array: Array[A]): ArrayOps[A] = new ArrayOps(array)
 
   implicit def canBuildFromArray[A]: CanBuildFrom[Array[_], A, Array[A]] = {
     @inline
     class CanBuildFromArray extends CanBuildFrom[Array[_], A, Array[A]] {
-      def apply(from: Array[_]): mutable.Builder[A, Array[A]] =
-        new ArrayOps[A]
-      def apply(): mutable.Builder[A, Array[A]] =
-        new ArrayOps[A]
+      def apply(from: Array[_]): mutable.Builder[A, Array[A]] = new ArrayOps[A]
+      def apply(): mutable.Builder[A, Array[A]] = new ArrayOps[A]
     }
     new CanBuildFromArray
   }

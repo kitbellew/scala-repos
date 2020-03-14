@@ -27,21 +27,19 @@ class ServerAdmissionControlTest extends FunSuite with MockitoSugar {
     object Addition2Filter {
       val name = "multiple 2"
 
-      val typeAgnostic: TypeAgnostic =
-        new TypeAgnostic {
-          override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-            new AdditionFilter(2)
-        }
+      val typeAgnostic: TypeAgnostic = new TypeAgnostic {
+        override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+          new AdditionFilter(2)
+      }
     }
 
     object Addition3Filter {
       val name = "multiple 3"
 
-      val typeAgnostic: TypeAgnostic =
-        new TypeAgnostic {
-          override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
-            new AdditionFilter(3)
-        }
+      val typeAgnostic: TypeAgnostic = new TypeAgnostic {
+        override def toFilter[Req, Rep]: Filter[Req, Rep, Req, Rep] =
+          new AdditionFilter(3)
+      }
     }
 
     ServerAdmissionControl.unregisterAll()

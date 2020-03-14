@@ -158,8 +158,8 @@ class ErrorFormatter(
     * Formats what is expected at the error location as a [[List]] of Strings.
     */
   def formatExpectedAsList(error: ParseError): List[String] = {
-    val distinctStrings: Set[String] =
-      error.effectiveTraces.map(formatAsExpected)(collection.breakOut)
+    val distinctStrings: Set[String] = error.effectiveTraces.map(
+      formatAsExpected)(collection.breakOut)
     distinctStrings.toList
   }
 
@@ -186,8 +186,9 @@ class ErrorFormatter(
       error: ParseError,
       input: ParserInput): JStringBuilder = {
     import error.position._
-    val (expandedCol, expandedLine) =
-      expandErrorLineTabs(input getLine line, column)
+    val (expandedCol, expandedLine) = expandErrorLineTabs(
+      input getLine line,
+      column)
     sb.append(expandedLine).append('\n')
     for (i ← 1 until expandedCol) sb.append(' ')
     sb.append('^')

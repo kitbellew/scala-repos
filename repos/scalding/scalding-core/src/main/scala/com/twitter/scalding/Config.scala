@@ -69,8 +69,7 @@ trait Config extends Serializable {
   def setCascadingAppName(name: String): Config =
     this + (CascadingAppName -> name)
 
-  def setCascadingAppId(id: String): Config =
-    this + (CascadingAppId -> id)
+  def setCascadingAppId(id: String): Config = this + (CascadingAppId -> id)
 
   /**
     * Non-fat-jar use cases require this, BUT using it
@@ -181,18 +180,16 @@ trait Config extends Serializable {
       userHadoop: Seq[Class[_ <: HSerialization[_]]] = Nil): Config = {
 
     // Hadoop and Cascading should come first
-    val first: Seq[Class[_ <: HSerialization[_]]] =
-      Seq(
-        classOf[org.apache.hadoop.io.serializer.WritableSerialization],
-        classOf[cascading.tuple.hadoop.TupleSerialization],
-        classOf[serialization.WrappedSerialization[_]]
-      )
+    val first: Seq[Class[_ <: HSerialization[_]]] = Seq(
+      classOf[org.apache.hadoop.io.serializer.WritableSerialization],
+      classOf[cascading.tuple.hadoop.TupleSerialization],
+      classOf[serialization.WrappedSerialization[_]]
+    )
     // this must come last
     val last: Seq[Class[_ <: HSerialization[_]]] = Seq(
       classOf[com.twitter.chill.hadoop.KryoSerialization])
-    val required =
-      (first ++ last)
-        .toSet[AnyRef] // Class is invariant, but we use it as a function
+    val required = (first ++ last)
+      .toSet[AnyRef] // Class is invariant, but we use it as a function
     // Make sure we keep the order correct and don't add the required fields twice
     val hadoopSer = first ++ (userHadoop.filterNot(required)) ++ last
 
@@ -288,8 +285,7 @@ trait Config extends Serializable {
   def setScaldingExecutionId(id: String): Config =
     this.+(ScaldingExecutionId -> id)
 
-  def getScaldingExecutionId: Option[String] =
-    get(ScaldingExecutionId)
+  def getScaldingExecutionId: Option[String] = get(ScaldingExecutionId)
 
   /*
    * Add this class name and the md5 hash of it into the config
@@ -377,8 +373,7 @@ trait Config extends Serializable {
     }._2
   }
 
-  def clearFlowStepStrategies: Config =
-    this.-(Config.FlowStepStrategies)
+  def clearFlowStepStrategies: Config = this.-(Config.FlowStepStrategies)
 
   def getFlowStepStrategies
       : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
@@ -560,8 +555,7 @@ object Config {
     */
   def overwrite[K >: String, V >: String](
       m: Map[K, V],
-      conf: Config): Map[K, V] =
-    m ++ (conf.toMap.toMap[K, V])
+      conf: Config): Map[K, V] = m ++ (conf.toMap.toMap[K, V])
 
   /*
    * Note that Hadoop Configuration is mutable, but Config is not. So a COPY is
@@ -614,10 +608,10 @@ object Config {
       : Injection[T, String] =
     Injection.connect[T, Externalizer[T], Array[Byte], Base64String, String]
 
-  @transient private[scalding] lazy val flowStepListenerSerializer =
-    buildInj[(Mode, Config) => FlowStepListener]
-  @transient private[scalding] lazy val flowListenerSerializer =
-    buildInj[(Mode, Config) => FlowListener]
-  @transient private[scalding] lazy val flowStepStrategiesSerializer =
-    buildInj[(Mode, Config) => FlowStepStrategy[JobConf]]
+  @transient private[scalding] lazy val flowStepListenerSerializer = buildInj[
+    (Mode, Config) => FlowStepListener]
+  @transient private[scalding] lazy val flowListenerSerializer = buildInj[
+    (Mode, Config) => FlowListener]
+  @transient private[scalding] lazy val flowStepStrategiesSerializer = buildInj[
+    (Mode, Config) => FlowStepStrategy[JobConf]]
 }

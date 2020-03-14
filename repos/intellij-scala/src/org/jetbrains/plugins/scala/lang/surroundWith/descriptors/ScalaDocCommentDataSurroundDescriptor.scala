@@ -54,11 +54,12 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
         else return PsiElement.EMPTY_ARRAY
       }
 
-    val isLastElementMarked = if (checkBoundElement(endElement)) { false }
-    else {
-      if (checkSyntaxBoundElement(endElement, false)) true
-      else return PsiElement.EMPTY_ARRAY
-    }
+    val isLastElementMarked =
+      if (checkBoundElement(endElement)) { false }
+      else {
+        if (checkSyntaxBoundElement(endElement, false)) true
+        else return PsiElement.EMPTY_ARRAY
+      }
 
     if (startElement.getParent != endElement.getParent) {
       (isFirstElementMarked, isLastElementMarked) match {
@@ -76,17 +77,19 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
 
     if (endElement == startElement) { return Array(startElement) }
 
-    var (nextElement, elementsToSurround) = if (isFirstElementMarked) {
-      if (startElement.getParent.getTextRange.getEndOffset <= endOffset)
-        (
-          startElement.getParent.getNextSibling,
-          ArrayBuffer(startElement.getParent))
-      else return PsiElement.EMPTY_ARRAY
-    } else { (startElement.getNextSibling, ArrayBuffer(startElement)) }
-    val lastBoundElement = if (isLastElementMarked) {
-      if (endElement.getTextOffset >= startOffset) (endElement.getParent)
-      else return PsiElement.EMPTY_ARRAY
-    } else { endElement }
+    var (nextElement, elementsToSurround) =
+      if (isFirstElementMarked) {
+        if (startElement.getParent.getTextRange.getEndOffset <= endOffset)
+          (
+            startElement.getParent.getNextSibling,
+            ArrayBuffer(startElement.getParent))
+        else return PsiElement.EMPTY_ARRAY
+      } else { (startElement.getNextSibling, ArrayBuffer(startElement)) }
+    val lastBoundElement =
+      if (isLastElementMarked) {
+        if (endElement.getTextOffset >= startOffset) (endElement.getParent)
+        else return PsiElement.EMPTY_ARRAY
+      } else { endElement }
 
     var hasAsterisk = false
 

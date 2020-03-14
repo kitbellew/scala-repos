@@ -50,8 +50,9 @@ object ImageSaver extends Logging {
     var fileExtension: String = ""
     var mimeType: String = null
     try {
-      val imageDims: ImageDetails =
-        ImageUtils.getImageDimensions(config.imagemagickIdentifyPath, fileName)
+      val imageDims: ImageDetails = ImageUtils.getImageDimensions(
+        config.imagemagickIdentifyPath,
+        fileName)
       mimeType = imageDims.getMimeType
       if (mimeType == "GIF") {
         if (logger.isDebugEnabled) { logger.debug("SNEAKY GIF! " + fileName) }

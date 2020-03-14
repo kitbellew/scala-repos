@@ -302,8 +302,9 @@ abstract class AbstractTestRunConfiguration(
               throw new RuntimeConfigurationException("Module is not specified")
             }
         }
-        val pack =
-          JavaPsiFacade.getInstance(project).findPackage(getTestPackagePath)
+        val pack = JavaPsiFacade
+          .getInstance(project)
+          .findPackage(getTestPackagePath)
         if (pack == null) {
           throw new RuntimeConfigurationException("Package doesn't exist")
         }
@@ -462,8 +463,9 @@ abstract class AbstractTestRunConfiguration(
 
         if (JdkUtil.useDynamicClasspath(getProject)) {
           try {
-            val fileWithParams: File =
-              File.createTempFile("abstracttest", ".tmp")
+            val fileWithParams: File = File.createTempFile(
+              "abstracttest",
+              ".tmp")
             val outputStream = new FileOutputStream(fileWithParams)
             val printer: PrintStream = new PrintStream(outputStream)
             if (getFailedTests == null) {
@@ -649,13 +651,14 @@ abstract class AbstractTestRunConfiguration(
     for (search <- SearchForTest.values()) {
       if (search.toString == s) searchTest = search
     }
-    testName =
-      Option(JDOMExternalizer.readString(element, "testName")).getOrElse("")
+    testName = Option(JDOMExternalizer.readString(element, "testName"))
+      .getOrElse("")
     testKind = TestKind.fromString(
       Option(JDOMExternalizer.readString(element, "testKind"))
         .getOrElse("Class"))
-    showProgressMessages =
-      JDOMExternalizer.readBoolean(element, "showProgressMessages")
+    showProgressMessages = JDOMExternalizer.readBoolean(
+      element,
+      "showProgressMessages")
   }
 }
 

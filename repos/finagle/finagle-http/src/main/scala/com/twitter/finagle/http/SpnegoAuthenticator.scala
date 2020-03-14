@@ -119,10 +119,9 @@ object SpnegoAuthenticator {
           Subject.doAs(portal.getSubject, createContextAction)
         }
 
-      private val createContextAction =
-        new PrivilegedAction[GSSContext] {
-          def run(): GSSContext = createGSSContext()
-        }
+      private val createContextAction = new PrivilegedAction[GSSContext] {
+        def run(): GSSContext = createGSSContext()
+      }
 
       /** Called while running with the privileges of the given loginContext.  */
       protected def createGSSContext(): GSSContext
@@ -142,8 +141,9 @@ object SpnegoAuthenticator {
         _serverPrincipalType: Oid = JAAS.Krb5PrincipalType
     ) extends ClientSource
         with JAAS {
-      val serverPrincipal =
-        manager.createName(_serverPrincipal, _serverPrincipalType)
+      val serverPrincipal = manager.createName(
+        _serverPrincipal,
+        _serverPrincipalType)
 
       def init(
           context: GSSContext,
@@ -176,8 +176,10 @@ object SpnegoAuthenticator {
         with JAAS {
       def accept(context: GSSContext, negotiation: Token): Future[Negotiated] =
         pool {
-          val token =
-            context.acceptSecContext(negotiation, 0, negotiation.length)
+          val token = context.acceptSecContext(
+            negotiation,
+            0,
+            negotiation.length)
           val established = if (context.isEstablished) Some(context) else None
           val wwwAuthenticate = AuthHeader(Option(token))
           Negotiated(established, wwwAuthenticate)
@@ -286,10 +288,9 @@ object SpnegoAuthenticator {
           val credentialFuture = credentialOption.getOrElse(credSrc.load())
           credentialFuture.flatMap { context =>
             // look for any Token data in the challenge, and attempt to initialize
-            val challengeToken =
-              rsps.wwwAuthenticateHeader(rsp).collect {
-                case AuthHeader(token) => token
-              }
+            val challengeToken = rsps.wwwAuthenticateHeader(rsp).collect {
+              case AuthHeader(token) => token
+            }
             credSrc.init(context, challengeToken).flatMap { nextToken =>
               // loop to reattempt the request, mutated with the next token data
               reqs.authorizationHeader(req, nextToken)

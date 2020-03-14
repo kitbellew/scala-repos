@@ -64,8 +64,8 @@ trait FieldPoly extends Poly1 {
     def apply[Res](fn: A => Res) =
       new Case[FieldType[T, A]] {
         type Result = FieldType[T, Res]
-        val value: Function1[A :: HNil, FieldType[T, Res]] =
-          (l: A :: HNil) => field[T](fn(l.head))
+        val value: Function1[A :: HNil, FieldType[T, Res]] = (l: A :: HNil) =>
+          field[T](fn(l.head))
       }
   }
 
@@ -109,10 +109,9 @@ class LabelledMacros(val c: whitebox.Context)
     val labelValues = labels.map(mkSingletonSymbol)
 
     val labelsTpe = mkHListTpe(labelTpes)
-    val labelsValue =
-      labelValues.foldRight(q"_root_.shapeless.HNil": Tree) {
-        case (elem, acc) => q"_root_.shapeless.::($elem, $acc)"
-      }
+    val labelsValue = labelValues.foldRight(q"_root_.shapeless.HNil": Tree) {
+      case (elem, acc) => q"_root_.shapeless.::($elem, $acc)"
+    }
 
     q"""
       new _root_.shapeless.DefaultSymbolicLabelling[$tTpe] {
@@ -142,17 +141,15 @@ class LabelledMacros(val c: whitebox.Context)
       else
         tpeString.split(",").map(_.trim).map(_.split("->").map(_.trim)).map {
           case Array(key, value) =>
-            val keyTpe =
-              parseLiteralType(key)
-                .getOrElse(
-                  c.abort(c.enclosingPosition, s"Malformed literal type $key"))
+            val keyTpe = parseLiteralType(key)
+              .getOrElse(
+                c.abort(c.enclosingPosition, s"Malformed literal type $key"))
 
-            val valueTpe =
-              parseType(value)
-                .getOrElse(
-                  c.abort(
-                    c.enclosingPosition,
-                    s"Malformed literal or standard type $value"))
+            val valueTpe = parseType(value)
+              .getOrElse(
+                c.abort(
+                  c.enclosingPosition,
+                  s"Malformed literal or standard type $value"))
 
             (keyTpe, valueTpe)
 
@@ -160,12 +157,11 @@ class LabelledMacros(val c: whitebox.Context)
             c.abort(c.enclosingPosition, s"Malformed $variety type $tpeString")
         }
 
-    val labelledTpe =
-      fields.foldRight(nilTpe) {
-        case ((keyTpe, valueTpe), acc) =>
-          val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
-          appliedType(consTpe, List(fieldTpe, acc))
-      }
+    val labelledTpe = fields.foldRight(nilTpe) {
+      case ((keyTpe, valueTpe), acc) =>
+        val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
+        appliedType(consTpe, List(fieldTpe, acc))
+    }
 
     typeCarrier(labelledTpe)
   }
@@ -193,11 +189,10 @@ class LabelledMacros(val c: whitebox.Context)
                 s"Malformed literal or standard type $elemTypeStr"))
         }
 
-    val tpe =
-      elemTypes.foldRight(nilTpe) {
-        case (elemTpe, acc) =>
-          appliedType(consTpe, List(elemTpe, acc))
-      }
+    val tpe = elemTypes.foldRight(nilTpe) {
+      case (elemTpe, acc) =>
+        appliedType(consTpe, List(elemTpe, acc))
+    }
 
     typeCarrier(tpe)
   }

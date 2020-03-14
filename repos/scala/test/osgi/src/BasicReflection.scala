@@ -37,8 +37,7 @@ object M
 class BasicReflectionTest extends ScalaOsgiHelper {
 
   @Configuration
-  def config(): Array[exam.Option] =
-    justReflectionOptions
+  def config(): Array[exam.Option] = justReflectionOptions
 
   // Ensure Pax-exam requires C/M in our module
   def dummy = {

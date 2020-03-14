@@ -91,8 +91,8 @@ trait ScExpression
         case _ => default
       }
     } else {
-      val expected: ScType =
-        expectedOption.getOrElse(expectedType(fromUnderscore).orNull)
+      val expected: ScType = expectedOption.getOrElse(
+        expectedType(fromUnderscore).orNull)
       if (expected == null) {
         ExpressionTypeResult(
           getTypeWithoutImplicits(ignoreBaseTypes, fromUnderscore),
@@ -114,15 +114,17 @@ trait ScExpression
                 case _       =>
               }
 
-              val functionType =
-                ScFunctionType(expected, Seq(tp))(getProject, getResolveScope)
-              val results = new ImplicitCollector(
-                ScExpression.this,
-                functionType,
-                functionType,
-                None,
-                isImplicitConversion = true,
-                isExtensionConversion = false).collect()
+              val functionType = ScFunctionType(expected, Seq(tp))(
+                getProject,
+                getResolveScope)
+              val results =
+                new ImplicitCollector(
+                  ScExpression.this,
+                  functionType,
+                  functionType,
+                  None,
+                  isImplicitConversion = true,
+                  isExtensionConversion = false).collect()
               if (results.length == 1) {
                 val res = results.head
                 val paramType = InferUtil.extractImplicitParameterType(res)
@@ -192,8 +194,9 @@ trait ScExpression
             case Some(methodType) if tp.conforms(methodType) => expectedResult
             case Some(methodType @ ScFunctionType(retTp, _))
                 if etaExpansionHappened && retTp.equiv(Unit) =>
-              val newTp =
-                ScFunctionType(Unit, params)(getProject, getResolveScope)
+              val newTp = ScFunctionType(Unit, params)(
+                getProject,
+                getResolveScope)
               if (newTp.conforms(methodType)) expectedResult else None
             case _ => None
           }
@@ -240,8 +243,8 @@ trait ScExpression
             }
           }
 
-          val checkImplicitParameters =
-            ScalaPsiUtil.withEtaExpansion(ScExpression.this)
+          val checkImplicitParameters = ScalaPsiUtil.withEtaExpansion(
+            ScExpression.this)
           if (checkImplicitParameters) {
             val tuple = InferUtil.updateTypeWithImplicitParameters(
               res,
@@ -521,13 +524,12 @@ trait ScExpression
               .unpackedType
             new Parameter("", None, tpe, false, false, false, index)
         }
-        val methType =
-          new ScMethodType(
-            getTypeAfterImplicitConversion(
-              ignoreBaseTypes = ignoreBaseType,
-              fromUnderscore = true).tr.getOrAny,
-            params,
-            false)(getProject, getResolveScope)
+        val methType = new ScMethodType(
+          getTypeAfterImplicitConversion(
+            ignoreBaseTypes = ignoreBaseType,
+            fromUnderscore = true).tr.getOrAny,
+          params,
+          false)(getProject, getResolveScope)
         new Success(methType, Some(ScExpression.this))
       }
     }
@@ -549,11 +551,12 @@ trait ScExpression
         .asInstanceOf[ScExpression]
         .replaceExpression(expr, removeParenthesis = true)
     }
-    val newExpr: ScExpression = if (ScalaPsiUtil.needParentheses(this, expr)) {
-      ScalaPsiElementFactory.createExpressionFromText(
-        "(" + expr.getText + ")",
-        getManager)
-    } else expr
+    val newExpr: ScExpression =
+      if (ScalaPsiUtil.needParentheses(this, expr)) {
+        ScalaPsiElementFactory.createExpressionFromText(
+          "(" + expr.getText + ")",
+          getManager)
+      } else expr
     val parentNode = oldParent.getNode
     val newNode = newExpr.copy.getNode
     parentNode.replaceChild(this.getNode, newNode)
@@ -713,15 +716,14 @@ trait ScExpression
       tp: ScType,
       exprs: Seq[ScExpression],
       call: Option[MethodInvocation]): Array[ScalaResolveResult] = {
-    val applyProc =
-      new MethodResolveProcessor(
-        ScExpression.this,
-        "apply",
-        List(exprs),
-        Seq.empty,
-        Seq.empty /* todo: ? */,
-        StdKinds.methodsOnly,
-        isShapeResolve = true)
+    val applyProc = new MethodResolveProcessor(
+      ScExpression.this,
+      "apply",
+      List(exprs),
+      Seq.empty,
+      Seq.empty /* todo: ? */,
+      StdKinds.methodsOnly,
+      isShapeResolve = true)
     applyProc.processType(tp, ScExpression.this)
     var cand = applyProc.candidates
     if (cand.length == 0 && call.isDefined) {
@@ -733,12 +735,13 @@ trait ScExpression
         applyProc,
         noImplicitsForArgs = false) match {
         case Some(res) =>
-          var state =
-            ResolveState.initial.put(CachesUtil.IMPLICIT_FUNCTION, res.element)
+          var state = ResolveState.initial
+            .put(CachesUtil.IMPLICIT_FUNCTION, res.element)
           res.getClazz match {
             case Some(cl: PsiClass) =>
-              state =
-                state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
+              state = state.put(
+                ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY,
+                cl)
             case _ =>
           }
           applyProc.processType(

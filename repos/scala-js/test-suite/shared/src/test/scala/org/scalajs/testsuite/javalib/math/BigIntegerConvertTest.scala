@@ -435,8 +435,8 @@ class BigIntegerConvertTest {
   }
 
   @Test def testLongValuePositive1(): Unit = {
-    val aBytes =
-      Array[Byte](12, 56, 100, -2, -76, 89, 45, 91, 3, 120, -34, -12, 45, 98)
+    val aBytes = Array[Byte](12, 56, 100, -2, -76, 89, 45, 91, 3, 120, -34, -12,
+      45, 98)
     val result = 3268209772258930018L
     val aNumber = new BigInteger(aBytes).longValue()
     assertEquals(result, aNumber)

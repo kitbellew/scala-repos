@@ -74,14 +74,14 @@ class SbtModuleBuilder
     val sbtVersionComboBox = new SComboBox(Array.empty)
     val scalaVersionComboBox = new SComboBox(Array.empty)
 
-    val (scalaVersions, sbtVersions) =
-      withProgressSynchronously("Fetching available versions") { listener =>
-        listener("Fetching Scala versions...")
-        val scalaVersions = Versions.loadScalaVersions
-        listener("Fetching SBT versions...")
-        val sbtVersions = Versions.loadSbtVersions
-        (scalaVersions, sbtVersions)
-      }
+    val (scalaVersions, sbtVersions) = withProgressSynchronously(
+      "Fetching available versions") { listener =>
+      listener("Fetching Scala versions...")
+      val scalaVersions = Versions.loadScalaVersions
+      listener("Fetching SBT versions...")
+      val sbtVersions = Versions.loadSbtVersions
+      (scalaVersions, sbtVersions)
+    }
 
     sbtVersionComboBox.setItems(sbtVersions)
     scalaVersionComboBox.setItems(scalaVersions)
@@ -184,13 +184,12 @@ class SbtModuleBuilder
 
     model.addContentEntry(vContentRootDir)
     model.inheritSdk()
-    val settings =
-      ExternalSystemApiUtil
-        .getSettings(model.getProject, SbtProjectSystem.Id)
-        .asInstanceOf[AbstractExternalSystemSettings[
-          _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
-          SbtProjectSettings,
-          _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
+    val settings = ExternalSystemApiUtil
+      .getSettings(model.getProject, SbtProjectSystem.Id)
+      .asInstanceOf[AbstractExternalSystemSettings[
+        _ <: AbstractExternalSystemSettings[_, SbtProjectSettings, _],
+        SbtProjectSettings,
+        _ <: ExternalSystemSettingsListener[SbtProjectSettings]]]
 //    model.commit()
 
     val externalProjectSettings = getExternalProjectSettings

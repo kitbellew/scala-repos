@@ -74,8 +74,10 @@ private[streaming] class ReceiverSupervisorImpl(
   }
 
   /** Remote RpcEndpointRef for the ReceiverTracker */
-  private val trackerEndpoint =
-    RpcUtils.makeDriverRef("ReceiverTracker", env.conf, env.rpcEnv)
+  private val trackerEndpoint = RpcUtils.makeDriverRef(
+    "ReceiverTracker",
+    env.conf,
+    env.rpcEnv)
 
   /** RpcEndpointRef for receiving messages from the ReceiverTracker in the driver */
   private val endpoint = env.rpcEnv.setupEndpoint(
@@ -165,21 +167,26 @@ private[streaming] class ReceiverSupervisorImpl(
   ) {
     val blockId = blockIdOption.getOrElse(nextBlockId)
     val time = System.currentTimeMillis
-    val blockStoreResult =
-      receivedBlockHandler.storeBlock(blockId, receivedBlock)
+    val blockStoreResult = receivedBlockHandler.storeBlock(
+      blockId,
+      receivedBlock)
     logDebug(
       s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
     val numRecords = blockStoreResult.numRecords
-    val blockInfo =
-      ReceivedBlockInfo(streamId, numRecords, metadataOption, blockStoreResult)
+    val blockInfo = ReceivedBlockInfo(
+      streamId,
+      numRecords,
+      metadataOption,
+      blockStoreResult)
     trackerEndpoint.askWithRetry[Boolean](AddBlock(blockInfo))
     logDebug(s"Reported block $blockId")
   }
 
   /** Report error to the receiver tracker */
   def reportError(message: String, error: Throwable) {
-    val errorString =
-      Option(error).map(Throwables.getStackTraceAsString).getOrElse("")
+    val errorString = Option(error)
+      .map(Throwables.getStackTraceAsString)
+      .getOrElse("")
     trackerEndpoint.send(ReportError(streamId, message, errorString))
     logWarning("Reported error " + message + " - " + error)
   }

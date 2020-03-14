@@ -173,11 +173,12 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
     // handlers, see scaladoc of def methodOptimizations. Removing an live handler may render more
     // code unreachable and therefore requires running another round.
     def removalRound(): Boolean = {
-      val (insnsRemoved, liveLabels) =
-        removeUnreachableCodeImpl(method, ownerClassName)
+      val (insnsRemoved, liveLabels) = removeUnreachableCodeImpl(
+        method,
+        ownerClassName)
       if (insnsRemoved) {
-        val liveHandlerRemoved =
-          removeEmptyExceptionHandlers(method).exists(h => liveLabels(h.start))
+        val liveHandlerRemoved = removeEmptyExceptionHandlers(method).exists(
+          h => liveLabels(h.start))
         if (liveHandlerRemoved) removalRound()
       }
       insnsRemoved
@@ -462,8 +463,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
         nullness(insn, slot).contains(NullValue)
 
       // cannot change instructions while iterating, it gets the analysis out of synch (indexed by instructions)
-      val toReplace =
-        mutable.Map.empty[AbstractInsnNode, List[AbstractInsnNode]]
+      val toReplace = mutable.Map
+        .empty[AbstractInsnNode, List[AbstractInsnNode]]
 
       val it = method.instructions.iterator()
       while (it.hasNext) it.next() match {
@@ -771,8 +772,8 @@ object LocalOptImpls {
     }
 
     // Update the local variable descriptors according to the renumber table, and eliminate stale entries
-    val removedLocalVariableDescriptors =
-      removeUnusedLocalVariableNodes(method)(firstLocalIndex, renumber)
+    val removedLocalVariableDescriptors = removeUnusedLocalVariableNodes(
+      method)(firstLocalIndex, renumber)
 
     if (nextIndex == renumber.length) removedLocalVariableDescriptors
     else {

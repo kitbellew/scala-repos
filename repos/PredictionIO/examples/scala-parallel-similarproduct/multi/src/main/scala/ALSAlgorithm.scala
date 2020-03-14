@@ -182,24 +182,26 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       .seq
       .flatten
 
-    val whiteList: Option[Set[Int]] =
-      query.whiteList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
-    val blackList: Option[Set[Int]] =
-      query.blackList.map(set => set.map(model.itemStringIntMap.get(_)).flatten)
+    val whiteList: Option[Set[Int]] = query.whiteList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
+    val blackList: Option[Set[Int]] = query.blackList.map(set =>
+      set.map(model.itemStringIntMap.get(_)).flatten)
 
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
 
-    val indexScores: Array[(Int, Double)] = if (queryFeatures.isEmpty) {
-      logger.info(s"No productFeatures vector for query items ${query.items}.")
-      Array[(Int, Double)]()
-    } else {
-      model.productFeatures
-        .mapValues { f =>
-          queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
-        }
-        .filter(_._2 > 0) // keep items with score > 0
-        .collect()
-    }
+    val indexScores: Array[(Int, Double)] =
+      if (queryFeatures.isEmpty) {
+        logger.info(
+          s"No productFeatures vector for query items ${query.items}.")
+        Array[(Int, Double)]()
+      } else {
+        model.productFeatures
+          .mapValues { f =>
+            queryFeatures.map { qf => cosine(qf, f) }.reduce(_ + _)
+          }
+          .filter(_._2 > 0) // keep items with score > 0
+          .collect()
+      }
 
     val filteredScore = indexScores.view.filter {
       case (i, v) =>

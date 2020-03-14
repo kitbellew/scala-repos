@@ -30,8 +30,8 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
   override def beforeAll(): Unit = {
     super.beforeAll()
     path = Utils.createTempDir()
-    val rdd =
-      sparkContext.parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
+    val rdd = sparkContext.parallelize(
+      (1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""))
     caseInsensitiveContext.read.json(rdd).registerTempTable("jt")
     sql(s"""
         |CREATE TEMPORARY TABLE jsonTable (a int, b string)

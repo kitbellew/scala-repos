@@ -56,18 +56,16 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
   }
 
   test("nice error message for missing encoder") {
-    val errorMsg1 =
-      intercept[UnsupportedOperationException](
-        ExpressionEncoder[ComplexNonEncodable1]).getMessage
+    val errorMsg1 = intercept[UnsupportedOperationException](
+      ExpressionEncoder[ComplexNonEncodable1]).getMessage
     assert(
       errorMsg1.contains(s"""root class: "${clsName[ComplexNonEncodable1]}""""))
     assert(
       errorMsg1.contains(
         s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
 
-    val errorMsg2 =
-      intercept[UnsupportedOperationException](
-        ExpressionEncoder[ComplexNonEncodable2]).getMessage
+    val errorMsg2 = intercept[UnsupportedOperationException](
+      ExpressionEncoder[ComplexNonEncodable2]).getMessage
     assert(
       errorMsg2.contains(s"""root class: "${clsName[ComplexNonEncodable2]}""""))
     assert(errorMsg2.contains(
@@ -76,9 +74,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       errorMsg1.contains(
         s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
 
-    val errorMsg3 =
-      intercept[UnsupportedOperationException](
-        ExpressionEncoder[ComplexNonEncodable3]).getMessage
+    val errorMsg3 = intercept[UnsupportedOperationException](
+      ExpressionEncoder[ComplexNonEncodable3]).getMessage
     assert(
       errorMsg3.contains(s"""root class: "${clsName[ComplexNonEncodable3]}""""))
     assert(
@@ -86,9 +83,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
     assert(
       errorMsg3.contains(s"""option value class: "${clsName[NonEncodable]}""""))
 
-    val errorMsg4 =
-      intercept[UnsupportedOperationException](
-        ExpressionEncoder[ComplexNonEncodable4]).getMessage
+    val errorMsg4 = intercept[UnsupportedOperationException](
+      ExpressionEncoder[ComplexNonEncodable4]).getMessage
     assert(
       errorMsg4.contains(s"""root class: "${clsName[ComplexNonEncodable4]}""""))
     assert(
@@ -97,9 +93,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       errorMsg4.contains(
         s"""array element class: "${clsName[NonEncodable]}""""))
 
-    val errorMsg5 =
-      intercept[UnsupportedOperationException](
-        ExpressionEncoder[ComplexNonEncodable5]).getMessage
+    val errorMsg5 = intercept[UnsupportedOperationException](
+      ExpressionEncoder[ComplexNonEncodable5]).getMessage
     assert(
       errorMsg5.contains(s"""root class: "${clsName[ComplexNonEncodable5]}""""))
     assert(

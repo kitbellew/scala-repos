@@ -134,13 +134,11 @@ object SbtRepositoryLayout extends RepositoryLayout {
   def getChecksums(
       artifact: Artifact,
       upload: Boolean,
-      location: URI): java.util.List[Checksum] =
-    getChecksums(location)
+      location: URI): java.util.List[Checksum] = getChecksums(location)
   def getChecksums(
       metadata: Metadata,
       upload: Boolean,
-      location: URI): java.util.List[Checksum] =
-    getChecksums(location)
+      location: URI): java.util.List[Checksum] = getChecksums(location)
 
   private def getChecksums(location: URI): java.util.List[Checksum] =
     java.util.Arrays.asList(

@@ -88,29 +88,25 @@ sealed trait Execution[+T] extends java.io.Serializable {
     * First run this Execution, then move to the result
     * of the function
     */
-  def flatMap[U](fn: T => Execution[U]): Execution[U] =
-    FlatMapped(this, fn)
+  def flatMap[U](fn: T => Execution[U]): Execution[U] = FlatMapped(this, fn)
 
   /**
     * This is the same as flatMap(identity)
     */
-  def flatten[U](implicit ev: T <:< Execution[U]): Execution[U] =
-    flatMap(ev)
+  def flatten[U](implicit ev: T <:< Execution[U]): Execution[U] = flatMap(ev)
 
   /**
     * Apply a pure function to the result. This may not
     * be called if subsequently the result is discarded with .unit
     * For side effects see onComplete.
     */
-  def map[U](fn: T => U): Execution[U] =
-    Mapped(this, fn)
+  def map[U](fn: T => U): Execution[U] = Mapped(this, fn)
 
   /**
     * Reads the counters into the value, but does not reset them.
     * You may want .getAndResetCounters.
     */
-  def getCounters: Execution[(T, ExecutionCounters)] =
-    GetCounters(this)
+  def getCounters: Execution[(T, ExecutionCounters)] = GetCounters(this)
 
   /**
     * Reads the counters and resets them to zero. Probably what
@@ -149,8 +145,7 @@ sealed trait Execution[+T] extends java.io.Serializable {
     * Resets the counters back to zero. This is useful if
     * you want to reset before a zip or a call to flatMap
     */
-  def resetCounters: Execution[T] =
-    ResetCounters(this)
+  def resetCounters: Execution[T] = ResetCounters(this)
 
   /**
     * This causes the Execution to occur. The result is not cached, so each call
@@ -162,8 +157,8 @@ sealed trait Execution[+T] extends java.io.Serializable {
   final def run(conf: Config, mode: Mode)(
       implicit cec: ConcurrentExecutionContext): Future[T] = {
     val ec = new EvalCache
-    val confWithId =
-      conf.setScaldingExecutionId(java.util.UUID.randomUUID.toString)
+    val confWithId = conf.setScaldingExecutionId(
+      java.util.UUID.randomUUID.toString)
     val result = runStats(confWithId, mode, ec)(cec).map(_._1)
     // When the final future in complete we stop the submit thread
     result.onComplete { _ => ec.finished() }
@@ -211,8 +206,7 @@ sealed trait Execution[+T] extends java.io.Serializable {
    * run this and that in parallel, without any dependency. This will
    * be done in a single cascading flow if possible.
    */
-  def zip[U](that: Execution[U]): Execution[(T, U)] =
-    Zipped(this, that)
+  def zip[U](that: Execution[U]): Execution[(T, U)] = Zipped(this, that)
 }
 
 /**
@@ -238,8 +232,7 @@ object Execution {
     def acquire(): Future[SemaphorePermit] = {
       val promise = Promise[SemaphorePermit]()
 
-      def setAcquired(): Unit =
-        promise.success(new SemaphorePermit)
+      def setAcquired(): Unit = promise.success(new SemaphorePermit)
 
       synchronized {
         if (availablePermits > 0) {
@@ -281,8 +274,7 @@ object Execution {
     *
     * Ex. (0 until 1000).map { _ => Execution.withNewCache(myLargeObjectProducingExecution)}
     */
-  def withNewCache[T](ex: Execution[T]): Execution[T] =
-    WithNewCache(ex)
+  def withNewCache[T](ex: Execution[T]): Execution[T] = WithNewCache(ex)
 
   /**
     * This is the standard semigroup on an Applicative (zip, then inside the Execution do plus)
@@ -772,8 +764,8 @@ object Execution {
               ToWrite,
               Either[Promise[ExecutionCounters], Future[ExecutionCounters]])] =
             (head :: tail).map { tw => (tw, cache.getOrLock(conf, tw)) }
-          val (weDoOperation, someoneElseDoesOperation) =
-            unwrapListEither(cacheLookup)
+          val (weDoOperation, someoneElseDoesOperation) = unwrapListEither(
+            cacheLookup)
 
           val otherResult = failFastSequence(someoneElseDoesOperation.map(_._2))
           otherResult.value match {
@@ -799,8 +791,8 @@ object Execution {
 
               failFastZip(otherResult, localFlowDefCountersFuture).map {
                 case (lCounters, fdCounters) =>
-                  val summedCounters: ExecutionCounters =
-                    Monoid.sum(fdCounters :: lCounters)
+                  val summedCounters: ExecutionCounters = Monoid.sum(
+                    fdCounters :: lCounters)
                   (fn(conf, mode), summedCounters)
               }
           }
@@ -890,8 +882,7 @@ object Execution {
     */
   private[scalding] def write[T](
       pipe: TypedPipe[T],
-      sink: TypedSink[T]): Execution[Unit] =
-    write(pipe, sink, ())
+      sink: TypedSink[T]): Execution[Unit] = write(pipe, sink, ())
 
   private[scalding] def write[T, U](
       pipe: TypedPipe[T],

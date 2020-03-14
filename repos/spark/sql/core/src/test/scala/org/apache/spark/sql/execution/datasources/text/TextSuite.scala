@@ -48,8 +48,9 @@ class TextSuite extends QueryTest with SharedSQLContext {
 
   test(
     "SPARK-12562 verify write.text() can handle column name beyond `value`") {
-    val df =
-      sqlContext.read.text(testFile).withColumnRenamed("value", "adwrasdf")
+    val df = sqlContext.read
+      .text(testFile)
+      .withColumnRenamed("value", "adwrasdf")
 
     val tempFile = Utils.createTempDir()
     tempFile.delete()
@@ -78,8 +79,10 @@ class TextSuite extends QueryTest with SharedSQLContext {
   test(
     "SPARK-13503 Support to specify the option for compression codec for TEXT") {
     val testDf = sqlContext.read.text(testFile)
-    val extensionNameMap =
-      Map("bzip2" -> ".bz2", "deflate" -> ".deflate", "gzip" -> ".gz")
+    val extensionNameMap = Map(
+      "bzip2" -> ".bz2",
+      "deflate" -> ".deflate",
+      "gzip" -> ".gz")
     extensionNameMap.foreach {
       case (codecName, extension) =>
         val tempDir = Utils.createTempDir()

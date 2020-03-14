@@ -112,8 +112,7 @@ class ListMap[A, +B]
   override def +[B1 >: B](
       elem1: (A, B1),
       elem2: (A, B1),
-      elems: (A, B1)*): ListMap[A, B1] =
-    this + elem1 + elem2 ++ elems
+      elems: (A, B1)*): ListMap[A, B1] = this + elem1 + elem2 ++ elems
 
   /** Adds a number of elements provided by a traversable object
     *  and returns a new collection with the added elements.

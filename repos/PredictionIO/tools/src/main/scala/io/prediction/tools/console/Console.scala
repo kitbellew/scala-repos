@@ -250,8 +250,8 @@ object Console extends Logging {
           c.copy(common = c.common.copy(engineParamsKey = Some(x)))
         },
         opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          c.copy(common = c.common
+            .copy(jsonExtractor = JsonExtractorOption.withName(x)))
         } validate { x =>
           if (JsonExtractorOption.values.map(_.toString).contains(x)) {
             success
@@ -280,8 +280,8 @@ object Console extends Logging {
           c.copy(common = c.common.copy(batch = x))
         } text ("Batch label of the run."),
         opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          c.copy(common = c.common
+            .copy(jsonExtractor = JsonExtractorOption.withName(x)))
         } validate { x =>
           if (JsonExtractorOption.values.map(_.toString).contains(x)) {
             success
@@ -340,8 +340,8 @@ object Console extends Logging {
           c.copy(deploy = c.deploy.copy(logPrefix = Some(x)))
         },
         opt[String]("json-extractor") action { (x, c) =>
-          c.copy(common =
-            c.common.copy(jsonExtractor = JsonExtractorOption.withName(x)))
+          c.copy(common = c.common
+            .copy(jsonExtractor = JsonExtractorOption.withName(x)))
         } validate { x =>
           if (JsonExtractorOption.values.map(_.toString).contains(x)) {
             success
@@ -549,8 +549,8 @@ object Console extends Logging {
           },
           arg[String]("[<event1> <event2> ...]") unbounded () optional ()
             action { (x, c) =>
-              c.copy(accessKey =
-                c.accessKey.copy(events = c.accessKey.events :+ x))
+              c.copy(accessKey = c.accessKey.copy(
+                events = c.accessKey.events :+ x))
             }
         ),
         cmd("list").text("List all access keys of an app.").action { (_, c) =>
@@ -1000,8 +1000,10 @@ object Console extends Logging {
       val sparkMinVersion = "1.3.0"
       val sparkReleaseFile = new File(s"$sparkHome/RELEASE")
       if (sparkReleaseFile.exists) {
-        val sparkReleaseStrings =
-          Source.fromFile(sparkReleaseFile).mkString.split(' ')
+        val sparkReleaseStrings = Source
+          .fromFile(sparkReleaseFile)
+          .mkString
+          .split(' ')
         if (sparkReleaseStrings.length < 2) {
           warn(stripMarginAndNewlines(
             s"""|Apache Spark version information cannot be found (RELEASE file

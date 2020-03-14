@@ -80,8 +80,10 @@ class TaskKillerTest
     val appId = PathId("invalid")
     when(tracker.hasAppTasksSync(appId)).thenReturn(false)
 
-    val result =
-      taskKiller.killAndScale(appId, (tasks) => Set.empty[Task], force = true)
+    val result = taskKiller.killAndScale(
+      appId,
+      (tasks) => Set.empty[Task],
+      force = true)
     result.failed.futureValue shouldEqual UnknownAppException(appId)
   }
 
@@ -97,8 +99,8 @@ class TaskKillerTest
 
     val groupUpdateCaptor = ArgumentCaptor.forClass(classOf[(Group) => Group])
     val forceCaptor = ArgumentCaptor.forClass(classOf[Boolean])
-    val toKillCaptor =
-      ArgumentCaptor.forClass(classOf[Map[PathId, Iterable[Task]]])
+    val toKillCaptor = ArgumentCaptor.forClass(
+      classOf[Map[PathId, Iterable[Task]]])
     val expectedDeploymentPlan = DeploymentPlan.empty
     when(
       groupManager.update(
@@ -109,8 +111,10 @@ class TaskKillerTest
         toKillCaptor.capture()))
       .thenReturn(Future.successful(expectedDeploymentPlan))
 
-    val result =
-      taskKiller.killAndScale(appId, (tasks) => tasksToKill, force = true)
+    val result = taskKiller.killAndScale(
+      appId,
+      (tasks) => tasksToKill,
+      force = true)
     result.futureValue shouldEqual expectedDeploymentPlan
     forceCaptor.getValue shouldEqual true
     toKillCaptor.getValue shouldEqual Map(appId -> tasksToKill)
@@ -153,8 +157,10 @@ class TaskKillerTest
         any[Map[PathId, Iterable[Task]]]
       )).thenReturn(Future.failed(AppLockedException()))
 
-    val result =
-      taskKiller.killAndScale(appId, (tasks) => tasksToKill, force = false)
+    val result = taskKiller.killAndScale(
+      appId,
+      (tasks) => tasksToKill,
+      force = false)
     forceCaptor.getValue shouldEqual false
     result.failed.futureValue shouldEqual AppLockedException()
   }

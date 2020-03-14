@@ -251,8 +251,8 @@ trait AssignClusterModule[M[+_]]
 
                         def transposeResults(values: Array[Array[Double]]) = {
                           var k = 0
-                          val acc =
-                            Array.fill(centerPaths.length)(Array.empty[Double])
+                          val acc = Array.fill(centerPaths.length)(
+                            Array.empty[Double])
 
                           while (k < values.length) {
                             var i = 0
@@ -315,8 +315,8 @@ trait AssignClusterModule[M[+_]]
                 implicit val semigroup = Column.unionRightSemigroup
                 val monoidCols = implicitly[Monoid[Map[ColumnRef, Column]]]
 
-                val reduced: Map[ColumnRef, Column] =
-                  result.toSet.suml(monoidCols)
+                val reduced: Map[ColumnRef, Column] = result.toSet.suml(
+                  monoidCols)
 
                 ((), reduced)
               }

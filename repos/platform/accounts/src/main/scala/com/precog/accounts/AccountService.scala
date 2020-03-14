@@ -134,8 +134,9 @@ trait AccountService
             logger.debug("Building account service state...")
             val (accountManager, stoppable) = AccountManager(config)
             val apiKeyFinder = APIKeyFinder(config.detach("security"))
-            val rootAccountId =
-              config[String]("accounts.rootAccountId", "INVALID")
+            val rootAccountId = config[String](
+              "accounts.rootAccountId",
+              "INVALID")
             val rootAPIKey = RootKey(config.detach("security"))
             val emailer = Emailer(config.detach("email"))
 

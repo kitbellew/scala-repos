@@ -28,8 +28,7 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
           bm.dataStream.runWith(Sink.ignore)
           Nil
       }
-    val websocketRoute =
-      path("greeter") { handleWebSocketMessages(greeter) }
+    val websocketRoute = path("greeter") { handleWebSocketMessages(greeter) }
 
     // tests:
     // create a testing probe representing the client-side

@@ -113,8 +113,7 @@ trait EitherInstances extends EitherInstances0 {
           case Left(a)      => f(a)
         }
 
-      def raiseError[A](e: L) =
-        Left(e)
+      def raiseError[A](e: L) = Left(e)
 
       def point[A](a: => A) = Right(a)
 
@@ -233,25 +232,22 @@ trait EitherInstances extends EitherInstances0 {
       def from[A, B](ga: Either[A, B]) = Last(ga.right)
     }
 
-  val eitherLeftInstance =
-    new IsomorphismBifunctor[LeftProjection, Either] {
-      def iso = LeftProjectionIso2
-      implicit def G: Bifunctor[Either] = eitherInstance
-    }
+  val eitherLeftInstance = new IsomorphismBifunctor[LeftProjection, Either] {
+    def iso = LeftProjectionIso2
+    implicit def G: Bifunctor[Either] = eitherInstance
+  }
 
-  val eitherFirstLeftInstance =
-    new IsomorphismBifunctor[
-      λ[(α, β) => LeftProjection[α, β] @@ First],
-      Either] {
-      def iso = FirstLeftProjectionIso2
-      implicit def G: Bifunctor[Either] = eitherInstance
-    }
+  val eitherFirstLeftInstance = new IsomorphismBifunctor[
+    λ[(α, β) => LeftProjection[α, β] @@ First],
+    Either] {
+    def iso = FirstLeftProjectionIso2
+    implicit def G: Bifunctor[Either] = eitherInstance
+  }
 
-  val eitherRightInstance =
-    new IsomorphismBifunctor[RightProjection, Either] {
-      def iso = RightProjectionIso2
-      implicit def G: Bifunctor[Either] = eitherInstance
-    }
+  val eitherRightInstance = new IsomorphismBifunctor[RightProjection, Either] {
+    def iso = RightProjectionIso2
+    implicit def G: Bifunctor[Either] = eitherInstance
+  }
 
   implicit def eitherRightLInstance[L] =
     new Monad[RightProjection[L, ?]] {

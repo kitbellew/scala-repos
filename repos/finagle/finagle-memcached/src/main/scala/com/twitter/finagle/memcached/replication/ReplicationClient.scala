@@ -94,10 +94,10 @@ object ReplicationClient {
 class BaseReplicationClient(
     clients: Seq[Client],
     statsReceiver: StatsReceiver = NullStatsReceiver) {
-  private[this] val inconsistentContentCounter =
-    statsReceiver.counter("inconsistent_content_count")
-  private[this] val failedCounter =
-    statsReceiver.counter("failed_replication_count")
+  private[this] val inconsistentContentCounter = statsReceiver.counter(
+    "inconsistent_content_count")
+  private[this] val failedCounter = statsReceiver.counter(
+    "failed_replication_count")
 
   assert(!clients.isEmpty)
 
@@ -127,8 +127,8 @@ class BaseReplicationClient(
           val missing = currentRes.misses ++ currentRes.failures.keySet
           c.getResult(missing) flatMap {
             case res =>
-              val newRes =
-                GetResult.merged(Seq(GetResult(currentRes.hits), res))
+              val newRes = GetResult.merged(
+                Seq(GetResult(currentRes.hits), res))
               loopGet(tail, newRes)
           }
       }
@@ -477,8 +477,7 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
   /**
     * Delete a key from all replicas, succeed only if all replicas succeed.
     */
-  def delete(key: String) =
-    resolve[JBoolean]("delete", _.delete(key), false)
+  def delete(key: String) = resolve[JBoolean]("delete", _.delete(key), false)
 
   /**
     * Add a new key to all replicas, succeed only if all replicas succeed.

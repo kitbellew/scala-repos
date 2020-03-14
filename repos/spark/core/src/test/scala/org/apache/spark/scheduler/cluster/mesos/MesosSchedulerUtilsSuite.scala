@@ -85,13 +85,16 @@ class MesosSchedulerUtilsSuite
 
     parsedConstraints shouldBe Map("tachyon" -> Set())
 
-    val zoneSet =
-      Value.Set.newBuilder().addItem("us-east-1a").addItem("us-east-1b").build()
+    val zoneSet = Value.Set
+      .newBuilder()
+      .addItem("us-east-1a")
+      .addItem("us-east-1b")
+      .build()
     val noTachyonOffer = Map("zone" -> zoneSet)
-    val tachyonTrueOffer =
-      Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
-    val tachyonFalseOffer =
-      Map("tachyon" -> Value.Text.newBuilder().setValue("false").build())
+    val tachyonTrueOffer = Map(
+      "tachyon" -> Value.Text.newBuilder().setValue("true").build())
+    val tachyonFalseOffer = Map(
+      "tachyon" -> Value.Text.newBuilder().setValue("false").build())
 
     utils.matchesAttributeRequirements(
       parsedConstraints,
@@ -124,8 +127,8 @@ class MesosSchedulerUtilsSuite
   }
 
   test("less than equal match is performed on scalar attributes") {
-    val offerAttribs =
-      Map("gpus" -> Value.Scalar.newBuilder().setValue(3).build())
+    val offerAttribs = Map(
+      "gpus" -> Value.Scalar.newBuilder().setValue(3).build())
 
     val ltConstraint = utils.parseConstraintString("gpus:2")
     val eqConstraint = utils.parseConstraintString("gpus:3")
@@ -159,8 +162,8 @@ class MesosSchedulerUtilsSuite
   }
 
   test("equality match is performed for text attributes") {
-    val offerAttribs =
-      Map("tachyon" -> Value.Text.newBuilder().setValue("true").build())
+    val offerAttribs = Map(
+      "tachyon" -> Value.Text.newBuilder().setValue("true").build())
 
     val trueConstraint = utils.parseConstraintString("tachyon:true")
     val falseConstraint = utils.parseConstraintString("tachyon:false")

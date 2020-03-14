@@ -7,8 +7,7 @@ import scala.collection.mutable
 private object MetricsRegistry {
   case class StatEntryImpl(delta: Double, value: Double) extends StatEntry
 
-  def instantaneous(value: Double): StatEntry =
-    StatEntryImpl(value, value)
+  def instantaneous(value: Double): StatEntry = StatEntryImpl(value, value)
 
   def cumulative(delta: Double, value: Double): StatEntry =
     StatEntryImpl(delta, value)

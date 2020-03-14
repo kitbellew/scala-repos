@@ -169,8 +169,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
     // TODO Get rid of this when we break backward binary compatibility
     private lazy val hasNewRuntimeLong = {
-      val rtLongClass =
-        classEmitter.linkedClassByName(LongImpl.RuntimeLongClass)
+      val rtLongClass = classEmitter.linkedClassByName(
+        LongImpl.RuntimeLongClass)
       rtLongClass.memberMethods.exists { linkedMethod =>
         linkedMethod.tree.name.name == LongImpl.initFromParts
       }
@@ -240,8 +240,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
       val env = env0.withParams(params)
 
-      val withReturn =
-        if (isStat) body else Return(body)
+      val withReturn = if (isStat) body else Return(body)
 
       val translateRestParam = outputMode match {
         case OutputMode.ECMAScript51Global | OutputMode.ECMAScript51Isolated =>
@@ -253,8 +252,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       val extractRestParam =
         if (translateRestParam) makeExtractRestParam(params) else js.Skip()
 
-      val newParams =
-        (if (translateRestParam) params.init else params).map(transformParamDef)
+      val newParams = (if (translateRestParam) params.init else params)
+        .map(transformParamDef)
 
       val newBody = transformStat(withReturn)(env) match {
         case js.Block(stats :+ js.Return(js.Undefined())) => js.Block(stats)
@@ -517,8 +516,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                   js.StringLiteral("writable") -> js.BooleanLiteral(true),
                   js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
                 ))
-              val descriptors =
-                js.ObjectConstr(List(transformedName -> descriptor))
+              val descriptors = js.ObjectConstr(
+                List(transformedName -> descriptor))
               js.Apply(defineProperties, List(js.This(), descriptors))
             }
 
@@ -1142,8 +1141,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
           case Try(block, errVar, handler, finalizer) =>
             extractLet { newLhs =>
-              val newBlock =
-                pushLhsInto(newLhs, block)
+              val newBlock = pushLhsInto(newLhs, block)
               val newHandler =
                 if (handler == EmptyTree) js.EmptyTree
                 else pushLhsInto(newLhs, handler)
@@ -1368,8 +1366,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSSuperBracketCall(cls, receiver, method, args) =>
             val superClass = getSuperClassOfJSClass(
               classEmitter.linkedClassByName(cls.className))
-            val superCtor =
-              LoadJSConstructor(ClassType(superClass.encodedName))
+            val superCtor = LoadJSConstructor(ClassType(superClass.encodedName))
 
             redo {
               JSBracketMethodApply(
@@ -1961,12 +1958,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           thisIdent.fold[js.Tree] { js.This() } { ident => js.VarRef(ident) }
 
         case Closure(captureParams, params, body, captureValues) =>
-          val innerFunction =
-            desugarToFunction(
-              params,
-              body,
-              isStat = false,
-              Env.empty.withParams(captureParams ++ params))
+          val innerFunction = desugarToFunction(
+            params,
+            body,
+            isStat = false,
+            Env.empty.withParams(captureParams ++ params))
 
           if (captureParams.isEmpty) { innerFunction }
           else {
@@ -2096,9 +2092,10 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           fields: List[RecordType.Field],
           recMutable: Boolean): Env = {
         fields.foldLeft(env) { (env, fld) =>
-          val ident =
-            makeRecordFieldIdent(recIdent, fld.name, fld.originalName)(
-              recIdent.pos)
+          val ident = makeRecordFieldIdent(
+            recIdent,
+            fld.name,
+            fld.originalName)(recIdent.pos)
           env.withDef(ident, fld.tpe, recMutable || fld.mutable)
         }
       }
@@ -2144,13 +2141,11 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   private[emitter] def genIsInstanceOf(expr: js.Tree, cls: ReferenceType)(
       implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    genIsAsInstanceOf(expr, cls, test = true)
+      pos: Position): js.Tree = genIsAsInstanceOf(expr, cls, test = true)
 
   private def genAsInstanceOf(expr: js.Tree, cls: ReferenceType)(implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    genIsAsInstanceOf(expr, cls, test = false)
+      pos: Position): js.Tree = genIsAsInstanceOf(expr, cls, test = false)
 
   private def genIsAsInstanceOf(
       expr: js.Tree,
@@ -2207,8 +2202,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
 
   private[emitter] def encodeClassVar(className: String)(implicit
       outputMode: OutputMode,
-      pos: Position): js.Tree =
-    envField("c", className)
+      pos: Position): js.Tree = envField("c", className)
 
   private[emitter] def genRawJSClassConstructor(linkedClass: LinkedClass)(
       implicit

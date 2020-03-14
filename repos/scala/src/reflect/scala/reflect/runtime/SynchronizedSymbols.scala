@@ -248,8 +248,7 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
     override protected def createPackageSymbol(
         name: TermName,
         pos: Position,
-        newFlags: Long): ModuleSymbol =
-      createModuleSymbol(name, pos, newFlags)
+        newFlags: Long): ModuleSymbol = createModuleSymbol(name, pos, newFlags)
 
     override protected def createValueParameterSymbol(
         name: TermName,

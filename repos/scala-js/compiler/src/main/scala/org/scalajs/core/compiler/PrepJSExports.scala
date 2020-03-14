@@ -314,8 +314,9 @@ trait PrepJSExports { this: PrepJSInterop =>
 
       // The dominating forcing symbol, is the first that does not ignore
       // or the first otherwise
-      val forcingSymInfo =
-        forcingSymInfos.find(!_._2).orElse(forcingSymInfos.headOption)
+      val forcingSymInfo = forcingSymInfos
+        .find(!_._2)
+        .orElse(forcingSymInfos.headOption)
 
       val name = decodedFullName(trgSym)
       val nameValid = !name.contains("__")
@@ -352,8 +353,9 @@ trait PrepJSExports { this: PrepJSInterop =>
   /** generate an exporter for a DefDef including default parameter methods */
   private def genExportDefs(defSym: Symbol, jsName: String, pos: Position) = {
     val clsSym = defSym.owner
-    val scalaName =
-      jsInterop.scalaExportName(jsName, jsInterop.isJSProperty(defSym))
+    val scalaName = jsInterop.scalaExportName(
+      jsName,
+      jsInterop.isJSProperty(defSym))
 
     // Create symbol for new method
     val expSym = defSym.cloneSymbol
@@ -410,8 +412,10 @@ trait PrepJSExports { this: PrepJSInterop =>
     val scalaName = jsInterop.scalaExportName(jsName, false)
 
     // Create symbol for the new exporter method
-    val expSym =
-      clsSym.newMethodSymbol(scalaName, pos, Flags.SYNTHETIC | Flags.FINAL)
+    val expSym = clsSym.newMethodSymbol(
+      scalaName,
+      pos,
+      Flags.SYNTHETIC | Flags.FINAL)
 
     // Mark the symbol to be a named export
     expSym.addAnnotation(JSExportNamedAnnotation)
@@ -447,8 +451,8 @@ trait PrepJSExports { this: PrepJSInterop =>
       pos: Position) = {
 
     // Get default getter method we'll copy
-    val trgGetter =
-      clsSym.tpe.member(nme.defaultGetterName(trgMethod.name, paramPos))
+    val trgGetter = clsSym.tpe.member(
+      nme.defaultGetterName(trgMethod.name, paramPos))
 
     assert(trgGetter.exists)
 

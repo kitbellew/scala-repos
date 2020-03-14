@@ -517,16 +517,15 @@ object DescriptiveStats {
       it.toIterable //convert to an iterable for zip operation
     import frac.mkNumericOps
     //mu1(n-1), mu2(n-1), Cov(n-1), n-1
-    val (mu1, mu2, c, n) =
-      (it1, it2).zipped.foldLeft((frac.zero, frac.zero, frac.zero, frac.zero)) {
-        (acc, y) =>
-          val (oldMu1, oldMu2, oldC, oldN) = acc
-          val newN = oldN + frac.fromInt(1)
-          val newMu1 = oldMu1 + ((y._1 - oldMu1) / newN)
-          val newMu2 = oldMu2 + ((y._2 - oldMu2) / newN)
-          val newC =
-            oldC + ((y._1 - oldMu1) * (y._2 - newMu2)) //compute covariance in single pass
-          (newMu1, newMu2, newC, newN)
+    val (mu1, mu2, c, n) = (it1, it2).zipped
+      .foldLeft((frac.zero, frac.zero, frac.zero, frac.zero)) { (acc, y) =>
+        val (oldMu1, oldMu2, oldC, oldN) = acc
+        val newN = oldN + frac.fromInt(1)
+        val newMu1 = oldMu1 + ((y._1 - oldMu1) / newN)
+        val newMu2 = oldMu2 + ((y._2 - oldMu2) / newN)
+        val newC =
+          oldC + ((y._1 - oldMu1) * (y._2 - newMu2)) //compute covariance in single pass
+        (newMu1, newMu2, newC, newN)
       }
     if (n == 1) (mu1, mu2, 0) else (mu1, mu2, c / (n - frac.fromInt(1)))
   }

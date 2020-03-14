@@ -26,8 +26,10 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null) return false
 
     val offset = editor.getCaretModel.getOffset
@@ -45,8 +47,10 @@ class SplitElseIfIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val ifStmt: ScIfStmt =
-      PsiTreeUtil.getParentOfType(element, classOf[ScIfStmt], false)
+    val ifStmt: ScIfStmt = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScIfStmt],
+      false)
     if (ifStmt == null || !ifStmt.isValid) return
 
     val start = ifStmt.getTextRange.getStartOffset

@@ -76,8 +76,8 @@ private[http] object OutgoingConnectionBlueprint {
         }
       }
 
-      val bypassFanout =
-        b.add(Broadcast[RequestRenderingContext](2, eagerCancel = true))
+      val bypassFanout = b.add(
+        Broadcast[RequestRenderingContext](2, eagerCancel = true))
 
       val terminationMerge = b.add(TerminationMerge)
 

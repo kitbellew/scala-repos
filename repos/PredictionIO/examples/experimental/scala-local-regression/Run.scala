@@ -41,8 +41,11 @@ case class LocalDataSource(val dsp: DataSourceParams)
       Double] {
   override def read()
       : Seq[(String, TrainingData, Seq[(Vector[Double], Double)])] = {
-    val lines =
-      Source.fromFile(dsp.filepath).getLines.toSeq.map(_.split(" ", 2))
+    val lines = Source
+      .fromFile(dsp.filepath)
+      .getLines
+      .toSeq
+      .map(_.split(" ", 2))
 
     // FIXME: Use different training / testing data.
     val x = lines.map { _(1).split(' ').map { _.toDouble } }.map { e =>

@@ -107,12 +107,11 @@ final case class BalancingPool(
       routeeProps: Props,
       context: ActorContext): Routee = {
 
-    val rawDeployPath =
-      context.self.path.elements.drop(1).mkString("/", "/", "")
-    val deployPath =
-      BalancingPoolDeploy.invalidConfigKeyChars.foldLeft(rawDeployPath) {
-        (replaced, c) ⇒ replaced.replace(c, '_')
-      }
+    val rawDeployPath = context.self.path.elements
+      .drop(1)
+      .mkString("/", "/", "")
+    val deployPath = BalancingPoolDeploy.invalidConfigKeyChars.foldLeft(
+      rawDeployPath) { (replaced, c) ⇒ replaced.replace(c, '_') }
     val dispatcherId = s"BalancingPool-$deployPath"
     def dispatchers = context.system.dispatchers
 

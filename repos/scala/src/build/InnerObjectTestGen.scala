@@ -29,8 +29,7 @@ object Contexts extends Enumeration {
 object TestGen {
   val testFile = "object-testers-automated.scala"
 
-  val payload =
-    """      var ObjCounter = 0
+  val payload = """      var ObjCounter = 0
 
       object Obj  { ObjCounter += 1}
       Obj // one
@@ -98,8 +97,7 @@ object TestGen {
 
   import Contexts._
 
-  val template =
-    """
+  val template = """
 %s
 
 %s

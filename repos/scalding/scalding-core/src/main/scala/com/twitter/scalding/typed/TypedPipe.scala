@@ -69,8 +69,7 @@ object TypedPipe extends Serializable {
   /**
     * Create a TypedPipe from an Iterable in memory.
     */
-  def from[T](iter: Iterable[T]): TypedPipe[T] =
-    IterablePipe[T](iter)
+  def from[T](iter: Iterable[T]): TypedPipe[T] = IterablePipe[T](iter)
 
   /**
     * Input must be a Pipe with exactly one Field
@@ -331,8 +330,7 @@ trait TypedPipe[+T] extends Serializable {
   /**
     * limit the output to at most count items, if at least count items exist.
     */
-  def limit(count: Int): TypedPipe[T] =
-    groupAll.bufferedTake(count).values
+  def limit(count: Int): TypedPipe[T] = groupAll.bufferedTake(count).values
 
   /** Transform each element via the function f */
   def map[U](f: T => U): TypedPipe[U] = flatMap { t => Iterator(f(t)) }
@@ -370,8 +368,7 @@ trait TypedPipe[+T] extends Serializable {
     * Keep only items that don't satisfy the predicate.
     * `filterNot` is the same as `filter` with a negated predicate.
     */
-  def filterNot(f: T => Boolean): TypedPipe[T] =
-    filter(!f(_))
+  def filterNot(f: T => Boolean): TypedPipe[T] = filter(!f(_))
 
   /** flatten an Iterable */
   def flatten[U](implicit ev: T <:< TraversableOnce[U]): TypedPipe[U] =
@@ -534,8 +531,7 @@ trait TypedPipe[+T] extends Serializable {
   def sumByKey[K, V](implicit
       ev: T <:< (K, V),
       ord: Ordering[K],
-      plus: Semigroup[V]): UnsortedGrouped[K, V] =
-    group[K, V].sum[V]
+      plus: Semigroup[V]): UnsortedGrouped[K, V] = group[K, V].sum[V]
 
   /**
     * This is used when you are working with Execution[T] to create loops.
@@ -851,8 +847,7 @@ final case object EmptyTypedPipe extends TypedPipe[Nothing] {
 
   override def hashCogroup[K, V, W, R](smaller: HashJoinable[K, W])(
       joiner: (K, V, Iterable[W]) => Iterator[R])(implicit
-      ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)]): TypedPipe[(K, R)] =
-    this
+      ev: TypedPipe[Nothing] <:< TypedPipe[(K, V)]): TypedPipe[(K, R)] = this
 }
 
 /**
@@ -890,8 +885,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
     * applied lazily, which avoids OOM issues when the returned value from the
     * map is larger than the input
     */
-  override def flatMap[U](f: T => TraversableOnce[U]) =
-    toSourcePipe.flatMap(f)
+  override def flatMap[U](f: T => TraversableOnce[U]) = toSourcePipe.flatMap(f)
 
   override def fork: TypedPipe[T] = this
 
@@ -905,8 +899,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
     * applied lazily, which avoids OOM issues when the returned value from the
     * map is larger than the input
     */
-  override def map[U](f: T => U): TypedPipe[U] =
-    toSourcePipe.map(f)
+  override def map[U](f: T => U): TypedPipe[U] = toSourcePipe.map(f)
 
   override def forceToDiskExecution: Execution[TypedPipe[T]] =
     Execution.from(this)
@@ -1005,8 +998,7 @@ class TypedPipeFactory[T] private (
 
   override def sumByLocalKeys[K, V](implicit
       ev: T <:< (K, V),
-      sg: Semigroup[V]) =
-    andThen(_.sumByLocalKeys[K, V])
+      sg: Semigroup[V]) = andThen(_.sumByLocalKeys[K, V])
 
   override def asPipe[U >: T](fieldNames: Fields)(implicit
       flowDef: FlowDef,
@@ -1183,8 +1175,7 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
       case _              => MergedTypedPipe(left.cross(tiny), right.cross(tiny))
     }
 
-  override def debug: TypedPipe[T] =
-    MergedTypedPipe(left.debug, right.debug)
+  override def debug: TypedPipe[T] = MergedTypedPipe(left.debug, right.debug)
 
   override def filter(f: T => Boolean): TypedPipe[T] =
     MergedTypedPipe(left.filter(f), right.filter(f))
@@ -1203,8 +1194,7 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
   override def map[U](f: T => U): TypedPipe[U] =
     MergedTypedPipe(left.map(f), right.map(f))
 
-  override def fork: TypedPipe[T] =
-    MergedTypedPipe(left.fork, right.fork)
+  override def fork: TypedPipe[T] = MergedTypedPipe(left.fork, right.fork)
 
   @annotation.tailrec
   private def flattenMerge(

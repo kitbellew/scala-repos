@@ -730,12 +730,11 @@ object ParserMacros {
   def ruleImpl[I <: HList: ctx.WeakTypeTag, O <: HList: ctx.WeakTypeTag](
       ctx: ParserContext)(r: ctx.Expr[Rule[I, O]]): ctx.Expr[Rule[I, O]] = {
     import ctx.universe._
-    val ruleName =
-      ctx.enclosingMethod match {
-        case DefDef(_, name, _, _, _, _) ⇒ name.decoded
-        case _ ⇒
-          ctx.abort(r.tree.pos, "`rule` can only be used from within a method")
-      }
+    val ruleName = ctx.enclosingMethod match {
+      case DefDef(_, name, _, _, _, _) ⇒ name.decoded
+      case _ ⇒
+        ctx.abort(r.tree.pos, "`rule` can only be used from within a method")
+    }
     namedRuleImpl(ctx)(ctx.Expr[String](Literal(Constant(ruleName))))(r)
   }
 

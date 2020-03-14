@@ -141,8 +141,8 @@ sealed case class Reporter(
     extends Monitor {
 
   private[this] val okCounter = statsReceiver.counter("report_exception_ok")
-  private[this] val tryLaterCounter =
-    statsReceiver.counter("report_exception_ok")
+  private[this] val tryLaterCounter = statsReceiver.counter(
+    "report_exception_ok")
 
   /**
     * Add a modifier to append a client address (i.e. endpoint) to a generated ServiceException.
@@ -206,8 +206,9 @@ object host
       "Host to scribe exception messages")
 
 class ExceptionReporter extends ReporterFactory {
-  private[this] val client =
-    Reporter.makeClient(host().getHostName, host().getPort)
+  private[this] val client = Reporter.makeClient(
+    host().getHostName,
+    host().getPort)
 
   def apply(name: String, addr: Option[SocketAddress]): Reporter =
     addr match {

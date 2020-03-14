@@ -77,8 +77,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
   val fs = this
 
   import Cache._
-  private[this] val cache: SimpleCache[JobId, FileJobState] =
-    Cache.simple[JobId, FileJobState](
+  private[this] val cache: SimpleCache[JobId, FileJobState] = Cache
+    .simple[JobId, FileJobState](
       ExpireAfterAccess(Duration(5, "minutes")),
       OnRemoval({ (jobId, job, reason) =>
         if (reason != RemovalCause.REPLACED) {
@@ -192,8 +192,10 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       channel: ChannelId,
       since: Option[MessageId]): M[Seq[Message]] =
     M.point {
-      val posts =
-        cache.get(jobId).flatMap(_.messages.get(channel)).getOrElse(Nil)
+      val posts = cache
+        .get(jobId)
+        .flatMap(_.messages.get(channel))
+        .getOrElse(Nil)
       since map { mId =>
         posts.takeWhile(_.id != mId).reverse
       } getOrElse posts.reverse
@@ -322,13 +324,16 @@ case class FileJobState(
 object FileJobState {
   val test = implicitly[Decomposer[Option[Status]]]
 
-  implicit val fileJobStateIso =
-    Iso.hlist(FileJobState.apply _, FileJobState.unapply _)
+  implicit val fileJobStateIso = Iso.hlist(
+    FileJobState.apply _,
+    FileJobState.unapply _)
 
   val schemaV1 = "job" :: "status" :: "messages" :: HNil
 
-  implicit val fjsDecomposerV1: Decomposer[FileJobState] =
-    decomposerV(schemaV1, Some("1.0".v))
-  implicit val fjsExtractorV1: Extractor[FileJobState] =
-    extractorV(schemaV1, Some("1.0".v))
+  implicit val fjsDecomposerV1: Decomposer[FileJobState] = decomposerV(
+    schemaV1,
+    Some("1.0".v))
+  implicit val fjsExtractorV1: Extractor[FileJobState] = extractorV(
+    schemaV1,
+    Some("1.0".v))
 }

@@ -102,12 +102,12 @@ final case class DeploymentPlan(
   override def toString: String = {
     def appString(app: AppDefinition): String = {
       val cmdString = app.cmd.fold("")(cmd => ", cmd=\"" + cmd + "\"")
-      val argsString =
-        app.args.fold("")(args => ", args=\"" + args.mkString(" ") + "\"")
-      val maybeDockerImage: Option[String] =
-        app.container.flatMap(_.docker.map(_.image))
-      val dockerImageString =
-        maybeDockerImage.fold("")(image => ", image=\"" + image + "\"")
+      val argsString = app.args.fold("")(args =>
+        ", args=\"" + args.mkString(" ") + "\"")
+      val maybeDockerImage: Option[String] = app.container.flatMap(
+        _.docker.map(_.image))
+      val dockerImageString = maybeDockerImage.fold("")(image =>
+        ", image=\"" + image + "\"")
 
       s"App(${app.id}$dockerImageString$cmdString$argsString))"
     }
@@ -117,11 +117,10 @@ final case class DeploymentPlan(
           s"Start(${appString(app)}, instances=$scale)"
         case StopApplication(app) => s"Stop(${appString(app)})"
         case ScaleApplication(app, scale, toKill) =>
-          val killTasksString =
-            toKill
-              .filter(_.nonEmpty)
-              .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
-              .getOrElse("")
+          val killTasksString = toKill
+            .filter(_.nonEmpty)
+            .map(", killTasks=" + _.map(_.taskId.idString).mkString(","))
+            .getOrElse("")
           s"Scale(${appString(app)}, instances=$scale$killTasksString)"
         case RestartApplication(app) => s"Restart(${appString(app)})"
         case ResolveArtifacts(app, urls) =>

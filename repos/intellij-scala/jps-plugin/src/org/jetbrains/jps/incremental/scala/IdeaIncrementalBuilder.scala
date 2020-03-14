@@ -61,8 +61,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
     context.processMessage(
       new ProgressMessage("Searching for compilable files..."))
 
-    val sourceDependencies =
-      SourceDependenciesProviderService.getSourceDependenciesFor(chunk)
+    val sourceDependencies = SourceDependenciesProviderService
+      .getSourceDependenciesFor(chunk)
     if (sourceDependencies.nonEmpty) {
       val message =
         "IDEA incremental compiler cannot handle shared source modules: " +
@@ -92,8 +92,9 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
           .isForcedRecompilationAllJavaModules(context)) { //rebuild
       packageObjectsData.clear()
     } else {
-      val additionalFiles =
-        packageObjectsData.invalidatedPackageObjects(sources).filter(_.exists)
+      val additionalFiles = packageObjectsData
+        .invalidatedPackageObjects(sources)
+        .filter(_.exists)
       if (additionalFiles.nonEmpty) {
         (sources ++ additionalFiles).foreach(f =>
           FSOperations.markDirty(context, CompilationRound.NEXT, f))
@@ -101,8 +102,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       }
     }
 
-    val delta =
-      context.getProjectDescriptor.dataManager.getMappings.createDelta()
+    val delta = context.getProjectDescriptor.dataManager.getMappings
+      .createDelta()
     val callback = delta.getCallback
 
     val modules = chunk.getModules.asScala.toSet

@@ -182,10 +182,9 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
   /** Merge classpath of `platform` and `urls` into merged classpath */
   def mergeUrlsIntoClassPath(urls: URL*): MergedClassPath[T] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
-    val allEntries =
-      (entries ++
-        urls.map(url =>
-          context.newClassPath(io.AbstractFile.getURL(url)))).distinct
+    val allEntries = (entries ++
+      urls.map(url =>
+        context.newClassPath(io.AbstractFile.getURL(url)))).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allEntries, context)
@@ -342,8 +341,7 @@ class MergedClassPath[T](
 
   def this(
       entries: TraversableOnce[ClassPath[T]],
-      context: ClassPathContext[T]) =
-    this(entries.toIndexedSeq, context)
+      context: ClassPathContext[T]) = this(entries.toIndexedSeq, context)
 
   def name = entries.head.name
   def asURLs = (entries flatMap (_.asURLs)).toList

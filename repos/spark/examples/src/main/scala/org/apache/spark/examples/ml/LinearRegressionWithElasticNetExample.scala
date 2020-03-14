@@ -27,8 +27,8 @@ import org.apache.spark.sql.SQLContext
 object LinearRegressionWithElasticNetExample {
 
   def main(args: Array[String]): Unit = {
-    val conf =
-      new SparkConf().setAppName("LinearRegressionWithElasticNetExample")
+    val conf = new SparkConf()
+      .setAppName("LinearRegressionWithElasticNetExample")
     val sc = new SparkContext(conf)
     val sqlCtx = new SQLContext(sc)
 

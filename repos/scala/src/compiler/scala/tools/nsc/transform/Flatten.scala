@@ -136,8 +136,8 @@ abstract class Flatten extends InfoTransform {
             //            - create the private[this] accessors eagerly in Namer (but would this cover private[this] fields
             //              added later phases in compilation?)
             //            - move the accessor creation to the Mixin info transformer
-            val liftedBuffer =
-              liftedDefs(tree.symbol.enclosingTopLevelClass.owner)
+            val liftedBuffer = liftedDefs(
+              tree.symbol.enclosingTopLevelClass.owner)
             val index = liftedBuffer.length
             liftedBuffer.insert(index, super.transform(tree))
             if (tree.symbol.sourceModule.isStaticModule)

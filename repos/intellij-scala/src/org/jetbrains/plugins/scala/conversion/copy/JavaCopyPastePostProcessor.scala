@@ -149,8 +149,9 @@ class JavaCopyPastePostProcessor
       val text = visitor.stringResult
       val rangeMap = visitor.rangedElementsMap
 
-      val updatedAssociations =
-        associationsHelper.filter(_.itype.isInstanceOf[TypedElement]).map { a =>
+      val updatedAssociations = associationsHelper
+        .filter(_.itype.isInstanceOf[TypedElement])
+        .map { a =>
           val typedElement = a.itype.asInstanceOf[TypedElement].getType
           val range = rangeMap.getOrElse(typedElement, new TextRange(0, 0))
           new Association(a.kind, range, a.path)
@@ -199,8 +200,9 @@ class JavaCopyPastePostProcessor
           .getInstance(project)
           .isEnableJavaToScalaConversion) return
     if (value == null) return
-    val file =
-      PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
+    val file = PsiDocumentManager
+      .getInstance(project)
+      .getPsiFile(editor.getDocument)
     if (!file.isInstanceOf[ScalaFile]) return
     val dialog = new ScalaPasteFromJavaDialog(project)
     val (text, associations) = value match {

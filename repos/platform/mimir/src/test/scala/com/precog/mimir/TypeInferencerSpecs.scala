@@ -151,19 +151,25 @@ trait TypeInferencerSpecs[M[+_]]
     }
   }
 
-  val cLiterals =
-    Set(CBoolean, CLong, CDouble, CNum, CString, CNull, CDate, CPeriod)
+  val cLiterals = Set(
+    CBoolean,
+    CLong,
+    CDouble,
+    CNum,
+    CString,
+    CNull,
+    CDate,
+    CPeriod)
 
   "type inference" should {
     "propagate structure/type information through a trivial Join/DerefObject node" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Join(
-          DerefObject,
-          Cross(None),
-          AbsoluteLoad(Const(CString("/file"))(line))(line),
-          Const(CString("column"))(line))(line)
+      val input = Join(
+        DerefObject,
+        Cross(None),
+        AbsoluteLoad(Const(CString("/file"))(line))(line),
+        Const(CString("column"))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -177,15 +183,14 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through New nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          New(
-            Join(
-              DerefObject,
-              Cross(None),
-              AbsoluteLoad(Const(CString("/file"))(line))(line),
-              Const(CString("column"))(line))(line))(line))(line)
+      val input = Operate(
+        Neg,
+        New(
+          Join(
+            DerefObject,
+            Cross(None),
+            AbsoluteLoad(Const(CString("/file"))(line))(line),
+            Const(CString("column"))(line))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -199,14 +204,13 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Operate nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file"))(line))(line),
-            Const(CString("column"))(line))(line))(line)
+      val input = Operate(
+        Neg,
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file"))(line))(line),
+          Const(CString("column"))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -220,14 +224,13 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Reduce nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Reduce(
-          Mean,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file"))(line))(line),
-            Const(CString("column"))(line))(line))(line)
+      val input = Reduce(
+        Mean,
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file"))(line))(line),
+          Const(CString("column"))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -241,14 +244,13 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Morph1 nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Morph1(
-          Median,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file"))(line))(line),
-            Const(CString("column"))(line))(line))(line)
+      val input = Morph1(
+        Median,
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file"))(line))(line),
+          Const(CString("column"))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -262,20 +264,19 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Morph2 nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Morph2(
-          Covariance,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column0"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file1"))(line))(line),
-            Const(CString("column1"))(line))(line)
-        )(line)
+      val input = Morph2(
+        Covariance,
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column0"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file1"))(line))(line),
+          Const(CString("column1"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -290,15 +291,14 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through DerefArray Join nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          New(
-            Join(
-              DerefArray,
-              Cross(None),
-              AbsoluteLoad(Const(CString("/file"))(line))(line),
-              Const(CLong(0))(line))(line))(line))(line)
+      val input = Operate(
+        Neg,
+        New(
+          Join(
+            DerefArray,
+            Cross(None),
+            AbsoluteLoad(Const(CString("/file"))(line))(line),
+            Const(CLong(0))(line))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -312,21 +312,20 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through ArraySwap Join nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
+      val input = Join(
+        ArraySwap,
+        Cross(None),
         Join(
-          ArraySwap,
+          DerefObject,
           Cross(None),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column0"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file1"))(line))(line),
-            Const(CString("column1"))(line))(line)
-        )(line)
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column0"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file1"))(line))(line),
+          Const(CString("column1"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -341,21 +340,20 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through WrapObject Join nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
+      val input = Join(
+        WrapObject,
+        Cross(None),
         Join(
-          WrapObject,
+          DerefObject,
           Cross(None),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column0"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file1"))(line))(line),
-            Const(CString("column1"))(line))(line)
-        )(line)
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column0"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file1"))(line))(line),
+          Const(CString("column1"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -370,21 +368,20 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Op2 Join nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
+      val input = Join(
+        BuiltInFunction2Op(min),
+        IdentitySort,
         Join(
-          BuiltInFunction2Op(min),
-          IdentitySort,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column0"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column1"))(line))(line)
-        )(line)
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column0"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column1"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -401,20 +398,19 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Filter nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Filter(
-          IdentitySort,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file0"))(line))(line),
-            Const(CString("column0"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/file1"))(line))(line),
-            Const(CString("column1"))(line))(line)
-        )(line)
+      val input = Filter(
+        IdentitySort,
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file0"))(line))(line),
+          Const(CString("column0"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/file1"))(line))(line),
+          Const(CString("column1"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -429,19 +425,18 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through AddSortKey nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          AddSortKey(
-            Join(
-              DerefObject,
-              Cross(None),
-              AbsoluteLoad(Const(CString("/file"))(line))(line),
-              Const(CString("column"))(line))(line),
-            "foo",
-            "bar",
-            23
-          ))(line)
+      val input = Operate(
+        Neg,
+        AddSortKey(
+          Join(
+            DerefObject,
+            Cross(None),
+            AbsoluteLoad(Const(CString("/file"))(line))(line),
+            Const(CString("column"))(line))(line),
+          "foo",
+          "bar",
+          23
+        ))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -455,17 +450,16 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Memoize nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          Memoize(
-            Join(
-              DerefObject,
-              Cross(None),
-              AbsoluteLoad(Const(CString("/file"))(line))(line),
-              Const(CString("column"))(line))(line),
-            23
-          ))(line)
+      val input = Operate(
+        Neg,
+        Memoize(
+          Join(
+            DerefObject,
+            Cross(None),
+            AbsoluteLoad(Const(CString("/file"))(line))(line),
+            Const(CString("column"))(line))(line),
+          23
+        ))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -479,15 +473,14 @@ trait TypeInferencerSpecs[M[+_]]
     "propagate structure/type information through Distinct nodes" in {
       val line = Line(1, 1, "")
 
-      val input =
-        Operate(
-          Neg,
-          Distinct(
-            Join(
-              DerefObject,
-              Cross(None),
-              AbsoluteLoad(Const(CString("/file"))(line))(line),
-              Const(CString("column"))(line))(line))(line))(line)
+      val input = Operate(
+        Neg,
+        Distinct(
+          Join(
+            DerefObject,
+            Cross(None),
+            AbsoluteLoad(Const(CString("/file"))(line))(line),
+            Const(CString("column"))(line))(line))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -505,34 +498,33 @@ trait TypeInferencerSpecs[M[+_]]
 
       val id = new Identifier
 
-      val input =
-        Split(
-          Group(
-            1,
-            clicks,
-            UnfixedSolution(
-              0,
-              Join(
-                DerefObject,
-                Cross(None),
-                clicks,
-                Const(CString("column0"))(line))(line))),
+      val input = Split(
+        Group(
+          1,
+          clicks,
+          UnfixedSolution(
+            0,
+            Join(
+              DerefObject,
+              Cross(None),
+              clicks,
+              Const(CString("column0"))(line))(line))),
+        Join(
+          Add,
+          Cross(None),
           Join(
-            Add,
+            DerefObject,
             Cross(None),
-            Join(
-              DerefObject,
-              Cross(None),
-              SplitParam(0, id)(line),
-              Const(CString("column1"))(line))(line),
-            Join(
-              DerefObject,
-              Cross(None),
-              SplitGroup(1, clicks.identities, id)(line),
-              Const(CString("column2"))(line))(line)
-          )(line),
-          id
-        )(line)
+            SplitParam(0, id)(line),
+            Const(CString("column1"))(line))(line),
+          Join(
+            DerefObject,
+            Cross(None),
+            SplitGroup(1, clicks.identities, id)(line),
+            Const(CString("column2"))(line))(line)
+        )(line),
+        id
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -554,40 +546,36 @@ trait TypeInferencerSpecs[M[+_]]
       val id = new Identifier
 
       // clicks := //clicks forall 'user { user: 'user, num: count(clicks.user where clicks.user = 'user) }
-      val input =
-        Split(
-          Group(
-            0,
+      val input = Split(
+        Group(
+          0,
+          Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+            line),
+          UnfixedSolution(
+            1,
             Join(
               DerefObject,
               Cross(None),
               clicks,
-              Const(CString("user"))(line))(line),
-            UnfixedSolution(
-              1,
-              Join(
-                DerefObject,
-                Cross(None),
-                clicks,
-                Const(CString("user"))(line))(line))
-          ),
+              Const(CString("user"))(line))(line))
+        ),
+        Join(
+          JoinObject,
+          Cross(None),
           Join(
-            JoinObject,
+            WrapObject,
             Cross(None),
-            Join(
-              WrapObject,
-              Cross(None),
-              Const(CString("user"))(line),
-              SplitParam(1, id)(line))(line),
-            Join(
-              WrapObject,
-              Cross(None),
-              Const(CString("num"))(line),
-              Reduce(Count, SplitGroup(0, clicks.identities, id)(line))(line))(
-              line)
-          )(line),
-          id
-        )(line)
+            Const(CString("user"))(line),
+            SplitParam(1, id)(line))(line),
+          Join(
+            WrapObject,
+            Cross(None),
+            Const(CString("num"))(line),
+            Reduce(Count, SplitGroup(0, clicks.identities, id)(line))(line))(
+            line)
+        )(line),
+        id
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -607,53 +595,46 @@ trait TypeInferencerSpecs[M[+_]]
       val id = new Identifier
 
       // clicks := //clicks forall 'user { user: 'user, age: clicks.age, num: count(clicks.user where clicks.user = 'user) }
-      val input =
-        Split(
-          Group(
-            0,
+      val input = Split(
+        Group(
+          0,
+          Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+            line),
+          UnfixedSolution(
+            1,
             Join(
               DerefObject,
               Cross(None),
               clicks,
-              Const(CString("user"))(line))(line),
-            UnfixedSolution(
-              1,
-              Join(
-                DerefObject,
-                Cross(None),
-                clicks,
-                Const(CString("user"))(line))(line))
-          ),
+              Const(CString("user"))(line))(line))
+        ),
+        Join(
+          JoinObject,
+          Cross(None),
           Join(
             JoinObject,
             Cross(None),
             Join(
-              JoinObject,
+              WrapObject,
               Cross(None),
-              Join(
-                WrapObject,
-                Cross(None),
-                Const(CString("user"))(line),
-                SplitParam(1, id)(line))(line),
-              Join(
-                WrapObject,
-                Cross(None),
-                Const(CString("num"))(line),
-                Reduce(Count, SplitGroup(0, clicks.identities, id)(line))(
-                  line))(line)
-            )(line),
+              Const(CString("user"))(line),
+              SplitParam(1, id)(line))(line),
             Join(
               WrapObject,
               Cross(None),
-              Const(CString("age"))(line),
-              Join(
-                DerefObject,
-                Cross(None),
-                clicks,
-                Const(CString("age"))(line))(line))(line)
+              Const(CString("num"))(line),
+              Reduce(Count, SplitGroup(0, clicks.identities, id)(line))(line))(
+              line)
           )(line),
-          id
-        )(line)
+          Join(
+            WrapObject,
+            Cross(None),
+            Const(CString("age"))(line),
+            Join(DerefObject, Cross(None), clicks, Const(CString("age"))(line))(
+              line))(line)
+        )(line),
+        id
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -670,21 +651,20 @@ trait TypeInferencerSpecs[M[+_]]
     "rewrite loads for a trivial but complete DAG such that they will restrict the columns loaded" in {
       val line = Line(1, 1, "")
 
-      val input =
+      val input = Join(
+        Add,
+        IdentitySort,
         Join(
-          Add,
-          IdentitySort,
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/clicks"))(line))(line),
-            Const(CString("time"))(line))(line),
-          Join(
-            DerefObject,
-            Cross(None),
-            AbsoluteLoad(Const(CString("/hom/heightWeight"))(line))(line),
-            Const(CString("height"))(line))(line)
-        )(line)
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/clicks"))(line))(line),
+          Const(CString("time"))(line))(line),
+        Join(
+          DerefObject,
+          Cross(None),
+          AbsoluteLoad(Const(CString("/hom/heightWeight"))(line))(line),
+          Const(CString("height"))(line))(line)
+      )(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -701,13 +681,12 @@ trait TypeInferencerSpecs[M[+_]]
 
       val clicks = AbsoluteLoad(Const(CString("/clicks"))(line))(line)
 
-      val input =
-        Join(
-          DerefObject,
-          Cross(None),
-          Join(WrapObject, Cross(None), Const(CString("foo"))(line), clicks)(
-            line),
-          Const(CString("foo"))(line))(line)
+      val input = Join(
+        DerefObject,
+        Cross(None),
+        Join(WrapObject, Cross(None), Const(CString("foo"))(line), clicks)(
+          line),
+        Const(CString("foo"))(line))(line)
 
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
@@ -723,24 +702,28 @@ trait TypeInferencerSpecs[M[+_]]
 
       val id = new Identifier
 
-      val clicksTime =
-        Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
-          line)
+      val clicksTime = Join(
+        DerefObject,
+        Cross(None),
+        clicks,
+        Const(CString("time"))(line))(line)
 
-      val split =
-        Split(
-          Group(0, clicks, UnfixedSolution(1, clicksTime)),
-          Join(
-            WrapObject,
-            Cross(None),
-            Const(CString("foo"))(line),
-            SplitGroup(0, Identities.Specs(Vector(LoadIds("/clicks"))), id)(
-              line))(line),
-          id
-        )(line)
+      val split = Split(
+        Group(0, clicks, UnfixedSolution(1, clicksTime)),
+        Join(
+          WrapObject,
+          Cross(None),
+          Const(CString("foo"))(line),
+          SplitGroup(0, Identities.Specs(Vector(LoadIds("/clicks"))), id)(
+            line))(line),
+        id
+      )(line)
 
-      val input =
-        Join(DerefObject, Cross(None), split, Const(CString("foo"))(line))(line)
+      val input = Join(
+        DerefObject,
+        Cross(None),
+        split,
+        Const(CString("foo"))(line))(line)
 
       /*
        clicks := //clicks

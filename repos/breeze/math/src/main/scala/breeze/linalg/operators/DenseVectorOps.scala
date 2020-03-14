@@ -307,8 +307,9 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
           }
         } else {
           cforRange(0 until length) { i =>
-            ad(aoff + astride * i) =
-              op(ad(aoff + astride * i), bd(boff + bstride * i))
+            ad(aoff + astride * i) = op(
+              ad(aoff + astride * i),
+              bd(boff + bstride * i))
           }
         }
       }

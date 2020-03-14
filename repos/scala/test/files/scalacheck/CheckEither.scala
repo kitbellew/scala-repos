@@ -12,11 +12,11 @@ object Test extends Properties("Either") {
     Arbitrary[Either[X, Y]](
       oneOf(arbitrary[X].map(Left(_)), arbitrary[Y].map(Right(_))))
 
-  val prop_either1 =
-    forAll((n: Int) => Left(n).fold(x => x, b => sys.error("fail")) == n)
+  val prop_either1 = forAll((n: Int) =>
+    Left(n).fold(x => x, b => sys.error("fail")) == n)
 
-  val prop_either2 =
-    forAll((n: Int) => Right(n).fold(a => sys.error("fail"), x => x) == n)
+  val prop_either2 = forAll((n: Int) =>
+    Right(n).fold(a => sys.error("fail"), x => x) == n)
 
   val prop_swap = forAll((e: Either[Int, Int]) =>
     e match {
@@ -41,14 +41,14 @@ object Test extends Properties("Either") {
     val prop_exists = forAll((e: Either[Int, Int]) =>
       e.left.exists(_ % 2 == 0) == (e.isLeft && e.left.get % 2 == 0))
 
-    val prop_flatMapLeftIdentity =
-      forAll((e: Either[Int, Int], n: Int, s: String) => {
+    val prop_flatMapLeftIdentity = forAll(
+      (e: Either[Int, Int], n: Int, s: String) => {
         def f(x: Int) = if (x % 2 == 0) Left(s) else Right(s)
         Left(n).left.flatMap(f(_)) == f(n)
       })
 
-    val prop_flatMapRightIdentity =
-      forAll((e: Either[Int, Int]) => e.left.flatMap(Left(_)) == e)
+    val prop_flatMapRightIdentity = forAll((e: Either[Int, Int]) =>
+      e.left.flatMap(Left(_)) == e)
 
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
@@ -57,8 +57,8 @@ object Test extends Properties("Either") {
         f(_).left.flatMap(g(_)))
     })
 
-    val prop_mapIdentity =
-      forAll((e: Either[Int, Int]) => e.left.map(x => x) == e)
+    val prop_mapIdentity = forAll((e: Either[Int, Int]) =>
+      e.left.map(x => x) == e)
 
     val prop_mapComposition = forAll((e: Either[String, Int]) => {
       def f(s: String) = s.toLowerCase
@@ -98,14 +98,14 @@ object Test extends Properties("Either") {
     val prop_exists = forAll((e: Either[Int, Int]) =>
       e.right.exists(_ % 2 == 0) == (e.isRight && e.right.get % 2 == 0))
 
-    val prop_flatMapLeftIdentity =
-      forAll((e: Either[Int, Int], n: Int, s: String) => {
+    val prop_flatMapLeftIdentity = forAll(
+      (e: Either[Int, Int], n: Int, s: String) => {
         def f(x: Int) = if (x % 2 == 0) Left(s) else Right(s)
         Right(n).right.flatMap(f(_)) == f(n)
       })
 
-    val prop_flatMapRightIdentity =
-      forAll((e: Either[Int, Int]) => e.right.flatMap(Right(_)) == e)
+    val prop_flatMapRightIdentity = forAll((e: Either[Int, Int]) =>
+      e.right.flatMap(Right(_)) == e)
 
     val prop_flatMapComposition = forAll((e: Either[Int, Int]) => {
       def f(x: Int) = if (x % 2 == 0) Left(x) else Right(x)
@@ -114,8 +114,8 @@ object Test extends Properties("Either") {
         f(_).right.flatMap(g(_)))
     })
 
-    val prop_mapIdentity =
-      forAll((e: Either[Int, Int]) => e.right.map(x => x) == e)
+    val prop_mapIdentity = forAll((e: Either[Int, Int]) =>
+      e.right.map(x => x) == e)
 
     val prop_mapComposition = forAll((e: Either[Int, String]) => {
       def f(s: String) = s.toLowerCase

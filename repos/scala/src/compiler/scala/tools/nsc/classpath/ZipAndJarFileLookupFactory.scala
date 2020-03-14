@@ -53,8 +53,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       with NoSourcePaths {
 
     override def findClassFile(className: String): Option[AbstractFile] = {
-      val (pkg, simpleClassName) =
-        PackageNameUtils.separatePkgAndClassNames(className)
+      val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
+        className)
       classes(pkg).find(_.name == simpleClassName).map(_.file)
     }
 
@@ -80,8 +80,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
       with NoSourcePaths {
 
     override def findClassFile(className: String): Option[AbstractFile] = {
-      val (pkg, simpleClassName) =
-        PackageNameUtils.separatePkgAndClassNames(className)
+      val (pkg, simpleClassName) = PackageNameUtils.separatePkgAndClassNames(
+        className)
       classes(pkg).find(_.name == simpleClassName).map(_.file)
     }
 
@@ -125,8 +125,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
             subpackagesQueue.enqueue(PackageInfo(newPackagePrefix, subpackages))
             traverse(packagePrefix, remainingFiles, subpackagesQueue)
           case Nil if subpackagesQueue.nonEmpty =>
-            val PackageInfo(packagePrefix, filesForPrefix) =
-              subpackagesQueue.dequeue()
+            val PackageInfo(packagePrefix, filesForPrefix) = subpackagesQueue
+              .dequeue()
             traverse(packagePrefix, filesForPrefix, subpackagesQueue)
           case _ =>
         }

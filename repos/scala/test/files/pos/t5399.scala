@@ -4,8 +4,7 @@ class Test {
 
   case class CaseClass[T](x: T)
 
-  def break(existB: B[_]) =
-    CaseClass(existB.a) match { case CaseClass(_) => }
+  def break(existB: B[_]) = CaseClass(existB.a) match { case CaseClass(_) => }
 }
 
 class Foo {

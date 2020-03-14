@@ -13,8 +13,7 @@ sealed trait Op[+A] {
       case o             => FlatMap(o, f)
     }
 
-  def map[B](f: A => B): Op[B] =
-    flatMap(a => Const(f(a)))
+  def map[B](f: A => B): Op[B] = flatMap(a => Const(f(a)))
 
   @tailrec
   final def resume(gen: Generator): Either[() => Op[A], A] =
@@ -89,8 +88,7 @@ trait RandomCompanion[G <: Generator] { self =>
   def long: R[Long] = next(_.nextLong)
   def double: R[Double] = next(_.nextDouble)
 
-  def string(size: Size): R[String] =
-    size.random(this).flatMap(stringOfSize)
+  def string(size: Size): R[String] = size.random(this).flatMap(stringOfSize)
 
   def stringOfSize(n: Int): Random[String, G] =
     char
@@ -125,8 +123,7 @@ trait RandomCompanion[G <: Generator] { self =>
     }
   }
 
-  def tuple2[A, B](r1: R[A], r2: R[B]): R[(A, B)] =
-    r1 and r2
+  def tuple2[A, B](r1: R[A], r2: R[B]): R[(A, B)] = r1 and r2
   def tuple3[A, B, C](r1: R[A], r2: R[B], r3: R[C]): R[(A, B, C)] =
     for { a <- r1; b <- r2; c <- r3 } yield (a, b, c)
   def tuple4[A, B, C, D](
@@ -141,14 +138,12 @@ abstract class Random[+A, G <: Generator](val op: Op[A]) { self =>
 
   def companion: RandomCompanion[G]
 
-  def map[B](f: A => B): Random[B, G] =
-    companion.spawn(op.map(f))
+  def map[B](f: A => B): Random[B, G] = companion.spawn(op.map(f))
 
   def flatMap[B](f: A => Random[B, G]): Random[B, G] =
     companion.spawn(op.flatMap(f(_).op))
 
-  def run(): A =
-    op.run(companion.initGenerator) //IO
+  def run(): A = op.run(companion.initGenerator) //IO
 
   def run(seed: Seed): A = { //IO
     val gen = companion.initGenerator()

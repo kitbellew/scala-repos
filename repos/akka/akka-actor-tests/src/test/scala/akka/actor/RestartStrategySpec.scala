@@ -55,8 +55,9 @@ class RestartStrategySpec
 
         override def postStop() = { stopLatch.open() }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -90,8 +91,9 @@ class RestartStrategySpec
           countDownLatch.countDown()
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       (1 to 100) foreach { _ ⇒ slave ! Crash }
       Await.ready(countDownLatch, 2 minutes)
@@ -128,8 +130,9 @@ class RestartStrategySpec
           if (restartLatch.isOpen) { secondRestartLatch.open() }
         }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -178,8 +181,9 @@ class RestartStrategySpec
 
         override def postStop() = { stopLatch.open() }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash
@@ -229,8 +233,9 @@ class RestartStrategySpec
 
         override def postStop() = { stopLatch.open() }
       })
-      val slave =
-        Await.result((boss ? slaveProps).mapTo[ActorRef], timeout.duration)
+      val slave = Await.result(
+        (boss ? slaveProps).mapTo[ActorRef],
+        timeout.duration)
 
       slave ! Ping
       slave ! Crash

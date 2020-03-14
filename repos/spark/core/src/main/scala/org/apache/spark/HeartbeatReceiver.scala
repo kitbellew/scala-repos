@@ -75,16 +75,16 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
   // "spark.network.timeout" uses "seconds", while `spark.storage.blockManagerSlaveTimeoutMs` uses
   // "milliseconds"
-  private val slaveTimeoutMs =
-    sc.conf.getTimeAsMs("spark.storage.blockManagerSlaveTimeoutMs", "120s")
+  private val slaveTimeoutMs = sc.conf
+    .getTimeAsMs("spark.storage.blockManagerSlaveTimeoutMs", "120s")
   private val executorTimeoutMs =
     sc.conf
       .getTimeAsSeconds("spark.network.timeout", s"${slaveTimeoutMs}ms") * 1000
 
   // "spark.network.timeoutInterval" uses "seconds", while
   // "spark.storage.blockManagerTimeoutIntervalMs" uses "milliseconds"
-  private val timeoutIntervalMs =
-    sc.conf.getTimeAsMs("spark.storage.blockManagerTimeoutIntervalMs", "60s")
+  private val timeoutIntervalMs = sc.conf
+    .getTimeAsMs("spark.storage.blockManagerTimeoutIntervalMs", "60s")
   private val checkTimeoutIntervalMs =
     sc.conf.getTimeAsSeconds(
       "spark.network.timeoutInterval",
@@ -94,12 +94,12 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
 
   // "eventLoopThread" is used to run some pretty fast actions. The actions running in it should not
   // block the thread for a long time.
-  private val eventLoopThread =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
+  private val eventLoopThread = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor(
       "heartbeat-receiver-event-loop-thread")
 
-  private val killExecutorThread =
-    ThreadUtils.newDaemonSingleThreadExecutor("kill-executor-thread")
+  private val killExecutorThread = ThreadUtils.newDaemonSingleThreadExecutor(
+    "kill-executor-thread")
 
   override def onStart(): Unit = {
     timeoutCheckingTask = eventLoopThread.scheduleAtFixedRate(
@@ -144,8 +144,8 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
                   executorId,
                   accumUpdates,
                   blockManagerId)
-                val response =
-                  HeartbeatResponse(reregisterBlockManager = unknownExecutor)
+                val response = HeartbeatResponse(reregisterBlockManager =
+                  unknownExecutor)
                 context.reply(response)
               }
           })

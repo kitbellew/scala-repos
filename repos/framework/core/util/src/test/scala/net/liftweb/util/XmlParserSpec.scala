@@ -32,13 +32,11 @@ object XmlParserSpec extends Specification with XmlMatchers {
 
   "Multiple attributes with same name, but different namespace" should {
     "parse correctly" >> {
-      val actual =
-        <lift:surround with="base" at="body">
+      val actual = <lift:surround with="base" at="body">
         <lift:Menu.builder  li_path:class="p" li_item:class="i"/>
       </lift:surround>
 
-      val expected =
-        <lift:surround with="base" at="body">
+      val expected = <lift:surround with="base" at="body">
         <lift:Menu.builder  li_path:class="p" li_item:class="i"/>
       </lift:surround>
 
@@ -66,11 +64,10 @@ object XmlParserSpec extends Specification with XmlMatchers {
   }
 
   "XML cannot contain Control characters" in {
-    val data =
-      <foo>
+    val data = <foo>
       {'\u0085'}{Text("hello \u0000 \u0085 \u0080")}{
-        "hello \u0000 \u0003 \u0085 \u0080"
-      }{'\u0003'}
+      "hello \u0000 \u0003 \u0085 \u0080"
+    }{'\u0003'}
     </foo>
 
     val str = AltXML.toXML(data, false, true)

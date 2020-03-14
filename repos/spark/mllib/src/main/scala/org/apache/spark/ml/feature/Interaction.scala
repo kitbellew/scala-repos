@@ -214,8 +214,10 @@ class Interaction @Since("1.6.0") (override val uid: String)
         index: Int,
         attrName: Option[String],
         categoryName: Option[String]): String = {
-      val parts =
-        Seq(groupName, Some(attrName.getOrElse(index.toString)), categoryName)
+      val parts = Seq(
+        groupName,
+        Some(attrName.getOrElse(index.toString)),
+        categoryName)
       parts.flatten.mkString("_")
     }
 

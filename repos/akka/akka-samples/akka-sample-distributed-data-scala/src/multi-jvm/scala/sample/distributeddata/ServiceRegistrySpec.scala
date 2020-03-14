@@ -127,8 +127,9 @@ class ServiceRegistrySpec
 
     "replicate many service entries" in within(10.seconds) {
       for (i ← 100 until 200) {
-        val service =
-          system.actorOf(Props[Service], name = myself.name + "_" + i)
+        val service = system.actorOf(
+          Props[Service],
+          name = myself.name + "_" + i)
         registry ! Register("a" + i, service)
       }
 

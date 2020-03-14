@@ -25,8 +25,7 @@ class MessageContainerSerializer(val system: ExtendedActorSystem)
   private lazy val serialization = SerializationExtension(system)
 
   // TODO remove this when deprecated this() is removed
-  override val identifier: Int =
-    if (system eq null) 6 else identifierFromConfig
+  override val identifier: Int = if (system eq null) 6 else identifierFromConfig
 
   def includeManifest: Boolean = false
 

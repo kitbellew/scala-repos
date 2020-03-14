@@ -16,14 +16,11 @@ object RequestRepo {
   def find(teamId: ID, userId: ID): Fu[Option[Request]] =
     $find.one(selectId(teamId, userId))
 
-  def countByTeam(teamId: ID): Fu[Int] =
-    $count(teamQuery(teamId))
+  def countByTeam(teamId: ID): Fu[Int] = $count(teamQuery(teamId))
 
-  def countByTeams(teamIds: List[ID]): Fu[Int] =
-    $count(teamsQuery(teamIds))
+  def countByTeams(teamIds: List[ID]): Fu[Int] = $count(teamsQuery(teamIds))
 
-  def findByTeam(teamId: ID): Fu[List[Request]] =
-    $find(teamQuery(teamId))
+  def findByTeam(teamId: ID): Fu[List[Request]] = $find(teamQuery(teamId))
 
   def findByTeams(teamIds: List[ID]): Fu[List[Request]] =
     $find(teamsQuery(teamIds))

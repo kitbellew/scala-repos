@@ -43,8 +43,9 @@ private[upgrade] object DeploymentPlanReverter {
     }
 
     /* a sequence of tuples with the old and the new group definition (also for unchanged groups) */
-    val groupChanges: Seq[(Option[Group], Option[Group])] =
-      changesOnIds(original.transitiveGroups, target.transitiveGroups)(_.id)
+    val groupChanges: Seq[(Option[Group], Option[Group])] = changesOnIds(
+      original.transitiveGroups,
+      target.transitiveGroups)(_.id)
 
     /* a sequence of tuples with the old and the new app definition */
     val appChanges: Seq[(Option[AppDefinition], Option[AppDefinition])] = {

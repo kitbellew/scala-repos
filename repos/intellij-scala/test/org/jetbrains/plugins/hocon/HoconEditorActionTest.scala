@@ -9,8 +9,8 @@ abstract class HoconEditorActionTest(actionId: String, subpath: String)
   override protected def executeAction(
       dataContext: DataContext,
       editor: Editor) = {
-    val actionHandler =
-      EditorActionManager.getInstance.getActionHandler(actionId)
+    val actionHandler = EditorActionManager.getInstance.getActionHandler(
+      actionId)
     assert(actionHandler != null)
 
     inWriteCommandAction {

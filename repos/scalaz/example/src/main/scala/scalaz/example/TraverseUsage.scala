@@ -58,8 +58,11 @@ object TraverseUsage extends App {
   // instead of the expected * -> * kind of an Applicative, since the
   // Validation type constructor takes two arguments instead of one.
 
-  val validations: Vector[ValidationNel[String, Int]] =
-    Vector(1.success, "failure2".failureNel, 3.success, "failure4".failureNel)
+  val validations: Vector[ValidationNel[String, Int]] = Vector(
+    1.success,
+    "failure2".failureNel,
+    3.success,
+    "failure4".failureNel)
 
   // this would not compile:
   // val result = validations.sequence

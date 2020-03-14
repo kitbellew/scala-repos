@@ -157,8 +157,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
       case _ => super.defaultSqlTypeName(tmd, sym)
     }
 
-  protected lazy val defaultStringType =
-    profileConfig.getStringOpt("defaultStringType")
+  protected lazy val defaultStringType = profileConfig.getStringOpt(
+    "defaultStringType")
 
   class MySQLResolveZipJoins extends ResolveZipJoins {
     // MySQL does not support ROW_NUMBER() but you can manually increment a variable in the SELECT
@@ -294,12 +294,13 @@ trait MySQLProfile extends JdbcProfile { profile =>
       if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
-      val incExpr = if (seq._cycle) {
-        if (desc)
-          "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
-        else
-          "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
-      } else { "id+(" + increment + ")" }
+      val incExpr =
+        if (seq._cycle) {
+          if (desc)
+            "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+          else
+            "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
+        } else { "id+(" + increment + ")" }
       DDL(
         Iterable(
           "create table " + quoteIdentifier(

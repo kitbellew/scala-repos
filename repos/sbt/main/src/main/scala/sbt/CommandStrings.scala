@@ -35,8 +35,7 @@ object CommandStrings {
 
   def multiTaskHelp =
     Help(MultiTaskCommand, (multiTaskSyntax, multiTaskBrief), multiTaskDetailed)
-  def multiTaskDetailed =
-    s"""$multiTaskSyntax
+  def multiTaskDetailed = s"""$multiTaskSyntax
 
 	$multiTaskBrief"""
   def multiTaskSyntax = s"""$MultiTaskCommand <task>+"""
@@ -46,8 +45,7 @@ object CommandStrings {
     Help(ShowCommand, (s"$ShowCommand <key>", showBrief), showDetailed)
   def showBrief =
     "Displays the result of evaluating the setting or task associated with 'key'."
-  def showDetailed =
-    s"""$ShowCommand <setting>
+  def showDetailed = s"""$ShowCommand <setting>
 
 	Displays the value of the specified setting.
 
@@ -93,8 +91,7 @@ $ShowCommand <task>
   val exportBrief = (
     ExportCommand + " <tasks>+",
     "Executes tasks and displays the equivalent command lines.")
-  val exportDetailed =
-    s"""$ExportCommand [--last] <task>+
+  val exportDetailed = s"""$ExportCommand [--last] <task>+
 	Runs the specified tasks and prints the equivalent command lines or other exportable information for those runs.
 
 	--last
@@ -333,8 +330,7 @@ defaults
   def crossHelp: Help = Help.more(CrossCommand, CrossDetailed)
   def switchHelp: Help = Help.more(SwitchCommand, SwitchDetailed)
 
-  def CrossDetailed =
-    s"""$CrossCommand <command>
+  def CrossDetailed = s"""$CrossCommand <command>
 	Runs <command> for each Scala version specified for cross-building.
 
 	For each string in `crossScalaVersions` in the current project, this command sets the
@@ -345,8 +341,7 @@ defaults
 	See also `help $SwitchCommand`
 """
 
-  def SwitchDetailed =
-    s"""$SwitchCommand <scala-version> [<command>]
+  def SwitchDetailed = s"""$SwitchCommand <scala-version> [<command>]
 	Changes the Scala version and runs a command.
 
 	Sets the `scalaVersion` of all projects to <scala-version> and reloads the build.

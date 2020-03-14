@@ -109,8 +109,7 @@ class ScalaInlineInfoTest extends ClearAfterClass {
 
   @Test
   def inlineInfoSam(): Unit = {
-    val code =
-      """abstract class C {
+    val code = """abstract class C {
         |  def f = 0
         |  def g(x: Int): Int
         |  val foo = "hi"

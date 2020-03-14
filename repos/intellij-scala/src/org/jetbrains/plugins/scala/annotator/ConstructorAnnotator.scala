@@ -25,8 +25,8 @@ trait ConstructorAnnotator {
       case None => return
       case _    =>
     }
-    val resolved =
-      constructor.reference.toList.flatMap(_.resolveAllConstructors)
+    val resolved = constructor.reference.toList
+      .flatMap(_.resolveAllConstructors)
 
     resolved match {
       case List() =>
@@ -52,14 +52,16 @@ trait ConstructorAnnotator {
             if (expression != null)
               for (t <- expression.getType(TypingContext.empty)) {
                 //TODO show parameter name
-                val (expectedText, actualText) =
-                  ScTypePresentation.different(expectedType, t)
+                val (expectedText, actualText) = ScTypePresentation.different(
+                  expectedType,
+                  t)
                 val message = ScalaBundle.message(
                   "type.mismatch.expected.actual",
                   expectedText,
                   actualText)
-                val annotation =
-                  holder.createErrorAnnotation(expression, message)
+                val annotation = holder.createErrorAnnotation(
+                  expression,
+                  message)
                 annotation.registerFix(ReportHighlightingErrorQuickFix)
               }
             else {

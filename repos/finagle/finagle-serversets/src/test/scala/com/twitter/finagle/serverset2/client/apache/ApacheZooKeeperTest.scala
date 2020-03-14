@@ -73,9 +73,8 @@ class ApacheZooKeeperTest
     classOf[org.apache.zookeeper.AsyncCallback.ACLCallback])
   val statCB = ArgumentCaptor.forClass(
     classOf[org.apache.zookeeper.AsyncCallback.StatCallback])
-  val childrenCB =
-    ArgumentCaptor.forClass(
-      classOf[org.apache.zookeeper.AsyncCallback.Children2Callback])
+  val childrenCB = ArgumentCaptor.forClass(
+    classOf[org.apache.zookeeper.AsyncCallback.Children2Callback])
 
   val watcher = ArgumentCaptor.forClass(classOf[ApacheWatcher])
 

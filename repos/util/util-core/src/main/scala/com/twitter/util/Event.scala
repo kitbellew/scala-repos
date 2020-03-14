@@ -48,14 +48,12 @@ trait Event[+T] { self =>
     * Build a new Event by keeping only those Event values that match
     * the predicate `p`.
     */
-  def filter(p: T => Boolean): Event[T] =
-    collect { case t if p(t) => t }
+  def filter(p: T => Boolean): Event[T] = collect { case t if p(t) => t }
 
   /**
     * Build a new Event by transforming each new event value with `f`.
     */
-  def map[U](f: T => U): Event[U] =
-    collect { case t => f(t) }
+  def map[U](f: T => U): Event[U] = collect { case t => f(t) }
 
   /**
     * Build a new Event by incrementally accumulating over events,

@@ -57,8 +57,7 @@ object SourceBuilder {
   def adjust[T](m: Map[T, Options], k: T)(f: Options => Options) =
     m.updated(k, f(m.getOrElse(k, Options())))
 
-  implicit def sg[T]: Semigroup[SourceBuilder[T]] =
-    Semigroup.from(_ ++ _)
+  implicit def sg[T]: Semigroup[SourceBuilder[T]] = Semigroup.from(_ ++ _)
 
   def nextName[T: Manifest]: String =
     "%s_%d".format(manifest[T], nextId.getAndIncrement)
@@ -68,8 +67,8 @@ object SourceBuilder {
       eventCodec: Codec[T]) = {
     implicit val te = TimeExtractor[T](timeOf(_).getTime)
     val newID = nextName[T]
-    val scaldingSource =
-      eventSource.offline.map(s => Scalding.pipeFactory(s.scaldingSource(_)))
+    val scaldingSource = eventSource.offline.map(s =>
+      Scalding.pipeFactory(s.scaldingSource(_)))
     val stormSource = eventSource.spout.map(Storm.toStormSource(_))
     new SourceBuilder[T](
       Source[PlatformPair, T]((scaldingSource, stormSource)),
@@ -111,17 +110,16 @@ case class SourceBuilder[T: Manifest] private (
       implicit
       batcher: Batcher,
       mf: Manifest[U]): SourceBuilder[T] = {
-    val newNode =
-      node
-        .flatMap(conversion)
-        .write(
-          sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
-          sink.online.map { supplier =>
-            new StormSink[U] {
-              lazy val toFn = supplier()
-            }
+    val newNode = node
+      .flatMap(conversion)
+      .write(
+        sink.offline.map(new BatchedSinkFromOffline[U](batcher, _)),
+        sink.online.map { supplier =>
+          new StormSink[U] {
+            lazy val toFn = supplier()
           }
-        )
+        }
+      )
     copy(
       node = node.either(newNode).flatMap[T] {
         case Left(t)  => Some(t)

@@ -343,8 +343,7 @@ trait SwaggerAuthSupport[TypeForUser <: AnyRef]
 
   protected implicit def operationBuilder2operation(
       bldr: AuthApi.SwaggerAuthOperationBuilder[TypeForUser])
-      : AuthOperation[TypeForUser] =
-    bldr.result
+      : AuthOperation[TypeForUser] = bldr.result
 
   protected def apiOperation[T: Manifest: NotNothing](
       nickname: String): AuthOperationBuilder[TypeForUser] = {

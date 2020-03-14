@@ -93,8 +93,11 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
   }
 
   test("basic conversion with primitive, string, date and timestamp types") {
-    val fieldTypes: Array[DataType] =
-      Array(LongType, StringType, DateType, TimestampType)
+    val fieldTypes: Array[DataType] = Array(
+      LongType,
+      StringType,
+      DateType,
+      TimestampType)
     val converter = UnsafeProjection.create(fieldTypes)
 
     val row = new SpecificMutableRow(fieldTypes)

@@ -56,8 +56,7 @@ object EventSource {
     */
   @deprecated("Use apply with an Akka source instead", "2.5.0")
   def apply[E: EventDataExtractor: EventNameExtractor: EventIdExtractor]()
-      : Enumeratee[E, Event] =
-    Enumeratee.map[E] { e => Event(e) }
+      : Enumeratee[E, Event] = Enumeratee.map[E] { e => Event(e) }
 
   /**
     * Makes a `Flow[E, Event, _]`, given an input source.

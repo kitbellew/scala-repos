@@ -123,8 +123,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         case fun: ScFunction =>
           (
             fun.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType =
-                subst.subst(p.getType(TypingContext.empty).getOrAny)
+              val paramType: ScType = subst.subst(
+                p.getType(TypingContext.empty).getOrAny)
               new Parameter(
                 p.name,
                 p.deprecatedName,
@@ -141,8 +141,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
         case f: ScPrimaryConstructor =>
           (
             f.effectiveParameterClauses.map(_.effectiveParameters.map { p =>
-              val paramType: ScType =
-                subst.subst(p.getType(TypingContext.empty).getOrAny)
+              val paramType: ScType = subst.subst(
+                p.getType(TypingContext.empty).getOrAny)
               new Parameter(
                 p.name,
                 p.deprecatedName,
@@ -445,8 +445,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                       r @ ScalaResolveResult(
                         method: PsiMethod,
                         subst: ScSubstitutor)) =>
-                  val (params, lastImplicit) =
-                    getConstructorParams(method, subst.followed(ss))
+                  val (params, lastImplicit) = getConstructorParams(
+                    method,
+                    subst.followed(ss))
                   updateImplicits(
                     tp,
                     withExpected = false,
@@ -610,8 +611,9 @@ object ScSimpleTypeElementImpl {
       case Some(qual) =>
         qual.resolve() match {
           case pack: PsiPackage =>
-            val obj =
-              PsiTreeUtil.getContextOfType(resolvedElement, classOf[ScObject])
+            val obj = PsiTreeUtil.getContextOfType(
+              resolvedElement,
+              classOf[ScObject])
             if (obj != null && obj.isPackageObject) {
               Success(
                 ScProjectionType(

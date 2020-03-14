@@ -77,8 +77,7 @@ sealed abstract class Xor[+A, +B] extends Product with Serializable {
     fold(Validated.Invalid.apply, Validated.Valid.apply)
 
   def withValidated[AA, BB](
-      f: Validated[A, B] => Validated[AA, BB]): AA Xor BB =
-    f(toValidated).toXor
+      f: Validated[A, B] => Validated[AA, BB]): AA Xor BB = f(toValidated).toXor
 
   def to[F[_], BB >: B](implicit
       monoidKF: MonoidK[F],
@@ -242,11 +241,9 @@ private[data] sealed abstract class XorInstances extends XorInstances1 {
       override def map[B, C](fa: A Xor B)(f: B => C): A Xor C = fa.map(f)
       override def attempt[B](fab: A Xor B): A Xor (A Xor B) = Xor.right(fab)
       override def recover[B](fab: A Xor B)(
-          pf: PartialFunction[A, B]): A Xor B =
-        fab recover pf
+          pf: PartialFunction[A, B]): A Xor B = fab recover pf
       override def recoverWith[B](fab: A Xor B)(
-          pf: PartialFunction[A, A Xor B]): A Xor B =
-        fab recoverWith pf
+          pf: PartialFunction[A, A Xor B]): A Xor B = fab recoverWith pf
     }
 }
 
@@ -317,8 +314,7 @@ trait XorFunctions {
   /**
     * Converts an `Either[A, B]` to an `A Xor B`.
     */
-  def fromEither[A, B](e: Either[A, B]): A Xor B =
-    e.fold(left, right)
+  def fromEither[A, B](e: Either[A, B]): A Xor B = e.fold(left, right)
 
   /**
     * Converts an `Option[B]` to an `A Xor B`, where the provided `ifNone` values is returned on

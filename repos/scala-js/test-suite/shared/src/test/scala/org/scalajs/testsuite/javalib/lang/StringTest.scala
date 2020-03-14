@@ -244,10 +244,9 @@ class StringTest {
   @Test def concat(): Unit = { assertEquals("asdffdsa", "asdf".concat("fdsa")) }
 
   @Test def constructors(): Unit = {
-    val charArray =
-      Array('a', 'b', 'c', 'd', '\uD834', '\uDF06', 'e', 'f', 'g', 'h', 'i')
-    val codePointArray =
-      Array(65, 0x1D306, 67, 68, 0xD834, 69, 72, 0xDF06)
+    val charArray = Array('a', 'b', 'c', 'd', '\uD834', '\uDF06', 'e', 'f', 'g',
+      'h', 'i')
+    val codePointArray = Array(65, 0x1D306, 67, 68, 0xD834, 69, 72, 0xDF06)
 
     assertEquals("", new String())
     assertEquals("abcd\uD834\uDF06efghi", new String(charArray))

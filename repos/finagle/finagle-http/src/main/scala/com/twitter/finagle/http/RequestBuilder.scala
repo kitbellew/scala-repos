@@ -197,8 +197,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val hostValue =
       if (u.getPort == -1 || u.getDefaultPort == u.getPort) host
       else "%s:%d".format(host, u.getPort)
-    val withHost =
-      config.headers.updated(HttpHeaders.Names.HOST, Seq(hostValue))
+    val withHost = config.headers
+      .updated(HttpHeaders.Names.HOST, Seq(hostValue))
     val userInfo = uri.getUserInfo
     val updated =
       if (userInfo == null || userInfo.isEmpty) withHost
@@ -243,8 +243,7 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
   /**
     * Declare the HTTP protocol version be HTTP/1.0
     */
-  def http10(): This =
-    new RequestBuilder(config.copy(version = Version.Http10))
+  def http10(): This = new RequestBuilder(config.copy(version = Version.Http10))
 
   /**
     * Set a new header with the specified name and value.
@@ -405,8 +404,8 @@ class RequestBuilder[HasUrl, HasForm] private[http] (
     val encodedReq = encoder.finalizeRequest()
 
     if (encodedReq.isChunked) {
-      val encodings =
-        encodedReq.headers.getAll(HttpHeaders.Names.TRANSFER_ENCODING)
+      val encodings = encodedReq.headers.getAll(
+        HttpHeaders.Names.TRANSFER_ENCODING)
       encodings.remove(HttpHeaders.Values.CHUNKED)
       if (encodings.isEmpty)
         encodedReq.headers.remove(HttpHeaders.Names.TRANSFER_ENCODING)

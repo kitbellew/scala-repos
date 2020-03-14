@@ -20,8 +20,7 @@ trait NaturalTransformation[-F[_], +G[_]] {
       def apply[A](ea: E[A]) = self(f(ea))
     }
 
-  def andThen[H[_]](f: G ~> H): F ~> H =
-    f compose self
+  def andThen[H[_]](f: G ~> H): F ~> H = f compose self
 }
 
 trait NaturalTransformations {

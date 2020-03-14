@@ -38,16 +38,15 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     val timer = new MockTimer
     val label = "test"
-    val factory =
-      new KetamaFailureAccrualFactory[Int, Int](
-        underlying,
-        FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(10.seconds)),
-        timer,
-        key,
-        broker,
-        ejectFailedHost,
-        label,
-        NullStatsReceiver)
+    val factory = new KetamaFailureAccrualFactory[Int, Int](
+      underlying,
+      FailureAccrualPolicy.consecutiveFailures(3, Backoff.const(10.seconds)),
+      timer,
+      key,
+      broker,
+      ejectFailedHost,
+      label,
+      NullStatsReceiver)
 
     val service = Await.result(factory())
     verify(underlying)()
@@ -161,17 +160,15 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
   }
 
   test("treat successful response and cancelled exceptions as success") {
-    val successes =
-      Seq(
-        Future.value(123),
-        Future.exception(new CancelledRequestException(new Exception)),
-        Future.exception(new CancelledConnectionException(new Exception)),
-        Future.exception(
-          ChannelWriteException(new CancelledRequestException(new Exception))),
-        Future.exception(
-          ChannelWriteException(
-            new CancelledConnectionException(new Exception)))
-      )
+    val successes = Seq(
+      Future.value(123),
+      Future.exception(new CancelledRequestException(new Exception)),
+      Future.exception(new CancelledConnectionException(new Exception)),
+      Future.exception(
+        ChannelWriteException(new CancelledRequestException(new Exception))),
+      Future.exception(
+        ChannelWriteException(new CancelledConnectionException(new Exception)))
+    )
 
     successes.foreach { rep =>
       val h = new Helper(false, rep)

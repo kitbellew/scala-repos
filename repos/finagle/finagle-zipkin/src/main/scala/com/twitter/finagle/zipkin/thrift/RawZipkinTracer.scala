@@ -48,9 +48,8 @@ object RawZipkinTracer {
   }
 
   // to make sure we only create one instance of the tracer per host and port
-  private[this] val map =
-    new HashMap[String, RawZipkinTracer]
-      with SynchronizedMap[String, RawZipkinTracer]
+  private[this] val map = new HashMap[String, RawZipkinTracer]
+    with SynchronizedMap[String, RawZipkinTracer]
 
   /**
     * @param scribeHost Host to send trace data to

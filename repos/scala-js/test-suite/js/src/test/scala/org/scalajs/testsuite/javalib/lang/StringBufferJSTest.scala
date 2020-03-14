@@ -14,8 +14,7 @@ import org.junit.Assert._
 
 class StringBufferJSTest {
 
-  def newBuf: java.lang.StringBuffer =
-    new java.lang.StringBuffer
+  def newBuf: java.lang.StringBuffer = new java.lang.StringBuffer
 
   @Test def append(): Unit =
     assertEquals("undefined", newBuf.append(js.undefined).toString)
@@ -26,8 +25,7 @@ class StringBufferJSTest {
 
 class StringBuilderJSTest {
 
-  def newBuilder: java.lang.StringBuilder =
-    new java.lang.StringBuilder
+  def newBuilder: java.lang.StringBuilder = new java.lang.StringBuilder
 
   @Test def append(): Unit = {
     assertEquals("undefined", newBuilder.append(js.undefined).toString)
@@ -37,6 +35,5 @@ class StringBuilderJSTest {
     assertEquals("undefined", newBuilder.insert(0, js.undefined).toString)
 
   @Test def should_allow_string_interpolation_to_survive_null_and_undefined()
-      : Unit =
-    assertEquals("undefined", s"${js.undefined}")
+      : Unit = assertEquals("undefined", s"${js.undefined}")
 }

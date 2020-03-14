@@ -71,12 +71,11 @@ class ActorPublisherDocSpec extends AkkaSpec {
   implicit val materializer = ActorMaterializer()
 
   "illustrate usage of ActorPublisher" in {
-    def println(s: String): Unit =
-      testActor ! s
+    def println(s: String): Unit = testActor ! s
 
     //#actor-publisher-usage
-    val jobManagerSource =
-      Source.actorPublisher[JobManager.Job](JobManager.props)
+    val jobManagerSource = Source.actorPublisher[JobManager.Job](
+      JobManager.props)
     val ref = Flow[JobManager.Job]
       .map(_.payload.toUpperCase)
       .map { elem => println(elem); elem }

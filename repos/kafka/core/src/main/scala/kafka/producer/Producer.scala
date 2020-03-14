@@ -60,8 +60,8 @@ class Producer[K, V](
       producerSendThread.start()
   }
 
-  private val producerTopicStats =
-    ProducerTopicStatsRegistry.getProducerTopicStats(config.clientId)
+  private val producerTopicStats = ProducerTopicStatsRegistry
+    .getProducerTopicStats(config.clientId)
 
   KafkaMetricsReporter.startReporters(config.props)
   AppInfo.registerInfo()

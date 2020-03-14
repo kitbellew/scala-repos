@@ -82,11 +82,10 @@ class UpgradedImageIExtractor(
     */
   private def checkForMsnVideoHeadlineImage: Option[String] = {
     // This DOM path may be too restrictive but it's performing quite well at time of writing.
-    val dataConfig: String =
-      article.rawDoc
-        .select(
-          "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
-        .attr("data-metadata")
+    val dataConfig: String = article.rawDoc
+      .select(
+        "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
+      .attr("data-metadata")
 
     JSON.parseRaw(dataConfig) match {
       case Some(JSONObject(metadataMap)) =>
@@ -140,8 +139,9 @@ class UpgradedImageIExtractor(
       case Some(goodImages) => {
         trace(
           "checkForLargeImages: After findImagesThatPassByteSizeTest we have: " + goodImages.size + " at parent depth: " + parentDepthLevel)
-        val scoredImages =
-          downloadImagesAndGetResults(goodImages, parentDepthLevel)
+        val scoredImages = downloadImagesAndGetResults(
+          goodImages,
+          parentDepthLevel)
         // get the high score image in a tuple
         scoredImages.sortBy(-_._2).take(1).headOption match {
           case Some(highScoreImage) => {

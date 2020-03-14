@@ -206,8 +206,10 @@ class LogManagerTest {
   @Test
   def testLeastLoadedAssignment() {
     // create a log manager with multiple data directories
-    val dirs =
-      Array(TestUtils.tempDir(), TestUtils.tempDir(), TestUtils.tempDir())
+    val dirs = Array(
+      TestUtils.tempDir(),
+      TestUtils.tempDir(),
+      TestUtils.tempDir())
     logManager.shutdown()
     logManager = createLogManager()
 
@@ -218,8 +220,10 @@ class LogManagerTest {
         "We should have created the right number of logs",
         partition + 1,
         logManager.allLogs.size)
-      val counts =
-        logManager.allLogs.groupBy(_.dir.getParent).values.map(_.size)
+      val counts = logManager.allLogs
+        .groupBy(_.dir.getParent)
+        .values
+        .map(_.size)
       assertTrue("Load should balance evenly", counts.max <= counts.min + 1)
     }
   }
@@ -287,8 +291,9 @@ class LogManagerTest {
     })
 
     logManager.checkpointRecoveryPointOffsets()
-    val checkpoints = new OffsetCheckpoint(
-      new File(logDir, logManager.RecoveryPointCheckpointFile)).read()
+    val checkpoints =
+      new OffsetCheckpoint(
+        new File(logDir, logManager.RecoveryPointCheckpointFile)).read()
 
     topicAndPartitions.zip(logs).foreach {
       case (tp, log) => {

@@ -121,8 +121,8 @@ object BackendReporting {
               descriptor,
               ownerInternalName,
               missingClasses) =>
-          val (javaDef, others) =
-            missingClasses.partition(_.definedInJavaSource)
+          val (javaDef, others) = missingClasses.partition(
+            _.definedInJavaSource)
           s"The method $name$descriptor could not be found in the class $ownerInternalName or any of its parents." +
             (if (others.isEmpty) ""
              else

@@ -56,8 +56,8 @@ final class RegressionEvaluator @Since("1.4.0") (
     */
   @Since("1.4.0")
   val metricName: Param[String] = {
-    val allowedParams =
-      ParamValidators.inArray(Array("mse", "rmse", "r2", "mae"))
+    val allowedParams = ParamValidators.inArray(
+      Array("mse", "rmse", "r2", "mae"))
     new Param(
       this,
       "metricName",

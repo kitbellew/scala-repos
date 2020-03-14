@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
   */
 class ScalaSuperParametersTest extends ScalaCodeInsightTestBase {
   def testConstructorCall() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -23,8 +22,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -40,8 +38,7 @@ class TUI {
   }
 
   def testConstructorCall2() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -53,8 +50,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -70,8 +66,7 @@ class TUI {
   }
 
   def testConstructorCall2Smart() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -83,8 +78,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A(x: Int, y: Int) {
     def this(x: Int, y: Int, z: Int) = this(x, y)
@@ -100,8 +94,7 @@ class TUI {
   }
 
   def testSuperCall() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A {
     def foo(x: Int, y: Int, z: Int) = 1
@@ -118,8 +111,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A {
     def foo(x: Int, y: Int, z: Int) = 1
@@ -140,8 +132,7 @@ class TUI {
   }
 
   def testSuperCall2() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   class A {
     def foo(x: Int, y: Int, z: Int) = 1
@@ -158,8 +149,7 @@ class TUI {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   class A {
     def foo(x: Int, y: Int, z: Int) = 1

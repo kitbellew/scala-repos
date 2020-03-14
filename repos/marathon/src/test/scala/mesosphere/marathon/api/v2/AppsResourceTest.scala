@@ -66,8 +66,8 @@ class AppsResourceTest
     And("the JSON is as expected, including a newly generated version")
     import mesosphere.marathon.api.v2.json.Formats._
     val expected = AppInfo(
-      app.copy(versionInfo =
-        AppDefinition.VersionInfo.OnlyVersion(clock.now())),
+      app
+        .copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(clock.now())),
       maybeTasks = Some(immutable.Seq.empty),
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
@@ -156,8 +156,8 @@ class AppsResourceTest
     And("the JSON is as expected, including a newly generated version")
     import mesosphere.marathon.api.v2.json.Formats._
     val expected = AppInfo(
-      app.copy(versionInfo =
-        AppDefinition.VersionInfo.OnlyVersion(clock.now())),
+      app
+        .copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(clock.now())),
       maybeTasks = Some(immutable.Seq.empty),
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
@@ -209,8 +209,11 @@ class AppsResourceTest
     groupManager.app(PathId("/app")) returns Future.successful(Some(app))
 
     When("The application is updated")
-    val response =
-      appsResource.replace(app.id.toString, body, false, auth.request)
+    val response = appsResource.replace(
+      app.id.toString,
+      body,
+      false,
+      auth.request)
 
     Then("The application is updated")
     response.getStatus should be(200)
@@ -233,8 +236,11 @@ class AppsResourceTest
     val body = Json.stringify(appJsonWithOnlyPorts).getBytes("UTF-8")
 
     When("The application is updated")
-    val response =
-      appsResource.replace(app.id.toString, body, false, auth.request)
+    val response = appsResource.replace(
+      app.id.toString,
+      body,
+      false,
+      auth.request)
 
     Then("The application is updated")
     response.getStatus should be(200)
@@ -246,8 +252,7 @@ class AppsResourceTest
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
-    val body =
-      """{
+    val body = """{
         |  "cmd": "sleep 1",
         |  "container": {
         |    "type": "DOCKER"
@@ -257,8 +262,11 @@ class AppsResourceTest
       plan)
 
     When("The application is updated")
-    val response =
-      appsResource.replace(app.id.toString, body, force = false, auth.request)
+    val response = appsResource.replace(
+      app.id.toString,
+      body,
+      force = false,
+      auth.request)
 
     Then("The return code indicates a validation error for container.docker")
     response.getStatus should be(422)
@@ -272,8 +280,7 @@ class AppsResourceTest
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
-    val body =
-      """
+    val body = """
         |{
         |  "id": "resident1",
         |  "cmd": "sleep 100",
@@ -310,8 +317,7 @@ class AppsResourceTest
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
     val plan = DeploymentPlan(group, group)
-    val body =
-      """{
+    val body = """{
         |  "cmd": "sleep 1",
         |  "container": {
         |    "type": "MESOS",
@@ -324,8 +330,11 @@ class AppsResourceTest
       plan)
 
     When("The application is updated")
-    val response =
-      appsResource.replace(app.id.toString, body, force = false, auth.request)
+    val response = appsResource.replace(
+      app.id.toString,
+      body,
+      force = false,
+      auth.request)
 
     Then("The return code indicates a validation error for container.docker")
     response.getStatus should be(422)
@@ -342,8 +351,10 @@ class AppsResourceTest
 
     groupManager.updateApp(any, any, any, any, any) returns Future.successful(
       plan)
-    val response =
-      appsResource.restart(app.id.toString, force = true, auth.request)
+    val response = appsResource.restart(
+      app.id.toString,
+      force = true,
+      auth.request)
     response.getStatus should be(200)
   }
 
@@ -471,8 +482,10 @@ class AppsResourceTest
     replace.getStatus should be(auth.NotAuthenticatedStatus)
 
     When("we try to update multiple apps")
-    val replaceMultiple =
-      appsResource.replaceMultiple(false, s"[$app]".getBytes("UTF-8"), req)
+    val replaceMultiple = appsResource.replaceMultiple(
+      false,
+      s"[$app]".getBytes("UTF-8"),
+      req)
     Then("we receive a NotAuthenticated response")
     replaceMultiple.getStatus should be(auth.NotAuthenticatedStatus)
 
@@ -519,8 +532,10 @@ class AppsResourceTest
     replace.getStatus should be(auth.UnauthorizedStatus)
 
     When("we try to update multiple apps")
-    val replaceMultiple =
-      appsResource.replaceMultiple(false, s"[$app]".getBytes("UTF-8"), req)
+    val replaceMultiple = appsResource.replaceMultiple(
+      false,
+      s"[$app]".getBytes("UTF-8"),
+      req)
     Then("we receive a NotAuthorized response")
     replaceMultiple.getStatus should be(auth.UnauthorizedStatus)
 

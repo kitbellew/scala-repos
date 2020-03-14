@@ -56,8 +56,9 @@ class VectorsSuite extends SparkFunSuite with Logging {
   }
 
   test("sparse vector construction with unordered elements") {
-    val vec =
-      Vectors.sparse(n, indices.zip(values).reverse).asInstanceOf[SparseVector]
+    val vec = Vectors
+      .sparse(n, indices.zip(values).reverse)
+      .asInstanceOf[SparseVector]
     assert(vec.size === n)
     assert(vec.indices === indices)
     assert(vec.values === values)
@@ -90,8 +91,9 @@ class VectorsSuite extends SparkFunSuite with Logging {
     val vec2 = Vectors.dense(arr).asInstanceOf[DenseVector]
     assert(vec2.argmax === 3)
 
-    val vec3 =
-      Vectors.dense(Array(-1.0, 0.0, -2.0, 1.0)).asInstanceOf[DenseVector]
+    val vec3 = Vectors
+      .dense(Array(-1.0, 0.0, -2.0, 1.0))
+      .asInstanceOf[DenseVector]
     assert(vec3.argmax === 3)
   }
 
@@ -202,8 +204,12 @@ class VectorsSuite extends SparkFunSuite with Logging {
       assert(v === v1)
     }
 
-    val malformatted =
-      Seq("1", "[1,,]", "[1,2b]", "(1,[1,2])", "([1],[2.0,1.0])")
+    val malformatted = Seq(
+      "1",
+      "[1,,]",
+      "[1,2b]",
+      "(1,[1,2])",
+      "([1],[2.0,1.0])")
     malformatted.foreach { s =>
       intercept[SparkException] {
         Vectors.parse(s)
@@ -277,8 +283,9 @@ class VectorsSuite extends SparkFunSuite with Logging {
       val denseVector1 = Vectors.dense(sparseVector1.toArray)
       val denseVector2 = Vectors.dense(sparseVector2.toArray)
 
-      val squaredDist =
-        breezeSquaredDistance(sparseVector1.toBreeze, sparseVector2.toBreeze)
+      val squaredDist = breezeSquaredDistance(
+        sparseVector1.toBreeze,
+        sparseVector2.toBreeze)
 
       // SparseVector vs. SparseVector
       assert(
@@ -315,8 +322,9 @@ class VectorsSuite extends SparkFunSuite with Logging {
 
   test("vector p-norm") {
     val dv = Vectors.dense(0.0, -1.2, 3.1, 0.0, -4.5, 1.9)
-    val sv =
-      Vectors.sparse(6, Seq((1, -1.2), (2, 3.1), (3, 0.0), (4, -4.5), (5, 1.9)))
+    val sv = Vectors.sparse(
+      6,
+      Seq((1, -1.2), (2, 3.1), (3, 0.0), (4, -4.5), (5, 1.9)))
 
     assert(Vectors.norm(dv, 1.0) ~== dv.toArray.foldLeft(0.0)((a, v) =>
       a + math.abs(v)) relTol 1e-8)

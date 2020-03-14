@@ -85,11 +85,11 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
 
   private[this] val asMap = underlying.asMap
 
-  private[this] val entityCache =
-    EvictingCache.lazily(new LoadingFutureCache(underlying))
+  private[this] val entityCache = EvictingCache.lazily(
+    new LoadingFutureCache(underlying))
 
-  private[this] val gauge =
-    statsReceiver.addGauge(s"numberOf${entityType}Nodes") { underlying.size }
+  private[this] val gauge = statsReceiver.addGauge(
+    s"numberOf${entityType}Nodes") { underlying.size }
 
   protected def parseNode(path: String, data: String): Seq[Entity]
 

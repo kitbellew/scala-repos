@@ -156,8 +156,8 @@ class MigrationTo0_13Test
   }
 
   class Fixture {
-    lazy val uuidGenerator =
-      Generators.timeBasedGenerator(EthernetAddress.fromInterface())
+    lazy val uuidGenerator = Generators.timeBasedGenerator(
+      EthernetAddress.fromInterface())
     lazy val state = new InMemoryStore
     lazy val metrics = new Metrics(new MetricRegistry)
     lazy val legacyTaskStore = new LegacyTaskStore(state)

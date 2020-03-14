@@ -12,10 +12,9 @@ import scala.runtime.NonLocalReturnControl
 @RunWith(classOf[JUnitRunner])
 class FuturePoolTest extends FunSuite with Eventually {
 
-  implicit override val patienceConfig =
-    PatienceConfig(
-      timeout = scaled(Span(15, Seconds)),
-      interval = scaled(Span(5, Millis)))
+  implicit override val patienceConfig = PatienceConfig(
+    timeout = scaled(Span(15, Seconds)),
+    interval = scaled(Span(5, Millis)))
 
   test("FuturePool should dispatch to another thread") {
     val executor = Executors.newFixedThreadPool(1)
@@ -46,8 +45,9 @@ class FuturePoolTest extends FunSuite with Eventually {
   }
 
   test("does not execute interrupted tasks") {
-    val executor =
-      Executors.newFixedThreadPool(1).asInstanceOf[ThreadPoolExecutor]
+    val executor = Executors
+      .newFixedThreadPool(1)
+      .asInstanceOf[ThreadPoolExecutor]
     val pool = FuturePool(executor)
 
     val runCount = new atomic.AtomicInteger
@@ -73,8 +73,9 @@ class FuturePoolTest extends FunSuite with Eventually {
   }
 
   test("continue to run a task if it's interrupted while running") {
-    val executor =
-      Executors.newFixedThreadPool(1).asInstanceOf[ThreadPoolExecutor]
+    val executor = Executors
+      .newFixedThreadPool(1)
+      .asInstanceOf[ThreadPoolExecutor]
     val pool = FuturePool(executor)
 
     val runCount = new atomic.AtomicInteger

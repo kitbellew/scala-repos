@@ -330,19 +330,19 @@ object VertexRDD {
         vertices.partitionBy(new HashPartitioner(vertices.partitions.length))
     }
     val routingTables = createRoutingTables(edges, vPartitioned.partitioner.get)
-    val vertexPartitions =
-      vPartitioned.zipPartitions(routingTables, preservesPartitioning = true) {
-        (vertexIter, routingTableIter) =>
-          val routingTable =
-            if (routingTableIter.hasNext) routingTableIter.next()
-            else RoutingTablePartition.empty
-          Iterator(
-            ShippableVertexPartition(
-              vertexIter,
-              routingTable,
-              defaultVal,
-              mergeFunc))
-      }
+    val vertexPartitions = vPartitioned.zipPartitions(
+      routingTables,
+      preservesPartitioning = true) { (vertexIter, routingTableIter) =>
+      val routingTable =
+        if (routingTableIter.hasNext) routingTableIter.next()
+        else RoutingTablePartition.empty
+      Iterator(
+        ShippableVertexPartition(
+          vertexIter,
+          routingTable,
+          defaultVal,
+          mergeFunc))
+    }
     new VertexRDDImpl(vertexPartitions)
   }
 
@@ -361,8 +361,9 @@ object VertexRDD {
       edges: EdgeRDD[_],
       numPartitions: Int,
       defaultVal: VD): VertexRDD[VD] = {
-    val routingTables =
-      createRoutingTables(edges, new HashPartitioner(numPartitions))
+    val routingTables = createRoutingTables(
+      edges,
+      new HashPartitioner(numPartitions))
     val vertexPartitions = routingTables.mapPartitions(
       { routingTableIter =>
         val routingTable =

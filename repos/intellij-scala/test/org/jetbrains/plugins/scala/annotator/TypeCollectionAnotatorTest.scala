@@ -17,10 +17,10 @@ import org.jetbrains.plugins.scala.settings.ScalaProjectSettings
 class TypeCollectionAnotatorTest
     extends ScalaLightPlatformCodeInsightTestCaseAdapter
     with TestScalaProjectSettings {
-  private val immutableCollectionMessage =
-    ScalaBundle.message("scala.immutable.collection")
-  private val mutableCollectionMessage =
-    ScalaBundle.message("scala.mutable.collection")
+  private val immutableCollectionMessage = ScalaBundle.message(
+    "scala.immutable.collection")
+  private val mutableCollectionMessage = ScalaBundle.message(
+    "scala.mutable.collection")
   private val javaCollectionMessage = ScalaBundle.message("java.collection")
 
   protected override def setUp() {

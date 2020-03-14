@@ -99,24 +99,23 @@ case class TungstenAggregate(
           // so return an empty iterator.
           Iterator.empty
         } else {
-          val aggregationIterator =
-            new TungstenAggregationIterator(
-              groupingExpressions,
-              aggregateExpressions,
-              aggregateAttributes,
-              initialInputBufferOffset,
-              resultExpressions,
-              (expressions, inputSchema) =>
-                newMutableProjection(
-                  expressions,
-                  inputSchema,
-                  subexpressionEliminationEnabled),
-              child.output,
-              iter,
-              testFallbackStartsAt,
-              numOutputRows,
-              dataSize,
-              spillSize)
+          val aggregationIterator = new TungstenAggregationIterator(
+            groupingExpressions,
+            aggregateExpressions,
+            aggregateAttributes,
+            initialInputBufferOffset,
+            resultExpressions,
+            (expressions, inputSchema) =>
+              newMutableProjection(
+                expressions,
+                inputSchema,
+                subexpressionEliminationEnabled),
+            child.output,
+            iter,
+            testFallbackStartsAt,
+            numOutputRows,
+            dataSize,
+            spillSize)
           if (!hasInput && groupingExpressions.isEmpty) {
             numOutputRows += 1
             Iterator.single[UnsafeRow](
@@ -258,8 +257,8 @@ case class TungstenAggregate(
     }
     ctx.currentVars = bufVars ++ input
     // TODO: support subexpression elimination
-    val aggVals =
-      updateExpr.map(BindReferences.bindReference(_, inputAttrs).gen(ctx))
+    val aggVals = updateExpr.map(
+      BindReferences.bindReference(_, inputAttrs).gen(ctx))
     // aggregate buffer should be updated atomic
     val updates = aggVals.zipWithIndex.map {
       case (ev, i) =>
@@ -282,8 +281,8 @@ case class TungstenAggregate(
     .map(_.aggregateFunction)
     .filter(_.isInstanceOf[DeclarativeAggregate])
     .map(_.asInstanceOf[DeclarativeAggregate])
-  private val bufferSchema =
-    StructType.fromAttributes(aggregateBufferAttributes)
+  private val bufferSchema = StructType.fromAttributes(
+    aggregateBufferAttributes)
 
   // The name for HashMap
   private var hashMapTerm: String = _
@@ -325,8 +324,9 @@ case class TungstenAggregate(
 
     // update peak execution memory
     val mapMemory = hashMap.getPeakMemoryUsedBytes
-    val sorterMemory =
-      Option(sorter).map(_.getPeakMemoryUsedBytes).getOrElse(0L)
+    val sorterMemory = Option(sorter)
+      .map(_.getPeakMemoryUsedBytes)
+      .getOrElse(0L)
     val peakMemory = Math.max(mapMemory, sorterMemory)
     val metrics = TaskContext.get().taskMetrics()
     metrics.incPeakExecutionMemory(peakMemory)
@@ -356,8 +356,9 @@ case class TungstenAggregate(
 
       var currentKey: UnsafeRow = null
       var currentRow: UnsafeRow = null
-      var nextKey: UnsafeRow = if (sortedIter.next()) { sortedIter.getKey }
-      else { null }
+      var nextKey: UnsafeRow =
+        if (sortedIter.next()) { sortedIter.getKey }
+        else { null }
 
       override def next(): Boolean = {
         if (nextKey != null) {
@@ -560,8 +561,8 @@ case class TungstenAggregate(
       new Array[ExprCode](aggregateBufferAttributes.length) ++ input
     ctx.INPUT_ROW = buffer
     // TODO: support subexpression elimination
-    val evals =
-      updateExpr.map(BindReferences.bindReference(_, inputAttr).gen(ctx))
+    val evals = updateExpr.map(
+      BindReferences.bindReference(_, inputAttr).gen(ctx))
     val updates = evals.zipWithIndex.map {
       case (ev, i) =>
         val dt = updateExpr(i).dataType
@@ -633,8 +634,8 @@ case class TungstenAggregate(
 
 object TungstenAggregate {
   def supportsAggregate(aggregateBufferAttributes: Seq[Attribute]): Boolean = {
-    val aggregationBufferSchema =
-      StructType.fromAttributes(aggregateBufferAttributes)
+    val aggregationBufferSchema = StructType.fromAttributes(
+      aggregateBufferAttributes)
     UnsafeFixedWidthAggregationMap.supportsAggregationBufferSchema(
       aggregationBufferSchema)
   }

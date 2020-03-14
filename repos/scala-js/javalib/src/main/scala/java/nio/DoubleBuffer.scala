@@ -5,14 +5,12 @@ import scala.scalajs.js.typedarray._
 object DoubleBuffer {
   private final val HashSeed = 2140173175 // "java.nio.DoubleBuffer".##
 
-  def allocate(capacity: Int): DoubleBuffer =
-    wrap(new Array[Double](capacity))
+  def allocate(capacity: Int): DoubleBuffer = wrap(new Array[Double](capacity))
 
   def wrap(array: Array[Double], offset: Int, length: Int): DoubleBuffer =
     HeapDoubleBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Double]): DoubleBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Double]): DoubleBuffer = wrap(array, 0, array.length)
 
   // Extended API
 
@@ -51,28 +49,22 @@ abstract class DoubleBuffer private[nio] (
   def get(dst: Array[Double], offset: Int, length: Int): DoubleBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Double]): DoubleBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Double]): DoubleBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: DoubleBuffer): DoubleBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: DoubleBuffer): DoubleBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Double], offset: Int, length: Int): DoubleBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Double]): DoubleBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Double]): DoubleBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Double] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Double] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): DoubleBuffer
 

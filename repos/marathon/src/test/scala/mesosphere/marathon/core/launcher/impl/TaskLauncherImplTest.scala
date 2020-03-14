@@ -23,8 +23,8 @@ import scala.collection.JavaConverters._
 
 class TaskLauncherImplTest extends MarathonSpec {
   private[this] val offerId = OfferID("offerId")
-  private[this] val offerIdAsJava: util.Set[Protos.OfferID] =
-    Collections.singleton[Protos.OfferID](offerId)
+  private[this] val offerIdAsJava: util.Set[Protos.OfferID] = Collections
+    .singleton[Protos.OfferID](offerId)
   private[this] def launch(taskInfoBuilder: TaskInfo.Builder): TaskOp.Launch = {
     val taskInfo = taskInfoBuilder.build()
     new TaskOpFactoryHelper(Some("principal"), Some("role"))
@@ -35,8 +35,10 @@ class TaskLauncherImplTest extends MarathonSpec {
   private[this] val ops = Seq(launch1, launch2)
   private[this] val opsAsJava: util.List[Offer.Operation] =
     ops.flatMap(_.offerOperations).asJava
-  private[this] val filter =
-    Protos.Filters.newBuilder().setRefuseSeconds(0).build()
+  private[this] val filter = Protos.Filters
+    .newBuilder()
+    .setRefuseSeconds(0)
+    .build()
 
   test("launchTasks without driver") {
     driverHolder.driver = None
@@ -79,8 +81,10 @@ class TaskLauncherImplTest extends MarathonSpec {
 
   test("declineOffer with driver and defined refuse seconds") {
     launcher.declineOffer(offerId, Some(123))
-    val filter =
-      Protos.Filters.newBuilder().setRefuseSeconds(123 / 1000.0).build()
+    val filter = Protos.Filters
+      .newBuilder()
+      .setRefuseSeconds(123 / 1000.0)
+      .build()
     verify(driverHolder.driver.get).declineOffer(offerId, filter)
   }
 

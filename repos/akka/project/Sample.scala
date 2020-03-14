@@ -33,8 +33,7 @@ object Sample {
         case _ => ti.unit
       }
 
-  def project(name: String) =
-    ProjectRef(file(s"akka-samples/$name"), name)
+  def project(name: String) = ProjectRef(file(s"akka-samples/$name"), name)
 
   private def libraryToProjectDeps(projects: Seq[Project]) =
     projects.map(

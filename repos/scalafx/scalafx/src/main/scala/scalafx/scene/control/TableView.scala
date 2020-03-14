@@ -154,8 +154,7 @@ object TableView {
       */
     implicit def sfxTableViewSelectionModel2jfx[S](
         tvsm: TableViewSelectionModel[S])
-        : jfxsc.TableView.TableViewSelectionModel[S] =
-      delegateOrNull(tvsm)
+        : jfxsc.TableView.TableViewSelectionModel[S] = delegateOrNull(tvsm)
 
   }
 

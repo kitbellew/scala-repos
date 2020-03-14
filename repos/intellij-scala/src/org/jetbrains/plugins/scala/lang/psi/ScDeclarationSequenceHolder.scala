@@ -90,8 +90,9 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
 
       //forward references are allowed (e.g. 2 local methods see each other)
       run = lastParent.getNextSibling
-      val forwardState =
-        state.put(BaseProcessor.FORWARD_REFERENCE_KEY, lang.Boolean.TRUE)
+      val forwardState = state.put(
+        BaseProcessor.FORWARD_REFERENCE_KEY,
+        lang.Boolean.TRUE)
       while (run != null) {
         ProgressManager.checkCanceled()
         if (!processElement(run, forwardState)) return false

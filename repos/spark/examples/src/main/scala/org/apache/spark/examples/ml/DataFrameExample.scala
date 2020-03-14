@@ -65,8 +65,10 @@ object DataFrameExample {
 
     // Load input data
     println(s"Loading LIBSVM file with UDT from ${params.input}.")
-    val df: DataFrame =
-      sqlContext.read.format("libsvm").load(params.input).cache()
+    val df: DataFrame = sqlContext.read
+      .format("libsvm")
+      .load(params.input)
+      .cache()
     println("Schema from LIBSVM:")
     df.printSchema()
     println(s"Loaded training data as a DataFrame with ${df.count()} records.")

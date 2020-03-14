@@ -72,8 +72,8 @@ class HttpModelIntegrationSpec
       // HttpHeaders by getting their name and value. We convert Content-Type
       // and Content-Length by using the toString of their values.
 
-      val partialTextHeaders: Seq[(String, String)] =
-        request.headers.map(h ⇒ (h.name, h.value))
+      val partialTextHeaders: Seq[(String, String)] = request.headers.map(h ⇒
+        (h.name, h.value))
       val entityTextHeaders: Seq[(String, String)] = request.entity match {
         case HttpEntity.Default(contentType, contentLength, _) ⇒
           Seq(
@@ -156,8 +156,8 @@ class HttpModelIntegrationSpec
       // Finally we can create our HttpResponse.
 
       HttpResponse(
-        entity =
-          HttpEntity.Default(contentType.get, contentLength.get, publisherBody))
+        entity = HttpEntity
+          .Default(contentType.get, contentLength.get, publisherBody))
     }
 
     "be able to wrap HttpHeaders with custom typed headers" in {

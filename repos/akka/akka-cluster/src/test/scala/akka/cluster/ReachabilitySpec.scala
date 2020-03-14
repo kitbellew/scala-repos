@@ -163,8 +163,9 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge by picking latest version of each record" in {
-      val r1 =
-        Reachability.empty.unreachable(nodeB, nodeA).unreachable(nodeC, nodeD)
+      val r1 = Reachability.empty
+        .unreachable(nodeB, nodeA)
+        .unreachable(nodeC, nodeD)
       val r2 = r1
         .reachable(nodeB, nodeA)
         .unreachable(nodeD, nodeE)
@@ -186,8 +187,9 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge by taking allowed set into account" in {
-      val r1 =
-        Reachability.empty.unreachable(nodeB, nodeA).unreachable(nodeC, nodeD)
+      val r1 = Reachability.empty
+        .unreachable(nodeB, nodeA)
+        .unreachable(nodeC, nodeD)
       val r2 = r1
         .reachable(nodeB, nodeA)
         .unreachable(nodeD, nodeE)
@@ -214,8 +216,9 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge correctly after pruning" in {
-      val r1 =
-        Reachability.empty.unreachable(nodeB, nodeA).unreachable(nodeC, nodeD)
+      val r1 = Reachability.empty
+        .unreachable(nodeB, nodeA)
+        .unreachable(nodeC, nodeD)
       val r2 = r1.unreachable(nodeA, nodeE)
       val r3 = r1.reachable(nodeB, nodeA) // nodeB pruned
       val merged = r2.merge(Set(nodeA, nodeB, nodeC, nodeD, nodeE), r3)
@@ -230,10 +233,12 @@ class ReachabilitySpec extends WordSpec with Matchers {
     }
 
     "merge versions correctly" in {
-      val r1 =
-        Reachability(Vector.empty, Map(nodeA -> 3L, nodeB -> 5L, nodeC -> 7L))
-      val r2 =
-        Reachability(Vector.empty, Map(nodeA -> 6L, nodeB -> 2L, nodeD -> 1L))
+      val r1 = Reachability(
+        Vector.empty,
+        Map(nodeA -> 3L, nodeB -> 5L, nodeC -> 7L))
+      val r2 = Reachability(
+        Vector.empty,
+        Map(nodeA -> 6L, nodeB -> 2L, nodeD -> 1L))
       val merged = r1.merge(Set(nodeA, nodeB, nodeC, nodeD, nodeE), r2)
 
       val expected = Map(nodeA -> 6L, nodeB -> 5L, nodeC -> 7L, nodeD -> 1L)

@@ -70,8 +70,10 @@ final class NIHDBProjection(
         (acc, segment) =>
           reduction.reduce(segment, None) map { a =>
             val key = segment.ctype
-            val value =
-              acc.get(key).map(reduction.semigroup.append(_, a)).getOrElse(a)
+            val value = acc
+              .get(key)
+              .map(reduction.semigroup.append(_, a))
+              .getOrElse(a)
             acc + (key -> value)
           } getOrElse acc
       }

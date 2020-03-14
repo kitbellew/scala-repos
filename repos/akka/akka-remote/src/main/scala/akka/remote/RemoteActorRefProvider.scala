@@ -357,9 +357,10 @@ private[akka] class RemoteActorRefProvider(
                     e)
               }
               val localAddress = transport.localAddressForRemote(addr)
-              val rpath = (RootActorPath(
-                addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
-                .withUid(path.uid)
+              val rpath =
+                (RootActorPath(
+                  addr) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
+                  .withUid(path.uid)
               new RemoteActorRef(
                 transport,
                 localAddress,
@@ -438,8 +439,7 @@ private[akka] class RemoteActorRefProvider(
   @deprecated("use actorSelection instead of actorFor", "2.2")
   override private[akka] def actorFor(
       ref: InternalActorRef,
-      path: Iterable[String]): InternalActorRef =
-    local.actorFor(ref, path)
+      path: Iterable[String]): InternalActorRef = local.actorFor(ref, path)
 
   def rootGuardianAt(address: Address): ActorRef =
     if (hasAddress(address)) rootGuardian

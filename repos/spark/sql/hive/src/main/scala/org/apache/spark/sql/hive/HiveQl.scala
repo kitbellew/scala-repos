@@ -238,8 +238,9 @@ private[hive] class HiveQl(conf: ParserConf)
       case Token(
             "TOK_DROPTABLE",
             Token("TOK_TABNAME", tableNameParts) :: ifExists) =>
-        val tableName =
-          tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
+        val tableName = tableNameParts
+          .map { case Token(p, Nil) => p }
+          .mkString(".")
         DropTable(tableName, ifExists.nonEmpty)
 
       // Support "ANALYZE TABLE tableName COMPUTE STATISTICS noscan"
@@ -259,22 +260,22 @@ private[hive] class HiveQl(conf: ParserConf)
           // If users do not specify "noscan", it will be treated as a Hive native command.
           NativePlaceholder
         } else {
-          val tableName =
-            tableNameParts.map { case Token(p, Nil) => p }.mkString(".")
+          val tableName = tableNameParts
+            .map { case Token(p, Nil) => p }
+            .mkString(".")
           AnalyzeTable(tableName)
         }
 
       case view @ Token("TOK_ALTERVIEW", children) =>
-        val Some(nameParts) :: maybeQuery :: _ =
-          getClauses(
-            Seq(
-              "TOK_TABNAME",
-              "TOK_QUERY",
-              "TOK_ALTERVIEW_ADDPARTS",
-              "TOK_ALTERVIEW_DROPPARTS",
-              "TOK_ALTERVIEW_PROPERTIES",
-              "TOK_ALTERVIEW_RENAME"),
-            children)
+        val Some(nameParts) :: maybeQuery :: _ = getClauses(
+          Seq(
+            "TOK_TABNAME",
+            "TOK_QUERY",
+            "TOK_ALTERVIEW_ADDPARTS",
+            "TOK_ALTERVIEW_DROPPARTS",
+            "TOK_ALTERVIEW_PROPERTIES",
+            "TOK_ALTERVIEW_RENAME"),
+          children)
 
         // if ALTER VIEW doesn't have query part, let hive to handle it.
         maybeQuery
@@ -358,37 +359,36 @@ private[hive] class HiveQl(conf: ParserConf)
           externalTable ::
           Some(query) ::
           allowExisting +:
-          _) =
-          getClauses(
-            Seq(
-              "TOK_TABNAME",
-              "TOK_LIKETABLE",
-              "EXTERNAL",
-              "TOK_QUERY",
-              "TOK_IFNOTEXISTS",
-              "TOK_TABLECOMMENT",
-              "TOK_TABCOLLIST",
-              "TOK_TABLEPARTCOLS", // Partitioned by
-              "TOK_TABLEBUCKETS", // Clustered by
-              "TOK_TABLESKEWED", // Skewed by
-              "TOK_TABLEROWFORMAT",
-              "TOK_TABLESERIALIZER",
-              "TOK_FILEFORMAT_GENERIC",
-              "TOK_TABLEFILEFORMAT", // User-provided InputFormat and OutputFormat
-              "TOK_STORAGEHANDLER", // Storage handler
-              "TOK_TABLELOCATION",
-              "TOK_TABLEPROPERTIES"
-            ),
-            children
-          )
+          _) = getClauses(
+          Seq(
+            "TOK_TABNAME",
+            "TOK_LIKETABLE",
+            "EXTERNAL",
+            "TOK_QUERY",
+            "TOK_IFNOTEXISTS",
+            "TOK_TABLECOMMENT",
+            "TOK_TABCOLLIST",
+            "TOK_TABLEPARTCOLS", // Partitioned by
+            "TOK_TABLEBUCKETS", // Clustered by
+            "TOK_TABLESKEWED", // Skewed by
+            "TOK_TABLEROWFORMAT",
+            "TOK_TABLESERIALIZER",
+            "TOK_FILEFORMAT_GENERIC",
+            "TOK_TABLEFILEFORMAT", // User-provided InputFormat and OutputFormat
+            "TOK_STORAGEHANDLER", // Storage handler
+            "TOK_TABLELOCATION",
+            "TOK_TABLEPROPERTIES"
+          ),
+          children
+        )
         val tableIdentifier = extractTableIdent(tableNameParts)
 
         // TODO add bucket support
         var tableDesc: CatalogTable = CatalogTable(
           name = tableIdentifier,
-          tableType = if (externalTable.isDefined) {
-            CatalogTableType.EXTERNAL_TABLE
-          } else { CatalogTableType.MANAGED_TABLE },
+          tableType =
+            if (externalTable.isDefined) { CatalogTableType.EXTERNAL_TABLE }
+            else { CatalogTableType.MANAGED_TABLE },
           storage = CatalogStorageFormat(
             locationUri = None,
             inputFormat = None,
@@ -400,11 +400,12 @@ private[hive] class HiveQl(conf: ParserConf)
         )
 
         // default storage type abbreviation (e.g. RCFile, ORC, PARQUET etc.)
-        val defaultStorageType =
-          hiveConf.getVar(HiveConf.ConfVars.HIVEDEFAULTFILEFORMAT)
+        val defaultStorageType = hiveConf.getVar(
+          HiveConf.ConfVars.HIVEDEFAULTFILEFORMAT)
         // handle the default format for the storage type abbreviation
-        val hiveSerDe =
-          HiveSerDe.sourceToSerDe(defaultStorageType, hiveConf).getOrElse {
+        val hiveSerDe = HiveSerDe
+          .sourceToSerDe(defaultStorageType, hiveConf)
+          .getOrElse {
             HiveSerDe(
               inputFormat = Option("org.apache.hadoop.mapred.TextInputFormat"),
               outputFormat = Option(
@@ -412,10 +413,10 @@ private[hive] class HiveQl(conf: ParserConf)
           }
 
         tableDesc = tableDesc.withNewStorage(
-          inputFormat =
-            hiveSerDe.inputFormat.orElse(tableDesc.storage.inputFormat),
-          outputFormat =
-            hiveSerDe.outputFormat.orElse(tableDesc.storage.outputFormat),
+          inputFormat = hiveSerDe.inputFormat.orElse(
+            tableDesc.storage.inputFormat),
+          outputFormat = hiveSerDe.outputFormat.orElse(
+            tableDesc.storage.outputFormat),
           serde = hiveSerDe.serde.orElse(tableDesc.storage.serde)
         )
 
@@ -501,10 +502,10 @@ private[hive] class HiveQl(conf: ParserConf)
             child.text.toLowerCase(Locale.ENGLISH) match {
               case "orc" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat =
-                    Option("org.apache.hadoop.hive.ql.io.orc.OrcInputFormat"),
-                  outputFormat =
-                    Option("org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat"))
+                  inputFormat = Option(
+                    "org.apache.hadoop.hive.ql.io.orc.OrcInputFormat"),
+                  outputFormat = Option(
+                    "org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat"))
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(
                     serde = Option("org.apache.hadoop.hive.ql.io.orc.OrcSerde"))
@@ -524,10 +525,10 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "rcfile" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat =
-                    Option("org.apache.hadoop.hive.ql.io.RCFileInputFormat"),
-                  outputFormat =
-                    Option("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
+                  inputFormat = Option(
+                    "org.apache.hadoop.hive.ql.io.RCFileInputFormat"),
+                  outputFormat = Option(
+                    "org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(serde = Option(
                     "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
@@ -535,17 +536,17 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "textfile" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat =
-                    Option("org.apache.hadoop.mapred.TextInputFormat"),
+                  inputFormat = Option(
+                    "org.apache.hadoop.mapred.TextInputFormat"),
                   outputFormat = Option(
                     "org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat"))
 
               case "sequencefile" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat =
-                    Option("org.apache.hadoop.mapred.SequenceFileInputFormat"),
-                  outputFormat =
-                    Option("org.apache.hadoop.mapred.SequenceFileOutputFormat"))
+                  inputFormat = Option(
+                    "org.apache.hadoop.mapred.SequenceFileInputFormat"),
+                  outputFormat = Option(
+                    "org.apache.hadoop.mapred.SequenceFileOutputFormat"))
 
               case "avro" =>
                 tableDesc = tableDesc.withNewStorage(
@@ -556,8 +557,8 @@ private[hive] class HiveQl(conf: ParserConf)
                 )
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(
-                    serde =
-                      Option("org.apache.hadoop.hive.serde2.avro.AvroSerDe"))
+                    serde = Option(
+                      "org.apache.hadoop.hive.serde2.avro.AvroSerDe"))
                 }
 
               case _ =>
@@ -570,8 +571,8 @@ private[hive] class HiveQl(conf: ParserConf)
                 Token(
                   "TOK_SERDENAME",
                   Token(serdeName, Nil) :: otherProps) :: Nil) =>
-            tableDesc =
-              tableDesc.withNewStorage(serde = Option(unquoteString(serdeName)))
+            tableDesc = tableDesc
+              .withNewStorage(serde = Option(unquoteString(serdeName)))
 
             otherProps match {
               case Token("TOK_TABLEPROPERTIES", list :: Nil) :: Nil =>
@@ -721,19 +722,20 @@ private[hive] class HiveQl(conf: ParserConf)
           outRowFormat,
           outSerdeClass,
           outSerdeProps,
-          useDefaultRecordWriter) =
-          matchSerDe(outputSerdeClause)
+          useDefaultRecordWriter) = matchSerDe(outputSerdeClause)
 
         val unescapedScript = unescapeSQLString(script)
 
         // TODO Adds support for user-defined record reader/writer classes
-        val recordReaderClass = if (useDefaultRecordReader) {
-          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
-        } else { None }
+        val recordReaderClass =
+          if (useDefaultRecordReader) {
+            Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDREADER))
+          } else { None }
 
-        val recordWriterClass = if (useDefaultRecordWriter) {
-          Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
-        } else { None }
+        val recordWriterClass =
+          if (useDefaultRecordWriter) {
+            Option(hiveConf.getVar(ConfVars.HIVESCRIPTRECORDWRITER))
+          } else { None }
 
         val schema = HiveScriptIOSchema(
           inRowFormat,
@@ -759,9 +761,9 @@ private[hive] class HiveQl(conf: ParserConf)
   protected override def nodeToGenerator(node: ASTNode): Generator =
     node match {
       case Token("TOK_FUNCTION", Token(functionName, Nil) :: children) =>
-        val functionInfo: FunctionInfo =
-          Option(FunctionRegistry.getFunctionInfo(functionName.toLowerCase))
-            .getOrElse(sys.error(s"Couldn't find function $functionName"))
+        val functionInfo: FunctionInfo = Option(
+          FunctionRegistry.getFunctionInfo(functionName.toLowerCase))
+          .getOrElse(sys.error(s"Couldn't find function $functionName"))
         val functionClassName = functionInfo.getFunctionClass.getName
         HiveGenericUDTF(
           functionName,
@@ -817,8 +819,9 @@ private[hive] class HiveQl(conf: ParserConf)
 
       case SparkSqlParser.TOK_UNIONTYPE =>
         val typeNode = node.children.head
-        val unionTypesString =
-          typeNode.children.map(nodeToTypeString).mkString(",")
+        val unionTypesString = typeNode.children
+          .map(nodeToTypeString)
+          .mkString(",")
         s"${serdeConstants.UNION_TYPE_NAME}<$unionTypesString>"
 
       case SparkSqlParser.TOK_CHAR =>

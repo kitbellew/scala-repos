@@ -68,8 +68,7 @@ class EventType[T <: jfxe.Event](override val delegate: jfxe.EventType[T])
     *
     * @param name The name
     */
-  def this(name: String) =
-    this(new jfxe.EventType[T](name))
+  def this(name: String) = this(new jfxe.EventType[T](name))
 
   /**
     * Gets the name of this event type.

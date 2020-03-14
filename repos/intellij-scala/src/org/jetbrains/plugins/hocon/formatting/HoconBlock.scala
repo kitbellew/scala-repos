@@ -41,8 +41,7 @@ class HoconBlock(
 
   def buildChildren() = children.asJava
 
-  def isLeaf =
-    formatter.getChildren(node).isEmpty
+  def isLeaf = formatter.getChildren(node).isEmpty
 
   def getSpacing(child1: Block, child2: Block) =
     if (child1 == null)
@@ -53,13 +52,12 @@ class HoconBlock(
         child1.asInstanceOf[HoconBlock].getNode,
         child2.asInstanceOf[HoconBlock].getNode)
 
-  lazy val children: Seq[Block] =
-    formatter
-      .getChildren(node)
-      .filterNot(n =>
-        n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
-      .map(createChildBlock)
-      .toVector
+  lazy val children: Seq[Block] = formatter
+    .getChildren(node)
+    .filterNot(n =>
+      n.getTextLength == 0 || n.getElementType == TokenType.WHITE_SPACE)
+    .map(createChildBlock)
+    .toVector
 
   private def createChildBlock(child: ASTNode) =
     new HoconBlock(

@@ -747,8 +747,7 @@ final class VectorBuilder[A]()
     this
   }
 
-  override def ++=(xs: TraversableOnce[A]): this.type =
-    super.++=(xs)
+  override def ++=(xs: TraversableOnce[A]): this.type = super.++=(xs)
 
   def result: Vector[A] = {
     val size = blockIndex + lo

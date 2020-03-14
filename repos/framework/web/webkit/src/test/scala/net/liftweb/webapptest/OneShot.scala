@@ -61,11 +61,10 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
 
-        val bx =
-          for {
-            resp <- get("/cv_int")
-            xml <- resp.xml
-          } yield xml
+        val bx = for {
+          resp <- get("/cv_int")
+          xml <- resp.xml
+        } yield xml
 
         bx.openOrThrowException("legacy code") must ==/(<int>45</int>)
           .when(jetty.running)
@@ -77,12 +76,11 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
 
-        val bx =
-          for {
-            resp <- get("/cv_int/33")
-            resp2 <- resp.get("/cv_int")
-            xml <- resp2.xml
-          } yield xml
+        val bx = for {
+          resp <- get("/cv_int/33")
+          resp2 <- resp.get("/cv_int")
+          xml <- resp2.xml
+        } yield xml
 
         bx.openOrThrowException("legacy code") must ==/(<int>33</int>)
           .when(jetty.running)
@@ -94,14 +92,13 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
 
-        val bx =
-          for {
-            resp <- get("/cv_int/33")
-            resp2 <- resp.get("/cv_int")
-            xml <- resp2.xml
-            resp3 <- get("/cv_int")
-            xml2 <- resp3.xml
-          } yield (xml, xml2)
+        val bx = for {
+          resp <- get("/cv_int/33")
+          resp2 <- resp.get("/cv_int")
+          xml <- resp2.xml
+          resp3 <- get("/cv_int")
+          xml2 <- resp3.xml
+        } yield (xml, xml2)
 
         bx.openOrThrowException("legacy code")._1 must ==/(<int>33</int>)
           .when(jetty.running)
@@ -115,15 +112,14 @@ object OneShot extends Specification with RequestKit with XmlMatchers {
       try {
         LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions
 
-        val bx =
-          for {
-            resp <- get("/cv_int/33")
-            resp2 <- resp.get("/cv_int")
-            respx <- resp.get("/cv_str/meow")
-            resp3 <- resp.get("/cv_str")
-            xml <- resp2.xml
-            xml2 <- resp3.xml
-          } yield (xml, xml2)
+        val bx = for {
+          resp <- get("/cv_int/33")
+          resp2 <- resp.get("/cv_int")
+          respx <- resp.get("/cv_str/meow")
+          resp3 <- resp.get("/cv_str")
+          xml <- resp2.xml
+          xml2 <- resp3.xml
+        } yield (xml, xml2)
 
         bx.openOrThrowException("legacy code")._1 must ==/(<int>33</int>)
           .when(jetty.running)

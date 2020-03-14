@@ -152,8 +152,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
   }
 
   protected def augmentSimpleRequest(): Unit = {
-    val anyOriginAllowed: Boolean =
-      corsConfig.allowedOrigins.contains(AnyOrigin)
+    val anyOriginAllowed: Boolean = corsConfig.allowedOrigins.contains(
+      AnyOrigin)
     val hdr =
       if (anyOriginAllowed && !corsConfig.allowCredentials) AnyOrigin
       else request.headers.get(OriginHeader).getOrElse("")
@@ -250,8 +250,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
   }
 
   private[this] def headersAreAllowed: Boolean = { // 5.2.4 and 5.2.6
-    val allowedHeaders =
-      corsConfig.allowedHeaders.map(_.trim.toUpperCase(ENGLISH))
+    val allowedHeaders = corsConfig.allowedHeaders.map(
+      _.trim.toUpperCase(ENGLISH))
     val requestedHeaders =
       for (header <- request.headers.getMulti(AccessControlRequestHeadersHeader)
            if header.nonBlank) yield header.toUpperCase(ENGLISH)

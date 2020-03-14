@@ -41,8 +41,9 @@ class MetadataCacheTest {
   def getTopicMetadataNonExistingTopics() {
     val topic = "topic"
     val cache = new MetadataCache(1)
-    val topicMetadata =
-      cache.getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
+    val topicMetadata = cache.getTopicMetadata(
+      Set(topic),
+      SecurityProtocol.PLAINTEXT)
     assertTrue(topicMetadata.isEmpty)
   }
 
@@ -110,8 +111,8 @@ class MetadataCacheTest {
       assertEquals(Errors.NONE, topicMetadata.error)
       assertEquals(topic, topicMetadata.topic)
 
-      val partitionMetadatas =
-        topicMetadata.partitionMetadata.asScala.sortBy(_.partition)
+      val partitionMetadatas = topicMetadata.partitionMetadata.asScala
+        .sortBy(_.partition)
       assertEquals(3, partitionMetadatas.size)
 
       for (i <- 0 to 2) {
@@ -165,8 +166,9 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas =
-      cache.getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache.getTopicMetadata(
+      Set(topic),
+      SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head
@@ -220,8 +222,9 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas =
-      cache.getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache.getTopicMetadata(
+      Set(topic),
+      SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head
@@ -274,8 +277,9 @@ class MetadataCacheTest {
       brokers.asJava)
     cache.updateCache(15, updateMetadataRequest)
 
-    val topicMetadatas =
-      cache.getTopicMetadata(Set(topic), SecurityProtocol.PLAINTEXT)
+    val topicMetadatas = cache.getTopicMetadata(
+      Set(topic),
+      SecurityProtocol.PLAINTEXT)
     assertEquals(1, topicMetadatas.size)
 
     val topicMetadata = topicMetadatas.head

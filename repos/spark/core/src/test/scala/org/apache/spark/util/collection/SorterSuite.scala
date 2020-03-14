@@ -53,11 +53,10 @@ class SorterSuite extends SparkFunSuite with Logging {
     }
 
     // Map from generated keys to values, to verify correctness later
-    val kvMap =
-      keyValueArray
-        .grouped(2)
-        .map { case Array(k, v) => k.doubleValue() -> v.intValue() }
-        .toMap
+    val kvMap = keyValueArray
+      .grouped(2)
+      .map { case Array(k, v) => k.doubleValue() -> v.intValue() }
+      .toMap
 
     Arrays.sort(keys)
     new Sorter(new KVArraySortDataFormat[Double, Number])

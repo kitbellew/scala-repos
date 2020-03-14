@@ -20,8 +20,8 @@ class SeqIdFilterTest
 
   def mkmsg(tmsg: TMessage, strictWrite: Boolean) = {
     val trans = new TMemoryBuffer(24)
-    val oprot =
-      (new TBinaryProtocol.Factory(false, strictWrite)).getProtocol(trans)
+    val oprot = (new TBinaryProtocol.Factory(false, strictWrite))
+      .getProtocol(trans)
     oprot.writeMessageBegin(tmsg)
     oprot.writeMessageEnd()
     trans.getArray()
@@ -68,8 +68,8 @@ class SeqIdFilterTest
     test("SeqIdFilter(%s) use its own seqids to the server".format(how)) {
       Time.withCurrentTimeFrozen { _ =>
         val filtered = new SeqIdFilter andThen service
-        val expected =
-          (new scala.util.Random(Time.now.inMilliseconds)).nextInt()
+        val expected = (new scala.util.Random(Time.now.inMilliseconds))
+          .nextInt()
         val f = filtered(
           new ThriftClientRequest(
             mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
@@ -84,8 +84,8 @@ class SeqIdFilterTest
       "SeqIdFilter(%s) fail when sequence ids are out of order".format(how)) {
       Time.withCurrentTimeFrozen { _ =>
         val filtered = new SeqIdFilter andThen service
-        val expected =
-          (new scala.util.Random(Time.now.inMilliseconds)).nextInt()
+        val expected = (new scala.util.Random(Time.now.inMilliseconds))
+          .nextInt()
         val f = filtered(
           new ThriftClientRequest(
             mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),

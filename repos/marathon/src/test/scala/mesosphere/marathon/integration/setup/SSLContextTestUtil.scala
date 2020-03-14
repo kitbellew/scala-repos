@@ -11,14 +11,15 @@ import mesosphere.marathon.io.SSLContextUtil
 object SSLContextTestUtil {
   val keyStorePassword = "password"
 
-  lazy val keyStoreURL =
-    Option(getClass.getResource("/test-keystore.jks")).getOrElse(
+  lazy val keyStoreURL = Option(getClass.getResource("/test-keystore.jks"))
+    .getOrElse(
       throw new RuntimeException(s"Could not find resource /test-keystore.jks")
     )
   lazy val keyStorePath = keyStoreURL.getPath
 
-  lazy val testSSLContext =
-    SSLContextUtil.createSSLContext(Some(keyStorePath), Some(keyStorePassword))
+  lazy val testSSLContext = SSLContextUtil.createSSLContext(
+    Some(keyStorePath),
+    Some(keyStorePassword))
 
   def sslConnection(url: URL): HttpsURLConnection = {
     val connection = url.openConnection().asInstanceOf[HttpsURLConnection]

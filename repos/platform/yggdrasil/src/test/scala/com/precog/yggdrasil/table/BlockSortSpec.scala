@@ -68,17 +68,18 @@ trait BlockSortSpec[M[+_]]
 
     val globalIdPath = JPath(".globalId")
 
-    val original = if (unique) {
-      sample.data
-        .map { jv =>
-          JArray(sortKeys.map(_.extract(jv \ "value")).toList) -> jv
-        }
-        .toMap
-        .toList
-        .unzip
-        ._2
-        .toStream
-    } else { sample.data }
+    val original =
+      if (unique) {
+        sample.data
+          .map { jv =>
+            JArray(sortKeys.map(_.extract(jv \ "value")).toList) -> jv
+          }
+          .toMap
+          .toList
+          .unzip
+          ._2
+          .toStream
+      } else { sample.data }
 
     // We have to add in and then later remove the global Id (insert
     // order) to match real sort semantics for disambiguation of equal

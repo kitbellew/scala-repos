@@ -21,8 +21,10 @@ trait MatchCps {
     val MarkerCPSAdaptMinus = cpsSymbol("cpsMinus")
     val MarkerCPSSynth = cpsSymbol("cpsSynth")
     val MarkerCPSTypes = cpsSymbol("cpsParam")
-    val stripTriggerCPSAnns =
-      Set[Symbol](MarkerCPSSynth, MarkerCPSAdaptMinus, MarkerCPSAdaptPlus)
+    val stripTriggerCPSAnns = Set[Symbol](
+      MarkerCPSSynth,
+      MarkerCPSAdaptMinus,
+      MarkerCPSAdaptPlus)
     val strippedCPSAnns = stripTriggerCPSAnns + MarkerCPSTypes
 
     // when one of the internal cps-type-state annotations is present, strip all CPS annotations

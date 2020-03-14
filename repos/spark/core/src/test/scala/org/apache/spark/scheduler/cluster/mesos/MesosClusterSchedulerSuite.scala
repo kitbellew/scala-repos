@@ -66,18 +66,17 @@ class MesosClusterSchedulerSuite
         "s1",
         new Date()))
     assert(response.success)
-    val response2 =
-      scheduler.submitDriver(
-        new MesosDriverDescription(
-          "d1",
-          "jar",
-          1000,
-          1,
-          true,
-          command,
-          Map[String, String](),
-          "s2",
-          new Date()))
+    val response2 = scheduler.submitDriver(
+      new MesosDriverDescription(
+        "d1",
+        "jar",
+        1000,
+        1,
+        true,
+        command,
+        Map[String, String](),
+        "s2",
+        new Date()))
     assert(response2.success)
     val state = scheduler.getSchedulerState()
     val queuedDrivers = state.queuedDrivers.toList

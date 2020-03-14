@@ -99,11 +99,9 @@ trait VectorInstances extends VectorInstances0 {
       }
     }
 
-    override def all[A](fa: Vector[A])(f: A => Boolean) =
-      fa forall f
+    override def all[A](fa: Vector[A])(f: A => Boolean) = fa forall f
 
-    override def any[A](fa: Vector[A])(f: A => Boolean) =
-      fa exists f
+    override def any[A](fa: Vector[A])(f: A => Boolean) = fa exists f
   }
 
   implicit def vectorMonoid[A]: Monoid[Vector[A]] =

@@ -195,8 +195,10 @@ abstract class Storm(
       stormDag: Dag[Storm],
       node: StormNode)(implicit topologyBuilder: TopologyBuilder) = {
     val nodeName = stormDag.getNodeName(node)
-    val usePreferLocalDependency =
-      getOrElse(stormDag, node, DEFAULT_FM_PREFER_LOCAL_DEPENDENCY)
+    val usePreferLocalDependency = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_FM_PREFER_LOCAL_DEPENDENCY)
     logger.info(
       s"[$nodeName] usePreferLocalDependency: ${usePreferLocalDependency.get}")
 
@@ -242,8 +244,9 @@ abstract class Storm(
         }
       }
 
-    val countersForSpout: Seq[(Group, Name)] =
-      JobCounters.getCountersForJob(jobID).getOrElse(Nil)
+    val countersForSpout: Seq[(Group, Name)] = JobCounters
+      .getCountersForJob(jobID)
+      .getOrElse(Nil)
 
     val metrics = getOrElse(stormDag, node, DEFAULT_SPOUT_STORM_METRICS)
 
@@ -303,12 +306,16 @@ abstract class Storm(
     val ackOnEntry = getOrElse(stormDag, node, DEFAULT_ACK_ON_ENTRY)
     logger.info(s"[$nodeName] ackOnEntry : ${ackOnEntry.get}")
 
-    val maxEmitPerExecute =
-      getOrElse(stormDag, node, DEFAULT_MAX_EMIT_PER_EXECUTE)
+    val maxEmitPerExecute = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_MAX_EMIT_PER_EXECUTE)
     logger.info(s"[$nodeName] maxEmitPerExecute : ${maxEmitPerExecute.get}")
 
-    val maxExecutePerSec =
-      getOrElse(stormDag, node, DEFAULT_MAX_EXECUTE_PER_SEC)
+    val maxExecutePerSec = getOrElse(
+      stormDag,
+      node,
+      DEFAULT_MAX_EXECUTE_PER_SEC)
     logger.info(s"[$nodeName] maxExecutePerSec : $maxExecutePerSec")
 
     val storeBaseFMOp = {
@@ -320,8 +327,7 @@ abstract class Storm(
 
     val flatmapOp: FlatMapOperation[
       (ExecutorKeyType, (Option[ExecutorValueType], ExecutorValueType)),
-      ExecutorOutputType] =
-      FlatMapOperation.apply(storeBaseFMOp)
+      ExecutorOutputType] = FlatMapOperation.apply(storeBaseFMOp)
 
     val sinkBolt = BaseBolt(
       jobID,
@@ -347,14 +353,13 @@ abstract class Storm(
 
     val parallelism =
       getOrElse(stormDag, node, DEFAULT_SUMMER_PARALLELISM).parHint
-    val declarer =
-      topologyBuilder
-        .setBolt(
-          nodeName,
-          sinkBolt,
-          parallelism
-        )
-        .addConfigurations(tickConfig)
+    val declarer = topologyBuilder
+      .setBolt(
+        nodeName,
+        sinkBolt,
+        parallelism
+      )
+      .addConfigurations(tickConfig)
     val dependenciesNames = stormDag.dependenciesOf(node).collect {
       case x: StormNode => stormDag.getNodeName(x)
     }
@@ -423,8 +428,9 @@ abstract class Storm(
      * planning
      */
     val dagOptimizer = new DagOptimizer[Storm] {}
-    val stormTail =
-      dagOptimizer.optimize(tail, dagOptimizer.ValueFlatMapToFlatMap)
+    val stormTail = dagOptimizer.optimize(
+      tail,
+      dagOptimizer.ValueFlatMapToFlatMap)
     val stormDag = OnlinePlan(stormTail.asInstanceOf[TailProducer[Storm, T]])
     implicit val topologyBuilder = new TopologyBuilder
     implicit val config = genConfig(stormDag)

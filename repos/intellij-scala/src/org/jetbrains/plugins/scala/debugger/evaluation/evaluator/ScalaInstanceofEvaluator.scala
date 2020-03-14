@@ -37,11 +37,12 @@ class ScalaInstanceofEvaluator(
         DebuggerBundle.message("evaluation.error.object.reference.expected"))
     }
     try {
-      val refType: ReferenceType =
-        typeEvaluator.evaluate(context).asInstanceOf[ReferenceType]
+      val refType: ReferenceType = typeEvaluator
+        .evaluate(context)
+        .asInstanceOf[ReferenceType]
       val classObject: ClassObjectReference = refType.classObject
-      val classRefType: ClassType =
-        classObject.referenceType.asInstanceOf[ClassType]
+      val classRefType: ClassType = classObject.referenceType
+        .asInstanceOf[ClassType]
       val method: Method = classRefType.concreteMethodByName(
         "isAssignableFrom",
         "(Ljava/lang/Class;)Z")

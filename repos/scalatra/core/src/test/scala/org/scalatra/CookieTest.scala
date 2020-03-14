@@ -14,23 +14,23 @@ class CookieTest extends WordSpec with Matchers with BeforeAndAfterAll {
     }
 
     "have a dot in front of the domain when set" in {
-      val cookie =
-        Cookie("cookiename", "value1")(CookieOptions(domain = "nowhere.com"))
+      val cookie = Cookie("cookiename", "value1")(
+        CookieOptions(domain = "nowhere.com"))
       cookie.toCookieString should equal(
         "cookiename=value1; Domain=.nowhere.com")
     }
 
     "prefix a path with / if a path is set" in {
-      val cookie =
-        Cookie("cookiename", "value1")(CookieOptions(path = "path/to/resource"))
+      val cookie = Cookie("cookiename", "value1")(
+        CookieOptions(path = "path/to/resource"))
       cookie.toCookieString should equal(
         "cookiename=value1; Path=/path/to/resource")
     }
 
     "have a maxAge when the value is >= 0" in {
       val cookie = Cookie("cookiename", "value1")(CookieOptions(maxAge = 86700))
-      val dateString =
-        Cookie.formatExpires(new Date(Cookie.currentTimeMillis + 86700000))
+      val dateString = Cookie.formatExpires(
+        new Date(Cookie.currentTimeMillis + 86700000))
       cookie.toCookieString should equal(
         "cookiename=value1; Expires=" + dateString)
     }
@@ -48,8 +48,8 @@ class CookieTest extends WordSpec with Matchers with BeforeAndAfterAll {
     }
 
     "flag the cookie as http only if needed" in {
-      val cookie =
-        Cookie("cookiename", "value1")(CookieOptions(httpOnly = true))
+      val cookie = Cookie("cookiename", "value1")(
+        CookieOptions(httpOnly = true))
       cookie.toCookieString should equal("cookiename=value1; HttpOnly")
     }
 

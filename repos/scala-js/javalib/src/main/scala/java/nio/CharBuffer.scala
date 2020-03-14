@@ -5,25 +5,21 @@ import scala.scalajs.js.typedarray._
 object CharBuffer {
   private final val HashSeed = -182887236 // "java.nio.CharBuffer".##
 
-  def allocate(capacity: Int): CharBuffer =
-    wrap(new Array[Char](capacity))
+  def allocate(capacity: Int): CharBuffer = wrap(new Array[Char](capacity))
 
   def wrap(array: Array[Char], offset: Int, length: Int): CharBuffer =
     HeapCharBuffer.wrap(array, 0, array.length, offset, length, false)
 
-  def wrap(array: Array[Char]): CharBuffer =
-    wrap(array, 0, array.length)
+  def wrap(array: Array[Char]): CharBuffer = wrap(array, 0, array.length)
 
   def wrap(csq: CharSequence, start: Int, end: Int): CharBuffer =
     StringCharBuffer.wrap(csq, 0, csq.length, start, end - start)
 
-  def wrap(csq: CharSequence): CharBuffer =
-    wrap(csq, 0, csq.length)
+  def wrap(csq: CharSequence): CharBuffer = wrap(csq, 0, csq.length)
 
   // Extended API
 
-  def wrap(array: Uint16Array): CharBuffer =
-    TypedArrayCharBuffer.wrap(array)
+  def wrap(array: Uint16Array): CharBuffer = TypedArrayCharBuffer.wrap(array)
 }
 
 abstract class CharBuffer private[nio] (
@@ -75,34 +71,27 @@ abstract class CharBuffer private[nio] (
   def get(dst: Array[Char], offset: Int, length: Int): CharBuffer =
     GenBuffer(this).generic_get(dst, offset, length)
 
-  def get(dst: Array[Char]): CharBuffer =
-    get(dst, 0, dst.length)
+  def get(dst: Array[Char]): CharBuffer = get(dst, 0, dst.length)
 
   @noinline
-  def put(src: CharBuffer): CharBuffer =
-    GenBuffer(this).generic_put(src)
+  def put(src: CharBuffer): CharBuffer = GenBuffer(this).generic_put(src)
 
   @noinline
   def put(src: Array[Char], offset: Int, length: Int): CharBuffer =
     GenBuffer(this).generic_put(src, offset, length)
 
-  final def put(src: Array[Char]): CharBuffer =
-    put(src, 0, src.length)
+  final def put(src: Array[Char]): CharBuffer = put(src, 0, src.length)
 
   def put(src: String, start: Int, end: Int): CharBuffer =
     put(CharBuffer.wrap(src, start, end))
 
-  final def put(src: String): CharBuffer =
-    put(src, 0, src.length)
+  final def put(src: String): CharBuffer = put(src, 0, src.length)
 
-  @inline final def hasArray(): Boolean =
-    GenBuffer(this).generic_hasArray()
+  @inline final def hasArray(): Boolean = GenBuffer(this).generic_hasArray()
 
-  @inline final def array(): Array[Char] =
-    GenBuffer(this).generic_array()
+  @inline final def array(): Array[Char] = GenBuffer(this).generic_array()
 
-  @inline final def arrayOffset(): Int =
-    GenBuffer(this).generic_arrayOffset()
+  @inline final def arrayOffset(): Int = GenBuffer(this).generic_arrayOffset()
 
   def compact(): CharBuffer
 
@@ -140,14 +129,12 @@ abstract class CharBuffer private[nio] (
 
   def subSequence(start: Int, end: Int): CharSequence
 
-  def append(csq: CharSequence): CharBuffer =
-    put(csq.toString())
+  def append(csq: CharSequence): CharBuffer = put(csq.toString())
 
   def append(csq: CharSequence, start: Int, end: Int): CharBuffer =
     put(csq.subSequence(start, end).toString())
 
-  def append(c: Char): CharBuffer =
-    put(c)
+  def append(c: Char): CharBuffer = put(c)
 
   def order(): ByteOrder
 

@@ -213,8 +213,8 @@ class Dataset[T] private[sql] (
   unresolvedTEncoder.validate(logicalPlan.output)
 
   /** The encoder for this [[Dataset]] that has been resolved to its output schema. */
-  private[sql] val resolvedTEncoder: ExpressionEncoder[T] =
-    unresolvedTEncoder.resolve(logicalPlan.output, OuterScopes.outerScopes)
+  private[sql] val resolvedTEncoder: ExpressionEncoder[T] = unresolvedTEncoder
+    .resolve(logicalPlan.output, OuterScopes.outerScopes)
 
   /**
     * The encoder where the expressions used to construct an object from an input row have been
@@ -727,8 +727,9 @@ class Dataset[T] private[sql] (
       case _           => Alias(CreateStruct(rightOutput), "_2")()
     }
 
-    implicit val tuple2Encoder: Encoder[(T, U)] =
-      ExpressionEncoder.tuple(this.unresolvedTEncoder, other.unresolvedTEncoder)
+    implicit val tuple2Encoder: Encoder[(T, U)] = ExpressionEncoder.tuple(
+      this.unresolvedTEncoder,
+      other.unresolvedTEncoder)
     withTypedPlan[(T, U)](other, encoderFor[(T, U)]) { (left, right) =>
       Project(leftData :: rightData :: Nil, joined.analyzed)
     }
@@ -965,8 +966,8 @@ class Dataset[T] private[sql] (
     */
   protected def selectUntyped(columns: TypedColumn[_, _]*): Dataset[_] = {
     val encoders = columns.map(_.encoder)
-    val namedColumns =
-      columns.map(_.withInputType(resolvedTEncoder, logicalPlan.output).named)
+    val namedColumns = columns.map(
+      _.withInputType(resolvedTEncoder, logicalPlan.output).named)
     val execution =
       new QueryExecution(sqlContext, Project(namedColumns, logicalPlan))
 
@@ -1591,10 +1592,11 @@ class Dataset[T] private[sql] (
     val names = schema.toAttributes.map(_.name)
     val convert = CatalystTypeConverters.createToCatalystConverter(schema)
 
-    val rowFunction =
-      f.andThen(_.map(convert(_).asInstanceOf[InternalRow]))
-    val generator =
-      UserDefinedGenerator(elementTypes, rowFunction, input.map(_.expr))
+    val rowFunction = f.andThen(_.map(convert(_).asInstanceOf[InternalRow]))
+    val generator = UserDefinedGenerator(
+      elementTypes,
+      rowFunction,
+      input.map(_.expr))
 
     withPlan {
       Generate(
@@ -1728,10 +1730,9 @@ class Dataset[T] private[sql] (
   @scala.annotation.varargs
   def drop(colNames: String*): DataFrame = {
     val resolver = sqlContext.sessionState.analyzer.resolver
-    val remainingCols =
-      schema
-        .filter(f => colNames.forall(n => !resolver(f.name, n)))
-        .map(f => Column(f.name))
+    val remainingCols = schema
+      .filter(f => colNames.forall(n => !resolver(f.name, n)))
+      .map(f => Column(f.name))
     if (remainingCols.size == this.schema.size) { toDF() }
     else { this.select(remainingCols: _*) }
   }
@@ -1754,8 +1755,9 @@ class Dataset[T] private[sql] (
       case Column(expr: Expression) => expr
     }
     val attrs = this.logicalPlan.output
-    val colsAfterDrop =
-      attrs.filter { attr => attr != expression }.map(attr => Column(attr))
+    val colsAfterDrop = attrs
+      .filter { attr => attr != expression }
+      .map(attr => Column(attr))
     select(colsAfterDrop: _*)
   }
 
@@ -1839,24 +1841,25 @@ class Dataset[T] private[sql] (
         (if (cols.isEmpty) numericColumns.map(usePrettyExpression(_).sql)
          else cols).toList
 
-      val ret: Seq[Row] = if (outputCols.nonEmpty) {
-        val aggExprs = statistics.flatMap {
-          case (_, colToAgg) =>
-            outputCols.map(c =>
-              Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
-        }
+      val ret: Seq[Row] =
+        if (outputCols.nonEmpty) {
+          val aggExprs = statistics.flatMap {
+            case (_, colToAgg) =>
+              outputCols.map(c =>
+                Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+          }
 
-        val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
+          val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq
 
-        // Pivot the data so each summary is one row
-        row.grouped(outputCols.size).toSeq.zip(statistics).map {
-          case (aggregation, (statistic, _)) =>
-            Row(statistic :: aggregation.toList: _*)
+          // Pivot the data so each summary is one row
+          row.grouped(outputCols.size).toSeq.zip(statistics).map {
+            case (aggregation, (statistic, _)) =>
+              Row(statistic :: aggregation.toList: _*)
+          }
+        } else {
+          // If there are no output columns, just output a single column that contains the stats.
+          statistics.map { case (name, _) => Row(name) }
         }
-      } else {
-        // If there are no output columns, just output a single column that contains the stats.
-        statistics.map { case (name, _) => Row(name) }
-      }
 
       // All columns are string type
       val schema = StructType(
@@ -2308,8 +2311,9 @@ class Dataset[T] private[sql] (
     val rdd = queryExecution.toRdd.mapPartitions { iter =>
       val writer = new CharArrayWriter()
       // create the Generator without separator inserted between 2 records
-      val gen =
-        new JsonFactory().createGenerator(writer).setRootValueSeparator(null)
+      val gen = new JsonFactory()
+        .createGenerator(writer)
+        .setRootValueSeparator(null)
 
       new Iterator[String] {
         override def hasNext: Boolean = iter.hasNext

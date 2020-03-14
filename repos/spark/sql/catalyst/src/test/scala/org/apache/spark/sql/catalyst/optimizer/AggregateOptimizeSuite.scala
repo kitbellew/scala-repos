@@ -36,8 +36,7 @@ class AggregateOptimizeSuite extends PlanTest {
   test("remove literals in grouping expression") {
     val input = LocalRelation('a.int, 'b.int)
 
-    val query =
-      input.groupBy('a, Literal(1), Literal(1) + Literal(2))(sum('b))
+    val query = input.groupBy('a, Literal(1), Literal(1) + Literal(2))(sum('b))
     val optimized = Optimize.execute(query)
 
     val correctAnswer = input.groupBy('a)(sum('b))

@@ -145,8 +145,8 @@ private[kinesis] class KinesisTestUtils extends Logging {
   private def describeStream(
       streamNameToDescribe: String): Option[StreamDescription] = {
     try {
-      val describeStreamRequest =
-        new DescribeStreamRequest().withStreamName(streamNameToDescribe)
+      val describeStreamRequest = new DescribeStreamRequest()
+        .withStreamName(streamNameToDescribe)
       val desc = kinesisClient
         .describeStream(describeStreamRequest)
         .getStreamDescription()

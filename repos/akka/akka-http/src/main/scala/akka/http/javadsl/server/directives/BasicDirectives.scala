@@ -96,10 +96,9 @@ abstract class BasicDirectives extends BasicDirectivesBase {
 
   private[http] def handle(extractions: RequestVal[_]*)(
       f: RequestContext ⇒ RouteResult): Route = {
-    val route =
-      new OpaqueRoute() {
-        def handle(ctx: RequestContext): RouteResult = f(ctx)
-      }
+    val route = new OpaqueRoute() {
+      def handle(ctx: RequestContext): RouteResult = f(ctx)
+    }
     val saExtractions = extractions.collect {
       case sa: StandaloneExtractionImpl[_] ⇒ sa
     }

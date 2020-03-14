@@ -247,19 +247,17 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
-            (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, viewPath) =>
+          (RewriteResponse(viewPath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(viewTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](viewPath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(viewPathString + "/" + obscurePrimaryKey(in)))
-        }
+      val link = new Loc.Link[TheCrudType](viewPath, false) {
+        override def createLink(in: TheCrudType) =
+          Full(Text(viewPathString + "/" + obscurePrimaryKey(in)))
+      }
     }))
 
   /**
@@ -295,19 +293,17 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
-            (RewriteResponse(editPath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, editPath) =>
+          (RewriteResponse(editPath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(editTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](editPath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(editPathString + "/" + obscurePrimaryKey(in)))
-        }
+      val link = new Loc.Link[TheCrudType](editPath, false) {
+        override def createLink(in: TheCrudType) =
+          Full(Text(editPathString + "/" + obscurePrimaryKey(in)))
+      }
     }))
   }
 
@@ -416,19 +412,17 @@ trait Crudify {
       /**
         * Rewrite the request and emit the type-safe parameter
         */
-      override val rewrite: LocRewrite =
-        Full(NamedPF(name) {
-          case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
-            (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
-        })
+      override val rewrite: LocRewrite = Full(NamedPF(name) {
+        case RewriteRequest(pp, _, _) if hasParamFor(pp, deletePath) =>
+          (RewriteResponse(deletePath), findForParam(pp.wholePath.last))
+      })
 
       override def calcTemplate = Full(deleteTemplate)
 
-      val link =
-        new Loc.Link[TheCrudType](deletePath, false) {
-          override def createLink(in: TheCrudType) =
-            Full(Text(deletePathString + "/" + obscurePrimaryKey(in)))
-        }
+      val link = new Loc.Link[TheCrudType](deletePath, false) {
+        override def createLink(in: TheCrudType) =
+          Full(Text(deletePathString + "/" + obscurePrimaryKey(in)))
+      }
     }))
   }
 

@@ -178,17 +178,20 @@ object Plugins extends PluginsFunctions {
       // Ignore clauses for plugins that does not require anything else.
       // Avoids the requirement for pure Nature strings *and* possible
       // circular dependencies in the logic.
-      val allRequirementsClause =
-        defined.filterNot(_.isRoot).flatMap(d => asRequirementsClauses(d))
-      val allEnabledByClause =
-        defined.filterNot(_.isRoot).flatMap(d => asEnabledByClauses(d))
+      val allRequirementsClause = defined
+        .filterNot(_.isRoot)
+        .flatMap(d => asRequirementsClauses(d))
+      val allEnabledByClause = defined
+        .filterNot(_.isRoot)
+        .flatMap(d => asEnabledByClauses(d))
 
       // Note: Here is where the function begins.  We're given a list of plugins now.
       (requestedPlugins, log) => {
         def explicitlyDisabled(p: AutoPlugin): Boolean =
           hasExclude(requestedPlugins, p)
-        val alwaysEnabled: List[AutoPlugin] =
-          defined.filter(_.isAlwaysEnabled).filterNot(explicitlyDisabled)
+        val alwaysEnabled: List[AutoPlugin] = defined
+          .filter(_.isAlwaysEnabled)
+          .filterNot(explicitlyDisabled)
         val knowlege0: Set[Atom] =
           ((flatten(requestedPlugins) ++ alwaysEnabled) collect {
             case x: AutoPlugin => Atom(x.label)

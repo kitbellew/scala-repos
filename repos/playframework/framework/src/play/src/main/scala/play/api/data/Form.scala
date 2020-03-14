@@ -322,8 +322,8 @@ case class Field(
   /**
     * The field ID - the same as the field name but with '.' replaced by '_'.
     */
-  lazy val id: String =
-    name.replace('.', '_').replace('[', '_').replace("]", "")
+  lazy val id
+      : String = name.replace('.', '_').replace('[', '_').replace("]", "")
 
   /**
     * Returns the first error associated with this field, if it exists.
@@ -1048,8 +1048,8 @@ trait ObjectMapping {
     */
   def merge(results: Either[Seq[FormError], Any]*)
       : Either[Seq[FormError], Seq[Any]] = {
-    val all: Seq[Either[Seq[FormError], Seq[Any]]] =
-      results.map(_.right.map(Seq(_)))
+    val all: Seq[Either[Seq[FormError], Seq[Any]]] = results.map(
+      _.right.map(Seq(_)))
     all.fold(Right(Nil)) { (s, i) => merge2(s, i) }
   }
 

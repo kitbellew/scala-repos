@@ -33,13 +33,11 @@ class IntroduceExplicitParameterIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testIntroduceExplicitParameter4() {
-    val text =
-      """
+    val text = """
         |val name: String = "gfgfgfgfg"
         |val nameHasUpperCase = name.exists(<caret>_.isUpper)
       """
-    val resultText =
-      """
+    val resultText = """
         |val name: String = "gfgfgfgfg"
         |val nameHasUpperCase = name.exists(c => c.isUpper)
       """

@@ -79,8 +79,8 @@ private[spark] class NodeIdCache(
     nodeIdsForInstances.sparkContext.getCheckpointDir.nonEmpty
 
   // FileSystem instance for deleting checkpoints as needed
-  private val fs =
-    FileSystem.get(nodeIdsForInstances.sparkContext.hadoopConfiguration)
+  private val fs = FileSystem.get(
+    nodeIdsForInstances.sparkContext.hadoopConfiguration)
 
   /**
     * Update the node index values in the cache.
@@ -105,8 +105,8 @@ private[spark] class NodeIdCache(
       case (point, ids) =>
         var treeId = 0
         while (treeId < nodeIdUpdaters.length) {
-          val nodeIdUpdater =
-            nodeIdUpdaters(treeId).getOrElse(ids(treeId), null)
+          val nodeIdUpdater = nodeIdUpdaters(treeId)
+            .getOrElse(ids(treeId), null)
           if (nodeIdUpdater != null) {
             val featureIndex = nodeIdUpdater.split.featureIndex
             val newNodeIndex = nodeIdUpdater.updateNodeIndex(

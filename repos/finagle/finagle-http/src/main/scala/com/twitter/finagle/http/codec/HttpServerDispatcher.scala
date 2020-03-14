@@ -61,14 +61,15 @@ class HttpServerDispatcher(
         Future.value(response)
 
       case reqIn: HttpRequest =>
-        val reader = if (reqIn.isChunked) {
-          val coll = Transport.collate(trans, readChunk)
-          coll.proxyTo(eos)
-          coll: Reader
-        } else {
-          eos.setDone()
-          BufReader(ChannelBufferBuf.Owned(reqIn.getContent))
-        }
+        val reader =
+          if (reqIn.isChunked) {
+            val coll = Transport.collate(trans, readChunk)
+            coll.proxyTo(eos)
+            coll: Reader
+          } else {
+            eos.setDone()
+            BufReader(ChannelBufferBuf.Owned(reqIn.getContent))
+          }
 
         val addr = trans.remoteAddress match {
           case ia: InetSocketAddress => ia

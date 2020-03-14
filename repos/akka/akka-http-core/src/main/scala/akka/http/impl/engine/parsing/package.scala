@@ -69,8 +69,7 @@ package parsing {
       this(
         status,
         ErrorInfo(if (summary.isEmpty) status.defaultMessage else summary))
-    def this(summary: String) =
-      this(StatusCodes.BadRequest, ErrorInfo(summary))
+    def this(summary: String) = this(StatusCodes.BadRequest, ErrorInfo(summary))
   }
 
   /**

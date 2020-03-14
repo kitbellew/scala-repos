@@ -163,8 +163,10 @@ class JsonFormatSpec extends FunSuite {
     "updated_at": "2011-04-14T16:00:49Z"
   }"""
 
-  val apiPersonIdent =
-    ApiPersonIdent("Monalisa Octocat", "support@example.com", date1)
+  val apiPersonIdent = ApiPersonIdent(
+    "Monalisa Octocat",
+    "support@example.com",
+    date1)
   val apiPersonIdentJson = """ {
     "name": "Monalisa Octocat",
     "email": "support@example.com",
@@ -276,9 +278,8 @@ class JsonFormatSpec extends FunSuite {
     number = 1347,
     updated_at = date1,
     created_at = date1,
-    head =
-      ApiPullRequest.Commit(sha = sha1, ref = "new-topic", repo = repository)(
-        "octocat"),
+    head = ApiPullRequest
+      .Commit(sha = sha1, ref = "new-topic", repo = repository)("octocat"),
     base = ApiPullRequest.Commit(sha = sha1, ref = "master", repo = repository)(
       "octocat"),
     mergeable = None,
@@ -401,8 +402,9 @@ class JsonFormatSpec extends FunSuite {
         case e: com.fasterxml.jackson.core.JsonParseException => {
           val p =
             java.lang.Math.max(e.getLocation.getCharOffset() - 10, 0).toInt
-          val message =
-            json2.substring(p, java.lang.Math.min(p + 100, json2.length))
+          val message = json2.substring(
+            p,
+            java.lang.Math.min(p + 100, json2.length))
           throw new com.fasterxml.jackson.core.JsonParseException(
             message + e.getMessage,
             e.getLocation)

@@ -60,8 +60,9 @@ object Multipart {
             .prefixAndTail(1)
             .map {
               case (Seq(Left(part: FilePart[_])), body) =>
-                part.copy[Source[ByteString, _]](ref =
-                  body.collect { case Right(bytes) => bytes })
+                part.copy[Source[ByteString, _]](ref = body.collect {
+                  case Right(bytes) => bytes
+                })
               case (Seq(Left(other)), ignored) =>
                 // If we don't run the source, it takes Akka streams 5 seconds to wake up and realise the source is empty
                 // before it progresses onto the next element

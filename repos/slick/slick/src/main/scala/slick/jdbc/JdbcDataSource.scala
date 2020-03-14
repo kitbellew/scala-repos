@@ -246,8 +246,9 @@ class ConnectionPreparer(c: Config) extends (Connection => Unit) {
       throw new SlickException(
         s"Unknown transaction isolation level [$unknown]")
   }
-  val catalog =
-    c.getStringOpt("catalog").orElse(c.getStringOpt("defaultCatalog"))
+  val catalog = c
+    .getStringOpt("catalog")
+    .orElse(c.getStringOpt("defaultCatalog"))
   val readOnly = c.getBooleanOpt("readOnly")
 
   val isLive = isolation.isDefined || catalog.isDefined || readOnly.isDefined

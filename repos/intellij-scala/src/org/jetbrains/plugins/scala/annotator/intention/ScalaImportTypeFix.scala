@@ -234,8 +234,8 @@ class ScalaImportTypeFix(
           }
           val qname: String = selectedValue.qualifiedName
           if (qname == null) return FINAL_CHOICE
-          val toExclude: java.util.List[String] =
-            AddImportAction.getAllExcludableStrings(qname)
+          val toExclude: java.util.List[String] = AddImportAction
+            .getAllExcludableStrings(qname)
           new BaseListPopupStep[String](null, toExclude) {
             override def onChosen(
                 selectedValue: String,
@@ -411,8 +411,9 @@ object ScalaImportTypeFix {
       }
     }
 
-    val typeAliases =
-      cache.getStableAliasesByName(ref.refName, ref.getResolveScope)
+    val typeAliases = cache.getStableAliasesByName(
+      ref.refName,
+      ref.getResolveScope)
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&

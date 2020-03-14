@@ -36,8 +36,8 @@ object JsonExtractor {
       extractorOption: JsonExtractorOption,
       o: Any,
       json4sFormats: Formats = Utils.json4sDefaultFormats,
-      gsonTypeAdapterFactories: Seq[TypeAdapterFactory] =
-        Seq.empty[TypeAdapterFactory]): JValue = {
+      gsonTypeAdapterFactories: Seq[TypeAdapterFactory] = Seq
+        .empty[TypeAdapterFactory]): JValue = {
 
     extractorOption match {
       case JsonExtractorOption.Both =>
@@ -58,8 +58,8 @@ object JsonExtractor {
       json: String,
       clazz: Class[T],
       json4sFormats: Formats = Utils.json4sDefaultFormats,
-      gsonTypeAdapterFactories: Seq[TypeAdapterFactory] =
-        Seq.empty[TypeAdapterFactory]): T = {
+      gsonTypeAdapterFactories: Seq[TypeAdapterFactory] = Seq
+        .empty[TypeAdapterFactory]): T = {
 
     extractorOption match {
       case JsonExtractorOption.Both =>
@@ -79,8 +79,9 @@ object JsonExtractor {
       extractorOption: JsonExtractorOption,
       param: (String, Params)): String = {
     // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
-    val toBeReplacedJValue =
-      JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, (param._1, null))
+    val toBeReplacedJValue = JsonExtractor.toJValue(
+      JsonExtractorOption.Json4sNative,
+      (param._1, null))
     val paramJValue = JsonExtractor.toJValue(extractorOption, param._2)
 
     compact(render(toBeReplacedJValue.replace(param._1 :: Nil, paramJValue)))
@@ -110,20 +111,23 @@ object JsonExtractor {
       params: EngineParams) = {
     var jValue = toJValue(JsonExtractorOption.Json4sNative, params)
 
-    val dataSourceParamsJValue =
-      toJValue(extractorOption, params.dataSourceParams._2)
+    val dataSourceParamsJValue = toJValue(
+      extractorOption,
+      params.dataSourceParams._2)
     jValue = jValue.replace(
       "dataSourceParams" :: params.dataSourceParams._1 :: Nil,
       dataSourceParamsJValue)
 
-    val preparatorParamsJValue =
-      toJValue(extractorOption, params.preparatorParams._2)
+    val preparatorParamsJValue = toJValue(
+      extractorOption,
+      params.preparatorParams._2)
     jValue = jValue.replace(
       "preparatorParams" :: params.preparatorParams._1 :: Nil,
       preparatorParamsJValue)
 
-    val algorithmParamsJValue =
-      paramsToJValue(extractorOption, params.algorithmParamsList)
+    val algorithmParamsJValue = paramsToJValue(
+      extractorOption,
+      params.algorithmParamsList)
     jValue = jValue.replace("algorithmParamsList" :: Nil, algorithmParamsJValue)
 
     val servingParamsJValue = toJValue(extractorOption, params.servingParams._2)
@@ -140,8 +144,9 @@ object JsonExtractor {
     val jValues = params.map {
       case (name, param) =>
         // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
-        val toBeReplacedJValue =
-          JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, (name, null))
+        val toBeReplacedJValue = JsonExtractor.toJValue(
+          JsonExtractorOption.Json4sNative,
+          (name, null))
         val paramJValue = JsonExtractor.toJValue(extractorOption, param)
 
         toBeReplacedJValue.replace(name :: Nil, paramJValue)

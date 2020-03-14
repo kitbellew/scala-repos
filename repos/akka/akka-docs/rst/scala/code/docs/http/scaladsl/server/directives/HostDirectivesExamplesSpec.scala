@@ -12,8 +12,7 @@ import StatusCodes._
 class HostDirectivesExamplesSpec extends RoutingSpec {
 
   "extractHost" in {
-    val route =
-      extractHost { hn => complete(s"Hostname: $hn") }
+    val route = extractHost { hn => complete(s"Hostname: $hn") }
 
     // tests:
     Get() ~> Host("company.com", 9090) ~> route ~> check {
@@ -23,8 +22,7 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "list-of-hosts" in {
-    val route =
-      host("api.company.com", "rest.company.com") { complete("Ok") }
+    val route = host("api.company.com", "rest.company.com") { complete("Ok") }
 
     // tests:
     Get() ~> Host("rest.company.com") ~> route ~> check {
@@ -40,8 +38,7 @@ class HostDirectivesExamplesSpec extends RoutingSpec {
   "predicate" in {
     val shortOnly: String => Boolean = (hostname) => hostname.length < 10
 
-    val route =
-      host(shortOnly) { complete("Ok") }
+    val route = host(shortOnly) { complete("Ok") }
 
     // tests:
     Get() ~> Host("short.com") ~> route ~> check {

@@ -247,10 +247,9 @@ class UISeleniumSuite
   test("job progress bars should handle stage / task failures") {
     withSpark(newSparkContext()) { sc =>
       val data = sc.parallelize(Seq(1, 2, 3), 1).map(identity).groupBy(identity)
-      val shuffleHandle =
-        data.dependencies.head
-          .asInstanceOf[ShuffleDependency[_, _, _]]
-          .shuffleHandle
+      val shuffleHandle = data.dependencies.head
+        .asInstanceOf[ShuffleDependency[_, _, _]]
+        .shuffleHandle
       // Simulate fetch failures:
       val mappedData = data.map { x =>
         val taskContext = TaskContext.get
@@ -297,9 +296,9 @@ class UISeleniumSuite
         JInt(stageId) <- stage \ "stageId"
         JInt(attemptId) <- stage \ "attemptId"
       } {
-        val exp = if (attemptId.toInt == 0 && stageId.toInt == 1) {
-          StageStatus.FAILED
-        } else { StageStatus.COMPLETE }
+        val exp =
+          if (attemptId.toInt == 0 && stageId.toInt == 1) { StageStatus.FAILED }
+          else { StageStatus.COMPLETE }
         status should be(exp.name())
       }
 
@@ -384,12 +383,12 @@ class UISeleniumSuite
     "stages that aren't run appear as 'skipped stages' after a job finishes") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+      val rdd = sc
+        .parallelize(Seq(1, 2, 3))
+        .map(identity)
+        .groupBy(identity)
+        .map(identity)
+        .groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -417,12 +416,12 @@ class UISeleniumSuite
     "jobs with stages that are skipped should show correct link descriptions on all jobs page") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
-      val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+      val rdd = sc
+        .parallelize(Seq(1, 2, 3))
+        .map(identity)
+        .groupBy(identity)
+        .map(identity)
+        .groupBy(identity)
       // Run it twice; this will cause the second job to have two "phantom" stages that were
       // mentioned in its job start event but which were never actually executed:
       rdd.count()
@@ -574,8 +573,8 @@ class UISeleniumSuite
       goToUi(sc, "/jobs/job/?id=7")
       find("no-info").get.text should be("No information to display for job 7")
 
-      val badJob =
-        HistoryServerSuite.getContentAndCode(apiUrl(sc.ui.get, "jobs/7"))
+      val badJob = HistoryServerSuite.getContentAndCode(
+        apiUrl(sc.ui.get, "jobs/7"))
       badJob._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badJob._2 should be(None)
       badJob._3 should be(Some("unknown job: 7"))
@@ -623,21 +622,21 @@ class UISeleniumSuite
       goToUi(sc, "/stages/stage/?id=12&attempt=0")
       find("no-info").get.text should be(
         "No information to display for Stage 12 (Attempt 0)")
-      val badStage =
-        HistoryServerSuite.getContentAndCode(apiUrl(sc.ui.get, "stages/12/0"))
+      val badStage = HistoryServerSuite.getContentAndCode(
+        apiUrl(sc.ui.get, "stages/12/0"))
       badStage._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStage._2 should be(None)
       badStage._3 should be(Some("unknown stage: 12"))
 
-      val badAttempt =
-        HistoryServerSuite.getContentAndCode(apiUrl(sc.ui.get, "stages/19/15"))
+      val badAttempt = HistoryServerSuite.getContentAndCode(
+        apiUrl(sc.ui.get, "stages/19/15"))
       badAttempt._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badAttempt._2 should be(None)
       badAttempt._3 should be(
         Some("unknown attempt for stage 19.  Found attempts: [0]"))
 
-      val badStageAttemptList =
-        HistoryServerSuite.getContentAndCode(apiUrl(sc.ui.get, "stages/12"))
+      val badStageAttemptList = HistoryServerSuite.getContentAndCode(
+        apiUrl(sc.ui.get, "stages/12"))
       badStageAttemptList._1 should be(HttpServletResponse.SC_NOT_FOUND)
       badStageAttemptList._2 should be(None)
       badStageAttemptList._3 should be(Some("unknown stage: 12"))
@@ -663,12 +662,12 @@ class UISeleniumSuite
   test("job stages should have expected dotfile under DAG visualization") {
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job
-      val rdd =
-        sc.parallelize(Seq(1, 2, 3))
-          .map(identity)
-          .groupBy(identity)
-          .map(identity)
-          .groupBy(identity)
+      val rdd = sc
+        .parallelize(Seq(1, 2, 3))
+        .map(identity)
+        .groupBy(identity)
+        .map(identity)
+        .groupBy(identity)
       rdd.count()
 
       val stage0 = Source

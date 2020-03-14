@@ -264,8 +264,8 @@ object JsonValidSpec extends Specification {
     "Can reads with nullable" in {
       val json = Json.obj("field" -> JsNull)
 
-      val resultPost =
-        json.validate((__ \ "field").read(Reads.optionWithNull[String]))
+      val resultPost = json.validate(
+        (__ \ "field").read(Reads.optionWithNull[String]))
       resultPost.get must equalTo(None)
     }
 
@@ -459,11 +459,12 @@ object JsonValidSpec extends Specification {
     "Format simpler syntax with constraints" in {
       val bobby = User("bobby", 54)
 
-      implicit val userFormat = (
-        (__ \ 'name).format(Reads.minLength[String](5))
-          and
-            (__ \ 'age).format(Reads.min(40))
-      )(User, unlift(User.unapply))
+      implicit val userFormat =
+        (
+          (__ \ 'name).format(Reads.minLength[String](5))
+            and
+              (__ \ 'age).format(Reads.min(40))
+        )(User, unlift(User.unapply))
 
       val js = Json.toJson(bobby)
 
@@ -486,14 +487,16 @@ object JsonValidSpec extends Specification {
     "Apply min/max correctly on any numeric type" in {
       case class Numbers(i: Int, l: Long, f: Float, d: Double, bd: BigDecimal)
 
-      implicit val numbersFormat = (
-        (__ \ 'i).format[Int](Reads.min(5) andKeep Reads.max(100)) and
-          (__ \ 'l).format[Long](Reads.min(5L) andKeep Reads.max(100L)) and
-          (__ \ 'f).format[Float](Reads.min(13.0f) andKeep Reads.max(14.0f)) and
-          (__ \ 'd).format[Double](Reads.min(0.1) andKeep Reads.max(1.0)) and
-          (__ \ 'bd).format[BigDecimal](
-            Reads.min(BigDecimal(5)) andKeep Reads.max(BigDecimal(100)))
-      )(Numbers.apply _, unlift(Numbers.unapply))
+      implicit val numbersFormat =
+        (
+          (__ \ 'i).format[Int](Reads.min(5) andKeep Reads.max(100)) and
+            (__ \ 'l).format[Long](Reads.min(5L) andKeep Reads.max(100L)) and
+            (__ \ 'f)
+              .format[Float](Reads.min(13.0f) andKeep Reads.max(14.0f)) and
+            (__ \ 'd).format[Double](Reads.min(0.1) andKeep Reads.max(1.0)) and
+            (__ \ 'bd).format[BigDecimal](
+              Reads.min(BigDecimal(5)) andKeep Reads.max(BigDecimal(100)))
+        )(Numbers.apply _, unlift(Numbers.unapply))
 
       val ok = Numbers(42, 55L, 13.5f, 0.3, BigDecimal(33.5))
       val fail = Numbers(42, 55L, 10.5f, 1.3, BigDecimal(33.5))
@@ -581,11 +584,12 @@ object JsonValidSpec extends Specification {
     "manage nullable/option" in {
       case class User(name: String, email: String, phone: Option[String])
 
-      implicit val UserReads = (
-        (__ \ 'name).read[String] and
-          (__ \ 'coords \ 'email).read(Reads.email) and
-          (__ \ 'coords \ 'phone).readNullable(Reads.minLength[String](8))
-      )(User)
+      implicit val UserReads =
+        (
+          (__ \ 'name).read[String] and
+            (__ \ 'coords \ 'email).read(Reads.email) and
+            (__ \ 'coords \ 'phone).readNullable(Reads.minLength[String](8))
+        )(User)
 
       Json
         .obj(
@@ -654,10 +658,11 @@ object JsonValidSpec extends Specification {
     "report correct path for validation errors" in {
       case class User(email: String, phone: Option[String])
 
-      implicit val UserReads = (
-        (__ \ 'email).read(Reads.email) and
-          (__ \ 'phone).readNullable(Reads.minLength[String](8))
-      )(User)
+      implicit val UserReads =
+        (
+          (__ \ 'email).read(Reads.email) and
+            (__ \ 'phone).readNullable(Reads.minLength[String](8))
+        )(User)
 
       Json.obj("email" -> "john").validate[User] must beEqualTo(
         JsError(__ \ "email", ValidationError("error.email")))
@@ -670,11 +675,13 @@ object JsonValidSpec extends Specification {
     "mix reads constraints" in {
       case class User(id: Long, email: String, age: Int)
 
-      implicit val UserReads = (
-        (__ \ 'id).read[Long] and
-          (__ \ 'email).read(Reads.email andKeep Reads.minLength[String](5)) and
-          (__ \ 'age).read(Reads.max(55) or Reads.min(65))
-      )(User)
+      implicit val UserReads =
+        (
+          (__ \ 'id).read[Long] and
+            (__ \ 'email).read(
+              Reads.email andKeep Reads.minLength[String](5)) and
+            (__ \ 'age).read(Reads.max(55) or Reads.min(65))
+        )(User)
 
       Json
         .obj("id" -> 123L, "email" -> "john.doe@blibli.com", "age" -> 50)
@@ -728,11 +735,12 @@ object JsonValidSpec extends Specification {
     "recursive reads" in {
       case class User(id: Long, name: String, friend: Option[User] = None)
 
-      implicit lazy val UserReads: Reads[User] = (
-        (__ \ 'id).read[Long] and
-          (__ \ 'name).read[String] and
-          (__ \ 'friend).lazyReadNullable(UserReads)
-      )(User)
+      implicit lazy val UserReads: Reads[User] =
+        (
+          (__ \ 'id).read[Long] and
+            (__ \ 'name).read[String] and
+            (__ \ 'friend).lazyReadNullable(UserReads)
+        )(User)
 
       val js = Json.obj(
         "id" -> 123L,
@@ -760,11 +768,12 @@ object JsonValidSpec extends Specification {
 
       case class User(id: Long, name: String, friend: Option[User] = None)
 
-      implicit lazy val UserWrites: Writes[User] = (
-        (__ \ 'id).write[Long] and
-          (__ \ 'name).write[String] and
-          (__ \ 'friend).lazyWriteNullable(UserWrites)
-      )(unlift(User.unapply))
+      implicit lazy val UserWrites: Writes[User] =
+        (
+          (__ \ 'id).write[Long] and
+            (__ \ 'name).write[String] and
+            (__ \ 'friend).lazyWriteNullable(UserWrites)
+        )(unlift(User.unapply))
 
       val js = Json.obj(
         "id" -> 123L,
@@ -782,11 +791,12 @@ object JsonValidSpec extends Specification {
 
       case class User(id: Long, name: String, friend: Option[User] = None)
 
-      implicit lazy val UserFormats: Format[User] = (
-        (__ \ 'id).format[Long] and
-          (__ \ 'name).format[String] and
-          (__ \ 'friend).lazyFormatNullable(UserFormats)
-      )(User, unlift(User.unapply))
+      implicit lazy val UserFormats: Format[User] =
+        (
+          (__ \ 'id).format[Long] and
+            (__ \ 'name).format[String] and
+            (__ \ 'friend).lazyFormatNullable(UserFormats)
+        )(User, unlift(User.unapply))
 
       val js = Json.obj(
         "id" -> 123L,
@@ -852,8 +862,9 @@ object JsonValidSpec extends Specification {
 
     "single field case class" in {
       case class Test(field: String)
-      val myFormat =
-        (__ \ 'field).format[String].inmap(Test, unlift(Test.unapply))
+      val myFormat = (__ \ 'field)
+        .format[String]
+        .inmap(Test, unlift(Test.unapply))
 
       myFormat.reads(Json.obj("field" -> "blabla")) must beEqualTo(
         JsSuccess(Test("blabla"), __ \ 'field))
@@ -884,11 +895,12 @@ object JsonValidSpec extends Specification {
     "reduce Reads[JsArray]" in {
       import Reads._
 
-      val myReads: Reads[JsArray] = (
-        (__ \ 'field1).json.pick[JsString] and
-          (__ \ 'field2).json.pick[JsNumber] and
-          (__ \ 'field3).json.pick[JsBoolean]
-      ).reduce[JsValue, JsArray]
+      val myReads: Reads[JsArray] =
+        (
+          (__ \ 'field1).json.pick[JsString] and
+            (__ \ 'field2).json.pick[JsNumber] and
+            (__ \ 'field3).json.pick[JsBoolean]
+        ).reduce[JsValue, JsArray]
 
       val js0 = Json.obj("field1" -> "alpha")
       val js = js0 ++ Json.obj("field2" -> 123L, "field3" -> false)
@@ -1002,10 +1014,11 @@ object JsonValidSpec extends Specification {
 
       case class User(email: String, phone: Option[String])
 
-      implicit val UserWrites = (
-        (__ \ 'email).write[String] and
-          (__ \ 'phone).writeNullable[String]
-      )(unlift(User.unapply))
+      implicit val UserWrites =
+        (
+          (__ \ 'email).write[String] and
+            (__ \ 'phone).writeNullable[String]
+        )(unlift(User.unapply))
 
       Json.toJson(User("john.doe@blibli.com", None)) must beEqualTo(
         Json.obj("email" -> "john.doe@blibli.com"))
@@ -1046,11 +1059,12 @@ object JsonValidSpec extends Specification {
 
       case class User(email: String, phone: Option[String])
 
-      implicit val UserFormat = (
-        (__ \ 'email).format(email) and
-          (__ \ 'phone).formatNullable(
-            Format(minLength[String](8), Writes.of[String]))
-      )(User, unlift(User.unapply))
+      implicit val UserFormat =
+        (
+          (__ \ 'email).format(email) and
+            (__ \ 'phone).formatNullable(
+              Format(minLength[String](8), Writes.of[String]))
+        )(User, unlift(User.unapply))
 
       Json.obj("email" -> "john").validate[User] must beEqualTo(
         JsError(__ \ "email", ValidationError("error.email")))
@@ -1085,8 +1099,9 @@ object JsonValidSpec extends Specification {
 
     "be a functor" in {
       "JsSuccess" in {
-        val res1: JsResult[String] =
-          JsSuccess("foo", JsPath(List(KeyPathNode("bar"))))
+        val res1: JsResult[String] = JsSuccess(
+          "foo",
+          JsPath(List(KeyPathNode("bar"))))
         res1.map(identity) must equalTo(res1)
       }
 

@@ -120,8 +120,9 @@ class CookStateLog(baseDir: File, scheduler: ScheduledExecutorService)
   def completeCook(blockId: Long) = {
     assert(pendingCookIds0 contains blockId)
 
-    val completeTxKey =
-      txLog.put(TXLogEntry.toBytes(CompleteCook(blockId)), true)
+    val completeTxKey = txLog.put(
+      TXLogEntry.toBytes(CompleteCook(blockId)),
+      true)
 
     // Remove the entry from pending map and advance the mark to the
     // lowest remaining txKey, or the txKey of the completion if there

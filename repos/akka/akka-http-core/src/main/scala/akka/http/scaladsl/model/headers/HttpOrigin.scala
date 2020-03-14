@@ -42,8 +42,8 @@ final case class HttpOrigin(scheme: String, host: Host)
     host.renderValue(r ~~ scheme ~~ "://")
 }
 object HttpOrigin {
-  implicit val originsRenderer: Renderer[immutable.Seq[HttpOrigin]] =
-    Renderer.seqRenderer(" ", "null")
+  implicit val originsRenderer: Renderer[immutable.Seq[HttpOrigin]] = Renderer
+    .seqRenderer(" ", "null")
 
   implicit def apply(str: String): HttpOrigin = {
     val parser = new UriParser(str, UTF8, Uri.ParsingMode.Relaxed)

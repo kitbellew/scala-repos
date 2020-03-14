@@ -140,8 +140,7 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
 
       override def plus(
           l: ReducerEstimator,
-          r: ReducerEstimator): ReducerEstimator =
-        FallbackEstimator(l, r)
+          r: ReducerEstimator): ReducerEstimator = FallbackEstimator(l, r)
     }
 
   /**
@@ -182,8 +181,9 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       conf.set(EstimatorConfig.originalNumReducers, stepNumReducers)
 
     // whether we should override explicitly-specified numReducers
-    val overrideExplicit =
-      conf.getBoolean(Config.ReducerEstimatorOverride, false)
+    val overrideExplicit = conf.getBoolean(
+      Config.ReducerEstimatorOverride,
+      false)
 
     Option(conf.get(Config.ReducerEstimators)).map { clsNames =>
       val clsLoader = Thread.currentThread.getContextClassLoader

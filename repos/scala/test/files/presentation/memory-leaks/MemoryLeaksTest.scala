@@ -72,8 +72,8 @@ object Test extends InteractiveTest {
 
     val originalTyper = new String(typerUnit.toCharArray)
 
-    val (prefix, postfix) =
-      originalTyper.splitAt(originalTyper.indexOf("import global._"))
+    val (prefix, postfix) = originalTyper.splitAt(
+      originalTyper.indexOf("import global._"))
     val changedTyper = prefix + " a\n " + postfix
 
     val usedMem = for (i <- 1 to N) yield {

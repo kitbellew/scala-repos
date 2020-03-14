@@ -48,19 +48,19 @@ object ParseKey extends Properties("Key parser test") {
         }
     }
 
-  property("An unspecified task axis resolves to Global") =
-    forAllNoShrink(structureDefinedKey) { (skm: StructureKeyMask) =>
-      import skm.{structure, key}
-      val mask = skm.mask.copy(task = false)
-      val string = displayMasked(key, mask)
+  property("An unspecified task axis resolves to Global") = forAllNoShrink(
+    structureDefinedKey) { (skm: StructureKeyMask) =>
+    import skm.{structure, key}
+    val mask = skm.mask.copy(task = false)
+    val string = displayMasked(key, mask)
 
-      ("Key: " + displayFull(key)) |:
-        ("Mask: " + mask) |:
-        parse(structure, string) {
-          case Left(err) => false
-          case Right(sk) => sk.scope.task == Global
-        }
-    }
+    ("Key: " + displayFull(key)) |:
+      ("Mask: " + mask) |:
+      parse(structure, string) {
+        case Left(err) => false
+        case Right(sk) => sk.scope.task == Global
+      }
+  }
 
   property(
     "An unspecified configuration axis resolves to the first configuration directly defining the key or else Global") =
@@ -131,11 +131,10 @@ object ParseKey extends Properties("Key parser test") {
   // from TestBuild.
   def genStructure(implicit mkEnv: Gen[Env]): Gen[Structure] =
     structureGenF { (scopes: Seq[Scope], env: Env, current: ProjectRef) =>
-      val settings =
-        for {
-          scope <- scopes
-          t <- env.tasks
-        } yield Def.setting(ScopedKey(scope, t.key), Def.value(""))
+      val settings = for {
+        scope <- scopes
+        t <- env.tasks
+      } yield Def.setting(ScopedKey(scope, t.key), Def.value(""))
       TestBuild.structure(env, settings, current)
     }
 

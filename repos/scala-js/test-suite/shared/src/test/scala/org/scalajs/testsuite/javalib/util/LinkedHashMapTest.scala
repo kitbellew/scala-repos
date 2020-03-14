@@ -45,11 +45,9 @@ abstract class LinkedHashMapTest extends HashMapTest {
     val lhm = factory.empty[jl.Integer, String]
     (0 until 100).foreach(key => lhm.put(key, s"elem $key"))
 
-    def expectedKey(index: Int): Int =
-      withSizeLimit.getOrElse(0) + index
+    def expectedKey(index: Int): Int = withSizeLimit.getOrElse(0) + index
 
-    def expectedValue(index: Int): String =
-      s"elem ${expectedKey(index)}"
+    def expectedValue(index: Int): String = s"elem ${expectedKey(index)}"
 
     val expectedSize = withSizeLimit.getOrElse(100)
 
@@ -78,8 +76,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
     val expectedKey =
       ((100 - withSizeLimit.getOrElse(100)) to 100).filter(_ % 3 != 0).toArray
 
-    def expectedValue(index: Int): String =
-      s"elem ${expectedKey(index)}"
+    def expectedValue(index: Int): String = s"elem ${expectedKey(index)}"
 
     val expectedSize = if (withSizeLimit.isDefined) 33 else 66
 
@@ -179,8 +176,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
       }
     }
 
-    def expectedValue(index: Int): String =
-      s"elem ${expectedKey(index)}"
+    def expectedValue(index: Int): String = s"elem ${expectedKey(index)}"
 
     val expectedSize = withSizeLimit.getOrElse(100)
 
@@ -215,8 +211,7 @@ class LinkedHashMapFactory(
     val accessOrder: Boolean,
     val withSizeLimit: Option[Int])
     extends HashMapFactory {
-  def orderName: String =
-    if (accessOrder) "access-order" else "insertion-order"
+  def orderName: String = if (accessOrder) "access-order" else "insertion-order"
 
   override def implementationName: String = {
     val sizeLimitSting = withSizeLimit.fold("")(", maxSize=" + _)
@@ -228,8 +223,7 @@ class LinkedHashMapFactory(
       case Some(limit) =>
         new ju.LinkedHashMap[K, V](16, 0.75f, accessOrder) {
           override protected def removeEldestEntry(
-              eldest: ju.Map.Entry[K, V]): Boolean =
-            size > limit
+              eldest: ju.Map.Entry[K, V]): Boolean = size > limit
         }
 
       case None =>

@@ -23,8 +23,11 @@ trait FunSpecScopeTest extends FunSpecGenerator {
       "FunSpecTest should launch single test",
       "FunSpecTest should not launch other tests")
 
-    val path1 =
-      List("[root]", "FunSpecTest", "FunSpecTest", "should launch single test")
+    val path1 = List(
+      "[root]",
+      "FunSpecTest",
+      "FunSpecTest",
+      "should launch single test")
     val path2 = List(
       "[root]",
       "FunSpecTest",

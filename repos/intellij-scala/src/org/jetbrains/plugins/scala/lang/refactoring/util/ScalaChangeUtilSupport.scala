@@ -89,6 +89,6 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
 }
 
 object ScalaChangeUtilSupport {
-  val REFERENCED_MEMBER_KEY: Key[PsiNamedElement] =
-    Key.create("REFERENCED_MEMBER_KEY")
+  val REFERENCED_MEMBER_KEY: Key[PsiNamedElement] = Key.create(
+    "REFERENCED_MEMBER_KEY")
 }

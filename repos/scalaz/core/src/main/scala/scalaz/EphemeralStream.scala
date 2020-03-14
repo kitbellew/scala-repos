@@ -130,8 +130,7 @@ sealed abstract class EphemeralStream[A] {
       if (p(h)) cons(h, tail().takeWhile(p)) else emptyEphemeralStream
     } else this
 
-  def zipWithIndex: EphemeralStream[(A, Int)] =
-    zip(iterate(0)(_ + 1))
+  def zipWithIndex: EphemeralStream[(A, Int)] = zip(iterate(0)(_ + 1))
 }
 
 sealed abstract class EphemeralStreamInstances {
@@ -169,8 +168,7 @@ sealed abstract class EphemeralStreamInstances {
     def empty[A] = EphemeralStream()
     def zip[A, B](a: => EphemeralStream[A], b: => EphemeralStream[B]) = a zip b
     def unzip[A, B](a: EphemeralStream[(A, B)]) = a.unzip
-    def alignWith[A, B, C](f: A \&/ B => C) =
-      (a, b) => a.alignWith(f)(b)
+    def alignWith[A, B, C](f: A \&/ B => C) = (a, b) => a.alignWith(f)(b)
     override def toEphemeralStream[A](fa: EphemeralStream[A]) = fa
     override def foldRight[A, B](fa: EphemeralStream[A], z: => B)(
         f: (A, => B) => B): B =
@@ -312,8 +310,7 @@ object EphemeralStream extends EphemeralStreamInstances {
     }
   }
 
-  def apply[A]: EphemeralStream[A] =
-    emptyEphemeralStream
+  def apply[A]: EphemeralStream[A] = emptyEphemeralStream
 
   def apply[A](as: A*): EphemeralStream[A] = {
     val as0 = as match {

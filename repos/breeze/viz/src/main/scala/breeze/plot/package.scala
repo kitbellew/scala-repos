@@ -274,10 +274,10 @@ package object plot {
       scale: GradientPaintScale[Double] = null,
       name: String = null,
       offset: (Int, Int) = (0, 0),
-      labels: PartialFunction[(Int, Int), String] =
-        null.asInstanceOf[PartialFunction[(Int, Int), String]],
-      tips: PartialFunction[(Int, Int), String] =
-        null.asInstanceOf[PartialFunction[(Int, Int), String]]): Series =
+      labels: PartialFunction[(Int, Int), String] = null
+        .asInstanceOf[PartialFunction[(Int, Int), String]],
+      tips: PartialFunction[(Int, Int), String] = null
+        .asInstanceOf[PartialFunction[(Int, Int), String]]): Series =
     new Series {
 
       val mt = img
@@ -346,8 +346,7 @@ package object plot {
         val paintScale = new org.jfree.chart.renderer.PaintScale {
           override def getLowerBound = staticScale.lower
           override def getUpperBound = staticScale.upper
-          override def getPaint(value: Double) =
-            staticScale(value)
+          override def getPaint(value: Double) = staticScale(value)
         }
 
         renderer.setPaintScale(paintScale)

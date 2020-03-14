@@ -80,8 +80,8 @@ object Announcer {
       _.asInstanceOf[T]
     }
 
-  private[this] val _announcements =
-    mutable.Set[(InetSocketAddress, List[String])]()
+  private[this] val _announcements = mutable
+    .Set[(InetSocketAddress, List[String])]()
   def announcements = synchronized { _announcements.toSet }
 
   def announce(addr: InetSocketAddress, forum: String): Future[Announcement] = {

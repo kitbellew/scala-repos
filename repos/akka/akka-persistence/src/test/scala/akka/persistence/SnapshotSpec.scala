@@ -153,8 +153,8 @@ class SnapshotSpec
       expectMsg("done")
     }
     "recover state starting from the most recent snapshot matching criteria" in {
-      val recovery =
-        Recovery(fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2))
+      val recovery = Recovery(
+        fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2))
       val persistentActor = system.actorOf(
         Props(
           classOf[LoadSnapshotTestPersistentActor],

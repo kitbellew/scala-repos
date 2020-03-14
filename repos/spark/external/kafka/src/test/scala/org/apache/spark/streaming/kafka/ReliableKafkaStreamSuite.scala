@@ -96,8 +96,8 @@ class ReliableKafkaStreamSuite
     // Verify whether the offset of this group/topic/partition is 0 before starting.
     assert(getCommitOffset(groupId, topic, 0) === None)
 
-    val stream =
-      KafkaUtils.createStream[String, String, StringDecoder, StringDecoder](
+    val stream = KafkaUtils
+      .createStream[String, String, StringDecoder, StringDecoder](
         ssc,
         kafkaParams,
         Map(topic -> 1),
@@ -137,8 +137,8 @@ class ReliableKafkaStreamSuite
     }
 
     // Consuming all the data sent to the broker which will potential commit the offsets internally.
-    val stream =
-      KafkaUtils.createStream[String, String, StringDecoder, StringDecoder](
+    val stream = KafkaUtils
+      .createStream[String, String, StringDecoder, StringDecoder](
         ssc,
         kafkaParams,
         topics,

@@ -40,14 +40,13 @@ object DefinitionConstructionProps
 
 trait ClassConstruction { self: QuasiquoteProperties =>
   val anyRef = ScalaDot(TypeName("AnyRef"))
-  val emtpyConstructor =
-    DefDef(
-      Modifiers(),
-      termNames.CONSTRUCTOR,
-      List(),
-      List(List()),
-      TypeTree(),
-      Block(List(pendingSuperCall), Literal(Constant(()))))
+  val emtpyConstructor = DefDef(
+    Modifiers(),
+    termNames.CONSTRUCTOR,
+    List(),
+    List(List()),
+    TypeTree(),
+    Block(List(pendingSuperCall), Literal(Constant(()))))
   def classWith(
       name: TypeName,
       parents: List[Tree] = List(anyRef),

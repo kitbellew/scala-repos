@@ -87,8 +87,8 @@ trait ServiceSpecBase {
       request: String,
       loginUser: String = null)(implicit s: Session): (Issue, PullRequest) = {
     val Array(baseUserName, baseRepositoryName, baesBranch) = base.split("/")
-    val Array(requestUserName, requestRepositoryName, requestBranch) =
-      request.split("/")
+    val Array(requestUserName, requestRepositoryName, requestBranch) = request
+      .split("/")
     val issueId = generateNewIssue(
       baseUserName,
       baseRepositoryName,

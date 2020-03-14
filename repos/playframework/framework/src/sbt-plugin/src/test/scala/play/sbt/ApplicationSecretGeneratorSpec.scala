@@ -9,8 +9,7 @@ import org.specs2.mutable._
 object ApplicationSecretGeneratorSpec extends Specification {
   "ApplicationSecretGenerator" should {
     "override literal secret" in {
-      val configContent =
-        """
+      val configContent = """
           |# test configuration
           |play.crypto.secret=changeme
           |""".stripMargin
@@ -24,8 +23,7 @@ object ApplicationSecretGeneratorSpec extends Specification {
     }
 
     "override nested secret" in {
-      val configContent =
-        """
+      val configContent = """
           |# test configuration
           |play {
           |  crypto {
@@ -43,8 +41,7 @@ object ApplicationSecretGeneratorSpec extends Specification {
     }
 
     "deletes existing nested application.secret while overriting secret" in {
-      val configContent =
-        """
+      val configContent = """
           |# test configuration
           |play {
           |  crypto {
@@ -66,8 +63,7 @@ object ApplicationSecretGeneratorSpec extends Specification {
     }
 
     "deletes existing fixed application.secret while overriting secret" in {
-      val configContent =
-        """
+      val configContent = """
           |# test configuration
           |play {
           |  crypto {

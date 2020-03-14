@@ -95,8 +95,9 @@ class StandardScalerSuite
     val df2 = sqlContext
       .createDataFrame(data.zip(resWithMean))
       .toDF("features", "expected")
-    val df3 =
-      sqlContext.createDataFrame(data.zip(data)).toDF("features", "expected")
+    val df3 = sqlContext
+      .createDataFrame(data.zip(data))
+      .toDF("features", "expected")
 
     val standardScaler1 = new StandardScaler()
       .setInputCol("features")

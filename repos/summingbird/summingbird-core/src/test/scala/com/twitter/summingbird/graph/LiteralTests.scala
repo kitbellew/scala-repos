@@ -76,8 +76,6 @@ object LiteralTests extends Properties("Literal") {
       case BinaryLit(a, b, fn) => fn(slowEvaluate(a), slowEvaluate(b))
     }
 
-  property("Literal.evaluate must match simple explanation") =
-    forAll(genLiteral) { (l: Literal[Int, Box]) =>
-      l.evaluate == slowEvaluate(l)
-    }
+  property("Literal.evaluate must match simple explanation") = forAll(
+    genLiteral) { (l: Literal[Int, Box]) => l.evaluate == slowEvaluate(l) }
 }

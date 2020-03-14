@@ -291,10 +291,20 @@ object ScalaRearranger {
       matchRules = addCondition(matchRules, CONSTRUCTOR, access)
     }
     matchRules = addCondition(matchRules, CONSTRUCTOR)
-    matchRules =
-      addCondition(matchRules, FUNCTION, PUBLIC, FINAL, OVERRIDE, IMPLICIT)
-    matchRules =
-      addCondition(matchRules, FUNCTION, PROTECTED, FINAL, OVERRIDE, IMPLICIT)
+    matchRules = addCondition(
+      matchRules,
+      FUNCTION,
+      PUBLIC,
+      FINAL,
+      OVERRIDE,
+      IMPLICIT)
+    matchRules = addCondition(
+      matchRules,
+      FUNCTION,
+      PROTECTED,
+      FINAL,
+      OVERRIDE,
+      IMPLICIT)
     for (access <- scalaAccessModifiersValues) {
       matchRules = addCondition(matchRules, FUNCTION, PUBLIC, FINAL, IMPLICIT)
     }

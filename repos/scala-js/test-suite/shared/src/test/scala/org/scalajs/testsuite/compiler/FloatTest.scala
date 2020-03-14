@@ -14,8 +14,7 @@ class FloatTest {
   @Test
   def `toInt`(): Unit = {
     @inline
-    def test(x: Float, expected: Int): Unit =
-      assertEquals(x.toInt, expected)
+    def test(x: Float, expected: Int): Unit = assertEquals(x.toInt, expected)
 
     // Specials
     test(+0.0f, 0)

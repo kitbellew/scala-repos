@@ -34,8 +34,8 @@ object ScalaChangeContextUtil {
 
   def decodeContextInfo(scope: Seq[PsiElement]) {
     def restoreForElement(elem: PsiElement) {
-      val associations: Associations =
-        elem.getCopyableUserData(ASSOCIATIONS_KEY)
+      val associations: Associations = elem.getCopyableUserData(
+        ASSOCIATIONS_KEY)
       if (associations != null) {
         try {
           processor.restoreAssociations(

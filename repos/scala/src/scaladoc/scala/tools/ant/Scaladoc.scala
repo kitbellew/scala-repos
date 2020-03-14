@@ -218,8 +218,7 @@ class Scaladoc extends ScalaMatchingTask {
     *
     *  @param input A reference to a class path.
     */
-  def setClasspathref(input: Reference) =
-    createClasspath().setRefid(input)
+  def setClasspathref(input: Reference) = createClasspath().setRefid(input)
 
   /** Sets the `sourcepath` attribute. Used by [[http://ant.apache.org Ant]].
     *
@@ -242,8 +241,7 @@ class Scaladoc extends ScalaMatchingTask {
     *
     *  @param input A reference to a source path.
     */
-  def setSourcepathref(input: Reference) =
-    createSourcepath().setRefid(input)
+  def setSourcepathref(input: Reference) = createSourcepath().setRefid(input)
 
   /** Sets the `bootclasspath` attribute. Used by [[http://ant.apache.org Ant]].
     *
@@ -369,8 +367,7 @@ class Scaladoc extends ScalaMatchingTask {
     *
     *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
     */
-  def setNoFail(input: String) =
-    nofail = Flag.getBooleanValue(input, "nofail")
+  def setNoFail(input: String) = nofail = Flag.getBooleanValue(input, "nofail")
 
   /** Set the `implicits` info attribute.
     *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
@@ -400,8 +397,7 @@ class Scaladoc extends ScalaMatchingTask {
 
   /** Set the `diagramsDotPath` attribute to the path where graphviz dot can be found (including the binary file name,
     *  eg: /usr/bin/dot) */
-  def setDiagramsDotPath(input: String) =
-    docDiagramsDotPath = Some(input)
+  def setDiagramsDotPath(input: String) = docDiagramsDotPath = Some(input)
 
   /** Set the `rawOutput` bit so Scaladoc also outputs text from each html file
     *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
@@ -421,8 +417,7 @@ class Scaladoc extends ScalaMatchingTask {
   /** Instruct the scaladoc tool to skip certain packages.
     *  @param input A colon-delimited list of fully qualified package names that will be skipped from scaladoc.
     */
-  def setSkipPackages(input: String) =
-    docSkipPackages = input
+  def setSkipPackages(input: String) = docSkipPackages = input
 
   /*============================================================================*\
 **                             Properties getters                             **
@@ -537,8 +532,7 @@ class Scaladoc extends ScalaMatchingTask {
     *  @param file A file to convert.
     *  @return     A string-representation of the file like `/x/k/a.scala`.
     */
-  private def asString(file: File): String =
-    file.getAbsolutePath()
+  private def asString(file: File): String = file.getAbsolutePath()
 
   /*============================================================================*\
 **                           The big execute method                           **
@@ -560,27 +554,25 @@ class Scaladoc extends ScalaMatchingTask {
     // Scans source directories to build up a compile lists.
     // If force is false, only files were the .class file in destination is
     // older than the .scala file will be used.
-    val sourceFiles: List[File] =
-      for {
-        originDir <- getOrigin
-        originFile <- {
-          val includedFiles =
-            getDirectoryScanner(originDir).getIncludedFiles()
-          val list = includedFiles.toList
-          if (list.length > 0)
-            log(
-              "Documenting " + list.length + " source file" +
-                (if (list.length > 1) "s" else "") +
-                (" to " + getDestination.toString)
-            )
-          else log("No files selected for documentation", Project.MSG_VERBOSE)
+    val sourceFiles: List[File] = for {
+      originDir <- getOrigin
+      originFile <- {
+        val includedFiles = getDirectoryScanner(originDir).getIncludedFiles()
+        val list = includedFiles.toList
+        if (list.length > 0)
+          log(
+            "Documenting " + list.length + " source file" +
+              (if (list.length > 1) "s" else "") +
+              (" to " + getDestination.toString)
+          )
+        else log("No files selected for documentation", Project.MSG_VERBOSE)
 
-          list
-        }
-      } yield {
-        log(originFile, Project.MSG_DEBUG)
-        nameToFile(originDir)(originFile)
+        list
       }
+    } yield {
+      log(originFile, Project.MSG_DEBUG)
+      nameToFile(originDir)(originFile)
+    }
 
     def decodeEscapes(s: String): String = {
       // In Ant script characters '<' and '>' must be encoded when

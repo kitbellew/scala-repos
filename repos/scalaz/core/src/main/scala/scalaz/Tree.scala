@@ -125,11 +125,9 @@ sealed abstract class Tree[A] {
     (Node(rootLabel._1, fst), Node(rootLabel._2, snd))
   }
 
-  def foldNode[Z](f: A => Stream[Tree[A]] => Z): Z =
-    f(rootLabel)(subForest)
+  def foldNode[Z](f: A => Stream[Tree[A]] => Z): Z = f(rootLabel)(subForest)
 
-  def map[B](f: A => B): Tree[B] =
-    Node(f(rootLabel), subForest map (_ map f))
+  def map[B](f: A => B): Tree[B] = Node(f(rootLabel), subForest map (_ map f))
 
   def flatMap[B](f: A => Tree[B]): Tree[B] = {
     val r: Tree[B] = f(rootLabel)
@@ -267,8 +265,7 @@ object Tree extends TreeInstances {
   }
 
   def unfoldForest[A, B](s: Stream[A])(
-      f: A => (B, () => Stream[A])): Stream[Tree[B]] =
-    s.map(unfoldTree(_)(f))
+      f: A => (B, () => Stream[A])): Stream[Tree[B]] = s.map(unfoldTree(_)(f))
 
   def unfoldTree[A, B](v: A)(f: A => (B, () => Stream[A])): Tree[B] =
     f(v) match { case (a, bs) => Node(a, unfoldForest(bs.apply())(f)) }

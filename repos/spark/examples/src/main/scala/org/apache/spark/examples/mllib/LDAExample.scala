@@ -127,8 +127,11 @@ object LDAExample {
 
     // Load documents, and prepare them for LDA.
     val preprocessStart = System.nanoTime()
-    val (corpus, vocabArray, actualNumTokens) =
-      preprocess(sc, params.input, params.vocabSize, params.stopwordFile)
+    val (corpus, vocabArray, actualNumTokens) = preprocess(
+      sc,
+      params.input,
+      params.vocabSize,
+      params.stopwordFile)
     corpus.cache()
     val actualCorpusSize = corpus.count()
     val actualVocabSize = vocabArray.length
@@ -220,12 +223,12 @@ object LDAExample {
     // this can result in a large number of small partitions, which can degrade performance.
     // In this case, consider using coalesce() to create fewer, larger partitions.
     val df = sc.textFile(paths.mkString(",")).toDF("docs")
-    val customizedStopWords: Array[String] = if (stopwordFile.isEmpty) {
-      Array.empty[String]
-    } else {
-      val stopWordText = sc.textFile(stopwordFile).collect()
-      stopWordText.flatMap(_.stripMargin.split("\\s+"))
-    }
+    val customizedStopWords: Array[String] =
+      if (stopwordFile.isEmpty) { Array.empty[String] }
+      else {
+        val stopWordText = sc.textFile(stopwordFile).collect()
+        stopWordText.flatMap(_.stripMargin.split("\\s+"))
+      }
     val tokenizer = new RegexTokenizer()
       .setInputCol("docs")
       .setOutputCol("rawTokens")

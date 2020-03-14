@@ -74,8 +74,7 @@ class ScalaFileImpl(
   override def toString = "ScalaFile:" + getName
 
   protected def findChildrenByClassScala[T >: Null <: ScalaPsiElement](
-      clazz: Class[T]): Array[T] =
-    findChildrenByClass[T](clazz)
+      clazz: Class[T]): Array[T] = findChildrenByClass[T](clazz)
 
   protected def findChildByClassScala[T >: Null <: ScalaPsiElement](
       clazz: Class[T]): T = findChildByClass[T](clazz)
@@ -117,8 +116,9 @@ class ScalaFileImpl(
       // Look in libraries' sources
       val vFile = getContainingFile.getVirtualFile
       val index = ProjectRootManager.getInstance(getProject).getFileIndex
-      val entries =
-        index.getOrderEntriesForFile(vFile).toArray(OrderEntry.EMPTY_ARRAY)
+      val entries = index
+        .getOrderEntriesForFile(vFile)
+        .toArray(OrderEntry.EMPTY_ARRAY)
       var entryIterator = entries.iterator
       while (entryIterator.hasNext) {
         val entry = entryIterator.next()
@@ -527,8 +527,9 @@ object ScalaFileImpl {
 
   val DefaultImplicitlyImportedPackages = Seq("scala", "java.lang")
 
-  val DefaultImplicitlyImportedObjects =
-    Seq("scala.Predef", "scala" /* package object*/ )
+  val DefaultImplicitlyImportedObjects = Seq(
+    "scala.Predef",
+    "scala" /* package object*/ )
 
   /**
     * @param _place actual place, can be null, if null => false

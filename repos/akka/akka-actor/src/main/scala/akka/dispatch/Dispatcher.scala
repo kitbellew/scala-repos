@@ -112,8 +112,8 @@ class Dispatcher(
     * INTERNAL API
     */
   protected[akka] def shutdown: Unit = {
-    val newDelegate =
-      executorServiceDelegate.copy() // Doesn't matter which one we copy
+    val newDelegate = executorServiceDelegate
+      .copy() // Doesn't matter which one we copy
     val es = esUpdater.getAndSet(this, newDelegate)
     es.shutdown()
   }

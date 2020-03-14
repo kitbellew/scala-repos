@@ -78,37 +78,35 @@ class AppStopActorTest
       )
     )
 
-    val statusUpdateEventA =
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_a"),
-        taskStatus = "TASK_FAILED",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString
-      )
+    val statusUpdateEventA = MesosStatusUpdateEvent(
+      slaveId = "",
+      taskId = Task.Id("task_a"),
+      taskStatus = "TASK_FAILED",
+      message = "",
+      appId = app.id,
+      host = "",
+      ipAddresses = Nil,
+      ports = Nil,
+      version = app.version.toString
+    )
 
-    val statusUpdateEventB =
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_b"),
-        taskStatus = "TASK_LOST",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString
-      )
+    val statusUpdateEventB = MesosStatusUpdateEvent(
+      slaveId = "",
+      taskId = Task.Id("task_b"),
+      taskStatus = "TASK_LOST",
+      message = "",
+      appId = app.id,
+      host = "",
+      ipAddresses = Nil,
+      ports = Nil,
+      version = app.version.toString
+    )
 
-    val Some(taskFailureA) =
-      TaskFailure.FromMesosStatusUpdateEvent(statusUpdateEventA)
+    val Some(taskFailureA) = TaskFailure.FromMesosStatusUpdateEvent(
+      statusUpdateEventA)
 
-    val Some(taskFailureB) =
-      TaskFailure.FromMesosStatusUpdateEvent(statusUpdateEventB)
+    val Some(taskFailureB) = TaskFailure.FromMesosStatusUpdateEvent(
+      statusUpdateEventB)
 
     system.eventStream.publish(statusUpdateEventA)
     system.eventStream.publish(statusUpdateEventB)

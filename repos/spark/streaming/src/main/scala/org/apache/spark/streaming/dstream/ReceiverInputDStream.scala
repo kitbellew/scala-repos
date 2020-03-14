@@ -83,12 +83,14 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
         // Otherwise, ask the tracker for all the blocks that have been allocated to this stream
         // for this batch
         val receiverTracker = ssc.scheduler.receiverTracker
-        val blockInfos =
-          receiverTracker.getBlocksOfBatch(validTime).getOrElse(id, Seq.empty)
+        val blockInfos = receiverTracker
+          .getBlocksOfBatch(validTime)
+          .getOrElse(id, Seq.empty)
 
         // Register the input blocks information into InputInfoTracker
-        val inputInfo =
-          StreamInputInfo(id, blockInfos.flatMap(_.numRecords).sum)
+        val inputInfo = StreamInputInfo(
+          id,
+          blockInfos.flatMap(_.numRecords).sum)
         ssc.scheduler.inputInfoTracker.reportInfo(validTime, inputInfo)
 
         // Create the BlockRDD

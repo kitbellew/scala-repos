@@ -106,12 +106,13 @@ class OneHotEncoder(override val uid: String)
       } else { names }
     }
 
-    val outputAttrGroup = if (filteredOutputAttrNames.isDefined) {
-      val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
-        BinaryAttribute.defaultAttr.withName(name)
-      }
-      new AttributeGroup($(outputCol), attrs)
-    } else { new AttributeGroup($(outputCol)) }
+    val outputAttrGroup =
+      if (filteredOutputAttrNames.isDefined) {
+        val attrs: Array[Attribute] = filteredOutputAttrNames.get.map { name =>
+          BinaryAttribute.defaultAttr.withName(name)
+        }
+        new AttributeGroup($(outputCol), attrs)
+      } else { new AttributeGroup($(outputCol)) }
 
     val outputFields = inputFields :+ outputAttrGroup.toStructField()
     StructType(outputFields)
@@ -146,8 +147,8 @@ class OneHotEncoder(override val uid: String)
       val outputAttrNames = Array.tabulate(numAttrs)(_.toString)
       val filtered =
         if (shouldDropLast) outputAttrNames.dropRight(1) else outputAttrNames
-      val outputAttrs: Array[Attribute] =
-        filtered.map(name => BinaryAttribute.defaultAttr.withName(name))
+      val outputAttrs: Array[Attribute] = filtered.map(name =>
+        BinaryAttribute.defaultAttr.withName(name))
       outputAttrGroup = new AttributeGroup(outputColName, outputAttrs)
     }
     val metadata = outputAttrGroup.toMetadata()

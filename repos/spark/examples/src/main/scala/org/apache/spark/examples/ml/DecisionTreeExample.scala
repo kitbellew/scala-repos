@@ -188,16 +188,20 @@ object DecisionTreeExample {
     val origExamples: DataFrame = loadData(sqlContext, input, dataFormat)
 
     // Load or create test set
-    val dataframes: Array[DataFrame] = if (testInput != "") {
-      // Load testInput.
-      val numFeatures = origExamples.first().getAs[Vector](1).size
-      val origTestExamples: DataFrame =
-        loadData(sqlContext, testInput, dataFormat, Some(numFeatures))
-      Array(origExamples, origTestExamples)
-    } else {
-      // Split input into training, test.
-      origExamples.randomSplit(Array(1.0 - fracTest, fracTest), seed = 12345)
-    }
+    val dataframes: Array[DataFrame] =
+      if (testInput != "") {
+        // Load testInput.
+        val numFeatures = origExamples.first().getAs[Vector](1).size
+        val origTestExamples: DataFrame = loadData(
+          sqlContext,
+          testInput,
+          dataFormat,
+          Some(numFeatures))
+        Array(origExamples, origTestExamples)
+      } else {
+        // Split input into training, test.
+        origExamples.randomSplit(Array(1.0 - fracTest, fracTest), seed = 12345)
+      }
 
     val training = dataframes(0).cache()
     val test = dataframes(1).cache()
@@ -221,14 +225,13 @@ object DecisionTreeExample {
     println(s"DecisionTreeExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      loadDatasets(
-        sc,
-        params.input,
-        params.dataFormat,
-        params.testInput,
-        algo,
-        params.fracTest)
+    val (training: DataFrame, test: DataFrame) = loadDatasets(
+      sc,
+      params.input,
+      params.dataFormat,
+      params.testInput,
+      algo,
+      params.fracTest)
 
     // Set up Pipeline
     val stages = new mutable.ArrayBuffer[PipelineStage]()
@@ -292,8 +295,8 @@ object DecisionTreeExample {
           println(treeModel) // Print model summary.
         }
       case "regression" =>
-        val treeModel =
-          pipelineModel.stages.last.asInstanceOf[DecisionTreeRegressionModel]
+        val treeModel = pipelineModel.stages.last
+          .asInstanceOf[DecisionTreeRegressionModel]
         if (treeModel.numNodes < 20) {
           println(treeModel.toDebugString) // Print full model.
         } else {
@@ -335,8 +338,10 @@ object DecisionTreeExample {
       data: DataFrame,
       labelColName: String): Unit = {
     val fullPredictions = model.transform(data).cache()
-    val predictions =
-      fullPredictions.select("prediction").rdd.map(_.getDouble(0))
+    val predictions = fullPredictions
+      .select("prediction")
+      .rdd
+      .map(_.getDouble(0))
     val labels = fullPredictions.select(labelColName).rdd.map(_.getDouble(0))
     // Print number of classes for reference
     val numClasses =
@@ -363,8 +368,10 @@ object DecisionTreeExample {
       data: DataFrame,
       labelColName: String): Unit = {
     val fullPredictions = model.transform(data).cache()
-    val predictions =
-      fullPredictions.select("prediction").rdd.map(_.getDouble(0))
+    val predictions = fullPredictions
+      .select("prediction")
+      .rdd
+      .map(_.getDouble(0))
     val labels = fullPredictions.select(labelColName).rdd.map(_.getDouble(0))
     val RMSE = new RegressionMetrics(
       predictions.zip(labels)).rootMeanSquaredError

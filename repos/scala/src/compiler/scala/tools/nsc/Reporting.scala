@@ -45,8 +45,9 @@ trait Reporting extends scala.reflect.internal.Reporting {
         if (warnings.nonEmpty && (setting.isDefault || doReport())) {
           val numWarnings = warnings.size
           val warningVerb = if (numWarnings == 1) "was" else "were"
-          val warningCount =
-            countElementsAsString(numWarnings, s"$what warning")
+          val warningCount = countElementsAsString(
+            numWarnings,
+            s"$what warning")
 
           reporter.warning(
             NoPosition,

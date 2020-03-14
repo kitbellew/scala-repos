@@ -502,8 +502,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
       // once we go to run-time checks (on Const's), convert them to checkable types
       // TODO: there seems to be bug for singleton domains (variable does not show up in model)
       lazy val domain: Option[Set[Const]] = {
-        val subConsts =
-          enumerateSubtypes(staticTp, grouped = false).headOption.map { tps =>
+        val subConsts = enumerateSubtypes(staticTp, grouped = false).headOption
+          .map { tps =>
             tps.toSet[Type].map { tp =>
               val domainC = TypeConst(tp)
               registerEquality(domainC)
@@ -673,8 +673,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         _ map symForEqualsTo
       }
 
-      lazy val symForStaticTp: Option[Sym] =
-        symForEqualsTo.get(TypeConst(staticTpCheckable))
+      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(
+        TypeConst(staticTpCheckable))
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {

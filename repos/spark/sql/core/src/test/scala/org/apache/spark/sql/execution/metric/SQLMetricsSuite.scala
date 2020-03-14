@@ -77,8 +77,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     val previousExecutionIds = sqlContext.listener.executionIdToData.keySet
     withSQLConf("spark.sql.codegen.wholeStage" -> "false") { df.collect() }
     sparkContext.listenerBus.waitUntilEmpty(10000)
-    val executionIds =
-      sqlContext.listener.executionIdToData.keySet.diff(previousExecutionIds)
+    val executionIds = sqlContext.listener.executionIdToData.keySet
+      .diff(previousExecutionIds)
     assert(executionIds.size === 1)
     val executionId = executionIds.head
     val jobs = sqlContext.listener.getExecution(executionId).get.jobs
@@ -170,8 +170,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("SortMergeJoin metrics") {
     // Because SortMergeJoin may skip different rows if the number of partitions is different, this
     // test should use the deterministic number of partitions.
-    val testDataForJoin =
-      testData2.filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2.filter(
+      'a < 2
+    ) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -192,8 +193,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("SortMergeJoin(outer) metrics") {
     // Because SortMergeJoin may skip different rows if the number of partitions is different,
     // this test should use the deterministic number of partitions.
-    val testDataForJoin =
-      testData2.filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2.filter(
+      'a < 2
+    ) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -253,8 +255,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   }
 
   test("BroadcastNestedLoopJoin metrics") {
-    val testDataForJoin =
-      testData2.filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2.filter(
+      'a < 2
+    ) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -288,8 +291,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   test("ShuffledHashJoin metrics") {
     withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "0") {
       val df1 = Seq((1, "1"), (2, "2")).toDF("key", "value")
-      val df2 =
-        Seq((1, "1"), (2, "2"), (3, "3"), (4, "4")).toDF("key2", "value")
+      val df2 = Seq((1, "1"), (2, "2"), (3, "3"), (4, "4"))
+        .toDF("key2", "value")
       // Assume the execution plan is
       // ... -> ShuffledHashJoin(nodeId = 0)
       val df = df1.join(df2, $"key" === $"key2", "leftsemi")
@@ -301,8 +304,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
   }
 
   test("CartesianProduct metrics") {
-    val testDataForJoin =
-      testData2.filter('a < 2) // TestData2(1, 1) :: TestData2(1, 2)
+    val testDataForJoin = testData2.filter(
+      'a < 2
+    ) // TestData2(1, 1) :: TestData2(1, 2)
     testDataForJoin.registerTempTable("testDataForJoin")
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
@@ -322,8 +326,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       // PhysicalRDD(nodeId = 0)
       person.select('name).write.format("json").save(file.getAbsolutePath)
       sparkContext.listenerBus.waitUntilEmpty(10000)
-      val executionIds =
-        sqlContext.listener.executionIdToData.keySet.diff(previousExecutionIds)
+      val executionIds = sqlContext.listener.executionIdToData.keySet
+        .diff(previousExecutionIds)
       assert(executionIds.size === 1)
       val executionId = executionIds.head
       val jobs = sqlContext.listener.getExecution(executionId).get.jobs
@@ -382,17 +386,16 @@ private class BoxingFinder(
     visitedMethods: mutable.Set[MethodIdentifier[_]] = mutable.Set.empty)
     extends ClassVisitor(ASM5) {
 
-  private val primitiveBoxingClassName =
-    Set(
-      "java/lang/Long",
-      "java/lang/Double",
-      "java/lang/Integer",
-      "java/lang/Float",
-      "java/lang/Short",
-      "java/lang/Character",
-      "java/lang/Byte",
-      "java/lang/Boolean"
-    )
+  private val primitiveBoxingClassName = Set(
+    "java/lang/Long",
+    "java/lang/Double",
+    "java/lang/Integer",
+    "java/lang/Float",
+    "java/lang/Short",
+    "java/lang/Character",
+    "java/lang/Byte",
+    "java/lang/Boolean"
+  )
 
   override def visitMethod(
       access: Int,

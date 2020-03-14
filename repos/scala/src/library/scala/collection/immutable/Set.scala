@@ -88,14 +88,10 @@ object Set extends ImmutableSetFactory[Set] {
       with Set[A]
       with Serializable {
     override def size: Int = 1
-    def contains(elem: A): Boolean =
-      elem == elem1
-    def +(elem: A): Set[A] =
-      if (contains(elem)) this else new Set2(elem1, elem)
-    def -(elem: A): Set[A] =
-      if (elem == elem1) Set.empty else this
-    def iterator: Iterator[A] =
-      Iterator(elem1)
+    def contains(elem: A): Boolean = elem == elem1
+    def +(elem: A): Set[A] = if (contains(elem)) this else new Set2(elem1, elem)
+    def -(elem: A): Set[A] = if (elem == elem1) Set.empty else this
+    def iterator: Iterator[A] = Iterator(elem1)
     override def foreach[U](f: A => U): Unit = { f(elem1) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1)
@@ -122,16 +118,14 @@ object Set extends ImmutableSetFactory[Set] {
       with Set[A]
       with Serializable {
     override def size: Int = 2
-    def contains(elem: A): Boolean =
-      elem == elem1 || elem == elem2
+    def contains(elem: A): Boolean = elem == elem1 || elem == elem2
     def +(elem: A): Set[A] =
       if (contains(elem)) this else new Set3(elem1, elem2, elem)
     def -(elem: A): Set[A] =
       if (elem == elem1) new Set1(elem2)
       else if (elem == elem2) new Set1(elem1)
       else this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2)
+    def iterator: Iterator[A] = Iterator(elem1, elem2)
     override def foreach[U](f: A => U): Unit = { f(elem1); f(elem2) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1) || p(elem2)
@@ -167,8 +161,7 @@ object Set extends ImmutableSetFactory[Set] {
       else if (elem == elem2) new Set2(elem1, elem3)
       else if (elem == elem3) new Set2(elem1, elem2)
       else this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2, elem3)
+    def iterator: Iterator[A] = Iterator(elem1, elem2, elem3)
     override def foreach[U](f: A => U): Unit = { f(elem1); f(elem2); f(elem3) }
     override def exists(@deprecatedName('f) p: A => Boolean): Boolean = {
       p(elem1) || p(elem2) || p(elem3)
@@ -209,8 +202,7 @@ object Set extends ImmutableSetFactory[Set] {
       else if (elem == elem3) new Set3(elem1, elem2, elem4)
       else if (elem == elem4) new Set3(elem1, elem2, elem3)
       else this
-    def iterator: Iterator[A] =
-      Iterator(elem1, elem2, elem3, elem4)
+    def iterator: Iterator[A] = Iterator(elem1, elem2, elem3, elem4)
     override def foreach[U](f: A => U): Unit = {
       f(elem1); f(elem2); f(elem3); f(elem4)
     }

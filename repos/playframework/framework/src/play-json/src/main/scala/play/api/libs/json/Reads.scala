@@ -43,8 +43,7 @@ trait Reads[A] { self =>
     */
   def reads(json: JsValue): JsResult[A]
 
-  def map[B](f: A => B): Reads[B] =
-    Reads[B] { json => self.reads(json).map(f) }
+  def map[B](f: A => B): Reads[B] = Reads[B] { json => self.reads(json).map(f) }
 
   def flatMap[B](f: A => Reads[B]): Reads[B] =
     Reads[B] { json =>
@@ -158,8 +157,8 @@ object Reads extends ConstraintReads with PathReads with DefaultReads {
     def identity = JsArray()
   }
 
-  implicit val JsArrayReducer =
-    Reducer[JsValue, JsArray](js => JsArray(Seq(js)))
+  implicit val JsArrayReducer = Reducer[JsValue, JsArray](js =>
+    JsArray(Seq(js)))
 }
 
 /**
@@ -523,8 +522,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * The default typeclass to reads `java.time.LocalDateTime` from JSON.
     * Accepts date/time formats as '2011-12-03T10:15:30', '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
     */
-  implicit val DefaultLocalDateTimeReads =
-    localDateTimeReads(DateTimeFormatter.ISO_DATE_TIME)
+  implicit val DefaultLocalDateTimeReads = localDateTimeReads(
+    DateTimeFormatter.ISO_DATE_TIME)
 
   /**
     * Reads for the `java.time.OffsetDateTime` type.
@@ -574,8 +573,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * The default typeclass to reads `java.time.OffsetDateTime` from JSON.
     * Accepts date/time formats as '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
     */
-  implicit val DefaultOffsetDateTimeReads =
-    offsetDateTimeReads(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+  implicit val DefaultOffsetDateTimeReads = offsetDateTimeReads(
+    DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
   /**
     * Reads for the `java.time.ZonedDateTime` type.
@@ -623,8 +622,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * The default typeclass to reads `java.time.ZonedDateTime` from JSON.
     * Accepts date/time formats as '2011-12-03T10:15:30', '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
     */
-  implicit val DefaultZonedDateTimeReads =
-    zonedDateTimeReads(DateTimeFormatter.ISO_DATE_TIME)
+  implicit val DefaultZonedDateTimeReads = zonedDateTimeReads(
+    DateTimeFormatter.ISO_DATE_TIME)
 
   /**
     * Reads for the `java.time.LocalDate` type.
@@ -671,8 +670,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * The default typeclass to reads `java.time.LocalDate` from JSON.
     * Accepts date formats as '2011-12-03'.
     */
-  implicit val DefaultLocalDateReads =
-    localDateReads(DateTimeFormatter.ISO_DATE)
+  implicit val DefaultLocalDateReads = localDateReads(
+    DateTimeFormatter.ISO_DATE)
 
   /**
     * Reads for the `java.time.Instant` type.
@@ -716,8 +715,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     * The default typeclass to reads `java.time.Instant` from JSON.
     * Accepts instant formats as '2011-12-03T10:15:30', '2011-12-03T10:15:30+01:00' or '2011-12-03T10:15:30+01:00[Europe/Paris]'.
     */
-  implicit val DefaultInstantReads =
-    instantReads(DateTimeFormatter.ISO_DATE_TIME)
+  implicit val DefaultInstantReads = instantReads(
+    DateTimeFormatter.ISO_DATE_TIME)
 
   /**
     * ISO 8601 Reads

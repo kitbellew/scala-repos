@@ -20,15 +20,13 @@ object Exponential extends ExponentialInstances {
 
 trait ExponentialInstances {
 
-  implicit val float: Exponential[Float] =
-    new Exponential[Float] {
-      def apply(rate: Float): Dist[Float] =
-        new DistFromGen(g => (Ziggurat.rexp(g) / rate).toFloat)
-    }
+  implicit val float: Exponential[Float] = new Exponential[Float] {
+    def apply(rate: Float): Dist[Float] =
+      new DistFromGen(g => (Ziggurat.rexp(g) / rate).toFloat)
+  }
 
-  implicit val double: Exponential[Double] =
-    new Exponential[Double] {
-      def apply(rate: Double): Dist[Double] =
-        new DistFromGen(g => Ziggurat.rexp(g) / rate)
-    }
+  implicit val double: Exponential[Double] = new Exponential[Double] {
+    def apply(rate: Double): Dist[Double] =
+      new DistFromGen(g => Ziggurat.rexp(g) / rate)
+  }
 }

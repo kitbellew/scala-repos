@@ -113,14 +113,14 @@ object BatchID {
     override def plus(l: BatchID, r: BatchID) = if (l >= r) l else r
   }
 
-  implicit val batchID2String: Injection[BatchID, String] =
-    Injection.buildCatchInvert[BatchID, String] { _.toString } { BatchID(_) }
+  implicit val batchID2String: Injection[BatchID, String] = Injection
+    .buildCatchInvert[BatchID, String] { _.toString } { BatchID(_) }
 
-  implicit val batchID2Long: Bijection[BatchID, Long] =
-    Bijection.build[BatchID, Long] { _.id } { BatchID(_) }
+  implicit val batchID2Long: Bijection[BatchID, Long] = Bijection
+    .build[BatchID, Long] { _.id } { BatchID(_) }
 
-  implicit val batchID2Bytes: Injection[BatchID, Array[Byte]] =
-    Injection.connect[BatchID, Long, Array[Byte]]
+  implicit val batchID2Bytes: Injection[BatchID, Array[Byte]] = Injection
+    .connect[BatchID, Long, Array[Byte]]
 
   implicit val batchIdOrdering: Ordering[BatchID] = Ordering.by(_.id)
 }

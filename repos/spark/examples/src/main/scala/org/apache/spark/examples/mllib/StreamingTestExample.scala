@@ -57,8 +57,9 @@ object StreamingTestExample {
     val batchDuration = Seconds(args(1).toLong)
     val numBatchesTimeout = args(2).toInt
 
-    val conf =
-      new SparkConf().setMaster("local").setAppName("StreamingTestExample")
+    val conf = new SparkConf()
+      .setMaster("local")
+      .setAppName("StreamingTestExample")
     val ssc = new StreamingContext(conf, batchDuration)
     ssc.checkpoint({
       val dir = Utils.createTempDir()

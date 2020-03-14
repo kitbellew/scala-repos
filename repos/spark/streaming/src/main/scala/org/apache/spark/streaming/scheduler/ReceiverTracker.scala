@@ -271,15 +271,16 @@ private[streaming] class ReceiverTracker(
     if (isTrackerStopping || isTrackerStopped) { return false }
 
     val scheduledLocations = receiverTrackingInfos(streamId).scheduledLocations
-    val acceptableExecutors = if (scheduledLocations.nonEmpty) {
-      // This receiver is registering and it's scheduled by
-      // ReceiverSchedulingPolicy.scheduleReceivers. So use "scheduledLocations" to check it.
-      scheduledLocations.get
-    } else {
-      // This receiver is scheduled by "ReceiverSchedulingPolicy.rescheduleReceiver", so calling
-      // "ReceiverSchedulingPolicy.rescheduleReceiver" again to check it.
-      scheduleReceiver(streamId)
-    }
+    val acceptableExecutors =
+      if (scheduledLocations.nonEmpty) {
+        // This receiver is registering and it's scheduled by
+        // ReceiverSchedulingPolicy.scheduleReceivers. So use "scheduledLocations" to check it.
+        scheduledLocations.get
+      } else {
+        // This receiver is scheduled by "ReceiverSchedulingPolicy.rescheduleReceiver", so calling
+        // "ReceiverSchedulingPolicy.rescheduleReceiver" again to check it.
+        scheduleReceiver(streamId)
+      }
 
     def isAcceptable: Boolean =
       acceptableExecutors.exists {
@@ -340,9 +341,9 @@ private[streaming] class ReceiverTracker(
     receiverTrackingInfos(streamId) = newReceiverTrackingInfo
     listenerBus.post(
       StreamingListenerReceiverStopped(newReceiverTrackingInfo.toReceiverInfo))
-    val messageWithError = if (error != null && !error.isEmpty) {
-      s"$message - $error"
-    } else { s"$message" }
+    val messageWithError =
+      if (error != null && !error.isEmpty) { s"$message - $error" }
+      else { s"$message" }
     logError(s"Deregistered receiver for stream $streamId: $messageWithError")
   }
 
@@ -387,16 +388,17 @@ private[streaming] class ReceiverTracker(
     receiverTrackingInfos(streamId) = newReceiverTrackingInfo
     listenerBus.post(
       StreamingListenerReceiverError(newReceiverTrackingInfo.toReceiverInfo))
-    val messageWithError = if (error != null && !error.isEmpty) {
-      s"$message - $error"
-    } else { s"$message" }
+    val messageWithError =
+      if (error != null && !error.isEmpty) { s"$message - $error" }
+      else { s"$message" }
     logWarning(
       s"Error reported by receiver for stream $streamId: $messageWithError")
   }
 
   private def scheduleReceiver(receiverId: Int): Seq[TaskLocation] = {
-    val preferredLocation =
-      receiverPreferredLocations.getOrElse(receiverId, None)
+    val preferredLocation = receiverPreferredLocations.getOrElse(
+      receiverId,
+      None)
     val scheduledLocations = schedulingPolicy.rescheduleReceiver(
       receiverId,
       preferredLocation,
@@ -512,8 +514,9 @@ private[streaming] class ReceiverTracker(
     override def receive: PartialFunction[Any, Unit] = {
       // Local messages
       case StartAllReceivers(receivers) =>
-        val scheduledLocations =
-          schedulingPolicy.scheduleReceivers(receivers, getExecutors)
+        val scheduledLocations = schedulingPolicy.scheduleReceivers(
+          receivers,
+          getExecutors)
         for (receiver <- receivers) {
           val executors = scheduledLocations(receiver.streamId)
           updateReceiverScheduledExecutors(receiver.streamId, executors)
@@ -525,22 +528,23 @@ private[streaming] class ReceiverTracker(
         // Old scheduled executors minus the ones that are not active any more
         val oldScheduledExecutors = getStoredScheduledExecutors(
           receiver.streamId)
-        val scheduledLocations = if (oldScheduledExecutors.nonEmpty) {
-          // Try global scheduling again
-          oldScheduledExecutors
-        } else {
-          val oldReceiverInfo = receiverTrackingInfos(receiver.streamId)
-          // Clear "scheduledLocations" to indicate we are going to do local scheduling
-          val newReceiverInfo = oldReceiverInfo.copy(
-            state = ReceiverState.INACTIVE,
-            scheduledLocations = None)
-          receiverTrackingInfos(receiver.streamId) = newReceiverInfo
-          schedulingPolicy.rescheduleReceiver(
-            receiver.streamId,
-            receiver.preferredLocation,
-            receiverTrackingInfos,
-            getExecutors)
-        }
+        val scheduledLocations =
+          if (oldScheduledExecutors.nonEmpty) {
+            // Try global scheduling again
+            oldScheduledExecutors
+          } else {
+            val oldReceiverInfo = receiverTrackingInfos(receiver.streamId)
+            // Clear "scheduledLocations" to indicate we are going to do local scheduling
+            val newReceiverInfo = oldReceiverInfo.copy(
+              state = ReceiverState.INACTIVE,
+              scheduledLocations = None)
+            receiverTrackingInfos(receiver.streamId) = newReceiverInfo
+            schedulingPolicy.rescheduleReceiver(
+              receiver.streamId,
+              receiver.preferredLocation,
+              receiverTrackingInfos,
+              getExecutors)
+          }
         // Assume there is one receiver restarting at one time, so we don't need to update
         // receiverTrackingInfos
         startReceiver(receiver, scheduledLocations)
@@ -563,14 +567,13 @@ private[streaming] class ReceiverTracker(
             host,
             executorId,
             receiverEndpoint) =>
-        val successful =
-          registerReceiver(
-            streamId,
-            typ,
-            host,
-            executorId,
-            receiverEndpoint,
-            context.senderAddress)
+        val successful = registerReceiver(
+          streamId,
+          typ,
+          host,
+          executorId,
+          receiverEndpoint,
+          context.senderAddress)
         context.reply(successful)
       case AddBlock(receivedBlockInfo) =>
         if (WriteAheadLogUtils.isBatchingEnabled(ssc.conf, isDriver = true)) {
@@ -638,8 +641,8 @@ private[streaming] class ReceiverTracker(
       }
 
       val checkpointDirOption = Option(ssc.checkpointDir)
-      val serializableHadoopConf =
-        new SerializableConfiguration(ssc.sparkContext.hadoopConfiguration)
+      val serializableHadoopConf = new SerializableConfiguration(
+        ssc.sparkContext.hadoopConfiguration)
 
       // Function to start the receiver on the worker node
       val startReceiverFunc: Iterator[Receiver[_]] => Unit =

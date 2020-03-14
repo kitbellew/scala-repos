@@ -29,8 +29,8 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
     if (position == null) return None
     val index = qual.lastIndexOf('.')
     val qualNoPoint = if (index < 0) null else qual.substring(0, index)
-    val tuple: (ArrayBuffer[ScImportStmt], Long) =
-      position.getUserData(ScalaExplicitlyImportedWeigher.key)
+    val tuple: (ArrayBuffer[ScImportStmt], Long) = position.getUserData(
+      ScalaExplicitlyImportedWeigher.key)
     var buffer: ArrayBuffer[ScImportStmt] =
       if (tuple != null) tuple._1 else null
     val currentModCount =
@@ -178,6 +178,6 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
 }
 
 object ScalaExplicitlyImportedWeigher {
-  private[weighter] val key: Key[(ArrayBuffer[ScImportStmt], Long)] =
-    Key.create("scala.explicitly.imported.weigher.key")
+  private[weighter] val key: Key[(ArrayBuffer[ScImportStmt], Long)] = Key
+    .create("scala.explicitly.imported.weigher.key")
 }

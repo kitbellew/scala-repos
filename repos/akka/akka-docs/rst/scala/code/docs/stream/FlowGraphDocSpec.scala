@@ -216,12 +216,11 @@ class FlowGraphDocSpec extends AkkaSpec {
   "access to materialized value" in {
     //#flow-graph-matvalue
     import GraphDSL.Implicits._
-    val foldFlow: Flow[Int, Int, Future[Int]] =
-      Flow.fromGraph(GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) {
-        implicit builder ⇒ fold ⇒
-          FlowShape(
-            fold.in,
-            builder.materializedValue.mapAsync(4)(identity).outlet)
+    val foldFlow: Flow[Int, Int, Future[Int]] = Flow.fromGraph(
+      GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) { implicit builder ⇒ fold ⇒
+        FlowShape(
+          fold.in,
+          builder.materializedValue.mapAsync(4)(identity).outlet)
       })
     //#flow-graph-matvalue
 
@@ -232,8 +231,8 @@ class FlowGraphDocSpec extends AkkaSpec {
     //#flow-graph-matvalue-cycle
     import GraphDSL.Implicits._
     // This cannot produce any value:
-    val cyclicFold: Source[Int, Future[Int]] =
-      Source.fromGraph(GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) {
+    val cyclicFold: Source[Int, Future[Int]] = Source.fromGraph(
+      GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) {
         implicit builder =>
           fold =>
             // - Fold cannot complete until its upstream mapAsync completes

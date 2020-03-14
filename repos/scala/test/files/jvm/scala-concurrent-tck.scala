@@ -838,8 +838,7 @@ trait ExecutionContextPrepare extends TestBase {
   class PreparingExecutionContext extends ExecutionContext {
     def delegate = ExecutionContext.global
 
-    override def execute(runnable: Runnable): Unit =
-      delegate.execute(runnable)
+    override def execute(runnable: Runnable): Unit = delegate.execute(runnable)
 
     override def prepare(): ExecutionContext = {
       // save object stored in ThreadLocal storage
@@ -859,8 +858,7 @@ trait ExecutionContextPrepare extends TestBase {
       }
     }
 
-    override def reportFailure(t: Throwable): Unit =
-      delegate.reportFailure(t)
+    override def reportFailure(t: Throwable): Unit = delegate.reportFailure(t)
   }
 
   implicit val ec = new PreparingExecutionContext

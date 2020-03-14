@@ -52,8 +52,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     else if (long != Long.MinValue) new FixedPoint(-long)
     else throw new FixedPointOverflow(long)
 
-  def signum: Int =
-    java.lang.Long.signum(long)
+  def signum: Int = java.lang.Long.signum(long)
 
   def compare(rhs: FixedPoint): Int =
     if (lhs.long < rhs.long) -1 else if (lhs.long == rhs.long) 0 else 1
@@ -146,8 +145,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
       throw new FixedPointOverflow(lhs.long)
     else new FixedPoint(lhs.long / rhs)
 
-  def %(rhs: FixedPoint): FixedPoint =
-    new FixedPoint(lhs.long % rhs.long)
+  def %(rhs: FixedPoint): FixedPoint = new FixedPoint(lhs.long % rhs.long)
 
   def %(rhs: Long)(implicit scale: FixedScale): FixedPoint = {
     val d = scale.denom
@@ -166,8 +164,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
     ((lhs - rem) / rhs, rem)
   }
 
-  def isWhole(implicit scale: FixedScale): Boolean =
-    long % scale.denom == 0L
+  def isWhole(implicit scale: FixedScale): Boolean = long % scale.denom == 0L
 
   def floor(implicit scale: FixedScale): FixedPoint =
     if (long % scale.denom == 0L) this
@@ -194,11 +191,9 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def gcd(rhs: FixedPoint): FixedPoint =
     new FixedPoint(spire.math.gcd(lhs.long, rhs.long))
 
-  def toLong(implicit scale: FixedScale): Long =
-    long / scale.denom
+  def toLong(implicit scale: FixedScale): Long = long / scale.denom
 
-  def toDouble(implicit scale: FixedScale): Double =
-    long.toDouble / scale.denom
+  def toDouble(implicit scale: FixedScale): Double = long.toDouble / scale.denom
 
   def toBigDecimal(implicit scale: FixedScale): BigDecimal =
     BigDecimal(long) / scale.denom
@@ -206,8 +201,7 @@ class FixedPoint(val long: Long) extends AnyVal { lhs =>
   def toRational(implicit scale: FixedScale): Rational =
     Rational(long, scale.denom)
 
-  def toReal(implicit scale: FixedScale): Real =
-    Real(toRational)
+  def toReal(implicit scale: FixedScale): Real = Real(toRational)
 
   def **(k: Int)(implicit scale: FixedScale): FixedPoint = pow(k)
 

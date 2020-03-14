@@ -151,8 +151,8 @@ trait GameHelper {
           val klass = userClass(user.id, cssClass, withOnline)
           val href = s"${routes.User show user.name}${if (mod) "?mod" else ""}"
           val content = playerUsername(player, withRating)
-          val diff =
-            (player.ratingDiff ifTrue withDiff).fold(Html(""))(showRatingDiff)
+          val diff = (player.ratingDiff ifTrue withDiff)
+            .fold(Html(""))(showRatingDiff)
           val mark = engine ?? s"""<span class="engine_mark" title="${trans
             .thisPlayerUsesChessComputerAssistance()}"></span>"""
           val dataIcon = withOnline ?? """data-icon="r""""
@@ -211,12 +211,13 @@ trait GameHelper {
       blackUserId: String,
       finished: Boolean,
       result: Option[Boolean]) = {
-    val res = if (finished) result match {
-      case Some(true)  => "1-0"
-      case Some(false) => "0-1"
-      case None        => "½-½"
-    }
-    else "*"
+    val res =
+      if (finished) result match {
+        case Some(true)  => "1-0"
+        case Some(false) => "0-1"
+        case None        => "½-½"
+      }
+      else "*"
     s"${usernameOrId(whiteUserId)} $res ${usernameOrId(blackUserId)}"
   }
 

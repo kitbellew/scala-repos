@@ -23,8 +23,8 @@ class JsonFunctionsSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
 
   test("function get_json_object") {
-    val df: DataFrame =
-      Seq(("""{"name": "alice", "age": 5}""", "")).toDF("a", "b")
+    val df: DataFrame = Seq(("""{"name": "alice", "age": 5}""", ""))
+      .toDF("a", "b")
     checkAnswer(
       df.selectExpr(
         "get_json_object(a, '$.name')",

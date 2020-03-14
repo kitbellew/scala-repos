@@ -144,8 +144,9 @@ abstract class BaseYarnClusterSuite
       extraConf: Map[String, String] = Map(),
       extraEnv: Map[String, String] = Map()): SparkAppHandle.State = {
     val deployMode = if (clientMode) "client" else "cluster"
-    val propsFile =
-      createConfFile(extraClassPath = extraClassPath, extraConf = extraConf)
+    val propsFile = createConfFile(
+      extraClassPath = extraClassPath,
+      extraConf = extraConf)
     val env =
       Map("YARN_CONF_DIR" -> hadoopConfDir.getAbsolutePath()) ++ extraEnv
 

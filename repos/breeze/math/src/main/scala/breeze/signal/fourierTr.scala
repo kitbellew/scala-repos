@@ -121,14 +121,13 @@ object fourierTr extends UFunc {
         val range = rangeNegative.getRangeWithoutNegativeIndexes(v.length)
         //ToDo check lengths and throw errors
 
-        val tempret =
-          for (k <- range) yield {
-            val pk2_N = scala.math.Pi * k * 2d / v.length
-            sum(DenseVector.tabulate[Complex](v.length)((n: Int) => {
-              val nd = n.toDouble
-              Complex(cos(pk2_N * nd), sin(pk2_N * nd))
-            }))
-          }
+        val tempret = for (k <- range) yield {
+          val pk2_N = scala.math.Pi * k * 2d / v.length
+          sum(DenseVector.tabulate[Complex](v.length)((n: Int) => {
+            val nd = n.toDouble
+            Complex(cos(pk2_N * nd), sin(pk2_N * nd))
+          }))
+        }
 
         new DenseVector[Complex](tempret.toArray[Complex])
 

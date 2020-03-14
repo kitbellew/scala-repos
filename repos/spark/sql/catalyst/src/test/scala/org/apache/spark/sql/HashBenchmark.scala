@@ -53,8 +53,9 @@ object HashBenchmark {
       }
     }
 
-    val getHashCode =
-      UnsafeProjection.create(new Murmur3Hash(attrs) :: Nil, attrs)
+    val getHashCode = UnsafeProjection.create(
+      new Murmur3Hash(attrs) :: Nil,
+      attrs)
     benchmark.addCase("codegen version") { _: Int =>
       for (_ <- 0L until iters) {
         var sum = 0

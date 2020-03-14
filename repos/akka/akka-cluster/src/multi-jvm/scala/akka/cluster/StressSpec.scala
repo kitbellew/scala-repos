@@ -174,8 +174,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     val infolog = getBoolean("infolog")
     val nFactor = getInt("nr-of-nodes-factor")
-    val numberOfSeedNodes =
-      getInt("nr-of-seed-nodes") // not scaled by nodes factor
+    val numberOfSeedNodes = getInt(
+      "nr-of-seed-nodes"
+    ) // not scaled by nodes factor
     val numberOfNodesJoiningToSeedNodesInitially =
       getInt("nr-of-nodes-joining-to-seed-initally") * nFactor
     val numberOfNodesJoiningOneByOneSmall =
@@ -200,8 +201,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesShutdownOneByOneLarge =
       getInt("nr-of-nodes-shutdown-one-by-one-large") * nFactor
     val numberOfNodesShutdown = getInt("nr-of-nodes-shutdown") * nFactor
-    val numberOfNodesJoinRemove =
-      getInt("nr-of-nodes-join-remove") // not scaled by nodes factor
+    val numberOfNodesJoinRemove = getInt(
+      "nr-of-nodes-join-remove"
+    ) // not scaled by nodes factor
 
     val workBatchSize = getInt("work-batch-size")
     val workBatchInterval = testConfig.getMillisDuration("work-batch-interval")
@@ -223,8 +225,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       testConfig.getMillisDuration("expected-test-duration") * dFactor
     val treeWidth = getInt("tree-width")
     val treeLevels = getInt("tree-levels")
-    val reportMetricsInterval =
-      testConfig.getMillisDuration("report-metrics-interval")
+    val reportMetricsInterval = testConfig.getMillisDuration(
+      "report-metrics-interval")
     val convergenceWithinFactor = getDouble("convergence-within-factor")
     val exerciseActors = getBoolean("exercise-actors")
 
@@ -324,8 +326,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case r: ClusterResult ⇒
         results :+= r
         if (results.size == expectedResults) {
-          val aggregated =
-            AggregatedClusterResult(title, maxDuration, totalGossipStats)
+          val aggregated = AggregatedClusterResult(
+            title,
+            maxDuration,
+            totalGossipStats)
           if (infolog)
             log.info(
               s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
@@ -373,11 +377,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       if (phiValuesObservedByNode.isEmpty) ""
       else {
         import akka.cluster.Member.addressOrdering
-        val lines =
-          for {
-            (monitor, phiValues) ← phiValuesObservedByNode
-            phi ← phiValues
-          } yield formatPhiLine(monitor, phi.address, phi)
+        val lines = for {
+          (monitor, phiValues) ← phiValuesObservedByNode
+          phi ← phiValues
+        } yield formatPhiLine(monitor, phi.address, phi)
 
         lines.mkString(formatPhiHeader + "\n", "\n", "")
       }
@@ -457,8 +460,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
 
     import context.dispatcher
-    val checkPhiTask =
-      context.system.scheduler.schedule(1.second, 1.second, self, PhiTick)
+    val checkPhiTask = context.system.scheduler.schedule(
+      1.second,
+      1.second,
+      self,
+      PhiTick)
 
     // subscribe to MemberEvent, re-subscribe when restart
     override def preStart(): Unit =
@@ -571,8 +577,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     var startTime = 0L
 
     import context.dispatcher
-    val resendTask =
-      context.system.scheduler.schedule(3.seconds, 3.seconds, self, RetryTick)
+    val resendTask = context.system.scheduler.schedule(
+      3.seconds,
+      3.seconds,
+      self,
+      RetryTick)
 
     override def postStop(): Unit = {
       resendTask.cancel()
@@ -662,8 +671,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           totalActors,
           levels,
           width)
-        val tree =
-          context.actorOf(Props(classOf[TreeNode], levels, width), "tree")
+        val tree = context.actorOf(
+          Props(classOf[TreeNode], levels, width),
+          "tree")
         tree forward ((idx, SimpleJob(id, payload)))
         context.become(treeWorker(tree))
     }
@@ -679,12 +689,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     require(level >= 1)
     def createChild(): Actor =
       if (level == 1) new Leaf else new TreeNode(level - 1, width)
-    val indexedChildren =
-      0 until width map { i ⇒
-        context.actorOf(
-          Props(createChild()).withDeploy(Deploy.local),
-          name = i.toString)
-      } toVector
+    val indexedChildren = 0 until width map { i ⇒
+      context.actorOf(
+        Props(createChild()).withDeploy(Deploy.local),
+        name = i.toString)
+    } toVector
 
     def receive = {
       case (idx: Int, job: SimpleJob) if idx < width ⇒
@@ -710,12 +719,13 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     var restartCount = 0
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 5, withinTimeRange = 1 minute) {
-        case _: Exception ⇒
-          restartCount += 1
-          Restart
-      }
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 5,
+      withinTimeRange = 1 minute) {
+      case _: Exception ⇒
+        restartCount += 1
+        Restart
+    }
 
     def receive = {
       case props: Props ⇒ context.actorOf(props)
@@ -903,8 +913,7 @@ abstract class StressSpec
   }
 
   // always create one worker when the cluster is started
-  lazy val createWorker: Unit =
-    system.actorOf(Props[Worker], "worker")
+  lazy val createWorker: Unit = system.actorOf(Props[Worker], "worker")
 
   def createResultAggregator(
       title: String,

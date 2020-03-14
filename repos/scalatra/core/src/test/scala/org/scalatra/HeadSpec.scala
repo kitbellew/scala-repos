@@ -3,8 +3,7 @@ package org.scalatra
 import org.scalatra.test.specs2.ScalatraSpec
 
 class HeadSpec extends ScalatraSpec {
-  def is =
-    s2"""
+  def is = s2"""
 A HEAD request should"
   return no body $noBody
   preserve headers $preserveHeaders

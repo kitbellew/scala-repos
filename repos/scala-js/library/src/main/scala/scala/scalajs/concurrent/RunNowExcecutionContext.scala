@@ -10,7 +10,6 @@ private[concurrent] object RunNowExecutionContext
     catch { case t: Throwable => reportFailure(t) }
   }
 
-  def reportFailure(t: Throwable): Unit =
-    t.printStackTrace()
+  def reportFailure(t: Throwable): Unit = t.printStackTrace()
 
 }

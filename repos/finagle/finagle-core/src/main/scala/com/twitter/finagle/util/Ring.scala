@@ -84,8 +84,7 @@ class Ring(positions: Array[Int]) {
   /**
     * Compute the index of the given position.
     */
-  def apply(pos: Int): Int =
-    index(pos) % N
+  def apply(pos: Int): Int = index(pos) % N
 
   /**
     * Pick a position within the given range, described

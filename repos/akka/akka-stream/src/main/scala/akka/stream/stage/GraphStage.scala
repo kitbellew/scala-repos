@@ -30,8 +30,10 @@ abstract class GraphStageWithMaterializedValue[+S <: Shape, +M]
 
   protected def initialAttributes: Attributes = Attributes.none
 
-  final override private[stream] lazy val module: Module =
-    GraphStageModule(shape, initialAttributes, this)
+  final override private[stream] lazy val module: Module = GraphStageModule(
+    shape,
+    initialAttributes,
+    this)
 
   final override def withAttributes(attr: Attributes): Graph[S, M] =
     new Graph[S, M] {
@@ -707,8 +709,7 @@ abstract class GraphStageLogic private[stream] (
   final protected def emitMultiple[T](
       out: Outlet[T],
       elems: immutable.Iterable[T],
-      andThen: () ⇒ Unit): Unit =
-    emitMultiple(out, elems.iterator, andThen)
+      andThen: () ⇒ Unit): Unit = emitMultiple(out, elems.iterator, andThen)
 
   /**
     * Emit a sequence of elements through the given outlet, suspending execution if necessary.
@@ -988,8 +989,7 @@ abstract class GraphStageLogic private[stream] (
     * This object can be cached and reused within the same [[GraphStageLogic]].
     */
   final protected def createAsyncCallback[T](
-      handler: Procedure[T]): AsyncCallback[T] =
-    getAsyncCallback(handler.apply)
+      handler: Procedure[T]): AsyncCallback[T] = getAsyncCallback(handler.apply)
 
   private var _stageActor: StageActor = _
   final def stageActor: StageActor =
@@ -1020,8 +1020,8 @@ abstract class GraphStageLogic private[stream] (
       receive: ((ActorRef, Any)) ⇒ Unit): StageActor = {
     _stageActor match {
       case null ⇒
-        val actorMaterializer =
-          ActorMaterializer.downcast(interpreter.materializer)
+        val actorMaterializer = ActorMaterializer.downcast(
+          interpreter.materializer)
         _stageActor =
           new StageActor(actorMaterializer, getAsyncCallback, receive)
         _stageActor
@@ -1157,8 +1157,7 @@ abstract class GraphStageLogic private[stream] (
     /**
       * Set the source into timed-out mode if it has not yet been materialized.
       */
-    def timeout(d: FiniteDuration): Unit =
-      if (_source.timeout(d)) closed = true
+    def timeout(d: FiniteDuration): Unit = if (_source.timeout(d)) closed = true
 
     /**
       * Get the Source for this dynamic output port.

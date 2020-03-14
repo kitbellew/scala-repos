@@ -129,8 +129,14 @@ final case class DateTime private (
 }
 
 object DateTime {
-  private[this] val WEEKDAYS =
-    Array("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+  private[this] val WEEKDAYS = Array(
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat")
   private[this] val MONTHS = Array(
     "Jan",
     "Feb",

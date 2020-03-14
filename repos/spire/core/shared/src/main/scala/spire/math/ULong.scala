@@ -30,8 +30,7 @@ object ULong extends ULongInstances {
     if (b == new ULong(0L)) a else gcd(b, a % b)
   }
 
-  private[spire] final val LimitAsDouble: Double =
-    spire.math.pow(2.0, 64)
+  private[spire] final val LimitAsDouble: Double = spire.math.pow(2.0, 64)
 
   private[spire] final val LimitAsBigInt: BigInt =
     BigInt(1) << 64
@@ -51,8 +50,7 @@ class ULong(val signed: Long) extends AnyVal {
 
   // FIXME: it would be nice to write some "real" floating-point code
   // to correctly find the nearest Double.
-  final def toDouble: Double =
-    toBigInt.toDouble
+  final def toDouble: Double = toBigInt.toDouble
 
   final def toBigInt: BigInt =
     if (signed < 0) ULong.LimitAsBigInt + signed else BigInt(signed)

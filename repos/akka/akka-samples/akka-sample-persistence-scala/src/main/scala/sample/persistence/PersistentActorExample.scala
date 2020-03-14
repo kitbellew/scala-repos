@@ -18,11 +18,9 @@ class ExamplePersistentActor extends PersistentActor {
 
   var state = ExampleState()
 
-  def updateState(event: Evt): Unit =
-    state = state.updated(event)
+  def updateState(event: Evt): Unit = state = state.updated(event)
 
-  def numEvents =
-    state.size
+  def numEvents = state.size
 
   val receiveRecover: Receive = {
     case evt: Evt                                 => updateState(evt)
@@ -46,8 +44,9 @@ class ExamplePersistentActor extends PersistentActor {
 object PersistentActorExample extends App {
 
   val system = ActorSystem("example")
-  val persistentActor =
-    system.actorOf(Props[ExamplePersistentActor], "persistentActor-4-scala")
+  val persistentActor = system.actorOf(
+    Props[ExamplePersistentActor],
+    "persistentActor-4-scala")
 
   persistentActor ! Cmd("foo")
   persistentActor ! Cmd("baz")

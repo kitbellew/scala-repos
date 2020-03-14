@@ -189,10 +189,11 @@ class AccountServiceHandlers(
       Account => Future[HttpResponse[JValue]]] =
       (request: HttpRequest[Future[JValue]]) => {
         Success { (auth: Account) =>
-          val keyToFind = if (auth.accountId == rootAccountId) {
-            // Root can send an apiKey query param for the lookup
-            request.parameters.get('apiKey).getOrElse(auth.apiKey)
-          } else { auth.apiKey }
+          val keyToFind =
+            if (auth.accountId == rootAccountId) {
+              // Root can send an apiKey query param for the lookup
+              request.parameters.get('apiKey).getOrElse(auth.apiKey)
+            } else { auth.apiKey }
 
           logger.debug(
             "Looking up account ids with account: " + auth.accountId + " for API key: " + keyToFind)
@@ -386,11 +387,9 @@ class AccountServiceHandlers(
               }
 
             case _ =>
-              Promise.successful(
-                HttpResponse[JValue](
-                  HttpStatus(NotFound),
-                  content =
-                    Some(JString("Unable to find account " + accountId))))
+              Promise.successful(HttpResponse[JValue](
+                HttpStatus(NotFound),
+                content = Some(JString("Unable to find account " + accountId))))
           }
         } getOrElse { Future(badRequest("Missing account Id")) }
       }
@@ -442,13 +441,12 @@ class AccountServiceHandlers(
                             accountManager.generateResetToken(account).map {
                               resetToken =>
                                 try {
-                                  val params =
-                                    Map(
-                                      "token" -> resetToken,
-                                      "requestor" -> remoteIpFrom(request),
-                                      "accountId" -> account.accountId,
-                                      "time" -> (new java.util.Date).toString
-                                    )
+                                  val params = Map(
+                                    "token" -> resetToken,
+                                    "requestor" -> remoteIpFrom(request),
+                                    "accountId" -> account.accountId,
+                                    "time" -> (new java.util.Date).toString
+                                  )
 
                                   emailer.sendEmail(
                                     Seq(account.email),
@@ -732,8 +730,8 @@ class AccountServiceHandlers(
                     .format(account.accountId, remoteIpFrom(request)))
                 HttpResponse[JValue](
                   OK,
-                  content =
-                    Some(jobject(jfield("type", account.plan.planType))))
+                  content = Some(
+                    jobject(jfield("type", account.plan.planType))))
               case _ =>
                 logger.error(
                   "Account plan for %s deletion by %s failed"

@@ -133,27 +133,24 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val emailServer = new EmailServer(probe.ref)
 
     //#tweet-authors
-    val authors: Source[Author, NotUsed] =
-      tweets
-        .filter(_.hashtags.contains(akka))
-        .map(_.author)
+    val authors: Source[Author, NotUsed] = tweets
+      .filter(_.hashtags.contains(akka))
+      .map(_.author)
     //#tweet-authors
 
     //#email-addresses-mapAsync
-    val emailAddresses: Source[String, NotUsed] =
-      authors
-        .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
-        .collect { case Some(emailAddress) => emailAddress }
+    val emailAddresses: Source[String, NotUsed] = authors
+      .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
+      .collect { case Some(emailAddress) => emailAddress }
     //#email-addresses-mapAsync
 
     //#send-emails
-    val sendEmails: RunnableGraph[NotUsed] =
-      emailAddresses
-        .mapAsync(4)(address => {
-          emailServer.send(
-            Email(to = address, title = "Akka", body = "I like your tweet"))
-        })
-        .to(Sink.ignore)
+    val sendEmails: RunnableGraph[NotUsed] = emailAddresses
+      .mapAsync(4)(address => {
+        emailServer.send(
+          Email(to = address, title = "Akka", body = "I like your tweet"))
+      })
+      .to(Sink.ignore)
 
     sendEmails.run()
     //#send-emails
@@ -169,18 +166,18 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "lookup email with mapAsync and supervision" in {
     val addressSystem = new AddressSystem2
-    val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akka)).map(_.author)
+    val authors: Source[Author, NotUsed] = tweets
+      .filter(_.hashtags.contains(akka))
+      .map(_.author)
 
     //#email-addresses-mapAsync-supervision
     import ActorAttributes.supervisionStrategy
     import Supervision.resumingDecider
 
-    val emailAddresses: Source[String, NotUsed] =
-      authors.via(
-        Flow[Author]
-          .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
-          .withAttributes(supervisionStrategy(resumingDecider)))
+    val emailAddresses: Source[String, NotUsed] = authors.via(
+      Flow[Author]
+        .mapAsync(4)(author => addressSystem.lookupEmail(author.handle))
+        .withAttributes(supervisionStrategy(resumingDecider)))
     //#email-addresses-mapAsync-supervision
   }
 
@@ -190,22 +187,20 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val emailServer = new EmailServer(probe.ref)
 
     //#external-service-mapAsyncUnordered
-    val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akka)).map(_.author)
+    val authors: Source[Author, NotUsed] = tweets
+      .filter(_.hashtags.contains(akka))
+      .map(_.author)
 
-    val emailAddresses: Source[String, NotUsed] =
-      authors
-        .mapAsyncUnordered(4)(author =>
-          addressSystem.lookupEmail(author.handle))
-        .collect { case Some(emailAddress) => emailAddress }
+    val emailAddresses: Source[String, NotUsed] = authors
+      .mapAsyncUnordered(4)(author => addressSystem.lookupEmail(author.handle))
+      .collect { case Some(emailAddress) => emailAddress }
 
-    val sendEmails: RunnableGraph[NotUsed] =
-      emailAddresses
-        .mapAsyncUnordered(4)(address => {
-          emailServer.send(
-            Email(to = address, title = "Akka", body = "I like your tweet"))
-        })
-        .to(Sink.ignore)
+    val sendEmails: RunnableGraph[NotUsed] = emailAddresses
+      .mapAsyncUnordered(4)(address => {
+        emailServer.send(
+          Email(to = address, title = "Akka", body = "I like your tweet"))
+      })
+      .to(Sink.ignore)
 
     sendEmails.run()
     //#external-service-mapAsyncUnordered
@@ -229,24 +224,21 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
-    val phoneNumbers =
-      authors
-        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
-        .collect { case Some(phoneNo) => phoneNo }
+    val phoneNumbers = authors
+      .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-mapAsync
-    val blockingExecutionContext =
-      system.dispatchers.lookup("blocking-dispatcher")
+    val blockingExecutionContext = system.dispatchers.lookup(
+      "blocking-dispatcher")
 
-    val sendTextMessages: RunnableGraph[NotUsed] =
-      phoneNumbers
-        .mapAsync(4)(phoneNo => {
-          Future {
-            smsServer.send(
-              TextMessage(to = phoneNo, body = "I like your tweet"))
-          }(blockingExecutionContext)
-        })
-        .to(Sink.ignore)
+    val sendTextMessages: RunnableGraph[NotUsed] = phoneNumbers
+      .mapAsync(4)(phoneNo => {
+        Future {
+          smsServer.send(TextMessage(to = phoneNo, body = "I like your tweet"))
+        }(blockingExecutionContext)
+      })
+      .to(Sink.ignore)
 
     sendTextMessages.run()
     //#blocking-mapAsync
@@ -270,10 +262,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val authors = tweets.filter(_.hashtags.contains(akka)).map(_.author)
 
-    val phoneNumbers =
-      authors
-        .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
-        .collect { case Some(phoneNo) => phoneNo }
+    val phoneNumbers = authors
+      .mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle))
+      .collect { case Some(phoneNo) => phoneNo }
 
     //#blocking-map
     val send = Flow[String]
@@ -281,8 +272,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
         smsServer.send(TextMessage(to = phoneNo, body = "I like your tweet"))
       }
       .withAttributes(ActorAttributes.dispatcher("blocking-dispatcher"))
-    val sendTextMessages: RunnableGraph[NotUsed] =
-      phoneNumbers.via(send).to(Sink.ignore)
+    val sendTextMessages: RunnableGraph[NotUsed] = phoneNumbers
+      .via(send)
+      .to(Sink.ignore)
 
     sendTextMessages.run()
     //#blocking-map
@@ -298,18 +290,18 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
   "calling actor service with mapAsync" in {
     val probe = TestProbe()
-    val database =
-      system.actorOf(Props(classOf[DatabaseService], probe.ref), "db")
+    val database = system.actorOf(
+      Props(classOf[DatabaseService], probe.ref),
+      "db")
 
     //#save-tweets
-    val akkaTweets: Source[Tweet, NotUsed] =
-      tweets.filter(_.hashtags.contains(akka))
+    val akkaTweets: Source[Tweet, NotUsed] = tweets.filter(
+      _.hashtags.contains(akka))
 
     implicit val timeout = Timeout(3.seconds)
-    val saveTweets: RunnableGraph[NotUsed] =
-      akkaTweets
-        .mapAsync(4)(tweet => database ? Save(tweet))
-        .to(Sink.ignore)
+    val saveTweets: RunnableGraph[NotUsed] = akkaTweets
+      .mapAsync(4)(tweet => database ? Save(tweet))
+      .to(Sink.ignore)
     //#save-tweets
 
     saveTweets.run()
@@ -328,8 +320,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     def println(s: String): Unit = { if (s.startsWith("after:")) probe.ref ! s }
 
     //#sometimes-slow-mapAsync
-    implicit val blockingExecutionContext =
-      system.dispatchers.lookup("blocking-dispatcher")
+    implicit val blockingExecutionContext = system.dispatchers.lookup(
+      "blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
@@ -359,8 +351,8 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     def println(s: String): Unit = { if (s.startsWith("after:")) probe.ref ! s }
 
     //#sometimes-slow-mapAsyncUnordered
-    implicit val blockingExecutionContext =
-      system.dispatchers.lookup("blocking-dispatcher")
+    implicit val blockingExecutionContext = system.dispatchers.lookup(
+      "blocking-dispatcher")
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(

@@ -31,8 +31,8 @@ class ScalaMethodImplementor extends MethodImplementor {
     def consume(t: PsiMethod) {}
   }
 
-  private val prototypeToBaseMethod =
-    mutable.WeakHashMap[PsiMethod, PsiMethod]()
+  private val prototypeToBaseMethod = mutable
+    .WeakHashMap[PsiMethod, PsiMethod]()
 
   def createImplementationPrototypes(
       inClass: PsiClass,
@@ -109,8 +109,9 @@ private class ScalaPsiMethodGenerationInfo(
       baseMethod: PsiMethod): PsiElement = {
     if (baseMethod == null) return null
 
-    var prevBaseMethod: PsiMethod =
-      PsiTreeUtil.getPrevSiblingOfType(baseMethod, classOf[PsiMethod])
+    var prevBaseMethod: PsiMethod = PsiTreeUtil.getPrevSiblingOfType(
+      baseMethod,
+      classOf[PsiMethod])
 
     while (prevBaseMethod != null) {
       td.findMethodBySignature(prevBaseMethod, checkBases = false) match {
@@ -121,12 +122,14 @@ private class ScalaPsiMethodGenerationInfo(
         case _ =>
       }
 
-      prevBaseMethod =
-        PsiTreeUtil.getPrevSiblingOfType(prevBaseMethod, classOf[PsiMethod])
+      prevBaseMethod = PsiTreeUtil.getPrevSiblingOfType(
+        prevBaseMethod,
+        classOf[PsiMethod])
     }
 
-    var nextBaseMethod: PsiMethod =
-      PsiTreeUtil.getNextSiblingOfType(baseMethod, classOf[PsiMethod])
+    var nextBaseMethod: PsiMethod = PsiTreeUtil.getNextSiblingOfType(
+      baseMethod,
+      classOf[PsiMethod])
 
     while (nextBaseMethod != null) {
       td.findMethodBySignature(nextBaseMethod, checkBases = false) match {
@@ -134,8 +137,9 @@ private class ScalaPsiMethodGenerationInfo(
         case method: PsiMethod if method.isPhysical => return method
         case _                                      =>
       }
-      nextBaseMethod =
-        PsiTreeUtil.getNextSiblingOfType(nextBaseMethod, classOf[PsiMethod])
+      nextBaseMethod = PsiTreeUtil.getNextSiblingOfType(
+        nextBaseMethod,
+        classOf[PsiMethod])
     }
 
     null

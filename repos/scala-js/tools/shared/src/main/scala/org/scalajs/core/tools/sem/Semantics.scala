@@ -109,8 +109,8 @@ final class Semantics private (
 }
 
 object Semantics {
-  private val HashSeed =
-    scala.util.hashing.MurmurHash3.stringHash(classOf[Semantics].getName)
+  private val HashSeed = scala.util.hashing.MurmurHash3
+    .stringHash(classOf[Semantics].getName)
 
   type RuntimeClassNameFunction = LinkedClass => String
 

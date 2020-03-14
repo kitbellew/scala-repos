@@ -29,8 +29,9 @@ object MapGetOrElse extends SimplificationType() {
       case qual `.mapOnOption` (fun) `.getOrElse` (default) =>
         replacementText(qual, fun, default) match {
           case Some(newText) if checkTypes(qual, fun, newText) =>
-            val simplification =
-              replace(expr).withText(newText).highlightFrom(qual)
+            val simplification = replace(expr)
+              .withText(newText)
+              .highlightFrom(qual)
             Some(simplification)
           case _ => None
         }

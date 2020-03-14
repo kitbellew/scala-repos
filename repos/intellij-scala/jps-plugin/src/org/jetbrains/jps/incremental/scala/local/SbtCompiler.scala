@@ -44,8 +44,10 @@ class SbtCompiler(
 
     val outputToAnalysisMap = compilationData.outputToCacheMap.map {
       case (output, cache) =>
-        val analysis =
-          fileToStore(cache).get().map(_._1).getOrElse(Analysis.Empty)
+        val analysis = fileToStore(cache)
+          .get()
+          .map(_._1)
+          .getOrElse(Analysis.Empty)
         (output, analysis)
     }
 

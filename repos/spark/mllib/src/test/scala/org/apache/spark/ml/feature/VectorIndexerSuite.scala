@@ -179,8 +179,8 @@ class VectorIndexerSuite
         assert(categoryMaps.keys.toSet === categoricalFeatures)
         val transformed = model.transform(data).select("indexed")
         val indexedRDD: RDD[Vector] = transformed.rdd.map(_.getAs[Vector](0))
-        val featureAttrs =
-          AttributeGroup.fromStructField(transformed.schema("indexed"))
+        val featureAttrs = AttributeGroup.fromStructField(
+          transformed.schema("indexed"))
         assert(featureAttrs.name === "indexed")
         assert(featureAttrs.attributes.get.length === model.numFeatures)
         categoricalFeatures.foreach { feature: Int =>
@@ -253,13 +253,12 @@ class VectorIndexerSuite
       val points = data.collect().map(_.getAs[Vector](0))
       val vectorIndexer = getIndexer.setMaxCategories(maxCategories)
       val model = vectorIndexer.fit(data)
-      val indexedPoints =
-        model
-          .transform(data)
-          .select("indexed")
-          .rdd
-          .map(_.getAs[Vector](0))
-          .collect()
+      val indexedPoints = model
+        .transform(data)
+        .select("indexed")
+        .rdd
+        .map(_.getAs[Vector](0))
+        .collect()
       points.zip(indexedPoints).foreach {
         case (orig: SparseVector, indexed: SparseVector) =>
           assert(orig.indices.length == indexed.indices.length)
@@ -280,18 +279,16 @@ class VectorIndexerSuite
         NumericAttribute.defaultAttr.withName(i.toString).withMax(maxVal)
     }
     val attrGroup = new AttributeGroup("features", featureAttributes)
-    val densePoints1WithMeta =
-      densePoints1.select(
-        densePoints1("features").as("features", attrGroup.toMetadata()))
+    val densePoints1WithMeta = densePoints1.select(
+      densePoints1("features").as("features", attrGroup.toMetadata()))
     val vectorIndexer = getIndexer.setMaxCategories(2)
     val model = vectorIndexer.fit(densePoints1WithMeta)
     // Check that ML metadata are preserved.
     val indexedPoints = model.transform(densePoints1WithMeta)
-    val transAttributes: Array[Attribute] =
-      AttributeGroup
-        .fromStructField(indexedPoints.schema("indexed"))
-        .attributes
-        .get
+    val transAttributes: Array[Attribute] = AttributeGroup
+      .fromStructField(indexedPoints.schema("indexed"))
+      .attributes
+      .get
     featureAttributes.zip(transAttributes).foreach {
       case (orig, trans) =>
         assert(orig.name === trans.name)

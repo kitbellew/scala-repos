@@ -62,8 +62,7 @@ abstract class WrappedArray[T]
 
   override def par = ParArray.handoff(array)
 
-  private def elementClass: Class[_] =
-    arrayElementClass(array.getClass)
+  private def elementClass: Class[_] = arrayElementClass(array.getClass)
 
   override def toArray[U >: T: ClassTag]: Array[U] = {
     val thatElementClass = arrayElementClass(implicitly[ClassTag[U]])

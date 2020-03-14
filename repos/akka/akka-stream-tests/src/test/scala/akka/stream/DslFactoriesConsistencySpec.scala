@@ -10,19 +10,17 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
 
   // configuration //
 
-  val scalaIgnore =
-    Set(
-      "equals",
-      "hashCode",
-      "notify",
-      "notifyAll",
-      "wait",
-      "toString",
-      "getClass",
-      "shape")
+  val scalaIgnore = Set(
+    "equals",
+    "hashCode",
+    "notify",
+    "notifyAll",
+    "wait",
+    "toString",
+    "getClass",
+    "shape")
 
-  val javaIgnore =
-    Set("adapt") // the scaladsl -> javadsl bridge
+  val javaIgnore = Set("adapt") // the scaladsl -> javadsl bridge
 
   val `scala -> java aliases` =
     ("apply" -> "create") ::

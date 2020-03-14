@@ -96,14 +96,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation works <lift:xxx/>" in {
       val res = <div/>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <lift:foo>{res}</lift:foo>)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -111,14 +110,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation works <l:xxx/>" in {
       val res = <div/>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <l:foo>{res}</l:foo>)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <l:foo>{res}</l:foo>)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -126,14 +124,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation works class='l:foo'" in {
       val res = <div/>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo" />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo" />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -148,14 +145,13 @@ object SnippetSpec extends Specification with XmlMatchers {
         in
       }
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> testAttrs _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong?fuzz=faz+snark?noodle=FatPoodle" />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> testAttrs _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong?fuzz=faz+snark?noodle=FatPoodle" />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -170,14 +166,13 @@ object SnippetSpec extends Specification with XmlMatchers {
         in
       }
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> testAttrs _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong;fuzz=faz+snark;noodle=FatPoodle" />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> testAttrs _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong;fuzz=faz+snark;noodle=FatPoodle" />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -192,16 +187,14 @@ object SnippetSpec extends Specification with XmlMatchers {
         in
       }
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> testAttrs _) {
-            val clStr =
-              "l:foo?bing=bong&amp;fuzz=faz+snark&amp;noodle=FatPoodle"
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class={clStr} />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> testAttrs _) {
+          val clStr = "l:foo?bing=bong&amp;fuzz=faz+snark&amp;noodle=FatPoodle"
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class={clStr} />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -216,14 +209,13 @@ object SnippetSpec extends Specification with XmlMatchers {
         in
       }
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> testAttrs _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class="l:foo?bing=bong?fuzz=faz+snark;noodle=FatPoodle" />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> testAttrs _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class="l:foo?bing=bong?fuzz=faz+snark;noodle=FatPoodle" />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -231,27 +223,25 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation works class='lift:foo'" in {
       val res = <div/>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class='lift:foo' />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class='lift:foo' />)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
 
     "Snippet invocation fails class='l:bar'" in {
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <div class="lift:bar" />)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <div class="lift:bar" />)
         }
+      }
 
       (ret.openOrThrowException(
         "legacy code") \ "@class").text must_== "snippeterror"
@@ -276,14 +266,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation fails in stateless mode" in {
       val res = <div>dog</div>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <lift:foo>{res}</lift:foo>)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
+      }
 
       (ret.openOrThrowException(
         "legacy code") \ "@class").text must_== "snippeterror"
@@ -293,14 +282,13 @@ object SnippetSpec extends Specification with XmlMatchers {
       val res = <div>dog</div>
       val session = new LiftSession("", "hello", Empty)
 
-      val ret =
-        S.init(makeReq, session) {
-          S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <lift:foo>{res}</lift:foo>)
-          }
+      val ret = S.init(makeReq, session) {
+        S.mapSnippetsWith("foo" -> ChangeVar.foo _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }
@@ -308,14 +296,13 @@ object SnippetSpec extends Specification with XmlMatchers {
     "Snippet invocation fails in stateless mode (function table)" in {
       val res = <div>dog</div>
 
-      val ret =
-        S.statelessInit(Req.nil) {
-          S.mapSnippetsWith("foo" -> Funky.foo _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <lift:foo>{res}</lift:foo>)
-          }
+      val ret = S.statelessInit(Req.nil) {
+        S.mapSnippetsWith("foo" -> Funky.foo _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
+      }
 
       (ret.openOrThrowException(
         "legacy code") \ "@class").text must_== "snippeterror"
@@ -325,14 +312,13 @@ object SnippetSpec extends Specification with XmlMatchers {
       val res = <div>dog</div>
       val session = new LiftSession("", "hello", Empty)
 
-      val ret =
-        S.init(makeReq, session) {
-          S.mapSnippetsWith("foo" -> Funky.foo _) {
-            for { s <- S.session } yield s.processSurroundAndInclude(
-              "test",
-              <lift:foo>{res}</lift:foo>)
-          }
+      val ret = S.init(makeReq, session) {
+        S.mapSnippetsWith("foo" -> Funky.foo _) {
+          for { s <- S.session } yield s.processSurroundAndInclude(
+            "test",
+            <lift:foo>{res}</lift:foo>)
         }
+      }
 
       ret.openOrThrowException("legacy code") must ==/(res)
     }

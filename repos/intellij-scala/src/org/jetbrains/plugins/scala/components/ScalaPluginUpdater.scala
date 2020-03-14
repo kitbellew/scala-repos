@@ -187,8 +187,9 @@ object ScalaPluginUpdater {
   def postCheckIdeaCompatibility(
       branch: ScalaApplicationSettings.pluginBranch) = {
     import scala.xml._
-    val infoImpl =
-      ApplicationInfo.getInstance().asInstanceOf[ApplicationInfoImpl]
+    val infoImpl = ApplicationInfo
+      .getInstance()
+      .asInstanceOf[ApplicationInfoImpl]
     val localBuildNumber = infoImpl.getBuild
     val url = branch match {
       case Release => None
@@ -216,8 +217,9 @@ object ScalaPluginUpdater {
     postCheckIdeaCompatibility(getScalaPluginBranch)
 
   private def suggestIdeaUpdate(branch: String, suggestedVersion: String) = {
-    val infoImpl =
-      ApplicationInfo.getInstance().asInstanceOf[ApplicationInfoImpl]
+    val infoImpl = ApplicationInfo
+      .getInstance()
+      .asInstanceOf[ApplicationInfoImpl]
     val appSettings = ScalaApplicationSettings.getInstance()
     def getPlatformUpdateResult = {
       val a = ApplicationInfoEx.getInstanceEx.getUpdateUrls.getCheckingUrl
@@ -304,8 +306,8 @@ object ScalaPluginUpdater {
           val os = URLEncoder.encode(
             SystemInfo.OS_NAME + " " + SystemInfo.OS_VERSION,
             CharsetToolkit.UTF8)
-          val uid =
-            UpdateChecker.getInstallationUID(PropertiesComponent.getInstance())
+          val uid = UpdateChecker.getInstallationUID(
+            PropertiesComponent.getInstance())
           val url =
             s"https://plugins.jetbrains.com/plugins/list?pluginId=$scalaPluginId&build=$buildNumber&pluginVersion=$pluginVersion&os=$os&uuid=$uid"
           PropertiesComponent
@@ -348,10 +350,11 @@ object ScalaPluginUpdater {
           case other => other
         }
     }
-    val stream =
-      getClass.getClassLoader.getResource("META-INF/plugin.xml").openStream()
-    val document =
-      new RuleTransformer(versionPatcher).transform(XML.load(stream))
+    val stream = getClass.getClassLoader
+      .getResource("META-INF/plugin.xml")
+      .openStream()
+    val document = new RuleTransformer(versionPatcher)
+      .transform(XML.load(stream))
     val tempFile = File.createTempFile("plugin", "xml")
     XML.save(tempFile.getAbsolutePath, document.head)
     pluginDescriptor.readExternal(tempFile.toURI.toURL)
@@ -362,8 +365,8 @@ object ScalaPluginUpdater {
   def patchPluginVersionReflection() = {
     // crime of reflection goes below - workaround until force updating is available
     try {
-      val hack: Field =
-        classOf[IdeaPluginDescriptorImpl].getDeclaredField("myVersion")
+      val hack: Field = classOf[IdeaPluginDescriptorImpl].getDeclaredField(
+        "myVersion")
       hack.setAccessible(true)
       hack.set(pluginDescriptor, "0.0.0")
     } catch {
@@ -378,8 +381,9 @@ object ScalaPluginUpdater {
   }
 
   def askUpdatePluginBranch(): Unit = {
-    val infoImpl =
-      ApplicationInfo.getInstance().asInstanceOf[ApplicationInfoImpl]
+    val infoImpl = ApplicationInfo
+      .getInstance()
+      .asInstanceOf[ApplicationInfoImpl]
     val applicationSettings = ScalaApplicationSettings.getInstance()
     if ((infoImpl.isEAP || infoImpl.isBetaOrRC)
         && applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS

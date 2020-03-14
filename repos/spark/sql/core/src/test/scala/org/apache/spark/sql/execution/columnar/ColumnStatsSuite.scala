@@ -81,8 +81,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       val values = rows
         .take(10)
         .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
-      val ordering =
-        columnType.dataType.ordering.asInstanceOf[Ordering[T#InternalType]]
+      val ordering = columnType.dataType.ordering
+        .asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics
 
       assertResult(values.min(ordering), "Wrong lower bound")(stats.values(0))
@@ -121,8 +121,8 @@ class ColumnStatsSuite extends SparkFunSuite {
       val values = rows
         .take(10)
         .map(_.get(0, columnType.dataType).asInstanceOf[T#InternalType])
-      val ordering =
-        columnType.dataType.ordering.asInstanceOf[Ordering[T#InternalType]]
+      val ordering = columnType.dataType.ordering
+        .asInstanceOf[Ordering[T#InternalType]]
       val stats = columnStats.collectedStatistics
 
       assertResult(values.min(ordering), "Wrong lower bound")(stats.values(0))

@@ -35,8 +35,7 @@ abstract class ProxyBatchedStore[K, V] extends batch.BatchedStore[K, V] {
     proxy.readLast(exclusiveUB, mode)
   override def writeLast(batchID: BatchID, lastVals: TypedPipe[(K, V)])(implicit
       flowDef: FlowDef,
-      mode: Mode): Unit =
-    proxy.writeLast(batchID, lastVals)(flowDef, mode)
+      mode: Mode): Unit = proxy.writeLast(batchID, lastVals)(flowDef, mode)
 
   override def toString =
     "ProxyBatchedStore(proxyingFor=%s)".format(proxy.toString)

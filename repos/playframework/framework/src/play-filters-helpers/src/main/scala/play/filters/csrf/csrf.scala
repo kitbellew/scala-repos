@@ -78,8 +78,8 @@ case class CSRFConfig(
       checkContentType: ju.function.Predicate[Optional[String]]) =
     copy(checkContentType = checkContentType.asScala.compose(_.asJava))
   def withShouldProtect(shouldProtect: ju.function.Predicate[JRequestHeader]) =
-    copy(shouldProtect =
-      shouldProtect.asScala.compose(new JRequestHeaderImpl(_)))
+    copy(shouldProtect = shouldProtect.asScala.compose(
+      new JRequestHeaderImpl(_)))
   def withBypassCorsTrustedOrigins(bypass: Boolean) =
     copy(bypassCorsTrustedOrigins = bypass)
 }
@@ -103,18 +103,18 @@ object CSRFConfig {
       .getOrElse(CSRFConfig())
 
   def fromConfiguration(conf: Configuration): CSRFConfig = {
-    val config =
-      PlayConfig(conf).getDeprecatedWithFallback("play.filters.csrf", "csrf")
+    val config = PlayConfig(conf)
+      .getDeprecatedWithFallback("play.filters.csrf", "csrf")
 
     val methodWhiteList = config.get[Seq[String]]("method.whiteList").toSet
     val methodBlackList = config.get[Seq[String]]("method.blackList").toSet
 
-    val checkMethod: String => Boolean = if (methodWhiteList.nonEmpty) {
-      !methodWhiteList.contains(_)
-    } else {
-      if (methodBlackList.isEmpty) { _ => true }
-      else { methodBlackList.contains }
-    }
+    val checkMethod: String => Boolean =
+      if (methodWhiteList.nonEmpty) { !methodWhiteList.contains(_) }
+      else {
+        if (methodBlackList.isEmpty) { _ => true }
+        else { methodBlackList.contains }
+      }
 
     val contentTypeWhiteList =
       config.get[Seq[String]]("contentType.whiteList").toSet

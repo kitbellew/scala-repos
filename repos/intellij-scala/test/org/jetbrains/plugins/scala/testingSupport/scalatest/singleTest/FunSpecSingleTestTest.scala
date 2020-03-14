@@ -7,8 +7,11 @@ import org.jetbrains.plugins.scala.testingSupport.scalatest.generators.FunSpecGe
   * @since 20.01.2015.
   */
 trait FunSpecSingleTestTest extends FunSpecGenerator {
-  val funSpecTestPath =
-    List("[root]", "FunSpecTest", "FunSpecTest", "should launch single test")
+  val funSpecTestPath = List(
+    "[root]",
+    "FunSpecTest",
+    "FunSpecTest",
+    "should launch single test")
 
   def testFunSpec() {
     addFunSpec()

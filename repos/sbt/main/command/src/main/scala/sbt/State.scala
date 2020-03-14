@@ -315,6 +315,5 @@ object State {
   private[sbt] def getBoolean(
       s: State,
       key: AttributeKey[Boolean],
-      default: Boolean): Boolean =
-    s.get(key) getOrElse default
+      default: Boolean): Boolean = s.get(key) getOrElse default
 }

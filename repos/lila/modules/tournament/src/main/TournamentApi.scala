@@ -43,8 +43,9 @@ private[tournament] final class TournamentApi(
     var variant = chess.variant.Variant orDefault setup.variant
     val tour = Tournament.make(
       createdBy = me,
-      clock =
-        TournamentClock((setup.clockTime * 60).toInt, setup.clockIncrement),
+      clock = TournamentClock(
+        (setup.clockTime * 60).toInt,
+        setup.clockIncrement),
       minutes = setup.minutes,
       waitMinutes = setup.waitMinutes,
       mode = setup.mode.fold(Mode.default)(Mode.orDefault),
@@ -282,8 +283,8 @@ private[tournament] final class TournamentApi(
               .copy(
                 score = sheet.total,
                 fire = sheet.onFire,
-                ratingDiff =
-                  perf.fold(player.ratingDiff)(_.intRating - player.rating),
+                ratingDiff = perf.fold(player.ratingDiff)(
+                  _.intRating - player.rating),
                 provisional = perf.fold(player.provisional)(_.provisional)
               )
               .recomputeMagicScore
@@ -316,8 +317,8 @@ private[tournament] final class TournamentApi(
     }
   }
 
-  private val miniStandingCache =
-    lila.memo.AsyncCache[String, List[RankedPlayer]](
+  private val miniStandingCache = lila.memo
+    .AsyncCache[String, List[RankedPlayer]](
       (id: String) => PlayerRepo.bestByTourWithRank(id, 30),
       timeToLive = 3 second)
 

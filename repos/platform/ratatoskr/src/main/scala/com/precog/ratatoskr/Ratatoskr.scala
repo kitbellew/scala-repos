@@ -118,8 +118,8 @@ object Ratatoskr {
     APIKeyTools
   )
 
-  val commandMap: Map[String, Command] =
-    commands.map(c => (c.name, c))(collection.breakOut)
+  val commandMap: Map[String, Command] = commands
+    .map(c => (c.name, c))(collection.breakOut)
 
   def main(args: Array[String]) {
     if (args.length > 0) {
@@ -164,8 +164,8 @@ object KafkaTools extends Command {
         "show message range, e.g.: 5:10 :100 10:",
         { s: String =>
           val range = MessageRange.parse(s)
-          config.range =
-            range.getOrElse(sys.error("Invalid range specification: " + s))
+          config.range = range.getOrElse(
+            sys.error("Invalid range specification: " + s))
         }
       )
       intOpt(
@@ -315,10 +315,9 @@ object KafkaTools extends Command {
       ArrayBuffer.empty
 
     def trackState(state: ReportState): Unit = {
-      val byAccount: Map[AccountId, Long] =
-        state.pathSize.groupBy(_._1.elements.head).map {
-          case (account, sizes) => (account, sizes.map(_._2).sum)
-        }
+      val byAccount: Map[AccountId, Long] = state.pathSize
+        .groupBy(_._1.elements.head)
+        .map { case (account, sizes) => (account, sizes.map(_._2).sum) }
 
       import state.index
 
@@ -345,31 +344,32 @@ object KafkaTools extends Command {
          Some(ExactTime(msg.timestamp.getMillis, state.index))
        } else {
          // see if we can deduce from the data (assuming Nathan's twitter feed or SE postings)
-         val timestamps = (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
-           _.value \ "timestamp"))
-           .flatMap {
-             case JString(date) =>
-               // Dirty hack for trying variations of ISO8601 in use by customers
-               List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
-                 .flatMap { date => List(date, date + ".000Z") }
-             case _ => None
-           }
-           .flatMap { date =>
-             try {
-               val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
-               if (ts.getMillis > lastTimestamp.time) {
-                 //println("Assigning new timestamp: " + ts)
-                 Some(ts)
-               } else {
-                 //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
-                 None
-               }
-             } catch {
-               case t =>
-                 //println("Error on datetime parse: " + t)
-                 None
+         val timestamps =
+           (msg.data.map(_.value \ "timeStamp") ++ msg.data.map(
+             _.value \ "timestamp"))
+             .flatMap {
+               case JString(date) =>
+                 // Dirty hack for trying variations of ISO8601 in use by customers
+                 List(date, date.replaceFirst(":", "-").replaceFirst(":", "-"))
+                   .flatMap { date => List(date, date + ".000Z") }
+               case _ => None
              }
-           }
+             .flatMap { date =>
+               try {
+                 val ts = ISODateTimeFormat.dateTime.parseDateTime(date)
+                 if (ts.getMillis > lastTimestamp.time) {
+                   //println("Assigning new timestamp: " + ts)
+                   Some(ts)
+                 } else {
+                   //println("%s is before %s".format(ts, new DateTime(lastTimestamp.time)))
+                   None
+                 }
+               } catch {
+                 case t =>
+                   //println("Error on datetime parse: " + t)
+                   None
+               }
+             }
 
          //println("Deducing timestamp from " + timestamps)
 
@@ -478,8 +478,8 @@ object KafkaTools extends Command {
             .mkString(","))
         slices.foreach {
           case (index, byAccount) =>
-            val accountTotals =
-              trackedAccounts.sorted.map(byAccount.getOrElse(_, 0L))
+            val accountTotals = trackedAccounts.sorted.map(
+              byAccount.getOrElse(_, 0L))
             (index match {
               case ExactTime(time, _) => Some(time)
               case i: Interpolated    => interpolationMap.get(i)
@@ -771,8 +771,9 @@ object ZookeeperTools extends Command {
     if (children == null) { ListBuffer[(String, String)]() }
     else {
       children.asScala map { child =>
-        val bytes =
-          client.readData(path + "/" + child).asInstanceOf[Array[Byte]]
+        val bytes = client
+          .readData(path + "/" + child)
+          .asInstanceOf[Array[Byte]]
         (child, new String(bytes))
       }
     }
@@ -983,8 +984,8 @@ object ImportTools extends Command with Logging {
     val authorities = Authorities(config.accountId)
 
     implicit val actorSystem = ActorSystem("yggutilImport")
-    implicit val defaultAsyncContext =
-      ExecutionContext.defaultExecutionContext(actorSystem)
+    implicit val defaultAsyncContext = ExecutionContext.defaultExecutionContext(
+      actorSystem)
     implicit val M = new FutureMonad(
       ExecutionContext.defaultExecutionContext(actorSystem))
 
@@ -1005,8 +1006,8 @@ object ImportTools extends Command with Logging {
             VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
             VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
     }
-    val masterChef =
-      actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
+    val masterChef = actorSystem.actorOf(
+      Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
     val accountFinder = new StaticAccountFinder[Future](
       config.accountId,
@@ -1278,23 +1279,22 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     implicit val timeout = config.mongoSettings.timeout
     val database = mongo.database(config.database)
 
-    val dbStop =
-      Stoppable.fromFuture(database.disconnect.fallbackTo(Future(())) flatMap {
-        _ => mongo.close
-      })
+    val dbStop = Stoppable.fromFuture(
+      database.disconnect.fallbackTo(Future(())) flatMap { _ => mongo.close })
 
-    val rootKey: Future[APIKeyRecord] = if (config.createRoot) {
-      MongoAPIKeyManager.createRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys,
-        config.mongoSettings.grants
-      )
-    } else {
-      MongoAPIKeyManager.findRootAPIKey(
-        database,
-        config.mongoSettings.apiKeys
-      )
-    }
+    val rootKey: Future[APIKeyRecord] =
+      if (config.createRoot) {
+        MongoAPIKeyManager.createRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys,
+          config.mongoSettings.grants
+        )
+      } else {
+        MongoAPIKeyManager.findRootAPIKey(
+          database,
+          config.mongoSettings.apiKeys
+        )
+      }
 
     rootKey map { k =>
       (

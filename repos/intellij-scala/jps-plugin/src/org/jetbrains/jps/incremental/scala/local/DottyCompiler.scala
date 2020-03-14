@@ -25,20 +25,21 @@ class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
       scalaInstance,
       ClasspathOptions.javac(compiler = false))
     val scalaOptions = compilationData.scalaOptions.flatMap(splitArg)
-    val args: Array[String] =
-      cArgs(
-        compilationData.sources,
-        compilationData.classpath,
-        Some(compilationData.output),
-        scalaOptions).toArray
+    val args: Array[String] = cArgs(
+      compilationData.sources,
+      compilationData.classpath,
+      Some(compilationData.output),
+      scalaOptions).toArray
 
     val oldOut = System.out
 
     try {
       System.setOut(emptyPrintStream)
 
-      val mainObj =
-        Class.forName("dotty.tools.dotc.Main$", true, scalaInstance.loader)
+      val mainObj = Class.forName(
+        "dotty.tools.dotc.Main$",
+        true,
+        scalaInstance.loader)
       mainObj.getClassLoader
       val moduleField = mainObj.getField("MODULE$")
       val mainInstance = moduleField.get(null)

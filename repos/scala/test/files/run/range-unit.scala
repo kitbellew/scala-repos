@@ -35,8 +35,11 @@ object Test {
   def runGroup(label: String, f: (Int, Int, Int) => Range) {
     println(">>> " + label + " <<<\n")
     for (start <- endpoints) {
-      val s =
-        "%-7s %-7s %-7s %s".format("start", "end", "step", "length/first/last")
+      val s = "%-7s %-7s %-7s %s".format(
+        "start",
+        "end",
+        "step",
+        "length/first/last")
       println(s + "\n" + ("-" * s.length))
       for (end <- endpoints; step <- numbers) {
         print("%-7s %-7s %-7s ".format(num(start), num(end), num(step)))

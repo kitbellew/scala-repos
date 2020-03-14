@@ -39,17 +39,14 @@ class LogLevelAccessBenchmark {
   @Benchmark
   @GroupThreads(20)
   @Group("g")
-  def readLogLevel(): LogLevel =
-    log.bus.logLevel
+  def readLogLevel(): LogLevel = log.bus.logLevel
 
   @Benchmark
   @Group("g")
-  def setLogLevel_1(): Unit =
-    log.bus.setLogLevel(Logging.ErrorLevel)
+  def setLogLevel_1(): Unit = log.bus.setLogLevel(Logging.ErrorLevel)
 
   @Benchmark
   @Group("g")
-  def setLogLevel_2(): Unit =
-    log.bus.setLogLevel(Logging.DebugLevel)
+  def setLogLevel_2(): Unit = log.bus.setLogLevel(Logging.DebugLevel)
 
 }

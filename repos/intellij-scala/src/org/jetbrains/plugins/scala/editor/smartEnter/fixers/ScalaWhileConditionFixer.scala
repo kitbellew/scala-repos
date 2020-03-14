@@ -18,8 +18,10 @@ class ScalaWhileConditionFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val whileStatement =
-      PsiTreeUtil.getParentOfType(psiElement, classOf[ScWhileStmt], false)
+    val whileStatement = PsiTreeUtil.getParentOfType(
+      psiElement,
+      classOf[ScWhileStmt],
+      false)
     if (whileStatement == null) return NoOperation
 
     val doc = editor.getDocument
@@ -37,8 +39,8 @@ class ScalaWhileConditionFixer extends ScalaFixer {
         WithEnter(3)
       case None if leftParenthesis == null || rightParenthesis == null =>
         val whileStartOffset = whileStatement.getTextRange.getStartOffset
-        var stopOffset =
-          doc.getLineEndOffset(doc getLineNumber whileStartOffset)
+        var stopOffset = doc.getLineEndOffset(
+          doc getLineNumber whileStartOffset)
         val whLength = "while (".length
 
         whileStatement.body.foreach(bl =>

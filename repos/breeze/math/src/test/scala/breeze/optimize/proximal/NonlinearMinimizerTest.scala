@@ -81,8 +81,8 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
     "Nonlinear Minimization with bounds constraint compared to QuadraticMinimizer") {
     init := 0.0
     val gold = QuadraticMinimizer(n, BOX).minimize(H, f :* (-1.0))
-    val nlResult =
-      NonlinearMinimizer(n, BOX, 0.0).minimizeAndReturnState(cost, init)
+    val nlResult = NonlinearMinimizer(n, BOX, 0.0)
+      .minimizeAndReturnState(cost, init)
     println(s"Bounds projection iter ${nlResult.iter}")
     assert(norm(nlResult.x - gold) < 1e-4)
   }
@@ -482,8 +482,9 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
       0.00000, 0.11215, 0.24778, 0.04082)
     val proximalL1 = ProximalL1().setLambda(2.0)
     val nl = new NonlinearMinimizer(proximalL1)
-    val nlResult =
-      nl.minimizeAndReturnState(cost, DenseVector.zeros[Double](25))
+    val nlResult = nl.minimizeAndReturnState(
+      cost,
+      DenseVector.zeros[Double](25))
 
     println(s"L1 Proximal iter ${nlResult.iter}")
     assert(norm(nlResult.z - octaveL1, Inf) < 1e-4)

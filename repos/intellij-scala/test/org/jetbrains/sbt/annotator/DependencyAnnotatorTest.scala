@@ -26,11 +26,9 @@ class DependencyAnnotatorTest extends AnnotatorTestBase {
     "Test repo",
     "file:/%s/sbt/resolvers/testRepository" format TestUtils.getTestDataPath)
 
-  def testDoNotAnnotateIndexedDep() =
-    doTest(Seq.empty)
+  def testDoNotAnnotateIndexedDep() = doTest(Seq.empty)
 
-  def testDoNotAnnotateIndexedDepWithDynamicVersion() =
-    doTest(Seq.empty)
+  def testDoNotAnnotateIndexedDepWithDynamicVersion() = doTest(Seq.empty)
 
   def testAnnotateUnresolvedDep() = {
     val msg = SbtBundle("sbt.annotation.unresolvedDependency")

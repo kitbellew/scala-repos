@@ -42,8 +42,9 @@ class ScalaPostfixTemplatePsiInfo extends PostfixTemplatePsiInfo {
   override def getNegatedExpression(element: PsiElement): PsiElement =
     element match {
       case expr if notSurrounder.isApplicable(Array(expr)) =>
-        var res =
-          notSurrounder.surroundPsi(Array(element)).asInstanceOf[ScExpression]
+        var res = notSurrounder
+          .surroundPsi(Array(element))
+          .asInstanceOf[ScExpression]
         if (DoubleNegationUtil.hasDoubleNegation(res)) {
           res = DoubleNegationUtil.removeDoubleNegation(res)
         }

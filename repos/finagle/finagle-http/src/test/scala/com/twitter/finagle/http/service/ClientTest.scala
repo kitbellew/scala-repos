@@ -30,11 +30,10 @@ class ClientTest extends FunSuite {
     val server = Http.serve(new InetSocketAddress(0), factory)
     val serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
 
-    val builder =
-      ClientBuilder()
-        .hosts(serverAddress)
-        .hostConnectionLimit(1)
-        .codec(HttpCodec())
+    val builder = ClientBuilder()
+      .hosts(serverAddress)
+      .hostConnectionLimit(1)
+      .codec(HttpCodec())
 
     try spec(builder)
     finally { Await.result(server.close()) }

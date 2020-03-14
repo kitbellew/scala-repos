@@ -44,24 +44,19 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
     val timeout = median.milliseconds - 1.nanosecond
     val filter =
       new TimeoutFilter[Event[Boolean, Boolean], Boolean](timeout, timer)
-    val gen =
-      new LoadGenerator(
-        data.map { latency =>
-          new Event(
-            now,
-            latency.milliseconds,
-            true,
-            { b: Boolean => Try(true) })
-        },
-        {
-          case (duration: Duration, f: Future[Boolean]) =>
-            f onSuccess { _ => assert(duration <= timeout) } onFailure { _ =>
-              assert(duration > timeout)
-            } ensure { num += 1 }
-        }: (Duration, Future[Boolean]) => Unit,
-        filter,
-        timer
-      )
+    val gen = new LoadGenerator(
+      data.map { latency =>
+        new Event(now, latency.milliseconds, true, { b: Boolean => Try(true) })
+      },
+      {
+        case (duration: Duration, f: Future[Boolean]) =>
+          f onSuccess { _ => assert(duration <= timeout) } onFailure { _ =>
+            assert(duration > timeout)
+          } ensure { num += 1 }
+      }: (Duration, Future[Boolean]) => Unit,
+      filter,
+      timer
+    )
     gen.execute()
     assert(num == total)
   }

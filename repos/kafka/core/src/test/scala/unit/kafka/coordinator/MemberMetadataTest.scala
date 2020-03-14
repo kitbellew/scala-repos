@@ -49,8 +49,9 @@ class MemberMetadataTest extends JUnitSuite {
 
   @Test
   def testVoteForPreferredProtocol {
-    val protocols =
-      List(("range", Array.empty[Byte]), ("roundrobin", Array.empty[Byte]))
+    val protocols = List(
+      ("range", Array.empty[Byte]),
+      ("roundrobin", Array.empty[Byte]))
 
     val member = new MemberMetadata(
       memberId,
@@ -65,8 +66,9 @@ class MemberMetadataTest extends JUnitSuite {
 
   @Test
   def testMetadata {
-    val protocols =
-      List(("range", Array[Byte](0)), ("roundrobin", Array[Byte](1)))
+    val protocols = List(
+      ("range", Array[Byte](0)),
+      ("roundrobin", Array[Byte](1)))
 
     val member = new MemberMetadata(
       memberId,
@@ -82,8 +84,9 @@ class MemberMetadataTest extends JUnitSuite {
 
   @Test(expected = classOf[IllegalArgumentException])
   def testMetadataRaisesOnUnsupportedProtocol {
-    val protocols =
-      List(("range", Array.empty[Byte]), ("roundrobin", Array.empty[Byte]))
+    val protocols = List(
+      ("range", Array.empty[Byte]),
+      ("roundrobin", Array.empty[Byte]))
 
     val member = new MemberMetadata(
       memberId,
@@ -98,8 +101,9 @@ class MemberMetadataTest extends JUnitSuite {
 
   @Test(expected = classOf[IllegalArgumentException])
   def testVoteRaisesOnNoSupportedProtocols {
-    val protocols =
-      List(("range", Array.empty[Byte]), ("roundrobin", Array.empty[Byte]))
+    val protocols = List(
+      ("range", Array.empty[Byte]),
+      ("roundrobin", Array.empty[Byte]))
 
     val member = new MemberMetadata(
       memberId,

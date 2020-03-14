@@ -247,8 +247,7 @@ private[util] trait InternalPositionImpl {
       source: SourceFile = source,
       start: Int = start,
       point: Int = point,
-      end: Int = end): Position =
-    Position.range(source, start, point, end)
+      end: Int = end): Position = Position.range(source, start, point, end)
 
   private def calculateColumn(): Int = {
     var idx = source.lineToOffset(source.offsetToLine(point))

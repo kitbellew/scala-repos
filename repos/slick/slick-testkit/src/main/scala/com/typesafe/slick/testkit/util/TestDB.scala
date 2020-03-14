@@ -217,8 +217,8 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
         .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
-      executor: AsyncExecutor = AsyncExecutor.default())
-      : profile.Backend#Database = {
+      executor: AsyncExecutor = AsyncExecutor
+        .default()): profile.Backend#Database = {
     val wrappedConn = new DelegateConnection(session.conn) {
       override def close(): Unit = ()
     }
@@ -273,15 +273,14 @@ abstract class ExternalJdbcTestDB(confName: String)
   override def isEnabled = super.isEnabled && config.getBoolean("enabled")
 
   override lazy val testClasses
-      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
-    TestkitConfig
-      .getStrings(config, "testClasses")
-      .map(
-        _.map(n =>
-          Class
-            .forName(n)
-            .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
-      .getOrElse(super.testClasses)
+      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
+    .getStrings(config, "testClasses")
+    .map(
+      _.map(n =>
+        Class
+          .forName(n)
+          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
+    .getOrElse(super.testClasses)
 
   def databaseFor(path: String) =
     database.forConfig(path, config, loadCustomDriver().getOrElse(null))

@@ -46,8 +46,9 @@ object StronglyConnectedComponents {
     // the graph we update with final SCC ids, and the graph we return at the end
     var sccGraph = graph.mapVertices { case (vid, _) => vid }
     // graph we are going to work with in our iterations
-    var sccWorkGraph =
-      graph.mapVertices { case (vid, _) => (vid, false) }.cache()
+    var sccWorkGraph = graph
+      .mapVertices { case (vid, _) => (vid, false) }
+      .cache()
 
     var numVertices = sccWorkGraph.numVertices
     var iter = 0
@@ -75,8 +76,9 @@ object StronglyConnectedComponents {
           (vid, scc, opt) => opt.getOrElse(scc)
         }
         // only keep vertices that are not final
-        sccWorkGraph =
-          sccWorkGraph.subgraph(vpred = (vid, data) => !data._2).cache()
+        sccWorkGraph = sccWorkGraph
+          .subgraph(vpred = (vid, data) => !data._2)
+          .cache()
       } while (sccWorkGraph.numVertices < numVertices)
 
       sccWorkGraph = sccWorkGraph.mapVertices {

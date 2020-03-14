@@ -148,8 +148,8 @@ object GBTExample {
     println(s"GBTExample with parameters:\n$params")
 
     // Load training and test data and cache it.
-    val (training: DataFrame, test: DataFrame) =
-      DecisionTreeExample.loadDatasets(
+    val (training: DataFrame, test: DataFrame) = DecisionTreeExample
+      .loadDatasets(
         sc,
         params.input,
         params.dataFormat,
@@ -213,8 +213,8 @@ object GBTExample {
     // Get the trained GBT from the fitted PipelineModel
     algo match {
       case "classification" =>
-        val rfModel =
-          pipelineModel.stages.last.asInstanceOf[GBTClassificationModel]
+        val rfModel = pipelineModel.stages.last
+          .asInstanceOf[GBTClassificationModel]
         if (rfModel.totalNumNodes < 30) {
           println(rfModel.toDebugString) // Print full model.
         } else {

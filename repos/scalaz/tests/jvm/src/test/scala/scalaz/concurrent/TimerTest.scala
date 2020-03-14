@@ -26,8 +26,9 @@ object TimerTest extends SpecLite {
     }
     "withTimeout(Future...) produces a Timeout if the timeout is exceeded" in {
       withTimer { timer =>
-        val future =
-          timer.withTimeout(Future { Thread.sleep(500); "Test" }, 100)
+        val future = timer.withTimeout(
+          Future { Thread.sleep(500); "Test" },
+          100)
         withTimeout(5000) { future.unsafePerformSync must_== Timeout.left }
       }
     }

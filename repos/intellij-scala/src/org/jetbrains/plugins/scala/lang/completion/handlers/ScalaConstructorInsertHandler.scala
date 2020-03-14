@@ -114,8 +114,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
           .commitDocument(document)
         val file = context.getFile
         val element = file.findElementAt(endOffset - 1)
-        val newT =
-          PsiTreeUtil.getParentOfType(element, classOf[ScNewTemplateDefinition])
+        val newT = PsiTreeUtil.getParentOfType(
+          element,
+          classOf[ScNewTemplateDefinition])
         if (newT != null) {
           newT.extendsBlock.templateParents match {
             case Some(tp: ScTemplateParents) =>
@@ -134,8 +135,10 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                 }
                 if (ref != null && !isRenamed) {
                   if (item.prefixCompletion) {
-                    val newRefText =
-                      clazz.qualifiedName.split('.').takeRight(2).mkString(".")
+                    val newRefText = clazz.qualifiedName
+                      .split('.')
+                      .takeRight(2)
+                      .mkString(".")
                     val newRef = ScalaPsiElementFactory.createReferenceFromText(
                       newRefText,
                       clazz.getManager)
@@ -162,8 +165,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
 
               element.getParent match {
                 case (_: ScTemplateBody) childOf ((_: ScExtendsBlock) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
-                  val members =
-                    ScalaOIUtil.getMembersToImplement(newTemplateDef)
+                  val members = ScalaOIUtil.getMembersToImplement(
+                    newTemplateDef)
                   ScalaOIUtil.runAction(
                     members.toSeq,
                     isImplement = true,

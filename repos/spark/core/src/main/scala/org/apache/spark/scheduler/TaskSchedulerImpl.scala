@@ -63,16 +63,17 @@ private[spark] class TaskSchedulerImpl(
   val conf = sc.conf
 
   // How often to check for speculative tasks
-  val SPECULATION_INTERVAL_MS =
-    conf.getTimeAsMs("spark.speculation.interval", "100ms")
+  val SPECULATION_INTERVAL_MS = conf.getTimeAsMs(
+    "spark.speculation.interval",
+    "100ms")
 
-  private val speculationScheduler =
-    ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "task-scheduler-speculation")
+  private val speculationScheduler = ThreadUtils
+    .newDaemonSingleThreadScheduledExecutor("task-scheduler-speculation")
 
   // Threshold above which we warn user initial TaskSet may be starved
-  val STARVATION_TIMEOUT_MS =
-    conf.getTimeAsMs("spark.starvation.timeout", "15s")
+  val STARVATION_TIMEOUT_MS = conf.getTimeAsMs(
+    "spark.starvation.timeout",
+    "15s")
 
   // CPUs to request per task
   val CPUS_PER_TASK = conf.getInt("spark.task.cpus", 1)
@@ -173,10 +174,9 @@ private[spark] class TaskSchedulerImpl(
     this.synchronized {
       val manager = createTaskSetManager(taskSet, maxTaskFailures)
       val stage = taskSet.stageId
-      val stageTaskSets =
-        taskSetsByStageIdAndAttempt.getOrElseUpdate(
-          stage,
-          new HashMap[Int, TaskSetManager])
+      val stageTaskSets = taskSetsByStageIdAndAttempt.getOrElseUpdate(
+        stage,
+        new HashMap[Int, TaskSetManager])
       stageTaskSets(taskSet.stageAttemptId) = manager
       val conflictingTaskSet = stageTaskSets.exists {
         case (_, ts) =>
@@ -320,8 +320,8 @@ private[spark] class TaskSchedulerImpl(
       // Randomly shuffle offers to avoid always placing tasks on the same set of workers.
       val shuffledOffers = Random.shuffle(offers)
       // Build a list of tasks to assign to each worker.
-      val tasks =
-        shuffledOffers.map(o => new ArrayBuffer[TaskDescription](o.cores))
+      val tasks = shuffledOffers.map(o =>
+        new ArrayBuffer[TaskDescription](o.cores))
       val availableCpus = shuffledOffers.map(o => o.cores).toArray
       val sortedTaskSets = rootPool.getSortedTaskSetQueue
       for (taskSet <- sortedTaskSets) {
@@ -633,8 +633,8 @@ private[spark] object TaskSchedulerImpl {
     _keyList ++= map.keys
 
     // order keyList based on population of value in map
-    val keyList =
-      _keyList.sortWith((left, right) => map(left).size > map(right).size)
+    val keyList = _keyList.sortWith((left, right) =>
+      map(left).size > map(right).size)
 
     val retval = new ArrayBuffer[T](keyList.size * 2)
     var index = 0

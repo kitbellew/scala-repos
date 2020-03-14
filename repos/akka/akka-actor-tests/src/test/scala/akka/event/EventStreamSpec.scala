@@ -31,10 +31,9 @@ object EventStreamSpec {
       }
       """)
 
-  val configUnhandledWithDebug =
-    ConfigFactory
-      .parseString("akka.actor.debug.event-stream = on")
-      .withFallback(configUnhandled)
+  val configUnhandledWithDebug = ConfigFactory
+    .parseString("akka.actor.debug.event-stream = on")
+    .withFallback(configUnhandled)
 
   final case class M(i: Int)
 
@@ -353,8 +352,9 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
     }
 
     "not allow initializing a TerminatedUnsubscriber twice" in {
-      val sys =
-        ActorSystem("MustNotAllowDoubleInitOfTerminatedUnsubscriber", config)
+      val sys = ActorSystem(
+        "MustNotAllowDoubleInitOfTerminatedUnsubscriber",
+        config)
       // initializes an TerminatedUnsubscriber during start
 
       try {
@@ -369,8 +369,9 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
     }
 
     "unwatch an actor from unsubscriber when that actor unsubscribes from the stream" in {
-      val sys =
-        ActorSystem("MustUnregisterDuringUnsubscribe", configUnhandledWithDebug)
+      val sys = ActorSystem(
+        "MustUnregisterDuringUnsubscribe",
+        configUnhandledWithDebug)
 
       try {
         val es = sys.eventStream

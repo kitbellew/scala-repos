@@ -60,10 +60,9 @@ object RecordSpec extends Specification {
     }
 
     "not look up fields by bogus names" in {
-      val fields =
-        allExpectedFieldNames.flatMap { name =>
-          rec.fieldByName("x" + name + "y")
-        }
+      val fields = allExpectedFieldNames.flatMap { name =>
+        rec.fieldByName("x" + name + "y")
+      }
 
       fields.length must_== 0
     }

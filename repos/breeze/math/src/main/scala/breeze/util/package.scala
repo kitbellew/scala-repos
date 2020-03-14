@@ -55,8 +55,8 @@ package object util {
 
       // from http://stackoverflow.com/questions/1816559/make-java-runtime-ignore-serialversionuids
       override protected def readClassDescriptor(): ObjectStreamClass = {
-        var resultClassDescriptor =
-          super.readClassDescriptor(); // initially streams descriptor
+        var resultClassDescriptor = super
+          .readClassDescriptor(); // initially streams descriptor
         if (ignoreSerialVersionUID) {
 
           var localClass: Class[_] =

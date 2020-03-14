@@ -12,8 +12,7 @@ import org.junit.Assert
   */
 class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   def testAfterPlaceholder() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  class B {def concat: B = new B}
       |  val f: B => B = _.<caret>
@@ -22,8 +21,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  class B {def concat: B = new B}
       |  val f: B => B = _.concat<caret>
@@ -36,8 +34,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTimeUnit1() {
-    val fileText =
-      """
+    val fileText = """
         |class TimeUnit
         |object TimeUnit {
         |  val HOURS = new TimeUnit
@@ -53,8 +50,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
         |class TimeUnit
         |object TimeUnit {
         |  val HOURS = new TimeUnit
@@ -74,8 +70,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTimeUnit2() {
-    val fileText =
-      """
+    val fileText = """
         |class TimeUnit
         |object TimeUnit {
         |  val HOURS = new TimeUnit
@@ -91,8 +86,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
         |class TimeUnit
         |object TimeUnit {
         |  val HOURS = new TimeUnit
@@ -112,8 +106,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testAfterNew() {
-    val fileText =
-      """
+    val fileText = """
       |import scala.collection.mutable.HashSet
       |
       |class A {
@@ -123,8 +116,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |import scala.collection.mutable
       |import scala.collection.mutable.HashSet
       |
@@ -140,8 +132,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFilterPrivates() {
-    val fileText =
-      """
+    val fileText = """
       |class Test {
       |  def foo(): String = ""
       |  private def bar(): String = ""
@@ -158,8 +149,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFilterObjectDouble() {
-    val fileText =
-      """
+    val fileText = """
       |class Test {
       |  val x: Double = <caret>
       |}
@@ -171,8 +161,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFalse() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  val f: Boolean = <caret>
       |}
@@ -180,8 +169,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  val f: Boolean = false<caret>
       |}
@@ -194,8 +182,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testClassOf() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  val f: Class[_] = <caret>
       |}
@@ -203,8 +190,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  val f: Class[_] = classOf[<caret>]
       |}
@@ -217,8 +203,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testSmartRenamed() {
-    val fileText =
-      """
+    val fileText = """
       |import java.util.{ArrayList => BLLLL}
       |object Test extends App {
       |  val al: java.util.List[Int] = new BL<caret>
@@ -227,8 +212,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |import java.util.{ArrayList => BLLLL}
       |object Test extends App {
       |  val al: java.util.List[Int] = new BLLLL[Int](<caret>)
@@ -242,8 +226,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testThis() {
-    val fileText =
-      """
+    val fileText = """
       |class TT {
       |  val al: TT = <caret>
       |}
@@ -251,8 +234,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class TT {
       |  val al: TT = this<caret>
       |}
@@ -266,8 +248,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testInnerThis() {
-    val fileText =
-      """
+    val fileText = """
       |class TT {
       |  class GG {
       |    val al: GG = <caret>
@@ -277,8 +258,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class TT {
       |  class GG {
       |    val al: GG = this<caret>
@@ -294,8 +274,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testOuterThis() {
-    val fileText =
-      """
+    val fileText = """
       |class TT {
       |  class GG {
       |    val al: TT = <caret>
@@ -305,8 +284,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class TT {
       |  class GG {
       |    val al: TT = TT.this<caret>
@@ -322,15 +300,13 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testWhile() {
-    val fileText =
-      """
+    val fileText = """
       |while (<caret>) {}
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |while (true<caret>) {}
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -342,15 +318,13 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testDoWhile() {
-    val fileText =
-      """
+    val fileText = """
       |do {} while (<caret>)
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |do {} while (true<caret>)
       """.stripMargin.replaceAll("\r", "").trim()
 
@@ -362,15 +336,13 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testNewFunction() {
-    val fileText =
-      """
+    val fileText = """
       |val x: Int => String = new <caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |val x: Int => String = new Function[Int, String] {
       |  def apply(v1: Int): String = <selection>???</selection>
       |}
@@ -384,16 +356,14 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testEtaExpansion() {
-    val fileText =
-      """
+    val fileText = """
       |def foo(x: Int): String = x.toString
       |val x: Int => String = <caret>
       """.stripMargin.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |def foo(x: Int): String = x.toString
       |val x: Int => String = foo _<caret>
       """.stripMargin.replaceAll("\r", "").trim()
@@ -406,16 +376,14 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testJavaEnum() {
-    val javaFileText =
-      """
+    val javaFileText = """
       |package a;
       |
       |public enum Java {
       |  aaa, bbb, ccc
       |}
       """.stripMargin('|').replaceAll("\r", "").trim()
-    val fileText =
-      """
+    val fileText = """
       |import a.Java
       |class A {
       |  val x: Java = a<caret>
@@ -432,8 +400,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |import a.Java
       |class A {
       |  val x: Java = Java.aaa<caret>
@@ -474,8 +441,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testScalaFactoryMethod() {
-    val fileText =
-      """
+    val fileText = """
       |class Scala
       |object Scala {
       |  def getInstance() = new Scala
@@ -487,8 +453,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class Scala
       |object Scala {
       |  def getInstance() = new Scala
@@ -506,8 +471,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testScalaFactoryApply() {
-    val fileText =
-      """
+    val fileText = """
       |case class Scala()
       |class A {
       |  val x: Scala = <caret>
@@ -516,8 +480,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |case class Scala()
       |class A {
       |  val x: Scala = Scala.apply()<caret>
@@ -532,8 +495,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testScalaHashSetEmpty() {
-    val fileText =
-      """
+    val fileText = """
       |import collection.mutable.HashSet
       |class A {
       |  val x: HashSet[String] = <caret>
@@ -542,8 +504,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |import collection.mutable.HashSet
       |class A {
       |  val x: HashSet[String] = HashSet.empty<caret>
@@ -558,8 +519,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTwoGenerics() {
-    val fileText =
-      """
+    val fileText = """
         |class A[T, K](s: Int)
         |
         |class B[T, K](s: Int) extends A[T, K](s)
@@ -569,8 +529,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |class A[T, K](s: Int)
       |
       |class B[T, K](s: Int) extends A[T, K](s)
@@ -586,8 +545,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testChainedSecondCompletion() {
-    val fileText =
-      """
+    val fileText = """
       |object YY {
       |  def foo(): YY = new YY
       |  val x: OP = <caret>
@@ -600,8 +558,7 @@ class ScalaSmartCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(2, CompletionType.SMART)
 
-    val resultText =
-      """
+    val resultText = """
       |object YY {
       |  def foo(): YY = new YY
       |  val x: OP = foo().goo(<caret>)

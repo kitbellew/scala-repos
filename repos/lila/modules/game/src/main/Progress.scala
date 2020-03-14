@@ -21,8 +21,7 @@ case class Progress(origin: Game, game: Game, events: List[Event] = Nil) {
 
 object Progress {
 
-  def apply(game: Game): Progress =
-    new Progress(game, game)
+  def apply(game: Game): Progress = new Progress(game, game)
 
   def apply(game: Game, events: List[Event]): Progress =
     new Progress(game, game, events)

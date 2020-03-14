@@ -23,6 +23,5 @@ class UndefinedBehaviorError(message: String, cause: Throwable)
         (if (cause == null) "" else ": " + cause.getMessage),
       cause)
 
-  override def fillInStackTrace(): Throwable =
-    super[Error].fillInStackTrace()
+  override def fillInStackTrace(): Throwable = super[Error].fillInStackTrace()
 }

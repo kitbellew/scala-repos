@@ -95,8 +95,8 @@ object SparkALS {
 
     var slices = 0
 
-    val options =
-      (0 to 4).map(i => if (i < args.length) Some(args(i)) else None)
+    val options = (0 to 4).map(i =>
+      if (i < args.length) Some(args(i)) else None)
 
     options.toArray match {
       case Array(m, u, f, iters, slices_) =>

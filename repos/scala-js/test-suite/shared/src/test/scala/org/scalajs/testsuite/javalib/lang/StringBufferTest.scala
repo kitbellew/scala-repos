@@ -15,8 +15,7 @@ import org.scalajs.testsuite.utils.Platform.executingInJVM
 
 class StringBufferTest {
 
-  def newBuf: java.lang.StringBuffer =
-    new java.lang.StringBuffer
+  def newBuf: java.lang.StringBuffer = new java.lang.StringBuffer
 
   def initBuf(str: String): java.lang.StringBuffer =
     new java.lang.StringBuffer(str)
@@ -142,8 +141,7 @@ class StringBufferTest {
 
 class StringBuilderTest {
 
-  def newBuilder: java.lang.StringBuilder =
-    new java.lang.StringBuilder
+  def newBuilder: java.lang.StringBuilder = new java.lang.StringBuilder
 
   def initBuilder(str: String): java.lang.StringBuilder =
     new java.lang.StringBuilder(str)

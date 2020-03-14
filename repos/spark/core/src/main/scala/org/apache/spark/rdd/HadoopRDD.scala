@@ -145,8 +145,8 @@ class HadoopRDD[K, V](
   // used to build JobTracker ID
   private val createTime = new Date()
 
-  private val shouldCloneJobConf =
-    sparkContext.conf.getBoolean("spark.hadoop.cloneConf", false)
+  private val shouldCloneJobConf = sparkContext.conf
+    .getBoolean("spark.hadoop.cloneConf", false)
 
   // Returns a JobConf that will be used on slaves to obtain input splits for Hadoop reads.
   protected def getJobConf(): JobConf = {
@@ -225,8 +225,9 @@ class HadoopRDD[K, V](
 
       // TODO: there is a lot of duplicate code between this and NewHadoopRDD and SqlNewHadoopRDD
 
-      val inputMetrics =
-        context.taskMetrics().registerInputMetrics(DataReadMethod.Hadoop)
+      val inputMetrics = context
+        .taskMetrics()
+        .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
       // Sets the thread local variable for the file's name
@@ -335,8 +336,9 @@ class HadoopRDD[K, V](
       case Some(c) =>
         try {
           val lsplit = c.inputSplitWithLocationInfo.cast(hsplit)
-          val infos =
-            c.getLocationInfo.invoke(lsplit).asInstanceOf[Array[AnyRef]]
+          val infos = c.getLocationInfo
+            .invoke(lsplit)
+            .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {
           case e: Exception =>
@@ -434,15 +436,15 @@ private[spark] object HadoopRDD extends Logging {
   }
 
   private[spark] class SplitInfoReflections {
-    val inputSplitWithLocationInfo =
-      Utils.classForName("org.apache.hadoop.mapred.InputSplitWithLocationInfo")
-    val getLocationInfo =
-      inputSplitWithLocationInfo.getMethod("getLocationInfo")
-    val newInputSplit =
-      Utils.classForName("org.apache.hadoop.mapreduce.InputSplit")
+    val inputSplitWithLocationInfo = Utils.classForName(
+      "org.apache.hadoop.mapred.InputSplitWithLocationInfo")
+    val getLocationInfo = inputSplitWithLocationInfo.getMethod(
+      "getLocationInfo")
+    val newInputSplit = Utils.classForName(
+      "org.apache.hadoop.mapreduce.InputSplit")
     val newGetLocationInfo = newInputSplit.getMethod("getLocationInfo")
-    val splitLocationInfo =
-      Utils.classForName("org.apache.hadoop.mapred.SplitLocationInfo")
+    val splitLocationInfo = Utils.classForName(
+      "org.apache.hadoop.mapred.SplitLocationInfo")
     val isInMemory = splitLocationInfo.getMethod("isInMemory")
     val getLocation = splitLocationInfo.getMethod("getLocation")
   }

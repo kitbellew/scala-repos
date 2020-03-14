@@ -99,8 +99,9 @@ object Reloader {
     // Or it can be defined in devSettings as "play.server.http.port"
     val httpPortString: Option[String] = otherArgs.headOption orElse prop(
       "http.port") orElse devSettings.toMap.get("play.server.http.port")
-    val httpPort: Option[Int] =
-      parsePortValue(httpPortString, Option(defaultHttpPort))
+    val httpPort: Option[Int] = parsePortValue(
+      httpPortString,
+      Option(defaultHttpPort))
 
     // https port can be defined as a -Dhttps.port argument or system property
     val httpsPortString: Option[String] =
@@ -174,8 +175,11 @@ object Reloader {
       runSbtTask: String => AnyRef,
       mainClassName: String): PlayDevServer = {
 
-    val (properties, httpPort, httpsPort, httpAddress) =
-      filterArgs(args, defaultHttpPort, defaultHttpAddress, devSettings)
+    val (properties, httpPort, httpsPort, httpAddress) = filterArgs(
+      args,
+      defaultHttpPort,
+      defaultHttpAddress,
+      devSettings)
     val systemProperties = extractSystemProperties(javaOptions)
 
     require(
@@ -271,8 +275,8 @@ object Reloader {
       val docsLoader =
         new URLClassLoader(urls(docsClasspath), applicationLoader)
       val maybeDocsJarFile = docsJar map { f => new JarFile(f) }
-      val docHandlerFactoryClass =
-        docsLoader.loadClass("play.docs.BuildDocHandlerFactory")
+      val docHandlerFactoryClass = docsLoader.loadClass(
+        "play.docs.BuildDocHandlerFactory")
       val buildDocHandler = maybeDocsJarFile match {
         case Some(docsJarFile) =>
           val factoryMethod = docHandlerFactoryClass.getMethod(
@@ -392,8 +396,9 @@ class Reloader(
   @volatile private var watchState: WatchState = WatchState.empty
 
   // Create the watcher, updates the changed boolean when a file has changed.
-  private val watcher =
-    fileWatchService.watch(monitoredFiles, () => { changed = true })
+  private val watcher = fileWatchService.watch(
+    monitoredFiles,
+    () => { changed = true })
   private val classLoaderVersion =
     new java.util.concurrent.atomic.AtomicInteger(0)
 

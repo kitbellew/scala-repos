@@ -65,8 +65,8 @@ trait SQLServerProfile extends JdbcProfile {
     super.loadProfileConfig
   }
 
-  protected lazy val defaultStringType =
-    profileConfig.getStringOpt("defaultStringType")
+  protected lazy val defaultStringType = profileConfig.getStringOpt(
+    "defaultStringType")
 
   override protected def computeCapabilities: Set[Capability] =
     (super.computeCapabilities
@@ -349,8 +349,8 @@ class ProtectGroupBy extends Phase {
             logger.debug("Examining GroupBy", g1)
             val (b2, b2s) = source(s2, b1, f1)
             logger.debug(s"Narrowed 'by' clause down to: (over $b2s)", b2)
-            val refsOK =
-              ProductNode(ConstArray(b2)).flatten.children.forall(_.findNode {
+            val refsOK = ProductNode(ConstArray(b2)).flatten.children
+              .forall(_.findNode {
                 case Ref(s) if s == b2s => true
                 case _                  => false
               }.isDefined)

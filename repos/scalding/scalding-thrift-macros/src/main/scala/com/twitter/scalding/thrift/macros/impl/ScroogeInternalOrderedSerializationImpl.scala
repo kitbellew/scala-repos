@@ -40,8 +40,8 @@ object ScroogeInternalOrderedSerializationImpl {
     def buildDispatcher: PartialFunction[c.Type, TreeOrderedBuf[c.type]] =
       ScroogeInternalOrderedSerializationImpl.innerDispatcher(c)
     val scroogeEnumDispatcher = ScroogeEnumOrderedBuf.dispatch(c)
-    val scroogeUnionDispatcher =
-      ScroogeUnionOrderedBuf.dispatch(c)(buildDispatcher)
+    val scroogeUnionDispatcher = ScroogeUnionOrderedBuf.dispatch(c)(
+      buildDispatcher)
     val scroogeOuterOrderedBuf = ScroogeOuterOrderedBuf.dispatch(c)
 
     OrderedSerializationProviderImpl

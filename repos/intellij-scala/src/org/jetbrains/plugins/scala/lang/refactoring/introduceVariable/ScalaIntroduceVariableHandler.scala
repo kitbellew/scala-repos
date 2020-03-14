@@ -84,8 +84,8 @@ class ScalaIntroduceVariableHandler
     }
 
     if (hasSelection && selectedElement.isEmpty) {
-      val message =
-        ScalaBundle.message("cannot.refactor.not.expression.nor.type")
+      val message = ScalaBundle.message(
+        "cannot.refactor.not.expression.nor.type")
       CommonRefactoringUtil.showErrorHint(
         project,
         editor,
@@ -126,8 +126,8 @@ class ScalaIntroduceVariableHandler
         }
       }
     } else {
-      val canBeIntroduced: ScExpression => Boolean =
-        ScalaRefactoringUtil.checkCanBeIntroduced(_)
+      val canBeIntroduced: ScExpression => Boolean = ScalaRefactoringUtil
+        .checkCanBeIntroduced(_)
       ScalaRefactoringUtil.afterExpressionChoosing(
         project,
         editor,

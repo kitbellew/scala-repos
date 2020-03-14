@@ -58,10 +58,8 @@ trait CogroupSpec[M[+_]]
       cschema <- Gen.oneOf(arraySchema(depth, 2), objectSchema(depth, 2))
       (idCount, data) <- genEventColumns(cschema)
     } yield {
-      val (lschema, rschema) =
-        Bifunctor[Tuple2].umap(cschema.splitAt(cschema.size / 2)) {
-          _.map(_._1).toSet
-        }
+      val (lschema, rschema) = Bifunctor[Tuple2].umap(
+        cschema.splitAt(cschema.size / 2)) { _.map(_._1).toSet }
       val (l, r) = data map {
         case (ids, values) =>
           val (d1, d2) = values.partition {
@@ -135,16 +133,18 @@ trait CogroupSpec[M[+_]]
       case Right3(jv) => jv
     }
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
         OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          OuterObjectConcat(
-            WrapObject(SourceValue.Left, "valueLeft"),
-            WrapObject(SourceValue.Right, "valueRight")))
-      )
+          WrapObject(SourceValue.Left, "valueLeft"),
+          WrapObject(SourceValue.Right, "valueRight")))
+    )
 
     val jsonResult = toJson(result)
 
@@ -161,16 +161,18 @@ trait CogroupSpec[M[+_]]
     val expected = Vector(
       toRecord(Array(0), JArray(JNum(12) :: JUndefined :: JNum(13) :: Nil)))
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
-        OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          WrapObject(
-            OuterArrayConcat(SourceValue.Left, SourceValue.Right),
-            "value"))
-      )
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
+        WrapObject(
+          OuterArrayConcat(SourceValue.Left, SourceValue.Right),
+          "value"))
+    )
 
     val jsonResult = toJson(f(result))
     jsonResult.copoint must_== expected
@@ -230,16 +232,18 @@ trait CogroupSpec[M[+_]]
       recBoth(8)
     )
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
-        OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          WrapObject(
-            OuterObjectConcat(SourceValue.Left, SourceValue.Right),
-            "value"))
-      )
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
+        WrapObject(
+          OuterObjectConcat(SourceValue.Left, SourceValue.Right),
+          "value"))
+    )
 
     val jsonResult = toJson(f(result))
     jsonResult.copoint must_== expected
@@ -274,16 +278,18 @@ trait CogroupSpec[M[+_]]
       recr(10, 77)
     )
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
-        OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          WrapObject(
-            OuterObjectConcat(SourceValue.Left, SourceValue.Right),
-            "value"))
-      )
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
+        WrapObject(
+          OuterObjectConcat(SourceValue.Left, SourceValue.Right),
+          "value"))
+    )
 
     val jsonResult = toJson(result)
     jsonResult.copoint must_== expected
@@ -318,16 +324,18 @@ trait CogroupSpec[M[+_]]
       recBoth(7)
     )
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
-        OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          WrapObject(
-            OuterObjectConcat(SourceValue.Left, SourceValue.Right),
-            "value"))
-      )
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
+        WrapObject(
+          OuterObjectConcat(SourceValue.Left, SourceValue.Right),
+          "value"))
+    )
 
     val jsonResult = toJson(result)
     jsonResult.copoint must_== expected
@@ -362,16 +370,18 @@ trait CogroupSpec[M[+_]]
       recBoth(7)
     )
 
-    val result: Table =
-      ltable.cogroup(SourceKey.Single, SourceKey.Single, rtable)(
-        Leaf(Source),
-        Leaf(Source),
-        OuterObjectConcat(
-          WrapObject(SourceKey.Left, "key"),
-          WrapObject(
-            OuterObjectConcat(SourceValue.Left, SourceValue.Right),
-            "value"))
-      )
+    val result: Table = ltable.cogroup(
+      SourceKey.Single,
+      SourceKey.Single,
+      rtable)(
+      Leaf(Source),
+      Leaf(Source),
+      OuterObjectConcat(
+        WrapObject(SourceKey.Left, "key"),
+        WrapObject(
+          OuterObjectConcat(SourceValue.Left, SourceValue.Right),
+          "value"))
+    )
 
     val jsonResult = toJson(result)
     jsonResult.copoint must_== expected

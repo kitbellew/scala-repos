@@ -159,8 +159,9 @@ private[json] class JsonOutputWriter(
 
   private[this] val writer = new CharArrayWriter()
   // create the Generator without separator inserted between 2 records
-  private[this] val gen =
-    new JsonFactory().createGenerator(writer).setRootValueSeparator(null)
+  private[this] val gen = new JsonFactory()
+    .createGenerator(writer)
+    .setRootValueSeparator(null)
   private[this] val result = new Text()
 
   private val recordWriter: RecordWriter[NullWritable, Text] = {
@@ -169,12 +170,13 @@ private[json] class JsonOutputWriter(
           context: TaskAttemptContext,
           extension: String): Path = {
         val configuration = context.getConfiguration
-        val uniqueWriteJobId =
-          configuration.get("spark.sql.sources.writeJobUUID")
+        val uniqueWriteJobId = configuration.get(
+          "spark.sql.sources.writeJobUUID")
         val taskAttemptId = context.getTaskAttemptID
         val split = taskAttemptId.getTaskID.getId
-        val bucketString =
-          bucketId.map(BucketingUtils.bucketIdToString).getOrElse("")
+        val bucketString = bucketId
+          .map(BucketingUtils.bucketIdToString)
+          .getOrElse("")
         new Path(
           path,
           f"part-r-$split%05d-$uniqueWriteJobId$bucketString.json$extension")

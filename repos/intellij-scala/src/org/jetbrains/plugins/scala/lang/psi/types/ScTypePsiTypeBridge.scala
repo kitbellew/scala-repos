@@ -334,8 +334,9 @@ trait ScTypePsiTypeBridge {
         if (c.qualifiedName == "scala.Array" && args.length == 1)
           new PsiArrayType(toPsi(args.head, project, scope))
         else {
-          val subst =
-            args.zip(c.getTypeParameters).foldLeft(PsiSubstitutor.EMPTY) {
+          val subst = args
+            .zip(c.getTypeParameters)
+            .foldLeft(PsiSubstitutor.EMPTY) {
               case (s, (targ, tp)) =>
                 s.put(
                   tp,
@@ -357,8 +358,9 @@ trait ScTypePsiTypeBridge {
             if (c.qualifiedName == "scala.Array" && args.length == 1)
               new PsiArrayType(toPsi(args.head, project, scope))
             else {
-              val subst =
-                args.zip(c.getTypeParameters).foldLeft(PsiSubstitutor.EMPTY) {
+              val subst = args
+                .zip(c.getTypeParameters)
+                .foldLeft(PsiSubstitutor.EMPTY) {
                   case (s, (targ, tp)) =>
                     s.put(
                       tp,

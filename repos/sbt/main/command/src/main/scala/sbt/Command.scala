@@ -210,8 +210,7 @@ object Help {
   def apply(
       briefHelp: Seq[(String, String)],
       detailedHelp: Map[String, String],
-      more: Set[String]): Help =
-    new Help0(briefHelp, detailedHelp, more)
+      more: Set[String]): Help = new Help0(briefHelp, detailedHelp, more)
 
   def more(name: String, detailedHelp: String): Help =
     apply(Nil, Map(name -> detailedHelp), Set(name))

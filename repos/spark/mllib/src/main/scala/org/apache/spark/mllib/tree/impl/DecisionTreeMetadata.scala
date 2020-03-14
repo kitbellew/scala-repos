@@ -133,11 +133,10 @@ private[spark] object DecisionTreeMetadata extends Logging {
     // based on the number of training examples.
     if (strategy.categoricalFeaturesInfo.nonEmpty) {
       val maxCategoriesPerFeature = strategy.categoricalFeaturesInfo.values.max
-      val maxCategory =
-        strategy.categoricalFeaturesInfo
-          .find(_._2 == maxCategoriesPerFeature)
-          .get
-          ._1
+      val maxCategory = strategy.categoricalFeaturesInfo
+        .find(_._2 == maxCategoriesPerFeature)
+        .get
+        ._1
       require(
         maxCategoriesPerFeature <= maxPossibleBins,
         s"DecisionTree requires maxBins (= $maxPossibleBins) to be at least as large as the " +

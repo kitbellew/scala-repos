@@ -95,30 +95,27 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     (req, body)
   }
 
-  val arbNettyVersion =
-    Gen.oneOf(
-      HttpVersion.HTTP_1_0,
-      HttpVersion.HTTP_1_1,
-      new HttpVersion("SECURE-HTTP/1.4", true)
-    )
+  val arbNettyVersion = Gen.oneOf(
+    HttpVersion.HTTP_1_0,
+    HttpVersion.HTTP_1_1,
+    new HttpVersion("SECURE-HTTP/1.4", true)
+  )
 
-  val arbNettyResponse =
-    for {
-      (resp, body) <- arbResponse
-      version <- arbNettyVersion
-    } yield {
-      resp.httpResponse.setProtocolVersion(version)
-      (resp.httpResponse, body)
-    }
+  val arbNettyResponse = for {
+    (resp, body) <- arbResponse
+    version <- arbNettyVersion
+  } yield {
+    resp.httpResponse.setProtocolVersion(version)
+    (resp.httpResponse, body)
+  }
 
-  val arbNettyRequest =
-    for {
-      (req, body) <- arbRequest
-      version <- arbNettyVersion
-    } yield {
-      req.setProtocolVersion(version)
-      (req.getHttpRequest, body)
-    }
+  val arbNettyRequest = for {
+    (req, body) <- arbRequest
+    version <- arbNettyVersion
+  } yield {
+    req.setProtocolVersion(version)
+    (req.getHttpRequest, body)
+  }
 
   test("netty: http request to netty") {
     forAll(arbRequest) {

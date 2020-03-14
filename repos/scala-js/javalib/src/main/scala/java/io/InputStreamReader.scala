@@ -42,8 +42,7 @@ class InputStreamReader(
         .onMalformedInput(CodingErrorAction.REPLACE)
         .onUnmappableCharacter(CodingErrorAction.REPLACE))
 
-  def this(in: InputStream) =
-    this(in, Charset.defaultCharset)
+  def this(in: InputStream) = this(in, Charset.defaultCharset)
 
   def this(in: InputStream, charsetName: String) =
     this(in, Charset.forName(charsetName))
@@ -56,8 +55,7 @@ class InputStreamReader(
     outBuf = null
   }
 
-  def getEncoding(): String =
-    if (closed) null else decoder.charset.name
+  def getEncoding(): String = if (closed) null else decoder.charset.name
 
   override def read(): Int = {
     ensureOpen()
@@ -173,8 +171,10 @@ class InputStreamReader(
          * Further, note that we may read more bytes than strictly necessary,
          * according to the specification of InputStreamReader.
          */
-        val bytesRead =
-          in.read(inBuf.array, inBuf.limit, inBuf.capacity - inBuf.limit)
+        val bytesRead = in.read(
+          inBuf.array,
+          inBuf.limit,
+          inBuf.capacity - inBuf.limit)
 
         if (bytesRead == -1) endOfInput = true
         else inBuf.limit(inBuf.limit + bytesRead)
@@ -193,8 +193,7 @@ class InputStreamReader(
    * However, this is how the JDK behaves, and even the JavaDoc suggests this
    * is the expected behavior.
    */
-  override def ready(): Boolean =
-    outBuf.hasRemaining || in.available() > 0
+  override def ready(): Boolean = outBuf.hasRemaining || in.available() > 0
 
   private def ensureOpen(): Unit = {
     if (closed) throw new IOException("Stream closed")

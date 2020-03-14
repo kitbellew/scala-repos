@@ -99,22 +99,22 @@ package object debug {
       *                     causing the wrong data to be projected.
       */
     case class ColumnMetrics(
-        elementTypes: Accumulator[HashSet[String]] =
-          sparkContext.accumulator(HashSet.empty))
+        elementTypes: Accumulator[HashSet[String]] = sparkContext.accumulator(
+          HashSet.empty))
 
     val tupleCount: Accumulator[Int] = sparkContext.accumulator[Int](0)
 
     val numColumns: Int = child.output.size
-    val columnStats: Array[ColumnMetrics] =
-      Array.fill(child.output.size)(new ColumnMetrics())
+    val columnStats: Array[ColumnMetrics] = Array.fill(child.output.size)(
+      new ColumnMetrics())
 
     def dumpStats(): Unit = {
       logDebug(s"== ${child.simpleString} ==")
       logDebug(s"Tuples output: ${tupleCount.value}")
       child.output.zip(columnStats).foreach {
         case (attr, metric) =>
-          val actualDataTypes =
-            metric.elementTypes.value.mkString("{", ",", "}")
+          val actualDataTypes = metric.elementTypes.value
+            .mkString("{", ",", "}")
           logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
       }
     }

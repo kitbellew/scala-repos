@@ -67,8 +67,9 @@ class KryoSerializer(conf: SparkConf)
     with Logging
     with Serializable {
 
-  private val bufferSizeKb =
-    conf.getSizeAsKb("spark.kryoserializer.buffer", "64k")
+  private val bufferSizeKb = conf.getSizeAsKb(
+    "spark.kryoserializer.buffer",
+    "64k")
 
   if (bufferSizeKb >= ByteUnit.GiB.toKiB(2)) {
     throw new IllegalArgumentException(
@@ -86,10 +87,12 @@ class KryoSerializer(conf: SparkConf)
   }
   private val maxBufferSize = ByteUnit.MiB.toBytes(maxBufferSizeMb).toInt
 
-  private val referenceTracking =
-    conf.getBoolean("spark.kryo.referenceTracking", true)
-  private val registrationRequired =
-    conf.getBoolean("spark.kryo.registrationRequired", false)
+  private val referenceTracking = conf.getBoolean(
+    "spark.kryo.referenceTracking",
+    true)
+  private val registrationRequired = conf.getBoolean(
+    "spark.kryo.registrationRequired",
+    false)
   private val userRegistrators = conf
     .get("spark.kryo.registrator", "")
     .split(',')
@@ -110,8 +113,8 @@ class KryoSerializer(conf: SparkConf)
     kryo.setRegistrationRequired(registrationRequired)
 
     val oldClassLoader = Thread.currentThread.getContextClassLoader
-    val classLoader =
-      defaultClassLoader.getOrElse(Thread.currentThread.getContextClassLoader)
+    val classLoader = defaultClassLoader.getOrElse(
+      Thread.currentThread.getContextClassLoader)
 
     // Allow disabling Kryo reference tracking if user knows their object graphs don't have loops.
     // Do this before we invoke the user registrator so the user registrator can override this.

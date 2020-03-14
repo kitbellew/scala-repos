@@ -492,8 +492,8 @@ object IterateesSpec
                 ))
             ))
         ).recover { case t: Throwable => expected }
-        val actual =
-          await(Enumerator(unexpected, unexpected, unexpected) |>>> it)
+        val actual = await(
+          Enumerator(unexpected, unexpected, unexpected) |>>> it)
         actual must equalTo(expected)
       }
     }
@@ -759,8 +759,9 @@ object IterateesSpec
       // Work out how many arrays we'd need to create to trigger an OutOfMemoryError
       val arraySize = 1000000
       val tooManyArrays = (Runtime.getRuntime.maxMemory / arraySize).toInt + 1
-      val iterator =
-        Iterator.range(0, tooManyArrays).map(_ => new Array[Byte](arraySize))
+      val iterator = Iterator
+        .range(0, tooManyArrays)
+        .map(_ => new Array[Byte](arraySize))
       import play.api.libs.iteratee.Execution.Implicits.defaultExecutionContext
       await(
         Enumerator.enumerate(iterator) |>>> Iteratee

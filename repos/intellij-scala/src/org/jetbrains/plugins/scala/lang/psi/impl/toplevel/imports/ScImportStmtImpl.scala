@@ -201,8 +201,8 @@ class ScImportStmtImpl private (
           (elem, processor) match {
             case (pack: PsiPackage, complProc: CompletionProcessor)
                 if complProc.includePrefixImports =>
-              val settings: ScalaCodeStyleSettings =
-                ScalaCodeStyleSettings.getInstance(getProject)
+              val settings: ScalaCodeStyleSettings = ScalaCodeStyleSettings
+                .getInstance(getProject)
               val prefixImports = settings.getImportsWithPrefix.filter(s =>
                 !s.startsWith(ScalaCodeStyleSettings.EXCLUDE_PREFIX) &&
                   s.substring(0, s.lastIndexOf(".")) == pack.getQualifiedName)
@@ -293,16 +293,17 @@ class ScImportStmtImpl private (
                 mutable.HashSet.empty
               set.selectors foreach { selector =>
                 ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] =
-                  selector.reference.multiResolve(false)
+                val selectorResolve: Array[ResolveResult] = selector.reference
+                  .multiResolve(false)
                 selectorResolve foreach { result =>
                   if (selector.isAliasedImport && selector.importedName != selector.reference.refName) {
                     //Resolve the name imported by selector
                     //Collect shadowed elements
                     shadowed += ((selector, result.getElement))
                     var newState: ResolveState = state
-                    newState =
-                      state.put(ResolverEnv.nameKey, selector.importedName)
+                    newState = state.put(
+                      ResolverEnv.nameKey,
+                      selector.importedName)
                     newState = newState
                       .put(
                         ImportUsed.key,
@@ -364,8 +365,9 @@ class ScImportStmtImpl private (
                           }
                         }
                         calculateRefType(isElementInPo).foreach { tp =>
-                          newState =
-                            newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
+                          newState = newState.put(
+                            BaseProcessor.FROM_TYPE_KEY,
+                            tp)
                         }
 
                         processor.execute(element, newState)
@@ -383,8 +385,9 @@ class ScImportStmtImpl private (
                       case (cl: PsiClass, processor: BaseProcessor)
                           if !cl.isInstanceOf[ScTemplateDefinition] =>
                         calculateRefType(checkResolve(next)).foreach { tp =>
-                          newState =
-                            newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
+                          newState = newState.put(
+                            BaseProcessor.FROM_TYPE_KEY,
+                            tp)
                         }
                         if (!processor.processType(
                               new ScDesignatorType(cl, true),
@@ -405,8 +408,8 @@ class ScImportStmtImpl private (
               //wildcard import first, to show that this imports are unused if they really are
               set.selectors foreach { selector =>
                 ProgressManager.checkCanceled()
-                val selectorResolve: Array[ResolveResult] =
-                  selector.reference.multiResolve(false)
+                val selectorResolve: Array[ResolveResult] = selector.reference
+                  .multiResolve(false)
                 selectorResolve foreach { result =>
                   var newState: ResolveState = state
                   if (!selector.isAliasedImport || selector.importedName == selector.reference.refName) {

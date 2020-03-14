@@ -32,8 +32,9 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
   setName(repo.name)
   protected val system = MavenRepositorySystemFactory.newRepositorySystemImpl
   IO.createDirectory(repo.rootFile)
-  protected val session =
-    MavenRepositorySystemFactory.newSessionImpl(system, repo.rootFile)
+  protected val session = MavenRepositorySystemFactory.newSessionImpl(
+    system,
+    repo.rootFile)
   protected def setRepository(
       request: AetherMetadataRequest): AetherMetadataRequest = request
   protected def addRepositories(
@@ -77,19 +78,17 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
           try new MetadataXpp3Reader().read(reader, false)
           finally reader.close()
         }
-        val timestampOpt =
-          for {
-            v <- Option(readMetadata.getVersioning)
-            sp <- Option(v.getSnapshot)
-            ts <- Option(sp.getTimestamp)
-            t <- MavenRepositoryResolver.parseTimeString(ts)
-          } yield t
-        val lastUpdatedOpt =
-          for {
-            v <- Option(readMetadata.getVersioning)
-            lu <- Option(v.getLastUpdated)
-            d <- MavenRepositoryResolver.parseTimeString(lu)
-          } yield d
+        val timestampOpt = for {
+          v <- Option(readMetadata.getVersioning)
+          sp <- Option(v.getSnapshot)
+          ts <- Option(sp.getTimestamp)
+          t <- MavenRepositoryResolver.parseTimeString(ts)
+        } yield t
+        val lastUpdatedOpt = for {
+          v <- Option(readMetadata.getVersioning)
+          lu <- Option(v.getLastUpdated)
+          d <- MavenRepositoryResolver.parseTimeString(lu)
+        } yield d
         // TODO - Only look at timestamp *IF* the version is for a snapshot.
         timestampOpt orElse lastUpdatedOpt
       case _ => None

@@ -109,8 +109,7 @@ sealed abstract class List[+A]
     *    Example:
     *    {{{1 :: List(2, 3) = List(2, 3).::(1) = List(1, 2, 3)}}}
     */
-  def ::[B >: A](x: B): List[B] =
-    new scala.collection.immutable.::(x, this)
+  def ::[B >: A](x: B): List[B] = new scala.collection.immutable.::(x, this)
 
   /** Adds the elements of a given list in front of this list.
     *  @param prefix  The list elements to prepend.

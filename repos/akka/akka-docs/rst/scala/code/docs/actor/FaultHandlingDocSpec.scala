@@ -25,13 +25,14 @@ object FaultHandlingDocSpec {
     import akka.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
-        case _: ArithmeticException      => Resume
-        case _: NullPointerException     => Restart
-        case _: IllegalArgumentException => Stop
-        case _: Exception                => Escalate
-      }
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 10,
+      withinTimeRange = 1 minute) {
+      case _: ArithmeticException      => Resume
+      case _: NullPointerException     => Restart
+      case _: IllegalArgumentException => Stop
+      case _: Exception                => Escalate
+    }
     //#strategy
 
     def receive = { case p: Props => sender() ! context.actorOf(p) }
@@ -45,13 +46,14 @@ object FaultHandlingDocSpec {
     import akka.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
-        case _: ArithmeticException      => Resume
-        case _: NullPointerException     => Restart
-        case _: IllegalArgumentException => Stop
-        case _: Exception                => Escalate
-      }
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 10,
+      withinTimeRange = 1 minute) {
+      case _: ArithmeticException      => Resume
+      case _: NullPointerException     => Restart
+      case _: IllegalArgumentException => Stop
+      case _: Exception                => Escalate
+    }
     //#strategy2
 
     def receive = { case p: Props => sender() ! context.actorOf(p) }
@@ -66,12 +68,13 @@ object FaultHandlingDocSpec {
     import akka.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 1 minute) {
-        case _: ArithmeticException => Resume
-        case t =>
-          super.supervisorStrategy.decider.applyOrElse(t, (_: Any) => Escalate)
-      }
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 10,
+      withinTimeRange = 1 minute) {
+      case _: ArithmeticException => Resume
+      case t =>
+        super.supervisorStrategy.decider.applyOrElse(t, (_: Any) => Escalate)
+    }
     //#default-strategy-fallback
 
     def receive = Actor.emptyBehavior
@@ -88,8 +91,8 @@ object FaultHandlingDocSpec {
   }
   //#child
 
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString(
+    """
       akka {
         loggers = ["akka.testkit.TestEventListener"]
       }
@@ -124,8 +127,9 @@ class FaultHandlingDocSpec(_system: ActorSystem)
     val supervisor = system.actorOf(Props[Supervisor], "supervisor")
 
     supervisor ! Props[Child]
-    val child =
-      expectMsgType[ActorRef] // retrieve answer from TestKit’s testActor
+    val child = expectMsgType[
+      ActorRef
+    ] // retrieve answer from TestKit’s testActor
     //#create
     EventFilter.warning(occurrences = 1) intercept {
       //#resume

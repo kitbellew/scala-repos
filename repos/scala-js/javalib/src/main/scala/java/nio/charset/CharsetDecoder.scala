@@ -95,12 +95,13 @@ abstract class CharsetDecoder protected (
             throw new CoderMalfunctionError(ex)
         }
 
-      val result2 = if (result1.isUnderflow) {
-        val remaining = in.remaining
-        if (endOfInput && remaining > 0)
-          CoderResult.malformedForLength(remaining)
-        else result1
-      } else { result1 }
+      val result2 =
+        if (result1.isUnderflow) {
+          val remaining = in.remaining
+          if (endOfInput && remaining > 0)
+            CoderResult.malformedForLength(remaining)
+          else result1
+        } else { result1 }
 
       if (result2.isUnderflow || result2.isOverflow) { result2 }
       else {
@@ -141,8 +142,7 @@ abstract class CharsetDecoder protected (
     }
   }
 
-  protected def implFlush(out: CharBuffer): CoderResult =
-    CoderResult.UNDERFLOW
+  protected def implFlush(out: CharBuffer): CoderResult = CoderResult.UNDERFLOW
 
   final def reset(): CharsetDecoder = {
     status = INIT
@@ -200,11 +200,9 @@ abstract class CharsetDecoder protected (
 
   def isAutoDetecting(): Boolean = false
 
-  def isCharsetDetected(): Boolean =
-    throw new UnsupportedOperationException
+  def isCharsetDetected(): Boolean = throw new UnsupportedOperationException
 
-  def detectedCharset(): Charset =
-    throw new UnsupportedOperationException
+  def detectedCharset(): Charset = throw new UnsupportedOperationException
 }
 
 object CharsetDecoder {

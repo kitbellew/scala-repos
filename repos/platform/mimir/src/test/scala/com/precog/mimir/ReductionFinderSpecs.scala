@@ -78,8 +78,9 @@ trait ReductionFinderSpecs[M[+_]]
 
       val parent = dag.AbsoluteLoad(Const(CString("/foo"))(line))(line)
       val red = Count
-      val megaR =
-        dag.MegaReduce(List((trans.Leaf(trans.Source), List(red))), parent)
+      val megaR = dag.MegaReduce(
+        List((trans.Leaf(trans.Source), List(red))),
+        parent)
 
       val expected = joinDeref(megaR, 0, 0, line)
 
@@ -98,8 +99,11 @@ trait ReductionFinderSpecs[M[+_]]
           line),
         Const(CNum(5))(line))(line)
 
-      val obj =
-        Join(WrapObject, Cross(None), Const(CString("bar"))(line), clicks)(line)
+      val obj = Join(
+        WrapObject,
+        Cross(None),
+        Const(CString("bar"))(line),
+        clicks)(line)
 
       val op = Operate(
         Neg,
@@ -115,16 +119,18 @@ trait ReductionFinderSpecs[M[+_]]
             line),
           Const(CNum(12))(line))(line))(line)
 
-      val fooDerefTrans =
-        trans.DerefObjectStatic(trans.Leaf(trans.Source), CPathField("foo"))
+      val fooDerefTrans = trans.DerefObjectStatic(
+        trans.Leaf(trans.Source),
+        CPathField("foo"))
       val nonEqTrans = trans.Map1(
         trans.Equal(fooDerefTrans, trans.ConstLiteral(CNum(5), fooDerefTrans)),
         Unary.Comp.f1(morphCtx))
       val objTrans = trans.WrapObject(trans.Leaf(trans.Source), "bar")
       val opTrans = op1ForUnOp(Neg).spec(morphCtx)(
         trans.DerefArrayStatic(trans.Leaf(trans.Source), CPathIndex(1)))
-      val bazDerefTrans =
-        trans.DerefObjectStatic(trans.Leaf(trans.Source), CPathField("baz"))
+      val bazDerefTrans = trans.DerefObjectStatic(
+        trans.Leaf(trans.Source),
+        CPathField("baz"))
       val filterTrans = trans.Filter(
         trans.Leaf(trans.Source),
         trans.Equal(bazDerefTrans, trans.ConstLiteral(CNum(12), bazDerefTrans)))
@@ -222,8 +228,8 @@ trait ReductionFinderSpecs[M[+_]]
       val megaR = dag.MegaReduce(List((spec, List(reduction))), load)
 
       "right" in {
-        val input =
-          Join(Add, Cross(None), dag.Operate(Neg, load)(line), r)(line)
+        val input = Join(Add, Cross(None), dag.Operate(Neg, load)(line), r)(
+          line)
         val expected = Join(
           Add,
           Cross(None),
@@ -233,8 +239,8 @@ trait ReductionFinderSpecs[M[+_]]
         megaReduce(input, findReductions(input, evalCtx)) mustEqual expected
       }
       "left" in {
-        val input =
-          Join(Add, Cross(None), r, dag.Operate(Neg, load)(line))(line)
+        val input = Join(Add, Cross(None), r, dag.Operate(Neg, load)(line))(
+          line)
         val expected = Join(
           Add,
           Cross(None),
@@ -369,22 +375,31 @@ trait ReductionFinderSpecs[M[+_]]
       val max = Max
       val mean = Mean
 
-      val id =
-        Join(DerefObject, Cross(None), load, Const(CString("userId"))(line))(
-          line)
-      val height =
-        Join(DerefObject, Cross(None), load, Const(CString("height"))(line))(
-          line)
-      val weight =
-        Join(DerefObject, Cross(None), load, Const(CString("weight"))(line))(
-          line)
+      val id = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("userId"))(line))(line)
+      val height = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("height"))(line))(line)
+      val weight = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("weight"))(line))(line)
 
       val r1 = dag.Reduce(min, id)(line)
       val r2 = dag.Reduce(max, height)(line)
       val r3 = dag.Reduce(mean, weight)(line)
 
-      val input =
-        Join(Add, Cross(None), r1, Join(Add, Cross(None), r2, r3)(line))(line)
+      val input = Join(
+        Add,
+        Cross(None),
+        r1,
+        Join(Add, Cross(None), r2, r3)(line))(line)
 
       val mega = dag.MegaReduce(
         List(
@@ -420,19 +435,26 @@ trait ReductionFinderSpecs[M[+_]]
       val max = Max
       val mean = Mean
 
-      val height =
-        Join(DerefObject, Cross(None), load, Const(CString("height"))(line))(
-          line)
-      val weight =
-        Join(DerefObject, Cross(None), load, Const(CString("weight"))(line))(
-          line)
+      val height = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("height"))(line))(line)
+      val weight = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("weight"))(line))(line)
 
       val r1 = dag.Reduce(min, height)(line)
       val r2 = dag.Reduce(max, height)(line)
       val r3 = dag.Reduce(mean, weight)(line)
 
-      val input =
-        Join(Add, Cross(None), r1, Join(Add, Cross(None), r2, r3)(line))(line)
+      val input = Join(
+        Add,
+        Cross(None),
+        r1,
+        Join(Add, Cross(None), r2, r3)(line))(line)
 
       val mega = dag.MegaReduce(
         List(
@@ -469,16 +491,21 @@ trait ReductionFinderSpecs[M[+_]]
       val max = Max
       val mean = Mean
 
-      val weight =
-        Join(DerefObject, Cross(None), load, Const(CString("weight"))(line))(
-          line)
+      val weight = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("weight"))(line))(line)
 
       val r1 = dag.Reduce(min, weight)(line)
       val r2 = dag.Reduce(max, weight)(line)
       val r3 = dag.Reduce(mean, weight)(line)
 
-      val input =
-        Join(Add, Cross(None), r1, Join(Add, Cross(None), r2, r3)(line))(line)
+      val input = Join(
+        Add,
+        Cross(None),
+        r1,
+        Join(Add, Cross(None), r2, r3)(line))(line)
 
       val mega = dag.MegaReduce(
         List(
@@ -512,22 +539,31 @@ trait ReductionFinderSpecs[M[+_]]
 
       val mean = Mean
 
-      val id =
-        Join(DerefObject, Cross(None), load, Const(CString("userId"))(line))(
-          line)
-      val height =
-        Join(DerefObject, Cross(None), load, Const(CString("height"))(line))(
-          line)
-      val weight =
-        Join(DerefObject, Cross(None), load, Const(CString("weight"))(line))(
-          line)
+      val id = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("userId"))(line))(line)
+      val height = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("height"))(line))(line)
+      val weight = Join(
+        DerefObject,
+        Cross(None),
+        load,
+        Const(CString("weight"))(line))(line)
 
       val r1 = dag.Reduce(mean, id)(line)
       val r2 = dag.Reduce(mean, height)(line)
       val r3 = dag.Reduce(mean, weight)(line)
 
-      val input =
-        Join(Add, Cross(None), r1, Join(Add, Cross(None), r2, r3)(line))(line)
+      val input = Join(
+        Add,
+        Cross(None),
+        r1,
+        Join(Add, Cross(None), r2, r3)(line))(line)
 
       val mega = dag.MegaReduce(
         List(
@@ -591,8 +627,9 @@ trait ReductionFinderSpecs[M[+_]]
         line
       ) //TODO need a window function
 
-      val megaR =
-        MegaReduce(List((trans.Leaf(trans.Source), List(reduction))), parent)
+      val megaR = MegaReduce(
+        List((trans.Leaf(trans.Source), List(reduction))),
+        parent)
 
       val expected = dag.Split(
         dag.Group(1, nums, UnfixedSolution(0, nums)),
@@ -848,8 +885,8 @@ trait ReductionFinderSpecs[M[+_]]
 
       "right" in {
         val r = dag.Reduce(StdDev, load)(line)
-        val input =
-          Join(Add, Cross(None), dag.Operate(Neg, load)(line), r)(line)
+        val input = Join(Add, Cross(None), dag.Operate(Neg, load)(line), r)(
+          line)
 
         val expected = MegaReduceState(
           Map(r -> load),
@@ -862,9 +899,11 @@ trait ReductionFinderSpecs[M[+_]]
       }
       "left" in {
         val r = dag.Reduce(Count, load)(line)
-        val input =
-          Join(Add, Cross(Some(CrossRight)), r, dag.Operate(Neg, load)(line))(
-            line)
+        val input = Join(
+          Add,
+          Cross(Some(CrossRight)),
+          r,
+          dag.Operate(Neg, load)(line))(line)
 
         val expected = MegaReduceState(
           Map(r -> load),
@@ -936,8 +975,10 @@ trait ReductionFinderSpecs[M[+_]]
 
       val id = new Identifier
 
-      lazy val parent =
-        SplitGroup(1, Identities.Specs(Vector(LoadIds("/clicks"))), id)(line)
+      lazy val parent = SplitGroup(
+        1,
+        Identities.Specs(Vector(LoadIds("/clicks"))),
+        id)(line)
       lazy val r1 = dag.Reduce(Min, parent)(line)
       lazy val r2 = dag.Reduce(Max, parent)(line)
 

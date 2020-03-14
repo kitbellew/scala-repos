@@ -51,8 +51,7 @@ private[http] object ParameterImpl {
   def apply[T, U](receptacle: NameReceptacle[T])(implicit
       fu: FromStringUnmarshaller[T],
       tTag: ClassTag[U],
-      conv: T ⇒ U): Parameter[U] =
-    new ParameterImpl(receptacle)(fu, tTag, conv)
+      conv: T ⇒ U): Parameter[U] = new ParameterImpl(receptacle)(fu, tTag, conv)
 
   def apply[T, U](receptacle: NameUnmarshallerReceptacle[T])(implicit
       tTag: ClassTag[U],

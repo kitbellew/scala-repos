@@ -33,8 +33,9 @@ object ScalaReflectMacroExpansionParser {
     "^performing macro expansion (.+) at source-(.+),line-(\\d+),offset=(\\d+)$",
     Pattern.DOTALL | Pattern.MULTILINE)
 //  val expansionRegex = Pattern.compile("^\\s*\\{(.+)\\}\\s+Block.*$", Pattern.DOTALL | Pattern.MULTILINE)
-  val expansionRegex =
-    Pattern.compile("^(.+)\\n[^\\n]+$", Pattern.DOTALL | Pattern.MULTILINE)
+  val expansionRegex = Pattern.compile(
+    "^(.+)\\n[^\\n]+$",
+    Pattern.DOTALL | Pattern.MULTILINE)
 
   def isMacroMessage(message: String): Boolean = {
     import ParsingState._
@@ -68,8 +69,9 @@ object ScalaReflectMacroExpansionParser {
         val matcher = expansionRegex.matcher(message)
         if (!matcher.matches()) reset()
         else {
-          expansions(expansions.length - 1) =
-            MacroExpansion(expansions.last.place, matcher.group(1))
+          expansions(expansions.length - 1) = MacroExpansion(
+            expansions.last.place,
+            matcher.group(1))
           parsingState = EXPANSION
         }
     }

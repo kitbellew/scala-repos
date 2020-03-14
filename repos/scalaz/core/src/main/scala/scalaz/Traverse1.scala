@@ -39,16 +39,14 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
 
   // derived functions
   override def traverseImpl[G[_]: Applicative, A, B](fa: F[A])(
-      f: A => G[B]): G[F[B]] =
-    traverse1Impl(fa)(f)
+      f: A => G[B]): G[F[B]] = traverse1Impl(fa)(f)
 
   override def foldMap1[A, B](fa: F[A])(f: A => B)(
       implicit F: Semigroup[B]): B =
     foldLeft1(traverse1Impl[Id, A, B](fa)(f))(F.append(_, _))
 
   def traverse1[G[_], A, B](fa: F[A])(f: A => G[B])(
-      implicit a: Apply[G]): G[F[B]] =
-    traverse1Impl(fa)(f)
+      implicit a: Apply[G]): G[F[B]] = traverse1Impl(fa)(f)
 
   final def traverse1U[A, GB](fa: F[A])(f: A => GB)(
       implicit G: Unapply[Apply, GB]): G.M[F[G.A]] =
@@ -82,10 +80,10 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
         M: Apply[M],
         MN: Equal[M[N[F[C]]]]): Boolean = {
       type MN[A] = M[N[A]]
-      val t1: MN[F[C]] =
-        M.map(traverse1[M, A, B](fa)(amb))(fb => traverse1[N, B, C](fb)(bnc))
-      val t2: MN[F[C]] =
-        traverse1[MN, A, C](fa)(a => M.map(amb(a))(bnc))(M compose N)
+      val t1: MN[F[C]] = M.map(traverse1[M, A, B](fa)(amb))(fb =>
+        traverse1[N, B, C](fb)(bnc))
+      val t2: MN[F[C]] = traverse1[MN, A, C](fa)(a => M.map(amb(a))(bnc))(
+        M compose N)
       MN.equal(t1, t2)
     }
 
@@ -112,8 +110,8 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
       type MN[A] = (M[A], N[A])
       val t1: MN[F[B]] =
         (traverse1[M, A, B](fa)(amb), traverse1[N, A, B](fa)(anb))
-      val t2: MN[F[B]] =
-        traverse1[MN, A, B](fa)(a => (amb(a), anb(a)))(M product N)
+      val t2: MN[F[B]] = traverse1[MN, A, B](fa)(a => (amb(a), anb(a)))(
+        M product N)
       MN.equal(t1, t2)
     }
   }

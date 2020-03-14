@@ -278,8 +278,8 @@ private[streaming] class ReceivedBlockTracker(
   /** Optionally create the write ahead log manager only if the feature is enabled */
   private def createWriteAheadLog(): Option[WriteAheadLog] = {
     checkpointDirOption.map { checkpointDir =>
-      val logDir =
-        ReceivedBlockTracker.checkpointDirToLogDir(checkpointDirOption.get)
+      val logDir = ReceivedBlockTracker.checkpointDirToLogDir(
+        checkpointDirOption.get)
       WriteAheadLogUtils.createLogForDriver(conf, logDir, hadoopConf)
     }
   }

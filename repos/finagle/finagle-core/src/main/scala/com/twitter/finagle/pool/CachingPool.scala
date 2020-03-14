@@ -30,8 +30,9 @@ private[finagle] class CachingPool[Req, Rep](
   private[this] val cache =
     new Cache[Service[Req, Rep]](cacheSize, ttl, timer, Some(_.close()))
   @volatile private[this] var isOpen = true
-  private[this] val sizeGauge =
-    statsReceiver.addGauge("pool_cached") { cache.size }
+  private[this] val sizeGauge = statsReceiver.addGauge("pool_cached") {
+    cache.size
+  }
 
   private[this] class WrappedService(underlying: Service[Req, Rep])
       extends ServiceProxy[Req, Rep](underlying) {
@@ -72,8 +73,7 @@ private[finagle] class CachingPool[Req, Rep](
       factory.close(deadline)
     }
 
-  override def status =
-    if (isOpen) factory.status else Status.Closed
+  override def status = if (isOpen) factory.status else Status.Closed
 
   override val toString = "caching_pool_%s".format(factory.toString)
 }

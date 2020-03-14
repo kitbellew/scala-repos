@@ -79,13 +79,12 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
 
   override def getNextBatch(start: Option[Offset]): Option[Batch] =
     synchronized {
-      val newBlocks =
-        batches.drop(
-          start
-            .map(_.asInstanceOf[LongOffset])
-            .getOrElse(LongOffset(-1))
-            .offset
-            .toInt + 1)
+      val newBlocks = batches.drop(
+        start
+          .map(_.asInstanceOf[LongOffset])
+          .getOrElse(LongOffset(-1))
+          .offset
+          .toInt + 1)
 
       if (newBlocks.nonEmpty) {
         logDebug(

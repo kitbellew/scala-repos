@@ -11,10 +11,9 @@ object test {
   /** def functor(x: A): B { type T = x.T } */
   abstract class functor() {
     val arg: A;
-    val res: B { type T = arg.T } =
-      new B {
-        type T = arg.T;
-      };
+    val res: B { type T = arg.T } = new B {
+      type T = arg.T;
+    };
   }
 
   val a = new A {

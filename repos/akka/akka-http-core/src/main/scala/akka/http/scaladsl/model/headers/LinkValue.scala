@@ -36,8 +36,8 @@ sealed abstract class LinkParam
   def value: AnyRef
 }
 object LinkParam {
-  implicit val paramsRenderer: Renderer[immutable.Seq[LinkParam]] =
-    Renderer.seqRenderer(separator = "; ")
+  implicit val paramsRenderer: Renderer[immutable.Seq[LinkParam]] = Renderer
+    .seqRenderer(separator = "; ")
 }
 
 object LinkParams {

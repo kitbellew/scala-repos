@@ -162,8 +162,8 @@ object ActorSelection {
     * intention is to send messages frequently.
     */
   def apply(anchorRef: ActorRef, elements: Iterable[String]): ActorSelection = {
-    val compiled: immutable.IndexedSeq[SelectionPathElement] =
-      elements.collect({
+    val compiled: immutable.IndexedSeq[SelectionPathElement] = elements
+      .collect({
         case x if !x.isEmpty ⇒
           if ((x.indexOf('?') != -1) || (x.indexOf('*') != -1))
             SelectChildPattern(x)
@@ -215,14 +215,14 @@ object ActorSelection {
                 val chldr = refWithCell.children
                 if (iter.isEmpty) {
                   // leaf
-                  val matchingChildren =
-                    chldr.filter(c ⇒ p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr.filter(c ⇒
+                    p.pattern.matcher(c.path.name).matches)
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)
                   else matchingChildren.foreach(_.tell(sel.msg, sender))
                 } else {
-                  val matchingChildren =
-                    chldr.filter(c ⇒ p.pattern.matcher(c.path.name).matches)
+                  val matchingChildren = chldr.filter(c ⇒
+                    p.pattern.matcher(c.path.name).matches)
                   // don't send to emptyRef after wildcard fan-out
                   if (matchingChildren.isEmpty && !sel.wildcardFanOut)
                     emptyRef.tell(sel, sender)

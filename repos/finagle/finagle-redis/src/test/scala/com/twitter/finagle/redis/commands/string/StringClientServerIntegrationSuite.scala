@@ -215,8 +215,10 @@ final class StringClientServerIntegrationSuite
         StringToChannelBuffer("msnx.key3") -> StringToChannelBuffer("world")
       )
       assert(Await.result(client(MSetNx(input2))) == IntegerReply(0))
-      val expects =
-        List("Hello", "there", BytesToString(RedisCodec.NIL_VALUE_BA.array))
+      val expects = List(
+        "Hello",
+        "there",
+        BytesToString(RedisCodec.NIL_VALUE_BA.array))
       assertMBulkReply(
         client(
           MGet(

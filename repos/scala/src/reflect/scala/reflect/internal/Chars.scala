@@ -62,8 +62,7 @@ trait Chars {
     }
 
   /** Is character a whitespace character (but not a new line)? */
-  def isWhitespace(c: Char) =
-    c == ' ' || c == '\t' || c == CR
+  def isWhitespace(c: Char) = c == ' ' || c == '\t' || c == CR
 
   /** Can character form part of a doc comment variable $xxx? */
   def isVarPart(c: Char) =

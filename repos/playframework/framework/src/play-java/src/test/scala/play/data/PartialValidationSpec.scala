@@ -41,8 +41,9 @@ class PartialValidationSpec extends Specification {
     }
 
     "support multiple validations for the same group" in {
-      val form1 =
-        formFactory.form(classOf[SomeForm]).bind(Map("prop2" -> "Hello").asJava)
+      val form1 = formFactory
+        .form(classOf[SomeForm])
+        .bind(Map("prop2" -> "Hello").asJava)
       form1.hasErrors must_== true
       val form2 = formFactory
         .form(classOf[SomeForm])

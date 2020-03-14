@@ -28,8 +28,8 @@ object TreeLocTest extends SpecLite {
 
   "TreeLoc from empty forest does not throw an exception" ! {
     import scalaz.std.option._
-    val result: Option[TreeLoc[Int]] =
-      TreeLoc.fromForest(Stream.empty[Tree[Int]])
+    val result: Option[TreeLoc[Int]] = TreeLoc.fromForest(
+      Stream.empty[Tree[Int]])
     result must_== (none[TreeLoc[Int]])
   }
 

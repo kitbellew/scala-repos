@@ -147,14 +147,18 @@ class SkewJoinPipeTest extends WordSpec with Matchers {
     }
 
     "compute skew join with reducers = 10, using strategy A" in {
-      val (sk, inner) =
-        runJobWithArguments(new SkewJoinJob(_), reducers = 10, replicator = "a")
+      val (sk, inner) = runJobWithArguments(
+        new SkewJoinJob(_),
+        reducers = 10,
+        replicator = "a")
       sk shouldBe inner
     }
 
     "compute skew join with reducers = 10, using strategy B" in {
-      val (sk, inner) =
-        runJobWithArguments(new SkewJoinJob(_), reducers = 10, replicator = "b")
+      val (sk, inner) = runJobWithArguments(
+        new SkewJoinJob(_),
+        reducers = 10,
+        replicator = "b")
       sk shouldBe inner
     }
   }
@@ -194,14 +198,16 @@ class CollidingKeySkewJoinTest extends WordSpec with Matchers {
 
   "A CollidingSkewInnerProductJob" should {
     "compute skew join with colliding fields, using strategy A" in {
-      val (sk, inn) =
-        runJobWithArguments(new CollidingKeySkewJoinJob(_), replicator = "a")
+      val (sk, inn) = runJobWithArguments(
+        new CollidingKeySkewJoinJob(_),
+        replicator = "a")
       sk shouldBe inn
     }
 
     "compute skew join with colliding fields, using strategy B" in {
-      val (sk, inn) =
-        runJobWithArguments(new CollidingKeySkewJoinJob(_), replicator = "b")
+      val (sk, inn) = runJobWithArguments(
+        new CollidingKeySkewJoinJob(_),
+        replicator = "b")
       sk shouldBe inn
     }
   }

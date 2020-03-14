@@ -106,8 +106,7 @@ object Status {
     *
     * @throws [[ClosedException]] if the status becomes [[Closed]].
     */
-  def awaitOpen(get: => Status): Unit =
-    Await.result(whenOpen(get))
+  def awaitOpen(get: => Status): Unit = Await.result(whenOpen(get))
 
   /**
     * An open [[Service]] or [[ServiceFactory]] is ready to be used.

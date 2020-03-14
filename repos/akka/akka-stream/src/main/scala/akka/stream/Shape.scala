@@ -348,8 +348,7 @@ final case class SinkShape[-T](in: Inlet[T @uncheckedVariance]) extends Shape {
 object SinkShape {
 
   /** Java API */
-  def of[T](inlet: Inlet[T @uncheckedVariance]): SinkShape[T] =
-    SinkShape(inlet)
+  def of[T](inlet: Inlet[T @uncheckedVariance]): SinkShape[T] = SinkShape(inlet)
 }
 
 //#bidi-shape

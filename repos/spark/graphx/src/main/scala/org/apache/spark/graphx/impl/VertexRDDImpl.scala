@@ -90,8 +90,9 @@ class VertexRDDImpl[VD] private[graphx] (
   override private[graphx] def mapVertexPartitions[VD2: ClassTag](
       f: ShippableVertexPartition[VD] => ShippableVertexPartition[VD2])
       : VertexRDD[VD2] = {
-    val newPartitionsRDD =
-      partitionsRDD.mapPartitions(_.map(f), preservesPartitioning = true)
+    val newPartitionsRDD = partitionsRDD.mapPartitions(
+      _.map(f),
+      preservesPartitioning = true)
     this.withPartitionsRDD(newPartitionsRDD)
   }
 
@@ -229,8 +230,9 @@ class VertexRDDImpl[VD] private[graphx] (
       vPart.withRoutingTable(vPart.routingTable.reverse))
 
   override def withEdges(edges: EdgeRDD[_]): VertexRDD[VD] = {
-    val routingTables =
-      VertexRDD.createRoutingTables(edges, this.partitioner.get)
+    val routingTables = VertexRDD.createRoutingTables(
+      edges,
+      this.partitioner.get)
     val vertexPartitions = partitionsRDD.zipPartitions(routingTables, true) {
       (partIter, routingTableIter) =>
         val routingTable =

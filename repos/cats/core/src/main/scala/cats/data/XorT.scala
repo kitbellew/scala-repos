@@ -40,8 +40,7 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   }
 
   def recover(pf: PartialFunction[A, B])(
-      implicit F: Functor[F]): XorT[F, A, B] =
-    XorT(F.map(value)(_.recover(pf)))
+      implicit F: Functor[F]): XorT[F, A, B] = XorT(F.map(value)(_.recover(pf)))
 
   def recoverWith(pf: PartialFunction[A, XorT[F, A, B]])(
       implicit F: Monad[F]): XorT[F, A, B] =
@@ -72,8 +71,7 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
   def to[G[_]](implicit
       functorF: Functor[F],
       monoidKG: MonoidK[G],
-      applicativeG: Applicative[G]): F[G[B]] =
-    functorF.map(value)(_.to[G, B])
+      applicativeG: Applicative[G]): F[G[B]] = functorF.map(value)(_.to[G, B])
 
   def collectRight(implicit F: MonadCombine[F]): F[B] =
     F.flatMap(value)(_.to[F, B])
@@ -94,16 +92,13 @@ final case class XorT[F[_], A, B](value: F[A Xor B]) {
     })
 
   def flatMapF[AA >: A, D](f: B => F[AA Xor D])(
-      implicit F: Monad[F]): XorT[F, AA, D] =
-    flatMap(f andThen XorT.apply)
+      implicit F: Monad[F]): XorT[F, AA, D] = flatMap(f andThen XorT.apply)
 
   def transform[C, D](f: Xor[A, B] => Xor[C, D])(
-      implicit F: Functor[F]): XorT[F, C, D] =
-    XorT(F.map(value)(f))
+      implicit F: Functor[F]): XorT[F, C, D] = XorT(F.map(value)(f))
 
   def subflatMap[AA >: A, D](f: B => AA Xor D)(
-      implicit F: Functor[F]): XorT[F, AA, D] =
-    transform(_.flatMap(f))
+      implicit F: Functor[F]): XorT[F, AA, D] = transform(_.flatMap(f))
 
   def map[D](f: B => D)(implicit F: Functor[F]): XorT[F, A, D] =
     bimap(identity, f)
@@ -244,8 +239,7 @@ private[data] abstract class XorTInstances extends XorTInstances1 {
   implicit def xortTransLift[M[_], E](implicit
       M: Functor[M]): TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = XorT[α, E, β] })#λ, M] {
-      def liftT[A](ma: M[A]): XorT[M, E, A] =
-        XorT(M.map(ma)(Xor.right))
+      def liftT[A](ma: M[A]): XorT[M, E, A] = XorT(M.map(ma)(Xor.right))
     }
 
 }
@@ -347,8 +341,7 @@ private[data] trait XorTMonadError[F[_], L]
   override def attempt[A](fla: XorT[F, L, A]): XorT[F, L, L Xor A] =
     XorT.right(fla.value)
   override def recover[A](fla: XorT[F, L, A])(
-      pf: PartialFunction[L, A]): XorT[F, L, A] =
-    fla.recover(pf)
+      pf: PartialFunction[L, A]): XorT[F, L, A] = fla.recover(pf)
   override def recoverWith[A](fla: XorT[F, L, A])(
       pf: PartialFunction[L, XorT[F, L, A]]): XorT[F, L, A] =
     fla.recoverWith(pf)
@@ -391,8 +384,7 @@ private[data] sealed trait XorTFoldable[F[_], L]
     fa.foldLeft(b)(f)
 
   def foldRight[A, B](fa: XorT[F, L, A], lb: Eval[B])(
-      f: (A, Eval[B]) => Eval[B]): Eval[B] =
-    fa.foldRight(lb)(f)
+      f: (A, Eval[B]) => Eval[B]): Eval[B] = fa.foldRight(lb)(f)
 }
 
 private[data] sealed trait XorTTraverse[F[_], L]
@@ -401,8 +393,7 @@ private[data] sealed trait XorTTraverse[F[_], L]
   override implicit def F0: Traverse[F]
 
   override def traverse[G[_]: Applicative, A, B](fa: XorT[F, L, A])(
-      f: A => G[B]): G[XorT[F, L, B]] =
-    fa traverse f
+      f: A => G[B]): G[XorT[F, L, B]] = fa traverse f
 }
 
 private[data] sealed trait XorTEq[F[_], L, A] extends Eq[XorT[F, L, A]] {

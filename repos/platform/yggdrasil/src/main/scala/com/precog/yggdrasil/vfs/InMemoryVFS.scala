@@ -228,8 +228,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       }
 
       IO {
-        data =
-          (events groupBy { case (offset, msg) => msg.path }).foldLeft(data) {
+        data = (events groupBy { case (offset, msg) => msg.path })
+          .foldLeft(data) {
             case (acc, (path, messages)) =>
               val currentKey = (path, Version.Current)
               // We can discard the event IDs for the purposes of this class

@@ -108,49 +108,42 @@ abstract class Request extends Message with HttpRequestProxy {
 
   /** Remote host - a dotted quad */
   @BeanProperty
-  def remoteHost: String =
-    remoteAddress.getHostAddress
+  def remoteHost: String = remoteAddress.getHostAddress
 
   /** Remote InetAddress */
   @BeanProperty
-  def remoteAddress: InetAddress =
-    remoteSocketAddress.getAddress
+  def remoteAddress: InetAddress = remoteSocketAddress.getAddress
 
   /** Remote port */
   @BeanProperty
-  def remotePort: Int =
-    remoteSocketAddress.getPort
+  def remotePort: Int = remoteSocketAddress.getPort
 
   // The get*Param methods below are for Java compatibility.  Note Scala default
   // arguments aren't compatible with Java, so we need two versions of each.
 
   /** Get parameter value.  Returns value or null. */
-  def getParam(name: String): String =
-    params.get(name).orNull
+  def getParam(name: String): String = params.get(name).orNull
 
   /** Get parameter value.  Returns value or default. */
   def getParam(name: String, default: String): String =
     params.get(name).getOrElse(default)
 
   /** Get Short param.  Returns value or 0. */
-  def getShortParam(name: String): Short =
-    params.getShortOrElse(name, 0)
+  def getShortParam(name: String): Short = params.getShortOrElse(name, 0)
 
   /** Get Short param.  Returns value or default. */
   def getShortParam(name: String, default: Short): Short =
     params.getShortOrElse(name, default)
 
   /** Get Int param.  Returns value or 0. */
-  def getIntParam(name: String): Int =
-    params.getIntOrElse(name, 0)
+  def getIntParam(name: String): Int = params.getIntOrElse(name, 0)
 
   /** Get Int param.  Returns value or default. */
   def getIntParam(name: String, default: Int): Int =
     params.getIntOrElse(name, default)
 
   /** Get Long param.  Returns value or 0. */
-  def getLongParam(name: String): Long =
-    params.getLongOrElse(name, 0L)
+  def getLongParam(name: String): Long = params.getLongOrElse(name, 0L)
 
   /** Get Long param.  Returns value or default. */
   def getLongParam(name: String, default: Long = 0L): Long =
@@ -165,8 +158,7 @@ abstract class Request extends Message with HttpRequestProxy {
     params.getBooleanOrElse(name, default)
 
   /** Get all values of parameter.  Returns list of values. */
-  def getParams(name: String): JList[String] =
-    params.getAll(name).toList.asJava
+  def getParams(name: String): JList[String] = params.getAll(name).toList.asJava
 
   /** Get all parameters. */
   def getParams(): JList[JMap.Entry[String, String]] =
@@ -178,12 +170,10 @@ abstract class Request extends Message with HttpRequestProxy {
     }).asJava
 
   /** Check if parameter exists. */
-  def containsParam(name: String): Boolean =
-    params.contains(name)
+  def containsParam(name: String): Boolean = params.contains(name)
 
   /** Get parameters names. */
-  def getParamNames(): JSet[String] =
-    params.keySet.asJava
+  def getParamNames(): JSet[String] = params.keySet.asJava
 
   /** Response associated with request */
   lazy val response: Response = Response(this)
@@ -241,8 +231,7 @@ object Request {
     * @param params a list of key-value pairs representing the query string.
     */
   @varargs
-  def apply(params: Tuple2[String, String]*): Request =
-    apply("/", params: _*)
+  def apply(params: Tuple2[String, String]*): Request = apply("/", params: _*)
 
   /**
     * Create an HTTP/1.1 GET Request from URI and query string parameters.
@@ -261,8 +250,7 @@ object Request {
   /**
     * Create an HTTP/1.1 GET Request from URI string.
     * */
-  def apply(uri: String): Request =
-    apply(Method.Get, uri)
+  def apply(uri: String): Request = apply(Method.Get, uri)
 
   /**
     * Create an HTTP/1.1 GET Request from method and URI string.
@@ -327,8 +315,8 @@ object Request {
       channel: Channel): Request =
     new Request {
       val httpRequest = httpRequestArg
-      lazy val remoteSocketAddress =
-        channel.getRemoteAddress.asInstanceOf[InetSocketAddress]
+      lazy val remoteSocketAddress = channel.getRemoteAddress
+        .asInstanceOf[InetSocketAddress]
     }
 
   /** Create a query string from URI and parameters. */

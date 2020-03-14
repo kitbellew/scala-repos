@@ -32,8 +32,7 @@ private[akka] class DaemonMsgCreateSerializer(val system: ExtendedActorSystem)
   def this() = this(null)
 
   // TODO remove this when deprecated this() is removed
-  override val identifier: Int =
-    if (system eq null) 3 else identifierFromConfig
+  override val identifier: Int = if (system eq null) 3 else identifierFromConfig
 
   def includeManifest: Boolean = false
 

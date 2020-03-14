@@ -188,8 +188,8 @@ class ClientRegistryTest
         "fancy")
     val simple = new SimpleRegistry()
     GlobalRegistry.withRegistry(simple) {
-      val factory =
-        (RegistryEntryLifecycle.module[Int, Int] +: stk).make(params)
+      val factory = (RegistryEntryLifecycle.module[Int, Int] +: stk)
+        .make(params)
       val expected = {
         Set(
           Entry(Seq("client", "fancy", "foo", "/$/fail", "name", "p1"), "999"),

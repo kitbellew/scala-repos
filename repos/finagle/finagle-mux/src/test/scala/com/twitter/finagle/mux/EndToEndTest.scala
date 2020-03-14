@@ -89,8 +89,9 @@ class EndToEndTest
     Dtab.unwind {
       Dtab.local ++= Dtab.read("/foo=>/bar; /web=>/$/inet/twitter.com/80")
       for (n <- 0 until 2) {
-        val rsp =
-          Await.result(client(Request(Path.empty, Buf.Empty)), 30.seconds)
+        val rsp = Await.result(
+          client(Request(Path.empty, Buf.Empty)),
+          30.seconds)
         val Buf.Utf8(str) = rsp.body
         assert(
           str == "Dtab(2)\n\t/foo => /bar\n\t/web => /$/inet/twitter.com/80\n")
@@ -262,10 +263,9 @@ EOF
    */
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
     test("draining and restart") {
-      val echo =
-        new Service[Request, Response] {
-          def apply(req: Request) = Future.value(Response(req.body))
-        }
+      val echo = new Service[Request, Response] {
+        def apply(req: Request) = Future.value(Response(req.body))
+      }
       val req = Request(Path.empty, Buf.Utf8("hello, world!"))
 
       // We need to reserve a port here because we're going to be

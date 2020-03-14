@@ -19,8 +19,7 @@ import akka.util.ByteString
 
 //#inet6-protocol-family
 final case class Inet6ProtocolFamily() extends DatagramChannelCreator {
-  override def create() =
-    DatagramChannel.open(StandardProtocolFamily.INET6)
+  override def create() = DatagramChannel.open(StandardProtocolFamily.INET6)
 }
 //#inet6-protocol-family
 

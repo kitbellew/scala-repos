@@ -45,8 +45,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Set the environment.
     */
-  final def in(env: Environment): Self =
-    copyBuilder(environment = env)
+  final def in(env: Environment): Self = copyBuilder(environment = env)
 
   /**
     * Set the environment path.
@@ -69,8 +68,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Set the dependency initialization to eager.
     */
-  final def eagerlyLoaded(): Self =
-    copyBuilder(eagerly = true)
+  final def eagerlyLoaded(): Self = copyBuilder(eagerly = true)
 
   /**
     * Add additional configuration.
@@ -87,8 +85,7 @@ abstract class GuiceBuilder[Self] protected (
   /**
     * Add additional configuration.
     */
-  final def configure(conf: (String, Any)*): Self =
-    configure(conf.toMap)
+  final def configure(conf: (String, Any)*): Self = configure(conf.toMap)
 
   private def withBinderOption(
       opt: BinderOption,
@@ -186,9 +183,10 @@ abstract class GuiceBuilder[Self] protected (
     val bindingModules =
       GuiceableModule.guiced(environment, configuration, binderOptions)(
         enabledModules) :+ injectorModule
-    val overrideModules =
-      GuiceableModule.guiced(environment, configuration, binderOptions)(
-        overrides)
+    val overrideModules = GuiceableModule.guiced(
+      environment,
+      configuration,
+      binderOptions)(overrides)
     GuiceModules
       .`override`(bindingModules.asJava)
       .`with`(overrideModules.asJava)

@@ -441,8 +441,9 @@ private[hive] trait HiveInspectors {
 
       case soi: StandardStructObjectInspector =>
         val schema = dataType.asInstanceOf[StructType]
-        val wrappers =
-          soi.getAllStructFieldRefs.asScala.zip(schema.fields).map {
+        val wrappers = soi.getAllStructFieldRefs.asScala
+          .zip(schema.fields)
+          .map {
             case (ref, field) =>
               wrapperFor(ref.getFieldObjectInspector, field.dataType)
           }
@@ -479,8 +480,9 @@ private[hive] trait HiveInspectors {
       case moi: MapObjectInspector =>
         val mt = dataType.asInstanceOf[MapType]
         val keyWrapper = wrapperFor(moi.getMapKeyObjectInspector, mt.keyType)
-        val valueWrapper =
-          wrapperFor(moi.getMapValueObjectInspector, mt.valueType)
+        val valueWrapper = wrapperFor(
+          moi.getMapValueObjectInspector,
+          mt.valueType)
 
         (o: Any) => {
           if (o != null) {

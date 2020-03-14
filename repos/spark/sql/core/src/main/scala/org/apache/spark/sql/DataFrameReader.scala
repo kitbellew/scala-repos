@@ -135,12 +135,11 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 1.4.0
     */
   def load(): DataFrame = {
-    val dataSource =
-      DataSource(
-        sqlContext,
-        userSpecifiedSchema = userSpecifiedSchema,
-        className = source,
-        options = extraOptions.toMap)
+    val dataSource = DataSource(
+      sqlContext,
+      userSpecifiedSchema = userSpecifiedSchema,
+      className = source,
+      options = extraOptions.toMap)
     Dataset.newDataFrame(
       sqlContext,
       LogicalRelation(dataSource.resolveRelation()))
@@ -183,12 +182,11 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
     * @since 2.0.0
     */
   def stream(): DataFrame = {
-    val dataSource =
-      DataSource(
-        sqlContext,
-        userSpecifiedSchema = userSpecifiedSchema,
-        className = source,
-        options = extraOptions.toMap)
+    val dataSource = DataSource(
+      sqlContext,
+      userSpecifiedSchema = userSpecifiedSchema,
+      className = source,
+      options = extraOptions.toMap)
     Dataset.newDataFrame(
       sqlContext,
       StreamingRelation(dataSource.createSource()))
@@ -240,8 +238,11 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       upperBound: Long,
       numPartitions: Int,
       connectionProperties: Properties): DataFrame = {
-    val partitioning =
-      JDBCPartitioningInfo(columnName, lowerBound, upperBound, numPartitions)
+    val partitioning = JDBCPartitioningInfo(
+      columnName,
+      lowerBound,
+      upperBound,
+      numPartitions)
     val parts = JDBCRelation.columnPartition(partitioning)
     jdbc(url, table, parts, connectionProperties)
   }

@@ -46,8 +46,10 @@ object InstructionStackEffect {
     * allows looking up the sizes of values on the stack.
     */
   def maxStackGrowth(insn: AbstractInsnNode): Int = {
-    val prodCons =
-      computeConsProd(insn, forClassfile = false, conservative = true)
+    val prodCons = computeConsProd(
+      insn,
+      forClassfile = false,
+      conservative = true)
     prod(prodCons) - cons(prodCons)
   }
 

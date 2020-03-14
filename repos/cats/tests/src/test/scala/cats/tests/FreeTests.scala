@@ -72,8 +72,7 @@ object FreeTests extends FreeTestsInstances {
   implicit def trampolineArbitrary[A: Arbitrary]: Arbitrary[Trampoline[A]] =
     freeArbitrary[Function0, A]
 
-  implicit def trampolineEq[A: Eq]: Eq[Trampoline[A]] =
-    freeEq[Function0, A]
+  implicit def trampolineEq[A: Eq]: Eq[Trampoline[A]] = freeEq[Function0, A]
 }
 
 sealed trait FreeTestsInstances {
@@ -104,8 +103,7 @@ sealed trait FreeTestsInstances {
 
   implicit def freeArbitrary[F[_], A](implicit
       F: Arbitrary[F[A]],
-      A: Arbitrary[A]): Arbitrary[Free[F, A]] =
-    Arbitrary(freeGen[F, A](4))
+      A: Arbitrary[A]): Arbitrary[Free[F, A]] = Arbitrary(freeGen[F, A](4))
 
   implicit def freeEq[S[_]: Monad, A](implicit SA: Eq[S[A]]): Eq[Free[S, A]] =
     new Eq[Free[S, A]] {

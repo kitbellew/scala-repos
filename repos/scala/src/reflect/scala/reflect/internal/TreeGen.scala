@@ -177,8 +177,9 @@ abstract class TreeGen {
     mkUnattributedRef(sym.fullNameAsName('.'))
 
   def mkUnattributedRef(fullName: Name): RefTree = {
-    val hd :: tl =
-      nme.segments(fullName.toString, assumeTerm = fullName.isTermName)
+    val hd :: tl = nme.segments(
+      fullName.toString,
+      assumeTerm = fullName.isTermName)
     tl.foldLeft(Ident(hd): RefTree)(Select(_, _))
   }
 
@@ -206,8 +207,7 @@ abstract class TreeGen {
   def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
     stabilize(mkAttributedRef(pre, sym))
 
-  def mkAttributedStableRef(sym: Symbol): Tree =
-    stabilize(mkAttributedRef(sym))
+  def mkAttributedStableRef(sym: Symbol): Tree = stabilize(mkAttributedRef(sym))
 
   def mkAttributedThis(sym: Symbol): This =
     This(sym.name.toTypeName) setSymbol sym setType sym.thisType
@@ -491,8 +491,9 @@ abstract class TreeGen {
     // Field definitions for the class - remove defaults.
 
     val fieldDefs = vparamss.flatten map (vd => {
-      val field =
-        copyValDef(vd)(mods = vd.mods &~ DEFAULTPARAM, rhs = EmptyTree)
+      val field = copyValDef(vd)(
+        mods = vd.mods &~ DEFAULTPARAM,
+        rhs = EmptyTree)
       // Prevent overlapping of `field` end's position with default argument's start position.
       // This is needed for `Positions.Locator(pos).traverse` to return the correct tree when
       // the `pos` is a point position with all its values equal to `vd.rhs.pos.start`.
@@ -846,9 +847,9 @@ abstract class TreeGen {
         val pos1 =
           if (t.pos == NoPosition) NoPosition
           else rangePos(t.pos.source, t.pos.start, t.pos.point, rhs1.pos.end)
-        val vfrom1 =
-          ValFrom(atPos(wrappingPos(allpats)) { mkTuple(allpats) }, rhs1)
-            .setPos(pos1)
+        val vfrom1 = ValFrom(
+          atPos(wrappingPos(allpats)) { mkTuple(allpats) },
+          rhs1).setPos(pos1)
         mkFor(vfrom1 :: rest1, sugarBody)
       case _ =>
         EmptyTree //may happen for erroneous input
@@ -918,15 +919,14 @@ abstract class TreeGen {
             })
           case _ =>
             val tmp = freshTermName()
-            val firstDef =
-              atPos(matchExpr.pos) {
-                ValDef(
-                  Modifiers(
-                    PrivateLocal | SYNTHETIC | ARTIFACT | (mods.flags & LAZY)),
-                  tmp,
-                  TypeTree(),
-                  matchExpr)
-              }
+            val firstDef = atPos(matchExpr.pos) {
+              ValDef(
+                Modifiers(
+                  PrivateLocal | SYNTHETIC | ARTIFACT | (mods.flags & LAZY)),
+                tmp,
+                TypeTree(),
+                matchExpr)
+            }
             var cnt = 0
             val restDefs = for ((vname, tpt, pos) <- vars) yield atPos(pos) {
               cnt += 1
@@ -956,8 +956,10 @@ abstract class TreeGen {
         CaseDef(pat.duplicate, EmptyTree, Literal(Constant(true))),
         CaseDef(Ident(nme.WILDCARD), EmptyTree, Literal(Constant(false)))
       )
-      val visitor =
-        mkVisitor(cases, checkExhaustive = false, nme.CHECK_IF_REFUTABLE_STRING)
+      val visitor = mkVisitor(
+        cases,
+        checkExhaustive = false,
+        nme.CHECK_IF_REFUTABLE_STRING)
       atPos(rhs.pos)(Apply(Select(rhs, nme.withFilter), visitor :: Nil))
     }
 

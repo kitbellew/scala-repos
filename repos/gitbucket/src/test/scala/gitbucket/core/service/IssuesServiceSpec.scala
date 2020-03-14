@@ -34,8 +34,9 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
 
       assert(getCommitStatues == Map.empty)
 
-      val (is2, pr2) =
-        generateNewPullRequest("user1/repo1/master", "user1/repo1/feature1")
+      val (is2, pr2) = generateNewPullRequest(
+        "user1/repo1/master",
+        "user1/repo1/feature1")
       assert(pr2.issueId == 2)
 
       // if there are no statuses, state is none
@@ -84,8 +85,9 @@ class IssuesServiceSpec extends FunSuite with ServiceSpecBase {
             None)))
 
       // get only statuses in query issues
-      val (is3, pr3) =
-        generateNewPullRequest("user1/repo1/master", "user1/repo1/feature3")
+      val (is3, pr3) = generateNewPullRequest(
+        "user1/repo1/master",
+        "user1/repo1/feature3")
       val cs4 = dummyService.createCommitStatus(
         "user1",
         "repo1",

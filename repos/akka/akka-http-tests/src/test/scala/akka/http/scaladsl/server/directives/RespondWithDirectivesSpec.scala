@@ -64,8 +64,9 @@ class RespondWithDirectivesSpec extends RoutingSpec {
     }
     "not update an existing header" in {
       Get() ~> route(existingHeader) ~> check {
-        response shouldEqual HttpResponse(headers =
-          List(customHeader2, existingHeader))
+        response shouldEqual HttpResponse(headers = List(
+          customHeader2,
+          existingHeader))
       }
     }
   }

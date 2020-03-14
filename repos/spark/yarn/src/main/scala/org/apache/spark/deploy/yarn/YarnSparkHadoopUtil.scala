@@ -195,8 +195,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
   }
 
   private[spark] def getContainerId: ContainerId = {
-    val containerIdString =
-      System.getenv(ApplicationConstants.Environment.CONTAINER_ID.name())
+    val containerIdString = System.getenv(
+      ApplicationConstants.Environment.CONTAINER_ID.name())
     ConverterUtils.toContainerId(containerIdString)
   }
 
@@ -230,15 +230,16 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
 
     // the hive configuration class is a subclass of Hadoop Configuration, so can be cast down
     // to a Configuration and used without reflection
-    val hiveConfClass =
-      mirror.classLoader.loadClass("org.apache.hadoop.hive.conf.HiveConf")
+    val hiveConfClass = mirror.classLoader.loadClass(
+      "org.apache.hadoop.hive.conf.HiveConf")
     // using the (Configuration, Class) constructor allows the current configuration to be included
     // in the hive config.
     val ctor = hiveConfClass.getDeclaredConstructor(
       classOf[Configuration],
       classOf[Object].getClass)
-    val hiveConf =
-      ctor.newInstance(conf, hiveConfClass).asInstanceOf[Configuration]
+    val hiveConf = ctor
+      .newInstance(conf, hiveConfClass)
+      .asInstanceOf[Configuration]
     val metastoreUri = hiveConf.getTrimmed("hive.metastore.uris", "")
 
     // Check for local metastore
@@ -250,8 +251,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       logDebug(
         s"Getting Hive delegation token for ${currentUser.getUserName()} against " +
           s"$principal at $metastoreUri")
-      val hiveClass =
-        mirror.classLoader.loadClass("org.apache.hadoop.hive.ql.metadata.Hive")
+      val hiveClass = mirror.classLoader.loadClass(
+        "org.apache.hadoop.hive.ql.metadata.Hive")
       val closeCurrent = hiveClass.getMethod("closeCurrent")
       try {
         // get all the instance methods before invoking any
@@ -383,9 +384,9 @@ object YarnSparkHadoopUtil {
       env: HashMap[String, String],
       key: String,
       value: String): Unit = {
-    val newValue = if (env.contains(key)) {
-      env(key) + getClassPathSeparator + value
-    } else value
+    val newValue =
+      if (env.contains(key)) { env(key) + getClassPathSeparator + value }
+      else value
     env.put(key, newValue)
   }
 
@@ -499,9 +500,8 @@ object YarnSparkHadoopUtil {
     * Otherwise, return the result of environment.$()
     * Note: $$() is added in Hadoop 2.4.
     */
-  private lazy val expandMethod =
-    Try(classOf[Environment].getMethod("$$"))
-      .getOrElse(classOf[Environment].getMethod("$"))
+  private lazy val expandMethod = Try(classOf[Environment].getMethod("$$"))
+    .getOrElse(classOf[Environment].getMethod("$"))
 
   def expandEnvironment(environment: Environment): String =
     expandMethod.invoke(environment).asInstanceOf[String]
@@ -512,9 +512,9 @@ object YarnSparkHadoopUtil {
     * Otherwise, return File.pathSeparator
     * Note: CLASS_PATH_SEPARATOR is added in Hadoop 2.4.
     */
-  private lazy val classPathSeparatorField =
-    Try(classOf[ApplicationConstants].getField("CLASS_PATH_SEPARATOR"))
-      .getOrElse(classOf[File].getField("pathSeparator"))
+  private lazy val classPathSeparatorField = Try(
+    classOf[ApplicationConstants].getField("CLASS_PATH_SEPARATOR"))
+    .getOrElse(classOf[File].getField("pathSeparator"))
 
   def getClassPathSeparator(): String = {
     classPathSeparatorField.get(null).asInstanceOf[String]
@@ -540,11 +540,10 @@ object YarnSparkHadoopUtil {
 
       initialNumExecutors
     } else {
-      val targetNumExecutors =
-        sys.env
-          .get("SPARK_EXECUTOR_INSTANCES")
-          .map(_.toInt)
-          .getOrElse(numExecutors)
+      val targetNumExecutors = sys.env
+        .get("SPARK_EXECUTOR_INSTANCES")
+        .map(_.toInt)
+        .getOrElse(numExecutors)
       // System property can override environment variable.
       conf.get(EXECUTOR_INSTANCES).getOrElse(targetNumExecutors)
     }

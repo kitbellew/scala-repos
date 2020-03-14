@@ -76,8 +76,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
 
       def makeReduction(jtpe: JType): Reduction = {
         val jtypes: List[Option[JType]] = {
-          val grouped =
-            Schema.flatten(jtpe, List.empty[ColumnRef]).groupBy(_.selector)
+          val grouped = Schema
+            .flatten(jtpe, List.empty[ColumnRef])
+            .groupBy(_.selector)
           val numerics = grouped filter {
             case (cpath, refs) =>
               refs.map(_.ctype).exists(_.isNumeric)

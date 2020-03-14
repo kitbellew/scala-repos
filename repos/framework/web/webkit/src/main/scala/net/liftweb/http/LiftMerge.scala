@@ -144,49 +144,47 @@ private[http] trait LiftMerge {
 
       nodes.foldLeft(NodesAndEventJs(Vector[Node](), Noop)) {
         case (soFar, node) =>
-          val childInfo =
-            node match {
-              case element: Elem
-                  if element.label == "html" && !htmlDescendant =>
-                htmlElement = element
+          val childInfo = node match {
+            case element: Elem if element.label == "html" && !htmlDescendant =>
+              htmlElement = element
 
-                startingState.copy(htmlDescendant = true && mergeHeadAndTail)
+              startingState.copy(htmlDescendant = true && mergeHeadAndTail)
 
-              case element: Elem
-                  if element.label == "head" && htmlDescendant && !bodyDescendant =>
-                headElement = element
+            case element: Elem
+                if element.label == "head" && htmlDescendant && !bodyDescendant =>
+              headElement = element
 
-                startingState.copy(headChild = true && mergeHeadAndTail)
+              startingState.copy(headChild = true && mergeHeadAndTail)
 
-              case element: Elem
-                  if mergeHeadAndTail &&
-                    (element.label == "head" ||
-                      element.label.startsWith("head_")) &&
-                    htmlDescendant &&
-                    bodyDescendant =>
-                startingState.copy(headInBodyChild = true)
+            case element: Elem
+                if mergeHeadAndTail &&
+                  (element.label == "head" ||
+                    element.label.startsWith("head_")) &&
+                  htmlDescendant &&
+                  bodyDescendant =>
+              startingState.copy(headInBodyChild = true)
 
-              case element: Elem
-                  if mergeHeadAndTail &&
-                    element.label == "tail" &&
-                    htmlDescendant &&
-                    bodyDescendant =>
-                startingState.copy(tailInBodyChild = true)
+            case element: Elem
+                if mergeHeadAndTail &&
+                  element.label == "tail" &&
+                  htmlDescendant &&
+                  bodyDescendant =>
+              startingState.copy(tailInBodyChild = true)
 
-              case element: Elem if element.label == "body" && htmlDescendant =>
-                bodyElement = element
+            case element: Elem if element.label == "body" && htmlDescendant =>
+              bodyElement = element
 
-                startingState.copy(
-                  bodyDescendant = true && mergeHeadAndTail,
-                  bodyChild = true && mergeHeadAndTail)
+              startingState.copy(
+                bodyDescendant = true && mergeHeadAndTail,
+                bodyChild = true && mergeHeadAndTail)
 
-              case _ =>
-                startingState.copy(
-                  headChild = false,
-                  headInBodyChild = false,
-                  tailInBodyChild = false,
-                  bodyChild = false)
-            }
+            case _ =>
+              startingState.copy(
+                headChild = false,
+                headInBodyChild = false,
+                tailInBodyChild = false,
+                bodyChild = false)
+          }
 
           val bodyHead = childInfo.headInBodyChild && !headInBodyChild
           val bodyTail = childInfo.tailInBodyChild && !tailInBodyChild
@@ -195,10 +193,9 @@ private[http] trait LiftMerge {
             .normalizeNode(node, contextPath, stripComments)
             .map {
               case normalized @ NodeAndEventJs(normalizedElement: Elem, _) =>
-                val normalizedChildren =
-                  normalizeMergeAndExtractEvents(
-                    normalizedElement.child,
-                    childInfo)
+                val normalizedChildren = normalizeMergeAndExtractEvents(
+                  normalizedElement.child,
+                  childInfo)
 
                 normalized.copy(
                   normalizedElement.copy(child = normalizedChildren.nodes),
@@ -213,14 +210,13 @@ private[http] trait LiftMerge {
                 case e: Elem
                     if e.label == "node" &&
                       e.prefix == "lift_deferred" =>
-                  val deferredNodes: Seq[NodesAndEventJs] =
-                    for {
-                      idAttribute <- e.attributes("id").take(1)
-                      id = idAttribute.text
-                      nodes <- processedSnippets.get(id)
-                    } yield {
-                      normalizeMergeAndExtractEvents(nodes, startingState)
-                    }
+                  val deferredNodes: Seq[NodesAndEventJs] = for {
+                    idAttribute <- e.attributes("id").take(1)
+                    id = idAttribute.text
+                    nodes <- processedSnippets.get(id)
+                  } yield {
+                    normalizeMergeAndExtractEvents(nodes, startingState)
+                  }
 
                   deferredNodes.foldLeft(soFar.append(normalizedResults))(
                     _ append _)
@@ -244,20 +240,18 @@ private[http] trait LiftMerge {
     }
 
     if (!hasHtmlHeadAndBody) {
-      val fixedHtml =
-        normalizeMergeAndExtractEvents(
-          xhtml,
-          HtmlState(mergeHeadAndTail = false)).nodes
+      val fixedHtml = normalizeMergeAndExtractEvents(
+        xhtml,
+        HtmlState(mergeHeadAndTail = false)).nodes
 
       fixedHtml.find {
         case e: Elem => true
         case _       => false
       } getOrElse Text("")
     } else {
-      val eventJs =
-        normalizeMergeAndExtractEvents(
-          xhtml,
-          HtmlState(mergeHeadAndTail = true)).js
+      val eventJs = normalizeMergeAndExtractEvents(
+        xhtml,
+        HtmlState(mergeHeadAndTail = true)).js
 
       val htmlKids = new ListBuffer[Node]
 
@@ -321,30 +315,31 @@ private[http] trait LiftMerge {
         htmlElement.minimizeEmpty,
         htmlKids.toList: _*)
 
-      val ret: Node = if (Props.devMode) {
-        LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
-          case Nil => tmpRet
-          case xs =>
-            import scala.xml.transform._
+      val ret: Node =
+        if (Props.devMode) {
+          LiftRules.xhtmlValidator.toList.flatMap(_(tmpRet)) match {
+            case Nil => tmpRet
+            case xs =>
+              import scala.xml.transform._
 
-            val errors: NodeSeq = xs.map(e =>
-              <div style="border: red solid 2px">XHTML Validation error:{
-                e.msg
-              }at line{e.line + 1}and column{e.col}</div>)
+              val errors: NodeSeq = xs.map(e =>
+                <div style="border: red solid 2px">XHTML Validation error:{
+                  e.msg
+                }at line{e.line + 1}and column{e.col}</div>)
 
-            val rule = new RewriteRule {
-              override def transform(n: Node) =
-                n match {
-                  case e: Elem if e.label == "body" =>
-                    e.copy(child = e.child ++ errors)
+              val rule = new RewriteRule {
+                override def transform(n: Node) =
+                  n match {
+                    case e: Elem if e.label == "body" =>
+                      e.copy(child = e.child ++ errors)
 
-                  case x => super.transform(x)
-                }
-            }
-            (new RuleTransformer(rule)).transform(tmpRet)(0)
-        }
+                    case x => super.transform(x)
+                  }
+              }
+              (new RuleTransformer(rule)).transform(tmpRet)(0)
+          }
 
-      } else tmpRet
+        } else tmpRet
 
       ret
     }

@@ -49,8 +49,13 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
       return UIUtils.basicSparkPage(msg, "Not Found")
     }
 
-    val executorHeaders =
-      Seq("ExecutorID", "Worker", "Cores", "Memory", "State", "Logs")
+    val executorHeaders = Seq(
+      "ExecutorID",
+      "Worker",
+      "Cores",
+      "Memory",
+      "State",
+      "Logs")
     val allExecutors =
       (app.executors.values ++ app.removedExecutors).toSet.toSeq
     // This includes executors that are either still running or have exited cleanly
@@ -59,13 +64,16 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
         exec.state) || exec.state == ExecutorState.EXITED
     }
     val removedExecutors = allExecutors.diff(executors)
-    val executorsTable =
-      UIUtils.listingTable(executorHeaders, executorRow, executors)
-    val removedExecutorsTable =
-      UIUtils.listingTable(executorHeaders, executorRow, removedExecutors)
+    val executorsTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      executors)
+    val removedExecutorsTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      removedExecutors)
 
-    val content =
-      <div class="row-fluid">
+    val content = <div class="row-fluid">
         <div class="span12">
           <ul class="unstyled">
             <li><strong>ID:</strong> {app.id}</li>
@@ -73,15 +81,15 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
             <li><strong>User:</strong> {app.desc.user}</li>
             <li><strong>Cores:</strong>
             {
-        if (app.desc.maxCores.isEmpty) {
-          "Unlimited (%s granted)".format(app.coresGranted)
-        } else {
-          "%s (%s granted, %s left)".format(
-            app.desc.maxCores.get,
-            app.coresGranted,
-            app.coresLeft)
-        }
+      if (app.desc.maxCores.isEmpty) {
+        "Unlimited (%s granted)".format(app.coresGranted)
+      } else {
+        "%s (%s granted, %s left)".format(
+          app.desc.maxCores.get,
+          app.coresGranted,
+          app.coresLeft)
       }
+    }
             </li>
             <li>
               <strong>Executor Memory:</strong>
@@ -99,11 +107,11 @@ private[ui] class ApplicationPage(parent: MasterWebUI)
           <h4> Executor Summary </h4>
           {executorsTable}
           {
-        if (removedExecutors.nonEmpty) {
-          <h4> Removed Executors </h4> ++
-            removedExecutorsTable
-        }
+      if (removedExecutors.nonEmpty) {
+        <h4> Removed Executors </h4> ++
+          removedExecutorsTable
       }
+    }
         </div>
       </div>;
     UIUtils.basicSparkPage(content, "Application: " + app.desc.name)

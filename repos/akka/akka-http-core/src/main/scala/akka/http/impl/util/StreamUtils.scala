@@ -58,13 +58,11 @@ private[http] object StreamUtils {
     val transformer = new PushStage[ByteString, ByteString] {
       override def onPush(
           element: ByteString,
-          ctx: Context[ByteString]): SyncDirective =
-        ctx.push(element)
+          ctx: Context[ByteString]): SyncDirective = ctx.push(element)
 
       override def onUpstreamFailure(
           cause: Throwable,
-          ctx: Context[ByteString]): TerminationDirective =
-        ctx.fail(f(cause))
+          ctx: Context[ByteString]): TerminationDirective = ctx.fail(f(cause))
     }
 
     Flow[ByteString].transform(() ⇒ transformer).named("transformError")
@@ -357,10 +355,9 @@ private[http] object StreamUtils {
     def apply(): OneTimeValve =
       new OneTimeValve {
         val promise = Promise[Unit]()
-        val _source =
-          Source
-            .fromFuture(promise.future)
-            .drop(1) // we are only interested in the completion event
+        val _source = Source
+          .fromFuture(promise.future)
+          .drop(1) // we are only interested in the completion event
 
         def source[T]: Source[T, NotUsed] =
           _source.asInstanceOf[
@@ -381,6 +378,5 @@ private[http] class EnhancedByteStringSource[Mat](
     byteStringStream.runFold(ByteString.empty)(_ ++ _)
   def utf8String(implicit
       materializer: Materializer,
-      ec: ExecutionContext): Future[String] =
-    join.map(_.utf8String)
+      ec: ExecutionContext): Future[String] = join.map(_.utf8String)
 }

@@ -57,8 +57,7 @@ object ClusterShardingSpec {
     }
     //#counter-actor
 
-    def updateState(event: CounterChanged): Unit =
-      count += event.delta
+    def updateState(event: CounterChanged): Unit = count += event.delta
 
     override def receiveRecover: Receive = {
       case evt: CounterChanged ⇒ updateState(evt)
@@ -266,8 +265,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       rebalance-interval = ${if (rebalanceEnabled) "2s" else "3600s"}
       """)
         .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
-      val settings =
-        ClusterShardingSettings(cfg).withRememberEntities(rememberEntities)
+      val settings = ClusterShardingSettings(cfg).withRememberEntities(
+        rememberEntities)
       if (settings.stateStoreMode == "persistence")
         ShardCoordinator.props(typeName, settings, allocationStrategy)
       else
@@ -291,8 +290,10 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       val rememberEnabled = typeName.toLowerCase.contains("remember")
       val singletonProps = BackoffSupervisor
         .props(
-          childProps =
-            coordinatorProps(typeName, rebalanceEnabled, rememberEnabled),
+          childProps = coordinatorProps(
+            typeName,
+            rebalanceEnabled,
+            rememberEnabled),
           childName = "coordinator",
           minBackoff = 5.seconds,
           maxBackoff = 5.seconds,
@@ -336,19 +337,25 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
   }
 
   lazy val region = createRegion("counter", rememberEntities = false)
-  lazy val rebalancingRegion =
-    createRegion("rebalancingCounter", rememberEntities = false)
+  lazy val rebalancingRegion = createRegion(
+    "rebalancingCounter",
+    rememberEntities = false)
 
-  lazy val persistentEntitiesRegion =
-    createRegion("RememberCounterEntities", rememberEntities = true)
-  lazy val anotherPersistentRegion =
-    createRegion("AnotherRememberCounter", rememberEntities = true)
-  lazy val persistentRegion =
-    createRegion("RememberCounter", rememberEntities = true)
-  lazy val rebalancingPersistentRegion =
-    createRegion("RebalancingRememberCounter", rememberEntities = true)
-  lazy val autoMigrateRegion =
-    createRegion("AutoMigrateRememberRegionTest", rememberEntities = true)
+  lazy val persistentEntitiesRegion = createRegion(
+    "RememberCounterEntities",
+    rememberEntities = true)
+  lazy val anotherPersistentRegion = createRegion(
+    "AnotherRememberCounter",
+    rememberEntities = true)
+  lazy val persistentRegion = createRegion(
+    "RememberCounter",
+    rememberEntities = true)
+  lazy val rebalancingPersistentRegion = createRegion(
+    "RebalancingRememberCounter",
+    rememberEntities = true)
+  lazy val autoMigrateRegion = createRegion(
+    "AutoMigrateRememberRegionTest",
+    rememberEntities = true)
 
   s"Cluster sharding ($mode)" must {
 
@@ -655,8 +662,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     enterBarrier("extension-started")
     runOn(fifth) {
       //#counter-usage
-      val counterRegion: ActorRef =
-        ClusterSharding(system).shardRegion("Counter")
+      val counterRegion: ActorRef = ClusterSharding(system).shardRegion(
+        "Counter")
       counterRegion ! Get(123)
       expectMsg(0)
 
@@ -696,8 +703,8 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
 
-      val counterRegionViaGet: ActorRef =
-        ClusterSharding(system).shardRegion("ApiTest")
+      val counterRegionViaGet: ActorRef = ClusterSharding(system).shardRegion(
+        "ApiTest")
 
       counterRegionViaStart should equal(counterRegionViaGet)
     }

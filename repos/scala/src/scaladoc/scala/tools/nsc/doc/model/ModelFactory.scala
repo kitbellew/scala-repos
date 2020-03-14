@@ -77,8 +77,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       case _              => false
     }
 
-  def optimize(str: String): String =
-    if (str.length < 16) str.intern else str
+  def optimize(str: String): String = if (str.length < 16) str.intern else str
 
   /* ============== IMPLEMENTATION PROVIDING ENTITY TYPES ============== */
 
@@ -398,8 +397,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         dtpl: DocTemplateImpl,
         conv: ImplicitConversionImpl): Unit = {
       if (implicitlyConvertibleClassesCache == null)
-        implicitlyConvertibleClassesCache =
-          mutable.ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)]()
+        implicitlyConvertibleClassesCache = mutable
+          .ListBuffer[(DocTemplateImpl, ImplicitConversionImpl)]()
       implicitlyConvertibleClassesCache += ((dtpl, conv))
     }
 
@@ -677,8 +676,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
   trait HigherKindedImpl extends HigherKinded {
     def sym: Symbol
     def inTpl: TemplateImpl
-    def typeParams =
-      sym.typeParams map (makeTypeParam(_, inTpl))
+    def typeParams = sym.typeParams map (makeTypeParam(_, inTpl))
   }
   /* ============== MAKER METHODS ============== */
 
@@ -1009,8 +1007,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     val aSym = annot.symbol
     new EntityImpl(aSym, makeTemplate(aSym.owner))
       with scala.tools.nsc.doc.model.Annotation {
-      lazy val annotationClass =
-        makeTemplate(annot.symbol)
+      lazy val annotationClass = makeTemplate(annot.symbol)
       val arguments = {
         val paramsOpt: Option[List[ValueParam]] = annotationClass match {
           case aClass: DocTemplateEntity with Class =>
@@ -1088,8 +1085,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             case _ => None
           }
         } else None
-      def resultType =
-        makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
+      def resultType = makeTypeInTemplateContext(aSym.tpe, inTpl, aSym)
       def isImplicit = aSym.isImplicit
     }
 

@@ -10,7 +10,6 @@ class PathBenchmark extends StdBenchAnnotations {
   var path: String = "/"
 
   @Benchmark
-  def read(): Path =
-    Path.read(path)
+  def read(): Path = Path.read(path)
 
 }

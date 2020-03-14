@@ -18,8 +18,7 @@ object IPC {
   private val portMax = 65536
   private val loopback = InetAddress.getByName(null) // loopback
 
-  def client[T](port: Int)(f: IPC => T): T =
-    ipc(new Socket(loopback, port))(f)
+  def client[T](port: Int)(f: IPC => T): T = ipc(new Socket(loopback, port))(f)
 
   def pullServer[T](f: Server => T): T = {
     val server = makeServer

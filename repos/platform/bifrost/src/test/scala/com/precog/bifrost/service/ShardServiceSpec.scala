@@ -286,8 +286,9 @@ trait TestShardService
     .contentType[QueryResult](application / (MimeTypes.json))
     .path("/analytics/v2/analytics/queries")
 
-  override implicit val defaultFutureTimeouts: FutureTimeouts =
-    FutureTimeouts(1, Duration(3, "second"))
+  override implicit val defaultFutureTimeouts: FutureTimeouts = FutureTimeouts(
+    1,
+    Duration(3, "second"))
   val shortFutureTimeouts = FutureTimeouts(1, Duration(50, "millis"))
 }
 
@@ -505,8 +506,8 @@ class ShardServiceSpec extends TestShardService {
 
   "Shard browse service" should {
     "handle browse for API key accessible path" in {
-      val obj =
-        JObject(Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
+      val obj = JObject(
+        Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       browse().copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>
@@ -552,8 +553,8 @@ class ShardServiceSpec extends TestShardService {
     }
 
     "handle metadata for API key accessible path" in {
-      val obj =
-        JObject(Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
+      val obj = JObject(
+        Map("foo" -> JArray(JString("foo") :: JString("bar") :: Nil)))
       meta().copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(Left(obj)), _) => ok
         case HttpResponse(HttpStatus(NotFound, _), _, Some(Left(obj)), _) =>

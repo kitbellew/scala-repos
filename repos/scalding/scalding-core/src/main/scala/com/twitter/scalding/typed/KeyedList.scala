@@ -149,8 +149,7 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     * This is just short hand for mapValueStream(identity), it makes sure the
     * planner sees that you want to force a shuffle. For expert tuning
     */
-  def forceToReducers: This[K, T] =
-    mapValueStream(identity)
+  def forceToReducers: This[K, T] = mapValueStream(identity)
 
   /**
     * Use this to get the first value encountered.
@@ -244,14 +243,12 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     mapValues { t => if (fn(t)) 1L else 0L }.sum
 
   /** For each key, check to see if a predicate is true for all Values*/
-  def forall(fn: T => Boolean): This[K, Boolean] =
-    mapValues { fn(_) }.product
+  def forall(fn: T => Boolean): This[K, Boolean] = mapValues { fn(_) }.product
 
   /**
     * For each key, selects all elements except first n ones.
     */
-  def drop(n: Int): This[K, T] =
-    mapValueStream { _.drop(n) }
+  def drop(n: Int): This[K, T] = mapValueStream { _.drop(n) }
 
   /**
     * For each key, Drops longest prefix of elements that satisfy the given predicate.

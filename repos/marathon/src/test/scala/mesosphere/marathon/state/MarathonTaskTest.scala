@@ -11,8 +11,11 @@ class MarathonTaskTest extends MarathonSpec with GivenWhenThen with Matchers {
 
   test("toProto returns the encapsulated MarathonTask") {
     Given("A state created from a task")
-    val encapsulatedTask =
-      makeTask("app/dummy", "dummyhost", 42000, version = Some("123"))
+    val encapsulatedTask = makeTask(
+      "app/dummy",
+      "dummyhost",
+      42000,
+      version = Some("123"))
     val state = MarathonTaskState(encapsulatedTask)
 
     When("We call the toProto function")

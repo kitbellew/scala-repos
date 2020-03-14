@@ -96,8 +96,8 @@ with AbstractTestConfigurationProducer {
         StringUtil.getShortName(testClassPath) +
           (if (testName != null) "\\" + testName else ""),
         confFactory)
-    val runConfiguration =
-      settings.getConfiguration.asInstanceOf[UTestRunConfiguration]
+    val runConfiguration = settings.getConfiguration
+      .asInstanceOf[UTestRunConfiguration]
     runConfiguration.setTestClassPath(testClassPath)
     runConfiguration.initWorkingDir()
     if (testName != null) runConfiguration.setTestName(testName)
@@ -190,8 +190,10 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     val fail = (null, null)
     //first, check that containing type definition is a uTest suite
-    var containingObject: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    var containingObject: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (containingObject == null) return fail
     while (!containingObject
              .isInstanceOf[ScObject] && PsiTreeUtil.getParentOfType(

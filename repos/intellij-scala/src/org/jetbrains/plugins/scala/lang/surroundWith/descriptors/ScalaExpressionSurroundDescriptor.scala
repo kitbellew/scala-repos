@@ -63,8 +63,10 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
       file: PsiFile,
       startOffset: Int,
       endOffset: Int): Array[PsiElement] = {
-    val expr: Array[PsiElement] =
-      findExpressionInRange(file, startOffset, endOffset)
+    val expr: Array[PsiElement] = findExpressionInRange(
+      file,
+      startOffset,
+      endOffset)
     if (expr == null) return PsiElement.EMPTY_ARRAY
     expr
   }
@@ -144,8 +146,10 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
       if (element == null) return null
       val result: Array[PsiElement] = Array.apply(element)
       if (element.getTextRange.getEndOffset < endOffset) {
-        val res =
-          findAllInRange(file, element.getTextRange.getEndOffset, endOffset)
+        val res = findAllInRange(
+          file,
+          element.getTextRange.getEndOffset,
+          endOffset)
         if (res == null) return null
         result ++ res
       } else if (element.getTextRange.getEndOffset > endOffset) { null }

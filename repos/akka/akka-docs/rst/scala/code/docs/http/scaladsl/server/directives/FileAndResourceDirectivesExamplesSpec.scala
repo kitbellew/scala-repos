@@ -16,10 +16,9 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
     import akka.http.scaladsl.server.directives._
     import ContentTypeResolver.Default
 
-    val route =
-      path("logs" / Segment) { name =>
-        getFromFile(".log") // uses implicit ContentTypeResolver
-      }
+    val route = path("logs" / Segment) { name =>
+      getFromFile(".log") // uses implicit ContentTypeResolver
+    }
 
     // tests:
     Get("/logs/example") ~> route ~> check {
@@ -30,10 +29,9 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
     import akka.http.scaladsl.server.directives._
     import ContentTypeResolver.Default
 
-    val route =
-      path("logs" / Segment) { name =>
-        getFromResource(".log") // uses implicit ContentTypeResolver
-      }
+    val route = path("logs" / Segment) { name =>
+      getFromResource(".log") // uses implicit ContentTypeResolver
+    }
 
     // tests:
     Get("/logs/example") ~> route ~> check {
@@ -57,22 +55,21 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "getFromBrowseableDirectory-examples" in compileOnlySpec {
-    val route =
-      path("tmp") { getFromBrowseableDirectory("/tmp") }
+    val route = path("tmp") { getFromBrowseableDirectory("/tmp") }
 
     // tests:
     Get("/tmp") ~> route ~> check { status shouldEqual StatusCodes.OK }
   }
   "getFromBrowseableDirectories-examples" in compileOnlySpec {
-    val route =
-      path("tmp") { getFromBrowseableDirectories("/main", "/backups") }
+    val route = path("tmp") {
+      getFromBrowseableDirectories("/main", "/backups")
+    }
 
     // tests:
     Get("/tmp") ~> route ~> check { status shouldEqual StatusCodes.OK }
   }
   "getFromDirectory-examples" in compileOnlySpec {
-    val route =
-      path("tmp") { getFromDirectory("/tmp") }
+    val route = path("tmp") { getFromDirectory("/tmp") }
 
     // tests:
     Get("/tmp/example") ~> route ~> check {
@@ -80,8 +77,7 @@ class FileAndResourceDirectivesExamplesSpec extends RoutingSpec {
     }
   }
   "getFromResourceDirectory-examples" in compileOnlySpec {
-    val route =
-      path("examples") { getFromResourceDirectory("/examples") }
+    val route = path("examples") { getFromResourceDirectory("/examples") }
 
     // tests:
     Get("/examples/example-1") ~> route ~> check {

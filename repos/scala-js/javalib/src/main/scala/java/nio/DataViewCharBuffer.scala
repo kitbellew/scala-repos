@@ -21,12 +21,10 @@ private[nio] final class DataViewCharBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): CharBuffer =
-    GenDataViewBuffer(this).generic_slice()
+  def slice(): CharBuffer = GenDataViewBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): CharBuffer =
-    GenDataViewBuffer(this).generic_duplicate()
+  def duplicate(): CharBuffer = GenDataViewBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): CharBuffer =
@@ -44,16 +42,13 @@ private[nio] final class DataViewCharBuffer private (
   }
 
   @noinline
-  def get(): Char =
-    GenBuffer(this).generic_get()
+  def get(): Char = GenBuffer(this).generic_get()
 
   @noinline
-  def put(c: Char): CharBuffer =
-    GenBuffer(this).generic_put(c)
+  def put(c: Char): CharBuffer = GenBuffer(this).generic_put(c)
 
   @noinline
-  def get(index: Int): Char =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Char = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, c: Char): CharBuffer =
@@ -68,11 +63,9 @@ private[nio] final class DataViewCharBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): CharBuffer =
-    GenDataViewBuffer(this).generic_compact()
+  def compact(): CharBuffer = GenDataViewBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    GenDataViewBuffer(this).generic_order()
+  def order(): ByteOrder = GenDataViewBuffer(this).generic_order()
 
   // Internal API
 

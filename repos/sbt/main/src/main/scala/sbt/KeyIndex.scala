@@ -172,8 +172,7 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
 
   def keyIndex(
       proj: Option[ResolvedReference],
-      conf: Option[String]): AKeyIndex =
-    confIndex(proj).keyIndex(conf)
+      conf: Option[String]): AKeyIndex = confIndex(proj).keyIndex(conf)
   def confIndex(proj: Option[ResolvedReference]): ConfigIndex = {
     val (build, project) = parts(proj)
     data.projectIndex(build).confIndex(project)
@@ -192,8 +191,11 @@ private final class KeyIndex0(val data: BuildIndex) extends ExtendableKeyIndex {
       scoped: ScopedKey[_],
       extra: BuildUtil[_]): ExtendableKeyIndex =
     if (validID(scoped.key.label)) {
-      val aggregateProjects =
-        Aggregation.aggregate(scoped, ScopeMask(), extra, reverse = true)
+      val aggregateProjects = Aggregation.aggregate(
+        scoped,
+        ScopeMask(),
+        extra,
+        reverse = true)
       ((this: ExtendableKeyIndex) /: aggregateProjects)(_ add _)
     } else this
 

@@ -127,25 +127,23 @@ object TestBuild {
     def inheritProject(ref: ProjectRef) = project(ref).delegates
     def resolve(ref: Reference) =
       Scope.resolveReference(builds.head.uri, rootProject, ref)
-    lazy val delegates: Scope => Seq[Scope] =
-      Scope.delegates(
-        allProjects,
-        (_: Proj).configurations.map(toConfigKey),
-        resolve,
-        uri => buildMap(uri).root.id,
-        inheritProject,
-        inheritConfig,
-        inheritTask,
-        (ref, mp) => Nil
-      )
-    lazy val allFullScopes: Seq[Scope] =
-      for {
-        (ref, p) <- (Global, root.root) +: allProjects.map {
-          case (ref, p) => (Select(ref), p)
-        }
-        t <- Global +: tasks.map(t => Select(t.key))
-        c <- Global +: p.configurations.map(c => Select(ConfigKey(c.name)))
-      } yield Scope(project = ref, config = c, task = t, extra = Global)
+    lazy val delegates: Scope => Seq[Scope] = Scope.delegates(
+      allProjects,
+      (_: Proj).configurations.map(toConfigKey),
+      resolve,
+      uri => buildMap(uri).root.id,
+      inheritProject,
+      inheritConfig,
+      inheritTask,
+      (ref, mp) => Nil
+    )
+    lazy val allFullScopes: Seq[Scope] = for {
+      (ref, p) <- (Global, root.root) +: allProjects.map {
+        case (ref, p) => (Select(ref), p)
+      }
+      t <- Global +: tasks.map(t => Select(t.key))
+      c <- Global +: p.configurations.map(c => Select(ConfigKey(c.name)))
+    } yield Scope(project = ref, config = c, task = t, extra = Global)
   }
   def getKey: Taskk => AttributeKey[_] = _.key
   def toConfigKey: Config => ConfigKey = c => ConfigKey(c.name)
@@ -219,12 +217,14 @@ object TestBuild {
       env: Env,
       settings: Seq[Setting[_]],
       current: ProjectRef): Structure = {
-    implicit val display =
-      Def.showRelativeKey(current, env.allProjects.size > 1)
+    implicit val display = Def.showRelativeKey(
+      current,
+      env.allProjects.size > 1)
     val data = Def.make(settings)(env.delegates, const(Nil), display)
     val keys = data.allKeys((s, key) => ScopedKey(s, key))
-    val keyMap =
-      keys.map(k => (k.key.label, k.key)).toMap[String, AttributeKey[_]]
+    val keyMap = keys
+      .map(k => (k.key.label, k.key))
+      .toMap[String, AttributeKey[_]]
     val projectsMap =
       env.builds.map(b => (b.uri, b.projects.map(_.id).toSet)).toMap
     new Structure(env, current, data, KeyIndex(keys, projectsMap), keyMap)
@@ -248,8 +248,9 @@ object TestBuild {
   implicit lazy val idGen: Gen[String] =
     for (size <- chooseShrinkable(1, MaxIDSize); cs <- listOfN(size, alphaChar))
       yield cs.mkString
-  implicit lazy val optIDGen: Gen[Option[String]] =
-    frequency((1, idGen map some.fn), (1, None))
+  implicit lazy val optIDGen: Gen[Option[String]] = frequency(
+    (1, idGen map some.fn),
+    (1, None))
   implicit lazy val uriGen: Gen[URI] =
     for (sch <- idGen; ssp <- idGen; frag <- optIDGen)
       yield new URI(sch, ssp, frag.orNull)

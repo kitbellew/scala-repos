@@ -98,8 +98,8 @@ final class DecisionTreeRegressor @Since("1.4.0") (
 
   override protected def train(
       dataset: DataFrame): DecisionTreeRegressionModel = {
-    val categoricalFeatures: Map[Int, Int] =
-      MetadataUtils.getCategoricalFeatures(dataset.schema($(featuresCol)))
+    val categoricalFeatures: Map[Int, Int] = MetadataUtils
+      .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
     val strategy = getOldStrategy(categoricalFeatures)
     val trees = RandomForest.run(
@@ -207,8 +207,9 @@ final class DecisionTreeRegressionModel private[ml] (
     }
     var output = dataset
     if ($(predictionCol).nonEmpty) {
-      output =
-        output.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
+      output = output.withColumn(
+        $(predictionCol),
+        predictUDF(col($(featuresCol))))
     }
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
       output = output.withColumn(
@@ -247,8 +248,9 @@ final class DecisionTreeRegressionModel private[ml] (
     *       to determine feature importance instead.
     */
   @Since("2.0.0")
-  lazy val featureImportances: Vector =
-    RandomForest.featureImportances(this, numFeatures)
+  lazy val featureImportances: Vector = RandomForest.featureImportances(
+    this,
+    numFeatures)
 
   /** Convert to a model in the old API */
   private[ml] def toOld: OldDecisionTreeModel = {

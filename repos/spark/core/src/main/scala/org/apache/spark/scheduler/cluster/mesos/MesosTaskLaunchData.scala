@@ -46,8 +46,8 @@ private[spark] object MesosTaskLaunchData extends Logging {
     val byteBuffer = byteString.asReadOnlyByteBuffer()
     logDebug(s"ByteBuffer size: [${byteBuffer.remaining}]")
     val attemptNumber = byteBuffer.getInt // updates the position by 4 bytes
-    val serializedTask =
-      byteBuffer.slice() // subsequence starting at the current position
+    val serializedTask = byteBuffer
+      .slice() // subsequence starting at the current position
     MesosTaskLaunchData(serializedTask, attemptNumber)
   }
 }

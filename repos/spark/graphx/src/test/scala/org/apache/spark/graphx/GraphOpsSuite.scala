@@ -24,10 +24,9 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
 
   test("joinVertices") {
     withSpark { sc =>
-      val vertices =
-        sc.parallelize(
-          Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
-          2)
+      val vertices = sc.parallelize(
+        Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
+        2)
       val edges = sc.parallelize((Seq(Edge(1, 2, "onetwo"))))
       val g: Graph[String, String] = Graph(vertices, edges)
 
@@ -102,12 +101,11 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
 
   test("convertToCanonicalEdges") {
     withSpark { sc =>
-      val vertices =
-        sc.parallelize(
-          Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
-          2)
-      val edges =
-        sc.parallelize(Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
+      val vertices = sc.parallelize(
+        Seq[(VertexId, String)]((1, "one"), (2, "two"), (3, "three")),
+        2)
+      val edges = sc.parallelize(
+        Seq(Edge(1, 2, 1), Edge(2, 1, 1), Edge(3, 2, 2)))
       val g: Graph[String, Int] = Graph(vertices, edges)
 
       val g1 = g.convertToCanonicalEdges()
@@ -238,8 +236,9 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
   private def getGraphFromSeq(
       sc: SparkContext,
       seq: IndexedSeq[(Int, Int)]): Graph[Double, Int] = {
-    val rawEdges =
-      sc.parallelize(seq, 3).map { case (s, d) => (s.toLong, d.toLong) }
+    val rawEdges = sc.parallelize(seq, 3).map {
+      case (s, d) => (s.toLong, d.toLong)
+    }
     Graph.fromEdgeTuples(rawEdges, 1.0).cache()
   }
 }

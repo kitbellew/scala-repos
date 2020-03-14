@@ -23,8 +23,7 @@ object JavaInterop extends DecorateAsJava with DecorateAsScala {
   type JTreeMap[K, V] = java.util.TreeMap[K, V]
 
   object JList {
-    def apply[A](values: A*): JList[A] =
-      JavaConversions.seqAsJavaList(values)
+    def apply[A](values: A*): JList[A] = JavaConversions.seqAsJavaList(values)
   }
 
 }

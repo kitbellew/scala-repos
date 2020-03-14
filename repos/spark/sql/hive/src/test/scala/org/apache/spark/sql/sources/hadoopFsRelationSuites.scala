@@ -44,23 +44,24 @@ abstract class HadoopFsRelationTest
 
   protected def supportsDataType(dataType: DataType): Boolean = true
 
-  val dataSchema =
-    StructType(
-      Seq(
-        StructField("a", IntegerType, nullable = false),
-        StructField("b", StringType, nullable = false)))
+  val dataSchema = StructType(
+    Seq(
+      StructField("a", IntegerType, nullable = false),
+      StructField("b", StringType, nullable = false)))
 
   lazy val testDF = (1 to 3).map(i => (i, s"val_$i")).toDF("a", "b")
 
-  lazy val partitionedTestDF1 = (for {
-    i <- 1 to 3
-    p2 <- Seq("foo", "bar")
-  } yield (i, s"val_$i", 1, p2)).toDF("a", "b", "p1", "p2")
+  lazy val partitionedTestDF1 =
+    (for {
+      i <- 1 to 3
+      p2 <- Seq("foo", "bar")
+    } yield (i, s"val_$i", 1, p2)).toDF("a", "b", "p1", "p2")
 
-  lazy val partitionedTestDF2 = (for {
-    i <- 1 to 3
-    p2 <- Seq("foo", "bar")
-  } yield (i, s"val_$i", 2, p2)).toDF("a", "b", "p1", "p2")
+  lazy val partitionedTestDF2 =
+    (for {
+      i <- 1 to 3
+      p2 <- Seq("foo", "bar")
+    } yield (i, s"val_$i", 2, p2)).toDF("a", "b", "p1", "p2")
 
   lazy val partitionedTestDF = partitionedTestDF1.unionAll(partitionedTestDF2)
 
@@ -152,8 +153,10 @@ abstract class HadoopFsRelationTest
           .add("col", dataType, nullable = true)
         val rdd = sqlContext.sparkContext.parallelize((1 to 10).map(i =>
           Row(i, dataGenerator())))
-        val df =
-          sqlContext.createDataFrame(rdd, schema).orderBy("index").coalesce(1)
+        val df = sqlContext
+          .createDataFrame(rdd, schema)
+          .orderBy("index")
+          .coalesce(1)
 
         df.write
           .mode("overwrite")
@@ -577,16 +580,17 @@ abstract class HadoopFsRelationTest
 
   test("SPARK-9735 Partition column type casting") {
     withTempPath { file =>
-      val df = (for {
-        i <- 1 to 3
-        p2 <- Seq("foo", "bar")
-      } yield (i, s"val_$i", 1.0d, p2, 123, 123.123f)).toDF(
-        "a",
-        "b",
-        "p1",
-        "p2",
-        "p3",
-        "f")
+      val df =
+        (for {
+          i <- 1 to 3
+          p2 <- Seq("foo", "bar")
+        } yield (i, s"val_$i", 1.0d, p2, 123, 123.123f)).toDF(
+          "a",
+          "b",
+          "p1",
+          "p2",
+          "p3",
+          "f")
 
       val input = df.select(
         'a,
@@ -754,9 +758,8 @@ abstract class HadoopFsRelationTest
   test(
     "SPARK-9899 Disable customized output committer when speculation is on") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    val speculationEnabled =
-      sqlContext.sparkContext.conf
-        .getBoolean("spark.speculation", defaultValue = false)
+    val speculationEnabled = sqlContext.sparkContext.conf
+      .getBoolean("spark.speculation", defaultValue = false)
 
     try {
       withTempPath { dir =>

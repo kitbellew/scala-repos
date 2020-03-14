@@ -68,8 +68,7 @@ sealed trait Matrix2[R, C, V] extends Serializable {
   // Matrix product
   def *[C2](that: Matrix2[C, C2, V])(implicit
       ring: Ring[V],
-      mj: MatrixJoiner2): Matrix2[R, C2, V] =
-    Product(this, that, ring)
+      mj: MatrixJoiner2): Matrix2[R, C2, V] = Product(this, that, ring)
 
   def *(that: Scalar2[V])(implicit
       ring: Ring[V],
@@ -127,8 +126,9 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       mj: MatrixJoiner2): Matrix2[R, C2, VecV] = {
 
     //This cast will always succeed:
-    lazy val joinedBool =
-      mj.join(this.asInstanceOf[Matrix2[R, C, Boolean]], vec)
+    lazy val joinedBool = mj.join(
+      this.asInstanceOf[Matrix2[R, C, Boolean]],
+      vec)
     implicit val ord2: Ordering[C2] = vec.colOrd
     lazy val resultPipe = joinedBool
       .flatMap {
@@ -368,16 +368,17 @@ case class Product[R, C, C2, V](
     val leftMatrix = right.isInstanceOf[OneC[_, _]]
     val localRing = ring
 
-    val joined = (if (leftMatrix) {
-                    val ord: Ordering[R] = left.rowOrd
-                    left.toTypedPipe.groupBy(x => x._1)(ord)
-                  } else {
-                    val ord: Ordering[C] = right.rowOrd
-                    right.toTypedPipe.groupBy(x => x._1)(ord)
-                  })
-      .mapValues { _._3 }
-      .sum(localRing)
-      .filter { kv => localRing.isNonZero(kv._2) }
+    val joined =
+      (if (leftMatrix) {
+         val ord: Ordering[R] = left.rowOrd
+         left.toTypedPipe.groupBy(x => x._1)(ord)
+       } else {
+         val ord: Ordering[C] = right.rowOrd
+         right.toTypedPipe.groupBy(x => x._1)(ord)
+       })
+        .mapValues { _._3 }
+        .sum(localRing)
+        .filter { kv => localRing.isNonZero(kv._2) }
 
     if (leftMatrix) {
       joined
@@ -447,8 +448,10 @@ case class Product[R, C, C2, V](
   implicit def withOrderedSerialization: Ordering[(R, C2)] =
     OrderedSerialization2.maybeOrderedSerialization2(rowOrd, colOrd)
 
-  override lazy val transpose: Product[C2, C, R, V] =
-    Product(right.transpose, left.transpose, ring)
+  override lazy val transpose: Product[C2, C, R, V] = Product(
+    right.transpose,
+    left.transpose,
+    ring)
   override def negate(implicit g: Group[V]): Product[R, C, C2, V] = {
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
           .getOrElse(BigInt(0L))) {
@@ -460,8 +463,8 @@ case class Product[R, C, C2, V](
     * Trace(A B) = Trace(B A) so we optimize to choose the lowest cost item
     */
   override def trace(implicit mon: Monoid[V], ev1: =:=[R, C2]): Scalar2[V] = {
-    val (cost1, plan1) =
-      Matrix2.optimize(this.asInstanceOf[Matrix2[Any, Any, V]])
+    val (cost1, plan1) = Matrix2.optimize(
+      this.asInstanceOf[Matrix2[Any, Any, V]])
     val (cost2, plan2) = Matrix2.optimize(
       Product(
         right.asInstanceOf[Matrix2[C, R, V]],
@@ -540,8 +543,10 @@ case class Sum[R, C, V](
   implicit def withOrderedSerialization: Ordering[(R, C)] =
     OrderedSerialization2.maybeOrderedSerialization2(rowOrd, colOrd)
 
-  override lazy val transpose: Sum[C, R, V] =
-    Sum(left.transpose, right.transpose, mon)
+  override lazy val transpose: Sum[C, R, V] = Sum(
+    left.transpose,
+    right.transpose,
+    mon)
   override def negate(implicit g: Group[V]): Sum[R, C, V] =
     Sum(left.negate, right.negate, mon)
   override def sumColVectors(implicit
@@ -611,10 +616,9 @@ case class MatrixLiteral[R, C, V](
     override val colOrd: Ordering[C])
     extends Matrix2[R, C, V] {
 
-  override lazy val transpose: MatrixLiteral[C, R, V] =
-    MatrixLiteral(toTypedPipe.map(x => (x._2, x._1, x._3)), sizeHint.transpose)(
-      colOrd,
-      rowOrd)
+  override lazy val transpose: MatrixLiteral[C, R, V] = MatrixLiteral(
+    toTypedPipe.map(x => (x._2, x._1, x._3)),
+    sizeHint.transpose)(colOrd, rowOrd)
 
   override def negate(implicit g: Group[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(toTypedPipe.map(x => (x._1, x._2, g.negate(x._3))), sizeHint)
@@ -704,18 +708,15 @@ object Scalar2 {
   def apply[V](v: ValuePipe[V]): Scalar2[V] = ValuePipeScalar(v)
 
   // implicits can't share names, but we want the implicit
-  implicit def const[V](v: V): Scalar2[V] =
-    from(LiteralValue(v))
+  implicit def const[V](v: V): Scalar2[V] = from(LiteralValue(v))
 
-  def apply[V](v: V): Scalar2[V] =
-    from(LiteralValue(v))
+  def apply[V](v: V): Scalar2[V] = from(LiteralValue(v))
 }
 
 object Matrix2 {
   def apply[R: Ordering, C: Ordering, V](
       t: TypedPipe[(R, C, V)],
-      hint: SizeHint): Matrix2[R, C, V] =
-    MatrixLiteral(t, hint)
+      hint: SizeHint): Matrix2[R, C, V] = MatrixLiteral(t, hint)
 
   def read[R, C, V](t: TypedSource[(R, C, V)], hint: SizeHint)(implicit
       ordr: Ordering[R],
@@ -726,8 +727,7 @@ object Matrix2 {
       ordR: Ordering[R],
       ordC: Ordering[C],
       ring: Ring[V],
-      mj: MatrixJoiner2) =
-    Product(OneC[R, V]()(ordR), OneR[C, V]()(ordC), ring)
+      mj: MatrixJoiner2) = Product(OneC[R, V]()(ordR), OneR[C, V]()(ordC), ring)
 
   /**
     * The original prototype that employs the standard O(n^3) dynamic programming
@@ -771,8 +771,8 @@ object Matrix2 {
       subchainCosts((i, j))
     }
 
-    val sharedMap =
-      HashMap.empty[Matrix2[Any, Any, V], TypedPipe[(Any, Any, V)]]
+    val sharedMap = HashMap
+      .empty[Matrix2[Any, Any, V], TypedPipe[(Any, Any, V)]]
 
     /* The only case where `product` will be `None` is if the result is an
      * intermediate matrix (like `OneC`).  This is not yet forbidden in the types.
@@ -831,10 +831,12 @@ object Matrix2 {
             left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
             right)
-          val (cost1, newLeft) =
-            optimizeProductChain(lastLChain.toIndexedSeq, pair(ringL, joinerL))
-          val (cost2, newRight) =
-            optimizeProductChain(lastRChain.toIndexedSeq, pair(ringR, joinerR))
+          val (cost1, newLeft) = optimizeProductChain(
+            lastLChain.toIndexedSeq,
+            pair(ringL, joinerL))
+          val (cost2, newRight) = optimizeProductChain(
+            lastRChain.toIndexedSeq,
+            pair(ringR, joinerR))
           (
             List(Sum(newLeft, newRight, mon)),
             lastCost1 + lastCost2 + cost1 + cost2,
@@ -846,10 +848,12 @@ object Matrix2 {
             left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
             right)
-          val (cost1, newLeft) =
-            optimizeProductChain(lastLChain.toIndexedSeq, pair(ringL, joinerL))
-          val (cost2, newRight) =
-            optimizeProductChain(lastRChain.toIndexedSeq, pair(ringR, joinerR))
+          val (cost1, newLeft) = optimizeProductChain(
+            lastLChain.toIndexedSeq,
+            pair(ringL, joinerL))
+          val (cost2, newRight) = optimizeProductChain(
+            lastRChain.toIndexedSeq,
+            pair(ringR, joinerR))
           (
             List(HadamardProduct(newLeft, newRight, ring)),
             lastCost1 + lastCost2 + cost1 + cost2,
@@ -873,8 +877,9 @@ object Matrix2 {
       }
     }
     val (lastChain, lastCost, ring, joiner) = optimizeBasicBlocks(mf)
-    val (potentialCost, finalResult) =
-      optimizeProductChain(lastChain.toIndexedSeq, pair(ring, joiner))
+    val (potentialCost, finalResult) = optimizeProductChain(
+      lastChain.toIndexedSeq,
+      pair(ring, joiner))
     (lastCost + potentialCost, finalResult)
   }
 }

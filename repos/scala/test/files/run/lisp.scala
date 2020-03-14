@@ -69,14 +69,10 @@ object LispCaseClasses extends Lisp {
     override def toString() = "<fn>";
   }
 
-  def list(): Data =
-    NIL();
-  def list(x0: Data): Data =
-    CONS(x0, NIL());
-  def list(x0: Data, x1: Data): Data =
-    CONS(x0, list(x1));
-  def list(x0: Data, x1: Data, x2: Data): Data =
-    CONS(x0, list(x1, x2));
+  def list(): Data = NIL();
+  def list(x0: Data): Data = CONS(x0, NIL());
+  def list(x0: Data, x1: Data): Data = CONS(x0, list(x1));
+  def list(x0: Data, x1: Data, x2: Data): Data = CONS(x0, list(x1, x2));
   def list(x0: Data, x1: Data, x2: Data, x3: Data): Data =
     CONS(x0, list(x1, x2, x3));
   def list(x0: Data, x1: Data, x2: Data, x3: Data, x4: Data): Data =
@@ -90,8 +86,7 @@ object LispCaseClasses extends Lisp {
       x3: Data,
       x4: Data,
       x5: Data,
-      x6: Data): Data =
-    CONS(x0, list(x1, x2, x3, x4, x5, x6));
+      x6: Data): Data = CONS(x0, list(x1, x2, x3, x4, x5, x6));
   def list(
       x0: Data,
       x1: Data,
@@ -100,8 +95,7 @@ object LispCaseClasses extends Lisp {
       x4: Data,
       x5: Data,
       x6: Data,
-      x7: Data): Data =
-    CONS(x0, list(x1, x2, x3, x4, x5, x6, x7));
+      x7: Data): Data = CONS(x0, list(x1, x2, x3, x4, x5, x6, x7));
   def list(
       x0: Data,
       x1: Data,
@@ -111,8 +105,7 @@ object LispCaseClasses extends Lisp {
       x5: Data,
       x6: Data,
       x7: Data,
-      x8: Data): Data =
-    CONS(x0, list(x1, x2, x3, x4, x5, x6, x7, x8));
+      x8: Data): Data = CONS(x0, list(x1, x2, x3, x4, x5, x6, x7, x8));
   def list(
       x0: Data,
       x1: Data,
@@ -123,15 +116,13 @@ object LispCaseClasses extends Lisp {
       x6: Data,
       x7: Data,
       x8: Data,
-      x9: Data): Data =
-    CONS(x0, list(x1, x2, x3, x4, x5, x6, x7, x8, x9));
+      x9: Data): Data = CONS(x0, list(x1, x2, x3, x4, x5, x6, x7, x8, x9));
 
   var curexp: Data = null
   var trace: Boolean = false
   var indent: Int = 0
 
-  def lispError[a](msg: String): a =
-    sys.error("error: " + msg + "\n" + curexp);
+  def lispError[a](msg: String): a = sys.error("error: " + msg + "\n" + curexp);
 
   trait Environment {
     def lookup(n: String): Data;
@@ -312,8 +303,7 @@ object LispAny extends Lisp {
   var trace: Boolean = false;
   var indent: Int = 0;
 
-  def lispError[a](msg: String): a =
-    sys.error("error: " + msg + "\n" + curexp);
+  def lispError[a](msg: String): a = sys.error("error: " + msg + "\n" + curexp);
 
   trait Environment {
     def lookup(n: String): Data;

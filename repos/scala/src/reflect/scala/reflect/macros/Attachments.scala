@@ -42,8 +42,7 @@ abstract class Attachments { self =>
     (all find matchesTag[T]).asInstanceOf[Option[T]]
 
   /** Check underlying payload contains an instance of type `T`. */
-  def contains[T: ClassTag]: Boolean =
-    !isEmpty && (all exists matchesTag[T])
+  def contains[T: ClassTag]: Boolean = !isEmpty && (all exists matchesTag[T])
 
   /** Creates a copy of this attachment with the payload slot of T added/updated with the provided value.
     *  Replaces an existing payload of the same type, if exists.

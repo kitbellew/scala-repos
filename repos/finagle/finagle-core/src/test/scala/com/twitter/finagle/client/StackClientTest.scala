@@ -79,8 +79,8 @@ class StackClientTest
     // use dest when no label is set
     client.newService("inet!127.0.0.1:8080")
     eventually {
-      val counter =
-        sr.counters(Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
+      val counter = sr.counters(
+        Seq("inet!127.0.0.1:8080", "loadbalancer", "adds"))
       assert(
         counter == 1,
         s"The instance should be to the loadbalancer once instead of $counter times.")
@@ -435,13 +435,12 @@ class StackClientTest
 
     val sr = new InMemoryStatsReceiver
 
-    val service =
-      new FactoryToService(
-        stack.make(
-          Stack.Params.empty +
-            FactoryToService.Enabled(true) +
-            param.Stats(sr) +
-            BindingFactory.BaseDtab(() => baseDtab)))
+    val service = new FactoryToService(
+      stack.make(
+        Stack.Params.empty +
+          FactoryToService.Enabled(true) +
+          param.Stats(sr) +
+          BindingFactory.BaseDtab(() => baseDtab)))
 
     intercept[ChannelWriteException] { Await.result(service(()), 5.seconds) }
 
@@ -456,19 +455,19 @@ class StackClientTest
   test("StackBasedClient.configured is a StackClient") {
     // compilation test
     val client: StackBasedClient[String, String] = stringClient
-    val client2: StackBasedClient[String, String] =
-      client.configured(param.Label("foo"))
-    val client3: StackBasedClient[String, String] =
-      client.configured[param.Label]((param.Label("foo"), param.Label.param))
+    val client2: StackBasedClient[String, String] = client.configured(
+      param.Label("foo"))
+    val client3: StackBasedClient[String, String] = client
+      .configured[param.Label]((param.Label("foo"), param.Label.param))
   }
 
   test("StackClient.configured is a StackClient") {
     // compilation test
     val client: StackClient[String, String] = stringClient
-    val client2: StackClient[String, String] =
-      client.configured(param.Label("foo"))
-    val client3: StackClient[String, String] =
-      client.configured[param.Label]((param.Label("foo"), param.Label.param))
+    val client2: StackClient[String, String] = client.configured(
+      param.Label("foo"))
+    val client3: StackClient[String, String] = client.configured[param.Label](
+      (param.Label("foo"), param.Label.param))
   }
 
   test("StackClient binds to a local service via exp.Address.ServiceFactory") {
@@ -489,12 +488,12 @@ class StackClientTest
     val name = Name.bound(addr)
 
     val reverseFilter = new SimpleFilter[String, String] {
-      def apply(str: String, svc: Service[String, String]) =
-        svc(str.reverse)
+      def apply(str: String, svc: Service[String, String]) = svc(str.reverse)
     }
 
-    val svc =
-      stringClient.filtered(reverseFilter).newRichClient(name, "test_client")
+    val svc = stringClient
+      .filtered(reverseFilter)
+      .newRichClient(name, "test_client")
     assert(Await.result(svc.ping(), 1.second) == "ping".reverse)
   }
 

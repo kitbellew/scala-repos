@@ -84,8 +84,7 @@ object Await {
   /** $ready */
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
-  def ready[T <: Awaitable[_]](awaitable: T): T =
-    ready(awaitable, Duration.Top)
+  def ready[T <: Awaitable[_]](awaitable: T): T = ready(awaitable, Duration.Top)
 
   /**
     * $ready
@@ -102,8 +101,7 @@ object Await {
 
   /** $result */
   @throws(classOf[Exception])
-  def result[T](awaitable: Awaitable[T]): T =
-    result(awaitable, Duration.Top)
+  def result[T](awaitable: Awaitable[T]): T = result(awaitable, Duration.Top)
 
   /**
     * $result
@@ -120,8 +118,7 @@ object Await {
   @throws(classOf[TimeoutException])
   @throws(classOf[InterruptedException])
   @scala.annotation.varargs
-  def all(awaitables: Awaitable[_]*): Unit =
-    all(awaitables, Duration.Top)
+  def all(awaitables: Awaitable[_]*): Unit = all(awaitables, Duration.Top)
 
   /**
     * $all
@@ -143,8 +140,7 @@ object Await {
   @throws(classOf[InterruptedException])
   def all(
       awaitables: java.util.Collection[Awaitable[_]],
-      timeout: Duration): Unit =
-    all(awaitables.asScala.toSeq, timeout)
+      timeout: Duration): Unit = all(awaitables.asScala.toSeq, timeout)
 }
 
 // See http://stackoverflow.com/questions/26643045/java-interoperability-woes-with-scala-generics-and-boxing
@@ -170,8 +166,7 @@ private[util] trait CloseAwaitably0[U <: Unit] extends Awaitable[U] {
   def result(timeout: Duration)(implicit permit: Awaitable.CanAwait): U =
     onClose.result(timeout)
 
-  def isReady(implicit permit: Awaitable.CanAwait): Boolean =
-    onClose.isReady
+  def isReady(implicit permit: Awaitable.CanAwait): Boolean = onClose.isReady
 }
 
 /**

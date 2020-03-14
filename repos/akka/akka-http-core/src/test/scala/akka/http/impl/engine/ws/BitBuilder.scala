@@ -90,8 +90,7 @@ class BitSpecParser(val input: ParserInput) extends parboiled2.Parser {
   val WSChar = CharPredicate(' ', '\t', '\n')
   def ws = rule { zeroOrMore(wsElement) }
   def wsElement = rule { WSChar | comment }
-  def comment =
-    rule { '#' ~ zeroOrMore(!'\n' ~ ANY) ~ '\n' }
+  def comment = rule { '#' ~ zeroOrMore(!'\n' ~ ANY) ~ '\n' }
 
   def element: Rule1[BitElement] = rule { zero | one | multi }
   def zero: Rule1[BitElement] = rule { '0' ~ push(Zero) ~ ws }

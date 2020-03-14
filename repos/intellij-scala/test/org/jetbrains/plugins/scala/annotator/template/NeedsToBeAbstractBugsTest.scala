@@ -40,8 +40,7 @@ class B extends A {
   }
 
   def testSCL4258(): Unit = {
-    val code =
-      """
+    val code = """
         |abstract class Parent {
         |  def m(p: T forSome {type T})
         |}
@@ -55,13 +54,12 @@ class B extends A {
   }
 
   def testSCL9446(): Unit = {
-    val extensionPoint =
-      Extensions.getRootArea.getExtensionPoint(SyntheticMembersInjector.EP_NAME)
+    val extensionPoint = Extensions.getRootArea.getExtensionPoint(
+      SyntheticMembersInjector.EP_NAME)
     val injector = new SCL9446Injector
     extensionPoint.registerExtension(injector)
     try {
-      val code =
-        """
+      val code = """
           |object ppp {
           |trait A {
           |  def foo(): Int

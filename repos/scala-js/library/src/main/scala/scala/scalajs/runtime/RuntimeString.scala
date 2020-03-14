@@ -95,8 +95,7 @@ private[runtime] object RuntimeString {
     thiz.toLowerCase() == (if (that == null) null else that.toLowerCase())
 
   @inline
-  def concat(thiz: String, s: String): String =
-    checkNull(thiz) + s
+  def concat(thiz: String, s: String): String = checkNull(thiz) + s
 
   @inline
   def contains(thiz: String, s: CharSequence): Boolean =
@@ -139,15 +138,13 @@ private[runtime] object RuntimeString {
     }
   }
 
-  def indexOf(thiz: String, ch: Int): Int =
-    thiz.indexOf(fromCodePoint(ch))
+  def indexOf(thiz: String, ch: Int): Int = thiz.indexOf(fromCodePoint(ch))
 
   def indexOf(thiz: String, ch: Int, fromIndex: Int): Int =
     thiz.indexOf(fromCodePoint(ch), fromIndex)
 
   @inline
-  def indexOf(thiz: String, str: String): Int =
-    thiz.jsIndexOf(str)
+  def indexOf(thiz: String, str: String): Int = thiz.jsIndexOf(str)
 
   @inline
   def indexOf(thiz: String, str: String, fromIndex: Int): Int =
@@ -158,12 +155,10 @@ private[runtime] object RuntimeString {
    * and reference equality is the same.
    */
   @inline
-  def intern(thiz: String): String =
-    checkNull(thiz)
+  def intern(thiz: String): String = checkNull(thiz)
 
   @inline
-  def isEmpty(thiz: String): Boolean =
-    checkNull(thiz) == ""
+  def isEmpty(thiz: String): Boolean = checkNull(thiz) == ""
 
   def lastIndexOf(thiz: String, ch: Int): Int =
     thiz.lastIndexOf(fromCodePoint(ch))
@@ -172,16 +167,14 @@ private[runtime] object RuntimeString {
     if (fromIndex < 0) -1 else thiz.lastIndexOf(fromCodePoint(ch), fromIndex)
 
   @inline
-  def lastIndexOf(thiz: String, str: String): Int =
-    thiz.jsLastIndexOf(str)
+  def lastIndexOf(thiz: String, str: String): Int = thiz.jsLastIndexOf(str)
 
   @inline
   def lastIndexOf(thiz: String, str: String, fromIndex: Int): Int =
     if (fromIndex < 0) -1 else thiz.jsLastIndexOf(str, fromIndex)
 
   @inline
-  def length(thiz: String): Int =
-    specialJSStringOps(thiz).length
+  def length(thiz: String): Int = specialJSStringOps(thiz).length
 
   @inline
   def matches(thiz: String, regex: String): Boolean = {
@@ -243,8 +236,7 @@ private[runtime] object RuntimeString {
   }
 
   @inline
-  def split(thiz: String, regex: String): Array[String] =
-    thiz.split(regex, 0)
+  def split(thiz: String, regex: String): Array[String] = thiz.split(regex, 0)
 
   def split(thiz: String, regex: String, limit: Int): Array[String] = {
     checkNull(thiz)
@@ -285,23 +277,19 @@ private[runtime] object RuntimeString {
   }
 
   @inline
-  def toLowerCase(thiz: String): String =
-    specialJSStringOps(thiz).toLowerCase()
+  def toLowerCase(thiz: String): String = specialJSStringOps(thiz).toLowerCase()
 
   @inline
-  def toUpperCase(thiz: String): String =
-    specialJSStringOps(thiz).toUpperCase()
+  def toUpperCase(thiz: String): String = specialJSStringOps(thiz).toUpperCase()
 
   @inline
-  def trim(thiz: String): String =
-    specialJSStringOps(thiz).trim()
+  def trim(thiz: String): String = specialJSStringOps(thiz).trim()
 
   // Constructors
 
   def newString(): String = ""
 
-  def newString(value: Array[Char]): String =
-    newString(value, 0, value.length)
+  def newString(value: Array[Char]): String = newString(value, 0, value.length)
 
   def newString(value: Array[Char], offset: Int, count: Int): String = {
     val end = offset + count
@@ -365,14 +353,11 @@ private[runtime] object RuntimeString {
     fromCharCode(charCodes: _*)
   }
 
-  def newString(original: String): String =
-    checkNull(original)
+  def newString(original: String): String = checkNull(original)
 
-  def newString(buffer: java.lang.StringBuffer): String =
-    buffer.toString
+  def newString(buffer: java.lang.StringBuffer): String = buffer.toString
 
-  def newString(builder: java.lang.StringBuilder): String =
-    builder.toString
+  def newString(builder: java.lang.StringBuilder): String = builder.toString
 
   // Static methods (aka methods on the companion object)
 
@@ -388,8 +373,7 @@ private[runtime] object RuntimeString {
   def valueOf(value: Object): String =
     if (value eq null) "null" else value.toString()
 
-  def valueOf(data: Array[Char]): String =
-    valueOf(data, 0, data.length)
+  def valueOf(data: Array[Char]): String = valueOf(data, 0, data.length)
 
   def valueOf(data: Array[Char], offset: Int, count: Int): String =
     newString(data, offset, count)

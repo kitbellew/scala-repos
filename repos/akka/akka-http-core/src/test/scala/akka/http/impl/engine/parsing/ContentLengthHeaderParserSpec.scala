@@ -32,8 +32,11 @@ class ContentLengthHeaderParserSpec extends WordSpec with Matchers {
   }
 
   def parse(bigint: String): Long = {
-    val (`Content-Length`(length), _) =
-      ContentLengthParser(null, ByteString(bigint + "\r\n").compact, 0, _ ⇒ ())
+    val (`Content-Length`(length), _) = ContentLengthParser(
+      null,
+      ByteString(bigint + "\r\n").compact,
+      0,
+      _ ⇒ ())
     length
   }
 

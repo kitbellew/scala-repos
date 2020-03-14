@@ -58,8 +58,7 @@ private[http] class EnhancedString(val underlying: String) extends AnyVal {
   /**
     * If the underlying string is null the method returns the empty string, otherwise the underlying string.
     */
-  def nullAsEmpty: String =
-    if (underlying eq null) "" else underlying
+  def nullAsEmpty: String = if (underlying eq null) "" else underlying
 
   /**
     * Returns the ASCII encoded bytes of this string. Truncates characters to 8-bit byte value.

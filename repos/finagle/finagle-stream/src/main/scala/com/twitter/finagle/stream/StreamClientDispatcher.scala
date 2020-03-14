@@ -22,8 +22,7 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
   import Bijections._
   import GenSerialClientDispatcher.wrapWriteException
 
-  def this(trans: Transport[Any, Any]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Any, Any]) = this(trans, NullStatsReceiver)
 
   private[this] val RT = implicitly[RequestType[Req]]
 

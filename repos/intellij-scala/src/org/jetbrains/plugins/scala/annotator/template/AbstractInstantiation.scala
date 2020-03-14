@@ -20,8 +20,8 @@ object AbstractInstantiation extends AnnotatorPart[ScTemplateDefinition] {
       typeAware: Boolean) {
     val newObject = definition.isInstanceOf[ScNewTemplateDefinition]
     val hasBody = definition.extendsBlock.templateBody.isDefined
-    val hasEarlyBody =
-      definition.extendsBlock.earlyDefinitions.exists(_.members.nonEmpty)
+    val hasEarlyBody = definition.extendsBlock.earlyDefinitions
+      .exists(_.members.nonEmpty)
 
     if (!newObject || hasEarlyBody || hasBody) return
 

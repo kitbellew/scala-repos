@@ -11,16 +11,14 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   val familyName = InvertIfConditionIntention.familyName
 
   def testInvertIf() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    <caret>if (a) b = false
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    <caret>if (!a) {
@@ -36,8 +34,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf2() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (a) {
@@ -47,8 +44,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (!a) {
@@ -65,8 +61,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf3() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (a == b) {
@@ -76,8 +71,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (a != b) {
@@ -94,16 +88,14 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf4() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (!a) b = false
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (a) {
@@ -119,16 +111,14 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf5() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (true) b = false
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (false) {
@@ -144,16 +134,14 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf6() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (!(a == true)) b = false
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (a == true) {
@@ -169,8 +157,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf7() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    if<caret> (false) {
@@ -181,8 +168,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    if<caret> (true) {
@@ -198,8 +184,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testInvertIf8() {
-    val text =
-      """
+    val text = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (false) {
@@ -210,8 +195,7 @@ class InvertIfConditionIntentionTest extends ScalaIntentionTestBase {
         |  }
         |}
       """
-    val resultText =
-      """
+    val resultText = """
         |class X {
         |  def f(a: Boolean, b: Boolean) {
         |    i<caret>f (true) {

@@ -53,8 +53,8 @@ final class InMemoryJobManager[M[+_]](implicit val M: Monad[M])
 final class ExpiringJobManager[M[+_]](timeout: Duration)(
     implicit val M: Monad[M])
     extends BaseInMemoryJobManager[M] {
-  private[jobs] val jobs: mutable.Map[JobId, JobData] =
-    Cache.simple(Cache.ExpireAfterAccess(timeout))
+  private[jobs] val jobs: mutable.Map[JobId, JobData] = Cache.simple(
+    Cache.ExpireAfterAccess(timeout))
 }
 
 object ExpiringJobManager {
@@ -152,8 +152,8 @@ trait BaseInMemoryJobManager[M[+_]]
         val data = jobs(jobId)
         val posts = data.channels.getOrElse(channel, Nil)
         val message = Message(jobId, posts.size, channel, value)
-        jobs(jobId) =
-          data.copy(channels = data.channels + (channel -> (message :: posts)))
+        jobs(jobId) = data.copy(channels =
+          data.channels + (channel -> (message :: posts)))
         message
       }
     }

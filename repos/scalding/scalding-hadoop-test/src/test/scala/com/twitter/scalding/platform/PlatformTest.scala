@@ -185,8 +185,10 @@ class TypedPipeHashJoinWithForceToDiskFilterJob(args: Args) extends Job(args) {
   val y = TypedPipe.from[(Int, String)](List((1, "first")))
 
   //trivial transform and forceToDisk followed by filter on rhs
-  val yFilter =
-    y.map(p => (p._1, p._2.toUpperCase)).forceToDisk.filter(p => p._1 == 1)
+  val yFilter = y
+    .map(p => (p._1, p._2.toUpperCase))
+    .forceToDisk
+    .filter(p => p._1 == 1)
 
   x.hashJoin(yFilter)
     .withDescription("hashJoin")
@@ -271,8 +273,8 @@ class TypedPipeHashJoinWithCoGroupJob(args: Args) extends Job(args) {
 
   val coGroupPipe = in0.coGroupBy('x0) { _.coGroup('x1, in1, OuterJoinMode) }
 
-  val coGroupTypedPipe =
-    TypedPipe.from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
+  val coGroupTypedPipe = TypedPipe
+    .from[(Int, Int, Int)](coGroupPipe, Fields.ALL)
   val coGroupTuplePipe = coGroupTypedPipe.map { case (a, b, c) => (a, (b, c)) }
   x.hashJoin(coGroupTuplePipe)
     .withDescription("hashJoin")

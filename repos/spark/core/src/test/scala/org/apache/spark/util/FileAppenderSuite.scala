@@ -110,8 +110,8 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     // setup input stream and appender
     val testOutputStream = new PipedOutputStream()
     val testInputStream = new PipedInputStream(testOutputStream, 100 * 1000)
-    val conf =
-      new SparkConf().set(RollingFileAppender.RETAINED_FILES_PROPERTY, "10")
+    val conf = new SparkConf()
+      .set(RollingFileAppender.RETAINED_FILES_PROPERTY, "10")
     val appender = new RollingFileAppender(
       testInputStream,
       testFile,

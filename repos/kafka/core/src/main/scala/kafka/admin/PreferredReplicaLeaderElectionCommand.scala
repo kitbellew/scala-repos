@@ -66,8 +66,11 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
     var zkUtils: ZkUtils = null
     try {
       zkClient = ZkUtils.createZkClient(zkConnect, 30000, 30000)
-      zkUtils =
-        ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
+      zkUtils = ZkUtils(
+        zkConnect,
+        30000,
+        30000,
+        JaasUtils.isZkSecurityEnabled())
       val partitionsForPreferredReplicaElection =
         if (!options.has(jsonFileOpt)) zkUtils.getAllPartitions()
         else
@@ -95,8 +98,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
       case Some(m) =>
         m.asInstanceOf[Map[String, Any]].get("partitions") match {
           case Some(partitionsList) =>
-            val partitionsRaw =
-              partitionsList.asInstanceOf[List[Map[String, Any]]]
+            val partitionsRaw = partitionsList
+              .asInstanceOf[List[Map[String, Any]]]
             val partitions = partitionsRaw.map { p =>
               val topic = p.get("topic").get.asInstanceOf[String]
               val partition = p.get("partition").get.asInstanceOf[Int]
@@ -126,8 +129,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
     val zkPath = ZkUtils.PreferredReplicaLeaderElectionPath
     val partitionsList = partitionsUndergoingPreferredReplicaElection.map(e =>
       Map("topic" -> e.topic, "partition" -> e.partition))
-    val jsonData =
-      Json.encode(Map("version" -> 1, "partitions" -> partitionsList))
+    val jsonData = Json.encode(
+      Map("version" -> 1, "partitions" -> partitionsList))
     try {
       zkUtils.createPersistentPath(zkPath, jsonData)
       info("Created preferred replica election path with %s".format(jsonData))
@@ -151,8 +154,8 @@ class PreferredReplicaLeaderElectionCommand(
     extends Logging {
   def moveLeaderToPreferredReplica() = {
     try {
-      val validPartitions =
-        partitions.filter(p => validatePartition(zkUtils, p.topic, p.partition))
+      val validPartitions = partitions.filter(p =>
+        validatePartition(zkUtils, p.topic, p.partition))
       PreferredReplicaLeaderElectionCommand.writePreferredReplicaElectionData(
         zkUtils,
         validPartitions)

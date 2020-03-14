@@ -73,8 +73,7 @@ trait IterableLike[+A, +Repr]
     *  @usecase def foreach(f: A => Unit): Unit
     *    @inheritdoc
     */
-  def foreach[U](f: A => U): Unit =
-    iterator.foreach(f)
+  def foreach[U](f: A => U): Unit = iterator.foreach(f)
 
   override /*TraversableLike*/ def forall(p: A => Boolean): Boolean =
     iterator.forall(p)
@@ -82,8 +81,7 @@ trait IterableLike[+A, +Repr]
     iterator.exists(p)
   override /*TraversableLike*/ def find(p: A => Boolean): Option[A] =
     iterator.find(p)
-  override /*TraversableLike*/ def isEmpty: Boolean =
-    !iterator.hasNext
+  override /*TraversableLike*/ def isEmpty: Boolean = !iterator.hasNext
   override /*TraversableLike*/ def foldRight[B](z: B)(op: (A, B) => B): B =
     iterator.foldRight(z)(op)
   override /*TraversableLike*/ def reduceRight[B >: A](op: (A, B) => B): B =
@@ -96,8 +94,7 @@ trait IterableLike[+A, +Repr]
     *  $willNotTerminateInf
     *  @return an `Iterable` containing all elements of this $coll.
     */
-  override /*TraversableLike*/ def toIterable: Iterable[A] =
-    thisCollection
+  override /*TraversableLike*/ def toIterable: Iterable[A] = thisCollection
 
   /** Returns an Iterator over the elements in this $coll.  Produces the same
     *  result as `iterator`.
@@ -109,8 +106,7 @@ trait IterableLike[+A, +Repr]
     "2.11.0")
   override def toIterator: Iterator[A] = iterator
 
-  override /*TraversableLike*/ def head: A =
-    iterator.next()
+  override /*TraversableLike*/ def head: A = iterator.next()
 
   override /*TraversableLike*/ def slice(from: Int, until: Int): Repr = {
     val lo = math.max(from, 0)

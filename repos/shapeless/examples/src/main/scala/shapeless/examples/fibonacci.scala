@@ -41,8 +41,7 @@ object FibonacciExamples {
     implicit def fibN[I <: Nat, L <: Nat, M <: Nat](implicit
         l: Fibonacci[I, L],
         m: Fibonacci[Succ[I], M],
-        sum: Sum[L, M]) =
-      new Fibonacci[Succ[Succ[I]], sum.Out]
+        sum: Sum[L, M]) = new Fibonacci[Succ[Succ[I]], sum.Out]
   }
 
   def fibonacci[N <: Nat](

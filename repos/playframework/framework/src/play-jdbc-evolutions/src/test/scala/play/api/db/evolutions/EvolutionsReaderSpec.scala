@@ -12,8 +12,10 @@ object EvolutionsReaderSpec extends Specification {
   "EnvironmentEvolutionsReader" should {
 
     "read evolution files from classpath" in {
-      val environment =
-        Environment(new File("."), getClass.getClassLoader, Mode.Test)
+      val environment = Environment(
+        new File("."),
+        getClass.getClassLoader,
+        Mode.Test)
       val reader = new EnvironmentEvolutionsReader(environment)
 
       reader.evolutions("test") must_== Seq(

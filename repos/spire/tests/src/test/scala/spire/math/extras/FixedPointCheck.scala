@@ -17,11 +17,11 @@ class FixedPointCheck
     with Matchers
     with GeneratorDrivenPropertyChecks {
 
-  implicit val arbFixedScale: Arbitrary[FixedScale] =
-    Arbitrary(arbitrary[Int].map(_.abs).filter(_ > 0).map(FixedScale))
+  implicit val arbFixedScale: Arbitrary[FixedScale] = Arbitrary(
+    arbitrary[Int].map(_.abs).filter(_ > 0).map(FixedScale))
 
-  implicit val arbFixedPoint: Arbitrary[FixedPoint] =
-    Arbitrary(arbitrary[Long].map(new FixedPoint(_)))
+  implicit val arbFixedPoint: Arbitrary[FixedPoint] = Arbitrary(
+    arbitrary[Long].map(new FixedPoint(_)))
 
   property("FixedScale(r).toRational ~= r") {
     forAll { (s: FixedScale, r: Rational) =>

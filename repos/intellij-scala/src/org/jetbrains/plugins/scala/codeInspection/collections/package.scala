@@ -65,75 +65,77 @@ package object collections {
   def invocation(methodNames: Set[String]) =
     new InvocationTemplate(methodNames.contains)
 
-  private[collections] val `.exists` =
-    invocation("exists").from(likeCollectionClasses)
-  private[collections] val `.forall` =
-    invocation("forall").from(likeCollectionClasses)
-  private[collections] val `.filter` =
-    invocation("filter").from(likeCollectionClasses)
-  private[collections] val `.filterNot` =
-    invocation("filterNot").from(likeCollectionClasses)
-  private[collections] val `.map` =
-    invocation("map").from(likeCollectionClasses)
-  private[collections] val `.headOption` =
-    invocation("headOption").from(likeCollectionClasses)
-  private[collections] val `.lastOption` =
-    invocation("lastOption").from(likeCollectionClasses)
-  private[collections] val `.head` =
-    invocation("head").from(likeCollectionClasses)
-  private[collections] val `.last` =
-    invocation("last").from(likeCollectionClasses)
-  private[collections] val `.sizeOrLength` =
-    invocation(Set("size", "length")).from(likeCollectionClasses)
-  private[collections] val `.find` =
-    invocation("find").from(likeCollectionClasses)
-  private[collections] val `.contains` =
-    invocation("contains").from(likeCollectionClasses)
-  private[collections] val `.flatten` =
-    invocation("flatten").from(likeCollectionClasses)
-  private[collections] val `.flatMap` =
-    invocation("flatMap").from(likeCollectionClasses)
+  private[collections] val `.exists` = invocation("exists").from(
+    likeCollectionClasses)
+  private[collections] val `.forall` = invocation("forall").from(
+    likeCollectionClasses)
+  private[collections] val `.filter` = invocation("filter").from(
+    likeCollectionClasses)
+  private[collections] val `.filterNot` = invocation("filterNot").from(
+    likeCollectionClasses)
+  private[collections] val `.map` = invocation("map").from(
+    likeCollectionClasses)
+  private[collections] val `.headOption` = invocation("headOption").from(
+    likeCollectionClasses)
+  private[collections] val `.lastOption` = invocation("lastOption").from(
+    likeCollectionClasses)
+  private[collections] val `.head` = invocation("head").from(
+    likeCollectionClasses)
+  private[collections] val `.last` = invocation("last").from(
+    likeCollectionClasses)
+  private[collections] val `.sizeOrLength` = invocation(Set("size", "length"))
+    .from(likeCollectionClasses)
+  private[collections] val `.find` = invocation("find").from(
+    likeCollectionClasses)
+  private[collections] val `.contains` = invocation("contains").from(
+    likeCollectionClasses)
+  private[collections] val `.flatten` = invocation("flatten").from(
+    likeCollectionClasses)
+  private[collections] val `.flatMap` = invocation("flatMap").from(
+    likeCollectionClasses)
 
-  private[collections] val `.isDefined` =
-    invocation(Set("isDefined", "nonEmpty")).from(likeOptionClasses)
-  private[collections] val `.isEmptyOnOption` =
-    invocation("isEmpty").from(likeOptionClasses)
-  private[collections] val `.isEmpty` =
-    invocation("isEmpty").from(likeCollectionClasses)
-  private[collections] val `.nonEmpty` =
-    invocation("nonEmpty").from(likeCollectionClasses)
+  private[collections] val `.isDefined` = invocation(
+    Set("isDefined", "nonEmpty")).from(likeOptionClasses)
+  private[collections] val `.isEmptyOnOption` = invocation("isEmpty").from(
+    likeOptionClasses)
+  private[collections] val `.isEmpty` = invocation("isEmpty").from(
+    likeCollectionClasses)
+  private[collections] val `.nonEmpty` = invocation("nonEmpty").from(
+    likeCollectionClasses)
 
-  private[collections] val `.fold` =
-    invocation(foldMethodNames).from(likeCollectionClasses)
-  private[collections] val `.foldLeft` =
-    invocation(Set("foldLeft", "/:")).from(likeCollectionClasses)
-  private[collections] val `.reduce` =
-    invocation(reduceMethodNames).from(likeCollectionClasses)
-  private[collections] val `.getOrElse` =
-    invocation("getOrElse").from(likeOptionClasses)
-  private[collections] val `.getOnMap` =
-    invocation("get").from(likeCollectionClasses).ref(checkResolveToMap)
-  private[collections] val `.mapOnOption` =
-    invocation("map").from(likeOptionClasses).ref(checkScalaVersion)
-  private[collections] val `.sort` =
-    invocation(Set("sortWith", "sortBy", "sorted")).from(likeCollectionClasses)
-  private[collections] val `.reverse` =
-    invocation("reverse").from(likeCollectionClasses)
-  private[collections] val `.iterator` =
-    invocation("iterator").from(likeCollectionClasses)
+  private[collections] val `.fold` = invocation(foldMethodNames).from(
+    likeCollectionClasses)
+  private[collections] val `.foldLeft` = invocation(Set("foldLeft", "/:"))
+    .from(likeCollectionClasses)
+  private[collections] val `.reduce` = invocation(reduceMethodNames).from(
+    likeCollectionClasses)
+  private[collections] val `.getOrElse` = invocation("getOrElse").from(
+    likeOptionClasses)
+  private[collections] val `.getOnMap` = invocation("get")
+    .from(likeCollectionClasses)
+    .ref(checkResolveToMap)
+  private[collections] val `.mapOnOption` = invocation("map")
+    .from(likeOptionClasses)
+    .ref(checkScalaVersion)
+  private[collections] val `.sort` = invocation(
+    Set("sortWith", "sortBy", "sorted")).from(likeCollectionClasses)
+  private[collections] val `.reverse` = invocation("reverse").from(
+    likeCollectionClasses)
+  private[collections] val `.iterator` = invocation("iterator").from(
+    likeCollectionClasses)
   private[collections] val `.apply` = invocation("apply")
-  private[collections] val `.zip` =
-    invocation("zip").from(likeCollectionClasses)
-  private[collections] val `.indices` =
-    invocation("indices").from(likeCollectionClasses)
-  private[collections] val `.take` =
-    invocation("take").from(likeCollectionClasses)
-  private[collections] val `.drop` =
-    invocation("drop").from(likeCollectionClasses)
-  private[collections] val `.sameElements` =
-    invocation("sameElements").from(likeCollectionClasses)
-  private[collections] val `.corresponds` =
-    invocation("corresponds").from(likeCollectionClasses)
+  private[collections] val `.zip` = invocation("zip").from(
+    likeCollectionClasses)
+  private[collections] val `.indices` = invocation("indices").from(
+    likeCollectionClasses)
+  private[collections] val `.take` = invocation("take").from(
+    likeCollectionClasses)
+  private[collections] val `.drop` = invocation("drop").from(
+    likeCollectionClasses)
+  private[collections] val `.sameElements` = invocation("sameElements").from(
+    likeCollectionClasses)
+  private[collections] val `.corresponds` = invocation("corresponds").from(
+    likeCollectionClasses)
 
   private[collections] val `.to` = invocation("to").from(
     Array("RichInt", "RichChar", "RichLong", "RichDouble", "RichFloat").map(
@@ -147,18 +149,19 @@ package object collections {
   private[collections] val `-` = invocation("-")
   private[collections] val `+` = invocation("+")
 
-  private[collections] val `.toCollection` = new InvocationTemplate(name =>
-    name.startsWith("to") && name != "toString").from(likeCollectionClasses)
-  private[collections] val `.toSet` =
-    invocation("toSet").from(likeCollectionClasses)
-  private[collections] val `.toIterator` =
-    invocation("toIterator").from(likeCollectionClasses)
+  private[collections] val `.toCollection` =
+    new InvocationTemplate(name => name.startsWith("to") && name != "toString")
+      .from(likeCollectionClasses)
+  private[collections] val `.toSet` = invocation("toSet").from(
+    likeCollectionClasses)
+  private[collections] val `.toIterator` = invocation("toIterator").from(
+    likeCollectionClasses)
 
-  private[collections] val `.lift` =
-    invocation("lift").from(Array("scala.PartialFunction"))
+  private[collections] val `.lift` = invocation("lift").from(
+    Array("scala.PartialFunction"))
 
-  private[collections] val `.monadicMethod` =
-    invocation(monadicMethods).from(likeCollectionClasses)
+  private[collections] val `.monadicMethod` = invocation(monadicMethods).from(
+    likeCollectionClasses)
 
   object scalaNone {
     def unapply(expr: ScExpression): Boolean = {

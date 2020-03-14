@@ -26,8 +26,10 @@ class CompilerFactoryImpl(sbtData: SbtData) extends CompilerFactory {
       client: Client,
       fileToStore: File => AnalysisStore): Compiler = {
 
-    val scalac: Option[AnalyzingCompiler] =
-      getScalac(sbtData, compilerData.compilerJars, client)
+    val scalac: Option[AnalyzingCompiler] = getScalac(
+      sbtData,
+      compilerData.compilerJars,
+      client)
 
     compilerData.compilerJars match {
       case Some(jars) if jars.dotty.isDefined =>
@@ -99,8 +101,10 @@ object CompilerFactoryImpl {
         new URLClassLoader(urls, sbt.classpath.ClasspathUtilities.rootLoader)
       }
 
-      val version =
-        readProperty(classLoader, "compiler.properties", "version.number")
+      val version = readProperty(
+        classLoader,
+        "compiler.properties",
+        "version.number")
 
       new ScalaInstance(
         version.getOrElse("unknown"),

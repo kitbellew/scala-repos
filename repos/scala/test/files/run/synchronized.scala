@@ -126,8 +126,11 @@ class C1 {
       gfv(this)
     }
     def gl = {
-      lazy val glv =
-        checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
+      lazy val glv = checkLocks()(
+        this,
+        this.getClass,
+        C1.this,
+        C1.this.getClass)
       glv
     }
   }
@@ -206,8 +209,11 @@ class C1 {
       gfv(this)
     }
     def gl = {
-      lazy val glv =
-        checkLocks()(this, this.getClass, C1.this, C1.this.getClass)
+      lazy val glv = checkLocks()(
+        this,
+        this.getClass,
+        C1.this,
+        C1.this.getClass)
       glv
     }
   }
@@ -417,8 +423,12 @@ trait T {
     gfv(this)
   }
   def gl = {
-    lazy val glv =
-      checkLocks()(this, this.getClass, classOf[T], classOf[C2], O2.getClass)
+    lazy val glv = checkLocks()(
+      this,
+      this.getClass,
+      classOf[T],
+      classOf[C2],
+      O2.getClass)
     glv
   }
 

@@ -33,8 +33,7 @@ private[phantomjs] final class JettyWebsocketManager(
 
     override def doWebSocketConnect(
         request: HttpServletRequest,
-        protocol: String): WebSocket =
-      new ComWebSocketListener
+        protocol: String): WebSocket = new ComWebSocketListener
   })
 
   server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener {
@@ -82,8 +81,7 @@ private[phantomjs] final class JettyWebsocketManager(
     def debug(msg: String, thrown: Throwable): Unit =
       if (debugEnabled) log("DEBUG", msg, thrown)
 
-    def debug(thrown: Throwable): Unit =
-      if (debugEnabled) log("DEBUG", thrown)
+    def debug(thrown: Throwable): Unit = if (debugEnabled) log("DEBUG", thrown)
 
     def getName(): String = fullName
 

@@ -19,8 +19,8 @@ object FormSpec extends Specification {
       f5.errors must haveSize(1)
       f5.errors.find(_.message == "error.email") must beSome
 
-      val f6 =
-        ScalaForms.emailForm.fillAndValidate(("john@zen.....com", "John"))
+      val f6 = ScalaForms.emailForm.fillAndValidate(
+        ("john@zen.....com", "John"))
       f6.errors must haveSize(1)
       f6.errors.find(_.message == "error.email") must beSome
     }
@@ -32,8 +32,8 @@ object FormSpec extends Specification {
       val f8 = ScalaForms.emailForm.fillAndValidate(("john@zen.museum", "John"))
       f8.errors must beEmpty
 
-      val f9 =
-        ScalaForms.emailForm.fillAndValidate(("john@mail.zen.com", "John"))
+      val f9 = ScalaForms.emailForm.fillAndValidate(
+        ("john@mail.zen.com", "John"))
       f9.errors must beEmpty
 
       ScalaForms.emailForm
@@ -222,8 +222,8 @@ object FormSpec extends Specification {
       .bindFromRequest(Map("pos" -> Seq("123"), "name" -> Seq("another text")))
       .get must equalTo((123, "another text"))
 
-    val f1 =
-      ScalaForms.defaultValuesForm.bindFromRequest(Map("pos" -> Seq("abc")))
+    val f1 = ScalaForms.defaultValuesForm.bindFromRequest(
+      Map("pos" -> Seq("abc")))
     f1.errors must haveSize(1)
   }
 

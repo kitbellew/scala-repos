@@ -176,8 +176,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
   /**
     * Creates a new StackServer with parameter `p`.
     */
-  override def configured[P: Stack.Param](p: P): This =
-    withParams(params + p)
+  override def configured[P: Stack.Param](p: P): This = withParams(params + p)
 
   /**
     * Creates a new StackServer with parameter `psp._1` and Stack Param type `psp._2`.
@@ -190,8 +189,7 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
   /**
     * Creates a new StackServer with `params` used to configure this StackServer's `stack`.
     */
-  def withParams(params: Stack.Params): This =
-    copy1(params = params)
+  def withParams(params: Stack.Params): This = copy1(params = params)
 
   def withStack(stack: Stack[ServiceFactory[Req, Rep]]): This =
     copy1(stack = stack)

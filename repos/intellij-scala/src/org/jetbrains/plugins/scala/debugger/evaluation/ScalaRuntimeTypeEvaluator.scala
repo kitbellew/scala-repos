@@ -49,8 +49,8 @@ abstract class ScalaRuntimeTypeEvaluator(
   override def evaluate(evaluationContext: EvaluationContextImpl): PsiType = {
     val project: Project = evaluationContext.getProject
 
-    val evaluator: ExpressionEvaluator =
-      DebuggerInvocationUtil.commitAndRunReadAction(
+    val evaluator: ExpressionEvaluator = DebuggerInvocationUtil
+      .commitAndRunReadAction(
         project,
         new EvaluatingComputable[ExpressionEvaluator] {
           def compute: ExpressionEvaluator = {
@@ -80,8 +80,8 @@ abstract class ScalaRuntimeTypeEvaluator(
 
 object ScalaRuntimeTypeEvaluator {
 
-  val KEY: Key[ScExpression => ScType] =
-    Key.create("SCALA_RUNTIME_TYPE_EVALUATOR")
+  val KEY: Key[ScExpression => ScType] = Key.create(
+    "SCALA_RUNTIME_TYPE_EVALUATOR")
 
   def getCastableRuntimeType(project: Project, value: Value): PsiClass = {
     val unwrapped = DebuggerUtil.unwrapScalaRuntimeObjectRef(value)
@@ -91,8 +91,11 @@ object ScalaRuntimeTypeEvaluator {
     jdiType match {
       case classType: ClassType =>
         val superclass: ClassType = classType.superclass
-        val stdTypeNames =
-          Seq("java.lang.Object", "scala.Any", "scala.AnyRef", "scala.AnyVal")
+        val stdTypeNames = Seq(
+          "java.lang.Object",
+          "scala.Any",
+          "scala.AnyRef",
+          "scala.AnyVal")
         if (superclass != null && !stdTypeNames.contains(superclass.name)) {
           psiClass = findPsiClass(project, superclass)
           if (psiClass != null) { return psiClass }

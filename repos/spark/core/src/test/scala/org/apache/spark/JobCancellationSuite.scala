@@ -56,8 +56,9 @@ class JobCancellationSuite
 
   test("local mode, fair scheduler") {
     val conf = new SparkConf().set("spark.scheduler.mode", "FAIR")
-    val xmlPath =
-      getClass.getClassLoader.getResource("fairscheduler.xml").getFile()
+    val xmlPath = getClass.getClassLoader
+      .getResource("fairscheduler.xml")
+      .getFile()
     conf.set("spark.scheduler.allocation.file", xmlPath)
     sc = new SparkContext("local[2]", "test", conf)
     testCount()
@@ -77,8 +78,9 @@ class JobCancellationSuite
 
   test("cluster mode, fair scheduler") {
     val conf = new SparkConf().set("spark.scheduler.mode", "FAIR")
-    val xmlPath =
-      getClass.getClassLoader.getResource("fairscheduler.xml").getFile()
+    val xmlPath = getClass.getClassLoader
+      .getResource("fairscheduler.xml")
+      .getFile()
     conf.set("spark.scheduler.allocation.file", xmlPath)
     sc = new SparkContext("local-cluster[2,1,1024]", "test", conf)
     testCount()

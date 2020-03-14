@@ -190,8 +190,8 @@ class UnsafeFixedWidthAggregationMapSuite
 
     val keys = randomStrings(1024).take(512)
     keys.foreach { keyString =>
-      val buf =
-        map.getAggregationBuffer(InternalRow(UTF8String.fromString(keyString)))
+      val buf = map.getAggregationBuffer(
+        InternalRow(UTF8String.fromString(keyString)))
       buf.setInt(0, keyString.length)
       assert(buf != null)
     }
@@ -201,8 +201,8 @@ class UnsafeFixedWidthAggregationMapSuite
     val additionalKeys = randomStrings(1024)
     additionalKeys.zipWithIndex.foreach {
       case (str, i) =>
-        val buf =
-          map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
+        val buf = map.getAggregationBuffer(
+          InternalRow(UTF8String.fromString(str)))
         buf.setInt(0, str.length)
 
         if ((i % 100) == 0) {
@@ -244,8 +244,8 @@ class UnsafeFixedWidthAggregationMapSuite
     val additionalKeys = randomStrings(1024)
     additionalKeys.zipWithIndex.foreach {
       case (str, i) =>
-        val buf =
-          map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
+        val buf = map.getAggregationBuffer(
+          InternalRow(UTF8String.fromString(str)))
         buf.setInt(0, str.length)
 
         if ((i % 100) == 0) {
@@ -331,8 +331,8 @@ class UnsafeFixedWidthAggregationMapSuite
     val rand = new Random(42)
     for (i <- 1 to 100) {
       val str = rand.nextString(1024)
-      val buf =
-        map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
+      val buf = map.getAggregationBuffer(
+        InternalRow(UTF8String.fromString(str)))
       buf.setInt(0, str.length)
     }
     // Simulate running out of space

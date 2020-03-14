@@ -235,12 +235,10 @@ abstract class SymbolTable
   /** The phase associated with given period. */
   final def phaseOf(period: Period): Phase = phaseWithId(phaseId(period))
 
-  final def period(rid: RunId, pid: Phase#Id): Period =
-    (rid << 8) + pid
+  final def period(rid: RunId, pid: Phase#Id): Period = (rid << 8) + pid
 
   /** Are we later than given phase in compilation? */
-  final def isAtPhaseAfter(p: Phase) =
-    p != NoPhase && phase.id > p.id
+  final def isAtPhaseAfter(p: Phase) = p != NoPhase && phase.id > p.id
 
   /** Perform given operation at given phase. */
   @inline final def enteringPhase[T](ph: Phase)(op: => T): T = {

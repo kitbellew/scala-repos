@@ -30,8 +30,10 @@ class JsonpFilterTest extends FunSuite {
   }
 
   test("ignore non-json") {
-    val request =
-      Request("/test.json", "callback" -> "mycallback", "not_json" -> "t")
+    val request = Request(
+      "/test.json",
+      "callback" -> "mycallback",
+      "not_json" -> "t")
     val response = Await.result(JsonpFilter(request, dummyService))
 
     assert(response.mediaType == Some("not_json"))

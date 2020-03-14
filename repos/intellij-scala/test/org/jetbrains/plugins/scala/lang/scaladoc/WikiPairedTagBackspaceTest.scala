@@ -56,8 +56,7 @@ class WikiPairedTagBackspaceTest
   }
 
   def testDeleteInnerCodeTag() {
-    val text =
-      ("""
+    val text = ("""
       | /**
       |   * {{{""" + CARET_MARKER + """
       |   *   class A {
@@ -66,8 +65,7 @@ class WikiPairedTagBackspaceTest
       |   *}}}
       |   */
       """).stripMargin.replace("\r", "")
-    val assumedStub =
-      """
+    val assumedStub = """
       | /**
       |   * {{
       |   *   class A {

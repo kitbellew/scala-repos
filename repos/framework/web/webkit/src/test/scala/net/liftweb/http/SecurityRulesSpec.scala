@@ -159,8 +159,8 @@ class ContentSecurityPolicySpec extends Specification {
     "combine restrictions for multiple content types correctly" in {
       ContentSecurityPolicy(
         defaultSources = List(ContentSourceRestriction.Self),
-        fontSources =
-          List(ContentSourceRestriction.Host("https://base.*.example.com")),
+        fontSources = List(
+          ContentSourceRestriction.Host("https://base.*.example.com")),
         frameSources = List(ContentSourceRestriction.Scheme("data")),
         imageSources = List(ContentSourceRestriction.All),
         mediaSources = List(ContentSourceRestriction.None),

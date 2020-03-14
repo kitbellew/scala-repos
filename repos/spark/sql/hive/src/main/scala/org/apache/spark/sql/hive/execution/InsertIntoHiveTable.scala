@@ -112,8 +112,8 @@ private[hive] case class InsertIntoHiveTable(
     }
 
     // All partition column names in the format of "<column name 1>/<column name 2>/..."
-    val partitionColumns =
-      fileSinkConf.getTableInfo.getProperties.getProperty("partition_columns")
+    val partitionColumns = fileSinkConf.getTableInfo.getProperties
+      .getProperty("partition_columns")
     val partitionColumnNames = Option(partitionColumns).map(_.split("/")).orNull
 
     // Validate partition spec if there exist any dynamic partitions
@@ -143,8 +143,8 @@ private[hive] case class InsertIntoHiveTable(
 
     // When speculation is on and output committer class name contains "Direct", we should warn
     // users that they may loss data if they are using a direct output committer.
-    val speculationEnabled =
-      sqlContext.sparkContext.conf.getBoolean("spark.speculation", false)
+    val speculationEnabled = sqlContext.sparkContext.conf
+      .getBoolean("spark.speculation", false)
     val outputCommitterClass = jobConf.get("mapred.output.committer.class", "")
     if (speculationEnabled && outputCommitterClass.contains("Direct")) {
       val warningMessage =
@@ -155,18 +155,19 @@ private[hive] case class InsertIntoHiveTable(
       logWarning(warningMessage)
     }
 
-    val writerContainer = if (numDynamicPartitions > 0) {
-      val dynamicPartColNames =
-        partitionColumnNames.takeRight(numDynamicPartitions)
-      new SparkHiveDynamicPartitionWriterContainer(
-        jobConf,
-        fileSinkConf,
-        dynamicPartColNames,
-        child.output,
-        table)
-    } else {
-      new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
-    }
+    val writerContainer =
+      if (numDynamicPartitions > 0) {
+        val dynamicPartColNames = partitionColumnNames.takeRight(
+          numDynamicPartitions)
+        new SparkHiveDynamicPartitionWriterContainer(
+          jobConf,
+          fileSinkConf,
+          dynamicPartColNames,
+          child.output,
+          table)
+      } else {
+        new SparkHiveWriterContainer(jobConf, fileSinkConf, child.output, table)
+      }
 
     @transient val outputClass =
       writerContainer.newSerializer(table.tableDesc).getSerializedClass
@@ -215,10 +216,9 @@ private[hive] case class InsertIntoHiveTable(
         // ifNotExists is only valid with static partition, refer to
         // https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML#LanguageManualDML-InsertingdataintoHiveTablesfromqueries
         // scalastyle:on
-        val oldPart =
-          catalog.client.getPartitionOption(
-            catalog.client.getTable(table.databaseName, table.tableName),
-            partitionSpec)
+        val oldPart = catalog.client.getPartitionOption(
+          catalog.client.getTable(table.databaseName, table.tableName),
+          partitionSpec)
 
         if (oldPart.isEmpty || !ifNotExists) {
           catalog.client.loadPartition(

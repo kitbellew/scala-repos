@@ -28,11 +28,12 @@ import play.utils.PlayIO
   */
 object Configuration {
 
-  private[this] lazy val dontAllowMissingConfigOptions =
-    ConfigParseOptions.defaults().setAllowMissing(false)
+  private[this] lazy val dontAllowMissingConfigOptions = ConfigParseOptions
+    .defaults()
+    .setAllowMissing(false)
 
-  private[this] lazy val dontAllowMissingConfig =
-    ConfigFactory.load(dontAllowMissingConfigOptions)
+  private[this] lazy val dontAllowMissingConfig = ConfigFactory.load(
+    dontAllowMissingConfigOptions)
 
   private[play] def load(
       classLoader: ClassLoader,
@@ -45,9 +46,10 @@ object Configuration {
       // Iterating through the system properties is prone to ConcurrentModificationExceptions (especially in our tests)
       // Typesafe config maintains a cache for this purpose.  So, if the passed in properties *are* the system
       // properties, use the Typesafe config cache, otherwise it should be safe to parse it ourselves.
-      val systemPropertyConfig = if (properties eq System.getProperties) {
-        ConfigImpl.systemPropertiesAsConfig()
-      } else { ConfigFactory.parseProperties(properties) }
+      val systemPropertyConfig =
+        if (properties eq System.getProperties) {
+          ConfigImpl.systemPropertiesAsConfig()
+        } else { ConfigFactory.parseProperties(properties) }
 
       // Inject our direct settings into the config.
       val directConfig: Config = ConfigFactory.parseMap(directSettings.asJava)
@@ -85,8 +87,9 @@ object Configuration {
 
       // Resolve reference.conf ourselves because ConfigFactory.defaultReference resolves
       // values, and we won't have a value for `play.server.dir` until all our config is combined.
-      val referenceConfig: Config =
-        ConfigFactory.parseResources(classLoader, "reference.conf")
+      val referenceConfig: Config = ConfigFactory.parseResources(
+        classLoader,
+        "reference.conf")
 
       // Combine all the config together into one big config
       val combinedConfig: Config = Seq(
@@ -1028,8 +1031,9 @@ private[play] class PlayConfig(val underlying: Config) {
   def getPrototypedMap(
       path: String,
       prototypePath: String = "prototype.$path"): Map[String, PlayConfig] = {
-    val prototype = if (prototypePath.isEmpty) { underlying }
-    else { underlying.getConfig(prototypePath.replace("$path", path)) }
+    val prototype =
+      if (prototypePath.isEmpty) { underlying }
+      else { underlying.getConfig(prototypePath.replace("$path", path)) }
     get[Map[String, Config]](path).map {
       case (key, config) =>
         key -> new PlayConfig(config.withFallback(prototype))
@@ -1068,10 +1072,11 @@ private[play] class PlayConfig(val underlying: Config) {
       deprecated: String,
       parent: String = ""): PlayConfig = {
     val config = get[Config](path)
-    val merged = if (underlying.hasPath(deprecated)) {
-      reportDeprecation(path, deprecated)
-      get[Config](deprecated).withFallback(config)
-    } else config
+    val merged =
+      if (underlying.hasPath(deprecated)) {
+        reportDeprecation(path, deprecated)
+        get[Config](deprecated).withFallback(config)
+      } else config
     new PlayConfig(merged)
   }
 
@@ -1146,12 +1151,12 @@ private[play] object ConfigLoader {
   implicit val seqStringLoader = ConfigLoader(_.getStringList).map(toScala)
 
   implicit val intLoader = ConfigLoader(_.getInt)
-  implicit val seqIntLoader =
-    ConfigLoader(_.getIntList).map(toScala(_).map(_.toInt))
+  implicit val seqIntLoader = ConfigLoader(_.getIntList)
+    .map(toScala(_).map(_.toInt))
 
   implicit val booleanLoader = ConfigLoader(_.getBoolean)
-  implicit val seqBooleanLoader =
-    ConfigLoader(_.getBooleanList).map(toScala(_).map(_.booleanValue()))
+  implicit val seqBooleanLoader = ConfigLoader(_.getBooleanList)
+    .map(toScala(_).map(_.booleanValue()))
 
   implicit val durationLoader: ConfigLoader[Duration] = ConfigLoader(config =>
     path =>
@@ -1179,12 +1184,12 @@ private[play] object ConfigLoader {
   implicit val seqBytesLoader = ConfigLoader(_.getMemorySizeList).map(toScala)
 
   implicit val configLoader: ConfigLoader[Config] = ConfigLoader(_.getConfig)
-  implicit val seqConfigLoader: ConfigLoader[Seq[Config]] =
-    ConfigLoader(_.getConfigList).map(_.asScala)
+  implicit val seqConfigLoader: ConfigLoader[Seq[Config]] = ConfigLoader(
+    _.getConfigList).map(_.asScala)
 
   implicit val playConfigLoader = configLoader.map(new PlayConfig(_))
-  implicit val seqPlayConfigLoader =
-    seqConfigLoader.map(_.map(new PlayConfig(_)))
+  implicit val seqPlayConfigLoader = seqConfigLoader.map(
+    _.map(new PlayConfig(_)))
 
   /**
     * Loads a value, interpreting a null value as None and any other value as Some(value).

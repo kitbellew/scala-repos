@@ -12,8 +12,7 @@ trait SetPicklers {
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Set[T]],
       cbf: CanBuildFrom[Set[T], T, Set[T]])
-      : Pickler[Set[T]] with Unpickler[Set[T]] =
-    SeqSetPickler[T, Set]
+      : Pickler[Set[T]] with Unpickler[Set[T]] = SeqSetPickler[T, Set]
 }
 
 trait ImmutableSortedSetPicklers {

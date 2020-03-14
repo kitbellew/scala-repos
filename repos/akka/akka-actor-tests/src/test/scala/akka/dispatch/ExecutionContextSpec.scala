@@ -20,16 +20,16 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     "be instantiable" in {
       val es = Executors.newCachedThreadPool()
       try {
-        val executor: Executor with ExecutionContext =
-          ExecutionContext.fromExecutor(es)
+        val executor: Executor with ExecutionContext = ExecutionContext
+          .fromExecutor(es)
         executor should not be (null)
 
         val executorService: ExecutorService with ExecutionContext =
           ExecutionContext.fromExecutorService(es)
         executorService should not be (null)
 
-        val jExecutor: ExecutionContextExecutor =
-          ExecutionContext.fromExecutor(es)
+        val jExecutor: ExecutionContextExecutor = ExecutionContext.fromExecutor(
+          es)
         jExecutor should not be (null)
 
         val jExecutorService: ExecutionContextExecutorService =
@@ -180,8 +180,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
 
   "A SerializedSuspendableExecutionContext" must {
     "be suspendable and resumable" in {
-      val sec =
-        SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
+      val sec = SerializedSuspendableExecutionContext(1)(
+        ExecutionContext.global)
       val counter = new AtomicInteger(0)
       def perform(f: Int ⇒ Int) =
         sec execute new Runnable {
@@ -232,8 +232,8 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
     }
 
     "execute tasks in serial" in {
-      val sec =
-        SerializedSuspendableExecutionContext(1)(ExecutionContext.global)
+      val sec = SerializedSuspendableExecutionContext(1)(
+        ExecutionContext.global)
       val total = 10000
       val counter = new AtomicInteger(0)
       def perform(f: Int ⇒ Int) =

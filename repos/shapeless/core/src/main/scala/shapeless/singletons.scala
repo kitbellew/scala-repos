@@ -46,11 +46,10 @@ object Witness extends Dynamic {
       val value = value0
     }
 
-  implicit val witness0: Witness.Aux[_0] =
-    new Witness {
-      type T = _0
-      val value = Nat._0
-    }
+  implicit val witness0: Witness.Aux[_0] = new Witness {
+    type T = _0
+    val value = Nat._0
+  }
 
   implicit def witnessN[P <: Nat]: Witness.Aux[Succ[P]] =
     new Witness {
@@ -221,8 +220,7 @@ trait SingletonTypeUtils extends ReprTypes {
   def parseType(typeStr: String): Option[Type] =
     parseStandardType(typeStr) orElse parseLiteralType(typeStr)
 
-  def typeCarrier(tpe: Type) =
-    mkTypeCarrier(tq"{ type T = $tpe }")
+  def typeCarrier(tpe: Type) = mkTypeCarrier(tq"{ type T = $tpe }")
 
   def fieldTypeCarrier(tpe: Type) =
     mkTypeCarrier(
@@ -383,14 +381,13 @@ class SingletonTypeMacros(val c: whitebox.Context)
   }
 
   def convertInstanceImplNatAux(i: Tree, tcTpe: Type): Tree = {
-    val (n, nTpe) =
-      i match {
-        case NatLiteral(n) => (mkNatValue(n), mkNatTpe(n))
-        case _ =>
-          c.abort(
-            c.enclosingPosition,
-            s"Expression $i does not evaluate to a non-negative Int literal")
-      }
+    val (n, nTpe) = i match {
+      case NatLiteral(n) => (mkNatValue(n), mkNatTpe(n))
+      case _ =>
+        c.abort(
+          c.enclosingPosition,
+          s"Expression $i does not evaluate to a non-negative Int literal")
+    }
     val nwTC = typeOf[NatWith[Any]].typeConstructor
     val parent = appliedType(nwTC, List(tcTpe))
     val instTpe = appliedType(tcTpe, List(nTpe))
@@ -444,10 +441,8 @@ class SingletonTypeMacros(val c: whitebox.Context)
 
   def witnessTypeImpl(tpeSelector: Tree): Tree = {
     val q"${tpeString: String}" = tpeSelector
-    val tpe =
-      parseLiteralType(tpeString)
-        .getOrElse(
-          c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
+    val tpe = parseLiteralType(tpeString)
+      .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
 
     fieldTypeCarrier(tpe)
   }

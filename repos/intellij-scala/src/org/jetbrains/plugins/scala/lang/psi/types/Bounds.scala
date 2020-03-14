@@ -316,8 +316,11 @@ object Bounds {
               lub(upper, t2, checkWeak))
           case (_: ValType, _: ValType) => types.AnyVal
           case (JavaArrayType(arg1), JavaArrayType(arg2)) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg1, arg2, depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg1,
+              arg2,
+              depth,
+              checkWeak)
             ex match {
               case Some(w) => ScExistentialType(JavaArrayType(v), List(w))
               case None    => JavaArrayType(v)
@@ -327,8 +330,11 @@ object Bounds {
                 case Some(q) => q.qualifiedName == "scala.Array"
                 case _       => false
               }) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg, args(0), depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg,
+              args(0),
+              depth,
+              checkWeak)
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
@@ -339,8 +345,11 @@ object Bounds {
                 case Some(q) => q.qualifiedName == "scala.Array"
                 case _       => false
               }) =>
-            val (v, ex) =
-              calcForTypeParamWithoutVariance(arg, args(0), depth, checkWeak)
+            val (v, ex) = calcForTypeParamWithoutVariance(
+              arg,
+              args(0),
+              depth,
+              checkWeak)
             ex match {
               case Some(w) =>
                 ScExistentialType(ScParameterizedType(des, Seq(v)), List(w))
@@ -367,8 +376,9 @@ object Bounds {
               types.Any
             else {
               val buf = new ArrayBuffer[ScType]
-              val supers: Array[(Options, Int, Int)] =
-                getLeastUpperClasses(aOptions, bOptions)
+              val supers: Array[(Options, Int, Int)] = getLeastUpperClasses(
+                aOptions,
+                bOptions)
               for (sup <- supers) {
                 val tp = getTypeForAppending(
                   aOptions(sup._2),

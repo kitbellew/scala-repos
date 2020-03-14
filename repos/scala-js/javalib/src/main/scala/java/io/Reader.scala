@@ -33,8 +33,7 @@ abstract class Reader private[this] (_lock: Option[Object])
     if (read(buf) == -1) -1 else buf(0).toInt
   }
 
-  def read(cbuf: Array[Char]): Int =
-    read(cbuf, 0, cbuf.length)
+  def read(cbuf: Array[Char]): Int = read(cbuf, 0, cbuf.length)
 
   def read(cbuf: Array[Char], off: Int, len: Int): Int
 
@@ -51,8 +50,7 @@ abstract class Reader private[this] (_lock: Option[Object])
   def mark(readAheadLimit: Int): Unit =
     throw new IOException("Mark not supported")
 
-  def reset(): Unit =
-    throw new IOException("Reset not supported")
+  def reset(): Unit = throw new IOException("Reset not supported")
 
   def close(): Unit
 

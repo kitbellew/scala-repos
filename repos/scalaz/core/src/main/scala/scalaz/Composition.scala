@@ -32,8 +32,7 @@ private trait CompositionApplicative[F[_], G[_]]
 private trait CompositionPlus[F[_], G[_]] extends Plus[λ[α => F[G[α]]]] {
   implicit def F: Plus[F]
 
-  def plus[A](a: F[G[A]], b: => F[G[A]]): F[G[A]] =
-    F.plus(a, b)
+  def plus[A](a: F[G[A]], b: => F[G[A]]): F[G[A]] = F.plus(a, b)
 }
 
 private trait CompositionPlusEmpty[F[_], G[_]]
@@ -78,8 +77,7 @@ private trait CompositionTraverse[F[_], G[_]]
   implicit def G: Traverse[G]
 
   def traverseImpl[X[_]: Applicative, A, B](a: F[G[A]])(
-      f: A => X[B]): X[F[G[B]]] =
-    F.traverse(a)(G.traverse(_)(f))
+      f: A => X[B]): X[F[G[B]]] = F.traverse(a)(G.traverse(_)(f))
 
 }
 
@@ -121,8 +119,7 @@ private trait CompositionDistributive[F[_], G[_]]
   implicit def G: Distributive[G]
 
   def distributeImpl[X[_]: Functor, A, B](a: X[A])(
-      f: A => F[G[B]]): F[G[X[B]]] =
-    F(F.distribute(a)(f))(G.cosequence(_))
+      f: A => F[G[B]]): F[G[X[B]]] = F(F.distribute(a)(f))(G.cosequence(_))
 }
 
 private trait CompositionZip[F[_], G[_]] extends Zip[λ[α => F[G[α]]]] {
@@ -226,11 +223,9 @@ private trait CompositionFoldableBifoldable[F[_], G[_, _]]
   def G: Bifoldable[G]
 
   override def bifoldMap[A, B, M: Monoid](fa: F[G[A, B]])(f: A => M)(
-      g: B => M) =
-    F.foldMap(fa)(G.bifoldMap(_)(f)(g))
+      g: B => M) = F.foldMap(fa)(G.bifoldMap(_)(f)(g))
   override def bifoldRight[A, B, C](fa: F[G[A, B]], z: => C)(f: (A, => C) => C)(
-      g: (B, => C) => C) =
-    F.foldRight(fa, z)(G.bifoldRight(_, _)(f)(g))
+      g: (B, => C) => C) = F.foldRight(fa, z)(G.bifoldRight(_, _)(f)(g))
   override def bifoldLeft[A, B, C](fa: F[G[A, B]], z: C)(f: (C, A) => C)(
       g: (C, B) => C) =
     F.foldLeft(fa, z)((c, gab) => G.bifoldLeft(gab, c)(f)(g))

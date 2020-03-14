@@ -57,8 +57,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
       val (leftErrors, leftConstr) = loop(left, relations, constraints)
       val (rightErrors, rightConstr) = loop(right, relations, constraints)
 
-      val unified =
-        unifyProvenance(relations)(left.provenance, right.provenance)
+      val unified = unifyProvenance(relations)(
+        left.provenance,
+        right.provenance)
 
       val (provenance, contribErrors, contribConstr) = {
         if ((left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance) && expr.disallowsInfinite) {
@@ -69,8 +70,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
         } else if (left.provenance.isParametric || right.provenance.isParametric) {
           if (unified.isDefined) { (unified.get, Set(), Set()) }
           else {
-            val provenance =
-              UnifiedProvenance(left.provenance, right.provenance)
+            val provenance = UnifiedProvenance(
+              left.provenance,
+              right.provenance)
             (provenance, Set(), Set(Related(left.provenance, right.provenance)))
           }
         } else {
@@ -122,8 +124,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
             val unified = unifyProvenance(relations)(prov1, prov2)
 
             if ((prov1 == InfiniteProvenance || prov2 == InfiniteProvenance) && expr.disallowsInfinite) {
-              val errors =
-                Set(Error(expr, CannotUseDistributionWithoutSampling))
+              val errors = Set(
+                Error(expr, CannotUseDistributionWithoutSampling))
               (NullProvenance, addedConstr, addedErrors ++ errors)
             } else if (prov1.isParametric || prov2.isParametric) {
               if (unified.isDefined) {
@@ -204,10 +206,12 @@ trait ProvenanceChecker extends parser.AST with Binder {
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
             Set())
         } else {
-          val leftUnified =
-            unifyProvenance(relations)(pred.provenance, left.provenance)
-          val rightUnified =
-            unifyProvenance(relations)(pred.provenance, right.provenance)
+          val leftUnified = unifyProvenance(relations)(
+            pred.provenance,
+            left.provenance)
+          val rightUnified = unifyProvenance(relations)(
+            pred.provenance,
+            right.provenance)
 
           (leftUnified |@| rightUnified)(
             handleUnionLike(CondProvenanceDifferentLength)) getOrElse {
@@ -318,8 +322,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
             Set())
         else if (left.provenance.isParametric || right.provenance.isParametric) {
-          val provenance =
-            DerivedIntersectProvenance(left.provenance, right.provenance)
+          val provenance = DerivedIntersectProvenance(
+            left.provenance,
+            right.provenance)
 
           val sameCard = SameCard(
             left.provenance,
@@ -337,8 +342,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
             Set(Error(expr, IntersectProvenanceDifferentLength)),
             Set())
         else if (isCommon) {
-          val unified =
-            unifyProvenance(relations)(left.provenance, right.provenance)
+          val unified = unifyProvenance(relations)(
+            left.provenance,
+            right.provenance)
           val prov = unified getOrElse CoproductProvenance(
             left.provenance,
             right.provenance)
@@ -394,8 +400,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
             Set(Error(expr, CannotUseDistributionWithoutSampling)),
             Set())
         else if (left.provenance.isParametric || right.provenance.isParametric) {
-          val provenance =
-            DerivedDifferenceProvenance(left.provenance, right.provenance)
+          val provenance = DerivedDifferenceProvenance(
+            left.provenance,
+            right.provenance)
 
           val sameCard = SameCard(
             left.provenance,
@@ -484,12 +491,15 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
         case Observe(_, data, samples) => {
           val (dataErrors, dataConst) = loop(data, relations, constraints)
-          val (samplesErrors, samplesConst) =
-            loop(samples, relations, constraints)
+          val (samplesErrors, samplesConst) = loop(
+            samples,
+            relations,
+            constraints)
 
-          val observeDataErrors = if (data.provenance == InfiniteProvenance) {
-            Set(Error(expr, CannotUseDistributionWithoutSampling))
-          } else { Set() }
+          val observeDataErrors =
+            if (data.provenance == InfiniteProvenance) {
+              Set(Error(expr, CannotUseDistributionWithoutSampling))
+            } else { Set() }
 
           val observeSamplesErrors =
             if (samples.provenance != InfiniteProvenance) {
@@ -532,8 +542,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
           val (fromErrors, fromConstr) = loop(from, relations, constraints)
           val (toErrors, toConstr) = loop(to, relations, constraints)
 
-          val unified =
-            unifyProvenance(relations)(from.provenance, to.provenance)
+          val unified = unifyProvenance(relations)(
+            from.provenance,
+            to.provenance)
 
           val (contribErrors, contribConstr) =
             if (from.provenance == InfiniteProvenance || to.provenance == InfiniteProvenance) {
@@ -668,8 +679,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
               val constrErrors = mapped collect { case Left(error)   => error }
               val constraints3 = mapped collect { case Right(constr) => constr }
 
-              expr.provenance =
-                resolveUnifications(relations)(sub(let.resultProvenance))
+              expr.provenance = resolveUnifications(relations)(
+                sub(let.resultProvenance))
 
               val finalErrors = actualErrors ++ constrErrors
               if (!finalErrors.isEmpty) { expr.provenance = NullProvenance }
@@ -792,11 +803,14 @@ trait ProvenanceChecker extends parser.AST with Binder {
               val right = actuals(1)
 
               val (leftErrors, leftConstr) = loop(left, relations, constraints)
-              val (rightErrors, rightConstr) =
-                loop(right, relations, constraints)
+              val (rightErrors, rightConstr) = loop(
+                right,
+                relations,
+                constraints)
 
-              val unified =
-                unifyProvenance(relations)(left.provenance, right.provenance)
+              val unified = unifyProvenance(relations)(
+                left.provenance,
+                right.provenance)
 
               def compute(paramProv: Provenance, prov: Provenance)
                   : (Set[Error], Set[ProvConstraint], Provenance) = {
@@ -845,8 +859,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
                    * smoothly resolved with the addition of record-based ids.)
                    */
                   case IdentityPolicy.Retain.Cross => {
-                    val product =
-                      ProductProvenance(left.provenance, right.provenance)
+                    val product = ProductProvenance(
+                      left.provenance,
+                      right.provenance)
                     val prov = unifyProvenance(relations)(
                       left.provenance,
                       right.provenance) getOrElse product
@@ -861,8 +876,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
                     compute(right.provenance, right.provenance)
 
                   case IdentityPolicy.Retain.Merge => {
-                    val paramProv =
-                      UnifiedProvenance(left.provenance, right.provenance)
+                    val paramProv = UnifiedProvenance(
+                      left.provenance,
+                      right.provenance)
                     val prov = unified getOrElse NullProvenance
                     compute(paramProv, prov)
                   }
@@ -919,29 +935,46 @@ trait ProvenanceChecker extends parser.AST with Binder {
         }
 
         case Cond(_, pred, left, right) => {
-          val (provenance, result) =
-            handleCond(expr, pred, left, right, relations, constraints)
+          val (provenance, result) = handleCond(
+            expr,
+            pred,
+            left,
+            right,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }
 
         case Union(_, left, right) => {
-          val (provenance, result) =
-            handleUnion(expr, left, right, relations, constraints)
+          val (provenance, result) = handleUnion(
+            expr,
+            left,
+            right,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }
 
         case Intersect(_, left, right) => {
-          val (provenance, result) =
-            handleIntersect(expr, left, right, relations, constraints)
+          val (provenance, result) = handleIntersect(
+            expr,
+            left,
+            right,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }
 
         case Difference(_, left, right) => {
-          val (provenance, result) =
-            handleDifference(expr, left, right, relations, constraints)
+          val (provenance, result) = handleDifference(
+            expr,
+            left,
+            right,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }
@@ -953,16 +986,23 @@ trait ProvenanceChecker extends parser.AST with Binder {
         }
 
         case BinaryOp(_, left, right) => {
-          val (provenance, result) =
-            handleBinary(expr, left, right, relations, constraints)
+          val (provenance, result) = handleBinary(
+            expr,
+            left,
+            right,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }
 
         // TODO change to NaryOp(_, values) once scalac bugs are resolved
         case expr: NaryOp => {
-          val (provenance, result) =
-            handleNary(expr, expr.values, relations, constraints)
+          val (provenance, result) = handleNary(
+            expr,
+            expr.values,
+            relations,
+            constraints)
           expr.provenance = provenance
           result
         }

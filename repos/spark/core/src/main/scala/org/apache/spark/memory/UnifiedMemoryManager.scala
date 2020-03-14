@@ -94,10 +94,9 @@ private[spark] class UnifiedMemoryManager private[memory] (
               // storage. We can reclaim any free memory from the storage pool. If the storage pool
               // has grown to become larger than `storageRegionSize`, we can evict blocks and reclaim
               // the memory that storage has borrowed from execution.
-              val memoryReclaimableFromStorage =
-                math.max(
-                  storageMemoryPool.memoryFree,
-                  storageMemoryPool.poolSize - storageRegionSize)
+              val memoryReclaimableFromStorage = math.max(
+                storageMemoryPool.memoryFree,
+                storageMemoryPool.poolSize - storageRegionSize)
               if (memoryReclaimableFromStorage > 0) {
                 // Only reclaim as much space as is necessary and available:
                 val spaceReclaimed = storageMemoryPool.shrinkPoolToFreeSpace(
@@ -152,8 +151,9 @@ private[spark] class UnifiedMemoryManager private[memory] (
       if (numBytes > storageMemoryPool.memoryFree) {
         // There is not enough free memory in the storage pool, so try to borrow free memory from
         // the execution pool.
-        val memoryBorrowedFromExecution =
-          Math.min(onHeapExecutionMemoryPool.memoryFree, numBytes)
+        val memoryBorrowedFromExecution = Math.min(
+          onHeapExecutionMemoryPool.memoryFree,
+          numBytes)
         onHeapExecutionMemoryPool.decrementPoolSize(memoryBorrowedFromExecution)
         storageMemoryPool.incrementPoolSize(memoryBorrowedFromExecution)
       }
@@ -186,8 +186,9 @@ object UnifiedMemoryManager {
     * Return the total amount of memory shared between execution and storage, in bytes.
     */
   private def getMaxMemory(conf: SparkConf): Long = {
-    val systemMemory =
-      conf.getLong("spark.testing.memory", Runtime.getRuntime.maxMemory)
+    val systemMemory = conf.getLong(
+      "spark.testing.memory",
+      Runtime.getRuntime.maxMemory)
     val reservedMemory = conf.getLong(
       "spark.testing.reservedMemory",
       if (conf.contains("spark.testing")) 0 else RESERVED_SYSTEM_MEMORY_BYTES)

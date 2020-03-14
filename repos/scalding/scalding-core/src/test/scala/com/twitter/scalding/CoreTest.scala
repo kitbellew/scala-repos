@@ -126,8 +126,8 @@ class ShuffleJob(args: Args) extends Job(args) {
 }
 
 class ShuffleJobTest extends WordSpec with Matchers {
-  val expectedShuffle: List[Int] =
-    List(10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3, 7)
+  val expectedShuffle: List[Int] = List(10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3,
+    7)
 
   "A ShuffleJob" should {
     val input = (0 to 12).map { Tuple1(_) }
@@ -330,8 +330,9 @@ class CollidingKeyJoinTest extends WordSpec with Matchers {
   "A CollidingKeyJoinJob" should {
     val input1 = List("a" -> 1, "b" -> 2, "c" -> 3)
     val input2 = List("b" -> -1, "c" -> 5, "d" -> 4)
-    val correctOutput =
-      Map("b" -> (2, "bb", -1, "bb"), "c" -> (3, "cc", 5, "cc"))
+    val correctOutput = Map(
+      "b" -> (2, "bb", -1, "bb"),
+      "c" -> (3, "cc", 5, "cc"))
 
     JobTest(new CollidingKeyJoinJob(_))
       .arg("input1", "fakeInput1")
@@ -451,8 +452,10 @@ class TinyThenSmallJoinTest
     val input0 = List((1, TC(2)), (2, TC(3)), (3, TC(4)))
     val input1 = List((1, TC(20)), (2, TC(30)), (3, TC(40)))
     val input2 = List((1, TC(200)), (2, TC(300)), (3, TC(400)))
-    val correct =
-      List((1, 2, 1, 20, 1, 200), (2, 3, 2, 30, 2, 300), (3, 4, 3, 40, 3, 400))
+    val correct = List(
+      (1, 2, 1, 20, 1, 200),
+      (2, 3, 2, 30, 2, 300),
+      (3, 4, 3, 40, 3, 400))
     var idx = 0
     JobTest(new TinyThenSmallJoin(_))
       .source(Tsv("in0", ('x0, 'y0)), input0)
@@ -1592,10 +1595,14 @@ class GroupAllToListTest extends WordSpec with Matchers {
   import Dsl._
 
   "A GroupAllToListTestJob" should {
-    val input =
-      List((1L, "a", 1.0), (1L, "b", 2.0), (2L, "a", 1.0), (2L, "b", 2.0))
-    val output =
-      Map(2L -> Map("a" -> 1.0, "b" -> 2.0), 1L -> Map("a" -> 1.0, "b" -> 2.0))
+    val input = List(
+      (1L, "a", 1.0),
+      (1L, "b", 2.0),
+      (2L, "a", 1.0),
+      (2L, "b", 2.0))
+    val output = Map(
+      2L -> Map("a" -> 1.0, "b" -> 2.0),
+      1L -> Map("a" -> 1.0, "b" -> 2.0))
     JobTest(new GroupAllToListTestJob(_))
       .source(TypedTsv[(Long, String, Double)]("input"), input)
       .sink[String](Tsv("output")) { outBuf =>
@@ -1803,8 +1810,10 @@ class SortingJobTest extends WordSpec with Matchers {
         (1 to 100).map(i => (i, i * i % 5, i * i * i)))
       .sink[(Int, Int, Int)](Tsv("output")) { outBuf =>
         "keep all the columns" in {
-          val correct =
-            (1 to 100).map(i => (i, i * i % 5, i * i * i)).toList.sortBy(_._2)
+          val correct = (1 to 100)
+            .map(i => (i, i * i % 5, i * i * i))
+            .toList
+            .sortBy(_._2)
           outBuf.toList shouldBe correct
         }
       }

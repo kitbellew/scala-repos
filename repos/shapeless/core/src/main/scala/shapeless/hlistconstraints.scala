@@ -64,8 +64,7 @@ object BasisConstraint {
   implicit def hnilBasis[M <: HList] = new BasisConstraint[HNil, M] {}
   implicit def hlistBasis[H, T <: HList, M <: HList](implicit
       bct: BasisConstraint[T, M],
-      sel: Selector[M, H]) =
-    new BasisConstraint[H :: T, M] {}
+      sel: Selector[M, H]) = new BasisConstraint[H :: T, M] {}
 }
 
 /**
@@ -82,8 +81,7 @@ object LUBConstraint {
   implicit def hnilLUB[T] = new LUBConstraint[HNil, T] {}
   implicit def hlistLUB[H, T <: HList, B](implicit
       bct: LUBConstraint[T, B],
-      ev: H <:< B) =
-    new LUBConstraint[H :: T, B] {}
+      ev: H <:< B) = new LUBConstraint[H :: T, B] {}
 }
 
 /**
@@ -142,8 +140,7 @@ object NotContainsConstraint {
   implicit def hnilNotContains[U] = new NotContainsConstraint[HNil, U] {}
   implicit def hlistNotContains[H, T <: HList, U](implicit
       nc: T NotContainsConstraint U,
-      neq: U =:!= H) =
-    new NotContainsConstraint[H :: T, U] {}
+      neq: U =:!= H) = new NotContainsConstraint[H :: T, U] {}
 }
 
 /**

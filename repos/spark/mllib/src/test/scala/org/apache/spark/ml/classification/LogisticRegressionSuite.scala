@@ -49,19 +49,22 @@ class LogisticRegressionSuite
 
     binaryDataset = {
       val nPoints = 10000
-      val coefficients =
-        Array(-0.57997, 0.912083, -0.371077, -0.819866, 2.688191)
+      val coefficients = Array(
+        -0.57997,
+        0.912083,
+        -0.371077,
+        -0.819866,
+        2.688191)
       val xMean = Array(5.843, 3.057, 3.758, 1.199)
       val xVariance = Array(0.6856, 0.1899, 3.116, 0.581)
 
-      val testData =
-        generateMultinomialLogisticInput(
-          coefficients,
-          xMean,
-          xVariance,
-          addIntercept = true,
-          nPoints,
-          42)
+      val testData = generateMultinomialLogisticInput(
+        coefficients,
+        xMean,
+        xVariance,
+        addIntercept = true,
+        nPoints,
+        42)
 
       sqlContext.createDataFrame(sc.parallelize(testData, 4))
     }
@@ -200,15 +203,14 @@ class LogisticRegressionSuite
         s" ${predAllZero.count(_ === 0)} of ${dataset.count()} were 0."
     )
     // Call transform with params, and check that the params worked.
-    val predNotAllZero =
-      model
-        .transform(
-          dataset,
-          model.threshold -> 0.0,
-          model.probabilityCol -> "myProb")
-        .select("prediction", "myProb")
-        .collect()
-        .map { case Row(pred: Double, prob: Vector) => pred }
+    val predNotAllZero = model
+      .transform(
+        dataset,
+        model.threshold -> 0.0,
+        model.probabilityCol -> "myProb")
+      .select("prediction", "myProb")
+      .collect()
+      .map { case Row(pred: Double, prob: Vector) => pred }
     assert(predNotAllZero.exists(_ !== 0.0))
 
     // Call fit() with new params, and check as many params as we can.
@@ -353,10 +355,12 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression with intercept without regularization") {
-    val trainer1 =
-      (new LogisticRegression).setFitIntercept(true).setStandardization(true)
-    val trainer2 =
-      (new LogisticRegression).setFitIntercept(true).setStandardization(false)
+    val trainer1 = (new LogisticRegression)
+      .setFitIntercept(true)
+      .setStandardization(true)
+    val trainer2 = (new LogisticRegression)
+      .setFitIntercept(true)
+      .setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -380,8 +384,11 @@ class LogisticRegressionSuite
        data.V5     -0.7996864
      */
     val interceptR = 2.8366423
-    val coefficientsR =
-      Vectors.dense(-0.5895848, 0.8931147, -0.3925051, -0.7996864)
+    val coefficientsR = Vectors.dense(
+      -0.5895848,
+      0.8931147,
+      -0.3925051,
+      -0.7996864)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR relTol 1e-3)
@@ -392,10 +399,12 @@ class LogisticRegressionSuite
   }
 
   test("binary logistic regression without intercept without regularization") {
-    val trainer1 =
-      (new LogisticRegression).setFitIntercept(false).setStandardization(true)
-    val trainer2 =
-      (new LogisticRegression).setFitIntercept(false).setStandardization(false)
+    val trainer1 = (new LogisticRegression)
+      .setFitIntercept(false)
+      .setStandardization(true)
+    val trainer2 = (new LogisticRegression)
+      .setFitIntercept(false)
+      .setStandardization(false)
 
     val model1 = trainer1.fit(binaryDataset)
     val model2 = trainer2.fit(binaryDataset)
@@ -420,8 +429,11 @@ class LogisticRegressionSuite
        data.V5     -0.7407946
      */
     val interceptR = 0.0
-    val coefficientsR =
-      Vectors.dense(-0.3534996, 1.2964482, -0.3571741, -0.7407946)
+    val coefficientsR = Vectors.dense(
+      -0.3534996,
+      1.2964482,
+      -0.3571741,
+      -0.7407946)
 
     assert(model1.intercept ~== interceptR relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR relTol 1e-2)
@@ -596,8 +608,11 @@ class LogisticRegressionSuite
        data.V5     -0.10062872
      */
     val interceptR1 = 0.15021751
-    val coefficientsR1 =
-      Vectors.dense(-0.07251837, 0.10724191, -0.04865309, -0.10062872)
+    val coefficientsR1 = Vectors.dense(
+      -0.07251837,
+      0.10724191,
+      -0.04865309,
+      -0.10062872)
 
     assert(model1.intercept ~== interceptR1 relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 relTol 1e-3)
@@ -622,8 +637,11 @@ class LogisticRegressionSuite
        data.V5     -0.06266838
      */
     val interceptR2 = 0.48657516
-    val coefficientsR2 =
-      Vectors.dense(-0.05155371, 0.02301057, -0.11482896, -0.06266838)
+    val coefficientsR2 = Vectors.dense(
+      -0.05155371,
+      0.02301057,
+      -0.11482896,
+      -0.06266838)
 
     assert(model2.intercept ~== interceptR2 relTol 1e-3)
     assert(model2.coefficients ~= coefficientsR2 relTol 1e-3)
@@ -664,8 +682,11 @@ class LogisticRegressionSuite
        data.V5     -0.09799775
      */
     val interceptR1 = 0.0
-    val coefficientsR1 =
-      Vectors.dense(-0.06099165, 0.12857058, -0.04708770, -0.09799775)
+    val coefficientsR1 = Vectors.dense(
+      -0.06099165,
+      0.12857058,
+      -0.04708770,
+      -0.09799775)
 
     assert(model1.intercept ~== interceptR1 absTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 relTol 1e-2)
@@ -690,8 +711,11 @@ class LogisticRegressionSuite
        data.V5     -0.053314311
      */
     val interceptR2 = 0.0
-    val coefficientsR2 =
-      Vectors.dense(-0.005679651, 0.048967094, -0.093714016, -0.053314311)
+    val coefficientsR2 = Vectors.dense(
+      -0.005679651,
+      0.048967094,
+      -0.093714016,
+      -0.053314311)
 
     assert(model2.intercept ~== interceptR2 absTol 1e-3)
     assert(model2.coefficients ~= coefficientsR2 relTol 1e-2)
@@ -732,8 +756,11 @@ class LogisticRegressionSuite
        data.V5     -0.15458796
      */
     val interceptR1 = 0.57734851
-    val coefficientsR1 =
-      Vectors.dense(-0.05310287, 0.0, -0.08849250, -0.15458796)
+    val coefficientsR1 = Vectors.dense(
+      -0.05310287,
+      0.0,
+      -0.08849250,
+      -0.15458796)
 
     assert(model1.intercept ~== interceptR1 relTol 6e-3)
     assert(model1.coefficients ~== coefficientsR1 absTol 5e-3)
@@ -800,8 +827,11 @@ class LogisticRegressionSuite
        data.V5     -0.142534158
      */
     val interceptR1 = 0.0
-    val coefficientsR1 =
-      Vectors.dense(-0.001005743, 0.072577857, -0.081203769, -0.142534158)
+    val coefficientsR1 = Vectors.dense(
+      -0.001005743,
+      0.072577857,
+      -0.081203769,
+      -0.142534158)
 
     assert(model1.intercept ~== interceptR1 relTol 1e-3)
     assert(model1.coefficients ~= coefficientsR1 absTol 1e-2)
@@ -920,8 +950,9 @@ class LogisticRegressionSuite
     val model = lr.fit(dataset)
     val summary = model.summary.asInstanceOf[BinaryLogisticRegressionSummary]
 
-    val sameSummary =
-      model.evaluate(dataset).asInstanceOf[BinaryLogisticRegressionSummary]
+    val sameSummary = model
+      .evaluate(dataset)
+      .asInstanceOf[BinaryLogisticRegressionSummary]
     assert(summary.areaUnderROC === sameSummary.areaUnderROC)
     assert(summary.roc.collect() === sameSummary.roc.collect())
     assert(summary.pr.collect === sameSummary.pr.collect())
@@ -953,18 +984,21 @@ class LogisticRegressionSuite
   test("binary logistic regression with weighted samples") {
     val (dataset, weightedDataset) = {
       val nPoints = 1000
-      val coefficients =
-        Array(-0.57997, 0.912083, -0.371077, -0.819866, 2.688191)
+      val coefficients = Array(
+        -0.57997,
+        0.912083,
+        -0.371077,
+        -0.819866,
+        2.688191)
       val xMean = Array(5.843, 3.057, 3.758, 1.199)
       val xVariance = Array(0.6856, 0.1899, 3.116, 0.581)
-      val testData =
-        generateMultinomialLogisticInput(
-          coefficients,
-          xMean,
-          xVariance,
-          true,
-          nPoints,
-          42)
+      val testData = generateMultinomialLogisticInput(
+        coefficients,
+        xMean,
+        xVariance,
+        true,
+        nPoints,
+        42)
 
       // Let's over-sample the positive samples twice.
       val data1 = testData.flatMap {

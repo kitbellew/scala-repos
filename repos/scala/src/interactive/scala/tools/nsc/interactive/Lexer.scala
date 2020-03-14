@@ -249,8 +249,7 @@ class Lexer(rd: Reader) {
   def getNumber() {
     def digit() =
       if ('0' <= ch && ch <= '9') putChar() else error("<digit> expected")
-    def digits() =
-      do { digit() } while ('0' <= ch && ch <= '9')
+    def digits() = do { digit() } while ('0' <= ch && ch <= '9')
     var isFloating = false
     if (ch == '-') putChar()
     if (ch == '0') digit() else digits()

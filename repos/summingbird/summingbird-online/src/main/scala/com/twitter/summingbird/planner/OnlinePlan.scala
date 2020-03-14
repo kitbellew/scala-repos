@@ -242,8 +242,9 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
             producer,
             currentBolt.toSummer)
         case AlsoProducer(lProducer, rProducer) =>
-          val (updatedReg, updatedVisited) =
-            maybeSplitThenRecurse(dependantProducer, rProducer)
+          val (updatedReg, updatedVisited) = maybeSplitThenRecurse(
+            dependantProducer,
+            rProducer)
           recurse(lProducer, FlatMapNode(), updatedReg, updatedVisited)
         case Source(spout) =>
           (distinctAddToList(nodeSet, currentBolt.toSource), visitedWithN)
@@ -252,8 +253,9 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
           if (l == r)
             throw new Exception(
               "Online Planner doesn't support both the left and right sides of a join being the same node.")
-          val (otherMergeNodes, dependencies) =
-            mergeCollapse(dependantProducer, rootMerge = true)
+          val (otherMergeNodes, dependencies) = mergeCollapse(
+            dependantProducer,
+            rootMerge = true)
           val newCurrentBolt = otherMergeNodes.foldLeft(currentBolt)(_.add(_))
           val visitedWithOther = otherMergeNodes.foldLeft(visitedWithN) {
             (visited, n) => visited + n
@@ -268,8 +270,11 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
       }
     }
 
-  val (nodeSet, _) =
-    addWithDependencies(tail, FlatMapNode(), List[CNode](), Set())
+  val (nodeSet, _) = addWithDependencies(
+    tail,
+    FlatMapNode(),
+    List[CNode](),
+    Set())
   require(
     nodeSet.collect { case n @ SourceNode(_) => n }.size > 0,
     "Valid nodeSet should have at least one source node")
@@ -284,10 +289,9 @@ object OnlinePlan {
     // The nodes are added in a source -> summer way with how we do list prepends
     // but its easier to look at laws in a summer -> source manner
     // We also drop all Nodes with no members(may occur when we visit a node already seen and its the first in that Node)
-    val reversedNodeSet =
-      nodesSet.filter(_.members.size > 0).foldLeft(List[Node[P]]()) {
-        (nodes, n) => n.reverse :: nodes
-      }
+    val reversedNodeSet = nodesSet
+      .filter(_.members.size > 0)
+      .foldLeft(List[Node[P]]()) { (nodes, n) => n.reverse :: nodes }
     Dag(tail, nameMap, strippedTail, reversedNodeSet)
   }
 }

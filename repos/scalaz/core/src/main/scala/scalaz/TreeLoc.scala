@@ -407,12 +407,12 @@ sealed abstract class TreeLocInstances {
             }
         }
 
-      private[this] val ForestT: Traverse[TreeForest] =
-        Traverse[Stream].compose[Tree]
+      private[this] val ForestT: Traverse[TreeForest] = Traverse[Stream]
+        .compose[Tree]
 
       private[this] val ForestT1
-          : Traverse1[Lambda[a => OneAnd[Stream, Tree[a]]]] =
-        Traverse1[Lambda[a => OneAnd[Stream, a]]].compose[Tree]
+          : Traverse1[Lambda[a => OneAnd[Stream, Tree[a]]]] = Traverse1[
+        Lambda[a => OneAnd[Stream, a]]].compose[Tree]
 
       private[this] implicit val ParentT: Traverse1[Parent] =
         new Traverse1[Parent] {
@@ -468,12 +468,12 @@ sealed abstract class TreeLocInstances {
             }
         }
 
-      private[this] val ParentsT: Traverse[Parents] =
-        Traverse[Stream].compose[Parent]
+      private[this] val ParentsT: Traverse[Parents] = Traverse[Stream]
+        .compose[Parent]
 
       private[this] val ParentsT1
-          : Traverse1[Lambda[a => OneAnd[Stream, Parent[a]]]] =
-        Traverse1[Lambda[a => OneAnd[Stream, a]]].compose[Parent]
+          : Traverse1[Lambda[a => OneAnd[Stream, Parent[a]]]] = Traverse1[
+        Lambda[a => OneAnd[Stream, a]]].compose[Parent]
     }
 
   implicit def treeLocEqual[A](implicit A: Equal[A]): Equal[TreeLoc[A]] =
@@ -492,21 +492,17 @@ sealed abstract class TreeLocInstances {
 }
 
 object TreeLoc extends TreeLocInstances {
-  type TreeForest[A] =
-    Stream[Tree[A]]
+  type TreeForest[A] = Stream[Tree[A]]
 
-  type Parent[A] =
-    (TreeForest[A], A, TreeForest[A])
+  type Parent[A] = (TreeForest[A], A, TreeForest[A])
 
-  type Parents[A] =
-    Stream[Parent[A]]
+  type Parents[A] = Stream[Parent[A]]
 
   def loc[A](
       t: Tree[A],
       l: TreeForest[A],
       r: TreeForest[A],
-      p: Parents[A]): TreeLoc[A] =
-    TreeLoc(t, l, r, p)
+      p: Parents[A]): TreeLoc[A] = TreeLoc(t, l, r, p)
 
   def fromForest[A](ts: TreeForest[A]): Option[TreeLoc[A]] =
     ts match {

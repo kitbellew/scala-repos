@@ -59,8 +59,8 @@ class JavaFunctionUsagesSearcher
             true
           }
         }
-        val helper: PsiSearchHelper =
-          PsiSearchHelper.SERVICE.getInstance(queryParameters.getProject)
+        val helper: PsiSearchHelper = PsiSearchHelper.SERVICE.getInstance(
+          queryParameters.getProject)
         if (name == "") return true
         helper.processElementsWithWord(
           processor,

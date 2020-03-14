@@ -52,27 +52,17 @@ object PureSet {
 }
 
 case class PureSet[A](f: A => Boolean) extends Function1[A, Boolean] { lhs =>
-  def apply(a: A): Boolean =
-    f(a)
-  def toSet(universe: Set[A]): Set[A] =
-    universe.filter(f)
-  def toMathSet(universe: Set[A]): MathSet[A] =
-    MathSet(universe.filter(f))
-  def filter(g: A => Boolean): PureSet[A] =
-    PureSet(a => f(a) && g(a))
-  def contramap[B](g: B => A): PureSet[B] =
-    PureSet(b => f(g(b)))
+  def apply(a: A): Boolean = f(a)
+  def toSet(universe: Set[A]): Set[A] = universe.filter(f)
+  def toMathSet(universe: Set[A]): MathSet[A] = MathSet(universe.filter(f))
+  def filter(g: A => Boolean): PureSet[A] = PureSet(a => f(a) && g(a))
+  def contramap[B](g: B => A): PureSet[B] = PureSet(b => f(g(b)))
 
-  def unary_~(): PureSet[A] =
-    PureSet(a => !(f(a)))
-  def |(rhs: PureSet[A]): PureSet[A] =
-    PureSet(a => lhs.f(a) || rhs.f(a))
-  def &(rhs: PureSet[A]): PureSet[A] =
-    PureSet(a => lhs.f(a) && rhs.f(a))
-  def --(rhs: PureSet[A]): PureSet[A] =
-    PureSet(a => lhs.f(a) && !rhs.f(a))
-  def ^(rhs: PureSet[A]): PureSet[A] =
-    PureSet(a => lhs.f(a) ^ rhs.f(a))
+  def unary_~(): PureSet[A] = PureSet(a => !(f(a)))
+  def |(rhs: PureSet[A]): PureSet[A] = PureSet(a => lhs.f(a) || rhs.f(a))
+  def &(rhs: PureSet[A]): PureSet[A] = PureSet(a => lhs.f(a) && rhs.f(a))
+  def --(rhs: PureSet[A]): PureSet[A] = PureSet(a => lhs.f(a) && !rhs.f(a))
+  def ^(rhs: PureSet[A]): PureSet[A] = PureSet(a => lhs.f(a) ^ rhs.f(a))
 
   def cross[B](rhs: PureSet[B]): PureSet[(A, B)] =
     PureSet[(A, B)](t => lhs.f(t._1) && rhs.f(t._2))
@@ -88,14 +78,10 @@ object MathSet {
   def apply[A](as: Set[A]): MathSet[A] = Fin(as)
 
   case class Fin[A](members: Set[A]) extends MathSet[A] { lhs =>
-    def apply(a: A): Boolean =
-      members(a)
-    def toSet(universe: Set[A]): Set[A] =
-      universe & members
-    def toPureSet: PureSet[A] =
-      PureSet(members)
-    def filter(f: A => Boolean): Fin[A] =
-      Fin(members.filter(f))
+    def apply(a: A): Boolean = members(a)
+    def toSet(universe: Set[A]): Set[A] = universe & members
+    def toPureSet: PureSet[A] = PureSet(members)
+    def filter(f: A => Boolean): Fin[A] = Fin(members.filter(f))
     def cross[B](rhs: Fin[B]): Fin[(A, B)] =
       Fin(lhs.members.flatMap(a => rhs.members.map(b => (a, b))))
     def size(usize: Option[Natural]): Option[Natural] =
@@ -104,17 +90,13 @@ object MathSet {
     def map[B](f: A => B): MathSet[B] = Fin(members.map(f))
     def unary_~(): MathSet[A] = Inf(members)
 
-    override def toString: String =
-      members.mkString("{", ", ", "}")
+    override def toString: String = members.mkString("{", ", ", "}")
   }
 
   case class Inf[A](outsiders: Set[A]) extends MathSet[A] {
-    def apply(a: A): Boolean =
-      !outsiders(a)
-    def toSet(universe: Set[A]): Set[A] =
-      universe -- outsiders
-    def toPureSet: PureSet[A] =
-      PureSet(a => !outsiders(a))
+    def apply(a: A): Boolean = !outsiders(a)
+    def toSet(universe: Set[A]): Set[A] = universe -- outsiders
+    def toPureSet: PureSet[A] = PureSet(a => !outsiders(a))
     def size(usize: Option[Natural]): Option[Natural] =
       usize.map(_ - UInt(outsiders.size))
 

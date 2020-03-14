@@ -62,11 +62,11 @@ class HeartbeatReceiverSuite
   private var heartbeatReceiverClock: ManualClock = null
 
   // Helper private method accessors for HeartbeatReceiver
-  private val _executorLastSeen =
-    PrivateMethod[collection.Map[String, Long]]('executorLastSeen)
+  private val _executorLastSeen = PrivateMethod[collection.Map[String, Long]](
+    'executorLastSeen)
   private val _executorTimeoutMs = PrivateMethod[Long]('executorTimeoutMs)
-  private val _killExecutorThread =
-    PrivateMethod[ExecutorService]('killExecutorThread)
+  private val _killExecutorThread = PrivateMethod[ExecutorService](
+    'killExecutorThread)
 
   /**
     * Before each test, set up the SparkContext and a custom [[HeartbeatReceiver]]
@@ -84,8 +84,8 @@ class HeartbeatReceiverSuite
     when(scheduler.sc).thenReturn(sc)
     heartbeatReceiverClock = new ManualClock
     heartbeatReceiver = new HeartbeatReceiver(sc, heartbeatReceiverClock)
-    heartbeatReceiverRef =
-      sc.env.rpcEnv.setupEndpoint("heartbeat", heartbeatReceiver)
+    heartbeatReceiverRef = sc.env.rpcEnv
+      .setupEndpoint("heartbeat", heartbeatReceiver)
     when(scheduler.executorHeartbeatReceived(any(), any(), any()))
       .thenReturn(true)
   }
@@ -173,8 +173,9 @@ class HeartbeatReceiverSuite
     // Set up a fake backend and cluster manager to simulate killing executors
     val rpcEnv = sc.env.rpcEnv
     val fakeClusterManager = new FakeClusterManager(rpcEnv)
-    val fakeClusterManagerRef =
-      rpcEnv.setupEndpoint("fake-cm", fakeClusterManager)
+    val fakeClusterManagerRef = rpcEnv.setupEndpoint(
+      "fake-cm",
+      fakeClusterManager)
     val fakeSchedulerBackend =
       new FakeSchedulerBackend(scheduler, rpcEnv, fakeClusterManagerRef)
     when(sc.schedulerBackend).thenReturn(fakeSchedulerBackend)
@@ -184,10 +185,12 @@ class HeartbeatReceiverSuite
     fakeSchedulerBackend.start()
     val dummyExecutorEndpoint1 = new FakeExecutorEndpoint(rpcEnv)
     val dummyExecutorEndpoint2 = new FakeExecutorEndpoint(rpcEnv)
-    val dummyExecutorEndpointRef1 =
-      rpcEnv.setupEndpoint("fake-executor-1", dummyExecutorEndpoint1)
-    val dummyExecutorEndpointRef2 =
-      rpcEnv.setupEndpoint("fake-executor-2", dummyExecutorEndpoint2)
+    val dummyExecutorEndpointRef1 = rpcEnv.setupEndpoint(
+      "fake-executor-1",
+      dummyExecutorEndpoint1)
+    val dummyExecutorEndpointRef2 = rpcEnv.setupEndpoint(
+      "fake-executor-2",
+      dummyExecutorEndpoint2)
     fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](
       RegisterExecutor(executorId1, dummyExecutorEndpointRef1, 0, Map.empty))
     fakeSchedulerBackend.driverEndpoint.askWithRetry[RegisterExecutorResponse](

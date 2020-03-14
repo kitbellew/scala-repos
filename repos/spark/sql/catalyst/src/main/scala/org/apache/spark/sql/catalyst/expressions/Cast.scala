@@ -631,8 +631,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       d: String,
       decimalType: DecimalType,
       evPrim: String,
-      evNull: String): String =
-    s"""
+      evNull: String): String = s"""
       if ($d.changePrecision(${decimalType.precision}, ${decimalType.scale})) {
         $evPrim = $d;
       } else {

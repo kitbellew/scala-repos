@@ -51,8 +51,7 @@ object FailFastFactory {
     *      for more details.
     */
   case class FailFast(enabled: Boolean) {
-    def mk(): (FailFast, Stack.Param[FailFast]) =
-      (this, FailFast.param)
+    def mk(): (FailFast, Stack.Param[FailFast]) = (this, FailFast.param)
   }
   object FailFast {
     implicit val param = Stack.Param(FailFast(enabled = true))
@@ -136,25 +135,25 @@ private[finagle] class FailFastFactory[Req, Rep](
 
   private[this] val futureExc = Future.exception(exc)
 
-  private[this] val markedAvailableCounter =
-    statsReceiver.counter("marked_available")
+  private[this] val markedAvailableCounter = statsReceiver.counter(
+    "marked_available")
   private[this] val markedDeadCounter = statsReceiver.counter("marked_dead")
 
-  private[this] val unhealthyForMsGauge =
-    statsReceiver.addGauge("unhealthy_for_ms") {
-      state match {
-        case r: Retrying => r.since.untilNow.inMilliseconds
-        case _           => 0
-      }
+  private[this] val unhealthyForMsGauge = statsReceiver.addGauge(
+    "unhealthy_for_ms") {
+    state match {
+      case r: Retrying => r.since.untilNow.inMilliseconds
+      case _           => 0
     }
+  }
 
-  private[this] val unhealthyNumRetriesGauge =
-    statsReceiver.addGauge("unhealthy_num_tries") {
-      state match {
-        case r: Retrying => r.ntries
-        case _           => 0
-      }
+  private[this] val unhealthyNumRetriesGauge = statsReceiver.addGauge(
+    "unhealthy_num_tries") {
+    state match {
+      case r: Retrying => r.ntries
+      case _           => 0
     }
+  }
 
   private[this] def getBackoffs(): Stream[Duration] =
     backoffs map { duration =>

@@ -48,34 +48,33 @@ object ScalaI18nUtil {
     Key.create("TOP_LEVEL_EXPRESSION")
   private final val TOP_LEVEL_PROVIDER: ParameterizedCachedValueProvider[
     ScExpression,
-    (Project, ScExpression)] =
-    new ParameterizedCachedValueProvider[
-      ScExpression,
-      (Project, ScExpression)] {
-      def compute(pair: (Project, ScExpression))
-          : CachedValueProvider.Result[ScExpression] = {
-        val param: ScExpression = pair._2
-        val project: Project = pair._1
-        val topLevel: ScExpression = getTopLevel(project, param)
-        val cachedValue
-            : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
-          param.getUserData(TOP_LEVEL_EXPRESSION)
-        assert(cachedValue != null)
-        var i: Int = 0
-        var element: PsiElement = param
-        while (element ne topLevel) {
-          if (i % 10 == 0) {
-            element.putUserData(TOP_LEVEL_EXPRESSION, cachedValue)
-          }
-          element = element.getParent
-          i += 1
-          i
+    (Project, ScExpression)] = new ParameterizedCachedValueProvider[
+    ScExpression,
+    (Project, ScExpression)] {
+    def compute(pair: (Project, ScExpression))
+        : CachedValueProvider.Result[ScExpression] = {
+      val param: ScExpression = pair._2
+      val project: Project = pair._1
+      val topLevel: ScExpression = getTopLevel(project, param)
+      val cachedValue
+          : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
+        param.getUserData(TOP_LEVEL_EXPRESSION)
+      assert(cachedValue != null)
+      var i: Int = 0
+      var element: PsiElement = param
+      while (element ne topLevel) {
+        if (i % 10 == 0) {
+          element.putUserData(TOP_LEVEL_EXPRESSION, cachedValue)
         }
-        CachedValueProvider.Result.create(
-          topLevel,
-          PsiManager.getInstance(project).getModificationTracker)
+        element = element.getParent
+        i += 1
+        i
       }
+      CachedValueProvider.Result.create(
+        topLevel,
+        PsiManager.getInstance(project).getModificationTracker)
     }
+  }
 
   def isFoldingsOn: Boolean = {
     ScalaCodeFoldingSettings.getInstance.isCollapseI18nMessages
@@ -269,8 +268,9 @@ object ScalaI18nUtil {
         .findPropertiesByKey(expression.getProject, key)
         .isEmpty
     } else {
-      val propertiesFiles =
-        propertiesFilesByBundleName(resourceBundleName, expression)
+      val propertiesFiles = propertiesFilesByBundleName(
+        resourceBundleName,
+        expression)
       var containedInPropertiesFile: Boolean = false
       import scala.collection.JavaConversions._
       for (propertiesFile <- propertiesFiles) {
@@ -299,8 +299,8 @@ object ScalaI18nUtil {
         .getFileIndex
         .getModuleForFile(virtualFile)
       if (module != null) {
-        val refManager: PropertiesReferenceManager =
-          PropertiesReferenceManager.getInstance(project)
+        val refManager: PropertiesReferenceManager = PropertiesReferenceManager
+          .getInstance(project)
         return refManager.findPropertiesFiles(module, resourceBundleName)
       }
     }
@@ -402,8 +402,9 @@ object ScalaI18nUtil {
       val count: Int = getPropertyValueParamsMaxCount(
         args(0).asInstanceOf[ScLiteral])
       if (args.length == 1 + count) {
-        var text: String =
-          getI18nMessage(project, args(0).asInstanceOf[ScLiteral])
+        var text: String = getI18nMessage(
+          project,
+          args(0).asInstanceOf[ScLiteral])
         var i: Int = 1
         var flag = true
         while (i < count + 1 && flag) {
@@ -470,8 +471,8 @@ object ScalaI18nUtil {
       value: String) {
     import scala.collection.JavaConversions._
     for (file <- propertiesFiles) {
-      val documentManager: PsiDocumentManager =
-        PsiDocumentManager.getInstance(project)
+      val documentManager: PsiDocumentManager = PsiDocumentManager.getInstance(
+        project)
       documentManager.commitDocument(
         documentManager.getDocument(file.getContainingFile))
       val existingProperty: IProperty = file.findPropertyByKey(key)
@@ -489,8 +490,8 @@ object ScalaI18nUtil {
         editor.getSelectionModel.getSelectionStart,
         editor.getSelectionModel.getSelectionEnd)
     }
-    val psiElement: PsiElement =
-      psiFile.findElementAt(editor.getCaretModel.getOffset)
+    val psiElement: PsiElement = psiFile.findElementAt(
+      editor.getCaretModel.getOffset)
     if (psiElement == null || psiElement.isInstanceOf[PsiWhiteSpace])
       return null
     psiElement.getTextRange

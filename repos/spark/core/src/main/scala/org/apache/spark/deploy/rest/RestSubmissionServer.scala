@@ -71,8 +71,8 @@ private[spark] abstract class RestSubmissionServer(
 
   /** Start the server and return the bound port. */
   def start(): Int = {
-    val (server, boundPort) =
-      Utils.startServiceOnPort[Server](requestedPort, doStart, masterConf)
+    val (server, boundPort) = Utils
+      .startServiceOnPort[Server](requestedPort, doStart, masterConf)
     _server = Some(server)
     logInfo(
       s"Started REST server for submitting applications on port $boundPort")
@@ -254,8 +254,8 @@ private[rest] abstract class SubmitRequestServlet extends RestServlet {
       try {
         val requestMessageJson =
           Source.fromInputStream(requestServlet.getInputStream).mkString
-        val requestMessage =
-          SubmitRestProtocolMessage.fromJson(requestMessageJson)
+        val requestMessage = SubmitRestProtocolMessage.fromJson(
+          requestMessageJson)
         // The response should have already been validated on the client.
         // In case this is not true, validate it ourselves to avoid potential NPEs.
         requestMessage.validate()
@@ -289,25 +289,24 @@ private class ErrorServlet extends RestServlet {
     val path = request.getPathInfo
     val parts = path.stripPrefix("/").split("/").filter(_.nonEmpty).toList
     var versionMismatch = false
-    var msg =
-      parts match {
-        case Nil =>
-          // http://host:port/
-          "Missing protocol version."
-        case `serverVersion` :: Nil =>
-          // http://host:port/correct-version
-          "Missing the /submissions prefix."
-        case `serverVersion` :: "submissions" :: tail =>
-          // http://host:port/correct-version/submissions/*
-          "Missing an action: please specify one of /create, /kill, or /status."
-        case unknownVersion :: tail =>
-          // http://host:port/unknown-version/*
-          versionMismatch = true
-          s"Unknown protocol version '$unknownVersion'."
-        case _ =>
-          // never reached
-          s"Malformed path $path."
-      }
+    var msg = parts match {
+      case Nil =>
+        // http://host:port/
+        "Missing protocol version."
+      case `serverVersion` :: Nil =>
+        // http://host:port/correct-version
+        "Missing the /submissions prefix."
+      case `serverVersion` :: "submissions" :: tail =>
+        // http://host:port/correct-version/submissions/*
+        "Missing an action: please specify one of /create, /kill, or /status."
+      case unknownVersion :: tail =>
+        // http://host:port/unknown-version/*
+        versionMismatch = true
+        s"Unknown protocol version '$unknownVersion'."
+      case _ =>
+        // never reached
+        s"Malformed path $path."
+    }
     msg += s" Please submit requests through http://[host]:[port]/$serverVersion/submissions/..."
     val error = handleError(msg)
     // If there is a version mismatch, include the highest protocol version that

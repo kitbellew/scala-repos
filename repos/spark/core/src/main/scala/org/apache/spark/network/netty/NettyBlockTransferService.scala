@@ -55,8 +55,10 @@ class NettyBlockTransferService(
   // TODO: Don't use Java serialization, use a more cross-version compatible serialization format.
   private val serializer = new JavaSerializer(conf)
   private val authEnabled = securityManager.isAuthenticationEnabled()
-  private val transportConf =
-    SparkTransportConf.fromSparkConf(conf, "shuffle", numCores)
+  private val transportConf = SparkTransportConf.fromSparkConf(
+    conf,
+    "shuffle",
+    numCores)
 
   private[this] var transportContext: TransportContext = _
   private[this] var server: TransportServer = _
@@ -79,8 +81,8 @@ class NettyBlockTransferService(
           securityManager.isSaslEncryptionEnabled()))
     }
     transportContext = new TransportContext(transportConf, rpcHandler)
-    clientFactory =
-      transportContext.createClientFactory(clientBootstrap.toSeq.asJava)
+    clientFactory = transportContext.createClientFactory(
+      clientBootstrap.toSeq.asJava)
     server = createServer(serverBootstrap.toList)
     appId = conf.getAppId
     logInfo("Server created on " + server.getPort)
@@ -153,8 +155,8 @@ class NettyBlockTransferService(
 
     // StorageLevel is serialized as bytes using our JavaSerializer. Everything else is encoded
     // using our binary protocol.
-    val levelBytes =
-      JavaUtils.bufferToArray(serializer.newInstance().serialize(level))
+    val levelBytes = JavaUtils.bufferToArray(
+      serializer.newInstance().serialize(level))
 
     // Convert or copy nio buffer into array in order to serialize it.
     val array = JavaUtils.bufferToArray(blockData.nioByteBuffer())

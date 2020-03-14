@@ -184,12 +184,11 @@ class ConcurrentMemory(
             case Nil           => (planned0, NullTarget)
             case single :: Nil => toPhys[U](deps, planned0, single)
             case many =>
-              val res =
-                many.scanLeft((planned0, None: Option[PhysicalNode[U]])) {
-                  (hm, p) =>
-                    val (post, phys) = toPhys[U](deps, hm._1, p)
-                    (post, Some(phys))
-                }
+              val res = many.scanLeft(
+                (planned0, None: Option[PhysicalNode[U]])) { (hm, p) =>
+                val (post, phys) = toPhys[U](deps, hm._1, p)
+                (post, Some(phys))
+              }
               (
                 res.last._1,
                 FanOut[U](res.collect { case (_, Some(phys)) => phys }))
@@ -257,8 +256,9 @@ class ConcurrentMemory(
     /*
      * Register the counters
      */
-    val registeredCounters: Seq[(Group, Name)] =
-      JobCounters.getCountersForJob(jobID).getOrElse(Nil)
+    val registeredCounters: Seq[(Group, Name)] = JobCounters
+      .getCountersForJob(jobID)
+      .getOrElse(Nil)
 
     if (!registeredCounters.isEmpty) {
       MemoryStatProvider.registerCounters(jobID, registeredCounters)

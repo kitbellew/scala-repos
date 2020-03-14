@@ -58,8 +58,11 @@ private[streaming] object MapWithStateRDDRecord {
     dataIterator.foreach {
       case (key, value) =>
         wrappedState.wrap(newStateMap.get(key))
-        val returned =
-          mappingFunction(batchTime, key, Some(value), wrappedState)
+        val returned = mappingFunction(
+          batchTime,
+          key,
+          Some(value),
+          wrappedState)
         if (wrappedState.isRemoved) { newStateMap.remove(key) }
         else if (wrappedState.isUpdated
                  || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
@@ -215,8 +218,9 @@ private[streaming] object MapWithStateRDD {
         preservesPartitioning = true
       )
 
-    val emptyDataRDD =
-      pairRDD.sparkContext.emptyRDD[(K, V)].partitionBy(partitioner)
+    val emptyDataRDD = pairRDD.sparkContext
+      .emptyRDD[(K, V)]
+      .partitionBy(partitioner)
 
     val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>
       None
@@ -249,8 +253,9 @@ private[streaming] object MapWithStateRDD {
         preservesPartitioning = true
       )
 
-    val emptyDataRDD =
-      pairRDD.sparkContext.emptyRDD[(K, V)].partitionBy(partitioner)
+    val emptyDataRDD = pairRDD.sparkContext
+      .emptyRDD[(K, V)]
+      .partitionBy(partitioner)
 
     val noOpFunc = (time: Time, key: K, value: Option[V], state: State[S]) =>
       None

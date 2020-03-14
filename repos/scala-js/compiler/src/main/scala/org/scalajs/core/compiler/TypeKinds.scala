@@ -165,8 +165,7 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
 
   ////////////////// Conversions //////////////////////////////
 
-  def toIRType(t: Type): Types.Type =
-    toTypeKind(t).toIRType
+  def toIRType(t: Type): Types.Type = toTypeKind(t).toIRType
 
   def toReferenceType(t: Type): Types.ReferenceType =
     toTypeKind(t).toReferenceType

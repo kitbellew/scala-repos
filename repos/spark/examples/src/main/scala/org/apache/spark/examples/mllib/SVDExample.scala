@@ -46,8 +46,9 @@ object SVDExample {
     val mat: RowMatrix = new RowMatrix(dataRDD)
 
     // Compute the top 5 singular values and corresponding singular vectors.
-    val svd: SingularValueDecomposition[RowMatrix, Matrix] =
-      mat.computeSVD(5, computeU = true)
+    val svd: SingularValueDecomposition[RowMatrix, Matrix] = mat.computeSVD(
+      5,
+      computeU = true)
     val U: RowMatrix = svd.U // The U factor is a RowMatrix.
     val s: Vector =
       svd.s // The singular values are stored in a local dense vector.

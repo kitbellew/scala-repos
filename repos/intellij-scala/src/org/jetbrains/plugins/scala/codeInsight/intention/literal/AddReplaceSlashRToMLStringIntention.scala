@@ -22,8 +22,9 @@ class AddReplaceSlashRToMLStringIntention
         element.getNode.getElementType != ScalaTokenTypes.tMULTILINE_STRING || !element.getText
           .contains("\n")) return false
 
-    val calls =
-      MultilineStringUtil.findAllMethodCallsOnMLString(element, "replace")
+    val calls = MultilineStringUtil.findAllMethodCallsOnMLString(
+      element,
+      "replace")
     !MultilineStringUtil.containsArgs(calls, """"\r"""", "\"\"")
   }
 

@@ -97,9 +97,8 @@ class Tools[C <: Context](val c: C) {
       tpe: Type,
       mirror: Mirror,
       excludeSelf: Boolean): List[Type] = {
-    val subtypes =
-      allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(subtpe =>
-        subtpe.typeSymbol != tpe.typeSymbol)
+    val subtypes = allStaticallyKnownConcreteSubclasses(tpe, mirror).filter(
+      subtpe => subtpe.typeSymbol != tpe.typeSymbol)
     val selfTpe =
       if (isRelevantSubclass(tpe.typeSymbol, tpe.typeSymbol)) List(tpe) else Nil
     val result = if (excludeSelf) subtypes else subtypes ++ selfTpe
@@ -143,17 +142,16 @@ class Tools[C <: Context](val c: C) {
           val initialize = sym.typeSignature
           if (sym.isFinal || sym.isModuleClass) { Nil }
           else if (treatAsSealed(sym)) {
-            val syms: List[ClassSymbol] =
-              directSubclasses(sym)
-                .map {
-                  case csym: ClassSymbol  => csym
-                  case msym: ModuleSymbol => msym.moduleClass.asClass
-                  case osym =>
-                    throw new Exception(
-                      s"unexpected known direct subclass: $osym <: $sym")
-                }
-                .toList
-                .flatMap(loop)
+            val syms: List[ClassSymbol] = directSubclasses(sym)
+              .map {
+                case csym: ClassSymbol  => csym
+                case msym: ModuleSymbol => msym.moduleClass.asClass
+                case osym =>
+                  throw new Exception(
+                    s"unexpected known direct subclass: $osym <: $sym")
+              }
+              .toList
+              .flatMap(loop)
             syms
           } else {
             hierarchyIsSealed = false
@@ -525,8 +523,7 @@ abstract class Macro extends RichTypes { self =>
     // 1) private[this] fields
     // 2) inherited private[this] fields
     // 3) overridden fields
-    val wrappedBody =
-      q"""
+    val wrappedBody = q"""
         val $ownerSymbol = implicitly[scala.pickling.FastTypeTag[${owner.asClass.toType.erasure}]].tpe
         val $firSymbol = $ownerSymbol.member(scala.reflect.runtime.universe.newTermName(${fir.name}))
         if ($firSymbol.isTerm) ${body(q"im.reflectField($firSymbol.asTerm)")}

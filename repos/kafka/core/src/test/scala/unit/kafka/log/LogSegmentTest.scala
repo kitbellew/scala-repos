@@ -323,8 +323,10 @@ class LogSegmentTest {
       true)
     segments += segReopen
 
-    val readAgain =
-      segReopen.read(startOffset = 55, maxSize = 200, maxOffset = None)
+    val readAgain = segReopen.read(
+      startOffset = 55,
+      maxSize = 200,
+      maxOffset = None)
     assertEquals(ms2.toList, readAgain.messageSet.toList)
     val size = segReopen.log.sizeInBytes()
     val position = segReopen.log.channel.position

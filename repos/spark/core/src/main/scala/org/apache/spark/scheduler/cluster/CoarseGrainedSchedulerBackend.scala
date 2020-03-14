@@ -57,14 +57,14 @@ private[spark] class CoarseGrainedSchedulerBackend(
   private val maxRpcMessageSize = RpcUtils.maxMessageSizeBytes(conf)
   // Submit tasks only after (registered resources / total expected resources)
   // is equal to at least this value, that is double between 0 and 1.
-  var minRegisteredRatio =
-    math.min(
-      1,
-      conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
+  var minRegisteredRatio = math.min(
+    1,
+    conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
   // Submit tasks after maxRegisteredWaitingTime milliseconds
   // if minRegisteredRatio has not yet been reached
-  val maxRegisteredWaitingTimeMs =
-    conf.getTimeAsMs("spark.scheduler.maxRegisteredResourcesWaitingTime", "30s")
+  val maxRegisteredWaitingTimeMs = conf.getTimeAsMs(
+    "spark.scheduler.maxRegisteredResourcesWaitingTime",
+    "30s")
   val createTime = System.currentTimeMillis()
 
   private val executorDataMap = new HashMap[String, ExecutorData]
@@ -103,13 +103,14 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
     protected val addressToExecutorId = new HashMap[RpcAddress, String]
 
-    private val reviveThread =
-      ThreadUtils.newDaemonSingleThreadScheduledExecutor("driver-revive-thread")
+    private val reviveThread = ThreadUtils
+      .newDaemonSingleThreadScheduledExecutor("driver-revive-thread")
 
     override def onStart() {
       // Periodically revive offers to allow delay scheduling to work
-      val reviveIntervalMs =
-        conf.getTimeAsMs("spark.scheduler.revive.interval", "1s")
+      val reviveIntervalMs = conf.getTimeAsMs(
+        "spark.scheduler.revive.interval",
+        "1s")
 
       reviveThread.scheduleAtFixedRate(
         new Runnable {
@@ -164,9 +165,9 @@ private[spark] class CoarseGrainedSchedulerBackend(
         } else {
           // If the executor's rpc env is not listening for incoming connections, `hostPort`
           // will be null, and the client connection should be used to contact the executor.
-          val executorAddress = if (executorRef.address != null) {
-            executorRef.address
-          } else { context.senderAddress }
+          val executorAddress =
+            if (executorRef.address != null) { executorRef.address }
+            else { context.senderAddress }
           logInfo(
             s"Registered executor $executorRef ($executorAddress) with ID $executorId")
           addressToExecutorId(executorAddress) = executorId
@@ -578,8 +579,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
       force: Boolean): Boolean =
     synchronized {
       logInfo(s"Requesting to kill executor(s) ${executorIds.mkString(", ")}")
-      val (knownExecutors, unknownExecutors) =
-        executorIds.partition(executorDataMap.contains)
+      val (knownExecutors, unknownExecutors) = executorIds.partition(
+        executorDataMap.contains)
       unknownExecutors.foreach { id =>
         logWarning(s"Executor to kill $id does not exist!")
       }

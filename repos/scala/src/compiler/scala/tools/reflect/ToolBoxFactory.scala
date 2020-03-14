@@ -22,8 +22,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
 
   def mkToolBox(
       frontEnd: FrontEnd = mkSilentFrontEnd(),
-      options: String = ""): ToolBox[U] =
-    new ToolBoxImpl(frontEnd, options)
+      options: String = ""): ToolBox[U] = new ToolBoxImpl(frontEnd, options)
 
   private class ToolBoxImpl(val frontEnd: FrontEnd, val options: String)
       extends ToolBox[U] { toolBoxSelf =>
@@ -36,13 +35,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
     lazy val mirror: u.Mirror = u.runtimeMirror(classLoader)
 
     lazy val arguments = CommandLineParser.tokenize(options)
-    lazy val virtualDirectory =
-      arguments.iterator.sliding(2).collectFirst {
-        case Seq("-d", dir) => dir
-      } match {
-        case Some(outDir) => AbstractFile.getDirectory(outDir)
-        case None         => new VirtualDirectory("(memory)", None)
-      }
+    lazy val virtualDirectory = arguments.iterator.sliding(2).collectFirst {
+      case Seq("-d", dir) => dir
+    } match {
+      case Some(outDir) => AbstractFile.getDirectory(outDir)
+      case None         => new VirtualDirectory("(memory)", None)
+    }
 
     class ToolBoxGlobal(settings: scala.tools.nsc.Settings, reporter0: Reporter)
         extends ReflectGlobal(settings, reporter0, toolBoxSelf.classLoader) {
@@ -106,8 +104,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           Tree,
           scala.collection.mutable.LinkedHashMap[FreeTermSymbol, TermName]) = {
         val freeTerms = expr0.freeTerms
-        val freeTermNames =
-          scala.collection.mutable.LinkedHashMap[FreeTermSymbol, TermName]()
+        val freeTermNames = scala.collection.mutable
+          .LinkedHashMap[FreeTermSymbol, TermName]()
         freeTerms foreach (ft => {
           var name = ft.name.toString
           val namesakes = freeTerms takeWhile (_ != ft) filter (ft2 =>
@@ -116,21 +114,23 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           freeTermNames += (ft -> newTermName(
             name + nme.REIFY_FREE_VALUE_SUFFIX))
         })
-        val expr = new Transformer {
-          override def transform(tree: Tree): Tree =
-            if (tree.hasSymbolField && tree.symbol.isFreeTerm) {
-              tree match {
-                case Ident(_) =>
-                  val freeTermRef = Ident(freeTermNames(tree.symbol.asFreeTerm))
-                  if (wrapFreeTermRefs) Apply(freeTermRef, List())
-                  else freeTermRef
-                case _ =>
-                  throw new Error(
-                    "internal error: %s (%s, %s) is not supported"
-                      .format(tree, tree.productPrefix, tree.getClass))
-              }
-            } else { super.transform(tree) }
-        }.transform(expr0)
+        val expr =
+          new Transformer {
+            override def transform(tree: Tree): Tree =
+              if (tree.hasSymbolField && tree.symbol.isFreeTerm) {
+                tree match {
+                  case Ident(_) =>
+                    val freeTermRef = Ident(
+                      freeTermNames(tree.symbol.asFreeTerm))
+                    if (wrapFreeTermRefs) Apply(freeTermRef, List())
+                    else freeTermRef
+                  case _ =>
+                    throw new Error(
+                      "internal error: %s (%s, %s) is not supported"
+                        .format(tree, tree.productPrefix, tree.getClass))
+                }
+              } else { super.transform(tree) }
+          }.transform(expr0)
         (expr, freeTermNames)
       }
 
@@ -144,8 +144,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           if (mode == TERMmode) wrappingIntoTerm(tree)(op) else op(tree)
         withWrapping(verify(expr))(expr1 => {
           // need to extract free terms, because otherwise you won't be able to typecheck macros against something that contains them
-          val exprAndFreeTerms =
-            extractFreeTerms(expr1, wrapFreeTermRefs = false)
+          val exprAndFreeTerms = extractFreeTerms(
+            expr1,
+            wrapFreeTermRefs = false)
           var expr2 = exprAndFreeTerms._1
           val freeTerms = exprAndFreeTerms._2
           val dummies = freeTerms.map {
@@ -199,15 +200,16 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             case result                 => ((Nil, result))
           }
           val invertedIndex = freeTerms map (_.swap)
-          result = new Transformer {
-            override def transform(tree: Tree): Tree =
-              tree match {
-                case Ident(name: TermName) if invertedIndex contains name =>
-                  Ident(invertedIndex(name)) setType tree.tpe
-                case _ =>
-                  super.transform(tree)
-              }
-          }.transform(result)
+          result =
+            new Transformer {
+              override def transform(tree: Tree): Tree =
+                tree match {
+                  case Ident(name: TermName) if invertedIndex contains name =>
+                    Ident(invertedIndex(name)) setType tree.tpe
+                  case _ =>
+                    super.transform(tree)
+                }
+            }.transform(result)
           new TreeTypeSubstituter(
             dummies1 map (_.symbol),
             dummies1 map (dummy =>
@@ -318,8 +320,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         verify(expr)
 
         def wrapInModule(expr0: Tree): ModuleDef = {
-          val (expr, freeTerms) =
-            extractFreeTerms(expr0, wrapFreeTermRefs = true)
+          val (expr, freeTerms) = extractFreeTerms(
+            expr0,
+            wrapFreeTermRefs = true)
 
           val (obj, _) = rootMirror.EmptyPackageClass.newModuleAndClassSymbol(
             nextWrapperModuleName(),
@@ -385,8 +388,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         val className = msym.fullName
         if (settings.debug) println("generated: " + className)
         def moduleFileName(className: String) = className + "$"
-        val jclazz =
-          jClass.forName(moduleFileName(className), true, classLoader)
+        val jclazz = jClass.forName(
+          moduleFileName(className),
+          true,
+          classLoader)
         val jmeth =
           jclazz.getDeclaredMethods.find(_.getName == wrapperMethodName).get
         val jfield = jclazz.getDeclaredFields
@@ -407,8 +412,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         //   applyMeth.invoke(result)
         // }
         () => {
-          val result =
-            jmeth.invoke(singleton, thunks map (_.asInstanceOf[AnyRef]): _*)
+          val result = jmeth.invoke(
+            singleton,
+            thunks map (_.asInstanceOf[AnyRef]): _*)
           if (jmeth.getReturnType == java.lang.Void.TYPE) () else result
         }
       }
@@ -647,8 +653,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         import compilerApi._
 
         if (compiler.settings.verbose) println("importing " + tree)
-        val ctree: compiler.ImplDef =
-          importer.importTree(tree).asInstanceOf[compiler.ImplDef]
+        val ctree: compiler.ImplDef = importer
+          .importTree(tree)
+          .asInstanceOf[compiler.ImplDef]
 
         if (compiler.settings.verbose) println("defining " + ctree)
         val csym: compiler.Symbol = compiler.define(ctree)

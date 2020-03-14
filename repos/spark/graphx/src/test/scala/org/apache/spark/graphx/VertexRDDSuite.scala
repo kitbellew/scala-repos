@@ -40,18 +40,17 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n)
-      val negatives =
-        verts
-          .mapValues(x => -x)
-          .cache() // Allow joining b with a derived RDD of b
+      val negatives = verts
+        .mapValues(x => -x)
+        .cache() // Allow joining b with a derived RDD of b
       assert(negatives.count === n + 1)
     }
   }
 
   test("minus") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
       val vertexB = VertexRDD(
         sc.parallelize(25 until 100, 2).map(i => (i.toLong, 1))).cache()
       val vertexC = vertexA.minus(vertexB)
@@ -61,10 +60,12 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
   test("minus with RDD[(VertexId, VD)]") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
-      val vertexB: RDD[(VertexId, Int)] =
-        sc.parallelize(25 until 100, 2).map(i => (i.toLong, 1)).cache()
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
+      val vertexB: RDD[(VertexId, Int)] = sc
+        .parallelize(25 until 100, 2)
+        .map(i => (i.toLong, 1))
+        .cache()
       val vertexC = vertexA.minus(vertexB)
       assert(vertexC.map(_._1).collect().toSet === (0 until 25).toSet)
     }
@@ -72,10 +73,10 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
   test("minus with non-equal number of partitions") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 75, 5).map(i => (i.toLong, 0)))
-      val vertexB =
-        VertexRDD(sc.parallelize(50 until 100, 2).map(i => (i.toLong, 1)))
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 75, 5).map(i => (i.toLong, 0)))
+      val vertexB = VertexRDD(
+        sc.parallelize(50 until 100, 2).map(i => (i.toLong, 1)))
       assert(vertexA.partitions.size != vertexB.partitions.size)
       val vertexC = vertexA.minus(vertexB)
       assert(vertexC.map(_._1).collect().toSet === (0 until 50).toSet)
@@ -102,10 +103,10 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val n = 100
       val verts = vertices(sc, n).cache()
-      val flipEvens: RDD[(VertexId, Int)] =
-        sc.parallelize(0L to 100L)
-          .map(id => if (id % 2 == 0) (id, -id.toInt) else (id, id.toInt))
-          .cache()
+      val flipEvens: RDD[(VertexId, Int)] = sc
+        .parallelize(0L to 100L)
+        .map(id => if (id % 2 == 0) (id, -id.toInt) else (id, id.toInt))
+        .cache()
       // diff should keep only the changed vertices
       assert(
         verts.diff(flipEvens).map(_._2).collect().toSet === (2 to n by 2)
@@ -116,10 +117,10 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
   test("diff vertices with non-equal number of partitions") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 24, 3).map(i => (i.toLong, 0)))
-      val vertexB =
-        VertexRDD(sc.parallelize(8 until 16, 2).map(i => (i.toLong, 1)))
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 24, 3).map(i => (i.toLong, 0)))
+      val vertexB = VertexRDD(
+        sc.parallelize(8 until 16, 2).map(i => (i.toLong, 1)))
       assert(vertexA.partitions.size != vertexB.partitions.size)
       val vertexC = vertexA.diff(vertexB)
       assert(vertexC.map(_._1).collect().toSet === (8 until 16).toSet)
@@ -155,8 +156,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
   test("leftJoin vertices with non-equal number of partitions") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 100, 2).map(i => (i.toLong, 1)))
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 100, 2).map(i => (i.toLong, 1)))
       val vertexB = VertexRDD(
         vertexA.filter(v => v._1 % 2 == 0).partitionBy(new HashPartitioner(3)))
       assert(vertexA.partitions.size != vertexB.partitions.size)
@@ -191,8 +192,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
 
   test("innerJoin vertices with the non-equal number of partitions") {
     withSpark { sc =>
-      val vertexA =
-        VertexRDD(sc.parallelize(0 until 100, 2).map(i => (i.toLong, 1)))
+      val vertexA = VertexRDD(
+        sc.parallelize(0 until 100, 2).map(i => (i.toLong, 1)))
       val vertexB = VertexRDD(
         vertexA.filter(v => v._1 % 2 == 0).partitionBy(new HashPartitioner(3)))
       assert(vertexA.partitions.size != vertexB.partitions.size)

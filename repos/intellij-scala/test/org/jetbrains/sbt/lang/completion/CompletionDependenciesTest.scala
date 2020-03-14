@@ -28,10 +28,7 @@ class CompletionDependenciesTest extends CompletionTestBase {
     }
   }
 
-  def testCompleteArtifact() =
-    doTest()
-  def testCompleteGroup() =
-    doTest()
-  def testCompleteVersion() =
-    doTest()
+  def testCompleteArtifact() = doTest()
+  def testCompleteGroup() = doTest()
+  def testCompleteVersion() = doTest()
 }

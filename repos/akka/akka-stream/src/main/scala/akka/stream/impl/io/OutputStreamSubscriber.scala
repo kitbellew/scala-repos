@@ -41,8 +41,8 @@ private[akka] class OutputStreamSubscriber(
     extends akka.stream.actor.ActorSubscriber
     with ActorLogging {
 
-  override protected val requestStrategy =
-    WatermarkRequestStrategy(highWatermark = bufSize)
+  override protected val requestStrategy = WatermarkRequestStrategy(
+    highWatermark = bufSize)
 
   private var bytesWritten: Long = 0
 

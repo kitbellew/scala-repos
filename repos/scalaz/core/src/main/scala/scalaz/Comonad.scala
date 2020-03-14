@@ -19,8 +19,7 @@ trait Comonad[F[_]] extends Cobind[F] { self =>
     def cobindLeftIdentity[A](fa: F[A])(implicit F: Equal[F[A]]): Boolean =
       F.equal(cobind(fa)(copoint), fa)
     def cobindRightIdentity[A, B](fa: F[A], f: F[A] => B)(
-        implicit F: Equal[B]): Boolean =
-      F.equal(copoint(cobind(fa)(f)), f(fa))
+        implicit F: Equal[B]): Boolean = F.equal(copoint(cobind(fa)(f)), f(fa))
   }
 
   def comonadLaw = new ComonadLaws {}

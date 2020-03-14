@@ -1060,8 +1060,11 @@ trait SparseVectorOps { this: SparseVector.type =>
 //              bLastInd = bind
 //              val aMax = math.min(asize, aoff + bind  - aind + 1)
               val aMax = math.min(asize, bind + 1)
-              var newAoff: Int =
-                ArrayUtil.gallopSearch(a.index, aoff, aMax, bind)
+              var newAoff: Int = ArrayUtil.gallopSearch(
+                a.index,
+                aoff,
+                aMax,
+                bind)
               if (newAoff < 0) {
                 newAoff = ~newAoff
                 boff += 1

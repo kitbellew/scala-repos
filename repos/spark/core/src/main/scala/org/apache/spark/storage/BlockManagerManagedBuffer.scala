@@ -36,8 +36,8 @@ private[storage] class BlockManagerManagedBuffer(
 
   override def retain(): ManagedBuffer = {
     super.retain()
-    val locked =
-      blockManager.blockInfoManager.lockForReading(blockId, blocking = false)
+    val locked = blockManager.blockInfoManager
+      .lockForReading(blockId, blocking = false)
     assert(locked.isDefined)
     this
   }

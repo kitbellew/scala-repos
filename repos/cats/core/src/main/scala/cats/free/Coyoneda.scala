@@ -33,11 +33,9 @@ sealed abstract class Coyoneda[F[_], A] extends Serializable { self =>
     * Simple function composition. Allows map fusion without touching
     * the underlying `F`.
     */
-  final def map[B](f: A => B): Aux[F, B, Pivot] =
-    apply(fi)(f compose k)
+  final def map[B](f: A => B): Aux[F, B, Pivot] = apply(fi)(f compose k)
 
-  final def transform[G[_]](f: F ~> G): Aux[G, A, Pivot] =
-    apply(f(fi))(k)
+  final def transform[G[_]](f: F ~> G): Aux[G, A, Pivot] = apply(f(fi))(k)
 
 }
 

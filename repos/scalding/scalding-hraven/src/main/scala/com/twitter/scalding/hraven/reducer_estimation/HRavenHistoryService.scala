@@ -114,8 +114,9 @@ object HRavenHistoryService extends HistoryService {
             }
           }
 
-          val successfulFlows =
-            flows.asScala.filter(_.getHdfsBytesRead > 0).take(max)
+          val successfulFlows = flows.asScala
+            .filter(_.getHdfsBytesRead > 0)
+            .take(max)
           if (successfulFlows.isEmpty) {
             LOG.warn(
               "Unable to find any successful flows in the last " + nFetch + " jobs.")

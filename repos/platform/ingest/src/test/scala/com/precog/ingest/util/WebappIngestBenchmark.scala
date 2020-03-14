@@ -239,8 +239,9 @@ object WebappIngestProducer {
 
 class WebappIngestProducer(args: Array[String]) extends IngestProducer(args) {
 
-  lazy val base =
-    config.getProperty("serviceUrl", "http://localhost:30050/vfs/")
+  lazy val base = config.getProperty(
+    "serviceUrl",
+    "http://localhost:30050/vfs/")
   lazy val ingestAPIKey = config.getProperty("apiKey", "dummy")
   val ingestOwnerAccountId = Authorities("dummy")
   val client = new HttpClientXLightWeb

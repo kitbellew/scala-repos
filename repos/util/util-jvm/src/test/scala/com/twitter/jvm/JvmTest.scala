@@ -13,8 +13,10 @@ class JvmTest extends WordSpec with TestLogging {
   "Jvm" should {
     class JvmHelper {
       object jvm extends Jvm {
-        @volatile private[this] var currentSnap: Snapshot =
-          Snapshot(Time.epoch, Heap(0, 0, Seq()), Seq())
+        @volatile private[this] var currentSnap: Snapshot = Snapshot(
+          Time.epoch,
+          Heap(0, 0, Seq()),
+          Seq())
 
         val opts = new Opts {
           def compileThresh = None
@@ -41,8 +43,8 @@ class JvmTest extends WordSpec with TestLogging {
     "ProcessId" should {
       val supported = Seq("Mac OS X", "Linux")
 
-      val osIsSupported =
-        Option(System.getProperty("os.name")).exists(supported.contains)
+      val osIsSupported = Option(System.getProperty("os.name"))
+        .exists(supported.contains)
 
       if (osIsSupported) {
         "define process id on supported platforms" in {

@@ -56,8 +56,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         case _: PsiNamedElement =>
         case _                  => return
       }
-      val context =
-        ScalaPsiUtil.nameContext(refElement.asInstanceOf[PsiNamedElement])
+      val context = ScalaPsiUtil.nameContext(
+        refElement.asInstanceOf[PsiNamedElement])
       context match {
         case doc: PsiDocCommentOwner =>
           doc match {
@@ -75,9 +75,9 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         message <- ScalaPsiUtil.readAttribute(annotation, "value")
       } yield message
 
-      val description: String =
-        Seq(Some("Symbol " + name + " is deprecated"), message).flatten
-          .mkString(". ")
+      val description: String = Seq(
+        Some("Symbol " + name + " is deprecated"),
+        message).flatten.mkString(". ")
       holder.registerProblem(
         holder.getManager.createProblemDescriptor(
           elementToHighlight,

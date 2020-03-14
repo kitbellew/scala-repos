@@ -21,10 +21,9 @@ case class CookieImpl(
   def withDomain(domain: String): Cookie = copy(domain = Optional.of(domain))
   def withPath(path: String): Cookie = copy(path = Optional.of(path))
 
-  val value: RequestVal[String] =
-    new StandaloneExtractionImpl[String] {
-      def directive: Directive1[String] = cookie(name).map(_.value)
-    }
+  val value: RequestVal[String] = new StandaloneExtractionImpl[String] {
+    def directive: Directive1[String] = cookie(name).map(_.value)
+  }
 
   def optionalValue(): RequestVal[Optional[String]] =
     new StandaloneExtractionImpl[Optional[String]] {

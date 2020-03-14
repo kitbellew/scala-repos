@@ -16,8 +16,7 @@ import Kleisli._
 sealed abstract class RegionT[S, P[_], A] {
   def value: Kleisli[P, IORef[List[RefCountedFinalizer]], A]
 
-  def runT(r: IORef[List[RefCountedFinalizer]]): P[A] =
-    value.run(r)
+  def runT(r: IORef[List[RefCountedFinalizer]]): P[A] = value.run(r)
 }
 
 object RegionT extends RegionTInstances {

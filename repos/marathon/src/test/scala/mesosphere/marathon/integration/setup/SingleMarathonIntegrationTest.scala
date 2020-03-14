@@ -179,8 +179,9 @@ trait SingleMarathonIntegrationTest
   }
 
   private def appProxyMainInvocationImpl: String = {
-    val javaExecutable =
-      sys.props.get("java.home").fold("java")(_ + "/bin/java")
+    val javaExecutable = sys.props
+      .get("java.home")
+      .fold("java")(_ + "/bin/java")
     val classPath = sys.props
       .getOrElse("java.class.path", "target/classes")
       .replaceAll(" ", "")
@@ -325,8 +326,9 @@ trait SingleMarathonIntegrationTest
     events.clear()
     ExternalMarathonIntegrationTest.healthChecks.clear()
 
-    val deleteResult: RestResult[ITDeploymentResult] =
-      marathon.deleteGroup(testBasePath, force = true)
+    val deleteResult: RestResult[ITDeploymentResult] = marathon.deleteGroup(
+      testBasePath,
+      force = true)
     if (deleteResult.code != 404) { waitForChange(deleteResult) }
 
     waitForCleanSlateInMesos()

@@ -609,8 +609,7 @@ trait Wizard extends StatefulSnippet with Factory with ScreenWizardRendered {
     def set[T](name: String, from: WizardVar[_], value: T): Unit =
       ScreenVars.set(ScreenVars.is + (name -> (from, value)))
 
-    def clear(name: String): Unit =
-      ScreenVars.set(ScreenVars.is - name)
+    def clear(name: String): Unit = ScreenVars.set(ScreenVars.is - name)
   }
 
 }

@@ -98,8 +98,9 @@ private[ml] object Node {
         impurity = oldNode.impurity,
         impurityStats = null)
     } else {
-      val gain = if (oldNode.stats.nonEmpty) { oldNode.stats.get.gain }
-      else { 0.0 }
+      val gain =
+        if (oldNode.stats.nonEmpty) { oldNode.stats.get.gain }
+        else { 0.0 }
       new InternalNode(
         prediction = oldNode.predict.predict,
         impurity = oldNode.impurity,
@@ -334,8 +335,9 @@ private[tree] class LearningNode(
     else {
       val split = this.split.get
       val featureIndex = split.featureIndex
-      val splitLeft =
-        split.shouldGoLeft(binnedFeatures(featureIndex), splits(featureIndex))
+      val splitLeft = split.shouldGoLeft(
+        binnedFeatures(featureIndex),
+        splits(featureIndex))
       if (this.leftChild.isEmpty) {
         // Not yet split. Return next layer of nodes to train
         if (splitLeft) { LearningNode.leftChildIndex(this.id) }

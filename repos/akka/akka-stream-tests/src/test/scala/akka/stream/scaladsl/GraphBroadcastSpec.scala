@@ -121,8 +121,31 @@ class GraphBroadcastSpec extends AkkaSpec {
           FT,
           FT,
           FT,
-          FT) ⇒ Future[Seq[Seq[Int]]] =
-        (
+          FT) ⇒ Future[Seq[Seq[Int]]] = (
+          f1,
+          f2,
+          f3,
+          f4,
+          f5,
+          f6,
+          f7,
+          f8,
+          f9,
+          f10,
+          f11,
+          f12,
+          f13,
+          f14,
+          f15,
+          f16,
+          f17,
+          f18,
+          f19,
+          f20,
+          f21,
+          f22) ⇒
+        Future.sequence(
+          List(
             f1,
             f2,
             f3,
@@ -144,31 +167,7 @@ class GraphBroadcastSpec extends AkkaSpec {
             f19,
             f20,
             f21,
-            f22) ⇒
-          Future.sequence(
-            List(
-              f1,
-              f2,
-              f3,
-              f4,
-              f5,
-              f6,
-              f7,
-              f8,
-              f9,
-              f10,
-              f11,
-              f12,
-              f13,
-              f14,
-              f15,
-              f16,
-              f17,
-              f18,
-              f19,
-              f20,
-              f21,
-              f22))
+            f22))
 
       val result = RunnableGraph
         .fromGraph(GraphDSL.create(
@@ -359,8 +358,10 @@ class GraphBroadcastSpec extends AkkaSpec {
 
     "alsoTo must broadcast" in assertAllStagesStopped {
       val p, p2 = TestSink.probe[Int](system)
-      val (ps1, ps2) =
-        Source(1 to 6).alsoToMat(p)(Keep.right).toMat(p2)(Keep.both).run()
+      val (ps1, ps2) = Source(1 to 6)
+        .alsoToMat(p)(Keep.right)
+        .toMat(p2)(Keep.both)
+        .run()
       ps1.request(6)
       ps2.request(6)
       ps1.expectNext(1, 2, 3, 4, 5, 6)
@@ -371,8 +372,10 @@ class GraphBroadcastSpec extends AkkaSpec {
 
     "alsoTo must continue if sink cancels" in assertAllStagesStopped {
       val p, p2 = TestSink.probe[Int](system)
-      val (ps1, ps2) =
-        Source(1 to 6).alsoToMat(p)(Keep.right).toMat(p2)(Keep.both).run()
+      val (ps1, ps2) = Source(1 to 6)
+        .alsoToMat(p)(Keep.right)
+        .toMat(p2)(Keep.both)
+        .run()
       ps2.request(6)
       ps1.cancel()
       ps2.expectNext(1, 2, 3, 4, 5, 6)

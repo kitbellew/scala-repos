@@ -48,10 +48,10 @@ object StringUtils {
     } else { v }
   }
 
-  private[this] val trueStrings =
-    Set("t", "true", "y", "yes", "1").map(UTF8String.fromString)
-  private[this] val falseStrings =
-    Set("f", "false", "n", "no", "0").map(UTF8String.fromString)
+  private[this] val trueStrings = Set("t", "true", "y", "yes", "1").map(
+    UTF8String.fromString)
+  private[this] val falseStrings = Set("f", "false", "n", "no", "0").map(
+    UTF8String.fromString)
 
   def isTrueString(s: UTF8String): Boolean = trueStrings.contains(s.toLowerCase)
   def isFalseString(s: UTF8String): Boolean =

@@ -25,8 +25,7 @@ private[json] object Impl extends AbstractJSONImpl {
   def toMap(x: Repr): Map[String, Repr] =
     x.asInstanceOf[java.util.Map[String, Repr]].asScala.toMap
 
-  def serialize(x: Repr): String =
-    JSONValue.toJSONString(x)
+  def serialize(x: Repr): String = JSONValue.toJSONString(x)
 
   def serialize(x: Repr, writer: Writer): Unit =
     JSONValue.writeJSONString(x, writer)

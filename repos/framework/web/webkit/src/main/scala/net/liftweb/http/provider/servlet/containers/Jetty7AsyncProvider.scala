@@ -45,14 +45,17 @@ object Jetty7AsyncProvider extends AsyncProviderMeta {
     isExpired,
     isResumed) = {
     try {
-      val cc =
-        Class.forName("org.eclipse.jetty.continuation.ContinuationSupport")
-      val meth =
-        cc.getMethod("getContinuation", classOf[javax.servlet.ServletRequest])
+      val cc = Class.forName(
+        "org.eclipse.jetty.continuation.ContinuationSupport")
+      val meth = cc.getMethod(
+        "getContinuation",
+        classOf[javax.servlet.ServletRequest])
       val cci = Class.forName("org.eclipse.jetty.continuation.Continuation")
       val getAttribute = cci.getMethod("getAttribute", classOf[String])
-      val setAttribute =
-        cci.getMethod("setAttribute", classOf[String], classOf[AnyRef])
+      val setAttribute = cci.getMethod(
+        "setAttribute",
+        classOf[String],
+        classOf[AnyRef])
       val suspend = cci.getMethod("suspend")
       val setTimeout = cci.getMethod("setTimeout", java.lang.Long.TYPE)
       val resume = cci.getMethod("resume")

@@ -165,10 +165,9 @@ class RequestRendererSpec
         HttpRequest(
           PUT,
           "/abc/xyz",
-          entity =
-            Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              source())) should renderTo {
+          entity = Chunked(
+            ContentTypes.`text/plain(UTF-8)`,
+            source())) should renderTo {
           """PUT /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -203,19 +202,17 @@ class RequestRendererSpec
       }
 
       "POST request with chunked body and explicit LastChunk" in new TestSetup() {
-        val chunks =
-          List(
-            ChunkStreamPart("XXXX"),
-            ChunkStreamPart("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-            LastChunk)
+        val chunks = List(
+          ChunkStreamPart("XXXX"),
+          ChunkStreamPart("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+          LastChunk)
 
         HttpRequest(
           POST,
           "/abc/xyz",
-          entity =
-            Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              Source(chunks))) should renderTo {
+          entity = Chunked(
+            ContentTypes.`text/plain(UTF-8)`,
+            Source(chunks))) should renderTo {
           """POST /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -233,20 +230,18 @@ class RequestRendererSpec
       }
 
       "POST request with chunked body and extra LastChunks at the end (which should be ignored)" in new TestSetup() {
-        val chunks =
-          List(
-            ChunkStreamPart("XXXX"),
-            ChunkStreamPart("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-            LastChunk,
-            LastChunk)
+        val chunks = List(
+          ChunkStreamPart("XXXX"),
+          ChunkStreamPart("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+          LastChunk,
+          LastChunk)
 
         HttpRequest(
           POST,
           "/abc/xyz",
-          entity =
-            Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              Source(chunks))) should renderTo {
+          entity = Chunked(
+            ContentTypes.`text/plain(UTF-8)`,
+            Source(chunks))) should renderTo {
           """POST /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0

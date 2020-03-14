@@ -15,8 +15,8 @@ class ArgHelpTest extends WordSpec with Matchers {
   "ArgHelper" should {
     "print help when asked" in {
       var helpCalled = false
-      val helper =
-        ArgHelperTest((describeArgs: Seq[DescribedArg]) => helpCalled = true)
+      val helper = ArgHelperTest((describeArgs: Seq[DescribedArg]) =>
+        helpCalled = true)
 
       val args = List(OptionalArg("name", "Name of person"))
       val config = Config.unitTestDefault.setArgs(Args("--help"))
@@ -31,8 +31,8 @@ class ArgHelpTest extends WordSpec with Matchers {
   it should {
     "run job without help" in {
       var helpCalled = false
-      val helper =
-        ArgHelperTest((describeArgs: Seq[DescribedArg]) => helpCalled = true)
+      val helper = ArgHelperTest((describeArgs: Seq[DescribedArg]) =>
+        helpCalled = true)
 
       val args = List(OptionalArg("name", "Name of person"))
       val config = Config.unitTestDefault.setArgs(Args(""))
@@ -47,8 +47,8 @@ class ArgHelpTest extends WordSpec with Matchers {
   it should {
     "call help even when given missing args" in {
       var helpCalled = false
-      val helper =
-        ArgHelperTest((describeArgs: Seq[DescribedArg]) => helpCalled = true)
+      val helper = ArgHelperTest((describeArgs: Seq[DescribedArg]) =>
+        helpCalled = true)
 
       val args = List(OptionalArg("name", "Name of person"))
       val config = Config.unitTestDefault.setArgs(

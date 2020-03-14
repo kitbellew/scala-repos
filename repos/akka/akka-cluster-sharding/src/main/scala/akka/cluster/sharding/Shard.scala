@@ -174,8 +174,7 @@ private[akka] class Shard(
   def totalBufferSize =
     messageBuffers.foldLeft(0) { (sum, entity) ⇒ sum + entity._2.size }
 
-  def processChange[A](event: A)(handler: A ⇒ Unit): Unit =
-    handler(event)
+  def processChange[A](event: A)(handler: A ⇒ Unit): Unit = handler(event)
 
   def receive = receiveCommand
 

@@ -39,8 +39,9 @@ object IntentionUtils {
   def addNameToArgumentsFix(
       element: PsiElement,
       onlyBoolean: Boolean): Option[() => Unit] = {
-    val argList: ScArgumentExprList =
-      PsiTreeUtil.getParentOfType(element, classOf[ScArgumentExprList])
+    val argList: ScArgumentExprList = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScArgumentExprList])
     if (argList == null || argList.isBraceArgs) return None
     val currentArg = argList.exprs.find { e =>
       PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
@@ -52,8 +53,8 @@ object IntentionUtils {
     }
 
     def matchedParamsAfter(): Seq[(ScExpression, Parameter)] = {
-      val sortedMatchedArgs =
-        argList.matchedParameters.sortBy(_._1.getTextOffset)
+      val sortedMatchedArgs = argList.matchedParameters.sortBy(
+        _._1.getTextOffset)
       sortedMatchedArgs.dropWhile {
         case (e, p) => !PsiTreeUtil.isAncestor(e, element, /*strict =*/ false)
         case _      => true
@@ -142,8 +143,9 @@ object IntentionUtils {
     if (parent != null && parent.isInstanceOf[ScPrefixExpr] &&
         parent.asInstanceOf[ScPrefixExpr].operation.getText == "!") {
 
-      val newExpr =
-        ScalaPsiElementFactory.createExpressionFromText(buf.toString(), manager)
+      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
+        buf.toString(),
+        manager)
 
       val size = newExpr match {
         case infix: ScInfixExpr =>
@@ -155,8 +157,9 @@ object IntentionUtils {
       (parent.asInstanceOf[ScPrefixExpr], newExpr, size)
     } else {
       buf.insert(0, "!(").append(")")
-      val newExpr =
-        ScalaPsiElementFactory.createExpressionFromText(buf.toString(), manager)
+      val newExpr = ScalaPsiElementFactory.createExpressionFromText(
+        buf.toString(),
+        manager)
 
       val children = newExpr
         .asInstanceOf[ScPrefixExpr]

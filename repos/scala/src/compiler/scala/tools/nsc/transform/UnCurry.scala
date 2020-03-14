@@ -182,8 +182,10 @@ abstract class UnCurry
         val ex = meth.newValue(nme.ex, body.pos) setInfo extpe
         val argType =
           restpe withAnnotation (AnnotationInfo marker UncheckedClass.tpe)
-        val pat =
-          gen.mkBindForCase(ex, NonLocalReturnControlClass, List(argType))
+        val pat = gen.mkBindForCase(
+          ex,
+          NonLocalReturnControlClass,
+          List(argType))
         val rhs = (
           IF((ex DOT nme.key)() OBJ_EQ Ident(key))
             THEN ((ex DOT nme.value)())
@@ -469,8 +471,9 @@ abstract class UnCurry
       /* Transform tree `t` to { def f = t; f } where `f` is a fresh name */
       def liftTree(tree: Tree) = {
         debuglog("lifting tree at: " + (tree.pos))
-        val sym =
-          currentOwner.newMethod(unit.freshTermName("liftedTree"), tree.pos)
+        val sym = currentOwner.newMethod(
+          unit.freshTermName("liftedTree"),
+          tree.pos)
         sym.setInfo(MethodType(List(), tree.tpe))
         tree.changeOwner(currentOwner -> sym)
         localTyper.typedPos(tree.pos)(
@@ -771,72 +774,71 @@ abstract class UnCurry
         */
       def erase(dd: DefDef): (List[List[ValDef]], Tree) = {
         import dd.{vparamss, rhs}
-        val paramTransforms: List[ParamTransform] =
-          map2(vparamss.flatten, dd.symbol.info.paramss.flatten) {
-            (p, infoParam) =>
-              val packedType = infoParam.info
-              if (packedType =:= p.symbol.info) Identity(p)
-              else {
-                // The Uncurry info transformer existentially abstracted over value parameters
-                // from the previous parameter lists.
+        val paramTransforms: List[ParamTransform] = map2(
+          vparamss.flatten,
+          dd.symbol.info.paramss.flatten) { (p, infoParam) =>
+          val packedType = infoParam.info
+          if (packedType =:= p.symbol.info) Identity(p)
+          else {
+            // The Uncurry info transformer existentially abstracted over value parameters
+            // from the previous parameter lists.
 
-                // Change the type of the param symbol
-                p.symbol updateInfo packedType
+            // Change the type of the param symbol
+            p.symbol updateInfo packedType
 
-                // Create a new param tree
-                val newParam: ValDef = copyValDef(p)(tpt = TypeTree(packedType))
+            // Create a new param tree
+            val newParam: ValDef = copyValDef(p)(tpt = TypeTree(packedType))
 
-                // Within the method body, we'll cast the parameter to the originally
-                // declared type and assign this to a synthetic val. Later, we'll patch
-                // the method body to refer to this, rather than the parameter.
-                val tempVal: ValDef = {
-                  // SI-9442: using the "uncurry-erased" type (the one after the uncurry phase) can lead to incorrect
-                  // tree transformations. For example, compiling:
-                  // ```
-                  //   def foo(c: Ctx)(l: c.Tree): Unit = {
-                  //     val l2: c.Tree = l
-                  //   }
-                  // ```
-                  // Results in the following AST:
-                  // ```
-                  //   def foo(c: Ctx, l: Ctx#Tree): Unit = {
-                  //     val l$1: Ctx#Tree = l.asInstanceOf[Ctx#Tree]
-                  //     val l2: c.Tree = l$1 // no, not really, it's not.
-                  //   }
-                  // ```
-                  // Of course, this is incorrect, since `l$1` has type `Ctx#Tree`, which is not a subtype of `c.Tree`.
-                  //
-                  // So what we need to do is to use the pre-uncurry type when creating `l$1`, which is `c.Tree` and is
-                  // correct. Now, there are two additional problems:
-                  // 1. when varargs and byname params are involved, the uncurry transformation desugares these special
-                  //    cases to actual typerefs, eg:
-                  //    ```
-                  //           T*  ~> Seq[T] (Scala-defined varargs)
-                  //           T*  ~> Array[T] (Java-defined varargs)
-                  //           =>T ~> Function0[T] (by name params)
-                  //    ```
-                  //    we use the DesugaredParameterType object (defined in scala.reflect.internal.transform.UnCurry)
-                  //    to redo this desugaring manually here
-                  // 2. the type needs to be normalized, since `gen.mkCast` checks this (no HK here, just aliases have
-                  //    to be expanded before handing the type to `gen.mkAttributedCast`, which calls `gen.mkCast`)
-                  val info0 =
-                    enteringUncurry(p.symbol.info) match {
-                      case DesugaredParameterType(desugaredTpe) =>
-                        desugaredTpe
-                      case tpe =>
-                        tpe
-                    }
-                  val info = info0.normalize
-                  val tempValName = unit freshTermName (p.name + "$")
-                  val newSym = dd.symbol
-                    .newTermSymbol(tempValName, p.pos, SYNTHETIC)
-                    .setInfo(info)
-                  atPos(p.pos)(
-                    ValDef(newSym, gen.mkAttributedCast(Ident(p.symbol), info)))
-                }
-                Packed(newParam, tempVal)
+            // Within the method body, we'll cast the parameter to the originally
+            // declared type and assign this to a synthetic val. Later, we'll patch
+            // the method body to refer to this, rather than the parameter.
+            val tempVal: ValDef = {
+              // SI-9442: using the "uncurry-erased" type (the one after the uncurry phase) can lead to incorrect
+              // tree transformations. For example, compiling:
+              // ```
+              //   def foo(c: Ctx)(l: c.Tree): Unit = {
+              //     val l2: c.Tree = l
+              //   }
+              // ```
+              // Results in the following AST:
+              // ```
+              //   def foo(c: Ctx, l: Ctx#Tree): Unit = {
+              //     val l$1: Ctx#Tree = l.asInstanceOf[Ctx#Tree]
+              //     val l2: c.Tree = l$1 // no, not really, it's not.
+              //   }
+              // ```
+              // Of course, this is incorrect, since `l$1` has type `Ctx#Tree`, which is not a subtype of `c.Tree`.
+              //
+              // So what we need to do is to use the pre-uncurry type when creating `l$1`, which is `c.Tree` and is
+              // correct. Now, there are two additional problems:
+              // 1. when varargs and byname params are involved, the uncurry transformation desugares these special
+              //    cases to actual typerefs, eg:
+              //    ```
+              //           T*  ~> Seq[T] (Scala-defined varargs)
+              //           T*  ~> Array[T] (Java-defined varargs)
+              //           =>T ~> Function0[T] (by name params)
+              //    ```
+              //    we use the DesugaredParameterType object (defined in scala.reflect.internal.transform.UnCurry)
+              //    to redo this desugaring manually here
+              // 2. the type needs to be normalized, since `gen.mkCast` checks this (no HK here, just aliases have
+              //    to be expanded before handing the type to `gen.mkAttributedCast`, which calls `gen.mkCast`)
+              val info0 = enteringUncurry(p.symbol.info) match {
+                case DesugaredParameterType(desugaredTpe) =>
+                  desugaredTpe
+                case tpe =>
+                  tpe
               }
+              val info = info0.normalize
+              val tempValName = unit freshTermName (p.name + "$")
+              val newSym = dd.symbol
+                .newTermSymbol(tempValName, p.pos, SYNTHETIC)
+                .setInfo(info)
+              atPos(p.pos)(
+                ValDef(newSym, gen.mkAttributedCast(Ident(p.symbol), info)))
+            }
+            Packed(newParam, tempVal)
           }
+        }
 
         val allParams = paramTransforms map (_.param)
         val (packedParams, tempVals) = paramTransforms.collect {

@@ -46,8 +46,11 @@ private[lobby] final class SocketHandler(
       user: Option[User],
       mobile: Boolean): Fu[JsSocketHandler] =
     (user ?? (u => blocking(u.id))) flatMap { blockedUserIds =>
-      val join =
-        Join(uid = uid, user = user, blocking = blockedUserIds, mobile = mobile)
+      val join = Join(
+        uid = uid,
+        user = user,
+        blocking = blockedUserIds,
+        mobile = mobile)
       Handler(hub, socket, uid, join, user map (_.id)) {
         case Connected(enum, member) =>
           (controller(socket, uid, member), enum, member)

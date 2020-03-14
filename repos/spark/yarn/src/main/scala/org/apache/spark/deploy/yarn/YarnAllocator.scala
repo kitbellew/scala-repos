@@ -88,8 +88,8 @@ private[yarn] class YarnAllocator(
   private var executorIdCounter = 0
   @volatile private var numExecutorsFailed = 0
 
-  @volatile private var targetNumExecutors =
-    YarnSparkHadoopUtil.getInitialTargetExecutorNumber(sparkConf)
+  @volatile private var targetNumExecutors = YarnSparkHadoopUtil
+    .getInitialTargetExecutorNumber(sparkConf)
 
   // Executor loss reason requests that are pending - maps from executor ID for inquiry to a
   // list of requesters that should be responded to once we find out why the given executor
@@ -122,16 +122,18 @@ private[yarn] class YarnAllocator(
   // Number of cores per executor.
   protected val executorCores = args.executorCores
   // Resource capability requested for each executors
-  private[yarn] val resource =
-    Resource.newInstance(executorMemory + memoryOverhead, executorCores)
+  private[yarn] val resource = Resource.newInstance(
+    executorMemory + memoryOverhead,
+    executorCores)
 
   private val launcherPool = ThreadUtils.newDaemonCachedThreadPool(
     "ContainerLauncher",
     sparkConf.get(CONTAINER_LAUNCH_MAX_THREADS))
 
   // For testing
-  private val launchContainers =
-    sparkConf.getBoolean("spark.yarn.launchContainers", true)
+  private val launchContainers = sparkConf.getBoolean(
+    "spark.yarn.launchContainers",
+    true)
 
   private val labelExpression = sparkConf.get(EXECUTOR_NODE_LABEL_EXPRESSION)
 
@@ -256,8 +258,8 @@ private[yarn] class YarnAllocator(
         handleAllocatedContainers(allocatedContainers.asScala)
       }
 
-      val completedContainers =
-        allocateResponse.getCompletedContainersStatuses()
+      val completedContainers = allocateResponse
+        .getCompletedContainersStatuses()
       if (completedContainers.size > 0) {
         logDebug("Completed %d containers".format(completedContainers.size))
         processCompletedContainers(completedContainers.asScala)
@@ -306,8 +308,8 @@ private[yarn] class YarnAllocator(
       // to maximize locality, include requests with no locality preference that can be cancelled
       val potentialContainers = availableContainers + anyHostRequests.size
 
-      val containerLocalityPreferences =
-        containerPlacementStrategy.localityOfRequestedContainers(
+      val containerLocalityPreferences = containerPlacementStrategy
+        .localityOfRequestedContainers(
           potentialContainers,
           numLocalityAwareTasks,
           hostToLocalTaskCounts,
@@ -348,8 +350,10 @@ private[yarn] class YarnAllocator(
       val numToCancel = math.min(numPendingAllocate, -missing)
       logInfo(s"Canceling requests for $numToCancel executor containers")
 
-      val matchingRequests =
-        amClient.getMatchingRequests(RM_REQUEST_PRIORITY, ANY_HOST, resource)
+      val matchingRequests = amClient.getMatchingRequests(
+        RM_REQUEST_PRIORITY,
+        ANY_HOST,
+        resource)
       if (!matchingRequests.isEmpty) {
         matchingRequests
           .iterator()
@@ -543,64 +547,65 @@ private[yarn] class YarnAllocator(
       val alreadyReleased = releasedContainers.remove(containerId)
       val hostOpt = allocatedContainerToHostMap.get(containerId)
       val onHostStr = hostOpt.map(host => s" on host: $host").getOrElse("")
-      val exitReason = if (!alreadyReleased) {
-        // Decrement the number of executors running. The next iteration of
-        // the ApplicationMaster's reporting thread will take care of allocating.
-        numExecutorsRunning -= 1
-        logInfo(
-          "Completed container %s%s (state: %s, exit status: %s)".format(
-            containerId,
-            onHostStr,
-            completedContainer.getState,
-            completedContainer.getExitStatus))
-        // Hadoop 2.2.X added a ContainerExitStatus we should switch to use
-        // there are some exit status' we shouldn't necessarily count against us, but for
-        // now I think its ok as none of the containers are expected to exit.
-        val exitStatus = completedContainer.getExitStatus
-        val (exitCausedByApp, containerExitReason) = exitStatus match {
-          case ContainerExitStatus.SUCCESS =>
-            (
-              false,
-              s"Executor for container $containerId exited because of a YARN event (e.g., " +
-                "pre-emption) and not because of an error in the running job.")
-          case ContainerExitStatus.PREEMPTED =>
-            // Preemption is not the fault of the running tasks, since YARN preempts containers
-            // merely to do resource sharing, and tasks that fail due to preempted executors could
-            // just as easily finish on any other executor. See SPARK-8167.
-            (false, s"Container ${containerId}${onHostStr} was preempted.")
-          // Should probably still count memory exceeded exit codes towards task failures
-          case VMEM_EXCEEDED_EXIT_CODE =>
-            (
-              true,
-              memLimitExceededLogMessage(
-                completedContainer.getDiagnostics,
-                VMEM_EXCEEDED_PATTERN))
-          case PMEM_EXCEEDED_EXIT_CODE =>
-            (
-              true,
-              memLimitExceededLogMessage(
-                completedContainer.getDiagnostics,
-                PMEM_EXCEEDED_PATTERN))
-          case _ =>
-            numExecutorsFailed += 1
-            (
-              true,
-              "Container marked as failed: " + containerId + onHostStr +
-                ". Exit status: " + completedContainer.getExitStatus +
-                ". Diagnostics: " + completedContainer.getDiagnostics)
+      val exitReason =
+        if (!alreadyReleased) {
+          // Decrement the number of executors running. The next iteration of
+          // the ApplicationMaster's reporting thread will take care of allocating.
+          numExecutorsRunning -= 1
+          logInfo(
+            "Completed container %s%s (state: %s, exit status: %s)".format(
+              containerId,
+              onHostStr,
+              completedContainer.getState,
+              completedContainer.getExitStatus))
+          // Hadoop 2.2.X added a ContainerExitStatus we should switch to use
+          // there are some exit status' we shouldn't necessarily count against us, but for
+          // now I think its ok as none of the containers are expected to exit.
+          val exitStatus = completedContainer.getExitStatus
+          val (exitCausedByApp, containerExitReason) = exitStatus match {
+            case ContainerExitStatus.SUCCESS =>
+              (
+                false,
+                s"Executor for container $containerId exited because of a YARN event (e.g., " +
+                  "pre-emption) and not because of an error in the running job.")
+            case ContainerExitStatus.PREEMPTED =>
+              // Preemption is not the fault of the running tasks, since YARN preempts containers
+              // merely to do resource sharing, and tasks that fail due to preempted executors could
+              // just as easily finish on any other executor. See SPARK-8167.
+              (false, s"Container ${containerId}${onHostStr} was preempted.")
+            // Should probably still count memory exceeded exit codes towards task failures
+            case VMEM_EXCEEDED_EXIT_CODE =>
+              (
+                true,
+                memLimitExceededLogMessage(
+                  completedContainer.getDiagnostics,
+                  VMEM_EXCEEDED_PATTERN))
+            case PMEM_EXCEEDED_EXIT_CODE =>
+              (
+                true,
+                memLimitExceededLogMessage(
+                  completedContainer.getDiagnostics,
+                  PMEM_EXCEEDED_PATTERN))
+            case _ =>
+              numExecutorsFailed += 1
+              (
+                true,
+                "Container marked as failed: " + containerId + onHostStr +
+                  ". Exit status: " + completedContainer.getExitStatus +
+                  ". Diagnostics: " + completedContainer.getDiagnostics)
 
+          }
+          if (exitCausedByApp) { logWarning(containerExitReason) }
+          else { logInfo(containerExitReason) }
+          ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
+        } else {
+          // If we have already released this container, then it must mean
+          // that the driver has explicitly requested it to be killed
+          ExecutorExited(
+            completedContainer.getExitStatus,
+            exitCausedByApp = false,
+            s"Container $containerId exited from explicit termination request.")
         }
-        if (exitCausedByApp) { logWarning(containerExitReason) }
-        else { logInfo(containerExitReason) }
-        ExecutorExited(exitStatus, exitCausedByApp, containerExitReason)
-      } else {
-        // If we have already released this container, then it must mean
-        // that the driver has explicitly requested it to be killed
-        ExecutorExited(
-          completedContainer.getExitStatus,
-          exitCausedByApp = false,
-          s"Container $containerId exited from explicit termination request.")
-      }
 
       for {
         host <- hostOpt
@@ -707,10 +712,10 @@ private[yarn] class YarnAllocator(
 
 private object YarnAllocator {
   val MEM_REGEX = "[0-9.]+ [KMG]B"
-  val PMEM_EXCEEDED_PATTERN =
-    Pattern.compile(s"$MEM_REGEX of $MEM_REGEX physical memory used")
-  val VMEM_EXCEEDED_PATTERN =
-    Pattern.compile(s"$MEM_REGEX of $MEM_REGEX virtual memory used")
+  val PMEM_EXCEEDED_PATTERN = Pattern.compile(
+    s"$MEM_REGEX of $MEM_REGEX physical memory used")
+  val VMEM_EXCEEDED_PATTERN = Pattern.compile(
+    s"$MEM_REGEX of $MEM_REGEX virtual memory used")
   val VMEM_EXCEEDED_EXIT_CODE = -103
   val PMEM_EXCEEDED_EXIT_CODE = -104
 

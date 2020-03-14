@@ -45,8 +45,9 @@ class Word2VecSuite
 
     val sentence = "a b " * 100 + "a c " * 10
     val numOfWords = sentence.split(" ").size
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
 
     val codes = Map(
       "a" -> Array(
@@ -101,8 +102,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
 
     val codes = Map(
       "a" -> Array(
@@ -115,8 +117,9 @@ class Word2VecSuite
         0.5137411952018738,
         0.11731560528278351)
     )
-    val expectedVectors =
-      codes.toSeq.sortBy(_._1).map { case (w, v) => Vectors.dense(v) }
+    val expectedVectors = codes.toSeq.sortBy(_._1).map {
+      case (w, v) => Vectors.dense(v)
+    }
 
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
@@ -158,8 +161,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a b " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
     val model = new Word2Vec()
@@ -190,8 +194,9 @@ class Word2VecSuite
     import sqlContext.implicits._
 
     val sentence = "a q s t q s t b b b s t m s t m q " * 100 + "a c " * 10
-    val doc =
-      sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
+    val doc = sc
+      .parallelize(Seq(sentence, sentence))
+      .map(line => line.split(" "))
     val docDF = doc.zip(doc).toDF("text", "alsotext")
 
     val model = new Word2Vec()

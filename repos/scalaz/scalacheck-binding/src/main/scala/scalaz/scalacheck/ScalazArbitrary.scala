@@ -51,15 +51,15 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit val BooleanConjunctionArbitrary: Arbitrary[Boolean @@ Conjunction] =
     Functor[Arbitrary].map(arb[Boolean])(_.conjunction)
 
-  implicit val arbBigInt: Arbitrary[BigInt] =
-    Apply[Arbitrary].apply2[Int, Int, BigInt](arb[Int], arb[Int])(_ + _)
+  implicit val arbBigInt: Arbitrary[BigInt] = Apply[Arbitrary]
+    .apply2[Int, Int, BigInt](arb[Int], arb[Int])(_ + _)
 
-  implicit val arbBigInteger: Arbitrary[BigInteger] =
-    Functor[Arbitrary].map(arb[BigInt])(_.bigInteger)
+  implicit val arbBigInteger: Arbitrary[BigInteger] = Functor[Arbitrary].map(
+    arb[BigInt])(_.bigInteger)
 
   implicit val BigIntegerMultiplicationArbitrary
-      : Arbitrary[BigInteger @@ Multiplication] =
-    Tag.subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
+      : Arbitrary[BigInteger @@ Multiplication] = Tag
+    .subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
 
   implicit val BigIntMultiplicationArbitrary
       : Arbitrary[BigInt @@ Multiplication] = Tag.subst(arb[BigInt])

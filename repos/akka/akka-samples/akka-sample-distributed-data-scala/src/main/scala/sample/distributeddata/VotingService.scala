@@ -54,10 +54,11 @@ class VotingService extends Actor {
 
   def open: Receive = {
     case v @ Vote(participant) ⇒
-      val update =
-        Update(CountersKey, PNCounterMap(), WriteLocal, request = Some(v)) {
-          _.increment(participant, 1)
-        }
+      val update = Update(
+        CountersKey,
+        PNCounterMap(),
+        WriteLocal,
+        request = Some(v)) { _.increment(participant, 1) }
       replicator ! update
 
     case _: UpdateSuccess[_] ⇒

@@ -123,33 +123,34 @@ case class Window(
       offset: Int): BoundOrdering = {
     frameType match {
       case RangeFrame =>
-        val (exprs, current, bound) = if (offset == 0) {
-          // Use the entire order expression when the offset is 0.
-          val exprs = orderSpec.map(_.child)
-          val projection = newMutableProjection(exprs, child.output)
-          (orderSpec, projection(), projection())
-        } else if (orderSpec.size == 1) {
-          // Use only the first order expression when the offset is non-null.
-          val sortExpr = orderSpec.head
-          val expr = sortExpr.child
-          // Create the projection which returns the current 'value'.
-          val current = newMutableProjection(expr :: Nil, child.output)()
-          // Flip the sign of the offset when processing the order is descending
-          val boundOffset = sortExpr.direction match {
-            case Descending => -offset
-            case Ascending  => offset
+        val (exprs, current, bound) =
+          if (offset == 0) {
+            // Use the entire order expression when the offset is 0.
+            val exprs = orderSpec.map(_.child)
+            val projection = newMutableProjection(exprs, child.output)
+            (orderSpec, projection(), projection())
+          } else if (orderSpec.size == 1) {
+            // Use only the first order expression when the offset is non-null.
+            val sortExpr = orderSpec.head
+            val expr = sortExpr.child
+            // Create the projection which returns the current 'value'.
+            val current = newMutableProjection(expr :: Nil, child.output)()
+            // Flip the sign of the offset when processing the order is descending
+            val boundOffset = sortExpr.direction match {
+              case Descending => -offset
+              case Ascending  => offset
+            }
+            // Create the projection which returns the current 'value' modified by adding the offset.
+            val boundExpr = Add(
+              expr,
+              Cast(Literal.create(boundOffset, IntegerType), expr.dataType))
+            val bound = newMutableProjection(boundExpr :: Nil, child.output)()
+            (sortExpr :: Nil, current, bound)
+          } else {
+            sys.error(
+              "Non-Zero range offsets are not supported for windows " +
+                "with multiple order expressions.")
           }
-          // Create the projection which returns the current 'value' modified by adding the offset.
-          val boundExpr = Add(
-            expr,
-            Cast(Literal.create(boundOffset, IntegerType), expr.dataType))
-          val bound = newMutableProjection(boundExpr :: Nil, child.output)()
-          (sortExpr :: Nil, current, bound)
-        } else {
-          sys.error(
-            "Non-Zero range offsets are not supported for windows " +
-              "with multiple order expressions.")
-        }
         // Construct the ordering. This is used to compare the result of current value projection
         // to the result of bound value projection. This is done manually because we want to use
         // Code Generation (if it is enabled).
@@ -170,8 +171,8 @@ case class Window(
   private[this] lazy val windowFrameExpressionFactoryPairs = {
     type FrameKey = (String, FrameType, Option[Int], Option[Int])
     type ExpressionBuffer = mutable.Buffer[Expression]
-    val framedFunctions =
-      mutable.Map.empty[FrameKey, (ExpressionBuffer, ExpressionBuffer)]
+    val framedFunctions = mutable.Map
+      .empty[FrameKey, (ExpressionBuffer, ExpressionBuffer)]
 
     // Add a function and its function to the map for a given frame.
     def collect(
@@ -302,8 +303,8 @@ case class Window(
         BoundReference(child.output.size + i, e.dataType, e.nullable)
     }
     val unboundToRefMap = expressions.zip(references).toMap
-    val patchedWindowExpression =
-      windowExpression.map(_.transform(unboundToRefMap))
+    val patchedWindowExpression = windowExpression.map(
+      _.transform(unboundToRefMap))
     UnsafeProjection.create(
       child.output ++ patchedWindowExpression,
       child.output)
@@ -461,8 +462,7 @@ private[execution] final case class RowBoundOrdering(offset: Int)
       inputRow: InternalRow,
       inputIndex: Int,
       outputRow: InternalRow,
-      outputIndex: Int): Int =
-    inputIndex - (outputIndex + offset)
+      outputIndex: Int): Int = inputIndex - (outputIndex + offset)
 }
 
 /**
@@ -630,8 +630,9 @@ private[execution] final class OffsetWindowFunctionFrame(
           input
         } else {
           // With default value.
-          val default =
-            BindReferences.bindReference(e.default, inputAttrs).transform {
+          val default = BindReferences
+            .bindReference(e.default, inputAttrs)
+            .transform {
               // Shift the input reference to its default version.
               case BoundReference(o, dataType, nullable) =>
                 BoundReference(o + numInputAttributes, dataType, nullable)
@@ -943,8 +944,8 @@ private[execution] object AggregateProcessor {
 
     // Check if there are any SizeBasedWindowFunctions. If there are, we add the partition size to
     // the aggregation buffer. Note that the ordinal of the partition size value will always be 0.
-    val trackPartitionSize =
-      functions.exists(_.isInstanceOf[SizeBasedWindowFunction])
+    val trackPartitionSize = functions.exists(
+      _.isInstanceOf[SizeBasedWindowFunction])
     if (trackPartitionSize) {
       aggBufferAttributes += SizeBasedWindowFunction.n
       initialValues += NoOp
@@ -976,13 +977,15 @@ private[execution] object AggregateProcessor {
     }
 
     // Create the projections.
-    val initialProjection =
-      newMutableProjection(initialValues, Seq(SizeBasedWindowFunction.n))()
+    val initialProjection = newMutableProjection(
+      initialValues,
+      Seq(SizeBasedWindowFunction.n))()
     val updateProjection = newMutableProjection(
       updateExpressions,
       aggBufferAttributes ++ inputAttributes)()
-    val evaluateProjection =
-      newMutableProjection(evaluateExpressions, aggBufferAttributes)()
+    val evaluateProjection = newMutableProjection(
+      evaluateExpressions,
+      aggBufferAttributes)()
 
     // Create the processor
     new AggregateProcessor(

@@ -41,8 +41,8 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     class AssemblyBuilder(
         stages: Seq[GraphStageWithMaterializedValue[_ <: Shape, _]]) {
       var upstreams = Vector.empty[(UpstreamBoundaryStageLogic[_], Inlet[_])]
-      var downstreams =
-        Vector.empty[(Outlet[_], DownstreamBoundaryStageLogic[_])]
+      var downstreams = Vector
+        .empty[(Outlet[_], DownstreamBoundaryStageLogic[_])]
       var connections = Vector.empty[(Outlet[_], Inlet[_])]
 
       def connect[T](
@@ -86,12 +86,11 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
       def init(): Unit = {
         val assembly = buildAssembly()
 
-        val (inHandlers, outHandlers, logics) =
-          assembly.materialize(
-            Attributes.none,
-            assembly.stages.map(_.module),
-            new java.util.HashMap,
-            _ ⇒ ())
+        val (inHandlers, outHandlers, logics) = assembly.materialize(
+          Attributes.none,
+          assembly.stages.map(_.module),
+          new java.util.HashMap,
+          _ ⇒ ())
         _interpreter = new GraphInterpreter(
           assembly,
           NoMaterializer,
@@ -118,12 +117,11 @@ trait GraphInterpreterSpecKit extends AkkaSpec {
     }
 
     def manualInit(assembly: GraphAssembly): Unit = {
-      val (inHandlers, outHandlers, logics) =
-        assembly.materialize(
-          Attributes.none,
-          assembly.stages.map(_.module),
-          new java.util.HashMap,
-          _ ⇒ ())
+      val (inHandlers, outHandlers, logics) = assembly.materialize(
+        Attributes.none,
+        assembly.stages.map(_.module),
+        new java.util.HashMap,
+        _ ⇒ ())
       _interpreter = new GraphInterpreter(
         assembly,
         NoMaterializer,

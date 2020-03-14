@@ -43,8 +43,7 @@ object Options {
     */
   def get[T <: AnyRef: ClassTag](
       options: Map[String, Options],
-      name: String): Option[T] =
-    options.get(name).flatMap(_.get[T])
+      name: String): Option[T] = options.get(name).flatMap(_.get[T])
 }
 class Options(val opts: Map[Class[_], Any]) {
   def set(opt: Any) = Options(opts + (opt.getClass -> opt))

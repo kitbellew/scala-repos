@@ -63,16 +63,18 @@ with AbstractTestConfigurationProducer {
               .message("test.in.scope.specs2.presentable.text", name))))
     }
 
-    val parent: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
 
     if (parent == null) return None
 
     val settings = RunManager
       .getInstance(location.getProject)
       .createRunConfiguration(parent.name, confFactory)
-    val runConfiguration =
-      settings.getConfiguration.asInstanceOf[Specs2RunConfiguration]
+    val runConfiguration = settings.getConfiguration
+      .asInstanceOf[Specs2RunConfiguration]
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null) return None
     val testClassPath = testClass.qualifiedName
@@ -114,8 +116,10 @@ with AbstractTestConfigurationProducer {
         element,
         configuration)
     }
-    val parent: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (parent == null) return false
     val suiteClasses = suitePaths
       .map(suite =>
@@ -160,8 +164,10 @@ with AbstractTestConfigurationProducer {
   def getLocationClassAndTest(
       location: Location[_ <: PsiElement]): (ScTypeDefinition, String) = {
     val element = location.getPsiElement
-    val testClassDef: ScTypeDefinition =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
+    val testClassDef: ScTypeDefinition = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeDefinition],
+      false)
     if (testClassDef == null) return (null, null)
 
     val psiManager = ScalaPsiManager.instance(testClassDef.getProject)

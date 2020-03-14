@@ -309,58 +309,65 @@ router-dispatcher {}
     //#paths
 
     //#round-robin-pool-1
-    val router1: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router1")
+    val router1: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router1")
     //#round-robin-pool-1
 
     //#round-robin-pool-2
-    val router2: ActorRef =
-      context.actorOf(RoundRobinPool(5).props(Props[Worker]), "router2")
+    val router2: ActorRef = context.actorOf(
+      RoundRobinPool(5).props(Props[Worker]),
+      "router2")
     //#round-robin-pool-2
 
     //#round-robin-group-1
-    val router3: ActorRef =
-      context.actorOf(FromConfig.props(), "router3")
+    val router3: ActorRef = context.actorOf(FromConfig.props(), "router3")
     //#round-robin-group-1
 
     //#round-robin-group-2
-    val router4: ActorRef =
-      context.actorOf(RoundRobinGroup(paths).props(), "router4")
+    val router4: ActorRef = context.actorOf(
+      RoundRobinGroup(paths).props(),
+      "router4")
     //#round-robin-group-2
 
     //#random-pool-1
-    val router5: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router5")
+    val router5: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router5")
     //#random-pool-1
 
     //#random-pool-2
-    val router6: ActorRef =
-      context.actorOf(RandomPool(5).props(Props[Worker]), "router6")
+    val router6: ActorRef = context.actorOf(
+      RandomPool(5).props(Props[Worker]),
+      "router6")
     //#random-pool-2
 
     //#random-group-1
-    val router7: ActorRef =
-      context.actorOf(FromConfig.props(), "router7")
+    val router7: ActorRef = context.actorOf(FromConfig.props(), "router7")
     //#random-group-1
 
     //#random-group-2
-    val router8: ActorRef =
-      context.actorOf(RandomGroup(paths).props(), "router8")
+    val router8: ActorRef = context.actorOf(
+      RandomGroup(paths).props(),
+      "router8")
     //#random-group-2
 
     //#balancing-pool-1
-    val router9: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router9")
+    val router9: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router9")
     //#balancing-pool-1
 
     //#balancing-pool-2
-    val router10: ActorRef =
-      context.actorOf(BalancingPool(5).props(Props[Worker]), "router10")
+    val router10: ActorRef = context.actorOf(
+      BalancingPool(5).props(Props[Worker]),
+      "router10")
     //#balancing-pool-2
 
     // #balancing-pool-3
-    val router10b: ActorRef =
-      context.actorOf(BalancingPool(20).props(Props[Worker]), "router10b")
+    val router10b: ActorRef = context.actorOf(
+      BalancingPool(20).props(Props[Worker]),
+      "router10b")
     //#balancing-pool-3
     import scala.collection.JavaConversions._
     for (i <- 1 to 100) router10b ! i
@@ -374,122 +381,125 @@ router-dispatcher {}
         .map(_.getName)}")
 
     //#smallest-mailbox-pool-1
-    val router11: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router11")
+    val router11: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router11")
     //#smallest-mailbox-pool-1
 
     //#smallest-mailbox-pool-2
-    val router12: ActorRef =
-      context.actorOf(SmallestMailboxPool(5).props(Props[Worker]), "router12")
+    val router12: ActorRef = context.actorOf(
+      SmallestMailboxPool(5).props(Props[Worker]),
+      "router12")
     //#smallest-mailbox-pool-2
 
     //#broadcast-pool-1
-    val router13: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router13")
+    val router13: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router13")
     //#broadcast-pool-1
 
     //#broadcast-pool-2
-    val router14: ActorRef =
-      context.actorOf(BroadcastPool(5).props(Props[Worker]), "router14")
+    val router14: ActorRef = context.actorOf(
+      BroadcastPool(5).props(Props[Worker]),
+      "router14")
     //#broadcast-pool-2
 
     //#broadcast-group-1
-    val router15: ActorRef =
-      context.actorOf(FromConfig.props(), "router15")
+    val router15: ActorRef = context.actorOf(FromConfig.props(), "router15")
     //#broadcast-group-1
 
     //#broadcast-group-2
-    val router16: ActorRef =
-      context.actorOf(BroadcastGroup(paths).props(), "router16")
+    val router16: ActorRef = context.actorOf(
+      BroadcastGroup(paths).props(),
+      "router16")
     //#broadcast-group-2
 
     //#scatter-gather-pool-1
-    val router17: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router17")
+    val router17: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router17")
     //#scatter-gather-pool-1
 
     //#scatter-gather-pool-2
-    val router18: ActorRef =
-      context.actorOf(
-        ScatterGatherFirstCompletedPool(5, within = 10.seconds)
-          .props(Props[Worker]),
-        "router18")
+    val router18: ActorRef = context.actorOf(
+      ScatterGatherFirstCompletedPool(5, within = 10.seconds)
+        .props(Props[Worker]),
+      "router18")
     //#scatter-gather-pool-2
 
     //#scatter-gather-group-1
-    val router19: ActorRef =
-      context.actorOf(FromConfig.props(), "router19")
+    val router19: ActorRef = context.actorOf(FromConfig.props(), "router19")
     //#scatter-gather-group-1
 
     //#scatter-gather-group-2
-    val router20: ActorRef =
-      context.actorOf(
-        ScatterGatherFirstCompletedGroup(paths, within = 10.seconds).props(),
-        "router20")
+    val router20: ActorRef = context.actorOf(
+      ScatterGatherFirstCompletedGroup(paths, within = 10.seconds).props(),
+      "router20")
     //#scatter-gather-group-2
 
     //#tail-chopping-pool-1
-    val router21: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router21")
+    val router21: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router21")
     //#tail-chopping-pool-1
 
     //#tail-chopping-pool-2
-    val router22: ActorRef =
-      context.actorOf(
-        TailChoppingPool(5, within = 10.seconds, interval = 20.millis)
-          .props(Props[Worker]),
-        "router22")
+    val router22: ActorRef = context.actorOf(
+      TailChoppingPool(5, within = 10.seconds, interval = 20.millis)
+        .props(Props[Worker]),
+      "router22")
     //#tail-chopping-pool-2
 
     //#tail-chopping-group-1
-    val router23: ActorRef =
-      context.actorOf(FromConfig.props(), "router23")
+    val router23: ActorRef = context.actorOf(FromConfig.props(), "router23")
     //#tail-chopping-group-1
 
     //#tail-chopping-group-2
-    val router24: ActorRef =
-      context.actorOf(
-        TailChoppingGroup(paths, within = 10.seconds, interval = 20.millis)
-          .props(),
-        "router24")
+    val router24: ActorRef = context.actorOf(
+      TailChoppingGroup(paths, within = 10.seconds, interval = 20.millis)
+        .props(),
+      "router24")
     //#tail-chopping-group-2
 
     //#consistent-hashing-pool-1
-    val router25: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router25")
+    val router25: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router25")
     //#consistent-hashing-pool-1
 
     //#consistent-hashing-pool-2
-    val router26: ActorRef =
-      context.actorOf(ConsistentHashingPool(5).props(Props[Worker]), "router26")
+    val router26: ActorRef = context.actorOf(
+      ConsistentHashingPool(5).props(Props[Worker]),
+      "router26")
     //#consistent-hashing-pool-2
 
     //#consistent-hashing-group-1
-    val router27: ActorRef =
-      context.actorOf(FromConfig.props(), "router27")
+    val router27: ActorRef = context.actorOf(FromConfig.props(), "router27")
     //#consistent-hashing-group-1
 
     //#consistent-hashing-group-2
-    val router28: ActorRef =
-      context.actorOf(ConsistentHashingGroup(paths).props(), "router28")
+    val router28: ActorRef = context.actorOf(
+      ConsistentHashingGroup(paths).props(),
+      "router28")
     //#consistent-hashing-group-2
 
     //#resize-pool-1
-    val router29: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router29")
+    val router29: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router29")
     //#resize-pool-1
 
     //#resize-pool-2
     val resizer = DefaultResizer(lowerBound = 2, upperBound = 15)
-    val router30: ActorRef =
-      context.actorOf(
-        RoundRobinPool(5, Some(resizer)).props(Props[Worker]),
-        "router30")
+    val router30: ActorRef = context.actorOf(
+      RoundRobinPool(5, Some(resizer)).props(Props[Worker]),
+      "router30")
     //#resize-pool-2
 
     //#optimal-size-exploring-resize-pool
-    val router31: ActorRef =
-      context.actorOf(FromConfig.props(Props[Worker]), "router31")
+    val router31: ActorRef = context.actorOf(
+      FromConfig.props(Props[Worker]),
+      "router31")
     //#optimal-size-exploring-resize-pool
 
     def receive = {
@@ -528,8 +538,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   }
 
   "demonstrate broadcast" in {
-    val router =
-      system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]))
+    val router = system.actorOf(
+      RoundRobinPool(nrOfInstances = 5).props(Props[Echo]))
     //#broadcastDavyJonesWarning
     import akka.routing.Broadcast
     router ! Broadcast("Watch out for Davy Jones' locker")

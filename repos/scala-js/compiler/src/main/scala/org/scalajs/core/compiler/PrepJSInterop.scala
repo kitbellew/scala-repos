@@ -90,8 +90,7 @@ abstract class PrepJSInterop
 
     /** Nicer syntax for `allEnclosingOwners isnt kind`. */
     private object noEnclosingOwner { // scalastyle:ignore
-      @inline def is(kind: OwnerKind): Boolean =
-        allEnclosingOwners isnt kind
+      @inline def is(kind: OwnerKind): Boolean = allEnclosingOwners isnt kind
     }
 
     private def enterOwner[A](kind: OwnerKind)(body: => A): A = {
@@ -883,8 +882,7 @@ abstract class PrepJSInterop
 
   }
 
-  def isJSAny(sym: Symbol): Boolean =
-    sym.tpe.typeSymbol isSubClass JSAnyClass
+  def isJSAny(sym: Symbol): Boolean = sym.tpe.typeSymbol isSubClass JSAnyClass
 
   /** Checks that a setter has the right signature.
     *
@@ -1037,8 +1035,9 @@ abstract class PrepJSInterop
     //     <defaultName>
     //
     val nextNameTree = Select(This(thisSym), jsnme.nextName)
-    val nullCompTree =
-      Apply(Select(nextNameTree, nme.NE), Literal(Constant(null)) :: Nil)
+    val nullCompTree = Apply(
+      Select(nextNameTree, nme.NE),
+      Literal(Constant(null)) :: Nil)
     val hasNextTree = Select(nextNameTree, jsnme.hasNext)
     val condTree = Apply(Select(nullCompTree, nme.ZAND), hasNextTree :: Nil)
     val nameTree = If(
@@ -1051,8 +1050,8 @@ abstract class PrepJSInterop
   }
 
   private lazy val ScalaEnumClass = getRequiredClass("scala.Enumeration")
-  private lazy val WasPublicBeforeTyperClass =
-    getRequiredClass("scala.scalajs.js.annotation.WasPublicBeforeTyper")
+  private lazy val WasPublicBeforeTyperClass = getRequiredClass(
+    "scala.scalajs.js.annotation.WasPublicBeforeTyper")
 
   /** checks if the primary constructor of the ClassDef `cldef` does not
     *  take any arguments
@@ -1107,8 +1106,7 @@ object PrepJSInterop {
     @inline def is(that: OwnerKind): Boolean =
       (this.baseKinds & that.baseKinds) != 0
 
-    @inline def isnt(that: OwnerKind): Boolean =
-      !this.is(that)
+    @inline def isnt(that: OwnerKind): Boolean = !this.is(that)
   }
 
   private object OwnerKind {

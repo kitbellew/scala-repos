@@ -66,8 +66,9 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 
   // PRIVATE DATA
 
-  private var queues =
-    Map[CallingThreadMailbox, Set[WeakReference[MessageQueue]]]()
+  private var queues = Map[
+    CallingThreadMailbox,
+    Set[WeakReference[MessageQueue]]]()
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime
@@ -164,8 +165,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator)
 
   protected[akka] override def createMailbox(
       actor: akka.actor.Cell,
-      mailboxType: MailboxType) =
-    new CallingThreadMailbox(actor, mailboxType)
+      mailboxType: MailboxType) = new CallingThreadMailbox(actor, mailboxType)
 
   protected[akka] override def shutdown() {}
 

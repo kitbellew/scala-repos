@@ -23,8 +23,7 @@ import simulacrum.typeclass
   /**
     * also commonly called join
     */
-  def flatten[A](ffa: F[F[A]]): F[A] =
-    flatMap(ffa)(fa => fa)
+  def flatten[A](ffa: F[F[A]]): F[A] = flatMap(ffa)(fa => fa)
 
   override def ap[A, B](ff: F[A => B])(fa: F[A]): F[B] =
     flatMap(ff)(f => map(fa)(f))

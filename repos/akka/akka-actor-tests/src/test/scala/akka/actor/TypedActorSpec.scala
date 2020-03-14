@@ -453,8 +453,8 @@ class TypedActorSpec
     }
 
     "be able to support implementation only typed actors with complex interfaces" in {
-      val t: Stackable1 with Stackable2 =
-        TypedActor(system).typedActorOf(TypedProps[StackedImpl]())
+      val t: Stackable1 with Stackable2 = TypedActor(system).typedActorOf(
+        TypedProps[StackedImpl]())
       t.stackable1 should ===("foo")
       t.stackable2 should ===("bar")
       mustStop(t)
@@ -614,8 +614,8 @@ class TypedActorRouterSpec
 
       val router = system.actorOf(RoundRobinGroup(routees).props(), "router")
 
-      val typedRouter =
-        TypedActor(system).typedActorOf[Foo, Foo](TypedProps[Foo](), router)
+      val typedRouter = TypedActor(system)
+        .typedActorOf[Foo, Foo](TypedProps[Foo](), router)
 
       info("got = " + typedRouter.optionPigdog())
       info("got = " + typedRouter.optionPigdog())

@@ -98,8 +98,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
         def apply(req: String): Future[String] = new Promise[String]
       }
       val underlying = ServiceFactory.const(service)
-      val spyFilter =
-        Mockito.spy(new IdleConnectionFilter(underlying, threshold))
+      val spyFilter = Mockito.spy(
+        new IdleConnectionFilter(underlying, threshold))
       assert(spyFilter.openConnections == 0)
       (1 to threshold.highWaterMark) map { _ =>
         val (c, _) = open(spyFilter)
@@ -145,8 +145,8 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
         }
       }
       val underlying = ServiceFactory.const(service)
-      val spyFilter =
-        Mockito.spy(new IdleConnectionFilter(underlying, threshold))
+      val spyFilter = Mockito.spy(
+        new IdleConnectionFilter(underlying, threshold))
 
       // Open all connections
       (1 to threshold.highWaterMark) map { _ =>

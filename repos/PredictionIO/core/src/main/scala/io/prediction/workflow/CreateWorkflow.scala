@@ -167,16 +167,17 @@ object CreateWorkflow extends Logging {
 
     if (evaluation.isEmpty) {
       val variantJson = parse(stringFromFile(wfc.engineVariant))
-      val engineFactory = if (wfc.engineFactory == "") {
-        variantJson \ "engineFactory" match {
-          case JString(s) => s
-          case _ =>
-            error(
-              "Unable to read engine factory class name from " +
-                s"${wfc.engineVariant}. Aborting.")
-            sys.exit(1)
-        }
-      } else wfc.engineFactory
+      val engineFactory =
+        if (wfc.engineFactory == "") {
+          variantJson \ "engineFactory" match {
+            case JString(s) => s
+            case _ =>
+              error(
+                "Unable to read engine factory class name from " +
+                  s"${wfc.engineVariant}. Aborting.")
+              sys.exit(1)
+          }
+        } else wfc.engineFactory
       val variantId = variantJson \ "id" match {
         case JString(s) => s
         case _ =>
@@ -212,9 +213,10 @@ object CreateWorkflow extends Logging {
 
       val trainableEngine = engine.asInstanceOf[Engine[_, _, _, _, _, _]]
 
-      val engineParams = if (wfc.engineParamsKey == "") {
-        trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
-      } else { engineFactoryObj.engineParams(wfc.engineParamsKey) }
+      val engineParams =
+        if (wfc.engineParamsKey == "") {
+          trainableEngine.jValueToEngineParams(variantJson, wfc.jsonExtractor)
+        } else { engineFactoryObj.engineParams(wfc.engineParamsKey) }
 
       val engineInstance = EngineInstance(
         id = "",
@@ -238,8 +240,8 @@ object CreateWorkflow extends Logging {
           .paramToJson(wfc.jsonExtractor, engineParams.servingParams)
       )
 
-      val engineInstanceId =
-        Storage.getMetaDataEngineInstances.insert(engineInstance)
+      val engineInstanceId = Storage.getMetaDataEngineInstances.insert(
+        engineInstance)
 
       CoreWorkflow.runTrain(
         env = pioEnvVars,

@@ -38,8 +38,8 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
       serverSet: ServerSet,
       var status: Option[EndpointStatus] = None,
       var addr: Option[InetSocketAddress] = None,
-      endpoints: mutable.Map[String, InetSocketAddress] =
-        mutable.Map.empty[String, InetSocketAddress])
+      endpoints: mutable.Map[String, InetSocketAddress] = mutable.Map
+        .empty[String, InetSocketAddress])
 
   private[this] case class Mutation(
       conf: ServerSetConf,
@@ -106,8 +106,11 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
     val conf = serverSets find { s =>
       s.client == client && s.path == path && s.shardId == shardId
     } getOrElse {
-      val serverSetConf =
-        ServerSetConf(client, path, shardId, new ServerSetImpl(client, path))
+      val serverSetConf = ServerSetConf(
+        client,
+        path,
+        shardId,
+        new ServerSetImpl(client, path))
       synchronized { serverSets += serverSetConf }
       serverSetConf
     }

@@ -32,11 +32,9 @@ final case class Flag(enabled: Boolean)
 
   type T = Flag
 
-  def switchOn: Flag =
-    if (enabled) this else Flag(true)
+  def switchOn: Flag = if (enabled) this else Flag(true)
 
-  override def merge(that: Flag): Flag =
-    if (that.enabled) that else this
+  override def merge(that: Flag): Flag = if (that.enabled) that else this
 }
 
 object FlagKey {

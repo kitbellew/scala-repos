@@ -441,8 +441,7 @@ trait LiftActor
     * up to timeout milliseconds for
     * the actor to process the message and reply.
     */
-  def !?(timeout: Long, message: Any): Box[Any] =
-    this !! (message, timeout)
+  def !?(timeout: Long, message: Any): Box[Any] = this !! (message, timeout)
 
   /**
     * Send a message to the Actor and wait for
@@ -530,22 +529,22 @@ object LiftActorJ {
   }
 
   private def buildPF(clz: Class[_]): DispatchVendor = {
-    val methods =
-      getBaseClasses(clz).flatMap(_.getDeclaredMethods.toList.filter(receiver))
+    val methods = getBaseClasses(clz).flatMap(
+      _.getDeclaredMethods.toList.filter(receiver))
 
-    val clzMap: Map[Class[_], Method] =
-      Map(methods.map { m =>
-        m.setAccessible(true) // access private and protected methods
-        m.getParameterTypes().apply(0) -> m
-      }: _*)
+    val clzMap: Map[Class[_], Method] = Map(methods.map { m =>
+      m.setAccessible(true) // access private and protected methods
+      m.getParameterTypes().apply(0) -> m
+    }: _*)
 
     new DispatchVendor(clzMap)
   }
 }
 
 private final class DispatchVendor(map: Map[Class[_], Method]) {
-  private val baseMap: Map[Class[_], Option[Method]] =
-    Map(map.map { case (k, v) => (k, Some(v)) }.toList: _*)
+  private val baseMap: Map[Class[_], Option[Method]] = Map(map.map {
+    case (k, v) => (k, Some(v))
+  }.toList: _*)
 
   def vend(actor: LiftActorJ): PartialFunction[Any, Unit] =
     new PartialFunction[Any, Unit] {

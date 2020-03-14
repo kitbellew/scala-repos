@@ -58,11 +58,13 @@ object MongoAccountServer
       with ZkAccountManagerSettings {
       val zkAccountIdPath = config[String]("zookeeper.accountId.path")
       val accounts = config[String]("mongo.collection", "accounts")
-      val deletedAccounts =
-        config[String]("mongo.deletedCollection", "deleted_accounts")
+      val deletedAccounts = config[String](
+        "mongo.deletedCollection",
+        "deleted_accounts")
       val timeout = new Timeout(config[Int]("mongo.timeout", 30000))
-      val resetTokens =
-        config[String]("mongo.resetTokenCollection", "reset_tokens")
+      val resetTokens = config[String](
+        "mongo.resetTokenCollection",
+        "reset_tokens")
       val resetTokenExpirationMinutes = config[Int]("resetTokenTimeout", 60)
     }
 

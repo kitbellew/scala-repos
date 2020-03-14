@@ -186,8 +186,8 @@ trait ResolvableStableCodeReferenceElement
           case p: ExtractorResolveProcessor =>
             if (processor.candidatesS.isEmpty) {
               //check implicit conversions
-              val expr =
-                ScalaPsiElementFactory.createExpressionWithContextFromText(
+              val expr = ScalaPsiElementFactory
+                .createExpressionWithContextFromText(
                   ref.getText,
                   ref.getContext,
                   ref)
@@ -229,12 +229,16 @@ trait ResolvableStableCodeReferenceElement
       ref: ScStableCodeReferenceElement,
       processor: BaseProcessor,
       accessibilityCheck: Boolean = true): Array[ResolveResult] = {
-    val importStmt =
-      PsiTreeUtil.getContextOfType(ref, true, classOf[ScImportStmt])
+    val importStmt = PsiTreeUtil.getContextOfType(
+      ref,
+      true,
+      classOf[ScImportStmt])
 
     if (importStmt != null) {
-      val importHolder =
-        PsiTreeUtil.getContextOfType(importStmt, true, classOf[ScImportsHolder])
+      val importHolder = PsiTreeUtil.getContextOfType(
+        importStmt,
+        true,
+        classOf[ScImportsHolder])
       if (importHolder != null) {
         importHolder.getImportStatements.takeWhile(_ != importStmt).foreach {
           case stmt: ScImportStmt =>
@@ -314,11 +318,10 @@ trait ResolvableStableCodeReferenceElement
         }
         treeWalkUp(ref, null)
       case Some(p: ScInterpolationPattern) =>
-        val expr =
-          ScalaPsiElementFactory.createExpressionWithContextFromText(
-            s"""_root_.scala.StringContext("").$refName""",
-            p,
-            ref)
+        val expr = ScalaPsiElementFactory.createExpressionWithContextFromText(
+          s"""_root_.scala.StringContext("").$refName""",
+          p,
+          ref)
         expr match {
           case ref: ResolvableReferenceExpression =>
             ref.doResolve(ref, processor, accessibilityCheck = true)

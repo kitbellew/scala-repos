@@ -44,8 +44,7 @@ class TraceBenchmark extends StdBenchAnnotations {
     Trace.letId(traceId, terminal = false) { contexts0(hole) }
 
   @Benchmark
-  def contexts2(hole: Blackhole): Unit =
-    clientId.asCurrent { contexts1(hole) }
+  def contexts2(hole: Blackhole): Unit = clientId.asCurrent { contexts1(hole) }
 
   @Benchmark
   def contexts3(hole: Blackhole): Unit =

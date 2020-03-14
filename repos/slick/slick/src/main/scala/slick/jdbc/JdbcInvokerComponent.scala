@@ -31,8 +31,8 @@ trait JdbcInvokerComponent { self: JdbcProfile =>
       _,
       compiled,
       CompiledMapping(_converter, _)) = tree
-    protected[this] val converter =
-      _converter.asInstanceOf[ResultConverter[JdbcResultConverterDomain, R]]
+    protected[this] val converter = _converter
+      .asInstanceOf[ResultConverter[JdbcResultConverterDomain, R]]
     protected[this] val CompiledStatement(_, sres: SQLBuilder.Result, _) =
       findCompiledStatement(compiled)
 

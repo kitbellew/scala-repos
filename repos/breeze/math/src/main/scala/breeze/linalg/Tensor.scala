@@ -171,8 +171,7 @@ trait TensorLike[
   }
 
   /** Applies the given function to each key in the tensor. */
-  def foreachKey[U](fn: K => U): Unit =
-    keysIterator.foreach[U](fn)
+  def foreachKey[U](fn: K => U): Unit = keysIterator.foreach[U](fn)
 
   /**
     * Applies the given function to each key and its corresponding value.
@@ -184,8 +183,7 @@ trait TensorLike[
     * Applies the given function to each value in the map (one for
     * each element of the domain, including zeros).
     */
-  def foreachValue[U](fn: (V => U)) =
-    foreachKey[U](k => fn(apply(k)))
+  def foreachValue[U](fn: (V => U)) = foreachKey[U](k => fn(apply(k)))
 
   /** Returns true if and only if the given predicate is true for all elements. */
   def forall(fn: (K, V) => Boolean): Boolean = {

@@ -26,8 +26,10 @@ class NeedsToBeAbstractTest extends AnnotatorTestBase(NeedsToBeAbstract) {
   }
 
   def testUndefinedMember() {
-    val Message =
-      NeedsToBeAbstract.message("Class", "C", ("f: Unit", "Holder.C"))
+    val Message = NeedsToBeAbstract.message(
+      "Class",
+      "C",
+      ("f: Unit", "Holder.C"))
 
     assertMatches(messages("class C { def f }")) {
       case Error("C", Message) :: Nil =>
@@ -35,8 +37,10 @@ class NeedsToBeAbstractTest extends AnnotatorTestBase(NeedsToBeAbstract) {
   }
 
   def testUndefinedInheritedMember() {
-    val Message =
-      NeedsToBeAbstract.message("Class", "C", ("f: Unit", "Holder.T"))
+    val Message = NeedsToBeAbstract.message(
+      "Class",
+      "C",
+      ("f: Unit", "Holder.T"))
 
     assertMatches(messages("trait T { def f }; class C extends T")) {
       case Error("C", Message) :: Nil =>
@@ -48,10 +52,14 @@ class NeedsToBeAbstractTest extends AnnotatorTestBase(NeedsToBeAbstract) {
   }
 
   def testNeedsToBeAbstractPlaceDiffer() {
-    val Message =
-      NeedsToBeAbstract.message("Class", "C", ("b: Unit", "Holder.B"))
-    val ReversedMessage =
-      NeedsToBeAbstract.message("Class", "C", ("a: Unit", "Holder.A"))
+    val Message = NeedsToBeAbstract.message(
+      "Class",
+      "C",
+      ("b: Unit", "Holder.B"))
+    val ReversedMessage = NeedsToBeAbstract.message(
+      "Class",
+      "C",
+      ("a: Unit", "Holder.A"))
 
     assertMatches(
       messages(

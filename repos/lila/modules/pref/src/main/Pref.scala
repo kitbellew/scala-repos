@@ -131,8 +131,10 @@ object Pref {
     val PREMOVE = 2
     val ALWAYS = 3
 
-    val choices =
-      Seq(NEVER -> "Never", ALWAYS -> "Always", PREMOVE -> "When premoving")
+    val choices = Seq(
+      NEVER -> "Never",
+      ALWAYS -> "Always",
+      PREMOVE -> "When premoving")
   }
 
   object SubmitMove {
@@ -201,8 +203,11 @@ object Pref {
     val NORMAL = 2
     val SLOW = 3
 
-    val choices =
-      Seq(NONE -> "None", FAST -> "Fast", NORMAL -> "Normal", SLOW -> "Slow")
+    val choices = Seq(
+      NONE -> "None",
+      FAST -> "Fast",
+      NORMAL -> "Normal",
+      SLOW -> "Slow")
   }
 
   object Coords {
@@ -221,8 +226,10 @@ object Pref {
     val SLOW = 1
     val ALWAYS = 2
 
-    val choices =
-      Seq(NEVER -> "Never", SLOW -> "On slow games", ALWAYS -> "Always")
+    val choices = Seq(
+      NEVER -> "Never",
+      SLOW -> "On slow games",
+      ALWAYS -> "Always")
   }
 
   object ClockTenths {
@@ -276,8 +283,10 @@ object Pref {
     val FRIEND = 2
     val ALWAYS = 3
 
-    val choices =
-      Seq(NEVER -> "Never", FRIEND -> "Only friends", ALWAYS -> "Always")
+    val choices = Seq(
+      NEVER -> "Never",
+      FRIEND -> "Only friends",
+      ALWAYS -> "Always")
   }
 
   def create(id: String) = default.copy(_id = id)

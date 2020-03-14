@@ -48,8 +48,8 @@ object WorksheetAutoRunner extends WorksheetPerFileConfig {
 
 class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
     extends ProjectComponent {
-  private val listeners =
-    ContainerUtil.createConcurrentWeakMap[Document, DocumentListener]()
+  private val listeners = ContainerUtil
+    .createConcurrentWeakMap[Document, DocumentListener]()
   private val myAlarm = new Alarm(Alarm.ThreadToUse.SWING_THREAD, project)
   private lazy val settings = ScalaProjectSettings.getInstance(project)
 

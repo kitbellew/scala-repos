@@ -160,8 +160,10 @@ case class HScan(
 ) extends Command {
   def command = Commands.HSCAN
   def toChannelBuffer = {
-    val bufs =
-      Seq(CommandBytes.HSCAN, key, StringToChannelBuffer(cursor.toString))
+    val bufs = Seq(
+      CommandBytes.HSCAN,
+      key,
+      StringToChannelBuffer(cursor.toString))
     val withCount = count match {
       case Some(count) =>
         bufs ++ Seq(Count.COUNT_CB, StringToChannelBuffer(count.toString))

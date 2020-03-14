@@ -181,8 +181,7 @@ trait RichCompilerControl
 
   def loadedFiles: List[SourceFile] = activeUnits().map(_.source)
 
-  def askReloadExistingFiles() =
-    askReloadFiles(loadedFiles)
+  def askReloadExistingFiles() = askReloadFiles(loadedFiles)
 
   def askInspectTypeAt(p: Position): Option[TypeInspectInfo] =
     askOption(inspectTypeAt(p)).flatten
@@ -492,41 +491,40 @@ class RichPresentationCompiler(
     val tree = wrapTypedTreeAt(pos)
     // This code taken mostly verbatim from Scala IDE sources. Licensed
     // under SCALA LICENSE.
-    val wannabes =
-      tree match {
-        case Import(expr, selectors) =>
-          if (expr.pos.includes(pos)) {
-            @annotation.tailrec
-            def locate(p: Position, inExpr: Tree): Symbol =
-              inExpr match {
-                case Select(qualifier, name) =>
-                  if (qualifier.pos.includes(p)) locate(p, qualifier)
-                  else inExpr.symbol
-                case tree => tree.symbol
-              }
-            List(locate(pos, expr))
-          } else {
-            selectors
-              .filter(_.namePos <= pos.point)
-              .sortBy(_.namePos)
-              .lastOption map { sel =>
-              val tpe = stabilizedType(expr)
-              List(tpe.member(sel.name), tpe.member(sel.name.toTypeName))
-            } getOrElse Nil
-          }
-        case Annotated(atp, _) =>
-          List(atp.symbol)
-        case ap @ Select(qualifier, nme.apply) =>
-          // If we would like to give user choice if to go to method apply or value
-          // like Eclipse is doing we would need to return:
-          // List(qualifier.symbol, ap.symbol)
-          List(qualifier.symbol)
-        case st if st.symbol ne null =>
-          logger.debug("using symbol of " + tree.getClass + " tree")
-          List(st.symbol)
-        case _ =>
-          noDefinitionFound(tree)
-      }
+    val wannabes = tree match {
+      case Import(expr, selectors) =>
+        if (expr.pos.includes(pos)) {
+          @annotation.tailrec
+          def locate(p: Position, inExpr: Tree): Symbol =
+            inExpr match {
+              case Select(qualifier, name) =>
+                if (qualifier.pos.includes(p)) locate(p, qualifier)
+                else inExpr.symbol
+              case tree => tree.symbol
+            }
+          List(locate(pos, expr))
+        } else {
+          selectors
+            .filter(_.namePos <= pos.point)
+            .sortBy(_.namePos)
+            .lastOption map { sel =>
+            val tpe = stabilizedType(expr)
+            List(tpe.member(sel.name), tpe.member(sel.name.toTypeName))
+          } getOrElse Nil
+        }
+      case Annotated(atp, _) =>
+        List(atp.symbol)
+      case ap @ Select(qualifier, nme.apply) =>
+        // If we would like to give user choice if to go to method apply or value
+        // like Eclipse is doing we would need to return:
+        // List(qualifier.symbol, ap.symbol)
+        List(qualifier.symbol)
+      case st if st.symbol ne null =>
+        logger.debug("using symbol of " + tree.getClass + " tree")
+        List(st.symbol)
+      case _ =>
+        noDefinitionFound(tree)
+    }
     wannabes.find(_.exists)
   }
 
@@ -608,8 +606,7 @@ class RichPresentationCompiler(
     result.get.fold(o => o, handle)
   }
 
-  def wrapReloadPosition(p: Position): Unit =
-    wrapReloadSource(p.source)
+  def wrapReloadPosition(p: Position): Unit = wrapReloadSource(p.source)
 
   def wrapReloadSource(source: SourceFile): Unit =
     wrapReloadSources(List(source))

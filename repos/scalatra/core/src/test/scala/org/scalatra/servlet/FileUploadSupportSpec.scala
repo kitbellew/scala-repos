@@ -245,12 +245,15 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
 
     "use default charset (UTF-8) for decoding form params if not excplicitly set to something else" in {
       val boundary = "XyXyXy"
-      val reqBody = ("--{boundary}\r\n" +
-        "Content-Disposition: form-data; name=\"utf8-string\"\r\n" +
-        "Content-Type: text/plain\r\n" +
-        "\r\n" +
-        "föo\r\n" +
-        "--{boundary}--\r\n").replace("{boundary}", boundary).getBytes("UTF-8")
+      val reqBody =
+        ("--{boundary}\r\n" +
+          "Content-Disposition: form-data; name=\"utf8-string\"\r\n" +
+          "Content-Type: text/plain\r\n" +
+          "\r\n" +
+          "föo\r\n" +
+          "--{boundary}--\r\n")
+          .replace("{boundary}", boundary)
+          .getBytes("UTF-8")
 
       post("/params", headers = multipartHeaders, body = reqBody) {
         header("utf8-string") must_== "föo"
@@ -258,12 +261,13 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
     }
 
     "use the charset specified in Content-Type header of a part for decoding form params" in {
-      val reqBody = ("--XyXyXy\r\n" +
-        "Content-Disposition: form-data; name=\"latin1-string\"\r\n" +
-        "Content-Type: text/plain; charset=ISO-8859-1\r\n" +
-        "\r\n" +
-        "äöööölfldflfldfdföödfödfödfåååååå\r\n" +
-        "--XyXyXy--").getBytes("ISO-8859-1")
+      val reqBody =
+        ("--XyXyXy\r\n" +
+          "Content-Disposition: form-data; name=\"latin1-string\"\r\n" +
+          "Content-Type: text/plain; charset=ISO-8859-1\r\n" +
+          "\r\n" +
+          "äöööölfldflfldfdföödfödfödfåååååå\r\n" +
+          "--XyXyXy--").getBytes("ISO-8859-1")
 
       post("/params", headers = multipartHeaders, body = reqBody) {
         header("latin1-string") must_== "äöööölfldflfldfdföödfödfödfåååååå"

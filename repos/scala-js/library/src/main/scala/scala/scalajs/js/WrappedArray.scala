@@ -43,8 +43,7 @@ final class WrappedArray[A](val array: Array[A])
     this
   }
 
-  @inline def clear(): Unit =
-    array.length = 0
+  @inline def clear(): Unit = array.length = 0
 
   @inline def result(): WrappedArray[A] = this
 
@@ -66,11 +65,9 @@ final class WrappedArray[A](val array: Array[A])
     array.splice(n, 0, elems.toSeq: _*)
   }
 
-  @inline def remove(n: Int): A =
-    array.splice(n, 1)(0)
+  @inline def remove(n: Int): A = array.splice(n, 1)(0)
 
-  @inline override def remove(n: Int, count: Int): Unit =
-    array.splice(n, count)
+  @inline override def remove(n: Int, count: Int): Unit = array.splice(n, count)
 
   @inline override def stringPrefix: String = "WrappedArray"
 

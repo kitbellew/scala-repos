@@ -17,8 +17,10 @@ class ScalaMissingWhileBodyFixer extends ScalaFixer {
       editor: Editor,
       processor: ScalaSmartEnterProcessor,
       psiElement: PsiElement): OperationPerformed = {
-    val whileStatement =
-      PsiTreeUtil.getParentOfType(psiElement, classOf[ScWhileStmt], false)
+    val whileStatement = PsiTreeUtil.getParentOfType(
+      psiElement,
+      classOf[ScWhileStmt],
+      false)
     if (whileStatement == null) return NoOperation
 
     val doc = editor.getDocument

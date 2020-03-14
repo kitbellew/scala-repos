@@ -59,8 +59,7 @@ object ArrayBuilder {
       this
     }
 
-    def clear(): Unit =
-      elems.length = 0
+    def clear(): Unit = elems.length = 0
 
     def result(): Array[T] = {
       val elemRuntimeClass =

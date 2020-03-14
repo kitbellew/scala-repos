@@ -114,14 +114,15 @@ trait ApplicationAnnotator {
                     if (expression != null)
                       for (t <- expression.getType(TypingContext.empty)) {
                         //TODO show parameter name
-                        val (expectedText, actualText) =
-                          ScTypePresentation.different(expectedType, t)
+                        val (expectedText, actualText) = ScTypePresentation
+                          .different(expectedType, t)
                         val message = ScalaBundle.message(
                           "type.mismatch.expected.actual",
                           expectedText,
                           actualText)
-                        val annotation =
-                          holder.createErrorAnnotation(expression, message)
+                        val annotation = holder.createErrorAnnotation(
+                          expression,
+                          message)
                         annotation.registerFix(ReportHighlightingErrorQuickFix)
                         addCreateFromUsagesQuickFixes(reference, holder)
                       }
@@ -161,8 +162,8 @@ trait ApplicationAnnotator {
                   case WrongTypeParameterInferred => //todo: ?
                   case ExpectedTypeMismatch       => //will be reported later
                   case ElementApplicabilityProblem(element, actual, expected) =>
-                    val (actualType, expectedType) =
-                      ScTypePresentation.different(actual, expected)
+                    val (actualType, expectedType) = ScTypePresentation
+                      .different(actual, expected)
                     holder.createErrorAnnotation(
                       element,
                       ScalaBundle.message(
@@ -211,8 +212,9 @@ trait ApplicationAnnotator {
     val ref: Option[PsiElement] = refElementOpt.flatMap(_.resolve().toOption)
     val reassignment = ref.exists(ScalaPsiUtil.isReadonly)
     if (reassignment) {
-      val annotation =
-        holder.createErrorAnnotation(reference, "Reassignment to val")
+      val annotation = holder.createErrorAnnotation(
+        reference,
+        "Reassignment to val")
       ref.get match {
         case named: PsiNamedElement
             if ScalaPsiUtil.nameContext(named).isInstanceOf[ScValue] =>
@@ -268,8 +270,9 @@ trait ApplicationAnnotator {
       case TypeMismatch(expression, expectedType) =>
         for (t <- expression.getType(TypingContext.empty)) {
           //TODO show parameter name
-          val (expectedText, actualText) =
-            ScTypePresentation.different(expectedType, t)
+          val (expectedText, actualText) = ScTypePresentation.different(
+            expectedType,
+            t)
           val message = ScalaBundle.message(
             "type.mismatch.expected.actual",
             expectedText,

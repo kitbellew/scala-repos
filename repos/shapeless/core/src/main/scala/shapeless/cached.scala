@@ -99,10 +99,9 @@ class CachedMacros(override val c: whitebox.Context)
       CachedMacros.deriving = true
 
       try {
-        val treeOpt =
-          CachedMacros.cache.asInstanceOf[List[(Type, Tree)]].collectFirst {
-            case (eTpe, eTree) if eTpe =:= tpe => eTree
-          }
+        val treeOpt = CachedMacros.cache
+          .asInstanceOf[List[(Type, Tree)]]
+          .collectFirst { case (eTpe, eTree) if eTpe =:= tpe => eTree }
 
         treeOpt.getOrElse {
           // Cached instances are derived like Lazy or Strict instances.

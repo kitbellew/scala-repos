@@ -72,8 +72,9 @@ class ConjugateGradient[T, M](
           val normSquare = maxNormValue * maxNormValue
 
           val radius = math.sqrt(xtd * xtd + dtd * (normSquare - xtx))
-          val alphaNext = if (xtd >= 0) { (normSquare - xtx) / (xtd + radius) }
-          else { (radius - xtd) / dtd }
+          val alphaNext =
+            if (xtd >= 0) { (normSquare - xtx) / (xtd + radius) }
+            else { (radius - xtd) / dtd }
 
           assert(
             !alphaNext.isNaN,

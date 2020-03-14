@@ -49,10 +49,14 @@ object Definitions {
   val HijackedClasses =
     HijackedBoxedClasses + StringClass
 
-  val AncestorsOfStringClass =
-    Set(CharSequenceClass, ComparableClass, SerializableClass)
-  val AncestorsOfHijackedNumberClasses =
-    Set(NumberClass, ComparableClass, SerializableClass)
+  val AncestorsOfStringClass = Set(
+    CharSequenceClass,
+    ComparableClass,
+    SerializableClass)
+  val AncestorsOfHijackedNumberClasses = Set(
+    NumberClass,
+    ComparableClass,
+    SerializableClass)
   val AncestorsOfBoxedBooleanClass = Set(ComparableClass, SerializableClass)
 
   val AncestorsOfHijackedClasses =
@@ -65,8 +69,10 @@ object Definitions {
   val ThrowableClass = "jl_Throwable"
 
   val PseudoArrayClass = "s_Array"
-  val AncestorsOfPseudoArrayClass =
-    Set(ObjectClass, SerializableClass, CloneableClass)
+  val AncestorsOfPseudoArrayClass = Set(
+    ObjectClass,
+    SerializableClass,
+    CloneableClass)
 
   val ExportedConstructorsName = "__exportedInits"
 
@@ -192,8 +198,7 @@ object Definitions {
 
   /* Common predicates on encoded names */
 
-  def isConstructorName(name: String): Boolean =
-    name.startsWith("init___")
+  def isConstructorName(name: String): Boolean = name.startsWith("init___")
 
   def isReflProxyName(name: String): Boolean =
     name.endsWith("__") && !isConstructorName(name)

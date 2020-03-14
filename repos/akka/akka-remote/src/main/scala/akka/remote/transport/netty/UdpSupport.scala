@@ -52,8 +52,9 @@ private[remote] trait UdpHandlers extends CommonHandlers {
             e.getMessage.asInstanceOf[ChannelBuffer])
         } else {
           val listener = transport.udpConnectionTable.get(inetSocketAddress)
-          val bytes: Array[Byte] =
-            e.getMessage.asInstanceOf[ChannelBuffer].array()
+          val bytes: Array[Byte] = e.getMessage
+            .asInstanceOf[ChannelBuffer]
+            .array()
           if (bytes.length > 0)
             listener notify InboundPayload(ByteString(bytes))
         }
@@ -78,8 +79,7 @@ private[remote] class UdpServerHandler(
   override def initUdp(
       channel: Channel,
       remoteSocketAddress: SocketAddress,
-      msg: ChannelBuffer): Unit =
-    initInbound(channel, remoteSocketAddress, msg)
+      msg: ChannelBuffer): Unit = initInbound(channel, remoteSocketAddress, msg)
 }
 
 /**

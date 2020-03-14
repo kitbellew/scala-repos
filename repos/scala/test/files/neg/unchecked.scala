@@ -11,8 +11,10 @@ object Test {
   case class ArrayApply[T](x: Exp[Array[T]], i: Exp[Int], j: Exp[_])
       extends Def[T]
 
-  val IntArrayApply =
-    ArrayApply[Int](new Exp[Array[Int]], new Exp[Int], new Exp[Int])
+  val IntArrayApply = ArrayApply[Int](
+    new Exp[Array[Int]],
+    new Exp[Int],
+    new Exp[Int])
 
   def f(x: Any) =
     x match {

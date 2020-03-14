@@ -268,8 +268,8 @@ private object JNotifyFileWatchService {
                     }
                     .getOrElse(libs)
                 })
-              val fieldSysPath =
-                classOf[ClassLoader].getDeclaredField("sys_paths")
+              val fieldSysPath = classOf[ClassLoader].getDeclaredField(
+                "sys_paths")
               fieldSysPath.setAccessible(true)
               fieldSysPath.set(null, null)
 
@@ -282,18 +282,19 @@ private object JNotifyFileWatchService {
               loader
             }
 
-          val jnotifyClass =
-            classloader.loadClass("net.contentobjects.jnotify.JNotify")
-          val jnotifyListenerClass =
-            classloader.loadClass("net.contentobjects.jnotify.JNotifyListener")
+          val jnotifyClass = classloader.loadClass(
+            "net.contentobjects.jnotify.JNotify")
+          val jnotifyListenerClass = classloader.loadClass(
+            "net.contentobjects.jnotify.JNotifyListener")
           val addWatchMethod = jnotifyClass.getMethod(
             "addWatch",
             classOf[String],
             classOf[Int],
             classOf[Boolean],
             jnotifyListenerClass)
-          val removeWatchMethod =
-            jnotifyClass.getMethod("removeWatch", classOf[Int])
+          val removeWatchMethod = jnotifyClass.getMethod(
+            "removeWatch",
+            classOf[Int])
 
           val d = new JNotifyDelegate(
             classloader,

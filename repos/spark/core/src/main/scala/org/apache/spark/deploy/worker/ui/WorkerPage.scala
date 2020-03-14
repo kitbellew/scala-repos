@@ -37,38 +37,56 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
   private val workerEndpoint = parent.worker.self
 
   override def renderJson(request: HttpServletRequest): JValue = {
-    val workerState =
-      workerEndpoint.askWithRetry[WorkerStateResponse](RequestWorkerState)
+    val workerState = workerEndpoint.askWithRetry[WorkerStateResponse](
+      RequestWorkerState)
     JsonProtocol.writeWorkerState(workerState)
   }
 
   def render(request: HttpServletRequest): Seq[Node] = {
-    val workerState =
-      workerEndpoint.askWithRetry[WorkerStateResponse](RequestWorkerState)
+    val workerState = workerEndpoint.askWithRetry[WorkerStateResponse](
+      RequestWorkerState)
 
-    val executorHeaders =
-      Seq("ExecutorID", "Cores", "State", "Memory", "Job Details", "Logs")
+    val executorHeaders = Seq(
+      "ExecutorID",
+      "Cores",
+      "State",
+      "Memory",
+      "Job Details",
+      "Logs")
     val runningExecutors = workerState.executors
-    val runningExecutorTable =
-      UIUtils.listingTable(executorHeaders, executorRow, runningExecutors)
+    val runningExecutorTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      runningExecutors)
     val finishedExecutors = workerState.finishedExecutors
-    val finishedExecutorTable =
-      UIUtils.listingTable(executorHeaders, executorRow, finishedExecutors)
+    val finishedExecutorTable = UIUtils.listingTable(
+      executorHeaders,
+      executorRow,
+      finishedExecutors)
 
-    val driverHeaders =
-      Seq("DriverID", "Main Class", "State", "Cores", "Memory", "Logs", "Notes")
+    val driverHeaders = Seq(
+      "DriverID",
+      "Main Class",
+      "State",
+      "Cores",
+      "Memory",
+      "Logs",
+      "Notes")
     val runningDrivers = workerState.drivers.sortBy(_.driverId).reverse
-    val runningDriverTable =
-      UIUtils.listingTable(driverHeaders, driverRow, runningDrivers)
+    val runningDriverTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      runningDrivers)
     val finishedDrivers = workerState.finishedDrivers.sortBy(_.driverId).reverse
-    val finishedDriverTable =
-      UIUtils.listingTable(driverHeaders, driverRow, finishedDrivers)
+    val finishedDriverTable = UIUtils.listingTable(
+      driverHeaders,
+      driverRow,
+      finishedDrivers)
 
     // For now we only show driver information if the user has submitted drivers to the cluster.
     // This is until we integrate the notion of drivers and applications in the UI.
 
-    val content =
-      <div class="row-fluid"> <!-- Worker Details -->
+    val content = <div class="row-fluid"> <!-- Worker Details -->
         <div class="span12">
           <ul class="unstyled">
             <li><strong>ID:</strong> {workerState.workerId}</li>
@@ -76,11 +94,11 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
               Master URL:</strong> {workerState.masterUrl}
             </li>
             <li><strong>Cores:</strong> {workerState.cores} ({
-        workerState.coresUsed
-      } Used)</li>
+      workerState.coresUsed
+    } Used)</li>
             <li><strong>Memory:</strong> {
-        Utils.megabytesToString(workerState.memory)
-      }
+      Utils.megabytesToString(workerState.memory)
+    }
               ({Utils.megabytesToString(workerState.memoryUsed)} Used)</li>
           </ul>
           <p><a href={workerState.masterWebUiUrl}>Back to Master</a></p>
@@ -91,23 +109,23 @@ private[ui] class WorkerPage(parent: WorkerWebUI) extends WebUIPage("") {
           <h4> Running Executors ({runningExecutors.size}) </h4>
           {runningExecutorTable}
           {
-        if (runningDrivers.nonEmpty) {
-          <h4> Running Drivers ({runningDrivers.size}) </h4> ++
-            runningDriverTable
-        }
+      if (runningDrivers.nonEmpty) {
+        <h4> Running Drivers ({runningDrivers.size}) </h4> ++
+          runningDriverTable
       }
+    }
           {
-        if (finishedExecutors.nonEmpty) {
-          <h4>Finished Executors ({finishedExecutors.size}) </h4> ++
-            finishedExecutorTable
-        }
+      if (finishedExecutors.nonEmpty) {
+        <h4>Finished Executors ({finishedExecutors.size}) </h4> ++
+          finishedExecutorTable
       }
+    }
           {
-        if (finishedDrivers.nonEmpty) {
-          <h4> Finished Drivers ({finishedDrivers.size}) </h4> ++
-            finishedDriverTable
-        }
+      if (finishedDrivers.nonEmpty) {
+        <h4> Finished Drivers ({finishedDrivers.size}) </h4> ++
+          finishedDriverTable
       }
+    }
         </div>
       </div>;
     UIUtils.basicSparkPage(

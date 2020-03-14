@@ -61,8 +61,8 @@ class ScalaMoveClassesOrPackagesHandler
       elements: Array[PsiElement],
       targetContainer: PsiElement): Boolean = {
     //sort of hack to save destinations here, need to be sure that it is called
-    val scalaElements =
-      elements.filter(_.getLanguage.isInstanceOf[ScalaLanguage])
+    val scalaElements = elements.filter(
+      _.getLanguage.isInstanceOf[ScalaLanguage])
     targetContainer match {
       case dir: PsiDirectory =>
         scalaElements.foreach(ScalaMoveUtil.saveMoveDestination(_, dir))
@@ -88,8 +88,8 @@ class ScalaMoveClassesOrPackagesHandler
     val initialTargetDirectory: PsiDirectory = MoveClassesOrPackagesImpl
       .getInitialTargetDirectory(initialTargetElement, adjustedElements)
     val isTargetDirectoryFixed: Boolean = initialTargetDirectory == null
-    val searchTextOccurences: Boolean =
-      adjustedElements.exists(TextOccurrencesUtil.isSearchTextOccurencesEnabled)
+    val searchTextOccurences: Boolean = adjustedElements.exists(
+      TextOccurrencesUtil.isSearchTextOccurencesEnabled)
     val moveDialog: MoveClassesOrPackagesDialog =
       new MoveClassesOrPackagesDialog(
         project,

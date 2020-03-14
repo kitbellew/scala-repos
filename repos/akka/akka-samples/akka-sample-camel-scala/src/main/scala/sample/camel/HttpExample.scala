@@ -16,10 +16,10 @@ object HttpExample {
   def main(args: Array[String]): Unit = {
     val system = ActorSystem("some-system")
     val httpTransformer = system.actorOf(Props[HttpTransformer])
-    val httpProducer =
-      system.actorOf(Props(classOf[HttpProducer], httpTransformer))
-    val httpConsumer =
-      system.actorOf(Props(classOf[HttpConsumer], httpProducer))
+    val httpProducer = system.actorOf(
+      Props(classOf[HttpProducer], httpTransformer))
+    val httpConsumer = system.actorOf(
+      Props(classOf[HttpConsumer], httpProducer))
   }
 
   class HttpConsumer(producer: ActorRef) extends Consumer {

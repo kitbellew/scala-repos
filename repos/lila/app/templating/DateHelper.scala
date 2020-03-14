@@ -53,8 +53,7 @@ trait DateHelper { self: I18nHelper =>
   def showDate(date: DateTime)(implicit ctx: Context): String =
     dateFormatter(ctx) print date
 
-  def showEnglishDate(date: DateTime): String =
-    englishDateFormatter print date
+  def showEnglishDate(date: DateTime): String = englishDateFormatter print date
 
   def semanticDate(date: DateTime)(implicit ctx: Context) =
     Html { s"""<time datetime="${isoDate(date)}">${showDate(date)}</time>""" }

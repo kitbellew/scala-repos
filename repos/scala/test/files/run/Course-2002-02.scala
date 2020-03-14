@@ -89,8 +89,7 @@ object M3 {
 
 object M4 {
   def sum(f: Int => Double): (Int, Int) => Double = {
-    def sumF(a: Int, b: Int): Double =
-      if (a > b) 0 else f(a) + sumF(a + 1, b);
+    def sumF(a: Int, b: Int): Double = if (a > b) 0 else f(a) + sumF(a + 1, b);
     sumF
   }
 
@@ -386,8 +385,7 @@ object ME {
 //############################################################################
 
 object MF {
-  def fib(x: Int): Int =
-    if (x <= 1) x else fib(x - 2) + fib(x - 1)
+  def fib(x: Int): Int = if (x <= 1) x else fib(x - 2) + fib(x - 1)
 
   Console.println("fib(0) = " + fib(0))
   Console.println("fib(1) = " + fib(1))

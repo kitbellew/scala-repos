@@ -131,8 +131,7 @@ trait ArrayInstances0 {
   type NI0[A] = NoImplicit[VectorSpace[Array[A], A]]
 
   implicit def ArrayModule[@sp(Int, Long, Float, Double) A: NI0: ClassTag: Ring]
-      : Module[Array[A], A] =
-    new ArrayModule[A]
+      : Module[Array[A], A] = new ArrayModule[A]
 }
 
 trait ArrayInstances1 extends ArrayInstances0 {
@@ -145,17 +144,14 @@ trait ArrayInstances1 extends ArrayInstances0 {
     Double) A: NI1: ClassTag: Field]: VectorSpace[Array[A], A] =
     new ArrayVectorSpace[A]
 
-  implicit def ArrayEq[@sp A: Eq]: Eq[Array[A]] =
-    new ArrayEq[A]
+  implicit def ArrayEq[@sp A: Eq]: Eq[Array[A]] = new ArrayEq[A]
 }
 
 trait ArrayInstances2 extends ArrayInstances1 {
   implicit def ArrayInnerProductSpace[@sp(Float, Double) A: Field: ClassTag]
-      : InnerProductSpace[Array[A], A] =
-    new ArrayInnerProductSpace[A]
+      : InnerProductSpace[Array[A], A] = new ArrayInnerProductSpace[A]
 
-  implicit def ArrayOrder[@sp A: Order]: Order[Array[A]] =
-    new ArrayOrder[A]
+  implicit def ArrayOrder[@sp A: Order]: Order[Array[A]] = new ArrayOrder[A]
 }
 
 trait ArrayInstances3 extends ArrayInstances2 {

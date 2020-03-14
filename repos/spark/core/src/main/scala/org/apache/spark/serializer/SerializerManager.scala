@@ -46,8 +46,8 @@ private[spark] class SerializerManager(
     primitiveClassTags ++ arrayClassTags
   }
 
-  private[this] val stringClassTag: ClassTag[String] =
-    implicitly[ClassTag[String]]
+  private[this] val stringClassTag
+      : ClassTag[String] = implicitly[ClassTag[String]]
 
   private def canUseKryo(ct: ClassTag[_]): Boolean = {
     primitiveAndPrimitiveArrayClassTags.contains(ct) || ct == stringClassTag

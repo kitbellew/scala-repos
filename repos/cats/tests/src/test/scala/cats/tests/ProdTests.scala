@@ -7,8 +7,8 @@ import cats.laws.discipline.arbitrary._
 import cats.laws.discipline.eq._
 
 class ProdTests extends CatsSuite {
-  implicit val iso =
-    CartesianTests.Isomorphisms.invariant[Prod[Option, List, ?]]
+  implicit val iso = CartesianTests.Isomorphisms
+    .invariant[Prod[Option, List, ?]]
   checkAll(
     "Prod[Option, List, Int]",
     CartesianTests[Lambda[X => Prod[Option, List, X]]].cartesian[Int, Int, Int])
@@ -50,8 +50,8 @@ class ProdTests extends CatsSuite {
 
   {
     implicit val apply = ListWrapper.applyInstance
-    implicit val iso =
-      CartesianTests.Isomorphisms.invariant[Prod[ListWrapper, ListWrapper, ?]]
+    implicit val iso = CartesianTests.Isomorphisms
+      .invariant[Prod[ListWrapper, ListWrapper, ?]]
     checkAll(
       "Prod[ListWrapper, ListWrapper, ?]",
       ApplyTests[Prod[ListWrapper, ListWrapper, ?]].apply[Int, Int, Int])

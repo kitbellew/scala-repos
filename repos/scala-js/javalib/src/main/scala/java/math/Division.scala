@@ -84,10 +84,9 @@ private[math] object Division {
       aLength: Int,
       b: Array[Int],
       bLength: Int): Array[Int] = {
-    val normA =
-      new Array[Int](
-        aLength + 1
-      ) // the normalized dividend an extra byte is needed for correct shift
+    val normA = new Array[Int](
+      aLength + 1
+    ) // the normalized dividend an extra byte is needed for correct shift
     val normB = new Array[Int](bLength + 1) // the normalized divisor
     val normBLength = bLength
     /*
@@ -424,8 +423,8 @@ private[math] object Division {
       // Optimization for small operands
       // (op2.bitLength() < 32) implies by INV (op1.bitLength() < 32)
       if ((op2.numberLength == 1) && (op2.digits(0) > 0)) {
-        op2 =
-          BigInteger.valueOf(Division.gcdBinary(op1.intValue(), op2.intValue()))
+        op2 = BigInteger.valueOf(
+          Division.gcdBinary(op1.intValue(), op2.intValue()))
       } else {
         // Implements one step of the Euclidean algorithm
         // To reduce one operand if it's much smaller than the other one
@@ -496,8 +495,7 @@ private[math] object Division {
     if (!(x.numberLength < fd || x.bitLength() <= n)) {
       leadingZeros = 32 - (n & 31)
       x.numberLength = fd + 1
-      val shift =
-        if (leadingZeros < 32) -1 >>> leadingZeros else 0
+      val shift = if (leadingZeros < 32) -1 >>> leadingZeros else 0
       x.digits(fd) &= shift
       x.cutOffLeadingZeroes()
     }
@@ -969,8 +967,11 @@ private[math] object Division {
       var innnerCarry: Long = 0
       val m = Multiplication.unsignedMultAddAdd(res(i), n2, 0, 0).toInt
       for (j <- 0 until modulusLen) {
-        innnerCarry =
-          unsignedMultAddAdd(m, modulusDigits(j), res(i + j), innnerCarry.toInt)
+        innnerCarry = unsignedMultAddAdd(
+          m,
+          modulusDigits(j),
+          res(i + j),
+          innnerCarry.toInt)
         res(i + j) = innnerCarry.toInt
         innnerCarry >>>= 32
       }

@@ -57,14 +57,13 @@ trait Loc[T] {
     * By default, this lazy val looks for the MenuCssClass LocParam and
     * uses it.
     */
-  protected lazy val cacheCssClassForMenuItem: Box[() => String] =
-    allParams
-      .flatMap {
-        case a: Loc.MenuCssClass => List(a)
-        case _                   => Nil
-      }
-      .headOption
-      .map(_.cssClass.func)
+  protected lazy val cacheCssClassForMenuItem: Box[() => String] = allParams
+    .flatMap {
+      case a: Loc.MenuCssClass => List(a)
+      case _                   => Nil
+    }
+    .headOption
+    .map(_.cssClass.func)
 
   /**
     * Given a value calculate the HREF to this item
@@ -116,8 +115,8 @@ trait Loc[T] {
   protected def appendQueryParameters(in: String, what: Box[T]) =
     Helpers.appendQueryParameters(in, queryParameters(what))
 
-  private lazy val addlQueryParams: List[() => List[(String, String)]] =
-    params.collect { case lp: Loc.QueryParameters => lp.f }
+  private lazy val addlQueryParams: List[() => List[(String, String)]] = params
+    .collect { case lp: Loc.QueryParameters => lp.f }
 
   private lazy val calcQueryParams: List[Box[T] => List[(String, String)]] =
     params.collect { case lp: Loc.LocQueryParameters[T] => lp.f }
@@ -177,8 +176,8 @@ trait Loc[T] {
   override def toString =
     "Loc(" + name + ", " + link + ", " + text + ", " + params + ")"
 
-  type LocRewrite =
-    Box[PartialFunction[RewriteRequest, (RewriteResponse, Box[T])]]
+  type LocRewrite = Box[
+    PartialFunction[RewriteRequest, (RewriteResponse, Box[T])]]
 
   def rewrite: LocRewrite = Empty
 
@@ -267,11 +266,10 @@ trait Loc[T] {
   /**
     * The snippets provided by `LocParam`s
     */
-  lazy val calcSnippets: SnippetTest =
-    allParams
-      .collect { case v: Loc.ValueSnippets[T] => v.snippets }
-      .reduceLeftOption(_ orElse _)
-      .getOrElse(Map.empty)
+  lazy val calcSnippets: SnippetTest = allParams
+    .collect { case v: Loc.ValueSnippets[T] => v.snippets }
+    .reduceLeftOption(_ orElse _)
+    .getOrElse(Map.empty)
 
   /**
     * Look up a snippet by name, taking into account the current
@@ -370,11 +368,10 @@ trait Loc[T] {
   /**
     * The first Loc.Title in the param list.
     */
-  lazy val paramTitle: Box[T => NodeSeq] =
-    allParams.flatMap {
-      case Loc.Title(f) => Some(f);
-      case _            => None
-    }.headOption
+  lazy val paramTitle: Box[T => NodeSeq] = allParams.flatMap {
+    case Loc.Title(f) => Some(f);
+    case _            => None
+  }.headOption
 
   /**
     * The title to be displayed for the value associated with this Loc.
@@ -489,11 +486,10 @@ trait Loc[T] {
 
   def hidden = _hidden
 
-  private lazy val groupSet: Set[String] =
-    Set(allParams.flatMap {
-      case s: Loc.LocGroup => s.group
-      case _               => Nil
-    }: _*)
+  private lazy val groupSet: Set[String] = Set(allParams.flatMap {
+    case s: Loc.LocGroup => s.group
+    case _               => Nil
+  }: _*)
 
   def inGroup_?(group: String): Boolean = groupSet.contains(group)
 

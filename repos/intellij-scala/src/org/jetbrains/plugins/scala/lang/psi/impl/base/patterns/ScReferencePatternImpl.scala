@@ -73,11 +73,10 @@ class ScReferencePatternImpl private (
   override def getNavigationElement =
     getContainingFile match {
       case sf: ScalaFile if sf.isCompiled => {
-        val parent =
-          PsiTreeUtil.getParentOfType(
-            this,
-            classOf[ScMember]
-          ) // there is no complicated pattern-based declarations in decompiled files
+        val parent = PsiTreeUtil.getParentOfType(
+          this,
+          classOf[ScMember]
+        ) // there is no complicated pattern-based declarations in decompiled files
         if (parent != null) {
           val navElem = parent.getNavigationElement
           navElem match {
@@ -126,8 +125,8 @@ class ScReferencePatternImpl private (
       case x =>
         // val (a, b) = t
         // val (_, b) = t
-        val anonymousRefPattern =
-          ScalaPsiElementFactory.createWildcardPattern(getManager)
+        val anonymousRefPattern = ScalaPsiElementFactory.createWildcardPattern(
+          getManager)
         replace(anonymousRefPattern)
     }
   }

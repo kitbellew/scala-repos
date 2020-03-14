@@ -144,11 +144,13 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
   }
 
   // the URL might be wrapped in simple quotes
-  lazy val singleQuotedPath =
-    fullUrl(elem('\'') ~> pathWith('"') <~ elem('\''), "'")
+  lazy val singleQuotedPath = fullUrl(
+    elem('\'') ~> pathWith('"') <~ elem('\''),
+    "'")
   // the URL might be wrapped in double quotes
-  lazy val doubleQuotedPath =
-    fullUrl(elem('\"') ~> pathWith('\'') <~ elem('\"'), "\"")
+  lazy val doubleQuotedPath = fullUrl(
+    elem('\"') ~> pathWith('\'') <~ elem('\"'),
+    "\"")
   // the URL might not be wrapped at all
   lazy val quotelessPath = fullUrl(path, "")
 
@@ -169,13 +171,12 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
         Full(updatedCss)
 
       case Success(_, remaining) =>
-        val remainingString =
-          remaining.source
-            .subSequence(
-              remaining.offset,
-              remaining.source.length
-            )
-            .toString
+        val remainingString = remaining.source
+          .subSequence(
+            remaining.offset,
+            remaining.source.length
+          )
+          .toString
 
         common.Failure(
           s"Parser did not consume all input. Parser error? Unconsumed:\n$remainingString")

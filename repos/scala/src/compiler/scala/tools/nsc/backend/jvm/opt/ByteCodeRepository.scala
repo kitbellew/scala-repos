@@ -110,13 +110,13 @@ class ByteCodeRepository[BT <: BTypes](
       val r = parsedClasses.get(internalName) match {
         case Some(l @ Left(_)) => l
         case Some(r @ Right((classNode, _))) =>
-          parsedClasses(internalName) =
-            Right((classNode, lruCounter.incrementAndGet()))
+          parsedClasses(internalName) = Right(
+            (classNode, lruCounter.incrementAndGet()))
           r
         case None =>
           limitCacheSize()
-          val res =
-            parseClass(internalName).map((_, lruCounter.incrementAndGet()))
+          val res = parseClass(internalName).map(
+            (_, lruCounter.incrementAndGet()))
           parsedClasses(internalName) = res
           res
       }

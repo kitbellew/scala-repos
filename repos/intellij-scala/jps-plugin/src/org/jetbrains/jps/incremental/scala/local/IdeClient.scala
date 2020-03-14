@@ -84,8 +84,8 @@ abstract class IdeClient(
   def debug(text: String) { ScalaBuilder.Log.info(text) }
 
   def deleted(module: File) {
-    val paths =
-      util.Collections.singletonList(FileUtil.toCanonicalPath(module.getPath))
+    val paths = util.Collections.singletonList(
+      FileUtil.toCanonicalPath(module.getPath))
     context.processMessage(new FileDeletedEvent(paths))
   }
 

@@ -160,8 +160,7 @@ object Util {
     val init = keywords.map(tn => '"' + tn + '"').mkString("Set(", ", ", ")")
     val ObjectName = "ScalaKeywords"
     val PackageName = "sbt"
-    val keywordsSrc =
-      """package %s
+    val keywordsSrc = """package %s
 object %s {
 	val values = %s
 }""".format(PackageName, ObjectName, init)

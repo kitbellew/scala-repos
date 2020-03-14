@@ -60,31 +60,24 @@ class TimerBenchmark extends StdBenchAnnotations {
     timer.doAt(wayLater) { () }
 
   @Benchmark
-  def scheduleOnceBaseline: TimerTask =
-    scheduleOnce(baseline)
+  def scheduleOnceBaseline: TimerTask = scheduleOnce(baseline)
 
   @Benchmark
-  def scheduleOnceJavaUtil: TimerTask =
-    scheduleOnce(javaUtil)
+  def scheduleOnceJavaUtil: TimerTask = scheduleOnce(javaUtil)
 
   @Benchmark
-  def scheduleOnceExecutor: TimerTask =
-    scheduleOnce(executor)
+  def scheduleOnceExecutor: TimerTask = scheduleOnce(executor)
 
   @Benchmark
-  def schedulePeriodicBaseline: TimerTask =
-    schedulePeriodic(baseline)
+  def schedulePeriodicBaseline: TimerTask = schedulePeriodic(baseline)
 
   @Benchmark
-  def schedulePeriodicJavaUtil: TimerTask =
-    schedulePeriodic(javaUtil)
+  def schedulePeriodicJavaUtil: TimerTask = schedulePeriodic(javaUtil)
 
   @Benchmark
-  def schedulePeriodicExecutor: TimerTask =
-    schedulePeriodic(executor)
+  def schedulePeriodicExecutor: TimerTask = schedulePeriodic(executor)
 
   @Benchmark
-  def doAtBaseline(): Future[Unit] =
-    doAt(baseline)
+  def doAtBaseline(): Future[Unit] = doAt(baseline)
 
 }

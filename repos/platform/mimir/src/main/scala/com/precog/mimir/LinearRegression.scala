@@ -418,8 +418,9 @@ trait LinearRegressionLibModule[M[+_]]
           jtype: JType): Table = {
         val cpaths = Schema.cpath(jtype)
 
-        val tree =
-          CPath.makeTree(cpaths, Range(1, coeffs.beta.length).toSeq :+ 0)
+        val tree = CPath.makeTree(
+          cpaths,
+          Range(1, coeffs.beta.length).toSeq :+ 0)
 
         val spec = TransSpec.concatChildren(tree)
 
@@ -476,8 +477,8 @@ trait LinearRegressionLibModule[M[+_]]
           if (errors.tss == 0) 1 else 1 - (errors.rss / errors.tss)
         }
         val rSquaredTable0 = Table.fromRValues(Stream(CNum(rSquared)))
-        val rSquaredTable =
-          rSquaredTable0.transform(trans.WrapObject(Leaf(Source), "RSquared"))
+        val rSquaredTable = rSquaredTable0.transform(
+          trans.WrapObject(Leaf(Source), "RSquared"))
 
         val result2 = coeffsTable.cross(rSquaredTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
@@ -486,8 +487,8 @@ trait LinearRegressionLibModule[M[+_]]
         val result = result1.cross(stdErrorTable)(
           InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
 
-        val valueTable =
-          result.transform(trans.WrapObject(Leaf(Source), paths.Value.name))
+        val valueTable = result.transform(
+          trans.WrapObject(Leaf(Source), paths.Value.name))
         val keyTable = Table.constEmptyArray.transform(
           trans.WrapObject(Leaf(Source), paths.Key.name))
 
@@ -504,8 +505,9 @@ trait LinearRegressionLibModule[M[+_]]
           val xsSpec = trans.DeepMap1(xsSpec0, cf.util.CoerceToDouble)
 
           // `arraySpec` generates the schema in which the Coefficients will be returned
-          val arraySpec =
-            InnerArrayConcat(trans.WrapArray(xsSpec), trans.WrapArray(ySpec))
+          val arraySpec = InnerArrayConcat(
+            trans.WrapArray(xsSpec),
+            trans.WrapArray(ySpec))
           val valueSpec = DerefObjectStatic(TransSpec1.Id, paths.Value)
           val table = table0.transform(valueSpec).transform(arraySpec)
 
@@ -575,13 +577,16 @@ trait LinearRegressionLibModule[M[+_]]
     object LinearPrediction
         extends Morphism2(Stats2Namespace, "predictLinear")
         with LinearPredictionBase {
-      val tpe =
-        BinaryOperationType(JType.JUniverseT, JObjectUnfixedT, JObjectUnfixedT)
+      val tpe = BinaryOperationType(
+        JType.JUniverseT,
+        JObjectUnfixedT,
+        JObjectUnfixedT)
 
       override val idPolicy = IdentityPolicy.Retain.Merge
 
-      lazy val alignment =
-        MorphismAlignment.Custom(IdentityPolicy.Retain.Cross, alignCustom _)
+      lazy val alignment = MorphismAlignment.Custom(
+        IdentityPolicy.Retain.Cross,
+        alignCustom _)
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
         val spec = liftToValues(

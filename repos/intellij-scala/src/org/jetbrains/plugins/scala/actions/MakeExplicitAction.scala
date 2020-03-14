@@ -55,8 +55,8 @@ class MakeExplicitAction
     if (index < 0) {
       throw new RuntimeException("Index = " + index + " is less than zero.")
     }
-    val itemBounds: Rectangle =
-      GoToImplicitConversionAction.getList.getCellBounds(index, index)
+    val itemBounds: Rectangle = GoToImplicitConversionAction.getList
+      .getCellBounds(index, index)
     if (itemBounds == null) {
       throw new RuntimeException("No bounds for index = " + index + ".")
     }

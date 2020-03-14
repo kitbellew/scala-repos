@@ -159,10 +159,9 @@ object SerializationTestDefns {
   object Functor extends Functor0 {
     def apply[F[_]](implicit f: Lazy[Functor[F]]): Functor[F] = f.value
 
-    implicit val idFunctor: Functor[Id] =
-      new Functor[Id] {
-        def map[A, B](a: A)(f: A => B): B = f(a)
-      }
+    implicit val idFunctor: Functor[Id] = new Functor[Id] {
+      def map[A, B](a: A)(f: A => B): B = f(a)
+    }
 
     // Induction step for products
     implicit def hcons[F[_]](
@@ -1143,8 +1142,8 @@ class SerializationTests {
     val l6 = optic[Tree[Int]][Node[Int]].l[Node[Int]].r[Leaf[Int]].t
     val l7 = l3 ~ l4
     val l8 = optic.hlistSelectLens[Int :: String :: Boolean :: HNil, String]
-    val l9 =
-      optic.coproductSelectPrism[Int :+: String :+: Boolean :+: CNil, String]
+    val l9 = optic
+      .coproductSelectPrism[Int :+: String :+: Boolean :+: CNil, String]
     val l10 = optic.hlistNthLens[Int :: String :: Boolean :: HNil, _1]
     val l11 = optic
       .recordLens[Record.`'foo -> Int, 'bar -> String, 'baz -> Boolean`.T]('bar)

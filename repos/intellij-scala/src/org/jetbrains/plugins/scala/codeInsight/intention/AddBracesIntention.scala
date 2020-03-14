@@ -78,10 +78,10 @@ class AddBracesIntention extends PsiElementBaseIntentionAction {
       case _ => None
     }
     val oneLinerExpr: Option[ScExpression] = expr.filter { x =>
-      val startLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getStartOffset)
-      val endLine =
-        editor.getDocument.getLineNumber(x.getTextRange.getEndOffset)
+      val startLine = editor.getDocument.getLineNumber(
+        x.getTextRange.getStartOffset)
+      val endLine = editor.getDocument.getLineNumber(
+        x.getTextRange.getEndOffset)
       val isBlock = x match {
         case _: ScBlockExpr => true
         case _              => false

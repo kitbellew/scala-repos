@@ -42,17 +42,13 @@ object UnitOrderedBuf {
 
       override def compareBinary(
           inputStreamA: ctx.TermName,
-          inputStreamB: ctx.TermName) =
-        q"0"
+          inputStreamB: ctx.TermName) = q"0"
 
-      override def hash(element: ctx.TermName): ctx.Tree =
-        q"0"
+      override def hash(element: ctx.TermName): ctx.Tree = q"0"
 
-      override def put(inputStream: ctx.TermName, element: ctx.TermName) =
-        q"()"
+      override def put(inputStream: ctx.TermName, element: ctx.TermName) = q"()"
 
-      override def get(inputStreamA: ctx.TermName): ctx.Tree =
-        q"()"
+      override def get(inputStreamA: ctx.TermName): ctx.Tree = q"()"
 
       def compare(elementA: ctx.TermName, elementB: ctx.TermName): ctx.Tree =
         q"0"
@@ -60,8 +56,7 @@ object UnitOrderedBuf {
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         ConstantLengthCalculation(c)(0)
 
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        Map.empty
+      override val lazyOuterVariables: Map[String, ctx.Tree] = Map.empty
     }
   }
 }

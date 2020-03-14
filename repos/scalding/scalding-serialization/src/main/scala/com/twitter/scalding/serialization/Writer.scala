@@ -31,8 +31,7 @@ object Writer {
 
   def write[@specialized(Boolean, Byte, Short, Int, Long, Float, Double) T](
       os: OutputStream,
-      t: T)(implicit w: Writer[T]): Unit =
-    w.write(os, t)
+      t: T)(implicit w: Writer[T]): Unit = w.write(os, t)
   /*
    * Instances below
    */

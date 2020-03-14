@@ -32,12 +32,12 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     def testPrefixComparison(s1: String, s2: String): Unit = {
       val utf8string1 = UTF8String.fromString(s1)
       val utf8string2 = UTF8String.fromString(s2)
-      val s1Prefix =
-        PrefixComparators.StringPrefixComparator.computePrefix(utf8string1)
-      val s2Prefix =
-        PrefixComparators.StringPrefixComparator.computePrefix(utf8string2)
-      val prefixComparisonResult =
-        PrefixComparators.STRING.compare(s1Prefix, s2Prefix)
+      val s1Prefix = PrefixComparators.StringPrefixComparator.computePrefix(
+        utf8string1)
+      val s2Prefix = PrefixComparators.StringPrefixComparator.computePrefix(
+        utf8string2)
+      val prefixComparisonResult = PrefixComparators.STRING
+        .compare(s1Prefix, s2Prefix)
 
       val cmp = UnsignedBytes
         .lexicographicalComparator()
@@ -77,8 +77,8 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     def testPrefixComparison(x: Array[Byte], y: Array[Byte]): Unit = {
       val s1Prefix = PrefixComparators.BinaryPrefixComparator.computePrefix(x)
       val s2Prefix = PrefixComparators.BinaryPrefixComparator.computePrefix(y)
-      val prefixComparisonResult =
-        PrefixComparators.BINARY.compare(s1Prefix, s2Prefix)
+      val prefixComparisonResult = PrefixComparators.BINARY
+        .compare(s1Prefix, s2Prefix)
       assert(
         (prefixComparisonResult == 0) ||
           (prefixComparisonResult < 0 && compareBinary(x, y) < 0) ||
@@ -111,13 +111,13 @@ class PrefixComparatorsSuite extends SparkFunSuite with PropertyChecks {
     val nan2: Double = java.lang.Double.longBitsToDouble(0x7FFFFFFFFFFFFFFFL)
     assert(nan1.isNaN)
     assert(nan2.isNaN)
-    val nan1Prefix =
-      PrefixComparators.DoublePrefixComparator.computePrefix(nan1)
-    val nan2Prefix =
-      PrefixComparators.DoublePrefixComparator.computePrefix(nan2)
+    val nan1Prefix = PrefixComparators.DoublePrefixComparator.computePrefix(
+      nan1)
+    val nan2Prefix = PrefixComparators.DoublePrefixComparator.computePrefix(
+      nan2)
     assert(nan1Prefix === nan2Prefix)
-    val doubleMaxPrefix =
-      PrefixComparators.DoublePrefixComparator.computePrefix(Double.MaxValue)
+    val doubleMaxPrefix = PrefixComparators.DoublePrefixComparator
+      .computePrefix(Double.MaxValue)
     assert(PrefixComparators.DOUBLE.compare(nan1Prefix, doubleMaxPrefix) === 1)
   }
 

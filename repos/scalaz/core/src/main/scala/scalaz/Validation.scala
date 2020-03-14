@@ -65,8 +65,7 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
   /** Spin in tail-position on the success value of this validation. */
   def loopSuccess[EE >: E, AA >: A, X](
       success: AA => X \/ Validation[EE, AA],
-      failure: EE => X): X =
-    Validation.loopSuccess(this, success, failure)
+      failure: EE => X): X = Validation.loopSuccess(this, success, failure)
 
   /** Spin in tail-position on the failure value of this validation. */
   def loopFailure[EE >: E, AA >: A, X](
@@ -75,8 +74,7 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     Validation.loopFailure(this, success, failure)
 
   /** Flip the failure/success values in this validation. Alias for `swap` */
-  def unary_~ : Validation[A, E] =
-    swap
+  def unary_~ : Validation[A, E] = swap
 
   /** Flip the failure/success values in this validation. Alias for `unary_~` */
   def swap: Validation[A, E] =
@@ -221,8 +219,7 @@ sealed abstract class Validation[+E, +A] extends Product with Serializable {
     }
 
   /** Return the success value of this validation or the given default if failure. Alias for `getOrElse` */
-  def |[AA >: A](x: => AA): AA =
-    getOrElse(x)
+  def |[AA >: A](x: => AA): AA = getOrElse(x)
 
   /** Return the success value of this validation or run the given function on the failure. */
   def valueOr[AA >: A](x: E => AA): AA =
@@ -417,21 +414,17 @@ object Validation extends ValidationInstances {
   /** Import this if you wish to use `flatMap` */
   object FlatMap {
     @inline implicit def ValidationFlatMapRequested[E, A](
-        d: Validation[E, A]): ValidationFlatMap[E, A] =
-      new ValidationFlatMap(d)
+        d: Validation[E, A]): ValidationFlatMap[E, A] = new ValidationFlatMap(d)
   }
 
   /** Construct a success validation value. */
-  def success[E, A]: A => Validation[E, A] =
-    Success(_)
+  def success[E, A]: A => Validation[E, A] = Success(_)
 
   /** Construct a failure validation value. */
-  def failure[E, A]: E => Validation[E, A] =
-    Failure(_)
+  def failure[E, A]: E => Validation[E, A] = Failure(_)
 
   /** Wrap a value in a `NonEmptyList` and construct a failure validation out of it. */
-  def failureNel[E, A](e: E): ValidationNel[E, A] =
-    Failure(NonEmptyList(e))
+  def failureNel[E, A](e: E): ValidationNel[E, A] = Failure(NonEmptyList(e))
 
   def fromTryCatchThrowable[T, E <: Throwable](
       a: => T)(implicit nn: NotNothing[E], ex: ClassTag[E]): Validation[E, T] =
@@ -450,27 +443,22 @@ object Validation extends ValidationInstances {
 }
 
 sealed abstract class ValidationInstances extends ValidationInstances0 {
-  type \?/[+E, +A] =
-    Validation[E, A]
+  type \?/[+E, +A] = Validation[E, A]
 }
 
 sealed abstract class ValidationInstances0 extends ValidationInstances1 {
 
   implicit def ValidationOrder[E: Order, A: Order]: Order[Validation[E, A]] =
     new Order[Validation[E, A]] {
-      def order(f1: Validation[E, A], f2: Validation[E, A]) =
-        f1 compare f2
-      override def equal(f1: Validation[E, A], f2: Validation[E, A]) =
-        f1 === f2
+      def order(f1: Validation[E, A], f2: Validation[E, A]) = f1 compare f2
+      override def equal(f1: Validation[E, A], f2: Validation[E, A]) = f1 === f2
     }
 
   implicit def ValidationMonoid[E: Semigroup, A: Monoid]
       : Monoid[Validation[E, A]] =
     new Monoid[Validation[E, A]] {
-      def append(a1: Validation[E, A], a2: => Validation[E, A]) =
-        a1 +++ a2
-      def zero =
-        Success(Monoid[A].zero)
+      def append(a1: Validation[E, A], a2: => Validation[E, A]) = a1 +++ a2
+      def zero = Success(Monoid[A].zero)
     }
 
   implicit def ValidationAssociative: Associative[Validation] =
@@ -512,8 +500,7 @@ final class ValidationFlatMap[E, A] private[scalaz] (val self: Validation[E, A])
 sealed abstract class ValidationInstances1 extends ValidationInstances2 {
   implicit def ValidationEqual[E: Equal, A: Equal]: Equal[Validation[E, A]] =
     new Equal[Validation[E, A]] {
-      def equal(a1: Validation[E, A], a2: Validation[E, A]) =
-        a1 === a2
+      def equal(a1: Validation[E, A], a2: Validation[E, A]) = a1 === a2
     }
 
   implicit def ValidationShow[E: Show, A: Show]: Show[Validation[E, A]] =
@@ -522,8 +509,7 @@ sealed abstract class ValidationInstances1 extends ValidationInstances2 {
   implicit def ValidationSemigroup[E: Semigroup, A: Semigroup]
       : Semigroup[Validation[E, A]] =
     new Semigroup[Validation[E, A]] {
-      def append(a1: Validation[E, A], a2: => Validation[E, A]) =
-        a1 +++ a2
+      def append(a1: Validation[E, A], a2: => Validation[E, A]) = a1 +++ a2
     }
 }
 
@@ -537,16 +523,13 @@ sealed abstract class ValidationInstances2 extends ValidationInstances3 {
       with Plus[Validation[L, ?]]
       with Optional[Validation[L, ?]] {
 
-      override def map[A, B](fa: Validation[L, A])(f: A => B) =
-        fa map f
+      override def map[A, B](fa: Validation[L, A])(f: A => B) = fa map f
 
       def traverseImpl[G[_]: Applicative, A, B](fa: Validation[L, A])(
-          f: A => G[B]) =
-        fa.traverse(f)
+          f: A => G[B]) = fa.traverse(f)
 
       override def foldRight[A, B](fa: Validation[L, A], z: => B)(
-          f: (A, => B) => B) =
-        fa.foldRight(z)(f)
+          f: (A, => B) => B) = fa.foldRight(z)(f)
 
       def cozip[A, B](x: Validation[L, A \/ B]) =
         x match {
@@ -558,8 +541,7 @@ sealed abstract class ValidationInstances2 extends ValidationInstances3 {
             }
         }
 
-      def plus[A](a: Validation[L, A], b: => Validation[L, A]) =
-        a orElse b
+      def plus[A](a: Validation[L, A], b: => Validation[L, A]) = a orElse b
 
       def pextract[B, A](fa: Validation[L, A]): Validation[L, B] \/ A =
         fa.fold(l => -\/(Failure(l)), \/.right)
@@ -580,11 +562,9 @@ sealed abstract class ValidationInstances3 {
   implicit def ValidationApplicative[L: Semigroup]
       : Applicative[Validation[L, ?]] =
     new Applicative[Validation[L, ?]] {
-      override def map[A, B](fa: Validation[L, A])(f: A => B) =
-        fa map f
+      override def map[A, B](fa: Validation[L, A])(f: A => B) = fa map f
 
-      def point[A](a: => A) =
-        Success(a)
+      def point[A](a: => A) = Success(a)
 
       def ap[A, B](fa: => Validation[L, A])(f: => Validation[L, A => B]) =
         fa ap f

@@ -98,8 +98,8 @@ class FlowConcatAllSpec extends AkkaSpec {
       val downstream = subscriber.expectSubscription()
       downstream.request(1000)
 
-      val substreamPublisher =
-        TestPublisher.manualProbe[Int](autoOnSubscribe = false)
+      val substreamPublisher = TestPublisher.manualProbe[Int](autoOnSubscribe =
+        false)
       val substreamFlow = Source.fromPublisher(substreamPublisher)
       upstream.expectRequest()
       upstream.sendNext(substreamFlow)
@@ -196,8 +196,8 @@ class FlowConcatAllSpec extends AkkaSpec {
       val downstream = subscriber.expectSubscription()
       downstream.request(1000)
 
-      val substreamPublisher =
-        TestPublisher.manualProbe[Int](autoOnSubscribe = false)
+      val substreamPublisher = TestPublisher.manualProbe[Int](autoOnSubscribe =
+        false)
       val substreamFlow = Source.fromPublisher(substreamPublisher)
       upstream.expectRequest()
       upstream.sendNext(substreamFlow)

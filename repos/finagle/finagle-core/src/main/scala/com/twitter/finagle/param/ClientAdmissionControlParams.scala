@@ -16,8 +16,7 @@ class ClientAdmissionControlParams[A <: Stack.Parameterized[A]](
     * connection. Default is no limit.
     */
   def maxPendingRequests(requestLimit: Int): A = {
-    val lim =
-      if (requestLimit == Int.MaxValue) None else Some(requestLimit)
+    val lim = if (requestLimit == Int.MaxValue) None else Some(requestLimit)
 
     self.configured(PendingRequestFilter.Param(limit = lim))
   }

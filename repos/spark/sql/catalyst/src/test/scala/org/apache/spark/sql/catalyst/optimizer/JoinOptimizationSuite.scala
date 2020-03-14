@@ -93,10 +93,10 @@ class JoinOptimizationSuite extends PlanTest {
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
-    val correctAnswer =
-      x.join(z, condition = Some("x.b".attr === "z.b".attr))
-        .join(y, condition = Some("y.d".attr === "z.a".attr))
-        .analyze
+    val correctAnswer = x
+      .join(z, condition = Some("x.b".attr === "z.b".attr))
+      .join(y, condition = Some("y.d".attr === "z.a".attr))
+      .analyze
 
     comparePlans(optimized, analysis.EliminateSubqueryAliases(correctAnswer))
   }
@@ -104,23 +104,21 @@ class JoinOptimizationSuite extends PlanTest {
   test("broadcasthint sets relation statistics to smallest value") {
     val input = LocalRelation('key.int, 'value.string)
 
-    val query =
-      Project(
-        Seq($"x.key", $"y.key"),
-        Join(
-          SubqueryAlias("x", input),
-          BroadcastHint(SubqueryAlias("y", input)),
-          Inner,
-          None)).analyze
+    val query = Project(
+      Seq($"x.key", $"y.key"),
+      Join(
+        SubqueryAlias("x", input),
+        BroadcastHint(SubqueryAlias("y", input)),
+        Inner,
+        None)).analyze
 
     val optimized = Optimize.execute(query)
 
-    val expected =
-      Join(
-        Project(Seq($"x.key"), SubqueryAlias("x", input)),
-        BroadcastHint(Project(Seq($"y.key"), SubqueryAlias("y", input))),
-        Inner,
-        None).analyze
+    val expected = Join(
+      Project(Seq($"x.key"), SubqueryAlias("x", input)),
+      BroadcastHint(Project(Seq($"y.key"), SubqueryAlias("y", input))),
+      Inner,
+      None).analyze
 
     comparePlans(optimized, expected)
 

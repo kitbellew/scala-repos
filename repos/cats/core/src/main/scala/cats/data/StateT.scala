@@ -69,8 +69,7 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
     */
   def transformF[G[_], B](f: F[(S, A)] => G[(S, B)])(implicit
       F: FlatMap[F],
-      G: Applicative[G]): StateT[G, S, B] =
-    StateT(s => f(run(s)))
+      G: Applicative[G]): StateT[G, S, B] = StateT(s => f(run(s)))
 
   /**
     * Transform the state used.
@@ -115,14 +114,12 @@ final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
   /**
     * Get the input state, without modifying the state.
     */
-  def get(implicit F: Monad[F]): StateT[F, S, S] =
-    inspect(identity)
+  def get(implicit F: Monad[F]): StateT[F, S, S] = inspect(identity)
 }
 
 object StateT extends StateTInstances {
   def apply[F[_], S, A](f: S => F[(S, A)])(
-      implicit F: Applicative[F]): StateT[F, S, A] =
-    new StateT(F.pure(f))
+      implicit F: Applicative[F]): StateT[F, S, A] = new StateT(F.pure(f))
 
   def applyF[F[_], S, A](runF: F[S => F[(S, A)]]): StateT[F, S, A] =
     new StateT(runF)
@@ -135,12 +132,10 @@ private[data] sealed abstract class StateTInstances {
   implicit def stateTMonadState[F[_], S](
       implicit F: Monad[F]): MonadState[StateT[F, S, ?], S] =
     new MonadState[StateT[F, S, ?], S] {
-      def pure[A](a: A): StateT[F, S, A] =
-        StateT.pure(a)
+      def pure[A](a: A): StateT[F, S, A] = StateT.pure(a)
 
       def flatMap[A, B](fa: StateT[F, S, A])(
-          f: A => StateT[F, S, B]): StateT[F, S, B] =
-        fa.flatMap(f)
+          f: A => StateT[F, S, B]): StateT[F, S, B] = fa.flatMap(f)
 
       val get: StateT[F, S, S] = StateT(a => F.pure((a, a)))
 

@@ -5,8 +5,12 @@ package org.jetbrains.plugins.scala.testingSupport.scalatest
   * @since 28.01.2015.
   */
 trait NestedSameNamesTest extends ScalaTestTestCase {
-  val testPath =
-    List("[root]", "FunSpecTest", "FunSpecTest", "FunSpecTest", "FunSpecTest")
+  val testPath = List(
+    "[root]",
+    "FunSpecTest",
+    "FunSpecTest",
+    "FunSpecTest",
+    "FunSpecTest")
 
   def testNestedSameNames(): Unit = {
     addFileToProject(

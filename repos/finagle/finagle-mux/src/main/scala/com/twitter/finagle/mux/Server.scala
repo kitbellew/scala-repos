@@ -103,14 +103,12 @@ private class Tracker[T] {
   /**
     * Retrieve the value for the pending transaction matching `tag`.
     */
-  def get(tag: Int): Option[Future[Unit]] =
-    Option(pending.get(tag))
+  def get(tag: Int): Option[Future[Unit]] = Option(pending.get(tag))
 
   /**
     * Returns the set of current tags.
     */
-  def tags: Set[Int] =
-    pending.keySet.asScala.toSet
+  def tags: Set[Int] = pending.keySet.asScala.toSet
 
   /**
     * Initiate the draining protocol. After `drain` is called, future
@@ -144,8 +142,7 @@ private class Tracker[T] {
   /**
     * The number of tracked tags.
     */
-  def npending: Int =
-    math.abs(state.get) - 1
+  def npending: Int = math.abs(state.get) - 1
 }
 
 private[twitter] object ServerDispatcher {
@@ -210,15 +207,14 @@ private[twitter] class ServerDispatcher(
   private[this] val tracker = new Tracker[Message]
   private[this] val log = Logger.getLogger(getClass.getName)
 
-  private[this] val state: AtomicReference[State.Value] =
-    new AtomicReference(State.Open)
+  private[this] val state: AtomicReference[State.Value] = new AtomicReference(
+    State.Open)
 
   @volatile private[this] var lease = Message.Tlease.MaxLease
   @volatile private[this] var curElapsed = NilStopwatch.start()
   lessor.register(this)
 
-  private[this] def write(m: Message): Future[Unit] =
-    trans.write(m)
+  private[this] def write(m: Message): Future[Unit] = trans.write(m)
 
   private[this] def isAccepting: Boolean =
     !tracker.isDraining && (!nackOnExpiredLease() || (lease > Duration.Zero))

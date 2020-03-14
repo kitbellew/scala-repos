@@ -54,10 +54,10 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
   val partitionId = 0
 
   val kafkaApisLogger = Logger.getLogger(classOf[kafka.server.KafkaApis])
-  val networkProcessorLogger =
-    Logger.getLogger(classOf[kafka.network.Processor])
-  val syncProducerLogger =
-    Logger.getLogger(classOf[kafka.producer.SyncProducer])
+  val networkProcessorLogger = Logger.getLogger(
+    classOf[kafka.network.Processor])
+  val syncProducerLogger = Logger.getLogger(
+    classOf[kafka.producer.SyncProducer])
   val eventHandlerLogger = Logger.getLogger(
     classOf[kafka.producer.async.DefaultEventHandler[Object, Object]])
 
@@ -195,8 +195,10 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
 
   def verifyUncleanLeaderElectionEnabled {
     // wait until leader is elected
-    val leaderIdOpt =
-      waitUntilLeaderIsElectedOrChanged(zkUtils, topic, partitionId)
+    val leaderIdOpt = waitUntilLeaderIsElectedOrChanged(
+      zkUtils,
+      topic,
+      partitionId)
     assertTrue("Leader should get elected", leaderIdOpt.isDefined)
     val leaderId = leaderIdOpt.get
     debug("Leader for " + topic + " is elected to be: %s".format(leaderId))
@@ -243,8 +245,10 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
 
   def verifyUncleanLeaderElectionDisabled {
     // wait until leader is elected
-    val leaderIdOpt =
-      waitUntilLeaderIsElectedOrChanged(zkUtils, topic, partitionId)
+    val leaderIdOpt = waitUntilLeaderIsElectedOrChanged(
+      zkUtils,
+      topic,
+      partitionId)
     assertTrue("Leader should get elected", leaderIdOpt.isDefined)
     val leaderId = leaderIdOpt.get
     debug("Leader for " + topic + " is elected to be: %s".format(leaderId))
@@ -329,8 +333,11 @@ class UncleanLeaderElectionTest extends ZooKeeperTestHarness {
   private def consumeAllMessages(topic: String): List[String] = {
     // use a fresh consumer group every time so that we don't need to mess with disabling auto-commit or
     // resetting the ZK offset
-    val consumerProps =
-      createConsumerProperties(zkConnect, "group" + random.nextLong, "id", 1000)
+    val consumerProps = createConsumerProperties(
+      zkConnect,
+      "group" + random.nextLong,
+      "id",
+      1000)
     val consumerConnector = Consumer.create(new ConsumerConfig(consumerProps))
     val messageStream = consumerConnector.createMessageStreams(
       Map(topic -> 1),

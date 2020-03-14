@@ -29,20 +29,17 @@ class Opt[+A](val ref: A) extends OptVersions.Base {
   def get: A =
     if (ref == null) throw new NoSuchElementException("Opt.empty.get") else ref
 
-  override def toString: String =
-    if (ref == null) "Opt.empty" else s"Opt($ref)"
+  override def toString: String = if (ref == null) "Opt.empty" else s"Opt($ref)"
 
   def filter(f: A => Boolean): Opt[A] =
     if (ref != null && f(ref)) this else Opt.empty
 
-  def map[B](f: A => B): Opt[B] =
-    if (ref == null) Opt.empty else Opt(f(ref))
+  def map[B](f: A => B): Opt[B] = if (ref == null) Opt.empty else Opt(f(ref))
 
   def flatMap[B](f: A => Opt[B]): Opt[B] =
     if (ref == null) Opt.empty else f(ref)
 
-  def fold[B](b: => B)(f: A => B): B =
-    if (ref == null) b else f(ref)
+  def fold[B](b: => B)(f: A => B): B = if (ref == null) b else f(ref)
 
   def getOrElse[B >: A](default: => B): B = if (ref == null) default else ref
 

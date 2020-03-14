@@ -12,22 +12,19 @@ class GenericRunnerSettings(error: String => Unit) extends Settings(error) {
   lazy val classpathURLs: Seq[URL] =
     PathResolverFactory.create(this).resultAsURLs
 
-  val howtorun =
-    ChoiceSetting(
-      "-howtorun",
-      "how",
-      "how to run the specified code",
-      List("object", "script", "jar", "guess"),
-      "guess")
+  val howtorun = ChoiceSetting(
+    "-howtorun",
+    "how",
+    "how to run the specified code",
+    List("object", "script", "jar", "guess"),
+    "guess")
 
-  val loadfiles =
-    MultiStringSetting(
-      "-i",
-      "file",
-      "load a file (assumes the code is given interactively)")
+  val loadfiles = MultiStringSetting(
+    "-i",
+    "file",
+    "load a file (assumes the code is given interactively)")
 
-  val execute =
-    StringSetting("-e", "string", "execute a single command", "")
+  val execute = StringSetting("-e", "string", "execute a single command", "")
 
   val save =
     BooleanSetting(

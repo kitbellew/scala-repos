@@ -76,10 +76,9 @@ class ScalaCalleeMethodsTreeStructure(
           result += d
       }
     }
-    val overridingMethods: Array[PsiMethod] =
-      OverridingMethodsSearch
-        .search(method, method.getUseScope, true)
-        .toArray(PsiMethod.EMPTY_ARRAY)
+    val overridingMethods: Array[PsiMethod] = OverridingMethodsSearch
+      .search(method, method.getUseScope, true)
+      .toArray(PsiMethod.EMPTY_ARRAY)
     for (overridingMethod <- overridingMethods
          if isInScope(baseClass, overridingMethod, myScopeType)) {
       val node: CallHierarchyNodeDescriptor = new CallHierarchyNodeDescriptor(

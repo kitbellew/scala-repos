@@ -122,22 +122,23 @@ class ZipperTests {
   case class Address(street: String, city: String, postcode: String)
   case class Person(name: String, age: Int, address: Address)
 
-  val p1 =
-    Person("Joe Grey", 37, Address("Southover Street", "Brighton", "BN2 9UA"))
+  val p1 = Person(
+    "Joe Grey",
+    37,
+    Address("Southover Street", "Brighton", "BN2 9UA"))
 
   case class Dept[E <: HList](manager: Employee, employees: E)
   case class Employee(name: String, salary: Int)
 
   type D = Dept[Employee :: Employee :: Employee :: HNil]
 
-  val dept =
-    Dept(
-      Employee("Agamemnon", 5000),
-      Employee("Menelaus", 3000) ::
-        Employee("Achilles", 2000) ::
-        Employee("Odysseus", 2000) ::
-        HNil
-    )
+  val dept = Dept(
+    Employee("Agamemnon", 5000),
+    Employee("Menelaus", 3000) ::
+      Employee("Achilles", 2000) ::
+      Employee("Odysseus", 2000) ::
+      HNil
+  )
 
   @Test
   def testCaseClasses {

@@ -32,45 +32,32 @@ package scala.scalajs.js.typedarray
 import java.nio._
 
 private[typedarray] object TypedArrayBufferBridge {
-  def wrap(array: ArrayBuffer): ByteBuffer =
-    ByteBuffer.wrap(array)
+  def wrap(array: ArrayBuffer): ByteBuffer = ByteBuffer.wrap(array)
 
   def wrap(array: ArrayBuffer, byteOffset: Int, length: Int): ByteBuffer =
     ByteBuffer.wrap(array, byteOffset, length)
 
-  def wrap(array: Int8Array): ByteBuffer =
-    ByteBuffer.wrap(array)
+  def wrap(array: Int8Array): ByteBuffer = ByteBuffer.wrap(array)
 
-  def wrap(array: Uint16Array): CharBuffer =
-    CharBuffer.wrap(array)
+  def wrap(array: Uint16Array): CharBuffer = CharBuffer.wrap(array)
 
-  def wrap(array: Int16Array): ShortBuffer =
-    ShortBuffer.wrap(array)
+  def wrap(array: Int16Array): ShortBuffer = ShortBuffer.wrap(array)
 
-  def wrap(array: Int32Array): IntBuffer =
-    IntBuffer.wrap(array)
+  def wrap(array: Int32Array): IntBuffer = IntBuffer.wrap(array)
 
-  def wrap(array: Float32Array): FloatBuffer =
-    FloatBuffer.wrap(array)
+  def wrap(array: Float32Array): FloatBuffer = FloatBuffer.wrap(array)
 
-  def wrap(array: Float64Array): DoubleBuffer =
-    DoubleBuffer.wrap(array)
+  def wrap(array: Float64Array): DoubleBuffer = DoubleBuffer.wrap(array)
 
-  def Buffer_hasArrayBuffer(buffer: Buffer): Boolean =
-    buffer.hasArrayBuffer()
+  def Buffer_hasArrayBuffer(buffer: Buffer): Boolean = buffer.hasArrayBuffer()
 
-  def Buffer_arrayBuffer(buffer: Buffer): ArrayBuffer =
-    buffer.arrayBuffer()
+  def Buffer_arrayBuffer(buffer: Buffer): ArrayBuffer = buffer.arrayBuffer()
 
-  def Buffer_arrayBufferOffset(buffer: Buffer): Int =
-    buffer.arrayBufferOffset()
+  def Buffer_arrayBufferOffset(buffer: Buffer): Int = buffer.arrayBufferOffset()
 
-  def Buffer_dataView(buffer: Buffer): DataView =
-    buffer.dataView()
+  def Buffer_dataView(buffer: Buffer): DataView = buffer.dataView()
 
-  def Buffer_hasTypedArray(buffer: Buffer): Boolean =
-    buffer.hasTypedArray()
+  def Buffer_hasTypedArray(buffer: Buffer): Boolean = buffer.hasTypedArray()
 
-  def Buffer_typedArray(buffer: Buffer): TypedArray[_, _] =
-    buffer.typedArray()
+  def Buffer_typedArray(buffer: Buffer): TypedArray[_, _] = buffer.typedArray()
 }

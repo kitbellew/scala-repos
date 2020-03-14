@@ -55,8 +55,7 @@ case class Duration(private val millis: Long) {
 
   def div(that: Duration): Double = this / that
 
-  def isMultipleOf(that: Duration): Boolean =
-    (this.millis % that.millis == 0)
+  def isMultipleOf(that: Duration): Boolean = (this.millis % that.millis == 0)
 
   def min(that: Duration): Duration = if (this < that) this else that
 

@@ -27,8 +27,7 @@ private[sys] class PropImpl[+T](val key: String, valueFn: String => T)
     if (newValue == null) set(null) else set("" + newValue)
     old
   }
-  def get: String =
-    if (isSet) underlying.getOrElse(key, "") else ""
+  def get: String = if (isSet) underlying.getOrElse(key, "") else ""
 
   def clear(): Unit = underlying -= key
   def option: Option[T] = if (isSet) Some(value) else None

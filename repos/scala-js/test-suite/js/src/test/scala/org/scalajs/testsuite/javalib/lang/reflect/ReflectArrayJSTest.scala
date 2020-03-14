@@ -20,8 +20,9 @@ class ReflectArrayJSTest {
       length: Int,
       expectedClazz: Class[_],
       sampleElem: Any): Unit = {
-    val array =
-      java.lang.reflect.Array.newInstance(clazz, length).asInstanceOf[Array[_]]
+    val array = java.lang.reflect.Array
+      .newInstance(clazz, length)
+      .asInstanceOf[Array[_]]
     assertEquals(expectedClazz, array.getClass)
     assertTrue(array.getClass.isArray)
     assertEquals(length, array.length)

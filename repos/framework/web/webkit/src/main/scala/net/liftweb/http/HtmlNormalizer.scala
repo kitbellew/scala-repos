@@ -27,11 +27,10 @@ private object EventAttribute {
     * This is a map from those attribute names to the corresponding JS event
     * that would be used to execute that JS when it isn't run in line.
     */
-  val eventsByAttributeName =
-    Map(
-      "action" -> "submit",
-      "href" -> "click"
-    )
+  val eventsByAttributeName = Map(
+    "action" -> "submit",
+    "href" -> "click"
+  )
 
   object EventForAttribute {
     def unapply(attributeName: String): Option[String] = {
@@ -125,20 +124,18 @@ private[http] final object HtmlNormalizer {
           (id, normalizedRemainingAttributes, updatedEventAttributes)
 
         case UnprefixedAttribute(name, _, _) if name == attributeToNormalize =>
-          val normalizedUrl =
-            Req.normalizeHref(
-              contextPath,
-              attributes.value,
-              shouldRewriteUrl,
-              URLRewriter.rewriteFunc
-            )
+          val normalizedUrl = Req.normalizeHref(
+            contextPath,
+            attributes.value,
+            shouldRewriteUrl,
+            URLRewriter.rewriteFunc
+          )
 
-          val newMetaData =
-            new UnprefixedAttribute(
-              attributeToNormalize,
-              normalizedUrl,
-              normalizedRemainingAttributes
-            )
+          val newMetaData = new UnprefixedAttribute(
+            attributeToNormalize,
+            normalizedUrl,
+            normalizedRemainingAttributes
+          )
 
           (id, newMetaData, remainingEventAttributes)
 
@@ -245,21 +242,20 @@ private[http] final object HtmlNormalizer {
       stripComments: Boolean): Option[NodeAndEventJs] = {
     node match {
       case element: Elem =>
-        val (attributeToFix, shouldRewriteUrl) =
-          element.label match {
-            case "form" =>
-              ("action", true)
+        val (attributeToFix, shouldRewriteUrl) = element.label match {
+          case "form" =>
+            ("action", true)
 
-            case "a" =>
-              ("href", true)
-            case "link" =>
-              ("href", false)
+          case "a" =>
+            ("href", true)
+          case "link" =>
+            ("href", false)
 
-            case "script" =>
-              ("src", false)
-            case _ =>
-              ("src", true)
-          }
+          case "script" =>
+            ("src", false)
+          case _ =>
+            ("src", true)
+        }
 
         Some(
           normalizeElementAndAttributes(

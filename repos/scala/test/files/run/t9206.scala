@@ -3,8 +3,7 @@ import scala.tools.partest.SessionTest
 object Test extends SessionTest {
   //override def prompt = "XXX> "
 //Welcome to Scala version 2.11.6 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_40).
-  def session =
-    s"""|
+  def session = s"""|
         |scala> val i: Int = "foo"
         |<console>:11: error: type mismatch;
         | found   : String("foo")

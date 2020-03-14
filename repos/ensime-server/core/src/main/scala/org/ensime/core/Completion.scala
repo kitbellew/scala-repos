@@ -103,23 +103,29 @@ trait CompletionControl {
       val constructing =
         ConstructingRegexp.findFirstMatchIn(preceding).isDefined
 
-      val (src, p, patched) = if (defaultPrefix.isEmpty) {
+      val (src, p, patched) =
+        if (defaultPrefix.isEmpty) {
 
-        // Add a fake prefix if none was provided by the user. Otherwise the
-        // compiler will give us a weird tree.
-        val orig = origContents
+          // Add a fake prefix if none was provided by the user. Otherwise the
+          // compiler will give us a weird tree.
+          val orig = origContents
 
-        // Uses array logic to minimise memory spikes of large Strings
-        val contents = Array.ofDim[Char](orig.length + 1)
-        System.arraycopy(orig, 0, contents, 0, point)
-        contents(point) = 'a'
-        System.arraycopy(orig, point, contents, point + 1, orig.length - point)
+          // Uses array logic to minimise memory spikes of large Strings
+          val contents = Array.ofDim[Char](orig.length + 1)
+          System.arraycopy(orig, 0, contents, 0, point)
+          contents(point) = 'a'
+          System.arraycopy(
+            orig,
+            point,
+            contents,
+            point + 1,
+            orig.length - point)
 
-        // uses the same VirtualFile as the original
-        val src = new BatchSourceFile(inputP.source.file, contents)
+          // uses the same VirtualFile as the original
+          val src = new BatchSourceFile(inputP.source.file, contents)
 
-        (src, inputP.withSource(src).withShift(1), true)
-      } else { (inputP.source, inputP, false) }
+          (src, inputP.withSource(src).withShift(1), true)
+        } else { (inputP.source, inputP, false) }
       askReloadFile(src)
       val x = new Response[Tree]
       askTypeAt(p, x)
@@ -404,8 +410,9 @@ trait Completion { self: RichPresentationCompiler =>
         }
         memberSyms
           .flatMap { s =>
-            val name = if (s.hasPackageFlag) { s.nameString }
-            else { typeShortName(s) }
+            val name =
+              if (s.hasPackageFlag) { s.nameString }
+              else { typeShortName(s) }
             if (name.startsWith(prefix))
               Some(
                 CompletionInfo(

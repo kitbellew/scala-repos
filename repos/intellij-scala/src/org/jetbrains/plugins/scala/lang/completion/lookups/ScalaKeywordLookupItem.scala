@@ -29,8 +29,17 @@ object ScalaKeywordLookupItem {
         item: LookupElement): Unit = {
       import org.jetbrains.plugins.scala.lang.completion.ScalaKeyword._
       val parentheses = Set(IF, FOR, WHILE)
-      val braces =
-        Set(CATCH, ELSE, EXTENDS, FINALLY, FOR, FOR_SOME, NEW, TRY, DO, YIELD)
+      val braces = Set(
+        CATCH,
+        ELSE,
+        EXTENDS,
+        FINALLY,
+        FOR,
+        FOR_SOME,
+        NEW,
+        TRY,
+        DO,
+        YIELD)
       val editor = context.getEditor
       val document = editor.getDocument
       val offset = context.getStartOffset + keyword.length

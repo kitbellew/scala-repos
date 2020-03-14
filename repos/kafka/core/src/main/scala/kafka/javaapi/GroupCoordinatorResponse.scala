@@ -31,8 +31,8 @@ class GroupCoordinatorResponse(
 
   override def equals(other: Any) =
     canEqual(other) && {
-      val otherConsumerMetadataResponse =
-        other.asInstanceOf[kafka.javaapi.GroupCoordinatorResponse]
+      val otherConsumerMetadataResponse = other
+        .asInstanceOf[kafka.javaapi.GroupCoordinatorResponse]
       this.underlying.equals(otherConsumerMetadataResponse.underlying)
     }
 

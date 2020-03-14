@@ -27,8 +27,9 @@ class UrlGeneratorTestServlet extends ScalatraServlet {
 
   val literalDotInPath = get("/literal.dot.in.path") {}
 
-  val stringAndBoolean =
-    get("/conditional", params.getOrElse("condition", "false") == "true") {}
+  val stringAndBoolean = get(
+    "/conditional",
+    params.getOrElse("condition", "false") == "true") {}
 
   val regex1 = get("""^\/fo(.*)/ba(.*)""".r) {}
 

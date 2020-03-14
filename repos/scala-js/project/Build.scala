@@ -46,21 +46,22 @@ object Build extends sbt.Build {
   val isGeneratingEclipse =
     Properties.envOrElse("GENERATING_ECLIPSE", "false").toBoolean
 
-  val fetchScalaSource =
-    taskKey[File]("Fetches the scala source for the current scala version")
+  val fetchScalaSource = taskKey[File](
+    "Fetches the scala source for the current scala version")
   val shouldPartest = settingKey[Boolean](
     "Whether we should partest the current scala version (and fail if we can't)")
 
   val previousVersion = "0.6.8"
-  val previousSJSBinaryVersion =
-    ScalaJSCrossVersion.binaryScalaJSVersion(previousVersion)
-  val previousBinaryCrossVersion =
-    CrossVersion.binaryMapped(v => s"sjs${previousSJSBinaryVersion}_$v")
+  val previousSJSBinaryVersion = ScalaJSCrossVersion.binaryScalaJSVersion(
+    previousVersion)
+  val previousBinaryCrossVersion = CrossVersion.binaryMapped(v =>
+    s"sjs${previousSJSBinaryVersion}_$v")
 
-  val scalaVersionsUsedForPublishing: Set[String] =
-    Set("2.10.6", "2.11.8", "2.12.0-M3")
-  val newScalaBinaryVersionsInThisRelease: Set[String] =
-    Set()
+  val scalaVersionsUsedForPublishing: Set[String] = Set(
+    "2.10.6",
+    "2.11.8",
+    "2.12.0-M3")
+  val newScalaBinaryVersionsInThisRelease: Set[String] = Set()
 
   val javaVersion = settingKey[Int](
     "The major Java SDK version that should be assumed for compatibility. " +
@@ -98,8 +99,8 @@ object Build extends sbt.Build {
         /* Filter out e:info.apiURL as it expects 0.6.7-SNAPSHOT, whereas the
          * artifact we're looking for has 0.6.6 (for example).
          */
-        val prevExtraAttributes =
-          thisProjectID.extraAttributes.filterKeys(_ != "e:info.apiURL")
+        val prevExtraAttributes = thisProjectID.extraAttributes.filterKeys(
+          _ != "e:info.apiURL")
         val prevProjectID =
           (thisProjectID.organization % thisProjectID.name % previousVersion)
             .cross(previousCrossVersion)
@@ -664,8 +665,7 @@ object Build extends sbt.Build {
           p.contains("/org.scala-sbt/") && p.endsWith(".jar")
         }
 
-        val docUrl =
-          url(s"http://www.scala-sbt.org/${sbtVersion.value}/api/")
+        val docUrl = url(s"http://www.scala-sbt.org/${sbtVersion.value}/api/")
 
         sbtJars.map(_.data -> docUrl).toMap
       }
@@ -806,8 +806,7 @@ object Build extends sbt.Build {
           // re-read version, since we lost '.' and '-'
           ver.substring(0, len)
         }
-        def dirStr(v: String) =
-          if (v.isEmpty) "overrides" else s"overrides-$v"
+        def dirStr(v: String) = if (v.isEmpty) "overrides" else s"overrides-$v"
         val dirs = verList.map(base / dirStr(_)).filter(_.exists)
         dirs.toSeq // most specific shadow less specific
       },
@@ -912,16 +911,16 @@ object Build extends sbt.Build {
           val filter = ("*.sjsir": NameFilter)
 
           val javalibProducts = (products in javalib).value
-          val javalibMappings =
-            javalibProducts.flatMap(base => Path.selectSubpaths(base, filter))
+          val javalibMappings = javalibProducts.flatMap(base =>
+            Path.selectSubpaths(base, filter))
           val javalibFilteredMappings = javalibMappings.filter(
             _._2.replace('\\', '/') != "java/lang/MathJDK8Bridge$.sjsir")
 
           val otherProducts = ((products in javalanglib).value ++
             (products in scalalib).value ++
             (products in libraryAux).value)
-          val otherMappings =
-            otherProducts.flatMap(base => Path.selectSubpaths(base, filter))
+          val otherMappings = otherProducts.flatMap(base =>
+            Path.selectSubpaths(base, filter))
 
           libraryMappings ++ otherMappings ++ javalibFilteredMappings
         }
@@ -1144,8 +1143,7 @@ object Build extends sbt.Build {
         envTags ++ (semTags :+ stageTag)
       },
       javaOptions in Test ++= {
-        def scalaJSProp(name: String): String =
-          s"-Dscalajs.$name=true"
+        def scalaJSProp(name: String): String = s"-Dscalajs.$name=true"
 
         testOptionTags.value.map(scalaJSProp) :+
           "-Dscalajs.testsuite.testtag=testtag.value"
@@ -1245,10 +1243,9 @@ object Build extends sbt.Build {
         )
 
         val outFile = dir / "SourceMapTest.scala"
-        val unitTests =
-          (0 until i)
-            .map(i => s"@Test def workTest$i(): Unit = test($i)")
-            .mkString("; ")
+        val unitTests = (0 until i)
+          .map(i => s"@Test def workTest$i(): Unit = test($i)")
+          .mkString("; ")
         IO.write(
           outFile,
           replaced.replace(

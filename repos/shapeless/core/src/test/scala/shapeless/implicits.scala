@@ -40,18 +40,16 @@ object CachedTestDefns {
   }
 
   object Eq {
-    implicit val eqInt: Eq[Int] =
-      new Eq[Int] {
-        def eqv(x: Int, y: Int): Boolean = x == y
-      }
+    implicit val eqInt: Eq[Int] = new Eq[Int] {
+      def eqv(x: Int, y: Int): Boolean = x == y
+    }
 
     implicit def eqGeneric[T, R](implicit
         gen: Generic.Aux[T, R],
         eqRepr: Lazy[Eq[R]]
     ): Eq[T] =
       new Eq[T] {
-        def eqv(x: T, y: T): Boolean =
-          eqRepr.value.eqv(gen.to(x), gen.to(y))
+        def eqv(x: T, y: T): Boolean = eqRepr.value.eqv(gen.to(x), gen.to(y))
       }
 
     // Base case for products

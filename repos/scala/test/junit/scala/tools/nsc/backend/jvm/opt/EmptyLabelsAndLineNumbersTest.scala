@@ -102,8 +102,8 @@ class EmptyLabelsAndLineNumbersTest {
         LineNumber(12, Label(target6))
       )
 
-    val method =
-      genMethod(handlers = handler)(ops(2, 3, 8, 8, 9, 11).map(_._1): _*)
+    val method = genMethod(handlers = handler)(
+      ops(2, 3, 8, 8, 9, 11).map(_._1): _*)
     assertTrue(LocalOptImpls.removeEmptyLabelNodes(method))
     val m = convertMethod(method)
     assertSameCode(

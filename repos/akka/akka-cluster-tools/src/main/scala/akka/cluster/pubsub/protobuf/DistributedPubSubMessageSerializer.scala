@@ -40,8 +40,8 @@ private[akka] class DistributedPubSubMessageSerializer(
   private val SendToAllManifest = "D"
   private val PublishManifest = "E"
 
-  private val fromBinaryMap =
-    collection.immutable.HashMap[String, Array[Byte] ⇒ AnyRef](
+  private val fromBinaryMap = collection.immutable
+    .HashMap[String, Array[Byte] ⇒ AnyRef](
       StatusManifest -> statusFromBinary,
       DeltaManifest -> deltaFromBinary,
       SendManifest -> sendFromBinary,

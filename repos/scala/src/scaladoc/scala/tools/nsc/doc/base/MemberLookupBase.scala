@@ -107,8 +107,7 @@ trait MemberLookupBase {
       case links =>
         val chosen = chooseLink(links)
         def linkToString(link: LinkTo) = {
-          val chosenInfo =
-            if (link == chosen) " [chosen]" else ""
+          val chosenInfo = if (link == chosen) " [chosen]" else ""
           toString(link) + chosenInfo + "\n"
         }
         if (warnNoLink) {
@@ -224,8 +223,9 @@ trait MemberLookupBase {
       if ((query.charAt(index) == '.' || query.charAt(index) == '#') &&
           ((index == 0) || (query.charAt(index - 1) != '\\'))) {
 
-        val member =
-          query.substring(last_index, index).replaceAll("\\\\([#\\.])", "$1")
+        val member = query
+          .substring(last_index, index)
+          .replaceAll("\\\\([#\\.])", "$1")
         // we want to allow javadoc-style links [[#member]] -- which requires us to remove empty members from the first
         // elemnt in the list
         if ((member != "") || (!members.isEmpty)) members ::= member

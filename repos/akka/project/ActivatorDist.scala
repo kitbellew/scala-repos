@@ -34,8 +34,8 @@ object ActivatorDist {
           val directories = projectBase
             .listFiles(DirectoryFilter)
             .filter(dir => (dir / "activator.properties").exists)
-          val rootGitignoreLines =
-            IO.readLines(AkkaBuild.root.base / ".gitignore")
+          val rootGitignoreLines = IO.readLines(
+            AkkaBuild.root.base / ".gitignore")
           for (dir <- directories) {
             val localGitignoreLines =
               if ((dir / ".gitignore").exists) IO.readLines(dir / ".gitignore")

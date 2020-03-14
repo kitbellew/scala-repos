@@ -610,8 +610,9 @@ class SetMapConsistencyTest {
   @Test
   def extraFilterTests() {
     type M = scala.collection.Map[Int, Boolean]
-    val manyKVs =
-      (0 to 1000).map(i => i * i * i).map(x => x -> ((x * x * x) < 0))
+    val manyKVs = (0 to 1000)
+      .map(i => i * i * i)
+      .map(x => x -> ((x * x * x) < 0))
     val rn = new scala.util.Random(42)
     def mhm: M = { val m = new cm.HashMap[Int, Boolean]; m ++= manyKVs; m }
     def mohm: M = { val m = new cm.OpenHashMap[Int, Boolean]; m ++= manyKVs; m }

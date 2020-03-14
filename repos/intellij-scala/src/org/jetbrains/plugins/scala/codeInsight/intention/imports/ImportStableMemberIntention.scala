@@ -22,8 +22,9 @@ class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val refAtCaret =
-      PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement])
+    val refAtCaret = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScReferenceElement])
     if (refAtCaret == null) return false
     setText(s"Import ${refAtCaret.refName}")
     checkReference(refAtCaret)
@@ -33,8 +34,9 @@ class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
       project: Project,
       editor: Editor,
       element: PsiElement): Unit = {
-    val refAtCaret =
-      PsiTreeUtil.getParentOfType(element, classOf[ScReferenceElement])
+    val refAtCaret = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScReferenceElement])
     if (refAtCaret == null || !checkReference(refAtCaret)) return
     refAtCaret.resolve() match {
       case named: PsiNamedElement =>

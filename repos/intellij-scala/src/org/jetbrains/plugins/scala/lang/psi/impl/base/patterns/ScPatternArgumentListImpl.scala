@@ -21,10 +21,11 @@ class ScPatternArgumentListImpl(node: ASTNode)
   override def toString: String = "Pattern Argument List"
 
   def patterns = {
-    val children: Seq[ScPattern] =
-      findChildrenByClassScala[ScPattern](classOf[ScPattern])
-    val grandChildrenInBlockExpr: Seq[ScPattern] =
-      this.getChildren.filter { _.isInstanceOf[ScBlockExpr] }.flatMap { s =>
+    val children: Seq[ScPattern] = findChildrenByClassScala[ScPattern](
+      classOf[ScPattern])
+    val grandChildrenInBlockExpr: Seq[ScPattern] = this.getChildren
+      .filter { _.isInstanceOf[ScBlockExpr] }
+      .flatMap { s =>
         s.getChildren.filter(_.isInstanceOf[ScPattern]).map {
           _.asInstanceOf[ScPattern]
         }

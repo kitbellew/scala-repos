@@ -447,8 +447,8 @@ class ReplicaManager(
 
       } else {
         // we can respond immediately
-        val produceResponseStatus =
-          produceStatus.mapValues(status => status.responseStatus)
+        val produceResponseStatus = produceStatus.mapValues(status =>
+          status.responseStatus)
         responseCallback(produceResponseStatus)
       }
     } else {
@@ -515,8 +515,9 @@ class ReplicaManager(
                   .format(topicPartition.topic)))))
         } else {
           try {
-            val partitionOpt =
-              getPartition(topicPartition.topic, topicPartition.partition)
+            val partitionOpt = getPartition(
+              topicPartition.topic,
+              topicPartition.partition)
             val info = partitionOpt match {
               case Some(partition) =>
                 partition.appendMessagesToLeader(
@@ -607,8 +608,10 @@ class ReplicaManager(
     val fetchOnlyCommitted: Boolean = !Request.isValidBrokerId(replicaId)
 
     // read from local logs
-    val logReadResults =
-      readFromLocalLog(fetchOnlyFromLeader, fetchOnlyCommitted, fetchInfo)
+    val logReadResults = readFromLocalLog(
+      fetchOnlyFromLeader,
+      fetchOnlyCommitted,
+      fetchInfo)
 
     // if the fetch comes from the follower,
     // update its corresponding log end offset
@@ -618,8 +621,8 @@ class ReplicaManager(
     // check if this fetch request can be satisfied right away
     val bytesReadable =
       logReadResults.values.map(_.info.messageSet.sizeInBytes).sum
-    val errorReadingData =
-      logReadResults.values.foldLeft(false)((errorIncurred, readResult) =>
+    val errorReadingData = logReadResults.values.foldLeft(false)(
+      (errorIncurred, readResult) =>
         errorIncurred || (readResult.errorCode != Errors.NONE.code))
 
     // respond immediately if 1) fetch request does not want to wait
@@ -802,14 +805,15 @@ class ReplicaManager(
       metadataCache: MetadataCache) {
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
-        val stateControllerEpochErrorMessage = ("Broker %d received update metadata request with correlation id %d from an " +
-          "old controller %d with epoch %d. Latest known controller epoch is %d")
-          .format(
-            localBrokerId,
-            correlationId,
-            updateMetadataRequest.controllerId,
-            updateMetadataRequest.controllerEpoch,
-            controllerEpoch)
+        val stateControllerEpochErrorMessage =
+          ("Broker %d received update metadata request with correlation id %d from an " +
+            "old controller %d with epoch %d. Latest known controller epoch is %d")
+            .format(
+              localBrokerId,
+              correlationId,
+              updateMetadataRequest.controllerId,
+              updateMetadataRequest.controllerEpoch,
+              controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {

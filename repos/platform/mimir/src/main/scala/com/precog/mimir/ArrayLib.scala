@@ -60,27 +60,27 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             else {
               val maxLength = indices.max + 1
 
-              val columnTables =
-                values.columns.foldLeft(Map[ColumnRef, Array[Column]]()) {
-                  case (
-                        acc,
-                        (
-                          ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
-                          col)) => {
-                    // remap around the mod ring w.r.t. max length
-                    // s.t. f(i) = f'(i * max + arrayI)
+              val columnTables = values.columns.foldLeft(
+                Map[ColumnRef, Array[Column]]()) {
+                case (
+                      acc,
+                      (
+                        ColumnRef(CPath(CPathIndex(idx), ptail @ _*), tpe),
+                        col)) => {
+                  // remap around the mod ring w.r.t. max length
+                  // s.t. f(i) = f'(i * max + arrayI)
 
-                    val finalRef = ColumnRef(CPath(ptail: _*), tpe)
-                    val colTable =
-                      acc get finalRef getOrElse (new Array[Column](maxLength))
+                  val finalRef = ColumnRef(CPath(ptail: _*), tpe)
+                  val colTable =
+                    acc get finalRef getOrElse (new Array[Column](maxLength))
 
-                    colTable(idx) = col
+                  colTable(idx) = col
 
-                    acc.updated(finalRef, colTable)
-                  }
-
-                  case (acc, _) => acc
+                  acc.updated(finalRef, colTable)
                 }
+
+                case (acc, _) => acc
+              }
 
               val valueCols = columnTables map {
                 case (ref @ ColumnRef(_, CUndefined), _) =>
@@ -190,8 +190,8 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           }
 
           val size2 = UnknownSize
-          val flattenedTable =
-            Table(flattenedSlices, UnknownSize).compact(TransSpec1.Id)
+          val flattenedTable = Table(flattenedSlices, UnknownSize).compact(
+            TransSpec1.Id)
           val finalTable = flattenedTable.canonicalize(
             yggConfig.minIdealSliceSize,
             Some(yggConfig.maxSliceSize))

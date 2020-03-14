@@ -127,8 +127,10 @@ class IntroduceImplicitParameterIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    val expr: ScFunctionExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
+    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScFunctionExpr],
+      false)
     if (expr == null) return false
 
     val range: TextRange = expr.params.getTextRange
@@ -146,8 +148,10 @@ class IntroduceImplicitParameterIntention
       else HintManager.getInstance().showErrorHint(editor, hint)
     }
 
-    val expr: ScFunctionExpr =
-      PsiTreeUtil.getParentOfType(element, classOf[ScFunctionExpr], false)
+    val expr: ScFunctionExpr = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScFunctionExpr],
+      false)
     if (expr == null || !expr.isValid) return
 
     val startOffset = expr.getTextRange.getStartOffset

@@ -36,8 +36,10 @@ abstract class ScalaSuppressByLineCommentFix(key: HighlightDisplayKey)
       container: PsiElement): Unit = {
     val text: String =
       SuppressionUtilCore.SUPPRESS_INSPECTIONS_TAG_NAME + " " + key.getID
-    val comment: PsiComment =
-      SuppressionUtil.createComment(project, text, ScalaLanguage.Instance)
+    val comment: PsiComment = SuppressionUtil.createComment(
+      project,
+      text,
+      ScalaLanguage.Instance)
     val newLine = ScalaPsiElementFactory.createNewLine(element.getManager)
     container match {
       case owner: ScDocCommentOwner if owner.docComment.isDefined =>

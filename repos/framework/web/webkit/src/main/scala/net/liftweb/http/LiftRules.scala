@@ -67,8 +67,8 @@ object LiftRulesMocker {
     * will be used, otherwise the global instance in LiftRules.prodInstance
     * will be used.
     */
-  @volatile var calcLiftRulesInstance: () => LiftRules =
-    () => devTestLiftRulesInstance.box.openOr(LiftRules.prodInstance)
+  @volatile var calcLiftRulesInstance: () => LiftRules = () =>
+    devTestLiftRulesInstance.box.openOr(LiftRules.prodInstance)
 }
 
 /**
@@ -151,8 +151,9 @@ object LiftRules extends LiftRulesMocker {
   /**
     * The pattern/PartialFunction for matching tags in Lift
     */
-  type TagProcessor =
-    PartialFunction[(String, Elem, LiftSession), DataAttributeProcessorAnswer]
+  type TagProcessor = PartialFunction[
+    (String, Elem, LiftSession),
+    DataAttributeProcessorAnswer]
 
   /**
     * The test between the path of a request and whether that path
@@ -168,18 +169,22 @@ object LiftRules extends LiftRulesMocker {
 
   type RewritePF = PartialFunction[RewriteRequest, RewriteResponse]
   type SnippetPF = PartialFunction[List[String], NodeSeq => NodeSeq]
-  type LiftTagPF =
-    PartialFunction[(String, Elem, MetaData, NodeSeq, String), NodeSeq]
+  type LiftTagPF = PartialFunction[
+    (String, Elem, MetaData, NodeSeq, String),
+    NodeSeq]
   type URINotFoundPF = PartialFunction[(Req, Box[Failure]), NotFound]
   type URLDecoratorPF = PartialFunction[String, String]
   type SnippetDispatchPF = PartialFunction[String, DispatchSnippet]
-  type ViewDispatchPF =
-    PartialFunction[List[String], Either[() => Box[NodeSeq], LiftView]]
+  type ViewDispatchPF = PartialFunction[
+    List[String],
+    Either[() => Box[NodeSeq], LiftView]]
   type HttpAuthProtectedResourcePF = PartialFunction[Req, Box[Role]]
-  type ExceptionHandlerPF =
-    PartialFunction[(Props.RunModes.Value, Req, Throwable), LiftResponse]
-  type ResourceBundleFactoryPF =
-    PartialFunction[(String, Locale), ResourceBundle]
+  type ExceptionHandlerPF = PartialFunction[
+    (Props.RunModes.Value, Req, Throwable),
+    LiftResponse]
+  type ResourceBundleFactoryPF = PartialFunction[
+    (String, Locale),
+    ResourceBundle]
   type SplitSuffixPF = PartialFunction[List[String], (List[String], String)]
   type CometCreationPF = PartialFunction[CometCreationInfo, LiftCometActor]
 
@@ -207,17 +212,21 @@ object LiftRules extends LiftRulesMocker {
   object SnippetFailures extends Enumeration {
     val NoTypeDefined = Value(1, "No Type Defined")
     val ClassNotFound = Value(2, "Class Not Found")
-    val StatefulDispatchNotMatched =
-      Value(3, "Stateful Snippet: Dispatch Not Matched")
+    val StatefulDispatchNotMatched = Value(
+      3,
+      "Stateful Snippet: Dispatch Not Matched")
     val MethodNotFound = Value(4, "Method Not Found")
     val NoNameSpecified = Value(5, "No Snippet Name Specified")
-    val InstantiationException =
-      Value(6, "Exception During Snippet Instantiation")
-    val DispatchSnippetNotMatched =
-      Value(7, "Dispatch Snippet: Dispatch Not Matched")
+    val InstantiationException = Value(
+      6,
+      "Exception During Snippet Instantiation")
+    val DispatchSnippetNotMatched = Value(
+      7,
+      "Dispatch Snippet: Dispatch Not Matched")
 
-    val StateInStateless =
-      Value(8, "Access to Lift's statefull features from Stateless mode")
+    val StateInStateless = Value(
+      8,
+      "Access to Lift's statefull features from Stateless mode")
     val CometTimeout = Value(9, "Comet Component did not response to requests")
     val CometNotFound = Value(10, "Comet Component not found")
     val ExecutionFailure = Value(11, "Execution Failure")
@@ -528,35 +537,33 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   lazy val liftVersion: String = {
     val cn = """\.""".r.replaceAllIn(LiftRules.getClass.getName, "/")
-    val ret: Box[String] =
-      for {
-        url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
-        newUrl = new java.net.URL(
-          url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-        str <- tryo(
-          new String(
-            readWholeStream(newUrl.openConnection.getInputStream),
-            "UTF-8"))
-        ma <- """Implementation-Version: (.*)""".r.findFirstMatchIn(str)
-      } yield ma.group(1)
+    val ret: Box[String] = for {
+      url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
+      newUrl = new java.net.URL(
+        url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
+      str <- tryo(
+        new String(
+          readWholeStream(newUrl.openConnection.getInputStream),
+          "UTF-8"))
+      ma <- """Implementation-Version: (.*)""".r.findFirstMatchIn(str)
+    } yield ma.group(1)
 
     ret openOr "Unknown Lift Version"
   }
 
   lazy val liftBuildDate: Date = {
     val cn = """\.""".r.replaceAllIn(LiftRules.getClass.getName, "/")
-    val ret: Box[Date] =
-      for {
-        url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
-        newUrl = new java.net.URL(
-          url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-        str <- tryo(
-          new String(
-            readWholeStream(newUrl.openConnection.getInputStream),
-            "UTF-8"))
-        ma <- """Built-Time: (.*)""".r.findFirstMatchIn(str)
-        asLong <- asLong(ma.group(1))
-      } yield new Date(asLong)
+    val ret: Box[Date] = for {
+      url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
+      newUrl = new java.net.URL(
+        url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
+      str <- tryo(
+        new String(
+          readWholeStream(newUrl.openConnection.getInputStream),
+          "UTF-8"))
+      ma <- """Built-Time: (.*)""".r.findFirstMatchIn(str)
+      asLong <- asLong(ma.group(1))
+    } yield new Date(asLong)
 
     ret openOr new Date(0L)
   }
@@ -753,8 +760,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     def groupEffects(noticeType: NoticeType.Value): JsCmd =
       Msgs.effects(Full(noticeType), noticeType.id, Noop, passJs)
 
-    def idEffects(id: String): JsCmd =
-      Msgs.effects(Empty, id, Noop, passJs)
+    def idEffects(id: String): JsCmd = Msgs.effects(Empty, id, Noop, passJs)
 
     // Compute the global notices first
     val groupMessages = Msgs.renderNotices() match {
@@ -937,11 +943,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * The function that calculates if the response should be rendered in
     * IE6/7/8 compatibility mode
     */
-  @volatile var calcIEMode: () => Boolean =
-    () =>
-      (for (r <- S.request)
-        yield r.isIE6 || r.isIE7 ||
-          r.isIE8) openOr true
+  @volatile var calcIEMode: () => Boolean = () =>
+    (for (r <- S.request)
+      yield r.isIE6 || r.isIE7 ||
+        r.isIE8) openOr true
 
   /**
     * The JavaScript to execute to log a message on the client side when
@@ -1001,8 +1006,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The default action to take when the JavaScript action fails
     */
-  @volatile var ajaxDefaultFailure: Box[() => JsCmd] =
-    Full(() => JsCmds.Alert(S.?("ajax.error")))
+  @volatile var ajaxDefaultFailure: Box[() => JsCmd] = Full(() =>
+    JsCmds.Alert(S.?("ajax.error")))
 
   /**
     * A function that takes the current HTTP request and returns the current
@@ -1043,8 +1048,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           new Elem("lift", snippetName, Null, element.scope, false, element)
 
         case snippetName :: encodedArguments =>
-          val decodedMetaData =
-            pairsToMetaData(encodedArguments.flatMap(_.roboSplit("[;&]")))
+          val decodedMetaData = pairsToMetaData(
+            encodedArguments.flatMap(_.roboSplit("[;&]")))
 
           if (decodedMetaData.get("parallel").headOption == Some(
                 Text("true"))) {
@@ -1265,9 +1270,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * If a deferred snippet has a failure during render,
     * what should we display?
     */
-  val deferredSnippetTimeout: FactoryMaker[NodeSeq] =
-    new FactoryMaker(() => {
-      if (Props.devMode) <div style="border: red solid 2px">
+  val deferredSnippetTimeout: FactoryMaker[NodeSeq] = new FactoryMaker(() => {
+    if (Props.devMode) <div style="border: red solid 2px">
           A deferred snippet timed out during render.
 
           <i>note: this error is displayed in the browser because
@@ -1276,13 +1280,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             be displayed, but there will be errors in the output logs.
           </i>
         </div> else NodeSeq.Empty
-    }) {}
+  }) {}
 
   /**
     * Should comments be stripped from the served XHTML
     */
-  val stripComments: FactoryMaker[Boolean] =
-    new FactoryMaker(() => { if (Props.devMode) false else true }) {}
+  val stripComments: FactoryMaker[Boolean] = new FactoryMaker(() => {
+    if (Props.devMode) false else true
+  }) {}
 
   private[http] val reqCnt = new AtomicInteger(0)
 
@@ -1297,9 +1302,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     * This is the way to do stateless REST in Lift
     */
-  val statelessDispatch =
-    RulesSeq[DispatchPF]
-      .append(ContentSecurityPolicyViolation.defaultViolationHandler)
+  val statelessDispatch = RulesSeq[DispatchPF]
+    .append(ContentSecurityPolicyViolation.defaultViolationHandler)
 
   /**
     * Add functionality around all of the HTTP request/response cycle.
@@ -1646,8 +1650,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Set a snippet failure handler here.  The class and method for the snippet are passed in
     */
-  val snippetFailedFunc =
-    RulesSeq[SnippetFailure => Unit].prepend(logSnippetFailure _)
+  val snippetFailedFunc = RulesSeq[SnippetFailure => Unit]
+    .prepend(logSnippetFailure _)
 
   private def logSnippetFailure(sf: SnippetFailure) =
     logger.info("Snippet Failure: " + sf)
@@ -2043,8 +2047,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The meta for the detected AsyncProvider given the container we're running in
     */
-  lazy val asyncProviderMeta: Box[AsyncProviderMeta] =
-    asyncMetaList.find(_.suspendResumeSupport_?)
+  lazy val asyncProviderMeta: Box[AsyncProviderMeta] = asyncMetaList.find(
+    _.suspendResumeSupport_?)
 
   /**
     * A function that converts the current Request into an AsyncProvider.
@@ -2052,8 +2056,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   lazy val theServletAsyncProvider: Box[HTTPRequest => ServletAsyncProvider] =
     asyncProviderMeta.flatMap(_.providerFunction)
 
-  private var asyncMetaList: List[AsyncProviderMeta] =
-    List(Servlet30AsyncProvider, Jetty6AsyncProvider, Jetty7AsyncProvider)
+  private var asyncMetaList: List[AsyncProviderMeta] = List(
+    Servlet30AsyncProvider,
+    Jetty6AsyncProvider,
+    Jetty7AsyncProvider)
 
   /**
     * Register an AsyncMeta provider in addition to the default

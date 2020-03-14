@@ -46,8 +46,7 @@ trait I18nSupport extends I18NSupportLowPriorityImplicits {
       * @param lang the language to store for the user
       * @return the new result
       */
-    def withLang(lang: Lang): Result =
-      messagesApi.setLang(result, lang)
+    def withLang(lang: Lang): Result = messagesApi.setLang(result, lang)
 
     /**
       * Clears the user's language by discarding the language cookie set by withLang
@@ -59,8 +58,7 @@ trait I18nSupport extends I18NSupportLowPriorityImplicits {
       *
       * @return the new result
       */
-    def clearingLang: Result =
-      messagesApi.clearLang(result)
+    def clearingLang: Result = messagesApi.clearLang(result)
 
   }
 

@@ -654,13 +654,12 @@ class DistributedLDAModel private[ml] (
 
   @Since("1.6.0")
   override def copy(extra: ParamMap): DistributedLDAModel = {
-    val copied =
-      new DistributedLDAModel(
-        uid,
-        vocabSize,
-        oldDistributedModel,
-        sqlContext,
-        oldLocalModelOption)
+    val copied = new DistributedLDAModel(
+      uid,
+      vocabSize,
+      oldDistributedModel,
+      sqlContext,
+      oldLocalModelOption)
     copyValues(copied, extra).setParent(parent)
     copied
   }

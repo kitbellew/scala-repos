@@ -73,8 +73,8 @@ object StandardMain {
   }
 
   /** The common interface to standard output, used for all built-in ConsoleLoggers. */
-  val console =
-    ConsoleOut.systemOutOverwrite(ConsoleOut.overwriteContaining("Resolving "))
+  val console = ConsoleOut.systemOutOverwrite(
+    ConsoleOut.overwriteContaining("Resolving "))
 
   def initialGlobalLogging: GlobalLogging =
     GlobalLogging.initial(
@@ -88,8 +88,8 @@ object StandardMain {
       preCommands: Seq[String]): State = {
     import BasicCommandStrings.isEarlyCommand
     val userCommands = configuration.arguments.map(_.trim)
-    val (earlyCommands, normalCommands) =
-      (preCommands ++ userCommands).partition(isEarlyCommand)
+    val (earlyCommands, normalCommands) = (preCommands ++ userCommands)
+      .partition(isEarlyCommand)
     val commands = earlyCommands ++ normalCommands
     val initAttrs = BuiltinCommands.initialAttributes
     val s = State(
@@ -426,8 +426,7 @@ object BuiltinCommands {
       s: State,
       extracted: Extracted,
       settings: Seq[Def.Setting[_]],
-      arg: String) =
-    SettingCompletions.setThis(s, extracted, settings, arg)
+      arg: String) = SettingCompletions.setThis(s, extracted, settings, arg)
   def inspect =
     Command(InspectCommand, inspectBrief, inspectDetailed)(Inspect.parser) {
       case (s, (option, sk)) =>
@@ -657,9 +656,10 @@ object BuiltinCommands {
 
   @tailrec
   private[this] def doLoadFailed(s: State, loadArg: String): State = {
-    val result = (SimpleReader.readLine(
-      "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
-      .toLowerCase(Locale.ENGLISH)
+    val result =
+      (SimpleReader.readLine(
+        "Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? ") getOrElse Quit)
+        .toLowerCase(Locale.ENGLISH)
     def matches(s: String) = !result.isEmpty && (s startsWith result)
 
     if (result.isEmpty || matches("retry"))

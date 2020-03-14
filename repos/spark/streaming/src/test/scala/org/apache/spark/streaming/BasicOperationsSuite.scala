@@ -435,25 +435,23 @@ class BasicOperationsSuite extends TestSuiteBase {
   }
 
   test("updateStateByKey") {
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 1)),
-        Seq(("a", 2), ("b", 1)),
-        Seq(("a", 3), ("b", 2), ("c", 1)),
-        Seq(("a", 4), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1)),
-        Seq(("a", 5), ("b", 3), ("c", 1))
-      )
+    val outputData = Seq(
+      Seq(("a", 1)),
+      Seq(("a", 2), ("b", 1)),
+      Seq(("a", 3), ("b", 2), ("c", 1)),
+      Seq(("a", 4), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1)),
+      Seq(("a", 5), ("b", 3), ("c", 1))
+    )
 
     val updateStateOperation = (s: DStream[String]) => {
       val updateFunc = (values: Seq[Int], state: Option[Int]) => {
@@ -468,25 +466,23 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("updateStateByKey - simple with initial value RDD") {
     val initial = Seq(("a", 1), ("c", 2))
 
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 2), ("c", 2)),
-        Seq(("a", 3), ("b", 1), ("c", 2)),
-        Seq(("a", 4), ("b", 2), ("c", 3)),
-        Seq(("a", 5), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3))
-      )
+    val outputData = Seq(
+      Seq(("a", 2), ("c", 2)),
+      Seq(("a", 3), ("b", 1), ("c", 2)),
+      Seq(("a", 4), ("b", 2), ("c", 3)),
+      Seq(("a", 5), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3))
+    )
 
     val updateStateOperation = (s: DStream[String]) => {
       val initialRDD = s.context.sparkContext.makeRDD(initial)
@@ -506,25 +502,23 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("updateStateByKey - with initial value RDD") {
     val initial = Seq(("a", 1), ("c", 2))
 
-    val inputData =
-      Seq(
-        Seq("a"),
-        Seq("a", "b"),
-        Seq("a", "b", "c"),
-        Seq("a", "b"),
-        Seq("a"),
-        Seq()
-      )
+    val inputData = Seq(
+      Seq("a"),
+      Seq("a", "b"),
+      Seq("a", "b", "c"),
+      Seq("a", "b"),
+      Seq("a"),
+      Seq()
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 2), ("c", 2)),
-        Seq(("a", 3), ("b", 1), ("c", 2)),
-        Seq(("a", 4), ("b", 2), ("c", 3)),
-        Seq(("a", 5), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3)),
-        Seq(("a", 6), ("b", 3), ("c", 3))
-      )
+    val outputData = Seq(
+      Seq(("a", 2), ("c", 2)),
+      Seq(("a", 3), ("b", 1), ("c", 2)),
+      Seq(("a", 4), ("b", 2), ("c", 3)),
+      Seq(("a", 5), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3)),
+      Seq(("a", 6), ("b", 3), ("c", 3))
+    )
 
     val updateStateOperation = (s: DStream[String]) => {
       val initialRDD = s.context.sparkContext.makeRDD(initial)
@@ -547,25 +541,23 @@ class BasicOperationsSuite extends TestSuiteBase {
   }
 
   test("updateStateByKey - object lifecycle") {
-    val inputData =
-      Seq(
-        Seq("a", "b"),
-        null,
-        Seq("a", "c", "a"),
-        Seq("c"),
-        null,
-        null
-      )
+    val inputData = Seq(
+      Seq("a", "b"),
+      null,
+      Seq("a", "c", "a"),
+      Seq("c"),
+      null,
+      null
+    )
 
-    val outputData =
-      Seq(
-        Seq(("a", 1), ("b", 1)),
-        Seq(("a", 1), ("b", 1)),
-        Seq(("a", 3), ("c", 1)),
-        Seq(("a", 3), ("c", 2)),
-        Seq(("c", 2)),
-        Seq()
-      )
+    val outputData = Seq(
+      Seq(("a", 1), ("b", 1)),
+      Seq(("a", 1), ("b", 1)),
+      Seq(("a", 3), ("c", 1)),
+      Seq(("a", 3), ("c", 2)),
+      Seq(("c", 2)),
+      Seq()
+    )
 
     val updateStateOperation = (s: DStream[String]) => {
       class StateObject(var counter: Int = 0, var expireCounter: Int = 0)
@@ -641,8 +633,8 @@ class BasicOperationsSuite extends TestSuiteBase {
       numExpectedOutput = cleanupTestInput.size / 2,
       rememberDuration = Seconds(3))
     val windowedStream2 = operatedStream.asInstanceOf[WindowedDStream[_]]
-    val windowedStream1 =
-      windowedStream2.dependencies.head.asInstanceOf[WindowedDStream[_]]
+    val windowedStream1 = windowedStream2.dependencies.head
+      .asInstanceOf[WindowedDStream[_]]
     val mappedStream = windowedStream1.dependencies.head
 
     // Checkpoint remember durations
@@ -696,11 +688,10 @@ class BasicOperationsSuite extends TestSuiteBase {
         val batchCounter = new BatchCounter(ssc)
 
         // Set up the streaming context and input streams
-        val networkStream =
-          ssc.socketTextStream(
-            "localhost",
-            testServer.port,
-            StorageLevel.MEMORY_AND_DISK)
+        val networkStream = ssc.socketTextStream(
+          "localhost",
+          testServer.port,
+          StorageLevel.MEMORY_AND_DISK)
         val mappedStream = networkStream.map(_ + ".").persist()
         val outputQueue = new ConcurrentLinkedQueue[Seq[String]]
         val outputStream = new TestOutputStream(mappedStream, outputQueue)
@@ -751,8 +742,8 @@ class BasicOperationsSuite extends TestSuiteBase {
         import Time._
 
         val latestPersistedRddId = persistentRddIds(persistentRddIds.keySet.max)
-        val earliestPersistedRddId =
-          persistentRddIds(persistentRddIds.keySet.min)
+        val earliestPersistedRddId = persistentRddIds(
+          persistentRddIds.keySet.min)
         val latestBlockRdd = blockRdds(blockRdds.keySet.max)
         val earliestBlockRdd = blockRdds(blockRdds.keySet.min)
         // verify that the latest mapped RDD is persisted but the earliest one has been unpersisted
@@ -784,16 +775,17 @@ class BasicOperationsSuite extends TestSuiteBase {
       batchDuration === Seconds(1),
       "Batch duration has changed from 1 second, check cleanup tests")
     withStreamingContext(setupStreams(cleanupTestInput, operation)) { ssc =>
-      val operatedStream =
-        ssc.graph
-          .getOutputStreams()
-          .head
-          .dependencies
-          .head
-          .asInstanceOf[DStream[T]]
+      val operatedStream = ssc.graph
+        .getOutputStreams()
+        .head
+        .dependencies
+        .head
+        .asInstanceOf[DStream[T]]
       if (rememberDuration != null) ssc.remember(rememberDuration)
-      val output =
-        runStreams[(Int, Int)](ssc, cleanupTestInput.size, numExpectedOutput)
+      val output = runStreams[(Int, Int)](
+        ssc,
+        cleanupTestInput.size,
+        numExpectedOutput)
       val clock = ssc.scheduler.clock.asInstanceOf[Clock]
       assert(clock.getTimeMillis() === Seconds(10).milliseconds)
       assert(output.size === numExpectedOutput)

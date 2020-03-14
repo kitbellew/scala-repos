@@ -34,16 +34,16 @@ object CompilerBenchmark {
 
     for (i <- 1 to RUNS) {
       val (queries, t1) = time("Creating queries", COUNT_CREATE)(allQueries)
-      val (asts, t2) =
-        time("Creating ASTs", COUNT_TONODE)(queries.map(_.toNode))
+      val (asts, t2) = time("Creating ASTs", COUNT_TONODE)(
+        queries.map(_.toNode))
       phases.foreach(p => phaseNanos += (p.name -> new Array[Long](1)))
       //asts.zipWithIndex.foreach { case (n, i) => println(i); compiler.run(n) }
       /*if(i == RUNS-1) {
         println("Attach profiler and press Return")
         Console.readLine()
       }*/
-      val (compiled, t3) =
-        time("Compiling", COUNT_COMPILE)(asts.map(compiler.run(_)))
+      val (compiled, t3) = time("Compiling", COUNT_COMPILE)(
+        asts.map(compiler.run(_)))
       /*if(i == RUNS-1) {
         println("Detach profiler and press Return")
         Console.readLine()
@@ -348,12 +348,14 @@ object CompilerBenchmark {
     val q12 = as.filter(_.id <= as.map(_.id).max - 1).map(_.a)
     val q13 = (as.filter(_.id < 2) union as.filter(_.id > 2)).map(_.id)
     val q14 = q13.to[Set]
-    val q15 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.get).to[Set]
-    val q16 = (as.map(a => a.id.?).filter(_ < 2) unionAll as
-      .map(a => a.id.?)
-      .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
+    val q15 =
+      (as.map(a => a.id.?).filter(_ < 2) unionAll as
+        .map(a => a.id.?)
+        .filter(_ > 2)).map(_.get).to[Set]
+    val q16 =
+      (as.map(a => a.id.?).filter(_ < 2) unionAll as
+        .map(a => a.id.?)
+        .filter(_ > 2)).map(_.getOrElse(-1)).to[Set].filter(_ =!= 42)
     val q17 = as.sortBy(_.id).zipWithIndex.filter(_._2 < 2L).map {
       case (a, i) => (a.id, i)
     }

@@ -24,8 +24,8 @@ class ScalaExtractMethodSettings(
     val lastExprType: Option[ScType],
     val innerClassSettings: InnerClassSettings) {
 
-  lazy val (calcReturnTypeIsUnit, calcReturnTypeText) =
-    ScalaExtractMethodUtils.calcReturnTypeExt(this)
+  lazy val (calcReturnTypeIsUnit, calcReturnTypeText) = ScalaExtractMethodUtils
+    .calcReturnTypeExt(this)
 
   val typeParameters: Seq[ScTypeParam] = {
     val tp: ArrayBuffer[ScTypeParam] = new ArrayBuffer

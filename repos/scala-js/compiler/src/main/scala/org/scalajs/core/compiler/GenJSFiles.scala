@@ -38,8 +38,8 @@ trait GenJSFiles extends SubComponent { self: GenJSCode =>
       cunit: CompilationUnit,
       sym: Symbol,
       suffix: String) = {
-    val baseDir: AbstractFile =
-      settings.outputDirs.outputDirFor(cunit.source.file)
+    val baseDir: AbstractFile = settings.outputDirs.outputDirFor(
+      cunit.source.file)
 
     val pathParts = sym.fullName.split("[./]")
     val dir = (baseDir /: pathParts.init)(_.subdirectoryNamed(_))

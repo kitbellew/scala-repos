@@ -115,15 +115,15 @@ class VersionedBatchedStoreTest extends WordSpec {
       val batchCoveredInput: List[Int] =
         TestUtil.pruneToBatchCovered(inWithTime, intr, batcher).toList
 
-      val (inMemoryA, inMemoryB) =
-        TestGraphs.multipleSummerJobInScala(batchCoveredInput)(fnA, fnB, fnC)
+      val (inMemoryA, inMemoryB) = TestGraphs.multipleSummerJobInScala(
+        batchCoveredInput)(fnA, fnB, fnC)
 
       val packFn = { (bid: BatchID, kv: (Int, Int)) =>
         ((bid.id, kv._1), kv._2)
       }
       val unpackFn = { kv: ((Long, Int), Int) => (kv._1._2, kv._2) }
-      implicit val tupEncoder: Injection[(Long, Int), Array[Byte]] =
-        Bufferable.injectionOf[(Long, Int)]
+      implicit val tupEncoder: Injection[(Long, Int), Array[Byte]] = Bufferable
+        .injectionOf[(Long, Int)]
       val conf = new org.apache.hadoop.conf.Configuration
       implicit val config = Config.hadoopWithDefaults(conf)
       implicit val mode: Mode = Hdfs(true, conf)
@@ -131,9 +131,9 @@ class VersionedBatchedStoreTest extends WordSpec {
       def buildStore()
           : (String, batch.BatchedStore[Int, Int], Long => Map[Int, Int]) = {
         val rootFolder = createTempDirectory().getAbsolutePath
-        val testStoreVBS =
-          VersionedBatchStore[Int, Int, (Long, Int), Int](rootFolder, 1)(
-            packFn)(unpackFn)
+        val testStoreVBS = VersionedBatchStore[Int, Int, (Long, Int), Int](
+          rootFolder,
+          1)(packFn)(unpackFn)
         val testStore = new InitialBatchedStore(
           batcher.batchOf(Timestamp(inWithTime.head._1)),
           testStoreVBS)

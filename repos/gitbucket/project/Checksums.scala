@@ -9,8 +9,7 @@ object Checksums {
   def generate(source: File, target: File, algorithm: String): Unit =
     IO write (target, compute(source, algorithm))
 
-  def compute(file: File, algorithm: String): String =
-    hex(raw(file, algorithm))
+  def compute(file: File, algorithm: String): String = hex(raw(file, algorithm))
 
   def raw(file: File, algorithm: String): Array[Byte] =
     (Using fileInputStream file) { is =>

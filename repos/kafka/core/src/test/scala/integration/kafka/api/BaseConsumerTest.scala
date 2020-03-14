@@ -143,8 +143,11 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     // change subscription to trigger rebalance
     consumer0.subscribe(List(topic, topic2).asJava, rebalanceListener)
 
-    val newAssignment =
-      Set(tp, tp2, new TopicPartition(topic2, 0), new TopicPartition(topic2, 1))
+    val newAssignment = Set(
+      tp,
+      tp2,
+      new TopicPartition(topic2, 0),
+      new TopicPartition(topic2, 1))
     TestUtils.waitUntilTrue(
       () => {
         val records = consumer0.poll(50)
@@ -361,8 +364,10 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       timestampType: TimestampType = TimestampType.CREATE_TIME,
       tp: TopicPartition = tp,
       maxPollRecords: Int = Int.MaxValue) {
-    val records =
-      consumeRecords(consumer, numRecords, maxPollRecords = maxPollRecords)
+    val records = consumeRecords(
+      consumer,
+      numRecords,
+      maxPollRecords = maxPollRecords)
     val now = System.currentTimeMillis()
     for (i <- 0 until numRecords) {
       val record = records.get(i)
@@ -431,16 +436,16 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       consumer: Consumer[Array[Byte], Array[Byte]],
       topicsToSubscribe: List[String])
       extends ShutdownableThread("daemon-consumer-assignment", false) {
-    @volatile private var partitionAssignment: Set[TopicPartition] =
-      Set.empty[TopicPartition]
+    @volatile private var partitionAssignment: Set[TopicPartition] = Set
+      .empty[TopicPartition]
     private var topicsSubscription = topicsToSubscribe
     @volatile private var subscriptionChanged = false
 
     val rebalanceListener = new ConsumerRebalanceListener {
       override def onPartitionsAssigned(
           partitions: util.Collection[TopicPartition]) = {
-        partitionAssignment =
-          collection.immutable.Set(consumer.assignment().asScala.toArray: _*)
+        partitionAssignment = collection.immutable.Set(
+          consumer.assignment().asScala.toArray: _*)
       }
 
       override def onPartitionsRevoked(
@@ -514,8 +519,8 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     // The above checks could miss the case where one or more partitions were assigned to more
     // than one consumer and the same number of partitions were missing from assignments.
     // Make sure that all unique assignments are the same as 'partitions'
-    val uniqueAssignedPartitions =
-      (Set[TopicPartition]() /: assignments)(_ ++ _)
+    val uniqueAssignedPartitions = (Set[TopicPartition]() /: assignments)(
+      _ ++ _)
     uniqueAssignedPartitions == partitions
   }
 

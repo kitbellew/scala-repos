@@ -24,8 +24,8 @@ import org.apache.spark.streaming.ui.StreamingJobProgressListener
 
 private[streaming] class StreamingSource(ssc: StreamingContext) extends Source {
   override val metricRegistry = new MetricRegistry
-  override val sourceName =
-    "%s.StreamingMetrics".format(ssc.sparkContext.appName)
+  override val sourceName = "%s.StreamingMetrics".format(
+    ssc.sparkContext.appName)
 
   private val streamingListener = ssc.progressListener
 

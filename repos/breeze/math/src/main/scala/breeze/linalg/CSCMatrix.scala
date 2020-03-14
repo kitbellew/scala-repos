@@ -244,8 +244,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
         }
         new SparseVector[V](indices, data, activeSize, rows * cols)
       case View.Copy =>
-        implicit val man =
-          ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+        implicit val man = ClassTag[V](
+          data.getClass.getComponentType.asInstanceOf[Class[V]])
         val sv = SparseVector.zeros[V](rows * cols)
         var j = 0
         while (j < cols) {
@@ -267,8 +267,8 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
       zero: Zero[V]): DenseMatrix[V] = { toDense }
 
   def toDense: DenseMatrix[V] = {
-    implicit val ctg =
-      ClassTag(data.getClass.getComponentType).asInstanceOf[ClassTag[V]]
+    implicit val ctg = ClassTag(data.getClass.getComponentType)
+      .asInstanceOf[ClassTag[V]]
     val res = DenseMatrix.zeros[V](rows, cols)
     var i = 0
     while (i < cols) {
@@ -340,8 +340,8 @@ object CSCMatrix
       cols: Int,
       data: Array[V]): CSCMatrix[V] = {
     val z = implicitly[Zero[V]].zero
-    implicit val man =
-      ClassTag[V](data.getClass.getComponentType.asInstanceOf[Class[V]])
+    implicit val man = ClassTag[V](
+      data.getClass.getComponentType.asInstanceOf[Class[V]])
     val res = zeros(rows, cols, data.length)
     var i = 0
     for (c <- 0 until cols; r <- 0 until rows) {
@@ -569,9 +569,9 @@ object CSCMatrix
         return new CSCMatrix(vs, _rows, _cols, outCols, 0, Array())
       }
 
-      val order: Array[Int] = if (keysAlreadySorted) {
-        VectorBuilder.range(nnz)
-      } else { sortedIndices(indices) }
+      val order: Array[Int] =
+        if (keysAlreadySorted) { VectorBuilder.range(nnz) }
+        else { sortedIndices(indices) }
 
       val outRows = new Array[Int](nnz)
       val outData = new Array[T](nnz)

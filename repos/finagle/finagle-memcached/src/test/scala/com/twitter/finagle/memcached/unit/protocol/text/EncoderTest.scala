@@ -23,8 +23,9 @@ class EncoderTest extends FunSuite with MockitoSugar {
     val encoder = new Encoder
 
     def encode(x: AnyRef) = {
-      val encoded =
-        encoder.encode(context, channel, x).asInstanceOf[ChannelBuffer]
+      val encoded = encoder
+        .encode(context, channel, x)
+        .asInstanceOf[ChannelBuffer]
       channelBufferToString(encoded)
     }
 

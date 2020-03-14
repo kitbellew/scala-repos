@@ -48,8 +48,8 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
             includedTerms = includedTerms.filter(_ != Seq(inner.value))
           case ColumnInteraction(cols) =>
             val fromInteraction = expandInteraction(schema, cols).map(_.toSet)
-            includedTerms =
-              includedTerms.filter(t => !fromInteraction.contains(t.toSet))
+            includedTerms = includedTerms.filter(t =>
+              !fromInteraction.contains(t.toSet))
           case Dot =>
             // e.g. "- .", which removes all first-order terms
             includedTerms = includedTerms.filter {
@@ -85,12 +85,13 @@ private[ml] case class ParsedRFormula(label: ColumnRef, terms: Seq[Term]) {
     if (terms.isEmpty) { return Seq(Nil) }
 
     val rest = expandInteraction(schema, terms.tail)
-    val validInteractions = (terms.head match {
-      case Dot =>
-        expandDot(schema).flatMap { t => rest.map { r => Seq(t) ++ r } }
-      case ColumnRef(value) =>
-        rest.map(Seq(value) ++ _)
-    }).map(_.distinct)
+    val validInteractions =
+      (terms.head match {
+        case Dot =>
+          expandDot(schema).flatMap { t => rest.map { r => Seq(t) ++ r } }
+        case ColumnRef(value) =>
+          rest.map(Seq(value) ++ _)
+      }).map(_.distinct)
 
     // Deduplicates feature interactions, for example, a:b is the same as b:a.
     var seen = mutable.Set[Set[String]]()
@@ -166,8 +167,9 @@ private[ml] object RFormulaParser extends RegexParsers {
 
   private val dot: Parser[InteractableTerm] = "\\.".r ^^ { case _ => Dot }
 
-  private val interaction: Parser[List[InteractableTerm]] =
-    rep1sep(columnRef | dot, ":")
+  private val interaction: Parser[List[InteractableTerm]] = rep1sep(
+    columnRef | dot,
+    ":")
 
   private val term: Parser[Term] = intercept |
     interaction ^^ { case terms => ColumnInteraction(terms) } | dot | columnRef

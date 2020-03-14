@@ -235,13 +235,13 @@ class TaskContextSuite
     }
     // First, simulate task success. This should give us all the accumulators.
     val accumUpdates1 = task.collectAccumulatorUpdates(taskFailed = false)
-    val accumUpdates2 =
-      (initialAccums ++ Seq(acc1, acc2)).map(TaskMetricsSuite.makeInfo)
+    val accumUpdates2 = (initialAccums ++ Seq(acc1, acc2))
+      .map(TaskMetricsSuite.makeInfo)
     TaskMetricsSuite.assertUpdatesEquals(accumUpdates1, accumUpdates2)
     // Now, simulate task failures. This should give us only the accums that count failed values.
     val accumUpdates3 = task.collectAccumulatorUpdates(taskFailed = true)
-    val accumUpdates4 =
-      (initialAccums ++ Seq(acc1)).map(TaskMetricsSuite.makeInfo)
+    val accumUpdates4 = (initialAccums ++ Seq(acc1))
+      .map(TaskMetricsSuite.makeInfo)
     TaskMetricsSuite.assertUpdatesEquals(accumUpdates3, accumUpdates4)
   }
 

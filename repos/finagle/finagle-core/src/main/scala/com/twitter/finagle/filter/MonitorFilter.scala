@@ -27,8 +27,7 @@ private[finagle] object MonitorFilter {
   */
 class MonitorFilter[Req, Rep](monitor: Monitor) extends SimpleFilter[Req, Rep] {
 
-  private[this] val OnFailureFn: Throwable => Unit =
-    exc => monitor.handle(exc)
+  private[this] val OnFailureFn: Throwable => Unit = exc => monitor.handle(exc)
 
   def apply(request: Req, service: Service[Req, Rep]): Future[Rep] =
     Future.monitored { service(request) }.onFailure(OnFailureFn)

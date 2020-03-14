@@ -133,8 +133,7 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
     abstract class Op1F1(namespace: Vector[String], name: String)
         extends Op1(namespace, name) {
       def spec[A <: SourceType](ctx: MorphContext)(
-          source: TransSpec[A]): TransSpec[A] =
-        trans.Map1(source, f1(ctx))
+          source: TransSpec[A]): TransSpec[A] = trans.Map1(source, f1(ctx))
 
       def f1(ctx: MorphContext): F1
 
@@ -180,8 +179,7 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
         extends Op2(namespace, name) {
       def spec[A <: SourceType](ctx: MorphContext)(
           left: TransSpec[A],
-          right: TransSpec[A]): TransSpec[A] =
-        trans.Map2(left, right, f2(ctx))
+          right: TransSpec[A]): TransSpec[A] = trans.Map2(left, right, f2(ctx))
 
       def f2(ctx: MorphContext): F2
 

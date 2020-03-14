@@ -24,8 +24,7 @@ object Test extends InteractiveTest {
     "TypeAlias",
     "Trait",
     "InnerClass")
-  val bareText =
-    """abstract class %s {
+  val bareText = """abstract class %s {
     |  def %s = ""
     |  val %s = ""
     |  var %s: String = _
@@ -111,8 +110,8 @@ object Test extends InteractiveTest {
               println("Couldn't parse")
             case Some(_) =>
               val sym = compiler.ask { () =>
-                val toplevel =
-                  compiler.rootMirror.EmptyPackage.info.decl(TypeName(name))
+                val toplevel = compiler.rootMirror.EmptyPackage.info
+                  .decl(TypeName(name))
                 if (toplevel eq NoSymbol) {
                   val clazz = compiler.rootMirror.EmptyPackage.info
                     .decl(TypeName(className))

@@ -49,8 +49,9 @@ class ShuffleBlockFetcherIteratorSuite
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
           val blocks = invocation.getArguments()(3).asInstanceOf[Array[String]]
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
 
           for (blockId <- blocks) {
             if (data.contains(BlockId(blockId))) {
@@ -126,8 +127,8 @@ class ShuffleBlockFetcherIteratorSuite
       // Make sure we release buffers when a wrapped input stream is closed.
       val mockBuf = localBlocks.getOrElse(blockId, remoteBlocks(blockId))
       // Note: ShuffleBlockFetcherIterator wraps input streams in a BufferReleasingInputStream
-      val wrappedInputStream =
-        inputStream.asInstanceOf[BufferReleasingInputStream]
+      val wrappedInputStream = inputStream
+        .asInstanceOf[BufferReleasingInputStream]
       verify(mockBuf, times(0)).release()
       val delegateAccess = PrivateMethod[InputStream]('delegate)
 
@@ -168,8 +169,9 @@ class ShuffleBlockFetcherIteratorSuite
     when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
           Future {
             // Return the first two blocks, and wait till task completion before returning the 3rd one
             listener.onBlockFetchSuccess(
@@ -238,8 +240,9 @@ class ShuffleBlockFetcherIteratorSuite
     when(transfer.fetchBlocks(any(), any(), any(), any(), any()))
       .thenAnswer(new Answer[Unit] {
         override def answer(invocation: InvocationOnMock): Unit = {
-          val listener =
-            invocation.getArguments()(4).asInstanceOf[BlockFetchingListener]
+          val listener = invocation
+            .getArguments()(4)
+            .asInstanceOf[BlockFetchingListener]
           Future {
             // Return the first block, and then fail.
             listener.onBlockFetchSuccess(

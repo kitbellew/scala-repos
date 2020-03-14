@@ -6,8 +6,8 @@ object SbtLauncherPlugin extends AutoPlugin {
 
   object autoImport {
     val SbtLaunchConfiguration = config("sbt-launch")
-    val sbtLaunchJar =
-      taskKey[File]("constructs an sbt-launch.jar for this version of sbt.")
+    val sbtLaunchJar = taskKey[File](
+      "constructs an sbt-launch.jar for this version of sbt.")
     val rawSbtLaunchJar = taskKey[File](
       "The released version of the sbt-launcher we use to bundle this application.")
   }

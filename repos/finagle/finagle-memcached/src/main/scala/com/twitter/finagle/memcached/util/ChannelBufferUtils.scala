@@ -72,8 +72,7 @@ private[finagle] object ChannelBufferUtils {
 
     override def toString: String = buffer.toString(Charsets.Utf8)
 
-    def split: Seq[ChannelBuffer] =
-      split(FIND_SPACE, 1)
+    def split: Seq[ChannelBuffer] = split(FIND_SPACE, 1)
 
     def split(
         indexFinder: ChannelBufferIndexFinder,
@@ -112,8 +111,7 @@ private[finagle] object ChannelBufferUtils {
     new String(channelBufferToBytes(channelBuffer))
 
   implicit def channelBufferToRichChannelBuffer(
-      buffer: ChannelBuffer): RichChannelBuffer =
-    new RichChannelBuffer(buffer)
+      buffer: ChannelBuffer): RichChannelBuffer = new RichChannelBuffer(buffer)
 
   implicit def stringToChannelBuffer(string: String): ChannelBuffer =
     if (Strings.isNullOrEmpty(string)) null
@@ -129,8 +127,7 @@ private[finagle] object ChannelBufferUtils {
       }
     }
 
-  implicit def stringToByteArray(string: String): Array[Byte] =
-    string.getBytes
+  implicit def stringToByteArray(string: String): Array[Byte] = string.getBytes
 
   implicit def stringToChannelBufferIndexFinder(
       string: String): ChannelBufferIndexFinder =

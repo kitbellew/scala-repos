@@ -81,8 +81,9 @@ class GroupedIterator private (
   val keyOrdering = GenerateOrdering.generate(sortOrder, inputSchema)
 
   /** Creates a row containing only the key for a given input row. */
-  val keyProjection =
-    GenerateUnsafeProjection.generate(groupingExpressions, inputSchema)
+  val keyProjection = GenerateUnsafeProjection.generate(
+    groupingExpressions,
+    inputSchema)
 
   /**
     * Holds null or the row that will be returned on next call to `next()` in the inner iterator.

@@ -68,8 +68,8 @@ private[cluster] object VectorClock {
   */
 @SerialVersionUID(1L)
 final case class VectorClock(
-    versions: TreeMap[VectorClock.Node, Long] =
-      TreeMap.empty[VectorClock.Node, Long]) {
+    versions: TreeMap[VectorClock.Node, Long] = TreeMap
+      .empty[VectorClock.Node, Long]) {
 
   import VectorClock._
 
@@ -211,8 +211,9 @@ final case class VectorClock(
   def merge(that: VectorClock): VectorClock = {
     var mergedVersions = that.versions
     for ((node, time) ← versions) {
-      val mergedVersionsCurrentTime =
-        mergedVersions.getOrElse(node, Timestamp.Zero)
+      val mergedVersionsCurrentTime = mergedVersions.getOrElse(
+        node,
+        Timestamp.Zero)
       if (time > mergedVersionsCurrentTime)
         mergedVersions = mergedVersions.updated(node, time)
     }

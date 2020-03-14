@@ -5,8 +5,7 @@ package a {
   }
 
   class Meter(val underlying: Double) extends AnyVal with _root_.b.Printable {
-    def +(other: Meter): Meter =
-      new Meter(this.underlying + other.underlying)
+    def +(other: Meter): Meter = new Meter(this.underlying + other.underlying)
     def /(other: Meter)(implicit dummy: Meter.MeterArg = null): Double =
       this.underlying / other.underlying
     def /(factor: Double): Meter = new Meter(this.underlying / factor)
@@ -29,8 +28,7 @@ package a {
   }
 
   class Foot(val unbox: Double) extends AnyVal {
-    def +(other: Foot): Foot =
-      new Foot(this.unbox + other.unbox)
+    def +(other: Foot): Foot = new Foot(this.unbox + other.unbox)
     override def toString = unbox.toString + "ft"
   }
   object Foot {

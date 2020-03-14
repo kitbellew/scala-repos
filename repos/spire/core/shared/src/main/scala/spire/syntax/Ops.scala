@@ -617,8 +617,6 @@ final class TorsorPointOps[P](lhs: P) {
 final class IntervalPointOps[A](lhs: A)(implicit
     o: Order[A],
     ev: AdditiveGroup[A]) {
-  def ±(rhs: A): Interval[A] =
-    Interval(ev.minus(lhs, rhs), ev.plus(lhs, rhs))
-  def +/-(rhs: A): Interval[A] =
-    Interval(ev.minus(lhs, rhs), ev.plus(lhs, rhs))
+  def ±(rhs: A): Interval[A] = Interval(ev.minus(lhs, rhs), ev.plus(lhs, rhs))
+  def +/-(rhs: A): Interval[A] = Interval(ev.minus(lhs, rhs), ev.plus(lhs, rhs))
 }

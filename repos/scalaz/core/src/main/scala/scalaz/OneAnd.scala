@@ -134,8 +134,7 @@ private sealed trait OneAndFoldable[F[_]] extends Foldable1[OneAnd[F, ?]] {
     F.foldLeft(fa.tail, z(fa.head))(f)
 
   override def foldMap[A, B](fa: OneAnd[F, A])(f: A => B)(
-      implicit M: Monoid[B]) =
-    M.append(f(fa.head), F.foldMap(fa.tail)(f))
+      implicit M: Monoid[B]) = M.append(f(fa.head), F.foldMap(fa.tail)(f))
 
   override def foldRight[A, B](fa: OneAnd[F, A], z: => B)(f: (A, => B) => B) =
     f(fa.head, F.foldRight(fa.tail, z)(f))
@@ -151,20 +150,15 @@ private sealed trait OneAndFoldable[F[_]] extends Foldable1[OneAnd[F, ?]] {
   override def index[A](fa: OneAnd[F, A], i: Int) =
     if (i == 0) Some(fa.head) else F.index(fa.tail, i - 1)
 
-  override def toVector[A](fa: OneAnd[F, A]) =
-    fa.head +: F.toVector(fa.tail)
+  override def toVector[A](fa: OneAnd[F, A]) = fa.head +: F.toVector(fa.tail)
 
-  override def toList[A](fa: OneAnd[F, A]) =
-    fa.head :: F.toList(fa.tail)
+  override def toList[A](fa: OneAnd[F, A]) = fa.head :: F.toList(fa.tail)
 
-  override def toIList[A](fa: OneAnd[F, A]) =
-    fa.head :: F.toIList(fa.tail)
+  override def toIList[A](fa: OneAnd[F, A]) = fa.head :: F.toIList(fa.tail)
 
-  override def toSet[A](fa: OneAnd[F, A]) =
-    F.toSet(fa.tail) + fa.head
+  override def toSet[A](fa: OneAnd[F, A]) = F.toSet(fa.tail) + fa.head
 
-  override def toStream[A](fa: OneAnd[F, A]) =
-    fa.head #:: F.toStream(fa.tail)
+  override def toStream[A](fa: OneAnd[F, A]) = fa.head #:: F.toStream(fa.tail)
 
   override def toEphemeralStream[A](fa: OneAnd[F, A]) =
     EphemeralStream.cons(fa.head, F.toEphemeralStream(fa.tail))
@@ -180,12 +174,10 @@ private sealed trait OneAndFoldable1[F[_]] extends OneAndFoldable[F] {
   def F: Foldable1[F]
 
   override def foldMap1[A, B](fa: OneAnd[F, A])(f: A => B)(
-      implicit S: Semigroup[B]) =
-    S.append(f(fa.head), F.foldMap1(fa.tail)(f))
+      implicit S: Semigroup[B]) = S.append(f(fa.head), F.foldMap1(fa.tail)(f))
 
   override def foldMapRight1[A, B](fa: OneAnd[F, A])(z: A => B)(
-      f: (A, => B) => B) =
-    f(fa.head, F.foldMapRight1(fa.tail)(z)(f))
+      f: (A, => B) => B) = f(fa.head, F.foldMapRight1(fa.tail)(z)(f))
 }
 
 private sealed trait OneAndTraverse[F[_]]
@@ -339,8 +331,7 @@ sealed abstract class OneAndInstances extends OneAndInstances0 {
     }
 
   implicit def oneAndSemigroup[F[_]: Applicative: Plus, A]
-      : Semigroup[OneAnd[F, A]] =
-    oneAndPlus[F].semigroup
+      : Semigroup[OneAnd[F, A]] = oneAndPlus[F].semigroup
 
   implicit def oneAndZip[F[_]: Zip]: Zip[OneAnd[F, ?]] =
     new Zip[OneAnd[F, ?]] {

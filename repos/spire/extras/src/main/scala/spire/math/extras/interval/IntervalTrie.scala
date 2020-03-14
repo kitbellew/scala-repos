@@ -260,8 +260,10 @@ object IntervalTrie {
       else r.toLong
     }
     def intervalToIntervalSet(i: Interval[Long]): IntervalTrie[Long] = apply(i)
-    val intervals =
-      text.split(';').map(Interval.apply).map(_.mapBounds(rationalToLong)(la))
+    val intervals = text
+      .split(';')
+      .map(Interval.apply)
+      .map(_.mapBounds(rationalToLong)(la))
     val simpleSets = intervals.map(intervalToIntervalSet)
     (empty[Long] /: simpleSets)(_ | _)
   }

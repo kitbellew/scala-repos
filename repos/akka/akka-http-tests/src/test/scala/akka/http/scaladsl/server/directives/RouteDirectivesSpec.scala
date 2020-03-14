@@ -72,28 +72,27 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       case class Registered(name: String) extends RegistrationStatus
       case object AlreadyRegistered extends RegistrationStatus
 
-      val route =
-        get {
-          path("register" / Segment) { name ⇒
-            def registerUser(name: String): Future[RegistrationStatus] =
-              Future.successful {
-                name match {
-                  case "otto" ⇒ AlreadyRegistered
-                  case _ ⇒ Registered(name)
-                }
+      val route = get {
+        path("register" / Segment) { name ⇒
+          def registerUser(name: String): Future[RegistrationStatus] =
+            Future.successful {
+              name match {
+                case "otto" ⇒ AlreadyRegistered
+                case _ ⇒ Registered(name)
               }
-            complete {
-              registerUser(name).map[ToResponseMarshallable] {
-                case Registered(_) ⇒ HttpEntity.Empty
-                case AlreadyRegistered ⇒
-                  import spray.json.DefaultJsonProtocol._
-                  import SprayJsonSupport._
-                  StatusCodes.BadRequest -> Map(
-                    "error" -> "User already Registered")
-              }
+            }
+          complete {
+            registerUser(name).map[ToResponseMarshallable] {
+              case Registered(_) ⇒ HttpEntity.Empty
+              case AlreadyRegistered ⇒
+                import spray.json.DefaultJsonProtocol._
+                import SprayJsonSupport._
+                StatusCodes.BadRequest -> Map(
+                  "error" -> "User already Registered")
             }
           }
         }
+      }
 
       Get("/register/otto") ~> route ~> check {
         status shouldEqual StatusCodes.BadRequest
@@ -158,7 +157,8 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       (data: Data) ⇒ <data><name>{data.name}</name><age>{data.age}</age></data>
     }
 
-    implicit val dataMarshaller: ToResponseMarshaller[Data] =
-      Marshaller.oneOf(jsonMarshaller, xmlMarshaller)
+    implicit val dataMarshaller: ToResponseMarshaller[Data] = Marshaller.oneOf(
+      jsonMarshaller,
+      xmlMarshaller)
   }
 }

@@ -43,8 +43,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t3430(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  final def m(f: String => Boolean) = f("a")
         |  def t(): Boolean =
         |    m { s1 =>
@@ -70,8 +69,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t3252(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(x: Boolean): Thread = {
         |    g {
         |      x match {
@@ -120,8 +118,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t6547(): Unit = { // "pos" test -- check that it compiles
-    val code =
-      """trait ConfigurableDefault[@specialized V] {
+    val code = """trait ConfigurableDefault[@specialized V] {
         |  def fillArray(arr: Array[V], v: V) = (arr: Any) match {
         |    case x: Array[Int]  => null
         |    case x: Array[Long] => v.asInstanceOf[Long]
@@ -146,8 +143,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t8306(): Unit = { // "pos" test
-    val code =
-      """class C {
+    val code = """class C {
         |  def foo: Int = 123
         |  lazy val extension: Int = foo match {
         |    case idx if idx != -1 => 15
@@ -171,8 +167,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
     // at scala.tools.nsc.backend.icode.analysis.CopyPropagation$copyLattice$State.getFieldNonRecordValue(CopyPropagation.scala:113)
     // at scala.tools.nsc.backend.icode.analysis.CopyPropagation$copyLattice$State.getFieldNonRecordValue(CopyPropagation.scala:122)
     // at scala.tools.nsc.backend.opt.ClosureElimination$ClosureElim$$anonfun$analyzeMethod$1$$anonfun$apply$2.replaceFieldAccess$1(ClosureElimination.scala:124)
-    val code =
-      """package test
+    val code = """package test
         |class Typer {
         |  def bar(a: Boolean, b: Boolean): Unit = {
         |    @inline
@@ -188,8 +183,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t9123(): Unit = { // "pos" test
-    val code =
-      """trait Setting {
+    val code = """trait Setting {
         |  type T
         |  def value: T
         |}
@@ -212,8 +206,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
     //  at scala.tools.nsc.symtab.classfile.ClassfileParser.classNameToSymbol(ClassfileParser.scala:489)
     //  at scala.tools.nsc.symtab.classfile.ClassfileParser.sig2type$1(ClassfileParser.scala:757)
     //  at scala.tools.nsc.symtab.classfile.ClassfileParser.sig2type$1(ClassfileParser.scala:789)
-    val code =
-      """package scala.tools.nsc
+    val code = """package scala.tools.nsc
         |package interactive
         |
         |trait MyContextTrees {
@@ -226,8 +219,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t9160(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def getInt: Int = 0
         |  def t(trees: Object): Int = {
         |    trees match {
@@ -255,8 +247,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t8796(): Unit = {
-    val code =
-      """final class C {
+    val code = """final class C {
         |  def pr(): Unit = ()
         |  def t(index: Int): Unit = index match {
         |    case 0 => pr()
@@ -290,8 +281,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t8524(): Unit = {
-    val c1 =
-      """package library
+    val c1 = """package library
         |object Library {
         |  @inline def pleaseInlineMe() = 1
         |  object Nested { @inline def pleaseInlineMe() = 2 }
@@ -362,8 +352,8 @@ class OptimizedBytecodeTest extends ClearAfterClass {
       """.stripMargin
     val List(c) = compileClasses(compiler)(
       code,
-      allowMessage =
-        _.msg.contains("exception handler declared in the inlined method"))
+      allowMessage = _.msg.contains(
+        "exception handler declared in the inlined method"))
     assertInvoke(getSingleMethod(c, "f1a"), "C", "C$$$anonfun$1")
     assertInvoke(getSingleMethod(c, "f1b"), "C", "wrapper1")
     assertInvoke(getSingleMethod(c, "f2a"), "C", "C$$$anonfun$3")
@@ -387,8 +377,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t8315(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def t(as: Listt): Unit = {
         |    map(as, (_: Any) => return)
         |  }
@@ -405,8 +394,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
 
   @Test
   def t8315b(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def crash: Unit = {
         |    val key = ""
         |    try map(new F(key))

@@ -258,10 +258,9 @@ object Jvm {
         None
     }
 
-  private lazy val executor =
-    Executors.newScheduledThreadPool(
-      1,
-      new NamedPoolThreadFactory("util-jvm-timer", true))
+  private lazy val executor = Executors.newScheduledThreadPool(
+    1,
+    new NamedPoolThreadFactory("util-jvm-timer", true))
 
   private lazy val _jvm =
     try new Hotspot
@@ -299,8 +298,7 @@ object Jvms {
   /**
     * Java compatibility for [[Jvm.ProcessId]].
     */
-  def processId(): Option[Int] =
-    Jvm.ProcessId
+  def processId(): Option[Int] = Jvm.ProcessId
 
   /**
     * Java compatibility for [[Jvm.apply()]].

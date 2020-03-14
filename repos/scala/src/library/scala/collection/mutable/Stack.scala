@@ -126,8 +126,7 @@ class Stack[A] private (var elems: List[A])
     *  @throws java.util.NoSuchElementException
     *  @return the top element
     */
-  def top: A =
-    elems.head
+  def top: A = elems.head
 
   /** Removes the top element from the stack.
     *

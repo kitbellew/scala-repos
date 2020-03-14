@@ -84,9 +84,8 @@ private[math] object Primality {
     (97, 75))
 
   /** All {@code BigInteger} prime numbers with bit length lesser than 8 bits. */
-  private val BiPrimes =
-    Array.tabulate[BigInteger](Primes.length)(i =>
-      BigInteger.valueOf(Primes(i)))
+  private val BiPrimes = Array.tabulate[BigInteger](Primes.length)(i =>
+    BigInteger.valueOf(Primes(i)))
 
   /** A random number is generated until a probable prime number is found.
     *
@@ -211,8 +210,7 @@ private[math] object Primality {
       // To discard multiples of first primes
       for (i <- 0 until Primes.length) {
         modules(i) = (modules(i) + gapSize) % Primes(i)
-        var j =
-          if (modules(i) == 0) 0 else (Primes(i) - modules(i))
+        var j = if (modules(i) == 0) 0 else (Primes(i) - modules(i))
         while (j < gapSize) {
           isDivisible(j) = true
           j += Primes(i)

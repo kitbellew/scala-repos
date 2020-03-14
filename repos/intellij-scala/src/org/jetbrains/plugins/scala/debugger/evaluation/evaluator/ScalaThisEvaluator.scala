@@ -20,8 +20,9 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
     for (field <- list) {
       val name: String = field.name
       if (name != null && name.startsWith("$outer")) {
-        val rv: ObjectReference =
-          objRef.getValue(field).asInstanceOf[ObjectReference]
+        val rv: ObjectReference = objRef
+          .getValue(field)
+          .asInstanceOf[ObjectReference]
         if (rv != null) { return rv }
       }
     }
@@ -35,8 +36,8 @@ class ScalaThisEvaluator(iterations: Int = 0) extends Evaluator {
     var objRef: Value = context.getThisObject match {
       case null => //so we possibly in trait $class
         try {
-          val variable: LocalVariableProxyImpl =
-            frameProxy.visibleVariableByName("$this")
+          val variable: LocalVariableProxyImpl = frameProxy
+            .visibleVariableByName("$this")
           if (variable == null) null else { frameProxy.getValue(variable) }
         } catch {
           case e: AbsentInformationException =>

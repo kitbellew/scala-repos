@@ -43,8 +43,7 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
   val cluster = Cluster(system)
   def clusterView = cluster.readView
 
-  def leaderActions(): Unit =
-    cluster.clusterCore ! LeaderActionsTick
+  def leaderActions(): Unit = cluster.clusterCore ! LeaderActionsTick
 
   "A Cluster" must {
 

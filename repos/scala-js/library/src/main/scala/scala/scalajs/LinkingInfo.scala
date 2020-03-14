@@ -41,8 +41,7 @@ object LinkingInfo {
     *  @see [[developmentMode]]
     */
   @inline
-  def productionMode: Boolean =
-    linkingInfo.semantics.productionMode
+  def productionMode: Boolean = linkingInfo.semantics.productionMode
 
   /** Returns true if we are linking for development, false otherwise.
     *
@@ -71,8 +70,7 @@ object LinkingInfo {
     *  @see [[productionMode]]
     */
   @inline
-  def developmentMode: Boolean =
-    !productionMode
+  def developmentMode: Boolean = !productionMode
 
   /** Returns true if we are assuming that the target platform supports
     *  ECMAScript 6, false otherwise.
@@ -104,7 +102,6 @@ object LinkingInfo {
     *  }}}
     */
   @inline
-  def assumingES6: Boolean =
-    linkingInfo.assumingES6
+  def assumingES6: Boolean = linkingInfo.assumingES6
 
 }

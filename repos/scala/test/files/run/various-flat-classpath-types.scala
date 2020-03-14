@@ -175,8 +175,10 @@ object Test {
       binDir.path,
       zipsDir.path + "/Bin.zip",
       jarsDir.path + "/Bin.jar")
-    val sourcePath =
-      mkPath(srcDir.path, zipsDir.path + "/Src.zip", jarsDir.path + "/Src.jar")
+    val sourcePath = mkPath(
+      srcDir.path,
+      zipsDir.path + "/Src.zip",
+      jarsDir.path + "/Src.jar")
 
     compiler.process(
       Array(
@@ -206,8 +208,8 @@ object Test {
       srcDir,
       DirRep(
         "",
-        nestedDirs =
-          Seq(DirRep("nested", sourceFiles = Seq("Nested" + baseFileName))),
+        nestedDirs = Seq(
+          DirRep("nested", sourceFiles = Seq("Nested" + baseFileName))),
         sourceFiles = Seq(baseFileName)))
 
   private def createSources(

@@ -146,12 +146,11 @@ class FlowExpandSpec extends AkkaSpec {
     }
 
     "work properly with finite extrapolations" in {
-      val (source, sink) =
-        TestSource
-          .probe[Int]
-          .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
-          .toMat(TestSink.probe)(Keep.both)
-          .run()
+      val (source, sink) = TestSource
+        .probe[Int]
+        .expand(i ⇒ Iterator.from(0).map(i -> _).take(3))
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
       source
         .sendNext(1)
       sink

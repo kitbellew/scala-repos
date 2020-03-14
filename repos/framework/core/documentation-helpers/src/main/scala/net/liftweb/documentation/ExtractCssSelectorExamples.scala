@@ -102,17 +102,16 @@ object ExtractCssSelectorExamples extends App {
             }
           val partExtractor =
             ".listingblock" #> { part: NodeSeq =>
-              var specializedPartExtractor =
-                part match {
-                  case inputBlock: Elem if hasClass_?(inputBlock, "input") =>
-                    Some(extractPart(ExampleInput(_)) _)
-                  case selectorBlock: Elem
-                      if hasClass_?(selectorBlock, "selector") =>
-                    Some(extractPart(ExampleFunction(_)) _)
-                  case outputBlock: Elem if hasClass_?(outputBlock, "output") =>
-                    Some(extractPart(ExampleOutput(_)) _)
-                  case _ => None
-                }
+              var specializedPartExtractor = part match {
+                case inputBlock: Elem if hasClass_?(inputBlock, "input") =>
+                  Some(extractPart(ExampleInput(_)) _)
+                case selectorBlock: Elem
+                    if hasClass_?(selectorBlock, "selector") =>
+                  Some(extractPart(ExampleFunction(_)) _)
+                case outputBlock: Elem if hasClass_?(outputBlock, "output") =>
+                  Some(extractPart(ExampleOutput(_)) _)
+                case _ => None
+              }
 
               for {
                 extractor <- specializedPartExtractor
@@ -145,10 +144,9 @@ object ExtractCssSelectorExamples extends App {
       "Expected two arguments: the base directory of generated HTML and the base directory of the Lift project."
     )
   } else {
-    val examples =
-      for { extractedContents <- contentsToProcess(args(0)) } yield {
-        extractedContents.flatMap(extractExamplesFromContents _)
-      }
+    val examples = for {
+      extractedContents <- contentsToProcess(args(0))
+    } yield { extractedContents.flatMap(extractExamplesFromContents _) }
 
     examples match {
       case Full(exampleContents) =>
@@ -161,19 +159,18 @@ object ExtractCssSelectorExamples extends App {
         } {
           val filename = camelify(normalizedFilename.replace('-', '_'))
 
-          val examples =
-            for {
-              ExampleContents(
-                _,
-                exampleLabel,
-                setupCode,
-                exampleParts) <- contents
-              i <- (0 to (exampleParts.length / 3))
-              ExampleInput(input) <- exampleParts.lift(i)
-              ExampleFunction(function) <- exampleParts.lift(i + 1)
-              ExampleOutput(output) <- exampleParts.lift(i + 2)
-            } yield {
-              s"""
+          val examples = for {
+            ExampleContents(
+              _,
+              exampleLabel,
+              setupCode,
+              exampleParts) <- contents
+            i <- (0 to (exampleParts.length / 3))
+            ExampleInput(input) <- exampleParts.lift(i)
+            ExampleFunction(function) <- exampleParts.lift(i + 1)
+            ExampleOutput(output) <- exampleParts.lift(i + 2)
+          } yield {
+            s"""
               |    ""\"$exampleLabel""\" in {
               |      $setupCode
               |
@@ -188,7 +185,7 @@ object ExtractCssSelectorExamples extends App {
               |         rendered must ==/(output.toOption.get)
               |      }
               |    }""".stripMargin('|')
-            }
+          }
 
           val file = new File(s"$testPath/${filename}Test.scala")
 

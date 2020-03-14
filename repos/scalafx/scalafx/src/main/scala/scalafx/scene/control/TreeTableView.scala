@@ -528,8 +528,8 @@ object TreeTableView {
     * whether the sort succeeded or not. A Boolean response of true represents success, and a response of false (or null)
     * will be considered to represent failure.
     */
-  val DefaultSortPolicy: TreeTableView[_] => Boolean =
-    ttv => jfxsc.TreeTableView.DEFAULT_SORT_POLICY(ttv)
+  val DefaultSortPolicy: TreeTableView[_] => Boolean = ttv =>
+    jfxsc.TreeTableView.DEFAULT_SORT_POLICY(ttv)
 
   /**
     * An EventType that indicates some edit event has occurred.

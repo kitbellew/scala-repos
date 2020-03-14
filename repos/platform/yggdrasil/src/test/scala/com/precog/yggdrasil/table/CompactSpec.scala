@@ -214,8 +214,9 @@ trait CompactSpec[M[+_]]
       val baseTable = fromSample(sample)
       val key = chooseColumn(baseTable)
 
-      val sampleTable =
-        undefineColumn(baseTable, extractPath(key).getOrElse(CPath.Identity))
+      val sampleTable = undefineColumn(
+        baseTable,
+        extractPath(key).getOrElse(CPath.Identity))
       val sampleKey = sampleTable.transform(key)
       val sampleKeyJson = toJson(sampleKey)
 
@@ -233,8 +234,9 @@ trait CompactSpec[M[+_]]
       val baseTable = fromSample(sample)
       val key = chooseColumn(baseTable)
 
-      val sampleTable =
-        undefineColumn(baseTable, extractPath(key).getOrElse(CPath.Identity))
+      val sampleTable = undefineColumn(
+        baseTable,
+        extractPath(key).getOrElse(CPath.Identity))
       val sampleKey = sampleTable.transform(key)
 
       val compactTable = sampleTable.compact(key)
@@ -251,8 +253,9 @@ trait CompactSpec[M[+_]]
       val baseTable = fromSample(sample)
       val key = chooseColumn(baseTable)
 
-      val sampleTable =
-        undefineColumn(baseTable, extractPath(key).getOrElse(CPath.Identity))
+      val sampleTable = undefineColumn(
+        baseTable,
+        extractPath(key).getOrElse(CPath.Identity))
       val sampleKey = sampleTable.transform(key)
 
       val compactTable = sampleTable.compact(key)

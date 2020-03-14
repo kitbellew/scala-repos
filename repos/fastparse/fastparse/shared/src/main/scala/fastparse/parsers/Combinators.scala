@@ -259,8 +259,10 @@ object Combinators {
                   f,
                   rIndex,
                   cfg.logDepth,
-                  traceParsers =
-                    mergeTrace(cfg.traceIndex, f.traceParsers, traceParsers),
+                  traceParsers = mergeTrace(
+                    cfg.traceIndex,
+                    f.traceParsers,
+                    traceParsers),
                   cut = c.cut | f.cut | rCut
                 )
               case Mutable.Success(value0, index0, traceParsers0, cut0) =>
@@ -344,8 +346,10 @@ object Combinators {
                 f,
                 index,
                 cfg.logDepth,
-                traceParsers =
-                  mergeTrace(cfg.traceIndex, traceParsers0, f.traceParsers),
+                traceParsers = mergeTrace(
+                  cfg.traceIndex,
+                  traceParsers0,
+                  f.traceParsers),
                 cut = cut | f.cut | cut0
               )
             case Mutable.Success(value1, index1, traceParsers1, cut1) =>
@@ -485,8 +489,10 @@ object Combinators {
         else
           ps0(parserIndex).parseRec(cfg, index) match {
             case s: Mutable.Success[T] =>
-              s.traceParsers =
-                mergeTrace(cfg.traceIndex, s.traceParsers, traceParsers)
+              s.traceParsers = mergeTrace(
+                cfg.traceIndex,
+                s.traceParsers,
+                traceParsers)
               s
             case f: Mutable.Failure if f.cut => failMore(f, index, cfg.logDepth)
             case f: Mutable.Failure =>

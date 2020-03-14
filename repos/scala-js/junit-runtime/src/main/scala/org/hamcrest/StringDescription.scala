@@ -32,6 +32,5 @@ class StringDescription(out: Appendable = new StringBuilder())
     }
   }
 
-  override def toString(): String =
-    out.toString()
+  override def toString(): String = out.toString()
 }

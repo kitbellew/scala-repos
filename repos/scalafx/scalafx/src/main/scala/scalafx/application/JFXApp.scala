@@ -75,8 +75,7 @@ object JFXApp {
   /**
     * Regular expression for parsing name/value parameters.
     */
-  private val keyValue =
-    """^--([A-Za-z_][^=]*?)=(.*)$""".r
+  private val keyValue = """^--([A-Za-z_][^=]*?)=(.*)$""".r
 
   object Parameters {
     implicit def sfxParameters2jfx(p: Parameters): Application.Parameters =
@@ -120,8 +119,8 @@ object JFXApp {
   private[application] class ParametersImpl(arguments: Seq[String])
       extends Parameters {
 
-    private var namedArguments: mutable.Map[String, String] =
-      mutable.Map.empty[String, String]
+    private var namedArguments: mutable.Map[String, String] = mutable.Map
+      .empty[String, String]
     private var unnamedArguments = Buffer.empty[String]
     private var filled = false
 

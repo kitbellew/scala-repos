@@ -31,20 +31,23 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     )
     val res1b = res1.map { case (a, b, c, d) => ((a, b), (c, d)) }
 
-    val q1a = (for {
-      (a, b) <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield a ~ b ~ c ~ 5).sortBy(t => t._3 ~ t._1)
+    val q1a =
+      (for {
+        (a, b) <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield a ~ b ~ c ~ 5).sortBy(t => t._3 ~ t._1)
 
-    val q1c = (for {
-      a ~ b <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield (a, b, c, LiteralColumn(5))).sortBy(t => t._3 ~ t._1)
+    val q1c =
+      (for {
+        a ~ b <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield (a, b, c, LiteralColumn(5))).sortBy(t => t._3 ~ t._1)
 
-    val q1d = (for {
-      (a, b) <- ts.map(t => (t.a, t.b))
-      c <- ts.map(t => t.c)
-    } yield ((a, b), (c, 5))).sortBy(t => t._2._1 ~ t._1._1)
+    val q1d =
+      (for {
+        (a, b) <- ts.map(t => (t.a, t.b))
+        c <- ts.map(t => t.c)
+      } yield ((a, b), (c, 5))).sortBy(t => t._2._1 ~ t._1._1)
 
     val res2 = Set((1, "1", 8), (2, "2", 10))
 
@@ -128,8 +131,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     )
 
     // Get plain values out
-    val q1b =
-      q1.map(_.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
+    val q1b = q1.map(
+      _.map(x => (x.a, x.b, x.c)).getOrElse((0, "", None: Option[Int])))
     val q2b = q2.map(_.get)
     val q3b = q3.filter(_.isDefined).map(_.get)
     val q4b = q4.map(_.getOrElse(None: Option[Int]))

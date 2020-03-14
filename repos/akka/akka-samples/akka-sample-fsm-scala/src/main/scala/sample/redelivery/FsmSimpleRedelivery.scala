@@ -176,8 +176,8 @@ class Requester extends Actor {
   /*
    * Create a [[SimpleOrderedRedeliverer]] and a [[Receiver]].
    */
-  val redeliverer =
-    context.actorOf(SimpleOrderedRedeliverer.props(retryTimeout = 3.seconds))
+  val redeliverer = context.actorOf(
+    SimpleOrderedRedeliverer.props(retryTimeout = 3.seconds))
   val receiver = context.actorOf(Receiver.props)
 
   /*

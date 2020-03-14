@@ -113,10 +113,18 @@ class TupleTests {
   val m2iExist: M2[Int, _] = new M2[Int, Unit] {}
   val m2sExist: M2[String, _] = new M2[String, Unit] {}
   val m2dExist: M2[Double, _] = new M2[Double, Unit] {}
-  val m2eim2esm2eim2eem2edList =
-    List(m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
-  val m2eim2esm2eim2eem2edArray =
-    Array(m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
+  val m2eim2esm2eim2eem2edList = List(
+    m2iExist,
+    m2sExist,
+    m2iExist,
+    m2iExist,
+    m2dExist)
+  val m2eim2esm2eim2eem2edArray = Array(
+    m2iExist,
+    m2sExist,
+    m2iExist,
+    m2iExist,
+    m2dExist)
   val m2eim2esm2eim2eem2ed = (m2iExist, m2sExist, m2iExist, m2iExist, m2dExist)
 
   object mkString extends (Any -> String)(_.toString)
@@ -408,8 +416,8 @@ class TupleTests {
 
     implicitly[Unifier.Aux[(Int, String, Int, Int), YYYY]]
 
-    val uapap =
-      implicitly[Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
+    val uapap = implicitly[
+      Unifier.Aux[(Apple, Pear, Apple, Pear), (PWS, PWS, PWS, PWS)]]
     val unified1 = uapap(apap)
     typed[FFFF](unified1)
     val unified2 = apap.unify

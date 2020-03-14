@@ -1069,30 +1069,30 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
 
   private val _numExecutorsToAdd = PrivateMethod[Int]('numExecutorsToAdd)
   private val _numExecutorsTarget = PrivateMethod[Int]('numExecutorsTarget)
-  private val _maxNumExecutorsNeeded =
-    PrivateMethod[Int]('maxNumExecutorsNeeded)
-  private val _executorsPendingToRemove =
-    PrivateMethod[collection.Set[String]]('executorsPendingToRemove)
+  private val _maxNumExecutorsNeeded = PrivateMethod[Int](
+    'maxNumExecutorsNeeded)
+  private val _executorsPendingToRemove = PrivateMethod[collection.Set[String]](
+    'executorsPendingToRemove)
   private val _executorIds = PrivateMethod[collection.Set[String]]('executorIds)
   private val _addTime = PrivateMethod[Long]('addTime)
-  private val _removeTimes =
-    PrivateMethod[collection.Map[String, Long]]('removeTimes)
+  private val _removeTimes = PrivateMethod[collection.Map[String, Long]](
+    'removeTimes)
   private val _schedule = PrivateMethod[Unit]('schedule)
   private val _addExecutors = PrivateMethod[Int]('addExecutors)
-  private val _updateAndSyncNumExecutorsTarget =
-    PrivateMethod[Int]('updateAndSyncNumExecutorsTarget)
+  private val _updateAndSyncNumExecutorsTarget = PrivateMethod[Int](
+    'updateAndSyncNumExecutorsTarget)
   private val _removeExecutor = PrivateMethod[Boolean]('removeExecutor)
   private val _onExecutorAdded = PrivateMethod[Unit]('onExecutorAdded)
   private val _onExecutorRemoved = PrivateMethod[Unit]('onExecutorRemoved)
-  private val _onSchedulerBacklogged =
-    PrivateMethod[Unit]('onSchedulerBacklogged)
-  private val _onSchedulerQueueEmpty =
-    PrivateMethod[Unit]('onSchedulerQueueEmpty)
+  private val _onSchedulerBacklogged = PrivateMethod[Unit](
+    'onSchedulerBacklogged)
+  private val _onSchedulerQueueEmpty = PrivateMethod[Unit](
+    'onSchedulerQueueEmpty)
   private val _onExecutorIdle = PrivateMethod[Unit]('onExecutorIdle)
   private val _onExecutorBusy = PrivateMethod[Unit]('onExecutorBusy)
   private val _localityAwareTasks = PrivateMethod[Int]('localityAwareTasks)
-  private val _hostToLocalTaskCount =
-    PrivateMethod[Map[String, Int]]('hostToLocalTaskCount)
+  private val _hostToLocalTaskCount = PrivateMethod[Map[String, Int]](
+    'hostToLocalTaskCount)
 
   private def numExecutorsToAdd(manager: ExecutorAllocationManager): Int = {
     manager invokePrivate _numExecutorsToAdd()

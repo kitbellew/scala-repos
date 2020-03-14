@@ -80,8 +80,10 @@ object ScroogeUnionOrderedBuf {
         UnionLike.compare(c)(outerType, elementA, elementB)(subData)
       override def length(element: Tree): CompileTimeLengthTypes[c.type] =
         UnionLike.length(c)(element)(subData)
-      override val lazyOuterVariables: Map[String, ctx.Tree] =
-        subData.flatMap(_._3).map(_.lazyOuterVariables).reduce(_ ++ _)
+      override val lazyOuterVariables: Map[String, ctx.Tree] = subData
+        .flatMap(_._3)
+        .map(_.lazyOuterVariables)
+        .reduce(_ ++ _)
     }
   }
 }

@@ -52,8 +52,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
         .build(proxyService)
 
       serverAddress = server.boundAddress.asInstanceOf[InetSocketAddress]
-      externalClient =
-        Client("%s:%d".format(serverAddress.getHostName, serverAddress.getPort))
+      externalClient = Client(
+        "%s:%d".format(serverAddress.getHostName, serverAddress.getPort))
     }
   }
 
@@ -110,8 +110,8 @@ class ProxyTest extends FunSuite with BeforeAndAfter {
       assert(slabs != null)
       assert(!slabs.isEmpty)
       val n = slabs.head.split(" ")(1).split(":")(0).toInt
-      val stats =
-        Await.result(externalClient.stats(Some("cachedump " + n + " 100")))
+      val stats = Await.result(
+        externalClient.stats(Some("cachedump " + n + " 100")))
       assert(stats != null)
       assert(!stats.isEmpty)
       stats.foreach { stat => assert(stat.startsWith("ITEM")) }

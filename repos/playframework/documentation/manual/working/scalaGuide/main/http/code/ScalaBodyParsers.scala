@@ -101,8 +101,9 @@ package scalaguide.http.scalabodyparsers {
               Ok("Saved the request content to " + request.body)
             }
           //#body-parser-limit-file
-          val result =
-            call(save, helloRequest.withSession("username" -> "player"))
+          val result = call(
+            save,
+            helloRequest.withSession("username" -> "player"))
           status(result) must_== OK
         }
       }

@@ -57,7 +57,6 @@ object Rule {
     }
   }
 
-  private[Rule] val WhitespacePattern =
-    Pattern.compile("\\s")
+  private[Rule] val WhitespacePattern = Pattern.compile("\\s")
 
 }

@@ -9,14 +9,12 @@ trait TypeAnalysis extends Macro {
   def isStaticOnly: Boolean =
     c.inferImplicitValue(typeOf[IsStaticOnly]) != EmptyTree
 
-  def configOption(t: Type): Boolean =
-    c.inferImplicitValue(t) != EmptyTree
+  def configOption(t: Type): Boolean = c.inferImplicitValue(t) != EmptyTree
 
   def isCaseClass(sym: TypeSymbol): Boolean =
     sym.isClass && sym.asClass.isCaseClass
 
-  def isClosed(sym: TypeSymbol): Boolean =
-    whyNotClosed(sym).isEmpty
+  def isClosed(sym: TypeSymbol): Boolean = whyNotClosed(sym).isEmpty
 
   def whyNotClosed(sym: TypeSymbol): Seq[String] = {
     if (sym.isEffectivelyFinal) Nil

@@ -111,10 +111,14 @@ trait TimePeriodSpecs[M[+_]]
 
   "Range computing" should {
     "compute correct range given single value" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "2005-08-09T12:00:00.000Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "2005-08-09T12:00:00.000Z")
       val step = createObject("step", ParsePeriod, "P3Y6M4DT12H30M5S")
 
       val obj = joinObject(start, end, step)
@@ -136,10 +140,14 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "compute correct range given end earlier than start" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "1980-08-09T12:00:00.000Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "1980-08-09T12:00:00.000Z")
       val step = createObject("step", ParsePeriod, "P3Y6M4DT12H30M5S")
 
       val obj = joinObject(start, end, step)
@@ -157,8 +165,10 @@ trait TimePeriodSpecs[M[+_]]
         "start",
         ParseDateTimeFuzzy,
         "1987-12-09T18:33:02.037+01:00")
-      val end =
-        createObject("end", ParseDateTimeFuzzy, "1987-12-09T20:33:02.037+03:00")
+      val end = createObject(
+        "end",
+        ParseDateTimeFuzzy,
+        "1987-12-09T20:33:02.037+03:00")
       val step = createObject("step", ParsePeriod, "PT2H")
 
       val obj = joinObject(start, end, step)
@@ -172,8 +182,8 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "compute correct range given multiple values" in {
-      val objects =
-        dag.AbsoluteLoad(Const(CString("/hom/timerange"))(line))(line)
+      val objects = dag
+        .AbsoluteLoad(Const(CString("/hom/timerange"))(line))(line)
 
       def deref(field: String) = {
         dag.Join(
@@ -242,8 +252,10 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "fail to compute correct range given only start field" in {
-      val start =
-        createObject("start", ParseDateTimeFuzzy, "1987-12-09T18:33:02.037Z")
+      val start = createObject(
+        "start",
+        ParseDateTimeFuzzy,
+        "1987-12-09T18:33:02.037Z")
       val input = Operate(BuiltInFunction1Op(TimeRange), start)(line)
 
       val result = testEval(input)

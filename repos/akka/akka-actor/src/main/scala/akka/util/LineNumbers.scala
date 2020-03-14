@@ -307,39 +307,36 @@ object LineNumbers {
     val name = d.readUnsignedShort() // name
     skip(d, 2) // signature
     if (debug) println(s"LNB:   ${c(name)}")
-    val attributes =
-      for (_ ← 1 to d.readUnsignedShort()) yield {
-        val tag = d.readUnsignedShort()
-        val length = d.readInt()
-        if (tag != codeTag || (filter.isDefined && c(name) != filter.get)) {
-          skip(d, length)
-          None
-        } else {
-          skip(d, 4) // shorts: max stack, max locals
-          skip(d, d.readInt()) // skip byte-code
-          // skip exception table: N records of 4 shorts (start PC, end PC, handler PC, catch type)
-          skip(d, 8 * d.readUnsignedShort())
-          val possibleLines =
-            for (_ ← 1 to d.readUnsignedShort()) yield {
-              val tag = d.readUnsignedShort()
-              val length = d.readInt()
-              if (tag != lineNumberTableTag) {
-                skip(d, length)
-                None
-              } else {
-                val lines =
-                  for (_ ← 1 to d.readUnsignedShort()) yield {
-                    skip(d, 2) // start PC
-                    d.readUnsignedShort() // finally: the line number
-                  }
-                Some(lines.min -> lines.max)
-              }
+    val attributes = for (_ ← 1 to d.readUnsignedShort()) yield {
+      val tag = d.readUnsignedShort()
+      val length = d.readInt()
+      if (tag != codeTag || (filter.isDefined && c(name) != filter.get)) {
+        skip(d, length)
+        None
+      } else {
+        skip(d, 4) // shorts: max stack, max locals
+        skip(d, d.readInt()) // skip byte-code
+        // skip exception table: N records of 4 shorts (start PC, end PC, handler PC, catch type)
+        skip(d, 8 * d.readUnsignedShort())
+        val possibleLines = for (_ ← 1 to d.readUnsignedShort()) yield {
+          val tag = d.readUnsignedShort()
+          val length = d.readInt()
+          if (tag != lineNumberTableTag) {
+            skip(d, length)
+            None
+          } else {
+            val lines = for (_ ← 1 to d.readUnsignedShort()) yield {
+              skip(d, 2) // start PC
+              d.readUnsignedShort() // finally: the line number
             }
-          if (debug)
-            println(s"LNB:     nested attributes yielded: $possibleLines")
-          possibleLines.flatten.headOption
+            Some(lines.min -> lines.max)
+          }
         }
+        if (debug)
+          println(s"LNB:     nested attributes yielded: $possibleLines")
+        possibleLines.flatten.headOption
       }
+    }
     attributes.flatten.headOption
   }
 
@@ -349,19 +346,18 @@ object LineNumbers {
     if (debug) println(s"LNB: reading $count attributes")
     if (c contains "SourceFile") {
       val s = c("SourceFile")
-      val attributes =
-        for (_ ← 1 to count) yield {
-          val tag = d.readUnsignedShort()
-          val length = d.readInt()
-          if (debug) println(s"LNB:   tag ${c(tag)} ($length bytes)")
-          if (tag != s) {
-            skip(d, length)
-            None
-          } else {
-            val name = d.readUnsignedShort()
-            Some(c(name))
-          }
+      val attributes = for (_ ← 1 to count) yield {
+        val tag = d.readUnsignedShort()
+        val length = d.readInt()
+        if (debug) println(s"LNB:   tag ${c(tag)} ($length bytes)")
+        if (tag != s) {
+          skip(d, length)
+          None
+        } else {
+          val name = d.readUnsignedShort()
+          Some(c(name))
         }
+      }
       if (debug) println(s"LNB:   yielded $attributes")
       attributes.flatten.headOption
     } else {

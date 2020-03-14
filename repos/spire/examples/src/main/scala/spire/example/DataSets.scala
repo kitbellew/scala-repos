@@ -73,18 +73,18 @@ object DataSet {
 
     // Perform our second pass, converting strings to variables.
     val maps = builders map (_.result())
-    val (dimensions, datar) =
-      lines.foldLeft((Int.MaxValue, List.empty[(CC[F], K)])) {
-        case ((dim, res), fields) =>
-          val bldr = cbf()
-          val vd = (maps zip fields).foldLeft(0) {
-            case (acc, (f, s)) =>
-              val vars = f(s)
-              bldr ++= vars
-              acc + vars.size
-          }
-          (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
-      }
+    val (dimensions, datar) = lines.foldLeft(
+      (Int.MaxValue, List.empty[(CC[F], K)])) {
+      case ((dim, res), fields) =>
+        val bldr = cbf()
+        val vd = (maps zip fields).foldLeft(0) {
+          case (acc, (f, s)) =>
+            val vars = f(s)
+            bldr ++= vars
+            acc + vars.size
+        }
+        (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
+    }
 
     (dimensions, datar.reverse)
   }
@@ -98,8 +98,10 @@ object DataSet {
       implicit cbf: CanBuildFrom[Nothing, F, CC[F]]): DataSet[CC[F], F, K] = {
 
     val lines = readDataSet(res)
-    val (dimensions, data) =
-      fromLines(lines map (_.split(sep).toList), variables, out)(cbf)
+    val (dimensions, data) = fromLines(
+      lines map (_.split(sep).toList),
+      variables,
+      out)(cbf)
     val space = cs(dimensions)
 
     new DataSet[CC[F], F, K](name, variables, space, data)

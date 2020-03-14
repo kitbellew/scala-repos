@@ -31,8 +31,9 @@ object VectorIndexerExample {
     val sqlContext = new SQLContext(sc)
 
     // $example on$
-    val data =
-      sqlContext.read.format("libsvm").load("data/mllib/sample_libsvm_data.txt")
+    val data = sqlContext.read
+      .format("libsvm")
+      .load("data/mllib/sample_libsvm_data.txt")
 
     val indexer = new VectorIndexer()
       .setInputCol("features")

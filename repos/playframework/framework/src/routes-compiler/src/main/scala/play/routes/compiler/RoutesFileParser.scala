@@ -334,8 +334,8 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def call: Parser[HandlerCall] =
     opt("@") ~ absoluteMethod ~ opt(parameters) ^^ {
       case instantiate ~ absMethod ~ parameters => {
-        val (packageParts, classAndMethod) =
-          absMethod.splitAt(absMethod.size - 2)
+        val (packageParts, classAndMethod) = absMethod.splitAt(
+          absMethod.size - 2)
         val packageName = packageParts.mkString(".")
         val className = classAndMethod(0)
         val methodName = classAndMethod(1)

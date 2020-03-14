@@ -162,10 +162,11 @@ private[akka] trait Dispatch { this: ActorCell ⇒
   def sendMessage(msg: Envelope): Unit =
     try {
       if (system.settings.SerializeAllMessages) {
-        val unwrapped = (msg.message match {
-          case DeadLetter(wrapped, _, _) ⇒ wrapped
-          case other ⇒ other
-        }).asInstanceOf[AnyRef]
+        val unwrapped =
+          (msg.message match {
+            case DeadLetter(wrapped, _, _) ⇒ wrapped
+            case other ⇒ other
+          }).asInstanceOf[AnyRef]
         if (!unwrapped.isInstanceOf[NoSerializationVerificationNeeded]) {
           val s = SerializationExtension(system)
           val serializer = s.findSerializerFor(unwrapped)

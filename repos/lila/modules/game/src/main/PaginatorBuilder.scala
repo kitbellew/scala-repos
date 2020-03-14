@@ -23,8 +23,7 @@ private[game] final class PaginatorBuilder(cached: Cached, maxPerPage: Int) {
     })(page)
 
   private def apply(adapter: AdapterLike[Game])(
-      page: Int): Fu[Paginator[Game]] =
-    paginator(adapter, page)
+      page: Int): Fu[Paginator[Game]] = paginator(adapter, page)
 
   private def cacheAdapter(
       selector: JsObject,

@@ -23,8 +23,7 @@ class BytecodeTest extends ClearAfterClass {
 
   @Test
   def t8731(): Unit = {
-    val code =
-      """class C {
+    val code = """class C {
         |  def f(x: Int) = (x: @annotation.switch) match {
         |    case 1 => 0
         |    case 2 => 1
@@ -57,16 +56,14 @@ class BytecodeTest extends ClearAfterClass {
     // partest first compiles all files with scalac, then the java files, and then again the scala
     // using the output classpath. this shadows the bug SI-8926.
 
-    val annotA =
-      """import java.lang.annotation.Retention;
+    val annotA = """import java.lang.annotation.Retention;
         |import java.lang.annotation.RetentionPolicy;
         |@Retention(RetentionPolicy.RUNTIME)
         |public @interface AnnotA { }
       """.stripMargin
     val annotB = "public @interface AnnotB { }"
 
-    val scalaSrc =
-      """@AnnotA class A
+    val scalaSrc = """@AnnotA class A
         |@AnnotB class B
       """.stripMargin
 

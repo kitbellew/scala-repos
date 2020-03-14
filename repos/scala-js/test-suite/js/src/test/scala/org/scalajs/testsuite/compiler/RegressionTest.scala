@@ -322,8 +322,7 @@ class RegressionTest {
 
       def get: Int = x
 
-      def foo(): Unit =
-        Seq(2).foreach(x = _)
+      def foo(): Unit = Seq(2).foreach(x = _)
     }
 
     val a = new A()
@@ -411,8 +410,7 @@ class RegressionTest {
      * reachable also for F.
      */
     class F extends Function1[Any, Unit] {
-      def apply(x: Any): Unit =
-        assertEquals(5, x.asInstanceOf[js.Any])
+      def apply(x: Any): Unit = assertEquals(5, x.asInstanceOf[js.Any])
     }
 
     // Make sure the specialized Function1.apply(Double)Double is reachable.

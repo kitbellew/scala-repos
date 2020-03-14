@@ -15,8 +15,10 @@ class FormFieldDirectivesSpec extends RoutingSpec {
   // FIXME: unfortunately, it has make a come back, this time it's reproducible ...
   import akka.http.scaladsl.server.directives.FormFieldDirectives.FieldMagnet
 
-  implicit val nodeSeqUnmarshaller =
-    ScalaXmlSupport.nodeSeqUnmarshaller(`text/xml`, `text/html`, `text/plain`)
+  implicit val nodeSeqUnmarshaller = ScalaXmlSupport.nodeSeqUnmarshaller(
+    `text/xml`,
+    `text/html`,
+    `text/plain`)
 
   val nodeSeq: xml.NodeSeq = <b>yes</b>
   val urlEncodedForm = FormData(Map("firstName" -> "Mike", "age" -> "42"))

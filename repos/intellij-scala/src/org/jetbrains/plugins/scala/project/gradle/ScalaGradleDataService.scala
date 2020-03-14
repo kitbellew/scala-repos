@@ -64,8 +64,7 @@ private object ScalaGradleDataService {
         project,
         modelsProvider) {
 
-    override def importData(): Unit =
-      dataToImport.foreach(doImport)
+    override def importData(): Unit = dataToImport.foreach(doImport)
 
     private def doImport(scalaNode: DataNode[ScalaModelData]): Unit =
       for {
@@ -80,8 +79,8 @@ private object ScalaGradleDataService {
     private def configureScalaSdk(
         module: Module,
         compilerClasspath: Seq[File]): Unit = {
-      val compilerVersionOption =
-        findScalaLibraryIn(compilerClasspath).flatMap(getVersionFromJar)
+      val compilerVersionOption = findScalaLibraryIn(compilerClasspath).flatMap(
+        getVersionFromJar)
       if (compilerVersionOption.isEmpty) {
         showWarning(
           ScalaBundle.message(
@@ -94,8 +93,8 @@ private object ScalaGradleDataService {
       val scalaLibraries = getScalaLibraries
       if (scalaLibraries.isEmpty) return
 
-      val scalaLibraryOption =
-        scalaLibraries.find(_.scalaVersion.contains(compilerVersion))
+      val scalaLibraryOption = scalaLibraries.find(
+        _.scalaVersion.contains(compilerVersion))
       if (scalaLibraryOption.isEmpty) {
         showWarning(
           ScalaBundle.message(
@@ -107,8 +106,8 @@ private object ScalaGradleDataService {
       val scalaLibrary = scalaLibraryOption.get
 
       if (!scalaLibrary.isScalaSdk) {
-        val languageLevel =
-          scalaLibrary.scalaLanguageLevel.getOrElse(ScalaLanguageLevel.Default)
+        val languageLevel = scalaLibrary.scalaLanguageLevel.getOrElse(
+          ScalaLanguageLevel.Default)
         convertToScalaSdk(scalaLibrary, languageLevel, compilerClasspath)
       }
     }

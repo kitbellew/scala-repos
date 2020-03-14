@@ -28,8 +28,8 @@ class DesugarForIntention extends PsiElementBaseIntentionAction {
     val statement = element.getParent.asInstanceOf[ScForStatement]
     statement.getDesugarizedExprText(forDisplay = true) match {
       case Some(expText) =>
-        val desugared =
-          ScalaPsiElementFactory.createExpressionWithContextFromText(
+        val desugared = ScalaPsiElementFactory
+          .createExpressionWithContextFromText(
             expText,
             statement.getContext,
             statement)

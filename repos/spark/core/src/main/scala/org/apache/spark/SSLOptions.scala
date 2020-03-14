@@ -167,8 +167,9 @@ private[spark] object SSLOptions extends Logging {
       conf: SparkConf,
       ns: String,
       defaults: Option[SSLOptions] = None): SSLOptions = {
-    val enabled =
-      conf.getBoolean(s"$ns.enabled", defaultValue = defaults.exists(_.enabled))
+    val enabled = conf.getBoolean(
+      s"$ns.enabled",
+      defaultValue = defaults.exists(_.enabled))
 
     val keyStore = conf
       .getOption(s"$ns.keyStore")
@@ -187,10 +188,9 @@ private[spark] object SSLOptions extends Logging {
       .getOption(s"$ns.keyStoreType")
       .orElse(defaults.flatMap(_.keyStoreType))
 
-    val needClientAuth =
-      conf.getBoolean(
-        s"$ns.needClientAuth",
-        defaultValue = defaults.exists(_.needClientAuth))
+    val needClientAuth = conf.getBoolean(
+      s"$ns.needClientAuth",
+      defaultValue = defaults.exists(_.needClientAuth))
 
     val trustStore = conf
       .getOption(s"$ns.trustStore")

@@ -140,8 +140,9 @@ object Template extends Logging {
           } getOrElse { http.asString }
         } getOrElse { http.asString }
 
-        val body = if (response.code == 304) { reposCache(repo).body }
-        else { response.body }
+        val body =
+          if (response.code == 304) { reposCache(repo).body }
+          else { response.body }
 
         repo -> GitHubCache(headers = response.headers, body = body)
       }.toMap
@@ -158,8 +159,11 @@ object Template extends Logging {
   }
 
   def sub(repo: String, name: String, email: String, org: String): Unit = {
-    val data =
-      Map("repo" -> repo, "name" -> name, "email" -> email, "org" -> org)
+    val data = Map(
+      "repo" -> repo,
+      "name" -> name,
+      "email" -> email,
+      "org" -> org)
     try {
       httpOptionalProxy("http://update.prediction.io/templates.subscribe")
         .postData("json=" + write(data))
@@ -207,8 +211,10 @@ object Template extends Logging {
   }
 
   def get(ca: ConsoleArgs): Int = {
-    val repos =
-      getGitHubRepos(Seq(ca.template.repository), "tags", ".templates-cache")
+    val repos = getGitHubRepos(
+      Seq(ca.template.repository),
+      "tags",
+      ".templates-cache")
 
     repos.get(ca.template.repository).map { repo =>
       try { read[List[GitHubTag]](repo.body) }
@@ -346,8 +352,7 @@ object Template extends Logging {
     zis.close()
     new File(zipFilename).delete
 
-    val engineJsonFile =
-      new File(ca.template.directory, "engine.json")
+    val engineJsonFile = new File(ca.template.directory, "engine.json")
 
     val engineJson =
       try { Some(parse(Source.fromFile(engineJsonFile).mkString)) }
@@ -375,8 +380,8 @@ object Template extends Logging {
       filesToModify.foreach { ftm =>
         println(s"Processing $ftm...")
         val fileContent = Source.fromFile(ftm).getLines()
-        val processedLines =
-          fileContent.map(_.replaceAllLiterally(pkgName, organization))
+        val processedLines = fileContent.map(
+          _.replaceAllLiterally(pkgName, organization))
         FileUtils.writeStringToFile(
           new File(ftm),
           processedLines.mkString("\n"))

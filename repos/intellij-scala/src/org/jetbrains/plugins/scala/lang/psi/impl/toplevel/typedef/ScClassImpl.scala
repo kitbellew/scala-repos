@@ -81,10 +81,9 @@ class ScClassImpl private (
   def constructor: Option[ScPrimaryConstructor] = {
     val stub = getStub
     if (stub != null) {
-      val array =
-        stub.getChildrenByType(
-          ScalaElementTypes.PRIMARY_CONSTRUCTOR,
-          JavaArrayFactoryUtil.ScPrimaryConstructorFactory)
+      val array = stub.getChildrenByType(
+        ScalaElementTypes.PRIMARY_CONSTRUCTOR,
+        JavaArrayFactoryUtil.ScPrimaryConstructorFactory)
       return array.headOption
     }
     findChild(classOf[ScPrimaryConstructor])
@@ -192,8 +191,10 @@ class ScClassImpl private (
       )
 
       caseClassGeneratedFunctions.foreach { funText =>
-        val fun: ScFunction =
-          ScalaPsiElementFactory.createMethodWithContext(funText, this, this)
+        val fun: ScFunction = ScalaPsiElementFactory.createMethodWithContext(
+          funText,
+          this,
+          this)
         fun.setSynthetic(this)
         res += fun
       }
@@ -361,8 +362,8 @@ class ScClassImpl private (
           param.getType(TypingContext.empty) match {
             case Success(tp: ScTypeParameterType, _)
                 if tp.param.findAnnotation("scala.specialized") != null =>
-              val factory: PsiElementFactory =
-                PsiElementFactory.SERVICE.getInstance(getProject)
+              val factory: PsiElementFactory = PsiElementFactory.SERVICE
+                .getInstance(getProject)
               val psiTypeText: String =
                 ScType.toPsi(tp, getProject, getResolveScope).getCanonicalText
               val text = s"public final $psiTypeText ${param.name};"

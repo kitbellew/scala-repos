@@ -47,8 +47,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
       // as a result this file must exist. the parser enforces this.
       val inputHadoopArgs = Array("-libjars", "/etc/hosts")
       val totalArgStr = leftArgs ++ inputHadoopArgs ++ rightArgs
-      val (hadoopArgs, nonHadoop) =
-        ExecutionApp.extractUserHadoopArgs(totalArgStr)
+      val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(
+        totalArgStr)
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))
@@ -61,8 +61,8 @@ object ExecutionAppProperties extends Properties("ExecutionApp Properties") {
     forAll { (leftArgs: Array[String], rightArgs: Array[String]) =>
       val inputHadoopArgs = Array("-Dx.y.z=123")
       val totalArgStr = leftArgs ++ inputHadoopArgs ++ rightArgs
-      val (hadoopArgs, nonHadoop) =
-        ExecutionApp.extractUserHadoopArgs(totalArgStr)
+      val (hadoopArgs, nonHadoop) = ExecutionApp.extractUserHadoopArgs(
+        totalArgStr)
       val res = (!hadoopArgs.toArray.isEmpty) &&
         (nonHadoop.toArray.sameElements(leftArgs ++ rightArgs)) &&
         (inputHadoopArgs.sameElements(hadoopArgs.toArray))

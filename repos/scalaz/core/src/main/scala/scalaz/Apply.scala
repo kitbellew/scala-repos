@@ -23,8 +23,7 @@ trait Apply[F[_]] extends Functor[F] { self =>
   // derived functions
 
   def traverse1[A, G[_], B](value: G[A])(f: A => F[B])(
-      implicit G: Traverse1[G]): F[G[B]] =
-    G.traverse1(value)(f)(this)
+      implicit G: Traverse1[G]): F[G[B]] = G.traverse1(value)(f)(this)
 
   def sequence1[A, G[_]: Traverse1](as: G[F[A]]): F[G[A]] =
     traverse1(as)(a => a)
@@ -244,16 +243,14 @@ trait Apply[F[_]] extends Functor[F] { self =>
         t3._3,
         t3._4))
 
-  def tuple2[A, B](fa: => F[A], fb: => F[B]): F[(A, B)] =
-    apply2(fa, fb)((_, _))
+  def tuple2[A, B](fa: => F[A], fb: => F[B]): F[(A, B)] = apply2(fa, fb)((_, _))
   def tuple3[A, B, C](fa: => F[A], fb: => F[B], fc: => F[C]): F[(A, B, C)] =
     apply3(fa, fb, fc)((_, _, _))
   def tuple4[A, B, C, D](
       fa: => F[A],
       fb: => F[B],
       fc: => F[C],
-      fd: => F[D]): F[(A, B, C, D)] =
-    apply4(fa, fb, fc, fd)((_, _, _, _))
+      fd: => F[D]): F[(A, B, C, D)] = apply4(fa, fb, fc, fd)((_, _, _, _))
   def tuple5[A, B, C, D, E](
       fa: => F[A],
       fb: => F[B],
@@ -262,8 +259,7 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fe: => F[E]): F[(A, B, C, D, E)] =
     apply5(fa, fb, fc, fd, fe)((_, _, _, _, _))
 
-  def lift2[A, B, C](f: (A, B) => C): (F[A], F[B]) => F[C] =
-    apply2(_, _)(f)
+  def lift2[A, B, C](f: (A, B) => C): (F[A], F[B]) => F[C] = apply2(_, _)(f)
   def lift3[A, B, C, D](f: (A, B, C) => D): (F[A], F[B], F[C]) => F[D] =
     apply3(_, _, _)(f)
   def lift4[A, B, C, D, E](
@@ -300,8 +296,7 @@ trait Apply[F[_]] extends Functor[F] { self =>
       F[H],
       F[I],
       F[J],
-      F[K]) => F[R] =
-    apply11(_, _, _, _, _, _, _, _, _, _, _)(f)
+      F[K]) => F[R] = apply11(_, _, _, _, _, _, _, _, _, _, _)(f)
   def lift12[A, B, C, D, E, FF, G, H, I, J, K, L, R](
       f: (A, B, C, D, E, FF, G, H, I, J, K, L) => R): (
       F[A],
@@ -315,8 +310,7 @@ trait Apply[F[_]] extends Functor[F] { self =>
       F[I],
       F[J],
       F[K],
-      F[L]) => F[R] =
-    apply12(_, _, _, _, _, _, _, _, _, _, _, _)(f)
+      F[L]) => F[R] = apply12(_, _, _, _, _, _, _, _, _, _, _, _)(f)
 
   /** Combine `fa` and `fb` according to `Apply[F]` with a function that discards the `A`(s) */
   def discardLeft[A, B](fa: => F[A], fb: => F[B]): F[B] =

@@ -25,8 +25,7 @@ final class FreeMonoid[A] private (val terms: List[A]) extends AnyVal { lhs =>
   def |+|(rhs: FreeMonoid[A]): FreeMonoid[A] =
     new FreeMonoid(lhs.terms ::: rhs.terms)
 
-  override def toString: String =
-    terms.mkString(" |+| ")
+  override def toString: String = terms.mkString(" |+| ")
 }
 
 object FreeMonoid { companion =>

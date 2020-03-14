@@ -29,8 +29,8 @@ object Scheduler {
       extends RuntimeException(msg, e)
 
   @volatile
-  private var service =
-    Executors.newSingleThreadScheduledExecutor(SchedulerThreadFactory)
+  private var service = Executors.newSingleThreadScheduledExecutor(
+    SchedulerThreadFactory)
 
   /**
     * Schedules to send the specified message to the receiver after initialDelay and then repeated after delay
@@ -166,8 +166,8 @@ object Scheduler {
   def restart() {
     synchronized {
       shutdown()
-      service =
-        Executors.newSingleThreadScheduledExecutor(SchedulerThreadFactory)
+      service = Executors.newSingleThreadScheduledExecutor(
+        SchedulerThreadFactory)
     }
   }
 }

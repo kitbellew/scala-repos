@@ -156,8 +156,11 @@ private[exception] class TestServiceException(
         }
         case "peer" =>
           assert(jsonValue.isTextual)
-          hasClient =
-            verifyOption(jsonValue.textValue, clientAddress, "peer", hasClient)
+          hasClient = verifyOption(
+            jsonValue.textValue,
+            clientAddress,
+            "peer",
+            hasClient)
         case "sourceAddress" =>
           assert(jsonValue.isTextual)
           hasSource = verifyOption(

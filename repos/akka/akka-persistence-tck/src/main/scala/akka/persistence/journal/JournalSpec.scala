@@ -16,8 +16,8 @@ import akka.testkit._
 import com.typesafe.config._
 
 object JournalSpec {
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
     akka.persistence.publish-plugin-commands = on
     """)
 }
@@ -40,8 +40,9 @@ abstract class JournalSpec(config: Config)
     with OptionalTests
     with JournalCapabilityFlags {
 
-  implicit lazy val system: ActorSystem =
-    ActorSystem("JournalSpec", config.withFallback(JournalSpec.config))
+  implicit lazy val system: ActorSystem = ActorSystem(
+    "JournalSpec",
+    config.withFallback(JournalSpec.config))
 
   private var senderProbe: TestProbe = _
   private var receiverProbe: TestProbe = _
@@ -67,8 +68,7 @@ abstract class JournalSpec(config: Config)
     */
   def supportsAtomicPersistAllOfSeveralEvents: Boolean = true
 
-  def journal: ActorRef =
-    extension.journalFor(null)
+  def journal: ActorRef = extension.journalFor(null)
 
   def replayedMessage(
       snr: Long,

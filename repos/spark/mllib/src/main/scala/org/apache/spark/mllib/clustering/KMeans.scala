@@ -250,12 +250,13 @@ class KMeans private (
     val initStartTime = System.nanoTime()
 
     // Only one run is allowed when initialModel is given
-    val numRuns = if (initialModel.nonEmpty) {
-      if (runs > 1)
-        logWarning(
-          "Ignoring runs; one run is allowed when initialModel is given.")
-      1
-    } else { runs }
+    val numRuns =
+      if (initialModel.nonEmpty) {
+        if (runs > 1)
+          logWarning(
+            "Ignoring runs; one run is allowed when initialModel is given.")
+        1
+      } else { runs }
 
     val centers = initialModel match {
       case Some(kMeansCenters) => {
@@ -306,8 +307,9 @@ class KMeans private (
 
           points.foreach { point =>
             (0 until runs).foreach { i =>
-              val (bestCenter, cost) =
-                KMeans.findClosest(thisActiveCenters(i), point)
+              val (bestCenter, cost) = KMeans.findClosest(
+                thisActiveCenters(i),
+                point)
               costAccums(i) += cost
               val sum = sums(i)(bestCenter)
               axpy(1.0, point.vector, sum)
@@ -627,8 +629,7 @@ object KMeans {
     */
   private[mllib] def pointCost(
       centers: TraversableOnce[VectorWithNorm],
-      point: VectorWithNorm): Double =
-    findClosest(centers, point)._2
+      point: VectorWithNorm): Double = findClosest(centers, point)._2
 
   /**
     * Returns the squared Euclidean distance between two vectors computed by

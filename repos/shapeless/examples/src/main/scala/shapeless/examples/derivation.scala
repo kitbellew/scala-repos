@@ -67,26 +67,25 @@ object TypeClassesDemo {
     //implicitly[Show[ADT]]
     //implicitly[Show[ADT2]]
 
-    val adt: ADT =
-      IndirectADTRec(
-        "top",
-        List(
-          Ctor("child"),
-          ExtCtor(true),
-          ADTRec(ExtCtor(false)),
-          CtorRec(Ctor("otherchild")),
-          IndirectADTRec(
-            "treeChild",
-            List(
-              Ctor("grandchild"),
-              Ctor("otherGrandchild"),
-              ExtIndirectADTRec("blah", Option(Ctor("wibble"))),
-              RefMutual(Some(RefADT(Ctor("mutual")))),
-              Show2Dep(23)
-            )
+    val adt: ADT = IndirectADTRec(
+      "top",
+      List(
+        Ctor("child"),
+        ExtCtor(true),
+        ADTRec(ExtCtor(false)),
+        CtorRec(Ctor("otherchild")),
+        IndirectADTRec(
+          "treeChild",
+          List(
+            Ctor("grandchild"),
+            Ctor("otherGrandchild"),
+            ExtIndirectADTRec("blah", Option(Ctor("wibble"))),
+            RefMutual(Some(RefADT(Ctor("mutual")))),
+            Show2Dep(23)
           )
         )
       )
+    )
 
     val out = adt.show
     val exp =

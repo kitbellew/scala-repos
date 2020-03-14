@@ -205,8 +205,8 @@ final class BtreeClientIntegrationSuite
       dict: mutable.HashMap[String, mutable.HashMap[String, String]]) {
     for ((outerKey, inner) <- dict) {
       val innerKeys = inner.toList.sortBy(_._1)
-      val target =
-        Await.result(client.bRange(StringToChannelBuffer(outerKey), None, None))
+      val target = Await.result(
+        client.bRange(StringToChannelBuffer(outerKey), None, None))
       validate(outerKey, innerKeys, target)
     }
 

@@ -24,8 +24,8 @@ final class RankingApi(
     lightUser: String => Option[lila.common.LightUser]) {
 
   import RankingApi._
-  private implicit val rankingBSONHandler =
-    reactivemongo.bson.Macros.handler[Ranking]
+  private implicit val rankingBSONHandler = reactivemongo.bson.Macros
+    .handler[Ranking]
 
   def save(userId: User.ID, perfType: Option[PerfType], perfs: Perfs): Funit =
     perfType ?? { pt => save(userId, pt, perfs(pt)) }

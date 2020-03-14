@@ -107,8 +107,9 @@ trait ScalaInplaceRenameHandler {
         case _: ScNewTemplateDefinition => "instance"
       }
       val title = ScalaBundle.message("rename.special.method.title")
-      val positive =
-        ScalaBundle.message("rename.special.method.rename.class", clazzType)
+      val positive = ScalaBundle.message(
+        "rename.special.method.rename.class",
+        clazzType)
       showSubstitutePopup(
         title,
         positive,

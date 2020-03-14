@@ -256,11 +256,12 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       classSym: Symbol,
       classSymToInternalName: Symbol => InternalName,
       methodSymToDescriptor: Symbol => String): InlineInfo = {
-    val traitSelfType = if (classSym.isTrait) {
-      // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
-      val selfSym = classSym.typeOfThis.typeSymbol
-      if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
-    } else { None }
+    val traitSelfType =
+      if (classSym.isTrait) {
+        // The mixin phase uses typeOfThis for the self parameter in implementation class methods.
+        val selfSym = classSym.typeOfThis.typeSymbol
+        if (selfSym != classSym) Some(classSymToInternalName(selfSym)) else None
+      } else { None }
 
     val isEffectivelyFinal = classSym.isEffectivelyFinal
 
@@ -792,10 +793,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               case ClazzTag =>
                 av.visit(name, typeToBType(const.typeValue).toASMType)
               case EnumTag =>
-                val edesc =
-                  descriptor(
-                    const.tpe
-                  ) // the class descriptor of the enumeration class.
+                val edesc = descriptor(
+                  const.tpe
+                ) // the class descriptor of the enumeration class.
                 val evalue =
                   const.symbolValue.name.toString // value the actual enumeration value.
                 av.visitEnum(name, edesc, evalue)
@@ -820,10 +820,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         case NestedAnnotArg(annInfo) =>
           val AnnotationInfo(typ, args, assocs) = annInfo
           assert(args.isEmpty, args)
-          val desc =
-            descriptor(
-              typ
-            ) // the class descriptor of the nested annotation class
+          val desc = descriptor(
+            typ
+          ) // the class descriptor of the nested annotation class
           val nestedVisitor = av.visitAnnotation(name, desc)
           emitAssocs(nestedVisitor, assocs)
       }
@@ -895,8 +894,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
            annot <- annots) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
-        val pannVisitor: asm.AnnotationVisitor =
-          jmethod.visitParameterAnnotation(
+        val pannVisitor: asm.AnnotationVisitor = jmethod
+          .visitParameterAnnotation(
             idx,
             descriptor(typ),
             isRuntimeVisible(annot))

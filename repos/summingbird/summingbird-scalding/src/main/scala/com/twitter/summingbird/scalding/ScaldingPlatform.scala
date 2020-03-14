@@ -409,8 +409,9 @@ object Scalding {
              * So, we pass the full PipeFactory to to the store so it can request only
              * the time ranges that it needs.
              */
-            val shouldForkProducer =
-              InternalService.storeIsJoined(dependants, store)
+            val shouldForkProducer = InternalService.storeIsJoined(
+              dependants,
+              store)
             val (in, m) = recurse(producer, forceFanOut = shouldForkProducer)
             val commutativity = getCommutativity(names, options, summer)
             val storeReducers =
@@ -451,8 +452,10 @@ object Scalding {
               val (leftPf, m1) = recurse(left)
               // We have to force the fanOut on the storeLog because this kind of fanout
               // due to joining is not visible in the Dependants dag
-              val (logPf, m2) =
-                recurse(storeLog, built = m1, forceFanOut = true)
+              val (logPf, m2) = recurse(
+                storeLog,
+                built = m1,
+                forceFanOut = true)
               // We have to combine the last snapshot on disk with the deltas:
               val allDeltas: PipeFactory[(K, V)] = bstore.readDeltaLog(logPf)
               val reducers =
@@ -476,8 +479,10 @@ object Scalding {
             def go[K, V, U](
                 incoming: Producer[Scalding, (K, V)],
                 bs: BatchedStore[K, U]) = {
-              val (flatMapFn, othersOpt) =
-                InternalService.getLoopInputs(dependants, incoming, bs)
+              val (flatMapFn, othersOpt) = InternalService.getLoopInputs(
+                dependants,
+                incoming,
+                bs)
               val (leftPf, m1) = recurse(incoming)
 
               val (deltaLogOpt, m2) = othersOpt match {
@@ -660,10 +665,9 @@ object Scalding {
       options: Map[String, Options],
       prod: Producer[Scalding, T]): PipeFactory[T] = {
     val dep = Dependants(prod)
-    val fanOutSet =
-      dep.nodes
-        .filter(dep.fanOut(_).exists(_ > 1))
-        .toSet
+    val fanOutSet = dep.nodes
+      .filter(dep.fanOut(_).exists(_ > 1))
+      .toSet
     buildFlow(options, prod, fanOutSet, dep, Map.empty)._1
   }
 
@@ -737,8 +741,8 @@ object Scalding {
 
 // Jank to get around serialization issues
 class Memo[T] extends java.io.Serializable {
-  @transient private val mmap =
-    scala.collection.mutable.Map[(FlowDef, Mode), TimedPipe[T]]()
+  @transient private val mmap = scala.collection.mutable
+    .Map[(FlowDef, Mode), TimedPipe[T]]()
   def getOrElseUpdate(
       in: (FlowDef, Mode),
       rdr: Reader[(FlowDef, Mode), TimedPipe[T]]): TimedPipe[T] =

@@ -20,8 +20,7 @@ object Opening extends LilaController {
 
   private def env = Env.opening
 
-  private def identify(opening: OpeningModel) =
-    env.api.identify(opening.fen, 5)
+  private def identify(opening: OpeningModel) = env.api.identify(opening.fen, 5)
 
   private def renderShow(opening: OpeningModel)(implicit ctx: Context) =
     env userInfos ctx.me zip identify(opening) map {

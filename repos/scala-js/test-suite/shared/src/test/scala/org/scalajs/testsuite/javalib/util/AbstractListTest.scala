@@ -17,8 +17,7 @@ class AbstractListTest extends AbstractCollectionTest with ListTest {
 
 class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
 
-  override def implementationName: String =
-    "java.util.AbstractList"
+  override def implementationName: String = "java.util.AbstractList"
 
   override def empty[E: ClassTag]: ju.AbstractList[E] = {
     // inefficient but simple for debugging implementation of AbstractList
@@ -31,8 +30,7 @@ class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
         inner(index)
       }
 
-      override def size(): Int =
-        inner.size
+      override def size(): Int = inner.size
 
       override def add(index: Int, element: E): Unit = {
         checkIndexOnBounds(index)
@@ -54,8 +52,7 @@ class AbstractListFactory extends AbstractCollectionFactory with ListFactory {
         right.head
       }
 
-      override def clear(): Unit =
-        inner = Nil
+      override def clear(): Unit = inner = Nil
 
       private def checkIndexInBounds(index: Int): Unit = {
         if (index < 0 || index >= size)

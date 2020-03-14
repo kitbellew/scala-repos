@@ -40,10 +40,9 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "The headerValueByType directive" should {
-    lazy val route =
-      headerValueByType[Origin]() { origin ⇒
-        complete(s"The first origin was ${origin.origins.head}")
-      }
+    lazy val route = headerValueByType[Origin]() { origin ⇒
+      complete(s"The first origin was ${origin.origins.head}")
+    }
     "extract a header if the type is matching" in {
       val originHeader = Origin(HttpOrigin("http://localhost:8080"))
       Get("abc") ~> originHeader ~> route ~> check {
@@ -61,10 +60,9 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "The headerValueByName directive" should {
-    lazy val route =
-      headerValueByName("Referer") { referer ⇒
-        complete(s"The referer was $referer")
-      }
+    lazy val route = headerValueByName("Referer") { referer ⇒
+      complete(s"The referer was $referer")
+    }
 
     "extract a header if the name is matching" in {
       Get("abc") ~> RawHeader(
@@ -75,10 +73,9 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "extract a header with Symbol name" in {
-      lazy val symbolRoute =
-        headerValueByName('Referer) { referer ⇒
-          complete(s"The symbol referer was $referer")
-        }
+      lazy val symbolRoute = headerValueByName('Referer) { referer ⇒
+        complete(s"The symbol referer was $referer")
+      }
 
       Get("abc") ~> RawHeader(
         "Referer",
@@ -98,10 +95,9 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "The optionalHeaderValueByName directive" should {
-    lazy val route =
-      optionalHeaderValueByName("Referer") { referer ⇒
-        complete(s"The referer was $referer")
-      }
+    lazy val route = optionalHeaderValueByName("Referer") { referer ⇒
+      complete(s"The referer was $referer")
+    }
 
     "extract a header if the name is matching" in {
       Get("abc") ~> RawHeader(
@@ -113,10 +109,9 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
     }
 
     "extract a header with Symbol name" in {
-      lazy val symbolRoute =
-        optionalHeaderValueByName('Referer) { referer ⇒
-          complete(s"The symbol referer was $referer")
-        }
+      lazy val symbolRoute = optionalHeaderValueByName('Referer) { referer ⇒
+        complete(s"The symbol referer was $referer")
+      }
 
       Get("abc") ~> RawHeader(
         "Referer",
@@ -163,12 +158,11 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
   }
 
   "The optionalHeaderValueByType directive" should {
-    val route =
-      optionalHeaderValueByType[Origin]() {
-        case Some(origin) ⇒
-          complete(s"The first origin was ${origin.origins.head}")
-        case None ⇒ complete("No Origin header found.")
-      }
+    val route = optionalHeaderValueByType[Origin]() {
+      case Some(origin) ⇒
+        complete(s"The first origin was ${origin.origins.head}")
+      case None ⇒ complete("No Origin header found.")
+    }
     "extract Some(header) if the type is matching" in {
       val originHeader = Origin(HttpOrigin("http://localhost:8080"))
       Get("abc") ~> originHeader ~> route ~> check {

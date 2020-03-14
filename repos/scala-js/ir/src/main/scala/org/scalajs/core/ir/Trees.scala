@@ -160,8 +160,7 @@ object Trees {
       extends Tree {
     val tpe = stats.last.tpe
 
-    override def toString(): String =
-      stats.mkString("Block(", ",", ")")
+    override def toString(): String = stats.mkString("Block(", ",", ")")
   }
 
   object Block {
@@ -178,8 +177,7 @@ object Trees {
       }
     }
 
-    def apply(stats: Tree*)(implicit pos: Position): Tree =
-      apply(stats.toList)
+    def apply(stats: Tree*)(implicit pos: Position): Tree = apply(stats.toList)
 
     def unapply(block: Block): Some[List[Tree]] = Some(block.stats)
   }
@@ -941,8 +939,7 @@ object Trees {
       if (value) new OptimizerHints(bits | NoinlineMask)
       else new OptimizerHints(bits & ~NoinlineMask)
 
-    override def toString(): String =
-      s"OptimizerHints($bits)"
+    override def toString(): String = s"OptimizerHints($bits)"
   }
 
   object OptimizerHints {
@@ -952,8 +949,7 @@ object Trees {
     final val NoinlineShift = 1
     final val NoinlineMask = 1 << NoinlineShift
 
-    final val empty: OptimizerHints =
-      new OptimizerHints(0)
+    final val empty: OptimizerHints = new OptimizerHints(0)
   }
 
   /** A hash of a tree (usually a MethodDef). Contains two SHA-1 hashes */

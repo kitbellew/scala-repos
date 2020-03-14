@@ -32,8 +32,8 @@ class ProtocolsBenchmark extends StdBenchAnnotations {
     "\u270A\u270B\u270C\u270D\u270E\u270F"
   )
 
-  private[this] val ttransport =
-    new TReusableMemoryTransport(new TByteArrayOutputStream(10000))
+  private[this] val ttransport = new TReusableMemoryTransport(
+    new TByteArrayOutputStream(10000))
 
   private[this] var baselineProtocol: TProtocol = _
   private[this] var protocolsProtocol: TProtocol = _

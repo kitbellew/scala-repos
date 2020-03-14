@@ -58,8 +58,12 @@ class AppClientSuite
     */
   override def beforeAll(): Unit = {
     super.beforeAll()
-    masterRpcEnv =
-      RpcEnv.create(Master.SYSTEM_NAME, "localhost", 0, conf, securityManager)
+    masterRpcEnv = RpcEnv.create(
+      Master.SYSTEM_NAME,
+      "localhost",
+      0,
+      conf,
+      securityManager)
     workerRpcEnvs = (0 until numWorkers).map { i =>
       RpcEnv.create(
         Worker.SYSTEM_NAME + i,
@@ -219,8 +223,12 @@ class AppClientSuite
 
   /** Create AppClient and supporting objects */
   private class AppClientInst(masterUrl: String) {
-    val rpcEnv =
-      RpcEnv.create("spark", Utils.localHostName(), 0, conf, securityManager)
+    val rpcEnv = RpcEnv.create(
+      "spark",
+      Utils.localHostName(),
+      0,
+      conf,
+      securityManager)
     private val cmd = new Command(
       TestExecutor.getClass.getCanonicalName.stripSuffix("$"),
       List(),

@@ -327,12 +327,13 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
         val form = nfl.id.toForm
         form.isDefined must_== true
         form foreach { fprime =>
-          val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-            ns.filter {
-              case e: Elem =>
-                e.attribute("selected").map(_.text) == Some("selected")
-              case _ => false
-            }) andThen "* [value]" #> ".*"))(fprime)
+          val f =
+            ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+              ns.filter {
+                case e: Elem =>
+                  e.attribute("selected").map(_.text) == Some("selected")
+                case _ => false
+              }) andThen "* [value]" #> ".*"))(fprime)
           val ret: Boolean = Helpers.compareXml(f, formPattern)
           ret must_== true
         }
@@ -399,12 +400,13 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
         val form = nfl.id.toForm
         form.isDefined must_== true
         form foreach { fprime =>
-          val f = ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
-            ns.filter {
-              case e: Elem =>
-                e.attribute("selected").map(_.text) == Some("selected")
-              case _ => false
-            }) andThen "* [value]" #> ".*"))(fprime)
+          val f =
+            ("* [name]" #> ".*" & "select *" #> (((ns: NodeSeq) =>
+              ns.filter {
+                case e: Elem =>
+                  e.attribute("selected").map(_.text) == Some("selected")
+                case _ => false
+              }) andThen "* [value]" #> ".*"))(fprime)
           val ret: Boolean = Helpers.compareXml(f, formPattern)
           ret must_== true
         }

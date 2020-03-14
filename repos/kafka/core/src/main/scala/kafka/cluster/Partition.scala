@@ -67,8 +67,10 @@ class Partition(
    * In addition to the leader, the controller can also send the epoch of the controller that elected the leader for
    * each partition. */
   private var controllerEpoch: Int = KafkaController.InitialControllerEpoch - 1
-  this.logIdent =
-    "Partition [%s,%d] on broker %d: ".format(topic, partitionId, localBrokerId)
+  this.logIdent = "Partition [%s,%d] on broker %d: ".format(
+    topic,
+    partitionId,
+    localBrokerId)
 
   private def isReplicaLocal(replicaId: Int): Boolean =
     (replicaId == localBrokerId)
@@ -99,8 +101,9 @@ class Partition(
           val config = LogConfig.fromProps(
             logManager.defaultConfig.originals,
             AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic))
-          val log =
-            logManager.createLog(TopicAndPartition(topic, partitionId), config)
+          val log = logManager.createLog(
+            TopicAndPartition(topic, partitionId),
+            config)
           val checkpoint = replicaManager.highWatermarkCheckpoints(
             log.dir.getParentFile.getAbsolutePath)
           val offsetMap = checkpoint.read
@@ -370,8 +373,8 @@ class Partition(
     */
   private def maybeIncrementLeaderHW(leaderReplica: Replica): Boolean = {
     val allLogEndOffsets = inSyncReplicas.map(_.logEndOffset)
-    val newHighWatermark =
-      allLogEndOffsets.min(new LogOffsetMetadata.OffsetOrdering)
+    val newHighWatermark = allLogEndOffsets.min(
+      new LogOffsetMetadata.OffsetOrdering)
     val oldHighWatermark = leaderReplica.highWatermark
     if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark
           .onOlderSegment(newHighWatermark)) {
@@ -407,8 +410,9 @@ class Partition(
     val leaderHWIncremented = inWriteLock(leaderIsrUpdateLock) {
       leaderReplicaIfLocal() match {
         case Some(leaderReplica) =>
-          val outOfSyncReplicas =
-            getOutOfSyncReplicas(leaderReplica, replicaMaxLagTimeMs)
+          val outOfSyncReplicas = getOutOfSyncReplicas(
+            leaderReplica,
+            replicaMaxLagTimeMs)
           if (outOfSyncReplicas.size > 0) {
             val newInSyncReplicas = inSyncReplicas -- outOfSyncReplicas
             assert(newInSyncReplicas.size > 0)

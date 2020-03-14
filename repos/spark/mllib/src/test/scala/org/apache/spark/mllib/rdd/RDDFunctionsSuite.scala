@@ -46,8 +46,12 @@ class RDDFunctionsSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("sliding with empty partitions") {
-    val data =
-      Seq(Seq(1, 2, 3), Seq.empty[Int], Seq(4), Seq.empty[Int], Seq(5, 6, 7))
+    val data = Seq(
+      Seq(1, 2, 3),
+      Seq.empty[Int],
+      Seq(4),
+      Seq.empty[Int],
+      Seq(5, 6, 7))
     val rdd = sc.parallelize(data, data.length).flatMap(s => s)
     assert(rdd.partitions.length === data.length)
     val sliding = rdd.sliding(3).collect().toSeq.map(_.toSeq)

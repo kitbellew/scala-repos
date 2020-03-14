@@ -138,8 +138,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
           }
 
         var methodCallsites = Map.empty[MethodInsnNode, Callsite]
-        var methodClosureInstantiations =
-          Map.empty[InvokeDynamicInsnNode, ClosureInstantiation]
+        var methodClosureInstantiations = Map
+          .empty[InvokeDynamicInsnNode, ClosureInstantiation]
 
         // lazy so it is only computed if actually used by computeArgInfos
         lazy val prodCons =
@@ -158,8 +158,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                 OptimizerWarning,
                 (ClassNode, Source)]
             } yield {
-              val declarationClassBType =
-                classBTypeFromClassNode(declarationClassNode)
+              val declarationClassBType = classBTypeFromClassNode(
+                declarationClassNode)
               val CallsiteInfo(
                 safeToInline,
                 safeToRewrite,

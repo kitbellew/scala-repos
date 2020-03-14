@@ -501,8 +501,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           redirect(s"/${accountName}/${repository.name}")
         } else {
           // Insert to the database at first
-          val originUserName =
-            repository.repository.originUserName.getOrElse(repository.owner)
+          val originUserName = repository.repository.originUserName
+            .getOrElse(repository.owner)
           val originRepositoryName = repository.repository.originRepositoryName
             .getOrElse(repository.name)
 

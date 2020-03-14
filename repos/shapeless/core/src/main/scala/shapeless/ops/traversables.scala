@@ -42,8 +42,7 @@ object traversable {
 
     implicit def hnilFromTraversable[T] =
       new FromTraversable[HNil] {
-        def apply(l: GenTraversable[_]) =
-          if (l.isEmpty) Some(HNil) else None
+        def apply(l: GenTraversable[_]) = if (l.isEmpty) Some(HNil) else None
       }
 
     implicit def hlistFromTraversable[OutH, OutT <: HList](implicit
@@ -76,8 +75,7 @@ object traversable {
 
     def apply[CC[T] <: GenTraversable[T], A, N <: Nat](implicit
         ev: ToSizedHList[CC, A, N]
-    ): ToSizedHList.Aux[CC, A, N, ev.Out] =
-      ev
+    ): ToSizedHList.Aux[CC, A, N, ev.Out] = ev
 
     import syntax.sized._
     import ops.nat._
@@ -94,8 +92,7 @@ object traversable {
     ): Aux[CC, A, N, Option[th.Out]] =
       new ToSizedHList[CC, A, N] {
         type Out = Option[th.Out]
-        def apply(as: CC[A]): Out =
-          as.sized[N].map(_.toHList)
+        def apply(as: CC[A]): Out = as.sized[N].map(_.toHList)
       }
 
   }

@@ -40,8 +40,7 @@ class FutureTest
     def scheduleOnce(when: Time)(f: => Unit): TimerTask =
       throw new Exception("schedule called")
     def schedulePeriodically(when: Time, period: Duration)(
-        f: => Unit): TimerTask =
-      throw new Exception("schedule called")
+        f: => Unit): TimerTask = throw new Exception("schedule called")
     def stop() = ()
   }
 

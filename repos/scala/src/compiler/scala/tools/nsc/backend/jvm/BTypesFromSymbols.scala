@@ -371,8 +371,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // Java enums have the `ACC_ABSTRACT` flag if they have a deferred method.
           // We cannot trust `hasAbstractFlag`: the ClassfileParser adds `ABSTRACT` and `SEALED` to all
           // Java enums for exhaustiveness checking.
-          val hasAbstractMethod =
-            classSym.info.decls.exists(s => s.isMethod && s.isDeferred)
+          val hasAbstractMethod = classSym.info.decls.exists(s =>
+            s.isMethod && s.isDeferred)
           if (hasAbstractMethod) ACC_ABSTRACT else 0
         }
       GenBCode.mkFlags(
@@ -432,10 +432,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
      * We collect them here.
      */
     val nestedClassSymbols = {
-      val linkedClass =
-        exitingPickler(
-          classSym.linkedClassOfClass
-        ) // linkedCoC does not work properly in late phases
+      val linkedClass = exitingPickler(
+        classSym.linkedClassOfClass
+      ) // linkedCoC does not work properly in late phases
 
       // The lambdalift phase lifts all nested classes to the enclosing class, so if we collect
       // member classes right after lambdalift, we obtain all nested classes, including local and
@@ -496,9 +495,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           val valueClassCompanionMembers = {
             if (linkedClass != NoSymbol && exitingPickler(
                   classSym.isDerivedValueClass)) {
-              val moduleMemberClasses =
-                exitingPhase(currentRun.lambdaliftPhase)(
-                  memberClassesForInnerClassTable(linkedClass))
+              val moduleMemberClasses = exitingPhase(
+                currentRun.lambdaliftPhase)(
+                memberClassesForInnerClassTable(linkedClass))
               moduleMemberClasses.filter(
                 classOriginallyNestedInClass(_, classSym))
             } else Nil
@@ -529,8 +528,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       } else true
     })
 
-    val nestedClasses =
-      nestedClassSymbolsNoJavaModuleClasses.map(classBTypeFromSymbol)
+    val nestedClasses = nestedClassSymbolsNoJavaModuleClasses.map(
+      classBTypeFromSymbol)
 
     val nestedInfo = buildNestedInfo(classSym)
 
@@ -654,8 +653,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         case Right(classNode) =>
           inlineInfoFromClassfile(classNode)
         case Left(missingClass) =>
-          EmptyInlineInfo.copy(warning =
-            Some(ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))
+          EmptyInlineInfo.copy(warning = Some(
+            ClassNotFoundWhenBuildingInlineInfoFromSymbol(missingClass)))
       }
     }
   }

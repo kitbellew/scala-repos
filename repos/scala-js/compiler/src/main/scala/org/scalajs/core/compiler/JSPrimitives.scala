@@ -105,6 +105,5 @@ abstract class JSPrimitives {
     addPrimitive(Runtime_linkingInfo, LINKING_INFO)
   }
 
-  def isJavaScriptPrimitive(code: Int): Boolean =
-    code >= 300 && code < 360
+  def isJavaScriptPrimitive(code: Int): Boolean = code >= 300 && code < 360
 }

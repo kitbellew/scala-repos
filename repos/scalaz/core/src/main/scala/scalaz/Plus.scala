@@ -33,8 +33,7 @@ trait Plus[F[_]] { self =>
         implicit FA: Equal[F[A]]): Boolean =
       FA.equal(plus(f1, plus(f2, f3)), plus(plus(f1, f2), f3))
   }
-  def plusLaw =
-    new PlusLaw {}
+  def plusLaw = new PlusLaw {}
   ////
   val plusSyntax = new scalaz.syntax.PlusSyntax[F] {
     def F = Plus.this

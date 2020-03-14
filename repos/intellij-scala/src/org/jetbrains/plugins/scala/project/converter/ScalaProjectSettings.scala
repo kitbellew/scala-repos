@@ -47,8 +47,8 @@ class ScalaProjectSettings(basePackages: Seq[String]) extends XmlConversion {
 
     if (file.exists()) {
       val rootElement = parseXml(FileUtil.loadFile(file))
-      val componentElement =
-        Option(rootElement.getChild("component")).getOrElse {
+      val componentElement = Option(rootElement.getChild("component"))
+        .getOrElse {
           val element = new Element("component")
           element.setAttribute("name", "ScalaProjectSettings")
           rootElement.addContent(element)

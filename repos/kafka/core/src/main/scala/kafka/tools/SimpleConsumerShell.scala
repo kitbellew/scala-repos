@@ -149,8 +149,8 @@ object SimpleConsumerShell extends Logging {
     val printOffsets = if (options.has(printOffsetOpt)) true else false
     val noWaitAtEndOfLog = options.has(noWaitAtEndOfLogOpt)
 
-    val messageFormatterClass =
-      Class.forName(options.valueOf(messageFormatterOpt))
+    val messageFormatterClass = Class.forName(
+      options.valueOf(messageFormatterOpt))
     val formatterArgs = CommandLineUtils.parseKeyValueArgs(
       options.valuesOf(messageFormatterArgOpt))
 
@@ -181,8 +181,8 @@ object SimpleConsumerShell extends Logging {
 
     // validating partition id
     val partitionsMetadata = topicsMetadata(0).partitionsMetadata
-    val partitionMetadataOpt =
-      partitionsMetadata.find(p => p.partitionId == partitionId)
+    val partitionMetadataOpt = partitionsMetadata.find(p =>
+      p.partitionId == partitionId)
     if (!partitionMetadataOpt.isDefined) {
       System.err.println(
         "Error: partition %d does not exist for topic %s"
@@ -240,8 +240,9 @@ object SimpleConsumerShell extends Logging {
     }
 
     // initializing formatter
-    val formatter =
-      messageFormatterClass.newInstance().asInstanceOf[MessageFormatter]
+    val formatter = messageFormatterClass
+      .newInstance()
+      .asInstanceOf[MessageFormatter]
     formatter.init(formatterArgs)
 
     val replicaString = if (replicaId > 0) "leader" else "replica"

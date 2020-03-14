@@ -115,10 +115,12 @@ object ORSet {
             val commonDotsKeys = commonDots.keys
             val lhsUniqueDots = lhsVs -- commonDotsKeys
             val rhsUniqueDots = rhsVs -- commonDotsKeys
-            val lhsKeep =
-              ORSet.subtractDots(VersionVector(lhsUniqueDots), rhs.vvector)
-            val rhsKeep =
-              ORSet.subtractDots(VersionVector(rhsUniqueDots), lhs.vvector)
+            val lhsKeep = ORSet.subtractDots(
+              VersionVector(lhsUniqueDots),
+              rhs.vvector)
+            val rhsKeep = ORSet.subtractDots(
+              VersionVector(rhsUniqueDots),
+              lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
             if (merged.isEmpty) acc else acc.updated(k, merged)
@@ -130,8 +132,9 @@ object ORSet {
             val lhsUniqueDots = lhsVs -- commonDotsKeys
             val rhsUnique =
               if (commonDotsKeys.isEmpty) rhsDots else VersionVector.empty
-            val lhsKeep =
-              ORSet.subtractDots(VersionVector(lhsUniqueDots), rhs.vvector)
+            val lhsKeep = ORSet.subtractDots(
+              VersionVector(lhsUniqueDots),
+              rhs.vvector)
             val rhsKeep = ORSet.subtractDots(rhsUnique, lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
@@ -145,8 +148,9 @@ object ORSet {
               if (commonDotsKeys.isEmpty) lhsDots else VersionVector.empty
             val rhsUniqueDots = rhsVs -- commonDotsKeys
             val lhsKeep = ORSet.subtractDots(lhsUnique, rhs.vvector)
-            val rhsKeep =
-              ORSet.subtractDots(VersionVector(rhsUniqueDots), lhs.vvector)
+            val rhsKeep = ORSet.subtractDots(
+              VersionVector(rhsUniqueDots),
+              lhs.vvector)
             val merged = lhsKeep.merge(rhsKeep).merge(VersionVector(commonDots))
             // Perfectly possible that an item in both sets should be dropped
             if (merged.isEmpty) acc else acc.updated(k, merged)
@@ -317,15 +321,15 @@ final class ORSet[A] private[akka] (
           this.elementsMap.keysIterator.filter(that.elementsMap.contains)
         else that.elementsMap.keysIterator.filter(this.elementsMap.contains)
       val entries00 = ORSet.mergeCommonKeys(commonKeys, this, that)
-      val thisUniqueKeys =
-        this.elementsMap.keysIterator.filterNot(that.elementsMap.contains)
+      val thisUniqueKeys = this.elementsMap.keysIterator
+        .filterNot(that.elementsMap.contains)
       val entries0 = ORSet.mergeDisjointKeys(
         thisUniqueKeys,
         this.elementsMap,
         that.vvector,
         entries00)
-      val thatUniqueKeys =
-        that.elementsMap.keysIterator.filterNot(this.elementsMap.contains)
+      val thatUniqueKeys = that.elementsMap.keysIterator
+        .filterNot(this.elementsMap.contains)
       val entries = ORSet.mergeDisjointKeys(
         thatUniqueKeys,
         that.elementsMap,

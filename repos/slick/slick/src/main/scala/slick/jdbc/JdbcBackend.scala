@@ -326,8 +326,11 @@ trait JdbcBackend extends RelationalBackend {
         classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
         : Database = {
       val usedConfig = if (path.isEmpty) config else config.getConfig(path)
-      val source =
-        JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)
+      val source = JdbcDataSource.forConfig(
+        usedConfig,
+        driver,
+        path,
+        classLoader)
       val executor = AsyncExecutor(
         path,
         usedConfig.getIntOr("numThreads", 20),
@@ -473,8 +476,10 @@ trait JdbcBackend extends RelationalBackend {
           ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability =
           ResultSetHoldability.Default)(f: (Statement => T)): T = {
-      val st =
-        createStatement(defaultType, defaultConcurrency, defaultHoldability)
+      val st = createStatement(
+        defaultType,
+        defaultConcurrency,
+        defaultHoldability)
       try f(st)
       finally st.close()
     }

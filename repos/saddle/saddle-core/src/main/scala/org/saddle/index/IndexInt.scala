@@ -30,8 +30,8 @@ import org.saddle.scalar._
 class IndexInt(keys: Vec[Int]) extends Index[Int] {
   val scalarTag = ScalarTagInt
 
-  private lazy val (lmap, IndexProperties(contiguous, monotonic)) =
-    IndexImpl.keys2map(this)
+  private lazy val (lmap, IndexProperties(contiguous, monotonic)) = IndexImpl
+    .keys2map(this)
 
   protected def locator: Locator[Int] = lmap
 

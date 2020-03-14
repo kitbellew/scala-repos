@@ -127,8 +127,8 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
         0)
       .topicsMetadata
     val metaDataForTopic1 = metadata.filter(p => p.topic.equals(topic1))
-    val partitionDataForTopic1 =
-      metaDataForTopic1.head.partitionsMetadata.sortBy(_.partitionId)
+    val partitionDataForTopic1 = metaDataForTopic1.head.partitionsMetadata
+      .sortBy(_.partitionId)
     assertEquals(partitionDataForTopic1.size, 3)
     assertEquals(partitionDataForTopic1(1).partitionId, 1)
     assertEquals(partitionDataForTopic1(2).partitionId, 2)
@@ -160,8 +160,8 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
         0)
       .topicsMetadata
     val metaDataForTopic2 = metadata.filter(p => p.topic.equals(topic2))
-    val partitionDataForTopic2 =
-      metaDataForTopic2.head.partitionsMetadata.sortBy(_.partitionId)
+    val partitionDataForTopic2 = metaDataForTopic2.head.partitionsMetadata
+      .sortBy(_.partitionId)
     assertEquals(partitionDataForTopic2.size, 3)
     assertEquals(partitionDataForTopic2(1).partitionId, 1)
     assertEquals(partitionDataForTopic2(2).partitionId, 2)
@@ -232,8 +232,8 @@ class AddPartitionsTest extends ZooKeeperTestHarness {
       partitionId: Int,
       expectedLeaderId: Int,
       expectedReplicas: Set[Int]) = {
-    val partitionOpt =
-      metadata.partitionsMetadata.find(_.partitionId == partitionId)
+    val partitionOpt = metadata.partitionsMetadata.find(
+      _.partitionId == partitionId)
     assertTrue(s"Partition $partitionId should exist", partitionOpt.isDefined)
     val partition = partitionOpt.get
 

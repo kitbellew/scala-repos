@@ -72,10 +72,9 @@ class SchedulerActionsTest
     val stagedTask = MarathonTestHelper.stagedTask("task_2")
 
     import MarathonTestHelper.Implicits._
-    val stagedTaskWithSlaveId =
-      MarathonTestHelper
-        .stagedTask("task_3")
-        .withAgentInfo(_.copy(agentId = Some("slave 1")))
+    val stagedTaskWithSlaveId = MarathonTestHelper
+      .stagedTask("task_3")
+      .withAgentInfo(_.copy(agentId = Some("slave 1")))
 
     val scheduler = new SchedulerActions(
       repo,
@@ -159,8 +158,9 @@ class SchedulerActionsTest
     val app = AppDefinition(id = PathId("/myapp"))
     val tasksOfApp = AppTasks.forTasks(app.id, Iterable(task))
     val orphanedApp = AppDefinition(id = PathId("/orphan"))
-    val tasksOfOrphanedApp =
-      AppTasks.forTasks(orphanedApp.id, Iterable(orphanedTask))
+    val tasksOfOrphanedApp = AppTasks.forTasks(
+      orphanedApp.id,
+      Iterable(orphanedTask))
 
     when(taskTracker.tasksByApp()).thenReturn(
       Future.successful(TasksByApp.of(tasksOfApp, tasksOfOrphanedApp)))

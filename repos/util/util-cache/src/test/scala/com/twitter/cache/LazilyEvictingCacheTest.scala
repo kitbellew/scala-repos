@@ -12,11 +12,10 @@ import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
 class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
-  val explodingCacheLoader =
-    new CacheLoader[String, Future[String]] {
-      override def load(k: String): Future[String] =
-        throw new RuntimeException("unexpected load call")
-    }
+  val explodingCacheLoader = new CacheLoader[String, Future[String]] {
+    override def load(k: String): Future[String] =
+      throw new RuntimeException("unexpected load call")
+  }
 
   test("LazilyEvictingCache should evict on failed futures for set") {
     val cache = mock[LoadingFutureCache[String, String]]

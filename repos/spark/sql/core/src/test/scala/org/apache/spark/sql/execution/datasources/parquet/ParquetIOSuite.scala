@@ -150,8 +150,14 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         .coalesce(1)
     }
 
-    val combinations =
-      Seq((5, 2), (1, 0), (1, 1), (18, 10), (18, 17), (19, 0), (38, 37))
+    val combinations = Seq(
+      (5, 2),
+      (1, 0),
+      (1, 1),
+      (18, 10),
+      (18, 17),
+      (19, 0),
+      (38, 37))
     for ((precision, scale) <- combinations) {
       withTempPath { dir =>
         val data = makeDecimalRDD(DecimalType(precision, scale))
@@ -191,8 +197,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   testStandardAndLegacyModes("array and double") {
-    val data =
-      (1 to 4).map(i => (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
+    val data = (1 to 4).map(i =>
+      (i.toDouble, Seq(i.toDouble, (i + 1).toDouble)))
     checkParquetFile(data)
   }
 
@@ -263,8 +269,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-10113 Support for unsigned Parquet logical types") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType(
+      """message root {
         |  required int32 c(UINT_32);
         |}
       """.stripMargin)
@@ -282,8 +288,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
   test(
     "SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType(
+      """message root {
         |  required binary a(JSON);
         |  required binary b(BSON);
         |}
@@ -295,8 +301,10 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf)
-      val sparkTypes =
-        sqlContext.read.parquet(path.toString).schema.map(_.dataType)
+      val sparkTypes = sqlContext.read
+        .parquet(path.toString)
+        .schema
+        .map(_.dataType)
       assert(sparkTypes === expectedSparkTypes)
     }
   }
@@ -381,8 +389,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     withTempPath { file =>
       val path = new Path(file.toURI.toString)
       val fs = FileSystem.getLocal(hadoopConfiguration)
-      val schema =
-        StructType.fromAttributes(ScalaReflection.attributesFor[(Int, String)])
+      val schema = StructType.fromAttributes(
+        ScalaReflection.attributesFor[(Int, String)])
       writeMetadata(schema, path, hadoopConfiguration)
 
       assert(
@@ -463,8 +471,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       """.stripMargin)
 
     withTempPath { location =>
-      val extraMetadata =
-        Map(CatalystReadSupport.SPARK_METADATA_KEY -> sparkSchema.toString)
+      val extraMetadata = Map(
+        CatalystReadSupport.SPARK_METADATA_KEY -> sparkSchema.toString)
       val path = new Path(location.getCanonicalPath)
       val conf = sparkContext.hadoopConfiguration
       writeMetadata(parquetSchema, path, conf, extraMetadata)
@@ -657,8 +665,9 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   test("null and non-null strings") {
     // Create a dataset where the first values are NULL and then some non-null values. The
     // number of non-nulls needs to be bigger than the ParquetReader batch size.
-    val data: Dataset[String] =
-      sqlContext.range(200).map(i => if (i < 150) null else "a")
+    val data: Dataset[String] = sqlContext
+      .range(200)
+      .map(i => if (i < 150) null else "a")
     val df = data.toDF("col")
     assert(df.agg("col" -> "count").collect().head.getLong(0) == 50)
 

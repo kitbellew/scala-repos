@@ -46,11 +46,9 @@ class ByteArrayInputStream(
 
   override def markSupported(): Boolean = true
 
-  override def mark(readlimit: Int): Unit =
-    mark = pos
+  override def mark(readlimit: Int): Unit = mark = pos
 
-  override def reset(): Unit =
-    pos = mark
+  override def reset(): Unit = pos = mark
 
   override def close(): Unit = ()
 

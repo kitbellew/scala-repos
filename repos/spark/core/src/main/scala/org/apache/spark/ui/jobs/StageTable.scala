@@ -154,16 +154,18 @@ private[ui] class StageTableBase(
 
     // The submission time for a stage is misleading because it counts the time
     // the stage waits to be launched. (SPARK-10930)
-    val taskLaunchTimes =
-      stageData.taskData.values.map(_.taskInfo.launchTime).filter(_ > 0)
+    val taskLaunchTimes = stageData.taskData.values
+      .map(_.taskInfo.launchTime)
+      .filter(_ > 0)
     val duration: Option[Long] =
       if (taskLaunchTimes.nonEmpty) {
         val startTime = taskLaunchTimes.min
         if (finishTime > startTime) { Some(finishTime - startTime) }
         else { Some(System.currentTimeMillis() - startTime) }
       } else { None }
-    val formattedDuration =
-      duration.map(d => UIUtils.formatDuration(d)).getOrElse("Unknown")
+    val formattedDuration = duration
+      .map(d => UIUtils.formatDuration(d))
+      .getOrElse("Unknown")
 
     val inputRead = stageData.inputBytes
     val inputReadWithUnit =
@@ -244,17 +246,18 @@ private[ui] class FailedStageTable(
     val failureReasonSummary = StringEscapeUtils.escapeHtml4(if (isMultiline) {
       failureReason.substring(0, failureReason.indexOf('\n'))
     } else { failureReason })
-    val details = if (isMultiline) {
-      // scalastyle:off
-      <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
+    val details =
+      if (isMultiline) {
+        // scalastyle:off
+        <span onclick="this.parentNode.querySelector('.stacktrace-details').classList.toggle('collapsed')"
             class="expand-details">
         +details
       </span> ++
-        <div class="stacktrace-details collapsed">
+          <div class="stacktrace-details collapsed">
           <pre>{failureReason}</pre>
         </div>
-      // scalastyle:on
-    } else { "" }
+        // scalastyle:on
+      } else { "" }
     val failureReasonHtml = <td valign="middle">{failureReasonSummary}{
       details
     }</td>

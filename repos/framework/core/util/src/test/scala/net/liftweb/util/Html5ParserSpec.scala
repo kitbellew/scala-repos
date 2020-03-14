@@ -86,9 +86,8 @@ object Html5ParserSpec
     }
 
     "change <lift:head> to <head>" in {
-      val parsed =
-        parse("<div><lift:head>123</lift:head></div>").openOrThrowException(
-          "Test")
+      val parsed = parse("<div><lift:head>123</lift:head></div>")
+        .openOrThrowException("Test")
       val heads = parsed \\ "head"
       heads.length must_== 1
       heads.text must_== "123"

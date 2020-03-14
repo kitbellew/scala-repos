@@ -55,8 +55,9 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       testUtils = new KPLBasedKinesisTestUtils()
       testUtils.createStream()
 
-      shardIdToDataAndSeqNumbers =
-        testUtils.pushData(testData, aggregate = aggregateTestData)
+      shardIdToDataAndSeqNumbers = testUtils.pushData(
+        testData,
+        aggregate = aggregateTestData)
       require(
         shardIdToDataAndSeqNumbers.size > 1,
         "Need data to be sent to multiple shards")
@@ -95,36 +96,39 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
 
   testIfEnabled("Basic reading from Kinesis") {
     // Verify all data using multiple ranges in a single RDD partition
-    val receivedData1 = new KinesisBackedBlockRDD[Array[Byte]](
-      sc,
-      testUtils.regionName,
-      testUtils.endpointUrl,
-      fakeBlockIds(1),
-      Array(SequenceNumberRanges(allRanges.toArray)))
-      .map { bytes => new String(bytes).toInt }
-      .collect()
+    val receivedData1 =
+      new KinesisBackedBlockRDD[Array[Byte]](
+        sc,
+        testUtils.regionName,
+        testUtils.endpointUrl,
+        fakeBlockIds(1),
+        Array(SequenceNumberRanges(allRanges.toArray)))
+        .map { bytes => new String(bytes).toInt }
+        .collect()
     assert(receivedData1.toSet === testData.toSet)
 
     // Verify all data using one range in each of the multiple RDD partitions
-    val receivedData2 = new KinesisBackedBlockRDD[Array[Byte]](
-      sc,
-      testUtils.regionName,
-      testUtils.endpointUrl,
-      fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
-      .collect()
+    val receivedData2 =
+      new KinesisBackedBlockRDD[Array[Byte]](
+        sc,
+        testUtils.regionName,
+        testUtils.endpointUrl,
+        fakeBlockIds(allRanges.size),
+        allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
+        .map { bytes => new String(bytes).toInt }
+        .collect()
     assert(receivedData2.toSet === testData.toSet)
 
     // Verify ordering within each partition
-    val receivedData3 = new KinesisBackedBlockRDD[Array[Byte]](
-      sc,
-      testUtils.regionName,
-      testUtils.endpointUrl,
-      fakeBlockIds(allRanges.size),
-      allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
-      .map { bytes => new String(bytes).toInt }
-      .collectPartitions()
+    val receivedData3 =
+      new KinesisBackedBlockRDD[Array[Byte]](
+        sc,
+        testUtils.regionName,
+        testUtils.endpointUrl,
+        fakeBlockIds(allRanges.size),
+        allRanges.map { range => SequenceNumberRanges(Array(range)) }.toArray)
+        .map { bytes => new String(bytes).toInt }
+        .collectPartitions()
     assert(receivedData3.length === allRanges.size)
     for (i <- 0 until allRanges.size) {
       assert(receivedData3(i).toSeq === shardIdToData(allRanges(i).shardId))
@@ -240,8 +244,8 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       SequenceNumberRanges(
         SequenceNumberRange("fakeStream", "fakeShardId", "xxx", "yyy")))
     val realRanges = Array.tabulate(numPartitionsInKinesis) { i =>
-      val range =
-        shardIdToRange(shardIds(i + (numPartitions - numPartitionsInKinesis)))
+      val range = shardIdToRange(
+        shardIds(i + (numPartitions - numPartitionsInKinesis)))
       SequenceNumberRanges(Array(range))
     }
     val ranges = (fakeRanges ++ realRanges)

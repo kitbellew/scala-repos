@@ -63,8 +63,9 @@ private[remote] class DefaultMessageDispatcher(
 
     import provider.remoteSettings._
 
-    lazy val payload: AnyRef =
-      MessageSerializer.deserialize(system, serializedMessage)
+    lazy val payload: AnyRef = MessageSerializer.deserialize(
+      system,
+      serializedMessage)
     def payloadClass: Class[_] = if (payload eq null) null else payload.getClass
     val sender: ActorRef = senderOption.getOrElse(system.deadLetters)
     val originalReceiver = recipient.path
@@ -655,11 +656,11 @@ private[remote] class EndpointWriter(
   import EndpointWriter._
   import context.dispatcher
 
-  val extendedSystem: ExtendedActorSystem =
-    context.system.asInstanceOf[ExtendedActorSystem]
+  val extendedSystem: ExtendedActorSystem = context.system
+    .asInstanceOf[ExtendedActorSystem]
   val remoteMetrics = RemoteMetricsExtension(extendedSystem)
-  val backoffDispatcher =
-    context.system.dispatchers.lookup("akka.remote.backoff-remote-dispatcher")
+  val backoffDispatcher = context.system.dispatchers
+    .lookup("akka.remote.backoff-remote-dispatcher")
 
   var reader: Option[ActorRef] = None
   var handle: Option[AkkaProtocolHandle] = handleOrActive
@@ -796,14 +797,17 @@ private[remote] class EndpointWriter(
     maxWriteCount = math.max(writeCount, maxWriteCount)
     if (writeCount <= SendBufferBatchSize) {
       fullBackoff = true
-      adaptiveBackoffNanos =
-        math.min((adaptiveBackoffNanos * 1.2).toLong, MaxAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math.min(
+        (adaptiveBackoffNanos * 1.2).toLong,
+        MaxAdaptiveBackoffNanos)
     } else if (writeCount >= maxWriteCount * 0.6)
-      adaptiveBackoffNanos =
-        math.max((adaptiveBackoffNanos * 0.9).toLong, MinAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math.max(
+        (adaptiveBackoffNanos * 0.9).toLong,
+        MinAdaptiveBackoffNanos)
     else if (writeCount <= maxWriteCount * 0.2)
-      adaptiveBackoffNanos =
-        math.min((adaptiveBackoffNanos * 1.1).toLong, MaxAdaptiveBackoffNanos)
+      adaptiveBackoffNanos = math.min(
+        (adaptiveBackoffNanos * 1.1).toLong,
+        MaxAdaptiveBackoffNanos)
 
     writeCount = 0
   }
@@ -1028,26 +1032,25 @@ private[remote] class EndpointWriter(
     }
 
   private def startReadEndpoint(handle: AkkaProtocolHandle): Some[ActorRef] = {
-    val newReader =
-      context.watch(
-        context.actorOf(
-          RARP(context.system)
-            .configureDispatcher(
-              EndpointReader.props(
-                localAddress,
-                remoteAddress,
-                transport,
-                settings,
-                codec,
-                msgDispatch,
-                inbound,
-                handle.handshakeInfo.uid,
-                reliableDeliverySupervisor,
-                receiveBuffers))
-            .withDeploy(Deploy.local),
-          "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
-            .next()
-        ))
+    val newReader = context.watch(
+      context.actorOf(
+        RARP(context.system)
+          .configureDispatcher(
+            EndpointReader.props(
+              localAddress,
+              remoteAddress,
+              transport,
+              settings,
+              codec,
+              msgDispatch,
+              inbound,
+              handle.handshakeInfo.uid,
+              reliableDeliverySupervisor,
+              receiveBuffers))
+          .withDeploy(Deploy.local),
+        "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
+          .next()
+      ))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
     Some(newReader)
   }

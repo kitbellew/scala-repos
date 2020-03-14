@@ -123,8 +123,7 @@ abstract class GenTraversableFactory[
     *  @return  A $coll that contains the results of `n1 x n2 x n3 x n4` evaluations of `elem`.
     */
   def fill[A](n1: Int, n2: Int, n3: Int, n4: Int)(
-      elem: => A): CC[CC[CC[CC[A]]]] =
-    tabulate(n1)(_ => fill(n2, n3, n4)(elem))
+      elem: => A): CC[CC[CC[CC[A]]]] = tabulate(n1)(_ => fill(n2, n3, n4)(elem))
 
   /** Produces a five-dimensional $coll containing the results of some element computation a number of times.
     *  @param   n1  the number of elements in the 1st dimension

@@ -102,8 +102,8 @@ object FormFieldDirectives extends FormFieldDirectives {
     }
   }
 
-  private val _formFieldMap: Directive1[Map[String, String]] =
-    _formFieldSeq.map(_.toMap)
+  private val _formFieldMap: Directive1[Map[String, String]] = _formFieldSeq
+    .map(_.toMap)
 
   sealed trait FieldMagnet {
     type Out
@@ -274,8 +274,7 @@ object FormFieldDirectives extends FormFieldDirectives {
 
     implicit def forTuple[T](implicit
         fold: FoldLeft[Directive0, T, ConvertFieldDefAndConcatenate.type])
-        : FieldDefAux[T, fold.Out] =
-      fieldDef[T, fold.Out](fold(pass, _))
+        : FieldDefAux[T, fold.Out] = fieldDef[T, fold.Out](fold(pass, _))
 
     object ConvertFieldDefAndConcatenate extends BinaryPolyFunc {
       implicit def from[P, TA, TB](implicit

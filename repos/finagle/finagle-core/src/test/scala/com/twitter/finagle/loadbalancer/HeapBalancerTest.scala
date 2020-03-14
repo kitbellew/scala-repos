@@ -46,8 +46,8 @@ class HeapBalancerTest
     val statsReceiver = new InMemoryStatsReceiver
     val half1, half2 = 0 until N / 2 map { i => new LoadedFactory(i.toString) }
     val factories = half1 ++ half2
-    val group =
-      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
+    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](
+      factories: _*)
     val nonRng = new Random {
       private[this] val i = new AtomicInteger(0)
       override def nextInt(n: Int) = i.incrementAndGet() % n
@@ -324,8 +324,8 @@ class HeapBalancerTest
     import ctx._
 
     val factories = Seq(new LoadedFactory("left"), new LoadedFactory("right"))
-    val group =
-      Group.mutable[ServiceFactory[Unit, LoadedFactory]](factories: _*)
+    val group = Group.mutable[ServiceFactory[Unit, LoadedFactory]](
+      factories: _*)
 
     val b = new HeapBalancer[Unit, LoadedFactory](
       Activity(group.set map (Activity.Ok(_))),

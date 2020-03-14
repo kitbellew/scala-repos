@@ -16,8 +16,7 @@ object Scalatest {
       javac + " -d " + outputdir + " -classpath " + classpath + " " + opts + tmpfilename)
   }
 
-  def java(cname: String) =
-    exec(javacmd + " -cp " + classpath + " " + cname)
+  def java(cname: String) = exec(javacmd + " -cp " + classpath + " " + cname)
 
   class Slurp(in: BufferedReader) extends Thread("slurper") {
     var done = false

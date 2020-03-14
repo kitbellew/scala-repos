@@ -38,11 +38,15 @@ class ClusterMessageSerializerSpec
   val a1 = TestMember(Address("akka.tcp", "sys", "a", 2552), Joining, Set.empty)
   val b1 = TestMember(Address("akka.tcp", "sys", "b", 2552), Up, Set("r1"))
   val c1 = TestMember(Address("akka.tcp", "sys", "c", 2552), Leaving, Set("r2"))
-  val d1 =
-    TestMember(Address("akka.tcp", "sys", "d", 2552), Exiting, Set("r1", "r2"))
+  val d1 = TestMember(
+    Address("akka.tcp", "sys", "d", 2552),
+    Exiting,
+    Set("r1", "r2"))
   val e1 = TestMember(Address("akka.tcp", "sys", "e", 2552), Down, Set("r3"))
-  val f1 =
-    TestMember(Address("akka.tcp", "sys", "f", 2552), Removed, Set("r2", "r3"))
+  val f1 = TestMember(
+    Address("akka.tcp", "sys", "f", 2552),
+    Removed,
+    Set("r2", "r3"))
 
   "ClusterMessages" must {
 
@@ -68,8 +72,9 @@ class ClusterMessageSerializerSpec
       val g1 = (Gossip(SortedSet(a1, b1, c1, d1)) :+ node1 :+ node2)
         .seen(a1.uniqueAddress)
         .seen(b1.uniqueAddress)
-      val g2 =
-        (g1 :+ node3 :+ node4).seen(a1.uniqueAddress).seen(c1.uniqueAddress)
+      val g2 = (g1 :+ node3 :+ node4)
+        .seen(a1.uniqueAddress)
+        .seen(c1.uniqueAddress)
       val reachability3 = Reachability.empty
         .unreachable(a1.uniqueAddress, e1.uniqueAddress)
         .unreachable(b1.uniqueAddress, e1.uniqueAddress)

@@ -58,8 +58,9 @@ object HttpRequest {
         if (headers.size == 0) {
           throw new ProtocolError("Malformed header line: " + line)
         }
-        val newHeaderLine =
-          HeaderLine(headers.head.name, headers.head.value + " " + line.trim)
+        val newHeaderLine = HeaderLine(
+          headers.head.name,
+          headers.head.value + " " + line.trim)
         readHeader(requestLine, newHeaderLine :: headers.drop(1))
       } else {
         val newHeaderLine = line.split(':').toList match {

@@ -15,8 +15,7 @@ object MaskCancelFilter {
   // TODO: we should simply transform the stack for boolean
   // stackables like this.
   case class Param(yesOrNo: Boolean) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(false))

@@ -43,8 +43,7 @@ final class BooleanOps(self: Boolean) {
     * 1 1  1
     * }}}
     */
-  final def /\(q: => Boolean) =
-    ∧(q)
+  final def /\(q: => Boolean) = ∧(q)
 
   /**
     * Disjunction. (OR)
@@ -258,8 +257,7 @@ final class BooleanOps(self: Boolean) {
     LazyOption.condLazyOption(self, a)
 
   final class ConditionalEither[A](a: => A) {
-    def or[B](b: => B) =
-      if (self) \/-(a) else -\/(b)
+    def or[B](b: => B) = if (self) \/-(a) else -\/(b)
   }
 
   /**

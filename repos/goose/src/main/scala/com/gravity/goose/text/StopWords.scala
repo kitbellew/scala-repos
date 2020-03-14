@@ -45,8 +45,8 @@ object StopWords {
     val ws: WordStats = new WordStats
     val strippedInput: String = removePunctuation(content)
 
-    val candidateWords: Array[String] =
-      string.SPACE_SPLITTER.split(strippedInput)
+    val candidateWords: Array[String] = string.SPACE_SPLITTER.split(
+      strippedInput)
 
     val overlappingStopWords: List[String] = new ArrayList[String]
 

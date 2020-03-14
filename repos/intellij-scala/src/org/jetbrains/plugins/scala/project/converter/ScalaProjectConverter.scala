@@ -24,8 +24,8 @@ class ScalaProjectConverter(context: ConversionContext)
   private var createdSettingsFiles: Seq[File] = Seq.empty
 
   override def getAdditionalAffectedFiles = {
-    val filesToDelete =
-      obsoleteProjectLibraries.flatMap(_.libraryStorageFileIn(context))
+    val filesToDelete = obsoleteProjectLibraries.flatMap(
+      _.libraryStorageFileIn(context))
     val filesToUpdate = scalaProjectSettings.getFilesToUpdate(context)
     (filesToDelete ++ filesToUpdate).asJava
   }
@@ -115,8 +115,8 @@ private object ScalaProjectConverter {
           settings)
     }
 
-    val defaultSettings =
-      profiles.headOption.fold(ScalaCompilerSettings.Default)(_.settings)
+    val defaultSettings = profiles.headOption.fold(
+      ScalaCompilerSettings.Default)(_.settings)
     val customProfiles = profiles.drop(1)
 
     new ScalaCompilerConfiguration(defaultSettings, customProfiles)

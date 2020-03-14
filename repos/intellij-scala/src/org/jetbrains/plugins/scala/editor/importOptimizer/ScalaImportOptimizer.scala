@@ -157,8 +157,9 @@ class ScalaImportOptimizer extends ImportOptimizer {
       }
     }
 
-    val importsInfo =
-      collectRanges(namesAtRangeStart, createInfo(_, isImportUsed))
+    val importsInfo = collectRanges(
+      namesAtRangeStart,
+      createInfo(_, isImportUsed))
 
     val optimized = importsInfo.map {
       case (range, rangeInfo) =>
@@ -224,11 +225,10 @@ class ScalaImportOptimizer extends ImportOptimizer {
       else {
         def isBlankLine(i: Int) =
           importLayout(i) == ScalaCodeStyleSettings.BLANK_LINE
-        val blankLineNumber =
-          Range(currentGroupIndex - 1, prevGroupIndex, -1)
-            .dropWhile(!isBlankLine(_))
-            .takeWhile(isBlankLine)
-            .size
+        val blankLineNumber = Range(currentGroupIndex - 1, prevGroupIndex, -1)
+          .dropWhile(!isBlankLine(_))
+          .takeWhile(isBlankLine)
+          .size
         newLineWithIndent * blankLineNumber
       }
     }
@@ -342,8 +342,8 @@ object ScalaImportOptimizer {
   }
 
   def findOptimizerFor(file: ScalaFile): Option[ImportOptimizer] = {
-    val topLevelFile =
-      file.getViewProvider.getPsi(file.getViewProvider.getBaseLanguage)
+    val topLevelFile = file.getViewProvider.getPsi(
+      file.getViewProvider.getBaseLanguage)
     val optimizers = LanguageImportStatements.INSTANCE.forFile(topLevelFile)
     if (optimizers.isEmpty) return None
 
@@ -533,8 +533,10 @@ object ScalaImportOptimizer {
     }
 
     def replace(oldInfos: Seq[ImportInfo], newInfos: Seq[ImportInfo]) = {
-      val oldIndices =
-        oldInfos.map(infos.indexOf).filter(_ >= 0).sorted(Ordering[Int].reverse)
+      val oldIndices = oldInfos
+        .map(infos.indexOf)
+        .filter(_ >= 0)
+        .sorted(Ordering[Int].reverse)
       if (oldIndices.nonEmpty) {
         val minIndex = oldIndices.last
         oldIndices.foreach(infos.remove)
@@ -567,12 +569,12 @@ object ScalaImportOptimizer {
 
     val actuallyInserted = withAliasedQualifier(infoToInsert)
 
-    val (samePrefixInfos, otherInfos) =
-      infos.partition(_.prefixQualifier == actuallyInserted.prefixQualifier)
+    val (samePrefixInfos, otherInfos) = infos.partition(
+      _.prefixQualifier == actuallyInserted.prefixQualifier)
     val samePrefixWithNewSplitted =
       samePrefixInfos.flatMap(_.split) ++ actuallyInserted.split
-    val (simpleInfos, notSimpleInfos) =
-      samePrefixWithNewSplitted.partition(_.singleNames.nonEmpty)
+    val (simpleInfos, notSimpleInfos) = samePrefixWithNewSplitted.partition(
+      _.singleNames.nonEmpty)
 
     def insertInfoWithWildcard(): Unit = {
       val (wildcard, withArrows) = notSimpleInfos.partition(_.hasWildcard)
@@ -594,8 +596,8 @@ object ScalaImportOptimizer {
 
       val notSimpleMerged = ImportInfo.merge(withArrows ++ wildcard)
       if (collectImports) {
-        val simpleMerged =
-          ImportInfo.merge(simpleInfosToRemain ++ notSimpleMerged)
+        val simpleMerged = ImportInfo.merge(
+          simpleInfosToRemain ++ notSimpleMerged)
         replace(samePrefixInfos, simpleMerged.toSeq)
       } else {
         replace(samePrefixInfos, simpleInfosToRemain ++ notSimpleMerged)

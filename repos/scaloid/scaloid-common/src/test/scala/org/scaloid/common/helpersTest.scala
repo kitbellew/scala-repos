@@ -57,8 +57,8 @@ class helpersTest extends JUnitSuite with ShouldMatchers {
   @Test
   def testPendingActivity(): Unit = {
     implicit val tag = ClassTag(classOf[SActivityImpl])
-    val shadowPI =
-      Robolectric.shadowOf(AppHelpers.pendingActivity[SActivityImpl])
+    val shadowPI = Robolectric.shadowOf(
+      AppHelpers.pendingActivity[SActivityImpl])
     val intent = shadowPI.getSavedIntent
     intent.getComponent.getClassName shouldBe classOf[SActivityImpl].getName
   }

@@ -95,8 +95,7 @@ class DocStubGenerationTest extends ScalaDocEnterActionTestBase {
 
   def testScl9049() {
     val testText = "def fooboobar(i: Int)(j: String) { }"
-    val assumed =
-      """/**
+    val assumed = """/**
         | * 
         | * @param i
         | * @param j

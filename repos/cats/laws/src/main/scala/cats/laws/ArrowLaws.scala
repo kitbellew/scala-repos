@@ -16,8 +16,7 @@ trait ArrowLaws[F[_, _]]
     with StrongLaws[F] {
   implicit override def F: Arrow[F]
 
-  def arrowIdentity[A]: IsEq[F[A, A]] =
-    F.lift(identity[A]) <-> F.id[A]
+  def arrowIdentity[A]: IsEq[F[A, A]] = F.lift(identity[A]) <-> F.id[A]
 
   def arrowComposition[A, B, C](f: A => B, g: B => C): IsEq[F[A, C]] =
     F.lift(f andThen g) <-> (F.lift(f) andThen F.lift(g))

@@ -52,8 +52,11 @@ class InnerProductJob(args: Args) extends Job(args) {
 class BlockJoinPipeTest extends WordSpec with Matchers {
   "An InnerProductJob" should {
 
-    val in1 =
-      List(("0", "0", "1"), ("0", "1", "1"), ("1", "0", "2"), ("2", "0", "4"))
+    val in1 = List(
+      ("0", "0", "1"),
+      ("0", "1", "1"),
+      ("1", "0", "2"),
+      ("2", "0", "4"))
     val in2 = List(("0", "1", "1"), ("1", "0", "2"), ("2", "4", "5"))
     val correctOutput = Set((0, 1, 2.0), (0, 0, 1.0), (1, 1, 4.0), (2, 1, 8.0))
 

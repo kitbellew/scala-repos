@@ -160,13 +160,14 @@ private[akka] trait MultiStreamOutputProcessorLike
   protected def nextId(): Long
 
   // stream keys will be removed from this map on cancellation/subscription-timeout, never assume a key is present
-  private val substreamOutputs =
-    mutable.Map.empty[SubstreamKey, SubstreamOutput]
+  private val substreamOutputs = mutable.Map
+    .empty[SubstreamKey, SubstreamOutput]
 
   protected def createSubstreamOutput(): SubstreamOutput = {
     val id = SubstreamKey(nextId())
-    val cancellable =
-      scheduleSubscriptionTimeout(self, SubstreamSubscriptionTimeout(id))
+    val cancellable = scheduleSubscriptionTimeout(
+      self,
+      SubstreamSubscriptionTimeout(id))
     val output = new SubstreamOutput(id, self, this, cancellable)
     substreamOutputs(output.key) = output
     output

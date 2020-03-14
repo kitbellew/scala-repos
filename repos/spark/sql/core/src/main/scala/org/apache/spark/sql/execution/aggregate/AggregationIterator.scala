@@ -152,10 +152,9 @@ abstract class AggregationIterator(
 
   // All imperative AggregateFunctions.
   protected[this] val allImperativeAggregateFunctions
-      : Array[ImperativeAggregate] =
-    allImperativeAggregateFunctionPositions
-      .map(aggregateFunctions)
-      .map(_.asInstanceOf[ImperativeAggregate])
+      : Array[ImperativeAggregate] = allImperativeAggregateFunctionPositions
+    .map(aggregateFunctions)
+    .map(_.asInstanceOf[ImperativeAggregate])
 
   // Initializing functions used to process a row.
   protected def generateProcessRow(
@@ -184,10 +183,9 @@ abstract class AggregationIterator(
       }
       // This projection is used to merge buffer values for all expression-based aggregates.
       val aggregationBufferSchema = functions.flatMap(_.aggBufferAttributes)
-      val updateProjection =
-        newMutableProjection(
-          mergeExpressions,
-          aggregationBufferSchema ++ inputAttributes)()
+      val updateProjection = newMutableProjection(
+        mergeExpressions,
+        aggregationBufferSchema ++ inputAttributes)()
 
       (currentBuffer: MutableRow, row: InternalRow) => {
         // Process all expression-based aggregate functions.
@@ -211,8 +209,9 @@ abstract class AggregationIterator(
       aggregateFunctions,
       inputAttributes)
 
-  protected val groupingProjection: UnsafeProjection =
-    UnsafeProjection.create(groupingExpressions, inputAttributes)
+  protected val groupingProjection: UnsafeProjection = UnsafeProjection.create(
+    groupingExpressions,
+    inputAttributes)
   protected val groupingAttributes = groupingExpressions.map(_.toAttribute)
 
   // Initializing the function used to generate the output row.
@@ -228,14 +227,14 @@ abstract class AggregationIterator(
       }
       val aggregateResult = new SpecificMutableRow(
         aggregateAttributes.map(_.dataType))
-      val expressionAggEvalProjection =
-        newMutableProjection(evalExpressions, bufferAttributes)()
+      val expressionAggEvalProjection = newMutableProjection(
+        evalExpressions,
+        bufferAttributes)()
       expressionAggEvalProjection.target(aggregateResult)
 
-      val resultProjection =
-        UnsafeProjection.create(
-          resultExpressions,
-          groupingAttributes ++ aggregateAttributes)
+      val resultProjection = UnsafeProjection.create(
+        resultExpressions,
+        groupingAttributes ++ aggregateAttributes)
 
       (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
         // Generate results for all expression-based aggregate functions.
@@ -259,8 +258,9 @@ abstract class AggregationIterator(
       }
     } else {
       // Grouping-only: we only output values based on grouping expressions.
-      val resultProjection =
-        UnsafeProjection.create(resultExpressions, groupingAttributes)
+      val resultProjection = UnsafeProjection.create(
+        resultExpressions,
+        groupingAttributes)
       (currentGroupingKey: UnsafeRow, currentBuffer: MutableRow) => {
         resultProjection(currentGroupingKey)
       }

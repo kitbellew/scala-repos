@@ -72,8 +72,8 @@ class ClientBuilderTest
         build
 
         val entries = GlobalRegistry.get.toSet
-        val unspecified =
-          entries.count(_.key.startsWith(Seq("client", "not-specified")))
+        val unspecified = entries.count(
+          _.key.startsWith(Seq("client", "not-specified")))
         assert(
           unspecified == 0,
           "saw registry keys with 'not-specified' protocol")
@@ -146,8 +146,11 @@ class ClientBuilderTest
 
   test("ClientBuilder should close properly") {
     new ClientBuilderHelper {
-      val svc =
-        ClientBuilder().hostConnectionLimit(1).codec(m.codec).hosts("").build()
+      val svc = ClientBuilder()
+        .hostConnectionLimit(1)
+        .codec(m.codec)
+        .hosts("")
+        .build()
       val f = svc.close()
       eventually { f.isDefined }
     }

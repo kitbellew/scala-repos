@@ -547,8 +547,10 @@ class SchedulerActions(
       log.info(
         s"Need to scale ${app.id} from $launchedCount up to $targetCount instances")
 
-      val queuedOrRunning =
-        taskQueue.get(app.id).map(_.finalTaskCount).getOrElse(launchedCount)
+      val queuedOrRunning = taskQueue
+        .get(app.id)
+        .map(_.finalTaskCount)
+        .getOrElse(launchedCount)
       val toQueue = targetCount - queuedOrRunning
 
       if (toQueue > 0) {

@@ -242,8 +242,10 @@ trait ScParameter
       getContainingFile match {
         case file: ScalaFile =>
           if (file.isCompiled) {
-            val containingMember =
-              PsiTreeUtil.getContextOfType(this, true, classOf[ScMember])
+            val containingMember = PsiTreeUtil.getContextOfType(
+              this,
+              true,
+              classOf[ScMember])
             if (containingMember == null) res
             else {
               def extractFromParameterOwner(

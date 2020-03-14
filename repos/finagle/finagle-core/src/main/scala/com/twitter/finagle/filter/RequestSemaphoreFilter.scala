@@ -12,8 +12,7 @@ object RequestSemaphoreFilter {
     * [[com.twitter.finagle.filter.RequestSemaphoreFilter]] module.
     */
   case class Param(sem: Option[AsyncSemaphore]) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
   object Param {
     implicit val param = Stack.Param(Param(None))

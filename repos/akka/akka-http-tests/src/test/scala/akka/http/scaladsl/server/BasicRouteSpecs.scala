@@ -99,8 +99,8 @@ class BasicRouteSpecs extends RoutingSpec {
     "extract two arguments" in {
       case class Person(name: String, age: Int)
 
-      val personPath =
-        path("person" / Segment / IntNumber).as(Person)(echoComplete)
+      val personPath = path("person" / Segment / IntNumber)
+        .as(Person)(echoComplete)
 
       Get("/person/john/38") ~> personPath ~> check {
         responseAs[String] shouldEqual "Person(john,38)"

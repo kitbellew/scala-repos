@@ -59,11 +59,10 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
   }
 
   "redirect-examples" in {
-    val route =
-      pathPrefix("foo") {
-        pathSingleSlash { complete("yes") } ~
-          pathEnd { redirect("/foo/", StatusCodes.PermanentRedirect) }
-      }
+    val route = pathPrefix("foo") {
+      pathSingleSlash { complete("yes") } ~
+        pathEnd { redirect("/foo/", StatusCodes.PermanentRedirect) }
+    }
 
     // tests:
     Get("/foo/") ~> route ~> check { responseAs[String] shouldEqual "yes" }
@@ -77,8 +76,7 @@ class RouteDirectivesExamplesSpec extends RoutingSpec {
   "failwith-examples" in EventFilter[RuntimeException](
     start = "Error during processing of request",
     occurrences = 1).intercept {
-    val route =
-      path("foo") { failWith(new RuntimeException("Oops.")) }
+    val route = path("foo") { failWith(new RuntimeException("Oops.")) }
 
     // tests:
     Get("/foo") ~> Route.seal(route) ~> check {

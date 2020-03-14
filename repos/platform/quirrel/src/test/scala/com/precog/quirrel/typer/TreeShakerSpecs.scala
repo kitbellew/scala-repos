@@ -402,8 +402,10 @@ object TreeShakerSpecs
       }
 
       "less-than" >> {
-        val tree =
-          Lt(LineStream(), NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))
+        val tree = Lt(
+          LineStream(),
+          NumLit(LineStream(), "1"),
+          NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
         shakeTree(tree) must beLike {
@@ -432,8 +434,10 @@ object TreeShakerSpecs
       }
 
       "greater-than" >> {
-        val tree =
-          Gt(LineStream(), NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))
+        val tree = Gt(
+          LineStream(),
+          NumLit(LineStream(), "1"),
+          NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
         shakeTree(tree) must beLike {
@@ -462,8 +466,10 @@ object TreeShakerSpecs
       }
 
       "equality" >> {
-        val tree =
-          Eq(LineStream(), NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))
+        val tree = Eq(
+          LineStream(),
+          NumLit(LineStream(), "1"),
+          NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
         shakeTree(tree) must beLike {
@@ -508,8 +514,10 @@ object TreeShakerSpecs
       }
 
       "boolean or" >> {
-        val tree =
-          Or(LineStream(), NumLit(LineStream(), "1"), NumLit(LineStream(), "2"))
+        val tree = Or(
+          LineStream(),
+          NumLit(LineStream(), "1"),
+          NumLit(LineStream(), "2"))
         bindRoot(tree, tree)
 
         shakeTree(tree) must beLike {

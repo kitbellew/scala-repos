@@ -17,53 +17,45 @@ import org.scalacheck.Arbitrary._
 
 object gen {
 
-  lazy val ubyte: Gen[UByte] =
-    arbitrary[Byte].map(new UByte(_))
+  lazy val ubyte: Gen[UByte] = arbitrary[Byte].map(new UByte(_))
 
-  lazy val ushort: Gen[UShort] =
-    arbitrary[Short].map(n => new UShort(n.toChar))
+  lazy val ushort: Gen[UShort] = arbitrary[Short].map(n => new UShort(n.toChar))
 
-  lazy val uint: Gen[UInt] =
-    arbitrary[Int].map(new UInt(_))
+  lazy val uint: Gen[UInt] = arbitrary[Int].map(new UInt(_))
 
-  lazy val ulong: Gen[ULong] =
-    arbitrary[Long].map(new ULong(_))
+  lazy val ulong: Gen[ULong] = arbitrary[Long].map(new ULong(_))
 
-  lazy val trilean: Gen[Trilean] =
-    Gen.oneOf(Trilean.True, Trilean.False, Trilean.Unknown)
+  lazy val trilean: Gen[Trilean] = Gen.oneOf(
+    Trilean.True,
+    Trilean.False,
+    Trilean.Unknown)
 
-  lazy val fixedScale: Gen[FixedScale] =
-    arbitrary[Short].map(n => new FixedScale(n & 0xffff))
+  lazy val fixedScale: Gen[FixedScale] = arbitrary[Short].map(n =>
+    new FixedScale(n & 0xffff))
 
-  lazy val fixedPoint: Gen[FixedPoint] =
-    arbitrary[Long].map(new FixedPoint(_))
+  lazy val fixedPoint: Gen[FixedPoint] = arbitrary[Long].map(new FixedPoint(_))
 
-  lazy val bigInteger: Gen[BigInteger] =
-    arbitrary[BigInt].map(_.bigInteger)
+  lazy val bigInteger: Gen[BigInteger] = arbitrary[BigInt].map(_.bigInteger)
 
-  lazy val safeLong: Gen[SafeLong] =
-    Gen.frequency(
-      1 → SafeLong(BigInt("393050634124102232869567034555427371542904833")),
-      100 → arbitrary[Long].map(SafeLong(_)),
-      100 → arbitrary[BigInt].map(SafeLong(_)))
+  lazy val safeLong: Gen[SafeLong] = Gen.frequency(
+    1 → SafeLong(BigInt("393050634124102232869567034555427371542904833")),
+    100 → arbitrary[Long].map(SafeLong(_)),
+    100 → arbitrary[BigInt].map(SafeLong(_)))
 
-  lazy val natural: Gen[Natural] =
-    Gen.oneOf(
-      arbitrary[Long].map(n => Natural(n & Long.MaxValue)),
-      arbitrary[BigInt].map(n => Natural(n.abs)))
+  lazy val natural: Gen[Natural] = Gen.oneOf(
+    arbitrary[Long].map(n => Natural(n & Long.MaxValue)),
+    arbitrary[BigInt].map(n => Natural(n.abs)))
 
   lazy val rational: Gen[Rational] = {
-    val rationalFromLongs: Gen[Rational] =
-      for {
-        n <- arbitrary[Long]
-        d <- arbitrary[Long].map(n => if (n == 0) 1L else n)
-      } yield Rational(n, d)
+    val rationalFromLongs: Gen[Rational] = for {
+      n <- arbitrary[Long]
+      d <- arbitrary[Long].map(n => if (n == 0) 1L else n)
+    } yield Rational(n, d)
 
-    val rationalFromSafeLongs: Gen[Rational] =
-      for {
-        n <- safeLong
-        d <- safeLong.map(n => if (n.isZero) SafeLong.one else n)
-      } yield Rational(n, d)
+    val rationalFromSafeLongs: Gen[Rational] = for {
+      n <- safeLong
+      d <- safeLong.map(n => if (n.isZero) SafeLong.one else n)
+    } yield Rational(n, d)
 
     val bigRational: Gen[Rational] = {
       val m = Rational("1/393050634124102232869567034555427371542904833")
@@ -79,21 +71,17 @@ object gen {
     )
   }
 
-  lazy val number: Gen[Number] =
-    Gen.oneOf(
-      arbitrary[Long].map(Number(_)),
-      arbitrary[Double].map(Number(_)),
-      arbitrary[BigDecimal].map(Number(_)),
-      rational.map(Number(_)))
+  lazy val number: Gen[Number] = Gen.oneOf(
+    arbitrary[Long].map(Number(_)),
+    arbitrary[Double].map(Number(_)),
+    arbitrary[BigDecimal].map(Number(_)),
+    rational.map(Number(_)))
 
-  lazy val algebraic: Gen[Algebraic] =
-    arbitrary[Int].map(Algebraic(_))
+  lazy val algebraic: Gen[Algebraic] = arbitrary[Int].map(Algebraic(_))
 
-  lazy val real: Gen[Real] =
-    rational.map(Real(_))
+  lazy val real: Gen[Real] = rational.map(Real(_))
 
-  lazy val sign: Gen[Sign] =
-    Gen.oneOf(Sign.Positive, Sign.Zero, Sign.Negative)
+  lazy val sign: Gen[Sign] = Gen.oneOf(Sign.Positive, Sign.Zero, Sign.Negative)
 
   def term[A: Arbitrary]: Gen[poly.Term[A]] =
     for {
@@ -192,17 +180,17 @@ object gen {
         acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
     }
 
-  val perm: Gen[Perm] =
-    Gen.parameterized { params =>
-      import params.rng.nextInt
-      val domainSize = params.size / 10 + 1
-      val images = new Array[Int](domainSize)
-      cforRange(0 until domainSize) { i =>
-        val j =
-          nextInt(i + 1) // uses the Fisher-Yates shuffle, inside out variant
-        images(i) = images(j)
-        images(j) = i
-      }
-      Perm(images.zipWithIndex.filter { case (p, i) => p != i }.toMap)
+  val perm: Gen[Perm] = Gen.parameterized { params =>
+    import params.rng.nextInt
+    val domainSize = params.size / 10 + 1
+    val images = new Array[Int](domainSize)
+    cforRange(0 until domainSize) { i =>
+      val j = nextInt(
+        i + 1
+      ) // uses the Fisher-Yates shuffle, inside out variant
+      images(i) = images(j)
+      images(j) = i
     }
+    Perm(images.zipWithIndex.filter { case (p, i) => p != i }.toMap)
+  }
 }

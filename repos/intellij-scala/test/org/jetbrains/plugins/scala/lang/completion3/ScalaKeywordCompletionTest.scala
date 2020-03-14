@@ -10,8 +10,7 @@ import org.junit.Assert
   */
 class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   def testPrivateVal() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  private va<caret>
       |}
@@ -19,8 +18,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  private val <caret>
       |}
@@ -31,8 +29,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testPrivateThis() {
-    val fileText =
-      """
+    val fileText = """
         |class A {
         |  pr<caret>
         |}
@@ -40,8 +37,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
         |class A {
         |  private[<caret>]
         |}
@@ -54,8 +50,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFirstVal() {
-    val fileText =
-      """
+    val fileText = """
       |class A {
       |  def foo() {
       |    va<caret>vv.v
@@ -65,8 +60,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |class A {
       |  def foo() {
       |    val <caret>vv.v
@@ -81,8 +75,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testIfAfterCase() {
-    val fileText =
-      """
+    val fileText = """
       |1 match {
       |  case a if<caret>
       |}
@@ -90,8 +83,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |1 match {
       |  case a if <caret>
       |}
@@ -104,8 +96,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testValUnderCaseClause() {
-    val fileText =
-      """
+    val fileText = """
       |1 match {
       |  case 1 =>
       |    val<caret>
@@ -114,8 +105,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |1 match {
       |  case 1 =>
       |    val <caret>
@@ -129,8 +119,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testDefUnderCaseClause() {
-    val fileText =
-      """
+    val fileText = """
       |1 match {
       |  case 1 =>
       |    def<caret>
@@ -139,8 +128,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |1 match {
       |  case 1 =>
       |    def <caret>
@@ -154,8 +142,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testIfParentheses() {
-    val fileText =
-      """
+    val fileText = """
       |1 match {
       |  case 1 =>
       |    if<caret>
@@ -164,8 +151,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |1 match {
       |  case 1 =>
       |    if (<caret>)
@@ -179,8 +165,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testTryBraces() {
-    val fileText =
-      """
+    val fileText = """
       |1 match {
       |  case 1 =>
       |    try<caret>
@@ -189,8 +174,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |1 match {
       |  case 1 =>
       |    try {<caret>}
@@ -204,16 +188,14 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testDoWhile() {
-    val fileText =
-      """
+    val fileText = """
       |do {} whi<caret>
       |1
       """.stripMargin('|').replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy.scala", fileText)
     val (activeLookup, _) = complete(1, CompletionType.BASIC)
 
-    val resultText =
-      """
+    val resultText = """
       |do {} while (<caret>)
       |1
       """.stripMargin('|').replaceAll("\r", "").trim()
@@ -225,8 +207,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFilterFinal() {
-    val fileText =
-      """
+    val fileText = """
       |class Test {
       |  def fina<caret>
       |}
@@ -238,8 +219,7 @@ class ScalaKeywordCompletionTest extends ScalaCodeInsightTestBase {
   }
 
   def testFilterImplicit() {
-    val fileText =
-      """
+    val fileText = """
       |def foo(p: (Int => Int)) {}
       |foo((impl<caret>: Int) => 0)
       """.stripMargin.replaceAll("\r", "").trim()

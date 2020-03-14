@@ -15,15 +15,13 @@ abstract class FloatBufferTest extends BaseBufferTest {
   type Factory = BufferFactory.FloatBufferFactory
 
   class AllocFloatBufferFactory extends Factory {
-    def allocBuffer(capacity: Int): FloatBuffer =
-      FloatBuffer.allocate(capacity)
+    def allocBuffer(capacity: Int): FloatBuffer = FloatBuffer.allocate(capacity)
   }
 
   class WrappedFloatBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Float]): FloatBuffer =
-      FloatBuffer.wrap(array)
+    def baseWrap(array: Array[Float]): FloatBuffer = FloatBuffer.wrap(array)
 
     def baseWrap(array: Array[Float], offset: Int, length: Int): FloatBuffer =
       FloatBuffer.wrap(array, offset, length)
@@ -51,13 +49,13 @@ class WrappedFloatBufferTest extends FloatBufferTest {
 }
 
 class WrappedFloatReadOnlyBufferTest extends FloatBufferTest {
-  val factory: Factory =
-    new WrappedFloatBufferFactory with BufferFactory.ReadOnlyBufferFactory
+  val factory: Factory = new WrappedFloatBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocFloatSlicedBufferTest extends FloatBufferTest {
-  val factory: Factory =
-    new AllocFloatBufferFactory with BufferFactory.SlicedBufferFactory
+  val factory: Factory = new AllocFloatBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 // Float views of byte buffers

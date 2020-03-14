@@ -148,10 +148,12 @@ trait BinOpSeries {
       if (v1.index == v2.index) { Series(opv(v1.values, v2.values), v1.index) }
       else {
         val joined = v1.index.join(v2.index, OuterJoin)
-        val lvec: Vec[A] =
-          joined.lTake.map(locs => v1.values.take(locs)).getOrElse(v1.values)
-        val rvec: Vec[B] =
-          joined.rTake.map(locs => v2.values.take(locs)).getOrElse(v2.values)
+        val lvec: Vec[A] = joined.lTake
+          .map(locs => v1.values.take(locs))
+          .getOrElse(v1.values)
+        val rvec: Vec[B] = joined.rTake
+          .map(locs => v2.values.take(locs))
+          .getOrElse(v2.values)
         Series(opv(lvec, rvec), joined.index)
       }
     }

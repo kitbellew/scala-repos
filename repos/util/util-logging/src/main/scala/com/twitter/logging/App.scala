@@ -35,15 +35,21 @@ trait Logging { self: App =>
     "log.async.inferClassNames",
     false,
     "Infer class and method names synchronously. See com.twitter.logging.QueueingHandler")
-  protected[this] val outputFlag =
-    flag("log.output", defaultOutput, "Output file")
-  protected[this] val levelFlag =
-    flag("log.level", defaultLogLevel, "Log level")
+  protected[this] val outputFlag = flag(
+    "log.output",
+    defaultOutput,
+    "Output file")
+  protected[this] val levelFlag = flag(
+    "log.level",
+    defaultLogLevel,
+    "Log level")
 
   private[this] val asyncFlag = flag("log.async", true, "Log asynchronously")
 
-  private[this] val asyncMaxSizeFlag =
-    flag("log.async.maxsize", 4096, "Max queue size for async logging")
+  private[this] val asyncMaxSizeFlag = flag(
+    "log.async.maxsize",
+    4096,
+    "Max queue size for async logging")
 
   // FileHandler-related flags are ignored if outputFlag is not overridden.
   protected[this] val rollPolicyFlag = flag(
@@ -52,16 +58,14 @@ trait Logging { self: App =>
     "When or how frequently to roll the logfile. " +
       "See com.twitter.logging.Policy#parse documentation for DSL details."
   )
-  protected[this] val appendFlag =
-    flag(
-      "log.append",
-      defaultAppend,
-      "If true, appends to existing logfile. Otherwise, file is truncated.")
-  protected[this] val rotateCountFlag =
-    flag(
-      "log.rotateCount",
-      defaultRotateCount,
-      "How many rotated logfiles to keep around")
+  protected[this] val appendFlag = flag(
+    "log.append",
+    defaultAppend,
+    "If true, appends to existing logfile. Otherwise, file is truncated.")
+  protected[this] val rotateCountFlag = flag(
+    "log.rotateCount",
+    defaultRotateCount,
+    "How many rotated logfiles to keep around")
 
   /**
     * By default, the root [[com.twitter.logging.LoggerFactory]] only has a single

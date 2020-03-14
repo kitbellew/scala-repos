@@ -255,8 +255,9 @@ object SessionMaster extends LiftActor with Loggable {
       /* remove dead sessions that are more than 45 minutes old */
       val now = Helpers.millis - 45.minutes
 
-      val removeKeys: Iterable[String] =
-        killedSessions.filter(_._2 < now).map(_._1)
+      val removeKeys: Iterable[String] = killedSessions
+        .filter(_._2 < now)
+        .map(_._1)
       removeKeys.foreach(s => killedSessions.remove(s))
 
       val ses = Map(lockRead { nsessions }.toList: _*)

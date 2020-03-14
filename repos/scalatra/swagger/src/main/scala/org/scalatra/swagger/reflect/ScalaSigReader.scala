@@ -58,8 +58,8 @@ private[reflect] object ScalaSigReader {
   }
 
   def findClass(clazz: Class[_]): ClassSymbol = {
-    val sig =
-      findScalaSig(clazz).getOrElse(fail("Can't find ScalaSig for " + clazz))
+    val sig = findScalaSig(clazz).getOrElse(
+      fail("Can't find ScalaSig for " + clazz))
     findClass(sig, clazz).getOrElse(
       fail("Can't find " + clazz + " from parsed ScalaSig"))
   }

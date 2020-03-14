@@ -17,12 +17,11 @@ object MVarUsage extends App {
   def out() {
     def calc(mvar: MVar[Int]): IO[Unit] = mvar.put(42)
 
-    val io =
-      for {
-        mvar <- newEmptyMVar[Int]
-        _ <- forkIO(calc(mvar))
-        a <- mvar.take
-      } yield a
+    val io = for {
+      mvar <- newEmptyMVar[Int]
+      _ <- forkIO(calc(mvar))
+      a <- mvar.take
+    } yield a
     assert(io.unsafePerformIO === 42)
   }
 
@@ -34,14 +33,13 @@ object MVarUsage extends App {
         _ <- out.put(a * b)
       } yield ()
 
-    val io =
-      for {
-        in <- newMVar(6)
-        out <- newEmptyMVar[Int]
-        _ <- forkIO(calc(in, out))
-        _ <- in.put(7)
-        a <- out.take
-      } yield a
+    val io = for {
+      in <- newMVar(6)
+      out <- newEmptyMVar[Int]
+      _ <- forkIO(calc(in, out))
+      _ <- in.put(7)
+      a <- out.take
+    } yield a
     assert(io.unsafePerformIO === 42)
   }
 

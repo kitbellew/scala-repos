@@ -264,8 +264,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
   protected def convertBindToType(
       bind: Option[ScalaResolveResult]): TypeResult[ScType] = {
     val fromType: Option[ScType] = bind.map(_.fromType).getOrElse(None)
-    val unresolvedTypeParameters: Seq[TypeParameter] =
-      bind.map(_.unresolvedTypeParameters).getOrElse(None).getOrElse(Seq.empty)
+    val unresolvedTypeParameters: Seq[TypeParameter] = bind
+      .map(_.unresolvedTypeParameters)
+      .getOrElse(None)
+      .getOrElse(Seq.empty)
 
     def stableTypeRequired: Boolean = {
       //SLS 6.4

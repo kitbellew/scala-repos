@@ -116,8 +116,8 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     val potentialFields = methods.toList.filter(isField)
 
     // any fields with duplicate names get put into a List
-    val map: Map[String, List[Method]] =
-      potentialFields.foldLeft[Map[String, List[Method]]](Map()) {
+    val map: Map[String, List[Method]] = potentialFields
+      .foldLeft[Map[String, List[Method]]](Map()) {
         case (map, method) =>
           val name = method.getName
           map + (name -> (method :: map.getOrElse(name, Nil)))
@@ -355,15 +355,16 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
         }
 
       case elem: Elem =>
-        elem.copy(child =
-          toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
+        elem
+          .copy(child = toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
 
       case s: Seq[_] =>
         s.flatMap(e =>
           e match {
             case elem: Elem =>
-              elem.copy(child =
-                toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
+              elem.copy(child = toForm(
+                inst,
+                elem.child.flatMap(n => toForm(inst, n))))
 
             case x => x
           })

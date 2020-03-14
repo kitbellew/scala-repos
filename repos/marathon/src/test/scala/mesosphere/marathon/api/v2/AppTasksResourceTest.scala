@@ -133,14 +133,22 @@ class AppTasksResourceTest
     indexTxt.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"One task is deleted")
-    val deleteOne =
-      appsTaskResource.deleteOne("appId", "taskId", false, false, req)
+    val deleteOne = appsTaskResource.deleteOne(
+      "appId",
+      "taskId",
+      false,
+      false,
+      req)
     Then("we receive a NotAuthenticated response")
     deleteOne.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"multiple tasks are deleted")
-    val deleteMany =
-      appsTaskResource.deleteMany("appId", "host", false, false, req)
+    val deleteMany = appsTaskResource.deleteMany(
+      "appId",
+      "host",
+      false,
+      false,
+      req)
     Then("we receive a NotAuthenticated response")
     deleteMany.getStatus should be(auth.NotAuthenticatedStatus)
   }
@@ -258,8 +266,12 @@ class AppTasksResourceTest
       Some(AppDefinition("/app".toRootPath)))
 
     When(s"deleteOne is called")
-    val deleteOne =
-      appsTaskResource.deleteOne("app", "taskId", false, false, req)
+    val deleteOne = appsTaskResource.deleteOne(
+      "app",
+      "taskId",
+      false,
+      false,
+      req)
     Then("we receive a not authorized response")
     deleteOne.getStatus should be(auth.UnauthorizedStatus)
   }
@@ -276,8 +288,12 @@ class AppTasksResourceTest
     groupManager.app("/app".toRootPath) returns Future.successful(None)
 
     When(s"deleteOne is called")
-    val deleteOne =
-      appsTaskResource.deleteOne("app", "taskId", false, false, req)
+    val deleteOne = appsTaskResource.deleteOne(
+      "app",
+      "taskId",
+      false,
+      false,
+      req)
     Then("we receive a not authorized response")
     deleteOne.getStatus should be(404)
   }
@@ -295,8 +311,12 @@ class AppTasksResourceTest
       Some(AppDefinition("/app".toRootPath)))
 
     When(s"deleteMany is called")
-    val deleteMany =
-      appsTaskResource.deleteMany("app", "host", false, false, req)
+    val deleteMany = appsTaskResource.deleteMany(
+      "app",
+      "host",
+      false,
+      false,
+      req)
     Then("we receive a not authorized response")
     deleteMany.getStatus should be(auth.UnauthorizedStatus)
   }
@@ -313,8 +333,12 @@ class AppTasksResourceTest
     groupManager.app("/app".toRootPath) returns Future.successful(None)
 
     When(s"deleteMany is called")
-    val deleteMany =
-      appsTaskResource.deleteMany("app", "host", false, false, req)
+    val deleteMany = appsTaskResource.deleteMany(
+      "app",
+      "host",
+      false,
+      false,
+      req)
     Then("we receive a not authorized response")
     deleteMany.getStatus should be(404)
   }

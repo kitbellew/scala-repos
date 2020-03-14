@@ -102,8 +102,8 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
     }
 
     "invoke decorated Actor's behavior when has one interceptor" in {
-      val replier =
-        system.actorOf(Props(new ReplierActor with AdderInterceptor))
+      val replier = system.actorOf(
+        Props(new ReplierActor with AdderInterceptor))
       replier ! 5
       expectMsg(15)
     }

@@ -148,9 +148,9 @@ class KinesisCheckpointerSuite
       verify(checkpointerMock, times(1)).checkpoint(anyString())
     }
     // don't block test thread
-    val f =
-      Future(kinesisCheckpointer.removeCheckpointer(shardId, checkpointerMock))(
-        ExecutionContext.global)
+    val f = Future(
+      kinesisCheckpointer.removeCheckpointer(shardId, checkpointerMock))(
+      ExecutionContext.global)
 
     intercept[TimeoutException] { Await.ready(f, 50 millis) }
 

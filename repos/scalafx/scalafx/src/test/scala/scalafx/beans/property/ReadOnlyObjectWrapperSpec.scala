@@ -204,8 +204,9 @@ class ReadOnlyObjectWrapperSpec
   it should "support implicit conversion to a String Binding" is (pending)
 
   it should "support implicit conversion from a ScalaFX ReadOnlyObjectWrapper with a SFXDelegate of a type T to a JavaFX ReadOnlyObjectWrapper of type T" in {
-    val scalaObjProperty: ReadOnlyObjectWrapper[Button] =
-      ReadOnlyObjectWrapper[Button](new Button("Test"))
+    val scalaObjProperty
+        : ReadOnlyObjectWrapper[Button] = ReadOnlyObjectWrapper[Button](
+      new Button("Test"))
     val javaObjProperty: jfxbp.ReadOnlyObjectWrapper[jfxsc.Button] =
       scalaObjProperty
 

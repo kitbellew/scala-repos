@@ -72,8 +72,9 @@ class SimulacrumInjection extends SyntheticMembersInjector {
               if (clazzTypeParam.typeParameters.nonEmpty) Some(s"Lifted$tpName")
               else None
             val additionalWithComma = tpAdditional.map(", " + _).getOrElse("")
-            val additionalWithBracket =
-              tpAdditional.map("[" + _ + "]").getOrElse("")
+            val additionalWithBracket = tpAdditional
+              .map("[" + _ + "]")
+              .getOrElse("")
             def isProperTpt(tp: ScType): Option[Option[ScTypeParameterType]] = {
               tp match {
                 case ScTypeParameterType(_, _, _, _, param)
@@ -93,42 +94,41 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                     .flatMap(_.getType(TypingContext.empty).toOption)
                     .flatMap(tp => isProperTpt(tp)) match {
                     case Some(funTypeParamToLift) =>
-                      val annotation =
-                        f.findAnnotationNoAliases("simulacrum.op")
-                      val names =
-                        annotation match {
-                          case a: ScAnnotation =>
-                            a.constructor.args match {
-                              case Some(args) =>
-                                args.exprs.headOption match {
-                                  case Some(l: ScLiteral) if l.isString =>
-                                    l.getValue match {
-                                      case value: String =>
-                                        args.exprs match {
-                                          case Seq(_, second) =>
-                                            second match {
-                                              case l: ScLiteral
-                                                  if l.getValue == true =>
-                                                Seq(value, f.name)
-                                              case a: ScAssignStmt =>
-                                                a.getRExpression match {
-                                                  case Some(l: ScLiteral)
-                                                      if l.getValue == true =>
-                                                    Seq(value, f.name)
-                                                  case _ => Seq(value)
-                                                }
-                                              case _ => Seq(value)
-                                            }
-                                          case _ => Seq(value)
-                                        }
-                                      case _ => Seq(f.name)
-                                    }
-                                  case _ => Seq(f.name)
-                                }
-                              case None => Seq(f.name)
-                            }
-                          case _ => Seq(f.name)
-                        }
+                      val annotation = f.findAnnotationNoAliases(
+                        "simulacrum.op")
+                      val names = annotation match {
+                        case a: ScAnnotation =>
+                          a.constructor.args match {
+                            case Some(args) =>
+                              args.exprs.headOption match {
+                                case Some(l: ScLiteral) if l.isString =>
+                                  l.getValue match {
+                                    case value: String =>
+                                      args.exprs match {
+                                        case Seq(_, second) =>
+                                          second match {
+                                            case l: ScLiteral
+                                                if l.getValue == true =>
+                                              Seq(value, f.name)
+                                            case a: ScAssignStmt =>
+                                              a.getRExpression match {
+                                                case Some(l: ScLiteral)
+                                                    if l.getValue == true =>
+                                                  Seq(value, f.name)
+                                                case _ => Seq(value)
+                                              }
+                                            case _ => Seq(value)
+                                          }
+                                        case _ => Seq(value)
+                                      }
+                                    case _ => Seq(f.name)
+                                  }
+                                case _ => Seq(f.name)
+                              }
+                            case None => Seq(f.name)
+                          }
+                        case _ => Seq(f.name)
+                      }
                       names.map {
                         case name =>
                           val substOpt = funTypeParamToLift match {
@@ -164,8 +164,9 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                 ", ",
                                 ")")
                           }
-                          val typeParamClasue =
-                            f.typeParametersClause.map(_.getText).getOrElse("")
+                          val typeParamClasue = f.typeParametersClause
+                            .map(_.getText)
+                            .getOrElse("")
                           val headParams =
                             f.paramClauses.clauses.head.parameters.tail
                               .map(paramText)
@@ -192,8 +193,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                                |  def self: $tpName$additionalWithBracket
                                |  $ops
                                |}""".stripMargin
-            val ToOpsTrait =
-              s"""trait To${className}Ops {
+            val ToOpsTrait = s"""trait To${className}Ops {
                  |  implicit def to${className}Ops[$tpText$additionalWithComma](target: $tpName$additionalWithBracket)(implicit tc: $className[$tpName]): $className.Ops[$tpName$additionalWithComma] = ???
                  |}
                """.stripMargin
@@ -233,8 +233,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                  |  def typClassInstance: $className[$tpName]
                  |}
                """.stripMargin
-            val opsObject =
-              s"""object ops {
+            val opsObject = s"""object ops {
                  |  implicit def toAll${className}Ops[$tpText$additionalWithComma](target: $tpName$additionalWithBracket)(implicit tc: $className[$tpName]): $className.AllOps[$tpName$additionalWithComma] = ???
                  |}
                """.stripMargin

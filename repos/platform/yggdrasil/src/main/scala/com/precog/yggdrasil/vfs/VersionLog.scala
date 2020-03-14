@@ -224,13 +224,16 @@ case class VersionEntry(
     timestamp: Instant)
 
 object VersionEntry {
-  implicit val versionEntryIso =
-    Iso.hlist(VersionEntry.apply _, VersionEntry.unapply _)
+  implicit val versionEntryIso = Iso.hlist(
+    VersionEntry.apply _,
+    VersionEntry.unapply _)
 
   val schemaV1 = "id" :: "typeName" :: "timestamp" :: HNil
 
-  implicit val Decomposer: Decomposer[VersionEntry] =
-    decomposerV(schemaV1, Some("1.0".v))
-  implicit val Extractor: Extractor[VersionEntry] =
-    extractorV(schemaV1, Some("1.0".v))
+  implicit val Decomposer: Decomposer[VersionEntry] = decomposerV(
+    schemaV1,
+    Some("1.0".v))
+  implicit val Extractor: Extractor[VersionEntry] = extractorV(
+    schemaV1,
+    Some("1.0".v))
 }

@@ -156,8 +156,9 @@ object Syntax {
       * we will go ahead and bind each argument to a val just to be
       * safe.
       */
-    val tree = if (util.isClean(test, next, body)) {
-      q"""
+    val tree =
+      if (util.isClean(test, next, body)) {
+        q"""
       var $index = $init
       while ($test($index)) {
         $body($index)
@@ -165,12 +166,12 @@ object Syntax {
       }
       """
 
-    } else {
-      val testName = util.name("test")
-      val nextName = util.name("next")
-      val bodyName = util.name("body")
+      } else {
+        val testName = util.name("test")
+        val nextName = util.name("next")
+        val bodyName = util.name("body")
 
-      q"""
+        q"""
       val $testName: Int => Boolean = $test
       val $nextName: Int => Int = $next
       val $bodyName: Int => Unit = $body
@@ -180,7 +181,7 @@ object Syntax {
         $index = $nextName($index)
       }
       """
-    }
+      }
 
     /**
       * Instead of just returning 'tree', we will go ahead and inline
@@ -195,8 +196,12 @@ v     */
     import c.universe._
     val util = SyntaxUtil[c.type](c)
 
-    val List(range, index, end, limit, step) =
-      util.names("range", "index", "end", "limit", "step")
+    val List(range, index, end, limit, step) = util.names(
+      "range",
+      "index",
+      "end",
+      "limit",
+      "step")
 
     def isLiteral(t: Tree): Option[Int] =
       t match {
@@ -208,8 +213,7 @@ v     */
         case _ => None
       }
 
-    def strideUpTo(fromExpr: Tree, toExpr: Tree, stride: Int): Tree =
-      q"""
+    def strideUpTo(fromExpr: Tree, toExpr: Tree, stride: Int): Tree = q"""
       var $index: Int = $fromExpr
       val $end: Int = $toExpr
       while ($index <= $end) {
@@ -217,8 +221,7 @@ v     */
         $index += $stride
       }"""
 
-    def strideUpUntil(fromExpr: Tree, untilExpr: Tree, stride: Int): Tree =
-      q"""
+    def strideUpUntil(fromExpr: Tree, untilExpr: Tree, stride: Int): Tree = q"""
       var $index: Int = $fromExpr
       val $limit: Int = $untilExpr
       while ($index < $limit) {
@@ -226,8 +229,7 @@ v     */
         $index += $stride
       }"""
 
-    def strideDownTo(fromExpr: Tree, toExpr: Tree, stride: Int): Tree =
-      q"""
+    def strideDownTo(fromExpr: Tree, toExpr: Tree, stride: Int): Tree = q"""
       var $index: Int = $fromExpr
       val $end: Int = $toExpr
       while ($index >= $end) {

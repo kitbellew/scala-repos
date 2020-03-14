@@ -544,8 +544,10 @@ object TestNodeProvider {
   private def extractFreeSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractFreeSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractFreeSpec,
+      project)
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("$minus", true, false, _ => children, List("void")),
@@ -568,8 +570,10 @@ object TestNodeProvider {
   private def extractWordSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractWordSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractWordSpec,
+      project)
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("in", true, true, List("void")),
@@ -622,8 +626,10 @@ object TestNodeProvider {
   private def extractFunSpec(
       expr: ScMethodCall,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerMethodCalls(expr), extractFunSpec, project)
+    lazy val children = processChildren(
+      getInnerMethodCalls(expr),
+      extractFunSpec,
+      project)
     extractScMethodCall(
       expr,
       ExtractEntry(
@@ -649,8 +655,10 @@ object TestNodeProvider {
   private def extractFeatureSpec(
       expr: ScMethodCall,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerMethodCalls(expr), extractFeatureSpec, project)
+    lazy val children = processChildren(
+      getInnerMethodCalls(expr),
+      extractFeatureSpec,
+      project)
     extractScMethodCall(
       expr,
       ExtractEntry(
@@ -701,8 +709,10 @@ object TestNodeProvider {
   private def extractUnitSpec(
       expr: ScInfixExpr,
       project: Project): Option[TestStructureViewElement] = {
-    lazy val children =
-      processChildren(getInnerInfixExprs(expr), extractUnitSpec, project)
+    lazy val children = processChildren(
+      getInnerInfixExprs(expr),
+      extractUnitSpec,
+      project)
     extractSpecs2ScInfixExpr(expr, children, project)
   }
 

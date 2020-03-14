@@ -136,8 +136,8 @@ class BigDecimalConstructorsTest {
   }
 
   @Test def testConstrCharMathContext(): Unit = {
-    val value =
-      Array('3', '8', '0', '.', '4', '7', '3', '8', 'E', '-', '4', '2')
+    val value = Array('3', '8', '0', '.', '4', '7', '3', '8', 'E', '-', '4',
+      '2')
     val precision = 4
     val rm = RoundingMode.CEILING
     val mc = new MathContext(precision, rm)

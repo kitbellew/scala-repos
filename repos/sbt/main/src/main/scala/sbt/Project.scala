@@ -593,8 +593,9 @@ object Project extends ProjectExtra {
     val history = get(historyPath) flatMap idFun
     val prompt = get(shellPrompt)
     val watched = get(watch)
-    val commandDefs =
-      allCommands.distinct.flatten[Command].map(_ tag (projectCommand, true))
+    val commandDefs = allCommands.distinct
+      .flatten[Command]
+      .map(_ tag (projectCommand, true))
     val newDefinedCommands = commandDefs ++ BasicCommands.removeTagged(
       s.definedCommands,
       projectCommand)
@@ -656,8 +657,7 @@ object Project extends ProjectExtra {
 
   def mapScope(f: Scope => Scope) =
     new (ScopedKey ~> ScopedKey) {
-      def apply[T](key: ScopedKey[T]) =
-        ScopedKey(f(key.scope), key.key)
+      def apply[T](key: ScopedKey[T]) = ScopedKey(f(key.scope), key.key)
     }
 
   def transform(
@@ -823,8 +823,7 @@ object Project extends ProjectExtra {
       implicit display: Show[ScopedKey[_]]): String =
     showKeys(defs.map(scope => ScopedKey(scope, key)))
   def showUses(defs: Seq[ScopedKey[_]])(
-      implicit display: Show[ScopedKey[_]]): String =
-    showKeys(defs)
+      implicit display: Show[ScopedKey[_]]): String = showKeys(defs)
   private[this] def showKeys(s: Seq[ScopedKey[_]])(
       implicit display: Show[ScopedKey[_]]): String =
     s.map(display.apply).sorted.mkString("\n\t", "\n\t", "\n\n")

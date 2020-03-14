@@ -83,17 +83,16 @@ private[json] object Meta {
 
       if (choices.isEmpty) None
       else {
-        val best =
-          choices.tail.foldLeft((choices.head, score(choices.head.args))) {
-            (best, c) =>
-              val newScore = score(c.args)
-              if (newScore == best._2) {
-                if (countOptionals(c.args) < countOptionals(best._1.args))
-                  (c, newScore)
-                else best
-              } else if (newScore > best._2) (c, newScore)
-              else best
-          }
+        val best = choices.tail.foldLeft(
+          (choices.head, score(choices.head.args))) { (best, c) =>
+          val newScore = score(c.args)
+          if (newScore == best._2) {
+            if (countOptionals(c.args) < countOptionals(best._1.args))
+              (c, newScore)
+            else best
+          } else if (newScore > best._2) (c, newScore)
+          else best
+        }
         Some(best._1)
       }
     }

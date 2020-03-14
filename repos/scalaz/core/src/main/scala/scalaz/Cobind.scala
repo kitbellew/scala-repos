@@ -13,8 +13,7 @@ trait Cobind[F[_]] extends Functor[F] { self =>
   final def extend[A, B](fa: F[A])(f: F[A] => B): F[B] = cobind(fa)(f)
 
   /** Also known as `duplicate` */
-  def cojoin[A](fa: F[A]): F[F[A]] =
-    cobind(fa)(fa => fa)
+  def cojoin[A](fa: F[A]): F[F[A]] = cobind(fa)(fa => fa)
 
   // derived functions
 

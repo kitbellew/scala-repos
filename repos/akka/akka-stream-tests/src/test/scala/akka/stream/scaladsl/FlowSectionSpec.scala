@@ -11,8 +11,7 @@ import akka.actor.ActorRef
 import akka.testkit.TestProbe
 
 object FlowSectionSpec {
-  val config =
-    s"""
+  val config = s"""
       my-dispatcher1 = $${akka.test.stream-dispatcher}
       my-dispatcher2 = $${akka.test.stream-dispatcher}
     """

@@ -76,8 +76,9 @@ class IncludedFileReferenceSet(
     val cf = getContainingFile
     if (cf == null) return empty
 
-    val containingFile =
-      Option(cf.getContext).map(_.getContainingFile).getOrElse(cf)
+    val containingFile = Option(cf.getContext)
+      .map(_.getContainingFile)
+      .getOrElse(cf)
 
     val proj = containingFile.getProject
     val vfile = containingFile.getOriginalFile.getVirtualFile
@@ -98,8 +99,11 @@ class IncludedFileReferenceSet(
 
       if (pkgName == null) return empty
 
-      val allScopes =
-        pfi.getOrderEntriesForFile(parent).iterator.asScala.collect {
+      val allScopes = pfi
+        .getOrderEntriesForFile(parent)
+        .iterator
+        .asScala
+        .collect {
           case msoe: ModuleSourceOrderEntry =>
             msoe.getOwnerModule.getModuleRuntimeScope(
               pfi.isInTestSourceContent(parent))

@@ -58,8 +58,9 @@ private[streaming] abstract class ReceiverSupervisor(
   private val stopLatch = new CountDownLatch(1)
 
   /** Time between a receiver is stopped and started again */
-  private val defaultRestartDelay =
-    conf.getInt("spark.streaming.receiverRestartDelay", 2000)
+  private val defaultRestartDelay = conf.getInt(
+    "spark.streaming.receiverRestartDelay",
+    2000)
 
   /** The current maximum rate limit for this receiver. */
   private[streaming] def getCurrentRateLimit: Long = Long.MaxValue

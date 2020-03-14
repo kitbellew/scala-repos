@@ -66,8 +66,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @return the integer value
     */
   def getIntInRange(name: String, default: Int, range: (Int, Int)): Int = {
-    val v =
-      if (containsKey(name)) getProperty(name).toInt else default
+    val v = if (containsKey(name)) getProperty(name).toInt else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")
@@ -78,8 +77,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
       name: String,
       default: Short,
       range: (Short, Short)): Short = {
-    val v =
-      if (containsKey(name)) getProperty(name).toShort else default
+    val v = if (containsKey(name)) getProperty(name).toShort else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")
@@ -110,8 +108,7 @@ class VerifiableProperties(val props: Properties) extends Logging {
     * @return the long value
     */
   def getLongInRange(name: String, default: Long, range: (Long, Long)): Long = {
-    val v =
-      if (containsKey(name)) getProperty(name).toLong else default
+    val v = if (containsKey(name)) getProperty(name).toLong else default
     require(
       v >= range._1 && v <= range._2,
       name + " has value " + v + " which is not in the range " + range + ".")

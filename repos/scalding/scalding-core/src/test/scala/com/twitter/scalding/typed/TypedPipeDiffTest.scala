@@ -37,8 +37,10 @@ class TypedPipeDiffTest extends FunSuite {
   val expectedSortedDiff =
     List(("bar", (1, 0)), ("baz", (0, 1)), ("hi", (2, 1))).sorted
 
-  val leftArr =
-    List(Array[Byte](3, 3, 5, 3, 2), Array[Byte](2, 2, 2), Array[Byte](0, 1, 0))
+  val leftArr = List(
+    Array[Byte](3, 3, 5, 3, 2),
+    Array[Byte](2, 2, 2),
+    Array[Byte](0, 1, 0))
 
   val rightArr = List(
     Array[Byte](2, 2, 2),
@@ -180,8 +182,8 @@ object TypedPipeDiffLaws {
 }
 
 class TypedPipeDiffLaws extends PropSpec with PropertyChecks with Checkers {
-  override implicit val generatorDrivenConfig =
-    PropertyCheckConfig(minSuccessful = 5)
+  override implicit val generatorDrivenConfig = PropertyCheckConfig(
+    minSuccessful = 5)
 
   property("diffLaws") {
     check(TypedPipeDiffLaws.diffLaw[Int])

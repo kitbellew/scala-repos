@@ -127,8 +127,7 @@ abstract class DriverType(val name: String) {
     * where not all types are supported. Classes that want to do custom type
     * mapping for columns should override the customColumnTypeMap method.
     */
-  def columnTypeMap: TypeMapFunc =
-    customColumnTypeMap orElse { case x => x }
+  def columnTypeMap: TypeMapFunc = customColumnTypeMap orElse { case x => x }
 
   /**
     * Allows the Vendor-specific Driver to do custom type mapping for a particular

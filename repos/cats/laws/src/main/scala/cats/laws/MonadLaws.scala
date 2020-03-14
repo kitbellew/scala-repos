@@ -13,8 +13,7 @@ trait MonadLaws[F[_]] extends ApplicativeLaws[F] with FlatMapLaws[F] {
   def monadLeftIdentity[A, B](a: A, f: A => F[B]): IsEq[F[B]] =
     F.pure(a).flatMap(f) <-> f(a)
 
-  def monadRightIdentity[A](fa: F[A]): IsEq[F[A]] =
-    fa.flatMap(F.pure) <-> fa
+  def monadRightIdentity[A](fa: F[A]): IsEq[F[A]] = fa.flatMap(F.pure) <-> fa
 
   /**
     * `pure` is the left identity element under left-to-right composition of

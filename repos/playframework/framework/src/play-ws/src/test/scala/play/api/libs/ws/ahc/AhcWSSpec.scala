@@ -399,8 +399,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
     "support patch method" in new WithServer(patchFakeApp) {
       // NOTE: if you are using a client proxy like Privoxy or Polipo, your proxy may not support PATCH & return 400.
-      val futureResponse =
-        WS.url("http://localhost:" + port + "/").patch("body")
+      val futureResponse = WS
+        .url("http://localhost:" + port + "/")
+        .patch("body")
 
       // This test experiences CI timeouts. Give it more time.
       val reallyLongTimeout = Timeout(defaultAwaitTimeout.duration * 3)

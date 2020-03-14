@@ -13,8 +13,7 @@ object ScalaJSEnvGenerator {
     if (!trg.exists() || trg.lastModified() < env.lastModified()) {
       val scalajsenv = IO.read(env).replaceAllLiterally("$", "$$")
 
-      val scalaCode =
-        s"""
+      val scalaCode = s"""
         package org.scalajs.core.tools.linker.backend.emitter
 
         private[emitter] object ScalaJSEnvHolder {

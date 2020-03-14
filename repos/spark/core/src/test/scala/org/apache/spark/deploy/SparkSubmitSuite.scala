@@ -224,8 +224,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     val childArgsStr = childArgs.mkString(" ")
     childArgsStr should include("--class org.SomeClass")
     childArgsStr should include("--executor-memory 5g")
@@ -278,8 +278,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (4)
@@ -381,8 +381,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (1)
@@ -413,8 +413,8 @@ class SparkSubmitSuite
       "arg2"
     )
     val appArgs = new SparkSubmitArguments(clArgs)
-    val (childArgs, classpath, sysProps, mainClass) =
-      prepareSubmitEnvironment(appArgs)
+    val (childArgs, classpath, sysProps, mainClass) = prepareSubmitEnvironment(
+      appArgs)
     childArgs.mkString(" ") should be("arg1 arg2")
     mainClass should be("org.SomeClass")
     classpath should have length (1)
@@ -527,9 +527,13 @@ class SparkSubmitSuite
     val main = MavenCoordinate("my.great.lib", "mylib", "0.1")
     val sparkHome = sys.props
       .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
-    val rScriptDir =
-      Seq(sparkHome, "R", "pkg", "inst", "tests", "packageInAJarTest.R")
-        .mkString(File.separator)
+    val rScriptDir = Seq(
+      sparkHome,
+      "R",
+      "pkg",
+      "inst",
+      "tests",
+      "packageInAJarTest.R").mkString(File.separator)
     assert(new File(rScriptDir).exists)
     IvyTestUtils.withRepository(main, None, None, withR = true) { repo =>
       val args = Seq(
@@ -675,8 +679,8 @@ class SparkSubmitSuite
   }
 
   test("user classpath first in driver") {
-    val systemJar =
-      TestUtils.createJarWithFiles(Map("test.resource" -> "SYSTEM"))
+    val systemJar = TestUtils.createJarWithFiles(
+      Map("test.resource" -> "SYSTEM"))
     val userJar = TestUtils.createJarWithFiles(Map("test.resource" -> "USER"))
     val args = Seq(
       "--class",

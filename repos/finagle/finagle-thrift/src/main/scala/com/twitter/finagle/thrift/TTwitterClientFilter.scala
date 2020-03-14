@@ -107,12 +107,11 @@ private[thrift] class TTwitterClientFilter(
       service: Service[ThriftClientRequest, Array[Byte]])
       : Future[Array[Byte]] = {
     // Create a new span identifier for this request.
-    val msg =
-      new InputBuffer(request.message, protocolFactory)().readMessageBegin()
+    val msg = new InputBuffer(request.message, protocolFactory)()
+      .readMessageBegin()
     Trace.recordRpc(msg.name)
 
-    val thriftRequest =
-      if (isUpgraded) mkTTwitterRequest(request) else request
+    val thriftRequest = if (isUpgraded) mkTTwitterRequest(request) else request
 
     val reply = service(thriftRequest)
 

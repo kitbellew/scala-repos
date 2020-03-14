@@ -81,14 +81,11 @@ object RetryBudget {
       depositAmount: Int,
       withdrawalAmount: Int)
       extends RetryBudget {
-    def deposit(): Unit =
-      tokenBucket.put(depositAmount)
+    def deposit(): Unit = tokenBucket.put(depositAmount)
 
-    def tryWithdraw(): Boolean =
-      tokenBucket.tryGet(withdrawalAmount)
+    def tryWithdraw(): Boolean = tokenBucket.tryGet(withdrawalAmount)
 
-    def balance: Long =
-      tokenBucket.count / withdrawalAmount
+    def balance: Long = tokenBucket.count / withdrawalAmount
   }
 
   private[this] val DefaultTtl = 10.seconds
@@ -105,8 +102,7 @@ object RetryBudget {
     * in order to accommodate clients that have just started issuing
     * requests as well as clients that do not issue many requests per window.
     */
-  def apply(): RetryBudget =
-    apply(DefaultTtl, 10, 0.2, Stopwatch.systemMillis)
+  def apply(): RetryBudget = apply(DefaultTtl, 10, 0.2, Stopwatch.systemMillis)
 
   /**
     * Creates a [[RetryBudget]] that allows for about `percentCanRetry` percent

@@ -27,8 +27,9 @@ abstract class HoconActionTest(actionId: String, subpath: String)
 
   protected def transform(data: Seq[String]): String = {
     val (fileText, offset) = extractCaret(data.head)
-    val psiFile =
-      HoconTestUtils.createPseudoPhysicalHoconFile(getProject, fileText)
+    val psiFile = HoconTestUtils.createPseudoPhysicalHoconFile(
+      getProject,
+      fileText)
 
     val editorManager = FileEditorManager.getInstance(getProject)
     val editor = editorManager.openTextEditor(

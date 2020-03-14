@@ -36,8 +36,7 @@ trait Row {
     * @return Some(Value) if the column
     * exists with the given name. Otherwise, None.
     */
-  def apply(columnName: String): Option[Value] =
-    apply(indexOf(columnName))
+  def apply(columnName: String): Option[Value] = apply(indexOf(columnName))
 
   protected def apply(columnIndex: Option[Int]): Option[Value] =
     for (idx <- columnIndex) yield values(idx)
@@ -62,38 +61,36 @@ class StringEncodedRow(
     * into an appropriate Value object.
     * [[http://dev.mysql.com/doc/internals/en/com-query-response.html#packet-ProtocolText::ResultsetRow]]
     */
-  lazy val values: IndexedSeq[Value] =
-    for (field <- fields) yield {
-      val bytes = buffer.readLengthCodedBytes()
-      if (bytes == null) NullValue
-      else if (bytes.isEmpty) EmptyValue
-      else if (!Charset.isCompatible(field.charset))
-        RawValue(field.fieldType, field.charset, false, bytes)
-      else {
-        val str = new String(bytes, Charset(field.charset))
-        field.fieldType match {
-          case Type.Tiny     => ByteValue(str.toByte)
-          case Type.Short    => ShortValue(str.toShort)
-          case Type.Int24    => IntValue(str.toInt)
-          case Type.Long     => IntValue(str.toInt)
-          case Type.LongLong => LongValue(str.toLong)
-          case Type.Float    => FloatValue(str.toFloat)
-          case Type.Double   => DoubleValue(str.toDouble)
-          case Type.Year     => ShortValue(str.toShort)
-          // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
-          case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
-              Type.Blob | Type.MediumBlob if !Charset.isBinary(field.charset) =>
-            StringValue(str)
-          // LongBlobs indicate a sequence of bytes with length >= 2^24 which
-          // can't fit into a Array[Byte]. This should be streamed and
-          // support for this needs to begin at the transport layer.
-          case Type.LongBlob =>
-            throw new UnsupportedOperationException(
-              "LongBlob is not supported!")
-          case typ => RawValue(typ, field.charset, false, bytes)
-        }
+  lazy val values: IndexedSeq[Value] = for (field <- fields) yield {
+    val bytes = buffer.readLengthCodedBytes()
+    if (bytes == null) NullValue
+    else if (bytes.isEmpty) EmptyValue
+    else if (!Charset.isCompatible(field.charset))
+      RawValue(field.fieldType, field.charset, false, bytes)
+    else {
+      val str = new String(bytes, Charset(field.charset))
+      field.fieldType match {
+        case Type.Tiny     => ByteValue(str.toByte)
+        case Type.Short    => ShortValue(str.toShort)
+        case Type.Int24    => IntValue(str.toInt)
+        case Type.Long     => IntValue(str.toInt)
+        case Type.LongLong => LongValue(str.toLong)
+        case Type.Float    => FloatValue(str.toFloat)
+        case Type.Double   => DoubleValue(str.toDouble)
+        case Type.Year     => ShortValue(str.toShort)
+        // Nonbinary strings as stored in the CHAR, VARCHAR, and TEXT data types
+        case Type.VarChar | Type.String | Type.VarString | Type.TinyBlob |
+            Type.Blob | Type.MediumBlob if !Charset.isBinary(field.charset) =>
+          StringValue(str)
+        // LongBlobs indicate a sequence of bytes with length >= 2^24 which
+        // can't fit into a Array[Byte]. This should be streamed and
+        // support for this needs to begin at the transport layer.
+        case Type.LongBlob =>
+          throw new UnsupportedOperationException("LongBlob is not supported!")
+        case typ => RawValue(typ, field.charset, false, bytes)
       }
     }
+  }
 
   def indexOf(name: String) = indexMap.get(name)
 }

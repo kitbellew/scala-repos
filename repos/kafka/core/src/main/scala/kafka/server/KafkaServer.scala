@@ -263,8 +263,11 @@ class KafkaServer(
         kafkaController.startup()
 
         /* start kafka coordinator */
-        consumerCoordinator =
-          GroupCoordinator(config, zkUtils, replicaManager, kafkaMetricsTime)
+        consumerCoordinator = GroupCoordinator(
+          config,
+          zkUtils,
+          replicaManager,
+          kafkaMetricsTime)
         consumerCoordinator.startup()
 
         /* Get the authorizer and initialize it if one is specified.*/
@@ -372,8 +375,8 @@ class KafkaServer(
         "zkEnableSecureAcls is true, but the verification of the JAAS login file failed.")
     }
     if (chroot.length > 1) {
-      val zkConnForChrootCreation =
-        config.zkConnect.substring(0, config.zkConnect.indexOf("/"))
+      val zkConnForChrootCreation = config.zkConnect
+        .substring(0, config.zkConnect.indexOf("/"))
       val zkClientForChrootCreation = ZkUtils(
         zkConnForChrootCreation,
         config.zkSessionTimeoutMs,
@@ -408,8 +411,8 @@ class KafkaServer(
   private def controlledShutdown() {
 
     def node(broker: Broker): Node = {
-      val brokerEndPoint =
-        broker.getBrokerEndPoint(config.interBrokerSecurityProtocol)
+      val brokerEndPoint = broker.getBrokerEndPoint(
+        config.interBrokerSecurityProtocol)
       new Node(brokerEndPoint.id, brokerEndPoint.host, brokerEndPoint.port)
     }
 
@@ -492,8 +495,8 @@ class KafkaServer(
                     socketTimeoutMs)) throw socketTimeoutException
 
               // send the controlled shutdown request
-              val requestHeader =
-                networkClient.nextRequestHeader(ApiKeys.CONTROLLED_SHUTDOWN_KEY)
+              val requestHeader = networkClient.nextRequestHeader(
+                ApiKeys.CONTROLLED_SHUTDOWN_KEY)
               val send = new RequestSend(
                 node(prevController).idString,
                 requestHeader,

@@ -27,14 +27,16 @@ class ScalaIntroduceParameterUsageProcessor
       case isIntroduceParameter(data) if data.replaceAll =>
         for { occ <- data.occurrences } yield {
           val file = data.methodToSearchFor.getContainingFile
-          val doc =
-            PsiDocumentManager.getInstance(data.getProject).getDocument(file)
+          val doc = PsiDocumentManager
+            .getInstance(data.getProject)
+            .getDocument(file)
           TextRangeUsageInfo(file, doc.createRangeMarker(occ))
         }
       case isIntroduceParameter(data) =>
         val file = data.methodToSearchFor.getContainingFile
-        val doc =
-          PsiDocumentManager.getInstance(data.getProject).getDocument(file)
+        val doc = PsiDocumentManager
+          .getInstance(data.getProject)
+          .getDocument(file)
         Array(TextRangeUsageInfo(file, doc.createRangeMarker(data.mainOcc)))
       case _ => Array.empty
     }

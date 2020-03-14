@@ -197,8 +197,7 @@ object Function {
 
 class Function(val i: Int) extends Group("Function") with Arity {
   def descriptiveComment = ""
-  def functionNTemplate =
-    """
+  def functionNTemplate = """
  *  In the following example, the definition of %s is a
  *  shorthand for the anonymous class definition %s:
  *

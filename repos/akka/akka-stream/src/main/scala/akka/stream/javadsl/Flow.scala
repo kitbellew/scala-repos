@@ -621,8 +621,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def reduce(f: function.Function2[Out, Out, Out @uncheckedVariance])
-      : javadsl.Flow[In, Out, Mat] =
-    new Flow(delegate.reduce(f.apply))
+      : javadsl.Flow[In, Out, Mat] = new Flow(delegate.reduce(f.apply))
 
   /**
     * Intersperses stream with provided element, similar to how [[scala.collection.immutable.List.mkString]]
@@ -752,8 +751,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * '''Cancels when''' downstream cancels
     */
-  def drop(n: Long): javadsl.Flow[In, Out, Mat] =
-    new Flow(delegate.drop(n))
+  def drop(n: Long): javadsl.Flow[In, Out, Mat] = new Flow(delegate.drop(n))
 
   /**
     * Discard the elements received within the given duration at beginning of the stream.
@@ -865,8 +863,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * See also [[Flow.limit]], [[Flow.limitWeighted]]
     */
-  def take(n: Long): javadsl.Flow[In, Out, Mat] =
-    new Flow(delegate.take(n))
+  def take(n: Long): javadsl.Flow[In, Out, Mat] = new Flow(delegate.take(n))
 
   /**
     * Terminate processing (and cancel the upstream publisher) after the given
@@ -1291,8 +1288,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Flow[In, T, Mat] =
-    new Flow(delegate.flatMapConcat[T, M](x ⇒ f(x)))
+      : Flow[In, T, Mat] = new Flow(delegate.flatMapConcat[T, M](x ⇒ f(x)))
 
   /**
     * Transform each input element into a `Source` of output elements that is
@@ -1310,8 +1306,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   def flatMapMerge[T, M](
       breadth: Int,
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Flow[In, T, Mat] =
-    new Flow(delegate.flatMapMerge(breadth, o ⇒ f(o)))
+      : Flow[In, T, Mat] = new Flow(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
     * Concatenate the given [[Source]] to this [[Flow]], meaning that once this
@@ -1615,8 +1610,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
             FlowShape[Out, Out @uncheckedVariance Pair T]] {
             def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
                 : FlowShape[Out, Out @uncheckedVariance Pair T] = {
-              val zip: FanInShape2[Out, T, Out Pair T] =
-                b.add(Zip.create[Out, T])
+              val zip: FanInShape2[Out, T, Out Pair T] = b.add(
+                Zip.create[Out, T])
               b.from(s).toInlet(zip.in1)
               FlowShape(zip.in0, zip.out)
             }
@@ -1859,8 +1854,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
   /**
     * Put an asynchronous boundary around this `Flow`
     */
-  override def async: javadsl.Flow[In, Out, Mat] =
-    new Flow(delegate.async)
+  override def async: javadsl.Flow[In, Out, Mat] = new Flow(delegate.async)
 
   /**
     * Logs elements flowing through the stream as well as completion and erroring.

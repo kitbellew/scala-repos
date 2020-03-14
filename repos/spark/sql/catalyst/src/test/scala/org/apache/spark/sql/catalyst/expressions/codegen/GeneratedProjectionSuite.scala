@@ -133,8 +133,9 @@ class GeneratedProjectionSuite extends SparkFunSuite {
     val row1 = InternalRow(UTF8String.fromString(""), innerRow)
     val unsafe1 = unsafeProj(row1).copy()
     // create a Row with long String before the inner struct
-    val row2 =
-      InternalRow(UTF8String.fromString("a_long_string").repeat(10), innerRow)
+    val row2 = InternalRow(
+      UTF8String.fromString("a_long_string").repeat(10),
+      innerRow)
     val unsafe2 = unsafeProj(row2).copy()
     assert(unsafe1.getStruct(1, 7) === unsafe2.getStruct(1, 7))
     val unsafe3 = unsafeProj(row1).copy()

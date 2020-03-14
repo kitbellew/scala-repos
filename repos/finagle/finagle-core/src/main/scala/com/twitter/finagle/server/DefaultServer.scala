@@ -79,8 +79,7 @@ case class DefaultServer[Req, Rep, In, Out](
     protected def newListener() = listener
     protected def newDispatcher(
         transport: Transport[In, Out],
-        service: Service[Req, Rep]) =
-      serviceTransport(transport, service)
+        service: Service[Req, Rep]) = serviceTransport(transport, service)
   }
 
   val underlying: StackServer[Req, Rep] = Server()

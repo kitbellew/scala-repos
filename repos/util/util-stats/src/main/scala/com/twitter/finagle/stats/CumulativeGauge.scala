@@ -16,8 +16,8 @@ private[finagle] abstract class CumulativeGauge {
     def remove(): Unit = removeGauge(this)
   }
 
-  @volatile private[this] var underlying =
-    IndexedSeq.empty[WeakReference[UnderlyingGauge]]
+  @volatile private[this] var underlying = IndexedSeq
+    .empty[WeakReference[UnderlyingGauge]]
 
   /**
     * Returns a buffered version of the current gauges
@@ -34,8 +34,7 @@ private[finagle] abstract class CumulativeGauge {
   }
 
   /** The number of active gauges */
-  private[stats] def size: Int =
-    get().size
+  private[stats] def size: Int = get().size
 
   /** Total number of gauges, including inactive */
   private[stats] def totalSize: Int = underlying.size
@@ -43,8 +42,8 @@ private[finagle] abstract class CumulativeGauge {
   private[this] def removeGauge(underlyingGauge: UnderlyingGauge): Unit =
     synchronized {
       // first, clean up weakrefs
-      val newUnderlying =
-        mutable.IndexedSeq.newBuilder[WeakReference[UnderlyingGauge]]
+      val newUnderlying = mutable.IndexedSeq
+        .newBuilder[WeakReference[UnderlyingGauge]]
       underlying.foreach { weakRef =>
         val g = weakRef.get()
         if (g != null && (g ne underlyingGauge)) newUnderlying += weakRef

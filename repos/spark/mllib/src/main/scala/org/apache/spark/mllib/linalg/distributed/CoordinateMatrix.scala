@@ -126,8 +126,10 @@ class CoordinateMatrix @Since("1.0.0") (
     val n = numCols()
     val numRowBlocks = math.ceil(m.toDouble / rowsPerBlock).toInt
     val numColBlocks = math.ceil(n.toDouble / colsPerBlock).toInt
-    val partitioner =
-      GridPartitioner(numRowBlocks, numColBlocks, entries.partitions.length)
+    val partitioner = GridPartitioner(
+      numRowBlocks,
+      numColBlocks,
+      entries.partitions.length)
 
     val blocks: RDD[((Int, Int), Matrix)] = entries
       .map { entry =>

@@ -46,8 +46,8 @@ class PCA @Since("1.4.0") (@Since("1.4.0") val k: Int) {
       s"source vector size is ${sources.first().size} must be greater than k=$k")
 
     val mat = new RowMatrix(sources)
-    val (pc, explainedVariance) =
-      mat.computePrincipalComponentsAndExplainedVariance(k)
+    val (pc, explainedVariance) = mat
+      .computePrincipalComponentsAndExplainedVariance(k)
     val densePC = pc match {
       case dm: DenseMatrix =>
         dm

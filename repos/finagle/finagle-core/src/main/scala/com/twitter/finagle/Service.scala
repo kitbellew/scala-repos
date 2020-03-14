@@ -36,8 +36,7 @@ object Service {
     new service.ConstantService(rep)
 
   /** Java compatible API for [[const]] as `const` is a reserved word in Java */
-  def constant[Rep](rep: Future[Rep]): Service[Any, Rep] =
-    Service.const(rep)
+  def constant[Rep](rep: Future[Rep]): Service[Any, Rep] = Service.const(rep)
 }
 
 /**
@@ -182,8 +181,8 @@ abstract class ServiceFactory[-Req, +Rep]
 object ServiceFactory {
   def const[Req, Rep](service: Service[Req, Rep]): ServiceFactory[Req, Rep] =
     new ServiceFactory[Req, Rep] {
-      private[this] val noRelease =
-        Future.value(new ServiceProxy[Req, Rep](service) {
+      private[this] val noRelease = Future.value(
+        new ServiceProxy[Req, Rep](service) {
           // close() is meaningless on connectionless services.
           override def close(deadline: Time) = Future.Done
         })
@@ -222,8 +221,7 @@ object FactoryToService {
   // TODO: we should simply transform the stack for boolean
   // stackables like this.
   case class Enabled(enabled: Boolean) {
-    def mk(): (Enabled, Stack.Param[Enabled]) =
-      (this, Enabled.param)
+    def mk(): (Enabled, Stack.Param[Enabled]) = (this, Enabled.param)
   }
   object Enabled {
     implicit val param = Stack.Param(Enabled(false))

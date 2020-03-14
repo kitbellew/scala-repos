@@ -55,8 +55,8 @@ object SbtData {
                     readSbtVersionFrom(classLoader)
                       .toRight("Unable to read SBT version from JVM classpath")
                       .map { sbtVersion =>
-                        val checksum =
-                          DatatypeConverter.printHexBinary(md5(sourceJar))
+                        val checksum = DatatypeConverter.printHexBinary(
+                          md5(sourceJar))
                         val interfacesHome = new File(
                           compilerInterfacesDir,
                           sbtVersion + "-idea-" + checksum)
@@ -92,8 +92,10 @@ object SbtData {
     val isSource =
       file.getName.endsWith(".java") || file.getName.endsWith(".scala")
     if (isSource) {
-      val text =
-        scala.io.Source.fromFile(file, "UTF-8").mkString.replace("\r", "")
+      val text = scala.io.Source
+        .fromFile(file, "UTF-8")
+        .mkString
+        .replace("\r", "")
       md.digest(text.getBytes("UTF8"))
     } else { md.digest(FileUtil.loadBytes(new FileInputStream(file))) }
   }

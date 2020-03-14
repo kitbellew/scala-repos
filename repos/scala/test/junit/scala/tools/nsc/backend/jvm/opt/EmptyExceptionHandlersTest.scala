@@ -88,8 +88,7 @@ class EmptyExceptionHandlersTest extends ClearAfterClass {
 
   @Test
   def keepAliveHandlers(): Unit = {
-    val code =
-      """def f: Int = {
+    val code = """def f: Int = {
         |  println(0)
         |  try { 1 }
         |  catch { case _: Exception => 2 }

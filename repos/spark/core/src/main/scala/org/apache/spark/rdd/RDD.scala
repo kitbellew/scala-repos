@@ -297,8 +297,8 @@ abstract class RDD[T: ClassTag](
     val ancestors = new mutable.HashSet[RDD[_]]
 
     def visit(rdd: RDD[_]) {
-      val narrowDependencies =
-        rdd.dependencies.filter(_.isInstanceOf[NarrowDependency[_]])
+      val narrowDependencies = rdd.dependencies.filter(
+        _.isInstanceOf[NarrowDependency[_]])
       val narrowParents = narrowDependencies.map(_.rdd)
       val narrowParentsNotVisited = narrowParents.filterNot(ancestors.contains)
       narrowParentsNotVisited.foreach { parent =>
@@ -342,8 +342,9 @@ abstract class RDD[T: ClassTag](
       }) match {
       case Left(blockResult) =>
         if (readCachedBlock) {
-          val existingMetrics =
-            context.taskMetrics().registerInputMetrics(blockResult.readMethod)
+          val existingMetrics = context
+            .taskMetrics()
+            .registerInputMetrics(blockResult.readMethod)
           existingMetrics.incBytesReadInternal(blockResult.bytes)
           new InterruptibleIterator[T](
             context,
@@ -587,8 +588,9 @@ abstract class RDD[T: ClassTag](
               num,
               initialCount,
               withReplacement)
-            var samples =
-              this.sample(withReplacement, fraction, rand.nextInt()).collect()
+            var samples = this
+              .sample(withReplacement, fraction, rand.nextInt())
+              .collect()
 
             // If the first sample didn't turn out large enough, keep trying to take samples;
             // this shouldn't happen often because we use a big multiplier for the initial size
@@ -596,8 +598,9 @@ abstract class RDD[T: ClassTag](
             while (samples.length < num) {
               logWarning(
                 s"Needed to re-sample due to insufficient sample size. Repeat #$numIters")
-              samples =
-                this.sample(withReplacement, fraction, rand.nextInt()).collect()
+              samples = this
+                .sample(withReplacement, fraction, rand.nextInt())
+                .collect()
               numIters += 1
             }
             Utils.randomizeInPlace(samples, rand).take(num)
@@ -1125,8 +1128,9 @@ abstract class RDD[T: ClassTag](
   def fold(zeroValue: T)(op: (T, T) => T): T =
     withScope {
       // Clone the zero value since we will also be serializing it as part of tasks
-      var jobResult =
-        Utils.clone(zeroValue, sc.env.closureSerializer.newInstance())
+      var jobResult = Utils.clone(
+        zeroValue,
+        sc.env.closureSerializer.newInstance())
       val cleanOp = sc.clean(op)
       val foldPartition = (iter: Iterator[T]) => iter.fold(zeroValue)(cleanOp)
       val mergeResult =
@@ -1186,11 +1190,12 @@ abstract class RDD[T: ClassTag](
         val cleanCombOp = context.clean(combOp)
         val aggregatePartition =
           (it: Iterator[T]) => it.aggregate(zeroValue)(cleanSeqOp, cleanCombOp)
-        var partiallyAggregated =
-          mapPartitions(it => Iterator(aggregatePartition(it)))
+        var partiallyAggregated = mapPartitions(it =>
+          Iterator(aggregatePartition(it)))
         var numPartitions = partiallyAggregated.partitions.length
-        val scale =
-          math.max(math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt, 2)
+        val scale = math.max(
+          math.ceil(math.pow(numPartitions, 1.0 / depth)).toInt,
+          2)
         // If creating an extra level doesn't help reduce
         // the wall-clock time, we stop tree aggregation.
 
@@ -1395,8 +1400,10 @@ abstract class RDD[T: ClassTag](
           val left = num - buf.size
           val p = partsScanned.until(
             math.min(partsScanned + numPartsToTry, totalParts).toInt)
-          val res =
-            sc.runJob(this, (it: Iterator[T]) => it.take(left).toArray, p)
+          val res = sc.runJob(
+            this,
+            (it: Iterator[T]) => it.take(left).toArray,
+            p)
 
           res.foreach(buf ++= _.take(num - buf.size))
           partsScanned += p.size
@@ -1732,10 +1739,10 @@ abstract class RDD[T: ClassTag](
   // less data but is not safe for all workloads. E.g. in streaming we may checkpoint both
   // an RDD and its parent in every batch, in which case the parent may never be checkpointed
   // and its lineage never truncated, leading to OOMs in the long run (SPARK-6847).
-  private val checkpointAllMarkedAncestors =
-    Option(sc.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-      .map(_.toBoolean)
-      .getOrElse(false)
+  private val checkpointAllMarkedAncestors = Option(
+    sc.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
+    .map(_.toBoolean)
+    .getOrElse(false)
 
   /** Returns the first parent RDD */
   protected[spark] def firstParent[U: ClassTag]: RDD[U] = {
@@ -1857,12 +1864,11 @@ abstract class RDD[T: ClassTag](
               d.isInstanceOf[ShuffleDependency[_, _, _]]))
 
           val lastDep = rdd.dependencies.last
-          val lastDepStrings =
-            debugString(
-              lastDep.rdd,
-              prefix,
-              lastDep.isInstanceOf[ShuffleDependency[_, _, _]],
-              true)
+          val lastDepStrings = debugString(
+            lastDep.rdd,
+            prefix,
+            lastDep.isInstanceOf[ShuffleDependency[_, _, _]],
+            true)
 
           (frontDepStrings ++ lastDepStrings)
       }

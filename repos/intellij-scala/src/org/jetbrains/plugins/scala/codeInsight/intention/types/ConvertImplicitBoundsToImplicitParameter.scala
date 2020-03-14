@@ -53,8 +53,10 @@ class ConvertImplicitBoundsToImplicitParameter
 object ConvertImplicitBoundsToImplicitParameter {
 
   def canBeConverted(element: PsiElement): Boolean = {
-    val paramTypeElement: ScTypeBoundsOwner =
-      PsiTreeUtil.getParentOfType(element, classOf[ScTypeBoundsOwner], false)
+    val paramTypeElement: ScTypeBoundsOwner = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScTypeBoundsOwner],
+      false)
     val scTypeParamOwner: ScTypeParametersOwner = PsiTreeUtil.getParentOfType(
       paramTypeElement,
       classOf[ScTypeParametersOwner],
@@ -68,15 +70,14 @@ object ConvertImplicitBoundsToImplicitParameter {
     val (
       function: ScMethodLike,
       paramOwner: ScParameterOwner,
-      typeParamOwner: ScTypeParametersOwner) =
-      PsiTreeUtil.getParentOfType(
-        element,
-        classOf[ScParameterOwner],
-        false) match {
-        case x: ScFunction => (x, x, x)
-        case x: ScClass    => (x.constructor.getOrElse(return Seq.empty), x, x)
-        case _             => return Seq.empty
-      }
+      typeParamOwner: ScTypeParametersOwner) = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScParameterOwner],
+      false) match {
+      case x: ScFunction => (x, x, x)
+      case x: ScClass    => (x.constructor.getOrElse(return Seq.empty), x, x)
+      case _             => return Seq.empty
+    }
     def removeImplicitBounds() {
       typeParamOwner.typeParameters.foreach(_.removeImplicitBounds())
     }
@@ -116,8 +117,9 @@ object ConvertImplicitBoundsToImplicitParameter {
               .headOption
             var result: Seq[ScParameter] = Seq.empty
             for (c <- extra) {
-              val newClause =
-                ScalaPsiElementFactory.createClauseFromText(c.getText, manager)
+              val newClause = ScalaPsiElementFactory.createClauseFromText(
+                c.getText,
+                manager)
               val addedParametersCount = c.parameters.size
               val addedClause =
                 function.parameterList.addClause(newClause).clauses.last

@@ -61,6 +61,6 @@ trait HostDirectives {
 object HostDirectives extends HostDirectives {
   import BasicDirectives._
 
-  private val _extractHost: Directive1[String] =
-    extract(_.request.uri.authority.host.address)
+  private val _extractHost: Directive1[String] = extract(
+    _.request.uri.authority.host.address)
 }

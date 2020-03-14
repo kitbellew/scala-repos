@@ -11,8 +11,7 @@ private[i18n] final class FileFix(
     keys: I18nKeys,
     messages: Messages) {
 
-  val apply: Funit =
-    Future.traverse(pool.nonDefaultLangs.toList)(fix).void
+  val apply: Funit = Future.traverse(pool.nonDefaultLangs.toList)(fix).void
 
   private def fix(lang: Lang): Funit =
     write(lang, sanitize((messages get lang.language) | Map.empty))

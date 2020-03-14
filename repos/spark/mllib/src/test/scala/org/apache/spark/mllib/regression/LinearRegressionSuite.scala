@@ -67,8 +67,11 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(weights(0) >= 9.0 && weights(0) <= 11.0)
     assert(weights(1) >= 9.0 && weights(1) <= 11.0)
 
-    val validationData =
-      LinearDataGenerator.generateLinearInput(3.0, Array(10.0, 10.0), 100, 17)
+    val validationData = LinearDataGenerator.generateLinearInput(
+      3.0,
+      Array(10.0, 10.0),
+      100,
+      17)
     val validationRDD = sc.parallelize(validationData, 2).cache()
 
     // Test prediction on RDD.
@@ -102,8 +105,11 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(weights(0) >= 9.0 && weights(0) <= 11.0)
     assert(weights(1) >= 9.0 && weights(1) <= 11.0)
 
-    val validationData =
-      LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 17)
+    val validationData = LinearDataGenerator.generateLinearInput(
+      0.0,
+      Array(10.0, 10.0),
+      100,
+      17)
     val validationRDD = sc.parallelize(validationData, 2).cache()
 
     // Test prediction on RDD.
@@ -141,8 +147,11 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(weights(0) >= 9.0 && weights(0) <= 11.0)
     assert(weights(9999) >= 9.0 && weights(9999) <= 11.0)
 
-    val validationData =
-      LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 17)
+    val validationData = LinearDataGenerator.generateLinearInput(
+      0.0,
+      Array(10.0, 10.0),
+      100,
+      17)
     val sparseValidationData = validationData.map {
       case LabeledPoint(label, v) =>
         val sv = Vectors.sparse(10000, Seq((0, v(0)), (9999, v(1))))

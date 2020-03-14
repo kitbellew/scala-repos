@@ -322,8 +322,9 @@ case class AhcWSRequest(
 
               // extract the content type and the charset
               val charsetOption = Option(HttpUtils.parseCharset(ct))
-              val charset =
-                charsetOption.getOrElse { StandardCharsets.UTF_8 }.name()
+              val charset = charsetOption
+                .getOrElse { StandardCharsets.UTF_8 }
+                .name()
 
               // Get the string body given the given charset...
               val stringBody = bytes.decodeString(charset)
@@ -577,8 +578,8 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
     // RFC-2616#3.7.1 states that any text/* mime type should default to ISO-8859-1 charset if not
     // explicitly set, while Plays default encoding is UTF-8.  So, use UTF-8 if charset is not explicitly
     // set and content type is not text/*, otherwise default to ISO-8859-1
-    val contentType =
-      Option(ahcResponse.getContentType).getOrElse("application/octet-stream")
+    val contentType = Option(ahcResponse.getContentType)
+      .getOrElse("application/octet-stream")
     val charset = Option(HttpUtils.parseCharset(contentType)).getOrElse {
       if (contentType.startsWith("text/")) HttpUtils.DEFAULT_CHARSET
       else StandardCharsets.UTF_8
@@ -602,8 +603,7 @@ case class AhcWSResponse(ahcResponse: AHCResponse) extends WSResponse {
   @throws(classOf[IOException])
   def bodyAsBytes: ByteString = ByteString(ahcResponse.getResponseBodyAsBytes)
 
-  override def toString: String =
-    s"AhcWSResponse($status, $statusText)"
+  override def toString: String = s"AhcWSResponse($status, $statusText)"
 }
 
 /**

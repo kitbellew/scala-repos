@@ -381,8 +381,8 @@ class Message(
   def toFormatVersion(toMagicValue: Byte): Message = {
     if (magic == toMagicValue) this
     else {
-      val byteBuffer =
-        ByteBuffer.allocate(size + Message.headerSizeDiff(magic, toMagicValue))
+      val byteBuffer = ByteBuffer.allocate(
+        size + Message.headerSizeDiff(magic, toMagicValue))
       // Copy bytes from old messages to new message
       convertToBuffer(toMagicValue, byteBuffer, Message.NoTimestamp)
       new Message(byteBuffer)

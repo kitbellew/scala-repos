@@ -48,11 +48,11 @@ package object config {
       .intConf
       .optional
 
-  private[spark] val USER_CLASS_PATH_FIRST =
-    ConfigBuilder("spark.yarn.user.classpath.first")
-      .doc("Whether to place user jars in front of Spark's classpath.")
-      .booleanConf
-      .withDefault(false)
+  private[spark] val USER_CLASS_PATH_FIRST = ConfigBuilder(
+    "spark.yarn.user.classpath.first")
+    .doc("Whether to place user jars in front of Spark's classpath.")
+    .booleanConf
+    .withDefault(false)
 
   private[spark] val GATEWAY_ROOT_PATH = ConfigBuilder(
     "spark.yarn.config.gatewayPath")
@@ -95,11 +95,11 @@ package object config {
   private[spark] val FILES_TO_DISTRIBUTE = ConfigBuilder(
     "spark.yarn.dist.files").stringConf.optional
 
-  private[spark] val PRESERVE_STAGING_FILES =
-    ConfigBuilder("spark.yarn.preserve.staging.files")
-      .doc("Whether to preserve temporary files created by the job in HDFS.")
-      .booleanConf
-      .withDefault(false)
+  private[spark] val PRESERVE_STAGING_FILES = ConfigBuilder(
+    "spark.yarn.preserve.staging.files")
+    .doc("Whether to preserve temporary files created by the job in HDFS.")
+    .booleanConf
+    .withDefault(false)
 
   private[spark] val STAGING_FILE_REPLICATION =
     ConfigBuilder("spark.yarn.submit.file.replication")
@@ -135,26 +135,26 @@ package object config {
       .stringConf
       .optional
 
-  private[spark] val CONTAINER_LAUNCH_MAX_THREADS =
-    ConfigBuilder("spark.yarn.containerLauncherMaxThreads").intConf
-      .withDefault(25)
+  private[spark] val CONTAINER_LAUNCH_MAX_THREADS = ConfigBuilder(
+    "spark.yarn.containerLauncherMaxThreads").intConf
+    .withDefault(25)
 
   private[spark] val MAX_EXECUTOR_FAILURES = ConfigBuilder(
     "spark.yarn.max.executor.failures").intConf.optional
 
-  private[spark] val MAX_REPORTER_THREAD_FAILURES =
-    ConfigBuilder("spark.yarn.scheduler.reporterThread.maxFailures").intConf
-      .withDefault(5)
+  private[spark] val MAX_REPORTER_THREAD_FAILURES = ConfigBuilder(
+    "spark.yarn.scheduler.reporterThread.maxFailures").intConf
+    .withDefault(5)
 
-  private[spark] val RM_HEARTBEAT_INTERVAL =
-    ConfigBuilder("spark.yarn.scheduler.heartbeat.interval-ms")
-      .timeConf(TimeUnit.MILLISECONDS)
-      .withDefaultString("3s")
+  private[spark] val RM_HEARTBEAT_INTERVAL = ConfigBuilder(
+    "spark.yarn.scheduler.heartbeat.interval-ms")
+    .timeConf(TimeUnit.MILLISECONDS)
+    .withDefaultString("3s")
 
-  private[spark] val INITIAL_HEARTBEAT_INTERVAL =
-    ConfigBuilder("spark.yarn.scheduler.initial-allocation.interval")
-      .timeConf(TimeUnit.MILLISECONDS)
-      .withDefaultString("200ms")
+  private[spark] val INITIAL_HEARTBEAT_INTERVAL = ConfigBuilder(
+    "spark.yarn.scheduler.initial-allocation.interval")
+    .timeConf(TimeUnit.MILLISECONDS)
+    .withDefaultString("200ms")
 
   private[spark] val SCHEDULER_SERVICES = ConfigBuilder("spark.yarn.services")
     .doc(
@@ -214,13 +214,13 @@ package object config {
 
   /* Security configuration. */
 
-  private[spark] val CREDENTIAL_FILE_MAX_COUNT =
-    ConfigBuilder("spark.yarn.credentials.file.retention.count").intConf
-      .withDefault(5)
+  private[spark] val CREDENTIAL_FILE_MAX_COUNT = ConfigBuilder(
+    "spark.yarn.credentials.file.retention.count").intConf
+    .withDefault(5)
 
-  private[spark] val CREDENTIALS_FILE_MAX_RETENTION =
-    ConfigBuilder("spark.yarn.credentials.file.retention.days").intConf
-      .withDefault(5)
+  private[spark] val CREDENTIALS_FILE_MAX_RETENTION = ConfigBuilder(
+    "spark.yarn.credentials.file.retention.days").intConf
+    .withDefault(5)
 
   private[spark] val NAMENODES_TO_ACCESS = ConfigBuilder(
     "spark.yarn.access.namenodes")
@@ -238,9 +238,9 @@ package object config {
 
   /* Private configs. */
 
-  private[spark] val CREDENTIALS_FILE_PATH =
-    ConfigBuilder("spark.yarn.credentials.file").internal.stringConf
-      .withDefault(null)
+  private[spark] val CREDENTIALS_FILE_PATH = ConfigBuilder(
+    "spark.yarn.credentials.file").internal.stringConf
+    .withDefault(null)
 
   // Internal config to propagate the location of the user's jar to the driver/executors
   private[spark] val APP_JAR = ConfigBuilder(

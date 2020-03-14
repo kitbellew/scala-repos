@@ -113,12 +113,12 @@ final class JSONIngestProcessing(
             stream: StreamT[Future, Array[Byte]]): Future[IngestReport] = {
           stream.uncons.flatMap {
             case Some((bytes, rest)) =>
-              val (parsed, updatedParser) =
-                state.parser(More(ByteBuffer.wrap(bytes)))
+              val (parsed, updatedParser) = state.parser(
+                More(ByteBuffer.wrap(bytes)))
               val ingestSize = parsed.values.size
 
-              val overLargeIdx =
-                parsed.values.indexWhere(_.flattenWithPath.size > maxFields)
+              val overLargeIdx = parsed.values.indexWhere(
+                _.flattenWithPath.size > maxFields)
               val errors = parsed.errors.map(pe => (pe.line, pe.msg)) ++
                 (overLargeIdx >= 0).option(
                   overLargeIdx + state.report.ingested -> overLargeMsg)
@@ -133,8 +133,8 @@ final class JSONIngestProcessing(
             case None =>
               val (parsed, finalParser) = state.parser(Done)
 
-              val overLargeIdx =
-                parsed.values.indexWhere(_.flattenWithPath.size > maxFields)
+              val overLargeIdx = parsed.values.indexWhere(
+                _.flattenWithPath.size > maxFields)
               val errors = parsed.errors.map(pe => (pe.line, pe.msg)) ++
                 (overLargeIdx >= 0).option(
                   overLargeIdx + state.report.ingested -> overLargeMsg)
@@ -168,8 +168,8 @@ final class JSONIngestProcessing(
         stream.uncons.flatMap {
           case Some((bytes, rest)) =>
             // Dup and rewind to ensure we have something to parse
-            val (parsed, updatedParser) =
-              state.parser(More(ByteBuffer.wrap(bytes)))
+            val (parsed, updatedParser) = state.parser(
+              More(ByteBuffer.wrap(bytes)))
 
             rest.isEmpty flatMap {
               case false =>
@@ -218,10 +218,10 @@ final class JSONIngestProcessing(
           : Future[JSONParseState] = {
         (errorHandling: @unchecked) match {
           case IngestAllPossible =>
-            val (toIngest, overLarge) =
-              partitionIndexed(expandArraysAtRoot(parsed.values)) {
-                _.flattenWithPath.size > maxFields
-              }
+            val (toIngest, overLarge) = partitionIndexed(
+              expandArraysAtRoot(parsed.values)) {
+              _.flattenWithPath.size > maxFields
+            }
             val ingestSize = toIngest.size
 
             storage.store(
@@ -313,8 +313,9 @@ final class JSONIngestProcessing(
         errorHandling: ErrorHandling,
         storeMode: WriteMode,
         data: ByteChunk): Future[IngestResult] = {
-      val dataStream =
-        data.fold(_ :: StreamT.empty[Future, Array[Byte]], identity)
+      val dataStream = data.fold(
+        _ :: StreamT.empty[Future, Array[Byte]],
+        identity)
 
       durability match {
         case LocalDurability =>

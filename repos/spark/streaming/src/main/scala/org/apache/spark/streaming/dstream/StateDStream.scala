@@ -80,8 +80,9 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
               val i = iterator.map(t => (t._1, Seq[V](), Option(t._2)))
               updateFuncLocal(i)
             }
-            val stateRDD =
-              prevStateRDD.mapPartitions(finalFunc, preservePartitioning)
+            val stateRDD = prevStateRDD.mapPartitions(
+              finalFunc,
+              preservePartitioning)
             Some(stateRDD)
           }
         }
@@ -104,8 +105,9 @@ private[streaming] class StateDStream[K: ClassTag, V: ClassTag, S: ClassTag](
                 }
 
                 val groupedRDD = parentRDD.groupByKey(partitioner)
-                val sessionRDD =
-                  groupedRDD.mapPartitions(finalFunc, preservePartitioning)
+                val sessionRDD = groupedRDD.mapPartitions(
+                  finalFunc,
+                  preservePartitioning)
                 // logDebug("Generating state RDD for time " + validTime + " (first)")
                 Some(sessionRDD)
               }

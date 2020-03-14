@@ -75,20 +75,19 @@ object StreamLayout {
     val inter = ups2.intersect(downs)
     if (downs != ups2) problems ::= s"inconsistent maps: ups ${pairs(
       ups2 -- inter)} downs ${pairs(downs -- inter)}"
-    val (allIn, dupIn, allOut, dupOut) =
-      subModules.foldLeft(
+    val (allIn, dupIn, allOut, dupOut) = subModules.foldLeft(
+      (
+        Set.empty[InPort],
+        Set.empty[InPort],
+        Set.empty[OutPort],
+        Set.empty[OutPort])) {
+      case ((ai, di, ao, doo), sm) ⇒
         (
-          Set.empty[InPort],
-          Set.empty[InPort],
-          Set.empty[OutPort],
-          Set.empty[OutPort])) {
-        case ((ai, di, ao, doo), sm) ⇒
-          (
-            ai ++ sm.inPorts,
-            di ++ ai.intersect(sm.inPorts),
-            ao ++ sm.outPorts,
-            doo ++ ao.intersect(sm.outPorts))
-      }
+          ai ++ sm.inPorts,
+          di ++ ai.intersect(sm.inPorts),
+          ao ++ sm.outPorts,
+          doo ++ ao.intersect(sm.outPorts))
+    }
     if (dupIn.nonEmpty)
       problems ::= s"duplicate ports in submodules ${ins(dupIn)}"
     if (dupOut.nonEmpty)
@@ -232,8 +231,7 @@ object StreamLayout {
         that: Module,
         from: OutPort,
         to: InPort,
-        f: (A, B) ⇒ C): Module =
-      this.compose(that, f).wire(from, to)
+        f: (A, B) ⇒ C): Module = this.compose(that, f).wire(from, to)
 
     /**
       * Creates a new Module based on the current Module but with
@@ -997,8 +995,7 @@ private[stream] abstract class MaterializerSession(
 
   protected def mergeAttributes(
       parent: Attributes,
-      current: Attributes): Attributes =
-    parent and current
+      current: Attributes): Attributes = parent and current
 
   def registerSrc(ms: MaterializedValueSource[Any]): Unit = {
     if (MaterializerSession.Debug) println(s"registering source $ms")
@@ -1018,8 +1015,9 @@ private[stream] abstract class MaterializerSession(
         f"entering module [${System.identityHashCode(module)}%08x] (${Logging.simpleName(module)})")
 
     for (submodule ← module.subModules) {
-      val subEffectiveAttributes =
-        mergeAttributes(effectiveAttributes, submodule.attributes)
+      val subEffectiveAttributes = mergeAttributes(
+        effectiveAttributes,
+        submodule.attributes)
       submodule match {
         case atomic: AtomicModule ⇒
           materializeAtomic(atomic, subEffectiveAttributes, materializedValues)

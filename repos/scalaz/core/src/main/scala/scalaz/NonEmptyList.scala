@@ -65,8 +65,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
   /** @since 7.0.2 */
   def init: IList[A] = tail.initOption.fold[IList[A]](INil())(il => head :: il)
 
-  def inits: NonEmptyList[NonEmptyList[A]] =
-    reverse.tails.map(_.reverse)
+  def inits: NonEmptyList[NonEmptyList[A]] = reverse.tails.map(_.reverse)
 
   /** @since 7.0.2 */
   def last: A = tail.lastOption.getOrElse(head)
@@ -132,22 +131,18 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
       case _                     => false
     }
 
-  override def hashCode: Int =
-    list.hashCode
+  override def hashCode: Int = list.hashCode
 }
 
 object NonEmptyList extends NonEmptyListInstances {
-  def apply[A](h: A, t: A*): NonEmptyList[A] =
-    nels(h, t: _*)
+  def apply[A](h: A, t: A*): NonEmptyList[A] = nels(h, t: _*)
 
   def unapply[A](v: NonEmptyList[A]): Option[(A, IList[A])] =
     Some((v.head, v.tail))
 
-  def nel[A](h: A, t: IList[A]): NonEmptyList[A] =
-    new NonEmptyList(h, t)
+  def nel[A](h: A, t: IList[A]): NonEmptyList[A] = new NonEmptyList(h, t)
 
-  def nels[A](h: A, t: A*): NonEmptyList[A] =
-    nel(h, IList(t: _*))
+  def nels[A](h: A, t: A*): NonEmptyList[A] = nel(h, IList(t: _*))
 
   def lift[A, B](f: NonEmptyList[A] => B): IList[A] => Option[B] = {
     case INil() ⇒ None
@@ -168,86 +163,82 @@ sealed abstract class NonEmptyListInstances extends NonEmptyListInstances0 {
     with Comonad[NonEmptyList]
     with Zip[NonEmptyList]
     with Unzip[NonEmptyList]
-    with Align[NonEmptyList] =
-    new Traverse1[NonEmptyList]
-      with Monad[NonEmptyList]
-      with BindRec[NonEmptyList]
-      with Plus[NonEmptyList]
-      with Comonad[NonEmptyList]
-      with Zip[NonEmptyList]
-      with Unzip[NonEmptyList]
-      with Align[NonEmptyList] {
-      override def findLeft[A](fa: NonEmptyList[A])(f: A => Boolean) =
-        if (f(fa.head)) Some(fa.head) else fa.tail.find(f)
+    with Align[NonEmptyList] = new Traverse1[NonEmptyList]
+    with Monad[NonEmptyList]
+    with BindRec[NonEmptyList]
+    with Plus[NonEmptyList]
+    with Comonad[NonEmptyList]
+    with Zip[NonEmptyList]
+    with Unzip[NonEmptyList]
+    with Align[NonEmptyList] {
+    override def findLeft[A](fa: NonEmptyList[A])(f: A => Boolean) =
+      if (f(fa.head)) Some(fa.head) else fa.tail.find(f)
 
-      def traverse1Impl[G[_]: Apply, A, B](fa: NonEmptyList[A])(
-          f: A => G[B]): G[NonEmptyList[B]] =
-        fa traverse1 f
+    def traverse1Impl[G[_]: Apply, A, B](fa: NonEmptyList[A])(
+        f: A => G[B]): G[NonEmptyList[B]] = fa traverse1 f
 
-      override def foldMapRight1[A, B](fa: NonEmptyList[A])(z: A => B)(
-          f: (A, => B) => B): B = {
-        val reversed = fa.reverse
-        reversed.tail.foldLeft(z(reversed.head))((x, y) => f(y, x))
-      }
-
-      override def foldMapLeft1[A, B](fa: NonEmptyList[A])(z: A => B)(
-          f: (B, A) => B): B =
-        fa.tail.foldLeft(z(fa.head))(f)
-
-      override def foldMap1[A, B](fa: NonEmptyList[A])(f: A => B)(
-          implicit F: Semigroup[B]): B = {
-        fa.tail.foldLeft(f(fa.head))((x, y) => F.append(x, f(y)))
-      }
-
-      // would otherwise use traverse1Impl
-      override def foldLeft[A, B](fa: NonEmptyList[A], z: B)(
-          f: (B, A) => B): B =
-        fa.tail.foldLeft(f(z, fa.head))(f)
-
-      def bind[A, B](fa: NonEmptyList[A])(
-          f: A => NonEmptyList[B]): NonEmptyList[B] = fa flatMap f
-
-      def point[A](a: => A): NonEmptyList[A] = NonEmptyList(a)
-
-      def plus[A](a: NonEmptyList[A], b: => NonEmptyList[A]): NonEmptyList[A] =
-        a.list <::: b
-
-      def copoint[A](p: NonEmptyList[A]): A = p.head
-
-      def cobind[A, B](fa: NonEmptyList[A])(
-          f: NonEmptyList[A] => B): NonEmptyList[B] = map(cojoin(fa))(f)
-
-      override def cojoin[A](
-          a: NonEmptyList[A]): NonEmptyList[NonEmptyList[A]] = a.tails
-
-      def zip[A, B](a: => NonEmptyList[A], b: => NonEmptyList[B]) = a zip b
-
-      def unzip[A, B](a: NonEmptyList[(A, B)]) = a.unzip
-
-      def alignWith[A, B, C](f: A \&/ B => C) =
-        (a, b) => {
-          NonEmptyList.nel(
-            f(\&/.Both(a.head, b.head)),
-            Align[IList].alignWith(f)(a.tail, b.tail))
-        }
-
-      override def length[A](a: NonEmptyList[A]): Int = a.size
-
-      override def toNel[A](fa: NonEmptyList[A]) = fa
-
-      override def toIList[A](fa: NonEmptyList[A]) = fa.list
-
-      override def all[A](fa: NonEmptyList[A])(f: A => Boolean) =
-        f(fa.head) && Foldable[IList].all(fa.tail)(f)
-
-      override def any[A](fa: NonEmptyList[A])(f: A => Boolean) =
-        f(fa.head) || Foldable[IList].any(fa.tail)(f)
-
-      def tailrecM[A, B](f: A => NonEmptyList[A \/ B])(a: A): NonEmptyList[B] =
-        (BindRec[IList].tailrecM[A, B](a => f(a).list)(a): @unchecked) match {
-          case ICons(h, t) => NonEmptyList.nel(h, t)
-        }
+    override def foldMapRight1[A, B](fa: NonEmptyList[A])(z: A => B)(
+        f: (A, => B) => B): B = {
+      val reversed = fa.reverse
+      reversed.tail.foldLeft(z(reversed.head))((x, y) => f(y, x))
     }
+
+    override def foldMapLeft1[A, B](fa: NonEmptyList[A])(z: A => B)(
+        f: (B, A) => B): B = fa.tail.foldLeft(z(fa.head))(f)
+
+    override def foldMap1[A, B](fa: NonEmptyList[A])(f: A => B)(
+        implicit F: Semigroup[B]): B = {
+      fa.tail.foldLeft(f(fa.head))((x, y) => F.append(x, f(y)))
+    }
+
+    // would otherwise use traverse1Impl
+    override def foldLeft[A, B](fa: NonEmptyList[A], z: B)(f: (B, A) => B): B =
+      fa.tail.foldLeft(f(z, fa.head))(f)
+
+    def bind[A, B](fa: NonEmptyList[A])(
+        f: A => NonEmptyList[B]): NonEmptyList[B] = fa flatMap f
+
+    def point[A](a: => A): NonEmptyList[A] = NonEmptyList(a)
+
+    def plus[A](a: NonEmptyList[A], b: => NonEmptyList[A]): NonEmptyList[A] =
+      a.list <::: b
+
+    def copoint[A](p: NonEmptyList[A]): A = p.head
+
+    def cobind[A, B](fa: NonEmptyList[A])(
+        f: NonEmptyList[A] => B): NonEmptyList[B] = map(cojoin(fa))(f)
+
+    override def cojoin[A](a: NonEmptyList[A]): NonEmptyList[NonEmptyList[A]] =
+      a.tails
+
+    def zip[A, B](a: => NonEmptyList[A], b: => NonEmptyList[B]) = a zip b
+
+    def unzip[A, B](a: NonEmptyList[(A, B)]) = a.unzip
+
+    def alignWith[A, B, C](f: A \&/ B => C) =
+      (a, b) => {
+        NonEmptyList.nel(
+          f(\&/.Both(a.head, b.head)),
+          Align[IList].alignWith(f)(a.tail, b.tail))
+      }
+
+    override def length[A](a: NonEmptyList[A]): Int = a.size
+
+    override def toNel[A](fa: NonEmptyList[A]) = fa
+
+    override def toIList[A](fa: NonEmptyList[A]) = fa.list
+
+    override def all[A](fa: NonEmptyList[A])(f: A => Boolean) =
+      f(fa.head) && Foldable[IList].all(fa.tail)(f)
+
+    override def any[A](fa: NonEmptyList[A])(f: A => Boolean) =
+      f(fa.head) || Foldable[IList].any(fa.tail)(f)
+
+    def tailrecM[A, B](f: A => NonEmptyList[A \/ B])(a: A): NonEmptyList[B] =
+      (BindRec[IList].tailrecM[A, B](a => f(a).list)(a): @unchecked) match {
+        case ICons(h, t) => NonEmptyList.nel(h, t)
+      }
+  }
 
   implicit def nonEmptyListSemigroup[A]: Semigroup[NonEmptyList[A]] =
     new Semigroup[NonEmptyList[A]] {

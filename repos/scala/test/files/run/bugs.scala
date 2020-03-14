@@ -314,8 +314,7 @@ object Bug226Test {
 
 object Bug233Test {
   val b: Array[String] = null;
-  def test(args: Array[String]): Unit =
-    Console.println(b == null);
+  def test(args: Array[String]): Unit = Console.println(b == null);
 }
 
 //############################################################################

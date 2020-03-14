@@ -36,8 +36,11 @@ object LabelledGenericTestsAux {
       inPrint: Boolean)
   case class BookWithMultipleAuthors(title: String, id: Int, authors: String*)
 
-  val tapl =
-    Book("Benjamin Pierce", "Types and Programming Languages", 262162091, 44.11)
+  val tapl = Book(
+    "Benjamin Pierce",
+    "Types and Programming Languages",
+    262162091,
+    44.11)
   val tapl2 = Book(
     "Benjamin Pierce",
     "Types and Programming Languages (2nd Ed.)",
@@ -118,25 +121,21 @@ object ScalazTaggedAux {
   }
 
   object TC {
-    implicit val intTC: TC[Int] =
-      new TC[Int] {
-        def apply() = "Int"
-      }
+    implicit val intTC: TC[Int] = new TC[Int] {
+      def apply() = "Int"
+    }
 
-    implicit val booleanTC: TC[Boolean] =
-      new TC[Boolean] {
-        def apply() = "Boolean"
-      }
+    implicit val booleanTC: TC[Boolean] = new TC[Boolean] {
+      def apply() = "Boolean"
+    }
 
-    implicit val taggedIntTC: TC[Int @@ CustomTag] =
-      new TC[Int @@ CustomTag] {
-        def apply() = s"TaggedInt"
-      }
+    implicit val taggedIntTC: TC[Int @@ CustomTag] = new TC[Int @@ CustomTag] {
+      def apply() = s"TaggedInt"
+    }
 
-    implicit val hnilTC: TC[HNil] =
-      new TC[HNil] {
-        def apply() = "HNil"
-      }
+    implicit val hnilTC: TC[HNil] = new TC[HNil] {
+      def apply() = "HNil"
+    }
 
     implicit def hconsTCTagged[K <: Symbol, H, HT, T <: HList](implicit
         key: Witness.Aux[K],

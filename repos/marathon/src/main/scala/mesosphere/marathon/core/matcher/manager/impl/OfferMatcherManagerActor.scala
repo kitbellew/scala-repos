@@ -30,14 +30,12 @@ import scala.util.Random
 import scala.util.control.NonFatal
 
 private[manager] class OfferMatcherManagerActorMetrics(metrics: Metrics) {
-  private[manager] val launchTokenGauge: AtomicIntGauge =
-    metrics.gauge(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "launchTokens"),
-      new AtomicIntGauge)
-  private[manager] val currentOffersGauge: AtomicIntGauge =
-    metrics.gauge(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "currentOffers"),
-      new AtomicIntGauge)
+  private[manager] val launchTokenGauge: AtomicIntGauge = metrics.gauge(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "launchTokens"),
+    new AtomicIntGauge)
+  private[manager] val currentOffersGauge: AtomicIntGauge = metrics.gauge(
+    metrics.name(MetricPrefixes.SERVICE, getClass, "currentOffers"),
+    new AtomicIntGauge)
 }
 
 /**
@@ -166,8 +164,8 @@ private[impl] class OfferMatcherManagerActor private (
       .map(_.getDisk.getPersistence.getId)
       .collect { case LocalVolumeId(volumeId) => volumeId.appId }
       .toSet
-    val (reserved, normal) =
-      matchers.toSeq.partition(_.precedenceFor.exists(appReservations))
+    val (reserved, normal) = matchers.toSeq.partition(
+      _.precedenceFor.exists(appReservations))
     //1 give the offer to the matcher waiting for a reservation
     //2 give the offer to anybody else
     //3 randomize both lists to be fair
@@ -213,12 +211,11 @@ private[impl] class OfferMatcherManagerActor private (
       def processAddedTasks(data: OfferData): OfferData = {
         val dataWithTasks =
           try {
-            val (acceptedOps, rejectedOps) =
-              addedOps.splitAt(
-                Seq(
-                  launchTokens,
-                  addedOps.size,
-                  conf.maxTasksPerOffer() - data.ops.size).min)
+            val (acceptedOps, rejectedOps) = addedOps.splitAt(
+              Seq(
+                launchTokens,
+                addedOps.size,
+                conf.maxTasksPerOffer() - data.ops.size).min)
 
             rejectedOps.foreach(_.reject(
               "not enough launch tokens OR already scheduled sufficient tasks on offer"))
@@ -271,21 +268,22 @@ private[impl] class OfferMatcherManagerActor private (
   }
 
   private[this] def scheduleNextMatcherOrFinish(data: OfferData): Unit = {
-    val nextMatcherOpt = if (data.deadline < clock.now()) {
-      log.warning(
-        s"Deadline for ${data.offer.getId.getValue} overdue. Scheduled ${data.ops.size} ops so far.")
-      None
-    } else if (data.ops.size >= conf.maxTasksPerOffer()) {
-      log.info(
-        s"Already scheduled the maximum number of ${data.ops.size} tasks on this offer. " +
-          s"Increase with --${conf.maxTasksPerOffer.name}.")
-      None
-    } else if (launchTokens <= 0) {
-      log.info(
-        s"No launch tokens left for ${data.offer.getId.getValue}. " +
-          s"Tune with --launch_tokens/launch_token_refresh_interval.")
-      None
-    } else { data.nextMatcherOpt }
+    val nextMatcherOpt =
+      if (data.deadline < clock.now()) {
+        log.warning(
+          s"Deadline for ${data.offer.getId.getValue} overdue. Scheduled ${data.ops.size} ops so far.")
+        None
+      } else if (data.ops.size >= conf.maxTasksPerOffer()) {
+        log.info(
+          s"Already scheduled the maximum number of ${data.ops.size} tasks on this offer. " +
+            s"Increase with --${conf.maxTasksPerOffer.name}.")
+        None
+      } else if (launchTokens <= 0) {
+        log.info(
+          s"No launch tokens left for ${data.offer.getId.getValue}. " +
+            s"Tune with --launch_tokens/launch_token_refresh_interval.")
+        None
+      } else { data.nextMatcherOpt }
 
     nextMatcherOpt match {
       case Some((nextMatcher, newData)) =>

@@ -23,8 +23,7 @@ trait ReplStrings {
     res.toString
   }
 
-  def string2codeQuoted(str: String) =
-    "\"" + string2code(str) + "\""
+  def string2codeQuoted(str: String) = "\"" + string2code(str) + "\""
 
   def any2stringOf(x: Any, maxlen: Int) =
     "scala.runtime.ScalaRunTime.replStringOf(%s, %s)".format(x, maxlen)

@@ -40,8 +40,8 @@ final class Refiner {
     analysis.errors.foreach(Analysis.logError(_, logger, Level.Warn))
 
     logger.time("Refiner: Assemble LinkedClasses") {
-      val linkedClassesByName =
-        Map(unit.classDefs.map(c => c.encodedName -> c): _*)
+      val linkedClassesByName = Map(
+        unit.classDefs.map(c => c.encodedName -> c): _*)
 
       def optClassDef(analyzerInfo: Analysis.ClassInfo) = {
         val encodedName = analyzerInfo.encodedName
@@ -72,8 +72,7 @@ final class Refiner {
       classDef: LinkedClass,
       info: Analysis.ClassInfo): LinkedClass = {
 
-    val fields =
-      if (info.isAnySubclassInstantiated) classDef.fields else Nil
+    val fields = if (info.isAnySubclassInstantiated) classDef.fields else Nil
 
     val staticMethods = classDef.staticMethods filter { m =>
       info.staticMethodInfos(m.info.encodedName).isReachable

@@ -146,8 +146,9 @@ private[concurrent] object ExecutionContextImpl {
       maxNoOfThreads)
 
     // The thread factory must provide additional threads to support managed blocking.
-    val maxExtraThreads =
-      getInt("scala.concurrent.context.maxExtraThreads", "256")
+    val maxExtraThreads = getInt(
+      "scala.concurrent.context.maxExtraThreads",
+      "256")
 
     val uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =
       new Thread.UncaughtExceptionHandler {

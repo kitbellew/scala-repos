@@ -104,8 +104,8 @@ trait EvaluatorModule[M[+_]]
     import constants._
 
     private implicit val N = N0
-    private val evalLogger =
-      LoggerFactory.getLogger("com.precog.mimir.Evaluator")
+    private val evalLogger = LoggerFactory.getLogger(
+      "com.precog.mimir.Evaluator")
     private val transState = StateMonadTrans[EvaluatorState]
     private val monadState = stateTMonadState[EvaluatorState, N]
 
@@ -504,8 +504,9 @@ trait EvaluatorModule[M[+_]]
               val (lIds, rIds) = ids.unzip
               (identityJoinSpec(lIds), identityJoinSpec(rIds))
             case ValueJoin(id) =>
-              val valueKeySpec =
-                trans.DerefObjectStatic(Leaf(Source), CPathField("sort-" + id))
+              val valueKeySpec = trans.DerefObjectStatic(
+                Leaf(Source),
+                CPathField("sort-" + id))
               (valueKeySpec, valueKeySpec)
           }
 
@@ -533,10 +534,10 @@ trait EvaluatorModule[M[+_]]
                 case valueOrder         => valueOrder
               }
 
-            val leftSort =
-              adjustTableOrder(pendingTableLeft.sort)(idMatch.mapLeftIndex)
-            val rightSort =
-              adjustTableOrder(pendingTableRight.sort)(idMatch.mapRightIndex)
+            val leftSort = adjustTableOrder(pendingTableLeft.sort)(
+              idMatch.mapLeftIndex)
+            val rightSort = adjustTableOrder(pendingTableRight.sort)(
+              idMatch.mapRightIndex)
 
             val joinSpec = buildWrappedJoinSpec(idMatch)(spec)
             val resultM = (isSorted(leftSort), isSorted(rightSort)) match {
@@ -614,10 +615,12 @@ trait EvaluatorModule[M[+_]]
                     trans.DerefObjectStatic(TransSpec1.Id, paths.Value),
                     paths.Value.name)
 
-                  val keyTable =
-                    tableData.transform(keySpec).canonicalize(maxSliceSize)
-                  val valueTable =
-                    tableSamples.transform(valueSpec).canonicalize(maxSliceSize)
+                  val keyTable = tableData
+                    .transform(keySpec)
+                    .canonicalize(maxSliceSize)
+                  val valueTable = tableSamples
+                    .transform(valueSpec)
+                    .canonicalize(maxSliceSize)
 
                   transState liftM mn(keyTable.zip(valueTable))
                 }
@@ -843,10 +846,10 @@ trait EvaluatorModule[M[+_]]
                       splits)).tupled
                     pair flatMap {
                       case (ptLeft, ptRight) =>
-                        val leftTable =
-                          ptLeft.table.transform(liftToValues(ptLeft.trans))
-                        val rightTable =
-                          ptRight.table.transform(liftToValues(ptRight.trans))
+                        val leftTable = ptLeft.table.transform(
+                          liftToValues(ptLeft.trans))
+                        val rightTable = ptRight.table.transform(
+                          liftToValues(ptRight.trans))
                         def sort(policy: IdentityPolicy): TableOrder =
                           policy match {
                             case IdentityPolicy.Retain.Left  => ptLeft.sort
@@ -1006,8 +1009,10 @@ trait EvaluatorModule[M[+_]]
                         replaceNode(child, param, Const(subKey)(param.loc))
                     }
 
-                    val back =
-                      fullEval(rewritten, splits2, id :: splits.keys.toList)
+                    val back = fullEval(
+                      rewritten,
+                      splits2,
+                      id :: splits.keys.toList)
                     back.eval(state)
                 })
               } yield { result.transform(idSpec) }
@@ -1145,8 +1150,9 @@ trait EvaluatorModule[M[+_]]
                   table = pending.table.transform(liftToValues(pending.trans))
                   result = {
                     val wrappedSort = trans.WrapObject(sortSpec, "sort-" + id)
-                    val wrappedValue =
-                      trans.WrapObject(valueSpec, paths.Value.name)
+                    val wrappedValue = trans.WrapObject(
+                      valueSpec,
+                      paths.Value.name)
                     val oldSortFields = parent.valueKeys map { id0 =>
                       CPathField("sort-" + id0)
                     }
@@ -1237,8 +1243,10 @@ trait EvaluatorModule[M[+_]]
         } yield table
       }
 
-      val resultState: StateT[N, EvaluatorState, Table] =
-        fullEval(rewrittenDAG, Map(), Nil)
+      val resultState: StateT[N, EvaluatorState, Table] = fullEval(
+        rewrittenDAG,
+        Map(),
+        Nil)
 
       val resultTable: N[Table] = resultState.eval(EvaluatorState())
       resultTable map {

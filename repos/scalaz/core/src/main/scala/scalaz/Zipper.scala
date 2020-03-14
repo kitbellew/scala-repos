@@ -12,15 +12,13 @@ import annotation.tailrec
 final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   import Zipper._
 
-  def map[B](f: A => B): Zipper[B] =
-    zipper(lefts map f, f(focus), rights map f)
+  def map[B](f: A => B): Zipper[B] = zipper(lefts map f, f(focus), rights map f)
 
   /**
     * Get the Stream representation of this Zipper. This fully traverses `lefts`. `rights` is
     * not evaluated.
     */
-  def toStream: Stream[A] =
-    lefts.reverse ++ focus #:: rights
+  def toStream: Stream[A] = lefts.reverse ++ focus #:: rights
 
   /**
     * Update the focus in this zipper.
@@ -44,8 +42,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Possibly moves to next element to the right of focus.
     */
-  def nextOr[AA >: A](z: => Zipper[AA]): Zipper[AA] =
-    next getOrElse z
+  def nextOr[AA >: A](z: => Zipper[AA]): Zipper[AA] = next getOrElse z
 
   /**
     * Possibly moves to the previous element to the left of focus.
@@ -59,8 +56,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
   /**
     * Possibly moves to previous element to the left of focus.
     */
-  def previousOr[AA >: A](z: => Zipper[AA]): Zipper[AA] =
-    previous getOrElse z
+  def previousOr[AA >: A](z: => Zipper[AA]): Zipper[AA] = previous getOrElse z
 
   /**
     * Moves to the previous element to the left of focus, or error if there is no element on the left.
@@ -146,8 +142,7 @@ final case class Zipper[+A](lefts: Stream[A], focus: A, rights: Stream[A]) {
     lefts.foldLeft(Stream.cons(focus, rights).foldRight(b)((a, b) => f(a, b)))(
       (a, b) => f(b, a))
 
-  def length: Int =
-    this.foldLeft(0)((b, _) => b + 1)
+  def length: Int = this.foldLeft(0)((b, _) => b + 1)
 
   /**
     * Whether the focus is on the first element in the zipper.
@@ -374,18 +369,14 @@ sealed abstract class ZipperInstances {
       : Traverse1[Zipper] with Applicative[Zipper] with Comonad[Zipper] =
     new Traverse1[Zipper] with Applicative[Zipper] with Comonad[Zipper] {
       import std.stream._
-      override def cojoin[A](a: Zipper[A]): Zipper[Zipper[A]] =
-        a.positions
+      override def cojoin[A](a: Zipper[A]): Zipper[Zipper[A]] = a.positions
       def cobind[A, B](fa: Zipper[A])(f: Zipper[A] => B): Zipper[B] =
         map(cojoin(fa))(f)
-      def copoint[A](p: Zipper[A]): A =
-        p.focus
+      def copoint[A](p: Zipper[A]): A = p.focus
       override def traverseImpl[G[_]: Applicative, A, B](za: Zipper[A])(
-          f: A => G[B]): G[Zipper[B]] =
-        za traverse f
+          f: A => G[B]): G[Zipper[B]] = za traverse f
       override def foldRight[A, B](fa: Zipper[A], z: => B)(
-          f: (A, => B) => B): B =
-        fa.foldRight(z)(f)
+          f: (A, => B) => B): B = fa.foldRight(z)(f)
       override def foldLeft[A, B](fa: Zipper[A], z: B)(f: (B, A) => B): B =
         fa.foldLeft(z)(f)
       override def foldMap[A, B](fa: Zipper[A])(f: A => B)(
@@ -393,10 +384,8 @@ sealed abstract class ZipperInstances {
         fa.foldLeft(F.zero)((b, a) => F.append(b, f(a)))
       def point[A](a: => A): Zipper[A] =
         zipper(Stream.continually(a), a, Stream.continually(a))
-      def ap[A, B](fa: => Zipper[A])(f: => Zipper[A => B]): Zipper[B] =
-        fa ap f
-      override def map[A, B](fa: Zipper[A])(f: A => B): Zipper[B] =
-        fa map f
+      def ap[A, B](fa: => Zipper[A])(f: => Zipper[A => B]): Zipper[B] = fa ap f
+      override def map[A, B](fa: Zipper[A])(f: A => B): Zipper[B] = fa map f
       override def all[A](fa: Zipper[A])(f: A => Boolean) =
         fa.lefts.forall(f) && f(fa.focus) && fa.rights.forall(f)
       override def any[A](fa: Zipper[A])(f: A => Boolean) =

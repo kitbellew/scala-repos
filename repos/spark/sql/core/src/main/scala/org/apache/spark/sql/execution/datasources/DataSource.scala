@@ -143,16 +143,18 @@ case class DataSource(
         val path = caseInsensitiveOptions.getOrElse(
           "path",
           { throw new IllegalArgumentException("'path' is not specified") })
-        val metadataPath =
-          caseInsensitiveOptions.getOrElse("metadataPath", s"$path/_metadata")
+        val metadataPath = caseInsensitiveOptions.getOrElse(
+          "metadataPath",
+          s"$path/_metadata")
 
         val allPaths = caseInsensitiveOptions.get("path")
         val globbedPaths = allPaths.toSeq.flatMap { path =>
           val hdfsPath = new Path(path)
-          val fs =
-            hdfsPath.getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
-          val qualified =
-            hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
+          val fs = hdfsPath.getFileSystem(
+            sqlContext.sparkContext.hadoopConfiguration)
+          val qualified = hdfsPath.makeQualified(
+            fs.getUri,
+            fs.getWorkingDirectory)
           SparkHadoopUtil.get.globPathIfNecessary(qualified)
         }.toArray
 
@@ -228,10 +230,11 @@ case class DataSource(
         val allPaths = caseInsensitiveOptions.get("path") ++ paths
         val globbedPaths = allPaths.flatMap { path =>
           val hdfsPath = new Path(path)
-          val fs =
-            hdfsPath.getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
-          val qualified =
-            hdfsPath.makeQualified(fs.getUri, fs.getWorkingDirectory)
+          val fs = hdfsPath.getFileSystem(
+            sqlContext.sparkContext.hadoopConfiguration)
+          val qualified = hdfsPath.makeQualified(
+            fs.getUri,
+            fs.getWorkingDirectory)
           SparkHadoopUtil.get.globPathIfNecessary(qualified)
         }.toArray
 
@@ -247,12 +250,11 @@ case class DataSource(
           })
         }
 
-        val fileCatalog: FileCatalog =
-          new HDFSFileCatalog(
-            sqlContext,
-            options,
-            globbedPaths,
-            partitionSchema)
+        val fileCatalog: FileCatalog = new HDFSFileCatalog(
+          sqlContext,
+          options,
+          globbedPaths,
+          partitionSchema)
         val dataSchema = userSpecifiedSchema
           .orElse {
             format.inferSchema(
@@ -308,8 +310,8 @@ case class DataSource(
               "path", {
                 throw new IllegalArgumentException("'path' is not specified")
               }))
-          val fs =
-            path.getFileSystem(sqlContext.sparkContext.hadoopConfiguration)
+          val fs = path.getFileSystem(
+            sqlContext.sparkContext.hadoopConfiguration)
           path.makeQualified(fs.getUri, fs.getWorkingDirectory)
         }
 
@@ -361,17 +363,16 @@ case class DataSource(
         // For partitioned relation r, r.schema's column ordering can be different from the column
         // ordering of data.logicalPlan (partition columns are all moved after data column).  This
         // will be adjusted within InsertIntoHadoopFsRelation.
-        val plan =
-          InsertIntoHadoopFsRelation(
-            outputPath,
-            partitionColumns.map(UnresolvedAttribute.quoted),
-            bucketSpec,
-            format,
-            () => Unit, // No existing table needs to be refreshed.
-            options,
-            data.logicalPlan,
-            mode
-          )
+        val plan = InsertIntoHadoopFsRelation(
+          outputPath,
+          partitionColumns.map(UnresolvedAttribute.quoted),
+          bucketSpec,
+          format,
+          () => Unit, // No existing table needs to be refreshed.
+          options,
+          data.logicalPlan,
+          mode
+        )
         sqlContext.executePlan(plan).toRdd
 
       case _ =>

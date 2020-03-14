@@ -49,14 +49,12 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         cases: List[List[TreeMaker]],
         pt: Type,
         matchFailGenOverride: Option[Tree => Tree],
-        unchecked: Boolean): Option[Tree] =
-      None
+        unchecked: Boolean): Option[Tree] = None
 
     // for catch (no need to customize match failure)
     def emitTypeSwitch(
         bindersAndCases: List[(Symbol, List[TreeMaker])],
-        pt: Type): Option[List[CaseDef]] =
-      None
+        pt: Type): Option[List[CaseDef]] = None
 
     abstract class TreeMaker {
       def pos: Position
@@ -130,8 +128,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
         extends TreeMaker {
       val pos = NoPosition
 
-      val localSubstitution =
-        Substitution(prevBinder, gen.mkAttributedStableRef(nextBinder))
+      val localSubstitution = Substitution(
+        prevBinder,
+        gen.mkAttributedStableRef(nextBinder))
       def chainBefore(next: Tree)(casegen: Casegen): Tree = substitution(next)
       override def toString = "S" + localSubstitution
     }
@@ -178,10 +177,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
 
       def emitVars = storedBinders.nonEmpty
 
-      private lazy val (stored, substed) =
-        (subPatBinders, subPatRefs).zipped.partition {
-          case (sym, _) => storedBinders(sym)
-        }
+      private lazy val (stored, substed) = (subPatBinders, subPatRefs).zipped
+        .partition { case (sym, _) => storedBinders(sym) }
 
       protected lazy val localSubstitution: Substitution =
         if (!emitVars) Substitution(subPatBinders, subPatRefs)
@@ -630,10 +627,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
               combineExtractors(altTreeMakers :+ TrivialTreeMaker(
                 casegen.one(mkTRUE)))(casegen)))
 
-          val findAltMatcher =
-            codegenAlt.matcher(EmptyTree, NoSymbol, BooleanTpe)(
-              combinedAlts,
-              Some(x => mkFALSE))
+          val findAltMatcher = codegenAlt.matcher(
+            EmptyTree,
+            NoSymbol,
+            BooleanTpe)(combinedAlts, Some(x => mkFALSE))
           codegenAlt.ifThenElseZero(findAltMatcher, substitution(next))
         }
       }
@@ -719,8 +716,9 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
                     true // SI-7183 don't warn for withFilter's that turn out to be irrefutable.
                   case _ => false
                 }
-                val suppression =
-                  Suppression(suppressExhaustive, supressUnreachable)
+                val suppression = Suppression(
+                  suppressExhaustive,
+                  supressUnreachable)
                 val hasSwitchAnnotation = treeInfo.isSwitchAnnotation(tpt.tpe)
                 // matches with two or fewer cases need not apply for switchiness (if-then-else will do)
                 // `case 1 | 2` is considered as two cases.

@@ -80,8 +80,8 @@ object FaultPosition {
 
   implicit val iso = Iso.hlist(FaultPosition.apply _, FaultPosition.unapply _)
   val schema = "line" :: "column" :: "text" :: HNil
-  implicit val (decomposer, extractor) =
-    IsoSerialization.serialization[FaultPosition](schema)
+  implicit val (decomposer, extractor) = IsoSerialization
+    .serialization[FaultPosition](schema)
 }
 
 sealed trait Fault {
@@ -106,8 +106,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
       with QueryExecutor[N, (Set[Fault], StreamT[N, Slice])] {
 
     type YggConfig <: ShardQueryExecutorConfig
-    protected lazy val queryLogger =
-      LoggerFactory.getLogger("com.precog.bifrost.ShardQueryExecutor")
+    protected lazy val queryLogger = LoggerFactory.getLogger(
+      "com.precog.bifrost.ShardQueryExecutor")
 
     implicit val M: Monad[M]
     private implicit val N: Monad[N] = N0

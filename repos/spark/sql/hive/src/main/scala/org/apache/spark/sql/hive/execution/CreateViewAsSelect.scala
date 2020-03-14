@@ -78,10 +78,11 @@ private[hive] case class CreateViewAsSelect(
   }
 
   private def prepareTable(sqlContext: SQLContext): CatalogTable = {
-    val expandedText = if (sqlContext.conf.canonicalView) {
-      try rebuildViewQueryString(sqlContext)
-      catch { case NonFatal(e) => wrapViewTextWithSelect }
-    } else { wrapViewTextWithSelect }
+    val expandedText =
+      if (sqlContext.conf.canonicalView) {
+        try rebuildViewQueryString(sqlContext)
+        catch { case NonFatal(e) => wrapViewTextWithSelect }
+      } else { wrapViewTextWithSelect }
 
     val viewSchema = {
       if (tableDesc.schema.isEmpty) {
@@ -124,13 +125,14 @@ private[hive] case class CreateViewAsSelect(
   }
 
   private def rebuildViewQueryString(sqlContext: SQLContext): String = {
-    val logicalPlan = if (tableDesc.schema.isEmpty) { child }
-    else {
-      val projectList = childSchema.zip(tableDesc.schema).map {
-        case (attr, col) => Alias(attr, col.name)()
+    val logicalPlan =
+      if (tableDesc.schema.isEmpty) { child }
+      else {
+        val projectList = childSchema.zip(tableDesc.schema).map {
+          case (attr, col) => Alias(attr, col.name)()
+        }
+        sqlContext.executePlan(Project(projectList, child)).analyzed
       }
-      sqlContext.executePlan(Project(projectList, child)).analyzed
-    }
     new SQLBuilder(logicalPlan, sqlContext).toSQL
   }
 

@@ -68,8 +68,8 @@ case class BaseBolt[I, O](
       TopologyContext])
     extends IRichBolt {
 
-  @transient protected lazy val logger: Logger =
-    LoggerFactory.getLogger(getClass)
+  @transient protected lazy val logger: Logger = LoggerFactory.getLogger(
+    getClass)
 
   private[this] val lockedCounters = Externalizer(
     JobCounters.getCountersForJob(jobID).getOrElse(Nil))
@@ -107,9 +107,10 @@ case class BaseBolt[I, O](
       val timeTillNextPeriod = (currentPeriod + 1) * PERIOD_LENGTH_MS - baseTime
 
       if (currentPeriod == lastPeriod) {
-        val maxPerPeriod = if (currentPeriod < endRampPeriod) {
-          ((currentPeriod - startPeriod) * deltaPerPeriod) + lowerBound
-        } else { upperBound }
+        val maxPerPeriod =
+          if (currentPeriod < endRampPeriod) {
+            ((currentPeriod - startPeriod) * deltaPerPeriod) + lowerBound
+          } else { upperBound }
         if (executedThisPeriod > maxPerPeriod) { timeTillNextPeriod }
         else {
           executedThisPeriod = executedThisPeriod + 1
@@ -147,19 +148,19 @@ case class BaseBolt[I, O](
     /**
       * System ticks come with a fixed stream id
       */
-    val curResults = if (!tuple.getSourceStreamId.equals("__tick")) {
-      val tsIn =
-        executor.decoder
+    val curResults =
+      if (!tuple.getSourceStreamId.equals("__tick")) {
+        val tsIn = executor.decoder
           .invert(tuple.getValues)
           .get // Failing to decode here is an ERROR
-      // Don't hold on to the input values
-      clearValues(tuple)
-      if (earlyAck) { collector.ack(tuple) }
-      executor.execute(InputState(tuple), tsIn)
-    } else {
-      collector.ack(tuple)
-      executor.executeTick
-    }
+        // Don't hold on to the input values
+        clearValues(tuple)
+        if (earlyAck) { collector.ack(tuple) }
+        executor.execute(InputState(tuple), tsIn)
+      } else {
+        collector.ack(tuple)
+        executor.executeTick
+      }
 
     curResults.foreach {
       case (tups, res) =>

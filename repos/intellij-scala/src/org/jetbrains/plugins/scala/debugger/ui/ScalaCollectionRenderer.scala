@@ -240,18 +240,19 @@ object ScalaCollectionRenderer {
         value: Value,
         context: EvaluationContext,
         parentDescriptor: NodeDescriptor): Boolean = {
-      val evaluationContext: EvaluationContext =
-        context.createEvaluationContext(value)
+      val evaluationContext: EvaluationContext = context
+        .createEvaluationContext(value)
       try { return nonEmpty(value, context) && hasDefiniteSize(value, context) }
       catch {
         case e: EvaluateException =>
       }
 
       try {
-        val children: Value =
-          evaluateChildren(evaluationContext, parentDescriptor)
-        val defaultChildrenRenderer: ChildrenRenderer =
-          DebugProcessImpl.getDefaultRenderer(value.`type`)
+        val children: Value = evaluateChildren(
+          evaluationContext,
+          parentDescriptor)
+        val defaultChildrenRenderer: ChildrenRenderer = DebugProcessImpl
+          .getDefaultRenderer(value.`type`)
         defaultChildrenRenderer.isExpandable(
           children,
           evaluationContext,
@@ -279,8 +280,9 @@ object ScalaCollectionRenderer {
         val childrenValue: Value = evaluateChildren(
           evaluationContext.createEvaluationContext(value),
           parentDescriptor)
-        val renderer: NodeRenderer =
-          getChildrenRenderer(childrenValue, parentDescriptor)
+        val renderer: NodeRenderer = getChildrenRenderer(
+          childrenValue,
+          parentDescriptor)
         renderer.buildChildren(childrenValue, builder, evaluationContext)
       } catch {
         case e: EvaluateException =>
@@ -296,8 +298,8 @@ object ScalaCollectionRenderer {
     private def getChildrenRenderer(
         childrenValue: Value,
         parentDescriptor: ValueDescriptor): NodeRenderer = {
-      var renderer: NodeRenderer =
-        ExpressionChildrenRenderer.getLastChildrenRenderer(parentDescriptor)
+      var renderer: NodeRenderer = ExpressionChildrenRenderer
+        .getLastChildrenRenderer(parentDescriptor)
       if (renderer == null || childrenValue == null || !renderer.isApplicable(
             childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(

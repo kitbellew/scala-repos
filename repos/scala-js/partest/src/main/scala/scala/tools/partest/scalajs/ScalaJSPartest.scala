@@ -119,17 +119,16 @@ trait ScalaJSSuiteRunner extends SuiteRunner {
     super.runTestsForFiles(kindFiles.filter(shouldUseTest), kind)
   }
 
-  private lazy val listDir =
-    s"/scala/tools/partest/scalajs/$scalaVersion"
+  private lazy val listDir = s"/scala/tools/partest/scalajs/$scalaVersion"
 
-  private lazy val buglistedTestFileNames =
-    readTestList(s"$listDir/BuglistedTests.txt")
+  private lazy val buglistedTestFileNames = readTestList(
+    s"$listDir/BuglistedTests.txt")
 
-  private lazy val blacklistedTestFileNames =
-    readTestList(s"$listDir/BlacklistedTests.txt")
+  private lazy val blacklistedTestFileNames = readTestList(
+    s"$listDir/BlacklistedTests.txt")
 
-  private lazy val whitelistedTestFileNames =
-    readTestList(s"$listDir/WhitelistedTests.txt")
+  private lazy val whitelistedTestFileNames = readTestList(
+    s"$listDir/WhitelistedTests.txt")
 
   private def readTestList(resourceName: String): Set[String] = {
     val source = scala.io.Source.fromURL(getClass.getResource(resourceName))

@@ -34,8 +34,9 @@ trait Binder extends parser.AST {
 
   protected override lazy val LoadId = Identifier(Vector(), "load")
   protected override lazy val RelLoadId = Identifier(Vector(), "relativeLoad")
-  protected override lazy val ExpandGlobId =
-    Identifier(Vector("std", "fs"), "expandGlob")
+  protected override lazy val ExpandGlobId = Identifier(
+    Vector("std", "fs"),
+    "expandGlob")
   protected override lazy val DistinctId = Identifier(Vector(), "distinct")
 
   override def bindNames(tree: Expr) = {
@@ -184,13 +185,14 @@ trait Binder extends parser.AST {
               deprecation <- f.deprecation
             } yield Error(d, DeprecatedFunction(name, deprecation))
 
-            val errors = if (actuals.length == arity) {
-              d.binding = binding
-              Set()
-            } else {
-              d.binding = NullBinding
-              Set(Error(d, IncorrectArity(arity, actuals.length)))
-            }
+            val errors =
+              if (actuals.length == arity) {
+                d.binding = binding
+                Set()
+              } else {
+                d.binding = NullBinding
+                Set(Error(d, IncorrectArity(arity, actuals.length)))
+              }
 
             d.isReduction = env.names(name) match {
               case ReductionBinding(_) => true
@@ -230,8 +232,9 @@ trait Binder extends parser.AST {
       libMorphism2.map(Morphism2Binding) ++
       Set(LoadBinding, RelLoadBinding, DistinctBinding, ExpandGlobBinding)
 
-    val env =
-      Env(Map(), builtIns.map({ b => b.name -> b })(collection.breakOut))
+    val env = Env(
+      Map(),
+      builtIns.map({ b => b.name -> b })(collection.breakOut))
 
     loop(tree, env)
   }
@@ -273,11 +276,10 @@ trait Binder extends parser.AST {
   // TODO arity and types
   case class ReductionBinding(red: Reduction) extends BuiltInBinding {
     val name = Identifier(red.namespace, red.name)
-    override val toString =
-      "<native: %s(%d)>".format(
-        red.name,
-        1
-      ) //assumes all reductions are arity 1
+    override val toString = "<native: %s(%d)>".format(
+      red.name,
+      1
+    ) //assumes all reductions are arity 1
   }
 
   case object DistinctBinding extends BuiltInBinding {

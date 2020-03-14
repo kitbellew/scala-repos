@@ -7,11 +7,9 @@ class AtomicLong(private[this] var value: Long)
 
   final def get(): Long = value
 
-  final def set(newValue: Long): Unit =
-    value = newValue
+  final def set(newValue: Long): Unit = value = newValue
 
-  final def lazySet(newValue: Long): Unit =
-    set(newValue)
+  final def lazySet(newValue: Long): Unit = set(newValue)
 
   final def getAndSet(newValue: Long): Long = {
     val old = value
@@ -30,11 +28,9 @@ class AtomicLong(private[this] var value: Long)
   final def weakCompareAndSet(expect: Long, update: Long): Boolean =
     compareAndSet(expect, update)
 
-  final def getAndIncrement(): Long =
-    getAndAdd(1L)
+  final def getAndIncrement(): Long = getAndAdd(1L)
 
-  final def getAndDecrement(): Long =
-    getAndAdd(-1L)
+  final def getAndDecrement(): Long = getAndAdd(-1L)
 
   @inline final def getAndAdd(delta: Long): Long = {
     val old = value
@@ -42,11 +38,9 @@ class AtomicLong(private[this] var value: Long)
     old
   }
 
-  final def incrementAndGet(): Long =
-    addAndGet(1L)
+  final def incrementAndGet(): Long = addAndGet(1L)
 
-  final def decrementAndGet(): Long =
-    addAndGet(-1L)
+  final def decrementAndGet(): Long = addAndGet(-1L)
 
   @inline final def addAndGet(delta: Long): Long = {
     val newValue = value + delta
@@ -54,8 +48,7 @@ class AtomicLong(private[this] var value: Long)
     newValue
   }
 
-  override def toString(): String =
-    value.toString()
+  override def toString(): String = value.toString()
 
   def intValue(): Int = value.toInt
   def longValue(): Long = value

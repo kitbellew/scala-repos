@@ -72,13 +72,17 @@ class MinMaxScalerSuite
         .createDataFrame(Seq((1, Vectors.dense(1.0, 2.0))))
         .toDF("id", "feature")
       intercept[IllegalArgumentException] {
-        val scaler =
-          new MinMaxScaler().setMin(10).setMax(0).setInputCol("feature")
+        val scaler = new MinMaxScaler()
+          .setMin(10)
+          .setMax(0)
+          .setInputCol("feature")
         scaler.transformSchema(dummyDF.schema)
       }
       intercept[IllegalArgumentException] {
-        val scaler =
-          new MinMaxScaler().setMin(0).setMax(0).setInputCol("feature")
+        val scaler = new MinMaxScaler()
+          .setMin(0)
+          .setMax(0)
+          .setInputCol("feature")
         scaler.transformSchema(dummyDF.schema)
       }
     }
@@ -94,14 +98,15 @@ class MinMaxScalerSuite
   }
 
   test("MinMaxScalerModel read/write") {
-    val instance = new MinMaxScalerModel(
-      "myMinMaxScalerModel",
-      Vectors.dense(-1.0, 0.0),
-      Vectors.dense(1.0, 10.0))
-      .setInputCol("myInputCol")
-      .setOutputCol("myOutputCol")
-      .setMin(-1.0)
-      .setMax(1.0)
+    val instance =
+      new MinMaxScalerModel(
+        "myMinMaxScalerModel",
+        Vectors.dense(-1.0, 0.0),
+        Vectors.dense(1.0, 10.0))
+        .setInputCol("myInputCol")
+        .setOutputCol("myOutputCol")
+        .setMin(-1.0)
+        .setMax(1.0)
     val newInstance = testDefaultReadWrite(instance)
     assert(newInstance.originalMin === instance.originalMin)
     assert(newInstance.originalMax === instance.originalMax)

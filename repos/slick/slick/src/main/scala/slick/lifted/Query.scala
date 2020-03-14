@@ -56,8 +56,7 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * `withFilter, this method only allows `Rep`-valued predicates, so it
     * guards against the accidental use use plain Booleans. */
   def filter[T <: Rep[_]](f: E => T)(
-      implicit wt: CanBeQueryCondition[T]): Query[E, U, C] =
-    withFilter(f)
+      implicit wt: CanBeQueryCondition[T]): Query[E, U, C] = withFilter(f)
   def filterNot[T <: Rep[_]](f: E => T)(
       implicit wt: CanBeQueryCondition[T]): Query[E, U, C] =
     filterHelper(f, node => Library.Not.typed(node.nodeType, node))
@@ -94,8 +93,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       sh: Shape[FlatShapeLevel, O2, U2, _]) = {
     val leftGen, rightGen = new AnonSymbol
     val aliased1 = shaped.encodeRef(Ref(leftGen))
-    val aliased2 =
-      ShapedValue(ol.lift(q2.shaped.value), sh).encodeRef(Ref(rightGen))
+    val aliased2 = ShapedValue(ol.lift(q2.shaped.value), sh)
+      .encodeRef(Ref(rightGen))
     new BaseJoinQuery[E, O2, U, U2, C, E, E2](
       leftGen,
       rightGen,
@@ -116,8 +115,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       ol: OptionLift[E1, O1],
       sh: Shape[FlatShapeLevel, O1, U1, _]) = {
     val leftGen, rightGen = new AnonSymbol
-    val aliased1 =
-      ShapedValue(ol.lift(shaped.value), sh).encodeRef(Ref(leftGen))
+    val aliased1 = ShapedValue(ol.lift(shaped.value), sh)
+      .encodeRef(Ref(leftGen))
     val aliased2 = q2.shaped.encodeRef(Ref(rightGen))
     new BaseJoinQuery[O1, E2, U1, U2, C, E, E2](
       leftGen,
@@ -141,10 +140,10 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       ol2: OptionLift[E2, O2],
       sh2: Shape[FlatShapeLevel, O2, U2, _]) = {
     val leftGen, rightGen = new AnonSymbol
-    val aliased1 =
-      ShapedValue(ol1.lift(shaped.value), sh1).encodeRef(Ref(leftGen))
-    val aliased2 =
-      ShapedValue(ol2.lift(q2.shaped.value), sh2).encodeRef(Ref(rightGen))
+    val aliased1 = ShapedValue(ol1.lift(shaped.value), sh1)
+      .encodeRef(Ref(leftGen))
+    val aliased2 = ShapedValue(ol2.lift(q2.shaped.value), sh2)
+      .encodeRef(Ref(rightGen))
     new BaseJoinQuery[O1, O2, U1, U2, C, E, E2](
       leftGen,
       rightGen,

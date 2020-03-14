@@ -12,15 +12,17 @@ object AtLeastOnceDeliveryCrashSpec {
   class StoppingStrategySupervisor(testProbe: ActorRef) extends Actor {
     import scala.concurrent.duration._
 
-    override val supervisorStrategy =
-      OneForOneStrategy(maxNrOfRetries = 10, withinTimeRange = 10.seconds) {
-        case _: IllegalStateException ⇒ Stop
-        case t ⇒
-          super.supervisorStrategy.decider.applyOrElse(t, (_: Any) ⇒ Escalate)
-      }
+    override val supervisorStrategy = OneForOneStrategy(
+      maxNrOfRetries = 10,
+      withinTimeRange = 10.seconds) {
+      case _: IllegalStateException ⇒ Stop
+      case t ⇒
+        super.supervisorStrategy.decider.applyOrElse(t, (_: Any) ⇒ Escalate)
+    }
 
-    val crashingActor =
-      context.actorOf(Props(new CrashingActor(testProbe)), "CrashingActor")
+    val crashingActor = context.actorOf(
+      Props(new CrashingActor(testProbe)),
+      "CrashingActor")
 
     def receive: Receive = { case msg ⇒ crashingActor forward msg }
   }

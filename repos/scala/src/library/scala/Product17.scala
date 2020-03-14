@@ -62,8 +62,7 @@ object Product17 {
     T14,
     T15,
     T16,
-    T17]] =
-    Some(x)
+    T17]] = Some(x)
 }
 
 /** Product17 is a cartesian product of 17 components.

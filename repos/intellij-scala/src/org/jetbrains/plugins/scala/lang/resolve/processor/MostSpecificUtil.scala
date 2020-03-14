@@ -111,8 +111,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
             implicitCase = true)
       }
     }
-    val (next, r) =
-      nextLayerSpecificGeneric(filterRest.map(update), rest.map(update))
+    val (next, r) = nextLayerSpecificGeneric(
+      filterRest.map(update),
+      rest.map(update))
     (next.map(_.repr), r.map(_.repr))
   }
 
@@ -176,23 +177,22 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   ScMethodType(_, params, _),
                   typeParams) =>
               if (!existential) {
-                val s: ScSubstitutor =
-                  typeParams.foldLeft(ScSubstitutor.empty) {
-                    (subst: ScSubstitutor, tp: TypeParameter) =>
-                      subst.bindT(
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScUndefinedType(
-                          ScalaPsiManager.typeVariable(tp.ptp)))
-                  }
+                val s: ScSubstitutor = typeParams.foldLeft(
+                  ScSubstitutor.empty) {
+                  (subst: ScSubstitutor, tp: TypeParameter) =>
+                    subst.bindT(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                      new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
+                }
                 Left(params.map(p => p.copy(paramType = s.subst(p.paramType))))
               } else {
-                val s: ScSubstitutor =
-                  typeParams.foldLeft(ScSubstitutor.empty) {
-                    (subst: ScSubstitutor, tp: TypeParameter) =>
-                      subst.bindT(
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScTypeVariable(tp.name))
-                  }
+                val s: ScSubstitutor = typeParams.foldLeft(
+                  ScSubstitutor.empty) {
+                  (subst: ScSubstitutor, tp: TypeParameter) =>
+                    subst.bindT(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                      new ScTypeVariable(tp.name))
+                }
                 val arguments = typeParams.toList.map(tp =>
                   new ScExistentialArgument(
                     tp.name,
@@ -201,28 +201,28 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     s.subst(tp.upperType())))
                 Left(
                   params.map(p =>
-                    p.copy(paramType =
-                      ScExistentialType(s.subst(p.paramType), arguments))))
+                    p.copy(paramType = ScExistentialType(
+                      s.subst(p.paramType),
+                      arguments))))
               }
             case ScTypePolymorphicType(internal, typeParams) =>
               if (!existential) {
-                val s: ScSubstitutor =
-                  typeParams.foldLeft(ScSubstitutor.empty) {
-                    (subst: ScSubstitutor, tp: TypeParameter) =>
-                      subst.bindT(
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScUndefinedType(
-                          ScalaPsiManager.typeVariable(tp.ptp)))
-                  }
+                val s: ScSubstitutor = typeParams.foldLeft(
+                  ScSubstitutor.empty) {
+                  (subst: ScSubstitutor, tp: TypeParameter) =>
+                    subst.bindT(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                      new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
+                }
                 Right(s.subst(internal))
               } else {
-                val s: ScSubstitutor =
-                  typeParams.foldLeft(ScSubstitutor.empty) {
-                    (subst: ScSubstitutor, tp: TypeParameter) =>
-                      subst.bindT(
-                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScTypeVariable(tp.name))
-                  }
+                val s: ScSubstitutor = typeParams.foldLeft(
+                  ScSubstitutor.empty) {
+                  (subst: ScSubstitutor, tp: TypeParameter) =>
+                    subst.bindT(
+                      (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
+                      new ScTypeVariable(tp.name))
+                }
                 val arguments = typeParams.toList.map(tp =>
                   new ScExistentialArgument(
                     tp.name,
@@ -283,11 +283,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
               }
             val i: Int =
               if (params1.length > 0) 0.max(length - params1.length) else 0
-            val default: Expression =
-              new Expression(
-                if (params1.length > 0) params1.last.paramType
-                else types.Nothing,
-                elem)
+            val default: Expression = new Expression(
+              if (params1.length > 0) params1.last.paramType else types.Nothing,
+              elem)
             val exprs: Seq[Expression] =
               params1.map(p => new Expression(p.paramType, elem)) ++
                 Seq.fill(i)(default)

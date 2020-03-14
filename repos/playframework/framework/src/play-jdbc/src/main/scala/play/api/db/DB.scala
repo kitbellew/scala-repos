@@ -42,8 +42,7 @@ object DB {
     */
   @deprecated("Inject DBApi into your component", "2.5.0")
   def getDataSource(name: String = "default")(
-      implicit app: Application): DataSource =
-    db.database(name).dataSource
+      implicit app: Application): DataSource = db.database(name).dataSource
 
   /**
     * Execute a block of code, providing a JDBC connection. The connection is
@@ -78,8 +77,7 @@ object DB {
     */
   @deprecated("Inject DBApi into your component", "2.5.0")
   def withTransaction[A](name: String = "default")(block: Connection => A)(
-      implicit app: Application): A =
-    db.database(name).withTransaction(block)
+      implicit app: Application): A = db.database(name).withTransaction(block)
 
   /**
     * Execute a block of code, in the scope of a JDBC transaction.

@@ -619,8 +619,7 @@ trait Path[T <: HList] extends LPPath[T] {
 trait LPPath[T <: HList] extends Dynamic { self: Path[T] =>
   def selectDynamic[H](h: String)(implicit
       segment: Segment[h.type, H, T],
-      dummy: DummyImplicit): Path[segment.Out] =
-    new Path[segment.Out] {}
+      dummy: DummyImplicit): Path[segment.Out] = new Path[segment.Out] {}
 }
 
 object Path extends Path[HNil]

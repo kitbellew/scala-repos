@@ -104,8 +104,9 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
           Fact(20151123, 18, 36, "room2", 25.6)))
       .toDF()
 
-    val cube0 =
-      df0.cube("date", "hour", "minute", "room_name").agg(Map("temp" -> "avg"))
+    val cube0 = df0
+      .cube("date", "hour", "minute", "room_name")
+      .agg(Map("temp" -> "avg"))
     assert(cube0.where("date IS NULL").count > 0)
   }
 

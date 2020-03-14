@@ -116,8 +116,8 @@ final class RandomForestClassifier @Since("1.4.0") (
 
   override protected def train(
       dataset: DataFrame): RandomForestClassificationModel = {
-    val categoricalFeatures: Map[Int, Int] =
-      MetadataUtils.getCategoricalFeatures(dataset.schema($(featuresCol)))
+    val categoricalFeatures: Map[Int, Int] = MetadataUtils
+      .getCategoricalFeatures(dataset.schema($(featuresCol)))
     val numClasses: Int =
       MetadataUtils.getNumClasses(dataset.schema($(labelCol))) match {
         case Some(n: Int) => n
@@ -129,21 +129,14 @@ final class RandomForestClassifier @Since("1.4.0") (
         // TODO: Automatically index labels: SPARK-7126
       }
     val oldDataset: RDD[LabeledPoint] = extractLabeledPoints(dataset)
-    val strategy =
-      super.getOldStrategy(
-        categoricalFeatures,
-        numClasses,
-        OldAlgo.Classification,
-        getOldImpurity)
-    val trees =
-      RandomForest
-        .run(
-          oldDataset,
-          strategy,
-          getNumTrees,
-          getFeatureSubsetStrategy,
-          getSeed)
-        .map(_.asInstanceOf[DecisionTreeClassificationModel])
+    val strategy = super.getOldStrategy(
+      categoricalFeatures,
+      numClasses,
+      OldAlgo.Classification,
+      getOldImpurity)
+    val trees = RandomForest
+      .run(oldDataset, strategy, getNumTrees, getFeatureSubsetStrategy, getSeed)
+      .map(_.asInstanceOf[DecisionTreeClassificationModel])
     val numFeatures = oldDataset.first().features.size
     new RandomForestClassificationModel(trees, numFeatures, numClasses)
   }
@@ -208,8 +201,8 @@ final class RandomForestClassificationModel private[ml] (
     _trees.asInstanceOf[Array[DecisionTreeModel]]
 
   // Note: We may add support for weights (based on tree performance) later on.
-  private lazy val _treeWeights: Array[Double] =
-    Array.fill[Double](numTrees)(1.0)
+  private lazy val _treeWeights: Array[Double] = Array.fill[Double](numTrees)(
+    1.0)
 
   @Since("1.4.0")
   override def treeWeights: Array[Double] = _treeWeights
@@ -283,8 +276,9 @@ final class RandomForestClassificationModel private[ml] (
     *  - Normalize feature importance vector to sum to 1.
     */
   @Since("1.5.0")
-  lazy val featureImportances: Vector =
-    RandomForest.featureImportances(trees, numFeatures)
+  lazy val featureImportances: Vector = RandomForest.featureImportances(
+    trees,
+    numFeatures)
 
   /** (private[ml]) Convert to a model in the old API */
   private[ml] def toOld: OldRandomForestModel = {

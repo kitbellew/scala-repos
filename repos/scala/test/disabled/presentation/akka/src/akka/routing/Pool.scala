@@ -147,11 +147,10 @@ trait RoundRobinSelector {
     val take =
       if (partialFill) math.min(selectionCount, length) else selectionCount
 
-    val set =
-      for (i ← 0 until take) yield {
-        _last = (_last + 1) % length
-        delegates(_last)
-      }
+    val set = for (i ← 0 until take) yield {
+      _last = (_last + 1) % length
+      delegates(_last)
+    }
 
     (set.iterator, set.size)
   }

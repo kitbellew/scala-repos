@@ -68,8 +68,7 @@ trait HfsTapProvider {
   def createHfsTap(
       scheme: Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _],
       path: String,
-      sinkMode: SinkMode): Hfs =
-    new Hfs(scheme, path, sinkMode)
+      sinkMode: SinkMode): Hfs = new Hfs(scheme, path, sinkMode)
 }
 
 private[scalding] object CastFileTap {

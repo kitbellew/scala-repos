@@ -52,8 +52,9 @@ trait PathServiceCombinators
         val service = (request: HttpRequest[A]) => {
           logger.debug("Handling dataPath request " + request.shows)
 
-          val path: Option[String] =
-            request.parameters.get('prefixPath).filter(_ != null)
+          val path: Option[String] = request.parameters
+            .get('prefixPath)
+            .filter(_ != null)
           next.service(request) map { f => (b: B) =>
             f(b, Path(path.getOrElse("")))
           }

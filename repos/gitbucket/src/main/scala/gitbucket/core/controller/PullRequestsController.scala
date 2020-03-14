@@ -55,8 +55,8 @@ trait PullRequestsControllerBase extends ControllerBase {
     with MergeService
     with ProtectedBranchService =>
 
-  private val logger =
-    LoggerFactory.getLogger(classOf[PullRequestsControllerBase])
+  private val logger = LoggerFactory.getLogger(
+    classOf[PullRequestsControllerBase])
 
   val pullRequestForm = mapping(
     "title" -> trim(label("Title", text(required, maxlength(100)))),
@@ -112,14 +112,13 @@ trait PullRequestsControllerBase extends ControllerBase {
           case (issue, pullreq) =>
             using(Git.open(getRepositoryDir(owner, name))) {
               git =>
-                val (commits, diffs) =
-                  getRequestCompareInfo(
-                    owner,
-                    name,
-                    pullreq.commitIdFrom,
-                    owner,
-                    name,
-                    pullreq.commitIdTo)
+                val (commits, diffs) = getRequestCompareInfo(
+                  owner,
+                  name,
+                  pullreq.commitIdFrom,
+                  owner,
+                  name,
+                  pullreq.commitIdTo)
                 html.pullreq(
                   issue,
                   pullreq,
@@ -159,14 +158,20 @@ trait PullRequestsControllerBase extends ControllerBase {
               val hasConflict = LockUtil.lock(s"${owner}/${name}") {
                 checkConflict(owner, name, pullreq.branch, issueId)
               }
-              val hasMergePermission =
-                hasWritePermission(owner, name, context.loginAccount)
-              val branchProtection =
-                getProtectedBranchInfo(owner, name, pullreq.branch)
+              val hasMergePermission = hasWritePermission(
+                owner,
+                name,
+                context.loginAccount)
+              val branchProtection = getProtectedBranchInfo(
+                owner,
+                name,
+                pullreq.branch)
               val mergeStatus = PullRequestService.MergeStatus(
                 hasConflict = hasConflict,
-                commitStatues =
-                  getCommitStatues(owner, name, pullreq.commitIdTo),
+                commitStatues = getCommitStatues(
+                  owner,
+                  name,
+                  pullreq.commitIdTo),
                 branchProtection = branchProtection,
                 branchIsOutOfDate =
                   JGitUtil.getShaByRef(owner, name, pullreq.branch) != Some(
@@ -245,8 +250,10 @@ trait PullRequestsControllerBase extends ControllerBase {
         name = pullreq.requestRepositoryName
         if hasWritePermission(owner, name, context.loginAccount)
       } yield {
-        val branchProtection =
-          getProtectedBranchInfo(owner, name, pullreq.requestBranch)
+        val branchProtection = getProtectedBranchInfo(
+          owner,
+          name,
+          pullreq.requestBranch)
         if (branchProtection.needStatusCheck(loginAccount.userName)) {
           flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
         } else {
@@ -498,10 +505,12 @@ trait PullRequestsControllerBase extends ControllerBase {
 
   get("/:owner/:repository/compare/*...*")(referrersOnly { forkedRepository =>
     val Seq(origin, forked) = multiParams("splat")
-    val (originOwner, originId) =
-      parseCompareIdentifie(origin, forkedRepository.owner)
-    val (forkedOwner, forkedId) =
-      parseCompareIdentifie(forked, forkedRepository.owner)
+    val (originOwner, originId) = parseCompareIdentifie(
+      origin,
+      forkedRepository.owner)
+    val (forkedOwner, forkedId) = parseCompareIdentifie(
+      forked,
+      forkedRepository.owner)
 
     (for (originRepositoryName <- if (originOwner == forkedOwner) {
             // Self repository
@@ -629,10 +638,12 @@ trait PullRequestsControllerBase extends ControllerBase {
   ajaxGet("/:owner/:repository/compare/*...*/mergecheck")(collaboratorsOnly {
     forkedRepository =>
       val Seq(origin, forked) = multiParams("splat")
-      val (originOwner, tmpOriginBranch) =
-        parseCompareIdentifie(origin, forkedRepository.owner)
-      val (forkedOwner, tmpForkedBranch) =
-        parseCompareIdentifie(forked, forkedRepository.owner)
+      val (originOwner, tmpOriginBranch) = parseCompareIdentifie(
+        origin,
+        forkedRepository.owner)
+      val (forkedOwner, tmpForkedBranch) = parseCompareIdentifie(
+        forked,
+        forkedRepository.owner)
 
       (for (originRepositoryName <- if (originOwner == forkedOwner) {
               Some(forkedRepository.name)

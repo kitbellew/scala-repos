@@ -5,15 +5,13 @@ import cats.arrow.NaturalTransformation
 import cats.data.Coproduct
 
 class NaturalTransformationTests extends CatsSuite {
-  val listToOption =
-    new NaturalTransformation[List, Option] {
-      def apply[A](fa: List[A]): Option[A] = fa.headOption
-    }
+  val listToOption = new NaturalTransformation[List, Option] {
+    def apply[A](fa: List[A]): Option[A] = fa.headOption
+  }
 
-  val optionToList =
-    new NaturalTransformation[Option, List] {
-      def apply[A](fa: Option[A]): List[A] = fa.toList
-    }
+  val optionToList = new NaturalTransformation[Option, List] {
+    def apply[A](fa: Option[A]): List[A] = fa.toList
+  }
 
   sealed trait Test1Algebra[A] {
     def v: A

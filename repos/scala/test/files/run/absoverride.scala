@@ -16,8 +16,7 @@ class StringIterator(s: String) extends AbsIterator {
 }
 
 trait SyncIterator extends AbsIterator {
-  abstract override def hasNext: Boolean =
-    synchronized(super.hasNext)
+  abstract override def hasNext: Boolean = synchronized(super.hasNext)
   abstract override def next: T =
     synchronized {
       println("<sync>"); val x = super.next; println("</sync>"); x

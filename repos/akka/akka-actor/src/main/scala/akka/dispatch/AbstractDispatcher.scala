@@ -419,23 +419,22 @@ class ThreadPoolExecutorConfigurator(
       config: Config,
       prerequisites: DispatcherPrerequisites): ThreadPoolConfigBuilder = {
     import akka.util.Helpers.ConfigOps
-    val builder =
-      ThreadPoolConfigBuilder(ThreadPoolConfig())
-        .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
-        .setAllowCoreThreadTimeout(config getBoolean "allow-core-timeout")
-        .configure(Some(config getInt "task-queue-size") flatMap {
-          case size if size > 0 ⇒
-            Some(config getString "task-queue-type") map {
-              case "array" ⇒
-                ThreadPoolConfig
-                  .arrayBlockingQueue(size, false) //TODO config fairness?
-              case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
-              case x ⇒
-                throw new IllegalArgumentException(
-                  "[%s] is not a valid task-queue-type [array|linked]!" format x)
-            } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒ q.setQueueFactory(qf) }
-          case _ ⇒ None
-        })
+    val builder = ThreadPoolConfigBuilder(ThreadPoolConfig())
+      .setKeepAliveTime(config.getMillisDuration("keep-alive-time"))
+      .setAllowCoreThreadTimeout(config getBoolean "allow-core-timeout")
+      .configure(Some(config getInt "task-queue-size") flatMap {
+        case size if size > 0 ⇒
+          Some(config getString "task-queue-type") map {
+            case "array" ⇒
+              ThreadPoolConfig
+                .arrayBlockingQueue(size, false) //TODO config fairness?
+            case "" | "linked" ⇒ ThreadPoolConfig.linkedBlockingQueue(size)
+            case x ⇒
+              throw new IllegalArgumentException(
+                "[%s] is not a valid task-queue-type [array|linked]!" format x)
+          } map { qf ⇒ (q: ThreadPoolConfigBuilder) ⇒ q.setQueueFactory(qf) }
+        case _ ⇒ None
+      })
 
     if (config.getString("fixed-pool-size") == "off")
       builder

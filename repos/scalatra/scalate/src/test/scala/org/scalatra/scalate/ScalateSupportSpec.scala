@@ -73,13 +73,13 @@ class ScalateSupportSpec extends ScalatraSpec {
         layoutTemplate("/urlGeneration.jade")
       }
 
-      val urlGenerationWithParams =
-        get("/url-generation-with-params/:a/vs/:b") {
-          layoutTemplate(
-            "/urlGenerationWithParams.jade",
-            ("a" -> params("a")),
-            ("b" -> params("b")))
-        }
+      val urlGenerationWithParams = get(
+        "/url-generation-with-params/:a/vs/:b") {
+        layoutTemplate(
+          "/urlGenerationWithParams.jade",
+          ("a" -> params("a")),
+          ("b" -> params("b")))
+      }
 
       get("/legacy-view-path") { jade("legacy") }
 

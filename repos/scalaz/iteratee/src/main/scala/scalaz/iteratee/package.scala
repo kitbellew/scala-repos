@@ -4,11 +4,9 @@ import Id._
 
 package object iteratee {
 
-  type Step[E, A] =
-    StepT[E, Id, A]
+  type Step[E, A] = StepT[E, Id, A]
 
-  type Iteratee[E, A] =
-    IterateeT[E, Id, A]
+  type Iteratee[E, A] = IterateeT[E, Id, A]
 
   object Iteratee
       extends IterateeFunctions
@@ -22,13 +20,10 @@ package object iteratee {
     def apply[E, A](s: Step[E, A]): Iteratee[E, A] = iteratee(s)
   }
 
-  type Enumerator[E] =
-    EnumeratorT[E, Id]
+  type Enumerator[E] = EnumeratorT[E, Id]
 
-  type Enumeratee[O, I] =
-    EnumerateeT[O, I, Id]
+  type Enumeratee[O, I] = EnumerateeT[O, I, Id]
 
-  type >@>[E, A] =
-    Iteratee[E, A]
+  type >@>[E, A] = Iteratee[E, A]
 
 }

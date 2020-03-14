@@ -25,8 +25,7 @@ abstract class HoconFileSetTestCase(subpath: String)
 
   protected def transform(data: Seq[String]): String
 
-  protected def preprocessData(parts: Seq[String]): Seq[String] =
-    parts
+  protected def preprocessData(parts: Seq[String]): Seq[String] = parts
 
   private def trimNewLines(str: String) = {
     val preTrimmed = str.substring(str.prefixLength(_ == '\n'))
@@ -85,6 +84,5 @@ abstract class HoconFileSetTestCase(subpath: String)
   protected def inWriteCommandAction[T](code: => T): T =
     extensions.inWriteCommandAction(getProject)(code)
 
-  protected def inReadAction[T](code: => T): T =
-    extensions.inReadAction(code)
+  protected def inReadAction[T](code: => T): T = extensions.inReadAction(code)
 }

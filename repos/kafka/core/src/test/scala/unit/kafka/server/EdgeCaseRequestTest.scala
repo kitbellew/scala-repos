@@ -132,8 +132,11 @@ class EdgeCaseRequestTest extends KafkaServerTestHarness {
       servers = servers)
 
     val serializedBytes = {
-      val headerBytes =
-        requestHeaderBytes(ApiKeys.PRODUCE.id, 2, null, correlationId)
+      val headerBytes = requestHeaderBytes(
+        ApiKeys.PRODUCE.id,
+        2,
+        null,
+        correlationId)
       val messageBytes = "message".getBytes
       val request = new ProduceRequest(
         1,

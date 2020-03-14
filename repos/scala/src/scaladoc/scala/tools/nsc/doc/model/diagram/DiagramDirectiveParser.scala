@@ -212,8 +212,10 @@ trait DiagramDirectiveParser {
             .replaceAll("\\*", ".*") + "$"
 
         // separate entries:
-        val entries =
-          directives.foldRight("")(_ + " " + _).split(",").map(_.trim)
+        val entries = directives
+          .foldRight("")(_ + " " + _)
+          .split(",")
+          .map(_.trim)
         for (entry <- entries) entry match {
           case "hideDiagram" =>
             hideDiagram0 = true
@@ -230,18 +232,18 @@ trait DiagramDirectiveParser {
           case HideNodesRegex(last) =>
             val matcher = NodeSpecPattern.matcher(entry)
             while (matcher.find()) {
-              val classPattern =
-                Pattern.compile(preparePattern(matcher.group()))
+              val classPattern = Pattern.compile(
+                preparePattern(matcher.group()))
               hideNodesFilter0 ::= classPattern
             }
           case HideEdgesRegex(last) =>
             val matcher = NodeSpecPattern.matcher(entry)
             while (matcher.find()) {
-              val class1Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
+              val class1Pattern = Pattern.compile(
+                preparePattern(matcher.group()))
               assert(matcher.find()) // it's got to be there, just matched it!
-              val class2Pattern =
-                Pattern.compile(preparePattern(matcher.group()))
+              val class2Pattern = Pattern.compile(
+                preparePattern(matcher.group()))
               hideEdgesFilter0 ::= ((class1Pattern, class2Pattern))
             }
           case "" =>

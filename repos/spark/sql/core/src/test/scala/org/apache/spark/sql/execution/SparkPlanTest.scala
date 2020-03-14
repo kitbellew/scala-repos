@@ -160,8 +160,7 @@ object SparkPlanTest {
       try { executePlan(expectedOutputPlan, sqlContext) }
       catch {
         case NonFatal(e) =>
-          val errorMessage =
-            s"""
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan to calculate expected answer:
              | $expectedOutputPlan
              | == Exception ==
@@ -175,8 +174,7 @@ object SparkPlanTest {
       try { executePlan(outputPlan, sqlContext) }
       catch {
         case NonFatal(e) =>
-          val errorMessage =
-            s"""
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan:
              | $outputPlan
              | == Exception ==
@@ -221,8 +219,7 @@ object SparkPlanTest {
       try { executePlan(outputPlan, sqlContext) }
       catch {
         case NonFatal(e) =>
-          val errorMessage =
-            s"""
+          val errorMessage = s"""
              | Exception thrown while executing Spark plan:
              | $outputPlan
              | == Exception ==

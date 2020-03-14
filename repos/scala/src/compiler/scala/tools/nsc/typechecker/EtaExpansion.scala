@@ -69,13 +69,14 @@ trait EtaExpansion { self: Analyzer =>
           val vname: Name = freshName()
           // Problem with ticket #2351 here
           defs += atPos(tree.pos) {
-            val rhs = if (byName) {
-              val res = typer.typed(Function(List(), tree))
-              new ChangeOwnerTraverser(
-                typer.context.owner,
-                res.symbol) traverse tree // SI-6274
-              res
-            } else tree
+            val rhs =
+              if (byName) {
+                val res = typer.typed(Function(List(), tree))
+                new ChangeOwnerTraverser(
+                  typer.context.owner,
+                  res.symbol) traverse tree // SI-6274
+                res
+              } else tree
             ValDef(Modifiers(SYNTHETIC), vname.toTermName, TypeTree(), rhs)
           }
           atPos(tree.pos.focus) {

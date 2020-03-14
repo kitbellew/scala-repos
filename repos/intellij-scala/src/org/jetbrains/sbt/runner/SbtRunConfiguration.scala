@@ -108,8 +108,9 @@ class SbtRunConfiguration(
 
     def createJavaParameters(): JavaParameters = {
       val params: JavaParameters = new JavaParameters
-      val jdk: Sdk =
-        JavaParametersUtil.createProjectJdk(configuration.getProject, null)
+      val jdk: Sdk = JavaParametersUtil.createProjectJdk(
+        configuration.getProject,
+        null)
       try {
         jdk.getSdkType match {
           case sdkType: AndroidSdkType =>
@@ -126,8 +127,8 @@ class SbtRunConfiguration(
         configuration.getProject,
         JavaParameters.JDK_ONLY,
         jdk)
-      val sbtSystemSettings: SbtSystemSettings =
-        SbtSystemSettings.getInstance(configuration.getProject)
+      val sbtSystemSettings: SbtSystemSettings = SbtSystemSettings.getInstance(
+        configuration.getProject)
       if (sbtSystemSettings.getCustomLauncherEnabled) {
         params.getClassPath.add(sbtSystemSettings.getCustomLauncherPath)
         params.setMainClass(

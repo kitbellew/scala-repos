@@ -67,18 +67,16 @@ class RSIIndicator(rsiPeriod: Int = 14) extends BaseIndicator {
   private def calcRS(
       logPrice: Series[DateTime, Double]): Series[DateTime, Double] = {
     //Positive and Negative Vecs
-    val posSeries =
-      logPrice.mapValues[Double]((x: Double) => if (x > 0) x else 0)
-    val negSeries =
-      logPrice.mapValues[Double]((x: Double) => if (x < 0) x else 0)
+    val posSeries = logPrice.mapValues[Double]((x: Double) =>
+      if (x > 0) x else 0)
+    val negSeries = logPrice.mapValues[Double]((x: Double) =>
+      if (x < 0) x else 0)
 
     //Get the sum of positive/negative Frame
-    val avgPosSeries =
-      posSeries
-        .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
-    val avgNegSeries =
-      negSeries
-        .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
+    val avgPosSeries = posSeries
+      .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
+    val avgNegSeries = negSeries
+      .rolling[Double](rsiPeriod, (f: Series[DateTime, Double]) => f.mean)
 
     val rsSeries = avgPosSeries / avgNegSeries
     rsSeries
@@ -88,8 +86,8 @@ class RSIIndicator(rsiPeriod: Int = 14) extends BaseIndicator {
   def getTraining(
       logPrice: Series[DateTime, Double]): Series[DateTime, Double] = {
     val rsSeries = calcRS(getRet(logPrice))
-    val rsiSeries =
-      rsSeries.mapValues[Double]((x: Double) => 100 - (100 / (1 + x)))
+    val rsiSeries = rsSeries.mapValues[Double]((x: Double) =>
+      100 - (100 / (1 + x)))
 
     // Fill in first 14 days offset with 50 to maintain results
     rsiSeries.reindex(logPrice.rowIx).fillNA(_ => 50.0)

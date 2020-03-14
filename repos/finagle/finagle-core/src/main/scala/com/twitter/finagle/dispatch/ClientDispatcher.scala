@@ -18,15 +18,13 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
     statsReceiver: StatsReceiver)
     extends Service[Req, Rep] {
 
-  def this(trans: Transport[In, Out]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[In, Out]) = this(trans, NullStatsReceiver)
 
   private[this] val semaphore = new AsyncSemaphore(1)
 
-  private[this] val queueSize =
-    statsReceiver.scope("serial").addGauge("queue_size") {
-      semaphore.numWaiters
-    }
+  private[this] val queueSize = statsReceiver
+    .scope("serial")
+    .addGauge("queue_size") { semaphore.numWaiters }
 
   private[this] val localAddress: InetSocketAddress = trans.localAddress match {
     case ia: InetSocketAddress => ia
@@ -118,8 +116,7 @@ class SerialClientDispatcher[Req, Rep](
 
   import GenSerialClientDispatcher.wrapWriteException
 
-  def this(trans: Transport[Req, Rep]) =
-    this(trans, NullStatsReceiver)
+  def this(trans: Transport[Req, Rep]) = this(trans, NullStatsReceiver)
 
   private[this] val readTheTransport: Unit => Future[Rep] = _ => trans.read()
 

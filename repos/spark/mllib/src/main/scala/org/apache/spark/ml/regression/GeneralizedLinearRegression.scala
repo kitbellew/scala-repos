@@ -213,8 +213,9 @@ class GeneralizedLinearRegression @Since("2.0.0") (
   override protected def train(
       dataset: DataFrame): GeneralizedLinearRegressionModel = {
     val familyObj = Family.fromName($(family))
-    val linkObj = if (isDefined(link)) { Link.fromName($(link)) }
-    else { familyObj.defaultLink }
+    val linkObj =
+      if (isDefined(link)) { Link.fromName($(link)) }
+      else { familyObj.defaultLink }
     val familyAndLink = new FamilyAndLink(familyObj, linkObj)
 
     val numFeatures = dataset
@@ -257,8 +258,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
           wlsModel.intercept)
           .setParent(this))
       // Handle possible missing or invalid prediction columns
-      val (summaryModel, predictionColName) =
-        model.findSummaryModelAndPredictionCol()
+      val (summaryModel, predictionColName) = model
+        .findSummaryModelAndPredictionCol()
       val trainingSummary = new GeneralizedLinearRegressionSummary(
         summaryModel.transform(dataset),
         predictionColName,
@@ -269,8 +270,10 @@ class GeneralizedLinearRegression @Since("2.0.0") (
     }
 
     // Fit Generalized Linear Model by iteratively reweighted least squares (IRLS).
-    val initialModel =
-      familyAndLink.initialize(instances, $(fitIntercept), $(regParam))
+    val initialModel = familyAndLink.initialize(
+      instances,
+      $(fitIntercept),
+      $(regParam))
     val optimizer = new IterativelyReweightedLeastSquares(
       initialModel,
       familyAndLink.reweightFunc,
@@ -287,8 +290,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
         irlsModel.intercept)
         .setParent(this))
     // Handle possible missing or invalid prediction columns
-    val (summaryModel, predictionColName) =
-      model.findSummaryModelAndPredictionCol()
+    val (summaryModel, predictionColName) = model
+      .findSummaryModelAndPredictionCol()
     val trainingSummary = new GeneralizedLinearRegressionSummary(
       summaryModel.transform(dataset),
       predictionColName,
@@ -329,12 +332,12 @@ object GeneralizedLinearRegression
   )
 
   /** Set of family names that GeneralizedLinearRegression supports. */
-  private[ml] lazy val supportedFamilyNames =
-    supportedFamilyAndLinkPairs.map(_._1.name)
+  private[ml] lazy val supportedFamilyNames = supportedFamilyAndLinkPairs.map(
+    _._1.name)
 
   /** Set of link names that GeneralizedLinearRegression supports. */
-  private[ml] lazy val supportedLinkNames =
-    supportedFamilyAndLinkPairs.map(_._2.name)
+  private[ml] lazy val supportedLinkNames = supportedFamilyAndLinkPairs.map(
+    _._2.name)
 
   private[ml] val epsilon: Double = 1e-16
 
@@ -363,12 +366,13 @@ object GeneralizedLinearRegression
         Instance(eta, instance.weight, instance.features)
       }
       // TODO: Make standardizeFeatures and standardizeLabel configurable.
-      val initialModel = new WeightedLeastSquares(
-        fitIntercept,
-        regParam,
-        standardizeFeatures = true,
-        standardizeLabel = true)
-        .fit(newInstances)
+      val initialModel =
+        new WeightedLeastSquares(
+          fitIntercept,
+          regParam,
+          standardizeFeatures = true,
+          standardizeLabel = true)
+          .fit(newInstances)
       initialModel
     }
 
@@ -729,8 +733,9 @@ class GeneralizedLinearRegressionModel private[ml] (
   import GeneralizedLinearRegression._
 
   lazy val familyObj = Family.fromName($(family))
-  lazy val linkObj = if (isDefined(link)) { Link.fromName($(link)) }
-  else { familyObj.defaultLink }
+  lazy val linkObj =
+    if (isDefined(link)) { Link.fromName($(link)) }
+    else { familyObj.defaultLink }
   lazy val familyAndLink = new FamilyAndLink(familyObj, linkObj)
 
   override protected def predict(features: Vector): Double = {
@@ -874,18 +879,19 @@ class GeneralizedLinearRegressionSummary private[regression] (
   import GeneralizedLinearRegression._
 
   private lazy val family = Family.fromName(model.getFamily)
-  private lazy val link = if (model.isDefined(model.getParam("link"))) {
-    Link.fromName(model.getLink)
-  } else { family.defaultLink }
+  private lazy val link =
+    if (model.isDefined(model.getParam("link"))) {
+      Link.fromName(model.getLink)
+    } else { family.defaultLink }
 
   /** Number of instances in DataFrame predictions */
   private lazy val numInstances: Long = predictions.count()
 
   /** The numeric rank of the fitted linear model */
   @Since("2.0.0")
-  lazy val rank: Long = if (model.getFitIntercept) {
-    model.coefficients.size + 1
-  } else { model.coefficients.size }
+  lazy val rank: Long =
+    if (model.getFitIntercept) { model.coefficients.size + 1 }
+    else { model.coefficients.size }
 
   /** Degrees of freedom */
   @Since("2.0.0")
@@ -897,9 +903,9 @@ class GeneralizedLinearRegressionSummary private[regression] (
 
   /** The residual degrees of freedom for the null model */
   @Since("2.0.0")
-  lazy val residualDegreeOfFreedomNull: Long = if (model.getFitIntercept) {
-    numInstances - 1
-  } else { numInstances }
+  lazy val residualDegreeOfFreedomNull: Long =
+    if (model.getFitIntercept) { numInstances - 1 }
+    else { numInstances }
 
   private lazy val devianceResiduals: DataFrame = {
     val drUDF = udf { (y: Double, mu: Double, weight: Double) =>
@@ -967,11 +973,13 @@ class GeneralizedLinearRegressionSummary private[regression] (
   lazy val nullDeviance: Double = {
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
-    val wtdmu: Double = if (model.getFitIntercept) {
-      val agg =
-        predictions.agg(sum(w.multiply(col(model.getLabelCol))), sum(w)).first()
-      agg.getDouble(0) / agg.getDouble(1)
-    } else { link.unlink(0.0) }
+    val wtdmu: Double =
+      if (model.getFitIntercept) {
+        val agg = predictions
+          .agg(sum(w.multiply(col(model.getLabelCol))), sum(w))
+          .first()
+        agg.getDouble(0) / agg.getDouble(1)
+      } else { link.unlink(0.0) }
     predictions
       .select(col(model.getLabelCol), w)
       .rdd
@@ -1046,9 +1054,10 @@ class GeneralizedLinearRegressionSummary private[regression] (
     */
   @Since("2.0.0")
   lazy val tValues: Array[Double] = {
-    val estimate = if (model.getFitIntercept) {
-      Array.concat(model.coefficients.toArray, Array(model.intercept))
-    } else { model.coefficients.toArray }
+    val estimate =
+      if (model.getFitIntercept) {
+        Array.concat(model.coefficients.toArray, Array(model.intercept))
+      } else { model.coefficients.toArray }
     estimate.zip(coefficientStandardErrors).map { x => x._1 / x._2 }
   }
 

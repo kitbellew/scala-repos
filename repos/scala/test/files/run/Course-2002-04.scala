@@ -8,10 +8,10 @@ object M0 {
     if (xs.isEmpty) xs
     else {
       val pivot: a = xs.head;
-      val smaller: List[a] =
-        quicksort(less)(xs.tail.filter(elem => less(elem, pivot)));
-      val greaterOrEqual: List[a] =
-        quicksort(less)(xs.tail.filter(elem => !less(elem, pivot)));
+      val smaller: List[a] = quicksort(less)(
+        xs.tail.filter(elem => less(elem, pivot)));
+      val greaterOrEqual: List[a] = quicksort(less)(
+        xs.tail.filter(elem => !less(elem, pivot)));
       smaller ::: List(pivot) ::: greaterOrEqual
     }
   }

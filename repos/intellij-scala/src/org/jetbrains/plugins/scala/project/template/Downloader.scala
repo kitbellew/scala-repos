@@ -30,8 +30,10 @@ trait Downloader {
     usingTempFile("sbt-commands") { file =>
       writeLinesTo(file, sbtCommandsFor(version): _*)
       usingTempDirectory("sbt-project") { directory =>
-        val process =
-          Runtime.getRuntime.exec(osCommandsFor(file).toArray, null, directory)
+        val process = Runtime.getRuntime.exec(
+          osCommandsFor(file).toArray,
+          null,
+          directory)
 
         val listenerAdapter = new ProcessAdapter {
           override def onTextAvailable(

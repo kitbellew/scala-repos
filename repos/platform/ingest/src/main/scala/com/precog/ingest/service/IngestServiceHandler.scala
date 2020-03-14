@@ -262,8 +262,8 @@ class IngestServiceHandler(
                         message) map { _ =>
                         HttpResponse[JValue](
                           BadRequest,
-                          content =
-                            Some(JObject("errors" -> JArray(JString(reason)))))
+                          content = Some(
+                            JObject("errors" -> JArray(JString(reason)))))
                       }
 
                     case StreamingResult(ingested, None) =>

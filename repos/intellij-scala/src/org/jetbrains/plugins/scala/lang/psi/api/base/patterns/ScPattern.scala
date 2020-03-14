@@ -222,8 +222,8 @@ trait ScPattern extends ScalaPsiElement {
               classOf[ScTemplateDefinition])
             clazz match {
               case clazz: ScTemplateDefinition =>
-                undefSubst =
-                  undefSubst.followed(new ScSubstitutor(ScThisType(clazz)))
+                undefSubst = undefSubst.followed(
+                  new ScSubstitutor(ScThisType(clazz)))
               case _ =>
             }
             val firstParameterType =
@@ -326,14 +326,15 @@ trait ScPattern extends ScalaPsiElement {
         val types = params
           .map(_.getType(TypingContext.empty).getOrAny)
           .map(undefSubst.subst)
-        val args = if (types.nonEmpty && params.last.isVarArgs) {
-          val lastType = types.last
-          val tp = ScalaPsiElementFactory.createTypeFromText(
-            s"scala.collection.Seq[${lastType.canonicalText}]",
-            cl,
-            cl)
-          types.dropRight(1) :+ tp
-        } else types
+        val args =
+          if (types.nonEmpty && params.last.isVarArgs) {
+            val lastType = types.last
+            val tp = ScalaPsiElementFactory.createTypeFromText(
+              s"scala.collection.Seq[${lastType.canonicalText}]",
+              cl,
+              cl)
+            types.dropRight(1) :+ tp
+          } else types
         if (argIndex < args.length) Some(args(argIndex)) else None
       case _ => None
     }
@@ -411,10 +412,9 @@ trait ScPattern extends ScalaPsiElement {
               this match {
                 case n: ScNamingPattern
                     if n.getLastChild.isInstanceOf[ScSeqWildcard] =>
-                  val seqClass: Option[PsiClass] =
-                    ScalaPsiManager
-                      .instance(getProject)
-                      .getCachedClass(getResolveScope, "scala.collection.Seq")
+                  val seqClass: Option[PsiClass] = ScalaPsiManager
+                    .instance(getProject)
+                    .getCachedClass(getResolveScope, "scala.collection.Seq")
                   seqClass.map { seqClass =>
                     ScParameterizedType(
                       ScDesignatorType(seqClass),
@@ -553,8 +553,8 @@ object ScPattern {
         case _                                   => return Seq.empty
       }
 
-      val receiverType =
-        findMember("get", returnType, place).getOrElse(return Seq.empty)
+      val receiverType = findMember("get", returnType, place).getOrElse(
+        return Seq.empty)
       extractPossibleProductParts(receiverType, place, isOneArgCaseClass)
     }
 

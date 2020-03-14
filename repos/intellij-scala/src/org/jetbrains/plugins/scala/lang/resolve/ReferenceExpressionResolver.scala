@@ -108,8 +108,8 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
       else reference.refName
 
     if (name == ScImplicitlyConvertible.IMPLICIT_REFERENCE_NAME) {
-      val data =
-        reference.getUserData(ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
+      val data = reference.getUserData(
+        ScImplicitlyConvertible.FAKE_RESOLVE_RESULT_KEY)
       if (data != null) return Array(data)
     }
 
@@ -150,8 +150,9 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
 
       var result: Array[ResolveResult] = Array.empty
       if (shapesOnly) {
-        result =
-          reference.doResolve(reference, processor(smartProcessor = false))
+        result = reference.doResolve(
+          reference,
+          processor(smartProcessor = false))
       } else {
         val candidatesS =
           processor(smartProcessor =
@@ -163,8 +164,9 @@ class ReferenceExpressionResolver(shapesOnly: Boolean)
           // so shape resolve return this wrong result
           // however there is implicit conversion with right argument
           // this is ugly, but it can improve performance
-          result =
-            reference.doResolve(reference, processor(smartProcessor = false))
+          result = reference.doResolve(
+            reference,
+            processor(smartProcessor = false))
         } else { result = candidatesS.toArray }
       }
       if (result.isEmpty && reference.isAssignmentOperator) {

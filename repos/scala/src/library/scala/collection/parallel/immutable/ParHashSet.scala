@@ -209,8 +209,11 @@ private[immutable] abstract class HashSetCombiner[T]
         while (i < chunksz) {
           val v = chunkarr(i).asInstanceOf[T]
           val hc = trie.computeHash(v)
-          trie =
-            trie.updated0(v, hc, rootbits) // internal API, private[collection]
+          trie = trie.updated0(
+            v,
+            hc,
+            rootbits
+          ) // internal API, private[collection]
           i += 1
         }
         i = 0

@@ -53,13 +53,13 @@ private[akka] object FanIn {
   abstract class InputBunch(inputCount: Int, bufferSize: Int, pump: Pump) {
     private var allCancelled = false
 
-    private val inputs: Array[BatchingInputBuffer] =
-      Array.tabulate(inputCount) { i ⇒
-        new BatchingInputBuffer(bufferSize, pump) {
-          override protected def onError(e: Throwable): Unit =
-            InputBunch.this.onError(i, e)
-        }
+    private val inputs: Array[BatchingInputBuffer] = Array.tabulate(
+      inputCount) { i ⇒
+      new BatchingInputBuffer(bufferSize, pump) {
+        override protected def onError(e: Throwable): Unit =
+          InputBunch.this.onError(i, e)
       }
+    }
 
     private[this] final val states = Array.ofDim[State](inputCount)
     private var markCount = 0
@@ -103,8 +103,7 @@ private[akka] object FanIn {
     private[this] final def marked(index: Int, on: Boolean): Unit =
       setState(index, Marked, on)
 
-    override def toString: String =
-      s"""|InputBunch
+    override def toString: String = s"""|InputBunch
           |  marked:    ${states.iterator.map(marked(_)).mkString(", ")}
           |  pending:   ${states.iterator.map(pending(_)).mkString(", ")}
           |  depleted:  ${states.iterator.map(depleted(_)).mkString(", ")}
@@ -212,8 +211,7 @@ private[akka] object FanIn {
       elem
     }
 
-    def dequeueAndYield(): Any =
-      dequeueAndYield(idToDequeue())
+    def dequeueAndYield(): Any = dequeueAndYield(idToDequeue())
 
     def dequeueAndYield(id: Int): Any = {
       preferredId = id + 1

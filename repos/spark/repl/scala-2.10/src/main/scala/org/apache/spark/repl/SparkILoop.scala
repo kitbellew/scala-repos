@@ -825,8 +825,9 @@ class SparkILoop(
       if (f.exists) {
         added = true
         addedClasspath = ClassPath.join(addedClasspath, f.path)
-        totalClasspath =
-          ClassPath.join(settings.classpath.value, addedClasspath)
+        totalClasspath = ClassPath.join(
+          settings.classpath.value,
+          addedClasspath)
         intp.addUrlsToClassPath(f.toURI.toURL)
         sparkContext.addJar(f.toURI.toURL.getPath)
       }
@@ -1039,8 +1040,8 @@ class SparkILoop(
             case x                   => x
           }
       }
-      lazy val tagOfSparkIMain =
-        tagOfStaticClass[org.apache.spark.repl.SparkIMain]
+      lazy val tagOfSparkIMain = tagOfStaticClass[
+        org.apache.spark.repl.SparkIMain]
       // Bind intp somewhere out of the regular namespace where
       // we can get at it in generated code.
       addThunk(

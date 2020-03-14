@@ -29,16 +29,26 @@ import org.apache.spark.unsafe.types.UTF8String
 
 private[columnar] class ColumnStatisticsSchema(a: Attribute)
     extends Serializable {
-  val upperBound =
-    AttributeReference(a.name + ".upperBound", a.dataType, nullable = true)()
-  val lowerBound =
-    AttributeReference(a.name + ".lowerBound", a.dataType, nullable = true)()
-  val nullCount =
-    AttributeReference(a.name + ".nullCount", IntegerType, nullable = false)()
-  val count =
-    AttributeReference(a.name + ".count", IntegerType, nullable = false)()
-  val sizeInBytes =
-    AttributeReference(a.name + ".sizeInBytes", LongType, nullable = false)()
+  val upperBound = AttributeReference(
+    a.name + ".upperBound",
+    a.dataType,
+    nullable = true)()
+  val lowerBound = AttributeReference(
+    a.name + ".lowerBound",
+    a.dataType,
+    nullable = true)()
+  val nullCount = AttributeReference(
+    a.name + ".nullCount",
+    IntegerType,
+    nullable = false)()
+  val count = AttributeReference(
+    a.name + ".count",
+    IntegerType,
+    nullable = false)()
+  val sizeInBytes = AttributeReference(
+    a.name + ".sizeInBytes",
+    LongType,
+    nullable = false)()
 
   val schema = Seq(lowerBound, upperBound, nullCount, count, sizeInBytes)
 }

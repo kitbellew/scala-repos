@@ -44,8 +44,8 @@ import org.jetbrains.plugins.scala.util.ScalaUtils
 trait IntroduceExpressions {
   this: ScalaIntroduceVariableHandler =>
 
-  val INTRODUCE_VARIABLE_REFACTORING_NAME =
-    ScalaBundle.message("introduce.variable.title")
+  val INTRODUCE_VARIABLE_REFACTORING_NAME = ScalaBundle.message(
+    "introduce.variable.title")
 
   def invokeExpression(
       project: Project,
@@ -82,8 +82,13 @@ trait IntroduceExpressions {
       val fileEncloser = ScalaRefactoringUtil.fileEncloser(startOffset, file)
       val occurrences: Array[TextRange] = ScalaRefactoringUtil
         .getOccurrenceRanges(ScalaRefactoringUtil.unparExpr(expr), fileEncloser)
-      val validator =
-        ScalaVariableValidator(this, project, editor, file, expr, occurrences)
+      val validator = ScalaVariableValidator(
+        this,
+        project,
+        editor,
+        file,
+        expr,
+        occurrences)
 
       def runWithDialog() {
         val dialog = getDialog(
@@ -122,8 +127,9 @@ trait IntroduceExpressions {
           def pass(replaceChoice: OccurrencesChooser.ReplaceChoice) {
             val replaceAll =
               OccurrencesChooser.ReplaceChoice.NO != replaceChoice
-            val suggestedNames: Array[String] =
-              NameSuggester.suggestNames(expr, validator)
+            val suggestedNames: Array[String] = NameSuggester.suggestNames(
+              expr,
+              validator)
             import scala.collection.JavaConversions.asJavaCollection
             val suggestedNamesSet =
               new util.LinkedHashSet[String](suggestedNames.toIterable)
@@ -326,8 +332,9 @@ trait IntroduceExpressions {
       val element = file.findElementAt(model.getSelectionStart)
       var parent = element
       def atSameLine(elem: PsiElement) = {
-        val offsets =
-          Seq(elem.getTextRange.getStartOffset, elem.getTextRange.getEndOffset)
+        val offsets = Seq(
+          elem.getTextRange.getStartOffset,
+          elem.getTextRange.getEndOffset)
         offsets.forall(document.getLineNumber(_) == lineNumber)
       }
       while (parent != null && !parent.isInstanceOf[PsiFile] && atSameLine(
@@ -351,9 +358,9 @@ trait IntroduceExpressions {
 
     val isFunExpr = expression.isInstanceOf[ScFunctionExpr]
     val mainRange = new TextRange(startOffset, endOffset)
-    val occurrences: Array[TextRange] = if (!replaceAllOccurrences) {
-      Array[TextRange](mainRange)
-    } else occurrences_
+    val occurrences: Array[TextRange] =
+      if (!replaceAllOccurrences) { Array[TextRange](mainRange) }
+      else occurrences_
     val occCount = occurrences.length
 
     val mainOcc = occurrences.indexWhere(range =>
@@ -361,8 +368,10 @@ trait IntroduceExpressions {
     val fastDefinition = occCount == 1 && isOneLiner
 
     //changes document directly
-    val replacedOccurences =
-      ScalaRefactoringUtil.replaceOccurences(occurrences, varName, file)
+    val replacedOccurences = ScalaRefactoringUtil.replaceOccurences(
+      occurrences,
+      varName,
+      file)
 
     //only Psi-operations after this moment
     var firstRange = replacedOccurences(0)
@@ -382,8 +391,9 @@ trait IntroduceExpressions {
           ScalaRefactoringUtil.findParentExpr(file, _))
     val commonParent: PsiElement = PsiTreeUtil.findCommonParent(parentExprs: _*)
 
-    val nextParent: PsiElement =
-      ScalaRefactoringUtil.nextParent(commonParent, file)
+    val nextParent: PsiElement = ScalaRefactoringUtil.nextParent(
+      commonParent,
+      file)
 
     editor.getCaretModel.moveToOffset(replacedOccurences(mainOcc).getEndOffset)
 
@@ -410,8 +420,9 @@ trait IntroduceExpressions {
           val semicolon = parent.addBefore(
             ScalaPsiElementFactory.createSemicolon(parent.getManager),
             elem)
-          result =
-            parent.addBefore(created, semicolon).asInstanceOf[ScEnumerator]
+          result = parent
+            .addBefore(created, semicolon)
+            .asInstanceOf[ScEnumerator]
           if (needSemicolon) {
             parent.addBefore(
               ScalaPsiElementFactory.createSemicolon(parent.getManager),
@@ -573,8 +584,10 @@ trait IntroduceExpressions {
       validator: ScalaVariableValidator): ScalaIntroduceVariableDialog = {
     // Add occurrences highlighting
     if (occurrences.length > 1)
-      occurrenceHighlighters =
-        ScalaRefactoringUtil.highlightOccurrences(project, occurrences, editor)
+      occurrenceHighlighters = ScalaRefactoringUtil.highlightOccurrences(
+        project,
+        occurrences,
+        editor)
 
     val possibleNames = NameSuggester.suggestNames(expr, validator)
     val dialog = new ScalaIntroduceVariableDialog(

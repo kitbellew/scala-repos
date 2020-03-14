@@ -48,14 +48,13 @@ trait HeadActionSpec
         Action { request => Results.Ok.chunked(Source(List("a", "b", "c"))) }
     }
 
-    val routes =
-      get // GET /get
-        .orElse(patch) // PATCH /patch
-        .orElse(post) // POST /post
-        .orElse(put) // PUT /put
-        .orElse(delete) // DELETE /delete
-        .orElse(stream) // GET /stream/0
-        .orElse(chunkedResponse) // GET /chunked
+    val routes = get // GET /get
+      .orElse(patch) // PATCH /patch
+      .orElse(post) // POST /post
+      .orElse(put) // PUT /put
+      .orElse(delete) // DELETE /delete
+      .orElse(stream) // GET /stream/0
+      .orElse(chunkedResponse) // GET /chunked
 
     def withServer[T](block: WSClient => T): T = {
       // Routes from HttpBinApplication

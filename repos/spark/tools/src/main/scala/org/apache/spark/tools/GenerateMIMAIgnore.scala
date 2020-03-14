@@ -59,8 +59,8 @@ object GenerateMIMAIgnore {
 
     for (className <- classes) {
       try {
-        val classSymbol =
-          mirror.classSymbol(Class.forName(className, false, classLoader))
+        val classSymbol = mirror.classSymbol(
+          Class.forName(className, false, classLoader))
         val moduleSymbol = mirror.staticModule(className)
         val directlyPrivateSpark =
           isPackagePrivate(classSymbol) ||
@@ -135,10 +135,10 @@ object GenerateMIMAIgnore {
       .writeAll(previousContents + privateClasses.mkString("\n"))
     // scalastyle:off println
     println("Created : .generated-mima-class-excludes in current directory.")
-    val previousMembersContents =
-      Try(File(".generated-mima-member-excludes").lines)
-        .getOrElse(Iterator.empty)
-        .mkString("\n")
+    val previousMembersContents = Try(
+      File(".generated-mima-member-excludes").lines)
+      .getOrElse(Iterator.empty)
+      .mkString("\n")
     File(".generated-mima-member-excludes").writeAll(
       previousMembersContents +
         privateMembers.mkString("\n"))

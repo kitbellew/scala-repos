@@ -25,8 +25,7 @@ package com.twitter.summingbird.graph
 sealed abstract class HMap[K[_], V[_]] {
   type Pair[t] = (K[t], V[t])
   protected val map: Map[K[_], V[_]]
-  override def toString: String =
-    "H%s".format(map)
+  override def toString: String = "H%s".format(map)
 
   override def equals(that: Any): Boolean =
     that match {
@@ -36,11 +35,9 @@ sealed abstract class HMap[K[_], V[_]] {
     }
   override def hashCode = map.hashCode
 
-  def +[T](kv: (K[T], V[T])): HMap[K, V] =
-    HMap.from[K, V](map + kv)
+  def +[T](kv: (K[T], V[T])): HMap[K, V] = HMap.from[K, V](map + kv)
 
-  def -(k: K[_]): HMap[K, V] =
-    HMap.from[K, V](map - k)
+  def -(k: K[_]): HMap[K, V] = HMap.from[K, V](map - k)
 
   def apply[T](id: K[T]): V[T] = get(id).get
 
@@ -52,8 +49,7 @@ sealed abstract class HMap[K[_], V[_]] {
     HMap.from[K, V](filtered.asInstanceOf[Map[K[_], V[_]]])
   }
 
-  def get[T](id: K[T]): Option[V[T]] =
-    map.get(id).asInstanceOf[Option[V[T]]]
+  def get[T](id: K[T]): Option[V[T]] = map.get(id).asInstanceOf[Option[V[T]]]
 
   def keysOf[T](v: V[T]): Set[K[T]] =
     map.collect {

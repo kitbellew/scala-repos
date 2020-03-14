@@ -195,8 +195,9 @@ private[akka] final class ActorSubscriberSink[In](
     extends SinkModule[In, ActorRef](shape) {
 
   override def create(context: MaterializationContext) = {
-    val subscriberRef =
-      ActorMaterializer.downcast(context.materializer).actorOf(context, props)
+    val subscriberRef = ActorMaterializer
+      .downcast(context.materializer)
+      .actorOf(context, props)
     (akka.stream.actor.ActorSubscriber[In](subscriberRef), subscriberRef)
   }
 
@@ -219,8 +220,8 @@ private[akka] final class ActorRefSink[In](
 
   override def create(context: MaterializationContext) = {
     val actorMaterializer = ActorMaterializer.downcast(context.materializer)
-    val effectiveSettings =
-      actorMaterializer.effectiveSettings(context.effectiveAttributes)
+    val effectiveSettings = actorMaterializer.effectiveSettings(
+      context.effectiveAttributes)
     val subscriberRef = actorMaterializer.actorOf(
       context,
       ActorRefSinkActor
@@ -408,8 +409,8 @@ final private[stream] class QueueSink[T]()
             new IllegalStateException(
               "Stream is terminated. QueueSink is detached")))
 
-      private val callback: AsyncCallback[Requested[T]] =
-        getAsyncCallback(promise ⇒
+      private val callback: AsyncCallback[Requested[T]] = getAsyncCallback(
+        promise ⇒
           currentRequest match {
             case Some(_) ⇒
               promise.failure(new IllegalStateException(

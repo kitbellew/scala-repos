@@ -141,10 +141,9 @@ class PipelineSuite
 
   test("PipelineModel read/write") {
     val writableStage = new WritableStage("writableStage").setIntParam(56)
-    val pipeline =
-      new PipelineModel(
-        "pipeline_89329327",
-        Array(writableStage.asInstanceOf[Transformer]))
+    val pipeline = new PipelineModel(
+      "pipeline_89329327",
+      Array(writableStage.asInstanceOf[Transformer]))
 
     val pipeline2 = testDefaultReadWrite(pipeline, testParams = false)
     assert(pipeline2.stages.length === 1)
@@ -160,8 +159,11 @@ class PipelineSuite
         stageIdx: Int,
         numStages: Int,
         expectedPrefix: String): Unit = {
-      val path =
-        SharedReadWrite.getStagePath(stageUid, stageIdx, numStages, stagesDir)
+      val path = SharedReadWrite.getStagePath(
+        stageUid,
+        stageIdx,
+        numStages,
+        stagesDir)
       val expected =
         new Path(stagesDir, expectedPrefix + "_" + stageUid).toString
       assert(path === expected)
@@ -175,10 +177,9 @@ class PipelineSuite
 
   test("PipelineModel read/write with non-Writable stage") {
     val unWritableStage = new UnWritableStage("unwritableStage")
-    val unWritablePipeline =
-      new PipelineModel(
-        "pipeline_328957",
-        Array(unWritableStage.asInstanceOf[Transformer]))
+    val unWritablePipeline = new PipelineModel(
+      "pipeline_328957",
+      Array(unWritableStage.asInstanceOf[Transformer]))
     withClue(
       "PipelineModel.write should fail when PipelineModel contains non-Writable stage") {
       intercept[UnsupportedOperationException] { unWritablePipeline.write }

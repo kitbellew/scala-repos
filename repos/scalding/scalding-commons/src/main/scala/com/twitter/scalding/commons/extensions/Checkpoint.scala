@@ -135,10 +135,9 @@ object Checkpoint {
   // TODO(mjahr): maybe move this to scalding.Args
   private case class CheckpointArg(checkpointName: String, argName: String)(
       implicit args: Args) {
-    val baseValue: Option[String] =
-      args.optional("checkpoint." + argName)
-    val overrideValue: Option[String] =
-      args.optional("checkpoint." + argName + "." + checkpointName)
+    val baseValue: Option[String] = args.optional("checkpoint." + argName)
+    val overrideValue: Option[String] = args.optional(
+      "checkpoint." + argName + "." + checkpointName)
     def value: Option[String] =
       if (overrideValue.isDefined) { overrideValue }
       else { baseValue }

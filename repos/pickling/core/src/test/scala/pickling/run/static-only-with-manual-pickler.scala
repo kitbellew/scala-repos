@@ -19,14 +19,14 @@ class StaticOnlyWithManualPicklerTest extends FunSuite {
     // we define this pickler. If we remove this, then
     // this file should not compile.
     implicit val picklerUnpickler
-        : Pickler[NotClosed] with Unpickler[NotClosed] =
-      new Pickler[NotClosed] with Unpickler[NotClosed] {
-        def pickle(picklee: NotClosed, builder: PBuilder): Unit =
-          throw FakeImplementation()
-        def unpickle(tag: String, reader: PReader): Any =
-          throw FakeImplementation()
-        def tag = FastTypeTag[NotClosed]
-      }
+        : Pickler[NotClosed] with Unpickler[NotClosed] = new Pickler[NotClosed]
+      with Unpickler[NotClosed] {
+      def pickle(picklee: NotClosed, builder: PBuilder): Unit =
+        throw FakeImplementation()
+      def unpickle(tag: String, reader: PReader): Any =
+        throw FakeImplementation()
+      def tag = FastTypeTag[NotClosed]
+    }
     val pkl: JSONPickle =
       try {
         pickle(x)

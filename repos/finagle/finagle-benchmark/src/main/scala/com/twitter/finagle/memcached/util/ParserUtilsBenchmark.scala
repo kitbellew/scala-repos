@@ -31,8 +31,7 @@ object ParserUtilsBenchmark {
     ChannelBuffers.copiedBuffer(rnd.nextString(5), Charsets.Utf8)
   }
 
-  private val _inputs =
-    (numbers ++ strings).toIndexedSeq
+  private val _inputs = (numbers ++ strings).toIndexedSeq
 
   @State(Scope.Thread)
   class Position {

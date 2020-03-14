@@ -168,8 +168,7 @@ sealed abstract class Try[+R] {
     * `respond` so that subclasses control evaluation order.  Returns a
     * chained `this` as in `respond`.
     */
-  def ensure(f: => Unit): Try[R] =
-    respond { _ => f }
+  def ensure(f: => Unit): Try[R] = respond { _ => f }
 
   /**
     * Returns None if this is a Throw or a Some containing the value if this is a Return
@@ -254,8 +253,7 @@ final case class Return[+R](r: R) extends Try[R] {
       "this Try is not a Throw; did you fail to check isThrow?")
 
   def rescue[R2 >: R](
-      rescueException: PartialFunction[Throwable, Try[R2]]): Try[R2] =
-    this
+      rescueException: PartialFunction[Throwable, Try[R2]]): Try[R2] = this
 
   def apply(): R = r
 

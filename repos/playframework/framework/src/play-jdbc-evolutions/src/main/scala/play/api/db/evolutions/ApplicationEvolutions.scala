@@ -196,8 +196,7 @@ private object ApplicationEvolutions {
       select `lock` from ${schema}play_evolutions_lock
     """
 
-  val CreatePlayEvolutionsLockSql =
-    """
+  val CreatePlayEvolutionsLockSql = """
       create table ${schema}play_evolutions_lock (
         lock int not null primary key
       )
@@ -228,22 +227,20 @@ private object ApplicationEvolutions {
       insert into ${schema}play_evolutions_lock (`lock`) values (1)
     """
 
-  val lockPlayEvolutionsLockSqls =
-    List(
-      """
+  val lockPlayEvolutionsLockSqls = List(
+    """
         select lock from ${schema}play_evolutions_lock where lock = 1 for update nowait
       """
-    )
+  )
 
-  val lockPlayEvolutionsLockMysqlSqls =
-    List(
-      """
+  val lockPlayEvolutionsLockMysqlSqls = List(
+    """
         set innodb_lock_wait_timeout = 1
       """,
-      """
+    """
         select `lock` from ${schema}play_evolutions_lock where `lock` = 1 for update
       """
-    )
+  )
 }
 
 /**
@@ -433,8 +430,10 @@ class EvolutionsWebCommands @Inject() (
 
       case applyEvolutions(db) => {
         Some {
-          val scripts =
-            evolutions.scripts(db, reader, config.forDatasource(db).schema)
+          val scripts = evolutions.scripts(
+            db,
+            reader,
+            config.forDatasource(db).schema)
           evolutions.evolve(
             db,
             scripts,

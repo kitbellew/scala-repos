@@ -167,8 +167,9 @@ class ScalaGradleDataServiceTest
         Some("2.10.4"),
         Set(new File("/tmp/test/scala-library-2.10.4.jar")),
         Some(options)))
-    val module =
-      ModuleManager.getInstance(getProject).findModuleByName("Module 1")
+    val module = ModuleManager
+      .getInstance(getProject)
+      .findModuleByName("Module 1")
     val compilerConfiguration = ScalaCompilerConfiguration
       .instanceIn(getProject)
       .getSettingsForModule(module)

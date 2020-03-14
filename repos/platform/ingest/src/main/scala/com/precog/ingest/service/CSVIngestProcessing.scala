@@ -141,12 +141,12 @@ class CSVIngestProcessing(
       * the header a,a,a will create objects of the form `{a:[_, _, _]}`.
       */
     def normalizeHeaders(headers: Array[String]): Array[JPath] = {
-      val positions =
-        headers.zipWithIndex.foldLeft(Map.empty[String, List[Int]]) {
-          case (hdrs, (h, i)) =>
-            val pos = i :: hdrs.getOrElse(h, Nil)
-            hdrs + (h -> pos)
-        }
+      val positions = headers.zipWithIndex.foldLeft(
+        Map.empty[String, List[Int]]) {
+        case (hdrs, (h, i)) =>
+          val pos = i :: hdrs.getOrElse(h, Nil)
+          hdrs + (h -> pos)
+      }
 
       positions.toList
         .flatMap {

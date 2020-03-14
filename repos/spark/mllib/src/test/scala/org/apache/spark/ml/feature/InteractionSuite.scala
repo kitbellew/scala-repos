@@ -83,8 +83,9 @@ class InteractionSuite
     val df = data.select(
       col("a").as("a", NumericAttribute.defaultAttr.toMetadata()),
       col("b").as("b", groupAttr.toMetadata()))
-    val trans =
-      new Interaction().setInputCols(Array("a", "b")).setOutputCol("features")
+    val trans = new Interaction()
+      .setInputCols(Array("a", "b"))
+      .setOutputCol("features")
     val res = trans.transform(df)
     val expected = sqlContext
       .createDataFrame(
@@ -121,8 +122,9 @@ class InteractionSuite
           .withValues(Array("up", "down", "left"))
           .toMetadata()),
       col("b").as("b", groupAttr.toMetadata()))
-    val trans =
-      new Interaction().setInputCols(Array("a", "b")).setOutputCol("features")
+    val trans = new Interaction()
+      .setInputCols(Array("a", "b"))
+      .setOutputCol("features")
     val res = trans.transform(df)
     val expected = sqlContext
       .createDataFrame(

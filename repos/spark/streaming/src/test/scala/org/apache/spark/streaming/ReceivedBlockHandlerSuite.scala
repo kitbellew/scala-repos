@@ -161,8 +161,8 @@ class ReceivedBlockHandlerSuite
             result.asInstanceOf[WriteAheadLogBasedStoreResult].walRecordHandle
           }
           val loggedData = walSegments.flatMap { walSegment =>
-            val fileSegment =
-              walSegment.asInstanceOf[FileBasedWriteAheadLogSegment]
+            val fileSegment = walSegment
+              .asInstanceOf[FileBasedWriteAheadLogSegment]
             val reader = new FileBasedWriteAheadLogRandomReader(
               fileSegment.path,
               hadoopConf)
@@ -363,8 +363,9 @@ class ReceivedBlockHandlerSuite
       if (isBlockManagedBasedBlockHandler) {
         // test received block with BlockManager based handler
         withBlockManagerBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
+          val (blockId, blockStoreResult) = storeSingleBlock(
+            handler,
+            receivedBlock)
           bId = blockId
           assert(
             blockStoreResult.numRecords === expectedNumRecords,
@@ -376,8 +377,9 @@ class ReceivedBlockHandlerSuite
       } else {
         // test received block with WAL based handler
         withWriteAheadLogBasedBlockHandler { handler =>
-          val (blockId, blockStoreResult) =
-            storeSingleBlock(handler, receivedBlock)
+          val (blockId, blockStoreResult) = storeSingleBlock(
+            handler,
+            receivedBlock)
           bId = blockId
           assert(
             blockStoreResult.numRecords === expectedNumRecords,

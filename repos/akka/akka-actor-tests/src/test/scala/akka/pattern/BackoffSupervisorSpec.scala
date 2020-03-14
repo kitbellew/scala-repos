@@ -14,8 +14,7 @@ object BackoffSupervisorSpec {
   class TestException extends RuntimeException with NoStackTrace
 
   object Child {
-    def props(probe: ActorRef): Props =
-      Props(new Child(probe))
+    def props(probe: ActorRef): Props = Props(new Child(probe))
   }
 
   class Child(probe: ActorRef) extends Actor {
@@ -26,8 +25,7 @@ object BackoffSupervisorSpec {
   }
 
   object ManualChild {
-    def props(probe: ActorRef): Props =
-      Props(new ManualChild(probe))
+    def props(probe: ActorRef): Props = Props(new ManualChild(probe))
   }
 
   class ManualChild(probe: ActorRef) extends Actor {

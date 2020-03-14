@@ -113,8 +113,8 @@ class ControllerChannelManager(
     debug(
       "Controller %d trying to connect to broker %d"
         .format(config.brokerId, broker.id))
-    val brokerEndPoint =
-      broker.getBrokerEndPoint(config.interBrokerSecurityProtocol)
+    val brokerEndPoint = broker.getBrokerEndPoint(
+      config.interBrokerSecurityProtocol)
     val brokerNode =
       new Node(broker.id, brokerEndPoint.host, brokerEndPoint.port)
     val networkClient = {
@@ -232,9 +232,9 @@ class RequestSendThread(
               isSendSuccessful = false
               backoff()
             } else {
-              val requestHeader =
-                apiVersion.fold(networkClient.nextRequestHeader(apiKey))(
-                  networkClient.nextRequestHeader(apiKey, _))
+              val requestHeader = apiVersion.fold(
+                networkClient.nextRequestHeader(apiKey))(
+                networkClient.nextRequestHeader(apiKey, _))
               val send = new RequestSend(
                 brokerNode.idString,
                 requestHeader,
@@ -305,8 +305,8 @@ class RequestSendThread(
 
       if (networkClient.isReady(brokerNode, time.milliseconds())) true
       else {
-        val ready =
-          networkClient.blockingReady(brokerNode, socketTimeoutMs)(time)
+        val ready = networkClient.blockingReady(brokerNode, socketTimeoutMs)(
+          time)
 
         if (!ready)
           throw new SocketTimeoutException(
@@ -334,12 +334,12 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
     extends Logging {
   val controllerContext = controller.controllerContext
   val controllerId: Int = controller.config.brokerId
-  val leaderAndIsrRequestMap =
-    mutable.Map.empty[Int, mutable.Map[TopicPartition, PartitionStateInfo]]
-  val stopReplicaRequestMap =
-    mutable.Map.empty[Int, Seq[StopReplicaRequestInfo]]
-  val updateMetadataRequestMap =
-    mutable.Map.empty[Int, mutable.Map[TopicPartition, PartitionStateInfo]]
+  val leaderAndIsrRequestMap = mutable.Map
+    .empty[Int, mutable.Map[TopicPartition, PartitionStateInfo]]
+  val stopReplicaRequestMap = mutable.Map
+    .empty[Int, Seq[StopReplicaRequestInfo]]
+  val updateMetadataRequestMap = mutable.Map
+    .empty[Int, mutable.Map[TopicPartition, PartitionStateInfo]]
   private val stateChangeLogger = KafkaController.stateChangeLogger
 
   def newBatch() {
@@ -377,8 +377,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
     val topicPartition = new TopicPartition(topic, partition)
 
     brokerIds.filter(_ >= 0).foreach { brokerId =>
-      val result =
-        leaderAndIsrRequestMap.getOrElseUpdate(brokerId, mutable.Map.empty)
+      val result = leaderAndIsrRequestMap
+        .getOrElseUpdate(brokerId, mutable.Map.empty)
       result.put(
         topicPartition,
         PartitionStateInfo(leaderIsrAndControllerEpoch, replicas.toSet))
@@ -414,8 +414,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
   /** Send UpdateMetadataRequest to the given brokers for the given partitions and partitions that are being deleted */
   def addUpdateMetadataRequestForBrokers(
       brokerIds: Seq[Int],
-      partitions: collection.Set[TopicAndPartition] =
-        Set.empty[TopicAndPartition],
+      partitions: collection.Set[TopicAndPartition] = Set
+        .empty[TopicAndPartition],
       callback: AbstractRequestResponse => Unit = null) {
     def updateMetadataRequestMapFor(
         partition: TopicAndPartition,
@@ -426,16 +426,17 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
         case Some(leaderIsrAndControllerEpoch) =>
           val replicas =
             controllerContext.partitionReplicaAssignment(partition).toSet
-          val partitionStateInfo = if (beingDeleted) {
-            val leaderAndIsr = new LeaderAndIsr(
-              LeaderAndIsr.LeaderDuringDelete,
-              leaderIsrAndControllerEpoch.leaderAndIsr.isr)
-            PartitionStateInfo(
-              LeaderIsrAndControllerEpoch(
-                leaderAndIsr,
-                leaderIsrAndControllerEpoch.controllerEpoch),
-              replicas)
-          } else { PartitionStateInfo(leaderIsrAndControllerEpoch, replicas) }
+          val partitionStateInfo =
+            if (beingDeleted) {
+              val leaderAndIsr = new LeaderAndIsr(
+                LeaderAndIsr.LeaderDuringDelete,
+                leaderIsrAndControllerEpoch.leaderAndIsr.isr)
+              PartitionStateInfo(
+                LeaderIsrAndControllerEpoch(
+                  leaderAndIsr,
+                  leaderIsrAndControllerEpoch.controllerEpoch),
+                replicas)
+            } else { PartitionStateInfo(leaderIsrAndControllerEpoch, replicas) }
           brokerIds.filter(b => b >= 0).foreach { brokerId =>
             updateMetadataRequestMap.getOrElseUpdate(
               brokerId,
@@ -568,10 +569,10 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
 
           val updateMetadataRequest =
             if (version == 0) {
-              val liveBrokers =
-                controllerContext.liveOrShuttingDownBrokers.map { broker =>
-                  val brokerEndPoint =
-                    broker.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
+              val liveBrokers = controllerContext.liveOrShuttingDownBrokers
+                .map { broker =>
+                  val brokerEndPoint = broker.getBrokerEndPoint(
+                    SecurityProtocol.PLAINTEXT)
                   new BrokerEndPoint(
                     brokerEndPoint.id,
                     brokerEndPoint.host,
@@ -583,8 +584,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
                 liveBrokers.asJava,
                 partitionStates.asJava)
             } else {
-              val liveBrokers =
-                controllerContext.liveOrShuttingDownBrokers.map { broker =>
+              val liveBrokers = controllerContext.liveOrShuttingDownBrokers
+                .map { broker =>
                   val endPoints = broker.endPoints.map {
                     case (securityProtocol, endPoint) =>
                       securityProtocol -> new UpdateMetadataRequest.EndPoint(

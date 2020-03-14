@@ -64,8 +64,9 @@ trait ScBlock
       getContext match {
         case c: ScCatchBlock =>
           val manager = ScalaPsiManager.instance(getProject)
-          val funs =
-            manager.getCachedClasses(getResolveScope, "scala.PartialFunction")
+          val funs = manager.getCachedClasses(
+            getResolveScope,
+            "scala.PartialFunction")
           val fun = funs
             .find(_.isInstanceOf[ScTrait])
             .getOrElse(
@@ -124,8 +125,9 @@ trait ScBlock
                 if p.owner.isInstanceOf[ScFunctionExpr] && p.owner
                   .asInstanceOf[ScFunctionExpr]
                   .result == Some(this) =>
-              val t =
-                existize(p.getType(TypingContext.empty).getOrAny, visitedWithT)
+              val t = existize(
+                p.getType(TypingContext.empty).getOrAny,
+                visitedWithT)
               m.put(p.name, new ScExistentialArgument(p.name, Nil, t, t))
               new ScTypeVariable(p.name)
             case ScDesignatorType(typed: ScBindingPattern)
@@ -183,9 +185,8 @@ trait ScBlock
                         tp.ptp)
                     }
 
-                    val pTypes: List[Seq[() => ScType]] =
-                      s.substitutedTypes.map(_.map(f =>
-                        () => existize(f(), visitedWithT)))
+                    val pTypes: List[Seq[() => ScType]] = s.substitutedTypes
+                      .map(_.map(f => () => existize(f(), visitedWithT)))
                     val tParams: Array[TypeParameter] =
                       if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
                       else s.typeParams.map(updateTypeParam)

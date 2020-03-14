@@ -26,17 +26,15 @@ trait GaussianInstances {
   import BigDecimal.defaultMathContext
   import spire.std.bigDecimal._
 
-  implicit val float: Gaussian[Float] =
-    new Gaussian[Float] {
-      def apply(mean: Float, stdDev: Float): Dist[Float] =
-        new DistFromGen(g => (Ziggurat.rnor(g) * stdDev + mean).toFloat)
-    }
+  implicit val float: Gaussian[Float] = new Gaussian[Float] {
+    def apply(mean: Float, stdDev: Float): Dist[Float] =
+      new DistFromGen(g => (Ziggurat.rnor(g) * stdDev + mean).toFloat)
+  }
 
-  implicit val double: Gaussian[Double] =
-    new Gaussian[Double] {
-      def apply(mean: Double, stdDev: Double): Dist[Double] =
-        new DistFromGen(g => Ziggurat.rnor(g) * stdDev + mean)
-    }
+  implicit val double: Gaussian[Double] = new Gaussian[Double] {
+    def apply(mean: Double, stdDev: Double): Dist[Double] =
+      new DistFromGen(g => Ziggurat.rnor(g) * stdDev + mean)
+  }
 
   implicit def bigDecimal(
       implicit mc: MathContext = defaultMathContext): Gaussian[BigDecimal] =

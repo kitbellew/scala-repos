@@ -599,8 +599,8 @@ private[parquet] object CatalystSchemaConverter {
   }
 
   // Returns the minimum number of bytes needed to store a decimal with a given `precision`.
-  val minBytesForPrecision =
-    Array.tabulate[Int](39)(computeMinBytesForPrecision)
+  val minBytesForPrecision = Array.tabulate[Int](39)(
+    computeMinBytesForPrecision)
 
   // Max precision of a decimal value stored in `numBytes` bytes
   def maxPrecisionForBytes(numBytes: Int): Int = {

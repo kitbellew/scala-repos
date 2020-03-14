@@ -93,13 +93,12 @@ private[coordinator] case object Dead extends GroupState {
 }
 
 private object GroupMetadata {
-  private val validPreviousStates: Map[GroupState, Set[GroupState]] =
-    Map(
-      Dead -> Set(Stable, PreparingRebalance, AwaitingSync),
-      AwaitingSync -> Set(PreparingRebalance),
-      Stable -> Set(AwaitingSync),
-      PreparingRebalance -> Set(Stable, AwaitingSync)
-    )
+  private val validPreviousStates: Map[GroupState, Set[GroupState]] = Map(
+    Dead -> Set(Stable, PreparingRebalance, AwaitingSync),
+    AwaitingSync -> Set(PreparingRebalance),
+    Stable -> Set(AwaitingSync),
+    PreparingRebalance -> Set(Stable, AwaitingSync)
+  )
 }
 
 /**
@@ -155,8 +154,9 @@ private[coordinator] class GroupMetadata(
   def remove(memberId: String) {
     members.remove(memberId)
     if (memberId == leaderId) {
-      leaderId = if (members.isEmpty) { null }
-      else { members.keys.head }
+      leaderId =
+        if (members.isEmpty) { null }
+        else { members.keys.head }
     }
   }
 

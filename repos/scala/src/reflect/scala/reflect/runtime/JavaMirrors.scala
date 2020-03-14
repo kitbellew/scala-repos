@@ -47,8 +47,8 @@ private[scala] trait JavaMirrors
   }
 
   override type Mirror = JavaMirror
-  implicit val MirrorTag: ClassTag[Mirror] =
-    ClassTag[Mirror](classOf[JavaMirror])
+  implicit val MirrorTag: ClassTag[Mirror] = ClassTag[Mirror](
+    classOf[JavaMirror])
 
   override lazy val rootMirror: Mirror = createMirror(NoSymbol, rootClassLoader)
 
@@ -80,14 +80,18 @@ private[scala] trait JavaMirrors
       new definitions.RunDefinitions // only one "run" in the reflection universe
     import runDefinitions._
 
-    override lazy val RootPackage = (new RootPackage
-      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val RootClass = (new RootClass
-      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val EmptyPackage = (new EmptyPackage
-      with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
-    override lazy val EmptyPackageClass = (new EmptyPackageClass
-      with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val RootPackage =
+      (new RootPackage
+        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val RootClass =
+      (new RootClass
+        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val EmptyPackage =
+      (new EmptyPackage
+        with SynchronizedTermSymbol).markFlagsCompleted(mask = AllFlags)
+    override lazy val EmptyPackageClass =
+      (new EmptyPackageClass
+        with SynchronizedModuleClassSymbol).markFlagsCompleted(mask = AllFlags)
 
     /** The lazy type for root.
       */
@@ -601,8 +605,8 @@ private[scala] trait JavaMirrors
     // TODO: vararg is only supported in the last parameter list (SI-6182), so we don't need to worry about the rest for now
     private class MethodMetadata(symbol: MethodSymbol) {
       private val params = symbol.paramss.flatten.toArray
-      private val vcMetadata =
-        params.map(p => new DerivedValueClassMetadata(p.info))
+      private val vcMetadata = params.map(p =>
+        new DerivedValueClassMetadata(p.info))
       val isByName = params.map(p => isByNameParam(p.info))
       def isDerivedValueClass(i: Int) = vcMetadata(i).isDerivedValueClass
       def paramUnboxers(i: Int) = vcMetadata(i).unboxer
@@ -1202,8 +1206,9 @@ private[scala] trait JavaMirrors
       toScala(constructorCache, jconstr)(_ constructorToScala1 _)
 
     private def constructorToScala1(jconstr: jConstructor[_]): MethodSymbol = {
-      val owner =
-        followStatic(classToScala(jconstr.getDeclaringClass), jconstr.javaFlags)
+      val owner = followStatic(
+        classToScala(jconstr.getDeclaringClass),
+        jconstr.javaFlags)
       (lookup(owner, jconstr.getName) suchThat (erasesTo(
         _,
         jconstr)) orElse jconstrAsScala(jconstr)).asMethod

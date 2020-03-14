@@ -98,16 +98,17 @@ object Analytics extends Logging {
             edgeStorageLevel = edgeStorageLevel,
             vertexStorageLevel = vertexStorageLevel)
           .cache()
-        val graph =
-          partitionStrategy.foldLeft(unpartitionedGraph)(_.partitionBy(_))
+        val graph = partitionStrategy.foldLeft(unpartitionedGraph)(
+          _.partitionBy(_))
 
         println("GRAPHX: Number of vertices " + graph.vertices.count)
         println("GRAPHX: Number of edges " + graph.edges.count)
 
-        val pr = (numIterOpt match {
-          case Some(numIter) => PageRank.run(graph, numIter)
-          case None          => PageRank.runUntilConvergence(graph, tol)
-        }).vertices.cache()
+        val pr =
+          (numIterOpt match {
+            case Some(numIter) => PageRank.run(graph, numIter)
+            case None          => PageRank.runUntilConvergence(graph, tol)
+          }).vertices.cache()
 
         println("GRAPHX: Total rank: " + pr.map(_._2).reduce(_ + _))
 
@@ -138,8 +139,8 @@ object Analytics extends Logging {
             edgeStorageLevel = edgeStorageLevel,
             vertexStorageLevel = vertexStorageLevel)
           .cache()
-        val graph =
-          partitionStrategy.foldLeft(unpartitionedGraph)(_.partitionBy(_))
+        val graph = partitionStrategy.foldLeft(unpartitionedGraph)(
+          _.partitionBy(_))
 
         val cc = ConnectedComponents.run(graph)
         println(

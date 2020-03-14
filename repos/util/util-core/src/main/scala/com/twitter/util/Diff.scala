@@ -66,11 +66,9 @@ trait Diffable[CC[_]] {
 object Diffable {
   private case class SetDiff[T](add: Set[T], remove: Set[T])
       extends Diff[Set, T] {
-    def patch(coll: Set[T]): Set[T] =
-      coll ++ add -- remove
+    def patch(coll: Set[T]): Set[T] = coll ++ add -- remove
 
-    def map[U](f: T => U): SetDiff[U] =
-      SetDiff(add.map(f), remove.map(f))
+    def map[U](f: T => U): SetDiff[U] = SetDiff(add.map(f), remove.map(f))
 
     override def toString = s"Diff(+$add, -$remove)"
   }
@@ -86,8 +84,7 @@ object Diffable {
       out.toSeq.asInstanceOf[Seq[T]]
     }
 
-    def map[U](f: T => U): SeqDiff[U] =
-      SeqDiff(limit, insert.mapValues(f))
+    def map[U](f: T => U): SeqDiff[U] = SeqDiff(limit, insert.mapValues(f))
   }
 
   implicit val ofSet: Diffable[Set] = new Diffable[Set] {
@@ -131,6 +128,5 @@ object Diffable {
   /**
     * The identity collection CC[T].
     */
-  def empty[CC[_]: Diffable, T]: CC[T] =
-    implicitly[Diffable[CC]].empty
+  def empty[CC[_]: Diffable, T]: CC[T] = implicitly[Diffable[CC]].empty
 }

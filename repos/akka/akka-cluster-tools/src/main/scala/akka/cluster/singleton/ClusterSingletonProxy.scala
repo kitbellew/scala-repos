@@ -153,8 +153,8 @@ final class ClusterSingletonProxy(
     extends Actor
     with ActorLogging {
   import settings._
-  val singletonPath =
-    (singletonManagerPath + "/" + settings.singletonName).split("/")
+  val singletonPath = (singletonManagerPath + "/" + settings.singletonName)
+    .split("/")
   var identifyCounter = 0
   var identifyId = createIdentifyId(identifyCounter)
   def createIdentifyId(i: Int) =
@@ -165,8 +165,8 @@ final class ClusterSingletonProxy(
   var singleton: Option[ActorRef] = None
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
-  var membersByAge: immutable.SortedSet[Member] =
-    immutable.SortedSet.empty(ageOrdering)
+  var membersByAge: immutable.SortedSet[Member] = immutable.SortedSet.empty(
+    ageOrdering)
 
   var buffer = new java.util.LinkedList[(Any, ActorRef)]
 

@@ -51,8 +51,7 @@ object BroadcastStatsReceiver {
 
     def statsReceivers: Seq[StatsReceiver] = Seq(first, second)
 
-    override def toString: String =
-      s"Broadcast($first, $second)"
+    override def toString: String = s"Broadcast($first, $second)"
   }
 
   private class N(srs: Seq[StatsReceiver])

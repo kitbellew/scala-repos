@@ -60,29 +60,26 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
           val maskBit = (maskAndLength & MASK_MASK) != 0
           val length7 = maskAndLength & LENGTH_MASK
 
-          val length =
-            length7 match {
-              case 126 ⇒ reader.readShortBE().toLong
-              case 127 ⇒ reader.readLongBE()
-              case x ⇒ x.toLong
-            }
+          val length = length7 match {
+            case 126 ⇒ reader.readShortBE().toLong
+            case 127 ⇒ reader.readLongBE()
+            case x ⇒ x.toLong
+          }
 
           if (length < 0)
             throw new ProtocolException("Highest bit of 64bit length was set")
 
-          val mask =
-            if (maskBit) Some(reader.readIntBE()) else None
+          val mask = if (maskBit) Some(reader.readIntBE()) else None
 
           def isFlagSet(mask: Int): Boolean = (flags & mask) != 0
-          val header =
-            FrameHeader(
-              Opcode.forCode(op.toByte),
-              mask,
-              length,
-              fin = isFlagSet(FIN_MASK),
-              rsv1 = isFlagSet(RSV1_MASK),
-              rsv2 = isFlagSet(RSV2_MASK),
-              rsv3 = isFlagSet(RSV3_MASK))
+          val header = FrameHeader(
+            Opcode.forCode(op.toByte),
+            mask,
+            length,
+            fin = isFlagSet(FIN_MASK),
+            rsv1 = isFlagSet(RSV1_MASK),
+            rsv2 = isFlagSet(RSV2_MASK),
+            rsv3 = isFlagSet(RSV3_MASK))
 
           val takeNow = (header.length min reader.remainingSize).toInt
           val thisFrameData = reader.take(takeNow)
@@ -128,8 +125,10 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
     @tailrec def rec(bytes: Array[Byte], offset: Int, mask: Int): Int =
       if (offset >= bytes.length) mask
       else {
-        val newMask =
-          Integer.rotateLeft(mask, 8) // we cycle through the mask in BE order
+        val newMask = Integer.rotateLeft(
+          mask,
+          8
+        ) // we cycle through the mask in BE order
         bytes(offset) = (bytes(offset) ^ (newMask & 0xff)).toByte
         rec(bytes, offset + 1, newMask)
       }

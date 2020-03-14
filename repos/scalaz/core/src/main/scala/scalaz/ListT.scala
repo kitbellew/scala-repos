@@ -121,8 +121,7 @@ sealed abstract class ListTInstances extends ListTInstances1 {
       implicit E: Show[F[List[A]]]): Show[ListT[F, A]] =
     Contravariant[Show].contramap(E)((_: ListT[F, A]).toList)
 
-  implicit val listTHoist: Hoist[ListT] =
-    new ListTHoist {}
+  implicit val listTHoist: Hoist[ListT] = new ListTHoist {}
 }
 
 object ListT extends ListTInstances {
@@ -134,8 +133,7 @@ object ListT extends ListTInstances {
   def empty[M[_], A](implicit M: Applicative[M]): ListT[M, A] =
     new ListT[M, A](M.point(Nil))
 
-  def fromList[M[_], A](mas: M[List[A]]): ListT[M, A] =
-    new ListT(mas)
+  def fromList[M[_], A](mas: M[List[A]]): ListT[M, A] = new ListT(mas)
 }
 
 //
@@ -178,8 +176,7 @@ private trait ListTMonadPlus[F[_]]
 private trait ListTHoist extends Hoist[ListT] {
   import ListT._
 
-  implicit def apply[G[_]: Monad]: Monad[ListT[G, ?]] =
-    listTMonadPlus[G]
+  implicit def apply[G[_]: Monad]: Monad[ListT[G, ?]] = listTMonadPlus[G]
 
   def liftM[G[_], A](a: G[A])(implicit G: Monad[G]): ListT[G, A] =
     fromList(G.map(a)(entry => entry :: Nil))

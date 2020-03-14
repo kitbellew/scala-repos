@@ -185,8 +185,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         repository.owner,
         repository.name,
         org.joda.time.LocalDateTime.now.minusWeeks(1).toDate).toSet
-      val knownContexts =
-        (lastWeeks ++ protection.status.contexts).toSeq.sortBy(identity)
+      val knownContexts = (lastWeeks ++ protection.status.contexts).toSeq
+        .sortBy(identity)
       html.branchprotection(
         repository,
         branch,
@@ -295,8 +295,11 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
         val url = params("url")
         val token = Some(params("token"))
-        val dummyWebHookInfo =
-          WebHook(repository.owner, repository.name, url, token)
+        val dummyWebHookInfo = WebHook(
+          repository.owner,
+          repository.name,
+          url,
+          token)
         val dummyPayload = {
           val ownerAccount = getAccountByUserName(repository.owner).get
           val commits =

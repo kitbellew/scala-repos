@@ -57,8 +57,9 @@ class ScImplicitFunctionListCellRenderer(actual: PsiNamedElement)
       cellHasFocus)
     comp match {
       case container: Container =>
-        val colored =
-          container.getComponents.apply(2).asInstanceOf[SimpleColoredComponent]
+        val colored = container.getComponents
+          .apply(2)
+          .asInstanceOf[SimpleColoredComponent]
         if (item == actual) {
           colored.clear()
           colored.setIcon(actual.getIcon(0))

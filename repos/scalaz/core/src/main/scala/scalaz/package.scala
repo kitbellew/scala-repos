@@ -177,8 +177,7 @@ package object scalaz {
   // flipped
   type |-->[A, B] = Store[B, A]
   object StoreT extends StoreTInstances with StoreTFunctions {
-    def apply[F[_], A, B](r: (F[A => B], A)): StoreT[F, A, B] =
-      storeT(r)
+    def apply[F[_], A, B](r: (F[A => B], A)): StoreT[F, A, B] = storeT(r)
   }
   object IndexedStore {
     def apply[I, A, B](f: A => B, i: I): IndexedStore[I, A, B] =
@@ -191,8 +190,13 @@ package object scalaz {
   type Traced[A, B] = TracedT[Id, A, B]
   def Traced[A, B](f: A => B): Traced[A, B] = TracedT[Id, A, B](f)
 
-  type ReaderWriterStateT[F[_], -R, W, S, A] =
-    IndexedReaderWriterStateT[F, R, W, S, S, A]
+  type ReaderWriterStateT[F[_], -R, W, S, A] = IndexedReaderWriterStateT[
+    F,
+    R,
+    W,
+    S,
+    S,
+    A]
   object ReaderWriterStateT
       extends ReaderWriterStateTInstances
       with ReaderWriterStateTFunctions {
@@ -200,8 +204,13 @@ package object scalaz {
         f: (R, S) => F[(W, A, S)]): ReaderWriterStateT[F, R, W, S, A] =
       IndexedReaderWriterStateT[F, R, W, S, S, A] { (r: R, s: S) => f(r, s) }
   }
-  type IndexedReaderWriterState[-R, W, -S1, S2, A] =
-    IndexedReaderWriterStateT[Id, R, W, S1, S2, A]
+  type IndexedReaderWriterState[-R, W, -S1, S2, A] = IndexedReaderWriterStateT[
+    Id,
+    R,
+    W,
+    S1,
+    S2,
+    A]
   object IndexedReaderWriterState
       extends ReaderWriterStateTInstances
       with ReaderWriterStateTFunctions {
@@ -219,8 +228,13 @@ package object scalaz {
         f: (R, S) => (W, A, S)): ReaderWriterState[R, W, S, A] =
       IndexedReaderWriterStateT[Id, R, W, S, S, A] { (r: R, s: S) => f(r, s) }
   }
-  type IRWST[F[_], -R, W, -S1, S2, A] =
-    IndexedReaderWriterStateT[F, R, W, S1, S2, A]
+  type IRWST[F[_], -R, W, -S1, S2, A] = IndexedReaderWriterStateT[
+    F,
+    R,
+    W,
+    S1,
+    S2,
+    A]
   val IRWST: IndexedReaderWriterStateT.type = IndexedReaderWriterStateT
   type IRWS[-R, W, -S1, S2, A] = IndexedReaderWriterState[R, W, S1, S2, A]
   val IRWS: IndexedReaderWriterState.type = IndexedReaderWriterState
@@ -269,8 +283,7 @@ package object scalaz {
     * @see [[scalaz.Lens]]
     */
   object Lens extends LensInstances with LensFunctions {
-    def apply[A, B](r: A => Store[B, A]): Lens[A, B] =
-      lens(r)
+    def apply[A, B](r: A => Store[B, A]): Lens[A, B] = lens(r)
   }
 
   /** @see [[scalaz.Lens]] */
@@ -290,8 +303,7 @@ package object scalaz {
     * @see [[scalaz.PLens]]
     */
   object PLens extends PLensInstances with PLensFunctions {
-    def apply[A, B](r: A => Option[Store[B, A]]): PLens[A, B] =
-      plens(r)
+    def apply[A, B](r: A => Option[Store[B, A]]): PLens[A, B] = plens(r)
   }
 
   /** @see [[scalaz.PLens]] */

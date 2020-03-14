@@ -130,8 +130,7 @@ object Source {
 
   /** same as fromURL(new URL(s))(Codec(enc))
     */
-  def fromURL(s: String, enc: String): BufferedSource =
-    fromURL(s)(Codec(enc))
+  def fromURL(s: String, enc: String): BufferedSource = fromURL(s)(Codec(enc))
 
   /** same as fromURL(new URL(s))
     */
@@ -140,8 +139,7 @@ object Source {
 
   /** same as fromInputStream(url.openStream())(Codec(enc))
     */
-  def fromURL(url: URL, enc: String): BufferedSource =
-    fromURL(url)(Codec(enc))
+  def fromURL(url: URL, enc: String): BufferedSource = fromURL(url)(Codec(enc))
 
   /** same as fromInputStream(url.openStream())(codec)
     */
@@ -191,9 +189,9 @@ object Source {
     */
   def fromResource(
       resource: String,
-      classLoader: ClassLoader =
-        Thread.currentThread().getContextClassLoader())(
-      implicit codec: Codec): BufferedSource =
+      classLoader: ClassLoader = Thread
+        .currentThread()
+        .getContextClassLoader())(implicit codec: Codec): BufferedSource =
     fromInputStream(classLoader.getResourceAsStream(resource))
 
 }

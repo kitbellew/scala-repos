@@ -46,8 +46,10 @@ trait RepositorySearchService { self: IssuesService =>
       if (JGitUtil.isEmpty(git)) { Nil }
       else {
         val files = searchRepositoryFiles(git, query)
-        val commits =
-          JGitUtil.getLatestCommitFromPaths(git, files.map(_._1), "HEAD")
+        val commits = JGitUtil.getLatestCommitFromPaths(
+          git,
+          files.map(_._1),
+          "HEAD")
         files.map {
           case (path, text) =>
             val (highlightText, lineNumber) = getHighlightText(text, query)

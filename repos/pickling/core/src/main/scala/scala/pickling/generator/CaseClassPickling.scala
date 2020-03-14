@@ -55,16 +55,16 @@ class CaseClassPickling(
             }.toSeq ++ standAloneVars.map { field =>
               GetField(field.methodName, field)
             })))
-            val unpickle =
-              UnpickleBehavior(Seq(CallConstructor(fields.map(_.name), c)) ++
-                standAloneVars.map { field =>
-                  field.setter match {
-                    case Some(mth) => SetField(field.methodName, mth)
-                    case _ =>
-                      sys.error(
-                        s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
-                  }
-                })
+            val unpickle = UnpickleBehavior(Seq(
+              CallConstructor(fields.map(_.name), c)) ++
+              standAloneVars.map { field =>
+                field.setter match {
+                  case Some(mth) => SetField(field.methodName, mth)
+                  case _ =>
+                    sys.error(
+                      s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
+                }
+              })
             if (!allowReflection && (pickle.requiresReflection || unpickle.requiresReflection)) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {

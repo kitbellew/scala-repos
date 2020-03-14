@@ -3,8 +3,7 @@ class Foo[@specialized A: ClassManifest] {
   // conflicting in bounds, expect a normalized member calling m
   // and bridge + implementation in specialized subclasses
   // and overloads here according to specialization on A
-  def m1[@specialized B <: A](x: B, y: A) =
-    goal(x)
+  def m1[@specialized B <: A](x: B, y: A) = goal(x)
 
   // conflicting, unsolvable, expect a warning
   def m2[@specialized B <: String](x: B) = x.concat("a")
@@ -22,8 +21,7 @@ class Foo[@specialized A: ClassManifest] {
 
   // non-conflicting, expect a normalized implementation here
   // and specialized implementations for all expansions in specialized subclasses
-  def m6[@specialized B](x: B, y: A) =
-    goal(y)
+  def m6[@specialized B](x: B, y: A) = goal(y)
 
   def goal(x: A) = {
     val xs = new Array[A](1)

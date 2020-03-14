@@ -185,8 +185,9 @@ private[spark] object HighlyCompressedMapStatus {
       } else { emptyBlocks.add(i) }
       i += 1
     }
-    val avgSize = if (numNonEmptyBlocks > 0) { totalSize / numNonEmptyBlocks }
-    else { 0 }
+    val avgSize =
+      if (numNonEmptyBlocks > 0) { totalSize / numNonEmptyBlocks }
+      else { 0 }
     emptyBlocks.trim()
     emptyBlocks.runOptimize()
     new HighlyCompressedMapStatus(loc, numNonEmptyBlocks, emptyBlocks, avgSize)

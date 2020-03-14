@@ -871,8 +871,9 @@ class HttpServerSpec
       "have a programmatically set timeout handler" in new RequestTimeoutTestSetup(
         10.millis) {
         send("GET / HTTP/1.1\r\nHost: example.com\r\n\r\n")
-        val timeoutResponse =
-          HttpResponse(StatusCodes.InternalServerError, entity = "OOPS!")
+        val timeoutResponse = HttpResponse(
+          StatusCodes.InternalServerError,
+          entity = "OOPS!")
         expectRequest()
           .header[`Timeout-Access`]
           .foreach(_.timeoutAccess.updateHandler(_ ⇒ timeoutResponse))

@@ -147,8 +147,9 @@ trait PerfTestSuite extends Logging {
             using(in) { in =>
               val reader = new InputStreamReader(in)
               val baseline = BaselineComparisons.readBaseline(reader)
-              val delta =
-                BaselineComparisons.compareWithBaseline(result, baseline)
+              val delta = BaselineComparisons.compareWithBaseline(
+                result,
+                baseline)
 
               withPrinter(_.println(config.format match {
                 case OutputFormat.Legible =>

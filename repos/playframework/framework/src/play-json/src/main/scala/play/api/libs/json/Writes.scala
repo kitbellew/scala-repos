@@ -335,33 +335,33 @@ trait DefaultWrites {
     * The default typeclass to write a `java.time.LocalDateTime`,
     * using '2011-12-03T10:15:30' format.
     */
-  implicit val DefaultLocalDateTimeWrites =
-    temporalWrites[LocalDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  implicit val DefaultLocalDateTimeWrites = temporalWrites[
+    LocalDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.OffsetDateTime`,
     * using '2011-12-03T10:15:30+02:00' format.
     */
-  implicit val DefaultOffsetDateTimeWrites =
-    temporalWrites[OffsetDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+  implicit val DefaultOffsetDateTimeWrites = temporalWrites[
+    OffsetDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.ZonedDateTime`,
     * using '2011-12-03T10:15:30+01:00[Europe/Paris]' format.
     */
-  implicit val DefaultZonedDateTimeWrites =
-    temporalWrites[ZonedDateTime, DateTimeFormatter](
-      DateTimeFormatter.ISO_ZONED_DATE_TIME)
+  implicit val DefaultZonedDateTimeWrites = temporalWrites[
+    ZonedDateTime,
+    DateTimeFormatter](DateTimeFormatter.ISO_ZONED_DATE_TIME)
 
   /**
     * The default typeclass to write a `java.time.LocalDate`,
     * using '2011-12-03' format.
     */
-  implicit val DefaultLocalDateWrites =
-    temporalWrites[LocalDate, DateTimeFormatter](
-      DateTimeFormatter.ISO_LOCAL_DATE)
+  implicit val DefaultLocalDateWrites = temporalWrites[
+    LocalDate,
+    DateTimeFormatter](DateTimeFormatter.ISO_LOCAL_DATE)
 
   /**
     * The default typeclass to write a `java.time.Instant`,

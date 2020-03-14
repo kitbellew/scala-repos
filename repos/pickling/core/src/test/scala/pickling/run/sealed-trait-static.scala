@@ -38,8 +38,8 @@ class SealedTraitStaticTest extends FunSuite {
     // if we are only using static (un)picklers, then the Fruit
     // unpickler should not know a thing about Cucumber.
     try {
-      val f =
-        JSONPickle(bananaString.replace("Banana", "Cucumber")).unpickle[Fruit]
+      val f = JSONPickle(bananaString.replace("Banana", "Cucumber"))
+        .unpickle[Fruit]
       throw new Exception(
         s"Should have thrown on unpickle but instead parsed $f")
     } catch {
@@ -50,8 +50,8 @@ class SealedTraitStaticTest extends FunSuite {
 
     // but since the Banana unpickler doesn't need the type tag as a discriminator,
     // it should accept anything with the same shape ignoring the tag
-    val bananaShapedCucumber =
-      JSONPickle(bananaString.replace("Banana", "Cucumber")).unpickle[Banana]
+    val bananaShapedCucumber = JSONPickle(
+      bananaString.replace("Banana", "Cucumber")).unpickle[Banana]
     assert(bananaShapedCucumber == banana)
 
     // The Apple unpickler isn't shaped the same so we can't unpickle a banana as an apple

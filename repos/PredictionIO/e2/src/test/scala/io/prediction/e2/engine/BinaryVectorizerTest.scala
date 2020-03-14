@@ -48,8 +48,9 @@ class BinaryVectorizerTest
     exactly(2, sumOne) should be(0.0)
     exactly(2, sumOne) should be(1.0)
 
-    val sumTwo =
-      vecSum(Vectors.dense(sumOne), testCase.toBinary(testArrays.twoC))
+    val sumTwo = vecSum(
+      Vectors.dense(sumOne),
+      testCase.toBinary(testArrays.twoC))
 
     exactly(3, sumTwo) should be(1.0)
   }

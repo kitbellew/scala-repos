@@ -44,8 +44,7 @@ object LoadBalancerFactory {
     * memory pressure.
     */
   case class HostStats(hostStatsReceiver: StatsReceiver) {
-    def mk(): (HostStats, Stack.Param[HostStats]) =
-      (this, HostStats.param)
+    def mk(): (HostStats, Stack.Param[HostStats]) = (this, HostStats.param)
   }
 
   object HostStats {
@@ -58,8 +57,7 @@ object LoadBalancerFactory {
     * of addrs to load balance.
     */
   case class Dest(va: Var[Addr]) {
-    def mk(): (Dest, Stack.Param[Dest]) =
-      (this, Dest.param)
+    def mk(): (Dest, Stack.Param[Dest]) = (this, Dest.param)
   }
 
   object Dest {
@@ -72,8 +70,7 @@ object LoadBalancerFactory {
     * for use in error messages.
     */
   case class ErrorLabel(label: String) {
-    def mk(): (ErrorLabel, Stack.Param[ErrorLabel]) =
-      (this, ErrorLabel.param)
+    def mk(): (ErrorLabel, Stack.Param[ErrorLabel]) = (this, ErrorLabel.param)
   }
 
   object ErrorLabel {
@@ -85,8 +82,7 @@ object LoadBalancerFactory {
     * [[com.twitter.finagle.loadbalancer.LoadBalancerFactory]].
     */
   case class Param(loadBalancerFactory: LoadBalancerFactory) {
-    def mk(): (Param, Stack.Param[Param]) =
-      (this, Param.param)
+    def mk(): (Param, Stack.Param[Param]) = (this, Param.param)
   }
 
   object Param {
@@ -363,14 +359,13 @@ object DefaultBalancerFactory extends LoadBalancerFactory {
       case _      => Balancers.p2c()
     }
 
-  private val underlying =
-    defaultBalancer() match {
-      case "heap"   => Balancers.heap()
-      case "choice" => p2c()
-      case x =>
-        log.warning(s"""Invalid load balancer $x, using "choice" balancer.""")
-        p2c()
-    }
+  private val underlying = defaultBalancer() match {
+    case "heap"   => Balancers.heap()
+    case "choice" => p2c()
+    case x =>
+      log.warning(s"""Invalid load balancer $x, using "choice" balancer.""")
+      p2c()
+  }
 
   def newBalancer[Req, Rep](
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],

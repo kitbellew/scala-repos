@@ -31,15 +31,11 @@ package object math {
     def pow(c: Complex): Complex = Complex(value, 0) pow c
   }
 
-  implicit def richInt(value: Int) =
-    new RichField(value)
+  implicit def richInt(value: Int) = new RichField(value)
 
-  implicit def richLong(value: Long) =
-    new RichField(value)
+  implicit def richLong(value: Long) = new RichField(value)
 
-  implicit def richFloat(value: Float) =
-    new RichField(value)
+  implicit def richFloat(value: Float) = new RichField(value)
 
-  implicit def richDouble(value: Double) =
-    new RichField(value)
+  implicit def richDouble(value: Double) = new RichField(value)
 }

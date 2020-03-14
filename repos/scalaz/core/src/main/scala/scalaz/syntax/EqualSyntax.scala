@@ -20,8 +20,7 @@ final class EqualOps[F] private[syntax] (val self: F)(implicit val F: Equal[F])
 }
 
 trait ToEqualOps {
-  implicit def ToEqualOps[F](v: F)(implicit F0: Equal[F]) =
-    new EqualOps[F](v)
+  implicit def ToEqualOps[F](v: F)(implicit F0: Equal[F]) = new EqualOps[F](v)
 
   ////
 

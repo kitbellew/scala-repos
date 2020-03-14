@@ -98,8 +98,10 @@ class TypeCheckCanBeMatchQuickFix(
     val isInstOf = getFirstElement
     val ifSt = getSecondElement
     if (!ifSt.isValid || !isInstOf.isValid) return
-    val (matchStmtOption, renameData) =
-      buildMatchStmt(ifSt, isInstOf, onlyFirst = true)
+    val (matchStmtOption, renameData) = buildMatchStmt(
+      ifSt,
+      isInstOf,
+      onlyFirst = true)
     for (matchStmt <- matchStmtOption) {
       val newMatch = inWriteAction {
         ifSt
@@ -125,8 +127,10 @@ object TypeCheckToMatchUtil {
     baseExpr(isInstOfUnderFix) match {
       case Some(expr: ScExpression) =>
         val matchedExprText = expr.getText
-        val (caseClausesText, renameData) =
-          buildCaseClausesText(ifStmt, isInstOfUnderFix, onlyFirst)
+        val (caseClausesText, renameData) = buildCaseClausesText(
+          ifStmt,
+          isInstOfUnderFix,
+          onlyFirst)
         val matchStmtText =
           s"$matchedExprText match { \n " + caseClausesText + "}"
         val matchStmt = ScalaPsiElementFactory
@@ -324,8 +328,9 @@ object TypeCheckToMatchUtil {
 
     if (ifStmts != Nil) {
       val lastElse = ifStmts.last.elseBranch
-      val defaultText: Option[String] =
-        buildDefaultCaseClauseText(lastElse, ifStmt.getProject)
+      val defaultText: Option[String] = buildDefaultCaseClauseText(
+        lastElse,
+        ifStmt.getProject)
       defaultText.foreach(builder.append)
     }
 
@@ -413,8 +418,8 @@ object TypeCheckToMatchUtil {
       name = suggestedNames.head
     } {
       val primary = mutable.ArrayBuffer[ScNamedElement]()
-      val dependents =
-        mutable.SortedSet()(Ordering.by[ScalaPsiElement, Int](_.getTextOffset))
+      val dependents = mutable.SortedSet()(
+        Ordering.by[ScalaPsiElement, Int](_.getTextOffset))
 
       val patternVisitor = new ScalaRecursiveElementVisitor() {
         override def visitPattern(pat: ScPattern) {
@@ -456,10 +461,11 @@ object TypeCheckToMatchUtil {
     conditions match {
       case Nil => None
       case _ =>
-        val guardConditions: List[ScExpression] =
-          conditions.filterNot(equiv(_, isInstOfCall))
-        val guardConditionsText: String =
-          guardConditions.map(_.getText).mkString(" && ")
+        val guardConditions: List[ScExpression] = conditions.filterNot(
+          equiv(_, isInstOfCall))
+        val guardConditionsText: String = guardConditions
+          .map(_.getText)
+          .mkString(" && ")
         val guard = ScalaPsiElementFactory
           .createExpressionFromText(guardConditionsText, condition)
           .asInstanceOf[ScExpression]

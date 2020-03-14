@@ -14,18 +14,17 @@ class ScalaGlobalMemberCompletionTest extends ScalaCodeInsightTestBase {
     baseRootPath() + "completion3/globalMember"
 
   def testGlobalMember1() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   rawObj<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy1.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject1
 
 class TUI {
@@ -40,18 +39,17 @@ class TUI {
   }
 
   def testGlobalMember2() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   globalVal<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy2.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject2
 
 class TUI {
@@ -66,18 +64,17 @@ class TUI {
   }
 
   def testGlobalMember3() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   globalVar<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy3.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject3
 
 class TUI {
@@ -92,18 +89,17 @@ class TUI {
   }
 
   def testGlobalMember4() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   patternVal<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy4.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject4
 
 class TUI {
@@ -118,18 +114,17 @@ class TUI {
   }
 
   def testGlobalMember5() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   patternVar<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy5.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject5
 
 class TUI {
@@ -144,8 +139,7 @@ class TUI {
   }
 
   def testGlobalMember6() {
-    val fileText =
-      """
+    val fileText = """
 import rawObject.RawObject6.importedDef
 
 class TUI {
@@ -153,11 +147,11 @@ class TUI {
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy6.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 import rawObject.RawObject6.importedDef
 
 class TUI {
@@ -172,19 +166,18 @@ class TUI {
   }
 
   def testGlobalMember7() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   imposToR<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy7.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
     assert(activeLookup == null)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   imposToR<caret>
 }
@@ -194,18 +187,17 @@ class TUI {
   }
 
   def testGlobalMemberJava() {
-    val fileText =
-      """
+    val fileText = """
 class TUI {
   activeCoun<caret>
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy7.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
 
-    val resultText =
-      """
+    val resultText = """
 class TUI {
   Thread.activeCount()<caret>
 }
@@ -219,8 +211,7 @@ class TUI {
   }
 
   def testGlobalMember8() {
-    val fileText =
-      """
+    val fileText = """
 object BlahBlahBlahContainer {
   private def doSmthPrivate() {}
   def doSmthPublic() {}
@@ -233,15 +224,15 @@ class Test {
 }
 """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy7.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 2)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 2)
     Assert.assertTrue(
       !activeLookup.exists(_.getLookupString == "doSmthPrivate"))
   }
 
   def testGlobalMember9() {
-    val fileText =
-      """
+    val fileText = """
       object BlahBlahBlahContainer {
         private def doSmthPrivate() {}
         def doSmthPublic() {}
@@ -254,14 +245,14 @@ class Test {
       }
       """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummy7.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 3)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 3)
     Assert.assertTrue(activeLookup.exists(_.getLookupString == "doSmthPrivate"))
   }
 
   def testGlobalMemberInherited() {
-    val fileText =
-      """
+    val fileText = """
       class Base {
         def zeeGlobalDefInherited = 0
         val zeeGlobalValInherited = 0
@@ -281,8 +272,9 @@ class Test {
       }
       """.replaceAll("\r", "").trim()
     configureFromFileTextAdapter("dummyGlobalMemberInherited.scala", fileText)
-    val (activeLookup, _) =
-      complete(completionType = CompletionType.BASIC, time = 3)
+    val (activeLookup, _) = complete(
+      completionType = CompletionType.BASIC,
+      time = 3)
     val lookups = activeLookup.collect {
       case sli: ScalaLookupItem =>
         sli.containingClass.name + "." + sli.getLookupString

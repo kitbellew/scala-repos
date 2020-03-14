@@ -41,14 +41,14 @@ private[akka] class GroupByProcessorImpl(
   var pendingSubstreamOutput: SubstreamOutput = _
 
   // No substream is open yet. If downstream cancels now, we are complete
-  val waitFirst =
-    TransferPhase(primaryInputs.NeedsInput && primaryOutputs.NeedsDemand) { () ⇒
-      val elem = primaryInputs.dequeueInputElement()
-      tryKeyFor(elem) match {
-        case Drop ⇒
-        case key ⇒ nextPhase(openSubstream(elem, key))
-      }
+  val waitFirst = TransferPhase(
+    primaryInputs.NeedsInput && primaryOutputs.NeedsDemand) { () ⇒
+    val elem = primaryInputs.dequeueInputElement()
+    tryKeyFor(elem) match {
+      case Drop ⇒
+      case key ⇒ nextPhase(openSubstream(elem, key))
     }
+  }
 
   // some substreams are open now. If downstream cancels, we still continue until the substreams are closed
   val waitNext = TransferPhase(primaryInputs.NeedsInput) { () ⇒

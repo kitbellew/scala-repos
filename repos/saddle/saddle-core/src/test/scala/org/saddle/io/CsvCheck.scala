@@ -22,8 +22,7 @@ import org.saddle.{na, Index, Vec, Frame, UTF8}
 
 class CsvCheck extends Specification with ScalaCheck {
   "csv string parsing works" in {
-    val data =
-      """a,"b,c,d",e
+    val data = """a,"b,c,d",e
         |1,25,36,
         |4,55, "6"
         |5,9,38
@@ -46,8 +45,7 @@ class CsvCheck extends Specification with ScalaCheck {
   }
 
   "csv int parsing works" in {
-    val data =
-      """a,"b,c,d",e
+    val data = """a,"b,c,d",e
         |1,2,3
         |4,5,"test",
         |7, "8",    "9",   """.stripMargin
@@ -71,8 +69,7 @@ class CsvCheck extends Specification with ScalaCheck {
   }
 
   "csv fails on irregular row" in {
-    val data =
-      """a,"b,c,d",e
+    val data = """a,"b,c,d",e
         |1,2,3
         |4,5
         |7, "8",    "9",   """.stripMargin
@@ -88,8 +85,7 @@ class CsvCheck extends Specification with ScalaCheck {
   }
 
   "csv parsing still works when final field is empty" in {
-    val data =
-      """1,2,3
+    val data = """1,2,3
        |1,2,""".stripMargin
 
     val buf = new BufferedReader(

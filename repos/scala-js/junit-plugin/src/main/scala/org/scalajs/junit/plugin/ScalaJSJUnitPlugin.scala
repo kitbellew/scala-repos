@@ -83,8 +83,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
 
   val name: String = "Scala.js JUnit plugin"
 
-  val components: List[NscPluginComponent] =
-    List(ScalaJSJUnitPluginComponent)
+  val components: List[NscPluginComponent] = List(ScalaJSJUnitPluginComponent)
 
   val description: String = "Makes JUnit test classes invokable in Scala.js"
 
@@ -125,11 +124,10 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
 
       import rootMirror.getRequiredClass
 
-      private val TestClass =
-        getRequiredClass("org.junit.Test")
+      private val TestClass = getRequiredClass("org.junit.Test")
 
-      private val FixMethodOrderClass =
-        getRequiredClass("org.junit.FixMethodOrder")
+      private val FixMethodOrderClass = getRequiredClass(
+        "org.junit.FixMethodOrder")
 
       private val annotationWhiteList = List(
         TestClass,
@@ -140,11 +138,11 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         getRequiredClass("org.junit.Ignore")
       )
 
-      private val jUnitClassMetadataType =
-        getRequiredClass("org.scalajs.junit.JUnitClassMetadata").toType
+      private val jUnitClassMetadataType = getRequiredClass(
+        "org.scalajs.junit.JUnitClassMetadata").toType
 
-      private val jUnitTestMetadataType =
-        getRequiredClass("org.scalajs.junit.JUnitTestBootstrapper").toType
+      private val jUnitTestMetadataType = getRequiredClass(
+        "org.scalajs.junit.JUnitTestBootstrapper").toType
 
       private def jUnitMethodMetadataTypeTree =
         TypeTree(
@@ -211,8 +209,9 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           clazz: ClassDef,
           modDefOption: Option[ClassDef]): ClassDef = {
         val bootSym = clazz.symbol.cloneSymbol
-        val getJUnitMetadataDef =
-          mkGetJUnitMetadataDef(clazz.symbol, modDefOption.map(_.symbol))
+        val getJUnitMetadataDef = mkGetJUnitMetadataDef(
+          clazz.symbol,
+          modDefOption.map(_.symbol))
         val newInstanceDef = genNewInstanceDef(clazz.symbol, bootSym)
         val invokeJUnitMethodDef = {
           val annotatedMethods = modDefOption.fold(List.empty[MethodSymbol]) {
@@ -242,13 +241,19 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
           TypeTree(definitions.ObjectTpe),
           TypeTree(jUnitTestMetadataType)
         )
-        val bootImpl =
-          treeCopy.Template(clazz.impl, bootParents, clazz.impl.self, bootBody)
+        val bootImpl = treeCopy.Template(
+          clazz.impl,
+          bootParents,
+          clazz.impl.self,
+          bootBody)
 
         val bootName = newTypeName(
           clazz.name.toString + "$scalajs$junit$bootstrapper")
-        val bootClazz =
-          gen.mkClassDef(Modifiers(Flags.MODULE), bootName, Nil, bootImpl)
+        val bootClazz = gen.mkClassDef(
+          Modifiers(Flags.MODULE),
+          bootName,
+          Nil,
+          bootImpl)
         bootSym.flags += Flags.MODULE
         bootSym.withoutAnnotations
         bootSym.setName(bootName)
@@ -473,10 +478,11 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
       private def genNewInstanceDef(
           classSym: Symbol,
           bootSymbol: Symbol): DefDef = {
-        val mkNewInstanceDefRhs =
-          mkNewInstance(TypeTree(classSym.typeConstructor), Nil)
-        val mkNewInstanceDefSym =
-          bootSymbol.newMethodSymbol(newTermName("newInstance"))
+        val mkNewInstanceDefRhs = mkNewInstance(
+          TypeTree(classSym.typeConstructor),
+          Nil)
+        val mkNewInstanceDefSym = bootSymbol.newMethodSymbol(
+          newTermName("newInstance"))
         mkNewInstanceDefSym.setInfo(MethodType(Nil, definitions.ObjectTpe))
 
         typer.typedDefDef(newDefDef(mkNewInstanceDefSym, mkNewInstanceDefRhs)())

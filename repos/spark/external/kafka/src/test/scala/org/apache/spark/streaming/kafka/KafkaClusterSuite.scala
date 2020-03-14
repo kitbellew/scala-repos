@@ -49,8 +49,10 @@ class KafkaClusterSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("metadata apis") {
-    val leader =
-      kc.findLeaders(Set(topicAndPartition)).right.get(topicAndPartition)
+    val leader = kc
+      .findLeaders(Set(topicAndPartition))
+      .right
+      .get(topicAndPartition)
     val leaderAddress = s"${leader._1}:${leader._2}"
     assert(leaderAddress === kafkaTestUtils.brokerAddress, "didn't get leader")
 

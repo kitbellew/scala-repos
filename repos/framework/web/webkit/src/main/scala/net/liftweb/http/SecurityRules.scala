@@ -254,28 +254,26 @@ final case class ContentSecurityPolicy(
     * expected by the `Content-Security-Policy` header.
     */
   def contentSecurityPolicyString = {
-    val allRestrictions =
-      List(
-        "default-src" -> defaultSources,
-        "connect-src" -> connectSources,
-        "font-src" -> fontSources,
-        "frame-src" -> frameSources,
-        "img-src" -> imageSources,
-        "media-src" -> mediaSources,
-        "object-src" -> objectSources,
-        "script-src" -> scriptSources,
-        "style-src" -> styleSources
-      )
+    val allRestrictions = List(
+      "default-src" -> defaultSources,
+      "connect-src" -> connectSources,
+      "font-src" -> fontSources,
+      "frame-src" -> frameSources,
+      "img-src" -> imageSources,
+      "media-src" -> mediaSources,
+      "object-src" -> objectSources,
+      "script-src" -> scriptSources,
+      "style-src" -> styleSources
+    )
 
-    val restrictionString =
-      allRestrictions
-        .collect {
-          case (category, restrictions) if restrictions.nonEmpty =>
-            category +
-              " " +
-              restrictions.map(_.sourceRestrictionString).mkString(" ")
-        }
-        .mkString("; ")
+    val restrictionString = allRestrictions
+      .collect {
+        case (category, restrictions) if restrictions.nonEmpty =>
+          category +
+            " " +
+            restrictions.map(_.sourceRestrictionString).mkString(" ")
+      }
+      .mkString("; ")
 
     reportUri.map { uri => s"$restrictionString; report-uri $uri" } getOrElse {
       restrictionString
@@ -348,23 +346,22 @@ object ContentSecurityPolicyViolation extends LazyLoggable {
   def defaultViolationHandler: DispatchPF = {
     case request @ Req(start :: "content-security-policy-report" :: Nil, _, _)
         if start == LiftRules.liftContextRelativePath =>
-      val violation =
-        for {
-          requestJson <- request.json
-          camelCasedJson = requestJson.transformField {
-            case JField("document-uri", content) =>
-              JField("documentUri", content)
-            case JField("blocked-uri", content) =>
-              JField("blockedUri", content)
-            case JField("violated-directive", content) =>
-              JField("violatedDirective", content)
-            case JField("original-policy", content) =>
-              JField("originalPolicy", content)
-          }
-          violationJson = camelCasedJson \ "csp-report"
-          extractedViolation <- tryo(
-            violationJson.extract[ContentSecurityPolicyViolation])
-        } yield { extractedViolation }
+      val violation = for {
+        requestJson <- request.json
+        camelCasedJson = requestJson.transformField {
+          case JField("document-uri", content) =>
+            JField("documentUri", content)
+          case JField("blocked-uri", content) =>
+            JField("blockedUri", content)
+          case JField("violated-directive", content) =>
+            JField("violatedDirective", content)
+          case JField("original-policy", content) =>
+            JField("originalPolicy", content)
+        }
+        violationJson = camelCasedJson \ "csp-report"
+        extractedViolation <- tryo(
+          violationJson.extract[ContentSecurityPolicyViolation])
+      } yield { extractedViolation }
 
       () => {
         violation match {

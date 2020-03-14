@@ -15,8 +15,8 @@ case class MethodCallTrace(
     className + "." + methodName + methodDescriptor
 }
 object MethodCallTrace {
-  implicit val ordering: Ordering[MethodCallTrace] =
-    Ordering.by(x => (x.className, x.methodName, x.methodDescriptor))
+  implicit val ordering: Ordering[MethodCallTrace] = Ordering.by(x =>
+    (x.className, x.methodName, x.methodDescriptor))
 }
 
 /**

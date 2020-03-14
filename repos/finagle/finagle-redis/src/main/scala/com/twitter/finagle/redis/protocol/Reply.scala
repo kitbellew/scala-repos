@@ -121,8 +121,7 @@ class ReplyCodec extends UnifiedProtocolCodec {
       }
     }
 
-  def decodeMBulkReply(argCount: Long) =
-    decodeMBulkLines(argCount, Nil, Nil)
+  def decodeMBulkReply(argCount: Long) = decodeMBulkLines(argCount, Nil, Nil)
 
   def decodeMBulkLines(
       i: Long,

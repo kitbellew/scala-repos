@@ -194,8 +194,8 @@ object SerializationExamples extends Specification {
 }
 
 object ShortTypeHintExamples extends TypeHintExamples {
-  implicit val formats =
-    Serialization.formats(ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
+  implicit val formats = Serialization.formats(
+    ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
 
   "Deserialization succeeds even if jsonClass is not the first field" in {
     val ser = """{"animals":[],"pet":{"name":"pluto","jsonClass":"Dog"}}"""
@@ -267,8 +267,9 @@ trait TypeHintExamples extends Specification {
   implicit val formats: Formats
 
   "Polymorphic List serialization example" in {
-    val animals =
-      Animals(Dog("pluto") :: Fish(1.2) :: Dog("devil") :: Nil, Dog("pluto"))
+    val animals = Animals(
+      Dog("pluto") :: Fish(1.2) :: Dog("devil") :: Nil,
+      Dog("pluto"))
     val ser = swrite(animals)
     read[Animals](ser) mustEqual animals
   }

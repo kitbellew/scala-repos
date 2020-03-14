@@ -131,8 +131,9 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
       logInfo("Input split: " + split.serializableHadoopSplit)
       val conf = getConf(isDriverSide = false)
 
-      val inputMetrics =
-        context.taskMetrics().registerInputMetrics(DataReadMethod.Hadoop)
+      val inputMetrics = context
+        .taskMetrics()
+        .registerInputMetrics(DataReadMethod.Hadoop)
       val existingBytesRead = inputMetrics.bytesRead
 
       // Sets the thread local variable for the file's name
@@ -277,8 +278,9 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
     val locs = HadoopRDD.SPLIT_INFO_REFLECTIONS match {
       case Some(c) =>
         try {
-          val infos =
-            c.newGetLocationInfo.invoke(split).asInstanceOf[Array[AnyRef]]
+          val infos = c.newGetLocationInfo
+            .invoke(split)
+            .asInstanceOf[Array[AnyRef]]
           Some(HadoopRDD.convertSplitLocationInfo(infos))
         } catch {
           case e: Exception =>

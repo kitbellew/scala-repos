@@ -58,8 +58,7 @@ object Tag {
     /** Tag `fa`'s return type.  Allows inference of `A` to "flow through" from
       * the enclosing context.
       */
-    def onF[A, B](fa: A => B): A => (B @@ T) =
-      subst[A => ?, B](fa)
+    def onF[A, B](fa: A => B): A => (B @@ T) = subst[A => ?, B](fa)
 
     /** One variant of `subst` with different inference. */
     def onCov[FA](fa: FA)(implicit U: Unapply[Functor, FA]): U.M[U.A @@ T] =
@@ -67,8 +66,7 @@ object Tag {
 
     /** One variant of `subst` with different inference. */
     def onContra[FA](fa: FA)(
-        implicit U: Unapply[Contravariant, FA]): U.M[U.A @@ T] =
-      subst(U(fa))
+        implicit U: Unapply[Contravariant, FA]): U.M[U.A @@ T] = subst(U(fa))
 
     /** Like `Tag.unsubst`, but specify only the `T`. */
     def unsubst[F[_], A](fa: F[A @@ T]): F[A] = Tag.unsubst(fa)

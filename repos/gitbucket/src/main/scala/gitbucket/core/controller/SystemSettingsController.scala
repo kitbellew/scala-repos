@@ -203,8 +203,10 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   })
 
   get("/admin/users")(adminOnly {
-    val includeRemoved =
-      params.get("includeRemoved").map(_.toBoolean).getOrElse(false)
+    val includeRemoved = params
+      .get("includeRemoved")
+      .map(_.toBoolean)
+      .getOrElse(false)
     val users = getAllUsers(includeRemoved)
     val members = users.collect {
       case account if (account.isGroupAccount) =>

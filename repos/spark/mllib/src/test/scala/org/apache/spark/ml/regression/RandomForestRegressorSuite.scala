@@ -138,20 +138,21 @@ private object RandomForestRegressorSuite extends SparkFunSuite {
       rf: RandomForestRegressor,
       categoricalFeatures: Map[Int, Int]): Unit = {
     val numFeatures = data.first().features.size
-    val oldStrategy =
-      rf.getOldStrategy(
-        categoricalFeatures,
-        numClasses = 0,
-        OldAlgo.Regression,
-        rf.getOldImpurity)
+    val oldStrategy = rf.getOldStrategy(
+      categoricalFeatures,
+      numClasses = 0,
+      OldAlgo.Regression,
+      rf.getOldImpurity)
     val oldModel = OldRandomForest.trainRegressor(
       data,
       oldStrategy,
       rf.getNumTrees,
       rf.getFeatureSubsetStrategy,
       rf.getSeed.toInt)
-    val newData: DataFrame =
-      TreeTests.setMetadata(data, categoricalFeatures, numClasses = 0)
+    val newData: DataFrame = TreeTests.setMetadata(
+      data,
+      categoricalFeatures,
+      numClasses = 0)
     val newModel = rf.fit(newData)
     // Use parent from newTree since this is not checked anyways.
     val oldModelAsNew = RandomForestRegressionModel.fromOld(

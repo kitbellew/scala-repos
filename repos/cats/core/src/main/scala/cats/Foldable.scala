@@ -261,8 +261,7 @@ import simulacrum.typeclass
   def isEmpty[A](fa: F[A]): Boolean =
     foldRight(fa, Eval.True)((_, _) => Eval.False).value
 
-  def nonEmpty[A](fa: F[A]): Boolean =
-    !isEmpty(fa)
+  def nonEmpty[A](fa: F[A]): Boolean = !isEmpty(fa)
 
   /**
     * Compose this `Foldable[F]` with a `Foldable[G]` to create
@@ -299,8 +298,7 @@ trait CompositeFoldable[F[_], G[_]] extends Foldable[λ[α => F[G[α]]]] {
 object Foldable {
   def iterateRight[A, B](it: Iterator[A], lb: Eval[B])(
       f: (A, Eval[B]) => Eval[B]): Eval[B] = {
-    def loop(): Eval[B] =
-      Eval.defer(if (it.hasNext) f(it.next, loop()) else lb)
+    def loop(): Eval[B] = Eval.defer(if (it.hasNext) f(it.next, loop()) else lb)
     loop()
   }
 }

@@ -50,8 +50,8 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     if (RequireCookie) Some(getString("akka.remote.secure-cookie")) else None
 
   val HandshakeTimeout: FiniteDuration = {
-    val enabledTransports =
-      config.getStringList("akka.remote.enabled-transports")
+    val enabledTransports = config.getStringList(
+      "akka.remote.enabled-transports")
     if (enabledTransports.contains("akka.remote.netty.tcp"))
       config.getMillisDuration("akka.remote.netty.tcp.connection-timeout")
     else if (enabledTransports.contains("akka.remote.netty.ssl"))

@@ -5,25 +5,20 @@ import Id._
 final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   import WriterT._
 
-  def off: UnwriterT[F, W, A] =
-    UnwriterT(run)
+  def off: UnwriterT[F, W, A] = UnwriterT(run)
 
   /** alias for `off` */
-  def unary_- : UnwriterT[F, W, A] =
-    UnwriterT(run)
+  def unary_- : UnwriterT[F, W, A] = UnwriterT(run)
 
   def mapValue[X, B](f: ((W, A)) => (X, B))(
-      implicit F: Functor[F]): WriterT[F, X, B] =
-    writerT(F.map(run)(f))
+      implicit F: Functor[F]): WriterT[F, X, B] = writerT(F.map(run)(f))
 
   def mapWritten[X](f: W => X)(implicit F: Functor[F]): WriterT[F, X, A] =
     mapValue(wa => (f(wa._1), wa._2))
 
-  def written(implicit F: Functor[F]): F[W] =
-    F.map(run)(_._1)
+  def written(implicit F: Functor[F]): F[W] = F.map(run)(_._1)
 
-  def value(implicit F: Functor[F]): F[A] =
-    F.map(run)(_._2)
+  def value(implicit F: Functor[F]): F[A] = F.map(run)(_._2)
 
   def swap(implicit F: Functor[F]): WriterT[F, A, W] =
     mapValue(wa => (wa._2, wa._1))
@@ -59,8 +54,7 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
 
   def flatMap[B](f: A => WriterT[F, W, B])(implicit
       F: Bind[F],
-      s: Semigroup[W]): WriterT[F, W, B] =
-    flatMapF(f.andThen(_.run))
+      s: Semigroup[W]): WriterT[F, W, B] = flatMapF(f.andThen(_.run))
 
   def flatMapF[B](f: A => F[(W, B)])(implicit
       F: Bind[F],
@@ -323,8 +317,7 @@ trait WriterTFunctions {
       l: Leibniz.===[AB, (A0, B0)]
   ): WriterT[u1.M, A0, B0] = WriterT(l.subst[u1.M](u1(fab)))
 
-  def writer[W, A](v: (W, A)): Writer[W, A] =
-    writerT[Id, W, A](v)
+  def writer[W, A](v: (W, A)): Writer[W, A] = writerT[Id, W, A](v)
 
   def tell[W](w: W): Writer[W, Unit] = writer((w, ()))
 
@@ -434,8 +427,7 @@ private trait WriterTMonadError[F[_], E, W]
   override def handleError[A](fa: WriterT[F, W, A])(f: E => WriterT[F, W, A]) =
     WriterT[F, W, A](F.handleError(fa.run)(f(_).run))
 
-  override def raiseError[A](e: E) =
-    WriterT[F, W, A](F.raiseError[(W, A)](e))
+  override def raiseError[A](e: E) = WriterT[F, W, A](F.raiseError[(W, A)](e))
 }
 
 private trait WriterTFoldable[F[_], W]
@@ -468,8 +460,7 @@ private trait WriterTBitraverse[F[_]]
   implicit def F: Traverse[F]
 
   def bitraverseImpl[G[_]: Applicative, A, B, C, D](
-      fab: WriterT[F, A, B])(f: A => G[C], g: B => G[D]) =
-    fab.bitraverse(f, g)
+      fab: WriterT[F, A, B])(f: A => G[C], g: B => G[D]) = fab.bitraverse(f, g)
 }
 
 private trait WriterComonad[W]
@@ -481,8 +472,7 @@ private trait WriterComonad[W]
     Writer(fa.written, fa)
 
   override def cobind[A, B](fa: Writer[W, A])(
-      f: (Writer[W, A]) => B): Writer[W, B] =
-    Writer(fa.written, f(fa))
+      f: (Writer[W, A]) => B): Writer[W, B] = Writer(fa.written, f(fa))
 }
 
 private trait WriterTHoist[W] extends Hoist[λ[(α[_], β) => WriterT[α, W, β]]] {

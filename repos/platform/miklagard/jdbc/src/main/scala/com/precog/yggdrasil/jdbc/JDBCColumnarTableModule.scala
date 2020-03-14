@@ -222,8 +222,8 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         // Here's where things get tricky. We support postgresql for now, but this code needs changed if we want to support something else
         if (meta.getClass.toString.contains("postgresql")) {
           new DBColumns {
-            private[this] var buildColumns =
-              Map.empty[ColumnRef, ArrayColumn[_]]
+            private[this] var buildColumns = Map
+              .empty[ColumnRef, ArrayColumn[_]]
 
             def columns = buildColumns.toSeq
 
@@ -325,9 +325,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
           fields
             .map {
               case (name, childType) =>
-                val newPaths = if (current.nonEmpty) {
-                  current.map { s => s + "." + name }
-                } else { Set(name) }
+                val newPaths =
+                  if (current.nonEmpty) { current.map { s => s + "." + name } }
+                  else { Set(name) }
                 jTypeToProperties(childType, newPaths)
             }
             .toSet
@@ -337,8 +337,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       }
 
     case class Query(expr: String, limit: Int) {
-      private val baseQuery = if (limit > 0) { expr + " LIMIT " + limit }
-      else { expr }
+      private val baseQuery =
+        if (limit > 0) { expr + " LIMIT " + limit }
+        else { expr }
 
       def atOffset(offset: Long) =
         if (offset > 0) { baseQuery + " OFFSET " + offset }
@@ -461,9 +462,10 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             val columns = valColumns.flatMap(_.columns).toMap
           }
 
-          val nextSkip = if (rowIndex == yggConfig.maxSliceSize) {
-            Some(skip + yggConfig.maxSliceSize)
-          } else { None }
+          val nextSkip =
+            if (rowIndex == yggConfig.maxSliceSize) {
+              Some(skip + yggConfig.maxSliceSize)
+            } else { None }
 
           (slice, nextSkip)
         } finally { conn.close() }

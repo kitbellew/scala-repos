@@ -33,8 +33,7 @@ sealed abstract class Cofree[S[_], A] {
 
   /** Redecorates this structure with a computation whose context is the entire structure under that value. */
   final def extend[B](f: Cofree[S, A] => B)(
-      implicit S: Functor[S]): Cofree[S, B] =
-    applyTail(f(this), _ extend f)
+      implicit S: Functor[S]): Cofree[S, B] = applyTail(f(this), _ extend f)
 
   /** Folds over this cofree structure, returning all the intermediate values in a new structure. */
   def scanr[B](g: (A, S[Cofree[S, B]]) => B)(
@@ -65,8 +64,7 @@ sealed abstract class Cofree[S[_], A] {
 
   /** Replaces the head with `b` and applies `g` through the tail. */
   final def applyTail[B](b: B, g: Cofree[S, A] => Cofree[S, B])(
-      implicit S: Functor[S]): Cofree[S, B] =
-    applyCofree(x => b, g)
+      implicit S: Functor[S]): Cofree[S, B] = applyCofree(x => b, g)
 
   /** Applies a function `f` to a value in this comonad and a corresponding value in the dual monad, annihilating both. */
   final def zapWith[G[_], B, C](bs: Free[G, B])(
@@ -108,8 +106,7 @@ object Cofree extends CofreeInstances {
 
   private[scalaz] final def CofreeZip[F[_], A](
       head: A,
-      tail: F[Cofree[F, A]]): CofreeZip[F, A] =
-    Tags.Zip(Cofree(head, tail))
+      tail: F[Cofree[F, A]]): CofreeZip[F, A] = Tags.Zip(Cofree(head, tail))
 
   /** Cofree corecursion. */
   def unfoldC[F[_], A](a: A)(f: A => F[A])(

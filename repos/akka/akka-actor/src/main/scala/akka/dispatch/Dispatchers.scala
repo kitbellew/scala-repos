@@ -63,9 +63,8 @@ class Dispatchers(
 
   val cachingConfig = new CachingConfig(settings.config)
 
-  val defaultDispatcherConfig: Config =
-    idConfig(DefaultDispatcherId).withFallback(
-      settings.config.getConfig(DefaultDispatcherId))
+  val defaultDispatcherConfig: Config = idConfig(DefaultDispatcherId)
+    .withFallback(settings.config.getConfig(DefaultDispatcherId))
 
   /**
     * The one and only default dispatcher.
@@ -242,9 +241,8 @@ class DispatcherConfigurator(
   * INTERNAL API
   */
 private[akka] object BalancingDispatcherConfigurator {
-  private val defaultRequirement =
-    ConfigFactory.parseString(
-      "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
+  private val defaultRequirement = ConfigFactory.parseString(
+    "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
     if (config.getString(
           "mailbox-requirement") != Mailboxes.NoMailboxRequirement) config

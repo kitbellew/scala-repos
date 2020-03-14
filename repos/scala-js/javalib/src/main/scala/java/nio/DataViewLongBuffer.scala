@@ -22,28 +22,23 @@ private[nio] final class DataViewLongBuffer private (
   def isDirect(): Boolean = true
 
   @noinline
-  def slice(): LongBuffer =
-    GenDataViewBuffer(this).generic_slice()
+  def slice(): LongBuffer = GenDataViewBuffer(this).generic_slice()
 
   @noinline
-  def duplicate(): LongBuffer =
-    GenDataViewBuffer(this).generic_duplicate()
+  def duplicate(): LongBuffer = GenDataViewBuffer(this).generic_duplicate()
 
   @noinline
   def asReadOnlyBuffer(): LongBuffer =
     GenDataViewBuffer(this).generic_asReadOnlyBuffer()
 
   @noinline
-  def get(): Long =
-    GenBuffer(this).generic_get()
+  def get(): Long = GenBuffer(this).generic_get()
 
   @noinline
-  def put(l: Long): LongBuffer =
-    GenBuffer(this).generic_put(l)
+  def put(l: Long): LongBuffer = GenBuffer(this).generic_put(l)
 
   @noinline
-  def get(index: Int): Long =
-    GenBuffer(this).generic_get(index)
+  def get(index: Int): Long = GenBuffer(this).generic_get(index)
 
   @noinline
   def put(index: Int, l: Long): LongBuffer =
@@ -58,11 +53,9 @@ private[nio] final class DataViewLongBuffer private (
     GenBuffer(this).generic_put(src, offset, length)
 
   @noinline
-  def compact(): LongBuffer =
-    GenDataViewBuffer(this).generic_compact()
+  def compact(): LongBuffer = GenDataViewBuffer(this).generic_compact()
 
-  def order(): ByteOrder =
-    GenDataViewBuffer(this).generic_order()
+  def order(): ByteOrder = GenDataViewBuffer(this).generic_order()
 
   // Internal API
 

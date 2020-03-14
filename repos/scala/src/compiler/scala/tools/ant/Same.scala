@@ -50,17 +50,13 @@ import org.apache.tools.ant.types.Mapper
 **                             Properties setters                             **
 \*============================================================================*/
 
-  def setDir(input: File) =
-    origin = Some(input)
+  def setDir(input: File) = origin = Some(input)
 
-  def setTodir(input: File) =
-    destination = Some(input)
+  def setTodir(input: File) = destination = Some(input)
 
-  def setResultproperty(input: String) =
-    resultProperty = Some(input)
+  def setResultproperty(input: String) = resultProperty = Some(input)
 
-  def setFailondifferent(input: Boolean) =
-    failing = input
+  def setFailondifferent(input: Boolean) = failing = input
 
   def createMapper(): Mapper =
     if (mapperElement.isEmpty) {
@@ -72,8 +68,7 @@ import org.apache.tools.ant.types.Mapper
         "Cannot define more than one mapper",
         getLocation)
 
-  def add(fileNameMapper: FileNameMapper) =
-    createMapper().add(fileNameMapper)
+  def add(fileNameMapper: FileNameMapper) = createMapper().add(fileNameMapper)
 
   /*============================================================================*\
 **                             Properties getters                             **

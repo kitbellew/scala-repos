@@ -134,8 +134,9 @@ final class VectorSlicer(override val uid: String)
 
   /** Get the feature indices in order: indices, names */
   private def getSelectedFeatureIndices(schema: StructType): Array[Int] = {
-    val nameFeatures =
-      MetadataUtils.getFeatureIndicesFromNames(schema($(inputCol)), $(names))
+    val nameFeatures = MetadataUtils.getFeatureIndicesFromNames(
+      schema($(inputCol)),
+      $(names))
     val indFeatures = $(indices)
     val numDistinctFeatures = (nameFeatures ++ indFeatures).distinct.length
     lazy val errMsg = "VectorSlicer requires indices and names to be disjoint" +

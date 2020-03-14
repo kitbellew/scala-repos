@@ -5,8 +5,7 @@ import Iteratee._
 import Id._
 
 trait IterateeFunctions {
-  def iteratee[E, A](s: Step[E, A]): Iteratee[E, A] =
-    iterateeT[E, Id, A](s)
+  def iteratee[E, A](s: Step[E, A]): Iteratee[E, A] = iterateeT[E, Id, A](s)
 
   /**
     * Repeats the given iteratee by appending with the given monoid.
@@ -92,8 +91,7 @@ trait IterateeFunctions {
     */
   def takeUntil[A, F[_]](p: A => Boolean)(implicit
       mon: Monoid[F[A]],
-      pt: Applicative[F]): Iteratee[A, F[A]] =
-    takeWhile(!p(_))
+      pt: Applicative[F]): Iteratee[A, F[A]] = takeWhile(!p(_))
 
   /**
     * Produces chunked output split by the given predicate.

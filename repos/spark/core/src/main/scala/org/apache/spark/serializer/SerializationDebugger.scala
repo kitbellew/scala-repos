@@ -194,8 +194,9 @@ private[spark] object SerializationDebugger extends Logging {
           // then its not obvious which fields of the class will be serialized as the writeObject()
           // can choose arbitrary fields for serialization. This case is handled separately.
           val elem = s"writeObject data (class: ${slotDesc.getName})"
-          val childStack =
-            visitSerializableWithWriteObjectMethod(finalObj, elem :: stack)
+          val childStack = visitSerializableWithWriteObjectMethod(
+            finalObj,
+            elem :: stack)
           if (childStack.nonEmpty) { return childStack }
         } else {
           // Visit all the fields objects of the class corresponding to the current slot.
@@ -378,16 +379,16 @@ private[spark] object SerializationDebugger extends Logging {
 
     /** ObjectStreamClass.hasWriteObjectMethod */
     val HasWriteObjectMethod: Method = {
-      val f =
-        classOf[ObjectStreamClass].getDeclaredMethod("hasWriteObjectMethod")
+      val f = classOf[ObjectStreamClass].getDeclaredMethod(
+        "hasWriteObjectMethod")
       f.setAccessible(true)
       f
     }
 
     /** ObjectStreamClass.hasWriteReplaceMethod */
     val HasWriteReplaceMethod: Method = {
-      val f =
-        classOf[ObjectStreamClass].getDeclaredMethod("hasWriteReplaceMethod")
+      val f = classOf[ObjectStreamClass].getDeclaredMethod(
+        "hasWriteReplaceMethod")
       f.setAccessible(true)
       f
     }

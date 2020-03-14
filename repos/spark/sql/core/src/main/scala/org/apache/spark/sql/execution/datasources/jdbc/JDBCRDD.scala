@@ -157,13 +157,15 @@ private[sql] object JDBCRDD extends Logging {
             val metadata = new MetadataBuilder()
               .putString("name", columnName)
               .putLong("scale", fieldScale)
-            val columnType =
-              dialect
-                .getCatalystType(dataType, typeName, fieldSize, metadata)
-                .getOrElse(
-                  getCatalystType(dataType, fieldSize, fieldScale, isSigned))
-            fields(i) =
-              StructField(columnName, columnType, nullable, metadata.build())
+            val columnType = dialect
+              .getCatalystType(dataType, typeName, fieldSize, metadata)
+              .getOrElse(
+                getCatalystType(dataType, fieldSize, fieldScale, isSigned))
+            fields(i) = StructField(
+              columnName,
+              columnType,
+              nullable,
+              metadata.build())
             i = i + 1
           }
           return new StructType(fields)
@@ -265,8 +267,8 @@ private[sql] object JDBCRDD extends Logging {
       filters: Array[Filter],
       parts: Array[Partition]): RDD[InternalRow] = {
     val dialect = JdbcDialects.get(url)
-    val quotedColumns =
-      requiredColumns.map(colName => dialect.quoteIdentifier(colName))
+    val quotedColumns = requiredColumns.map(colName =>
+      dialect.quoteIdentifier(colName))
     new JDBCRDD(
       sc,
       JdbcUtils.createConnectionFactory(url, properties),
@@ -314,8 +316,9 @@ private[sql] class JDBCRDD(
   /**
     * `filters`, but as a WHERE clause suitable for injection into a SQL query.
     */
-  private val filterWhereClause: String =
-    filters.flatMap(JDBCRDD.compileFilter).mkString(" AND ")
+  private val filterWhereClause: String = filters
+    .flatMap(JDBCRDD.compileFilter)
+    .mkString(" AND ")
 
   /**
     * A WHERE clause representing both `filters`, if any, and the current partition.

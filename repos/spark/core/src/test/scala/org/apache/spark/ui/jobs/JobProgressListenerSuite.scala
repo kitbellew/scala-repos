@@ -377,8 +377,8 @@ class JobProgressListenerSuite
       val shuffleReadMetrics = taskMetrics.registerTempShuffleReadMetrics()
       val shuffleWriteMetrics = taskMetrics.registerShuffleWriteMetrics()
       val inputMetrics = taskMetrics.registerInputMetrics(DataReadMethod.Hadoop)
-      val outputMetrics =
-        taskMetrics.registerOutputMetrics(DataWriteMethod.Hadoop)
+      val outputMetrics = taskMetrics.registerOutputMetrics(
+        DataWriteMethod.Hadoop)
       shuffleReadMetrics.incRemoteBytesRead(base + 1)
       shuffleReadMetrics.incLocalBytesRead(base + 9)
       shuffleReadMetrics.incRemoteBlocksFetched(base + 2)

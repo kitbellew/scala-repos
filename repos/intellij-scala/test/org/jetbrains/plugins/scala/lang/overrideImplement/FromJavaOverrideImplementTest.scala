@@ -51,22 +51,19 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testDefaultImplementations(): Unit = {
-    val javaText =
-      """
+    val javaText = """
         |public interface JavaDummy {
         |    default int foo() {
         |      return 1;
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy {
         |  <caret>
         |}
       """
-    val expectedText =
-      """
+    val expectedText = """
         |class Child extends JavaDummy {
         |  override def foo(): Int = super.foo()
         |}
@@ -81,20 +78,17 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testVarargImplement() {
-    val javaText =
-      """
+    val javaText = """
         |public abstract class JavaDummy {
         |    public abstract void vararg(int... args);
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy {
         |  <caret>
         |}
       """
-    val expectedText =
-      """
+    val expectedText = """
         |class Child extends JavaDummy {
         |  def vararg(args: Int*): Unit = ???
         |}
@@ -109,14 +103,12 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testVarargOverride() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy {
         |    public void vararg(int... args) {}
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy {
         |  <caret>
         |}
@@ -137,20 +129,17 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testKeywordNames() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy {
         |    public void def(int val) {}
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy {
         |  <caret>
         |}
       """
-    val expectedText =
-      """
+    val expectedText = """
         |class Child extends JavaDummy {
         |  override def `def`(`val`: Int) = super.`def`(`val`)
         |}
@@ -165,8 +154,7 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testWithOverrideAnnotation() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy {
         |    public void method(int number) {}
         |    public static class Inner extends JavaDummy {
@@ -177,8 +165,7 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy.Inner {
         | <caret>
         |}
@@ -199,8 +186,7 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testWithoutOverrideAnnotation() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy {
         |    public void method(int number) {}
         |    public static class Inner extends JavaDummy {
@@ -210,8 +196,7 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy.Inner {
         | <caret>
         |}
@@ -232,22 +217,19 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testSimpleGenerics() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy<T> {
         |    public T method(T arg) {
         |        return arg;
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy[Int] {
         | <caret>
         |}
       """
-    val expected =
-      """
+    val expected = """
         |class Child extends JavaDummy[Int] {
         |  override def method(arg: Int): Int = super.method(arg)
         |}
@@ -262,22 +244,19 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testSimpleGenerics2() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy<T> {
         |    public T method(T arg) {
         |        return arg;
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child[S] extends JavaDummy[S] {
         | <caret>
         |}
       """
-    val expected =
-      """
+    val expected = """
         |class Child[S] extends JavaDummy[S] {
         |  override def method(arg: S): S = super.method(arg)
         |}
@@ -292,16 +271,14 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testGenerics() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy<T, S> {
         |    public T method(JavaDummy<? extends T, ? super S> arg) {
         |        return null;
         |    }
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy[Int, Boolean] {
         | <caret>
         |}
@@ -332,8 +309,7 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
         |    public static interface DummyInterface<S> {}
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy[Int] {
         |  <caret>
         |}
@@ -356,20 +332,17 @@ class FromJavaOverrideImplementTest extends JavaCodeInsightFixtureTestCase {
   }
 
   def testQueryLikeMethod() {
-    val javaText =
-      """
+    val javaText = """
         |public class JavaDummy<T> {
         |    public int getValue() {return 0;}
         |}
       """
-    val scalaText =
-      """
+    val scalaText = """
         |class Child extends JavaDummy[Int] {
         |  <caret>
         |}
       """
-    val expectedText =
-      """
+    val expectedText = """
         |class Child extends JavaDummy[Int] {
         |  override def getValue: Int = super.getValue
         |}

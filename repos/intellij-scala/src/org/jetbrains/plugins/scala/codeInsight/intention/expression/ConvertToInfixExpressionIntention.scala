@@ -34,8 +34,10 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       element: PsiElement): Boolean = {
     if (!IntentionAvailabilityChecker.checkIntention(this, element))
       return false
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null) return false
     val referenceExpr = methodCallExpr.getInvokedExpr match {
       case ref: ScReferenceExpression => ref
@@ -55,8 +57,10 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
   }
 
   override def invoke(project: Project, editor: Editor, element: PsiElement) {
-    val methodCallExpr: ScMethodCall =
-      PsiTreeUtil.getParentOfType(element, classOf[ScMethodCall], false)
+    val methodCallExpr: ScMethodCall = PsiTreeUtil.getParentOfType(
+      element,
+      classOf[ScMethodCall],
+      false)
     if (methodCallExpr == null || !methodCallExpr.isValid) return
 
     val referenceExpr = methodCallExpr.getInvokedExpr match {
@@ -110,10 +114,12 @@ class ConvertToInfixExpressionIntention extends PsiElementBaseIntentionAction {
       forB = argsBuilder.toString().drop(1).dropRight(1)
     }
 
-    val exprA: ScExpression =
-      ScalaPsiElementFactory.createExpressionFromText(forA, element.getManager)
-    val exprB: ScExpression =
-      ScalaPsiElementFactory.createExpressionFromText(forB, element.getManager)
+    val exprA: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
+      forA,
+      element.getManager)
+    val exprB: ScExpression = ScalaPsiElementFactory.createExpressionFromText(
+      forB,
+      element.getManager)
 
     val expr = putArgsFirst match {
       case true  => argsBuilder.append(" ").append(invokedExprBuilder)

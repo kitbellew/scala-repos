@@ -31,8 +31,9 @@ object Release {
       val projectRef = extracted.get(thisProjectRef)
       val repo = extracted.get(Publish.defaultPublishTo)
       val state1 = extracted.runAggregated(publishSigned in projectRef, state)
-      val (state2, Seq(api, japi)) =
-        extracted.runTask(unidoc in Compile, state1)
+      val (state2, Seq(api, japi)) = extracted.runTask(
+        unidoc in Compile,
+        state1)
       val (state3, docs) = extracted.runTask(generate in Sphinx, state2)
       val (state4, _) = extracted.runTask(Dist.dist, state3)
       val (state5, activatorDist) = extracted.runTask(

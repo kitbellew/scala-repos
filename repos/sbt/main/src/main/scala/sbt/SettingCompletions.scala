@@ -82,8 +82,8 @@ private[sbt] object SettingCompletions {
       currentRef.build,
       rootProject,
       settings)
-    val newSession =
-      session.appendSettings(append map (a => (a, arg.split('\n').toList)))
+    val newSession = session.appendSettings(
+      append map (a => (a, arg.split('\n').toList)))
     val struct = extracted.structure
     val r = relation(newSession.mergeSettings, true)(
       structure.delegates,

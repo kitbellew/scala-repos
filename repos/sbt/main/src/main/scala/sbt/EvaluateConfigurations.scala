@@ -98,8 +98,9 @@ object EvaluateConfigurations {
       lines: Seq[String],
       builtinImports: Seq[String],
       offset: Int): ParsedFile = {
-    val (importStatements, settingsAndDefinitions) =
-      splitExpressions(file, lines)
+    val (importStatements, settingsAndDefinitions) = splitExpressions(
+      file,
+      lines)
     val allImports =
       builtinImports.map(s => (s, -1)) ++ addOffset(offset, importStatements)
     val (definitions, settings) = splitSettingsDefinitions(
@@ -173,10 +174,9 @@ object EvaluateConfigurations {
     val allGeneratedFiles =
       (definitions.generated ++ dslEntries.flatMap(_.generated))
     loader => {
-      val projects =
-        definitions.values(loader).collect {
-          case p: Project => resolveBase(file.getParentFile, p)
-        }
+      val projects = definitions.values(loader).collect {
+        case p: Project => resolveBase(file.getParentFile, p)
+      }
       val (settingsRaw, manipulationsRaw) =
         dslEntries map (_.result apply loader) partition {
           case internals.ProjectSettings(_) => true
@@ -218,10 +218,9 @@ object EvaluateConfigurations {
     * The name of the class we cast DSL "setting" (vs. definition) lines to.
     */
   val SettingsDefinitionName = {
-    val _ =
-      classOf[
-        sbt.internals.DslEntry
-      ] // this line exists to try to provide a compile-time error when the following line needs to be changed
+    val _ = classOf[
+      sbt.internals.DslEntry
+    ] // this line exists to try to provide a compile-time error when the following line needs to be changed
     "sbt.internals.DslEntry"
   }
 
@@ -429,8 +428,9 @@ object Index {
         case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
       } mkString ("Some keys were defined with the same name but different types: ", ", ", ""))
   }
-  private[this] type TriggerMap =
-    collection.mutable.HashMap[Task[_], Seq[Task[_]]]
+  private[this] type TriggerMap = collection.mutable.HashMap[
+    Task[_],
+    Seq[Task[_]]]
   def triggers(ss: Settings[Scope]): Triggers[Task] = {
     val runBefore = new TriggerMap
     val triggeredBy = new TriggerMap

@@ -132,12 +132,9 @@ private[sql] class ExchangeCoordinator(
         // only have a single post-shuffle partition.
         // There is no particular reason that we pick 16. We just need a number to
         // prevent maxPostShuffleInputSize from being set to 0.
-        val maxPostShuffleInputSize =
-          math.max(
-            math
-              .ceil(totalPostShuffleInputSize / numPartitions.toDouble)
-              .toLong,
-            16)
+        val maxPostShuffleInputSize = math.max(
+          math.ceil(totalPostShuffleInputSize / numPartitions.toDouble).toLong,
+          16)
         math.min(maxPostShuffleInputSize, advisoryTargetPostShuffleInputSize)
 
       case None => advisoryTargetPostShuffleInputSize
@@ -216,10 +213,10 @@ private[sql] class ExchangeCoordinator(
           new JHashMap[ShuffleExchange, ShuffledRowRDD](numExchanges)
 
         // Submit all map stages
-        val shuffleDependencies =
-          ArrayBuffer[ShuffleDependency[Int, InternalRow, InternalRow]]()
-        val submittedStageFutures =
-          ArrayBuffer[SimpleFutureAction[MapOutputStatistics]]()
+        val shuffleDependencies = ArrayBuffer[
+          ShuffleDependency[Int, InternalRow, InternalRow]]()
+        val submittedStageFutures = ArrayBuffer[
+          SimpleFutureAction[MapOutputStatistics]]()
         var i = 0
         while (i < numExchanges) {
           val exchange = exchanges(i)
@@ -253,10 +250,9 @@ private[sql] class ExchangeCoordinator(
         var k = 0
         while (k < numExchanges) {
           val exchange = exchanges(k)
-          val rdd =
-            exchange.preparePostShuffleRDD(
-              shuffleDependencies(k),
-              partitionStartIndices)
+          val rdd = exchange.preparePostShuffleRDD(
+            shuffleDependencies(k),
+            partitionStartIndices)
           newPostShuffleRDDs.put(exchange, rdd)
 
           k += 1

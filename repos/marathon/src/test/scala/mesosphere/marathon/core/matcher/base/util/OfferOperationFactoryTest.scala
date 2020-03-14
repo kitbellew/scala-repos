@@ -111,8 +111,10 @@ class OfferOperationFactoryTest
     val volumes = Seq(f.localVolume("mount"))
 
     When("We create a reserve operation")
-    val operation =
-      factory.createVolumes(f.frameworkId, Task.Id(task.getTaskId), volumes)
+    val operation = factory.createVolumes(
+      f.frameworkId,
+      Task.Id(task.getTaskId),
+      volumes)
 
     Then("The operation is as expected")
     operation.getType shouldEqual Mesos.Offer.Operation.Type.CREATE

@@ -279,8 +279,8 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
   }
 
   private def checkIsr(servers: Seq[KafkaServer]): Unit = {
-    val activeBrokers: Seq[KafkaServer] =
-      servers.filter(x => x.brokerState.currentState != NotRunning.state)
+    val activeBrokers: Seq[KafkaServer] = servers.filter(x =>
+      x.brokerState.currentState != NotRunning.state)
     val expectedIsr: Seq[BrokerEndPoint] = activeBrokers.map(x =>
       new BrokerEndPoint(
         x.config.brokerId,
@@ -327,8 +327,9 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
     val numBrokers = 2 //just 2 brokers are enough for the test
 
     // start adHoc brokers
-    val adHocServers =
-      adHocConfigs.take(numBrokers - 1).map(p => createServer(p))
+    val adHocServers = adHocConfigs
+      .take(numBrokers - 1)
+      .map(p => createServer(p))
     val allServers: Seq[KafkaServer] = Seq(server1) ++ adHocServers
 
     // create topic
@@ -399,8 +400,9 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
 
   @Test
   def testAliveBrokersListWithNoTopicsAfterNewBrokerStartup {
-    var adHocServers =
-      adHocConfigs.takeRight(adHocConfigs.size - 1).map(p => createServer(p))
+    var adHocServers = adHocConfigs
+      .takeRight(adHocConfigs.size - 1)
+      .map(p => createServer(p))
 
     checkMetadata(adHocServers, numConfigs - 1)
 

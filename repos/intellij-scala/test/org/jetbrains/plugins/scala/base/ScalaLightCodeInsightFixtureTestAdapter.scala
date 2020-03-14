@@ -57,11 +57,10 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       .getSurroundDescriptors()(1)
     val selectionModel = myFixture.getEditor.getSelectionModel
 
-    val elementsToSurround =
-      scaladocSurroundDescriptor.getElementsToSurround(
-        myFixture.getFile,
-        selectionModel.getSelectionStart,
-        selectionModel.getSelectionEnd)
+    val elementsToSurround = scaladocSurroundDescriptor.getElementsToSurround(
+      myFixture.getFile,
+      selectionModel.getSelectionStart,
+      selectionModel.getSelectionEnd)
 
     if (!canSurround) {
       assert(
@@ -205,8 +204,8 @@ abstract class ScalaLightCodeInsightFixtureTestAdapter
       withRightDescription.nonEmpty,
       "No highlightings with such description: " + annotation)
 
-    val ranges =
-      withRightDescription.map(info => (info.getStartOffset, info.getEndOffset))
+    val ranges = withRightDescription.map(info =>
+      (info.getStartOffset, info.getEndOffset))
     val message = "Highlights with this description are at " + ranges.mkString(
       " ") + ", but has to be at " + (selectionStart, selectionEnd)
     assert(

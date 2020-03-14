@@ -32,8 +32,9 @@ import scala.collection.mutable
 class ScalaLanguageConsole(project: Project, title: String)
     extends LanguageConsoleImpl(project, title, ScalaFileType.SCALA_LANGUAGE) {
   private val textBuffer = new StringBuilder
-  private var scalaFile =
-    ScalaPsiElementFactory.createScalaFileFromText("1", project)
+  private var scalaFile = ScalaPsiElementFactory.createScalaFileFromText(
+    "1",
+    project)
   getFile.asInstanceOf[ScalaFile].setContext(scalaFile, scalaFile.getLastChild)
 
   def getHistory = textBuffer.toString()

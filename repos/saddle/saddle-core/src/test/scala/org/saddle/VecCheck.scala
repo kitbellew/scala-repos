@@ -214,8 +214,8 @@ class VecCheck extends Specification with ScalaCheck {
 
     "foldLeft works" in {
       forAll { (v: Vec[Double]) =>
-        val res =
-          v.foldLeft(0)((c: Int, x: Double) => c + { if (x.isNaN) 0 else 1 })
+        val res = v.foldLeft(0)((c: Int, x: Double) =>
+          c + { if (x.isNaN) 0 else 1 })
         val exp = v.count
         res must_== exp
       }

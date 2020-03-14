@@ -81,30 +81,29 @@ trait ModelFactoryTypeSupport {
                   preSym
                 else bSym.owner
 
-              val link =
-                findTemplateMaybe(bSym) match {
-                  case Some(bTpl) if owner == bSym.owner =>
-                    // (0) the owner's class is linked AND has a template - lovely
-                    bTpl match {
-                      case dtpl: DocTemplateEntity => new LinkToTpl(dtpl)
-                      case _                       => new Tooltip(bTpl.qualifiedName)
-                    }
-                  case _ =>
-                    val oTpl = findTemplateMaybe(owner)
-                    (oTpl, oTpl flatMap (findMember(bSym, _))) match {
-                      case (Some(oTpl), Some(bMbr)) =>
-                        // (1) the owner's class
-                        LinkToMember(bMbr, oTpl)
-                      case _ =>
-                        val name = makeQualifiedName(bSym)
-                        if (!bSym.owner.hasPackageFlag) Tooltip(name)
-                        else
-                          findExternalLink(bSym, name).getOrElse(
-                            // (3) if we couldn't find neither the owner nor external URL to link to, show a tooltip with the qualified name
-                            Tooltip(name)
-                          )
-                    }
-                }
+              val link = findTemplateMaybe(bSym) match {
+                case Some(bTpl) if owner == bSym.owner =>
+                  // (0) the owner's class is linked AND has a template - lovely
+                  bTpl match {
+                    case dtpl: DocTemplateEntity => new LinkToTpl(dtpl)
+                    case _                       => new Tooltip(bTpl.qualifiedName)
+                  }
+                case _ =>
+                  val oTpl = findTemplateMaybe(owner)
+                  (oTpl, oTpl flatMap (findMember(bSym, _))) match {
+                    case (Some(oTpl), Some(bMbr)) =>
+                      // (1) the owner's class
+                      LinkToMember(bMbr, oTpl)
+                    case _ =>
+                      val name = makeQualifiedName(bSym)
+                      if (!bSym.owner.hasPackageFlag) Tooltip(name)
+                      else
+                        findExternalLink(bSym, name).getOrElse(
+                          // (3) if we couldn't find neither the owner nor external URL to link to, show a tooltip with the qualified name
+                          Tooltip(name)
+                        )
+                  }
+              }
 
               // SI-4360 Showing prefixes when necessary
               // We check whether there's any directly accessible type with the same name in the current template OR if the

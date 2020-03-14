@@ -43,8 +43,10 @@ class MetricsSystemSuite
   }
 
   test("MetricsSystem with default config") {
-    val metricsSystem =
-      MetricsSystem.createMetricsSystem("default", conf, securityMgr)
+    val metricsSystem = MetricsSystem.createMetricsSystem(
+      "default",
+      conf,
+      securityMgr)
     metricsSystem.start()
     val sources = PrivateMethod[ArrayBuffer[Source]]('sources)
     val sinks = PrivateMethod[ArrayBuffer[Source]]('sinks)
@@ -55,8 +57,10 @@ class MetricsSystemSuite
   }
 
   test("MetricsSystem with sources add") {
-    val metricsSystem =
-      MetricsSystem.createMetricsSystem("test", conf, securityMgr)
+    val metricsSystem = MetricsSystem.createMetricsSystem(
+      "test",
+      conf,
+      securityMgr)
     metricsSystem.start()
     val sources = PrivateMethod[ArrayBuffer[Source]]('sources)
     val sinks = PrivateMethod[ArrayBuffer[Source]]('sinks)
@@ -82,8 +86,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === s"$appId.$executorId.${source.sourceName}")
@@ -99,8 +105,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
@@ -116,8 +124,10 @@ class MetricsSystemSuite
     conf.set("spark.app.id", appId)
 
     val instanceName = "driver"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
@@ -135,8 +145,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === s"$appId.$executorId.${source.sourceName}")
@@ -152,8 +164,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
@@ -170,8 +184,10 @@ class MetricsSystemSuite
     conf.set("spark.app.id", appId)
 
     val instanceName = "executor"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
     assert(metricName === source.sourceName)
@@ -189,8 +205,10 @@ class MetricsSystemSuite
     conf.set("spark.executor.id", executorId)
 
     val instanceName = "testInstance"
-    val driverMetricsSystem =
-      MetricsSystem.createMetricsSystem(instanceName, conf, securityMgr)
+    val driverMetricsSystem = MetricsSystem.createMetricsSystem(
+      instanceName,
+      conf,
+      securityMgr)
 
     val metricName = driverMetricsSystem.buildRegistryName(source)
 

@@ -97,8 +97,8 @@ sealed trait CPathTraversal { self =>
           }
 
         case Sequence(ts) =>
-          val comparators: Array[CPathComparator] =
-            ts.map(plan0(_, paths, idx))(collection.breakOut)
+          val comparators: Array[CPathComparator] = ts.map(
+            plan0(_, paths, idx))(collection.breakOut)
 
           new CPathComparator {
             def compare(
@@ -381,35 +381,46 @@ object CPathTraversal {
 
           case (CPathPoint(n @ CPathIndex(i)) :: ps, CPathRange(ns, j, k) :: qs)
               if i >= j && i <= k.getOrElse(i) =>
-            val rss0 = if (j < i) {
-              ((CPathRange(ns, j, Some(i - 1)) :: is) reverse_::: qs) :: rss
-            } else rss
+            val rss0 =
+              if (j < i) {
+                ((CPathRange(ns, j, Some(i - 1)) :: is) reverse_::: qs) :: rss
+              } else rss
 
-            val rss1 = if (k map (_ > i) getOrElse true) {
-              ((CPathRange(ns, i + 1, k) :: is) reverse_::: qs) :: rss0
-            } else rss0
+            val rss1 =
+              if (k map (_ > i) getOrElse true) {
+                ((CPathRange(ns, i + 1, k) :: is) reverse_::: qs) :: rss0
+              } else rss0
 
             loop(ps, qs, CPathRange(ns + n, i, Some(i)) :: is, rss1)
 
           case (CPathRange(ns, j, k) :: ps, CPathPoint(n @ CPathIndex(i)) :: qs)
               if i >= j && i <= k.getOrElse(i) =>
-            val rss0 = if (j < i) {
-              ((CPathRange(ns, j, Some(i - 1)) :: is) reverse_::: ps) :: rss
-            } else rss
+            val rss0 =
+              if (j < i) {
+                ((CPathRange(ns, j, Some(i - 1)) :: is) reverse_::: ps) :: rss
+              } else rss
 
-            val rss1 = if (k map (_ > i) getOrElse true) {
-              ((CPathRange(ns, i + 1, k) :: is) reverse_::: ps) :: rss0
-            } else rss0
+            val rss1 =
+              if (k map (_ > i) getOrElse true) {
+                ((CPathRange(ns, i + 1, k) :: is) reverse_::: ps) :: rss0
+              } else rss0
 
             loop(ps, qs, CPathRange(ns + n, i, Some(i)) :: is, rss1)
 
           case (CPathRange(ns1, l1, r1) :: ps, CPathRange(ns2, l2, r2) :: qs)
               if overlaps(l1, r1, l2, r2) =>
-            val rss0 = if (l1 < l2) {
-              ((CPathRange(ns1, l1, Some(l2 - 1)) :: is) reverse_::: ps) :: rss
-            } else if (l2 < l1) {
-              ((CPathRange(ns2, l2, Some(l1 - 1)) :: is) reverse_::: qs) :: rss
-            } else { rss }
+            val rss0 =
+              if (l1 < l2) {
+                ((CPathRange(
+                  ns1,
+                  l1,
+                  Some(l2 - 1)) :: is) reverse_::: ps) :: rss
+              } else if (l2 < l1) {
+                ((CPathRange(
+                  ns2,
+                  l2,
+                  Some(l1 - 1)) :: is) reverse_::: qs) :: rss
+              } else { rss }
 
             val rss1 = (r1, r2) match {
               case (r1, Some(r2)) if r1 map (_ > r2) getOrElse true =>

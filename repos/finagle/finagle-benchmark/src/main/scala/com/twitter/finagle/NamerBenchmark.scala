@@ -19,7 +19,6 @@ class NamerBenchmark extends StdBenchAnnotations {
   }
 
   @Benchmark
-  def lookup(): Activity[NameTree[Name]] =
-    Namer.global.lookup(parsedPath)
+  def lookup(): Activity[NameTree[Name]] = Namer.global.lookup(parsedPath)
 
 }

@@ -36,8 +36,8 @@ class AbstractTestRerunFailedTestsAction(
 
   override def getRunProfile: MyRunProfileAdapter = {
     val properties: TestConsoleProperties = getModel.getProperties
-    val configuration =
-      properties.getConfiguration.asInstanceOf[AbstractTestRunConfiguration]
+    val configuration = properties.getConfiguration
+      .asInstanceOf[AbstractTestRunConfiguration]
     new MyRunProfileAdapter(configuration) {
       def getModules: Array[Module] = configuration.getModules
 

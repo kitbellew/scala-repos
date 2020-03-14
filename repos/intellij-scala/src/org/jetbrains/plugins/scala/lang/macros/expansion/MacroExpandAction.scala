@@ -67,8 +67,8 @@ class MacroExpandAction extends AnAction {
     val filtered = expansions.filter { exp =>
       psiFile.getVirtualFile.getPath == exp.place.sourceFile
     }
-    val ensugared =
-      filtered.map(e => MacroExpansion(e.place, ensugarExpansion(e.body)))
+    val ensugared = filtered.map(e =>
+      MacroExpansion(e.place, ensugarExpansion(e.body)))
     val resolved = tryResolveExpansionPlaces(ensugared)
 
     // if macro is under cursor, expand it, otherwise expand all macros in current file
@@ -178,8 +178,8 @@ class MacroExpandAction extends AnAction {
     place.getParent.getParent match {
       case holder: ScAnnotationsHolder =>
         val body = expansion.body
-        val newPsi =
-          ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
+        val newPsi = ScalaPsiElementFactory
+          .createBlockExpressionWithoutBracesFromText(
             body,
             PsiManager.getInstance(e.getProject))
         reformatCode(newPsi)
@@ -213,8 +213,8 @@ class MacroExpandAction extends AnAction {
 
   def expandMacroCall(call: ScMethodCall, expansion: MacroExpansion)(
       implicit e: AnActionEvent) = {
-    val blockImpl =
-      ScalaPsiElementFactory.createBlockExpressionWithoutBracesFromText(
+    val blockImpl = ScalaPsiElementFactory
+      .createBlockExpressionWithoutBracesFromText(
         expansion.body,
         PsiManager.getInstance(e.getProject))
     val element = call.getParent.addAfter(blockImpl, call)
@@ -259,8 +259,8 @@ class MacroExpandAction extends AnAction {
       // most likely it means given call is located inside another macro expansion
       case e: LeafPsiElement
           if expansion.place.macroApplication.matches("^[^\\)]+\\)$") =>
-        val pos =
-          e.getContainingFile.getText.indexOf(expansion.place.macroApplication)
+        val pos = e.getContainingFile.getText
+          .indexOf(expansion.place.macroApplication)
         if (pos != -1) Some(e.getContainingFile.findElementAt(pos)) else None
       // macro annotations
       case e: LeafPsiElement =>

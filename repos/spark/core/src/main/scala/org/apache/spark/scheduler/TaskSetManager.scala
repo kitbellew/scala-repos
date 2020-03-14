@@ -65,13 +65,15 @@ private[spark] class TaskSetManager(
    * this temporarily prevents a task from re-launching on an executor where
    * it just failed.
    */
-  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT =
-    conf.getLong("spark.scheduler.executorTaskBlacklistTime", 0L)
+  private val EXECUTOR_TASK_BLACKLIST_TIMEOUT = conf.getLong(
+    "spark.scheduler.executorTaskBlacklistTime",
+    0L)
 
   // Quantile of tasks at which to start speculation
   val SPECULATION_QUANTILE = conf.getDouble("spark.speculation.quantile", 0.75)
-  val SPECULATION_MULTIPLIER =
-    conf.getDouble("spark.speculation.multiplier", 1.5)
+  val SPECULATION_MULTIPLIER = conf.getDouble(
+    "spark.speculation.multiplier",
+    1.5)
 
   // Limit of bytes for total size of results (default is 1GB)
   val maxResultSize = Utils.getMaxResultSize(conf)
@@ -147,8 +149,9 @@ private[spark] class TaskSetManager(
   val taskInfos = new HashMap[Long, TaskInfo]
 
   // How frequently to reprint duplicate exceptions in full, in milliseconds
-  val EXCEPTION_PRINT_INTERVAL =
-    conf.getLong("spark.logging.exceptionPrintInterval", 10000)
+  val EXCEPTION_PRINT_INTERVAL = conf.getLong(
+    "spark.logging.exceptionPrintInterval",
+    10000)
 
   // Map of recent exceptions (identified by string representation and top stack frame) to
   // duplicate count (how many times the same exception has appeared) and time the full exception
@@ -166,16 +169,17 @@ private[spark] class TaskSetManager(
 
   // Figure out which locality levels we have in our TaskSet, so we can do delay scheduling
   var myLocalityLevels = computeValidLocalityLevels()
-  var localityWaits =
-    myLocalityLevels.map(getLocalityWait) // Time to wait at each level
+  var localityWaits = myLocalityLevels.map(
+    getLocalityWait
+  ) // Time to wait at each level
 
   // Delay scheduling variables: we keep track of our current locality level and the time we
   // last launched a task at that level, and move up a level when localityWaits[curLevel] expires.
   // We then move down if we manage to launch a "more local" task.
   var currentLocalityIndex =
     0 // Index of our current locality level in validLocalityLevels
-  var lastLaunchTime =
-    clock.getTimeMillis() // Time we last launched a task at this level
+  var lastLaunchTime = clock
+    .getTimeMillis() // Time we last launched a task at this level
 
   override def schedulableQueue: ConcurrentLinkedQueue[Schedulable] = null
 

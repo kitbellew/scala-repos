@@ -63,8 +63,8 @@ class BindingFactoryTest
         expected: Seq[Annotation]
     ) {
       val tracer: Tracer = spy(new NullTracer)
-      val captor: ArgumentCaptor[Record] =
-        ArgumentCaptor.forClass(classOf[Record])
+      val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
+        classOf[Record])
       Trace.letTracer(tracer) { f }
       verify(tracer, atLeastOnce()).record(captor.capture())
       val annotations = captor.getAllValues.asScala collect {
@@ -145,12 +145,11 @@ class BindingFactoryTest
 
       val v = Var[Activity.State[NameTree[Name]]](Activity.Pending)
       TestNamer.f = { _ => Activity(v) }
-      val f =
-        Dtab.unwind {
-          Dtab.local = Dtab.read(
-            "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
-          factory()
-        }
+      val f = Dtab.unwind {
+        Dtab.local = Dtab.read(
+          "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
+        factory()
+      }
       tc.advance(5678.microseconds)
       v() = Activity.Ok(NameTree.Leaf(Name.Path(Path.read("/test1010"))))
       Await.result(Await.result(f).close())
@@ -540,15 +539,14 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
 class NameTreeFactoryTest extends FunSuite {
 
   test("distributes requests according to weight") {
-    val tree =
-      NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf("foo")),
-            NameTree.Weighted(1d, NameTree.Leaf("bar")))),
-        NameTree.Weighted(1d, NameTree.Leaf("baz"))
-      )
+    val tree = NameTree.Union(
+      NameTree.Weighted(
+        1d,
+        NameTree.Union(
+          NameTree.Weighted(1d, NameTree.Leaf("foo")),
+          NameTree.Weighted(1d, NameTree.Leaf("bar")))),
+      NameTree.Weighted(1d, NameTree.Leaf("baz"))
+    )
 
     val counts = mutable.HashMap[String, Int]()
 
@@ -569,8 +567,7 @@ class NameTreeFactoryTest extends FunSuite {
       var intIdx = 0
 
       new Rng {
-        def nextDouble() =
-          throw new UnsupportedOperationException
+        def nextDouble() = throw new UnsupportedOperationException
 
         def nextInt(n: Int) = {
           val i = ints(intIdx)

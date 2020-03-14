@@ -53,8 +53,7 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
   }
 
   // reduce - given monoid
-  def traversal[G[_]: Applicative]: Traversal[G] =
-    new Traversal[G]
+  def traversal[G[_]: Applicative]: Traversal[G] = new Traversal[G]
   def traversalS[S]: Traversal[State[S, ?]] =
     new Traversal[State[S, ?]]()(StateT.stateMonad) {
       override def run[A, B](fa: F[A])(f: A => State[S, B]) = traverseS(fa)(f)
@@ -84,8 +83,9 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
   def traverseSTrampoline[S, G[_]: Applicative, A, B](fa: F[A])(
       f: A => State[S, G[B]]): State[S, G[F[B]]] = {
     import Free._
-    implicit val A =
-      StateT.stateTMonadState[S, Trampoline].compose(Applicative[G])
+    implicit val A = StateT
+      .stateTMonadState[S, Trampoline]
+      .compose(Applicative[G])
     State[S, G[F[B]]](s => {
       val st = traverse[λ[α => StateT[Trampoline, S, G[α]]], A, B](fa)(
         f(_: A).lift[Trampoline])
@@ -97,8 +97,9 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
   def traverseKTrampoline[S, G[_]: Applicative, A, B](fa: F[A])(
       f: A => Kleisli[G, S, B]): Kleisli[G, S, F[B]] = {
     import Free._
-    implicit val A =
-      Kleisli.kleisliMonadReader[Trampoline, S].compose(Applicative[G])
+    implicit val A = Kleisli
+      .kleisliMonadReader[Trampoline, S]
+      .compose(Applicative[G])
     Kleisli[G, S, F[B]](s => {
       val kl = traverse[λ[α => Kleisli[Trampoline, S, G[α]]], A, B](fa)(z =>
         Kleisli[Id, S, G[B]](i => f(z)(i)).lift[Trampoline]).run(s)
@@ -192,10 +193,10 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
         M: Applicative[M],
         MN: Equal[M[N[F[C]]]]): Boolean = {
       type MN[A] = M[N[A]]
-      val t1: MN[F[C]] =
-        M.map(traverse[M, A, B](fa)(amb))(fb => traverse[N, B, C](fb)(bnc))
-      val t2: MN[F[C]] =
-        traverse[MN, A, C](fa)(a => M.map(amb(a))(bnc))(M compose N)
+      val t1: MN[F[C]] = M.map(traverse[M, A, B](fa)(amb))(fb =>
+        traverse[N, B, C](fb)(bnc))
+      val t2: MN[F[C]] = traverse[MN, A, C](fa)(a => M.map(amb(a))(bnc))(
+        M compose N)
       MN.equal(t1, t2)
     }
 
@@ -229,8 +230,8 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
       type MN[A] = (M[A], N[A])
       val t1: MN[F[B]] =
         (traverse[M, A, B](fa)(amb), traverse[N, A, B](fa)(anb))
-      val t2: MN[F[B]] =
-        traverse[MN, A, B](fa)(a => (amb(a), anb(a)))(M product N)
+      val t2: MN[F[B]] = traverse[MN, A, B](fa)(a => (amb(a), anb(a)))(
+        M product N)
       MN.equal(t1, t2)
     }
   }

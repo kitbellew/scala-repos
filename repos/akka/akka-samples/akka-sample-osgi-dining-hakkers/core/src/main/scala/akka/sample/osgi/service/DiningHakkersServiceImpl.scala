@@ -26,6 +26,5 @@ class DiningHakkersServiceImpl(system: ActorSystem)
   def getHakker(name: String, chairNumber: Int): ActorRef =
     system.actorOf(Props(classOf[Hakker], name, chairNumber))
 
-  def getTracker(): ActorRef =
-    system.actorOf(Props[HakkerTracker], "tracker")
+  def getTracker(): ActorRef = system.actorOf(Props[HakkerTracker], "tracker")
 }

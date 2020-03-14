@@ -109,15 +109,17 @@ class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
 
   def testNoDefaultArg(): Unit = {
     isAddDefaultValue = true
-    val params =
-      Seq(parameterInfo("i", 0, types.Int), parameterInfo("j", -1, types.Int))
+    val params = Seq(
+      parameterInfo("i", 0, types.Int),
+      parameterInfo("j", -1, types.Int))
     doTest(null, "foo", null, Seq(params))
   }
 
   def testNoDefaultArg2(): Unit = {
     isAddDefaultValue = false
-    val params =
-      Seq(parameterInfo("i", 0, types.Int), parameterInfo("j", -1, types.Int))
+    val params = Seq(
+      parameterInfo("i", 0, types.Int),
+      parameterInfo("j", -1, types.Int))
     doTest(null, "foo", null, Seq(params))
   }
 

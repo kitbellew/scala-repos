@@ -23,11 +23,10 @@ class Server(address: SocketAddress) {
     def close(deadline: Time) = Future.Done
   }
 
-  private[this] val serverSpec =
-    ServerBuilder()
-      .name("schmestrel")
-      .codec(Kestrel())
-      .bindTo(address)
+  private[this] val serverSpec = ServerBuilder()
+    .name("schmestrel")
+    .codec(Kestrel())
+    .bindTo(address)
 
   private[this] var server: Option[BuiltServer] = None
 

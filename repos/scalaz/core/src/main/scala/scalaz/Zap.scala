@@ -17,10 +17,9 @@ trait Zap[F[_], G[_]] { self =>
 sealed abstract class ZapInstances {
 
   /** The identity functor annihilates itself. */
-  implicit val identityZap: Zap[Id, Id] =
-    new Zap[Id, Id] {
-      def zapWith[A, B, C](a: A, b: B)(f: (A, B) => C): C = f(a, b)
-    }
+  implicit val identityZap: Zap[Id, Id] = new Zap[Id, Id] {
+    def zapWith[A, B, C](a: A, b: B)(f: (A, B) => C): C = f(a, b)
+  }
 
   /** The product of two functors annihilates their coproduct. */
   implicit def productCoproductZap[F[_], FF[_], G[_], GG[_]](implicit

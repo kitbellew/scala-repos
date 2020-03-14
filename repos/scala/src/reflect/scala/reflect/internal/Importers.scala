@@ -286,8 +286,10 @@ trait Importers { to: SymbolTable =>
           val myclazz = importSymbol(clazz)
           val myscope =
             if (myclazz.isPackageClass) newPackageScope(myclazz) else newScope
-          val myclazzTpe =
-            ClassInfoType(parents map importType, myscope, myclazz)
+          val myclazzTpe = ClassInfoType(
+            parents map importType,
+            myscope,
+            myclazz)
           myclazz setInfo GenPolyType(
             myclazz.typeParams,
             myclazzTpe

@@ -15,19 +15,16 @@ import org.scalajs.testsuite.niobuffer.ByteBufferFactories._
 abstract class CharBufferTest extends BaseBufferTest {
   type Factory = BufferFactory.CharBufferFactory
 
-  def zeros(n: Int): String =
-    "\u0000" * n
+  def zeros(n: Int): String = "\u0000" * n
 
   class AllocCharBufferFactory extends Factory {
-    def allocBuffer(capacity: Int): CharBuffer =
-      CharBuffer.allocate(capacity)
+    def allocBuffer(capacity: Int): CharBuffer = CharBuffer.allocate(capacity)
   }
 
   class WrappedCharBufferFactory
       extends Factory
       with BufferFactory.WrappedBufferFactory {
-    def baseWrap(array: Array[Char]): CharBuffer =
-      CharBuffer.wrap(array)
+    def baseWrap(array: Array[Char]): CharBuffer = CharBuffer.wrap(array)
 
     def baseWrap(array: Array[Char], offset: Int, length: Int): CharBuffer =
       CharBuffer.wrap(array, offset, length)
@@ -54,13 +51,13 @@ class WrappedCharBufferTest extends CharBufferTest {
 }
 
 class WrappedCharReadOnlyBufferTest extends CharBufferTest {
-  val factory: CharBufferFactory =
-    new WrappedCharBufferFactory with BufferFactory.ReadOnlyBufferFactory
+  val factory: CharBufferFactory = new WrappedCharBufferFactory
+    with BufferFactory.ReadOnlyBufferFactory
 }
 
 class AllocCharSlicedBufferTest extends CharBufferTest {
-  val factory: CharBufferFactory =
-    new AllocCharBufferFactory with BufferFactory.SlicedBufferFactory
+  val factory: CharBufferFactory = new AllocCharBufferFactory
+    with BufferFactory.SlicedBufferFactory
 }
 
 class CharBufferWrappingACharSequenceTest extends CharBufferTest {
@@ -118,8 +115,8 @@ class SlicedCharBufferWrappingACharSequenceTest extends CharBufferTest {
       if (!(0 <= pos && pos <= limit && limit <= capacity))
         throw new IllegalArgumentException
       val after = (25 + capacity) - (9 + pos + content.size)
-      val buf =
-        CharBuffer.wrap(zeros(9 + pos) + content.mkString + zeros(after))
+      val buf = CharBuffer.wrap(
+        zeros(9 + pos) + content.mkString + zeros(after))
       buf.position(9)
       buf.limit(9 + capacity)
       val buf2 = buf.slice()

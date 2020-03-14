@@ -173,14 +173,14 @@ private[spark] class BlockManagerMaster(
       .askWithRetry[Map[BlockManagerId, Future[Option[BlockStatus]]]](msg)
     val (blockManagerIds, futures) = response.unzip
     implicit val sameThread = ThreadUtils.sameThread
-    val cbf =
-      implicitly[CanBuildFrom[
-        Iterable[Future[Option[BlockStatus]]],
-        Option[BlockStatus],
-        Iterable[Option[BlockStatus]]]]
-    val blockStatus =
-      timeout.awaitResult(Future.sequence[Option[BlockStatus], Iterable](
-        futures)(cbf, ThreadUtils.sameThread))
+    val cbf = implicitly[CanBuildFrom[
+      Iterable[Future[Option[BlockStatus]]],
+      Option[BlockStatus],
+      Iterable[Option[BlockStatus]]]]
+    val blockStatus = timeout.awaitResult(
+      Future.sequence[Option[BlockStatus], Iterable](futures)(
+        cbf,
+        ThreadUtils.sameThread))
     if (blockStatus == null) {
       throw new SparkException(
         "BlockManager returned null for BlockStatus query: " + blockId)

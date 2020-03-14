@@ -69,14 +69,13 @@ object HiveTypeCoercion {
 
   // See https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types.
   // The conversion for integral and floating point types have a linear widening hierarchy:
-  private[sql] val numericPrecedence =
-    IndexedSeq(
-      ByteType,
-      ShortType,
-      IntegerType,
-      LongType,
-      FloatType,
-      DoubleType)
+  private[sql] val numericPrecedence = IndexedSeq(
+    ByteType,
+    ShortType,
+    IntegerType,
+    LongType,
+    FloatType,
+    DoubleType)
 
   /**
     * Case 1 type widening (see the classdoc comment above for HiveTypeCoercion).
@@ -244,8 +243,8 @@ object HiveTypeCoercion {
         case s @ SetOperation(left, right)
             if s.childrenResolved &&
               left.output.length == right.output.length && !s.resolved =>
-          val newChildren: Seq[LogicalPlan] =
-            buildNewChildrenWithWiderTypes(left :: right :: Nil)
+          val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
+            left :: right :: Nil)
           assert(newChildren.length == 2)
           s.makeCopy(Array(newChildren.head, newChildren.last))
 
@@ -253,8 +252,8 @@ object HiveTypeCoercion {
             if s.childrenResolved &&
               s.children.forall(
                 _.output.length == s.children.head.output.length) && !s.resolved =>
-          val newChildren: Seq[LogicalPlan] =
-            buildNewChildrenWithWiderTypes(s.children)
+          val newChildren: Seq[LogicalPlan] = buildNewChildrenWithWiderTypes(
+            s.children)
           s.makeCopy(Array(newChildren))
       }
 
@@ -265,8 +264,10 @@ object HiveTypeCoercion {
 
       // Get a sequence of data types, each of which is the widest type of this specific attribute
       // in all the children
-      val targetTypes: Seq[DataType] =
-        getWidestTypes(children, attrIndex = 0, mutable.Queue[DataType]())
+      val targetTypes: Seq[DataType] = getWidestTypes(
+        children,
+        attrIndex = 0,
+        mutable.Queue[DataType]())
 
       if (targetTypes.nonEmpty) {
         // Add an extra Project if the targetTypes are different from the original types.

@@ -36,8 +36,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     server1 = TestMemcachedServer.start()
     server2 = TestMemcachedServer.start()
     if (server1.isDefined && server2.isDefined) {
-      val n =
-        Name.bound(Address(server1.get.address), Address(server2.get.address))
+      val n = Name.bound(
+        Address(server1.get.address),
+        Address(server2.get.address))
       client = Memcached.client.newRichClient(n, clientName)
     }
   }
@@ -65,15 +66,14 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   test("get") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
     Await.result(client.set("baz", Buf.Utf8("boing")))
-    val result =
-      Await
-        .result(
-          client.get(Seq("foo", "baz", "notthere"))
-        )
-        .map {
-          case (key, Buf.Utf8(value)) =>
-            (key, value)
-        }
+    val result = Await
+      .result(
+        client.get(Seq("foo", "baz", "notthere"))
+      )
+      .map {
+        case (key, Buf.Utf8(value)) =>
+          (key, value)
+      }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
@@ -82,25 +82,23 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       Await.result(client.set("foos", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("zyx")))
-      val result =
-        Await
-          .result(
-            client.gets(Seq("foos", "bazs", "somethingelse"))
-          )
-          .map {
-            case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
-              (key, (value, casUnique))
-          }
-      val expected =
-        Map(
-          "foos" -> (
-            (
-              "xyz",
-              "1"
-            )
-          ), // the "cas unique" values are predictable from a fresh memcached
-          "bazs" -> (("zyx", "3"))
+      val result = Await
+        .result(
+          client.gets(Seq("foos", "bazs", "somethingelse"))
         )
+        .map {
+          case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
+            (key, (value, casUnique))
+        }
+      val expected = Map(
+        "foos" -> (
+          (
+            "xyz",
+            "1"
+          )
+        ), // the "cas unique" values are predictable from a fresh memcached
+        "bazs" -> (("zyx", "3"))
+      )
       assert(result == expected)
     }
   }
@@ -206,8 +204,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   }
 
   test("re-hash when a bad host is ejected") {
-    val n =
-      Name.bound(Address(server1.get.address), Address(server2.get.address))
+    val n = Name.bound(
+      Address(server1.get.address),
+      Address(server2.get.address))
     client = Memcached.client
       .configured(FailureAccrualFactory.Param(1, () => 10.minutes))
       .configured(Memcached.param.EjectFailedHost(true))
@@ -228,12 +227,11 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
     for (i <- 0 to 20) { Await.ready(client.get(s"foo$i"), TimeOut) }
 
     // one memcache host alive
-    val clientSet =
-      (0 to 20).foldLeft(Set[Client]()) {
-        case (s, i) =>
-          val c = partitionedClient.clientOf(s"foo$i")
-          s + c
-      }
+    val clientSet = (0 to 20).foldLeft(Set[Client]()) {
+      case (s, i) =>
+        val c = partitionedClient.clientOf(s"foo$i")
+        s + c
+    }
     assert(clientSet.size == 1)
 
     // previously set values have cache misses

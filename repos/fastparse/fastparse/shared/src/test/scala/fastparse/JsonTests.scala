@@ -51,9 +51,8 @@ object JsonTests extends TestSuite {
   val fractional = P("." ~ digits)
   val integral = P("0" | CharIn('1' to '9') ~ digits.?)
 
-  val number =
-    P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?).!.map(x =>
-      Js.Num(x.toDouble))
+  val number = P(CharIn("+-").? ~ integral ~ fractional.? ~ exponent.?).!.map(
+    x => Js.Num(x.toDouble))
 
   val `null` = P("null").map(_ => Js.Null)
   val `false` = P("false").map(_ => Js.False)
@@ -64,16 +63,14 @@ object JsonTests extends TestSuite {
   val escape = P("\\" ~ (CharIn("\"/\\bfnrt") | unicodeEscape))
 
   val strChars = P(CharsWhile(StringChars))
-  val string =
-    P(space ~ "\"" ~/ (strChars | escape).rep.! ~ "\"").map(Js.Str)
+  val string = P(space ~ "\"" ~/ (strChars | escape).rep.! ~ "\"").map(Js.Str)
 
-  val array =
-    P("[" ~/ jsonExpr.rep(sep = ",".~/) ~ space ~ "]").map(Js.Arr(_: _*))
+  val array = P("[" ~/ jsonExpr.rep(sep = ",".~/) ~ space ~ "]")
+    .map(Js.Arr(_: _*))
 
   val pair = P(string.map(_.value) ~/ ":" ~/ jsonExpr)
 
-  val obj =
-    P("{" ~/ pair.rep(sep = ",".~/) ~ space ~ "}").map(Js.Obj(_: _*))
+  val obj = P("{" ~/ pair.rep(sep = ",".~/) ~ space ~ "}").map(Js.Obj(_: _*))
 
   val jsonExpr: P[Js.Val] = P(
     space ~ (obj | array | string | `true` | `false` | `null` | number) ~ space

@@ -554,11 +554,14 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     self,
     GossipTick)
   val pruneInterval: FiniteDuration = removedTimeToLive / 2
-  val pruneTask =
-    context.system.scheduler.schedule(pruneInterval, pruneInterval, self, Prune)
+  val pruneTask = context.system.scheduler.schedule(
+    pruneInterval,
+    pruneInterval,
+    self,
+    Prune)
 
-  var registry: Map[Address, Bucket] =
-    Map.empty.withDefault(a ⇒ Bucket(a, 0L, TreeMap.empty))
+  var registry: Map[Address, Bucket] = Map.empty.withDefault(a ⇒
+    Bucket(a, 0L, TreeMap.empty))
   var nodes: Set[Address] = Set.empty
 
   // the version is a timestamp because it is also used when pruning removed entries
@@ -815,8 +818,8 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         else {
           // exceeded the maxDeltaElements, pick the elements with lowest versions
           val sortedContent = deltaContent.toVector.sortBy(_._2.version)
-          val chunk =
-            sortedContent.take(maxDeltaElements - (count - sortedContent.size))
+          val chunk = sortedContent.take(
+            maxDeltaElements - (count - sortedContent.size))
           bucket.copy(
             content = TreeMap.empty[String, ValueHolder] ++ chunk,
             version = chunk.last._2.version)

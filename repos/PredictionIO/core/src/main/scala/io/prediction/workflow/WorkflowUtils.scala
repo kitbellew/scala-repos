@@ -402,8 +402,9 @@ class UpgradeCheckRunner(val component: String, val engine: String)
   val versionsHost = "http://direct.prediction.io/"
 
   def run(): Unit = {
-    val url = if (engine == "") { s"$versionsHost$version/$component.json" }
-    else { s"$versionsHost$version/$component/$engine.json" }
+    val url =
+      if (engine == "") { s"$versionsHost$version/$component.json" }
+      else { s"$versionsHost$version/$component/$engine.json" }
     try { val upgradeData = Source.fromURL(url) }
     catch {
       case e: FileNotFoundException =>

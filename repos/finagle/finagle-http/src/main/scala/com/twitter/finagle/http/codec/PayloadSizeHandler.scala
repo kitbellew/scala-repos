@@ -18,8 +18,8 @@ private[http] class PayloadSizeHandler(maxRequestPayloadSize: Int)
           if HttpHeaders.getContentLength(
             request,
             -1) > maxRequestPayloadSize =>
-        val tooLargeResponse =
-          PayloadSizeHandler.mkTooLargeResponse(request.getProtocolVersion)
+        val tooLargeResponse = PayloadSizeHandler.mkTooLargeResponse(
+          request.getProtocolVersion)
         val writeF = Channels.future(ctx.getChannel)
 
         // hang up after the 413 is sent.

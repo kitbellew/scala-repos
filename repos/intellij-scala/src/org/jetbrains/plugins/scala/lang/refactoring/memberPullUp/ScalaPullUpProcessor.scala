@@ -77,8 +77,9 @@ class ScalaPullUpProcessor(
         templateBody.addBefore(
           ScalaPsiElementFactory.createNewLine(manager),
           anchor)
-        val added =
-          templateBody.addBefore(memberCopy, anchor).asInstanceOf[ScMember]
+        val added = templateBody
+          .addBefore(memberCopy, anchor)
+          .asInstanceOf[ScMember]
         if (info.isToAbstract) TypeAdjuster.markToAdjust(added)
         else movedDefinitions += added
       }
@@ -99,12 +100,12 @@ class ScalaPullUpProcessor(
   private def reformatAfter() {
     val documentManager = PsiDocumentManager.getInstance(project)
     val csManager = CodeStyleManager.getInstance(project)
-    val targetDocument =
-      documentManager.getDocument(targetClass.getContainingFile)
+    val targetDocument = documentManager.getDocument(
+      targetClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(targetDocument)
     csManager.reformat(targetClass)
-    val sourceDocument =
-      documentManager.getDocument(sourceClass.getContainingFile)
+    val sourceDocument = documentManager.getDocument(
+      sourceClass.getContainingFile)
     documentManager.doPostponedOperationsAndUnblockDocument(sourceDocument)
     csManager.adjustLineIndent(
       sourceClass.getContainingFile,

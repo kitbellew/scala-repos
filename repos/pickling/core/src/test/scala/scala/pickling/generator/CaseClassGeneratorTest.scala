@@ -34,8 +34,8 @@ class CaseClassGeneratorTest extends FunSuite {
    */
 
   test("mulitpleParamList") {
-    implicit val pu =
-      PicklingMacros.genPicklerUnpickler[MultipleParamListCaseClass]
+    implicit val pu = PicklingMacros
+      .genPicklerUnpickler[MultipleParamListCaseClass]
     val x = MultipleParamListCaseClass(1)("hi")
     val y = x.pickle.unpickle[MultipleParamListCaseClass]
     assert(x == y)
@@ -64,8 +64,8 @@ class CaseClassGeneratorTest extends FunSuite {
     assert(x == y)
   }
   test("protectedMember") {
-    implicit val pu =
-      PicklingMacros.genPicklerUnpickler[ProtectedMemberCaseClass]
+    implicit val pu = PicklingMacros
+      .genPicklerUnpickler[ProtectedMemberCaseClass]
     val x = ProtectedMemberCaseClass(5, "hi")
     val y = x.pickle.unpickle[ProtectedMemberCaseClass]
     assert(x == y)
@@ -78,15 +78,15 @@ class CaseClassGeneratorTest extends FunSuite {
     assert(x == y)
   }
   test("nestedPrivateVal") {
-    implicit val pu =
-      PicklingMacros.genPicklerUnpickler[NestedPrivateVarCaseClass]
+    implicit val pu = PicklingMacros
+      .genPicklerUnpickler[NestedPrivateVarCaseClass]
     val x = NestedPrivateVarCaseClass(1)
     val y = x.pickle.unpickle[NestedPrivateVarCaseClass]
     assert(x == y)
   }
   test("nestedPrivateThisVar") {
-    implicit val pu =
-      PicklingMacros.genPicklerUnpickler[NestedPrivateThisCaseClass]
+    implicit val pu = PicklingMacros
+      .genPicklerUnpickler[NestedPrivateThisCaseClass]
     val x = NestedPrivateThisCaseClass(1)
     val y = x.pickle.unpickle[NestedPrivateThisCaseClass]
     assert(x.toString == y.toString)

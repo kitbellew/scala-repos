@@ -52,8 +52,8 @@ class ScalaArrangementVisitor(
 
   private val arrangementEntries = mutable.Stack[ScalaArrangementEntry]()
 
-  private val splitBodyByExpressions =
-    groupingRules.contains(SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
+  private val splitBodyByExpressions = groupingRules.contains(
+    SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
 
   private val unseparableRanges = mutable.HashMap[
     ScalaArrangementEntry /*parent*/,
@@ -235,9 +235,10 @@ class ScalaArrangementVisitor(
     else {
 
       val currentEntry = getCurrentEntry
-      val newRange = if (canArrange && document != null) {
-        ArrangementUtil.expandToLineIfPossible(range, document)
-      } else { range }
+      val newRange =
+        if (canArrange && document != null) {
+          ArrangementUtil.expandToLineIfPossible(range, document)
+        } else { range }
       //we only arrange elements in ScTypeDefinitions and top-level elements
       val newEntry = new ScalaArrangementEntry(
         currentEntry,
@@ -291,8 +292,9 @@ class ScalaArrangementVisitor(
       entry: ScalaArrangementEntry) {
     genUnseparableRanges(psiRoot, entry)
     val top = arrangementEntries.top
-    val queue =
-      unseparableRanges.getOrElse(entry, mutable.Queue[ScalaArrangementEntry]())
+    val queue = unseparableRanges.getOrElse(
+      entry,
+      mutable.Queue[ScalaArrangementEntry]())
     //    var unseparable =
     def next() = if (queue.isEmpty) null else queue.dequeue()
     psiRoot.getChildren.foldLeft(
@@ -301,28 +303,30 @@ class ScalaArrangementVisitor(
       val (insideBlock, unseparable) = acc
       val childStart = child.getTextRange.getStartOffset
       //check if there are any more unseparable blocks at all
-      val res = if (unseparable != null) {
-        //process current child with regard to current block
-        (
-          insideBlock,
-          childStart >= unseparable.getStartOffset,
-          childStart >= unseparable.getEndOffset) match {
-          case (false, true, false) => //entering arrange block
-            arrangementEntries.push(unseparable)
-            (true, unseparable)
-          case (true, true, false) => (true, unseparable) //inside arrange block
-          case (true, true, true) => //leaving arrange block
-            arrangementEntries.pop()
-            val nextUnseparable = next()
-            //check whether new current block is immediately adjucent to the previous
-            //in such case leaving the previous means entering the current
-            if (childStart >= nextUnseparable.getStartOffset) {
-              arrangementEntries.push(nextUnseparable)
-              (true, nextUnseparable)
-            } else { (false, nextUnseparable) }
-          case _ => (false, unseparable) //outside arrange block
-        }
-      } else (false, unseparable)
+      val res =
+        if (unseparable != null) {
+          //process current child with regard to current block
+          (
+            insideBlock,
+            childStart >= unseparable.getStartOffset,
+            childStart >= unseparable.getEndOffset) match {
+            case (false, true, false) => //entering arrange block
+              arrangementEntries.push(unseparable)
+              (true, unseparable)
+            case (true, true, false) =>
+              (true, unseparable) //inside arrange block
+            case (true, true, true) => //leaving arrange block
+              arrangementEntries.pop()
+              val nextUnseparable = next()
+              //check whether new current block is immediately adjucent to the previous
+              //in such case leaving the previous means entering the current
+              if (childStart >= nextUnseparable.getStartOffset) {
+                arrangementEntries.push(nextUnseparable)
+                (true, nextUnseparable)
+              } else { (false, nextUnseparable) }
+            case _ => (false, unseparable) //outside arrange block
+          }
+        } else (false, unseparable)
       child.accept(this)
       res
     })

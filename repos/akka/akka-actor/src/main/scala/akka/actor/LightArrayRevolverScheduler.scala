@@ -43,23 +43,21 @@ class LightArrayRevolverScheduler(
   import Helpers.Requiring
   import Helpers.ConfigOps
 
-  val WheelSize =
-    config
-      .getInt("akka.scheduler.ticks-per-wheel")
-      .requiring(
-        ticks ⇒ (ticks & (ticks - 1)) == 0,
-        "ticks-per-wheel must be a power of 2")
-  val TickDuration =
-    config
-      .getMillisDuration("akka.scheduler.tick-duration")
-      .requiring(
-        _ >= 10.millis || !Helpers.isWindows,
-        "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
-      .requiring(
-        _ >= 1.millis,
-        "minimum supported akka.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout =
-    config.getMillisDuration("akka.scheduler.shutdown-timeout")
+  val WheelSize = config
+    .getInt("akka.scheduler.ticks-per-wheel")
+    .requiring(
+      ticks ⇒ (ticks & (ticks - 1)) == 0,
+      "ticks-per-wheel must be a power of 2")
+  val TickDuration = config
+    .getMillisDuration("akka.scheduler.tick-duration")
+    .requiring(
+      _ >= 10.millis || !Helpers.isWindows,
+      "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
+    .requiring(
+      _ >= 1.millis,
+      "minimum supported akka.scheduler.tick-duration is 1ms")
+  val ShutdownTimeout = config.getMillisDuration(
+    "akka.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 
@@ -222,8 +220,8 @@ class LightArrayRevolverScheduler(
     } else Future.successful(Nil)
   }
 
-  @volatile private var timerThread: Thread =
-    threadFactory.newThread(new Runnable {
+  @volatile private var timerThread: Thread = threadFactory.newThread(
+    new Runnable {
 
       var tick = 0
       val wheel = Array.fill(WheelSize)(new TaskQueue)
@@ -338,8 +336,8 @@ class LightArrayRevolverScheduler(
 }
 
 object LightArrayRevolverScheduler {
-  private[this] val taskOffset =
-    unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
+  private[this] val taskOffset = unsafe.objectFieldOffset(
+    classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
 

@@ -159,8 +159,7 @@ sealed class SiteMapSingleton {
           } else List(menu.rebuild(doAMenuItem _))
         }
 
-      def doAMenuItem(in: List[Menu]): List[Menu] =
-        in.flatMap(theFunc)
+      def doAMenuItem(in: List[Menu]): List[Menu] = in.flatMap(theFunc)
 
       val ret = sm.rebuild(_.flatMap(theFunc))
 
@@ -253,8 +252,7 @@ sealed class SiteMapSingleton {
   /**
     * A Java-callable method that builds a SiteMap
     */
-  def build(kids: Array[ConvertableToMenu]): SiteMap =
-    this.apply(kids: _*)
+  def build(kids: Array[ConvertableToMenu]): SiteMap = this.apply(kids: _*)
 
   def apply(kids: ConvertableToMenu*) = new SiteMap(Nil, kids: _*)
 

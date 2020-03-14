@@ -34,8 +34,9 @@ import org.apache.spark.util.io.ChunkedByteBuffer
 private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
     extends Logging {
 
-  private val minMemoryMapBytes =
-    conf.getSizeAsBytes("spark.storage.memoryMapThreshold", "2m")
+  private val minMemoryMapBytes = conf.getSizeAsBytes(
+    "spark.storage.memoryMapThreshold",
+    "2m")
 
   def getSize(blockId: BlockId): Long = {
     diskManager.getFile(blockId.name).length

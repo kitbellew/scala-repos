@@ -37,14 +37,13 @@ object ALSSuite {
       implicitPrefs: Boolean,
       negativeWeights: Boolean)
       : (java.util.List[Rating], Array[Double], Array[Double]) = {
-    val (sampledRatings, trueRatings, truePrefs) =
-      generateRatings(
-        users,
-        products,
-        features,
-        samplingRate,
-        implicitPrefs,
-        negativeWeights)
+    val (sampledRatings, trueRatings, truePrefs) = generateRatings(
+      users,
+      products,
+      features,
+      samplingRate,
+      implicitPrefs,
+      negativeWeights)
     (
       sampledRatings.asJava,
       trueRatings.toArray,

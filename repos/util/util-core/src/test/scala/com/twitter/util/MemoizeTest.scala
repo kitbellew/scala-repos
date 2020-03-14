@@ -47,10 +47,9 @@ class MemoizeTest extends FunSuite {
     }
 
     val ConcurrencyLevel = 5
-    val computations =
-      Future.collect(1 to ConcurrencyLevel map { _ =>
-        FuturePool.unboundedPool(memoizer(5))
-      })
+    val computations = Future.collect(1 to ConcurrencyLevel map { _ =>
+      FuturePool.unboundedPool(memoizer(5))
+    })
 
     startUpLatch.countDown()
     val results = Await.result(computations)
@@ -82,10 +81,9 @@ class MemoizeTest extends FunSuite {
     }
 
     val ConcurrencyLevel = 5
-    val computation =
-      Future.collect(1 to ConcurrencyLevel map { _ =>
-        FuturePool.unboundedPool(memo(5)) transform { Future.value _ }
-      })
+    val computation = Future.collect(1 to ConcurrencyLevel map { _ =>
+      FuturePool.unboundedPool(memo(5)) transform { Future.value _ }
+    })
 
     startUpLatch.countDown()
     val (successes, failures) =

@@ -30,8 +30,7 @@ trait TypedSeperatedFile extends Serializable {
   def writeHeader: Boolean = false
 
   def apply[T: Manifest: TupleConverter: TupleSetter](
-      path: String): FixedPathTypedDelimited[T] =
-    apply(Seq(path))
+      path: String): FixedPathTypedDelimited[T] = apply(Seq(path))
 
   def apply[T: Manifest: TupleConverter: TupleSetter](
       paths: Seq[String]): FixedPathTypedDelimited[T] = {
@@ -41,8 +40,7 @@ trait TypedSeperatedFile extends Serializable {
 
   def apply[T: Manifest: TupleConverter: TupleSetter](
       path: String,
-      f: Fields): FixedPathTypedDelimited[T] =
-    apply(Seq(path), f)
+      f: Fields): FixedPathTypedDelimited[T] = apply(Seq(path), f)
 
   def apply[T: Manifest: TupleConverter: TupleSetter](
       paths: Seq[String],

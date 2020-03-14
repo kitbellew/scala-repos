@@ -65,8 +65,9 @@ class ConcurrentActivationTest
                   (activations.flatten, deactivations.flatten))
             }
         }
-        val (activations, deactivations) =
-          Await.result(allRefsFuture, 10.seconds.dilated)
+        val (activations, deactivations) = Await.result(
+          allRefsFuture,
+          10.seconds.dilated)
         // should be the size of the activated activated producers and consumers
         activations.size should ===(2 * number * number)
         // should be the size of the activated activated producers and consumers
@@ -79,8 +80,8 @@ class ConcurrentActivationTest
           val (a, b) = lists
           a.intersect(b).size should ===(a.size)
         }
-        val (activatedConsumerNames, activatedProducerNames) =
-          partitionNames(activations)
+        val (activatedConsumerNames, activatedProducerNames) = partitionNames(
+          activations)
         val (deactivatedConsumerNames, deactivatedProducerNames) =
           partitionNames(deactivations)
         assertContainsSameElements(

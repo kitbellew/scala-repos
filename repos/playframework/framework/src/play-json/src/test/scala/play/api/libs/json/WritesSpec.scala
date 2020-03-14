@@ -23,8 +23,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
 
     @inline def dateTime(input: String) = LocalDateTime.parse(input)
 
-    val CustomWrites1 =
-      Writes.temporalWrites[LocalDateTime, String]("dd/MM/yyyy, HH:mm:ss")
+    val CustomWrites1 = Writes.temporalWrites[LocalDateTime, String](
+      "dd/MM/yyyy, HH:mm:ss")
 
     "be written as number" in {
       Writes.LocalDateTimeNumberWrites
@@ -77,8 +77,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
 
     @inline def dateTime(input: String) = ZonedDateTime.parse(input)
 
-    val CustomWrites1 =
-      Writes.temporalWrites[ZonedDateTime, String]("dd/MM/yyyy, HH:mm:ss")
+    val CustomWrites1 = Writes.temporalWrites[ZonedDateTime, String](
+      "dd/MM/yyyy, HH:mm:ss")
 
     "be written as number" in {
       Writes.ZonedDateTimeNumberWrites
@@ -177,10 +177,9 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be transformed with another OWrites" in {
-      val transformed: OWrites[Foo] =
-        writes.transform(OWrites[JsObject] { obj =>
-          obj ++ Json.obj("time" -> time)
-        })
+      val transformed: OWrites[Foo] = writes.transform(OWrites[JsObject] {
+        obj => obj ++ Json.obj("time" -> time)
+      })
       val written: JsObject = transformed.writes(Foo("Lorem"))
 
       written must_== Json.obj("bar" -> "Lorem", "time" -> time)

@@ -99,8 +99,8 @@ class HoistClientOps extends Phase {
                 }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val bl2 = bl
-                  .copy(select =
-                    Pure(StructNode(ConstArray.from(newDefsM.map(_.swap)))))
+                  .copy(select = Pure(
+                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
                 logger.debug(
                   "Translated left join side:",
@@ -127,8 +127,8 @@ class HoistClientOps extends Phase {
                 }.toMap
                 logger.debug("New defs: " + newDefsM)
                 val br2 = br
-                  .copy(select =
-                    Pure(StructNode(ConstArray.from(newDefsM.map(_.swap)))))
+                  .copy(select = Pure(
+                    StructNode(ConstArray.from(newDefsM.map(_.swap)))))
                   .infer()
                 logger.debug(
                   "Translated right join side:",
