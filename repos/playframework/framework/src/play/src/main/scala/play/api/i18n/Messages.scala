@@ -323,11 +323,11 @@ object Messages {
 
     val messagePattern = namedError(
       rep(
-        ("""\""" ^^ (_ => "")) ~> (// Ignore the leading \
-        ("\r" ?) ~> "\n" ^^ (_ => "") | // Ignore escaped end of lines \
-          "n" ^^ (_ => "\n") | // Translate literal \n to real newline
-          """\""" | // Handle escaped \\
-          "^.".r ^^ ("""\""" + _)) |
+        ("""\""" ^^ (_ => "")) ~> ( // Ignore the leading \
+          ("\r" ?) ~> "\n" ^^ (_ => "") | // Ignore escaped end of lines \
+            "n" ^^ (_ => "\n") | // Translate literal \n to real newline
+            """\""" | // Handle escaped \\
+            "^.".r ^^ ("""\""" + _)) |
           "^.".r // Or any character
       ) ^^ { case chars => chars.mkString },
       "Message pattern expected"
