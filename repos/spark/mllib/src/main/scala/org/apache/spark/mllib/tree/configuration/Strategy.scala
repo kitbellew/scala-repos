@@ -143,10 +143,11 @@ class Strategy @Since("1.3.0") (
       categoricalFeaturesInfo: java.util.Map[
         java.lang.Integer,
         java.lang.Integer]): Unit = {
-    this.categoricalFeaturesInfo = categoricalFeaturesInfo
-      .asInstanceOf[java.util.Map[Int, Int]]
-      .asScala
-      .toMap
+    this.categoricalFeaturesInfo =
+      categoricalFeaturesInfo
+        .asInstanceOf[java.util.Map[Int, Int]]
+        .asScala
+        .toMap
   }
 
   /**

@@ -43,8 +43,9 @@ class RandomForestRegressorSuite
 
   override def beforeAll() {
     super.beforeAll()
-    orderedLabeledPoints50_1000 = sc.parallelize(
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000))
+    orderedLabeledPoints50_1000 =
+      sc.parallelize(
+        EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 50, 1000))
   }
 
   /////////////////////////////////////////////////////////////////////////////

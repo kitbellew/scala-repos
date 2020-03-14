@@ -1192,7 +1192,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "simple nested struct",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    optional int32 f00;
         |    optional int32 f01;
@@ -1205,7 +1206,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f0", f0Type, nullable = false)
         .add("f1", IntegerType, nullable = true)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    optional int32 f00;
         |  }
@@ -1216,7 +1218,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "parquet-protobuf style array",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    repeated binary f00 (UTF8);
         |    repeated group f01 {
@@ -1242,7 +1245,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f0", f0Type, nullable = false)
         .add("f1", f1Type, nullable = true)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    repeated binary f00 (UTF8);
         |    repeated group f01 {
@@ -1261,7 +1265,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "parquet-thrift style array",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated binary f00_tuple (UTF8);
@@ -1293,7 +1298,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated binary f00_tuple (UTF8);
@@ -1312,7 +1318,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "parquet-avro style array",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated binary array (UTF8);
@@ -1344,7 +1351,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated binary array (UTF8);
@@ -1363,7 +1371,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "parquet-hive style array",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  optional group f0 {
         |    optional group f00 (LIST) {
         |      repeated group bag {
@@ -1396,7 +1405,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = true)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  optional group f0 {
         |    optional group f00 (LIST) {
         |      repeated group bag {
@@ -1419,7 +1429,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "2-level list of required struct",
-    parquetSchema = s"""message root {
+    parquetSchema =
+      s"""message root {
          |  required group f0 {
          |    required group f00 (LIST) {
          |      repeated group element {
@@ -1441,7 +1452,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = s"""message root {
+    expectedSchema =
+      s"""message root {
          |  required group f0 {
          |    required group f00 (LIST) {
          |      repeated group element {
@@ -1456,7 +1468,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "standard array",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated group list {
@@ -1492,7 +1505,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    optional group f00 (LIST) {
         |      repeated group list {
@@ -1515,7 +1529,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "empty requested schema",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    required int32 f00;
         |    required int64 f01;
@@ -1528,21 +1543,24 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "disjoint field sets",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 {
         |    required int32 f00;
         |    required int64 f01;
         |  }
         |}
       """.stripMargin,
-    catalystSchema = new StructType()
-      .add(
-        "f0",
-        new StructType()
-          .add("f02", FloatType, nullable = true)
-          .add("f03", DoubleType, nullable = true),
-        nullable = true),
-    expectedSchema = """message root {
+    catalystSchema =
+      new StructType()
+        .add(
+          "f0",
+          new StructType()
+            .add("f02", FloatType, nullable = true)
+            .add("f03", DoubleType, nullable = true),
+          nullable = true),
+    expectedSchema =
+      """message root {
         |  required group f0 {
         |    optional float f02;
         |    optional double f03;
@@ -1553,7 +1571,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "parquet-avro style map",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group map (MAP_KEY_VALUE) {
         |      required int32 key;
@@ -1575,7 +1594,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group map (MAP_KEY_VALUE) {
         |      required int32 key;
@@ -1591,7 +1611,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "standard map",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group key_value {
         |      required int32 key;
@@ -1613,7 +1634,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group key_value {
         |      required int32 key;
@@ -1629,7 +1651,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testSchemaClipping(
     "standard map with complex key",
-    parquetSchema = """message root {
+    parquetSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group key_value {
         |      required group key {
@@ -1651,7 +1674,8 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       new StructType().add("f0", f0Type, nullable = false)
     },
-    expectedSchema = """message root {
+    expectedSchema =
+      """message root {
         |  required group f0 (MAP) {
         |    repeated group key_value {
         |      required group key {

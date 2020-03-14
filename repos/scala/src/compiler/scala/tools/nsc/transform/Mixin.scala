@@ -1095,12 +1095,14 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         }
       }
       stats1 = add(stats1, newDefs.toList)
-      if (clazz.isTrait) stats1 = stats1.filter {
-        case vd: ValDef =>
-          // TODO do we get here?
-          false
-        case _ => true
-      }
+      if (clazz.isTrait)
+        stats1 =
+          stats1.filter {
+            case vd: ValDef =>
+              // TODO do we get here?
+              false
+            case _ => true
+          }
       if (!clazz.isTrait) stats1 = stats1 map completeSuperAccessor
       stats1
     }

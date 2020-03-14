@@ -465,14 +465,15 @@ class SparkContext(config: SparkConf)
       .toSeq
       .flatten
 
-    _eventLogDir = if (isEventLogEnabled) {
-      val unresolvedDir = conf
-        .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
-        .stripSuffix("/")
-      Some(Utils.resolveURI(unresolvedDir))
-    } else {
-      None
-    }
+    _eventLogDir =
+      if (isEventLogEnabled) {
+        val unresolvedDir = conf
+          .get("spark.eventLog.dir", EventLoggingListener.DEFAULT_LOG_DIR)
+          .stripSuffix("/")
+        Some(Utils.resolveURI(unresolvedDir))
+      } else {
+        None
+      }
 
     _eventLogCodec = {
       val compress = _conf.getBoolean("spark.eventLog.compress", false)
@@ -514,20 +515,21 @@ class SparkContext(config: SparkConf)
         None
       }
 
-    _ui = if (conf.getBoolean("spark.ui.enabled", true)) {
-      Some(
-        SparkUI.createLiveUI(
-          this,
-          _conf,
-          listenerBus,
-          _jobProgressListener,
-          _env.securityManager,
-          appName,
-          startTime = startTime))
-    } else {
-      // For tests, do not enable the UI
-      None
-    }
+    _ui =
+      if (conf.getBoolean("spark.ui.enabled", true)) {
+        Some(
+          SparkUI.createLiveUI(
+            this,
+            _conf,
+            listenerBus,
+            _jobProgressListener,
+            _env.securityManager,
+            appName,
+            startTime = startTime))
+      } else {
+        // For tests, do not enable the UI
+        None
+      }
     // Bind the UI before starting the task scheduler to communicate
     // the bound port to the cluster manager properly
     _ui.foreach(_.bind())
@@ -599,35 +601,38 @@ class SparkContext(config: SparkConf)
     _env.metricsSystem.getServletHandlers.foreach(handler =>
       ui.foreach(_.attachHandler(handler)))
 
-    _eventLogger = if (isEventLogEnabled) {
-      val logger =
-        new EventLoggingListener(
-          _applicationId,
-          _applicationAttemptId,
-          _eventLogDir.get,
-          _conf,
-          _hadoopConfiguration)
-      logger.start()
-      listenerBus.addListener(logger)
-      Some(logger)
-    } else {
-      None
-    }
+    _eventLogger =
+      if (isEventLogEnabled) {
+        val logger =
+          new EventLoggingListener(
+            _applicationId,
+            _applicationAttemptId,
+            _eventLogDir.get,
+            _conf,
+            _hadoopConfiguration)
+        logger.start()
+        listenerBus.addListener(logger)
+        Some(logger)
+      } else {
+        None
+      }
 
     // Optionally scale number of executors dynamically based on workload. Exposed for testing.
     val dynamicAllocationEnabled = Utils.isDynamicAllocationEnabled(_conf)
-    _executorAllocationManager = if (dynamicAllocationEnabled) {
-      Some(new ExecutorAllocationManager(this, listenerBus, _conf))
-    } else {
-      None
-    }
+    _executorAllocationManager =
+      if (dynamicAllocationEnabled) {
+        Some(new ExecutorAllocationManager(this, listenerBus, _conf))
+      } else {
+        None
+      }
     _executorAllocationManager.foreach(_.start())
 
-    _cleaner = if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
-      Some(new ContextCleaner(this))
-    } else {
-      None
-    }
+    _cleaner =
+      if (_conf.getBoolean("spark.cleaner.referenceTracking", true)) {
+        Some(new ContextCleaner(this))
+      } else {
+        None
+      }
     _cleaner.foreach(_.start())
 
     setupAndStartListenerBus()

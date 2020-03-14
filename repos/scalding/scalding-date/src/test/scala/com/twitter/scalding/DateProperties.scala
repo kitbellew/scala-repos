@@ -95,8 +95,8 @@ object DateProperties extends Properties("Date Properties") {
     Millisecs(ms).toMillisecs.toInt == ms
   }
 
-  property("AbsoluteDuration group properties") = forAll {
-    (a: AbsoluteDuration, b: AbsoluteDuration, c: AbsoluteDuration) =>
+  property("AbsoluteDuration group properties") =
+    forAll { (a: AbsoluteDuration, b: AbsoluteDuration, c: AbsoluteDuration) =>
       (a + b) - c == a + (b - c) &&
       (a + b) + c == a + (b + c) &&
       (a - a) == fromMillisecs(0) &&
@@ -108,7 +108,7 @@ object DateProperties extends Properties("Date Properties") {
           a == b * d + rem && (rem.toMillisecs.abs < b.toMillisecs.abs)
         }
       }
-  }
+    }
 
   property("DateRange.length is correct") = forAll { (dr: DateRange) =>
     dr.start + dr.length - AbsoluteDuration.fromMillisecs(1L) == dr.end

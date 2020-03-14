@@ -330,10 +330,11 @@ object Conformance {
                   ScalaPsiManager.ClassCategory.TYPE)
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
-                result = (
-                  !conforms(notNullType, l),
-                  undefinedSubst
-                ) //todo: think about undefinedSubst
+                result =
+                  (
+                    !conforms(notNullType, l),
+                    undefinedSubst
+                  ) //todo: think about undefinedSubst
               } else {
                 result = (true, undefinedSubst)
               }

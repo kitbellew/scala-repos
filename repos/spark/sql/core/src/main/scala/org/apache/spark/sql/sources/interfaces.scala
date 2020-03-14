@@ -385,9 +385,10 @@ abstract class OutputWriter {
   private var converter: InternalRow => Row = _
 
   protected[sql] def initConverter(dataSchema: StructType) = {
-    converter = CatalystTypeConverters
-      .createToScalaConverter(dataSchema)
-      .asInstanceOf[InternalRow => Row]
+    converter =
+      CatalystTypeConverters
+        .createToScalaConverter(dataSchema)
+        .asInstanceOf[InternalRow => Row]
   }
 
   protected[sql] def writeInternal(row: InternalRow): Unit = {

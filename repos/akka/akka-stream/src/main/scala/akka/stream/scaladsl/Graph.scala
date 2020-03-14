@@ -1005,9 +1005,10 @@ object GraphDSL extends GraphApply {
     private[stream] def deprecatedAndThen(
         port: OutPort,
         op: StageModule): Unit = {
-      moduleInProgress = moduleInProgress
-        .compose(op)
-        .wire(port, op.inPort)
+      moduleInProgress =
+        moduleInProgress
+          .compose(op)
+          .wire(port, op.inPort)
     }
 
     private[stream] def module: Module = moduleInProgress

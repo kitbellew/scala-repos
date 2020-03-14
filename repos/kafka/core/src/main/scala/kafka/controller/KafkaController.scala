@@ -1728,16 +1728,17 @@ class KafkaController(
           var topicsNotInPreferredReplica: Map[TopicAndPartition, Seq[Int]] =
             null
           inLock(controllerContext.controllerLock) {
-            topicsNotInPreferredReplica = topicAndPartitionsForBroker.filter {
-              case (topicPartition, replicas) => {
-                controllerContext.partitionLeadershipInfo.contains(
-                  topicPartition) &&
-                controllerContext
-                  .partitionLeadershipInfo(topicPartition)
-                  .leaderAndIsr
-                  .leader != leaderBroker
+            topicsNotInPreferredReplica =
+              topicAndPartitionsForBroker.filter {
+                case (topicPartition, replicas) => {
+                  controllerContext.partitionLeadershipInfo.contains(
+                    topicPartition) &&
+                  controllerContext
+                    .partitionLeadershipInfo(topicPartition)
+                    .leaderAndIsr
+                    .leader != leaderBroker
+                }
               }
-            }
             debug(
               "topics not in preferred replica " + topicsNotInPreferredReplica)
             val totalTopicPartitionsForBroker = topicAndPartitionsForBroker.size

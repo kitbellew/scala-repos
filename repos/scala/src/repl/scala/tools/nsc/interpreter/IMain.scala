@@ -167,9 +167,10 @@ class IMain(
   def initialize(postInitSignal: => Unit) {
     synchronized {
       if (_isInitialized == null) {
-        _isInitialized = Future(
-          try _initialize()
-          finally postInitSignal)(ExecutionContext.global)
+        _isInitialized =
+          Future(
+            try _initialize()
+            finally postInitSignal)(ExecutionContext.global)
       }
     }
   }

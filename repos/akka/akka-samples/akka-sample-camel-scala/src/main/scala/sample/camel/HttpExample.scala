@@ -40,7 +40,8 @@ object HttpExample {
     override def transformOutgoingMessage(msg: Any) =
       msg match {
         case camelMsg: CamelMessage =>
-          camelMsg.copy(headers = camelMsg.headers(Set(Exchange.HTTP_PATH)))
+          camelMsg.copy(headers =
+            camelMsg.headers(Set(Exchange.HTTP_PATH)))
       }
 
     // instead of replying to the initial sender(), producer actors can implement custom

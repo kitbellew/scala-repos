@@ -175,11 +175,12 @@ class WorksheetInProcessRunnerFactory {
       val newTrace = new Array[StackTraceElement](length - TRACE_PREFIX + 1)
       val referenceElement = els(length - TRACE_PREFIX)
 
-      newTrace(newTrace.length - 1) = new StackTraceElement(
-        WORKSHEET,
-        WORKSHEET,
-        if (fileName == null) referenceElement.getFileName else fileName,
-        referenceElement.getLineNumber - 4)
+      newTrace(newTrace.length - 1) =
+        new StackTraceElement(
+          WORKSHEET,
+          WORKSHEET,
+          if (fileName == null) referenceElement.getFileName else fileName,
+          referenceElement.getLineNumber - 4)
 
       var i: Int = 0
       while (i < newTrace.length - 1) {

@@ -26,30 +26,30 @@ import com.twitter.algebird.Interval
 object BatchLaws extends Properties("BatchID") {
   import Generators._
 
-  property("BatchIDs should RT to String") = forAll { batch: BatchID =>
-    batch == BatchID(batch.toString)
-  }
+  property("BatchIDs should RT to String") =
+    forAll { batch: BatchID => batch == BatchID(batch.toString) }
 
-  property("BatchID should parse strings as expected") = forAll { l: Long =>
-    (BatchID("BatchID." + l)) == BatchID(l)
-  }
+  property("BatchID should parse strings as expected") =
+    forAll { l: Long => (BatchID("BatchID." + l)) == BatchID(l) }
 
-  property("BatchID should respect ordering") = forAll { (a: Long, b: Long) =>
-    a.compare(b) == implicitly[Ordering[BatchID]]
-      .compare(BatchID(a), BatchID(b))
-  }
+  property("BatchID should respect ordering") =
+    forAll { (a: Long, b: Long) =>
+      a.compare(b) == implicitly[Ordering[BatchID]]
+        .compare(BatchID(a), BatchID(b))
+    }
 
-  property("BatchID should respect addition and subtraction") = forAll {
-    (init: Long, forward: Long, backward: Long) =>
+  property("BatchID should respect addition and subtraction") =
+    forAll { (init: Long, forward: Long, backward: Long) =>
       val batchID = BatchID(init)
       (batchID + forward - backward) == batchID + (forward - backward)
-  }
+    }
 
-  property("BatchID should roll forward and backward") = forAll { (b: Long) =>
-    BatchID(b).next.prev == BatchID(b) &&
-    BatchID(b).prev.next == BatchID(b) &&
-    BatchID(b).prev == BatchID(b - 1L)
-  }
+  property("BatchID should roll forward and backward") =
+    forAll { (b: Long) =>
+      BatchID(b).next.prev == BatchID(b) &&
+      BatchID(b).prev.next == BatchID(b) &&
+      BatchID(b).prev == BatchID(b - 1L)
+    }
 
   property("range, toInterval and toIterable should be equivalent") =
     forAll(Arbitrary.arbitrary[BatchID], Gen.choose(0L, 1000L)) {

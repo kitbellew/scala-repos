@@ -1094,15 +1094,16 @@ class Analyzer(
                     s"and ${generator.nodeName} found.")
               }
 
-              resolvedGenerator = Generate(
-                generator,
-                join =
-                  projectList.size > 1, // Only join if there are other expressions in SELECT.
-                outer = false,
-                qualifier = None,
-                generatorOutput = makeGeneratorOutput(generator, names),
-                child
-              )
+              resolvedGenerator =
+                Generate(
+                  generator,
+                  join =
+                    projectList.size > 1, // Only join if there are other expressions in SELECT.
+                  outer = false,
+                  qualifier = None,
+                  generatorOutput = makeGeneratorOutput(generator, names),
+                  child
+                )
 
               resolvedGenerator.generatorOutput
             case other => other :: Nil

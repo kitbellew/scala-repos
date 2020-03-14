@@ -117,10 +117,11 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
     val rawSplits = inputFormat.getSplits(jobContext).toArray
     val result = new Array[SparkPartition](rawSplits.size)
     for (i <- 0 until rawSplits.size) {
-      result(i) = new SqlNewHadoopPartition(
-        id,
-        i,
-        rawSplits(i).asInstanceOf[InputSplit with Writable])
+      result(i) =
+        new SqlNewHadoopPartition(
+          id,
+          i,
+          rawSplits(i).asInstanceOf[InputSplit with Writable])
     }
     result
   }

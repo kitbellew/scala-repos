@@ -44,7 +44,8 @@ case class HealthCheck(
 
   def mergeFromProto(proto: Protos.HealthCheckDefinition): HealthCheck =
     HealthCheck(
-      path = if (proto.hasPath) Some(proto.getPath) else None,
+      path =
+        if (proto.hasPath) Some(proto.getPath) else None,
       protocol = proto.getProtocol,
       portIndex =
         if (proto.hasPortIndex)

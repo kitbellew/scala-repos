@@ -52,12 +52,14 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
     data = sc.parallelize(
       EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 10, 100),
       2)
-    trainData = sc.parallelize(
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 120),
-      2)
-    validationData = sc.parallelize(
-      EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 80),
-      2)
+    trainData =
+      sc.parallelize(
+        EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 120),
+        2)
+    validationData =
+      sc.parallelize(
+        EnsembleTestHelper.generateOrderedLabeledPoints(numFeatures = 20, 80),
+        2)
   }
 
   test("Regression with continuous features: SquaredError") {

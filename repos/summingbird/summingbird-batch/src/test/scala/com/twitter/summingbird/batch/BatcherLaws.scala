@@ -106,11 +106,12 @@ object BatcherLaws extends Properties("Batcher") {
   property("UTC 1H obeys laws") = batcherLaws(CalendarBatcher.ofHoursUtc(1))
   property("UTC 1D obeys laws") = batcherLaws(CalendarBatcher.ofDaysUtc(1))
 
-  property("Combined obeys laws") = batcherLaws(
-    new CombinedBatcher(
-      Batcher.ofHours(1),
-      ExclusiveUpper(Timestamp.now),
-      Batcher.ofMinutes(10)))
+  property("Combined obeys laws") =
+    batcherLaws(
+      new CombinedBatcher(
+        Batcher.ofHours(1),
+        ExclusiveUpper(Timestamp.now),
+        Batcher.ofMinutes(10)))
 
   val millisPerHour = 1000 * 60 * 60
 
@@ -122,17 +123,18 @@ object BatcherLaws extends Properties("Batcher") {
 
   val hourlyBatcher = Batcher.ofHours(1)
 
-  property("DurationBatcher should batch correctly") = forAll { millis: Long =>
-    val hourIndex: Long = millis / millisPerHour
+  property("DurationBatcher should batch correctly") =
+    forAll { millis: Long =>
+      val hourIndex: Long = millis / millisPerHour
 
-    // Long division rounds toward zero. Add a correction to make
-    // sure that our index is floored toward negative inf.
-    val flooredBatch = BatchID(if (millis < 0) (hourIndex - 1) else hourIndex)
+      // Long division rounds toward zero. Add a correction to make
+      // sure that our index is floored toward negative inf.
+      val flooredBatch = BatchID(if (millis < 0) (hourIndex - 1) else hourIndex)
 
-    (hourlyBatcher.batchOf(Timestamp(millis)) == flooredBatch) &&
-    (hourlyBatcher.earliestTimeOf(flooredBatch).milliSinceEpoch ==
-      hourlyBatchFloor(flooredBatch.id))
-  }
+      (hourlyBatcher.batchOf(Timestamp(millis)) == flooredBatch) &&
+      (hourlyBatcher.earliestTimeOf(flooredBatch).milliSinceEpoch ==
+        hourlyBatchFloor(flooredBatch.id))
+    }
 
   property(
     "DurationBatcher should fully enclose each batch with a single batch") =
@@ -141,12 +143,12 @@ object BatcherLaws extends Properties("Batcher") {
         BatchID(i))
     }
 
-  property("batchesCoveredBy is a subset of covers") = forAll {
-    (int: Interval[Timestamp]) =>
+  property("batchesCoveredBy is a subset of covers") =
+    forAll { (int: Interval[Timestamp]) =>
       val coveredBy = hourlyBatcher.batchesCoveredBy(int)
       val covers = hourlyBatcher.cover(int)
       (covers && coveredBy) == coveredBy
-  }
+    }
 
   property("Lower batch edge should align") = {
     implicit val tenSecondBatcher = Batcher(10, TimeUnit.SECONDS)
@@ -164,8 +166,8 @@ object BatcherLaws extends Properties("Batcher") {
     }
   }
 
-  property("batchesCoveredBy produces has times in the interval") = forAll {
-    (d: Timestamp, sl: SmallLong) =>
+  property("batchesCoveredBy produces has times in the interval") =
+    forAll { (d: Timestamp, sl: SmallLong) =>
       // Make sure we cover at least an hour in the usual case by multiplying by ms per hour
       val int = Interval.leftClosedRightOpen(d, d.incrementHours(sl.get))
       val covered = hourlyBatcher.batchesCoveredBy(int)
@@ -176,6 +178,6 @@ object BatcherLaws extends Properties("Batcher") {
         int.contains(hourlyBatcher.earliestTimeOf(minBatch)) &&
         int.contains(hourlyBatcher.earliestTimeOf(maxBatch.next).prev)
       }
-  }
+    }
 
 }

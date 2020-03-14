@@ -203,11 +203,12 @@ object HttpDtab {
           name <- decodeName(msg.headerMap(dest))
         } yield Dentry(path, name)
 
-      dentries(i) = tryDentry match {
-        case Return(dentry) => dentry
-        case Throw(e) =>
-          return Throw(e)
-      }
+      dentries(i) =
+        tryDentry match {
+          case Return(dentry) => dentry
+          case Throw(e) =>
+            return Throw(e)
+        }
 
       i += 1
     }

@@ -390,11 +390,12 @@ private[hive] class HiveQl(conf: ParserConf)
         // TODO add bucket support
         var tableDesc: CatalogTable = CatalogTable(
           name = tableIdentifier,
-          tableType = if (externalTable.isDefined) {
-            CatalogTableType.EXTERNAL_TABLE
-          } else {
-            CatalogTableType.MANAGED_TABLE
-          },
+          tableType =
+            if (externalTable.isDefined) {
+              CatalogTableType.EXTERNAL_TABLE
+            } else {
+              CatalogTableType.MANAGED_TABLE
+            },
           storage = CatalogStorageFormat(
             locationUri = None,
             inputFormat = None,
@@ -520,10 +521,12 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "parquet" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"),
-                  outputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat")
+                  inputFormat =
+                    Option(
+                      "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"),
+                  outputFormat =
+                    Option(
+                      "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat")
                 )
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(serde = Option(
@@ -537,8 +540,10 @@ private[hive] class HiveQl(conf: ParserConf)
                   outputFormat =
                     Option("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
                 if (tableDesc.storage.serde.isEmpty) {
-                  tableDesc = tableDesc.withNewStorage(serde = Option(
-                    "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
+                  tableDesc = tableDesc.withNewStorage(
+                    serde =
+                      Option(
+                        "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
                 }
 
               case "textfile" =>
@@ -557,10 +562,12 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "avro" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat"),
-                  outputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
+                  inputFormat =
+                    Option(
+                      "org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat"),
+                  outputFormat =
+                    Option(
+                      "org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
                 )
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(

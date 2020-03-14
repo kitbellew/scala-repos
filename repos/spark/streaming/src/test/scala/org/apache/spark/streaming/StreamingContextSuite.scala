@@ -994,10 +994,11 @@ package object testPackage extends Assertions {
 
       inputStream.foreachRDD { rdd =>
         rddCreationSiteCorrect = rdd.creationSite == creationSite
-        foreachCallSiteCorrect = rdd.sparkContext
-          .getCallSite()
-          .shortForm
-          .contains("StreamingContextSuite")
+        foreachCallSiteCorrect =
+          rdd.sparkContext
+            .getCallSite()
+            .shortForm
+            .contains("StreamingContextSuite")
         rddGenerated = true
       }
       ssc.start()

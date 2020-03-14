@@ -80,9 +80,8 @@ class CacheConditionDirectivesSpec extends RoutingSpec {
         status shouldEqual NotModified
         headers should contain theSameElementsAs (responseHeaders)
       }
-      Get() ~> `If-None-Match`(
-        tag.copy(weak =
-          true)) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
+      Get() ~> `If-None-Match`(tag.copy(weak =
+        true)) ~> ifModifiedSince ~> taggedAndTimestamped ~> check {
         status shouldEqual NotModified
         headers should contain theSameElementsAs (responseHeaders)
       }

@@ -349,9 +349,10 @@ private[spark] class ApplicationMaster(
     val driverEndpoint = rpcEnv.setupEndpointRef(
       RpcAddress(host, port.toInt),
       YarnSchedulerBackend.ENDPOINT_NAME)
-    amEndpoint = rpcEnv.setupEndpoint(
-      "YarnAM",
-      new AMEndpoint(rpcEnv, driverEndpoint, isClusterMode))
+    amEndpoint =
+      rpcEnv.setupEndpoint(
+        "YarnAM",
+        new AMEndpoint(rpcEnv, driverEndpoint, isClusterMode))
     driverEndpoint
   }
 

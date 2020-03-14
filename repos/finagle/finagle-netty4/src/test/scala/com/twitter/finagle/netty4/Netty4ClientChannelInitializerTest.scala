@@ -47,12 +47,13 @@ class Netty4ClientChannelInitializerTest
     val transportP = new Promise[Transport[String, String]]
 
     def initChannel() = {
-      channelInit = new Netty4ClientChannelInitializer(
-        transportP,
-        params,
-        Some(enc),
-        Some(() => dec)
-      )
+      channelInit =
+        new Netty4ClientChannelInitializer(
+          transportP,
+          params,
+          Some(enc),
+          Some(() => dec)
+        )
       server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
       channelInit.initChannel(client)
     }

@@ -775,22 +775,23 @@ object Test extends Properties("HtmlFactory") {
       case _                    => false
     }
 
-    property("SI-8514: No inconsistencies") = checkText("SI-8514.scala")(
-      (
-        Some("a/index"),
-        """class A extends AnyRef
+    property("SI-8514: No inconsistencies") =
+      checkText("SI-8514.scala")(
+        (
+          Some("a/index"),
+          """class A extends AnyRef
             Some doc here
             Some doc here
             Annotations @DeveloperApi()
          """,
-        true),
-      (
-        Some("a/index"),
-        """class B extends AnyRef
+          true),
+        (
+          Some("a/index"),
+          """class B extends AnyRef
             Annotations @DeveloperApi()
          """,
-        true)
-    )
+          true)
+      )
   }
 
   // SI-8144

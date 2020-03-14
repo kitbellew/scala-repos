@@ -236,15 +236,16 @@ class JobProgressListenerSuite
         .shuffleRead === 1000)
 
     // finish a task with unknown executor-id, nothing should happen
-    taskInfo = new TaskInfo(
-      1234L,
-      0,
-      1,
-      1000L,
-      "exe-unknown",
-      "host1",
-      TaskLocality.NODE_LOCAL,
-      true)
+    taskInfo =
+      new TaskInfo(
+        1234L,
+        0,
+        1,
+        1000L,
+        "exe-unknown",
+        "host1",
+        TaskLocality.NODE_LOCAL,
+        true)
     taskInfo.finishTime = 1
     task = new ShuffleMapTask(0)
     listener.onTaskEnd(

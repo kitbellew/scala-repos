@@ -739,9 +739,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             mname,
             methodType.descriptor,
             app.pos)
-          generatedType = boxResultType(
-            fun.symbol
-          ) // was typeToBType(fun.symbol.tpe.resultType)
+          generatedType =
+            boxResultType(
+              fun.symbol
+            ) // was typeToBType(fun.symbol.tpe.resultType)
 
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>

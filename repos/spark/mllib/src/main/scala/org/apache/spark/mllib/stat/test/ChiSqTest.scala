@@ -135,13 +135,14 @@ private[stat] object ChiSqTest extends Logging {
 
       if (labels == null) {
         // Do this only once for the first column since labels are invariant across features.
-        labels = pairCounts.keys
-          .filter(_._1 == startCol)
-          .map(_._3)
-          .toArray
-          .distinct
-          .zipWithIndex
-          .toMap
+        labels =
+          pairCounts.keys
+            .filter(_._1 == startCol)
+            .map(_._3)
+            .toArray
+            .distinct
+            .zipWithIndex
+            .toMap
       }
       val numLabels = labels.size
       pairCounts.keys.groupBy(_._1).foreach {

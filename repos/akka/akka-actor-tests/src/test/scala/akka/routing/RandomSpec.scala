@@ -57,13 +57,14 @@ class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
       }
 
       val actor = system.actorOf(
-        RandomPool(connectionCount).props(routeeProps = Props(new Actor {
-          lazy val id = counter.getAndIncrement()
-          def receive = {
-            case "hit" ⇒ sender() ! id
-            case "end" ⇒ doneLatch.countDown()
-          }
-        })),
+        RandomPool(connectionCount).props(routeeProps =
+          Props(new Actor {
+            lazy val id = counter.getAndIncrement()
+            def receive = {
+              case "hit" ⇒ sender() ! id
+              case "end" ⇒ doneLatch.countDown()
+            }
+          })),
         name = "random"
       )
 

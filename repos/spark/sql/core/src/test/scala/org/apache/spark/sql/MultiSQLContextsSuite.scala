@@ -34,11 +34,12 @@ class MultiSQLContextsSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     SQLContext.clearActive()
     SQLContext.clearInstantiatedContext()
-    sparkConf = new SparkConf(false)
-      .setMaster("local[*]")
-      .setAppName("test")
-      .set("spark.ui.enabled", "false")
-      .set("spark.driver.allowMultipleContexts", "true")
+    sparkConf =
+      new SparkConf(false)
+        .setMaster("local[*]")
+        .setAppName("test")
+        .set("spark.ui.enabled", "false")
+        .set("spark.driver.allowMultipleContexts", "true")
   }
 
   override protected def afterAll(): Unit = {

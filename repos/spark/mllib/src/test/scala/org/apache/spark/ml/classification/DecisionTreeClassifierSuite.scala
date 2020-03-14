@@ -52,14 +52,18 @@ class DecisionTreeClassifierSuite
     super.beforeAll()
     categoricalDataPointsRDD =
       sc.parallelize(OldDecisionTreeSuite.generateCategoricalDataPoints())
-    orderedLabeledPointsWithLabel0RDD = sc.parallelize(
-      OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel0())
-    orderedLabeledPointsWithLabel1RDD = sc.parallelize(
-      OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel1())
-    categoricalDataPointsForMulticlassRDD = sc.parallelize(
-      OldDecisionTreeSuite.generateCategoricalDataPointsForMulticlass())
-    continuousDataPointsForMulticlassRDD = sc.parallelize(
-      OldDecisionTreeSuite.generateContinuousDataPointsForMulticlass())
+    orderedLabeledPointsWithLabel0RDD =
+      sc.parallelize(
+        OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel0())
+    orderedLabeledPointsWithLabel1RDD =
+      sc.parallelize(
+        OldDecisionTreeSuite.generateOrderedLabeledPointsWithLabel1())
+    categoricalDataPointsForMulticlassRDD =
+      sc.parallelize(
+        OldDecisionTreeSuite.generateCategoricalDataPointsForMulticlass())
+    continuousDataPointsForMulticlassRDD =
+      sc.parallelize(
+        OldDecisionTreeSuite.generateContinuousDataPointsForMulticlass())
     categoricalDataPointsForMulticlassForOrderedFeaturesRDD = sc.parallelize(
       OldDecisionTreeSuite
         .generateCategoricalDataPointsForMulticlassForOrderedFeatures())

@@ -502,13 +502,14 @@ private[http] abstract class HttpMessageParser[
 
   def continue(input: ByteString, offset: Int)(
       next: (ByteString, Int) ⇒ StateResult): StateResult = {
-    state = math.signum(offset - input.length) match {
-      case -1 ⇒
-        val remaining = input.drop(offset)
-        (more ⇒ next(remaining ++ more, 0))
-      case 0 ⇒ next(_, 0)
-      case 1 ⇒ throw new IllegalStateException
-    }
+    state =
+      math.signum(offset - input.length) match {
+        case -1 ⇒
+          val remaining = input.drop(offset)
+          (more ⇒ next(remaining ++ more, 0))
+        case 0 ⇒ next(_, 0)
+        case 1 ⇒ throw new IllegalStateException
+      }
     done()
   }
 

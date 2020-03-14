@@ -77,7 +77,8 @@ object ProcessKeeper {
     val aclsPath = write(
       mesosWorkDirFile,
       fileName = "acls.json",
-      content = """
+      content =
+        """
         |{
         |  "run_tasks": [{
         |    "principals": { "type": "ANY" },

@@ -71,9 +71,10 @@ abstract class InlineRefactoringTestBase
         },
         getProjectAdapter,
         "Test")
-      res = scalaFile.getText
-        .substring(0, lastPsi.getTextOffset)
-        .trim //getImportStatements.map(_.getText()).mkString("\n")
+      res =
+        scalaFile.getText
+          .substring(0, lastPsi.getTextOffset)
+          .trim //getImportStatements.map(_.getText()).mkString("\n")
     } catch {
       case e: RefactoringErrorHintException =>
         assert(

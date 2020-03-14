@@ -130,23 +130,28 @@ object CORSConfig {
         case Some(allowed) => Origins.Matching(allowed.toSet)
         case None          => Origins.All
       },
-      isHttpMethodAllowed = config
-        .get[Option[Seq[String]]]("allowedHttpMethods")
-        .map { methods =>
-          val s = methods.toSet
-          s.contains _
-        }
-        .getOrElse(_ => true),
-      isHttpHeaderAllowed = config
-        .get[Option[Seq[String]]]("allowedHttpHeaders")
-        .map { headers =>
-          val s = headers.map(_.toLowerCase(java.util.Locale.ENGLISH)).toSet
-          s.contains _
-        }
-        .getOrElse(_ => true),
-      exposedHeaders = config.get[Seq[String]]("exposedHeaders"),
-      supportsCredentials = config.get[Boolean]("supportsCredentials"),
-      preflightMaxAge = config.get[Duration]("preflightMaxAge")
+      isHttpMethodAllowed =
+        config
+          .get[Option[Seq[String]]]("allowedHttpMethods")
+          .map { methods =>
+            val s = methods.toSet
+            s.contains _
+          }
+          .getOrElse(_ => true),
+      isHttpHeaderAllowed =
+        config
+          .get[Option[Seq[String]]]("allowedHttpHeaders")
+          .map { headers =>
+            val s = headers.map(_.toLowerCase(java.util.Locale.ENGLISH)).toSet
+            s.contains _
+          }
+          .getOrElse(_ => true),
+      exposedHeaders =
+        config.get[Seq[String]]("exposedHeaders"),
+      supportsCredentials =
+        config.get[Boolean]("supportsCredentials"),
+      preflightMaxAge =
+        config.get[Duration]("preflightMaxAge")
     )
   }
 }

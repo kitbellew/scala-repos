@@ -274,10 +274,12 @@ private[sql] class DefaultSource
 
     FileTypes(
       data = leaves.filterNot(f => isSummaryFile(f.getPath)),
-      metadata = leaves.filter(
-        _.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
-      commonMetadata = leaves.filter(
-        _.getPath.getName == ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)
+      metadata =
+        leaves.filter(
+          _.getPath.getName == ParquetFileWriter.PARQUET_METADATA_FILE),
+      commonMetadata =
+        leaves.filter(
+          _.getPath.getName == ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)
     )
   }
 

@@ -238,9 +238,10 @@ object TypedActor
               Array.ofDim[AnyRef](a.length) //Mutable for the sake of sanity
             for (i ← 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
-              deserializedParameters(i) = serialization
-                .serializerByIdentity(sId)
-                .fromBinary(bytes, Option(manifest))
+              deserializedParameters(i) =
+                serialization
+                  .serializerByIdentity(sId)
+                  .fromBinary(bytes, Option(manifest))
             }
 
             deserializedParameters

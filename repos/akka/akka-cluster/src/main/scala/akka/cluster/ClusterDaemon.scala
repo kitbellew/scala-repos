@@ -461,26 +461,27 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     if (newSeedNodes.nonEmpty) {
       stopSeedNodeProcess()
       seedNodes = newSeedNodes // keep them for retry
-      seedNodeProcess = if (newSeedNodes == immutable.IndexedSeq(selfAddress)) {
-        self ! ClusterUserAction.JoinTo(selfAddress)
-        None
-      } else {
-        // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
-        seedNodeProcessCounter += 1
-        if (newSeedNodes.head == selfAddress) {
-          Some(
-            context.actorOf(
-              Props(classOf[FirstSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
-              name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
+      seedNodeProcess =
+        if (newSeedNodes == immutable.IndexedSeq(selfAddress)) {
+          self ! ClusterUserAction.JoinTo(selfAddress)
+          None
         } else {
-          Some(
-            context.actorOf(
-              Props(classOf[JoinSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
-              name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
+          // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
+          seedNodeProcessCounter += 1
+          if (newSeedNodes.head == selfAddress) {
+            Some(
+              context.actorOf(
+                Props(classOf[FirstSeedNodeProcess], newSeedNodes)
+                  .withDispatcher(UseDispatcher),
+                name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
+          } else {
+            Some(
+              context.actorOf(
+                Props(classOf[JoinSeedNodeProcess], newSeedNodes)
+                  .withDispatcher(UseDispatcher),
+                name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
+          }
         }
-      }
     }
   }
 

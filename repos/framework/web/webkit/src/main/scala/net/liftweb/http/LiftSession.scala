@@ -472,12 +472,13 @@ class LiftSession(
       // then use the Lift length.  Why not use it if the Lift length is
       // longer?  Well, the container's just going to time you out, so
       // why bother.
-      inactivityLength = (
-        sess.maxInactiveInterval * 1000L,
-        LiftRules.sessionInactivityTimeout.vend) match {
-        case (container, Full(lift)) if lift < container => lift
-        case (container, _)                              => container
-      }
+      inactivityLength =
+        (
+          sess.maxInactiveInterval * 1000L,
+          LiftRules.sessionInactivityTimeout.vend) match {
+          case (container, Full(lift)) if lift < container => lift
+          case (container, _)                              => container
+        }
     }
 
     lastServiceTime = millis

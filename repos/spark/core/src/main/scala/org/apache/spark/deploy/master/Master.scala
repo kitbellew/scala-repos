@@ -1199,8 +1199,9 @@ private[deploy] class Master(
         var msg = s"Exception in replaying log for application $appName!"
         logError(msg, e)
         msg = URLEncoder.encode(msg, "UTF-8")
-        app.appUIUrlAtHistoryServer = Some(
-          notFoundBasePath + s"?msg=$msg&exception=$exception&title=$title")
+        app.appUIUrlAtHistoryServer =
+          Some(
+            notFoundBasePath + s"?msg=$msg&exception=$exception&title=$title")
     }(ThreadUtils.sameThread)
 
     futureUI

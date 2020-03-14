@@ -56,11 +56,12 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
       columnName: String,
       useCompression: Boolean): Unit = {
 
-    compressionEncoders = if (useCompression) {
-      schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
-    } else {
-      Seq(PassThrough.encoder(columnType))
-    }
+    compressionEncoders =
+      if (useCompression) {
+        schemes.filter(_.supports(columnType)).map(_.encoder[T](columnType))
+      } else {
+        Seq(PassThrough.encoder(columnType))
+      }
     super.initialize(initialSize, columnName, useCompression)
   }
 

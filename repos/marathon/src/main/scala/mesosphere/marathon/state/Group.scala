@@ -256,7 +256,8 @@ object Group {
 
   implicit val validRootGroup: Validator[Group] = new Validator[Group] {
     override def apply(group: Group): Result = {
-      validate(group)(validator = validNestedGroup(PathId.empty))
+      validate(group)(validator =
+        validNestedGroup(PathId.empty))
     }
   }
 

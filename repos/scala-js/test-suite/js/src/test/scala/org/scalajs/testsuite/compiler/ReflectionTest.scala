@@ -66,7 +66,8 @@ class ReflectionTest {
   }
 
   @Test def isInstance_for_raw_JS_class(): Unit = {
-    js.Dynamic.global.ReflectionTestRawJSClass = js.eval("""(function() {})""")
+    js.Dynamic.global.ReflectionTestRawJSClass =
+      js.eval("""(function() {})""")
 
     val obj = new ReflectionTestRawJSClass
     assertTrue(obj.isInstanceOf[ReflectionTestRawJSClass])

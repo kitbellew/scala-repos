@@ -205,15 +205,16 @@ trait NamesDefaults { self: Analyzer =>
         val b = Block(List(vd), baseFunTransformed)
           .setType(baseFunTransformed.tpe)
           .setPos(baseFun.pos.makeTransparent)
-        context.namedApplyBlockInfo = Some(
-          (b, NamedApplyInfo(Some(newQual), defaultTargs, Nil, blockTyper)))
+        context.namedApplyBlockInfo =
+          Some(
+            (b, NamedApplyInfo(Some(newQual), defaultTargs, Nil, blockTyper)))
         b
       }
 
       def blockWithoutQualifier(defaultQual: Option[Tree]) = {
         val b = atPos(baseFun.pos)(Block(Nil, baseFun).setType(baseFun.tpe))
-        context.namedApplyBlockInfo = Some(
-          (b, NamedApplyInfo(defaultQual, defaultTargs, Nil, blockTyper)))
+        context.namedApplyBlockInfo =
+          Some((b, NamedApplyInfo(defaultQual, defaultTargs, Nil, blockTyper)))
         b
       }
 
@@ -424,8 +425,8 @@ trait NamesDefaults { self: Analyzer =>
                 val block = Block(stats ::: valDefs.flatten, res)
                   .setType(res.tpe)
                   .setPos(tree.pos.makeTransparent)
-                context.namedApplyBlockInfo = Some(
-                  (
+                context.namedApplyBlockInfo =
+                  Some((
                     block,
                     NamedApplyInfo(qual, targs, vargss :+ refArgs, blockTyper)))
                 block

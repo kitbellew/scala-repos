@@ -1390,14 +1390,15 @@ trait SHtml extends Loggable {
   }
 
   private def dupWithName(elem: Elem, name: String): Elem = {
-    elem.copy(attributes = new UnprefixedAttribute(
-      "name",
-      name,
-      elem.attributes.filter {
-        case up: UnprefixedAttribute =>
-          up.key != "name"
-        case _ => true
-      }))
+    elem.copy(attributes =
+      new UnprefixedAttribute(
+        "name",
+        name,
+        elem.attributes.filter {
+          case up: UnprefixedAttribute =>
+            up.key != "name"
+          case _ => true
+        }))
   }
 
   private def isRadio(in: MetaData): Boolean =
@@ -1435,15 +1436,16 @@ trait SHtml extends Loggable {
 
             fmapFunc(func) {
               funcName =>
-                e.copy(attributes = allEvent.foldLeft(newAttr) {
-                  case (meta, attr) =>
-                    new UnprefixedAttribute(
-                      attr,
-                      Helpers.appendFuncToURL(
-                        oldAttr.getOrElse(attr, ""),
-                        funcName + "=_"),
-                      meta)
-                })
+                e.copy(attributes =
+                  allEvent.foldLeft(newAttr) {
+                    case (meta, attr) =>
+                      new UnprefixedAttribute(
+                        attr,
+                        Helpers.appendFuncToURL(
+                          oldAttr.getOrElse(attr, ""),
+                          funcName + "=_"),
+                        meta)
+                  })
             }
           }
 
@@ -1509,14 +1511,15 @@ trait SHtml extends Loggable {
 
             val cmd = ajaxCall(JsRaw("this.value"), func)._2.toJsCmd
 
-            e.copy(attributes = allEvent.foldLeft(newAttr) {
-              case (meta, attr) =>
-                new UnprefixedAttribute(
-                  attr,
-                  oldAttr.getOrElse(attr, "") + cmd,
-                  meta)
+            e.copy(attributes =
+              allEvent.foldLeft(newAttr) {
+                case (meta, attr) =>
+                  new UnprefixedAttribute(
+                    attr,
+                    oldAttr.getOrElse(attr, "") + cmd,
+                    meta)
 
-            })
+              })
           }
 
           case x => x

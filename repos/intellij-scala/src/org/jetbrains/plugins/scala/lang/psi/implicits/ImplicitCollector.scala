@@ -208,7 +208,8 @@ class ImplicitCollector(
       }
 
       val secondCandidates = processor.candidatesS(fullInfo).toSeq
-      result = if (secondCandidates.isEmpty) candidates else secondCandidates
+      result =
+        if (secondCandidates.isEmpty) candidates else secondCandidates
       if (predicate.isEmpty && !fullInfo)
         ImplicitCollector.cache.put((place, tp), result)
       result

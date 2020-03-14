@@ -105,9 +105,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       }
       env("SPARK_YARN_CACHE_FILES_TIME_STAMPS") =
         timeStamps.reduceLeft[String] { (acc, n) => acc + "," + n }
-      env("SPARK_YARN_CACHE_FILES_FILE_SIZES") = sizes.reduceLeft[String] {
-        (acc, n) => acc + "," + n
-      }
+      env("SPARK_YARN_CACHE_FILES_FILE_SIZES") =
+        sizes.reduceLeft[String] { (acc, n) => acc + "," + n }
       env("SPARK_YARN_CACHE_FILES_VISIBILITIES") =
         visibilities.reduceLeft[String] { (acc, n) => acc + "," + n }
     }
@@ -125,9 +124,8 @@ private[spark] class ClientDistributedCacheManager() extends Logging {
       }
       env("SPARK_YARN_CACHE_ARCHIVES_TIME_STAMPS") =
         timeStamps.reduceLeft[String] { (acc, n) => acc + "," + n }
-      env("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES") = sizes.reduceLeft[String] {
-        (acc, n) => acc + "," + n
-      }
+      env("SPARK_YARN_CACHE_ARCHIVES_FILE_SIZES") =
+        sizes.reduceLeft[String] { (acc, n) => acc + "," + n }
       env("SPARK_YARN_CACHE_ARCHIVES_VISIBILITIES") =
         visibilities.reduceLeft[String] { (acc, n) => acc + "," + n }
     }

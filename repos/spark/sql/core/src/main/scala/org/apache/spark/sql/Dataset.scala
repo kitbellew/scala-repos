@@ -718,7 +718,12 @@ class Dataset[T] private[sql] (
     val right = other.logicalPlan
 
     val joined = sqlContext.executePlan(
-      Join(left, right, joinType = JoinType(joinType), Some(condition.expr)))
+      Join(
+        left,
+        right,
+        joinType =
+          JoinType(joinType),
+        Some(condition.expr)))
     val leftOutput = joined.analyzed.output.take(left.output.length)
     val rightOutput = joined.analyzed.output.takeRight(right.output.length)
 

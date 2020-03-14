@@ -1202,9 +1202,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
             clazz.info.decls.enter(om)
             foreachWithIndex(om.paramss) { (params, i) =>
               foreachWithIndex(params) { (param, j) =>
-                param.name = overriding
-                  .paramss(i)(j)
-                  .name // SI-6555 Retain the parameter names from the subclass.
+                param.name =
+                  overriding
+                    .paramss(i)(j)
+                    .name // SI-6555 Retain the parameter names from the subclass.
               }
             }
             debuglog(

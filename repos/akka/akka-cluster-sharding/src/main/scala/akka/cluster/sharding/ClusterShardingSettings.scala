@@ -42,8 +42,9 @@ object ClusterShardingSettings {
       snapshotAfter = config.getInt("snapshot-after"),
       leastShardAllocationRebalanceThreshold =
         config.getInt("least-shard-allocation-strategy.rebalance-threshold"),
-      leastShardAllocationMaxSimultaneousRebalance = config.getInt(
-        "least-shard-allocation-strategy.max-simultaneous-rebalance"),
+      leastShardAllocationMaxSimultaneousRebalance =
+        config.getInt(
+          "least-shard-allocation-strategy.max-simultaneous-rebalance"),
       waitingForStateTimeout =
         config.getDuration("waiting-for-state-timeout", MILLISECONDS).millis,
       updatingStateTimeout =

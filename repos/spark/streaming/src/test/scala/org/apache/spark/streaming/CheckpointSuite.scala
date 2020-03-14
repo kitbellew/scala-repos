@@ -1007,11 +1007,11 @@ class CheckpointSuite
           }
         }
 
-        shouldCheckpointAllMarkedRDDs = Option(
-          rdd.sparkContext.getLocalProperty(
+        shouldCheckpointAllMarkedRDDs =
+          Option(rdd.sparkContext.getLocalProperty(
             RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
-          .map(_.toBoolean)
-          .getOrElse(false)
+            .map(_.toBoolean)
+            .getOrElse(false)
 
         val stateRDDs = findAllMarkedRDDs(rdd)
         rdd.count()

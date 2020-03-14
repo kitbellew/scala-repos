@@ -250,8 +250,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
   */
 case class ExplainCommand(
     logicalPlan: LogicalPlan,
-    override val output: Seq[Attribute] = Seq(
-      AttributeReference("plan", StringType, nullable = true)()),
+    override val output: Seq[Attribute] =
+      Seq(AttributeReference("plan", StringType, nullable = true)()),
     extended: Boolean = false)
     extends RunnableCommand {
 

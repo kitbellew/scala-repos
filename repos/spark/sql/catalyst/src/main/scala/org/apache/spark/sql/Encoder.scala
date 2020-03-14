@@ -258,10 +258,11 @@ object Encoders {
         EncodeUsingSerializer(
           BoundReference(0, ObjectType(classOf[AnyRef]), nullable = true),
           kryo = useKryo)),
-      fromRowExpression = DecodeUsingSerializer[T](
-        BoundReference(0, BinaryType, nullable = true),
-        classTag[T],
-        kryo = useKryo),
+      fromRowExpression =
+        DecodeUsingSerializer[T](
+          BoundReference(0, BinaryType, nullable = true),
+          classTag[T],
+          kryo = useKryo),
       clsTag = classTag[T]
     )
   }

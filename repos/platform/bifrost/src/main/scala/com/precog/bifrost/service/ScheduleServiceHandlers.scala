@@ -173,8 +173,9 @@ class AddScheduledQueryServiceHandler(
                     logger.error("Failure adding scheduled execution: " + error)
                     HttpResponse(
                       status = HttpStatus(InternalServerError),
-                      content = Some(
-                        "An error occurred scheduling your query".serialize))
+                      content =
+                        Some(
+                          "An error occurred scheduling your query".serialize))
                   }
 
                 case Some(errors) =>

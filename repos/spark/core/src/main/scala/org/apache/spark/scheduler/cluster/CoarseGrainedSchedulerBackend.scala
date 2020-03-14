@@ -539,9 +539,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
       this.localityAwareTasks = localityAwareTasks
       this.hostToLocalTaskCount = hostToLocalTaskCount
 
-      numPendingExecutors = math.max(
-        numExecutors - numExistingExecutors + executorsPendingToRemove.size,
-        0)
+      numPendingExecutors =
+        math.max(
+          numExecutors - numExistingExecutors + executorsPendingToRemove.size,
+          0)
       doRequestTotalExecutors(numExecutors)
     }
 

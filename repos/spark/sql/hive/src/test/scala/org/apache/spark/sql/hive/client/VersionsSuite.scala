@@ -150,16 +150,17 @@ class VersionsSuite extends SparkFunSuite with Logging {
     test(s"$version: create client") {
       client = null
       System.gc() // Hack to avoid SEGV on some JVM versions.
-      client = IsolatedClientLoader
-        .forVersion(
-          hiveMetastoreVersion = version,
-          hadoopVersion = VersionInfo.getVersion,
-          sparkConf = sparkConf,
-          hadoopConf = new Configuration(),
-          config = buildConf(),
-          ivyPath = ivyPath
-        )
-        .createClient()
+      client =
+        IsolatedClientLoader
+          .forVersion(
+            hiveMetastoreVersion = version,
+            hadoopVersion = VersionInfo.getVersion,
+            sparkConf = sparkConf,
+            hadoopConf = new Configuration(),
+            config = buildConf(),
+            ivyPath = ivyPath
+          )
+          .createClient()
     }
 
     test(s"$version: createDatabase") {

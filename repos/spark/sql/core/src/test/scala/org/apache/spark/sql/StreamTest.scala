@@ -302,9 +302,10 @@ trait StreamTest extends QueryTest with Timeouts {
           case StartStream =>
             verify(currentStream == null, "stream already running")
             lastStream = currentStream
-            currentStream = sqlContext.streams
-              .startQuery(StreamExecution.nextName, stream, sink)
-              .asInstanceOf[StreamExecution]
+            currentStream =
+              sqlContext.streams
+                .startQuery(StreamExecution.nextName, stream, sink)
+                .asInstanceOf[StreamExecution]
             currentStream.microBatchThread.setUncaughtExceptionHandler(
               new UncaughtExceptionHandler {
                 override def uncaughtException(

@@ -125,9 +125,10 @@ object SliderLabelControlDemo extends JFXApp {
     width = 200
     title = "Slider Label Control Demo"
     scene = new Scene {
-      content = new FlowPane {
-        children = List(lblValue, sldValue)
-      }
+      content =
+        new FlowPane {
+          children = List(lblValue, sldValue)
+        }
     }
   }
 

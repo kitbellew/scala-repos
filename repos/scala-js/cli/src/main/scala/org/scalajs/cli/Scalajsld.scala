@@ -88,7 +88,8 @@ object Scalajsld {
         .text("Produce a source map for the produced code")
       opt[Unit]("compliantAsInstanceOfs")
         .action { (_, c) =>
-          c.copy(semantics = c.semantics.withAsInstanceOfs(Compliant))
+          c.copy(semantics =
+            c.semantics.withAsInstanceOfs(Compliant))
         }
         .text("Use compliant asInstanceOfs")
       opt[OutputMode]('m', "outputMode")

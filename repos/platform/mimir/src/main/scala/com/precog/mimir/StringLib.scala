@@ -509,7 +509,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                   if (quote) Pattern.quote(right(row)) else right(row)
 
                 // TOOD cache compiled patterns for awesome sauce
-                result(row) = Pattern.compile(pattern).split(left(row), -1)
+                result(row) =
+                  Pattern.compile(pattern).split(left(row), -1)
 
                 defined.flip(row)
               } catch {

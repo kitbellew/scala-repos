@@ -195,13 +195,14 @@ class JavapClass(
             (method == pattern || isSpecialized(method) || isAnonymized(method))
           }
         }
-        filtering = if (filtering) {
-          // next blank line terminates section
-          // in non-verbose mode, next line is next method, more or less
-          line.trim.nonEmpty && (!isAnyMethod || isOurMethod)
-        } else {
-          isAnyMethod && isOurMethod
-        }
+        filtering =
+          if (filtering) {
+            // next blank line terminates section
+            // in non-verbose mode, next line is next method, more or less
+            line.trim.nonEmpty && (!isAnyMethod || isOurMethod)
+          } else {
+            isAnyMethod && isOurMethod
+          }
         filtering
       }
       // do we output this line?

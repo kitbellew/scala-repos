@@ -20,8 +20,9 @@ class BufAsByteBufTest extends FunSuite with BeforeAndAfter {
   private[this] var buffer: ByteBuf = null
 
   before {
-    buffer = BufAsByteBuf.Owned(
-      Buf.ByteArray.Owned(Array.fill[Byte](Capacity)(0.toByte)))
+    buffer =
+      BufAsByteBuf.Owned(
+        Buf.ByteArray.Owned(Array.fill[Byte](Capacity)(0.toByte)))
     seed = System.currentTimeMillis()
     random = new Random(seed)
   }
