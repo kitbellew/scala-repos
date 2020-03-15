@@ -76,8 +76,7 @@ private[play] final class SerializableResult(constructorResult: Result)
 
     cachedResult = Result(
       header = ResponseHeader(status, headerMap),
-      body = body
-    )
+      body = body)
   }
   override def writeExternal(out: ObjectOutput): Unit = {
     out.writeByte(SerializableResult.encodingVersion)

@@ -242,10 +242,11 @@ private object YarnClusterDriver extends Logging with Matchers {
       System.exit(1)
     }
 
-    val sc = new SparkContext(new SparkConf()
-      .set("spark.extraListeners", classOf[SaveExecutorInfo].getName)
-      .setAppName(
-        "yarn \"test app\" 'with quotes' and \\back\\slashes and $dollarSigns"))
+    val sc = new SparkContext(
+      new SparkConf()
+        .set("spark.extraListeners", classOf[SaveExecutorInfo].getName)
+        .setAppName(
+          "yarn \"test app\" 'with quotes' and \\back\\slashes and $dollarSigns"))
     val conf = sc.getConf
     val status = new File(args(0))
     var result = "failure"
@@ -280,9 +281,8 @@ private object YarnClusterDriver extends Logging with Matchers {
       new URL(urlStr)
       val containerId = YarnSparkHadoopUtil.get.getContainerId
       val user = Utils.getCurrentUserName()
-      assert(
-        urlStr.endsWith(
-          s"/node/containerlogs/$containerId/$user/stderr?start=-4096"))
+      assert(urlStr.endsWith(
+        s"/node/containerlogs/$containerId/$user/stderr?start=-4096"))
     }
   }
 

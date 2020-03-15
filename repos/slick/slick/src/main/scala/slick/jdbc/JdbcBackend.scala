@@ -360,23 +360,22 @@ trait JdbcBackend extends RelationalBackend {
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : PreparedStatement = {
       JdbcBackend.logStatement("Preparing statement", sql)
-      val s = loggingPreparedStatement(
-        decorateStatement(
-          resultSetHoldability.withDefault(defaultHoldability) match {
-            case ResultSetHoldability.Default =>
-              val rsType = resultSetType.withDefault(defaultType).intValue
-              val rsConc =
-                resultSetConcurrency.withDefault(defaultConcurrency).intValue
-              if (rsType == ResultSet.TYPE_FORWARD_ONLY && rsConc == ResultSet.CONCUR_READ_ONLY)
-                conn.prepareStatement(sql)
-              else conn.prepareStatement(sql, rsType, rsConc)
-            case h =>
-              conn.prepareStatement(
-                sql,
-                resultSetType.withDefault(defaultType).intValue,
-                resultSetConcurrency.withDefault(defaultConcurrency).intValue,
-                h.intValue)
-          }))
+      val s = loggingPreparedStatement(decorateStatement(
+        resultSetHoldability.withDefault(defaultHoldability) match {
+          case ResultSetHoldability.Default =>
+            val rsType = resultSetType.withDefault(defaultType).intValue
+            val rsConc =
+              resultSetConcurrency.withDefault(defaultConcurrency).intValue
+            if (rsType == ResultSet.TYPE_FORWARD_ONLY && rsConc == ResultSet.CONCUR_READ_ONLY)
+              conn.prepareStatement(sql)
+            else conn.prepareStatement(sql, rsType, rsConc)
+          case h =>
+            conn.prepareStatement(
+              sql,
+              resultSetType.withDefault(defaultType).intValue,
+              resultSetConcurrency.withDefault(defaultConcurrency).intValue,
+              h.intValue)
+        }))
       if (fetchSize != 0) s.setFetchSize(fetchSize)
       s
     }
@@ -416,19 +415,18 @@ trait JdbcBackend extends RelationalBackend {
           ResultSetConcurrency.ReadOnly,
         defaultHoldability: ResultSetHoldability = ResultSetHoldability.Default)
         : Statement = {
-      val s = loggingStatement(
-        decorateStatement(
-          resultSetHoldability.withDefault(defaultHoldability) match {
-            case ResultSetHoldability.Default =>
-              conn.createStatement(
-                resultSetType.withDefault(defaultType).intValue,
-                resultSetConcurrency.withDefault(defaultConcurrency).intValue)
-            case h =>
-              conn.createStatement(
-                resultSetType.withDefault(defaultType).intValue,
-                resultSetConcurrency.withDefault(defaultConcurrency).intValue,
-                h.intValue)
-          }))
+      val s = loggingStatement(decorateStatement(
+        resultSetHoldability.withDefault(defaultHoldability) match {
+          case ResultSetHoldability.Default =>
+            conn.createStatement(
+              resultSetType.withDefault(defaultType).intValue,
+              resultSetConcurrency.withDefault(defaultConcurrency).intValue)
+          case h =>
+            conn.createStatement(
+              resultSetType.withDefault(defaultType).intValue,
+              resultSetConcurrency.withDefault(defaultConcurrency).intValue,
+              h.intValue)
+        }))
       if (fetchSize != 0) s.setFetchSize(fetchSize)
       s
     }
@@ -588,7 +586,9 @@ trait JdbcBackend extends RelationalBackend {
 
     def pushStatementParameters(p: JdbcBackend.StatementParameters): Unit = {
       val p2 =
-        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (p.rsHoldability eq null) || (p.statementInit eq null)) {
+        if ((p.rsType eq null) || (p.rsConcurrency eq null) || (
+              p.rsHoldability eq null
+            ) || (p.statementInit eq null)) {
           val curr =
             if (statementParameters eq null)
               JdbcBackend.defaultStatementParameters

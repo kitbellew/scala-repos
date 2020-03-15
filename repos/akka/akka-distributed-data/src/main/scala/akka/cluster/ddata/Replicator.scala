@@ -1435,7 +1435,9 @@ final class Replicator(settings: ReplicatorSettings)
 
     pruningPerformed.foreach {
       case (removed, timestamp)
-          if ((allReachableClockTime - timestamp) > maxPruningDisseminationNanos) &&
+          if (
+            (allReachableClockTime - timestamp) > maxPruningDisseminationNanos
+          ) &&
             allPruningPerformed(removed) ⇒
         log.debug("All pruning performed for [{}], tombstoned", removed)
         pruningPerformed -= removed

@@ -88,8 +88,8 @@ private[impl] class TaskUpdateActor(
 
     // Answer all outstanding requests.
     operationsByTaskId.values.iterator.flatten.map(_.sender) foreach { sender =>
-      sender ! Status.Failure(
-        new IllegalStateException("TaskUpdateActor stopped"))
+      sender ! Status.Failure(new IllegalStateException(
+        "TaskUpdateActor stopped"))
     }
 
     metrics.numberOfActiveOps.setValue(0)
@@ -144,10 +144,8 @@ private[impl] class TaskUpdateActor(
       val future = {
         if (op.deadline <= clock.now()) {
           metrics.timedOutOpsMeter.mark()
-          op.sender ! Status.Failure(
-            new TimeoutException(
-              s"Timeout: ${op.action} for app [${op.appId}] and ${op.taskId}.")
-          )
+          op.sender ! Status.Failure(new TimeoutException(
+            s"Timeout: ${op.action} for app [${op.appId}] and ${op.taskId}."))
           Future.successful(())
         } else metrics.processOpTimer.timeFuture(processor.process(op))
       }.map { _ =>

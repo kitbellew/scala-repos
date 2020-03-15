@@ -307,9 +307,7 @@ class ScImplicitlyConvertible(
           .getCachedClass(
             "scala.Function1",
             place.getResolveScope,
-            ScalaPsiManager.ClassCategory.TYPE
-          )
-      ) collect {
+            ScalaPsiManager.ClassCategory.TYPE)) collect {
         case cl: ScTrait =>
           ScParameterizedType(
             ScType.designator(cl),
@@ -407,10 +405,9 @@ class ScImplicitlyConvertible(
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       f.typeParameters.find(tp =>
-                        (
-                          tp.name,
-                          ScalaPsiUtil.getPsiElementId(
-                            tp)) == (tpt.name, tpt.getId)) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp)) == (
+                          tpt.name, tpt.getId
+                        )) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

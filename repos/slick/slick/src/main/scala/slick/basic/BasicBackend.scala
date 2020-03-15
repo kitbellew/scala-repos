@@ -407,10 +407,10 @@ trait BasicBackend { self =>
                   if (debug) {
                     if (state eq null)
                       streamLogger.debug(
-                        s"Sent up to ${str(realDemand)} elements - Stream " + (if (ctx.cancelled)
-                                                                                 "cancelled"
-                                                                               else
-                                                                                 "completely delivered"))
+                        s"Sent up to ${str(realDemand)} elements - Stream " + (
+                          if (ctx.cancelled) "cancelled"
+                          else "completely delivered"
+                        ))
                     else
                       streamLogger.debug(
                         s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")

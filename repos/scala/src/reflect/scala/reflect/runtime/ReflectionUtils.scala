@@ -68,8 +68,8 @@ object ReflectionUtils {
           inferClasspath(cl),
           show(cl.getParent))
       case null =>
-        "primordial classloader with boot classpath [%s]".format(
-          inferClasspath(cl))
+        "primordial classloader with boot classpath [%s]".format(inferClasspath(
+          cl))
     }
   }
 

@@ -99,7 +99,6 @@ class ClasspathDependenciesSuite extends SparkFunSuite {
   test("parquet-hadoop-bundle") {
     assertLoads(
       "parquet.hadoop.ParquetOutputFormat",
-      "parquet.hadoop.ParquetInputFormat"
-    )
+      "parquet.hadoop.ParquetInputFormat")
   }
 }

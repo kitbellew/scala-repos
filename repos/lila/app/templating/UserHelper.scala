@@ -322,8 +322,9 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
     "user_link" :: List(
       cssClass,
       withPowerTip option "ulpt",
-      withOnline option isOnline(userId).fold("online is-green", "offline")
-    ).flatten
+      withOnline option isOnline(userId).fold(
+        "online is-green",
+        "offline")).flatten
   }.mkString("class=\"", " ", "\"")
 
   def userGameFilterTitle(info: UserInfo, filter: GameFilter)(

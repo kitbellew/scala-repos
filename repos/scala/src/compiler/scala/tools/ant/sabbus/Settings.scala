@@ -112,6 +112,5 @@ class Settings {
     encodingBf,
     targetBf,
     optimiseBf,
-    extraParamsBf
-  ).##
+    extraParamsBf).##
 }

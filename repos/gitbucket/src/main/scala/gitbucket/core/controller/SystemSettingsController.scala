@@ -88,9 +88,8 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
     ).flatten
   }
 
-  private val pluginForm = mapping(
-    "pluginId" -> list(trim(label("", text())))
-  )(PluginForm.apply)
+  private val pluginForm = mapping("pluginId" -> list(trim(label("", text()))))(
+    PluginForm.apply)
 
   case class PluginForm(pluginIds: List[String])
 
@@ -129,16 +128,14 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
       isRemoved: Boolean)
 
   val newUserForm = mapping(
-    "userName" -> trim(
-      label(
-        "Username",
-        text(required, maxlength(100), identifier, uniqueUserName))),
+    "userName" -> trim(label(
+      "Username",
+      text(required, maxlength(100), identifier, uniqueUserName))),
     "password" -> trim(label("Password", text(required, maxlength(20)))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress()))),
+    "mailAddress" -> trim(label(
+      "Mail Address",
+      text(required, maxlength(100), uniqueMailAddress()))),
     "isAdmin" -> trim(label("User Type", boolean())),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text())))
@@ -149,10 +146,9 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
       label("Username", text(required, maxlength(100), identifier))),
     "password" -> trim(label("Password", optional(text(maxlength(20))))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress("userName")))),
+    "mailAddress" -> trim(label(
+      "Mail Address",
+      text(required, maxlength(100), uniqueMailAddress("userName")))),
     "isAdmin" -> trim(label("User Type", boolean())),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
@@ -162,10 +158,9 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
   )(EditUserForm.apply)
 
   val newGroupForm = mapping(
-    "groupName" -> trim(
-      label(
-        "Group name",
-        text(required, maxlength(100), identifier, uniqueUserName))),
+    "groupName" -> trim(label(
+      "Group name",
+      text(required, maxlength(100), identifier, uniqueUserName))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "members" -> trim(label("Members", text(required, members)))
@@ -251,15 +246,14 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           removeUserRelatedData(userName)
         }
 
-        updateAccount(
-          account.copy(
-            password = form.password.map(sha1).getOrElse(account.password),
-            fullName = form.fullName,
-            mailAddress = form.mailAddress,
-            isAdmin = form.isAdmin,
-            url = form.url,
-            isRemoved = form.isRemoved
-          ))
+        updateAccount(account.copy(
+          password = form.password.map(sha1).getOrElse(account.password),
+          fullName = form.fullName,
+          mailAddress = form.mailAddress,
+          isAdmin = form.isAdmin,
+          url = form.url,
+          isRemoved = form.isRemoved
+        ))
 
         updateImage(userName, form.fileId, form.clearImage)
         redirect("/admin/users")

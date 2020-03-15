@@ -594,20 +594,16 @@ private[http] trait CoreRequestVarHandler {
     val mySessionThing = sessionThing.value
 
     f =>
-      isIn.doWith("in")(
-        vals.doWith(myVals)(
-          cleanup.doWith(new ListBuffer) {
-            sessionThing.doWith(mySessionThing) {
-              val ret: T = f()
+      isIn.doWith("in")(vals.doWith(myVals)(cleanup.doWith(new ListBuffer) {
+        sessionThing.doWith(mySessionThing) {
+          val ret: T = f()
 
-              cleanup.value.toList.foreach(clean =>
-                Helpers.tryo(clean(sessionThing.value)))
+          cleanup.value.toList.foreach(clean =>
+            Helpers.tryo(clean(sessionThing.value)))
 
-              ret
-            }
-          }
-        )
-      )
+          ret
+        }
+      }))
   }
 
   protected def backingStore
@@ -660,32 +656,29 @@ private[http] trait CoreRequestVarHandler {
       f
     } else {
       isIn.doWith("in")(
-        vals.doWith(new ConcurrentHashMap)(
-          cleanup.doWith(new ListBuffer) {
-            sessionThing.doWith(session) {
-              val ret: T = f
+        vals.doWith(new ConcurrentHashMap)(cleanup.doWith(new ListBuffer) {
+          sessionThing.doWith(session) {
+            val ret: T = f
 
-              cleanup.value.toList.foreach(clean =>
-                Helpers.tryo(clean(sessionThing.value)))
+            cleanup.value.toList.foreach(clean =>
+              Helpers.tryo(clean(sessionThing.value)))
 
-              if (Props.devMode && LiftRules.logUnreadRequestVars) {
-                vals.value.keys
-                  .filter(!_.startsWith(VarConstants.varPrefix + "net.liftweb"))
-                  .filter(!_.endsWith(VarConstants.initedSuffix))
-                  .foreach(key =>
-                    vals.value(key) match {
-                      case (rv, _, true) if rv.logUnreadVal =>
-                        logger.warn("RequestVar %s was set but not read".format(
-                          key.replace(VarConstants.varPrefix, "")))
-                      case _ =>
-                    })
-              }
-
-              ret
+            if (Props.devMode && LiftRules.logUnreadRequestVars) {
+              vals.value.keys
+                .filter(!_.startsWith(VarConstants.varPrefix + "net.liftweb"))
+                .filter(!_.endsWith(VarConstants.initedSuffix))
+                .foreach(key =>
+                  vals.value(key) match {
+                    case (rv, _, true) if rv.logUnreadVal =>
+                      logger.warn("RequestVar %s was set but not read".format(
+                        key.replace(VarConstants.varPrefix, "")))
+                    case _ =>
+                  })
             }
+
+            ret
           }
-        )
-      )
+        }))
     }
   }
 }

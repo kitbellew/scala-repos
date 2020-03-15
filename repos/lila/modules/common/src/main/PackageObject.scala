@@ -108,8 +108,8 @@ trait WithPlay { self: PackageObject =>
   implicit def LilaFuZero[A: Zero]: Zero[Fu[A]] =
     Zero.instance(fuccess(zero[A]))
 
-  implicit val LilaJsObjectZero: Zero[JsObject] = Zero.instance(
-    JsObject(Seq.empty))
+  implicit val LilaJsObjectZero: Zero[JsObject] = Zero.instance(JsObject(
+    Seq.empty))
 
   implicit def LilaJsResultZero[A]: Zero[JsResult[A]] =
     Zero.instance(JsError(Seq.empty))
@@ -185,16 +185,14 @@ trait WithPlay { self: PackageObject =>
       fua ~ {
         _.effectFold(
           e => println("[failure] " + e),
-          a => println("[success] " + a)
-        )
+          a => println("[success] " + a))
       }
 
     def thenPp(msg: String): Fu[A] =
       fua ~ {
         _.effectFold(
           e => println(s"[$msg] [failure] $e"),
-          a => println(s"[$msg] [success] $a")
-        )
+          a => println(s"[$msg] [success] $a"))
       }
 
     def awaitSeconds(seconds: Int): A = {

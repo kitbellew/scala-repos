@@ -23,8 +23,7 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
 
   def testSessionStatus[Req, Rep](
       name: String,
-      sessionFac: (Transport[Req, Rep]) => () => Status
-  ): Unit = {
+      sessionFac: (Transport[Req, Rep]) => () => Status): Unit = {
 
     test(s"$name: session status reflects underlying transport") {
       val clientToServer = new AsyncQueue[Req]
@@ -76,8 +75,7 @@ class ClientSessionTest extends FunSuite with MockitoSugar {
     { tr: Transport[Any, Any] =>
       val dispatcher = new HttpClientDispatcher(tr)
       () => dispatcher.status
-    }
-  )
+    })
 
   class MyClient extends com.twitter.finagle.Memcached.Client {
     def newDisp(transport: Transport[In, Out]): Service[In, Out] =

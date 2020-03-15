@@ -617,15 +617,14 @@ private[spark] class DAGScheduler(
     assert(partitions.size > 0)
     val func2 = func.asInstanceOf[(TaskContext, Iterator[_]) => _]
     val waiter = new JobWaiter(this, jobId, partitions.size, resultHandler)
-    eventProcessLoop.post(
-      JobSubmitted(
-        jobId,
-        rdd,
-        func2,
-        partitions.toArray,
-        callSite,
-        waiter,
-        SerializationUtils.clone(properties)))
+    eventProcessLoop.post(JobSubmitted(
+      jobId,
+      rdd,
+      func2,
+      partitions.toArray,
+      callSite,
+      waiter,
+      SerializationUtils.clone(properties)))
     waiter
   }
 
@@ -666,17 +665,15 @@ private[spark] class DAGScheduler(
     waiter.completionFuture.ready(Duration.Inf)(awaitPermission)
     waiter.completionFuture.value.get match {
       case scala.util.Success(_) =>
-        logInfo(
-          "Job %d finished: %s, took %f s".format(
-            waiter.jobId,
-            callSite.shortForm,
-            (System.nanoTime - start) / 1e9))
+        logInfo("Job %d finished: %s, took %f s".format(
+          waiter.jobId,
+          callSite.shortForm,
+          (System.nanoTime - start) / 1e9))
       case scala.util.Failure(exception) =>
-        logInfo(
-          "Job %d failed: %s, took %f s".format(
-            waiter.jobId,
-            callSite.shortForm,
-            (System.nanoTime - start) / 1e9))
+        logInfo("Job %d failed: %s, took %f s".format(
+          waiter.jobId,
+          callSite.shortForm,
+          (System.nanoTime - start) / 1e9))
         // SPARK-8644: Include user stack trace in exceptions coming from DAGScheduler.
         val callerStackTrace = Thread.currentThread().getStackTrace.tail
         exception.setStackTrace(exception.getStackTrace ++ callerStackTrace)
@@ -706,15 +703,14 @@ private[spark] class DAGScheduler(
     val func2 = func.asInstanceOf[(TaskContext, Iterator[_]) => _]
     val partitions = (0 until rdd.partitions.length).toArray
     val jobId = nextJobId.getAndIncrement()
-    eventProcessLoop.post(
-      JobSubmitted(
-        jobId,
-        rdd,
-        func2,
-        partitions,
-        callSite,
-        listener,
-        SerializationUtils.clone(properties)))
+    eventProcessLoop.post(JobSubmitted(
+      jobId,
+      rdd,
+      func2,
+      partitions,
+      callSite,
+      listener,
+      SerializationUtils.clone(properties)))
     listener.awaitResult() // Will throw an exception if the job fails
   }
 
@@ -753,13 +749,12 @@ private[spark] class DAGScheduler(
       jobId,
       1,
       (i: Int, r: MapOutputStatistics) => callback(r))
-    eventProcessLoop.post(
-      MapStageSubmitted(
-        jobId,
-        dependency,
-        callSite,
-        waiter,
-        SerializationUtils.clone(properties)))
+    eventProcessLoop.post(MapStageSubmitted(
+      jobId,
+      dependency,
+      callSite,
+      waiter,
+      SerializationUtils.clone(properties)))
     waiter
   }
 
@@ -788,10 +783,9 @@ private[spark] class DAGScheduler(
     // Cancel all running jobs.
     runningStages
       .map(_.firstJobId)
-      .foreach(
-        handleJobCancellation(
-          _,
-          reason = "as part of cancellation of all jobs"))
+      .foreach(handleJobCancellation(
+        _,
+        reason = "as part of cancellation of all jobs"))
     activeJobs.clear() // These should already be empty by this point,
     jobIdToActiveJob.clear() // but just in case we lost track of some jobs...
     submitWaitingStages()
@@ -858,10 +852,9 @@ private[spark] class DAGScheduler(
       }
     }
     val jobIds = activeInGroup.map(_.jobId)
-    jobIds.foreach(
-      handleJobCancellation(
-        _,
-        "part of cancelled job group %s".format(groupId)))
+    jobIds.foreach(handleJobCancellation(
+      _,
+      "part of cancelled job group %s".format(groupId)))
     submitWaitingStages()
   }
 
@@ -936,9 +929,10 @@ private[spark] class DAGScheduler(
 
     val job = new ActiveJob(jobId, finalStage, callSite, listener, properties)
     clearCacheLocs()
-    logInfo(
-      "Got job %s (%s) with %d output partitions"
-        .format(job.jobId, callSite.shortForm, partitions.length))
+    logInfo("Got job %s (%s) with %d output partitions".format(
+      job.jobId,
+      callSite.shortForm,
+      partitions.length))
     logInfo("Final stage: " + finalStage + " (" + finalStage.name + ")")
     logInfo("Parents of final stage: " + finalStage.parents)
     logInfo("Missing parents: " + getMissingParentStages(finalStage))
@@ -950,12 +944,11 @@ private[spark] class DAGScheduler(
     val stageIds = jobIdToStageIds(jobId).toArray
     val stageInfos = stageIds.flatMap(id =>
       stageIdToStage.get(id).map(_.latestInfo))
-    listenerBus.post(
-      SparkListenerJobStart(
-        job.jobId,
-        jobSubmissionTime,
-        stageInfos,
-        properties))
+    listenerBus.post(SparkListenerJobStart(
+      job.jobId,
+      jobSubmissionTime,
+      stageInfos,
+      properties))
     submitStage(finalStage)
 
     submitWaitingStages()
@@ -985,9 +978,10 @@ private[spark] class DAGScheduler(
 
     val job = new ActiveJob(jobId, finalStage, callSite, listener, properties)
     clearCacheLocs()
-    logInfo(
-      "Got map stage job %s (%s) with %d output partitions"
-        .format(jobId, callSite.shortForm, dependency.rdd.partitions.length))
+    logInfo("Got map stage job %s (%s) with %d output partitions".format(
+      jobId,
+      callSite.shortForm,
+      dependency.rdd.partitions.length))
     logInfo("Final stage: " + finalStage + " (" + finalStage.name + ")")
     logInfo("Parents of final stage: " + finalStage.parents)
     logInfo("Missing parents: " + getMissingParentStages(finalStage))
@@ -999,12 +993,11 @@ private[spark] class DAGScheduler(
     val stageIds = jobIdToStageIds(jobId).toArray
     val stageInfos = stageIds.flatMap(id =>
       stageIdToStage.get(id).map(_.latestInfo))
-    listenerBus.post(
-      SparkListenerJobStart(
-        job.jobId,
-        jobSubmissionTime,
-        stageInfos,
-        properties))
+    listenerBus.post(SparkListenerJobStart(
+      job.jobId,
+      jobSubmissionTime,
+      stageInfos,
+      properties))
     submitStage(finalStage)
 
     // If the whole stage has already finished, tell the listener and remove it
@@ -1187,13 +1180,12 @@ private[spark] class DAGScheduler(
         "Submitting " + tasks.size + " missing tasks from " + stage + " (" + stage.rdd + ")")
       stage.pendingPartitions ++= tasks.map(_.partitionId)
       logDebug("New pending partitions: " + stage.pendingPartitions)
-      taskScheduler.submitTasks(
-        new TaskSet(
-          tasks.toArray,
-          stage.id,
-          stage.latestInfo.attemptId,
-          jobId,
-          properties))
+      taskScheduler.submitTasks(new TaskSet(
+        tasks.toArray,
+        stage.id,
+        stage.latestInfo.attemptId,
+        jobId,
+        properties))
       stage.latestInfo.submissionTime = Some(clock.getTimeMillis())
     } else {
       // Because we posted SparkListenerStageSubmitted earlier, we should mark
@@ -1291,14 +1283,13 @@ private[spark] class DAGScheduler(
     // are properly notified and can chose to handle it. For instance, some listeners are
     // doing their own accounting and if they don't get the task end event they think
     // tasks are still running when they really aren't.
-    listenerBus.post(
-      SparkListenerTaskEnd(
-        stageId,
-        task.stageAttemptId,
-        taskType,
-        event.reason,
-        event.taskInfo,
-        taskMetrics))
+    listenerBus.post(SparkListenerTaskEnd(
+      stageId,
+      task.stageAttemptId,
+      taskType,
+      event.reason,
+      event.taskInfo,
+      taskMetrics))
 
     if (!stageIdToStage.contains(task.stageId)) {
       // Skip all the actions if the stage has been cancelled.
@@ -1324,11 +1315,10 @@ private[spark] class DAGScheduler(
                   if (job.numFinished == job.numPartitions) {
                     markStageAsFinished(resultStage)
                     cleanupStateForJobAndIndependentStages(job)
-                    listenerBus.post(
-                      SparkListenerJobEnd(
-                        job.jobId,
-                        clock.getTimeMillis(),
-                        JobSucceeded))
+                    listenerBus.post(SparkListenerJobEnd(
+                      job.jobId,
+                      clock.getTimeMillis(),
+                      JobSucceeded))
                   }
 
                   // taskSucceeded runs some user code that might throw an exception. Make sure
@@ -1337,8 +1327,8 @@ private[spark] class DAGScheduler(
                   catch {
                     case e: Exception =>
                       // TODO: Perhaps we want to mark the resultStage as failed?
-                      job.listener.jobFailed(
-                        new SparkDriverExecutionException(e))
+                      job.listener.jobFailed(new SparkDriverExecutionException(
+                        e))
                   }
                 }
               case None =>

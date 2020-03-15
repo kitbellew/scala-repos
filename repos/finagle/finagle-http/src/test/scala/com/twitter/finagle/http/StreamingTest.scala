@@ -367,8 +367,8 @@ object StreamingTest {
           codec.newClientDispatcher(cmod(transport), params)
         override def newServerDispatcher(
             transport: Transport[Any, Any],
-            service: Service[Request, Response]
-        ) = codec.newServerDispatcher(smod(transport), service)
+            service: Service[Request, Response]) =
+          codec.newServerDispatcher(smod(transport), service)
       }
 
     val factory = Http().streaming(true)

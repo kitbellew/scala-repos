@@ -21,8 +21,7 @@ abstract class ParallelSeqCheck[T](collName: String)
   override def instances(vals: Seq[Gen[T]]): Gen[Seq[T]] =
     oneOf(
       sized(sz => ofSize(vals, sz)),
-      for (sz <- choose(1000, 2000)) yield ofSize(vals, sz)
-    )
+      for (sz <- choose(1000, 2000)) yield ofSize(vals, sz))
 
   def fromTraversable(t: Traversable[T]) = fromSeq(traversable2Seq(t))
   def traversable2Seq(t: Traversable[T]): Seq[T] = {
@@ -162,8 +161,9 @@ abstract class ParallelSeqCheck[T](collName: String)
         println(ccm)
       }
       ("Nil" |: s.sameElements(Nil) == coll.sameElements(Nil)) &&
-      ("toList" |: s.sameElements(s.toList) == coll.sameElements(
-        coll.toList)) &&
+      (
+        "toList" |: s.sameElements(s.toList) == coll.sameElements(coll.toList)
+      ) &&
       ("identity" |: s.sameElements(s.map(e => e)) == coll.sameElements(
         coll.map(e => e))) &&
       ("vice-versa" |: s.sameElements(coll) == coll.sameElements(s)) &&
@@ -213,8 +213,9 @@ abstract class ParallelSeqCheck[T](collName: String)
   property("endsWiths must be equal") = forAll(collectionPairsWithModified) {
     case (s, coll, collmodif) =>
       ("ends with self" |: s.endsWith(s) == coll.endsWith(s)) &&
-        ("ends with tail" |: (s.length == 0 || s.endsWith(s.tail) == coll
-          .endsWith(coll.tail))) &&
+        ("ends with tail" |: (
+          s.length == 0 || s.endsWith(s.tail) == coll.endsWith(coll.tail)
+        )) &&
         ("with each other" |: coll.endsWith(s)) &&
         ("modified" |: s.startsWith(collmodif) == coll.endsWith(collmodif)) &&
         (for (sq <- startEndSeqs) yield {
@@ -245,8 +246,9 @@ abstract class ParallelSeqCheck[T](collName: String)
   if (!isCheckingViews)
     property("patches must be equal") = forAll(collectionTripletsWith2Indices) {
       case (s, coll, pat, from, repl) =>
-        ("with seq" |: s
-          .patch(from, pat, repl) == coll.patch(from, pat, repl)) &&
+        (
+          "with seq" |: s.patch(from, pat, repl) == coll.patch(from, pat, repl)
+        ) &&
           ("with par" |: s
             .patch(from, pat, repl) == coll.patch(from, fromSeq(pat), repl)) &&
           ("with empty" |: s

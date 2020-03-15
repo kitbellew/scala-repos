@@ -121,15 +121,14 @@ object ConsumerGroupCommand {
     }
 
     protected def printDescribeHeader() {
-      println(
-        "%-30s %-30s %-10s %-15s %-15s %-15s %s".format(
-          "GROUP",
-          "TOPIC",
-          "PARTITION",
-          "CURRENT-OFFSET",
-          "LOG-END-OFFSET",
-          "LAG",
-          "OWNER"))
+      println("%-30s %-30s %-10s %-15s %-15s %-15s %s".format(
+        "GROUP",
+        "TOPIC",
+        "PARTITION",
+        "CURRENT-OFFSET",
+        "LOG-END-OFFSET",
+        "LAG",
+        "OWNER"))
     }
 
     private def describePartition(
@@ -142,15 +141,14 @@ object ConsumerGroupCommand {
         val lag = offsetOpt
           .filter(_ != -1)
           .flatMap(offset => logEndOffset.map(_ - offset))
-        println(
-          "%-30s %-30s %-10s %-15s %-15s %-15s %s".format(
-            group,
-            topic,
-            partition,
-            offsetOpt.getOrElse("unknown"),
-            logEndOffset.getOrElse("unknown"),
-            lag.getOrElse("unknown"),
-            ownerOpt.getOrElse("none")))
+        println("%-30s %-30s %-10s %-15s %-15s %-15s %s".format(
+          group,
+          topic,
+          partition,
+          offsetOpt.getOrElse("unknown"),
+          logEndOffset.getOrElse("unknown"),
+          lag.getOrElse("unknown"),
+          ownerOpt.getOrElse("none")))
       }
       getLogEndOffset(topic, partition) match {
         case LogEndOffsetResult.LogEndOffset(logEndOffset) =>
@@ -243,11 +241,10 @@ object ConsumerGroupCommand {
           getZkConsumer(brokerId)
             .map { consumer =>
               val topicAndPartition = new TopicAndPartition(topic, partition)
-              val request = OffsetRequest(
-                Map(
-                  topicAndPartition -> PartitionOffsetRequestInfo(
-                    OffsetRequest.LatestTime,
-                    1)))
+              val request = OffsetRequest(Map(
+                topicAndPartition -> PartitionOffsetRequestInfo(
+                  OffsetRequest.LatestTime,
+                  1)))
               val logEndOffset = consumer
                 .getOffsetsBefore(request)
                 .partitionErrorAndOffsets(topicAndPartition)
@@ -379,13 +376,12 @@ object ConsumerGroupCommand {
                 val brokerInfo = m.asInstanceOf[Map[String, Any]]
                 val host = brokerInfo.get("host").get.asInstanceOf[String]
                 val port = brokerInfo.get("port").get.asInstanceOf[Int]
-                Some(
-                  new SimpleConsumer(
-                    host,
-                    port,
-                    10000,
-                    100000,
-                    "ConsumerGroupCommand"))
+                Some(new SimpleConsumer(
+                  host,
+                  port,
+                  10000,
+                  100000,
+                  "ConsumerGroupCommand"))
               case None =>
                 throw new BrokerNotAvailableException(
                   "Broker id %d does not exist".format(brokerId))
@@ -428,11 +424,9 @@ object ConsumerGroupCommand {
           val topicPartitions = consumerSummary.assignment.map(tp =>
             TopicAndPartition(tp.topic, tp.partition))
           val partitionOffsets = topicPartitions.flatMap { topicPartition =>
-            Option(
-              consumer.committed(
-                new TopicPartition(
-                  topicPartition.topic,
-                  topicPartition.partition))).map { offsetAndMetadata =>
+            Option(consumer.committed(new TopicPartition(
+              topicPartition.topic,
+              topicPartition.partition))).map { offsetAndMetadata =>
               topicPartition -> offsetAndMetadata.offset
             }
           }.toMap

@@ -31,8 +31,8 @@ trait Placeholders { self: Quasiquotes =>
     }
 
     def appendHole(tree: Tree, rank: Rank) = {
-      val placeholderName = c.freshName(
-        TermName(nme.QUASIQUOTE_PREFIX + sessionSuffix))
+      val placeholderName = c.freshName(TermName(
+        nme.QUASIQUOTE_PREFIX + sessionSuffix))
       sb.append(placeholderName)
       val holeTree =
         if (method != nme.unapply) tree else Bind(placeholderName, tree)

@@ -23,8 +23,7 @@ trait Interpolation {
       Map(
         "PROGRAM" -> (() => programInfo.runner),
         "ALLOPTIONS" -> (() => options.all mkString " "),
-        "MAINCLASS" -> (() => programInfo.mainClass)
-      )
+        "MAINCLASS" -> (() => programInfo.mainClass))
 
     private def mark(key: String) = "@@" + key + "@@"
     def apply(template: String) =

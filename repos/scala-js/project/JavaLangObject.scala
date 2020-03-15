@@ -63,12 +63,11 @@ object JavaLangObject {
         MethodDef(
           static = false,
           Ident("equals__O__Z", Some("equals__O__Z")),
-          List(
-            ParamDef(
-              Ident("that", Some("that")),
-              AnyType,
-              mutable = false,
-              rest = false)),
+          List(ParamDef(
+            Ident("that", Some("that")),
+            AnyType,
+            mutable = false,
+            rest = false)),
           BooleanType, {
             BinaryOp(
               BinaryOp.===,
@@ -94,11 +93,10 @@ object JavaLangObject {
                     Some("cloneObject")),
                   List(This()(ThisType)))(AnyType)
               }, {
-                Throw(
-                  New(
-                    ClassType("jl_CloneNotSupportedException"),
-                    Ident("init___", Some("<init>")),
-                    Nil))
+                Throw(New(
+                  ClassType("jl_CloneNotSupportedException"),
+                  Ident("init___", Some("<init>")),
+                  Nil))
               }
             )(AnyType)
           }
@@ -129,9 +127,8 @@ object JavaLangObject {
               Apply(
                 LoadModule(ClassType("jl_Integer$")),
                 Ident("toHexString__I__T"),
-                List(
-                  Apply(This()(ThisType), Ident("hashCode__I"), Nil)(IntType)))(
-                ClassType(StringClass))
+                List(Apply(This()(ThisType), Ident("hashCode__I"), Nil)(
+                  IntType)))(ClassType(StringClass))
             )
           }
         )(OptimizerHints.empty, None),

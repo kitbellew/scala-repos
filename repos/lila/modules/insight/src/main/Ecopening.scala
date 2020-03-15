@@ -56,8 +56,7 @@ object Ecopening {
         .boards(
           moveStrs = game.pgnMoves take EcopeningDB.MAX_MOVES,
           initialFen = none,
-          variant = chess.variant.Standard
-        )
+          variant = chess.variant.Standard)
         .toOption flatMap matchChronoBoards
 
   private def matchChronoBoards(boards: List[chess.Board]): Option[Ecopening] =

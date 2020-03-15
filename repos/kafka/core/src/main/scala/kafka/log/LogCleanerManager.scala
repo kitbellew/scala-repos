@@ -178,9 +178,8 @@ private[log] class LogCleanerManager(
       while (!isCleaningInState(topicAndPartition, LogCleaningPaused))
         pausedCleaningCond.await(100, TimeUnit.MILLISECONDS)
     }
-    info(
-      "The cleaning for partition %s is aborted and paused".format(
-        topicAndPartition))
+    info("The cleaning for partition %s is aborted and paused".format(
+      topicAndPartition))
   }
 
   /**
@@ -272,8 +271,9 @@ private[log] class LogCleanerManager(
           pausedCleaningCond.signalAll()
         case s =>
           throw new IllegalStateException(
-            "In-progress partition %s cannot be in %s state."
-              .format(topicAndPartition, s))
+            "In-progress partition %s cannot be in %s state.".format(
+              topicAndPartition,
+              s))
       }
     }
   }

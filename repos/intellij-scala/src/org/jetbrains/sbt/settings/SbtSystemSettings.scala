@@ -30,10 +30,7 @@ import scala.collection.JavaConverters._
   * @author Pavel Fatin
   */
 
-@State(
-  name = "ScalaSbtSettings",
-  storages = Array(new Storage("sbt.xml"))
-)
+@State(name = "ScalaSbtSettings", storages = Array(new Storage("sbt.xml")))
 class SbtSystemSettings(project: Project)
     extends AbstractExternalSystemSettings[
       SbtSystemSettings,
@@ -131,9 +128,8 @@ class SbtSystemSettings(project: Project)
   override def getLinkedProjectSettings(
       linkedProjectPath: String): SbtProjectSettings =
     Option(super.getLinkedProjectSettings(linkedProjectPath))
-      .getOrElse(
-        super.getLinkedProjectSettings(
-          ExternalSystemApiUtil.normalizePath(linkedProjectPath)))
+      .getOrElse(super.getLinkedProjectSettings(
+        ExternalSystemApiUtil.normalizePath(linkedProjectPath)))
 }
 
 object SbtSystemSettings {

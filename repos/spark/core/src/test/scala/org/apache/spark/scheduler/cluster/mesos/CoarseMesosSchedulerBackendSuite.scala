@@ -163,16 +163,14 @@ class CoarseMesosSchedulerBackendSuite
   test("mesos assigns tasks round-robin on offers") {
     val executorCores = 4
     val maxCores = executorCores * 2
-    setBackend(
-      Map(
-        "spark.executor.cores" -> executorCores.toString,
-        "spark.cores.max" -> maxCores.toString))
+    setBackend(Map(
+      "spark.executor.cores" -> executorCores.toString,
+      "spark.cores.max" -> maxCores.toString))
 
     val executorMemory = backend.executorMemory(sc)
-    offerResources(
-      List(
-        (executorMemory * 2, executorCores * 2),
-        (executorMemory * 2, executorCores * 2)))
+    offerResources(List(
+      (executorMemory * 2, executorCores * 2),
+      (executorMemory * 2, executorCores * 2)))
 
     verifyTaskLaunched("o1")
     verifyTaskLaunched("o2")

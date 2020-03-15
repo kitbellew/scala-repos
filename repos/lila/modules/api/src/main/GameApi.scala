@@ -44,23 +44,19 @@ private[api] final class GameApi(
           selector = BSONDocument(
             G.playerUids -> user.id,
             G.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
-            G.rated -> rated.map(
-              _.fold[BSONValue](
-                BSONBoolean(true),
-                BSONDocument("$exists" -> false))),
-            G.analysed -> analysed.map(
-              _.fold[BSONValue](
-                BSONBoolean(true),
-                BSONDocument("$exists" -> false)))
+            G.rated -> rated.map(_.fold[BSONValue](
+              BSONBoolean(true),
+              BSONDocument("$exists" -> false))),
+            G.analysed -> analysed.map(_.fold[BSONValue](
+              BSONBoolean(true),
+              BSONDocument("$exists" -> false)))
           ),
           projection = BSONDocument(),
-          sort = BSONDocument(G.createdAt -> -1)
-        ),
+          sort = BSONDocument(G.createdAt -> -1)),
         nbResults = fuccess {
           rated.fold(user.count.game)(
             _.fold(user.count.rated, user.count.casual))
-        }
-      ),
+        }),
       currentPage = math.max(0, page | 1),
       maxPerPage = math.max(1, math.min(100, nb | 10))
     ) flatMap { pag =>
@@ -91,8 +87,7 @@ private[api] final class GameApi(
           withOpening = withOpening,
           withFens = withFens && g.finished,
           withMoveTimes = withMoveTimes,
-          token = token
-        )(List(g)) map (_.headOption)
+          token = token)(List(g)) map (_.headOption)
       }
     }
 
@@ -160,8 +155,7 @@ private[api] final class GameApi(
           Json.obj(
             "initial" -> clock.limit,
             "increment" -> clock.increment,
-            "totalTime" -> clock.estimateTotalTime
-          )
+            "totalTime" -> clock.estimateTotalTime)
         },
         "daysPerTurn" -> g.daysPerTurn,
         "players" -> JsObject(g.players.zipWithIndex map {
@@ -179,11 +173,7 @@ private[api] final class GameApi(
                 "blurs" -> withBlurs.option(p.blurs),
                 "hold" -> p.holdAlert.ifTrue(withHold).fold[JsValue](JsNull) {
                   h =>
-                    Json.obj(
-                      "ply" -> h.ply,
-                      "mean" -> h.mean,
-                      "sd" -> h.sd
-                    )
+                    Json.obj("ply" -> h.ply, "mean" -> h.mean, "sd" -> h.sd)
                 },
                 "analysis" -> analysisOption.flatMap(
                   analysisApi.player(p.color))

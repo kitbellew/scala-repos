@@ -135,8 +135,7 @@ object GeneratedCodeTest {
       schema.create,
       Suppliers.length.result.map(assertEquals(0, _)),
       Suppliers += s,
-      Suppliers.result.map(assertEquals(List(s), _))
-    )
+      Suppliers.result.map(assertEquals(List(s), _)))
   }
 
   def testCG3 = {
@@ -152,8 +151,7 @@ object GeneratedCodeTest {
     DBIO.seq(
       schema.create,
       Suppliers += s,
-      Suppliers.result.map(assertEquals(List(s), _))
-    )
+      Suppliers.result.map(assertEquals(List(s), _)))
   }
 
   def testCG7 = {

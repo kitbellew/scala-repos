@@ -77,12 +77,11 @@ object ClassHelpersSpec extends Specification {
 
   "The findClass function" should {
     "return a Full can with the found class when given a list of names and corresponding packages" in {
-      findClass(
-        List(
-          ("wrong name", List("net.liftweb.util", "other.package")),
-          (
-            "ClassHelpers",
-            List("net.liftweb.util", "other.package")))) must_== Full(
+      findClass(List(
+        ("wrong name", List("net.liftweb.util", "other.package")),
+        (
+          "ClassHelpers",
+          List("net.liftweb.util", "other.package")))) must_== Full(
         classOf[ClassHelpers])
     }
     "use a list of modifiers functions to try to modify the original name in order to find the class" in {

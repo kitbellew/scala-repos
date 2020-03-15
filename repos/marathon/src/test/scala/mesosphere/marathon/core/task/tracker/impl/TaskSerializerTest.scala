@@ -78,8 +78,8 @@ class TaskSerializerTest
     val taskState = TaskSerializer.fromProto(marathonTask)
 
     Then("we get the expected task state")
-    val expectedState = f.fullSampleTaskStateWithoutNetworking.copy(
-      networking = Task.HostPorts(samplePorts))
+    val expectedState = f.fullSampleTaskStateWithoutNetworking
+      .copy(networking = Task.HostPorts(samplePorts))
 
     taskState should be(expectedState)
 
@@ -103,8 +103,8 @@ class TaskSerializerTest
     val taskState = TaskSerializer.fromProto(marathonTask)
 
     Then("we get the expected task state")
-    val expectedState = f.fullSampleTaskStateWithoutNetworking.copy(
-      networking = Task.NetworkInfoList(f.sampleNetworks))
+    val expectedState = f.fullSampleTaskStateWithoutNetworking
+      .copy(networking = Task.NetworkInfoList(f.sampleNetworks))
 
     taskState should be(expectedState)
 
@@ -191,8 +191,7 @@ class TaskSerializerTest
           MesosProtos.NetworkInfo.IPAddress
             .newBuilder()
             .setIpAddress("1.2.3.4"))
-        .build()
-    )
+        .build())
     val fullSampleTaskStateWithoutNetworking: Task.LaunchedOnReservation = Task
       .LaunchedOnReservation(
         taskId,
@@ -204,8 +203,7 @@ class TaskSerializerTest
         status = Task.Status(
           stagedAt = Timestamp(stagedAtLong),
           startedAt = Some(Timestamp(startedAtLong)),
-          mesosStatus = Some(sampleTaskStatus)
-        ),
+          mesosStatus = Some(sampleTaskStatus)),
         networking = Task.NoNetworking,
         reservation = Task.Reservation(
           Seq(LocalVolumeId(appId, "my-volume", "uuid-123")),
@@ -226,9 +224,10 @@ class TaskSerializerTest
         MarathonTask.Reservation.newBuilder
           .addLocalVolumeIds(
             LocalVolumeId(appId, "my-volume", "uuid-123").idString)
-          .setState(MarathonTask.Reservation.State
-            .newBuilder()
-            .setType(MarathonTask.Reservation.State.Type.Launched)))
+          .setState(
+            MarathonTask.Reservation.State
+              .newBuilder()
+              .setType(MarathonTask.Reservation.State.Type.Launched)))
       .build()
 
     private[this] def attribute(
@@ -283,12 +282,13 @@ class TaskSerializerTest
                 MarathonTask.Reservation.State
                   .newBuilder()
                   .setType(MarathonTask.Reservation.State.Type.New)
-                  .setTimeout(MarathonTask.Reservation.State.Timeout
-                    .newBuilder()
-                    .setInitiated(now.toDateTime.getMillis)
-                    .setDeadline((now + 1.minute).toDateTime.getMillis)
-                    .setReason(
-                      MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
+                  .setTimeout(
+                    MarathonTask.Reservation.State.Timeout
+                      .newBuilder()
+                      .setInitiated(now.toDateTime.getMillis)
+                      .setDeadline((now + 1.minute).toDateTime.getMillis)
+                      .setReason(
+                        MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
           .build()
 
       def reservedState =
@@ -297,12 +297,10 @@ class TaskSerializerTest
           Task.AgentInfo(host = host, agentId = Some(agentId), attributes),
           reservation = Task.Reservation(
             localVolumeIds,
-            Task.Reservation.State.New(
-              Some(
-                Task.Reservation.Timeout(
-                  initiated = now,
-                  deadline = now + 1.minute,
-                  reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
+            Task.Reservation.State.New(Some(Task.Reservation.Timeout(
+              initiated = now,
+              deadline = now + 1.minute,
+              reason = Task.Reservation.Timeout.Reason.ReservationTimeout)))
           )
         )
 
@@ -326,9 +324,10 @@ class TaskSerializerTest
             MarathonTask.Reservation
               .newBuilder()
               .addAllLocalVolumeIds(localVolumeIds.map(_.idString).asJava)
-              .setState(MarathonTask.Reservation.State
-                .newBuilder()
-                .setType(MarathonTask.Reservation.State.Type.Launched)))
+              .setState(
+                MarathonTask.Reservation.State
+                  .newBuilder()
+                  .setType(MarathonTask.Reservation.State.Type.Launched)))
           .build()
 
       def launchedOnReservationState =

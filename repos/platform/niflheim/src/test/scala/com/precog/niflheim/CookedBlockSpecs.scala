@@ -62,11 +62,11 @@ trait CookedBlockFormatSpecs
     }
 
     "round trip simple segments" in {
-      surviveRoundTrip(format)(
-        CookedBlockMetadata(
-          999L,
-          1,
-          Array(SegmentId(1234L, CPath("a.b.c"), CLong) -> new File(
+      surviveRoundTrip(format)(CookedBlockMetadata(
+        999L,
+        1,
+        Array(
+          SegmentId(1234L, CPath("a.b.c"), CLong) -> new File(
             "/hello/there/abc.cooked"))))
     }
 

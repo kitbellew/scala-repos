@@ -74,10 +74,9 @@ case class ControlledShutdownRequest(
       correlationId,
       Errors.forException(e).code,
       Set.empty[TopicAndPartition])
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, errorResponse)))
   }
 
   override def describe(details: Boolean = false): String = {

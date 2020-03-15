@@ -76,11 +76,9 @@ object Transporter {
     def mk(): (SocksProxy, Stack.Param[SocksProxy]) = (this, SocksProxy.param)
   }
   object SocksProxy {
-    implicit val param = Stack.Param(
-      SocksProxy(
-        SocksProxyFlags.socksProxy,
-        SocksProxyFlags.socksUsernameAndPassword
-      ))
+    implicit val param = Stack.Param(SocksProxy(
+      SocksProxyFlags.socksProxy,
+      SocksProxyFlags.socksUsernameAndPassword))
   }
 
   /**

@@ -9,8 +9,7 @@ object ScalacParser {
     System
       .getProperty("sun.boot.class.path")
       .split(":")
-      .map(new java.io.File(_))
-  )
+      .map(new java.io.File(_)))
   while (current != null) {
     current match {
       case t: java.net.URLClassLoader =>

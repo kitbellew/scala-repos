@@ -156,11 +156,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         interestCallReceiver.expectMsg(OP_CONNECT)
 
         selector.send(connectionActor, ChannelConnectable)
-        userHandler.expectMsg(
-          Connected(
-            serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
+        userHandler.expectMsg(Connected(
+          serverAddress,
+          clientSideChannel.socket.getLocalSocketAddress
+            .asInstanceOf[InetSocketAddress]))
 
         userHandler.send(connectionActor, Register(userHandler.ref))
         userHandler
@@ -583,7 +582,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false) // send EOF (fin) from the server side
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -602,7 +602,8 @@ class TcpConnectionSpec extends AkkaSpec("""
       new EstablishedConnectionTest(keepOpenOnPeerClosed = true) {
         run {
           closeServerSideAndWaitForClientReadable(fullClose =
-            false) // send EOF (fin) from the server side
+            false
+          ) // send EOF (fin) from the server side
 
           selector.send(connectionActor, ChannelReadable)
           connectionHandler.expectMsg(PeerClosed)
@@ -690,9 +691,8 @@ class TcpConnectionSpec extends AkkaSpec("""
           timeout = Option(100.millis))
         run {
           connectionActor.toString should not be ("")
-          userHandler.expectMsg(
-            CommandFailed(
-              Connect(UnboundAddress, timeout = Option(100.millis))))
+          userHandler.expectMsg(CommandFailed(
+            Connect(UnboundAddress, timeout = Option(100.millis))))
           watch(connectionActor)
           expectTerminated(connectionActor)
         }
@@ -703,11 +703,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         localServerChannel.accept()
 
         selector.send(connectionActor, ChannelConnectable)
-        userHandler.expectMsg(
-          Connected(
-            serverAddress,
-            clientSideChannel.socket.getLocalSocketAddress
-              .asInstanceOf[InetSocketAddress]))
+        userHandler.expectMsg(Connected(
+          serverAddress,
+          clientSideChannel.socket.getLocalSocketAddress
+            .asInstanceOf[InetSocketAddress]))
 
         watch(connectionActor)
         expectTerminated(connectionActor)
@@ -1039,11 +1038,10 @@ class TcpConnectionSpec extends AkkaSpec("""
 
           interestCallReceiver.expectMsg(OP_CONNECT)
           selector.send(connectionActor, ChannelConnectable)
-          userHandler.expectMsg(
-            Connected(
-              serverAddress,
-              clientSideChannel.socket.getLocalSocketAddress
-                .asInstanceOf[InetSocketAddress]))
+          userHandler.expectMsg(Connected(
+            serverAddress,
+            clientSideChannel.socket.getLocalSocketAddress
+              .asInstanceOf[InetSocketAddress]))
 
           userHandler.send(
             connectionActor,
@@ -1166,10 +1164,12 @@ class TcpConnectionSpec extends AkkaSpec("""
         def apply(key: SelectionKey) =
           MatchResult(
             checkFor(key, interest, duration.toMillis.toInt),
-            "%s key was not selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration),
-            "%s key was selected for %s after %s" format (key
-              .attachment(), interestsDesc(interest), duration)
+            "%s key was not selected for %s after %s" format (
+              key.attachment(), interestsDesc(interest), duration
+            ),
+            "%s key was selected for %s after %s" format (
+              key.attachment(), interestsDesc(interest), duration
+            )
           )
       }
 

@@ -587,8 +587,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           multiplyByPosInt(larger.getUnscaledValue, 10).add(biLarger)
         } else {
           val tempBI2 = larger.getUnscaledValue.subtract(biLarger)
-          multiplyByPosInt(tempBI2, 10).add(
-            BigInteger.valueOf(largerSignum * 9))
+          multiplyByPosInt(tempBI2, 10).add(BigInteger.valueOf(
+            largerSignum * 9))
         }
       }
       // Rounding the improved adding
@@ -1375,8 +1375,8 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
       if (_scale > approxPrecision() || _scale > getUnscaledValue.getLowestSetBit)
         throw new ArithmeticException("Rounding necessary")
 
-      val integerAndFraction = getUnscaledValue.divideAndRemainder(
-        powerOf10(_scale))
+      val integerAndFraction = getUnscaledValue.divideAndRemainder(powerOf10(
+        _scale))
       if (integerAndFraction(1).signum() != 0) {
         // It exists a non-zero fractional part
         throw new ArithmeticException("Rounding necessary")
@@ -1474,8 +1474,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
       if (discardedSize > 0) { // (#bits > 54)
         bits = mantissa.shiftRight(discardedSize).longValue()
         tempBits = bits
-        if (((bits & 1) == 1 && lowestSetBit < discardedSize) || (bits & 3) == 3)
-          bits += 2
+        if ((
+              (bits & 1) == 1 && lowestSetBit < discardedSize
+            ) || (bits & 3) == 3) bits += 2
       } else { // (#bits <= 54)
         bits = mantissa.longValue() << -discardedSize
         tempBits = bits
@@ -1503,9 +1504,9 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           bits >>= (-exponent)
           // To test if after discard bits, a new carry is generated
           if (((bits & 3) == 3) ||
-              (((bits & 1) == 1) && (tempBits != 0) && (lowestSetBit < discardedSize))) {
-            bits += 1
-          }
+              (((bits & 1) == 1) && (tempBits != 0) && (
+                lowestSetBit < discardedSize
+              ))) { bits += 1 }
           exponent = 0
           bits >>= 1
         }

@@ -509,15 +509,14 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                 case name: Ident      => transformIdent(name)
                 case StringLiteral(s) => js.StringLiteral(s)
               }
-              val descriptor = js.ObjectConstr(
-                List(
-                  js.StringLiteral("configurable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("writable") -> js.BooleanLiteral(true),
-                  js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
-                ))
-              val descriptors = js.ObjectConstr(
-                List(transformedName -> descriptor))
+              val descriptor = js.ObjectConstr(List(
+                js.StringLiteral("configurable") -> js.BooleanLiteral(true),
+                js.StringLiteral("enumerable") -> js.BooleanLiteral(true),
+                js.StringLiteral("writable") -> js.BooleanLiteral(true),
+                js.StringLiteral("value") -> transformExpr(zeroOf(ftpe))
+              ))
+              val descriptors = js.ObjectConstr(List(
+                transformedName -> descriptor))
               js.Apply(defineProperties, List(js.This(), descriptors))
             }
 
@@ -889,8 +888,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           case JSDotMethodApply(receiver, method, args) =>
             allowSideEffects && test(receiver) && (args forall test)
           case JSBracketMethodApply(receiver, method, args) =>
-            allowSideEffects && test(receiver) && test(
-              method) && (args forall test)
+            allowSideEffects && test(receiver) && test(method) && (
+              args forall test
+            )
           case JSSuperBracketSelect(_, qualifier, item) =>
             allowSideEffects && test(qualifier) && test(item)
           case LoadJSModule(_) =>
@@ -1198,8 +1198,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
                     // add the break statement
                     newBody = js.Block(pushLhsInto(newLhs, body), js.Break())
                     // desugar alternatives into several cases falling through
-                    caze <- (newValues.init map (v =>
-                      (v, js.Skip()))) :+ (newValues.last, newBody)
+                    caze <- (
+                      newValues.init map (v => (v, js.Skip()))
+                    ) :+ (newValues.last, newBody)
                   } yield { caze }
                 }
                 val newDefault =

@@ -129,8 +129,7 @@ object Status {
         jfield("message", status.message) ::
           jfield("progress", status.progress) ::
           jfield("unit", status.unit) ::
-          (status.info map (jfield("info", _) :: Nil) getOrElse Nil)
-      )
+          (status.info map (jfield("info", _) :: Nil) getOrElse Nil))
     )
   }
 }

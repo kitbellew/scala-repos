@@ -99,8 +99,7 @@ class AppsResource @Inject() (
             app,
             maybeCounts = Some(TaskCounts.zero),
             maybeTasks = Some(Seq.empty),
-            maybeDeployments = Some(Seq(Identifiable(plan.id)))
-          )
+            maybeDeployments = Some(Seq(Identifiable(plan.id))))
 
           maybePostEvent(req, appWithDeployments.app)
           Response
@@ -124,16 +123,16 @@ class AppsResource @Inject() (
           AppInfo.Embed.Counts,
           AppInfo.Embed.Tasks,
           AppInfo.Embed.LastTaskFailure,
-          AppInfo.Embed.Deployments
-        )
+          AppInfo.Embed.Deployments)
 
       def transitiveApps(groupId: PathId): Response = {
         result(groupManager.group(groupId)) match {
           case Some(group) =>
             checkAuthorization(ViewGroup, group)
-            val appsWithTasks = result(
-              appInfoService
-                .selectAppsInGroup(groupId, allAuthorized, resolvedEmbed))
+            val appsWithTasks = result(appInfoService.selectAppsInGroup(
+              groupId,
+              allAuthorized,
+              resolvedEmbed))
             ok(jsonObjString("*" -> appsWithTasks))
           case None =>
             unknownGroup(groupId)
@@ -170,12 +169,11 @@ class AppsResource @Inject() (
 
       withValid(Json.parse(body).as[AppUpdate].copy(id = Some(appId))) {
         appUpdate =>
-          val plan = result(
-            groupManager.updateApp(
-              appId,
-              updateOrCreate(appId, _, appUpdate, now),
-              now,
-              force))
+          val plan = result(groupManager.updateApp(
+            appId,
+            updateOrCreate(appId, _, appUpdate, now),
+            now,
+            force))
 
           val response = plan.original
             .app(appId)
@@ -209,9 +207,8 @@ class AppsResource @Inject() (
               }
             }
 
-          deploymentResult(
-            result(
-              groupManager.update(PathId.empty, updateGroup, version, force)))
+          deploymentResult(result(
+            groupManager.update(PathId.empty, updateGroup, version, force)))
       }
     }
 
@@ -233,9 +230,8 @@ class AppsResource @Inject() (
         group.removeApplication(appId)
       }
 
-      deploymentResult(
-        result(
-          groupManager.update(appId.parent, deleteAppFromGroup, force = force)))
+      deploymentResult(result(
+        groupManager.update(appId.parent, deleteAppFromGroup, force = force)))
     }
 
   @Path("{appId:.+}/tasks")
@@ -267,10 +263,11 @@ class AppsResource @Inject() (
       }
 
       val newVersion = clock.now()
-      val restartDeployment = result(
-        groupManager
-          .updateApp(id.toRootPath, markForRestartingOrThrow, newVersion, force)
-      )
+      val restartDeployment = result(groupManager.updateApp(
+        id.toRootPath,
+        markForRestartingOrThrow,
+        newVersion,
+        force))
 
       deploymentResult(restartDeployment)
     }

@@ -68,8 +68,10 @@ final class SortedSetClientServerIntegrationSuite
   test("ZCOUNT should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       initialize(client)
-      assert(Await.result(
-        client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(3))
+      assert(
+        Await.result(
+          client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(
+          3))
       assert(
         Await.result(
           client(ZCount(ZKEY, ZInterval.exclusive(1), ZInterval(3)))) ==
@@ -194,11 +196,10 @@ final class SortedSetClientServerIntegrationSuite
         client(ZRevRangeByScore(key, ZInterval(2f), ZInterval.exclusive(1f))),
         List("two"))
       assertMBulkReply(
-        client(
-          ZRevRangeByScore(
-            key,
-            ZInterval.exclusive(2f),
-            ZInterval.exclusive(1f))),
+        client(ZRevRangeByScore(
+          key,
+          ZInterval.exclusive(2f),
+          ZInterval.exclusive(1f))),
         List())
     }
   }
@@ -267,9 +268,10 @@ final class SortedSetClientServerIntegrationSuite
         ZMember(1, "one"),
         ZMember(2, "two"),
         ZMember(3, "three"))
-      assert(Await.result(
-        client(ZRemRangeByScore(key, ZInterval.MIN, ZInterval.exclusive(2)))) ==
-        IntegerReply(1))
+      assert(
+        Await.result(client(
+          ZRemRangeByScore(key, ZInterval.MIN, ZInterval.exclusive(2)))) ==
+          IntegerReply(1))
       assertMBulkReply(
         client(ZRange(key, 0, -1, WithScores)),
         List("two", "2", "three", "3"))

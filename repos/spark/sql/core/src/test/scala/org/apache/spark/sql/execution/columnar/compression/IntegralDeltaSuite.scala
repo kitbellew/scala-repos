@@ -82,8 +82,8 @@ class IntegralDeltaSuite extends SparkFunSuite {
         assertResult(
           Byte.MinValue,
           "The first byte should be an escaping mark")(buffer.get())
-        assertResult(input.head, "The first value is wrong")(
-          columnType.extract(buffer))
+        assertResult(input.head, "The first value is wrong")(columnType.extract(
+          buffer))
 
         (input.tail, deltas).zipped.foreach { (value, delta) =>
           if (math.abs(delta) <= Byte.MaxValue) {

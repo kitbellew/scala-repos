@@ -169,8 +169,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       info: CompilationInfo,
       select: MemberSelectTree,
       prefix: String,
-      caseSense: Boolean
-  ): List[CompletionInfo] = {
+      caseSense: Boolean): List[CompletionInfo] = {
     val pkg = selectedPackageName(select)
     val candidates =
       (Option(info.getElements.getPackageElement(pkg)) map {
@@ -219,8 +218,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       scope: Scope,
       prefix: String,
       caseSense: Boolean,
-      constructing: Boolean
-  ): List[CompletionInfo] = {
+      constructing: Boolean): List[CompletionInfo] = {
     var candidates = ArrayBuffer[CompletionInfo]()
 
     // Note Scope#getLocalElements does not include fields / members of
@@ -277,8 +275,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       target: Tree,
       prefix: String,
       importing: Boolean,
-      caseSense: Boolean
-  ): List[CompletionInfo] = {
+      caseSense: Boolean): List[CompletionInfo] = {
     val candidates = typeElement(info, target)
       .map { el =>
         el match {
@@ -310,8 +307,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
             .map { p => (p.getSimpleName.toString, p.asType.toString) }
             .toList),
         e.getReturnType.toString,
-        false
-      ),
+        false),
       true,
       relavence,
       None
@@ -325,8 +321,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       CompletionSignature(List(), e.asType.toString, false),
       false,
       relavence,
-      None
-    )
+      None)
   }
 
   private def typeInfo(e: TypeElement, relavence: Int): CompletionInfo = {
@@ -336,8 +331,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       CompletionSignature(List(), e.asType.toString, false),
       false,
       relavence,
-      None
-    )
+      None)
   }
 
   private def constructorInfos(

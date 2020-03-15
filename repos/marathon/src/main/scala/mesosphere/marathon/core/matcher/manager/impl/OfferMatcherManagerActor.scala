@@ -49,13 +49,12 @@ private[manager] object OfferMatcherManagerActor {
       clock: Clock,
       offerMatcherConfig: OfferMatcherManagerConfig,
       offersWanted: Observer[Boolean]): Props = {
-    Props(
-      new OfferMatcherManagerActor(
-        metrics,
-        random,
-        clock,
-        offerMatcherConfig,
-        offersWanted))
+    Props(new OfferMatcherManagerActor(
+      metrics,
+      random,
+      clock,
+      offerMatcherConfig,
+      offersWanted))
   }
 
   private val log = LoggerFactory.getLogger(getClass)
@@ -82,10 +81,7 @@ private[manager] object OfferMatcherManagerActor {
         nextOp.op.applyToOffer(offer)
       }
 
-      copy(
-        offer = leftOverOffer,
-        ops = added ++ ops
-      )
+      copy(offer = leftOverOffer, ops = added ++ ops)
     }
   }
 
@@ -114,8 +110,7 @@ private[impl] class OfferMatcherManagerActor private (
         receiveSetLaunchTokens,
         receiveChangingMatchers,
         receiveProcessOffer,
-        receiveMatchedTasks
-      ).reduceLeft(_.orElse[Any, Unit](_))
+        receiveMatchedTasks).reduceLeft(_.orElse[Any, Unit](_))
     }
 
   private[this] def receiveSetLaunchTokens: Receive = {
@@ -248,10 +243,9 @@ private[impl] class OfferMatcherManagerActor private (
       offerQueues.get(offerId) match {
         case Some(data) =>
           val resend = data.resendThisOffer | resendOffer
-          val nextData = processAddedTasks(
-            data.copy(
-              matchPasses = data.matchPasses + 1,
-              resendThisOffer = resend))
+          val nextData = processAddedTasks(data.copy(
+            matchPasses = data.matchPasses + 1,
+            resendThisOffer = resend))
           scheduleNextMatcherOrFinish(nextData)
 
         case None =>
@@ -319,8 +313,9 @@ private[impl] class OfferMatcherManagerActor private (
     //scalastyle:off magic.number
     val maxRanges = if (log.isDebugEnabled) 1000 else 10
     //scalastyle:on magic.number
-    log.info(s"Finished processing ${data.offer.getId.getValue}. " +
-      s"Matched ${data.ops.size} ops after ${data.matchPasses} passes. " +
-      s"${ResourceUtil.displayResources(data.offer.getResourcesList.asScala, maxRanges)} left.")
+    log.info(
+      s"Finished processing ${data.offer.getId.getValue}. " +
+        s"Matched ${data.ops.size} ops after ${data.matchPasses} passes. " +
+        s"${ResourceUtil.displayResources(data.offer.getResourcesList.asScala, maxRanges)} left.")
   }
 }

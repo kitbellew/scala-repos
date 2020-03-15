@@ -28,9 +28,8 @@ class ClusterMetricsSettingsSpec extends AkkaSpec {
       SupervisorName should ===("cluster-metrics")
       SupervisorStrategyProvider should ===(
         classOf[ClusterMetricsStrategy].getName)
-      SupervisorStrategyConfiguration should ===(
-        ConfigFactory.parseString(
-          "loggingEnabled=true,maxNrOfRetries=3,withinTimeRange=3s"))
+      SupervisorStrategyConfiguration should ===(ConfigFactory.parseString(
+        "loggingEnabled=true,maxNrOfRetries=3,withinTimeRange=3s"))
 
       // Collector.
       CollectorEnabled should ===(true)

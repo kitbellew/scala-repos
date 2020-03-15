@@ -104,11 +104,7 @@ object ScalaFX_Controls_02 extends JFXApp {
   val hBox1 = new HBox {
     spacing = 10
     alignment = Pos.BottomCenter
-    children = List(
-      okButton2,
-      koButton1,
-      label
-    )
+    children = List(okButton2, koButton1, label)
   }
 
   val okButton3 = new Button {
@@ -123,21 +119,14 @@ object ScalaFX_Controls_02 extends JFXApp {
 
   val hBox2 = new HBox {
     spacing = 25
-    children = List(
-      okButton3,
-      koButton2
-    )
+    children = List(okButton3, koButton2)
   }
 
   val vBox = new VBox {
     layoutX = 20
     layoutY = 20
     spacing = 10
-    children = List(
-      okButton1,
-      hBox1,
-      hBox2
-    )
+    children = List(okButton1, hBox1, hBox2)
   }
   stage = new PrimaryStage {
     title = "ScalaFX Controls 02"

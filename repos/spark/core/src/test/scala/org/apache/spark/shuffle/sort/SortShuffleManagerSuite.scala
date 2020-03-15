@@ -61,38 +61,29 @@ class SortShuffleManagerSuite extends SparkFunSuite with Matchers {
   test("supported shuffle dependencies for serialized shuffle") {
     val kryo = new KryoSerializer(new SparkConf())
 
-    assert(
-      canUseSerializedShuffle(
-        shuffleDep(
-          partitioner = new HashPartitioner(2),
-          serializer = kryo,
-          keyOrdering = None,
-          aggregator = None,
-          mapSideCombine = false
-        )))
+    assert(canUseSerializedShuffle(shuffleDep(
+      partitioner = new HashPartitioner(2),
+      serializer = kryo,
+      keyOrdering = None,
+      aggregator = None,
+      mapSideCombine = false)))
 
     val rangePartitioner = mock(classOf[RangePartitioner[Any, Any]])
     when(rangePartitioner.numPartitions).thenReturn(2)
-    assert(
-      canUseSerializedShuffle(
-        shuffleDep(
-          partitioner = rangePartitioner,
-          serializer = kryo,
-          keyOrdering = None,
-          aggregator = None,
-          mapSideCombine = false
-        )))
+    assert(canUseSerializedShuffle(shuffleDep(
+      partitioner = rangePartitioner,
+      serializer = kryo,
+      keyOrdering = None,
+      aggregator = None,
+      mapSideCombine = false)))
 
     // Shuffles with key orderings are supported as long as no aggregator is specified
-    assert(
-      canUseSerializedShuffle(
-        shuffleDep(
-          partitioner = new HashPartitioner(2),
-          serializer = kryo,
-          keyOrdering = Some(mock(classOf[Ordering[Any]])),
-          aggregator = None,
-          mapSideCombine = false
-        )))
+    assert(canUseSerializedShuffle(shuffleDep(
+      partitioner = new HashPartitioner(2),
+      serializer = kryo,
+      keyOrdering = Some(mock(classOf[Ordering[Any]])),
+      aggregator = None,
+      mapSideCombine = false)))
 
   }
 
@@ -102,14 +93,12 @@ class SortShuffleManagerSuite extends SparkFunSuite with Matchers {
 
     // We only support serializers that support object relocation
     assert(
-      !canUseSerializedShuffle(
-        shuffleDep(
-          partitioner = new HashPartitioner(2),
-          serializer = java,
-          keyOrdering = None,
-          aggregator = None,
-          mapSideCombine = false
-        )))
+      !canUseSerializedShuffle(shuffleDep(
+        partitioner = new HashPartitioner(2),
+        serializer = java,
+        keyOrdering = None,
+        aggregator = None,
+        mapSideCombine = false)))
 
     // The serialized shuffle path do not support shuffles with more than 16 million output
     // partitions, due to a limitation in its sorter implementation.
@@ -125,14 +114,12 @@ class SortShuffleManagerSuite extends SparkFunSuite with Matchers {
 
     // We do not support shuffles that perform aggregation
     assert(
-      !canUseSerializedShuffle(
-        shuffleDep(
-          partitioner = new HashPartitioner(2),
-          serializer = kryo,
-          keyOrdering = None,
-          aggregator = Some(mock(classOf[Aggregator[Any, Any, Any]])),
-          mapSideCombine = false
-        )))
+      !canUseSerializedShuffle(shuffleDep(
+        partitioner = new HashPartitioner(2),
+        serializer = kryo,
+        keyOrdering = None,
+        aggregator = Some(mock(classOf[Aggregator[Any, Any, Any]])),
+        mapSideCombine = false)))
     assert(
       !canUseSerializedShuffle(shuffleDep(
         partitioner = new HashPartitioner(2),

@@ -49,11 +49,10 @@ class StreamTcpDocSpec extends AkkaSpec {
         println(s"New connection from: ${connection.remoteAddress}")
 
         val echo = Flow[ByteString]
-          .via(
-            Framing.delimiter(
-              ByteString("\n"),
-              maximumFrameLength = 256,
-              allowTruncation = true))
+          .via(Framing.delimiter(
+            ByteString("\n"),
+            maximumFrameLength = 256,
+            allowTruncation = true))
           .map(_.utf8String)
           .map(_ + "!!!\n")
           .map(ByteString(_))
@@ -84,11 +83,10 @@ class StreamTcpDocSpec extends AkkaSpec {
       val welcome = Source.single(welcomeMsg)
 
       val serverLogic = Flow[ByteString]
-        .via(
-          Framing.delimiter(
-            ByteString("\n"),
-            maximumFrameLength = 256,
-            allowTruncation = true))
+        .via(Framing.delimiter(
+          ByteString("\n"),
+          maximumFrameLength = 256,
+          allowTruncation = true))
         .map(_.utf8String)
         //#welcome-banner-chat-server
         .map { command ⇒ serverProbe.ref ! command; command }
@@ -129,11 +127,10 @@ class StreamTcpDocSpec extends AkkaSpec {
         .map(elem => ByteString(s"$elem\n"))
 
       val repl = Flow[ByteString]
-        .via(
-          Framing.delimiter(
-            ByteString("\n"),
-            maximumFrameLength = 256,
-            allowTruncation = true))
+        .via(Framing.delimiter(
+          ByteString("\n"),
+          maximumFrameLength = 256,
+          allowTruncation = true))
         .map(_.utf8String)
         .map(text => println("Server: " + text))
         .map(_ => readLine("> "))

@@ -31,7 +31,6 @@ class ScalaBuilderService extends BuilderService {
     util.Arrays.asList[ModuleLevelBuilder](
       new IdeaIncrementalBuilder(BuilderCategory.SOURCE_PROCESSOR),
       new IdeaIncrementalBuilder(BuilderCategory.OVERWRITING_TRANSLATOR),
-      new SbtBuilder
-    )
+      new SbtBuilder)
   }
 }

@@ -118,51 +118,51 @@ trait EvaluatorTestSupport[M[+_]]
     override def load(table: Table, apiKey: APIKey, jtpe: JType) =
       EitherT {
         table.toJson map { events =>
-          val eventsV = events.toStream.traverse[
-            ({ type λ[α] = Validation[ResourceError, α] })#λ,
-            Stream[JValue]] {
-            case JString(pathStr) =>
-              success {
-                indexLock synchronized { // block the WHOLE WORLD
-                  val path = Path(pathStr)
+          val eventsV = events.toStream
+            .traverse[({ type λ[α] = Validation[ResourceError, α] })#λ, Stream[
+              JValue]] {
+              case JString(pathStr) =>
+                success {
+                  indexLock synchronized { // block the WHOLE WORLD
+                    val path = Path(pathStr)
 
-                  val index = initialIndices get path getOrElse {
-                    initialIndices += (path -> currentIndex)
-                    currentIndex
-                  }
+                    val index = initialIndices get path getOrElse {
+                      initialIndices += (path -> currentIndex)
+                      currentIndex
+                    }
 
-                  val prefix = "filesystem"
-                  val target = path.path
-                    .replaceAll("/$", ".json")
-                    .replaceAll("^/" + prefix, prefix)
+                    val prefix = "filesystem"
+                    val target = path.path
+                      .replaceAll("/$", ".json")
+                      .replaceAll("^/" + prefix, prefix)
 
-                  val src =
-                    if (target startsWith prefix)
-                      io.Source.fromFile(
-                        new File(target.substring(prefix.length)))
-                    else
-                      io.Source.fromInputStream(
-                        getClass.getResourceAsStream(target))
+                    val src =
+                      if (target startsWith prefix)
+                        io.Source.fromFile(new File(
+                          target.substring(prefix.length)))
+                      else
+                        io.Source.fromInputStream(getClass.getResourceAsStream(
+                          target))
 
-                  val parsed: Stream[JValue] =
-                    src.getLines map JParser.parseUnsafe toStream
+                    val parsed: Stream[JValue] =
+                      src.getLines map JParser.parseUnsafe toStream
 
-                  currentIndex += parsed.length
+                    currentIndex += parsed.length
 
-                  parsed zip (Stream from index) map {
-                    case (value, id) =>
-                      JObject(
-                        JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                          "value",
-                          value) :: Nil)
+                    parsed zip (Stream from index) map {
+                      case (value, id) =>
+                        JObject(
+                          JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                            "value",
+                            value) :: Nil)
+                    }
                   }
                 }
-              }
 
-            case x =>
-              failure(ResourceError.corrupt(
-                "Attempted to load JSON as a table from something that wasn't a string: " + x))
-          }
+              case x =>
+                failure(ResourceError.corrupt(
+                  "Attempted to load JSON as a table from something that wasn't a string: " + x))
+            }
 
           eventsV.disjunction.map(ss => fromJson(ss.flatten))
         }
@@ -463,9 +463,9 @@ trait EvaluatorSpecs[M[+_]]
           case (ids, SDecimal(d)) if ids.size == 2 => d.toInt
         }
 
-        result2 must contain(84, 54, 119, 43, 55, 43, 54, 24, 89, 13, 25, 13,
-          119, 89, 154, 78, 90, 78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26,
-          14)
+        result2 must contain(
+          84, 54, 119, 43, 55, 43, 54, 24, 89, 13, 25, 13, 119, 89, 154, 78, 90,
+          78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26, 14)
       }
     }
 
@@ -1775,13 +1775,12 @@ trait EvaluatorSpecs[M[+_]]
           case (ids, SArray(arr)) if ids.size == 1 => arr
         }
 
-        result2 must contain(
-          Vector(
-            SDecimal(-9),
-            SDecimal(-42),
-            SDecimal(42),
-            SDecimal(87),
-            SDecimal(4)))
+        result2 must contain(Vector(
+          SDecimal(-9),
+          SDecimal(-42),
+          SDecimal(42),
+          SDecimal(87),
+          SDecimal(4)))
       }
     }
 
@@ -3078,9 +3077,9 @@ trait EvaluatorSpecs[M[+_]]
 
         result2 must haveSize(23)
 
-        result2 must contain(0, -377, -780, 6006, -76, 5929, 1, 156, 169, 2,
-          1764, 2695, 144, 1806, -360, 1176, -832, 182, 4851, -1470, -13, -41,
-          -24)
+        result2 must contain(
+          0, -377, -780, 6006, -76, 5929, 1, 156, 169, 2, 1764, 2695, 144, 1806,
+          -360, 1176, -832, 182, 4851, -1470, -13, -41, -24)
       }
     }
 
@@ -3124,8 +3123,9 @@ trait EvaluatorSpecs[M[+_]]
 
         result2 must haveSize(20)
 
-        result2 must contain(0, 1260, -1470, 1722, 1218, -360, -780, 132, -12,
-          2695, 5005, 5852, 4928, -41, -11, -76, -377, 13, -832, 156)
+        result2 must contain(
+          0, 1260, -1470, 1722, 1218, -360, -780, 132, -12, 2695, 5005, 5852,
+          4928, -41, -11, -76, -377, 13, -832, 156)
       }
     }
 
@@ -3783,66 +3783,46 @@ trait EvaluatorSpecs[M[+_]]
           case (ids, sv) if ids.length == 1 => sv
         }
 
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("daniel"),
-              "num" -> SDecimal(BigDecimal("9")),
-              "rank" -> SDecimal(BigDecimal("4")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("kris"),
-              "num" -> SDecimal(BigDecimal("8")),
-              "rank" -> SDecimal(BigDecimal("3")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("derek"),
-              "num" -> SDecimal(BigDecimal("7")),
-              "rank" -> SDecimal(BigDecimal("1")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("nick"),
-              "num" -> SDecimal(BigDecimal("17")),
-              "rank" -> SDecimal(BigDecimal("9")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("john"),
-              "num" -> SDecimal(BigDecimal("13")),
-              "rank" -> SDecimal(BigDecimal("6")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("alissa"),
-              "num" -> SDecimal(BigDecimal("7")),
-              "rank" -> SDecimal(BigDecimal("1")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("franco"),
-              "num" -> SDecimal(BigDecimal("13")),
-              "rank" -> SDecimal(BigDecimal("6")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("matthew"),
-              "num" -> SDecimal(BigDecimal("10")),
-              "rank" -> SDecimal(BigDecimal("5")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SString("jason"),
-              "num" -> SDecimal(BigDecimal("13")),
-              "rank" -> SDecimal(BigDecimal("6")))))
-        results must contain(
-          SObject(
-            Map(
-              "user" -> SNull,
-              "num" -> SDecimal(BigDecimal("3")),
-              "rank" -> SDecimal(BigDecimal("0")))))
+        results must contain(SObject(Map(
+          "user" -> SString("daniel"),
+          "num" -> SDecimal(BigDecimal("9")),
+          "rank" -> SDecimal(BigDecimal("4")))))
+        results must contain(SObject(Map(
+          "user" -> SString("kris"),
+          "num" -> SDecimal(BigDecimal("8")),
+          "rank" -> SDecimal(BigDecimal("3")))))
+        results must contain(SObject(Map(
+          "user" -> SString("derek"),
+          "num" -> SDecimal(BigDecimal("7")),
+          "rank" -> SDecimal(BigDecimal("1")))))
+        results must contain(SObject(Map(
+          "user" -> SString("nick"),
+          "num" -> SDecimal(BigDecimal("17")),
+          "rank" -> SDecimal(BigDecimal("9")))))
+        results must contain(SObject(Map(
+          "user" -> SString("john"),
+          "num" -> SDecimal(BigDecimal("13")),
+          "rank" -> SDecimal(BigDecimal("6")))))
+        results must contain(SObject(Map(
+          "user" -> SString("alissa"),
+          "num" -> SDecimal(BigDecimal("7")),
+          "rank" -> SDecimal(BigDecimal("1")))))
+        results must contain(SObject(Map(
+          "user" -> SString("franco"),
+          "num" -> SDecimal(BigDecimal("13")),
+          "rank" -> SDecimal(BigDecimal("6")))))
+        results must contain(SObject(Map(
+          "user" -> SString("matthew"),
+          "num" -> SDecimal(BigDecimal("10")),
+          "rank" -> SDecimal(BigDecimal("5")))))
+        results must contain(SObject(Map(
+          "user" -> SString("jason"),
+          "num" -> SDecimal(BigDecimal("13")),
+          "rank" -> SDecimal(BigDecimal("6")))))
+        results must contain(SObject(Map(
+          "user" -> SNull,
+          "num" -> SDecimal(BigDecimal("3")),
+          "rank" -> SDecimal(BigDecimal("0")))))
       }
     }
 
@@ -4125,9 +4105,10 @@ trait EvaluatorSpecs[M[+_]]
     "evaluate as a transspec a cond on a single source" in {
       val line = Line(1, 1, "")
 
-      val source = dag.New(dag.Const(
-        RObject("a" -> CBoolean(true), "b" -> CNum(1), "c" -> CNum(2)))(line))(
-        line)
+      val source = dag.New(
+        dag.Const(
+          RObject("a" -> CBoolean(true), "b" -> CNum(1), "c" -> CNum(2)))(
+          line))(line)
 
       val input = dag.Cond(
         Join(DerefObject, Cross(None), source, dag.Const(CString("a"))(line))(

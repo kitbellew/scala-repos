@@ -79,9 +79,8 @@ class BitSpecParser(val input: ParserInput) extends parboiled2.Parser {
     bits.run() match {
       case s: Success[Bits] ⇒ s
       case Failure(e: ParseError) ⇒
-        Failure(
-          new RuntimeException(
-            formatError(e, new ErrorFormatter(showTraces = true))))
+        Failure(new RuntimeException(
+          formatError(e, new ErrorFormatter(showTraces = true))))
       case _ ⇒ throw new IllegalStateException()
     }
 

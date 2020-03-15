@@ -542,9 +542,8 @@ class TaskSetManagerSuite
     sched.addExecutor("execC", "host2")
     manager.executorAdded()
     // Valid locality should contain PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL and ANY
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY)))
     // test if the valid locality is recomputed when the executor is lost
     sched.removeExecutor("execC")
     manager.executorLost("execC", "host2", SlaveLost())
@@ -608,9 +607,8 @@ class TaskSetManagerSuite
     val clock = new ManualClock
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
 
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, RACK_LOCAL, ANY)))
     // Set allowed locality to ANY
     clock.advance(LOCALITY_WAIT_MS * 3)
     // Offer host3
@@ -827,9 +825,8 @@ class TaskSetManagerSuite
     manager.executorAdded()
     assert(manager.pendingTasksWithNoPrefs.size === 0)
     // Valid locality should contain PROCESS_LOCAL, NODE_LOCAL and ANY
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     assert(manager.resourceOffer("execA", "host1", ANY) !== None)
     clock.advance(LOCALITY_WAIT_MS * 4)
     assert(manager.resourceOffer("execB.2", "host2", ANY) !== None)
@@ -860,19 +857,16 @@ class TaskSetManagerSuite
       Seq(TaskLocation("hdfs_cache_host3")))
     val clock = new ManualClock
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execA")
     manager.executorAdded()
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execB")
     manager.executorAdded()
-    assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+    assert(manager.myLocalityLevels.sameElements(
+      Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execC")
     manager.executorAdded()
     assert(manager.myLocalityLevels.sameElements(Array(ANY)))

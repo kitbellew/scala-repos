@@ -25,15 +25,14 @@ object IListTest extends SpecLite {
 
   implicit val intBooleanArb: Arbitrary[Int => Boolean] = {
     val intGen = implicitly[Arbitrary[Int]].arbitrary
-    Arbitrary(
-      Gen.oneOf(
-        Gen.const((_: Int) => true),
-        Gen.const((_: Int) => false),
-        Gen.choose(2, 5).map(n => (a: Int) => a % n == 0),
-        Gen.choose(2, 5).map(n => (a: Int) => a % n != 0),
-        intGen.map(n => (_: Int) > n),
-        intGen.map(n => (_: Int) < n)
-      ))
+    Arbitrary(Gen.oneOf(
+      Gen.const((_: Int) => true),
+      Gen.const((_: Int) => false),
+      Gen.choose(2, 5).map(n => (a: Int) => a % n == 0),
+      Gen.choose(2, 5).map(n => (a: Int) => a % n != 0),
+      intGen.map(n => (_: Int) > n),
+      intGen.map(n => (_: Int) < n)
+    ))
   }
 
   "intercalate empty list is flatten" ! forAll { (a: IList[IList[Int]]) =>
@@ -92,14 +91,16 @@ object IListTest extends SpecLite {
 
   "mapAccumLeft" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumLeft(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (xs, xs
-      .map(f))
+    xs.mapAccumLeft(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (
+      xs, xs.map(f)
+    )
   }
 
   "mapAccumRight" ! forAll { xs: IList[Int] =>
     val f = (_: Int) + 1
-    xs.mapAccumRight(IList[Int]())((c, a) =>
-      (c :+ a, f(a))) must_=== (xs.reverse, xs.map(f))
+    xs.mapAccumRight(IList[Int]())((c, a) => (c :+ a, f(a))) must_=== (
+      xs.reverse, xs.map(f)
+    )
   }
 
   // And some other tests that List doesn't have

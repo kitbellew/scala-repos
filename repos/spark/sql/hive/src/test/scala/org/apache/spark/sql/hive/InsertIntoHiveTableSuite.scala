@@ -60,8 +60,7 @@ class InsertIntoHiveTableSuite
     // Make sure the table has also been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.collect().toSeq
-    )
+      testData.collect().toSeq)
 
     // Add more data.
     testData.write.mode(SaveMode.Append).insertInto("createAndInsertTest")
@@ -69,8 +68,7 @@ class InsertIntoHiveTableSuite
     // Make sure the table has been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.toDF().collect().toSeq ++ testData.toDF().collect().toSeq
-    )
+      testData.toDF().collect().toSeq ++ testData.toDF().collect().toSeq)
 
     // Now overwrite.
     testData.write.mode(SaveMode.Overwrite).insertInto("createAndInsertTest")
@@ -78,8 +76,7 @@ class InsertIntoHiveTableSuite
     // Make sure the registered table has also been updated.
     checkAnswer(
       sql("SELECT * FROM createAndInsertTest"),
-      testData.collect().toSeq
-    )
+      testData.collect().toSeq)
   }
 
   test("Double create fails when allowExisting = false") {
@@ -109,8 +106,7 @@ class InsertIntoHiveTableSuite
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithMapValue"),
-      rowRDD.collect().toSeq
-    )
+      rowRDD.collect().toSeq)
 
     sql("DROP TABLE hiveTableWithMapValue")
   }
@@ -185,11 +181,9 @@ class InsertIntoHiveTableSuite
   }
 
   test("Insert MapType.valueContainsNull == false") {
-    val schema = StructType(
-      Seq(
-        StructField(
-          "m",
-          MapType(StringType, StringType, valueContainsNull = false))))
+    val schema = StructType(Seq(StructField(
+      "m",
+      MapType(StringType, StringType, valueContainsNull = false))))
     val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
       Row(Map(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)
@@ -206,11 +200,9 @@ class InsertIntoHiveTableSuite
   }
 
   test("Insert StructType.fields.exists(_.nullable == false)") {
-    val schema = StructType(
-      Seq(
-        StructField(
-          "s",
-          StructType(Seq(StructField("f", StringType, nullable = false))))))
+    val schema = StructType(Seq(StructField(
+      "s",
+      StructType(Seq(StructField("f", StringType, nullable = false))))))
     val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
       Row(Row(s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)

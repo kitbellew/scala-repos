@@ -68,8 +68,8 @@ class KinesisReceiverSuite
   }
 
   test("check serializability of SerializableAWSCredentials") {
-    Utils.deserialize[SerializableAWSCredentials](
-      Utils.serialize(new SerializableAWSCredentials("x", "y")))
+    Utils.deserialize[SerializableAWSCredentials](Utils.serialize(
+      new SerializableAWSCredentials("x", "y")))
   }
 
   test("process records including store and set checkpointer") {
@@ -99,9 +99,8 @@ class KinesisReceiverSuite
 
   test("shouldn't update checkpointer when exception occurs during store") {
     when(receiverMock.isStopped()).thenReturn(false)
-    when(
-      receiverMock.addRecords(anyString, anyListOf(classOf[Record]))
-    ).thenThrow(new RuntimeException())
+    when(receiverMock.addRecords(anyString, anyListOf(classOf[Record])))
+      .thenThrow(new RuntimeException())
 
     intercept[RuntimeException] {
       val recordProcessor = new KinesisRecordProcessor(receiverMock, workerId)
@@ -185,8 +184,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after a shutdown exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new ShutdownException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(new ShutdownException(
+      "error message"))
 
     intercept[ShutdownException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -196,8 +195,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after an invalid state exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new InvalidStateException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(new InvalidStateException(
+      "error message"))
 
     intercept[InvalidStateException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)
@@ -207,8 +206,8 @@ class KinesisReceiverSuite
   }
 
   test("retry failed after unexpected exception") {
-    when(checkpointerMock.checkpoint())
-      .thenThrow(new RuntimeException("error message"))
+    when(checkpointerMock.checkpoint()).thenThrow(new RuntimeException(
+      "error message"))
 
     intercept[RuntimeException] {
       KinesisRecordProcessor.retryRandom(checkpointerMock.checkpoint(), 2, 100)

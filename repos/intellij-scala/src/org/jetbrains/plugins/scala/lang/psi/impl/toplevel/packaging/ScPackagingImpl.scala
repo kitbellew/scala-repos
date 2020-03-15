@@ -109,8 +109,7 @@ class ScPackagingImpl private (
         TokenSet.create(
           ScalaElementTypes.OBJECT_DEF,
           ScalaElementTypes.CLASS_DEF,
-          ScalaElementTypes.TRAIT_DEF
-        ),
+          ScalaElementTypes.TRAIT_DEF),
         JavaArrayFactoryUtil.ScTypeDefinitionFactory)
     } else {
       val buffer = new ArrayBuffer[ScTypeDefinition]

@@ -178,9 +178,8 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
       try unit.body = transform(unit.body)
       catch {
         case ex: Exception =>
-          log(
-            supplementErrorMessage(
-              "unhandled exception while transforming " + unit))
+          log(supplementErrorMessage(
+            "unhandled exception while transforming " + unit))
           throw ex
       }
     }
@@ -353,8 +352,9 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
                 // if we move these trees into lexical contexts different from their original locations.
                 if (dupl.hasSymbolField) {
                   val sym = dupl.symbol
-                  val vetoScope =
-                    !brutally && !(locals contains sym) && !(locals contains sym.deSkolemize)
+                  val vetoScope = !brutally && !(locals contains sym) && !(
+                    locals contains sym.deSkolemize
+                  )
                   val vetoThis = dupl.isInstanceOf[This] && sym.isPackageClass
                   if (!(vetoScope || vetoThis)) dupl.symbol = NoSymbol
                 }

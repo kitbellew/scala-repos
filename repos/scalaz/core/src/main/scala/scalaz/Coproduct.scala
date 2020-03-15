@@ -13,19 +13,16 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
   def cobind[B](f: Coproduct[F, G, A] => B)(implicit
       F: Cobind[F],
       G: Cobind[G]): Coproduct[F, G, B] =
-    Coproduct(
-      run.bimap(
-        a => F.cobind(a)(x => f(leftc(x))),
-        a => G.cobind(a)(x => f(rightc(x))))
-    )
+    Coproduct(run.bimap(
+      a => F.cobind(a)(x => f(leftc(x))),
+      a => G.cobind(a)(x => f(rightc(x)))))
 
   def duplicate(implicit
       F: Cobind[F],
       G: Cobind[G]): Coproduct[F, G, Coproduct[F, G, A]] =
-    Coproduct(
-      run.bimap(
-        x => F.extend(x)(a => leftc(a)),
-        x => G.extend(x)(a => rightc(a))))
+    Coproduct(run.bimap(
+      x => F.extend(x)(a => leftc(a)),
+      x => G.extend(x)(a => rightc(a))))
 
   def copoint(implicit F: Comonad[F], G: Comonad[G]): A =
     run.fold(F.copoint(_), G.copoint(_))
@@ -58,8 +55,7 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       A: Applicative[X]): X[Coproduct[F, G, B]] =
     run.fold(
       x => A.map(F.traverse(x)(g))(leftc(_)),
-      x => A.map(G.traverse(x)(g))(rightc(_))
-    )
+      x => A.map(G.traverse(x)(g))(rightc(_)))
 
   def traverse1[X[_], B](g: A => X[B])(implicit
       F: Traverse1[F],
@@ -67,8 +63,7 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       A: Apply[X]): X[Coproduct[F, G, B]] =
     run.fold(
       x => A.map(F.traverse1(x)(g))(leftc(_)),
-      x => A.map(G.traverse1(x)(g))(rightc(_))
-    )
+      x => A.map(G.traverse1(x)(g))(rightc(_)))
 
   def isLeft: Boolean = run.isLeft
 

@@ -200,9 +200,8 @@ trait Future[+T] extends Awaitable[T] {
     transform({
       case Failure(t) => Success(t)
       case Success(v) =>
-        Failure(
-          new NoSuchElementException(
-            "Future.failed not completed with a throwable."))
+        Failure(new NoSuchElementException(
+          "Future.failed not completed with a throwable."))
     })(internalExecutor)
 
   /* Monadic operations */

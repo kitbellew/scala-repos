@@ -320,11 +320,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds = Seq("abc", "xyz", "hello").toDS()
     val count = ds.groupByKey(s => Tuple1(s.length)).count()
 
-    checkDataset(
-      count,
-      (Tuple1(3), 2L),
-      (Tuple1(5), 1L)
-    )
+    checkDataset(count, (Tuple1(3), 2L), (Tuple1(5), 1L))
   }
 
   test("groupBy columns, map") {
@@ -574,17 +570,12 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   }
 
   test("runtime nullability check") {
-    val schema = StructType(
-      Seq(
-        StructField(
-          "f",
-          StructType(
-            Seq(
-              StructField("a", StringType, nullable = true),
-              StructField("b", IntegerType, nullable = false)
-            )),
-          nullable = true)
-      ))
+    val schema = StructType(Seq(StructField(
+      "f",
+      StructType(Seq(
+        StructField("a", StringType, nullable = true),
+        StructField("b", IntegerType, nullable = false))),
+      nullable = true)))
 
     def buildDataset(rows: Row*): Dataset[NestedStruct] = {
       val rowRDD = sqlContext.sparkContext.parallelize(rows)
@@ -593,8 +584,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
 
     checkDataset(
       buildDataset(Row(Row("hello", 1))),
-      NestedStruct(ClassData("hello", 1))
-    )
+      NestedStruct(ClassData("hello", 1)))
 
     // Shouldn't throw runtime exception when parent object (`ClassData`) is null
     assert(buildDataset(Row(null)).collect() === Array(NestedStruct(null)))

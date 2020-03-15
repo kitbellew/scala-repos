@@ -63,8 +63,8 @@ object EnumeratorsSpec
     "not necessarily go alternatively between two enumerators" in {
       mustExecute(1, 2) { (onDoneEC, unfoldEC) =>
         val firstDone = Promise[Unit]
-        val e1 = Enumerator(1, 2, 3, 4).onDoneEnumerating(
-          firstDone.success(Unit))(onDoneEC)
+        val e1 = Enumerator(1, 2, 3, 4).onDoneEnumerating(firstDone.success(
+          Unit))(onDoneEC)
         val e2 = Enumerator.unfoldM[Boolean, Int](true) { first =>
           if (first) firstDone.future.map(_ => Some((false, 5)))
           else Future.successful(None)
@@ -159,8 +159,7 @@ object EnumeratorsSpec
         val count = new java.util.concurrent.atomic.AtomicInteger()
         mustPropagateFailure(
           Enumerator(1, 2, 3).onDoneEnumerating(count.incrementAndGet())(
-            onDoneEC)
-        )
+            onDoneEC))
         count.get() must_== 1
       }
     }
@@ -195,8 +194,8 @@ object EnumeratorsSpec
         val a = (0 to 10).toList
         val it = a.iterator
 
-        val enumerator = Enumerator.generateM(
-          Future(if (it.hasNext) Some(it.next()) else None))(generateEC)
+        val enumerator = Enumerator.generateM(Future(
+          if (it.hasNext) Some(it.next()) else None))(generateEC)
 
         Await.result(
           enumerator |>>> Iteratee.fold[Int, String]("")(_ + _)(foldEC),
@@ -209,8 +208,8 @@ object EnumeratorsSpec
         val a = (0 to 10).toList
         val it = a.iterator
 
-        val enumerator = Enumerator.generateM(
-          Future(if (it.hasNext) Some(it.next()) else None))(
+        val enumerator = Enumerator.generateM(Future(
+          if (it.hasNext) Some(it.next()) else None))(
           generateEC) >>> Enumerator(12)
 
         Await.result(
@@ -229,8 +228,7 @@ object EnumeratorsSpec
       val enum = Enumerator.fromCallback1[String](
         b => Future.successful(None),
         () => (),
-        (msg, input) => errorCount.incrementAndGet()
-      )
+        (msg, input) => errorCount.incrementAndGet())
 
       val result = enum |>>> it
 
@@ -241,16 +239,15 @@ object EnumeratorsSpec
     "Call onError on future failure" in {
       val it1 = Iteratee.fold1[String, String](Future.successful(""))((_, _) =>
         Future.failed(new RuntimeException()))
-      val it2 = Iteratee.fold1[String, String](
-        Future.failed(new RuntimeException()))((_, _) =>
+      val it2 = Iteratee.fold1[String, String](Future.failed(
+        new RuntimeException()))((_, _) =>
         Future.failed(new RuntimeException()))
       val errorCount = new AtomicInteger(0)
 
       val enum = Enumerator.fromCallback1[String](
         b => Future.successful(Some("")),
         () => (),
-        (msg, input) => errorCount.incrementAndGet()
-      )
+        (msg, input) => errorCount.incrementAndGet())
 
       val result1 = enum |>>> it1
       val result2 = enum |>>> it2
@@ -378,8 +375,9 @@ object EnumeratorsSpec
     "supply input from a by-name arg" in {
       mustExecute(3) { repeatEC =>
         val count = new AtomicInteger(0)
-        val fut = Enumerator.repeat(count.incrementAndGet())(
-          repeatEC) |>>> (Enumeratee.take(3) &>> Iteratee.getChunks[Int])
+        val fut =
+          Enumerator.repeat(count.incrementAndGet())(repeatEC) |>>> (Enumeratee
+            .take(3) &>> Iteratee.getChunks[Int])
         Await.result(fut, Duration.Inf) must equalTo(List(1, 2, 3))
       }
     }

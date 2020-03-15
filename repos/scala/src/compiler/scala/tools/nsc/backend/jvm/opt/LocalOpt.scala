@@ -282,10 +282,11 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       // UNREACHABLE CODE
       // Both AliasingAnalyzer (used in copyProp) and ProdConsAnalyzer (used in eliminateStaleStores,
       // boxUnboxElimination) require not having unreachable instructions (null frames).
-      val runDCE =
-        (compilerSettings.YoptUnreachableCode && (requestDCE || nullnessOptChanged)) ||
-          compilerSettings.YoptBoxUnbox ||
-          compilerSettings.YoptCopyPropagation
+      val runDCE = (compilerSettings.YoptUnreachableCode && (
+        requestDCE || nullnessOptChanged
+      )) ||
+        compilerSettings.YoptBoxUnbox ||
+        compilerSettings.YoptCopyPropagation
       val (codeRemoved, liveLabels) =
         if (runDCE) removeUnreachableCodeImpl(method, ownerClassName)
         else (false, Set.empty[LabelNode])
@@ -299,36 +300,41 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
       traceIfChanged("boxUnbox")
 
       // COPY PROPAGATION
-      val runCopyProp =
-        compilerSettings.YoptCopyPropagation && (firstIteration || boxUnboxChanged)
+      val runCopyProp = compilerSettings.YoptCopyPropagation && (
+        firstIteration || boxUnboxChanged
+      )
       val copyPropChanged =
         runCopyProp && copyPropagation(method, ownerClassName)
       traceIfChanged("copyProp")
 
       // STALE STORES
-      val runStaleStores =
-        compilerSettings.YoptCopyPropagation && (requestStaleStores || nullnessOptChanged || codeRemoved || boxUnboxChanged || copyPropChanged)
+      val runStaleStores = compilerSettings.YoptCopyPropagation && (
+        requestStaleStores || nullnessOptChanged || codeRemoved || boxUnboxChanged || copyPropChanged
+      )
       val storesRemoved =
         runStaleStores && eliminateStaleStores(method, ownerClassName)
       traceIfChanged("staleStores")
 
       // REDUNDANT CASTS
-      val runRedundantCasts =
-        compilerSettings.YoptRedundantCasts && (firstIteration || boxUnboxChanged)
+      val runRedundantCasts = compilerSettings.YoptRedundantCasts && (
+        firstIteration || boxUnboxChanged
+      )
       val castRemoved =
         runRedundantCasts && eliminateRedundantCasts(method, ownerClassName)
       traceIfChanged("redundantCasts")
 
       // PUSH-POP
-      val runPushPop =
-        compilerSettings.YoptCopyPropagation && (requestPushPop || firstIteration || storesRemoved || castRemoved)
+      val runPushPop = compilerSettings.YoptCopyPropagation && (
+        requestPushPop || firstIteration || storesRemoved || castRemoved
+      )
       val pushPopRemoved =
         runPushPop && eliminatePushPop(method, ownerClassName)
       traceIfChanged("pushPop")
 
       // STORE-LOAD PAIRS
-      val runStoreLoad =
-        compilerSettings.YoptCopyPropagation && (requestStoreLoad || boxUnboxChanged || copyPropChanged || pushPopRemoved)
+      val runStoreLoad = compilerSettings.YoptCopyPropagation && (
+        requestStoreLoad || boxUnboxChanged || copyPropChanged || pushPopRemoved
+      )
       val storeLoadRemoved = runStoreLoad && eliminateStoreLoad(method)
       traceIfChanged("storeLoadPairs")
 

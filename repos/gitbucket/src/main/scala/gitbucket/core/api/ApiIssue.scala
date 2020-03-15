@@ -24,14 +24,13 @@ case class ApiIssue(
     else { "issues" }}/${number}")
   val pull_request =
     if (isPullRequest) {
-      Some(
-        Map(
-          "url" -> ApiPath(
-            s"/api/v3/repos/${repositoryName.fullName}/pulls/${number}"),
-          "html_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}")
-          // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
-          // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")
-        ))
+      Some(Map(
+        "url" -> ApiPath(
+          s"/api/v3/repos/${repositoryName.fullName}/pulls/${number}"),
+        "html_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}")
+        // "diff_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.diff"),
+        // "patch_url" -> ApiPath(s"/${repositoryName.fullName}/pull/${number}.patch")
+      ))
     } else { None }
 }
 

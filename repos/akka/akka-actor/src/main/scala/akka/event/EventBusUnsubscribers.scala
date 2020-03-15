@@ -28,22 +28,20 @@ private[akka] class EventStreamUnsubscriber(
 
   override def preStart() {
     if (debug)
-      eventStream.publish(
-        Logging.Debug(
-          simpleName(getClass),
-          getClass,
-          s"registering unsubscriber with $eventStream"))
+      eventStream.publish(Logging.Debug(
+        simpleName(getClass),
+        getClass,
+        s"registering unsubscriber with $eventStream"))
     eventStream initUnsubscriber self
   }
 
   def receive = {
     case Register(actor) ⇒
       if (debug)
-        eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"watching $actor in order to unsubscribe from EventStream when it terminates"))
+        eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"watching $actor in order to unsubscribe from EventStream when it terminates"))
       context watch actor
 
     case UnregisterIfNoMoreSubscribedChannels(actor)
@@ -53,20 +51,18 @@ private[akka] class EventStreamUnsubscriber(
 
     case UnregisterIfNoMoreSubscribedChannels(actor) ⇒
       if (debug)
-        eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"unwatching $actor, since has no subscriptions"))
+        eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"unwatching $actor, since has no subscriptions"))
       context unwatch actor
 
     case Terminated(actor) ⇒
       if (debug)
-        eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"unsubscribe $actor from $eventStream, because it was terminated"))
+        eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"unsubscribe $actor from $eventStream, because it was terminated"))
       eventStream unsubscribe actor
   }
 }
@@ -127,11 +123,10 @@ private[akka] class ActorClassificationUnsubscriber(
   def receive = {
     case Register(actor, seq) if seq == nextSeq ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"registered watch for $actor in $bus"))
+        context.system.eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"registered watch for $actor in $bus"))
       context watch actor
       atSeq = nextSeq
       unstashAll()
@@ -141,11 +136,10 @@ private[akka] class ActorClassificationUnsubscriber(
 
     case Unregister(actor, seq) if seq == nextSeq ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"unregistered watch of $actor in $bus"))
+        context.system.eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"unregistered watch of $actor in $bus"))
       context unwatch actor
       atSeq = nextSeq
       unstashAll()
@@ -155,11 +149,10 @@ private[akka] class ActorClassificationUnsubscriber(
 
     case Terminated(actor) ⇒
       if (debug)
-        context.system.eventStream.publish(
-          Logging.Debug(
-            simpleName(getClass),
-            getClass,
-            s"actor $actor has terminated, unsubscribing it from $bus"))
+        context.system.eventStream.publish(Logging.Debug(
+          simpleName(getClass),
+          getClass,
+          s"actor $actor has terminated, unsubscribing it from $bus"))
       // the `unsubscribe` will trigger another `Unregister(actor, _)` message to this unsubscriber;
       // but since that actor is terminated, there cannot be any harm in processing an Unregister for it.
       bus unsubscribe actor

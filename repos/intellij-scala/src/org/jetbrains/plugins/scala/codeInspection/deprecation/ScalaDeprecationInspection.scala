@@ -36,7 +36,8 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
         elementToHighlight: PsiElement,
         name: String) {
       val refElement = result
-        .getOrElse(return
+        .getOrElse(
+          return
         )
         .element
       refElement match {
@@ -45,13 +46,12 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
               !ScalaPsiUtil.memberNamesEquals(param.name, name) =>
           val description: String =
             s"Parameter name ${param.deprecatedName.get} is deprecated"
-          holder.registerProblem(
-            holder.getManager.createProblemDescriptor(
-              elementToHighlight,
-              description,
-              true,
-              ProblemHighlightType.LIKE_DEPRECATED,
-              isOnTheFly))
+          holder.registerProblem(holder.getManager.createProblemDescriptor(
+            elementToHighlight,
+            description,
+            true,
+            ProblemHighlightType.LIKE_DEPRECATED,
+            isOnTheFly))
           return
         case _: PsiNamedElement =>
         case _                  => return
@@ -78,13 +78,12 @@ class ScalaDeprecationInspection extends LocalInspectionTool {
       val description: String = Seq(
         Some("Symbol " + name + " is deprecated"),
         message).flatten.mkString(". ")
-      holder.registerProblem(
-        holder.getManager.createProblemDescriptor(
-          elementToHighlight,
-          description,
-          true,
-          ProblemHighlightType.LIKE_DEPRECATED,
-          isOnTheFly))
+      holder.registerProblem(holder.getManager.createProblemDescriptor(
+        elementToHighlight,
+        description,
+        true,
+        ProblemHighlightType.LIKE_DEPRECATED,
+        isOnTheFly))
     }
 
     new ScalaElementVisitor {

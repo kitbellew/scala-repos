@@ -29,8 +29,8 @@ case class ShutdownRequest(reason: String, isError: Boolean = false)
 class ServerActor(
     config: EnsimeConfig,
     protocol: Protocol,
-    interface: String = "127.0.0.1"
-) extends Actor
+    interface: String = "127.0.0.1")
+    extends Actor
     with ActorLogging {
 
   override val supervisorStrategy = OneForOneStrategy() {
@@ -54,16 +54,13 @@ class ServerActor(
     val preferredTcpPort = PortUtil.port(config.cacheDir, "port")
     val shutdownOnLastDisconnect = Environment.shutdownOnDisconnectFlag
     context.actorOf(
-      Props(
-        new TCPServer(
-          config.cacheDir,
-          protocol,
-          project,
-          broadcaster,
-          shutdownOnLastDisconnect,
-          preferredTcpPort
-        )
-      ),
+      Props(new TCPServer(
+        config.cacheDir,
+        protocol,
+        project,
+        broadcaster,
+        shutdownOnLastDisconnect,
+        preferredTcpPort)),
       "tcp-server")
 
     // this is a bit ugly in a couple of ways
@@ -131,8 +128,7 @@ object Server {
   def main(args: Array[String]): Unit = {
     val ensimeFileStr = propOrNone("ensime.config").getOrElse(
       throw new RuntimeException(
-        "ensime.config (the location of the .ensime file) must be set")
-    )
+        "ensime.config (the location of the .ensime file) must be set"))
 
     val ensimeFile = new File(ensimeFileStr)
     if (!ensimeFile.exists() || !ensimeFile.isFile)

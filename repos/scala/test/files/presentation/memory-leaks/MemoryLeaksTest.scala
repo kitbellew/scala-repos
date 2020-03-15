@@ -62,11 +62,10 @@ object Test extends InteractiveTest {
     val treesUnit = AbstractFile.getFile(
       baseDir.parent.parent.parent.parent / "src/reflect/scala/reflect/internal/Trees.scala")
 
-    askReload(
-      Seq(
-        new BatchSourceFile(typerUnit),
-        new BatchSourceFile(typesUnit),
-        new BatchSourceFile(treesUnit)))
+    askReload(Seq(
+      new BatchSourceFile(typerUnit),
+      new BatchSourceFile(typesUnit),
+      new BatchSourceFile(treesUnit)))
     typeCheckWith(treesUnit, new String(treesUnit.toCharArray))
     typeCheckWith(typesUnit, new String(typesUnit.toCharArray))
 

@@ -78,10 +78,9 @@ object KeyValue {
   def apply[T >: Int <: Int, J >: Number <: Number](
       target: Property[T, J],
       endValue: Int) =
-    new KeyValue[T, J](
-      new jfxa.KeyValue(
-        Property.sfxProperty2jfx(target),
-        int2Integer(endValue)))
+    new KeyValue[T, J](new jfxa.KeyValue(
+      Property.sfxProperty2jfx(target),
+      int2Integer(endValue)))
   def apply[T >: Long <: Long, J >: Number <: Number](
       target: Property[T, J],
       endValue: Long) =
@@ -146,11 +145,10 @@ object KeyValue {
       target: Property[T, J],
       endValue: Int,
       interpolator: jfxa.Interpolator) =
-    new KeyValue[T, J](
-      new jfxa.KeyValue(
-        Property.sfxProperty2jfx(target),
-        int2Integer(endValue),
-        interpolator))
+    new KeyValue[T, J](new jfxa.KeyValue(
+      Property.sfxProperty2jfx(target),
+      int2Integer(endValue),
+      interpolator))
   def apply[T >: Long <: Long, J >: Number <: Number](
       target: Property[T, J],
       endValue: Long,

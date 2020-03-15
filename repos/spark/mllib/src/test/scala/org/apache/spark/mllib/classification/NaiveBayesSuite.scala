@@ -122,11 +122,10 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
     for (i <- modelIndex) {
       for (j <- 0 until thetaData(i._2).length) {
-        assert(
-          closeFit(
-            math.exp(thetaData(i._2)(j)),
-            math.exp(model.theta(i._1)(j)),
-            0.05))
+        assert(closeFit(
+          math.exp(thetaData(i._2)(j)),
+          math.exp(model.theta(i._1)(j)),
+          0.05))
       }
     }
   }
@@ -216,11 +215,14 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
     val nPoints = 10000
     val pi = Array(0.5, 0.3, 0.2).map(math.log)
     val theta = Array(
-      Array(0.50, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.50, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.40), // label 0
-      Array(0.02, 0.70, 0.10, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.02, 0.70, 0.10, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.02), // label 1
-      Array(0.02, 0.02, 0.60, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.02, 0.02, 0.60, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.30) // label 2
     ).map(_.map(math.log))
 

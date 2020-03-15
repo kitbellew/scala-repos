@@ -129,8 +129,7 @@ trait VFSModule[M[+_], Block] extends Logging {
         EitherT {
           resource.fold(
             br => br.asString.run.map(_.toRightDisjunction(notAQuery)),
-            _ => \/.left(notAQuery).point[M]
-          )
+            _ => \/.left(notAQuery).point[M])
         }
     }
 
@@ -143,8 +142,7 @@ trait VFSModule[M[+_], Block] extends Logging {
               .format(path.path, version))
         resource.fold(
           _ => EitherT.left(notAProjection.point[M]),
-          pr => EitherT.right(pr.projection)
-        )
+          pr => EitherT.right(pr.projection))
     }
   }
 

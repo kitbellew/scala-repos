@@ -83,8 +83,7 @@ private[serverset2] trait StatsWriter extends StatsClient with ZooKeeperWriter {
       path: String,
       data: Option[Buf],
       acl: Seq[Data.ACL],
-      createMode: CreateMode
-  ): Future[String] =
+      createMode: CreateMode): Future[String] =
     createMode match {
       case CreateMode.Ephemeral =>
         EphemeralFilter(underlying.create(path, data, acl, createMode))
@@ -164,8 +163,7 @@ object SessionStats {
       underlying: Var[WatchState],
       statsReceiver: StatsReceiver,
       interval: Duration,
-      timer: Timer
-  ): Var[WatchState] = {
+      timer: Timer): Var[WatchState] = {
     import SessionState._
     val unknownCounter = statsReceiver.counter(Unknown.name)
     val authFailedCounter = statsReceiver.counter(AuthFailed.name)

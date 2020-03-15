@@ -309,11 +309,10 @@ object CachesUtil {
   def enclosingModificationOwner(elem: PsiElement): ModificationTracker = {
     @tailrec
     def calc(element: PsiElement): ModificationTracker = {
-      Option(
-        PsiTreeUtil.getContextOfType(
-          element,
-          false,
-          classOf[ScModificationTrackerOwner])) match {
+      Option(PsiTreeUtil.getContextOfType(
+        element,
+        false,
+        classOf[ScModificationTrackerOwner])) match {
         case Some(owner) if owner.isValidModificationTrackerOwner() =>
           owner.getModificationTracker
         case Some(owner) => calc(owner.getContext)
@@ -331,12 +330,11 @@ object CachesUtil {
   def updateModificationCount(
       elem: PsiElement,
       incModCountOnTopLevel: Boolean = false): Unit = {
-    Option(
-      PsiTreeUtil.getContextOfType(
-        elem,
-        false,
-        classOf[ScModificationTrackerOwner],
-        classOf[ScalaCodeFragment])) match {
+    Option(PsiTreeUtil.getContextOfType(
+      elem,
+      false,
+      classOf[ScModificationTrackerOwner],
+      classOf[ScalaCodeFragment])) match {
       case Some(_: ScalaCodeFragment) => //do not update on changes in dummy file
       case Some(owner: ScModificationTrackerOwner)
           if owner.isValidModificationTrackerOwner(checkForChangedReturn =
@@ -388,7 +386,9 @@ object CachesUtil {
       while (cur != null) {
         val (fun, proj) = cur
         val isValid: Boolean = fun.isValid
-        if ((!isValid || fun.returnTypeHasChangedSinceLastCheck) && !proj.isDisposed) {
+        if ((
+              !isValid || fun.returnTypeHasChangedSinceLastCheck
+            ) && !proj.isDisposed) {
           //if there's more than one, just increment the general modCount If there's one, go up th
           if (!isValid || checkSize) {
             ScalaPsiManager.instance(proj).incModificationCount()

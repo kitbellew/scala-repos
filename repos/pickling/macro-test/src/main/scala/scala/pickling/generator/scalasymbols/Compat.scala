@@ -94,9 +94,8 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.constructorParamTypes[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle
+      .constructorParamTypes[T]})""")
   }
   def varTypes[T]: Seq[String] = macro getVarTypes_impl[T]
   def getVarTypes_impl[T: c.WeakTypeTag](c: Context): c.Expr[Seq[String]] = {
@@ -105,9 +104,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.varTypes[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.varTypes[T]})""")
   }
 
   def parentClassTags[T]: Seq[String] = macro getParentClassTags_impl[T]
@@ -118,9 +115,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.parentClasses[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.parentClasses[T]})""")
   }
 
   def getTransientFieldNames[T]: Seq[String] =
@@ -132,9 +127,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.transientFields[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.transientFields[T]})""")
   }
   def getTransientVars[T]: Seq[String] = macro getTransientVars_Impl[T]
   def getTransientVars_Impl[T: c.WeakTypeTag](
@@ -144,9 +137,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.transientVars[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.transientVars[T]})""")
   }
   def fieldNames[T]: Seq[String] = macro getFieldNames_Impl[T]
   def getFieldNames_Impl[T: c.WeakTypeTag](c: Context): c.Expr[Seq[String]] = {
@@ -155,9 +146,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.fieldNames[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.fieldNames[T]})""")
   }
   def varNames[T]: Seq[String] = macro varNames_impl[T]
   def varNames_impl[T: c.WeakTypeTag](c: Context): c.Expr[Seq[String]] = {
@@ -166,9 +155,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.varNames[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.varNames[T]})""")
   }
   def valNames[T]: Seq[String] = macro valNames_impl[T]
   def valNames_impl[T: c.WeakTypeTag](c: Context): c.Expr[Seq[String]] = {
@@ -177,9 +164,7 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.valNames[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.valNames[T]})""")
   }
   def paramNames[T]: Seq[String] = macro paramNames_impl[T]
   def paramNames_impl[T: c.WeakTypeTag](c: Context): c.Expr[Seq[String]] = {
@@ -188,8 +173,6 @@ object Compat {
       val c: c0.type = c0
     } with SymbolTestMacros
     import c.universe._
-    c.Expr[Seq[String]](
-      q"""Seq[String](..${bundle.paramNames[T]})"""
-    )
+    c.Expr[Seq[String]](q"""Seq[String](..${bundle.paramNames[T]})""")
   }
 }

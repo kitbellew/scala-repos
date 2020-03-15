@@ -240,8 +240,7 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
     "RequestQueueSize",
     new Gauge[Int] {
       def value = requestQueue.size
-    }
-  )
+    })
 
   newGauge(
     "ResponseQueueSize",
@@ -269,23 +268,21 @@ class RequestChannel(val numProcessors: Int, val queueSize: Int)
 
   /** No operation to take for the request, need to read more over the network */
   def noOperation(processor: Int, request: RequestChannel.Request) {
-    responseQueues(processor).put(
-      new RequestChannel.Response(
-        processor,
-        request,
-        null,
-        RequestChannel.NoOpAction))
+    responseQueues(processor).put(new RequestChannel.Response(
+      processor,
+      request,
+      null,
+      RequestChannel.NoOpAction))
     for (onResponse <- responseListeners) onResponse(processor)
   }
 
   /** Close the connection for the request */
   def closeConnection(processor: Int, request: RequestChannel.Request) {
-    responseQueues(processor).put(
-      new RequestChannel.Response(
-        processor,
-        request,
-        null,
-        RequestChannel.CloseConnectionAction))
+    responseQueues(processor).put(new RequestChannel.Response(
+      processor,
+      request,
+      null,
+      RequestChannel.CloseConnectionAction))
     for (onResponse <- responseListeners) onResponse(processor)
   }
 

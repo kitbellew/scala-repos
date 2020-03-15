@@ -256,8 +256,7 @@ class KafkaController(
     "ActiveControllerCount",
     new Gauge[Int] {
       def value() = if (isActive) 1 else 0
-    }
-  )
+    })
 
   newGauge(
     "OfflinePartitionsCount",
@@ -385,11 +384,10 @@ class KafkaController(
                     }
                     // If the broker is a follower, updates the isr in ZK and notifies the current leader
                     replicaStateMachine.handleStateChanges(
-                      Set(
-                        PartitionAndReplica(
-                          topicAndPartition.topic,
-                          topicAndPartition.partition,
-                          id)),
+                      Set(PartitionAndReplica(
+                        topicAndPartition.topic,
+                        topicAndPartition.partition,
+                        id)),
                       OfflineReplica)
                   }
                 }
@@ -429,9 +427,8 @@ class KafkaController(
     */
   def onControllerFailover() {
     if (isRunning) {
-      info(
-        "Broker %d starting become controller state transition".format(
-          config.brokerId))
+      info("Broker %d starting become controller state transition".format(
+        config.brokerId))
       //read controller epoch from zk
       readControllerEpochFromZookeeper()
       // increment the controller epoch
@@ -591,9 +588,8 @@ class KafkaController(
     info("Broker failure callback for %s".format(deadBrokers.mkString(",")))
     val deadBrokersThatWereShuttingDown = deadBrokers.filter(id =>
       controllerContext.shuttingDownBrokerIds.remove(id))
-    info(
-      "Removed %s from list of shutting down brokers.".format(
-        deadBrokersThatWereShuttingDown))
+    info("Removed %s from list of shutting down brokers.".format(
+      deadBrokersThatWereShuttingDown))
     val deadBrokersSet = deadBrokers.toSet
     // trigger OfflinePartition state for all partitions whose current leader is one amongst the dead brokers
     val partitionsWithoutLeader = controllerContext.partitionLeadershipInfo
@@ -659,9 +655,8 @@ class KafkaController(
     * 2. Move the newly created partitions from NewPartition->OnlinePartition state
     */
   def onNewPartitionCreation(newPartitions: Set[TopicAndPartition]) {
-    info(
-      "New partition creation callback for %s".format(
-        newPartitions.mkString(",")))
+    info("New partition creation callback for %s".format(
+      newPartitions.mkString(",")))
     partitionStateMachine.handleStateChanges(newPartitions, NewPartition)
     replicaStateMachine.handleStateChanges(
       controllerContext.replicasForPartition(newPartitions),
@@ -762,11 +757,10 @@ class KafkaController(
         //5. replicas in RAR -> OnlineReplica
         reassignedReplicas.foreach { replica =>
           replicaStateMachine.handleStateChanges(
-            Set(
-              new PartitionAndReplica(
-                topicAndPartition.topic,
-                topicAndPartition.partition,
-                replica)),
+            Set(new PartitionAndReplica(
+              topicAndPartition.topic,
+              topicAndPartition.partition,
+              replica)),
             OnlineReplica)
         }
         //6. Set AR to RAR in memory.
@@ -882,9 +876,8 @@ class KafkaController(
   def onPreferredReplicaElection(
       partitions: Set[TopicAndPartition],
       isTriggeredByAutoRebalance: Boolean = false) {
-    info(
-      "Starting preferred replica leader election for partitions %s".format(
-        partitions.mkString(",")))
+    info("Starting preferred replica leader election for partitions %s".format(
+      partitions.mkString(",")))
     try {
       controllerContext.partitionsUndergoingPreferredReplicaElection ++= partitions
       deleteTopicManager.markTopicIneligibleForDeletion(partitions.map(_.topic))
@@ -984,9 +977,9 @@ class KafkaController(
         error("Error while incrementing controller epoch", oe)
 
     }
-    info(
-      "Controller %d incremented epoch to %d"
-        .format(config.brokerId, controllerContext.epoch))
+    info("Controller %d incremented epoch to %d".format(
+      config.brokerId,
+      controllerContext.epoch))
   }
 
   private def registerSessionExpirationListener() = {
@@ -1009,15 +1002,12 @@ class KafkaController(
     initializePreferredReplicaElection()
     initializePartitionReassignment()
     initializeTopicDeletion()
-    info(
-      "Currently active brokers in the cluster: %s".format(
-        controllerContext.liveBrokerIds))
-    info(
-      "Currently shutting brokers in the cluster: %s".format(
-        controllerContext.shuttingDownBrokerIds))
-    info(
-      "Current list of topics in the cluster: %s".format(
-        controllerContext.allTopics))
+    info("Currently active brokers in the cluster: %s".format(
+      controllerContext.liveBrokerIds))
+    info("Currently shutting brokers in the cluster: %s".format(
+      controllerContext.shuttingDownBrokerIds))
+    info("Current list of topics in the cluster: %s".format(
+      controllerContext.allTopics))
   }
 
   private def initializePreferredReplicaElection() {
@@ -1041,16 +1031,13 @@ class KafkaController(
       }
     controllerContext.partitionsUndergoingPreferredReplicaElection ++= partitionsUndergoingPreferredReplicaElection
     controllerContext.partitionsUndergoingPreferredReplicaElection --= partitionsThatCompletedPreferredReplicaElection
-    info(
-      "Partitions undergoing preferred replica election: %s".format(
-        partitionsUndergoingPreferredReplicaElection.mkString(",")))
-    info(
-      "Partitions that completed preferred replica election: %s".format(
-        partitionsThatCompletedPreferredReplicaElection.mkString(",")))
-    info(
-      "Resuming preferred replica election for partitions: %s".format(
-        controllerContext.partitionsUndergoingPreferredReplicaElection.mkString(
-          ",")))
+    info("Partitions undergoing preferred replica election: %s".format(
+      partitionsUndergoingPreferredReplicaElection.mkString(",")))
+    info("Partitions that completed preferred replica election: %s".format(
+      partitionsThatCompletedPreferredReplicaElection.mkString(",")))
+    info("Resuming preferred replica election for partitions: %s".format(
+      controllerContext.partitionsUndergoingPreferredReplicaElection.mkString(
+        ",")))
   }
 
   private def initializePartitionReassignment() {
@@ -1076,15 +1063,12 @@ class KafkaController(
     partitionsToReassign ++= partitionsBeingReassigned
     partitionsToReassign --= reassignedPartitions
     controllerContext.partitionsBeingReassigned ++= partitionsToReassign
-    info(
-      "Partitions being reassigned: %s".format(
-        partitionsBeingReassigned.toString()))
-    info(
-      "Partitions already reassigned: %s".format(
-        reassignedPartitions.toString()))
-    info(
-      "Resuming reassignment of partitions: %s".format(
-        partitionsToReassign.toString()))
+    info("Partitions being reassigned: %s".format(
+      partitionsBeingReassigned.toString()))
+    info("Partitions already reassigned: %s".format(
+      reassignedPartitions.toString()))
+    info("Resuming reassignment of partitions: %s".format(
+      partitionsToReassign.toString()))
   }
 
   private def initializeTopicDeletion() {
@@ -1106,12 +1090,10 @@ class KafkaController(
     val topicsIneligibleForDeletion =
       topicsWithReplicasOnDeadBrokers | topicsForWhichPartitionReassignmentIsInProgress |
         topicsForWhichPreferredReplicaElectionIsInProgress
-    info(
-      "List of topics to be deleted: %s".format(
-        topicsQueuedForDeletion.mkString(",")))
-    info(
-      "List of topics ineligible for deletion: %s".format(
-        topicsIneligibleForDeletion.mkString(",")))
+    info("List of topics to be deleted: %s".format(
+      topicsQueuedForDeletion.mkString(",")))
+    info("List of topics ineligible for deletion: %s".format(
+      topicsIneligibleForDeletion.mkString(",")))
     // initialize the topic deletion manager
     deleteTopicManager = new TopicDeletionManager(
       this,
@@ -1269,11 +1251,10 @@ class KafkaController(
     // replicas list
     newReplicas.foreach { replica =>
       replicaStateMachine.handleStateChanges(
-        Set(
-          new PartitionAndReplica(
-            topicAndPartition.topic,
-            topicAndPartition.partition,
-            replica)),
+        Set(new PartitionAndReplica(
+          topicAndPartition.topic,
+          topicAndPartition.partition,
+          replica)),
         NewReplica)
     }
   }
@@ -1383,9 +1364,9 @@ class KafkaController(
         ZkUtils.ControllerEpochPath)
       controllerContext.epoch = epochData._1.toInt
       controllerContext.epochZkVersion = epochData._2.getVersion
-      info(
-        "Initialized controller epoch to %d and zk version %d"
-          .format(controllerContext.epoch, controllerContext.epochZkVersion))
+      info("Initialized controller epoch to %d and zk version %d".format(
+        controllerContext.epoch,
+        controllerContext.epochZkVersion))
     }
   }
 
@@ -1425,9 +1406,9 @@ class KafkaController(
         newReplicaAssignmentForTopic.map(e =>
           (e._1.partition.toString -> e._2)))
       zkUtils.updatePersistentPath(zkPath, jsonPartitionMap)
-      debug(
-        "Updated path %s with %s for replica assignment"
-          .format(zkPath, jsonPartitionMap))
+      debug("Updated path %s with %s for replica assignment".format(
+        zkPath,
+        jsonPartitionMap))
     } catch {
       case e: ZkNoNodeException =>
         throw new IllegalStateException(
@@ -1498,15 +1479,14 @@ class KafkaController(
       partition: Int,
       replicaId: Int): Option[LeaderIsrAndControllerEpoch] = {
     val topicAndPartition = TopicAndPartition(topic, partition)
-    debug(
-      "Removing replica %d from ISR %s for partition %s.".format(
-        replicaId,
-        controllerContext
-          .partitionLeadershipInfo(topicAndPartition)
-          .leaderAndIsr
-          .isr
-          .mkString(","),
-        topicAndPartition))
+    debug("Removing replica %d from ISR %s for partition %s.".format(
+      replicaId,
+      controllerContext
+        .partitionLeadershipInfo(topicAndPartition)
+        .leaderAndIsr
+        .isr
+        .mkString(","),
+      topicAndPartition))
     var finalLeaderIsrAndControllerEpoch: Option[LeaderIsrAndControllerEpoch] =
       None
     var zkWriteCompleteOrUnnecessary = false
@@ -1572,9 +1552,9 @@ class KafkaController(
             controllerContext.partitionLeadershipInfo
               .put(topicAndPartition, finalLeaderIsrAndControllerEpoch.get)
             if (updateSucceeded)
-              info(
-                "New leader and ISR for partition %s is %s"
-                  .format(topicAndPartition, newLeaderAndIsr.toString()))
+              info("New leader and ISR for partition %s is %s".format(
+                topicAndPartition,
+                newLeaderAndIsr.toString()))
             updateSucceeded
           } else {
             warn(
@@ -1650,15 +1630,16 @@ class KafkaController(
           finalLeaderIsrAndControllerEpoch = Some(
             LeaderIsrAndControllerEpoch(newLeaderAndIsr, epoch))
           if (updateSucceeded)
-            info(
-              "Updated leader epoch for partition %s to %d"
-                .format(topicAndPartition, newLeaderAndIsr.leaderEpoch))
+            info("Updated leader epoch for partition %s to %d".format(
+              topicAndPartition,
+              newLeaderAndIsr.leaderEpoch))
           updateSucceeded
         case None =>
           throw new IllegalStateException(
-            ("Cannot update leader epoch for partition %s as leaderAndIsr path is empty. " +
-              "This could mean we somehow tried to reassign a partition that doesn't exist")
-              .format(topicAndPartition))
+            (
+              "Cannot update leader epoch for partition %s as leaderAndIsr path is empty. " +
+                "This could mean we somehow tried to reassign a partition that doesn't exist"
+            ).format(topicAndPartition))
           true
       }
     }
@@ -1736,13 +1717,15 @@ class KafkaController(
               topicsNotInPreferredReplica.size
             imbalanceRatio =
               totalTopicPartitionsNotLedByBroker.toDouble / totalTopicPartitionsForBroker
-            trace(
-              "leader imbalance ratio for broker %d is %f"
-                .format(leaderBroker, imbalanceRatio))
+            trace("leader imbalance ratio for broker %d is %f".format(
+              leaderBroker,
+              imbalanceRatio))
           }
           // check ratio and if greater than desired ratio, trigger a rebalance for the topic partitions
           // that need to be on this broker
-          if (imbalanceRatio > (config.leaderImbalancePerBrokerPercentage.toDouble / 100)) {
+          if (imbalanceRatio > (
+                config.leaderImbalancePerBrokerPercentage.toDouble / 100
+              )) {
             topicsNotInPreferredReplica.foreach {
               case (topicPartition, replicas) => {
                 inLock(controllerContext.controllerLock) {
@@ -1887,12 +1870,15 @@ class ReassignedPartitionsIsrChangeListener(
                         reassignedReplicas.size,
                         topicAndPartition) +
                       "Replica(s) %s still need to catch up".format(
-                        (reassignedReplicas -- leaderAndIsr.isr.toSet)
-                          .mkString(",")))
+                        (reassignedReplicas -- leaderAndIsr.isr.toSet).mkString(
+                          ",")))
                 }
               case None =>
-                error("Error handling reassignment of partition %s to replicas %s as it was never created"
-                  .format(topicAndPartition, reassignedReplicas.mkString(",")))
+                error(
+                  "Error handling reassignment of partition %s to replicas %s as it was never created"
+                    .format(
+                      topicAndPartition,
+                      reassignedReplicas.mkString(",")))
             }
           case None =>
         }
@@ -2068,9 +2054,8 @@ object ControllerStats extends KafkaMetricsGroup {
     "UncleanLeaderElectionsPerSec",
     "elections",
     TimeUnit.SECONDS)
-  val leaderElectionTimer = new KafkaTimer(
-    newTimer(
-      "LeaderElectionRateAndTimeMs",
-      TimeUnit.MILLISECONDS,
-      TimeUnit.SECONDS))
+  val leaderElectionTimer = new KafkaTimer(newTimer(
+    "LeaderElectionRateAndTimeMs",
+    TimeUnit.MILLISECONDS,
+    TimeUnit.SECONDS))
 }

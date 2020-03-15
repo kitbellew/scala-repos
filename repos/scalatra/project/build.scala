@@ -67,8 +67,7 @@ object ScalatraBuild extends Build {
     settings = scalatraSettings ++ Unidoc.unidocSettings ++ doNotPublish ++ Seq(
       description := "A tiny, Sinatra-like web framework for Scala",
       Unidoc.unidocExclude := Seq("scalatra-example"),
-      previousArtifacts := Set.empty
-    ),
+      previousArtifacts := Set.empty),
     aggregate = Seq(
       scalatraCore,
       scalatraAuth,
@@ -97,9 +96,7 @@ object ScalatraBuild extends Build {
     id = "scalatra-common",
     base = file("common"),
     settings = scalatraSettings ++ Seq(
-      libraryDependencies ++= Seq(servletApi % "provided,test")
-    )
-  )
+      libraryDependencies ++= Seq(servletApi % "provided,test")))
 
   lazy val scalatraCore = Project(
     id = "scalatra",
@@ -115,8 +112,7 @@ object ScalatraBuild extends Build {
           mimeUtil,
           jodaTime,
           jodaConvert,
-          akkaActor % "test"
-        )
+          akkaActor % "test")
         if (sv.startsWith("2.10")) default
         else default ++ Seq(parserCombinators, xml)
       }),
@@ -140,17 +136,16 @@ object ScalatraBuild extends Build {
     base = file("auth"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(base64),
-      description := "Scalatra authentication module"
-    )
-  ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
+      description := "Scalatra authentication module")) dependsOn (
+    scalatraCore % "compile;test->test;provided->provided"
+  )
 
   lazy val scalatraFileupload = Project(
     id = "scalatra-fileupload",
     base = file("fileupload"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(commonsFileupload, commonsIo),
-      description := "Commons-Fileupload integration with Scalatra"
-    )
+      description := "Commons-Fileupload integration with Scalatra")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraAtmosphere = Project(
@@ -176,8 +171,7 @@ object ScalatraBuild extends Build {
     base = file("scalate"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies += scalate,
-      description := "Scalate integration with Scalatra"
-    )
+      description := "Scalate integration with Scalatra")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraJson = Project(
@@ -188,8 +182,7 @@ object ScalatraBuild extends Build {
       libraryDependencies ++= Seq(
         json4sJackson % "provided",
         json4sNative % "provided",
-        json4sCore)
-    )
+        json4sCore))
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraCommands = Project(
@@ -198,8 +191,7 @@ object ScalatraBuild extends Build {
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(
         "commons-validator" % "commons-validator" % "1.5.0",
-        "io.backchat.inflector" %% "scala-inflector" % "1.3.5"
-      ),
+        "io.backchat.inflector" %% "scala-inflector" % "1.3.5"),
       libraryDependencies ++= Seq(scalaz, jodaTime, jodaConvert),
       initialCommands :=
         """
@@ -219,12 +211,8 @@ object ScalatraBuild extends Build {
     id = "scalatra-jetty",
     base = file("jetty"),
     settings = scalatraSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        servletApi,
-        jettyServlet
-      ),
-      description := "Embedded Jetty server for Scalatra apps"
-    )
+      libraryDependencies ++= Seq(servletApi, jettyServlet),
+      description := "Embedded Jetty server for Scalatra apps")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraTest = Project(
@@ -240,8 +228,7 @@ object ScalatraBuild extends Build {
         httpclient,
         httpmime,
         jodaTime % "provided",
-        jodaConvert % "provided"
-      ) ++ specs2.map(_ % "test"),
+        jodaConvert % "provided") ++ specs2.map(_ % "test"),
       description := "The abstract Scalatra test framework"
     )
   ) dependsOn (scalatraCommon % "compile;test->test;provided->provided")
@@ -255,8 +242,7 @@ object ScalatraBuild extends Build {
         junit,
         testng % "optional",
         guice % "optional"),
-      description := "ScalaTest support for the Scalatra test framework"
-    )
+      description := "ScalaTest support for the Scalatra test framework")
   ) dependsOn (scalatraTest % "compile;test->test;provided->provided")
 
   lazy val scalatraSpecs2 = Project(
@@ -264,8 +250,7 @@ object ScalatraBuild extends Build {
     base = file("specs2"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= specs2,
-      description := "Specs2 support for the Scalatra test framework"
-    )
+      description := "Specs2 support for the Scalatra test framework")
   ) dependsOn (scalatraTest % "compile;test->test;provided->provided")
 
   lazy val scalatraSwagger = Project(
@@ -278,23 +263,24 @@ object ScalatraBuild extends Build {
       },
       description := "Scalatra integration with Swagger"
     )
-  ) dependsOn (scalatraCore % "compile;test->test;provided->provided", scalatraJson % "compile;test->test;provided->provided")
+  ) dependsOn (
+    scalatraCore % "compile;test->test;provided->provided", scalatraJson % "compile;test->test;provided->provided"
+  )
 
   lazy val scalatraSwaggerExt = Project(
     id = "scalatra-swagger-ext",
     base = file("swagger-ext"),
     settings = scalatraSettings ++ Seq(
-      description := "Deeper Swagger integration for scalatra"
-    )
-  ) dependsOn (scalatraSwagger % "compile;test->test;provided->provided", scalatraCommands % "compile;test->test;provided->provided", scalatraAuth % "compile;test->test")
+      description := "Deeper Swagger integration for scalatra")) dependsOn (
+    scalatraSwagger % "compile;test->test;provided->provided", scalatraCommands % "compile;test->test;provided->provided", scalatraAuth % "compile;test->test"
+  )
 
   lazy val scalatraSlf4j = Project(
     id = "scalatra-slf4j",
     base = file("slf4j"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(grizzledSlf4j, logbackClassic % "provided"),
-      description := "Scalatra integration with SLF4J and Logback"
-    )
+      description := "Scalatra integration with SLF4J and Logback")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraSpring = Project(
@@ -302,8 +288,7 @@ object ScalatraBuild extends Build {
     base = file("spring"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies += springWeb,
-      description := "Scalatra integration with Spring Framework"
-    )
+      description := "Scalatra integration with Spring Framework")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraMetrics = Project(
@@ -314,8 +299,7 @@ object ScalatraBuild extends Build {
         metricsScala,
         metricsServlets,
         metricsServlet),
-      description := "Scalatra integration with Metrics"
-    )
+      description := "Scalatra integration with Metrics")
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
 
   lazy val scalatraCache = Project(
@@ -323,18 +307,19 @@ object ScalatraBuild extends Build {
     base = file("cache"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(),
-      description := "Scalatra Cache support"
-    )
-  ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
+      description := "Scalatra Cache support")) dependsOn (
+    scalatraCore % "compile;test->test;provided->provided"
+  )
 
   lazy val scalatraCacheGuava = Project(
     id = "scalatra-cache-guava",
     base = file("cache-guava"),
     settings = scalatraSettings ++ Seq(
       libraryDependencies ++= Seq(googleGuava, googleFindBugs),
-      description := "Scalatra Cache integration with Google Guava"
-    )
-  ) dependsOn (scalatraCore % "compile;test->test;provided->provided", scalatraCache % "compile;test->test;provided->provided")
+      description := "Scalatra Cache integration with Google Guava")
+  ) dependsOn (
+    scalatraCore % "compile;test->test;provided->provided", scalatraCache % "compile;test->test;provided->provided"
+  )
 
   lazy val scalatraExample = Project(
     id = "scalatra-example",
@@ -408,8 +393,9 @@ object ScalatraBuild extends Build {
     lazy val jUniversalChardet =
       "com.googlecode.juniversalchardet" % "juniversalchardet" % "1.0.3"
     lazy val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.1.3"
-    lazy val mimeUtil =
-      "eu.medsea.mimeutil" % "mime-util" % "2.1.3" exclude ("org.slf4j", "slf4j-log4j12") exclude ("log4j", "log4j")
+    lazy val mimeUtil = "eu.medsea.mimeutil" % "mime-util" % "2.1.3" exclude (
+      "org.slf4j", "slf4j-log4j12"
+    ) exclude ("log4j", "log4j")
     lazy val mockitoAll = "org.mockito" % "mockito-all" % "1.10.19"
     lazy val rl = "org.scalatra.rl" %% "rl" % "0.4.10"
     lazy val scalajCollection = "org.scalaj" %% "scalaj-collection" % "1.2"
@@ -423,8 +409,7 @@ object ScalatraBuild extends Build {
     lazy val specs2 = Seq(
       "org.specs2" %% "specs2-core",
       "org.specs2" %% "specs2-mock",
-      "org.specs2" %% "specs2-matcher-extra"
-    ).map(_ % specs2Version)
+      "org.specs2" %% "specs2-matcher-extra").map(_ % specs2Version)
     lazy val testJettyServlet =
       "org.eclipse.jetty" % "test-jetty-servlet" % jettyVersion
     lazy val testng =
@@ -472,8 +457,7 @@ object ScalatraBuild extends Build {
     licenses := Seq(
       ("BSD", new URL("http://github.com/scalatra/scalatra/raw/HEAD/LICENSE"))),
     pomExtra <<= (pomExtra, name, description) { (pom, name, desc) =>
-      pom ++ Group(
-        <scm>
+      pom ++ Group(<scm>
         <url>http://github.com/scalatra/scalatra</url>
         <connection>scm:git:git://github.com/scalatra/scalatra.git</connection>
       </scm>
@@ -553,8 +537,7 @@ object ScalatraBuild extends Build {
           <name>Kazuhiro Sera</name>
           <url>hhttps://github.com/seratch</url>
         </developer>
-      </developers>
-      )
+      </developers>)
     }
   )
 

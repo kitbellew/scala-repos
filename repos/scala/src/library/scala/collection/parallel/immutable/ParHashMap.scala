@@ -106,8 +106,7 @@ class ParHashMap[K, +V] private[immutable] (
             val sndlength = previousRemaining - fstlength
             Seq(
               new ParHashMapIterator(fst, fstlength),
-              new ParHashMapIterator(snd, sndlength)
-            )
+              new ParHashMapIterator(snd, sndlength))
           case _ =>
             // iterator of the collision map case
             val buff = triter.toBuffer
@@ -166,11 +165,9 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
 }
 
 private[parallel] abstract class HashMapCombiner[K, V]
-    extends scala.collection.parallel.BucketCombiner[
-      (K, V),
-      ParHashMap[K, V],
-      (K, V),
-      HashMapCombiner[K, V]](HashMapCombiner.rootsize) {
+    extends scala.collection.parallel.BucketCombiner[(K, V), ParHashMap[
+      K,
+      V], (K, V), HashMapCombiner[K, V]](HashMapCombiner.rootsize) {
 //self: EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]] =>
   import HashMapCombiner._
   val emptyTrie = HashMap.empty[K, V]

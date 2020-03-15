@@ -35,14 +35,12 @@ object MemoryArbitraries {
         .map(Producer.source[Memory, (K, V)](_)))
   implicit def arbService[K: Arbitrary, V: Arbitrary]
       : Arbitrary[MemoryService[K, V]] =
-    Arbitrary(
-      for {
-        k <- Gen.listOfN(100, Arbitrary.arbitrary[K])
-        v <- Gen.listOfN(100, Arbitrary.arbitrary[V])
-      } yield {
-        val m = new HashMap[K, V]() with MemoryService[K, V]
-        k.zip(v).foreach(p => m.put(p._1, p._2))
-        m
-      }
-    )
+    Arbitrary(for {
+      k <- Gen.listOfN(100, Arbitrary.arbitrary[K])
+      v <- Gen.listOfN(100, Arbitrary.arbitrary[V])
+    } yield {
+      val m = new HashMap[K, V]() with MemoryService[K, V]
+      k.zip(v).foreach(p => m.put(p._1, p._2))
+      m
+    })
 }

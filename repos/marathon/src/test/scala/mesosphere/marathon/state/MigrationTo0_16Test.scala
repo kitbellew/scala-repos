@@ -130,9 +130,8 @@ class MigrationTo0_16Test
           PathId("/test"),
           cmd = Some("true"),
           portDefinitions = PortDefinitions(1000, 1001),
-          versionInfo = AppDefinition.VersionInfo.OnlyVersion(
-            Timestamp(version))
-        )
+          versionInfo = AppDefinition.VersionInfo.OnlyVersion(Timestamp(
+            version)))
         with DeprecatedSerialization
 
     new T()

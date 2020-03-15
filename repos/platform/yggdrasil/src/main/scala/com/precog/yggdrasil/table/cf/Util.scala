@@ -668,64 +668,62 @@ object util {
 
   def DefinedConst(value: CValue) =
     CF1("builtin::ct::definedConst") { c =>
-      Some(
-        value match {
-          case CString(s) =>
-            new StrColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = s
-            }
-          case CBoolean(b) =>
-            new BoolColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = b
-            }
-          case CLong(l) =>
-            new LongColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = l
-            }
-          case CDouble(d) =>
-            new DoubleColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = d
-            }
-          case CNum(n) =>
-            new NumColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = n
-            }
-          case CDate(d) =>
-            new DateColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = d
-            }
-          case CPeriod(p) =>
-            new PeriodColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = p
-            }
-          case value: CArray[a] =>
-            new HomogeneousArrayColumn[a] {
-              val tpe = value.cType
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-              def apply(row: Int) = value.value
-            }
-          case CNull =>
-            new NullColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-            }
-          case CEmptyObject =>
-            new EmptyObjectColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-            }
-          case CEmptyArray =>
-            new EmptyArrayColumn {
-              def isDefinedAt(row: Int) = c.isDefinedAt(row)
-            }
-          case CUndefined => UndefinedColumn(c)
-        }
-      )
+      Some(value match {
+        case CString(s) =>
+          new StrColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = s
+          }
+        case CBoolean(b) =>
+          new BoolColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = b
+          }
+        case CLong(l) =>
+          new LongColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = l
+          }
+        case CDouble(d) =>
+          new DoubleColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = d
+          }
+        case CNum(n) =>
+          new NumColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = n
+          }
+        case CDate(d) =>
+          new DateColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = d
+          }
+        case CPeriod(p) =>
+          new PeriodColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = p
+          }
+        case value: CArray[a] =>
+          new HomogeneousArrayColumn[a] {
+            val tpe = value.cType
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+            def apply(row: Int) = value.value
+          }
+        case CNull =>
+          new NullColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+          }
+        case CEmptyObject =>
+          new EmptyObjectColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+          }
+        case CEmptyArray =>
+          new EmptyArrayColumn {
+            def isDefinedAt(row: Int) = c.isDefinedAt(row)
+          }
+        case CUndefined => UndefinedColumn(c)
+      })
     }
 
   def MaskedUnion(leftMask: BitSet) =

@@ -286,8 +286,7 @@ class ContinuousQueryManagerSuite
       expectedBehavior: ExpectedBehavior,
       expectedReturnedValue: Boolean = false,
       awaitTimeout: Span = null,
-      testBehaviorFor: Span = 4 seconds
-  ): Unit = {
+      testBehaviorFor: Span = 4 seconds): Unit = {
 
     def awaitTermFunc(): Unit = {
       if (awaitTimeout != null && awaitTimeout.toMillis > 0) {

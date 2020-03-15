@@ -107,11 +107,8 @@ trait LEvents {
     * @param channelId Optional channel ID that contains the [[Event]]
     */
   @DeveloperApi
-  def futureGet(
-      eventId: String,
-      appId: Int,
-      channelId: Option[Int]
-  )(implicit ec: ExecutionContext): Future[Option[Event]]
+  def futureGet(eventId: String, appId: Int, channelId: Option[Int])(
+      implicit ec: ExecutionContext): Future[Option[Event]]
 
   /** :: DeveloperApi ::
     * Delete an [[Event]] in a non-blocking fashion.
@@ -132,11 +129,8 @@ trait LEvents {
     * @param channelId Optional channel ID that contains the [[Event]]
     */
   @DeveloperApi
-  def futureDelete(
-      eventId: String,
-      appId: Int,
-      channelId: Option[Int]
-  )(implicit ec: ExecutionContext): Future[Boolean]
+  def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
+      implicit ec: ExecutionContext): Future[Boolean]
 
   /** :: DeveloperApi ::
     * Reads from database and returns a Future of Iterator of [[Event]]s.
@@ -175,8 +169,8 @@ trait LEvents {
       targetEntityType: Option[Option[String]] = None,
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
-      reversed: Option[Boolean] = None
-  )(implicit ec: ExecutionContext): Future[Iterator[Event]]
+      reversed: Option[Boolean] = None)(
+      implicit ec: ExecutionContext): Future[Iterator[Event]]
 
   /** Aggregate properties of entities based on these special events:
     * \$set, \$unset, \$delete events.
@@ -205,8 +199,7 @@ trait LEvents {
       startTime = startTime,
       untilTime = untilTime,
       entityType = Some(entityType),
-      eventNames = Some(LEventAggregator.eventNames)
-    ).map { eventIt =>
+      eventNames = Some(LEventAggregator.eventNames)).map { eventIt =>
       val dm = LEventAggregator.aggregateProperties(eventIt)
       if (required.isDefined) {
         dm.filter {
@@ -357,23 +350,22 @@ trait LEvents {
       implicit ec: ExecutionContext): Either[StorageError, Iterator[Event]] = {
     try {
       // return Either for legacy usage
-      Right(
-        Await.result(
-          futureFind(
-            appId = appId,
-            channelId = channelId,
-            startTime = startTime,
-            untilTime = untilTime,
-            entityType = entityType,
-            entityId = entityId,
-            eventNames = eventNames,
-            targetEntityType = targetEntityType,
-            targetEntityId = targetEntityId,
-            limit = limit,
-            reversed = reversed
-          ),
-          timeout
-        ))
+      Right(Await.result(
+        futureFind(
+          appId = appId,
+          channelId = channelId,
+          startTime = startTime,
+          untilTime = untilTime,
+          entityType = entityType,
+          entityId = entityId,
+          eventNames = eventNames,
+          targetEntityType = targetEntityType,
+          targetEntityId = targetEntityId,
+          limit = limit,
+          reversed = reversed
+        ),
+        timeout
+      ))
     } catch {
       case e: TimeoutException => Left(StorageError(s"${e}"))
       case e: Exception        => Left(StorageError(s"${e}"))

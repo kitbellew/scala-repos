@@ -16,14 +16,13 @@ class BackoffSupervisorDocSpec {
     //#backoff-stop
     val childProps = Props(classOf[EchoActor])
 
-    val supervisor = BackoffSupervisor.props(
-      Backoff.onStop(
-        childProps,
-        childName = "myEcho",
-        minBackoff = 3.seconds,
-        maxBackoff = 30.seconds,
-        randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
-      ))
+    val supervisor = BackoffSupervisor.props(Backoff.onStop(
+      childProps,
+      childName = "myEcho",
+      minBackoff = 3.seconds,
+      maxBackoff = 30.seconds,
+      randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+    ))
 
     system.actorOf(supervisor, name = "echoSupervisor")
     //#backoff-stop
@@ -36,14 +35,13 @@ class BackoffSupervisorDocSpec {
     //#backoff-fail
     val childProps = Props(classOf[EchoActor])
 
-    val supervisor = BackoffSupervisor.props(
-      Backoff.onFailure(
-        childProps,
-        childName = "myEcho",
-        minBackoff = 3.seconds,
-        maxBackoff = 30.seconds,
-        randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
-      ))
+    val supervisor = BackoffSupervisor.props(Backoff.onFailure(
+      childProps,
+      childName = "myEcho",
+      minBackoff = 3.seconds,
+      maxBackoff = 30.seconds,
+      randomFactor = 0.2 // adds 20% "noise" to vary the intervals slightly
+    ))
 
     system.actorOf(supervisor, name = "echoSupervisor")
     //#backoff-fail

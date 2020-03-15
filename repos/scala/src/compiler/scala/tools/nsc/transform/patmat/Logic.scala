@@ -673,8 +673,8 @@ trait ScalaLogic extends Interface with Logic with TreeAndTypeAnalysis {
         _ map symForEqualsTo
       }
 
-      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(
-        TypeConst(staticTpCheckable))
+      lazy val symForStaticTp: Option[Sym] = symForEqualsTo.get(TypeConst(
+        staticTpCheckable))
 
       // don't access until all potential equalities have been registered using registerEquality
       private lazy val equalitySyms = {

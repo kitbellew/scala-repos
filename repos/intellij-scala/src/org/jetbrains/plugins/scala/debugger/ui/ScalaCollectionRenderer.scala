@@ -164,12 +164,11 @@ object ScalaCollectionRenderer {
         }
       }
     }
-    labelRenderer.setLabelExpression(
-      new TextWithImportsImpl(
-        CodeFragmentKind.EXPRESSION,
-        expressionText,
-        "",
-        StdFileTypes.JAVA))
+    labelRenderer.setLabelExpression(new TextWithImportsImpl(
+      CodeFragmentKind.EXPRESSION,
+      expressionText,
+      "",
+      StdFileTypes.JAVA))
     labelRenderer
   }
 
@@ -288,8 +287,8 @@ object ScalaCollectionRenderer {
         case e: EvaluateException =>
           val errorChildren: util.ArrayList[DebuggerTreeNode] =
             new util.ArrayList[DebuggerTreeNode]
-          errorChildren.add(
-            nodeManager.createMessageNode(DebuggerBundle.message(
+          errorChildren.add(nodeManager.createMessageNode(
+            DebuggerBundle.message(
               "error.unable.to.evaluate.expression") + " " + e.getMessage))
           builder.setChildren(errorChildren)
       }

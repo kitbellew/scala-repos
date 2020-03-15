@@ -120,8 +120,8 @@ private[remote] object Remoting {
     def receive = {
       case RegisterTransportActor(props, name) ⇒
         sender() ! context.actorOf(
-          RARP(context.system)
-            .configureDispatcher(props.withDeploy(Deploy.local)),
+          RARP(context.system).configureDispatcher(props.withDeploy(
+            Deploy.local)),
           name)
     }
   }
@@ -160,8 +160,8 @@ private[remote] class Remoting(
     new EventPublisher(system, log, RemoteLifecycleEventsLogLevel)
 
   private def notifyError(msg: String, cause: Throwable): Unit =
-    eventPublisher.notifyListeners(
-      RemotingErrorEvent(new RemoteTransportException(msg, cause)))
+    eventPublisher.notifyListeners(RemotingErrorEvent(
+      new RemoteTransportException(msg, cause)))
 
   override def shutdown(): Future[Done] = {
     endpointManager match {
@@ -198,11 +198,10 @@ private[remote] class Remoting(
       case None ⇒
         log.info("Starting remoting")
         val manager: ActorRef = system.systemActorOf(
-          configureDispatcher(
-            Props(
-              classOf[EndpointManager],
-              provider.remoteSettings.config,
-              log)).withDeploy(Deploy.local),
+          configureDispatcher(Props(
+            classOf[EndpointManager],
+            provider.remoteSettings.config,
+            log)).withDeploy(Deploy.local),
           Remoting.EndpointManagerName)
         endpointManager = Some(manager)
 
@@ -900,11 +899,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     val writing =
       settings.UsePassiveConnections && !endpoints.hasWritableEndpointFor(
         handle.remoteAddress)
-    eventPublisher.notifyListeners(
-      AssociatedEvent(
-        handle.localAddress,
-        handle.remoteAddress,
-        inbound = true))
+    eventPublisher.notifyListeners(AssociatedEvent(
+      handle.localAddress,
+      handle.remoteAddress,
+      inbound = true))
     val endpoint = createEndpoint(
       handle.remoteAddress,
       handle.localAddress,
@@ -998,11 +996,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     if (pendingReadHandoffs.contains(takingOverFrom)) {
       val handle = pendingReadHandoffs(takingOverFrom)
       pendingReadHandoffs -= takingOverFrom
-      eventPublisher.notifyListeners(
-        AssociatedEvent(
-          handle.localAddress,
-          handle.remoteAddress,
-          inbound = true))
+      eventPublisher.notifyListeners(AssociatedEvent(
+        handle.localAddress,
+        handle.remoteAddress,
+        inbound = true))
       val endpoint = createEndpoint(
         handle.remoteAddress,
         handle.localAddress,
@@ -1042,42 +1039,38 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     // quarantine checks
 
     if (writing)
-      context.watch(
-        context.actorOf(
-          RARP(extendedSystem)
-            .configureDispatcher(
-              ReliableDeliverySupervisor.props(
-                handleOption,
-                localAddress,
-                remoteAddress,
-                refuseUid,
-                transport,
-                endpointSettings,
-                AkkaPduProtobufCodec,
-                receiveBuffers))
-            .withDeploy(Deploy.local),
-          "reliableEndpointWriter-" + AddressUrlEncoder(
-            remoteAddress) + "-" + endpointId.next()
-        ))
+      context.watch(context.actorOf(
+        RARP(extendedSystem)
+          .configureDispatcher(ReliableDeliverySupervisor.props(
+            handleOption,
+            localAddress,
+            remoteAddress,
+            refuseUid,
+            transport,
+            endpointSettings,
+            AkkaPduProtobufCodec,
+            receiveBuffers))
+          .withDeploy(Deploy.local),
+        "reliableEndpointWriter-" + AddressUrlEncoder(
+          remoteAddress) + "-" + endpointId.next()
+      ))
     else
-      context.watch(
-        context.actorOf(
-          RARP(extendedSystem)
-            .configureDispatcher(
-              EndpointWriter.props(
-                handleOption,
-                localAddress,
-                remoteAddress,
-                refuseUid,
-                transport,
-                endpointSettings,
-                AkkaPduProtobufCodec,
-                receiveBuffers,
-                reliableDeliverySupervisor = None))
-            .withDeploy(Deploy.local),
-          "endpointWriter-" + AddressUrlEncoder(
-            remoteAddress) + "-" + endpointId.next()
-        ))
+      context.watch(context.actorOf(
+        RARP(extendedSystem)
+          .configureDispatcher(EndpointWriter.props(
+            handleOption,
+            localAddress,
+            remoteAddress,
+            refuseUid,
+            transport,
+            endpointSettings,
+            AkkaPduProtobufCodec,
+            receiveBuffers,
+            reliableDeliverySupervisor = None))
+          .withDeploy(Deploy.local),
+        "endpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId
+          .next()
+      ))
   }
 
   private var normalShutdown = false

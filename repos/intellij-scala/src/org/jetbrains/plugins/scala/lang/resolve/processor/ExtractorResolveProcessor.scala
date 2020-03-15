@@ -81,14 +81,13 @@ class ExtractorResolveProcessor(
             case FakeCompanionClassOrCompanionClass(cl: ScClass)
                 if cl.tooBigForUnapply && cl.scalaLanguageLevel.exists(
                   _ >= Scala_2_11) =>
-              addResult(
-                new ScalaResolveResult(
-                  named,
-                  ScSubstitutor.empty,
-                  getImports(state),
-                  fromType = getFromType(state),
-                  parentElement = Option(obj),
-                  isAccessible = accessible))
+              addResult(new ScalaResolveResult(
+                named,
+                ScSubstitutor.empty,
+                getImports(state),
+                fromType = getFromType(state),
+                parentElement = Option(obj),
+                isAccessible = accessible))
             case _ =>
           }
         }

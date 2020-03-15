@@ -32,9 +32,7 @@ class ChannelRequestStatsHandlerTest extends FunSuite with MockitoSugar {
     val sr = new InMemoryStatsReceiver()
 
     def requestsEqual(requests: Seq[Float]) =
-      assert(
-        sr.stat("connection_requests")() == requests
-      )
+      assert(sr.stat("connection_requests")() == requests)
 
     val handler = new ChannelRequestStatsHandler(sr)
     requestsEqual(Seq.empty[Float])

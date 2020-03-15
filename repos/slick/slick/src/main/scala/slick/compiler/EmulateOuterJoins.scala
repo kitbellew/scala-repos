@@ -50,12 +50,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
                   Library.Exists.typed(
                     on.nodeType,
                     Filter(rgen2, assignFreshSymbols(right), on2)))),
-              Pure(
-                ProductNode(
-                  ConstArray(
-                    Ref(bgen),
-                    nullStructFor(
-                      right.nodeType.structural.asCollectionType.elementType))))
+              Pure(ProductNode(ConstArray(
+                Ref(bgen),
+                nullStructFor(
+                  right.nodeType.structural.asCollectionType.elementType))))
             ),
             true
           ).infer())
@@ -67,10 +65,9 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
           Bind(
             bgen,
             Join(rightGen, leftGen, right, left, JoinType.Left, on),
-            Pure(
-              ProductNode(ConstArray(
-                Select(Ref(bgen), ElementSymbol(2)),
-                Select(Ref(bgen), ElementSymbol(1)))))
+            Pure(ProductNode(ConstArray(
+              Select(Ref(bgen), ElementSymbol(2)),
+              Select(Ref(bgen), ElementSymbol(1)))))
           ).infer())
       case Join(leftGen, rightGen, left, right, JoinType.Outer, on) =>
         // as fullJoin bs on e => (as leftJoin bs on e) unionAll bs.filter(b => !exists(as.filter(a => e(a, b)))).map(b => (nulls, b))
@@ -96,12 +93,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
                   Library.Exists.typed(
                     on.nodeType,
                     Filter(lgen2, assignFreshSymbols(left), on2)))),
-              Pure(
-                ProductNode(
-                  ConstArray(
-                    nullStructFor(
-                      left.nodeType.structural.asCollectionType.elementType),
-                    Ref(bgen))))
+              Pure(ProductNode(ConstArray(
+                nullStructFor(
+                  left.nodeType.structural.asCollectionType.elementType),
+                Ref(bgen))))
             ),
             true
           ).infer())

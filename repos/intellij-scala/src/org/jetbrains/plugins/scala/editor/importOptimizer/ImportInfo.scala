@@ -327,19 +327,18 @@ object ImportInfo {
       }
     }
 
-    Some(
-      new ImportInfo(
-        prefixQualifier,
-        relativeQualifier,
-        allNames.toSet,
-        singleNames.toSet,
-        renames.toMap,
-        hiddenNames.toSet,
-        hasWildcard,
-        rootUsed,
-        isStableImport,
-        namesForWildcard.toSet,
-        hasNonUsedImplicits))
+    Some(new ImportInfo(
+      prefixQualifier,
+      relativeQualifier,
+      allNames.toSet,
+      singleNames.toSet,
+      renames.toMap,
+      hiddenNames.toSet,
+      hasWildcard,
+      rootUsed,
+      isStableImport,
+      namesForWildcard.toSet,
+      hasNonUsedImplicits))
   }
 
   def merge(infos: Seq[ImportInfo]): Option[ImportInfo] =

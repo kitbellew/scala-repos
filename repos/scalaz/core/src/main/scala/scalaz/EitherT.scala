@@ -65,8 +65,9 @@ final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   def bitraverse[G[_], C, D](f: A => G[C], g: B => G[D])(implicit
       F: Traverse[F],
       G: Applicative[G]): G[EitherT[F, C, D]] =
-    Applicative[G].map(F.traverse(run)(Bitraverse[\/].bitraverseF(f, g)))(
-      EitherT(_: F[C \/ D]))
+    Applicative[G]
+      .map(F.traverse(run)(Bitraverse[\/].bitraverseF(f, g)))(EitherT(
+        _: F[C \/ D]))
 
   /** Map on the right of this disjunction. */
   def map[C](f: B => C)(implicit F: Functor[F]): EitherT[F, A, C] =
@@ -421,8 +422,7 @@ private trait EitherTBindRec[F[_], E]
           _.fold(
             e => \/.right(\/.left(e)),
             _.fold(a => \/.left(a), b => \/.right(\/.right(b))))
-        })(a)
-    )
+        })(a))
 }
 
 private trait EitherTMonad[F[_], E]

@@ -578,11 +578,10 @@ private[akka] class EmptyLocalActorRef(
           d.sender
         ) // do NOT form endless loops, since deadLetters will resend!
       case _ if !specialHandle(message, sender) ⇒
-        eventStream.publish(
-          DeadLetter(
-            message,
-            if (sender eq Actor.noSender) provider.deadLetters else sender,
-            this))
+        eventStream.publish(DeadLetter(
+          message,
+          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          this))
       case _ ⇒
     }
 
@@ -590,11 +589,10 @@ private[akka] class EmptyLocalActorRef(
     msg match {
       case w: Watch ⇒
         if (w.watchee == this && w.watcher != this)
-          w.watcher.sendSystemMessage(
-            DeathWatchNotification(
-              w.watchee,
-              existenceConfirmed = false,
-              addressTerminated = false))
+          w.watcher.sendSystemMessage(DeathWatchNotification(
+            w.watchee,
+            existenceConfirmed = false,
+            addressTerminated = false))
         true
       case _: Unwatch ⇒ true // Just ignore
       case Identify(messageId) ⇒
@@ -606,19 +604,17 @@ private[akka] class EmptyLocalActorRef(
             if (!sel.wildcardFanOut)
               sender ! ActorIdentity(identify.messageId, None)
           case None ⇒
-            eventStream.publish(
-              DeadLetter(
-                sel.msg,
-                if (sender eq Actor.noSender) provider.deadLetters else sender,
-                this))
+            eventStream.publish(DeadLetter(
+              sel.msg,
+              if (sender eq Actor.noSender) provider.deadLetters else sender,
+              this))
         }
         true
       case m: DeadLetterSuppression ⇒
-        eventStream.publish(
-          SuppressedDeadLetter(
-            m,
-            if (sender eq Actor.noSender) provider.deadLetters else sender,
-            this))
+        eventStream.publish(SuppressedDeadLetter(
+          m,
+          if (sender eq Actor.noSender) provider.deadLetters else sender,
+          this))
         true
       case _ ⇒ false
     }
@@ -644,22 +640,20 @@ private[akka] class DeadLetterActorRef(
         if (!specialHandle(d.message, d.sender)) eventStream.publish(d)
       case _ ⇒
         if (!specialHandle(message, sender))
-          eventStream.publish(
-            DeadLetter(
-              message,
-              if (sender eq Actor.noSender) provider.deadLetters else sender,
-              this))
+          eventStream.publish(DeadLetter(
+            message,
+            if (sender eq Actor.noSender) provider.deadLetters else sender,
+            this))
     }
 
   override protected def specialHandle(msg: Any, sender: ActorRef): Boolean =
     msg match {
       case w: Watch ⇒
         if (w.watchee != this && w.watcher != this)
-          w.watcher.sendSystemMessage(
-            DeathWatchNotification(
-              w.watchee,
-              existenceConfirmed = false,
-              addressTerminated = false))
+          w.watcher.sendSystemMessage(DeathWatchNotification(
+            w.watchee,
+            existenceConfirmed = false,
+            addressTerminated = false))
         true
       case _ ⇒ super.specialHandle(msg, sender)
     }
@@ -795,10 +789,9 @@ private[akka] final class FunctionRef(
       case w: Watch ⇒ addWatcher(w.watchee, w.watcher)
       case u: Unwatch ⇒ remWatcher(u.watchee, u.watcher)
       case DeathWatchNotification(actorRef, _, _) ⇒
-        this.!(
-          Terminated(actorRef)(
-            existenceConfirmed = true,
-            addressTerminated = false))
+        this.!(Terminated(actorRef)(
+          existenceConfirmed = true,
+          addressTerminated = false))
       case _ ⇒ //ignore all other messages
     }
   }
@@ -828,11 +821,10 @@ private[akka] final class FunctionRef(
     if (watcher.asInstanceOf[ActorRefScope].isLocal == ifLocal)
       watcher
         .asInstanceOf[InternalActorRef]
-        .sendSystemMessage(
-          DeathWatchNotification(
-            this,
-            existenceConfirmed = true,
-            addressTerminated = false))
+        .sendSystemMessage(DeathWatchNotification(
+          this,
+          existenceConfirmed = true,
+          addressTerminated = false))
 
   private def unwatchWatched(watched: ActorRef): Unit =
     watched
@@ -856,17 +848,15 @@ private[akka] final class FunctionRef(
             if (!_watchedBy.compareAndSet(watchedBy, watchedBy + watcher))
               addWatcher(watchee, watcher) // try again
         } else if (!watcheeSelf && watcherSelf) {
-          publish(
-            Logging.Warning(
-              path.toString,
-              classOf[FunctionRef],
-              s"externally triggered watch from $watcher to $watchee is illegal on FunctionRef"))
+          publish(Logging.Warning(
+            path.toString,
+            classOf[FunctionRef],
+            s"externally triggered watch from $watcher to $watchee is illegal on FunctionRef"))
         } else {
-          publish(
-            Logging.Error(
-              path.toString,
-              classOf[FunctionRef],
-              s"BUG: illegal Watch($watchee,$watcher) for $this"))
+          publish(Logging.Error(
+            path.toString,
+            classOf[FunctionRef],
+            s"BUG: illegal Watch($watchee,$watcher) for $this"))
         }
     }
 
@@ -884,17 +874,15 @@ private[akka] final class FunctionRef(
             if (!_watchedBy.compareAndSet(watchedBy, watchedBy - watcher))
               remWatcher(watchee, watcher) // try again
         } else if (!watcheeSelf && watcherSelf) {
-          publish(
-            Logging.Warning(
-              path.toString,
-              classOf[FunctionRef],
-              s"externally triggered unwatch from $watcher to $watchee is illegal on FunctionRef"))
+          publish(Logging.Warning(
+            path.toString,
+            classOf[FunctionRef],
+            s"externally triggered unwatch from $watcher to $watchee is illegal on FunctionRef"))
         } else {
-          publish(
-            Logging.Error(
-              path.toString,
-              classOf[FunctionRef],
-              s"BUG: illegal Unwatch($watchee,$watcher) for $this"))
+          publish(Logging.Error(
+            path.toString,
+            classOf[FunctionRef],
+            s"BUG: illegal Unwatch($watchee,$watcher) for $this"))
         }
     }
   }

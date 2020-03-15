@@ -90,9 +90,9 @@ object ClientUtils extends Logging {
           .format(topics, shuffledBrokers),
         t)
     } else {
-      debug(
-        "Successfully fetched metadata for %d topic(s) %s"
-          .format(topics.size, topics))
+      debug("Successfully fetched metadata for %d topic(s) %s".format(
+        topics.size,
+        topics))
     }
     topicMetadataResponse
   }
@@ -153,17 +153,17 @@ object ClientUtils extends Logging {
             BlockingChannel.UseDefaultBufferSize,
             socketTimeoutMs)
           channel.connect()
-          debug(
-            "Created channel to broker %s:%d."
-              .format(channel.host, channel.port))
+          debug("Created channel to broker %s:%d.".format(
+            channel.host,
+            channel.port))
           true
         } catch {
           case e: Exception =>
             if (channel != null) channel.disconnect()
             channel = null
-            info(
-              "Error while creating channel to %s:%d."
-                .format(broker.host, broker.port))
+            info("Error while creating channel to %s:%d.".format(
+              broker.host,
+              broker.port))
             false
         }
       }
@@ -193,9 +193,10 @@ object ClientUtils extends Logging {
         try {
           if (!queryChannel.isConnected)
             queryChannel = channelToAnyBroker(zkUtils)
-          debug(
-            "Querying %s:%d to locate offset manager for %s."
-              .format(queryChannel.host, queryChannel.port, group))
+          debug("Querying %s:%d to locate offset manager for %s.".format(
+            queryChannel.host,
+            queryChannel.port,
+            group))
           queryChannel.send(GroupCoordinatorRequest(group))
           val response = queryChannel.receive()
           val consumerMetadataResponse = GroupCoordinatorResponse.readFrom(
@@ -216,9 +217,9 @@ object ClientUtils extends Logging {
           }
         } catch {
           case ioe: IOException =>
-            info(
-              "Failed to fetch consumer metadata from %s:%d."
-                .format(queryChannel.host, queryChannel.port))
+            info("Failed to fetch consumer metadata from %s:%d.".format(
+              queryChannel.host,
+              queryChannel.port))
             queryChannel.disconnect()
         }
       }

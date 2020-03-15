@@ -50,9 +50,10 @@ case class Cookie(name: String, value: String)(
     if (cookieOptions.domain.nonBlank && cookieOptions.domain != "localhost")
       sb.append("; Domain=")
         .append({
-          if (!cookieOptions.domain.startsWith(".")) "." + cookieOptions.domain
-          else cookieOptions.domain
-        }.toLowerCase(Locale.ENGLISH))
+            if (!cookieOptions.domain.startsWith("."))
+              "." + cookieOptions.domain
+            else cookieOptions.domain
+          }.toLowerCase(Locale.ENGLISH))
 
     val pth = cookieOptions.path
     if (pth.nonBlank) {

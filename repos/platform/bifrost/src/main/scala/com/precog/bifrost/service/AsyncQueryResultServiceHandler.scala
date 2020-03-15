@@ -41,9 +41,8 @@ import scalaz._
 class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
     executor: ExecutionContext,
     M: Monad[Future])
-    extends CustomHttpService[
-      ByteChunk,
-      APIKey => Future[HttpResponse[ByteChunk]]] {
+    extends CustomHttpService[ByteChunk, APIKey => Future[
+      HttpResponse[ByteChunk]]] {
   import JobManager._
   import JobState._
   import scalaz.syntax.monad._
@@ -71,13 +70,15 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
                       { _ => HttpResponse[ByteChunk](NotFound) },
                       {
                         case (mimeType0, data0) =>
-                          val mimeType =
-                            mimeType0 getOrElse (MimeTypes.application / MimeTypes.json)
-                          if (mimeType != (MimeTypes.application / MimeTypes.json)) {
-                            HttpResponse[ByteChunk](
-                              HttpStatus(
-                                InternalServerError,
-                                "Incompatible mime-type of query results."))
+                          val mimeType = mimeType0 getOrElse (
+                            MimeTypes.application / MimeTypes.json
+                          )
+                          if (mimeType != (
+                                MimeTypes.application / MimeTypes.json
+                              )) {
+                            HttpResponse[ByteChunk](HttpStatus(
+                              InternalServerError,
+                              "Incompatible mime-type of query results."))
                           } else {
                             val headers =
                               HttpHeaders.Empty + `Content-Type`(mimeType)
@@ -106,9 +107,8 @@ class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
               Future(HttpResponse[ByteChunk](NotFound))
           }
       } getOrElse {
-        Future(
-          HttpResponse[ByteChunk](
-            HttpStatus(BadRequest, "Missing required 'jobId parameter.")))
+        Future(HttpResponse[ByteChunk](
+          HttpStatus(BadRequest, "Missing required 'jobId parameter.")))
       }
     })
   }

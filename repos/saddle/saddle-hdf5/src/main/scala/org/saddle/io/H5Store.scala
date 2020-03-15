@@ -379,12 +379,12 @@ object H5Store {
 
   private def wrapHdf5Exception(e: HDF5LibraryException): H5StoreException = {
     H5Reg.closeAll()
-    H5StoreException(
-      """Exception: %s
+    H5StoreException("""Exception: %s
         |------------- HDF5 Stack --------------
         |%s
-        |---------------------------------------""".stripMargin
-        .format(e.getMessage, e.getStackTraceString))
+        |---------------------------------------""".stripMargin.format(
+      e.getMessage,
+      e.getStackTraceString))
   }
 
   private def openNode(parent_id: Int, path: String): Int = {

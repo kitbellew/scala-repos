@@ -22,8 +22,9 @@ trait MemberLookup extends base.MemberLookupBase {
       case Some(tpl) => Some(LinkToTpl(tpl))
       case None =>
         findTemplateMaybe(site) flatMap { inTpl =>
-          inTpl.members find (_.asInstanceOf[
-            EntityImpl].sym == sym) map (LinkToMember(_, inTpl))
+          inTpl.members find (_.asInstanceOf[EntityImpl].sym == sym) map (
+            LinkToMember(_, inTpl)
+          )
         }
     }
 

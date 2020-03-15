@@ -114,10 +114,9 @@ object TestLogger {
       logger: sbt.util.Logger,
       logTest: TestDefinition => sbt.util.Logger,
       buffered: Boolean): TestLogger =
-    new TestLogger(
-      new TestLogging(
-        wrap(logger),
-        tdef => contentLogger(logTest(tdef), buffered)))
+    new TestLogger(new TestLogging(
+      wrap(logger),
+      tdef => contentLogger(logTest(tdef), buffered)))
 
   @deprecated(
     "Doesn't provide for underlying resources to be released.",

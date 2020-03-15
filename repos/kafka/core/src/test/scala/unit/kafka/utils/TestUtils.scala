@@ -123,8 +123,8 @@ object TestUtils extends Logging {
       .continually(new File(parentDir, "kafka-" + random.nextInt(1000000)))
       .take(attempts)
       .find(_.mkdir())
-      .getOrElse(
-        sys.error(s"Failed to create directory after $attempts attempts"))
+      .getOrElse(sys.error(
+        s"Failed to create directory after $attempts attempts"))
     f.deleteOnExit()
     f
   }
@@ -522,12 +522,11 @@ object TestUtils extends Logging {
       certAlias: String): Properties = {
     val props = new Properties
     if (usesSslTransportLayer(securityProtocol))
-      props.putAll(
-        sslConfigs(
-          mode,
-          securityProtocol == SecurityProtocol.SSL,
-          trustStoreFile,
-          certAlias))
+      props.putAll(sslConfigs(
+        mode,
+        securityProtocol == SecurityProtocol.SSL,
+        trustStoreFile,
+        certAlias))
     props.put(
       CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,
       securityProtocol.name)
@@ -570,8 +569,7 @@ object TestUtils extends Logging {
     val defaultProps = Map(
       ProducerConfig.RETRY_BACKOFF_MS_CONFIG -> "100",
       ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG -> "200",
-      ProducerConfig.LINGER_MS_CONFIG -> lingerMs.toString
-    )
+      ProducerConfig.LINGER_MS_CONFIG -> lingerMs.toString)
 
     defaultProps.foreach {
       case (key, value) =>
@@ -856,28 +854,35 @@ object TestUtils extends Logging {
         case Some(l) =>
           if (newLeaderOpt.isDefined && newLeaderOpt.get == l) {
             trace(
-              "Expected new leader %d is elected for partition [%s,%d]"
-                .format(l, topic, partition))
+              "Expected new leader %d is elected for partition [%s,%d]".format(
+                l,
+                topic,
+                partition))
             isLeaderElectedOrChanged = true
           } else if (oldLeaderOpt.isDefined && oldLeaderOpt.get != l) {
             trace(
-              "Leader for partition [%s,%d] is changed from %d to %d"
-                .format(topic, partition, oldLeaderOpt.get, l))
+              "Leader for partition [%s,%d] is changed from %d to %d".format(
+                topic,
+                partition,
+                oldLeaderOpt.get,
+                l))
             isLeaderElectedOrChanged = true
           } else if (!oldLeaderOpt.isDefined) {
-            trace(
-              "Leader %d is elected for partition [%s,%d]"
-                .format(l, topic, partition))
+            trace("Leader %d is elected for partition [%s,%d]".format(
+              l,
+              topic,
+              partition))
             isLeaderElectedOrChanged = true
           } else {
-            trace(
-              "Current leader for partition [%s,%d] is %d"
-                .format(topic, partition, l))
+            trace("Current leader for partition [%s,%d] is %d".format(
+              topic,
+              partition,
+              l))
           }
         case None =>
-          trace(
-            "Leader for partition [%s,%d] is not elected yet"
-              .format(topic, partition))
+          trace("Leader for partition [%s,%d] is not elected yet".format(
+            topic,
+            partition))
       }
       Thread.sleep(timeoutMs.min(100L))
     }
@@ -1137,9 +1142,10 @@ object TestUtils extends Logging {
 
       producer.send(
         ms.map(m => new KeyedMessage[Int, String](topic, partition, m)): _*)
-      debug(
-        "Sent %d messages for partition [%s,%d]"
-          .format(ms.size, topic, partition))
+      debug("Sent %d messages for partition [%s,%d]".format(
+        ms.size,
+        topic,
+        partition))
       producer.close()
       ms.toList
     } else {
@@ -1167,8 +1173,7 @@ object TestUtils extends Logging {
     val producer = createNewProducer(
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,
-      requestTimeoutMs = 2000
-    )
+      requestTimeoutMs = 2000)
 
     val values = (0 until numMessages).map(x => s"test-$x")
 
@@ -1190,8 +1195,7 @@ object TestUtils extends Logging {
     val producer = createNewProducer(
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,
-      requestTimeoutMs = 2000
-    )
+      requestTimeoutMs = 2000)
     producer
       .send(new ProducerRecord(topic, topic.getBytes, message.getBytes))
       .get

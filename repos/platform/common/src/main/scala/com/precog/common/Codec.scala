@@ -293,7 +293,9 @@ object Codec {
         case FALSE_VALUE => false
         case invalid =>
           sys.error(
-            "Error reading boolean: expecting %d or %d, found %d" format (TRUE_VALUE, FALSE_VALUE, invalid))
+            "Error reading boolean: expecting %d or %d, found %d" format (
+              TRUE_VALUE, FALSE_VALUE, invalid
+            ))
       }
   }
 

@@ -24,15 +24,12 @@ class QueueResourceTest
   test("return well formatted JSON") {
     //given
     val app = AppDefinition(id = "app".toRootPath)
-    queue.list returns Seq(
-      QueuedTaskInfo(
-        app,
-        tasksLeftToLaunch = 23,
-        taskLaunchesInFlight = 0,
-        tasksLaunched = 0,
-        clock.now() + 100.seconds
-      )
-    )
+    queue.list returns Seq(QueuedTaskInfo(
+      app,
+      tasksLeftToLaunch = 23,
+      taskLaunchesInFlight = 0,
+      tasksLaunched = 0,
+      clock.now() + 100.seconds))
 
     //when
     val response = queueResource.index(auth.request)
@@ -56,15 +53,12 @@ class QueueResourceTest
   test("the generated info from the queue contains 0 if there is no delay") {
     //given
     val app = AppDefinition(id = "app".toRootPath)
-    queue.list returns Seq(
-      QueuedTaskInfo(
-        app,
-        tasksLeftToLaunch = 23,
-        taskLaunchesInFlight = 0,
-        tasksLaunched = 0,
-        backOffUntil = clock.now() - 100.seconds
-      )
-    )
+    queue.list returns Seq(QueuedTaskInfo(
+      app,
+      tasksLeftToLaunch = 23,
+      taskLaunchesInFlight = 0,
+      tasksLaunched = 0,
+      backOffUntil = clock.now() - 100.seconds))
     //when
     val response = queueResource.index(auth.request)
 
@@ -96,15 +90,12 @@ class QueueResourceTest
   test("application backoff can be removed from the taskqueue") {
     //given
     val app = AppDefinition(id = "app".toRootPath)
-    queue.list returns Seq(
-      QueuedTaskInfo(
-        app,
-        tasksLeftToLaunch = 23,
-        taskLaunchesInFlight = 0,
-        tasksLaunched = 0,
-        backOffUntil = clock.now() + 100.seconds
-      )
-    )
+    queue.list returns Seq(QueuedTaskInfo(
+      app,
+      tasksLeftToLaunch = 23,
+      taskLaunchesInFlight = 0,
+      tasksLaunched = 0,
+      backOffUntil = clock.now() + 100.seconds))
 
     //when
     val response = queueResource.resetDelay("app", auth.request)
@@ -177,12 +168,7 @@ class QueueResourceTest
     auth = new TestAuthFixture
     config = mock[MarathonConf]
     queue = mock[LaunchQueue]
-    queueResource = new QueueResource(
-      clock,
-      queue,
-      auth.auth,
-      auth.auth,
-      config
-    )
+    queueResource =
+      new QueueResource(clock, queue, auth.auth, auth.auth, config)
   }
 }

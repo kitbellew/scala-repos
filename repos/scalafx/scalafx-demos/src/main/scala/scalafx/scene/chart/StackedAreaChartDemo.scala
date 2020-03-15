@@ -62,6 +62,5 @@ object StackedAreaChartDemo extends JFXApp {
       name,
       ObservableBuffer(data.map {
         case (x, y) => XYChart.Data[Number, Number](x, y)
-      })
-    )
+      }))
 }

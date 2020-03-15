@@ -66,16 +66,14 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 
   // PRIVATE DATA
 
-  private var queues = Map[
-    CallingThreadMailbox,
-    Set[WeakReference[MessageQueue]]]()
+  private var queues = Map[CallingThreadMailbox, Set[
+    WeakReference[MessageQueue]]]()
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime
   private def gc(): Unit = {
-    queues = (Map.newBuilder[
-      CallingThreadMailbox,
-      Set[WeakReference[MessageQueue]]] /: queues) {
+    queues = (Map.newBuilder[CallingThreadMailbox, Set[
+      WeakReference[MessageQueue]]] /: queues) {
       case (m, (k, v)) ⇒
         val nv = v filter (_.get ne null)
         if (nv.isEmpty) m else m += (k -> nv)

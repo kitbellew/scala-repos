@@ -74,8 +74,7 @@ class HeapBalancerTest
       Activity(emptyCluster.set.map(Activity.Ok(_))),
       NullStatsReceiver,
       new NoBrokersAvailableException,
-      new Random
-    )
+      new Random)
     assert(b.status == Status.Closed)
   }
 
@@ -90,8 +89,7 @@ class HeapBalancerTest
         Activity(cluster.set map (Activity.Ok(_))),
         NullStatsReceiver,
         new NoBrokersAvailableException,
-        new Random
-      )
+        new Random)
       assert(b.status == status)
     }
   }
@@ -222,8 +220,7 @@ class HeapBalancerTest
       Activity.value(Set.empty),
       NullStatsReceiver,
       new NoBrokersAvailableException(heapBalancerEmptyGroup),
-      new Random
-    )
+      new Random)
     val exc = intercept[NoBrokersAvailableException] { Await.result(b()) }
     assert(exc.getMessage.contains(heapBalancerEmptyGroup))
   }
@@ -331,8 +328,7 @@ class HeapBalancerTest
       Activity(group.set map (Activity.Ok(_))),
       statsReceiver,
       new NoBrokersAvailableException,
-      new Random
-    )
+      new Random)
 
     b(); b(); b(); b()
 

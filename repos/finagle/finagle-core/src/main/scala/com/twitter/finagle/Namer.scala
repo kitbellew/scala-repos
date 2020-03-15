@@ -76,10 +76,9 @@ object Namer {
                 host,
                 IntegerString(port),
                 residual @ _*) =>
-            Some(
-              (
-                Address(new InetSocketAddress(host, port)),
-                Path.Utf8(residual: _*)))
+            Some((
+              Address(new InetSocketAddress(host, port)),
+              Path.Utf8(residual: _*)))
           case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
             Some(
               (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
@@ -114,8 +113,8 @@ object Namer {
         // back to the same Name.Bound.
         case InetPath(addr, residual) =>
           val id = path.take(path.size - residual.size)
-          Activity.value(
-            Leaf(Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
+          Activity.value(Leaf(
+            Name.Bound(Var.value(Addr.Bound(addr)), id, residual)))
 
         case FailPath()             => Activity.value(Fail)
         case NilPath()              => Activity.value(Empty)
@@ -168,15 +167,13 @@ object Namer {
     */
   def bind(
       lookup: Path => Activity[NameTree[Name]],
-      tree: NameTree[Path]
-  ): Activity[NameTree[Name.Bound]] =
+      tree: NameTree[Path]): Activity[NameTree[Name.Bound]] =
     bind(lookup, 0, None)(tree map { path => Name.Path(path) })
 
   private[this] def bindUnion(
       lookup: Path => Activity[NameTree[Name]],
       depth: Int,
-      trees: Seq[Weighted[Name]]
-  ): Activity[NameTree[Name.Bound]] = {
+      trees: Seq[Weighted[Name]]): Activity[NameTree[Name.Bound]] = {
 
     val weightedTreeVars
         : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {
@@ -212,8 +209,8 @@ object Namer {
       weight: Option[Double])(
       tree: NameTree[Name]): Activity[NameTree[Name.Bound]] =
     if (depth > MaxDepth)
-      Activity.exception(
-        new IllegalArgumentException("Max recursion level reached."))
+      Activity.exception(new IllegalArgumentException(
+        "Max recursion level reached."))
     else
       tree match {
         case Leaf(Name.Path(path)) =>

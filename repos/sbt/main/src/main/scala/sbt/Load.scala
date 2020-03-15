@@ -159,8 +159,8 @@ object Load {
     val compiled: ClassLoader => Seq[Setting[_]] =
       if (files.isEmpty || base == globalBase) const(Nil)
       else buildGlobalSettings(globalBase, files, config)
-    config.copy(injectSettings = config.injectSettings.copy(projectLoaded =
-      compiled))
+    config.copy(injectSettings = config.injectSettings
+      .copy(projectLoaded = compiled))
   }
   def buildGlobalSettings(
       base: File,
@@ -246,11 +246,10 @@ object Load {
     val loaded = resolveProjects(load(rootBase, s, config))
     val projects = loaded.units
     lazy val rootEval = lazyEval(loaded.units(loaded.root).unit)
-    val settings = finalTransforms(
-      buildConfigurations(
-        loaded,
-        getRootProject(projects),
-        config.injectSettings))
+    val settings = finalTransforms(buildConfigurations(
+      loaded,
+      getRootProject(projects),
+      config.injectSettings))
     val delegates = config.delegates(loaded)
     val data = Def.make(settings)(
       delegates,
@@ -379,8 +378,9 @@ object Load {
               val defineConfig: Seq[Setting[_]] =
                 for (c <- project.configurations)
                   yield ((configuration in (ref, ConfigKey(c.name))) :== c)
-              val builtin: Seq[Setting[_]] =
-                (thisProject :== project) +: (thisProjectRef :== ref) +: defineConfig
+              val builtin: Seq[Setting[_]] = (thisProject :== project) +: (
+                thisProjectRef :== ref
+              ) +: defineConfig
               val settings =
                 builtin ++ project.settings ++ injectSettings.project
               // map This to thisScope, Select(p) to mapRef(uri, rootProject, p)
@@ -392,7 +392,9 @@ object Load {
             buildScope,
             uri,
             rootProject,
-            pluginNotThis ++ pluginBuildSettings ++ (buildBase +: build.buildSettings))
+            pluginNotThis ++ pluginBuildSettings ++ (
+              buildBase +: build.buildSettings
+            ))
           buildSettings ++ projectSettings
       }
   }
@@ -1186,22 +1188,21 @@ object Load {
 
   /** These are the settings defined when loading a project "meta" build. */
   val autoPluginSettings: Seq[Setting[_]] = inScope(
-    GlobalScope in LocalRootProject)(
-    Seq(
-      sbtPlugin :== true,
-      pluginData := {
-        val prod = (exportedProducts in Configurations.Runtime).value
-        val cp = (fullClasspath in Configurations.Runtime).value
-        val opts = (scalacOptions in Configurations.Compile).value
-        PluginData(
-          removeEntries(cp, prod),
-          prod,
-          Some(fullResolvers.value),
-          Some(update.value),
-          opts)
-      },
-      onLoadMessage := ("Loading project definition from " + baseDirectory.value)
-    ))
+    GlobalScope in LocalRootProject)(Seq(
+    sbtPlugin :== true,
+    pluginData := {
+      val prod = (exportedProducts in Configurations.Runtime).value
+      val cp = (fullClasspath in Configurations.Runtime).value
+      val opts = (scalacOptions in Configurations.Compile).value
+      PluginData(
+        removeEntries(cp, prod),
+        prod,
+        Some(fullResolvers.value),
+        Some(update.value),
+        opts)
+    },
+    onLoadMessage := ("Loading project definition from " + baseDirectory.value)
+  ))
   private[this] def removeEntries(
       cp: Seq[Attributed[File]],
       remove: Seq[Attributed[File]]): Seq[Attributed[File]] = {
@@ -1213,14 +1214,14 @@ object Load {
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration =
     config.copy(injectSettings = config.injectSettings.copy(
       global = autoPluginSettings ++ config.injectSettings.global,
-      project = config.pluginManagement.inject ++ config.injectSettings.project
-    ))
+      project =
+        config.pluginManagement.inject ++ config.injectSettings.project))
   def activateGlobalPlugin(
       config: sbt.LoadBuildConfiguration): sbt.LoadBuildConfiguration =
     config.globalPlugin match {
       case Some(gp) =>
-        config.copy(injectSettings = config.injectSettings.copy(project =
-          gp.inject))
+        config.copy(injectSettings = config.injectSettings
+          .copy(project = gp.inject))
       case None => config
     }
   def plugins(

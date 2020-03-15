@@ -256,8 +256,7 @@ trait MatchCodeGen extends Interface {
         // val (prologue, cases) = stats span (s => !s.isInstanceOf[LabelDef])
         Block(
           scrutDef ++ caseDefs ++ catchAllDef,
-          LabelDef(matchEnd, List(matchRes), REF(matchRes))
-        )
+          LabelDef(matchEnd, List(matchRes), REF(matchRes)))
       }
 
       class OptimizedCasegen(matchEnd: Symbol, nextCase: Symbol)
@@ -272,7 +271,9 @@ trait MatchCodeGen extends Interface {
         // res: T
         // returns MatchMonad[T]
         def one(res: Tree): Tree =
-          matchEnd APPLY (res) // a jump to a case label is special-cased in typedApply
+          matchEnd APPLY (
+            res
+          ) // a jump to a case label is special-cased in typedApply
         protected def zero: Tree = nextCase APPLY ()
 
         // prev: MatchMonad[T]
@@ -286,8 +287,7 @@ trait MatchCodeGen extends Interface {
             // must be isEmpty and get as we don't control the target of the call (prev is an extractor call)
             ifThenElseZero(
               NOT(prevSym DOT vpmName.isEmpty),
-              Substitution(b, prevSym DOT vpmName.get)(next)
-            )
+              Substitution(b, prevSym DOT vpmName.get)(next))
           )
         }
 
@@ -306,8 +306,7 @@ trait MatchCodeGen extends Interface {
               // only emit a local val for `nextBinder` if it's actually referenced in `next`
               if (next.exists(_.symbol eq nextBinder))
                 BLOCK(ValDef(nextBinder, res), next)
-              else next
-            )
+              else next)
           ifThenElseZero(cond, rest)
         }
 
@@ -325,11 +324,7 @@ trait MatchCodeGen extends Interface {
             next: Tree): Tree =
           ifThenElseZero(
             cond,
-            BLOCK(
-              condSym === mkTRUE,
-              nextBinder === res,
-              next
-            ))
+            BLOCK(condSym === mkTRUE, nextBinder === res, next))
       }
 
     }

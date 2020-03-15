@@ -178,8 +178,7 @@ object PlayDocsPlugin extends AutoPlugin {
       scalaTwirlSourceManaged := target.value / "twirl" / "scala",
       managedSourceDirectories in Test ++= Seq(
         javaTwirlSourceManaged.value,
-        scalaTwirlSourceManaged.value
-      ),
+        scalaTwirlSourceManaged.value),
       // Need to ensure that templates in the Java docs get Java imports, and in the Scala docs get Scala imports
       sourceGenerators in Test <+= (
         javaManualSourceDirectories,
@@ -350,10 +349,9 @@ object PlayDocsPlugin extends AutoPlugin {
       .asInstanceOf[ServerWithStop]
 
     println()
-    println(
-      Colors.green(
-        "Documentation server started, you can now view the docs by going to http://" + server
-          .mainAddress()))
+    println(Colors.green(
+      "Documentation server started, you can now view the docs by going to http://" + server
+        .mainAddress()))
     println()
 
     waitForKey()

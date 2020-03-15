@@ -195,10 +195,7 @@ class DatasetAggregatorSuite extends QueryTest with SharedSQLContext {
   test("typed aggregation: complex input") {
     val ds = Seq(AggData(1, "one"), AggData(2, "two")).toDS()
 
-    checkDataset(
-      ds.select(ComplexBufferAgg.toColumn),
-      2
-    )
+    checkDataset(ds.select(ComplexBufferAgg.toColumn), 2)
 
     checkDataset(
       ds.select(expr("avg(a)").as[Double], ComplexBufferAgg.toColumn),

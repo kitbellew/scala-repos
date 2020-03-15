@@ -20,9 +20,8 @@ object BindersSpec extends Specification {
       subject.bind("key", uuid.toString) must be_==(Right(uuid))
     }
     "Fail on unparseable UUID" in {
-      subject.bind("key", "bad-uuid") must be_==(
-        Left(
-          "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid"))
+      subject.bind("key", "bad-uuid") must be_==(Left(
+        "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid"))
     }
   }
 
@@ -37,9 +36,8 @@ object BindersSpec extends Specification {
         Some(Right(uuid)))
     }
     "Fail on unparseable UUID" in {
-      subject.bind("key", Map("key" -> Seq("bad-uuid"))) must be_==(
-        Some(Left(
-          "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid")))
+      subject.bind("key", Map("key" -> Seq("bad-uuid"))) must be_==(Some(Left(
+        "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid")))
     }
   }
 
@@ -76,8 +74,7 @@ object BindersSpec extends Specification {
             if (x == "i" || x == "nantucket") x else sys.error(s"failed: ${x}")
           },
           identity,
-          (key, ex) => s"failed to parse ${key}: ${ex.getMessage}"
-        )
+          (key, ex) => s"failed to parse ${key}: ${ex.getMessage}")
       }
       val brokenSeqBinder = implicitly[QueryStringBindable[Seq[String]]]
       val err = s"""failed to parse q: failed: once

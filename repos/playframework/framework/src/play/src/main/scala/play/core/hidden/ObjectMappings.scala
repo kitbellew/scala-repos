@@ -105,10 +105,7 @@ class ObjectMapping1[R, A1](
     merge(field1.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1]
-          ))
+        applyConstraints(apply(values(0).asInstanceOf[A1]))
       }
     }
   }
@@ -173,10 +170,7 @@ class ObjectMapping2[R, A1, A2](
       case Left(errors) => Left(errors)
       case Right(values) => {
         applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2]
-          ))
+          apply(values(0).asInstanceOf[A1], values(1).asInstanceOf[A2]))
       }
     }
   }
@@ -245,12 +239,10 @@ class ObjectMapping3[R, A1, A2, A3](
     merge(field1.bind(data), field2.bind(data), field3.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3]))
       }
     }
   }
@@ -330,13 +322,11 @@ class ObjectMapping4[R, A1, A2, A3, A4](
       field4.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4]))
       }
     }
   }
@@ -423,14 +413,12 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
       field5.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5]))
       }
     }
   }
@@ -532,15 +520,14 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
       field6.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6]
+        ))
       }
     }
   }
@@ -569,8 +556,8 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping6[R, A1, A2, A3, A4, A5, A6] =
@@ -649,16 +636,15 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
       field7.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7]
+        ))
       }
     }
   }
@@ -689,8 +675,8 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -776,17 +762,16 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
       field8.bind(data)) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8]
+        ))
       }
     }
   }
@@ -815,11 +800,13 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
         val a7 = field7.unbindAndValidate(v7)
         val a8 = field8.unbindAndValidate(v8)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1) ->
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1
+        ) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -912,18 +899,17 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9]
+        ))
       }
     }
   }
@@ -953,11 +939,15 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
         val a8 = field8.unbindAndValidate(v8)
         val a9 = field9.unbindAndValidate(v9)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -1056,19 +1046,18 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10]
+        ))
       }
     }
   }
@@ -1100,11 +1089,15 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
         val a9 = field9.unbindAndValidate(v9)
         val a10 = field10.unbindAndValidate(v10)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1154,9 +1147,8 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
 
 class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
     apply: Function11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, R],
-    unapply: Function1[
-      R,
-      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -1211,20 +1203,19 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11]
+        ))
       }
     }
   }
@@ -1257,11 +1248,15 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
         val a10 = field10.unbindAndValidate(v10)
         val a11 = field11.unbindAndValidate(v11)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1313,9 +1308,8 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
 
 class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
     apply: Function12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, R],
-    unapply: Function1[
-      R,
-      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -1374,21 +1368,20 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12]
+        ))
       }
     }
   }
@@ -1422,11 +1415,15 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
         val a11 = field11.unbindAndValidate(v11)
         val a12 = field12.unbindAndValidate(v12)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1520,9 +1517,8 @@ class ObjectMapping13[
       A12,
       A13,
       R],
-    unapply: Function1[
-      R,
-      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -1585,22 +1581,21 @@ class ObjectMapping13[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13]
+        ))
       }
     }
   }
@@ -1636,11 +1631,15 @@ class ObjectMapping13[
         val a12 = field12.unbindAndValidate(v12)
         val a13 = field13.unbindAndValidate(v13)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping13[
@@ -1752,9 +1751,8 @@ class ObjectMapping14[
       A13,
       A14,
       R],
-    unapply: Function1[
-      R,
-      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -1821,23 +1819,22 @@ class ObjectMapping14[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14]
+        ))
       }
     }
   }
@@ -1876,11 +1873,15 @@ class ObjectMapping14[
         val a13 = field13.unbindAndValidate(v13)
         val a14 = field14.unbindAndValidate(v14)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping14[
@@ -1998,10 +1999,8 @@ class ObjectMapping15[
       A14,
       A15,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -2072,24 +2071,23 @@ class ObjectMapping15[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15]
+        ))
       }
     }
   }
@@ -2129,11 +2127,15 @@ class ObjectMapping15[
         val a14 = field14.unbindAndValidate(v14)
         val a15 = field15.unbindAndValidate(v15)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping15[
@@ -2257,26 +2259,8 @@ class ObjectMapping16[
       A15,
       A16,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16)]],
+    unapply: Function1[R, Option[
+      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -2351,25 +2335,24 @@ class ObjectMapping16[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16]
+        ))
       }
     }
   }
@@ -2441,11 +2424,15 @@ class ObjectMapping16[
         val a15 = field15.unbindAndValidate(v15)
         val a16 = field16.unbindAndValidate(v16)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping16[
@@ -2575,27 +2562,25 @@ class ObjectMapping17[
       A16,
       A17,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -2674,26 +2659,25 @@ class ObjectMapping17[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17]
+        ))
       }
     }
   }
@@ -2768,11 +2752,15 @@ class ObjectMapping17[
         val a16 = field16.unbindAndValidate(v16)
         val a17 = field17.unbindAndValidate(v17)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping17[
@@ -2908,28 +2896,26 @@ class ObjectMapping18[
       A17,
       A18,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17,
-            A18)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17,
+          A18)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -3012,27 +2998,26 @@ class ObjectMapping18[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17],
-            values(17).asInstanceOf[A18]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17],
+          values(17).asInstanceOf[A18]
+        ))
       }
     }
   }
@@ -3110,11 +3095,15 @@ class ObjectMapping18[
         val a17 = field17.unbindAndValidate(v17)
         val a18 = field18.unbindAndValidate(v18)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping18[
@@ -3256,29 +3245,27 @@ class ObjectMapping19[
       A18,
       A19,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17,
-            A18,
-            A19)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17,
+          A18,
+          A19)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -3365,28 +3352,27 @@ class ObjectMapping19[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17],
-            values(17).asInstanceOf[A18],
-            values(18).asInstanceOf[A19]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17],
+          values(17).asInstanceOf[A18],
+          values(18).asInstanceOf[A19]
+        ))
       }
     }
   }
@@ -3468,11 +3454,15 @@ class ObjectMapping19[
         val a18 = field18.unbindAndValidate(v18)
         val a19 = field19.unbindAndValidate(v19)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping19[
@@ -3620,30 +3610,28 @@ class ObjectMapping20[
       A19,
       A20,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17,
-            A18,
-            A19,
-            A20)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17,
+          A18,
+          A19,
+          A20)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -3734,29 +3722,28 @@ class ObjectMapping20[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17],
-            values(17).asInstanceOf[A18],
-            values(18).asInstanceOf[A19],
-            values(19).asInstanceOf[A20]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17],
+          values(17).asInstanceOf[A18],
+          values(18).asInstanceOf[A19],
+          values(19).asInstanceOf[A20]
+        ))
       }
     }
   }
@@ -3841,11 +3828,15 @@ class ObjectMapping20[
         val a19 = field19.unbindAndValidate(v19)
         val a20 = field20.unbindAndValidate(v20)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping20[
@@ -3999,31 +3990,29 @@ class ObjectMapping21[
       A20,
       A21,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17,
-            A18,
-            A19,
-            A20,
-            A21)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17,
+          A18,
+          A19,
+          A20,
+          A21)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -4118,30 +4107,29 @@ class ObjectMapping21[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17],
-            values(17).asInstanceOf[A18],
-            values(18).asInstanceOf[A19],
-            values(19).asInstanceOf[A20],
-            values(20).asInstanceOf[A21]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17],
+          values(17).asInstanceOf[A18],
+          values(18).asInstanceOf[A19],
+          values(19).asInstanceOf[A20],
+          values(20).asInstanceOf[A21]
+        ))
       }
     }
   }
@@ -4229,11 +4217,15 @@ class ObjectMapping21[
         val a20 = field20.unbindAndValidate(v20)
         val a21 = field21.unbindAndValidate(v21)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping21[
@@ -4393,32 +4385,30 @@ class ObjectMapping22[
       A21,
       A22,
       R],
-    unapply: Function1[
-      R,
-      Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16,
-            A17,
-            A18,
-            A19,
-            A20,
-            A21,
-            A22)]],
+    unapply: Function1[R, Option[
+      (
+          A1,
+          A2,
+          A3,
+          A4,
+          A5,
+          A6,
+          A7,
+          A8,
+          A9,
+          A10,
+          A11,
+          A12,
+          A13,
+          A14,
+          A15,
+          A16,
+          A17,
+          A18,
+          A19,
+          A20,
+          A21,
+          A22)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -4517,31 +4507,30 @@ class ObjectMapping22[
     ) match {
       case Left(errors) => Left(errors)
       case Right(values) => {
-        applyConstraints(
-          apply(
-            values(0).asInstanceOf[A1],
-            values(1).asInstanceOf[A2],
-            values(2).asInstanceOf[A3],
-            values(3).asInstanceOf[A4],
-            values(4).asInstanceOf[A5],
-            values(5).asInstanceOf[A6],
-            values(6).asInstanceOf[A7],
-            values(7).asInstanceOf[A8],
-            values(8).asInstanceOf[A9],
-            values(9).asInstanceOf[A10],
-            values(10).asInstanceOf[A11],
-            values(11).asInstanceOf[A12],
-            values(12).asInstanceOf[A13],
-            values(13).asInstanceOf[A14],
-            values(14).asInstanceOf[A15],
-            values(15).asInstanceOf[A16],
-            values(16).asInstanceOf[A17],
-            values(17).asInstanceOf[A18],
-            values(18).asInstanceOf[A19],
-            values(19).asInstanceOf[A20],
-            values(20).asInstanceOf[A21],
-            values(21).asInstanceOf[A22]
-          ))
+        applyConstraints(apply(
+          values(0).asInstanceOf[A1],
+          values(1).asInstanceOf[A2],
+          values(2).asInstanceOf[A3],
+          values(3).asInstanceOf[A4],
+          values(4).asInstanceOf[A5],
+          values(5).asInstanceOf[A6],
+          values(6).asInstanceOf[A7],
+          values(7).asInstanceOf[A8],
+          values(8).asInstanceOf[A9],
+          values(9).asInstanceOf[A10],
+          values(10).asInstanceOf[A11],
+          values(11).asInstanceOf[A12],
+          values(12).asInstanceOf[A13],
+          values(13).asInstanceOf[A14],
+          values(14).asInstanceOf[A15],
+          values(15).asInstanceOf[A16],
+          values(16).asInstanceOf[A17],
+          values(17).asInstanceOf[A18],
+          values(18).asInstanceOf[A19],
+          values(19).asInstanceOf[A20],
+          values(20).asInstanceOf[A21],
+          values(21).asInstanceOf[A22]
+        ))
       }
     }
   }
@@ -4633,11 +4622,15 @@ class ObjectMapping22[
         val a21 = field21.unbindAndValidate(v21)
         val a22 = field22.unbindAndValidate(v22)
 
-        (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1 ++ a22._1) ->
-          (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2 ++ a22._2)
+        (
+          a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1 ++ a22._1
+        ) ->
+          (
+            a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2 ++ a22._2
+          )
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(
+        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping22[

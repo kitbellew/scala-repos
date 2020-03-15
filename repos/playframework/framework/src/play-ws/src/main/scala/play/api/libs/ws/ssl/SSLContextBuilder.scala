@@ -127,12 +127,11 @@ class ConfigSSLContextBuilder(
 
   lazy val trustManagers: Seq[TrustManager] =
     if (info.trustManagerConfig.trustStoreConfigs.nonEmpty) {
-      Seq(
-        buildCompositeTrustManager(
-          info.trustManagerConfig,
-          info.checkRevocation.getOrElse(false),
-          revocationLists,
-          algorithmChecker))
+      Seq(buildCompositeTrustManager(
+        info.trustManagerConfig,
+        info.checkRevocation.getOrElse(false),
+        revocationLists,
+        algorithmChecker))
     } else Nil
 
   def buildSSLContext(
@@ -312,10 +311,9 @@ class ConfigSSLContextBuilder(
     // For the sake of completeness, set the static revocation list if it exists...
     revocationLists.map { crlList =>
       import scala.collection.JavaConverters._
-      pkixParameters.addCertStore(
-        CertStore.getInstance(
-          "Collection",
-          new CollectionCertStoreParameters(crlList.asJavaCollection)))
+      pkixParameters.addCertStore(CertStore.getInstance(
+        "Collection",
+        new CollectionCertStoreParameters(crlList.asJavaCollection)))
     }
 
     // Add the algorithm checker in here to check the certification path sequence (not including trust anchor)...

@@ -962,7 +962,9 @@ private[akka] class ActorSystemImpl(
                   toDie,
                   reason) ⇒
               "Terminating(" + reason + ")" +
-                (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
+                (toDie.toSeq.sorted mkString (
+                  "\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""
+                ))
             case x @ (ChildrenContainer.TerminatedChildrenContainer |
                 ChildrenContainer.EmptyChildrenContainer) ⇒
               x.toString

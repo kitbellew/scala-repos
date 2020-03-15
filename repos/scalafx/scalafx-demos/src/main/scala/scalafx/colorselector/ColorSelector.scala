@@ -152,8 +152,8 @@ object ColorSelector extends JFXApp {
     }
   }
 
-  currentColor.onChange(
-    rectangleRegion.setStyle("-fx-background-color: " + RgbFormatter
+  currentColor.onChange(rectangleRegion.setStyle(
+    "-fx-background-color: " + RgbFormatter
       .format(currentColor(), !this.chbDisableAlpha.selected.value)))
 
   val controlRed = new SliderControl("R") {

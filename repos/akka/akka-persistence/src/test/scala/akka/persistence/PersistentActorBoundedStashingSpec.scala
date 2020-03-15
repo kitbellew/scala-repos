@@ -72,8 +72,8 @@ class SteppingInMemPersistentActorBoundedStashingSpec(strategyConfig: String)
     with ImplicitSender {
 
   override def atStartup: Unit = {
-    system.eventStream.publish(
-      Mute(EventFilter.warning(pattern = ".*received dead letter from.*Cmd.*")))
+    system.eventStream.publish(Mute(
+      EventFilter.warning(pattern = ".*received dead letter from.*Cmd.*")))
   }
 
   override def beforeEach(): Unit =

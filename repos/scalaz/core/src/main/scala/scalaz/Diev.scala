@@ -141,22 +141,20 @@ trait DievImplementation {
         case (Coincidence(startPosition), Coincidence(endPosition)) => {
           construct(
             startPosition,
-            Vector(
-              (
-                intervals(startPosition)._1.min(correctedInterval._1),
-                intervals(endPosition)._2.max(correctedInterval._2))),
+            Vector((
+              intervals(startPosition)._1.min(correctedInterval._1),
+              intervals(endPosition)._2.max(correctedInterval._2))),
             endPosition + 1)
         }
         case (Coincidence(startPosition), between @ Between(_, after)) => {
           val adjacentAfterResult = between.adjacentAfter(correctedInterval)
           construct(
             startPosition,
-            Vector(
-              (
-                intervals(startPosition)._1.min(correctedInterval._1),
-                adjacentAfterResult
-                  .map(intervals(_)._2)
-                  .getOrElse(correctedInterval._2))),
+            Vector((
+              intervals(startPosition)._1.min(correctedInterval._1),
+              adjacentAfterResult
+                .map(intervals(_)._2)
+                .getOrElse(correctedInterval._2))),
             adjacentAfterResult
               .map(_ + 1)
               .orElse(after)
@@ -170,12 +168,11 @@ trait DievImplementation {
             correctedInterval)
           construct(
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),
-            Vector(
-              (
-                adjacentBeforeResult
-                  .map(intervals(_)._1)
-                  .getOrElse(correctedInterval._1),
-                intervals(endPosition)._2.max(correctedInterval._2))),
+            Vector((
+              adjacentBeforeResult
+                .map(intervals(_)._1)
+                .getOrElse(correctedInterval._1),
+              intervals(endPosition)._2.max(correctedInterval._2))),
             endPosition + 1
           )
         }
@@ -188,14 +185,13 @@ trait DievImplementation {
           val adjacentAfterResult = lateBound.adjacentAfter(correctedInterval)
           construct(
             adjacentBeforeResult.orElse(before.map(_ + 1)).getOrElse(0),
-            Vector(
-              (
-                adjacentBeforeResult
-                  .map(intervals(_)._1)
-                  .getOrElse(correctedInterval._1),
-                adjacentAfterResult
-                  .map(intervals(_)._2)
-                  .getOrElse(correctedInterval._2))),
+            Vector((
+              adjacentBeforeResult
+                .map(intervals(_)._1)
+                .getOrElse(correctedInterval._1),
+              adjacentAfterResult
+                .map(intervals(_)._2)
+                .getOrElse(correctedInterval._2))),
             adjacentAfterResult
               .map(_ + 1)
               .orElse(otherAfter)

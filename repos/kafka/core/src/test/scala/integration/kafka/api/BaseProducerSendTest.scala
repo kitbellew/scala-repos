@@ -377,13 +377,12 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       val now = System.currentTimeMillis()
       val responses =
         for (i <- 1 to numRecords)
-          yield producer.send(
-            new ProducerRecord[Array[Byte], Array[Byte]](
-              topic,
-              partition,
-              now,
-              null,
-              ("value" + i).getBytes))
+          yield producer.send(new ProducerRecord[Array[Byte], Array[Byte]](
+            topic,
+            partition,
+            now,
+            null,
+            ("value" + i).getBytes))
       val futures = responses.toList
       futures.foreach(_.get)
       for (future <- futures)
@@ -600,13 +599,12 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
     val producer = createProducer(brokerList = brokerList)
     try {
       producer
-        .send(
-          new ProducerRecord(
-            topic,
-            0,
-            System.currentTimeMillis() - 1001,
-            "key".getBytes,
-            "value".getBytes))
+        .send(new ProducerRecord(
+          topic,
+          0,
+          System.currentTimeMillis() - 1001,
+          "key".getBytes,
+          "value".getBytes))
         .get()
       fail("Should throw CorruptedRecordException")
     } catch {
@@ -622,13 +620,12 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       props = Some(producerProps))
     try {
       compressedProducer
-        .send(
-          new ProducerRecord(
-            topic,
-            0,
-            System.currentTimeMillis() - 1001,
-            "key".getBytes,
-            "value".getBytes))
+        .send(new ProducerRecord(
+          topic,
+          0,
+          System.currentTimeMillis() - 1001,
+          "key".getBytes,
+          "value".getBytes))
         .get()
       fail("Should throw CorruptedRecordException")
     } catch {

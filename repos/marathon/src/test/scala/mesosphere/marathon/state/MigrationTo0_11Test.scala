@@ -84,8 +84,7 @@ class MigrationTo0_11Test
       versionInfo = versionInfo)
     val groupWithApp = emptyGroup.copy(
       apps = Set(app),
-      version = versionInfo.version
-    )
+      version = versionInfo.version)
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")
@@ -136,8 +135,7 @@ class MigrationTo0_11Test
       versionInfo = onlyVersion(3))
     val groupWithApp = emptyGroup.copy(
       apps = Set(appV3Scaling),
-      version = Timestamp(3)
-    )
+      version = Timestamp(3))
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")
@@ -198,8 +196,7 @@ class MigrationTo0_11Test
 
     val groupWithApp = emptyGroup.copy(
       apps = Set(appV3Scaling),
-      version = Timestamp(3)
-    )
+      version = Timestamp(3))
     f.groupRepo.store(f.groupRepo.zkRootName, groupWithApp).futureValue
 
     When("migrating")

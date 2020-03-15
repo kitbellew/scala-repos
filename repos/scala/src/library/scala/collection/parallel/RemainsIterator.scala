@@ -700,9 +700,8 @@ trait SeqSplitter[+T]
 
         // appended last in self with first in rest if necessary
         if (appendMiddle)
-          selfs.init ++ Seq(
-            selfs.last.appendParSeq[U, SeqSplitter[U]](
-              thats.head)) ++ thats.tail
+          selfs.init ++ Seq(selfs.last.appendParSeq[U, SeqSplitter[U]](
+            thats.head)) ++ thats.tail
         else selfs ++ thats
       } else curr.asInstanceOf[SeqSplitter[U]].psplit(sizes: _*)
   }

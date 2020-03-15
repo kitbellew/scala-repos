@@ -120,9 +120,9 @@ class Log(
 
   val topicAndPartition: TopicAndPartition = Log.parseTopicPartitionName(dir)
 
-  info(
-    "Completed load of log %s with log end offset %d"
-      .format(name, logEndOffset))
+  info("Completed load of log %s with log end offset %d".format(
+    name,
+    logEndOffset))
 
   val tags = Map(
     "topic" -> topicAndPartition.topic,
@@ -183,9 +183,10 @@ class Log(
         if (baseName.getPath.endsWith(IndexFileSuffix)) { file.delete() }
         else if (baseName.getPath.endsWith(LogFileSuffix)) {
           // delete the index
-          val index = new File(
-            CoreUtils
-              .replaceSuffix(baseName.getPath, LogFileSuffix, IndexFileSuffix))
+          val index = new File(CoreUtils.replaceSuffix(
+            baseName.getPath,
+            LogFileSuffix,
+            IndexFileSuffix))
           index.delete()
           swapFiles += file
         }
@@ -318,9 +319,9 @@ class Log(
     val unflushed = logSegments(this.recoveryPoint, Long.MaxValue).iterator
     while (unflushed.hasNext) {
       val curr = unflushed.next
-      info(
-        "Recovering unflushed segment %d in log %s."
-          .format(curr.baseOffset, name))
+      info("Recovering unflushed segment %d in log %s.".format(
+        curr.baseOffset,
+        name))
       val truncatedBytes =
         try { curr.recover(config.maxMessageSize) }
         catch {
@@ -594,9 +595,11 @@ class Log(
       startOffset: Long,
       maxLength: Int,
       maxOffset: Option[Long] = None): FetchDataInfo = {
-    trace(
-      "Reading %d bytes from offset %d in log %s of length %d bytes"
-        .format(maxLength, startOffset, name, size))
+    trace("Reading %d bytes from offset %d in log %s of length %d bytes".format(
+      maxLength,
+      startOffset,
+      name,
+      size))
 
     // Because we don't use lock for reading, the synchronization is a little bit tricky.
     // We create the local variables to avoid race conditions with updates to the log.
@@ -867,17 +870,16 @@ class Log(
     lock synchronized {
       val segmentsToDelete = logSegments.toList
       segmentsToDelete.foreach(deleteSegment(_))
-      addSegment(
-        new LogSegment(
-          dir,
-          newOffset,
-          indexIntervalBytes = config.indexInterval,
-          maxIndexSize = config.maxIndexSize,
-          rollJitterMs = config.randomSegmentJitter,
-          time = time,
-          fileAlreadyExists = false,
-          initFileSize = initFileSize,
-          preallocate = config.preallocate))
+      addSegment(new LogSegment(
+        dir,
+        newOffset,
+        indexIntervalBytes = config.indexInterval,
+        maxIndexSize = config.maxIndexSize,
+        rollJitterMs = config.randomSegmentJitter,
+        time = time,
+        fileAlreadyExists = false,
+        initFileSize = initFileSize,
+        preallocate = config.preallocate))
       updateLogEndOffset(newOffset)
       this.recoveryPoint = math.min(newOffset, this.recoveryPoint)
     }
@@ -929,9 +931,9 @@ class Log(
     * @param segment The log segment to schedule for deletion
     */
   private def deleteSegment(segment: LogSegment) {
-    info(
-      "Scheduling log segment %d for log %s for deletion."
-        .format(segment.baseOffset, name))
+    info("Scheduling log segment %d for log %s for deletion.".format(
+      segment.baseOffset,
+      name))
     lock synchronized {
       segments.remove(segment.baseOffset)
       asyncDeleteSegment(segment)

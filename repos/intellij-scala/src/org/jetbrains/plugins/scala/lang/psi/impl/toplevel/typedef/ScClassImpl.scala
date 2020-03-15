@@ -187,8 +187,7 @@ class ScClassImpl private (
         "def canEqual(that: Any): Boolean = ???",
         "def equals(that: Any): Boolean = ???",
         "def productArity: Int = ???",
-        "def productElement(n: Int): Any = ???"
-      )
+        "def productElement(n: Int): Any = ???")
 
       caseClassGeneratedFunctions.foreach { funText =>
         val fun: ScFunction = ScalaPsiElementFactory.createMethodWithContext(
@@ -229,11 +228,10 @@ class ScClassImpl private (
     val buffer = new ArrayBuffer[PsiMethod]
     buffer ++= functions
       .filter(_.isConstructor)
-      .flatMap(
-        _.getFunctionWrappers(
-          isStatic = false,
-          isInterface = false,
-          Some(this)))
+      .flatMap(_.getFunctionWrappers(
+        isStatic = false,
+        isInterface = false,
+        Some(this)))
     constructor match {
       case Some(x) => buffer ++= x.getFunctionWrappers
       case _       =>

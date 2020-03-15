@@ -68,11 +68,10 @@ class BytecodeTest extends ClearAfterClass {
       """.stripMargin
 
     val run = new compiler.Run()
-    run.compileSources(
-      List(
-        new BatchSourceFile("AnnotA.java", annotA),
-        new BatchSourceFile("AnnotB.java", annotB),
-        new BatchSourceFile("Test.scala", scalaSrc)))
+    run.compileSources(List(
+      new BatchSourceFile("AnnotA.java", annotA),
+      new BatchSourceFile("AnnotB.java", annotB),
+      new BatchSourceFile("Test.scala", scalaSrc)))
     val outDir = compiler.settings.outputDirs.getSingleOutput.get
     val outfiles = (for (f <- outDir.iterator if !f.isDirectory)
       yield (f.name, f.toByteArray)).toList

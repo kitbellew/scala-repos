@@ -69,10 +69,9 @@ class LocalActorRefProviderSpec
       val rootGuardian = system.actorSelection("/")
       val deadLettersPath = system.deadLetters.path
 
-      filterEvents(
-        EventFilter.warning(
-          s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) { rootGuardian ! message }
+      filterEvents(EventFilter.warning(
+        s"unhandled message from Actor[$deadLettersPath]: $message",
+        occurrences = 1)) { rootGuardian ! message }
     }
   }
 
@@ -83,10 +82,9 @@ class LocalActorRefProviderSpec
       val userGuardian = system.actorSelection("/user")
       val deadLettersPath = system.deadLetters.path
 
-      filterEvents(
-        EventFilter.warning(
-          s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) { userGuardian ! message }
+      filterEvents(EventFilter.warning(
+        s"unhandled message from Actor[$deadLettersPath]: $message",
+        occurrences = 1)) { userGuardian ! message }
     }
   }
 
@@ -97,10 +95,9 @@ class LocalActorRefProviderSpec
       val systemGuardian = system.actorSelection("/system")
       val deadLettersPath = system.deadLetters.path
 
-      filterEvents(
-        EventFilter.warning(
-          s"unhandled message from Actor[$deadLettersPath]: $message",
-          occurrences = 1)) { systemGuardian ! message }
+      filterEvents(EventFilter.warning(
+        s"unhandled message from Actor[$deadLettersPath]: $message",
+        occurrences = 1)) { systemGuardian ! message }
     }
   }
 
@@ -143,12 +140,11 @@ class LocalActorRefProviderSpec
         implicit val timeout = Timeout(5 seconds)
         val actors =
           for (j ← 1 to 4)
-            yield Future(
-              system.actorOf(
-                Props(new Actor {
-                  def receive = { case _ ⇒ }
-                }),
-                address))
+            yield Future(system.actorOf(
+              Props(new Actor {
+                def receive = { case _ ⇒ }
+              }),
+              address))
         val set = Set() ++ actors.map(a ⇒
           Await.ready(a, timeout.duration).value match {
             case Some(Success(a: ActorRef)) ⇒ 1

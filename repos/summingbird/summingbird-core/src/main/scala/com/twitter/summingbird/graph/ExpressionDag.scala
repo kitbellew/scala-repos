@@ -238,8 +238,8 @@ sealed trait ExpressionDag[N[_]] { self =>
     */
   def idOf[T](node: N[T]): Id[T] =
     find(node)
-      .getOrElse(
-        sys.error("could not get node: %s\n from %s".format(node, this)))
+      .getOrElse(sys.error(
+        "could not get node: %s\n from %s".format(node, this)))
 
   /**
     * ensure the given literal node is present in the Dag
@@ -281,8 +281,8 @@ sealed trait ExpressionDag[N[_]] { self =>
     * this dag or a parent.
     */
   def evaluate[T](id: Id[T]): N[T] =
-    evaluateOption(id).getOrElse(
-      sys.error("Could not evaluate: %s\nin %s".format(id, this)))
+    evaluateOption(id).getOrElse(sys.error(
+      "Could not evaluate: %s\nin %s".format(id, this)))
 
   def evaluateOption[T](id: Id[T]): Option[N[T]] =
     idToN.getOrElseUpdate(

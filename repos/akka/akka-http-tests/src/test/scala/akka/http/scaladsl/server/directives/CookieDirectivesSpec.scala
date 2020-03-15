@@ -41,13 +41,11 @@ class CookieDirectivesSpec extends RoutingSpec {
         deleteCookie("myCookie", "test.com") { completeOk }
       } ~> check {
         status shouldEqual OK
-        header[`Set-Cookie`] shouldEqual Some(
-          `Set-Cookie`(
-            HttpCookie(
-              "myCookie",
-              "deleted",
-              expires = deletedTimeStamp,
-              domain = Some("test.com"))))
+        header[`Set-Cookie`] shouldEqual Some(`Set-Cookie`(HttpCookie(
+          "myCookie",
+          "deleted",
+          expires = deletedTimeStamp,
+          domain = Some("test.com"))))
       }
     }
 

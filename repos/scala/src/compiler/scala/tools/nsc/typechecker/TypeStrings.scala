@@ -29,9 +29,7 @@ trait StructuredTypeStrings extends DestructureTypes {
       rdelim: String,
       labels: Boolean) {
     def join(elems: String*): String =
-      (
-        if (elems.isEmpty) "" else elems.mkString(ldelim, mdelim, rdelim)
-      )
+      (if (elems.isEmpty) "" else elems.mkString(ldelim, mdelim, rdelim))
   }
   val NoGrouping = Grouping("", "", "", labels = false)
   val ListGrouping = Grouping("(", ", ", ")", labels = false)
@@ -205,8 +203,7 @@ trait TypeStrings {
 
     scalaName(
       if (enclClass == null || isAnonClass(clazz) || !enclMatch) name
-      else enclClass.getName + "." + (name stripPrefix enclPre)
-    )
+      else enclClass.getName + "." + (name stripPrefix enclPre))
   }
   def anyClass(x: Any): JClass = if (x == null) null else x.getClass
 

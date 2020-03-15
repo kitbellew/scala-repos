@@ -77,9 +77,8 @@ object CompilerData {
               libraries.find(_.getName == sdkName).map(_.getProperties)
             }
           } else {
-            Option(
-              model.getProject.getSdkReferencesTable.getSdkReference(
-                JpsJavaSdkType.INSTANCE))
+            Option(model.getProject.getSdkReferencesTable.getSdkReference(
+              JpsJavaSdkType.INSTANCE))
               .flatMap(references => Option(references.resolve))
               .map(_.getProperties)
           }
@@ -162,9 +161,10 @@ object CompilerData {
       case Seq(file) =>
         Right(file)
       case Seq(duplicates @ _*) =>
-        Left(
-          "Multiple '%s*%s' files (%s)"
-            .format(prefix, suffix, duplicates.map(_.getName).mkString(", ")))
+        Left("Multiple '%s*%s' files (%s)".format(
+          prefix,
+          suffix,
+          duplicates.map(_.getName).mkString(", ")))
     }
   }
 }

@@ -48,12 +48,11 @@ object CompilerBenchmark {
         println("Detach profiler and press Return")
         Console.readLine()
       }*/
-      println(
-        String.format(
-          "Creating: %1$7.3f ms, toNode: %2$7.3f ms, compiling: %3$7.3f ms",
-          t1.asInstanceOf[AnyRef],
-          t2.asInstanceOf[AnyRef],
-          t3.asInstanceOf[AnyRef]))
+      println(String.format(
+        "Creating: %1$7.3f ms, toNode: %2$7.3f ms, compiling: %3$7.3f ms",
+        t1.asInstanceOf[AnyRef],
+        t2.asInstanceOf[AnyRef],
+        t3.asInstanceOf[AnyRef]))
       compileMS = t3
     }
 
@@ -61,12 +60,11 @@ object CompilerBenchmark {
     phases.foreach { p =>
       val pms = (phaseNanos(p.name)(0) / 1000000.0 / COUNT_COMPILE)
       val percentage = pms / compileMS * 100.0
-      println(
-        String.format(
-          "Phase %1$25s: %2$7.3f ms, %3$7.3f %%",
-          p.name,
-          pms.asInstanceOf[AnyRef],
-          percentage.asInstanceOf[AnyRef]))
+      println(String.format(
+        "Phase %1$25s: %2$7.3f ms, %3$7.3f %%",
+        p.name,
+        pms.asInstanceOf[AnyRef],
+        percentage.asInstanceOf[AnyRef]))
     }
   }
 

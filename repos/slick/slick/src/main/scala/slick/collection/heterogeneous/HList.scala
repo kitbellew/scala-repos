@@ -156,8 +156,9 @@ sealed abstract class HList extends Product {
 final object HList {
   import syntax._
 
-  final class HListShape[Level <: ShapeLevel, M <: HList, U <: HList: ClassTag,
-  P <: HList](val shapes: Seq[Shape[_, _, _, _]])
+  final class HListShape[
+      Level <: ShapeLevel, M <: HList, U <: HList: ClassTag, P <: HList](
+      val shapes: Seq[Shape[_, _, _, _]])
       extends MappedScalaProductShape[Level, HList, M, U, P] {
     def buildValue(elems: IndexedSeq[Any]) =
       elems.foldRight(HNil: HList)(_ :: _)
@@ -191,15 +192,11 @@ final object HListMacros {
           case (z, _) =>
             AppliedTypeTree(Ident(_Succ), List(z))
         }
-        ctx.Expr(
-          Apply(
-            TypeApply(
-              Select(ctx.prefix.tree, TermName("_unsafeApply")),
-              List(tt)
-            ),
-            List(t)
-          )
-        )
+        ctx.Expr(Apply(
+          TypeApply(
+            Select(ctx.prefix.tree, TermName("_unsafeApply")),
+            List(tt)),
+          List(t)))
       case _ => reify(ctx.prefix.splice.productElement(n.splice))
     }
   }

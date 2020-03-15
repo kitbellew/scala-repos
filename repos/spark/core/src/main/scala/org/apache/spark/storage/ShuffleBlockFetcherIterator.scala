@@ -156,11 +156,10 @@ private[spark] final class ShuffleBlockFetcherIterator(
   }
 
   private[this] def sendRequest(req: FetchRequest) {
-    logDebug(
-      "Sending request for %d blocks (%s) from %s".format(
-        req.blocks.size,
-        Utils.bytesToString(req.size),
-        req.address.hostPort))
+    logDebug("Sending request for %d blocks (%s) from %s".format(
+      req.blocks.size,
+      Utils.bytesToString(req.size),
+      req.address.hostPort))
     bytesInFlight += req.size
     reqsInFlight += 1
 
@@ -189,13 +188,12 @@ private[spark] final class ShuffleBlockFetcherIterator(
               // This needs to be released after use.
               buf.retain()
               remainingBlocks -= blockId
-              results.put(
-                new SuccessFetchResult(
-                  BlockId(blockId),
-                  address,
-                  sizeMap(blockId),
-                  buf,
-                  remainingBlocks.isEmpty))
+              results.put(new SuccessFetchResult(
+                BlockId(blockId),
+                address,
+                sizeMap(blockId),
+                buf,
+                remainingBlocks.isEmpty))
               logDebug("remainingBlocks: " + remainingBlocks)
             }
           }
@@ -284,13 +282,12 @@ private[spark] final class ShuffleBlockFetcherIterator(
         shuffleMetrics.incLocalBlocksFetched(1)
         shuffleMetrics.incLocalBytesRead(buf.size)
         buf.retain()
-        results.put(
-          new SuccessFetchResult(
-            blockId,
-            blockManager.blockManagerId,
-            0,
-            buf,
-            false))
+        results.put(new SuccessFetchResult(
+          blockId,
+          blockManager.blockManagerId,
+          0,
+          buf,
+          false))
       } catch {
         case e: Exception =>
           // If we see an exception, stop immediately.

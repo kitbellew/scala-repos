@@ -40,8 +40,7 @@ private[appinfo] object TaskForStatistics {
             TaskState.TASK_STAGING),
           healthy = healths.nonEmpty && healths.forall(_.alive),
           unhealthy = healths.exists(!_.alive),
-          maybeLifeTime = maybeTaskLifeTime
-        )
+          maybeLifeTime = maybeTaskLifeTime)
       }
     }
 

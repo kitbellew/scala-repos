@@ -45,8 +45,9 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -85,8 +86,9 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -130,12 +132,11 @@ private object PartitionAssignorTest extends Logging {
   private case class StaticSubscriptionInfo(streamCounts: Map[String, Int])
       extends SubscriptionInfo {
     def registrationString =
-      Json.encode(
-        Map(
-          "version" -> 1,
-          "subscription" -> streamCounts,
-          "pattern" -> "static",
-          "timestamp" -> 1234.toString))
+      Json.encode(Map(
+        "version" -> 1,
+        "subscription" -> streamCounts,
+        "pattern" -> "static",
+        "timestamp" -> 1234.toString))
 
     override def toString = { "Stream counts: " + streamCounts }
   }
@@ -146,11 +147,10 @@ private object PartitionAssignorTest extends Logging {
       isWhitelist: Boolean)
       extends SubscriptionInfo {
     def registrationString =
-      Json.encode(
-        Map(
-          "version" -> 1,
-          "subscription" -> Map(regex -> streamCount),
-          "pattern" -> (if (isWhitelist) "white_list" else "black_list")))
+      Json.encode(Map(
+        "version" -> 1,
+        "subscription" -> Map(regex -> streamCount),
+        "pattern" -> (if (isWhitelist) "white_list" else "black_list")))
 
     override def toString = {
       "\"%s\":%d (%s)".format(
@@ -189,18 +189,18 @@ private object PartitionAssignorTest extends Logging {
     scenario.subscriptions.foreach {
       case (consumerId, subscriptionInfo) =>
         EasyMock
-          .expect(
-            zkClient.readData(
-              "/consumers/%s/ids/%s".format(scenario.group, consumerId),
-              new Stat()))
+          .expect(zkClient.readData(
+            "/consumers/%s/ids/%s".format(scenario.group, consumerId),
+            new Stat()))
           .andReturn(subscriptionInfo.registrationString)
         EasyMock.expectLastCall().anyTimes()
     }
 
     scenario.topicPartitionCounts.foreach {
       case (topic, partitionCount) =>
-        val replicaAssignment = Map((0 until partitionCount).map(partition =>
-          (partition.toString, Seq(0))): _*)
+        val replicaAssignment = Map(
+          (0 until partitionCount).map(partition =>
+            (partition.toString, Seq(0))): _*)
         EasyMock
           .expect(
             zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
@@ -210,8 +210,8 @@ private object PartitionAssignorTest extends Logging {
 
     EasyMock
       .expect(zkUtils.zkClient.getChildren("/brokers/topics"))
-      .andReturn(
-        java.util.Arrays.asList(scenario.topicPartitionCounts.keys.toSeq: _*))
+      .andReturn(java.util.Arrays.asList(
+        scenario.topicPartitionCounts.keys.toSeq: _*))
     EasyMock.expectLastCall().anyTimes()
 
     zkUtils

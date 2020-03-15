@@ -102,8 +102,7 @@ trait CValueGenerators extends ArbitraryBigDecimal {
       CNum,
       CNull,
       CEmptyObject,
-      CEmptyArray
-    )
+      CEmptyArray)
 
   // FIXME: TODO Should this provide some form for CDate?
   def jvalue(ctype: CType): Gen[JValue] =

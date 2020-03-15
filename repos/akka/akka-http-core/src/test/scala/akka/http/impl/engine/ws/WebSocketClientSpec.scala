@@ -347,8 +347,8 @@ class WebSocketClientSpec
     val random = new Random(0)
     def settings =
       ClientConnectionSettings(system)
-        .withUserAgentHeader(
-          Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
+        .withUserAgentHeader(Some(
+          `User-Agent`(List(ProductVersion("akka-http", "test")))))
         .withWebsocketRandomFactory(() ⇒ random)
 
     def targetUri: Uri = "ws://example.org/ws"

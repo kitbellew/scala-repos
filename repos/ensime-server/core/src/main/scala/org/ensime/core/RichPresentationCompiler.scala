@@ -102,11 +102,8 @@ trait RichCompilerControl
       memberName: Option[String],
       signatureString: Option[String]): Option[DocSigPair] =
     askOption {
-      symbolMemberByName(
-        typeFullName,
-        memberName,
-        signatureString
-      ).flatMap(docSignature(_, None))
+      symbolMemberByName(typeFullName, memberName, signatureString).flatMap(
+        docSignature(_, None))
     }.flatten
 
   def askSymbolInfoAt(p: Position): Option[SymbolInfo] =
@@ -116,9 +113,8 @@ trait RichCompilerControl
       fqn: String,
       memberName: Option[String],
       signatureString: Option[String]): Option[SymbolInfo] =
-    askOption(
-      symbolMemberByName(fqn, memberName, signatureString).map(
-        SymbolInfo(_))).flatten
+    askOption(symbolMemberByName(fqn, memberName, signatureString).map(
+      SymbolInfo(_))).flatten
 
   def askTypeInfoAt(p: Position): Option[TypeInfo] =
     askOption(typeAt(p).map(TypeInfo(_, PosNeededYes))).flatten
@@ -137,8 +133,7 @@ trait RichCompilerControl
               members,
               firstName,
               matchEntire = true,
-              caseSens = true
-            ).map { _.sym }
+              caseSens = true).map { _.sym }
             val restOfPath = nameSegs.drop(1).mkString(".")
             val syms = roots.flatMap { symbolByName(restOfPath, _) }
             syms.find(_.tpe != NoType).map { sym => TypeInfo(sym.tpe) }
@@ -211,15 +206,13 @@ trait RichCompilerControl
       p: RangePosition,
       tpes: List[SourceSymbol]): SymbolDesignations =
     askOption(
-      new SemanticHighlighting(this).symbolDesignationsInRegion(p, tpes)
-    ).getOrElse(SymbolDesignations(new File("."), List.empty))
+      new SemanticHighlighting(this).symbolDesignationsInRegion(p, tpes))
+      .getOrElse(SymbolDesignations(new File("."), List.empty))
 
   def askImplicitInfoInRegion(p: Position): ImplicitInfos =
     ImplicitInfos(
-      askOption(
-        new ImplicitAnalyzer(this).implicitDetails(p)
-      ).getOrElse(List.empty)
-    )
+      askOption(new ImplicitAnalyzer(this).implicitDetails(p))
+        .getOrElse(List.empty))
 
   def askNotifyWhenReady(): Unit = ask(setNotifyWhenReady)
 
@@ -242,20 +235,15 @@ trait RichCompilerControl
       case SourceFileInfo(f, None, None) =>
         new BatchSourceFile(
           new PlainFile(f.getPath),
-          f.readString()(charset).toCharArray
-        )
+          f.readString()(charset).toCharArray)
 
       case SourceFileInfo(f, Some(contents), None) =>
-        new BatchSourceFile(
-          new PlainFile(f.getPath),
-          contents.toCharArray
-        )
+        new BatchSourceFile(new PlainFile(f.getPath), contents.toCharArray)
 
       case SourceFileInfo(f, None, Some(contentsIn)) =>
         new BatchSourceFile(
           new PlainFile(f.getPath),
-          contentsIn.readString()(charset).toCharArray
-        )
+          contentsIn.readString()(charset).toCharArray)
     }
 
   def askLinkPos(sym: Symbol, path: AbstractFile): Option[Position] =
@@ -273,10 +261,8 @@ class RichPresentationCompiler(
     val richReporter: Reporter,
     val parent: ActorRef,
     val indexer: ActorRef,
-    val search: SearchService
-)(implicit
-    val vfs: EnsimeVFS
-) extends Global(settings, richReporter)
+    val search: SearchService)(implicit val vfs: EnsimeVFS)
+    extends Global(settings, richReporter)
     with ModelBuilders
     with RichCompilerControl
     with RefactoringImpl
@@ -338,13 +324,7 @@ class RichPresentationCompiler(
         inherited: Boolean,
         viaView: Symbol): Unit = {
       try {
-        val m = new TypeMember(
-          sym,
-          sym.tpe,
-          sym.isPublic,
-          inherited,
-          viaView
-        )
+        val m = new TypeMember(sym, sym.tpe, sym.isPublic, inherited, viaView)
         members(sym) = m
       } catch {
         case e: Throwable =>
@@ -389,8 +369,7 @@ class RichPresentationCompiler(
       TypeInfo(tpe, PosNeededAvail),
       prepareSortedInterfaceInfo(
         typePublicMembers(tpe.asInstanceOf[Type]),
-        parents)
-    )
+        parents))
   }
 
   protected def inspectTypeAt(p: Position): Option[TypeInspectInfo] = {
@@ -399,10 +378,7 @@ class RichPresentationCompiler(
         val members = getMembersForTypeAt(tpe, p)
         val parents = tpe.parents
         val preparedMembers = prepareSortedInterfaceInfo(members, parents)
-        new TypeInspectInfo(
-          TypeInfo(tpe, PosNeededAvail),
-          preparedMembers
-        )
+        new TypeInspectInfo(TypeInfo(tpe, PosNeededAvail), preparedMembers)
       })
       .orElse {
         logger.error("ERROR: Failed to get any type information :(  ")
@@ -447,15 +423,16 @@ class RichPresentationCompiler(
   protected def symbolMemberByName(
       fqn: String,
       memberName: Option[String],
-      signatureString: Option[String]
-  ): Option[Symbol] = {
+      signatureString: Option[String]): Option[Symbol] = {
     symbolByName(fqn).flatMap { owner =>
       memberName
         .flatMap { rawName =>
           val module = rawName.endsWith("$")
           val nm = if (module) rawName.dropRight(1) else rawName
           val candidates = owner.info.members.filter { s =>
-            s.nameString == nm && ((module && s.isModule) || (!module && (!s.isModule || s.hasPackageFlag)))
+            s.nameString == nm && ((module && s.isModule) || (
+              !module && (!s.isModule || s.hasPackageFlag)
+            ))
           }
           val exact = signatureString.flatMap { s =>
             candidates.find(_.signatureString == s)
@@ -559,12 +536,7 @@ class RichPresentationCompiler(
             _.pos match {
               case p: RangePosition => p
               case p =>
-                new RangePosition(
-                  p.source,
-                  p.point,
-                  p.point,
-                  p.point
-                )
+                new RangePosition(p.source, p.point, p.point, p.point)
             }
           }
         }

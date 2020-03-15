@@ -337,10 +337,9 @@ class Flags extends ModifierFlags {
     flagsToString(OverloadedFlagsMask & FlagsNotPickled))
 
   /** These flags are pickled */
-  final val PickledFlags = (
-    (InitialFlags & ~FlagsNotPickled)
-      | notPRIVATE // for value class constructors (SI-6601), and private members referenced
-    // in @inline-marked methods publicized in SuperAccessors (see SI-6608, e6b4204604)
+  final val PickledFlags = ((InitialFlags & ~FlagsNotPickled)
+    | notPRIVATE // for value class constructors (SI-6601), and private members referenced
+  // in @inline-marked methods publicized in SuperAccessors (see SI-6608, e6b4204604)
   )
 
   /** If we have a top-level class or module
@@ -354,10 +353,9 @@ class Flags extends ModifierFlags {
     (paramFlags & DefaultGetterFlags) | SYNTHETIC | METHOD | DEFAULTPARAM
 
   def getterFlags(fieldFlags: Long): Long =
-    ACCESSOR + (
-      if ((fieldFlags & MUTABLE) != 0) fieldFlags & ~MUTABLE & ~PRESUPER
-      else fieldFlags & ~PRESUPER | STABLE
-    )
+    ACCESSOR + (if ((fieldFlags & MUTABLE) != 0)
+                  fieldFlags & ~MUTABLE & ~PRESUPER
+                else fieldFlags & ~PRESUPER | STABLE)
 
   def setterFlags(fieldFlags: Long): Long =
     getterFlags(fieldFlags) & ~STABLE & ~CASEACCESSOR
@@ -500,16 +498,14 @@ class Flags extends ModifierFlags {
     }
 
   private def accessString(flags: Long, privateWithin: String) =
-    (
-      if (privateWithin == "") {
-        if ((flags & PrivateLocal) == PrivateLocal) "private[this]"
-        else if ((flags & ProtectedLocal) == ProtectedLocal) "protected[this]"
-        else if ((flags & PRIVATE) != 0) "private"
-        else if ((flags & PROTECTED) != 0) "protected"
-        else ""
-      } else if ((flags & PROTECTED) != 0) "protected[" + privateWithin + "]"
-      else "private[" + privateWithin + "]"
-    )
+    (if (privateWithin == "") {
+       if ((flags & PrivateLocal) == PrivateLocal) "private[this]"
+       else if ((flags & ProtectedLocal) == ProtectedLocal) "protected[this]"
+       else if ((flags & PRIVATE) != 0) "private"
+       else if ((flags & PROTECTED) != 0) "protected"
+       else ""
+     } else if ((flags & PROTECTED) != 0) "protected[" + privateWithin + "]"
+     else "private[" + privateWithin + "]")
 
   @deprecated("Use flagString on the flag-carrying member", "2.10.0")
   private[scala] def flagsToString(

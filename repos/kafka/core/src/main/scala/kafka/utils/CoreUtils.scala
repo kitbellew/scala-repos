@@ -222,8 +222,9 @@ object CoreUtils extends Logging {
   def replaceSuffix(s: String, oldSuffix: String, newSuffix: String): String = {
     if (!s.endsWith(oldSuffix))
       throw new IllegalArgumentException(
-        "Expected string to end with '%s' but string is '%s'"
-          .format(oldSuffix, s))
+        "Expected string to end with '%s' but string is '%s'".format(
+          oldSuffix,
+          s))
     s.substring(0, s.length - oldSuffix.length) + newSuffix
   }
 
@@ -272,7 +273,9 @@ object CoreUtils extends Logging {
        * encode the C1 codes, but we do to be safe.
        */
       case c
-          if ((c >= '\u0000' && c <= '\u001f') || (c >= '\u007f' && c <= '\u009f')) =>
+          if (
+            (c >= '\u0000' && c <= '\u001f') || (c >= '\u007f' && c <= '\u009f')
+          ) =>
         "\\u%04x".format(c: Int)
       case c => c
     }.mkString

@@ -921,8 +921,7 @@ package play.api.mvc {
           fromMap(
             decodeSetCookieHeader(headerValue)
               .groupBy(_.name)
-              .mapValues(_.head)
-          )
+              .mapValues(_.head))
         case None => fromMap(Map.empty)
       }
 
@@ -932,8 +931,7 @@ package play.api.mvc {
           fromMap(
             decodeCookieHeader(headerValue)
               .groupBy(_.name)
-              .mapValues(_.head)
-          )
+              .mapValues(_.head))
         case None => fromMap(Map.empty)
       }
 
@@ -1019,12 +1017,7 @@ package play.api.mvc {
         config.serverDecoder
           .decode(cookieHeader)
           .asScala
-          .map { cookie =>
-            Cookie(
-              cookie.name,
-              cookie.value
-            )
-          }
+          .map { cookie => Cookie(cookie.name, cookie.value) }
           .toSeq
       }.getOrElse {
         logger.debug(

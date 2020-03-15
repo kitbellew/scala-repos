@@ -98,13 +98,12 @@ class ProducerCompressionTest(compression: String)
       val now = System.currentTimeMillis()
       val responses =
         for (message <- messages)
-          yield producer.send(
-            new ProducerRecord[Array[Byte], Array[Byte]](
-              topic,
-              null,
-              now,
-              null,
-              message))
+          yield producer.send(new ProducerRecord[Array[Byte], Array[Byte]](
+            topic,
+            null,
+            now,
+            null,
+            message))
       val futures = responses.toList
       for ((future, offset) <- futures zip (0 until numRecords)) {
         assertEquals(offset.toLong, future.get.offset)

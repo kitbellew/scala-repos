@@ -209,7 +209,9 @@ case class TestResults(res: List[Tracker]) {
           .mkString("\n")
     }
 
-    "Ran " + testCnt + " tests and " + assertCnt + " asserts in " + (end - start) / 1000L + " seconds" + append
+    "Ran " + testCnt + " tests and " + assertCnt + " asserts in " + (
+      end - start
+    ) / 1000L + " seconds" + append
   }
 }
 

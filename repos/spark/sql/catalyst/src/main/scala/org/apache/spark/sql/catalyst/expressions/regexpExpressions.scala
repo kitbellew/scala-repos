@@ -84,8 +84,8 @@ case class Like(left: Expression, right: Expression)
     if (right.foldable) {
       val rVal = right.eval()
       if (rVal != null) {
-        val regexStr = StringEscapeUtils.escapeJava(
-          escape(rVal.asInstanceOf[UTF8String].toString()))
+        val regexStr = StringEscapeUtils.escapeJava(escape(
+          rVal.asInstanceOf[UTF8String].toString()))
         ctx.addMutableState(
           patternClass,
           pattern,

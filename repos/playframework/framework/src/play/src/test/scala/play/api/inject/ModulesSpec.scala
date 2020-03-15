@@ -18,9 +18,7 @@ class ModulesSpec extends Specification {
     "load simple Guice modules" in {
       val env = Environment.simple()
       val conf = Configuration(
-        "play.modules.enabled" -> Seq(
-          classOf[PlainGuiceModule].getName
-        ))
+        "play.modules.enabled" -> Seq(classOf[PlainGuiceModule].getName))
 
       val located: Seq[AnyRef] = Modules.locate(env, conf)
       located.size must_== 1
@@ -32,9 +30,7 @@ class ModulesSpec extends Specification {
     "load Guice modules that take a Scala Environment and Configuration" in {
       val env = Environment.simple()
       val conf = Configuration(
-        "play.modules.enabled" -> Seq(
-          classOf[ScalaGuiceModule].getName
-        ))
+        "play.modules.enabled" -> Seq(classOf[ScalaGuiceModule].getName))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
       located.head must beLike {
@@ -47,9 +43,7 @@ class ModulesSpec extends Specification {
     "load Guice modules that take a Java Environment and Configuration" in {
       val env = Environment.simple()
       val conf = Configuration(
-        "play.modules.enabled" -> Seq(
-          classOf[JavaGuiceModule].getName
-        ))
+        "play.modules.enabled" -> Seq(classOf[JavaGuiceModule].getName))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
       located.head must beLike {

@@ -90,8 +90,8 @@ private[http4] class HttpClientDispatcher(
 
           case invalid =>
             // relies on GenSerialClientDispatcher satisfying `p`
-            Future.exception(
-              new IllegalArgumentException(s"invalid message '$invalid'"))
+            Future.exception(new IllegalArgumentException(
+              s"invalid message '$invalid'"))
         }
 
         Future.join(reqStreamF, repF).unit

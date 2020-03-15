@@ -574,12 +574,10 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
       val list = (scalaFiles ++ javaFiles).toList
 
       if (scalacDebugging && !list.isEmpty)
-        log(
-          "Compiling source file%s: %s to %s".format(
-            plural(list),
-            list.mkString(", "),
-            getDestination.toString
-          ))
+        log("Compiling source file%s: %s to %s".format(
+          plural(list),
+          list.mkString(", "),
+          getDestination.toString))
       else if (!list.isEmpty) {
         val str =
           if (javaFiles.isEmpty)

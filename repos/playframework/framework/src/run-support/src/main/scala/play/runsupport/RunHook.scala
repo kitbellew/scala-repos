@@ -44,8 +44,7 @@ case class RunHookCompositeThrowable(val throwables: Set[Throwable])
         throwables
           .map(t =>
             t + "\n" + t.getStackTrace.take(10).++("...").mkString("\n"))
-          .mkString("\n\n")
-    )
+          .mkString("\n\n"))
 
 object RunHook {
 

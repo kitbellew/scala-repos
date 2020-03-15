@@ -138,10 +138,9 @@ case class FetchRequest(
       foldedTopics +
         shortStringLength(topic) +
         4 + /* partition count */
-      partitionFetchInfos.size * (
-        4 + /* partition id */
-        8 + /* offset */
-        4 /* fetch size */
+      partitionFetchInfos.size * (4 + /* partition id */
+      8 + /* offset */
+      4 /* fetch size */
       )
     })
   }
@@ -175,10 +174,9 @@ case class FetchRequest(
       fetchResponsePartitionData,
       fetchRequest.versionId)
     // Magic value does not matter here because the message set is empty
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new FetchResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new FetchResponseSend(request.connectionId, errorResponse)))
   }
 
   override def describe(details: Boolean): String = {

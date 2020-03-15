@@ -63,8 +63,8 @@ trait ColumnExtensionMethods[B1, P1] extends Any with ExtensionMethods[B1, P1] {
       om.column(
         Library.In,
         n,
-        ProductNode(ConstArray.from(seq.map(v =>
-          LiteralNode(implicitly[TypedType[B1]], v, vol = true)))))
+        ProductNode(ConstArray.from(
+          seq.map(v => LiteralNode(implicitly[TypedType[B1]], v, vol = true)))))
 
   def between[P2, P3, R](start: Rep[P2], end: Rep[P3])(
       implicit om: o#arg[B1, P2]#arg[B1, P3]#to[Boolean, R]) =
@@ -94,10 +94,9 @@ final class OptionColumnExtensionMethods[B1](val c: Rep[Option[B1]])
     * inside a subquery that cannot be fused), otherwise the exception is thrown during query
     * compilation. */
   def get: Rep[B1] =
-    Rep.forNode[B1](
-      GetOrElse(
-        c.toNode,
-        () => throw new SlickException("Read NULL value for column " + this)))(
+    Rep.forNode[B1](GetOrElse(
+      c.toNode,
+      () => throw new SlickException("Read NULL value for column " + this)))(
       c.asInstanceOf[Rep.TypedRep[_]]
         .tpe
         .asInstanceOf[OptionType]

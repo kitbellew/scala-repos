@@ -25,16 +25,14 @@ package javaguide.testhelpers {
 
     private lazy val components = new DefaultJavaHandlerComponents(
       play.api.Play.current.injector,
-      new DefaultActionCreator
-    )
+      new DefaultActionCreator)
 
     private lazy val action = new JavaAction(components) {
       val annotations = new JavaActionAnnotations(controller, method)
 
       def parser = {
         play.HandlerInvokerFactoryAccessor.javaBodyParserToScala(
-          components.getBodyParser(annotations.parser)
-        )
+          components.getBodyParser(annotations.parser))
       }
 
       def invocation = self.invocation
@@ -87,8 +85,8 @@ package javaguide.testhelpers {
     }
 
     def setContext(request: play.mvc.Http.RequestBuilder): Unit = {
-      Http.Context.current
-        .set(JavaHelpers.createJavaContext(request.build()._underlyingRequest))
+      Http.Context.current.set(JavaHelpers.createJavaContext(
+        request.build()._underlyingRequest))
     }
 
     def removeContext: Unit = Http.Context.current.remove()
@@ -109,8 +107,7 @@ package javaguide.testhelpers {
       val maybeMethod = obj.getClass.getDeclaredMethods.find(!_.isSynthetic)
       val theMethod = maybeMethod.getOrElse(
         throw new RuntimeException(
-          "MockJavaAction must declare at least one non synthetic method")
-      )
+          "MockJavaAction must declare at least one non synthetic method"))
       theMethod.setAccessible(true)
       theMethod
     }

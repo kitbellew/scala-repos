@@ -423,7 +423,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                         allCreations,
                         allConsumers,
                         boxKind)
-                    } else if (allCreations.size == 1 && (!hasEscaping || !boxKind.isMutable)) {
+                    } else if (allCreations.size == 1 && (
+                                 !hasEscaping || !boxKind.isMutable
+                               )) {
                       // M1 -- see doc comment in the beginning of this file
                       replaceBoxOperationsSingleCreation(
                         allCreations.head,
@@ -822,9 +824,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     private def refClass(mi: MethodInsnNode): InternalName = mi.owner
     private def loadZeroValue(
         refZeroCall: MethodInsnNode): List[AbstractInsnNode] =
-      List(
-        loadZeroForTypeSort(
-          runtimeRefClassBoxedType(refZeroCall.owner).getSort))
+      List(loadZeroForTypeSort(
+        runtimeRefClassBoxedType(refZeroCall.owner).getSort))
 
     def checkRefCreation(
         insn: AbstractInsnNode,
@@ -842,10 +843,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
           if (isRefCreate(mi))
             checkKind(mi).map((StaticFactory(mi, loadInitialValues = None), _))
           else if (isRefZero(mi))
-            checkKind(mi).map(
-              (
-                StaticFactory(mi, loadInitialValues = Some(loadZeroValue(mi))),
-                _))
+            checkKind(mi).map((
+              StaticFactory(mi, loadInitialValues = Some(loadZeroValue(mi))),
+              _))
           else None
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>

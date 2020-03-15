@@ -72,8 +72,11 @@ object DirectKafkaConsumer extends App {
         val secs = (now - start) / 1000000000.0
         val throughput = msgs / secs
         println(
-          "Message %d batch %d time %.02fs throughput %.01f msgs/s"
-            .format(msgs, batch, secs, throughput))
+          "Message %d batch %d time %.02fs throughput %.01f msgs/s".format(
+            msgs,
+            batch,
+            secs,
+            throughput))
       }
     }
 
@@ -110,9 +113,10 @@ object DirectKafkaProducer extends App {
       val now = System.nanoTime
       val secs = (now - start) / 1000000000.0
       val throughput = i / secs
-      println(
-        "Message %d time %.02fs throughput %.01f msgs/s"
-          .format(i, secs, throughput))
+      println("Message %d time %.02fs throughput %.01f msgs/s".format(
+        i,
+        secs,
+        throughput))
     }
 
     val data = new ProducerData[String, IngestMessage](topic, msg)

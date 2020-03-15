@@ -341,9 +341,8 @@ private[cors] trait AbstractCORSPolicy {
     val originUri = new URI(
       (if (request.secure) "https://" else "http://") + request.host
         .toLowerCase(Locale.ENGLISH))
-    (
-      hostUri.getScheme,
-      hostUri.getHost,
-      hostUri.getPort) == (originUri.getScheme, originUri.getHost, originUri.getPort)
+    (hostUri.getScheme, hostUri.getHost, hostUri.getPort) == (
+      originUri.getScheme, originUri.getHost, originUri.getPort
+    )
   }
 }

@@ -429,8 +429,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
         signatureConstraints = Set(),
         keyConstraints = disabledKeyAlgorithms)
 
-      { builder.validateStore(trustStore, checker) }
-        .must(not(throwAn[CertPathValidatorException]))
+      { builder.validateStore(trustStore, checker) }.must(not(
+        throwAn[CertPathValidatorException]))
     }
 
     "warnOnPKCS12EmptyPasswordBug returns true when a PKCS12 keystore has a null or empty password" in {

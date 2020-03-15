@@ -17,21 +17,19 @@ object CodeGenerator extends App {
       "jdbc:h2:mem:test1;DB_CLOSE_DELAY=-1",
       driver = "org.h2.Driver")
     //#default-runner
-    slick.codegen.SourceCodeGenerator.main(
-      Array(profile, jdbcDriver, url, outputFolder, pkg)
-    )
+    slick.codegen.SourceCodeGenerator
+      .main(Array(profile, jdbcDriver, url, outputFolder, pkg))
     //#default-runner
     //#default-runner-with-auth
-    slick.codegen.SourceCodeGenerator.main(
-      Array(profile, jdbcDriver, url, outputFolder, pkg, user, password)
-    )
+    slick.codegen.SourceCodeGenerator
+      .main(Array(profile, jdbcDriver, url, outputFolder, pkg, user, password))
     //#default-runner-with-auth
     //#customization
     import slick.codegen.SourceCodeGenerator
     // fetch data model
-    val modelAction = H2Profile.createModel(
-      Some(H2Profile.defaultTables)
-    ) // you can filter specific tables here
+    val modelAction = H2Profile.createModel(Some(
+      H2Profile.defaultTables
+    )) // you can filter specific tables here
     val modelFuture = db.run(modelAction)
     // customize code generator
     val codegenFuture = modelFuture.map(model =>
@@ -73,8 +71,7 @@ object CodeGenerator extends App {
           "some/folder/",
           "some.packag",
           "Tables",
-          "Tables.scala"
-        )
+          "Tables.scala")
     }
     //#customization
   }

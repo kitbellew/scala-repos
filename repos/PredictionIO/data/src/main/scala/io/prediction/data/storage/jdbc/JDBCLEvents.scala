@@ -182,8 +182,8 @@ class JDBCLEvents(
       targetEntityType: Option[Option[String]] = None,
       targetEntityId: Option[Option[String]] = None,
       limit: Option[Int] = None,
-      reversed: Option[Boolean] = None
-  )(implicit ec: ExecutionContext): Future[Iterator[Event]] =
+      reversed: Option[Boolean] = None)(
+      implicit ec: ExecutionContext): Future[Iterator[Event]] =
     Future {
       DB readOnly { implicit session =>
         val tableName = sqls.createUnsafely(

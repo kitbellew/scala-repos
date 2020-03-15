@@ -71,15 +71,11 @@ final class FishnetApi(
   private def acquireAnalysis(client: Client): Fu[Option[JsonApi.Work]] =
     sequencer {
       analysisColl
-        .find(
-          BSONDocument(
-            "acquired" -> BSONDocument("$exists" -> false)
-          ))
-        .sort(
-          BSONDocument(
-            "sender.system" -> 1, // user requests first, then lichess auto analysis
-            "createdAt" -> 1 // oldest requests first
-          ))
+        .find(BSONDocument("acquired" -> BSONDocument("$exists" -> false)))
+        .sort(BSONDocument(
+          "sender.system" -> 1, // user requests first, then lichess auto analysis
+          "createdAt" -> 1 // oldest requests first
+        ))
         .one[Work.Analysis]
         .flatMap {
           _ ?? { work =>
@@ -159,11 +155,7 @@ final class FishnetApi(
 
   def prioritaryAnalysisExists(gameId: String): Fu[Boolean] =
     analysisColl
-      .count(
-        BSONDocument(
-          "game.id" -> gameId,
-          "sender.system" -> false
-        ).some)
+      .count(BSONDocument("game.id" -> gameId, "sender.system" -> false).some)
       .map(0 !=)
 
   private[fishnet] def createClient(

@@ -56,8 +56,7 @@ class PresentationReporter(handler: ReportHandler)
               pos.startOrCursor,
               pos.endOrCursor,
               pos.line,
-              posColumn
-            )
+              posColumn)
             handler.reportScalaNotes(List(note))
           }
         }

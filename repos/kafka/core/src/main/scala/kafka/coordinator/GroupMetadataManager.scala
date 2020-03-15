@@ -112,12 +112,12 @@ class GroupMetadataManager(
     Utils.abs(groupId.hashCode) % groupMetadataTopicPartitionCount
 
   def isGroupLocal(groupId: String): Boolean =
-    loadingPartitions synchronized ownedPartitions.contains(
-      partitionFor(groupId))
+    loadingPartitions synchronized ownedPartitions.contains(partitionFor(
+      groupId))
 
   def isGroupLoading(groupId: String): Boolean =
-    loadingPartitions synchronized loadingPartitions.contains(
-      partitionFor(groupId))
+    loadingPartitions synchronized loadingPartitions.contains(partitionFor(
+      groupId))
 
   def isLoading(): Boolean =
     loadingPartitions synchronized !loadingPartitions.isEmpty
@@ -170,10 +170,9 @@ class GroupMetadataManager(
           // do not need to require acks since even if the tombstone is lost,
           // it will be appended again by the new leader
           // TODO KAFKA-2720: periodic purging instead of immediate removal of groups
-          partition.appendMessagesToLeader(
-            new ByteBufferMessageSet(
-              config.offsetsTopicCompressionCodec,
-              tombstone))
+          partition.appendMessagesToLeader(new ByteBufferMessageSet(
+            config.offsetsTopicCompressionCodec,
+            tombstone))
         } catch {
           case t: Throwable =>
             error(
@@ -305,8 +304,7 @@ class GroupMetadataManager(
             topicAndPartition.partition),
           bytes = GroupMetadataManager.offsetCommitValue(offsetAndMetadata),
           timestamp = timestamp,
-          magicValue = magicValue
-        )
+          magicValue = magicValue)
     }.toSeq
 
     val offsetTopicPartition = new TopicPartition(
@@ -491,13 +489,11 @@ class GroupMetadataManager(
                         msgAndOffset.message.payload)
                       putOffset(
                         key,
-                        value.copy(
-                          expireTimestamp = {
-                            if (value.expireTimestamp == org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP)
-                              value.commitTimestamp + config.offsetsRetentionMs
-                            else value.expireTimestamp
-                          }
-                        )
+                        value.copy(expireTimestamp = {
+                          if (value.expireTimestamp == org.apache.kafka.common.requests.OffsetCommitRequest.DEFAULT_TIMESTAMP)
+                            value.commitTimestamp + config.offsetsRetentionMs
+                          else value.expireTimestamp
+                        })
                       )
                       trace("Loaded offset %s for %s.".format(value, key))
                     }
@@ -526,8 +522,9 @@ class GroupMetadataManager(
               loadedGroups.values.foreach { group =>
                 val currentGroup = addGroup(group)
                 if (group != currentGroup)
-                  debug(s"Attempt to load group ${group.groupId} from log with generation ${group.generationId} failed " +
-                    s"because there is already a cached group with generation ${currentGroup.generationId}")
+                  debug(
+                    s"Attempt to load group ${group.groupId} from log with generation ${group.generationId} failed " +
+                      s"because there is already a cached group with generation ${currentGroup.generationId}")
                 else onGroupLoaded(group)
               }
 
@@ -675,9 +672,9 @@ class GroupMetadataManager(
         .map {
           case (groupTopicAndPartition, offsetAndMetadata) =>
             val offsetsPartition = partitionFor(groupTopicAndPartition.group)
-            trace(
-              "Removing expired offset and metadata for %s: %s"
-                .format(groupTopicAndPartition, offsetAndMetadata))
+            trace("Removing expired offset and metadata for %s: %s".format(
+              groupTopicAndPartition,
+              offsetAndMetadata))
 
             offsetsCache.remove(groupTopicAndPartition)
 
@@ -711,17 +708,16 @@ class GroupMetadataManager(
               offsetsPartition)
             val messages = tombstones.map(_._2).toSeq
 
-            trace(
-              "Marked %d offsets in %s for deletion."
-                .format(messages.size, appendPartition))
+            trace("Marked %d offsets in %s for deletion.".format(
+              messages.size,
+              appendPartition))
 
             try {
               // do not need to require acks since even if the tombstone is lost,
               // it will be appended again in the next purge cycle
-              partition.appendMessagesToLeader(
-                new ByteBufferMessageSet(
-                  config.offsetsTopicCompressionCodec,
-                  messages: _*))
+              partition.appendMessagesToLeader(new ByteBufferMessageSet(
+                config.offsetsTopicCompressionCodec,
+                messages: _*))
               tombstones.size
             } catch {
               case t: Throwable =>
@@ -736,9 +732,9 @@ class GroupMetadataManager(
       }.sum
     }
 
-    info(
-      "Removed %d expired offsets in %d milliseconds."
-        .format(numExpiredOffsetsRemoved, time.milliseconds() - startMs))
+    info("Removed %d expired offsets in %d milliseconds.".format(
+      numExpiredOffsetsRemoved,
+      time.milliseconds() - startMs))
   }
 
   private def getHighWatermark(partitionId: Int): Long = {

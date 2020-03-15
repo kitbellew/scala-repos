@@ -30,12 +30,11 @@ object Editor extends LilaController {
           (decodedFen flatMap Forsyth.<<< map (_.situation)) | Situation(
             chess.variant.Standard)
         val fen = Forsyth >> situation
-        Ok(
-          html.board.editor(
-            situation,
-            fen,
-            positionsJson,
-            animationDuration = Env.api.EditorAnimationDuration))
+        Ok(html.board.editor(
+          situation,
+          fen,
+          positionsJson,
+          animationDuration = Env.api.EditorAnimationDuration))
       }
     }
 

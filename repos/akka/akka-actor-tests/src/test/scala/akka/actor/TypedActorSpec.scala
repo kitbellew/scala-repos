@@ -557,10 +557,9 @@ class TypedActorSpec
     "be able to override lifecycle callbacks" in {
       val latch = new CountDownLatch(16)
       val ta = TypedActor(system)
-      val t: LifeCycles = ta.typedActorOf(
-        TypedProps[LifeCyclesImpl](
-          classOf[LifeCycles],
-          new LifeCyclesImpl(latch)))
+      val t: LifeCycles = ta.typedActorOf(TypedProps[LifeCyclesImpl](
+        classOf[LifeCycles],
+        new LifeCyclesImpl(latch)))
       EventFilter[IllegalStateException]("Crash!", occurrences = 1) intercept {
         t.crash()
       }

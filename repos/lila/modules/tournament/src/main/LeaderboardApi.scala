@@ -30,12 +30,10 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
     coll
       .aggregate(
         Match(BSONDocument("u" -> user.id)),
-        List(
-          GroupField("v")(
-            "nb" -> SumValue(1),
-            "points" -> Push("s"),
-            "ratios" -> Push("w")))
-      )
+        List(GroupField("v")(
+          "nb" -> SumValue(1),
+          "points" -> Push("s"),
+          "ratios" -> Push("w"))))
       .map { _.documents map leaderboardAggregationResultBSONHandler.read }
       .map { aggs =>
         ChartData {
@@ -62,8 +60,7 @@ final class LeaderboardApi(coll: Coll, maxPerPage: Int) {
         collection = coll,
         selector = BSONDocument("u" -> user.id),
         projection = BSONDocument(),
-        sort = sort
-      ) mapFutureList withTournaments,
+        sort = sort) mapFutureList withTournaments,
       currentPage = page,
       maxPerPage = maxPerPage
     )

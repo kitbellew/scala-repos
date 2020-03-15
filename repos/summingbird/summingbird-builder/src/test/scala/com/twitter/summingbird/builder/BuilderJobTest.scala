@@ -82,16 +82,14 @@ class BuilderJobTest extends WordSpec {
   "Builder API should NOT throw when building a storm job w/ onlineStore" in {
     AbstractJob(
       "com.twitter.summingbird.builder.TestJobWithOnline",
-      StormEnv("name", Args(Array.empty[String]))
-    )
+      StormEnv("name", Args(Array.empty[String])))
   }
 
   "Builder API should throw when building a storm job w/ missing onlineStore" in {
     intercept[Exception] {
       AbstractJob(
         "com.twitter.summingbird.builder.TestJobWithOffline",
-        StormEnv("name", Args(Array.empty[String]))
-      )
+        StormEnv("name", Args(Array.empty[String])))
     }
   }
 }

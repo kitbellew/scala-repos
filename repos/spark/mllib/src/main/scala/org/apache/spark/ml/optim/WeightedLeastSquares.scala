@@ -97,9 +97,10 @@ private[ml] class WeightedLeastSquares(
 
     if (bStd == 0) {
       if (fitIntercept) {
-        logWarning(s"The standard deviation of the label is zero, so the coefficients will be " +
-          s"zeros and the intercept will be the mean of the label; as a result, " +
-          s"training is not needed.")
+        logWarning(
+          s"The standard deviation of the label is zero, so the coefficients will be " +
+            s"zeros and the intercept will be the mean of the label; as a result, " +
+            s"training is not needed.")
         val coefficients = new DenseVector(Array.ofDim(k - 1))
         val intercept = bBar
         val diagInvAtWA = new DenseVector(Array(0d))

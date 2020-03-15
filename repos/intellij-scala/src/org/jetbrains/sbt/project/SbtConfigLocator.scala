@@ -23,9 +23,8 @@ class SbtConfigLocator extends ExternalSystemConfigLocator {
     val modules = externalProjectSettings.getModules.asScala
     modules
       .flatMap { path =>
-        Option(
-          LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-            new File(path))).safeMap(adjust)
+        Option(LocalFileSystem.getInstance.refreshAndFindFileByIoFile(new File(
+          path))).safeMap(adjust)
       }
       .toList
       .asJava

@@ -87,14 +87,12 @@ class TaskStatusUpdateProcessorImplTest
 
     Given("an unknown task")
     import scala.concurrent.ExecutionContext.Implicits.global
-    f.taskTracker.task(taskId)(global) returns Future.successful(
-      Some(
-        MarathonTestHelper.minimalReservedTask(
-          taskId.appId,
-          Task.Reservation(
-            Iterable.empty,
-            MarathonTestHelper.taskReservationStateNew)))
-    )
+    f.taskTracker.task(taskId)(global) returns Future.successful(Some(
+      MarathonTestHelper.minimalReservedTask(
+        taskId.appId,
+        Task.Reservation(
+          Iterable.empty,
+          MarathonTestHelper.taskReservationStateNew))))
 
     When("we process the updated")
     f.updateProcessor.publish(status).futureValue
@@ -248,9 +246,7 @@ class TaskStatusUpdateProcessorImplTest
         notifyLaunchQueue,
         emitUpdate,
         postToEventStream,
-        scaleApp
-      )
-    )
+        scaleApp))
 
     def verifyNoMoreInteractions(): Unit = {
       noMoreInteractions(eventBus)

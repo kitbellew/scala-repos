@@ -60,11 +60,10 @@ trait RepositoryCreationService {
               "===============\n"
           }
 
-        builder.add(
-          JGitUtil.createDirCacheEntry(
-            "README.md",
-            FileMode.REGULAR_FILE,
-            inserter.insert(Constants.OBJ_BLOB, content.getBytes("UTF-8"))))
+        builder.add(JGitUtil.createDirCacheEntry(
+          "README.md",
+          FileMode.REGULAR_FILE,
+          inserter.insert(Constants.OBJ_BLOB, content.getBytes("UTF-8"))))
         builder.finish()
 
         JGitUtil.createNewCommit(

@@ -147,8 +147,9 @@ private[akka] class DistributedPubSubMessageSerializer(
     statusFromProto(dm.Status.parseFrom(decompress(bytes)))
 
   private def statusFromProto(status: dm.Status): Status =
-    Status(status.getVersionsList.asScala.map(v ⇒
-      addressFromProto(v.getAddress) -> v.getTimestamp)(breakOut))
+    Status(
+      status.getVersionsList.asScala.map(v ⇒
+        addressFromProto(v.getAddress) -> v.getTimestamp)(breakOut))
 
   private def deltaToProto(delta: Delta): dm.Delta = {
     val buckets = delta.buckets

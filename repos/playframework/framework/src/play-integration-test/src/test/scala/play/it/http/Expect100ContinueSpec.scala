@@ -24,39 +24,33 @@ trait Expect100ContinueSpec
 
     def withServer[T](action: EssentialAction)(block: Port => T) = {
       val port = testServerPort
-      running(
-        TestServer(
-          port,
-          GuiceApplicationBuilder().routes { case _ => action }.build())) {
+      running(TestServer(
+        port,
+        GuiceApplicationBuilder().routes { case _ => action }.build())) {
         block(port)
       }
     }
 
     "honour 100 continue" in withServer(Action(req => Results.Ok)) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest(
-          "POST",
-          "/",
-          "HTTP/1.1",
-          Map("Expect" -> "100-continue", "Content-Length" -> "10"),
-          "abcdefghij")
-      )
+      val responses = BasicHttpClient.makeRequests(port)(BasicRequest(
+        "POST",
+        "/",
+        "HTTP/1.1",
+        Map("Expect" -> "100-continue", "Content-Length" -> "10"),
+        "abcdefghij"))
       responses.length must_== 2
       responses(0).status must_== 100
       responses(1).status must_== 200
     }
 
     "not read body when expecting 100 continue but action iteratee is done" in withServer(
-      EssentialAction(_ => Accumulator.done(Results.Ok))
-    ) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest(
-          "POST",
-          "/",
-          "HTTP/1.1",
-          Map("Expect" -> "100-continue", "Content-Length" -> "100000"),
-          "foo")
-      )
+      EssentialAction(_ => Accumulator.done(Results.Ok))) { port =>
+      val responses = BasicHttpClient.makeRequests(port)(BasicRequest(
+        "POST",
+        "/",
+        "HTTP/1.1",
+        Map("Expect" -> "100-continue", "Content-Length" -> "100000"),
+        "foo"))
       responses.length must_== 1
       responses(0).status must_== 200
     }
@@ -69,23 +63,20 @@ trait Expect100ContinueSpec
     //
     // See https://issues.jboss.org/browse/NETTY-390 for more details.
     "close the connection after rejecting a Expect: 100-continue body" in withServer(
-      EssentialAction(_ => Accumulator.done(Results.Ok))
-    ) { port =>
+      EssentialAction(_ => Accumulator.done(Results.Ok))) { port =>
       val responses = BasicHttpClient.makeRequests(port, checkClosed = true)(
         BasicRequest(
           "POST",
           "/",
           "HTTP/1.1",
           Map("Expect" -> "100-continue", "Content-Length" -> "100000"),
-          "foo")
-      )
+          "foo"))
       responses.length must_== 1
       responses(0).status must_== 200
     }
 
     "leave the Netty pipeline in the right state after accepting a 100 continue request" in withServer(
-      Action(req => Results.Ok)
-    ) { port =>
+      Action(req => Results.Ok)) { port =>
       val responses = BasicHttpClient.makeRequests(port)(
         BasicRequest(
           "POST",
@@ -93,8 +84,7 @@ trait Expect100ContinueSpec
           "HTTP/1.1",
           Map("Expect" -> "100-continue", "Content-Length" -> "10"),
           "abcdefghij"),
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "")
-      )
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), ""))
       responses.length must_== 3
       responses(0).status must_== 100
       responses(1).status must_== 200

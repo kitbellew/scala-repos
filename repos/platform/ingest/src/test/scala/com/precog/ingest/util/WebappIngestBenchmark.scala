@@ -108,8 +108,11 @@ abstract class IngestProducer(args: Array[String])
       val totalMessages = messages * threadCount * samples.size
 
       println(
-        "Time: %.02f Messages: %d Throughput: %.01f msgs/s Errors: %d"
-          .format(seconds, totalMessages, totalMessages / seconds, totalErrors))
+        "Time: %.02f Messages: %d Throughput: %.01f msgs/s Errors: %d".format(
+          seconds,
+          totalMessages,
+          totalMessages / seconds,
+          totalErrors))
     }
     close
   }
@@ -183,13 +186,11 @@ object JsonLoader extends App with AkkaDefaults {
     new blueeyes.bkka.FutureMonad(defaultFutureDispatch)
 
   def usage() {
-    println(
-      """
+    println("""
 Usage:
 
   command {host} {API key} {json data file}
-"""
-    )
+""")
   }
 
   val client = new HttpClientXLightWeb

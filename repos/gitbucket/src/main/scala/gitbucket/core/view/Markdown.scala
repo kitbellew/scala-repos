@@ -168,9 +168,9 @@ object Markdown {
             else repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else "")
+            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
+            if (isImage) "?raw=true" else ""
+          )
         } else {
           val paths = context.currentPath.split("/")
           val branch =
@@ -178,9 +178,9 @@ object Markdown {
             else repository.repository.defaultBranch
           repository.httpUrl
             .replaceFirst("/git/", "/")
-            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (if (isImage)
-                                                                      "?raw=true"
-                                                                    else "")
+            .stripSuffix(".git") + "/blob/" + branch + "/" + url + (
+            if (isImage) "?raw=true" else ""
+          )
         }
       } else {
         repository.httpUrl

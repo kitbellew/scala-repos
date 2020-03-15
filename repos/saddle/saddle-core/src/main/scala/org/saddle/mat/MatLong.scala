@@ -83,7 +83,9 @@ class MatLong(r: Int, c: Int, values: Array[Long]) extends Mat[Long] {
   override def equals(o: Any): Boolean =
     o match {
       case rv: Mat[_] =>
-        (this eq rv) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
+        (
+          this eq rv
+        ) || this.numRows == rv.numRows && this.numCols == rv.numCols && {
           var i = 0
           var eq = true
           while (eq && i < length) {

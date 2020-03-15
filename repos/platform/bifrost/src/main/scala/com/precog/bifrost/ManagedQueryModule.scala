@@ -272,10 +272,10 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     def start(): Unit =
       lock.synchronized {
         if (poller.isEmpty) {
-          poller = Some(jobActorSystem.scheduler
-            .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
-              poll()
-            })
+          poller = Some(
+            jobActorSystem.scheduler.schedule(
+              yggConfig.jobPollFrequency,
+              yggConfig.jobPollFrequency) { poll() })
         }
       }
 

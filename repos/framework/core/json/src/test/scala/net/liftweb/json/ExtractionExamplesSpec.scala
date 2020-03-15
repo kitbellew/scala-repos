@@ -141,9 +141,8 @@ object ExtractionExamples extends Specification {
   }
 
   "Flatten example with simple case class" in {
-    val f = Extraction.flatten(
-      Extraction.decompose(
-        SimplePerson("joe", Address("Bulevard", "Helsinki"))))
+    val f = Extraction.flatten(Extraction.decompose(
+      SimplePerson("joe", Address("Bulevard", "Helsinki"))))
     val e = Map(
       ".name" -> "\"joe\"",
       ".address.street" -> "\"Bulevard\"",
@@ -172,15 +171,13 @@ object ExtractionExamples extends Specification {
       ".address.street" -> "\"Bulevard\"",
       ".address.city" -> "\"Helsinki\"")
 
-    Extraction.unflatten(m) mustEqual JObject(
-      List(
-        JField("name", JString("joe")),
-        JField(
-          "address",
-          JObject(
-            List(
-              JField("street", JString("Bulevard")),
-              JField("city", JString("Helsinki")))))))
+    Extraction.unflatten(m) mustEqual JObject(List(
+      JField("name", JString("joe")),
+      JField(
+        "address",
+        JObject(List(
+          JField("street", JString("Bulevard")),
+          JField("city", JString("Helsinki")))))))
   }
 
   "Unflatten example with top level array" in {
@@ -196,11 +193,10 @@ object ExtractionExamples extends Specification {
       ".photographer" -> "\"photographer string\"",
       ".other" -> "\"other string\"")
 
-    Extraction.unflatten(m) mustEqual JObject(
-      List(
-        JField("photo", JString("photo string")),
-        JField("photographer", JString("photographer string")),
-        JField("other", JString("other string"))))
+    Extraction.unflatten(m) mustEqual JObject(List(
+      JField("photo", JString("photo string")),
+      JField("photographer", JString("photographer string")),
+      JField("other", JString("other string"))))
   }
 
   "Flatten and unflatten are symmetric" in {
@@ -242,10 +238,9 @@ object ExtractionExamples extends Specification {
 
   "Extraction failure message example" in {
     val json = parse("""{"city":"San Francisco"}""")
-    json.extract[Address] must throwA(
-      MappingException(
-        "No usable value for street\nDid not find value which can be converted into java.lang.String",
-        null))
+    json.extract[Address] must throwA(MappingException(
+      "No usable value for street\nDid not find value which can be converted into java.lang.String",
+      null))
   }
 
   "Best matching constructor selection example" in {

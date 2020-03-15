@@ -384,13 +384,14 @@ abstract class MessageDispatcherConfigurator(
             .recover({
               case exception ⇒
                 throw new IllegalArgumentException(
-                  ("""Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
-                make sure it has an accessible constructor with a [%s,%s] signature""")
-                    .format(
-                      fqcn,
-                      config.getString("id"),
-                      classOf[Config],
-                      classOf[DispatcherPrerequisites]),
+                  (
+                    """Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
+                make sure it has an accessible constructor with a [%s,%s] signature"""
+                  ).format(
+                    fqcn,
+                    config.getString("id"),
+                    classOf[Config],
+                    classOf[DispatcherPrerequisites]),
                   exception)
             })
             .get
@@ -583,12 +584,11 @@ class DefaultExecutorServiceConfigurator(
   val provider: ExecutorServiceFactoryProvider =
     prerequisites.defaultExecutionContext match {
       case Some(ec) ⇒
-        prerequisites.eventStream.publish(
-          Debug(
-            "DefaultExecutorServiceConfigurator",
-            this.getClass,
-            s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
-          ))
+        prerequisites.eventStream.publish(Debug(
+          "DefaultExecutorServiceConfigurator",
+          this.getClass,
+          s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."
+        ))
 
         new AbstractExecutorService
           with ExecutorServiceFactory

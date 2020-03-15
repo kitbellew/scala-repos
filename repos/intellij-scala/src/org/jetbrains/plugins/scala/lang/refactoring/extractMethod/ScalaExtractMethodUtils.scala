@@ -148,18 +148,12 @@ object ScalaExtractMethodUtils {
           if (!ret.returnFunction.contains(method)) return
           val retExprText = ret.expr.map(_.getText).mkString
           val newText = settings.returnType match {
-            case Some(psi.types.Unit) =>
-              byOutputsSize(
-                "true",
-                "None",
-                "None"
-              )
+            case Some(psi.types.Unit) => byOutputsSize("true", "None", "None")
             case Some(_) =>
               byOutputsSize(
                 s"Some($retExprText)",
                 s"Left($retExprText)",
-                s"Left($retExprText)"
-              )
+                s"Left($retExprText)")
             case None => "" //should not occur
           }
           val retElem = ScalaPsiElementFactory.createExpressionFromText(
@@ -320,20 +314,17 @@ object ScalaExtractMethodUtils {
         byOutputsSize(
           (false, "Boolean"),
           (false, s"Option[$outputType]"),
-          (false, s"Option[$outputType]")
-        )
+          (false, s"Option[$outputType]"))
       case Some(tp) =>
         byOutputsSize(
           (false, s"Option[${tp.presentableText}]"),
           (false, s"Either[${tp.presentableText}, $outputType]"),
-          (false, s"Either[${tp.presentableText}, $outputType]")
-        )
+          (false, s"Either[${tp.presentableText}, $outputType]"))
       case None =>
         byOutputsSize(
           (true, "Unit"),
           prepareResult(outputs(0).returnType),
-          (false, outputType)
-        )
+          (false, outputType))
     }
   }
 
@@ -445,7 +436,8 @@ object ScalaExtractMethodUtils {
       outputName: ExtractMethodOutput => String) {
     val element = elements
       .find(elem => elem.isInstanceOf[ScalaPsiElement])
-      .getOrElse(return
+      .getOrElse(
+        return
       )
     val manager = element.getManager
     val processor = new CompletionProcessor(

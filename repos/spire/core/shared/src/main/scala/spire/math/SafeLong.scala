@@ -249,16 +249,16 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
   def signum: Int = java.lang.Long.signum(x)
 
   def +(y: Long): SafeLong =
-    Checked.tryOrReturn[SafeLong](SafeLongLong(x + y))(
-      SafeLongBigInteger(BigInteger.valueOf(x) add BigInteger.valueOf(y)))
+    Checked.tryOrReturn[SafeLong](SafeLongLong(x + y))(SafeLongBigInteger(
+      BigInteger.valueOf(x) add BigInteger.valueOf(y)))
 
   def -(y: Long): SafeLong =
-    Checked.tryOrReturn[SafeLong](SafeLongLong(x - y))(
-      SafeLongBigInteger(BigInteger.valueOf(x) subtract BigInteger.valueOf(y)))
+    Checked.tryOrReturn[SafeLong](SafeLongLong(x - y))(SafeLongBigInteger(
+      BigInteger.valueOf(x) subtract BigInteger.valueOf(y)))
 
   def *(y: Long): SafeLong =
-    Checked.tryOrReturn[SafeLong](SafeLongLong(x * y))(
-      SafeLongBigInteger(BigInteger.valueOf(x) multiply BigInteger.valueOf(y)))
+    Checked.tryOrReturn[SafeLong](SafeLongLong(x * y))(SafeLongBigInteger(
+      BigInteger.valueOf(x) multiply BigInteger.valueOf(y)))
 
   def /(y: Long): SafeLong =
     Checked.tryOrReturn[SafeLong](SafeLongLong(x / y))(SafeLong.safe64)
@@ -307,8 +307,8 @@ private[math] final case class SafeLongLong(x: Long) extends SafeLong {
   def ^(y: BigInteger): SafeLong = SafeLong(BigInteger.valueOf(x) xor y)
 
   def unary_-(): SafeLong =
-    Checked.tryOrReturn[SafeLong](SafeLongLong(-x))(
-      SafeLongBigInteger(BigInteger.valueOf(x).negate()))
+    Checked.tryOrReturn[SafeLong](SafeLongLong(-x))(SafeLongBigInteger(
+      BigInteger.valueOf(x).negate()))
 
   override def <(that: SafeLong): Boolean =
     that match {

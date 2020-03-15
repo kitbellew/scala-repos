@@ -52,8 +52,8 @@ class MarathonSchedulerActorTest
 
   test("RecoversDeploymentsAndReconcilesHealthChecksOnStart") {
     val app = AppDefinition(id = "test-app".toPath, instances = 1)
-    when(groupRepo.rootGroup()).thenReturn(
-      Future.successful(Some(Group.apply(PathId.empty, apps = Set(app)))))
+    when(groupRepo.rootGroup()).thenReturn(Future.successful(Some(
+      Group.apply(PathId.empty, apps = Set(app)))))
 
     val schedulerActor = createActor()
     try {
@@ -68,10 +68,9 @@ class MarathonSchedulerActorTest
     val tasks = Iterable(MarathonTestHelper.runningTaskProto("task_a"))
 
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
-    when(taskTracker.tasksByApp()(any[ExecutionContext])).thenReturn(
-      Future.successful(
-        TaskTracker.TasksByApp.of(TaskTracker.AppTasks("nope".toPath, tasks)))
-    )
+    when(taskTracker.tasksByApp()(any[ExecutionContext]))
+      .thenReturn(Future.successful(
+        TaskTracker.TasksByApp.of(TaskTracker.AppTasks("nope".toPath, tasks))))
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
 
     val schedulerActor = createActor()
@@ -95,9 +94,8 @@ class MarathonSchedulerActorTest
     when(queue.get(app.id)).thenReturn(Some(LaunchQueueTestHelper.zeroCounts))
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable.empty[Task])
-    when(taskTracker.tasksByAppSync).thenReturn(
-      TaskTracker.TasksByApp.of(
-        TaskTracker.AppTasks.forTasks("nope".toPath, tasks)))
+    when(taskTracker.tasksByAppSync).thenReturn(TaskTracker.TasksByApp.of(
+      TaskTracker.AppTasks.forTasks("nope".toPath, tasks)))
     when(taskTracker.appTasksSync("nope".toPath)).thenReturn(tasks)
     when(repo.currentVersion(app.id)).thenReturn(Future.successful(Some(app)))
     when(taskTracker.countLaunchedAppTasksSync(app.id)).thenReturn(0)
@@ -158,8 +156,7 @@ class MarathonSchedulerActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
     when(driver.killTask(taskA.taskId.mesosTaskId))
       .thenAnswer(new Answer[Status] {
@@ -246,14 +243,12 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val origGroup = Group(PathId("/foo/bar"), Set(app))
 
     val appNew = app.copy(
       cmd = Some("cmd new"),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1000)))
 
     val targetGroup = Group(PathId("/foo/bar"), Set(appNew))
 
@@ -287,8 +282,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val taskA = MarathonTestHelper.runningTaskForApp(app.id)
     val origGroup = Group(PathId("/foo/bar"), Set(app))
     val targetGroup = Group(PathId("/foo/bar"), Set())
@@ -307,19 +301,16 @@ class MarathonSchedulerActorTest
     when(driver.killTask(taskA.taskId.mesosTaskId))
       .thenAnswer(new Answer[Status] {
         def answer(invocation: InvocationOnMock): Status = {
-          system.eventStream.publish(
-            MesosStatusUpdateEvent(
-              slaveId = "",
-              taskId = taskA.taskId,
-              taskStatus = "TASK_KILLED",
-              message = "",
-              appId = app.id,
-              host = "",
-              ipAddresses = Nil,
-              ports = Nil,
-              version = app.version.toString
-            )
-          )
+          system.eventStream.publish(MesosStatusUpdateEvent(
+            slaveId = "",
+            taskId = taskA.taskId,
+            taskStatus = "TASK_KILLED",
+            message = "",
+            appId = app.id,
+            host = "",
+            ipAddresses = Nil,
+            ports = Nil,
+            version = app.version.toString))
           Status.DRIVER_RUNNING
         }
       })
@@ -346,8 +337,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val group = Group(PathId("/foo/bar"), Set(app))
 
     val plan = DeploymentPlan(Group.empty, group)
@@ -381,8 +371,7 @@ class MarathonSchedulerActorTest
       cmd = Some("cmd"),
       instances = 2,
       upgradeStrategy = UpgradeStrategy(0.5),
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0))
-    )
+      versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(0)))
     val group = Group(PathId("/foo/bar"), Set(app))
 
     val plan = DeploymentPlan(Group.empty, group)
@@ -394,20 +383,18 @@ class MarathonSchedulerActorTest
     when(deploymentRepo.store(plan)).thenReturn(Future.successful(plan))
     when(taskTracker.appTasksSync(app.id)).thenReturn(Iterable.empty[Task])
 
-    val schedulerActor = system.actorOf(
-      MarathonSchedulerActor.props(
-        schedulerActions,
-        deploymentManagerProps,
-        historyActorProps,
-        repo,
-        deploymentRepo,
-        hcManager,
-        taskTracker,
-        queue,
-        holder,
-        leaderInfo,
-        system.eventStream
-      ))
+    val schedulerActor = system.actorOf(MarathonSchedulerActor.props(
+      schedulerActions,
+      deploymentManagerProps,
+      historyActorProps,
+      repo,
+      deploymentRepo,
+      hcManager,
+      taskTracker,
+      queue,
+      holder,
+      leaderInfo,
+      system.eventStream))
 
     try {
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
@@ -467,22 +454,20 @@ class MarathonSchedulerActorTest
       .thenReturn(Iterable.empty[Task])
     when(repo.expunge(app.id)).thenReturn(Future.successful(Nil))
 
-    val schedulerActor = TestActorRef(
-      MarathonSchedulerActor.props(
-        schedulerActions,
-        deploymentManagerProps,
-        historyActorProps,
-        repo,
-        deploymentRepo,
-        hcManager,
-        taskTracker,
-        queue,
-        holder,
-        leaderInfo,
-        system.eventStream,
-        cancellationTimeout = 0.seconds
-      )
-    )
+    val schedulerActor = TestActorRef(MarathonSchedulerActor.props(
+      schedulerActions,
+      deploymentManagerProps,
+      historyActorProps,
+      repo,
+      deploymentRepo,
+      hcManager,
+      taskTracker,
+      queue,
+      holder,
+      leaderInfo,
+      system.eventStream,
+      cancellationTimeout = 0.seconds
+    ))
     try {
       schedulerActor ! LocalLeadershipEvent.ElectedAsLeader
       schedulerActor ! Deploy(plan)
@@ -579,16 +564,14 @@ class MarathonSchedulerActorTest
     taskFailureEventRepository = mock[TaskFailureRepository]
     leaderInfo = mock[LeaderInfo]
     deploymentManagerProps = schedulerActions =>
-      Props(
-        new DeploymentManager(
-          repo,
-          taskTracker,
-          queue,
-          schedulerActions,
-          storage,
-          hcManager,
-          system.eventStream
-        ))
+      Props(new DeploymentManager(
+        repo,
+        taskTracker,
+        queue,
+        schedulerActions,
+        storage,
+        hcManager,
+        system.eventStream))
     historyActorProps = Props(
       new HistoryActor(system.eventStream, taskFailureEventRepository))
     schedulerActions = ref =>
@@ -618,21 +601,18 @@ class MarathonSchedulerActorTest
   }
 
   def createActor() = {
-    system.actorOf(
-      MarathonSchedulerActor.props(
-        schedulerActions,
-        deploymentManagerProps,
-        historyActorProps,
-        repo,
-        deploymentRepo,
-        hcManager,
-        taskTracker,
-        queue,
-        holder,
-        leaderInfo,
-        system.eventStream
-      )
-    )
+    system.actorOf(MarathonSchedulerActor.props(
+      schedulerActions,
+      deploymentManagerProps,
+      historyActorProps,
+      repo,
+      deploymentRepo,
+      hcManager,
+      taskTracker,
+      queue,
+      holder,
+      leaderInfo,
+      system.eventStream))
   }
 
   def stopActor(ref: ActorRef): Unit = {

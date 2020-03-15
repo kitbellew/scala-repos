@@ -165,18 +165,14 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
 
       diffMemberEvents(g1, g2) should ===(Seq.empty)
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g1, g2, selfDummyAddress) should ===(
-        Seq(
-          SeenChanged(
-            convergence = true,
-            seenBy = Set(aUp.address, bUp.address))))
+      diffSeen(g1, g2, selfDummyAddress) should ===(Seq(SeenChanged(
+        convergence = true,
+        seenBy = Set(aUp.address, bUp.address))))
       diffMemberEvents(g2, g1) should ===(Seq.empty)
       diffUnreachable(g2, g1, selfDummyAddress) should ===(Seq.empty)
-      diffSeen(g2, g1, selfDummyAddress) should ===(
-        Seq(
-          SeenChanged(
-            convergence = true,
-            seenBy = Set(aUp.address, bUp.address, eJoining.address))))
+      diffSeen(g2, g1, selfDummyAddress) should ===(Seq(SeenChanged(
+        convergence = true,
+        seenBy = Set(aUp.address, bUp.address, eJoining.address))))
     }
 
     "be produced for leader changes" in {
@@ -195,20 +191,18 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
       val g0 = Gossip.empty
       val g1 = Gossip(members = SortedSet(aUp, bUp, cUp, dLeaving, eJoining))
       val g2 = Gossip(members = SortedSet(bUp, cUp, dExiting, eJoining))
-      diffRolesLeader(g0, g1, selfDummyAddress) should ===(
-        Set(
-          RoleLeaderChanged("AA", Some(aUp.address)),
-          RoleLeaderChanged("AB", Some(aUp.address)),
-          RoleLeaderChanged("BB", Some(bUp.address)),
-          RoleLeaderChanged("DD", Some(dLeaving.address)),
-          RoleLeaderChanged("DE", Some(dLeaving.address)),
-          RoleLeaderChanged("EE", Some(eUp.address))
-        ))
-      diffRolesLeader(g1, g2, selfDummyAddress) should ===(
-        Set(
-          RoleLeaderChanged("AA", None),
-          RoleLeaderChanged("AB", Some(bUp.address)),
-          RoleLeaderChanged("DE", Some(eJoining.address))))
+      diffRolesLeader(g0, g1, selfDummyAddress) should ===(Set(
+        RoleLeaderChanged("AA", Some(aUp.address)),
+        RoleLeaderChanged("AB", Some(aUp.address)),
+        RoleLeaderChanged("BB", Some(bUp.address)),
+        RoleLeaderChanged("DD", Some(dLeaving.address)),
+        RoleLeaderChanged("DE", Some(dLeaving.address)),
+        RoleLeaderChanged("EE", Some(eUp.address))
+      ))
+      diffRolesLeader(g1, g2, selfDummyAddress) should ===(Set(
+        RoleLeaderChanged("AA", None),
+        RoleLeaderChanged("AB", Some(bUp.address)),
+        RoleLeaderChanged("DE", Some(eJoining.address))))
     }
   }
 }

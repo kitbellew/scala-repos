@@ -54,11 +54,9 @@ trait DefaultFiltersSpec extends FiltersSpec {
       makeFilters: Materializer => Seq[EssentialFilter])(
       block: WSClient => T) = {
 
-    val app = new BuiltInComponentsFromContext(
-      ApplicationLoader.createContext(
-        environment = Environment.simple(),
-        initialSettings = settings
-      )) {
+    val app = new BuiltInComponentsFromContext(ApplicationLoader.createContext(
+      environment = Environment.simple(),
+      initialSettings = settings)) {
       lazy val router = testRouter
       override lazy val httpFilters: Seq[EssentialFilter] = makeFilters(
         materializer)
@@ -67,8 +65,7 @@ trait DefaultFiltersSpec extends FiltersSpec {
           environment,
           configuration,
           sourceMapper,
-          Some(router))
-      )
+          Some(router)))
     }.application
 
     Server.withApplication(app) { implicit port =>
@@ -120,16 +117,13 @@ trait GlobalFiltersSpec extends FiltersSpec {
       .configure(settings)
       .overrides(
         bind[Router].toInstance(testRouter),
-        bind[HttpRequestHandler].to[GlobalSettingsHttpRequestHandler]
-      )
-      .global(
-        new WithFilters(filters: _*) {
-          override def onHandlerNotFound(request: RequestHeader) = {
-            errorHandler.fold(super.onHandlerNotFound(request))(
-              _.onClientError(request, 404, ""))
-          }
+        bind[HttpRequestHandler].to[GlobalSettingsHttpRequestHandler])
+      .global(new WithFilters(filters: _*) {
+        override def onHandlerNotFound(request: RequestHeader) = {
+          errorHandler.fold(super.onHandlerNotFound(request))(
+            _.onClientError(request, 404, ""))
         }
-      )
+      })
       .build()
 
     Server.withApplication(app) { implicit port =>
@@ -299,7 +293,9 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
         }
       def addCustomHeader(originalHeaders: Headers): Headers = {
         FakeHeaders(
-          originalHeaders.headers :+ (filterAddedHeaderKey -> filterAddedHeaderVal))
+          originalHeaders.headers :+ (
+            filterAddedHeaderKey -> filterAddedHeaderVal
+          ))
       }
     }
 
@@ -308,11 +304,10 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
           request: RequestHeader,
           statusCode: Int,
           message: String) = {
-        Future.successful(
-          Results.NotFound(
-            request.headers
-              .get(filterAddedHeaderKey)
-              .getOrElse("undefined header")))
+        Future.successful(Results.NotFound(
+          request.headers
+            .get(filterAddedHeaderKey)
+            .getOrElse("undefined header")))
       }
       def onServerError(request: RequestHeader, exception: Throwable) =
         Future.successful(Results.InternalServerError)

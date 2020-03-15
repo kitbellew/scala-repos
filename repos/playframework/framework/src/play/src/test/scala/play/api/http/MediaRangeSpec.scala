@@ -56,8 +56,7 @@ object MediaRangeSpec extends Specification {
           "bar2",
           Seq("p" -> Some("""v,/"\vv"""), "p2" -> Some("v2")),
           None,
-          Nil)
-      )
+          Nil))
     }
     "allow valueless parameters" in {
       MediaType.parse("foo/bar;param") must beSome(
@@ -93,8 +92,7 @@ object MediaRangeSpec extends Specification {
         exactly(
           new MediaRange("foo1", "bar1", Nil, None, Nil),
           new MediaRange("foo3", "bar3", Nil, None, Nil),
-          new MediaRange("foo2", "bar2", Nil, None, Nil)
-        ).inOrder)
+          new MediaRange("foo2", "bar2", Nil, None, Nil)).inOrder)
     }
     "order by q value" in {
       MediaRange.parse(
@@ -102,16 +100,14 @@ object MediaRangeSpec extends Specification {
         exactly(
           new MediaRange("foo3", "bar3", Nil, None, Nil),
           new MediaRange("foo2", "bar2", Nil, Some(0.5f), Nil),
-          new MediaRange("foo1", "bar1", Nil, Some(0.25f), Nil)
-        ).inOrder)
+          new MediaRange("foo1", "bar1", Nil, Some(0.25f), Nil)).inOrder)
     }
     "order by specificity" in {
       MediaRange.parse("*/*, foo/*, foo/bar") must contain(
         exactly(
           new MediaRange("foo", "bar", Nil, None, Nil),
           new MediaRange("foo", "*", Nil, None, Nil),
-          new MediaRange("*", "*", Nil, None, Nil)
-        ).inOrder)
+          new MediaRange("*", "*", Nil, None, Nil)).inOrder)
     }
     "order by parameters" in {
       MediaRange.parse(

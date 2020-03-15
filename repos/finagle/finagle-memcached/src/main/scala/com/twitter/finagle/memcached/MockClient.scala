@@ -62,14 +62,12 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
     * Note: expiry and flags are ignored.
     */
   def add(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
-    Future.value(
-      map.synchronized {
-        if (!map.contains(key)) {
-          map(key) = value
-          true
-        } else { false }
-      }
-    )
+    Future.value(map.synchronized {
+      if (!map.contains(key)) {
+        map(key) = value
+        true
+      } else { false }
+    })
 
   /**
     * Note: expiry and flags are ignored.
@@ -79,17 +77,15 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    Future.value(
-      map.synchronized {
-        map.get(key) match {
-          case Some(previousValue) =>
-            map(key) = previousValue.concat(value)
-            true
-          case None =>
-            false
-        }
+    Future.value(map.synchronized {
+      map.get(key) match {
+        case Some(previousValue) =>
+          map(key) = previousValue.concat(value)
+          true
+        case None =>
+          false
       }
-    )
+    })
 
   /**
     * Note: expiry and flags are ignored.
@@ -99,17 +95,15 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    Future.value(
-      map.synchronized {
-        map.get(key) match {
-          case Some(previousValue) =>
-            map(key) = value.concat(previousValue)
-            true
-          case None =>
-            false
-        }
+    Future.value(map.synchronized {
+      map.get(key) match {
+        case Some(previousValue) =>
+          map(key) = value.concat(previousValue)
+          true
+        case None =>
+          false
       }
-    )
+    })
 
   /**
     * Note: expiry and flags are ignored.
@@ -119,14 +113,12 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       flags: Int,
       expiry: Time,
       value: Buf): Future[JBoolean] =
-    Future.value(
-      map.synchronized {
-        if (map.contains(key)) {
-          map(key) = value
-          true
-        } else { false }
-      }
-    )
+    Future.value(map.synchronized {
+      if (map.contains(key)) {
+        map(key) = value
+        true
+      } else { false }
+    })
 
   /**
     * Checks if value is same as previous value, if not, do a swap and return true.
@@ -138,53 +130,46 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
       flags: Int,
       expiry: Time,
       value: Buf,
-      casUnique: Buf
-  ): Future[CasResult] =
-    Future.value(
-      map.synchronized {
-        map.get(key) match {
-          case Some(previousValue)
-              if Interpreter.generateCasUnique(previousValue) == casUnique =>
-            map(key) = value
-            CasResult.Stored
+      casUnique: Buf): Future[CasResult] =
+    Future.value(map.synchronized {
+      map.get(key) match {
+        case Some(previousValue)
+            if Interpreter.generateCasUnique(previousValue) == casUnique =>
+          map(key) = value
+          CasResult.Stored
 
-          case Some(_) => CasResult.Exists
-          case None    => CasResult.NotFound
-        }
+        case Some(_) => CasResult.Exists
+        case None    => CasResult.NotFound
       }
-    )
+    })
 
   def delete(key: String): Future[JBoolean] =
-    Future.value(
-      map.synchronized {
-        if (map.contains(key)) {
-          map.remove(key)
-          true
-        } else { false }
-      }
-    )
+    Future.value(map.synchronized {
+      if (map.contains(key)) {
+        map.remove(key)
+        true
+      } else { false }
+    })
 
   def incr(key: String, delta: Long): Future[Option[JLong]] =
-    Future.value(
-      map.synchronized {
-        map.get(key) match {
-          case Some(value: Buf) =>
-            try {
-              val Buf.Utf8(valStr) = value
-              val newValue = math.max(valStr.toLong + delta, 0L)
-              map(key) = Buf.Utf8(newValue.toString)
-              Some(newValue)
-            } catch {
-              case _: NumberFormatException =>
-                throw new ClientError(
-                  "cannot increment or decrement non-numeric value")
-            }
+    Future.value(map.synchronized {
+      map.get(key) match {
+        case Some(value: Buf) =>
+          try {
+            val Buf.Utf8(valStr) = value
+            val newValue = math.max(valStr.toLong + delta, 0L)
+            map(key) = Buf.Utf8(newValue.toString)
+            Some(newValue)
+          } catch {
+            case _: NumberFormatException =>
+              throw new ClientError(
+                "cannot increment or decrement non-numeric value")
+          }
 
-          case None =>
-            None
-        }
+        case None =>
+          None
       }
-    )
+    })
 
   def decr(key: String, delta: Long): Future[Option[JLong]] = incr(key, -delta)
 

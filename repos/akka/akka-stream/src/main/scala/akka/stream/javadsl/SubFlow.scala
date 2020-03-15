@@ -30,11 +30,10 @@ class SubFlow[-In, +Out, +Mat](
       scaladsl.Sink[In, Mat]]) {
 
   /** Converts this Flow to its Scala DSL counterpart */
-  def asScala: scaladsl.SubFlow[
+  def asScala: scaladsl.SubFlow[Out, Mat, scaladsl.Flow[
+    In,
     Out,
-    Mat,
-    scaladsl.Flow[In, Out, Mat]#Repr,
-    scaladsl.Sink[In, Mat]] @uncheckedVariance = delegate
+    Mat]#Repr, scaladsl.Sink[In, Mat]] @uncheckedVariance = delegate
 
   /**
     * Flatten the sub-flows back into the super-flow by performing a merge
@@ -904,12 +903,9 @@ class SubFlow[-In, +Out, +Mat](
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): SubFlow[
-    In,
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+  def prefixAndTail(n: Int): SubFlow[In, akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubFlow(delegate.prefixAndTail(n).map {
       case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
     })

@@ -158,8 +158,7 @@ sealed abstract class Ior[+A, +B] extends Product with Serializable {
     fold(
       a => s"Ior.Left(${AA.show(a)})",
       b => s"Ior.Right(${BB.show(b)})",
-      (a, b) => s"Ior.Both(${AA.show(a)}, ${BB.show(b)})"
-    )
+      (a, b) => s"Ior.Both(${AA.show(a)}, ${BB.show(b)})")
 }
 
 object Ior extends IorInstances with IorFunctions {

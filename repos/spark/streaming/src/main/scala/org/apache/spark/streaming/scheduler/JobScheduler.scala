@@ -171,8 +171,8 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
       listenerBus.post(StreamingListenerBatchStarted(jobSet.toBatchInfo))
     }
     job.setStartTime(startTime)
-    listenerBus.post(
-      StreamingListenerOutputOperationStarted(job.toOutputOperationInfo))
+    listenerBus.post(StreamingListenerOutputOperationStarted(
+      job.toOutputOperationInfo))
     logInfo("Starting job " + job.id + " from job set of time " + jobSet.time)
   }
 
@@ -180,18 +180,16 @@ private[streaming] class JobScheduler(val ssc: StreamingContext)
     val jobSet = jobSets.get(job.time)
     jobSet.handleJobCompletion(job)
     job.setEndTime(completedTime)
-    listenerBus.post(
-      StreamingListenerOutputOperationCompleted(job.toOutputOperationInfo))
+    listenerBus.post(StreamingListenerOutputOperationCompleted(
+      job.toOutputOperationInfo))
     logInfo("Finished job " + job.id + " from job set of time " + jobSet.time)
     if (jobSet.hasCompleted) {
       jobSets.remove(jobSet.time)
       jobGenerator.onBatchCompletion(jobSet.time)
-      logInfo(
-        "Total delay: %.3f s for time %s (execution: %.3f s)".format(
-          jobSet.totalDelay / 1000.0,
-          jobSet.time.toString,
-          jobSet.processingDelay / 1000.0
-        ))
+      logInfo("Total delay: %.3f s for time %s (execution: %.3f s)".format(
+        jobSet.totalDelay / 1000.0,
+        jobSet.time.toString,
+        jobSet.processingDelay / 1000.0))
       listenerBus.post(StreamingListenerBatchCompleted(jobSet.toBatchInfo))
     }
     job.result match {

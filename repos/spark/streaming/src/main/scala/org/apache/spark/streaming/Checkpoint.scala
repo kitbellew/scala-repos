@@ -181,8 +181,8 @@ private[streaming] class CheckpointWriter(
     jobGenerator: JobGenerator,
     conf: SparkConf,
     checkpointDir: String,
-    hadoopConf: Configuration
-) extends Logging {
+    hadoopConf: Configuration)
+    extends Logging {
   val MAX_ATTEMPTS = 3
   val executor = Executors.newFixedThreadPool(1)
   val compressionCodec = CompressionCodec.createCodec(conf)
@@ -265,8 +265,11 @@ private[streaming] class CheckpointWriter(
 
           // All done, print success
           val finishTime = System.currentTimeMillis()
-          logInfo("Checkpoint for time " + checkpointTime + " saved to file '" + checkpointFile +
-            "', took " + bytes.length + " bytes and " + (finishTime - startTime) + " ms")
+          logInfo(
+            "Checkpoint for time " + checkpointTime + " saved to file '" + checkpointFile +
+              "', took " + bytes.length + " bytes and " + (
+              finishTime - startTime
+            ) + " ms")
           jobGenerator.onCheckpointCompletion(
             checkpointTime,
             clearCheckpointDataLater)
@@ -289,11 +292,10 @@ private[streaming] class CheckpointWriter(
   def write(checkpoint: Checkpoint, clearCheckpointDataLater: Boolean) {
     try {
       val bytes = Checkpoint.serialize(checkpoint, conf)
-      executor.execute(
-        new CheckpointWriteHandler(
-          checkpoint.checkpointTime,
-          bytes,
-          clearCheckpointDataLater))
+      executor.execute(new CheckpointWriteHandler(
+        checkpoint.checkpointTime,
+        bytes,
+        clearCheckpointDataLater))
       logInfo(
         "Submitted checkpoint of time " + checkpoint.checkpointTime + " writer queue")
     } catch {

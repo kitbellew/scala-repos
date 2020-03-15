@@ -76,11 +76,10 @@ abstract class WithServer(
   implicit def implicitPort: Port = port
 
   override def around[T: AsResult](t: => T): Result =
-    Helpers.running(
-      TestServer(
-        port = port,
-        application = app,
-        serverProvider = serverProvider))(AsResult.effectively(t))
+    Helpers.running(TestServer(
+      port = port,
+      application = app,
+      serverProvider = serverProvider))(AsResult.effectively(t))
 }
 
 /**

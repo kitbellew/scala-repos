@@ -40,16 +40,15 @@ class HTTPRequestServlet(
     req.getSession(
       false
     ) // do this to make sure we capture the JSESSIONID cookie
-    (Box !! req.getCookies).map(
-      _.toList.map(c =>
-        HTTPCookie(
-          c.getName,
-          Box !! (c.getValue),
-          Box !! (c.getDomain),
-          Box !! (c.getPath),
-          Box !! (c.getMaxAge),
-          Box !! (c.getVersion),
-          Box !! (c.getSecure)))) openOr Nil
+    (Box !! req.getCookies).map(_.toList.map(c =>
+      HTTPCookie(
+        c.getName,
+        Box !! (c.getValue),
+        Box !! (c.getDomain),
+        Box !! (c.getPath),
+        Box !! (c.getMaxAge),
+        Box !! (c.getVersion),
+        Box !! (c.getSecure)))) openOr Nil
   }
 
   lazy val authType: Box[String] = Box !! req.getAuthType
@@ -101,8 +100,9 @@ class HTTPRequestServlet(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find (
+    _.name equalsIgnoreCase "user-agent"
+  ) flatMap (_.values.headOption)
 
   def remotePort: Int = req.getRemotePort
 
@@ -322,7 +322,8 @@ private class OfflineRequestSnapshot(
   /**
     * The User-Agent of the request
     */
-  lazy val userAgent: Box[String] =
-    headers find (_.name equalsIgnoreCase "user-agent") flatMap (_.values.headOption)
+  lazy val userAgent: Box[String] = headers find (
+    _.name equalsIgnoreCase "user-agent"
+  ) flatMap (_.values.headOption)
 
 }

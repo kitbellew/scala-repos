@@ -55,12 +55,11 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             MediaType.Compressible,
             params = Map("bar" -> "b>az")))
       "Accept: application/*+xml; version=2" =!=
-        Accept(
-          MediaType.customBinary(
-            "application",
-            "*+xml",
-            MediaType.Compressible,
-            params = Map("version" -> "2")))
+        Accept(MediaType.customBinary(
+          "application",
+          "*+xml",
+          MediaType.Compressible,
+          params = Map("version" -> "2")))
     }
 
     "Accept-Charset" in {
@@ -195,10 +194,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           GenericHttpCredentials("Fancy", Map("yes" -> "n:o", "nonce" -> "42")))
           .renderedTo("""Fancy yes="n:o",nonce=42""")
       """Authorization: Fancy yes=no,nonce="4\\2"""" =!=
-        Authorization(
-          GenericHttpCredentials(
-            "Fancy",
-            Map("yes" -> "no", "nonce" -> """4\2""")))
+        Authorization(GenericHttpCredentials(
+          "Fancy",
+          Map("yes" -> "no", "nonce" -> """4\2""")))
       "Authorization: Basic Qm9iOg==" =!=
         Authorization(BasicHttpCredentials("Bob", ""))
       """Authorization: Digest name=Bob""" =!=
@@ -279,9 +277,12 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         `Content-Type`(ContentType(`text/plain`, `UTF-8`))
           .renderedTo("text/plain; charset=UTF-8")
       "Content-Type: text/xml2; version=3; charset=windows-1252" =!=
-        `Content-Type`(MediaType
-          .customWithOpenCharset("text", "xml2", params = Map("version" -> "3"))
-          withCharset HttpCharsets.getForKey("windows-1252").get)
+        `Content-Type`(
+          MediaType.customWithOpenCharset(
+            "text",
+            "xml2",
+            params = Map("version" -> "3"))
+            withCharset HttpCharsets.getForKey("windows-1252").get)
       "Content-Type: text/plain; charset=fancy-pants" =!=
         `Content-Type`(
           `text/plain` withCharset HttpCharset.custom("fancy-pants"))
@@ -294,12 +295,11 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           `multipart/mixed` withBoundary "ABC/123" withCharset `UTF-8`)
           .renderedTo("""multipart/mixed; boundary="ABC/123"; charset=UTF-8""")
       "Content-Type: application/*" =!=
-        `Content-Type`(
-          MediaType.customBinary(
-            "application",
-            "*",
-            MediaType.Compressible,
-            allowArbitrarySubtypes = true))
+        `Content-Type`(MediaType.customBinary(
+          "application",
+          "*",
+          MediaType.Compressible,
+          allowArbitrarySubtypes = true))
     }
 
     "Content-Range" in {
@@ -363,35 +363,29 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         List(HttpCookiePair("a" -> "1"), HttpCookiePair.raw("b" -> "\"test\"")))
         .renderedTo("a=1; b=\"test\"")
         .withCookieParsingMode(CookieParsingMode.Raw)
-      "Cookie: a=1; b=f\"d\"c\"; c=xyz" =!= Cookie(
-        List(
-          HttpCookiePair("a" -> "1"),
-          HttpCookiePair.raw("b" -> "f\"d\"c\""),
-          HttpCookiePair("c" -> "xyz")))
+      "Cookie: a=1; b=f\"d\"c\"; c=xyz" =!= Cookie(List(
+        HttpCookiePair("a" -> "1"),
+        HttpCookiePair.raw("b" -> "f\"d\"c\""),
+        HttpCookiePair("c" -> "xyz")))
         .withCookieParsingMode(CookieParsingMode.Raw)
-      "Cookie: a=1; b=ä; c=d" =!= Cookie(
-        List(
-          HttpCookiePair("a" -> "1"),
-          HttpCookiePair.raw("b" -> "ä"),
-          HttpCookiePair("c" -> "d")))
+      "Cookie: a=1; b=ä; c=d" =!= Cookie(List(
+        HttpCookiePair("a" -> "1"),
+        HttpCookiePair.raw("b" -> "ä"),
+        HttpCookiePair("c" -> "d")))
         .withCookieParsingMode(CookieParsingMode.Raw)
     }
 
     "Date" in {
-      "Date: Wed, 13 Jul 2011 08:12:31 GMT" =!= Date(
-        DateTime(2011, 7, 13, 8, 12, 31))
-      "Date: Wed, 13-Jul-2011 08:12:31 GMT" =!= Date(
-        DateTime(2011, 7, 13, 8, 12, 31))
-        .renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
-      "Date: Wed, 13-Jul-11 08:12:31 GMT" =!= Date(
-        DateTime(2011, 7, 13, 8, 12, 31))
-        .renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
-      "Date: Mon, 13-Jul-70 08:12:31 GMT" =!= Date(
-        DateTime(1970, 7, 13, 8, 12, 31))
-        .renderedTo("Mon, 13 Jul 1970 08:12:31 GMT")
-      "Date: Fri, 23 Mar 1804 12:11:10 UTC" =!= Date(
-        DateTime(1804, 3, 23, 12, 11, 10))
-        .renderedTo("Fri, 23 Mar 1804 12:11:10 GMT")
+      "Date: Wed, 13 Jul 2011 08:12:31 GMT" =!= Date(DateTime(
+        2011, 7, 13, 8, 12, 31))
+      "Date: Wed, 13-Jul-2011 08:12:31 GMT" =!= Date(DateTime(
+        2011, 7, 13, 8, 12, 31)).renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
+      "Date: Wed, 13-Jul-11 08:12:31 GMT" =!= Date(DateTime(
+        2011, 7, 13, 8, 12, 31)).renderedTo("Wed, 13 Jul 2011 08:12:31 GMT")
+      "Date: Mon, 13-Jul-70 08:12:31 GMT" =!= Date(DateTime(
+        1970, 7, 13, 8, 12, 31)).renderedTo("Mon, 13 Jul 1970 08:12:31 GMT")
+      "Date: Fri, 23 Mar 1804 12:11:10 UTC" =!= Date(DateTime(
+        1804, 3, 23, 12, 11, 10)).renderedTo("Fri, 23 Mar 1804 12:11:10 GMT")
     }
 
     "ETag" in {
@@ -402,8 +396,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "Expect" in { "Expect: 100-continue" =!= Expect.`100-continue` }
 
     "Expires" in {
-      "Expires: Wed, 13 Jul 2011 08:12:31 GMT" =!= Expires(
-        DateTime(2011, 7, 13, 8, 12, 31))
+      "Expires: Wed, 13 Jul 2011 08:12:31 GMT" =!= Expires(DateTime(
+        2011, 7, 13, 8, 12, 31))
       "Expires: 0" =!= Expires(DateTime.MinValue)
         .renderedTo("Wed, 01 Jan 1800 00:00:00 GMT")
     }
@@ -543,10 +537,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
 
     "Proxy-Authorization" in {
       """Proxy-Authorization: Fancy yes=no,nonce="4\\2"""" =!=
-        `Proxy-Authorization`(
-          GenericHttpCredentials(
-            "Fancy",
-            Map("yes" -> "no", "nonce" -> """4\2""")))
+        `Proxy-Authorization`(GenericHttpCredentials(
+          "Fancy",
+          Map("yes" -> "no", "nonce" -> """4\2""")))
     }
 
     "Referer" in {
@@ -602,40 +595,35 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         `Sec-WebSocket-Extensions`(
           Vector(WebSocketExtension("abc"), WebSocketExtension("def")))
       "Sec-WebSocket-Extensions: abc; param=2; use_y, def" =!=
-        `Sec-WebSocket-Extensions`(
-          Vector(
-            WebSocketExtension("abc", Map("param" -> "2", "use_y" -> "")),
-            WebSocketExtension("def")))
+        `Sec-WebSocket-Extensions`(Vector(
+          WebSocketExtension("abc", Map("param" -> "2", "use_y" -> "")),
+          WebSocketExtension("def")))
       "Sec-WebSocket-Extensions: abc; param=\",xyz\", def" =!=
-        `Sec-WebSocket-Extensions`(
-          Vector(
-            WebSocketExtension("abc", Map("param" -> ",xyz")),
-            WebSocketExtension("def")))
+        `Sec-WebSocket-Extensions`(Vector(
+          WebSocketExtension("abc", Map("param" -> ",xyz")),
+          WebSocketExtension("def")))
 
       // real examples from https://tools.ietf.org/html/draft-ietf-hybi-permessage-compression-19
       "Sec-WebSocket-Extensions: permessage-deflate" =!=
         `Sec-WebSocket-Extensions`(
           Vector(WebSocketExtension("permessage-deflate")))
       "Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits; server_max_window_bits=10" =!=
-        `Sec-WebSocket-Extensions`(
-          Vector(
-            WebSocketExtension(
-              "permessage-deflate",
-              Map(
-                "client_max_window_bits" -> "",
-                "server_max_window_bits" -> "10"))))
+        `Sec-WebSocket-Extensions`(Vector(WebSocketExtension(
+          "permessage-deflate",
+          Map(
+            "client_max_window_bits" -> "",
+            "server_max_window_bits" -> "10"))))
       "Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits; server_max_window_bits=10, permessage-deflate; client_max_window_bits" =!=
-        `Sec-WebSocket-Extensions`(
-          Vector(
-            WebSocketExtension(
-              "permessage-deflate",
-              Map(
-                "client_max_window_bits" -> "",
-                "server_max_window_bits" -> "10")),
-            WebSocketExtension(
-              "permessage-deflate",
-              Map("client_max_window_bits" -> ""))
-          ))
+        `Sec-WebSocket-Extensions`(Vector(
+          WebSocketExtension(
+            "permessage-deflate",
+            Map(
+              "client_max_window_bits" -> "",
+              "server_max_window_bits" -> "10")),
+          WebSocketExtension(
+            "permessage-deflate",
+            Map("client_max_window_bits" -> ""))
+        ))
     }
     "Sec-WebSocket-Key" in {
       "Sec-WebSocket-Key: c2Zxb3JpbmgyMzA5dGpoMDIzOWdlcm5vZ2luCg==" =!= `Sec-WebSocket-Key`(
@@ -661,156 +649,138 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         `Set-Cookie`(HttpCookie("SID", "31d4d96e407aad42"))
           .renderedTo("SID=31d4d96e407aad42")
       "Set-Cookie: SID=31d4d96e407aad42; Domain=example.com; Path=/" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "SID",
-            "31d4d96e407aad42",
-            path = Some("/"),
-            domain = Some("example.com")))
+        `Set-Cookie`(HttpCookie(
+          "SID",
+          "31d4d96e407aad42",
+          path = Some("/"),
+          domain = Some("example.com")))
       "Set-Cookie: lang=en-US; Expires=Wed, 09 Jun 2021 10:18:14 GMT; Path=/hello" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "en-US",
-            expires = Some(DateTime(2021, 6, 9, 10, 18, 14)),
-            path = Some("/hello")))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "en-US",
+          expires = Some(DateTime(2021, 6, 9, 10, 18, 14)),
+          path = Some("/hello")))
       "Set-Cookie: name=123; Max-Age=12345; Secure" =!=
         `Set-Cookie`(
           HttpCookie("name", "123", maxAge = Some(12345), secure = true))
       "Set-Cookie: name=123; HttpOnly; fancyPants" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "name",
-            "123",
-            httpOnly = true,
-            extension = Some("fancyPants")))
+        `Set-Cookie`(HttpCookie(
+          "name",
+          "123",
+          httpOnly = true,
+          extension = Some("fancyPants")))
       "Set-Cookie: foo=bar; domain=example.com; Path=/this is a path with blanks; extension with blanks" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "foo",
-            "bar",
-            domain = Some("example.com"),
-            path = Some("/this is a path with blanks"),
-            extension = Some("extension with blanks"))).renderedTo(
+        `Set-Cookie`(HttpCookie(
+          "foo",
+          "bar",
+          domain = Some("example.com"),
+          path = Some("/this is a path with blanks"),
+          extension = Some("extension with blanks"))).renderedTo(
           "foo=bar; Domain=example.com; Path=/this is a path with blanks; extension with blanks")
 
       // test all weekdays
       "Set-Cookie: lang=; Expires=Sun, 07 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 7, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 7, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Sunday, 07 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 7, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 7, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Sun, 07 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Mon, 08 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 8, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 8, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Monday, 08 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 8, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 8, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Mon, 08 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Tue, 09 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 9, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 9, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Tuesday, 09 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 9, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 9, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Tue, 09 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Wed, 10 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 10, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 10, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Wednesday, 10 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 10, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 10, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Wed, 10 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Thu, 11 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 11, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 11, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Thursday, 11 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 11, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 11, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Thu, 11 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Fri, 12 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 12, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 12, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Friday, 12 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 12, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 12, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Fri, 12 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
       "Set-Cookie: lang=; Expires=Sat, 13 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 13, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 13, 0, 42, 55)),
+          maxAge = Some(12345)))
       "Set-Cookie: lang=; Expires=Saturday, 13 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "lang",
-            "",
-            expires = Some(DateTime(2014, 12, 13, 0, 42, 55)),
-            maxAge = Some(12345)))
+        `Set-Cookie`(HttpCookie(
+          "lang",
+          "",
+          expires = Some(DateTime(2014, 12, 13, 0, 42, 55)),
+          maxAge = Some(12345)))
           .renderedTo(
             "lang=; Expires=Sat, 13 Dec 2014 00:42:55 GMT; Max-Age=12345")
 
@@ -826,21 +796,19 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
 
       // extra examples from play
       "Set-Cookie: PLAY_FLASH=\"success=found\"; Path=/; HTTPOnly" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "PLAY_FLASH",
-            "success=found",
-            path = Some("/"),
-            httpOnly = true))
+        `Set-Cookie`(HttpCookie(
+          "PLAY_FLASH",
+          "success=found",
+          path = Some("/"),
+          httpOnly = true))
           .renderedTo("PLAY_FLASH=success=found; Path=/; HttpOnly")
       "Set-Cookie: PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HTTPOnly" =!=
-        `Set-Cookie`(
-          HttpCookie(
-            "PLAY_FLASH",
-            "",
-            expires = Some(DateTime(2014, 12, 7, 22, 48, 47)),
-            path = Some("/"),
-            httpOnly = true))
+        `Set-Cookie`(HttpCookie(
+          "PLAY_FLASH",
+          "",
+          expires = Some(DateTime(2014, 12, 7, 22, 48, 47)),
+          path = Some("/"),
+          httpOnly = true))
           .renderedTo(
             "PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HttpOnly")
     }
@@ -879,14 +847,13 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
                            nonce=dcd98b7102dd2f0e8b11d0f600bfb0c093,
                            opaque=5ccc069c403ebaf9f0171e9517f40e41"""
         .stripMarginWithNewline("\r\n") =!=
-        `WWW-Authenticate`(
-          HttpChallenge(
-            "Digest",
-            "testrealm@host.com",
-            Map(
-              "qop" -> "auth,auth-int",
-              "nonce" -> "dcd98b7102dd2f0e8b11d0f600bfb0c093",
-              "opaque" -> "5ccc069c403ebaf9f0171e9517f40e41"))).renderedTo(
+        `WWW-Authenticate`(HttpChallenge(
+          "Digest",
+          "testrealm@host.com",
+          Map(
+            "qop" -> "auth,auth-int",
+            "nonce" -> "dcd98b7102dd2f0e8b11d0f600bfb0c093",
+            "opaque" -> "5ccc069c403ebaf9f0171e9517f40e41"))).renderedTo(
           "Digest realm=\"testrealm@host.com\",qop=\"auth,auth-int\",nonce=dcd98b7102dd2f0e8b11d0f600bfb0c093,opaque=5ccc069c403ebaf9f0171e9517f40e41")
       "WWW-Authenticate: Basic realm=\"WallyWorld\",attr=\"val>ue\", Fancy realm=\"yeah\"" =!=
         `WWW-Authenticate`(
@@ -996,10 +963,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         ErrorInfo("Illegal HTTP header name", " X"))
     }
     "not accept illegal header values" in {
-      parse("Foo", "ba\u0000r") shouldEqual ParsingResult.Error(
-        ErrorInfo(
-          "Illegal HTTP header value: Invalid input '\\u0000', expected field-value-char, FWS or 'EOI' (line 1, column 3)",
-          "ba\u0000r\n  ^"))
+      parse("Foo", "ba\u0000r") shouldEqual ParsingResult.Error(ErrorInfo(
+        "Illegal HTTP header value: Invalid input '\\u0000', expected field-value-char, FWS or 'EOI' (line 1, column 3)",
+        "ba\u0000r\n  ^"))
     }
     "allow UTF8 characters in RawHeaders" in {
       parse("Flood-Resistant-Hammerdrill", "árvíztűrő ütvefúrógép") shouldEqual

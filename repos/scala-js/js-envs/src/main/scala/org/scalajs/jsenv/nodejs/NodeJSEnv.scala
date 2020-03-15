@@ -28,8 +28,8 @@ class NodeJSEnv private (
     nodejsPath: String,
     addArgs: Seq[String],
     addEnv: Map[String, String],
-    val sourceMap: Boolean
-) extends ExternalJSEnv(addArgs, addEnv)
+    val sourceMap: Boolean)
+    extends ExternalJSEnv(addArgs, addEnv)
     with ComJSEnv {
 
   def this(
@@ -101,9 +101,7 @@ class NodeJSEnv private (
     private[this] var jvm2js: DataOutputStream = _
     private[this] var js2jvm: DataInputStream = _
 
-    private def comSetup =
-      new MemVirtualJSFile("comSetup.js").withContent(
-        s"""
+    private def comSetup = new MemVirtualJSFile("comSetup.js").withContent(s"""
       (function() {
         // The socket for communication
         var socket = null;
@@ -178,8 +176,7 @@ class NodeJSEnv private (
           }
         }
       }).call(this);
-      """
-      )
+      """)
 
     def send(msg: String): Unit = {
       if (awaitConnection()) {
@@ -232,10 +229,10 @@ class NodeJSEnv private (
       while (comSocket == null && isRunning) {
         try {
           comSocket = serverSocket.accept()
-          jvm2js = new DataOutputStream(
-            new BufferedOutputStream(comSocket.getOutputStream()))
-          js2jvm = new DataInputStream(
-            new BufferedInputStream(comSocket.getInputStream()))
+          jvm2js = new DataOutputStream(new BufferedOutputStream(
+            comSocket.getOutputStream()))
+          js2jvm = new DataInputStream(new BufferedInputStream(
+            comSocket.getInputStream()))
         } catch {
           case to: SocketTimeoutException =>
         }
@@ -259,15 +256,12 @@ class NodeJSEnv private (
       */
     protected def installSourceMap(): Seq[VirtualJSFile] = {
       if (sourceMap)
-        Seq(
-          new MemVirtualJSFile("sourceMapSupport.js").withContent(
-            """
+        Seq(new MemVirtualJSFile("sourceMapSupport.js").withContent(
+          """
             try {
               require('source-map-support').install();
             } catch (e) {}
-            """
-          )
-        )
+            """))
       else Seq()
     }
 
@@ -275,9 +269,8 @@ class NodeJSEnv private (
       *  Is used by [[initFiles]], override to change/disable.
       */
     protected def fixPercentConsole(): Seq[VirtualJSFile] =
-      Seq(
-        new MemVirtualJSFile("nodeConsoleHack.js").withContent(
-          """
+      Seq(new MemVirtualJSFile("nodeConsoleHack.js").withContent(
+        """
           // Hack console log to duplicate double % signs
           (function() {
             function startsWithAnyOf(s, prefixes) {
@@ -303,23 +296,18 @@ class NodeJSEnv private (
             };
             console.log = newLog;
           })();
-          """
-        )
-      )
+          """))
 
     /** File(s) to define `__ScalaJSEnv`. Defines `exitFunction`.
       *  Is used by [[initFiles]], override to change/disable.
       */
     protected def runtimeEnv(): Seq[VirtualJSFile] =
-      Seq(
-        new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
-          """
+      Seq(new MemVirtualJSFile("scalaJSEnvInfo.js").withContent(
+        """
           __ScalaJSEnv = {
             exitFunction: function(status) { process.exit(status); }
           };
-          """
-        )
-      )
+          """))
 
     /** Concatenates results from [[installSourceMap]], [[fixPercentConsole]] and
       *  [[runtimeEnv]] (in this order).
@@ -339,9 +327,8 @@ class NodeJSEnv private (
       dep.info.commonJSName.fold(dep.lib) { varname =>
         val fname = dep.lib.name
         libCache.materialize(dep.lib)
-        new MemVirtualJSFile(s"require-$fname").withContent(
-          s"""$varname = require("${escapeJS(fname)}");"""
-        )
+        new MemVirtualJSFile(s"require-$fname")
+          .withContent(s"""$varname = require("${escapeJS(fname)}");""")
       }
     }
 
@@ -373,8 +360,7 @@ class NodeJSEnv private (
 
       sys.env ++ Seq(
         "NODE_MODULE_CONTEXTS" -> "0",
-        "NODE_PATH" -> nodePath
-      ) ++ additionalEnv
+        "NODE_PATH" -> nodePath) ++ additionalEnv
     }
   }
 

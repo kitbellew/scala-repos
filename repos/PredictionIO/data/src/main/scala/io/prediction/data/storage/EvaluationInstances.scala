@@ -149,6 +149,5 @@ class EvaluationInstanceSerializer
                 JField(
                   "evaluatorResultsJSON",
                   JString(i.evaluatorResultsJSON)) ::
-                Nil
-            )
+                Nil)
         }))

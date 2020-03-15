@@ -343,18 +343,16 @@ object InferUtil {
           }
           val update: ScTypePolymorphicType = localTypeInference(
             m,
-            Seq(
-              Parameter(
-                "",
-                None,
-                expected,
-                expected,
-                isDefault = false,
-                isRepeated = false,
-                isByName = false)),
-            Seq(
-              new Expression(undefineSubstitutor(typeParams).subst(
-                innerInternal.inferValueType))),
+            Seq(Parameter(
+              "",
+              None,
+              expected,
+              expected,
+              isDefault = false,
+              isRepeated = false,
+              isByName = false)),
+            Seq(new Expression(undefineSubstitutor(typeParams).subst(
+              innerInternal.inferValueType))),
             typeParams,
             shouldUndefineParameters = false,
             safeCheck = check,
@@ -373,18 +371,16 @@ object InferUtil {
           nonValueType = Success(
             localTypeInference(
               internal,
-              Seq(
-                Parameter(
-                  "",
-                  None,
-                  expected,
-                  expected,
-                  isDefault = false,
-                  isRepeated = false,
-                  isByName = false)),
-              Seq(
-                new Expression(undefineSubstitutor(typeParams).subst(
-                  internal.inferValueType))),
+              Seq(Parameter(
+                "",
+                None,
+                expected,
+                expected,
+                isDefault = false,
+                isRepeated = false,
+                isByName = false)),
+              Seq(new Expression(undefineSubstitutor(typeParams).subst(
+                internal.inferValueType))),
               typeParams,
               shouldUndefineParameters = false,
               safeCheck = check,
@@ -410,11 +406,10 @@ object InferUtil {
               && !mt.returnType.conforms(expectedType) =>
           mt.returnType match {
             case methodType: ScMethodType =>
-              return mt.copy(
-                returnType = applyImplicitViewToResult(
-                  methodType,
-                  Some(expectedRet),
-                  fromSAM))(mt.project, mt.scope)
+              return mt.copy(returnType = applyImplicitViewToResult(
+                methodType,
+                Some(expectedRet),
+                fromSAM))(mt.project, mt.scope)
             case _ =>
           }
           val dummyExpr = ScalaPsiElementFactory
@@ -562,10 +557,9 @@ object InferUtil {
                       (
                         typeParam.name,
                         ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
-                      new ScUndefinedType(
-                        new ScTypeParameterType(
-                          typeParam.ptp,
-                          ScSubstitutor.empty)))
+                      new ScUndefinedType(new ScTypeParameterType(
+                        typeParam.ptp,
+                        ScSubstitutor.empty)))
                   })
                   .toMap,
                 Map.empty,
@@ -580,10 +574,9 @@ object InferUtil {
                     typez.recursiveUpdate {
                       case tpt: ScTypeParameterType =>
                         typeParams.find(tp =>
-                          (
-                            tp.name,
-                            ScalaPsiUtil.getPsiElementId(
-                              tp.ptp)) == (tpt.name, tpt.getId)) match {
+                          (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                            tpt.name, tpt.getId
+                          )) match {
                           case None => (true, tpt)
                           case _ =>
                             hasRecursiveTypeParameters = true
@@ -655,10 +648,9 @@ object InferUtil {
                       typez.recursiveUpdate {
                         case tpt: ScTypeParameterType =>
                           typeParams.find(tp =>
-                            (
-                              tp.name,
-                              ScalaPsiUtil.getPsiElementId(
-                                tp.ptp)) == (tpt.name, tpt.getId)) match {
+                            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                              tpt.name, tpt.getId
+                            )) match {
                             case None => (true, tpt)
                             case _ =>
                               hasRecursiveTypeParameters = true

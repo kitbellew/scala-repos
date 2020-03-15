@@ -1029,14 +1029,7 @@ trait StringLibSpecs[M[+_]]
 
       val ss = result.toList.collect { case (_, SString(s)) => s }
 
-      ss must contain(
-        "4",
-        "3",
-        "4",
-        "4",
-        "3",
-        "4"
-      ).only
+      ss must contain("4", "3", "4", "4", "3", "4").only
     }
 
     "trim the trailing '.0' in round double conversion" in {

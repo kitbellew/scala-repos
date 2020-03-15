@@ -239,8 +239,8 @@ class ReplicaManagerTest {
         requiredAcks = -1,
         internalTopicsAllowed = false,
         messagesPerPartition = Map(
-          new TopicPartition(topic, 0) -> new ByteBufferMessageSet(
-            new Message("first message".getBytes))),
+          new TopicPartition(topic, 0) -> new ByteBufferMessageSet(new Message(
+            "first message".getBytes))),
         responseCallback = produceCallback
       )
 

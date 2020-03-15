@@ -87,8 +87,7 @@ object CubeSampleDemo extends JFXApp {
         at(0 s) { c3.rz.angle -> 0d },
         at(1 s) { c.ry.angle -> 360d },
         at(1 s) { c2.rx.angle -> 360d },
-        at(1 s) { c3.rz.angle -> 360d }
-      )
+        at(1 s) { c3.rz.angle -> 360d })
     }
 
     new Group(c, c2, c3)

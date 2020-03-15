@@ -28,12 +28,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val create = f.delegate.created(task)
 
     Then("an update operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        task.taskId,
-        TaskOpProcessor.Action.Update(task))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      task.taskId,
+      TaskOpProcessor.Action.Update(task)))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -50,12 +48,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val create = f.delegate.created(task)
 
     Then("an update operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        task.taskId,
-        TaskOpProcessor.Action.Update(task))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      task.taskId,
+      TaskOpProcessor.Action.Update(task)))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")
@@ -76,12 +72,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val terminated = f.delegate.terminated(task.taskId)
 
     Then("an expunge operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        task.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      task.taskId,
+      TaskOpProcessor.Action.Expunge))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -98,12 +92,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val terminated = f.delegate.terminated(task.taskId)
 
     Then("an expunge operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        task.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      task.taskId,
+      TaskOpProcessor.Action.Expunge))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")
@@ -130,12 +122,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val statusUpdate = f.delegate.statusUpdate(appId, update)
 
     Then("an update operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        Task.Id(taskId),
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      Task.Id(taskId),
+      TaskOpProcessor.Action.UpdateStatus(update)))
 
     When("the request is acknowledged")
     f.taskTrackerProbe.reply(())
@@ -157,12 +147,10 @@ class TaskCreationHandlerAndUpdaterDelegateTest
     val statusUpdate = f.delegate.statusUpdate(appId, update)
 
     Then("an update operation is requested")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.ForwardTaskOp(
-        f.timeoutFromNow,
-        taskId,
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.ForwardTaskOp(
+      f.timeoutFromNow,
+      taskId,
+      TaskOpProcessor.Action.UpdateStatus(update)))
 
     When("the response is an error")
     val cause: RuntimeException = new scala.RuntimeException("test failure")

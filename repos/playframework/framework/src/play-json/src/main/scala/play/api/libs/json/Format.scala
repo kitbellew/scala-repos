@@ -9,8 +9,7 @@ import play.api.libs.functional._
   * Json formatter: write an implicit to define both a serializer and a deserializer for any type.
   */
 @implicitNotFound(
-  "No Json formatter found for type ${A}. Try to implement an implicit Format for this type."
-)
+  "No Json formatter found for type ${A}. Try to implement an implicit Format for this type.")
 trait Format[A] extends Writes[A] with Reads[A]
 trait OFormat[A] extends OWrites[A] with Reads[A] with Format[A]
 
@@ -22,10 +21,7 @@ object OFormat {
     new FunctionalCanBuild[OFormat] {
 
       def apply[A, B](fa: OFormat[A], fb: OFormat[B]): OFormat[A ~ B] =
-        OFormat[A ~ B](
-          rcb(fa, fb),
-          wcb(fa, fb)
-        )
+        OFormat[A ~ B](rcb(fa, fb), wcb(fa, fb))
 
     }
 

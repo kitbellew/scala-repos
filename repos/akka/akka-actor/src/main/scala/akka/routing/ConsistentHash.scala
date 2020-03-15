@@ -141,8 +141,8 @@ object ConsistentHash {
       nodes: java.lang.Iterable[T],
       virtualNodesFactor: Int): ConsistentHash[T] = {
     import scala.collection.JavaConverters._
-    apply(nodes.asScala, virtualNodesFactor)(
-      ClassTag(classOf[Any].asInstanceOf[Class[T]]))
+    apply(nodes.asScala, virtualNodesFactor)(ClassTag(
+      classOf[Any].asInstanceOf[Class[T]]))
   }
 
   private def concatenateNodeHash(nodeHash: Int, vnode: Int): Int = {

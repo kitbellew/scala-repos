@@ -24,16 +24,15 @@ class ScalaDocInlinedTagInspection extends LocalInspectionTool {
       isOnTheFly: Boolean): PsiElementVisitor = {
     new ScalaElementVisitor {
       override def visitInlinedTag(s: ScDocInlinedTag) {
-        holder.registerProblem(
-          holder.getManager.createProblemDescriptor(
-            s,
-            getDisplayName,
-            true,
-            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-            isOnTheFly,
-            new ScalaDocInlinedTagDeleteQuickFix(s),
-            new ScalaDocInlinedTagReplaceQuickFix(s)
-          ))
+        holder.registerProblem(holder.getManager.createProblemDescriptor(
+          s,
+          getDisplayName,
+          true,
+          ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+          isOnTheFly,
+          new ScalaDocInlinedTagDeleteQuickFix(s),
+          new ScalaDocInlinedTagReplaceQuickFix(s)
+        ))
       }
     }
   }
@@ -63,15 +62,15 @@ class ScalaDocInlinedTagReplaceQuickFix(inlinedTag: ScDocInlinedTag)
     if (!tag.isValid) return
 
     if (tag.getValueElement == null) {
-      tag.replace(
-        ScalaPsiElementFactory
-          .createMonospaceSyntaxFromText("", tag.getManager))
+      tag.replace(ScalaPsiElementFactory.createMonospaceSyntaxFromText(
+        "",
+        tag.getManager))
     } else {
       val tagText = tag.getValueElement.getText
         .replace("`", MyScaladocParsing.escapeSequencesForWiki.get("`").get)
-      tag.replace(
-        ScalaPsiElementFactory
-          .createMonospaceSyntaxFromText(tagText, tag.getManager))
+      tag.replace(ScalaPsiElementFactory.createMonospaceSyntaxFromText(
+        tagText,
+        tag.getManager))
     }
   }
 }

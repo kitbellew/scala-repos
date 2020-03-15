@@ -17,8 +17,7 @@ class LoadGenerator[Req, Rep](
     history: TraversableOnce[Event[Req, Rep]],
     recorder: (Duration, Future[Rep]) => Unit,
     filter: SimpleFilter[Event[Req, Rep], Rep],
-    timer: MockTimer = new MockTimer()
-) {
+    timer: MockTimer = new MockTimer()) {
   val svc = filter andThen Service.mk[Event[Req, Rep], Rep] {
     evt: Event[Req, Rep] =>
       val p = Promise[Rep]()
@@ -89,16 +88,15 @@ object LoadGenerator {
       start: Time,
       interval: Duration,
       mkEvent: Time => Event[Req, Rep],
-      num: Int
-  ): Iterator[Event[Req, Rep]] = mkInGroups(start, interval, mkEvent, 1, num)
+      num: Int): Iterator[Event[Req, Rep]] =
+    mkInGroups(start, interval, mkEvent, 1, num)
 
   def mkInGroups[Req, Rep](
       start: Time,
       interval: Duration,
       mkEvent: Time => Event[Req, Rep],
       groupSize: Int,
-      num: Int
-  ): Iterator[Event[Req, Rep]] = {
+      num: Int): Iterator[Event[Req, Rep]] = {
     var cur = start
     var curGroupSize = 0
     mkHistory(

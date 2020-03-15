@@ -57,10 +57,9 @@ class ProducerFeatureTest
         "test",
         Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
-      expectMsg(
-        CamelMessage(
-          "received TEST",
-          Map(CamelMessage.MessageExchangeId -> "123")))
+      expectMsg(CamelMessage(
+        "received TEST",
+        Map(CamelMessage.MessageExchangeId -> "123")))
     }
 
     "02 produce a message and receive failure response" in {
@@ -136,10 +135,9 @@ class ProducerFeatureTest
         "test",
         Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
-      expectMsg(
-        CamelMessage(
-          "received test",
-          Map(CamelMessage.MessageExchangeId -> "123")))
+      expectMsg(CamelMessage(
+        "received test",
+        Map(CamelMessage.MessageExchangeId -> "123")))
     }
 
     "11 produce message to direct:producer-test-3 and receive failure response" in {
@@ -171,10 +169,9 @@ class ProducerFeatureTest
         "test",
         Map(CamelMessage.MessageExchangeId -> "123"))
       producer.tell(message, testActor)
-      expectMsg(
-        CamelMessage(
-          "received test",
-          Map(CamelMessage.MessageExchangeId -> "123", "test" -> "result")))
+      expectMsg(CamelMessage(
+        "received test",
+        Map(CamelMessage.MessageExchangeId -> "123", "test" -> "result")))
     }
 
     "13 produce message, forward failure response of direct:producer-test-2 to a replying target actor and receive response" in {
@@ -241,10 +238,9 @@ class ProducerFeatureTest
         Map(CamelMessage.MessageExchangeId -> "123"))
 
       producer.tell(message, testActor)
-      expectMsg(
-        CamelMessage(
-          "received test",
-          Map(CamelMessage.MessageExchangeId -> "123", "test" -> "result")))
+      expectMsg(CamelMessage(
+        "received test",
+        Map(CamelMessage.MessageExchangeId -> "123", "test" -> "result")))
     }
 
     "17 produce message, forward failure response from direct:producer-test-3 to a replying target actor and receive response" in {
@@ -324,9 +320,8 @@ class ProducerFeatureTest
       import TestSupport._
       filterEvents(EventFilter[Exception](occurrences = 1)) {
         val producerSupervisor = system.actorOf(
-          Props(
-            new ProducerSupervisor(
-              Props(new ChildProducer("mock:mock", true)))),
+          Props(new ProducerSupervisor(Props(
+            new ChildProducer("mock:mock", true)))),
           "21-ignore-deadletter-sender-ref-test")
         mockEndpoint.reset()
         producerSupervisor.tell(CamelMessage("test", Map()), testActor)

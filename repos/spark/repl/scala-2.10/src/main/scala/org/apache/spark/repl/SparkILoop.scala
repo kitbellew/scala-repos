@@ -61,8 +61,8 @@ import org.apache.spark.util.Utils
 class SparkILoop(
     private val in0: Option[BufferedReader],
     protected val out: JPrintWriter,
-    val master: Option[String]
-) extends AnyRef
+    val master: Option[String])
+    extends AnyRef
     with LoopCommands
     with SparkILoopInit
     with Logging {
@@ -446,18 +446,15 @@ class SparkILoop(
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(
-          typeMsg,
-          termMsg,
-          implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
+          _ == ""
+        ) mkString ("(", ", ", ")")
 
-        intp.reporter.printMessage(
-          "%2d) %-30s %s%s".format(
-            idx + 1,
-            handler.importString,
-            statsMsg,
-            foundMsg
-          ))
+        intp.reporter.printMessage("%2d) %-30s %s%s".format(
+          idx + 1,
+          handler.importString,
+          statsMsg,
+          foundMsg))
     }
   }
 
@@ -501,10 +498,8 @@ class SparkILoop(
               val memberGroups: List[List[Symbol]] = {
                 val groups = members groupBy (_.tpe.finalResultType) toList
                 val (big, small) = groups partition (_._2.size > 3)
-                val xss = (
-                  (big sortBy (_._1.toString) map (_._2)) :+
-                    (small flatMap (_._2))
-                )
+                val xss = ((big sortBy (_._1.toString) map (_._2)) :+
+                  (small flatMap (_._2)))
 
                 xss map (xs => xs sortBy (_.name.toString))
               }
@@ -840,9 +835,9 @@ class SparkILoop(
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)
       sparkContext.addJar(f.toURI.toURL.getPath)
-      echo(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClasspathString))
+      echo("Added '%s'.  Your new classpath is:\n\"%s\"".format(
+        f.path,
+        intp.global.classPath.asClasspathString))
     } else echo("The path '" + f + "' doesn't seem to exist.")
   }
 
@@ -998,8 +993,7 @@ class SparkILoop(
     else
       try new SparkJLineReader(
         if (settings.noCompletion.value) NoCompletion
-        else new SparkJLineCompletion(intp)
-      )
+        else new SparkJLineCompletion(intp))
       catch {
         case ex @ (_: Exception | _: NoClassDefFoundError) =>
           echo(
@@ -1044,11 +1038,9 @@ class SparkILoop(
         org.apache.spark.repl.SparkIMain]
       // Bind intp somewhere out of the regular namespace where
       // we can get at it in generated code.
-      addThunk(
-        intp.quietBind(
-          NamedParam[SparkIMain]("$intp", intp)(
-            tagOfSparkIMain,
-            classTag[SparkIMain])))
+      addThunk(intp.quietBind(NamedParam[SparkIMain]("$intp", intp)(
+        tagOfSparkIMain,
+        classTag[SparkIMain])))
       addThunk({
         import scala.tools.nsc.io._
         import Properties.userHome

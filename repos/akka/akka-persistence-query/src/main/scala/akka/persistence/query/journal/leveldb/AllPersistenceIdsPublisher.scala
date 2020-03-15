@@ -21,11 +21,10 @@ private[akka] object AllPersistenceIdsPublisher {
       liveQuery: Boolean,
       maxBufSize: Int,
       writeJournalPluginId: String): Props =
-    Props(
-      new AllPersistenceIdsPublisher(
-        liveQuery,
-        maxBufSize,
-        writeJournalPluginId))
+    Props(new AllPersistenceIdsPublisher(
+      liveQuery,
+      maxBufSize,
+      writeJournalPluginId))
 
   private case object Continue
 }

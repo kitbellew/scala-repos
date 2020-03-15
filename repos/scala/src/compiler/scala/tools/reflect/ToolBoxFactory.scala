@@ -126,8 +126,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
                     else freeTermRef
                   case _ =>
                     throw new Error(
-                      "internal error: %s (%s, %s) is not supported"
-                        .format(tree, tree.productPrefix, tree.getClass))
+                      "internal error: %s (%s, %s) is not supported".format(
+                        tree,
+                        tree.productPrefix,
+                        tree.getClass))
                 }
               } else { super.transform(tree) }
           }.transform(expr0)
@@ -232,32 +234,29 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           mode,
           withImplicitViewsDisabled = withImplicitViewsDisabled,
           withMacrosDisabled = withMacrosDisabled)((currentTyper, expr) => {
-          trace(
-            "typing (implicit views = %s, macros = %s): "
-              .format(!withImplicitViewsDisabled, !withMacrosDisabled))(
-            showAttributed(
-              expr,
-              true,
-              true,
-              settings.Yshowsymowners.value,
-              settings.Yshowsymkinds.value))
+          trace("typing (implicit views = %s, macros = %s): ".format(
+            !withImplicitViewsDisabled,
+            !withMacrosDisabled))(showAttributed(
+            expr,
+            true,
+            true,
+            settings.Yshowsymowners.value,
+            settings.Yshowsymkinds.value))
           currentTyper.silent(
             _.typed(expr, mode, pt),
             reportAmbiguousErrors = false) match {
             case analyzer.SilentResultValue(result) =>
-              trace("success: ")(
-                showAttributed(
-                  result,
-                  true,
-                  true,
-                  settings.Yshowsymkinds.value))
+              trace("success: ")(showAttributed(
+                result,
+                true,
+                true,
+                settings.Yshowsymkinds.value))
               result
             case error @ analyzer.SilentTypeError(_) =>
               trace("failed: ")(error.err.errMsg)
               if (!silent)
-                throw ToolBoxError(
-                  "reflective typecheck has failed: %s".format(
-                    error.err.errMsg))
+                throw ToolBoxError("reflective typecheck has failed: %s".format(
+                  error.err.errMsg))
               EmptyTree
           }
         })
@@ -274,15 +273,14 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           TERMmode,
           withImplicitViewsDisabled = false,
           withMacrosDisabled = withMacrosDisabled)((currentTyper, tree) => {
-          trace(
-            "inferring implicit %s (macros = %s): "
-              .format(if (isView) "view" else "value", !withMacrosDisabled))(
-            showAttributed(
-              pt,
-              true,
-              true,
-              settings.Yshowsymowners.value,
-              settings.Yshowsymkinds.value))
+          trace("inferring implicit %s (macros = %s): ".format(
+            if (isView) "view" else "value",
+            !withMacrosDisabled))(showAttributed(
+            pt,
+            true,
+            true,
+            settings.Yshowsymowners.value,
+            settings.Yshowsymkinds.value))
           analyzer.inferImplicit(
             tree,
             pt,
@@ -363,22 +361,20 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
               List(),
               List(methdef),
               NoPosition))
-          trace("wrapped: ")(
-            showAttributed(
-              moduledef,
-              true,
-              true,
-              settings.Yshowsymowners.value,
-              settings.Yshowsymkinds.value))
+          trace("wrapped: ")(showAttributed(
+            moduledef,
+            true,
+            true,
+            settings.Yshowsymowners.value,
+            settings.Yshowsymkinds.value))
 
           val cleanedUp = resetAttrs(moduledef)
-          trace("cleaned up: ")(
-            showAttributed(
-              cleanedUp,
-              true,
-              true,
-              settings.Yshowsymowners.value,
-              settings.Yshowsymkinds.value))
+          trace("cleaned up: ")(showAttributed(
+            cleanedUp,
+            true,
+            true,
+            settings.Yshowsymowners.value,
+            settings.Yshowsymkinds.value))
           cleanedUp.asInstanceOf[ModuleDef]
         }
 
@@ -464,8 +460,9 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
       def throwIfErrors() = {
         if (frontEnd.hasErrors)
           throw ToolBoxError(
-            "reflective compilation has failed:" + EOL + EOL + (frontEnd.infos map (_.msg) mkString EOL)
-          )
+            "reflective compilation has failed:" + EOL + EOL + (
+              frontEnd.infos map (_.msg) mkString EOL
+            ))
       }
     }
 
@@ -492,8 +489,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             if (frontEnd.hasErrors) {
               throw ToolBoxError(
                 "reflective compilation has failed: cannot initialize the compiler:" + EOL + EOL +
-                  (frontEnd.infos map (_.msg) mkString EOL)
-              )
+                  (frontEnd.infos map (_.msg) mkString EOL))
             }
             instance
           } catch {
@@ -603,9 +599,10 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
         val cpos: compiler.Position = importer.importPosition(pos)
 
         if (compiler.settings.verbose)
-          println(
-            "inferring implicit %s of type %s, macros = %s"
-              .format(if (isView) "view" else "value", pt, !withMacrosDisabled))
+          println("inferring implicit %s of type %s, macros = %s".format(
+            if (isView) "view" else "value",
+            pt,
+            !withMacrosDisabled))
         val itree: compiler.Tree = compiler.inferImplicit(
           ctree,
           cpt,

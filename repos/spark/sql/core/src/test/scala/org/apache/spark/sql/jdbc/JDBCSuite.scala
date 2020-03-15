@@ -301,8 +301,9 @@ class JDBCSuite
         .collect()
         .size == 2)
     assert(
-      checkPushdown(sql("SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary' "
-        + "AND THEID = 2")).collect().size == 2)
+      checkPushdown(sql(
+        "SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary' "
+          + "AND THEID = 2")).collect().size == 2)
     assert(
       checkPushdown(sql("SELECT * FROM foobar WHERE NAME LIKE 'fr%'"))
         .collect()
@@ -362,9 +363,10 @@ class JDBCSuite
     // are applied for columns with Filter producing wrong results. On the other hand, JDBCRDD
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
-    assert(sql(
-      "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
-      Row(1)))
+    assert(
+      sql(
+        "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
+        Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
@@ -474,10 +476,18 @@ class JDBCSuite
   }
 
   test("Partitioning via JDBCPartitioningInfo API") {
-    assert(sqlContext.read
-      .jdbc(urlWithUserAndPass, "TEST.PEOPLE", "THEID", 0, 4, 3, new Properties)
-      .collect()
-      .length === 3)
+    assert(
+      sqlContext.read
+        .jdbc(
+          urlWithUserAndPass,
+          "TEST.PEOPLE",
+          "THEID",
+          0,
+          4,
+          3,
+          new Properties)
+        .collect()
+        .length === 3)
   }
 
   test("Partitioning via list-of-where-clauses API") {
@@ -705,11 +715,10 @@ class JDBCSuite
         === "(col0 = 2) OR (col1 = 'ghi')")
     assert(doCompileFilter(LessThan("col0", 5)) === "col0 < 5")
     assert(
-      doCompileFilter(
-        LessThan(
-          "col3",
-          Timestamp.valueOf(
-            "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
+      doCompileFilter(LessThan(
+        "col3",
+        Timestamp.valueOf(
+          "1995-11-21 00:00:00.0"))) === "col3 < '1995-11-21 00:00:00.0'")
     assert(
       doCompileFilter(
         LessThan("col4", Date.valueOf("1983-08-04"))) === "col4 < '1983-08-04'")
@@ -735,21 +744,20 @@ class JDBCSuite
   }
 
   test("Aggregated dialects") {
-    val agg = new AggregatedDialect(
-      List(
-        new JdbcDialect {
-          override def canHandle(url: String): Boolean =
-            url.startsWith("jdbc:h2:")
-          override def getCatalystType(
-              sqlType: Int,
-              typeName: String,
-              size: Int,
-              md: MetadataBuilder): Option[DataType] =
-            if (sqlType % 2 == 0) { Some(LongType) }
-            else { None }
-        },
-        testH2Dialect
-      ))
+    val agg = new AggregatedDialect(List(
+      new JdbcDialect {
+        override def canHandle(url: String): Boolean =
+          url.startsWith("jdbc:h2:")
+        override def getCatalystType(
+            sqlType: Int,
+            typeName: String,
+            size: Int,
+            md: MetadataBuilder): Option[DataType] =
+          if (sqlType % 2 == 0) { Some(LongType) }
+          else { None }
+      },
+      testH2Dialect
+    ))
     assert(agg.canHandle("jdbc:h2:xxx"))
     assert(!agg.canHandle("jdbc:h2"))
     assert(agg.getCatalystType(0, "", 1, null) === Some(LongType))

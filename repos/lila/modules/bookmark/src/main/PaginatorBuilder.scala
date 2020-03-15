@@ -20,11 +20,7 @@ private[bookmark] final class PaginatorBuilder(maxPerPage: Int) {
   private def paginator(
       adapter: AdapterLike[Bookmark],
       page: Int): Fu[Paginator[Bookmark]] =
-    Paginator(
-      adapter,
-      currentPage = page,
-      maxPerPage = maxPerPage
-    )
+    Paginator(adapter, currentPage = page, maxPerPage = maxPerPage)
 
   final class UserAdapter(user: User) extends AdapterLike[Bookmark] {
 

@@ -107,8 +107,7 @@ class ReplicaFetcherThread(
         brokerConfig.interBrokerSecurityProtocol,
         Mode.CLIENT,
         LoginType.SERVER,
-        brokerConfig.values)
-    )
+        brokerConfig.values))
     new NetworkClient(
       selector,
       new ManualMetadataUpdater(),
@@ -118,8 +117,7 @@ class ReplicaFetcherThread(
       Selectable.USE_DEFAULT_BUFFER_SIZE,
       brokerConfig.replicaSocketReceiveBufferBytes,
       brokerConfig.requestTimeoutMs,
-      time
-    )
+      time)
   }
 
   override def shutdown(): Unit = {
@@ -140,8 +138,9 @@ class ReplicaFetcherThread(
 
       if (fetchOffset != replica.logEndOffset.messageOffset)
         throw new RuntimeException(
-          "Offset mismatch: fetched offset = %d, log end offset = %d."
-            .format(fetchOffset, replica.logEndOffset.messageOffset))
+          "Offset mismatch: fetched offset = %d, log end offset = %d.".format(
+            fetchOffset,
+            replica.logEndOffset.messageOffset))
       if (logger.isTraceEnabled)
         trace(
           "Follower %d has replica log end offset %d for partition %s. Received %d messages and leader hw %d"
@@ -246,8 +245,8 @@ class ReplicaFetcherThread(
             replica.logEndOffset.messageOffset,
             sourceBroker.id,
             leaderEndOffset))
-      replicaMgr.logManager.truncateTo(
-        Map(topicAndPartition -> leaderEndOffset))
+      replicaMgr.logManager.truncateTo(Map(
+        topicAndPartition -> leaderEndOffset))
       leaderEndOffset
     } else {
 
@@ -351,8 +350,9 @@ class ReplicaFetcherThread(
     val topicPartition =
       new TopicPartition(topicAndPartition.topic, topicAndPartition.partition)
     val partitions = Map(
-      topicPartition -> new ListOffsetRequest.PartitionData(earliestOrLatest, 1)
-    )
+      topicPartition -> new ListOffsetRequest.PartitionData(
+        earliestOrLatest,
+        1))
     val request = new ListOffsetRequest(consumerId, partitions.asJava)
     val clientResponse = sendRequest(ApiKeys.LIST_OFFSETS, None, request)
     val response = new ListOffsetResponse(clientResponse.responseBody)
@@ -391,10 +391,9 @@ object ReplicaFetcherThread {
     def isEmpty: Boolean = underlying.fetchData.isEmpty
     def offset(topicAndPartition: TopicAndPartition): Long =
       underlying.fetchData
-        .asScala(
-          new TopicPartition(
-            topicAndPartition.topic,
-            topicAndPartition.partition))
+        .asScala(new TopicPartition(
+          topicAndPartition.topic,
+          topicAndPartition.partition))
         .offset
   }
 

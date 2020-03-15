@@ -222,8 +222,8 @@ trait ScPattern extends ScalaPsiElement {
               classOf[ScTemplateDefinition])
             clazz match {
               case clazz: ScTemplateDefinition =>
-                undefSubst = undefSubst.followed(
-                  new ScSubstitutor(ScThisType(clazz)))
+                undefSubst = undefSubst.followed(new ScSubstitutor(ScThisType(
+                  clazz)))
               case _ =>
             }
             val firstParameterType =

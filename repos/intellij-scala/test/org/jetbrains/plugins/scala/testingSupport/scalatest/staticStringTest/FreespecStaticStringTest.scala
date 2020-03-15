@@ -49,44 +49,39 @@ trait FreeSpecStaticStringTest extends ScalaTestTestCase {
   def testFreeSpecSum() = {
     addFreeSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(8, 7, freeSpecFileName),
-        freeSpecClassName,
-        "A FreeSpecTest should work with sum"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(8, 7, freeSpecFileName),
+      freeSpecClassName,
+      "A FreeSpecTest should work with sum"))
   }
 
   def testFreeSpecVal() = {
     addFreeSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(16, 7, freeSpecFileName),
-        freeSpecClassName,
-        "Const name innerNonConst"))
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(19, 7, freeSpecFileName),
-        freeSpecClassName,
-        "Const name InnerConst"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(16, 7, freeSpecFileName),
+      freeSpecClassName,
+      "Const name innerNonConst"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(19, 7, freeSpecFileName),
+      freeSpecClassName,
+      "Const name InnerConst"))
   }
 
   def testFreeSpecValSum() = {
     addFreeSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(11, 7, freeSpecFileName),
-        freeSpecClassName,
-        "A FreeSpecTest should work with sum of consts"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(11, 7, freeSpecFileName),
+      freeSpecClassName,
+      "A FreeSpecTest should work with sum of consts"))
   }
 
   def testFreeSpecNonConst() = {
     addFreeSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(24, 7, freeSpecFileName),
-        freeSpecClassName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(24, 7, freeSpecFileName),
+      freeSpecClassName))
   }
 }

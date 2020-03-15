@@ -414,21 +414,19 @@ object Bounds {
       if (substed1 conforms substed2) {
         (
           ScTypeVariable("_$" + count),
-          Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed1,
-              substed2)))
+          Some(ScExistentialArgument(
+            "_$" + count,
+            List.empty,
+            substed1,
+            substed2)))
       } else if (substed2 conforms substed1) {
         (
           ScTypeVariable("_$" + count),
-          Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed2,
-              substed1)))
+          Some(ScExistentialArgument(
+            "_$" + count,
+            List.empty,
+            substed2,
+            substed1)))
       } else {
         (substed1, substed2) match {
           case (
@@ -472,22 +470,20 @@ object Bounds {
                   true)
               (
                 ScTypeVariable("_$" + count),
-                Some(
-                  ScExistentialArgument(
-                    "_$" + count,
-                    List.empty,
-                    newGlb,
-                    newLub)))
+                Some(ScExistentialArgument(
+                  "_$" + count,
+                  List.empty,
+                  newGlb,
+                  newLub)))
             } else {
               //todo: this is wrong, actually we should pick lub, just without merging parameters in this method
               (
                 ScTypeVariable("_$" + count),
-                Some(
-                  ScExistentialArgument(
-                    "_$" + count,
-                    List.empty,
-                    newGlb,
-                    types.Any)))
+                Some(ScExistentialArgument(
+                  "_$" + count,
+                  List.empty,
+                  newGlb,
+                  types.Any)))
             }
         }
       }
@@ -554,9 +550,11 @@ object Bounds {
       alias match {
         case aliasDef: ScTypeAliasDefinition
             if s.aliasesMap.get(aliasDef.name) == None =>
-          run = run bindA (aliasDef.name, { () =>
-            aliasDef.aliasedType(TypingContext.empty).getOrAny
-          })
+          run = run bindA (
+            aliasDef.name, { () =>
+              aliasDef.aliasedType(TypingContext.empty).getOrAny
+            }
+          )
         case _ =>
       }
     }

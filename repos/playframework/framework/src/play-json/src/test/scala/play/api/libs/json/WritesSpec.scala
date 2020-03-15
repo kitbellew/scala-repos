@@ -28,11 +28,9 @@ object WritesSpec extends org.specs2.mutable.Specification {
 
     "be written as number" in {
       Writes.LocalDateTimeNumberWrites
-        .writes(
-          LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
+        .writes(LocalDateTime.ofInstant(
+          Instant.ofEpochMilli(1234567890L),
+          ZoneOffset.UTC))
         .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 
@@ -59,9 +57,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     "be written with default implicit as '2011-12-03T10:15:30-01:30'" in {
       writes(
         OffsetDateTime.parse(
-          "2011-12-03T10:15:30-01:30")) aka "written date" must_== (
-        JsString("2011-12-03T10:15:30-01:30")
-      )
+          "2011-12-03T10:15:30-01:30")) aka "written date" must_== (JsString(
+        "2011-12-03T10:15:30-01:30"))
     }
 
     "be written with custom pattern as '03/12/2011, 10:15:30 (-01:30)'" in {
@@ -82,11 +79,9 @@ object WritesSpec extends org.specs2.mutable.Specification {
 
     "be written as number" in {
       Writes.ZonedDateTimeNumberWrites
-        .writes(
-          ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(1234567890L),
-            ZoneOffset.UTC
-          ))
+        .writes(ZonedDateTime.ofInstant(
+          Instant.ofEpochMilli(1234567890L),
+          ZoneOffset.UTC))
         .aka("written date") must_== JsNumber(BigDecimal valueOf 1234567890L)
     }
 

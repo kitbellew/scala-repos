@@ -93,9 +93,8 @@ class IngestServiceHandler(
     postMode: WriteMode)(implicit
     val M: Monad[Future],
     executor: ExecutionContext)
-    extends CustomHttpService[
-      ByteChunk,
-      (APIKey, Path) => Future[HttpResponse[JValue]]]
+    extends CustomHttpService[ByteChunk, (APIKey, Path) => Future[
+      HttpResponse[JValue]]]
     with IngestSupport
     with Logging {
 
@@ -158,16 +157,17 @@ class IngestServiceHandler(
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) =>
         EitherT {
-          (processing.forRequest(request) tuple request.content.toSuccess(
-            nels("Ingest request missing body content."))) traverse {
+          (processing.forRequest(request) tuple request.content.toSuccess(nels(
+            "Ingest request missing body content."))) traverse {
             case (processor, data) =>
               processor.ingest(durability, errorHandling, storeMode, data)
           } map { _.disjunction }
         }
 
       case None =>
-        right(Promise successful NotIngested(
-          "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
+        right(
+          Promise successful NotIngested(
+            "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
     }
 
   def notifyJob(
@@ -339,10 +339,9 @@ class IngestServiceHandler(
               logger.warn(
                 "No event data found for ingest request from %s owner %s at path %s"
                   .format(apiKey, authorities, path))
-              M.point(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(JString("Missing event data."))))
+              M.point(HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString("Missing event data."))))
             }
           }
         }

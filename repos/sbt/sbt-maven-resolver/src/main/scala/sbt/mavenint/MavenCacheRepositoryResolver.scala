@@ -53,13 +53,12 @@ class MavenCacheRepositoryResolver(val repo: MavenCache, settings: IvySettings)
   // TODO - Share this with non-local repository code, since it's MOSTLY the same.
   protected def getPublicationTime(mrid: ModuleRevisionId): Option[Long] = {
     val metadataRequest = new AetherMetadataRequest()
-    metadataRequest.setMetadata(
-      new DefaultMetadata(
-        mrid.getOrganisation,
-        mrid.getName,
-        mrid.getRevision,
-        MavenRepositoryResolver.MAVEN_METADATA_XML,
-        Metadata.Nature.RELEASE_OR_SNAPSHOT))
+    metadataRequest.setMetadata(new DefaultMetadata(
+      mrid.getOrganisation,
+      mrid.getName,
+      mrid.getRevision,
+      MavenRepositoryResolver.MAVEN_METADATA_XML,
+      Metadata.Nature.RELEASE_OR_SNAPSHOT))
     val metadataResultOpt =
       try system
         .resolveMetadata(session, java.util.Arrays.asList(metadataRequest))

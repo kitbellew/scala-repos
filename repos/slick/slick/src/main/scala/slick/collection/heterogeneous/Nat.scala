@@ -205,10 +205,9 @@ object Nat {
           case (z, _) =>
             AppliedTypeTree(Ident(_Succ), List(z))
         }
-        ctx.Expr(
-          Apply(
-            TypeApply(Select(Ident(_Nat), TermName("_unsafe")), List(tt)),
-            List(Literal(Constant(v)))))
+        ctx.Expr(Apply(
+          TypeApply(Select(Ident(_Nat), TermName("_unsafe")), List(tt)),
+          List(Literal(Constant(v)))))
       case _ => reify(Nat._unsafe[Nat](i.splice))
     }
   }

@@ -8,9 +8,10 @@ import scala.collection.immutable.{Map => SMap, MapLike}
 import scala.math.{Ordering => SOrdering}
 import org.scalacheck.Prop.forAll
 
-abstract class XMapTest[
-    Map[K, V] <: SMap[K, V] with MapLike[K, V, Map[K, V]],
-    BKC[_]](dict: MapSubInstances with MapSubFunctions {
+abstract class XMapTest[Map[K, V] <: SMap[K, V] with MapLike[
+  K,
+  V,
+  Map[K, V]], BKC[_]](dict: MapSubInstances with MapSubFunctions {
   type XMap[A, B] = Map[A, B]
   type BuildKeyConstraint[A] = BKC[A]
 })(implicit BKCF: Contravariant[BKC], OI: BKC[Int], OS: BKC[String])

@@ -233,11 +233,10 @@ object ScalaClassNameCompletionContributor {
         else {
           typeToImport match {
             case ClassTypeToImport(clazz) =>
-              result.addElement(
-                getLookupElementFromClass(
-                  expectedTypesAfterNew,
-                  clazz,
-                  renamesMap))
+              result.addElement(getLookupElementFromClass(
+                expectedTypesAfterNew,
+                clazz,
+                renamesMap))
             case _ =>
           }
         }

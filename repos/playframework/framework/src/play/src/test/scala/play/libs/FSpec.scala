@@ -279,8 +279,7 @@ object FSpec extends Specification with ExecutionSpecification {
         },
         new Function[Throwable, Throwable] {
           def apply(t: Throwable) = t
-        }
-      )
+        })
       mapped.get(5, SECONDS) must equalTo(2)
     }
 
@@ -294,8 +293,7 @@ object FSpec extends Specification with ExecutionSpecification {
           new Function[Throwable, Throwable] {
             def apply(t: Throwable) = t
           },
-          ec
-        )
+          ec)
         mapped.get(5, SECONDS) must equalTo(2)
       }
     }
@@ -308,8 +306,7 @@ object FSpec extends Specification with ExecutionSpecification {
         },
         new Function[Throwable, Throwable] {
           def apply(t: Throwable) = new RuntimeException("2")
-        }
-      )
+        })
       mapped.get(5, SECONDS) must throwA[RuntimeException]("2")
     }
 
@@ -323,8 +320,7 @@ object FSpec extends Specification with ExecutionSpecification {
           new Function[Throwable, Throwable] {
             def apply(t: Throwable) = new RuntimeException("2")
           },
-          ec
-        )
+          ec)
         mapped.get(5, SECONDS) must throwA[RuntimeException]("2")
       }
     }

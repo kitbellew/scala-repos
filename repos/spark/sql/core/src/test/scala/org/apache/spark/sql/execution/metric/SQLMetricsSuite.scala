@@ -183,9 +183,11 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         df,
         1,
         Map(
-          0L -> ("SortMergeJoin", Map(
-            // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
-            "number of output rows" -> 4L)))
+          0L -> (
+            "SortMergeJoin", Map(
+              // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
+              "number of output rows" -> 4L)
+          ))
       )
     }
   }
@@ -206,9 +208,11 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         df,
         1,
         Map(
-          0L -> ("SortMergeJoin", Map(
-            // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
-            "number of output rows" -> 8L)))
+          0L -> (
+            "SortMergeJoin", Map(
+              // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
+              "number of output rows" -> 8L)
+          ))
       )
 
       val df2 = sqlContext.sql(
@@ -217,9 +221,11 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         df2,
         1,
         Map(
-          0L -> ("SortMergeJoin", Map(
-            // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
-            "number of output rows" -> 8L)))
+          0L -> (
+            "SortMergeJoin", Map(
+              // It's 4 because we only read 3 rows in the first partition and 1 row in the second one
+              "number of output rows" -> 8L)
+          ))
       )
     }
   }
@@ -269,8 +275,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
         df,
         3,
         Map(
-          1L -> ("BroadcastNestedLoopJoin", Map(
-            "number of output rows" -> 12L))))
+          1L -> (
+            "BroadcastNestedLoopJoin", Map("number of output rows" -> 12L)
+          )))
     }
   }
 
@@ -284,8 +291,9 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       df,
       2,
       Map(
-        0L -> ("BroadcastLeftSemiJoinHash", Map(
-          "number of output rows" -> 2L))))
+        0L -> (
+          "BroadcastLeftSemiJoinHash", Map("number of output rows" -> 2L)
+        )))
   }
 
   test("ShuffledHashJoin metrics") {

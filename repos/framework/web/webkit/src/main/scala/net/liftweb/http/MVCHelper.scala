@@ -205,14 +205,13 @@ trait MVCHelper extends LiftRules.DispatchPF {
   protected def emptyToResp(eb: EmptyBox): Box[LiftResponse] =
     eb match {
       case ParamFailure(msg, _, _, code: Int) =>
-        Full(
-          InMemoryResponse(
-            msg.getBytes("UTF-8"),
-            ("Content-Type" ->
-              "text/plain; charset=utf-8") ::
-              Nil,
+        Full(InMemoryResponse(
+          msg.getBytes("UTF-8"),
+          ("Content-Type" ->
+            "text/plain; charset=utf-8") ::
             Nil,
-            code))
+          Nil,
+          code))
 
       case Failure(msg, _, _) =>
         Full(NotFoundResponse(msg))

@@ -57,26 +57,12 @@ class AppStopActorTest
 
     when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(tasks)
 
-    val ref = TestActorRef[AppStopActor](
-      Props(
-        new AppStopActor(
-          driver,
-          taskTracker,
-          system.eventStream,
-          app,
-          promise
-        ))
-    )
+    val ref = TestActorRef[AppStopActor](Props(
+      new AppStopActor(driver, taskTracker, system.eventStream, app, promise)))
     watch(ref)
 
-    val historyRef = TestActorRef[HistoryActor](
-      Props(
-        new HistoryActor(
-          system.eventStream,
-          taskFailureRepository
-        )
-      )
-    )
+    val historyRef = TestActorRef[HistoryActor](Props(
+      new HistoryActor(system.eventStream, taskFailureRepository)))
 
     val statusUpdateEventA = MesosStatusUpdateEvent(
       slaveId = "",
@@ -87,8 +73,7 @@ class AppStopActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
     val statusUpdateEventB = MesosStatusUpdateEvent(
       slaveId = "",
@@ -99,8 +84,7 @@ class AppStopActorTest
       host = "",
       ipAddresses = Nil,
       ports = Nil,
-      version = app.version.toString
-    )
+      version = app.version.toString)
 
     val Some(taskFailureA) = TaskFailure.FromMesosStatusUpdateEvent(
       statusUpdateEventA)
@@ -133,16 +117,8 @@ class AppStopActorTest
     when(taskTracker.appTasksLaunchedSync(app.id))
       .thenReturn(Iterable.empty[Task])
 
-    val ref = TestActorRef[AppStopActor](
-      Props(
-        new AppStopActor(
-          driver,
-          taskTracker,
-          system.eventStream,
-          app,
-          promise
-        ))
-    )
+    val ref = TestActorRef[AppStopActor](Props(
+      new AppStopActor(driver, taskTracker, system.eventStream, app, promise)))
     watch(ref)
 
     Await.result(promise.future, 5.seconds)
@@ -160,16 +136,8 @@ class AppStopActorTest
 
     when(taskTracker.appTasksLaunchedSync(app.id)).thenReturn(tasks)
 
-    val ref = TestActorRef[AppStopActor](
-      Props(
-        new AppStopActor(
-          driver,
-          taskTracker,
-          system.eventStream,
-          app,
-          promise
-        ))
-    )
+    val ref = TestActorRef[AppStopActor](Props(
+      new AppStopActor(driver, taskTracker, system.eventStream, app, promise)))
     watch(ref)
 
     ref.stop()
@@ -193,16 +161,13 @@ class AppStopActorTest
       .thenReturn(tasks)
       .thenReturn(Iterable.empty[Task])
 
-    val ref = TestActorRef[AppStopActor](
-      Props(
-        classOf[AppStopActor],
-        driver,
-        taskTracker,
-        system.eventStream,
-        app,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStopActor](Props(
+      classOf[AppStopActor],
+      driver,
+      taskTracker,
+      system.eventStream,
+      app,
+      promise))
     watch(ref)
 
     ref.underlyingActor.periodicalCheck.cancel()

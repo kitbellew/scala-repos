@@ -102,7 +102,9 @@ object MatrixProduct extends java.io.Serializable {
     hint.total
       .map { tot =>
         // + 1L is to make sure there is at least once reducer
-        (tot / MatrixProduct.maxTinyJoin + 1L).toInt min MatrixProduct.maxReducers
+        (
+          tot / MatrixProduct.maxTinyJoin + 1L
+        ).toInt min MatrixProduct.maxReducers
       }
       .getOrElse(-1)
   }
@@ -134,11 +136,9 @@ object MatrixProduct extends java.io.Serializable {
       .map { t => if (t < maxTinyJoin) AnyCrossTiny else AnyCrossSmall }
       .getOrElse(AnyCrossSmall)
 
-  implicit def literalScalarRightProduct[Row, Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Matrix[Row, Col, ValT],
-    LiteralScalar[ValT],
-    Matrix[Row, Col, ValT]] =
+  implicit def literalScalarRightProduct[Row, Col, ValT](implicit
+      ring: Ring[ValT]): MatrixProduct[Matrix[Row, Col, ValT], LiteralScalar[
+    ValT], Matrix[Row, Col, ValT]] =
     new MatrixProduct[
       Matrix[Row, Col, ValT],
       LiteralScalar[ValT],
@@ -173,10 +173,10 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def literalScalarLeftProduct[Row, Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    LiteralScalar[ValT],
-    Matrix[Row, Col, ValT],
-    Matrix[Row, Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[LiteralScalar[ValT], Matrix[
+    Row,
+    Col,
+    ValT], Matrix[Row, Col, ValT]] =
     new MatrixProduct[
       LiteralScalar[ValT],
       Matrix[Row, Col, ValT],
@@ -195,10 +195,8 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarPipeRightProduct[Row, Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Matrix[Row, Col, ValT],
-    Scalar[ValT],
-    Matrix[Row, Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[Matrix[Row, Col, ValT], Scalar[
+    ValT], Matrix[Row, Col, ValT]] =
     new MatrixProduct[
       Matrix[Row, Col, ValT],
       Scalar[ValT],
@@ -214,10 +212,10 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarPipeLeftProduct[Row, Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Scalar[ValT],
-    Matrix[Row, Col, ValT],
-    Matrix[Row, Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[Scalar[ValT], Matrix[
+    Row,
+    Col,
+    ValT], Matrix[Row, Col, ValT]] =
     new MatrixProduct[
       Scalar[ValT],
       Matrix[Row, Col, ValT],
@@ -233,10 +231,8 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarRowRightProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[Col, ValT],
-    Scalar[ValT],
-    RowVector[Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[RowVector[Col, ValT], Scalar[
+    ValT], RowVector[Col, ValT]] =
     new MatrixProduct[
       RowVector[Col, ValT],
       Scalar[ValT],
@@ -254,10 +250,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarRowLeftProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Scalar[ValT],
-    RowVector[Col, ValT],
-    RowVector[Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[Scalar[ValT], RowVector[
+    Col,
+    ValT], RowVector[Col, ValT]] =
     new MatrixProduct[
       Scalar[ValT],
       RowVector[Col, ValT],
@@ -275,10 +270,8 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarColRightProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    ColVector[Row, ValT],
-    Scalar[ValT],
-    ColVector[Row, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[ColVector[Row, ValT], Scalar[
+    ValT], ColVector[Row, ValT]] =
     new MatrixProduct[
       ColVector[Row, ValT],
       Scalar[ValT],
@@ -296,10 +289,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarColLeftProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Scalar[ValT],
-    ColVector[Row, ValT],
-    ColVector[Row, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[Scalar[ValT], ColVector[
+    Row,
+    ValT], ColVector[Row, ValT]] =
     new MatrixProduct[
       Scalar[ValT],
       ColVector[Row, ValT],
@@ -316,11 +308,9 @@ object MatrixProduct extends java.io.Serializable {
       }
     }
 
-  implicit def litScalarRowRightProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[Col, ValT],
-    LiteralScalar[ValT],
-    RowVector[Col, ValT]] =
+  implicit def litScalarRowRightProduct[Col, ValT](implicit
+      ring: Ring[ValT]): MatrixProduct[RowVector[Col, ValT], LiteralScalar[
+    ValT], RowVector[Col, ValT]] =
     new MatrixProduct[
       RowVector[Col, ValT],
       LiteralScalar[ValT],
@@ -338,10 +328,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def litScalarRowLeftProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    LiteralScalar[ValT],
-    RowVector[Col, ValT],
-    RowVector[Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[LiteralScalar[ValT], RowVector[
+    Col,
+    ValT], RowVector[Col, ValT]] =
     new MatrixProduct[
       LiteralScalar[ValT],
       RowVector[Col, ValT],
@@ -358,11 +347,9 @@ object MatrixProduct extends java.io.Serializable {
       }
     }
 
-  implicit def litScalarColRightProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    ColVector[Row, ValT],
-    LiteralScalar[ValT],
-    ColVector[Row, ValT]] =
+  implicit def litScalarColRightProduct[Row, ValT](implicit
+      ring: Ring[ValT]): MatrixProduct[ColVector[Row, ValT], LiteralScalar[
+    ValT], ColVector[Row, ValT]] =
     new MatrixProduct[
       ColVector[Row, ValT],
       LiteralScalar[ValT],
@@ -380,10 +367,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def litScalarColLeftProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    LiteralScalar[ValT],
-    ColVector[Row, ValT],
-    ColVector[Row, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[LiteralScalar[ValT], ColVector[
+    Row,
+    ValT], ColVector[Row, ValT]] =
     new MatrixProduct[
       LiteralScalar[ValT],
       ColVector[Row, ValT],
@@ -400,11 +386,9 @@ object MatrixProduct extends java.io.Serializable {
       }
     }
 
-  implicit def scalarDiagRightProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    DiagonalMatrix[Row, ValT],
-    Scalar[ValT],
-    DiagonalMatrix[Row, ValT]] =
+  implicit def scalarDiagRightProduct[Row, ValT](implicit
+      ring: Ring[ValT]): MatrixProduct[DiagonalMatrix[Row, ValT], Scalar[
+    ValT], DiagonalMatrix[Row, ValT]] =
     new MatrixProduct[
       DiagonalMatrix[Row, ValT],
       Scalar[ValT],
@@ -422,10 +406,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def scalarDiagLeftProduct[Row, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    Scalar[ValT],
-    DiagonalMatrix[Row, ValT],
-    DiagonalMatrix[Row, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[Scalar[ValT], DiagonalMatrix[
+    Row,
+    ValT], DiagonalMatrix[Row, ValT]] =
     new MatrixProduct[
       Scalar[ValT],
       DiagonalMatrix[Row, ValT],
@@ -442,15 +425,11 @@ object MatrixProduct extends java.io.Serializable {
       }
     }
 
-  implicit def litScalarDiagRightProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    DiagonalMatrix[Col, ValT],
-    LiteralScalar[ValT],
-    DiagonalMatrix[Col, ValT]] =
-    new MatrixProduct[
-      DiagonalMatrix[Col, ValT],
-      LiteralScalar[ValT],
-      DiagonalMatrix[Col, ValT]] {
+  implicit def litScalarDiagRightProduct[Col, ValT](implicit
+      ring: Ring[ValT]): MatrixProduct[DiagonalMatrix[Col, ValT], LiteralScalar[
+    ValT], DiagonalMatrix[Col, ValT]] =
+    new MatrixProduct[DiagonalMatrix[Col, ValT], LiteralScalar[
+      ValT], DiagonalMatrix[Col, ValT]] {
       def apply(
           left: DiagonalMatrix[Col, ValT],
           right: LiteralScalar[ValT]): DiagonalMatrix[Col, ValT] = {
@@ -464,10 +443,8 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def litScalarDiagLeftProduct[Col, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    LiteralScalar[ValT],
-    DiagonalMatrix[Col, ValT],
-    DiagonalMatrix[Col, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[LiteralScalar[
+    ValT], DiagonalMatrix[Col, ValT], DiagonalMatrix[Col, ValT]] =
     new MatrixProduct[
       LiteralScalar[ValT],
       DiagonalMatrix[Col, ValT],
@@ -485,20 +462,15 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   //TODO: remove in 0.9.0, only here just for compatibility.
-  def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[IdxT, ValT],
-    ColVector[IdxT, ValT],
-    Scalar[ValT]] = rowColProduct(ring)
+  def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT])
+      : MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[
+        ValT]] = rowColProduct(ring)
 
-  implicit def rowColProduct[IdxT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[IdxT, ValT],
-    ColVector[IdxT, ValT],
-    Scalar[ValT]] =
-    new MatrixProduct[
-      RowVector[IdxT, ValT],
-      ColVector[IdxT, ValT],
-      Scalar[ValT]] {
+  implicit def rowColProduct[IdxT, ValT](implicit ring: Ring[ValT])
+      : MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[
+        ValT]] =
+    new MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[
+      ValT]] {
       def apply(
           left: RowVector[IdxT, ValT],
           right: ColVector[IdxT, ValT]): Scalar[ValT] = {
@@ -510,10 +482,10 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def rowMatrixProduct[Common, ColR, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[Common, ValT],
-    Matrix[Common, ColR, ValT],
-    RowVector[ColR, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[RowVector[Common, ValT], Matrix[
+    Common,
+    ColR,
+    ValT], RowVector[ColR, ValT]] =
     new MatrixProduct[
       RowVector[Common, ValT],
       Matrix[Common, ColR, ValT],
@@ -542,10 +514,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def vectorOuterProduct[RowT, ColT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    ColVector[RowT, ValT],
-    RowVector[ColT, ValT],
-    Matrix[RowT, ColT, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[ColVector[
+    RowT,
+    ValT], RowVector[ColT, ValT], Matrix[RowT, ColT, ValT]] =
     new MatrixProduct[
       ColVector[RowT, ValT],
       RowVector[ColT, ValT],
@@ -606,8 +577,9 @@ object MatrixProduct extends java.io.Serializable {
                 (left.colSym -> getField(newRightFields, 0)),
                 newRightPipe)
               // Do the product:
-              .map((left.valSym.append(
-                getField(newRightFields, 2))) -> left.valSym) {
+              .map(
+                (left.valSym.append(
+                  getField(newRightFields, 2))) -> left.valSym) {
                 pair: (ValT, ValT) => ring.times(pair._1, pair._2)
               }
               .groupBy(left.rowSym.append(getField(newRightFields, 1))) {
@@ -633,10 +605,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def diagMatrixProduct[RowT, ColT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    DiagonalMatrix[RowT, ValT],
-    Matrix[RowT, ColT, ValT],
-    Matrix[RowT, ColT, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[DiagonalMatrix[
+    RowT,
+    ValT], Matrix[RowT, ColT, ValT], Matrix[RowT, ColT, ValT]] =
     new MatrixProduct[
       DiagonalMatrix[RowT, ValT],
       Matrix[RowT, ColT, ValT],
@@ -694,10 +665,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def diagDiagProduct[IdxT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    DiagonalMatrix[IdxT, ValT],
-    DiagonalMatrix[IdxT, ValT],
-    DiagonalMatrix[IdxT, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[DiagonalMatrix[
+    IdxT,
+    ValT], DiagonalMatrix[IdxT, ValT], DiagonalMatrix[IdxT, ValT]] =
     new MatrixProduct[
       DiagonalMatrix[IdxT, ValT],
       DiagonalMatrix[IdxT, ValT],
@@ -719,8 +689,9 @@ object MatrixProduct extends java.io.Serializable {
                 (left.idxSym -> getField(newRightFields, 0)),
                 newRightPipe)
               // Do the product:
-              .map((left.valSym.append(
-                getField(newRightFields, 1))) -> left.valSym) {
+              .map(
+                (left.valSym.append(
+                  getField(newRightFields, 1))) -> left.valSym) {
                 pair: (ValT, ValT) => ring.times(pair._1, pair._2)
               }
           }
@@ -735,10 +706,9 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   implicit def diagColProduct[IdxT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    DiagonalMatrix[IdxT, ValT],
-    ColVector[IdxT, ValT],
-    ColVector[IdxT, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[DiagonalMatrix[
+    IdxT,
+    ValT], ColVector[IdxT, ValT], ColVector[IdxT, ValT]] =
     new MatrixProduct[
       DiagonalMatrix[IdxT, ValT],
       ColVector[IdxT, ValT],
@@ -748,10 +718,9 @@ object MatrixProduct extends java.io.Serializable {
           right: ColVector[IdxT, ValT]) = { (left * (right.diag)).toCol }
     }
   implicit def rowDiagProduct[IdxT, ValT](
-      implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[IdxT, ValT],
-    DiagonalMatrix[IdxT, ValT],
-    RowVector[IdxT, ValT]] =
+      implicit ring: Ring[ValT]): MatrixProduct[RowVector[
+    IdxT,
+    ValT], DiagonalMatrix[IdxT, ValT], RowVector[IdxT, ValT]] =
     new MatrixProduct[
       RowVector[IdxT, ValT],
       DiagonalMatrix[IdxT, ValT],

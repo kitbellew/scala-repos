@@ -275,12 +275,11 @@ class ResponseRendererSpec
     }
     "a response with a CloseDelimited body" - {
       "without data" in new TestSetup() {
-        ResponseRenderingContext(
-          HttpResponse(
-            200,
-            entity = CloseDelimited(
-              ContentTypes.`application/json`,
-              source(ByteString.empty)))) should renderTo(
+        ResponseRenderingContext(HttpResponse(
+          200,
+          entity = CloseDelimited(
+            ContentTypes.`application/json`,
+            source(ByteString.empty)))) should renderTo(
           """HTTP/1.1 200 OK
               |Server: akka-http/1.0.0
               |Date: Thu, 25 Aug 2011 09:10:29 GMT
@@ -292,12 +291,11 @@ class ResponseRendererSpec
         )
       }
       "consisting of two parts" in new TestSetup() {
-        ResponseRenderingContext(
-          HttpResponse(
-            200,
-            entity = CloseDelimited(
-              ContentTypes.`application/json`,
-              source(ByteString("abc"), ByteString("defg"))))) should renderTo(
+        ResponseRenderingContext(HttpResponse(
+          200,
+          entity = CloseDelimited(
+            ContentTypes.`application/json`,
+            source(ByteString("abc"), ByteString("defg"))))) should renderTo(
           """HTTP/1.1 200 OK
               |Server: akka-http/1.0.0
               |Date: Thu, 25 Aug 2011 09:10:29 GMT
@@ -693,8 +691,9 @@ class ResponseRendererSpec
       equal(expected.stripMarginWithNewline("\r\n") -> close)
         .matcher[(String, Boolean)] compose { ctx ⇒
         val (wasCompletedFuture, resultFuture) =
-          (Source.single(ctx) ++ Source
-            .maybe[ResponseRenderingContext]) // never send upstream completion
+          (
+            Source.single(ctx) ++ Source.maybe[ResponseRenderingContext]
+          ) // never send upstream completion
             .via(renderer.named("renderer"))
             .map {
               case ResponseRenderingOutput.HttpData(bytes) ⇒ bytes
@@ -721,8 +720,8 @@ class ResponseRendererSpec
       }
 
     override def currentTimeMillis() =
-      DateTime(2011, 8, 25, 9, 10,
-        29).clicks // provide a stable date for testing
+      DateTime(
+        2011, 8, 25, 9, 10, 29).clicks // provide a stable date for testing
   }
 
   def source[T](elems: T*) = Source(elems.toList)

@@ -538,39 +538,30 @@ trait ClusteringLibSpecs[M[+_]]
       }
 
       result mustEqual Set(
-        SObject(
-          Map(
-            "model1" -> SObject(
-              Map(
-                "clusterId" -> SString("cluster2"),
-                "clusterCenter" -> SObject(
-                  Map("bar" -> SDecimal(9.0), "foo" -> SDecimal(4.4))))))),
-        SObject(
-          Map(
-            "model2" -> SObject(Map(
-              "clusterId" -> SString("cluster1"),
-              "clusterCenter" -> SObject(Map("baz" -> SDecimal(4.0))))))),
-        SObject(
-          Map(
-            "model1" -> SObject(
-              Map(
-                "clusterId" -> SString("cluster2"),
-                "clusterCenter" -> SArray(
-                  Vector(SDecimal(6.0), SDecimal(3.0), SDecimal(2.0))))))),
-        SObject(
-          Map(
-            "model1" -> SObject(
-              Map(
-                "clusterId" -> SString("cluster3"),
-                "clusterCenter" -> SArray(
-                  Vector(SDecimal(0.0), SDecimal(3.2), SDecimal(5.1))))))),
-        SObject(
-          Map(
-            "model1" -> SObject(
-              Map(
-                "clusterId" -> SString("cluster1"),
-                "clusterCenter" -> SArray(
-                  Vector(SDecimal(2.1), SDecimal(3.3), SDecimal(4.0)))))))
+        SObject(Map(
+          "model1" -> SObject(Map(
+            "clusterId" -> SString("cluster2"),
+            "clusterCenter" -> SObject(
+              Map("bar" -> SDecimal(9.0), "foo" -> SDecimal(4.4))))))),
+        SObject(Map(
+          "model2" -> SObject(Map(
+            "clusterId" -> SString("cluster1"),
+            "clusterCenter" -> SObject(Map("baz" -> SDecimal(4.0))))))),
+        SObject(Map(
+          "model1" -> SObject(Map(
+            "clusterId" -> SString("cluster2"),
+            "clusterCenter" -> SArray(
+              Vector(SDecimal(6.0), SDecimal(3.0), SDecimal(2.0))))))),
+        SObject(Map(
+          "model1" -> SObject(Map(
+            "clusterId" -> SString("cluster3"),
+            "clusterCenter" -> SArray(
+              Vector(SDecimal(0.0), SDecimal(3.2), SDecimal(5.1))))))),
+        SObject(Map(
+          "model1" -> SObject(Map(
+            "clusterId" -> SString("cluster1"),
+            "clusterCenter" -> SArray(
+              Vector(SDecimal(2.1), SDecimal(3.3), SDecimal(4.0)))))))
       )
     }
   }

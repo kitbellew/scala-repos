@@ -62,8 +62,8 @@ object Future {
   /**
     * A failed `Future` analogous to `Predef.???`.
     */
-  val ??? : Future[Nothing] = Future.exception(
-    new NotImplementedError("an implementation is missing"))
+  val ??? : Future[Nothing] = Future.exception(new NotImplementedError(
+    "an implementation is missing"))
 
   private val SomeReturnUnit = Some(Return.Unit)
   private val NotApplied: Future[Nothing] = new NoFuture
@@ -1283,18 +1283,13 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
   def batched[In, Out](
       sizeThreshold: Int,
       timeThreshold: Duration = Duration.Top,
-      sizePercentile: => Float = 1.0f
-  )(
-      f: Seq[In] => Future[Seq[Out]]
-  )(implicit
-      timer: Timer
-  ): Batcher[In, Out] = {
-    new Batcher[In, Out](
-      new BatchExecutor[In, Out](
-        sizeThreshold,
-        timeThreshold,
-        sizePercentile,
-        f))
+      sizePercentile: => Float = 1.0f)(f: Seq[In] => Future[Seq[Out]])(
+      implicit timer: Timer): Batcher[In, Out] = {
+    new Batcher[In, Out](new BatchExecutor[In, Out](
+      sizeThreshold,
+      timeThreshold,
+      sizePercentile,
+      f))
   }
 }
 
@@ -1651,8 +1646,7 @@ abstract class Future[+A] extends Awaitable[A] {
     * @see [[handle]]
     */
   def rescue[B >: A](
-      rescueException: PartialFunction[Throwable, Future[B]]
-  ): Future[B] =
+      rescueException: PartialFunction[Throwable, Future[B]]): Future[B] =
     transform({
       case Throw(t) =>
         val result = rescueException.applyOrElse(t, Future.AlwaysNotApplied)
@@ -2762,30 +2756,29 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
       u: Future[U],
       v: Future[V]): Future[
     (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
-    Future.join(
-      Seq(
-        a,
-        b,
-        c,
-        d,
-        e,
-        f,
-        g,
-        h,
-        i,
-        j,
-        k,
-        l,
-        m,
-        n,
-        o,
-        p,
-        q,
-        r,
-        s,
-        t,
-        u,
-        v)) map { _ =>
+    Future.join(Seq(
+      a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g,
+      h,
+      i,
+      j,
+      k,
+      l,
+      m,
+      n,
+      o,
+      p,
+      q,
+      r,
+      s,
+      t,
+      u,
+      v)) map { _ =>
       (
         Await.result(a),
         Await.result(b),

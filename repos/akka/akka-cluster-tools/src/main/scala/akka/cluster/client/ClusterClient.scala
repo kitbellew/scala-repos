@@ -312,9 +312,11 @@ final class ClusterClient(settings: ClusterClientSettings)
 
   def scheduleRefreshContactsTick(interval: FiniteDuration): Unit = {
     refreshContactsTask foreach { _.cancel() }
-    refreshContactsTask = Some(
-      context.system.scheduler
-        .schedule(interval, interval, self, RefreshContactsTick))
+    refreshContactsTask = Some(context.system.scheduler.schedule(
+      interval,
+      interval,
+      self,
+      RefreshContactsTick))
   }
 
   override def postStop(): Unit = {

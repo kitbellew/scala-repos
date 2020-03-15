@@ -72,10 +72,7 @@ class LEventsSpec extends Specification with TestEvents {
 
   val dbName = "test_pio_storage_events_" + hashCode
   def hbDO =
-    Storage.getDataObject[LEvents](
-      StorageTestUtils.hbaseSourceName,
-      dbName
-    )
+    Storage.getDataObject[LEvents](StorageTestUtils.hbaseSourceName, dbName)
 
   def jdbcDO =
     Storage.getDataObject[LEvents](StorageTestUtils.jdbcSourceName, dbName)
@@ -166,8 +163,7 @@ class LEventsSpec extends Specification with TestEvents {
 
     val expected = Map(
       "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),
-      "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime)
-    )
+      "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime))
 
     result must beEqualTo(expected)
   }
@@ -228,10 +224,7 @@ class LEventsSpec extends Specification with TestEvents {
   def findChannel(eventClient: LEvents) = {
 
     val results: List[Event] = eventClient
-      .find(
-        appId = appId,
-        channelId = Some(channelId)
-      )
+      .find(appId = appId, channelId = Some(channelId))
       .toList
       .map(e => e.copy(eventId = None)) // ignore eventId
 

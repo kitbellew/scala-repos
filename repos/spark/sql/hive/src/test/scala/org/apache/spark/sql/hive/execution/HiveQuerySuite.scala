@@ -174,9 +174,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
   }
 
-  createQueryTest(
-    "! operator",
-    """
+  createQueryTest("! operator", """
       |SELECT a FROM (
       |  SELECT 1 AS a UNION ALL SELECT 2 AS a) t
       |WHERE !(a>1)
@@ -694,9 +692,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     """.stripMargin
   )
 
-  createQueryTest(
-    "CTE feature #3",
-    """with q1 as (select key from src)
+  createQueryTest("CTE feature #3", """with q1 as (select key from src)
       |from q1
       |select * where key = 4
     """.stripMargin)
@@ -937,32 +933,28 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       """.stripMargin)
 
     // Describe a table
-    assertResult(
-      Array(
-        Row("key", "int", null),
-        Row("value", "string", null),
-        Row("dt", "string", null),
-        Row("# Partition Information", "", ""),
-        Row("# col_name", "data_type", "comment"),
-        Row("dt", "string", null)
-      )
-    ) {
+    assertResult(Array(
+      Row("key", "int", null),
+      Row("value", "string", null),
+      Row("dt", "string", null),
+      Row("# Partition Information", "", ""),
+      Row("# col_name", "data_type", "comment"),
+      Row("dt", "string", null)
+    )) {
       sql("DESCRIBE test_describe_commands1")
         .select('col_name, 'data_type, 'comment)
         .collect()
     }
 
     // Describe a table with a fully qualified table name
-    assertResult(
-      Array(
-        Row("key", "int", null),
-        Row("value", "string", null),
-        Row("dt", "string", null),
-        Row("# Partition Information", "", ""),
-        Row("# col_name", "data_type", "comment"),
-        Row("dt", "string", null)
-      )
-    ) {
+    assertResult(Array(
+      Row("key", "int", null),
+      Row("value", "string", null),
+      Row("dt", "string", null),
+      Row("# Partition Information", "", ""),
+      Row("# col_name", "data_type", "comment"),
+      Row("dt", "string", null)
+    )) {
       sql("DESCRIBE default.test_describe_commands1")
         .select('col_name, 'data_type, 'comment)
         .collect()
@@ -985,18 +977,16 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     // Describe a partition is a native command
-    assertResult(
-      Array(
-        Array("key", "int"),
-        Array("value", "string"),
-        Array("dt", "string"),
-        Array(""),
-        Array("# Partition Information"),
-        Array("# col_name", "data_type", "comment"),
-        Array(""),
-        Array("dt", "string")
-      )
-    ) {
+    assertResult(Array(
+      Array("key", "int"),
+      Array("value", "string"),
+      Array("dt", "string"),
+      Array(""),
+      Array("# Partition Information"),
+      Array("# col_name", "data_type", "comment"),
+      Array(""),
+      Array("dt", "string")
+    )) {
       sql("DESCRIBE test_describe_commands1 PARTITION (dt='2008-06-08')")
         .select('result)
         .collect()
@@ -1009,9 +999,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
         TestData(1, "str2") :: Nil)
     testData.toDF().registerTempTable("test_describe_commands2")
 
-    assertResult(
-      Array(Row("a", "int", ""), Row("b", "string", ""))
-    ) {
+    assertResult(Array(Row("a", "int", ""), Row("b", "string", ""))) {
       sql("DESCRIBE test_describe_commands2")
         .select('col_name, 'data_type, 'comment)
         .collect()
@@ -1292,8 +1280,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     assert(hiveconf.get(testKey, "") === testVal)
-    assertResult(defaults ++ Set(testKey -> testVal))(
-      collectResults(sql("SET")))
+    assertResult(defaults ++ Set(testKey -> testVal))(collectResults(
+      sql("SET")))
 
     sql(s"SET ${testKey + testKey}=${testVal + testVal}")
     assert(hiveconf.get(testKey + testKey, "") == testVal + testVal)

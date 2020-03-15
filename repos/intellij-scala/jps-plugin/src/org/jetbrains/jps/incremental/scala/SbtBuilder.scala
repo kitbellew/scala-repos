@@ -60,8 +60,8 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
 
     updateSharedResources(context, chunk)
 
-    context.processMessage(
-      new ProgressMessage("Searching for compilable files..."))
+    context.processMessage(new ProgressMessage(
+      "Searching for compilable files..."))
 
     val filesToCompile = collectCompilableFiles(context, chunk)
     if (filesToCompile.isEmpty) return ExitCode.NOTHING_DONE

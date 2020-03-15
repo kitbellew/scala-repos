@@ -35,15 +35,11 @@ class PEventAggregatorSpec extends Specification with TestEvents {
       val users = PEventAggregator.aggregateProperties(events)
 
       val userMap = users.collectAsMap.toMap
-      val expectedDM = Map(
-        "u1" -> DataMap(u1),
-        "u2" -> DataMap(u2)
-      )
+      val expectedDM = Map("u1" -> DataMap(u1), "u2" -> DataMap(u2))
 
       val expectedPM = Map(
         "u1" -> PropertyMap(u1, u1BaseTime, u1LastTime),
-        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime)
-      )
+        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime))
 
       userMap must beEqualTo(expectedDM)
       userMap must beEqualTo(expectedPM)
@@ -57,9 +53,7 @@ class PEventAggregatorSpec extends Specification with TestEvents {
       val users = PEventAggregator.aggregateProperties(events)
 
       val userMap = users.collectAsMap.toMap
-      val expectedPM = Map(
-        "u2" -> PropertyMap(u2, u2BaseTime, u2LastTime)
-      )
+      val expectedPM = Map("u2" -> PropertyMap(u2, u2BaseTime, u2LastTime))
 
       userMap must beEqualTo(expectedPM)
     }

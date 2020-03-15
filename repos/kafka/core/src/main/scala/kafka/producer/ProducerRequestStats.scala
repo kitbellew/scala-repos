@@ -35,12 +35,11 @@ class ProducerRequestMetrics(metricId: ClientIdBroker)
     case ClientIdAllBrokers(clientId) => Map("clientId" -> clientId)
   }
 
-  val requestTimer = new KafkaTimer(
-    newTimer(
-      "ProducerRequestRateAndTimeMs",
-      TimeUnit.MILLISECONDS,
-      TimeUnit.SECONDS,
-      tags))
+  val requestTimer = new KafkaTimer(newTimer(
+    "ProducerRequestRateAndTimeMs",
+    TimeUnit.MILLISECONDS,
+    TimeUnit.SECONDS,
+    tags))
   val requestSizeHist = newHistogram("ProducerRequestSize", biased = true, tags)
   val throttleTimeStats = newTimer(
     "ProducerRequestThrottleRateAndTimeMs",
@@ -59,8 +58,8 @@ class ProducerRequestMetrics(metricId: ClientIdBroker)
 class ProducerRequestStats(clientId: String) {
   private val valueFactory = (k: ClientIdBroker) =>
     new ProducerRequestMetrics(k)
-  private val stats =
-    new Pool[ClientIdBroker, ProducerRequestMetrics](Some(valueFactory))
+  private val stats = new Pool[ClientIdBroker, ProducerRequestMetrics](Some(
+    valueFactory))
   private val allBrokersStats = new ProducerRequestMetrics(
     new ClientIdAllBrokers(clientId))
 
@@ -83,8 +82,8 @@ class ProducerRequestStats(clientId: String) {
   "0.10.0.0")
 object ProducerRequestStatsRegistry {
   private val valueFactory = (k: String) => new ProducerRequestStats(k)
-  private val globalStats =
-    new Pool[String, ProducerRequestStats](Some(valueFactory))
+  private val globalStats = new Pool[String, ProducerRequestStats](Some(
+    valueFactory))
 
   def getProducerRequestStats(clientId: String) = {
     globalStats.getAndMaybePut(clientId)

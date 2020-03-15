@@ -65,8 +65,7 @@ object StackOverflow3 {
 
   class Preprocessor[In <: HList, Out <: HList, R](ctor: Out => R)(implicit
       mapped: Mapped.Aux[Out, Input, In],
-      mapper: Mapper.Aux[value.type, In, Out]
-  ) {
+      mapper: Mapper.Aux[value.type, In, Out]) {
     def apply(in: In) = ctor(in map value)
   }
 

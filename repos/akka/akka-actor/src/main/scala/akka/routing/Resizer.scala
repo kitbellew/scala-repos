@@ -157,8 +157,9 @@ case class DefaultResizer(
       "upperBound must be >= 0, was: [%s]".format(upperBound))
   if (upperBound < lowerBound)
     throw new IllegalArgumentException(
-      "upperBound must be >= lowerBound, was: [%s] < [%s]"
-        .format(upperBound, lowerBound))
+      "upperBound must be >= lowerBound, was: [%s] < [%s]".format(
+        upperBound,
+        lowerBound))
   if (rampupRate < 0.0)
     throw new IllegalArgumentException(
       "rampupRate must be >= 0.0, was [%s]".format(rampupRate))

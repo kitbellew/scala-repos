@@ -620,9 +620,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               case o: ScObject if isStable(o) =>
                 o.qualifiedName + "." + elem.name
               case o: ScObject => //todo: It can cover many cases!
-                throw EvaluationException(
-                  ScalaBundle.message(
-                    "implicit.parameters.from.dependent.objects"))
+                throw EvaluationException(ScalaBundle.message(
+                  "implicit.parameters.from.dependent.objects"))
               case _ => elem.name //from scope
             }
         }
@@ -1228,12 +1227,10 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               leftEvaluator: Evaluator): Option[Evaluator] = {
             leftEvaluator match {
               case m: ScalaMethodEvaluator =>
-                Some(
-                  m.copy(
-                    _methodName = m.methodName + "_$eq",
-                    argumentEvaluators = Seq(rightEvaluator)
-                  )
-                ) //todo: signature?
+                Some(m.copy(
+                  _methodName = m.methodName + "_$eq",
+                  argumentEvaluators = Seq(rightEvaluator)
+                )) //todo: signature?
               case ScalaDuplexEvaluator(first, second) =>
                 createAssignEvaluator(first) orElse createAssignEvaluator(
                   second)
@@ -1302,15 +1299,15 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
               val indexEval = evaluatorFor(indexExpr)
               new ScalaMethodEvaluator(getEval, "apply", null, Seq(indexEval))
             } else
-              throw EvaluationException(
-                ScalaBundle
-                  .message("pattern.doesnot.resolves.to.unapply", ref.refName))
+              throw EvaluationException(ScalaBundle.message(
+                "pattern.doesnot.resolves.to.unapply",
+                ref.refName))
           val nextPattern = pattern.subpatterns(nextPatternIndex)
           evaluateSubpatternFromPattern(newEval, nextPattern, subPattern)
         case _ =>
-          throw EvaluationException(
-            ScalaBundle
-              .message("pattern.doesnot.resolves.to.unapply", ref.refName))
+          throw EvaluationException(ScalaBundle.message(
+            "pattern.doesnot.resolves.to.unapply",
+            ref.refName))
       }
     }
 
@@ -1356,10 +1353,10 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             ScalaBundle.message("xml.patterns.not.supported")
           ) //todo: xml patterns
         case _ =>
-          throw EvaluationException(
-            ScalaBundle
-              .message("kind.of.patterns.not.supported", pattern.getText)
-          ) //todo: xml patterns
+          throw EvaluationException(ScalaBundle.message(
+            "kind.of.patterns.not.supported",
+            pattern.getText
+          )) //todo: xml patterns
       }
     }
   }
@@ -1845,12 +1842,11 @@ object ScalaEvaluatorBuilderUtil {
   def unaryEvaluator(eval: Evaluator, boxesRunTimeName: String): Evaluator = {
     val rawText = JVMNameUtil.getJVMRawText(
       "(Ljava/lang/Object;)Ljava/lang/Object;")
-    unboxEvaluator(
-      new ScalaMethodEvaluator(
-        BOXES_RUN_TIME,
-        boxesRunTimeName,
-        rawText,
-        boxed(eval)))
+    unboxEvaluator(new ScalaMethodEvaluator(
+      BOXES_RUN_TIME,
+      boxesRunTimeName,
+      rawText,
+      boxed(eval)))
   }
 
   def binaryEvaluator(
@@ -1859,12 +1855,11 @@ object ScalaEvaluatorBuilderUtil {
       boxesRunTimeName: String): Evaluator = {
     val rawText = JVMNameUtil.getJVMRawText(
       "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;")
-    unboxEvaluator(
-      new ScalaMethodEvaluator(
-        BOXES_RUN_TIME,
-        boxesRunTimeName,
-        rawText,
-        boxed(left, right)))
+    unboxEvaluator(new ScalaMethodEvaluator(
+      BOXES_RUN_TIME,
+      boxesRunTimeName,
+      rawText,
+      boxed(left, right)))
   }
 
   object hasDeepestInvokedReference {
@@ -1973,16 +1968,14 @@ object ScalaEvaluatorBuilderUtil {
           val newExprText = fun.containingClass match {
             case o: ScObject if isStable(o) => s"${o.qualifiedName}.$callText"
             case o: ScObject => //todo: It can cover many cases!
-              throw EvaluationException(
-                ScalaBundle.message(
-                  "implicit.conversions.from.dependent.objects"))
+              throw EvaluationException(ScalaBundle.message(
+                "implicit.conversions.from.dependent.objects"))
             case _ => callText //from scope
           }
-          Some(
-            ScalaPsiElementFactory.createExpressionWithContextFromText(
-              newExprText,
-              expr.getContext,
-              expr))
+          Some(ScalaPsiElementFactory.createExpressionWithContextFromText(
+            newExprText,
+            expr.getContext,
+            expr))
         case _ => None
       }
     }

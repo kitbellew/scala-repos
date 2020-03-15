@@ -124,9 +124,8 @@ object ForkRun {
     )
 
     println()
-    println(
-      Colors.green(
-        "(Server started, use Ctrl+D to stop and go back to the console...)"))
+    println(Colors.green(
+      "(Server started, use Ctrl+D to stop and go back to the console...)"))
     println()
 
     server
@@ -220,8 +219,8 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
   def run(config: ForkConfig): Unit = {
     try {
       val notifyStart = ForkRun.sendStart(sbt, config, args)
-      val reloadCompile = ForkRun.askForReload(self)(
-        Timeout(config.compileTimeout.millis))
+      val reloadCompile = ForkRun.askForReload(self)(Timeout(
+        config.compileTimeout.millis))
       val server = ForkRun.startServer(
         config,
         args,

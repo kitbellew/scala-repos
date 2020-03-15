@@ -437,13 +437,12 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       lingerMs = Long.MaxValue,
       props = Some(producerProps))
     (0 until numRecords).foreach { i =>
-      producer.send(
-        new ProducerRecord(
-          tp.topic,
-          tp.partition,
-          i.toLong,
-          s"key $i".getBytes,
-          s"value $i".getBytes))
+      producer.send(new ProducerRecord(
+        tp.topic,
+        tp.partition,
+        i.toLong,
+        s"key $i".getBytes,
+        s"value $i".getBytes))
     }
     producer.close()
   }
@@ -749,12 +748,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     val numRecords = 10
     (0 until numRecords)
       .map { i =>
-        testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
+        testProducer.send(new ProducerRecord(
+          tp.topic(),
+          tp.partition(),
+          s"key $i",
+          s"value $i"))
       }
       .foreach(_.get)
     assertEquals(numRecords, MockProducerInterceptor.ONSEND_COUNT.intValue())
@@ -842,12 +840,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       new StringSerializer)
     (0 until numRecords)
       .map { i =>
-        testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
+        testProducer.send(new ProducerRecord(
+          tp.topic(),
+          tp.partition(),
+          s"key $i",
+          s"value $i"))
       }
       .foreach(_.get)
 
@@ -928,12 +925,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       new ByteArraySerializer())
 
     // producing records should succeed
-    testProducer.send(
-      new ProducerRecord(
-        tp.topic(),
-        tp.partition(),
-        s"key".getBytes,
-        s"value will not be modified".getBytes))
+    testProducer.send(new ProducerRecord(
+      tp.topic(),
+      tp.partition(),
+      s"key".getBytes,
+      s"value will not be modified".getBytes))
 
     // create consumer with interceptor that has different key and value types from the consumer
     this.consumerConfig.setProperty(

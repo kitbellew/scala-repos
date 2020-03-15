@@ -38,17 +38,13 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       val clazz = cd.symbol
 
       def checkableForInit(sym: Symbol) =
-        (
-          (sym ne null)
-            && (sym.isVal || sym.isVar)
-            && !(sym hasFlag LAZY | DEFERRED | SYNTHETIC)
-        )
-      val uninitializedVals = mutable.Set[Symbol](
-        stats collect {
-          case vd: ValDef if checkableForInit(vd.symbol) =>
-            vd.symbol.accessedOrSelf
-        }: _*
-      )
+        ((sym ne null)
+          && (sym.isVal || sym.isVar)
+          && !(sym hasFlag LAZY | DEFERRED | SYNTHETIC))
+      val uninitializedVals = mutable.Set[Symbol](stats collect {
+        case vd: ValDef if checkableForInit(vd.symbol) =>
+          vd.symbol.accessedOrSelf
+      }: _*)
       if (uninitializedVals.size > 1)
         log(
           "Checking constructor for init order issues among: " + uninitializedVals.toList
@@ -216,7 +212,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       }
 
       if (omittables.nonEmpty)
-        (defs.iterator ++ auxConstructors.iterator) foreach detectUsages.traverse
+        (
+          defs.iterator ++ auxConstructors.iterator
+        ) foreach detectUsages.traverse
 
       omittables.toSet
     }
@@ -303,16 +301,12 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             newScope,
             closureClass)
 
-          val outerField: TermSymbol = (
-            closureClass
-              newValue (nme.OUTER, impl.pos, PrivateLocal | PARAMACCESSOR)
-              setInfoAndEnter clazz.tpe
-          )
-          val applyMethod: MethodSymbol = (
-            closureClass
-              newMethod (nme.apply, impl.pos, FINAL)
-              setInfoAndEnter MethodType(Nil, ObjectTpe)
-          )
+          val outerField: TermSymbol = (closureClass
+            newValue (nme.OUTER, impl.pos, PrivateLocal | PARAMACCESSOR)
+            setInfoAndEnter clazz.tpe)
+          val applyMethod: MethodSymbol = (closureClass
+            newMethod (nme.apply, impl.pos, FINAL)
+            setInfoAndEnter MethodType(Nil, ObjectTpe))
           val outerFieldDef = ValDef(outerField)
           val closureClassTyper = localTyper.atOwner(closureClass)
           val applyMethodTyper = closureClassTyper.atOwner(applyMethod)
@@ -408,10 +402,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             t match {
               case Apply(fun @ Select(receiver, method), List(xs, idx, v))
                   if fun.symbol == arrayUpdateMethod =>
-                localTyper.typed(
-                  Apply(
-                    gen.mkAttributedSelect(xs, arrayUpdateMethod),
-                    List(idx, v)))
+                localTyper.typed(Apply(
+                  gen.mkAttributedSelect(xs, arrayUpdateMethod),
+                  List(idx, v)))
               case _ => super.transform(t)
             }
         }
@@ -567,11 +560,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
 
       // Terminology: a stationary location is never written after being read.
       private def isStationaryParamRef(sym: Symbol) =
-        (
-          isParamRef(sym) &&
-            !(sym.isGetter && sym.accessed.isVariable) &&
-            !sym.isSetter
-        )
+        (isParamRef(sym) &&
+          !(sym.isGetter && sym.accessed.isVariable) &&
+          !sym.isSetter)
 
       private def possiblySpecialized(s: Symbol) =
         specializeTypes.specializedTypeVars(s).nonEmpty

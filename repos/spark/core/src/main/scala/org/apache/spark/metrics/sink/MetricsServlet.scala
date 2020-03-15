@@ -46,20 +46,17 @@ private[spark] class MetricsServlet(
     .map(_.toBoolean)
     .getOrElse(SERVLET_DEFAULT_SAMPLE)
 
-  val mapper = new ObjectMapper().registerModule(
-    new MetricsModule(
-      TimeUnit.SECONDS,
-      TimeUnit.MILLISECONDS,
-      servletShowSample))
+  val mapper = new ObjectMapper().registerModule(new MetricsModule(
+    TimeUnit.SECONDS,
+    TimeUnit.MILLISECONDS,
+    servletShowSample))
 
   def getHandlers(conf: SparkConf): Array[ServletContextHandler] = {
-    Array[ServletContextHandler](
-      createServletHandler(
-        servletPath,
-        new ServletParams(request => getMetricsSnapshot(request), "text/json"),
-        securityMgr,
-        conf)
-    )
+    Array[ServletContextHandler](createServletHandler(
+      servletPath,
+      new ServletParams(request => getMetricsSnapshot(request), "text/json"),
+      securityMgr,
+      conf))
   }
 
   def getMetricsSnapshot(request: HttpServletRequest): String = {

@@ -100,20 +100,16 @@ class WorksheetCompiler {
 
                 if (module == null) onError("Can't find Scala module to run")
                 else
-                  new RemoteServerConnector(
-                    module,
-                    tempFile,
-                    outputDir,
-                    name
-                  ).compileAndRun(
-                    new Runnable {
-                      override def run() {
-                        if (runType == OutOfProcessServer)
-                          callback(name, outputDir.getAbsolutePath)
-                      }
-                    },
-                    worksheetVirtual,
-                    consumer)
+                  new RemoteServerConnector(module, tempFile, outputDir, name)
+                    .compileAndRun(
+                      new Runnable {
+                        override def run() {
+                          if (runType == OutOfProcessServer)
+                            callback(name, outputDir.getAbsolutePath)
+                        }
+                      },
+                      worksheetVirtual,
+                      consumer)
               } catch {
                 case ex: IllegalArgumentException => onError(ex.getMessage)
               }

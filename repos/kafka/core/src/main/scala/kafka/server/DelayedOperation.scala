@@ -141,16 +141,14 @@ class DelayedOperationPurgatory[T <: DelayedOperation](
     new Gauge[Int] {
       def value = watched()
     },
-    metricsTags
-  )
+    metricsTags)
 
   newGauge(
     "NumDelayedOperations",
     new Gauge[Int] {
       def value = delayed()
     },
-    metricsTags
-  )
+    metricsTags)
 
   expirationReaper.start()
 

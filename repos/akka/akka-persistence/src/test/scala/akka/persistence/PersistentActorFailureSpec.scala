@@ -44,8 +44,8 @@ object PersistentActorFailureSpec {
       val readFromStore = read(persistenceId, fromSequenceNr, toSequenceNr, max)
       if (readFromStore.isEmpty) Future.successful(())
       else if (isCorrupt(readFromStore))
-        Future.failed(
-          new SimulatedException(s"blahonga $fromSequenceNr $toSequenceNr"))
+        Future.failed(new SimulatedException(
+          s"blahonga $fromSequenceNr $toSequenceNr"))
       else {
         readFromStore.foreach(recoveryCallback)
         Future.successful(())
@@ -158,22 +158,21 @@ object PersistentActorFailureSpec {
 }
 
 class PersistentActorFailureSpec
-    extends PersistenceSpec(
-      PersistenceSpec.config(
-        "inmem",
-        "SnapshotFailureRobustnessSpec",
-        extraConfig = Some(
-          """
+    extends PersistenceSpec(PersistenceSpec.config(
+      "inmem",
+      "SnapshotFailureRobustnessSpec",
+      extraConfig = Some(
+        """
   akka.persistence.journal.inmem.class = "akka.persistence.PersistentActorFailureSpec$FailingInmemJournal"
   """)
-      ))
+    ))
     with ImplicitSender {
 
   import PersistentActorFailureSpec._
   import PersistentActorSpec._
 
-  system.eventStream.publish(
-    TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
+  system.eventStream.publish(TestEvent.Mute(
+    EventFilter[akka.pattern.AskTimeoutException]()))
 
   def prepareFailingRecovery(): Unit = {
     val persistentActor = namedPersistentActor[FailingRecovery]

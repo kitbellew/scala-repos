@@ -225,8 +225,7 @@ object SparkEnv extends Logging {
       port,
       isDriver = false,
       isLocal = isLocal,
-      numUsableCores = numCores
-    )
+      numUsableCores = numCores)
     SparkEnv.set(env)
     env
   }
@@ -460,8 +459,7 @@ object SparkEnv extends Logging {
     val jvmInformation = Seq(
       ("Java Version", s"$javaVersion ($javaVendor)"),
       ("Java Home", javaHome),
-      ("Scala Version", versionString)
-    ).sorted
+      ("Scala Version", versionString)).sorted
 
     // Spark properties
     // This includes the scheduling mode whether or not it is configured (used by SparkUI)

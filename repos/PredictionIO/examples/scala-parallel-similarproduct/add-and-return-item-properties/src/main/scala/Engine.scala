@@ -8,20 +8,18 @@ case class Query(
     num: Int,
     categories: Option[Set[String]],
     whiteList: Option[Set[String]],
-    blackList: Option[Set[String]]
-) extends Serializable
+    blackList: Option[Set[String]])
+    extends Serializable
 
-case class PredictedResult(
-    itemScores: Array[ItemScore]
-) extends Serializable
+case class PredictedResult(itemScores: Array[ItemScore]) extends Serializable
 
 case class ItemScore(
     item: String,
     title: String,
     date: String,
     imdbUrl: String,
-    score: Double
-) extends Serializable
+    score: Double)
+    extends Serializable
 
 object SimilarProductEngine extends IEngineFactory {
   def apply() = {

@@ -71,8 +71,8 @@ class ALS private (
     private var lambda: Double,
     private var implicitPrefs: Boolean,
     private var alpha: Double,
-    private var seed: Long = System.nanoTime()
-) extends Serializable
+    private var seed: Long = System.nanoTime())
+    extends Serializable
     with Logging {
 
   /**
@@ -302,8 +302,7 @@ object ALS {
       iterations: Int,
       lambda: Double,
       blocks: Int,
-      seed: Long
-  ): MatrixFactorizationModel = {
+      seed: Long): MatrixFactorizationModel = {
     new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0, seed)
       .run(ratings)
   }
@@ -326,8 +325,7 @@ object ALS {
       rank: Int,
       iterations: Int,
       lambda: Double,
-      blocks: Int
-  ): MatrixFactorizationModel = {
+      blocks: Int): MatrixFactorizationModel = {
     new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0).run(ratings)
   }
 
@@ -392,8 +390,7 @@ object ALS {
       lambda: Double,
       blocks: Int,
       alpha: Double,
-      seed: Long
-  ): MatrixFactorizationModel = {
+      seed: Long): MatrixFactorizationModel = {
     new ALS(blocks, blocks, rank, iterations, lambda, true, alpha, seed)
       .run(ratings)
   }
@@ -418,8 +415,7 @@ object ALS {
       iterations: Int,
       lambda: Double,
       blocks: Int,
-      alpha: Double
-  ): MatrixFactorizationModel = {
+      alpha: Double): MatrixFactorizationModel = {
     new ALS(blocks, blocks, rank, iterations, lambda, true, alpha).run(ratings)
   }
 

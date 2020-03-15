@@ -37,9 +37,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
   private val messageBytes = new Array[Byte](2)
   // turning off controlled shutdown since testProducerCanTimeout() explicitly shuts down request handler pool.
   def generateConfigs() =
-    List(
-      KafkaConfig.fromProps(
-        TestUtils.createBrokerConfigs(1, zkConnect, false).head))
+    List(KafkaConfig.fromProps(
+      TestUtils.createBrokerConfigs(1, zkConnect, false).head))
 
   private def produceRequest(
       topic: String,
@@ -69,14 +68,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val producer = new SyncProducer(new SyncProducerConfig(props))
     val firstStart = SystemTime.milliseconds
     try {
-      val response = producer.send(
-        produceRequest(
-          "test",
-          0,
-          new ByteBufferMessageSet(
-            compressionCodec = NoCompressionCodec,
-            messages = new Message(messageBytes)),
-          acks = 1))
+      val response = producer.send(produceRequest(
+        "test",
+        0,
+        new ByteBufferMessageSet(
+          compressionCodec = NoCompressionCodec,
+          messages = new Message(messageBytes)),
+        acks = 1))
       assertNotNull(response)
     } catch {
       case e: Exception =>
@@ -86,14 +84,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     assertTrue((firstEnd - firstStart) < 500)
     val secondStart = SystemTime.milliseconds
     try {
-      val response = producer.send(
-        produceRequest(
-          "test",
-          0,
-          new ByteBufferMessageSet(
-            compressionCodec = NoCompressionCodec,
-            messages = new Message(messageBytes)),
-          acks = 1))
+      val response = producer.send(produceRequest(
+        "test",
+        0,
+        new ByteBufferMessageSet(
+          compressionCodec = NoCompressionCodec,
+          messages = new Message(messageBytes)),
+        acks = 1))
       assertNotNull(response)
     } catch {
       case e: Exception =>
@@ -102,14 +99,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val secondEnd = SystemTime.milliseconds
     assertTrue((secondEnd - secondStart) < 500)
     try {
-      val response = producer.send(
-        produceRequest(
-          "test",
-          0,
-          new ByteBufferMessageSet(
-            compressionCodec = NoCompressionCodec,
-            messages = new Message(messageBytes)),
-          acks = 1))
+      val response = producer.send(produceRequest(
+        "test",
+        0,
+        new ByteBufferMessageSet(
+          compressionCodec = NoCompressionCodec,
+          messages = new Message(messageBytes)),
+        acks = 1))
       assertNotNull(response)
     } catch {
       case e: Exception =>
@@ -192,8 +188,20 @@ class SyncProducerTest extends KafkaServerTestHarness {
     TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, "test", 0)
 
     // This message will be dropped silently since message size too large.
-    producer.send(
-      produceRequest(
+    producer.send(produceRequest(
+      "test",
+      0,
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        messages =
+          new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
+      acks = 0))
+
+    // Send another message whose size is large enough to exceed the buffer size so
+    // the socket buffer will be flushed immediately;
+    // this send should fail since the socket has been closed
+    try {
+      producer.send(produceRequest(
         "test",
         0,
         new ByteBufferMessageSet(
@@ -201,20 +209,6 @@ class SyncProducerTest extends KafkaServerTestHarness {
           messages =
             new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
         acks = 0))
-
-    // Send another message whose size is large enough to exceed the buffer size so
-    // the socket buffer will be flushed immediately;
-    // this send should fail since the socket has been closed
-    try {
-      producer.send(
-        produceRequest(
-          "test",
-          0,
-          new ByteBufferMessageSet(
-            compressionCodec = NoCompressionCodec,
-            messages =
-              new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
-          acks = 0))
     } catch {
       case e: java.io.IOException => // success
       case e2: Throwable          => throw e2
@@ -344,14 +338,13 @@ class SyncProducerTest extends KafkaServerTestHarness {
     AdminUtils.createTopic(zkUtils, topicName, 1, 1, topicProps)
     TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topicName, 0)
 
-    val response = producer.send(
-      produceRequest(
-        topicName,
-        0,
-        new ByteBufferMessageSet(
-          compressionCodec = NoCompressionCodec,
-          messages = new Message(messageBytes)),
-        -1))
+    val response = producer.send(produceRequest(
+      topicName,
+      0,
+      new ByteBufferMessageSet(
+        compressionCodec = NoCompressionCodec,
+        messages = new Message(messageBytes)),
+      -1))
 
     assertEquals(
       Errors.NOT_ENOUGH_REPLICAS.code,

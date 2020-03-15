@@ -54,9 +54,8 @@ object CronExpressionSerialization {
             .fromTryCatch(new CronExpression(expr))
             .leftMap(Extractor.Error.thrown)
         case invalid =>
-          Failure(
-            Extractor.Error.invalid(
-              "Could not parse CRON expression from " + invalid))
+          Failure(Extractor.Error.invalid(
+            "Could not parse CRON expression from " + invalid))
       }
   }
 }

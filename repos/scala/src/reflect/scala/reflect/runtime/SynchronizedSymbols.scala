@@ -104,7 +104,9 @@ private[reflect] trait SynchronizedSymbols extends internal.Symbols {
       if (isCompilerUniverse) false
       else if (_initialized) true
       else
-        purpose.isFlagRelated && (_initializationMask & purpose.mask & TopLevelPickledFlags) == 0
+        purpose.isFlagRelated && (
+          _initializationMask & purpose.mask & TopLevelPickledFlags
+        ) == 0
     }
 
     /** Communicates with completers declared in scala.reflect.runtime.SymbolLoaders

@@ -137,8 +137,8 @@ class TypedTutorial(args: Args) extends Job(args) {
       // get the lines, this time from an 'OffsetTextLine' which is a
       // typed wrapper on 'TextLine' that contains the 'byte offset' and
       // text of each line in the file.
-      val lines: TypedPipe[(Long, String)] = TypedPipe.from(
-        OffsetTextLine(args("input")))
+      val lines: TypedPipe[(Long, String)] = TypedPipe.from(OffsetTextLine(
+        args("input")))
 
       // Split lines into words, but keep their original line offset with them.
       val wordsWithLine: Grouped[String, Long] = lines.flatMap {

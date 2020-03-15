@@ -87,7 +87,6 @@ object ScalaCompilerSettings {
       continuations = properties.boolean("continuations"),
       debuggingInfoLevel = debuggingLevel,
       additionalCompilerOptions = properties.seq("compilerOptions"),
-      compilerPlugins = properties.array("pluginPaths")
-    )
+      compilerPlugins = properties.array("pluginPaths"))
   }
 }

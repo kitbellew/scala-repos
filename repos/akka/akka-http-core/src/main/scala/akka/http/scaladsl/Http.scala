@@ -305,14 +305,13 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
       if (port == connectionContext.defaultPort) Host(host)
       else Host(host, port)
     val layer = clientLayer(hostHeader, settings, log)
-    layer.joinMat(
-      _outgoingTlsConnectionLayer(
-        host,
-        port,
-        localAddress,
-        settings,
-        connectionContext,
-        log))(Keep.right)
+    layer.joinMat(_outgoingTlsConnectionLayer(
+      host,
+      port,
+      localAddress,
+      settings,
+      connectionContext,
+      log))(Keep.right)
   }
 
   private def _outgoingTlsConnectionLayer(
@@ -604,14 +603,13 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     val port = uri.effectivePort
 
     webSocketClientLayer(request, settings, log)
-      .joinMat(
-        _outgoingTlsConnectionLayer(
-          host,
-          port,
-          localAddress,
-          settings,
-          ctx,
-          log))(Keep.left)
+      .joinMat(_outgoingTlsConnectionLayer(
+        host,
+        port,
+        localAddress,
+        settings,
+        ctx,
+        log))(Keep.left)
   }
 
   /**

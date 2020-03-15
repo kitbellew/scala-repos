@@ -85,20 +85,22 @@ trait IntroduceTypeAlias {
 
       val typeElement: ScTypeElement = ScalaRefactoringUtil
         .checkTypeElement(inTypeElement)
-        .getOrElse(
-          showErrorMessageWithException(
-            ScalaBundle.message("cannot.refactor.not.valid.type"),
-            project,
-            editor,
-            INTRODUCE_TYPEALIAS_REFACTORING_NAME))
+        .getOrElse(showErrorMessageWithException(
+          ScalaBundle.message("cannot.refactor.not.valid.type"),
+          project,
+          editor,
+          INTRODUCE_TYPEALIAS_REFACTORING_NAME))
 
       val currentDataObject = editor.getUserData(
         IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
 
       if (currentDataObject.possibleScopes == null) {
-        currentDataObject.setPossibleScopes(
-          ScopeSuggester
-            .suggestScopes(this, project, editor, file, typeElement))
+        currentDataObject.setPossibleScopes(ScopeSuggester.suggestScopes(
+          this,
+          project,
+          editor,
+          file,
+          typeElement))
       }
 
       if (currentDataObject.possibleScopes.isEmpty) {
@@ -258,8 +260,8 @@ trait IntroduceTypeAlias {
         val currentScope = currentDataObject.currentScope
 
         //need open modal dialog in inplace mode
-        if ((StartMarkAction.canStart(
-              project) != null) && (currentScope != null)) {
+        if ((StartMarkAction
+              .canStart(project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState = TemplateManagerImpl
             .getTemplateState(InjectedLanguageUtil.getTopLevelEditor(editor))
@@ -663,8 +665,8 @@ trait IntroduceTypeAlias {
       if (occurrences.length > 1) {
         WindowManager.getInstance
           .getStatusBar(project)
-          .setInfo(
-            ScalaBundle.message("press.escape.to.remove.the.highlighting"))
+          .setInfo(ScalaBundle.message(
+            "press.escape.to.remove.the.highlighting"))
       }
     }
 

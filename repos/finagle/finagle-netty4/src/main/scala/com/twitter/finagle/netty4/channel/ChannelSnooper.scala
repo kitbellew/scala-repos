@@ -139,8 +139,7 @@ private[netty4] class SimpleChannelSnooper(val name: String)
       ctx: ChannelHandlerContext,
       remoteAddress: SocketAddress,
       localAddress: SocketAddress,
-      future: ChannelPromise
-  ): Unit = {
+      future: ChannelPromise): Unit = {
     printEvent(ctx.channel, "connected to " + remoteAddress)
     super.connect(ctx, remoteAddress, localAddress, future)
   }

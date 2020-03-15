@@ -41,12 +41,10 @@ class DataSource(val dsp: DataSourceParams)
           try {
             LabeledPoint(
               properties.get[Double]("plan"),
-              Vectors.dense(
-                Array(
-                  properties.get[Double]("attr0"),
-                  properties.get[Double]("attr1"),
-                  properties.get[Double]("attr2")
-                )))
+              Vectors.dense(Array(
+                properties.get[Double]("attr0"),
+                properties.get[Double]("attr1"),
+                properties.get[Double]("attr2"))))
           } catch {
             case e: Exception => {
               logger.error(
@@ -61,6 +59,4 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-class TrainingData(
-    val labeledPoints: RDD[LabeledPoint]
-) extends Serializable
+class TrainingData(val labeledPoints: RDD[LabeledPoint]) extends Serializable

@@ -40,34 +40,31 @@ object GettingStartedOverview extends App {
           andThen
 //#quick-query
             // or
-            coffees.filter(_.price < 10.0).map(_.name).result
-      )
+            coffees.filter(_.price < 10.0).map(_.name).result)
 //#quick-query
   Await.result(f1, Duration.Inf)
 
   val f2 = Database
     .forURL("jdbc:h2:mem:test1", driver = "org.h2.Driver")
-    .run(
-      coffees.schema.create andThen {
-        //#what-is-slick-micro-example
-        val limit = 10.0
+    .run(coffees.schema.create andThen {
+      //#what-is-slick-micro-example
+      val limit = 10.0
 
-        // Your query could look like this:
-        (for (c <- coffees; if c.price < limit) yield c.name).result
+      // Your query could look like this:
+      (for (c <- coffees; if c.price < limit) yield c.name).result
 
-        // Equivalent SQL: select COF_NAME from COFFEES where PRICE < 10.0
-        //#what-is-slick-micro-example
-      } andThen {
-        //#what-is-slick-micro-example-plainsql
-        val limit = 10.0
+      // Equivalent SQL: select COF_NAME from COFFEES where PRICE < 10.0
+      //#what-is-slick-micro-example
+    } andThen {
+      //#what-is-slick-micro-example-plainsql
+      val limit = 10.0
 
-        sql"select COF_NAME from COFFEES where PRICE < $limit".as[String]
+      sql"select COF_NAME from COFFEES where PRICE < $limit".as[String]
 
-        // Automatically using a bind variable to be safe from SQL injection:
-        // select COF_NAME from COFFEES where PRICE < ?
-        //#what-is-slick-micro-example-plainsql
-      }
-    )
+      // Automatically using a bind variable to be safe from SQL injection:
+      // select COF_NAME from COFFEES where PRICE < ?
+      //#what-is-slick-micro-example-plainsql
+    })
   Await.result(f2, Duration.Inf)
 
   //#features-scala-collections
@@ -90,8 +87,7 @@ object GettingStartedOverview extends App {
         //#features-type-safe
         coffees.schema.create andThen
           //#features-type-safe
-          coffees.map(_.price).result
-      )
+          coffees.map(_.price).result)
 
       // Query builders are type safe:
       coffees.filter(_.price < 10.0)

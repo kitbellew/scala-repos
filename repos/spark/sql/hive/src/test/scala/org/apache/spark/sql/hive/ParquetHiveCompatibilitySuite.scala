@@ -140,10 +140,9 @@ class ParquetHiveCompatibilitySuite
   // HIVE-11625: Parquet map entries with null keys are dropped by Hive
   ignore("map entries with null keys") {
     testParquetHiveCompatibility(
-      Row(
-        Map[Integer, String](
-          null.asInstanceOf[Integer] -> "bar",
-          null.asInstanceOf[Integer] -> null)),
+      Row(Map[Integer, String](
+        null.asInstanceOf[Integer] -> "bar",
+        null.asInstanceOf[Integer] -> null)),
       "MAP<INT, STRING>")
   }
 

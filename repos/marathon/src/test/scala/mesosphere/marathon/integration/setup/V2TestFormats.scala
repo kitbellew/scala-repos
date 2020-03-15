@@ -19,8 +19,7 @@ object V2TestFormats {
         original = (js \ "original").as[Group],
         target = (js \ "target").as[Group],
         version = (js \ "version").as[Timestamp])
-        .copy(id = (js \ "id").as[String])
-    )
+        .copy(id = (js \ "id").as[String]))
   }
 
   implicit lazy val SubscribeReads: Reads[Subscribe] = Json.reads[Subscribe]
@@ -62,10 +61,9 @@ object V2TestFormats {
 
   implicit lazy val eventSubscribersReads: Reads[EventSubscribers] = Reads {
     subscribersJson =>
-      JsSuccess(
-        EventSubscribers(urls = (subscribersJson \ "callbackUrls")
-          .asOpt[Set[String]]
-          .getOrElse(Set.empty)))
+      JsSuccess(EventSubscribers(urls = (subscribersJson \ "callbackUrls")
+        .asOpt[Set[String]]
+        .getOrElse(Set.empty)))
   }
 
   implicit lazy val v2AppUpdateWrite: Writes[AppUpdate] = Writes { update =>

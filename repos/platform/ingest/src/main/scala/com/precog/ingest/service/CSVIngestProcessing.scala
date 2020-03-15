@@ -209,11 +209,10 @@ class CSVIngestProcessing(
                 jobId,
                 if (done) streamRef.terminate else streamRef) flatMap { _ =>
                 if (done)
-                  M.point(
-                    BatchResult(
-                      total + batch.length,
-                      ingested + batch.length,
-                      errors))
+                  M.point(BatchResult(
+                    total + batch.length,
+                    ingested + batch.length,
+                    errors))
                 else
                   readBatches(
                     paths,

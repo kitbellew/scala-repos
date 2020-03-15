@@ -224,8 +224,7 @@ object LabelledGeneric {
       lab: DefaultSymbolicLabelling.Aux[T, K],
       gen: Generic.Aux[T, V],
       zip: hlist.ZipWithKeys.Aux[K, V, R],
-      ev: R <:< V
-  ): Aux[T, R] =
+      ev: R <:< V): Aux[T, R] =
     new LabelledGeneric[T] {
       type Repr = R
       def to(t: T): Repr = zip(gen.to(t))
@@ -241,8 +240,7 @@ object LabelledGeneric {
       lab: DefaultSymbolicLabelling.Aux[T, K],
       gen: Generic.Aux[T, V],
       zip: coproduct.ZipWithKeys.Aux[K, V, R],
-      ev: R <:< V
-  ): Aux[T, R] =
+      ev: R <:< V): Aux[T, R] =
     new LabelledGeneric[T] {
       type Repr = R
       def to(t: T): Repr = zip(gen.to(t))
@@ -318,8 +316,9 @@ trait CaseClassMacros extends ReprTypes {
     tpe =:= typeOf[Unit] || (!(tpe =:= typeOf[AnyRef]) && isProductAux(tpe))
 
   def isProduct1(tpe: Type): Boolean =
-    lowerKind(tpe) =:= typeOf[Unit] || (!(lowerKind(tpe) =:= typeOf[
-      AnyRef]) && isProductAux(tpe))
+    lowerKind(tpe) =:= typeOf[Unit] || (
+      !(lowerKind(tpe) =:= typeOf[AnyRef]) && isProductAux(tpe)
+    )
 
   def isCoproduct(tpe: Type): Boolean = {
     val sym = tpe.typeSymbol
@@ -705,8 +704,7 @@ trait CaseClassMacros extends ReprTypes {
     val typerContext = typer.context
     typerContext.isAccessible(
       sym.asInstanceOf[global.Symbol],
-      pre.asInstanceOf[global.Type]
-    )
+      pre.asInstanceOf[global.Type])
   }
   def isAccessible(tpe: Type): Boolean =
     isAccessible(prefix(tpe), tpe.typeSymbol)

@@ -28,9 +28,8 @@ import net.liftweb.util.Helpers.tryo
 
 import com.mongodb.DBObject
 
-abstract class JsonObjectField[
-    OwnerType <: BsonRecord[OwnerType],
-    JObjectType <: JsonObject[JObjectType]](
+abstract class JsonObjectField[OwnerType <: BsonRecord[
+  OwnerType], JObjectType <: JsonObject[JObjectType]](
     rec: OwnerType,
     valueMeta: JsonObjectMeta[JObjectType])
     extends Field[JObjectType, OwnerType]

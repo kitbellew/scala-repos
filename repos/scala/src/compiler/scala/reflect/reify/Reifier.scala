@@ -97,10 +97,9 @@ abstract class Reifier extends States with Phases with Errors with Utils {
             reificationIsConcrete)
 
         case _ =>
-          throw new Error(
-            "reifee %s of type %s is not supported".format(
-              reifee,
-              if (reifee == null) "null" else reifee.getClass.toString))
+          throw new Error("reifee %s of type %s is not supported".format(
+            reifee,
+            if (reifee == null) "null" else reifee.getClass.toString))
       }
 
       // todo. why do we reset attrs?

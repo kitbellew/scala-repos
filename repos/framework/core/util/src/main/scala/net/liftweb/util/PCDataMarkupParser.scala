@@ -607,11 +607,13 @@ object AltXML {
                 sb.append(str)
                 sb.append(';')
               case _ =>
-                if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
-                  sb.append(c)
+                if (c >= ' ' && c != '\u0085' && !(
+                      c >= '\u007f' && c <= '\u0095'
+                    )) sb.append(c)
             }
-          } else if (c >= ' ' && c != '\u0085' && !(c >= '\u007f' && c <= '\u0095'))
-            sb.append(c)
+          } else if (c >= ' ' && c != '\u0085' && !(
+                       c >= '\u007f' && c <= '\u0095'
+                     )) sb.append(c)
       }
 
       pos += 1
@@ -668,7 +670,9 @@ object AltXML {
             legacyIeCompatibilityMode)
 
       case e: Elem
-          if !legacyIeCompatibilityMode && ((e.child eq null) || e.child.isEmpty)
+          if !legacyIeCompatibilityMode && (
+            (e.child eq null) || e.child.isEmpty
+          )
             && inlineTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)
@@ -677,7 +681,9 @@ object AltXML {
         sb.append(" />")
 
       case e: Elem
-          if legacyIeCompatibilityMode && ((e.child eq null) || e.child.isEmpty) &&
+          if legacyIeCompatibilityMode && (
+            (e.child eq null) || e.child.isEmpty
+          ) &&
             ieBadTags.contains(e.label) =>
         sb.append('<')
         e.nameToString(sb)

@@ -123,8 +123,8 @@ class MutableSettings(val errorFn: String => Unit)
     def tryToSetIfExists(
         cmd: String,
         args: List[String],
-        setter: (Setting) => (List[String] => Option[List[String]])
-    ): Option[List[String]] =
+        setter: (Setting) => (List[String] => Option[List[String]]))
+        : Option[List[String]] =
       lookupSetting(cmd) match {
         //case None       => errorFn("Parameter '" + cmd + "' is not recognised by Scalac.") ; None
         case None      => None //error reported in processArguments
@@ -319,14 +319,12 @@ class MutableSettings(val errorFn: String => Unit)
         dir: AbstractFile,
         name: String,
         allowJar: Boolean = false): AbstractFile =
-      (
-        if (dir != null && dir.isDirectory) dir
-        else if (allowJar && dir == null && Jar.isJarOrZip(
-                   name,
-                   examineFile = false)) new PlainFile(Path(name))
-        else
-          throw new FatalError(name + " does not exist or is not a directory")
-      )
+      (if (dir != null && dir.isDirectory) dir
+       else if (allowJar && dir == null && Jar.isJarOrZip(
+                  name,
+                  examineFile = false)) new PlainFile(Path(name))
+       else
+         throw new FatalError(name + " does not exist or is not a directory"))
 
     /** Set the single output directory. From now on, all files will
       *  be dumped in there, regardless of previous calls to 'add'.
@@ -628,12 +626,7 @@ class MutableSettings(val errorFn: String => Unit)
 
     override def isDefault =
       super.isDefault && prependPath.isDefault && appendPath.isDefault
-    override def value =
-      join(
-        prependPath.value,
-        super.value,
-        appendPath.value
-      )
+    override def value = join(prependPath.value, super.value, appendPath.value)
   }
 
   /** Set the output directory. */
@@ -703,8 +696,8 @@ class MutableSettings(val errorFn: String => Unit)
       helpArg: String,
       descr: String,
       val domain: E,
-      val default: Option[List[String]]
-  ) extends Setting(name, s"$descr: `_' for all, `$name:help' to list")
+      val default: Option[List[String]])
+      extends Setting(name, s"$descr: `_' for all, `$name:help' to list")
       with Clearable {
 
     withHelpSyntax(s"$name:<_,$helpArg,-$helpArg>")
@@ -943,9 +936,8 @@ class MutableSettings(val errorFn: String => Unit)
   }
 
   private def mkPhasesHelp(descr: String, default: String) = {
-    descr + " <phases>" + (
-      if (default == "") "" else " (default: " + default + ")"
-    )
+    descr + " <phases>" + (if (default == "") ""
+                           else " (default: " + default + ")")
   }
 
   /** A setting represented by a list of strings which should be prefixes of
@@ -956,8 +948,8 @@ class MutableSettings(val errorFn: String => Unit)
   class PhasesSetting private[nsc] (
       name: String,
       descr: String,
-      default: String
-  ) extends Setting(name, mkPhasesHelp(descr, default))
+      default: String)
+      extends Setting(name, mkPhasesHelp(descr, default))
       with Clearable {
     private[nsc] def this(name: String, descr: String) = this(name, descr, "")
 
@@ -1016,8 +1008,7 @@ class MutableSettings(val errorFn: String => Unit)
     def unparse: List[String] = value map (name + ":" + _)
 
     withHelpSyntax(
-      if (default == "") name + ":<phases>" else name + "[:phases]"
-    )
+      if (default == "") name + ":<phases>" else name + "[:phases]")
   }
 
   /** Internal use - syntax enhancements. */

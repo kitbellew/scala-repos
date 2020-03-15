@@ -23,8 +23,8 @@ import org.apache.spark.rdd.RDD
   */
 class BiMap[K, V] private[prediction] (
     private val m: Map[K, V],
-    private val i: Option[BiMap[V, K]] = None
-) extends Serializable {
+    private val i: Option[BiMap[V, K]] = None)
+    extends Serializable {
 
   // NOTE: make inverse's inverse point back to current BiMap
   val inverse: BiMap[V, K] = i.getOrElse {

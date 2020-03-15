@@ -65,8 +65,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fc: => F[C],
       fd: => F[D],
       fe: => F[E])(f: F[(A, B, C, D, E) => R]): F[R] =
-    ap2(fd, fe)(ap3(fa, fb, fc)(map(f)(f =>
-      ((a: A, b: B, c: C) => (d: D, e: E) => f(a, b, c, d, e)))))
+    ap2(fd, fe)(ap3(fa, fb, fc)(
+      map(f)(f => ((a: A, b: B, c: C) => (d: D, e: E) => f(a, b, c, d, e)))))
   def ap6[A, B, C, D, E, FF, R](
       fa: => F[A],
       fb: => F[B],
@@ -84,15 +84,13 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fe: => F[E],
       ff: => F[FF],
       fg: => F[G])(f: F[(A, B, C, D, E, FF, G) => R]): F[R] =
-    ap3(fe, ff, fg)(
-      ap4(fa, fb, fc, fd)(
-        map(f)(f =>
+    ap3(fe, ff, fg)(ap4(fa, fb, fc, fd)(map(f)(f =>
+      (
           (
-              (
-                  a: A,
-                  b: B,
-                  c: C,
-                  d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
+              a: A,
+              b: B,
+              c: C,
+              d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
   def ap8[A, B, C, D, E, FF, G, H, R](
       fa: => F[A],
       fb: => F[B],
@@ -102,16 +100,14 @@ trait Apply[F[_]] extends Functor[F] { self =>
       ff: => F[FF],
       fg: => F[G],
       fh: => F[H])(f: F[(A, B, C, D, E, FF, G, H) => R]): F[R] =
-    ap4(fe, ff, fg, fh)(
-      ap4(fa, fb, fc, fd)(
-        map(f)(f =>
+    ap4(fe, ff, fg, fh)(ap4(fa, fb, fc, fd)(map(f)(f =>
+      (
           (
-              (
-                  a: A,
-                  b: B,
-                  c: C,
-                  d: D) =>
-                (e: E, ff: FF, g: G, h: H) => f(a, b, c, d, e, ff, g, h)))))
+              a: A,
+              b: B,
+              c: C,
+              d: D) =>
+            (e: E, ff: FF, g: G, h: H) => f(a, b, c, d, e, ff, g, h)))))
 
   def apply2[A, B, C](fa: => F[A], fb: => F[B])(f: (A, B) => C): F[C] =
     ap(fb)(map(fa)(f.curried))

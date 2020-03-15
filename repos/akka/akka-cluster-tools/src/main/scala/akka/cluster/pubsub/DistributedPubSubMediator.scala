@@ -744,7 +744,9 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def publish(path: String, msg: Any, allButSelf: Boolean = false): Unit = {
     for {
       (address, bucket) ← registry
-      if !(allButSelf && address == selfAddress) // if we should skip sender() node and current address == self address => skip
+      if !(
+        allButSelf && address == selfAddress
+      ) // if we should skip sender() node and current address == self address => skip
       valueHolder ← bucket.content.get(path)
       ref ← valueHolder.ref
     } ref forward msg

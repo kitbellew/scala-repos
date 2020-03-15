@@ -245,8 +245,8 @@ class StreamingKMeans @Since("1.2.0") (
       weight: Double,
       seed: Long = Utils.random.nextLong): this.type = {
     val random = new XORShiftRandom(seed)
-    val centers = Array.fill(k)(
-      Vectors.dense(Array.fill(dim)(random.nextGaussian())))
+    val centers = Array.fill(k)(Vectors.dense(
+      Array.fill(dim)(random.nextGaussian())))
     val weights = Array.fill(k)(weight)
     model = new StreamingKMeansModel(centers, weights)
     this

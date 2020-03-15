@@ -48,13 +48,12 @@ object ConsumerOffsetChecker extends Logging {
               val brokerInfo = m.asInstanceOf[Map[String, Any]]
               val host = brokerInfo.get("host").get.asInstanceOf[String]
               val port = brokerInfo.get("port").get.asInstanceOf[Int]
-              Some(
-                new SimpleConsumer(
-                  host,
-                  port,
-                  10000,
-                  100000,
-                  "ConsumerOffsetChecker"))
+              Some(new SimpleConsumer(
+                host,
+                port,
+                10000,
+                100000,
+                "ConsumerOffsetChecker"))
             case None =>
               throw new BrokerNotAvailableException(
                 "Broker id %d does not exist".format(bid))
@@ -89,11 +88,10 @@ object ConsumerOffsetChecker extends Logging {
         consumerOpt match {
           case Some(consumer) =>
             val topicAndPartition = TopicAndPartition(topic, pid)
-            val request = OffsetRequest(
-              immutable.Map(
-                topicAndPartition -> PartitionOffsetRequestInfo(
-                  OffsetRequest.LatestTime,
-                  1)))
+            val request = OffsetRequest(immutable.Map(
+              topicAndPartition -> PartitionOffsetRequestInfo(
+                OffsetRequest.LatestTime,
+                1)))
             val logSize = consumer
               .getOffsetsBefore(request)
               .partitionErrorAndOffsets(topicAndPartition)
@@ -102,18 +100,17 @@ object ConsumerOffsetChecker extends Logging {
 
             val lagString = offsetOpt.map(o =>
               if (o == -1) "unknown" else (logSize - o).toString)
-            println(
-              "%-15s %-30s %-3s %-15s %-15s %-15s %s".format(
-                group,
-                topic,
-                pid,
-                offsetOpt.getOrElse("unknown"),
-                logSize,
-                lagString.getOrElse("unknown"),
-                owner match {
-                  case Some(ownerStr) => ownerStr
-                  case None           => "none"
-                }))
+            println("%-15s %-30s %-3s %-15s %-15s %-15s %s".format(
+              group,
+              topic,
+              pid,
+              offsetOpt.getOrElse("unknown"),
+              logSize,
+              lagString.getOrElse("unknown"),
+              owner match {
+                case Some(ownerStr) => ownerStr
+                case None           => "none"
+              }))
           case None => // ignore
         }
       case None =>
@@ -235,9 +232,9 @@ object ConsumerOffsetChecker extends Logging {
         channelSocketTimeoutMs,
         channelRetryBackoffMs)
 
-      debug(
-        "Sending offset fetch request to coordinator %s:%d."
-          .format(channel.host, channel.port))
+      debug("Sending offset fetch request to coordinator %s:%d.".format(
+        channel.host,
+        channel.port))
       channel.send(OffsetFetchRequest(group, topicPartitions))
       val offsetFetchResponse = OffsetFetchResponse.readFrom(
         channel.receive().payload())
@@ -266,17 +263,21 @@ object ConsumerOffsetChecker extends Logging {
           } else if (offsetAndMetadata.error == Errors.NONE.code)
             offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
           else {
-            println(
-              "Could not fetch offset for %s due to %s.".format(
-                topicAndPartition,
-                Errors.forCode(offsetAndMetadata.error).exception))
+            println("Could not fetch offset for %s due to %s.".format(
+              topicAndPartition,
+              Errors.forCode(offsetAndMetadata.error).exception))
           }
       }
       channel.disconnect()
 
-      println(
-        "%-15s %-30s %-3s %-15s %-15s %-15s %s"
-          .format("Group", "Topic", "Pid", "Offset", "logSize", "Lag", "Owner"))
+      println("%-15s %-30s %-3s %-15s %-15s %-15s %s".format(
+        "Group",
+        "Topic",
+        "Pid",
+        "Offset",
+        "logSize",
+        "Lag",
+        "Owner"))
       topicList.sorted.foreach { topic => processTopic(zkUtils, group, topic) }
 
       if (options.has("broker-info")) printBrokerInfo()

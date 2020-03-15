@@ -49,10 +49,9 @@ class LookupRemoteActorSpec
         }
         hello.isInstanceOf[RemoteActorRef] should ===(true)
         val masterAddress = testConductor.getAddressFor(master).await
-        (hello ? "identify").await
-          .asInstanceOf[ActorRef]
-          .path
-          .address should ===(masterAddress)
+        (
+          hello ? "identify"
+        ).await.asInstanceOf[ActorRef].path.address should ===(masterAddress)
       }
       enterBarrier("done")
     }

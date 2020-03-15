@@ -221,10 +221,9 @@ trait InlineParsers extends BaseParsers {
   def fullLink(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("a")) { failure("Cannot nest a link in a link.") }
     else {
-      '[' ~> linkInline(
-        ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (ows ~ ')') ^^ {
-        case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl)
-      }
+      '[' ~> linkInline(ctx.addTag("a")) ~ ("](" ~ ows) ~ url ~ ows ~ title <~ (
+        ows ~ ')'
+      ) ^^ { case txt ~ _ ~ u ~ _ ~ ttl => deco.decorateLink(txt, u, ttl) }
     }
 
   /** A markdown link which references an url by id.
@@ -239,11 +238,13 @@ trait InlineParsers extends BaseParsers {
 
   /** Inline markdown in a link. Like normal inline stuff but stops when it reaches a closing square bracket.
     */
-  def linkInline(ctx: InlineContext): Parser[
+  def linkInline(
+      ctx: InlineContext): Parser[
     String
   ] = //( (not(']') ~> oneInline(ctx.addTag("a")))* ) ^^ {_.mkString}
-    ((markdownText(specialLinkInlineChars, true) | elementParsers(ctx) | ((not(
-      ']') ~> aChar))) *) ^^ { _.mkString }
+    ((markdownText(specialLinkInlineChars, true) | elementParsers(ctx) | (
+      (not(']') ~> aChar)
+    )) *) ^^ { _.mkString }
 
   /** We parse everything as a link/img url until we hit whitespace or a closing brace.
     */

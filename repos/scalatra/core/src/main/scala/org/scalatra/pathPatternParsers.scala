@@ -30,8 +30,7 @@ case class PathPattern(regex: Regex, captureGroupNames: List[String] = Nil) {
   def +(pathPattern: PathPattern): PathPattern =
     PathPattern(
       new Regex(this.regex.toString + pathPattern.regex.toString),
-      this.captureGroupNames ::: pathPattern.captureGroupNames
-    )
+      this.captureGroupNames ::: pathPattern.captureGroupNames)
 
 }
 
@@ -65,8 +64,7 @@ trait RegexPathPatternParser extends PathPatternParser with RegexParsers {
     def +(other: PartialPathPattern): PartialPathPattern =
       PartialPathPattern(
         this.regex + other.regex,
-        this.captureGroupNames ::: other.captureGroupNames
-      )
+        this.captureGroupNames ::: other.captureGroupNames)
   }
 }
 

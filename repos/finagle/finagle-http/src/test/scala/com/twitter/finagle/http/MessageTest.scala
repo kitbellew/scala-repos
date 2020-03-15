@@ -102,8 +102,7 @@ class MessageTest extends FunSuite {
       ("x;p1; p2 ;p3" -> "y") -> "y;p1; p2 ;p3",
       ("x;" -> "y") -> "y",
       (";" -> "y") -> "y",
-      ("" -> "y") -> "y"
-    )
+      ("" -> "y") -> "y")
     tests.foreach {
       case ((header, mediaType), expected) =>
         val request = Request()

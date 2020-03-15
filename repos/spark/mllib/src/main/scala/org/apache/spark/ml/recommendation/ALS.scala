@@ -264,8 +264,8 @@ class ALSModel private[ml] (
       .join(itemFactors, dataset($(itemCol)) === itemFactors("id"), "left")
       .select(
         dataset("*"),
-        predict(userFactors("features"), itemFactors("features"))
-          .as($(predictionCol)))
+        predict(userFactors("features"), itemFactors("features")).as($(
+          predictionCol)))
   }
 
   @Since("1.3.0")
@@ -660,8 +660,19 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     */
   @DeveloperApi
   def train[ID: ClassTag]( // scalastyle:ignore
-      ratings: RDD[Rating[ID]], rank: Int = 10, numUserBlocks: Int = 10, numItemBlocks: Int = 10, maxIter: Int = 10, regParam: Double = 1.0, implicitPrefs: Boolean = false, alpha: Double = 1.0, nonnegative: Boolean = false, intermediateRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK, finalRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK, checkpointInterval: Int = 10, seed: Long = 0L)(
-      implicit
+      ratings: RDD[Rating[ID]],
+      rank: Int = 10,
+      numUserBlocks: Int = 10,
+      numItemBlocks: Int = 10,
+      maxIter: Int = 10,
+      regParam: Double = 1.0,
+      implicitPrefs: Boolean = false,
+      alpha: Double = 1.0,
+      nonnegative: Boolean = false,
+      intermediateRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK,
+      finalRDDStorageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK,
+      checkpointInterval: Int = 10,
+      seed: Long = 0L)(implicit
       ord: Ordering[ID]): (RDD[(ID, Array[Float])], RDD[(ID, Array[Float])]) = {
     require(
       intermediateRDDStorageLevel != StorageLevel.NONE,
@@ -703,7 +714,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     var itemFactors = initialize(itemInBlocks, rank, seedGen.nextLong())
     var previousCheckpointFile: Option[String] = None
     val shouldCheckpoint: Int => Boolean = (iter) =>
-      sc.checkpointDir.isDefined && checkpointInterval != -1 && (iter % checkpointInterval == 0)
+      sc.checkpointDir.isDefined && checkpointInterval != -1 && (
+        iter % checkpointInterval == 0
+      )
     val deletePreviousCheckpointFile: () => Unit = () =>
       previousCheckpointFile.foreach { file =>
         try {
@@ -1256,15 +1269,17 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
             dstIdToLocalIndex.update(sortedDstIds(i), i)
             i += 1
           }
-          logDebug("Converting to local indices took " + (System
-            .nanoTime() - start) / 1e9 + " seconds.")
+          logDebug(
+            "Converting to local indices took " + (
+              System.nanoTime() - start
+            ) / 1e9 + " seconds.")
           val dstLocalIndices = dstIds.map(dstIdToLocalIndex.apply)
           (srcBlockId, (dstBlockId, srcIds, dstLocalIndices, ratings))
       }
       .groupByKey(new ALSPartitioner(srcPart.numPartitions))
       .mapValues { iter =>
-        val builder = new UncompressedInBlockBuilder[ID](
-          new LocalIndexEncoder(dstPart.numPartitions))
+        val builder = new UncompressedInBlockBuilder[ID](new LocalIndexEncoder(
+          dstPart.numPartitions))
         iter.foreach {
           case (dstBlockId, srcIds, dstLocalIndices, ratings) =>
             builder.add(dstBlockId, srcIds, dstLocalIndices, ratings)
@@ -1339,8 +1354,8 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
               (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
         }
     }
-    val merged = srcOut.groupByKey(
-      new ALSPartitioner(dstInBlocks.partitions.length))
+    val merged = srcOut.groupByKey(new ALSPartitioner(
+      dstInBlocks.partitions.length))
     dstInBlocks.join(merged).mapValues {
       case (InBlock(dstIds, srcPtrs, srcEncodedIndices, ratings), srcFactors) =>
         val sortedSrcFactors = new Array[FactorBlock](numSrcBlocks)

@@ -44,11 +44,10 @@ class HaltTestServlet extends ScalatraServlet {
   get("/halt-before") { "this content must not be returned" }
 
   get("/action-result") {
-    halt(
-      ActionResult(
-        status = new ResponseStatus(406, "Not Acceptable"),
-        headers = Map("X-Action-Result" -> "present"),
-        body = "body sent using ActionResult"))
+    halt(ActionResult(
+      status = new ResponseStatus(406, "Not Acceptable"),
+      headers = Map("X-Action-Result" -> "present"),
+      body = "body sent using ActionResult"))
     "this content must not be returned"
   }
 

@@ -24,14 +24,12 @@ object CORSFilterSpec extends CORSCommonSpec {
 
   def withApplication[T](conf: Map[String, _ <: Any] = Map.empty)(
       block: => T): T = {
-    running(
-      _.configure(conf).overrides(
-        bind[Router].to(Router.from {
-          case p"/error" => Action { req => throw sys.error("error") }
-          case _         => Action(Results.Ok)
-        }),
-        bind[HttpFilters].to[Filters]
-      ))(_ => block)
+    running(_.configure(conf).overrides(
+      bind[Router].to(Router.from {
+        case p"/error" => Action { req => throw sys.error("error") }
+        case _         => Action(Results.Ok)
+      }),
+      bind[HttpFilters].to[Filters]))(_ => block)
   }
 
   "The CORSFilter" should {
@@ -41,9 +39,8 @@ object CORSFilterSpec extends CORSCommonSpec {
 
     "pass through a cors request that doesn't match the path prefixes" in withApplication(
       conf = restrictPaths) {
-      val result = route(
-        fakeRequest("GET", "/baz").withHeaders(
-          ORIGIN -> "http://localhost")).get
+      val result = route(fakeRequest("GET", "/baz").withHeaders(
+        ORIGIN -> "http://localhost")).get
 
       status(result) must_== OK
       mustBeNoAccessControlResponseHeaders(result)
@@ -67,14 +64,12 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
   def withApp[T](
       filters: Class[_ <: HttpFilters] = classOf[Filters],
       conf: Map[String, _ <: Any] = Map())(block: Application => T): T = {
-    running(
-      _.configure(conf).overrides(
-        bind[Router].to(Router.from {
-          case p"/error" => Action { req => throw sys.error("error") }
-          case _         => CSRFCheck(Action(Results.Ok))
-        }),
-        bind[HttpFilters].to(filters)
-      ))(block)
+    running(_.configure(conf).overrides(
+      bind[Router].to(Router.from {
+        case p"/error" => Action { req => throw sys.error("error") }
+        case _         => CSRFCheck(Action(Results.Ok))
+      }),
+      bind[HttpFilters].to(filters)))(block)
   }
 
   def withApplication[T](conf: Map[String, _] = Map.empty)(block: => T) =
@@ -85,8 +80,7 @@ object CORSWithCSRFSpec extends CORSCommonSpec {
       .withHeaders(
         ORIGIN -> "http://localhost",
         CONTENT_TYPE -> ContentTypes.FORM,
-        COOKIE -> "foo=bar"
-      )
+        COOKIE -> "foo=bar")
       .withBody("foo=1&bar=2")
 
   "The CORSFilter" should {
@@ -184,9 +178,7 @@ trait CORSCommonSpec extends PlaySpecification {
   }
 
   def fakeRequest(method: String = "GET", path: String = "/") =
-    FakeRequest(method, path).withHeaders(
-      HOST -> "www.example.com"
-    )
+    FakeRequest(method, path).withHeaders(HOST -> "www.example.com")
 
   def commonTests = {
 
@@ -199,21 +191,17 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "pass through same origin requests" in {
       "with a port number" in withApplication() {
-        val result = route(
-          FakeRequest().withHeaders(
-            ORIGIN -> "http://www.example.com:9000",
-            HOST -> "www.example.com:9000"
-          )).get
+        val result = route(FakeRequest().withHeaders(
+          ORIGIN -> "http://www.example.com:9000",
+          HOST -> "www.example.com:9000")).get
 
         status(result) must_== OK
         mustBeNoAccessControlResponseHeaders(result)
       }
       "without a port number" in withApplication() {
-        val result = route(
-          FakeRequest().withHeaders(
-            ORIGIN -> "http://www.example.com",
-            HOST -> "www.example.com"
-          )).get
+        val result = route(FakeRequest().withHeaders(
+          ORIGIN -> "http://www.example.com",
+          HOST -> "www.example.com")).get
 
         status(result) must_== OK
         mustBeNoAccessControlResponseHeaders(result)
@@ -221,11 +209,9 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "not consider sub domains to be the same origin" in withApplication() {
-      val result = route(
-        fakeRequest().withHeaders(
-          ORIGIN -> "http://www.example.com",
-          HOST -> "example.com"
-        )).get
+      val result = route(fakeRequest().withHeaders(
+        ORIGIN -> "http://www.example.com",
+        HOST -> "example.com")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
@@ -233,11 +219,9 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "not consider different ports to be the same origin" in withApplication() {
-      val result = route(
-        fakeRequest().withHeaders(
-          ORIGIN -> "http://www.example.com:9000",
-          HOST -> "www.example.com:9001"
-        )).get
+      val result = route(fakeRequest().withHeaders(
+        ORIGIN -> "http://www.example.com:9000",
+        HOST -> "www.example.com:9001")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
@@ -245,11 +229,9 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "not consider different protocols to be the same origin" in withApplication() {
-      val result = route(
-        fakeRequest().withHeaders(
-          ORIGIN -> "https://www.example.com:9000",
-          HOST -> "www.example.com:9000"
-        )).get
+      val result = route(fakeRequest().withHeaders(
+        ORIGIN -> "https://www.example.com:9000",
+        HOST -> "www.example.com:9000")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
@@ -279,10 +261,9 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "forbid an empty Access-Control-Request-Method header in a preflight request" in withApplication() {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "")).get
 
       status(result) must_== FORBIDDEN
       mustBeNoAccessControlResponseHeaders(result)
@@ -304,9 +285,8 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "handle simple cross-origin request when the action throws an error" in withApplication() {
-      val result = route(
-        fakeRequest("GET", "/error").withHeaders(
-          ORIGIN -> "http://localhost")).get
+      val result = route(fakeRequest("GET", "/error").withHeaders(
+        ORIGIN -> "http://localhost")).get
 
       status(result) must_== INTERNAL_SERVER_ERROR
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -320,10 +300,9 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "handle a basic preflight request with default config" in withApplication() {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -337,11 +316,10 @@ trait CORSCommonSpec extends PlaySpecification {
     }
 
     "handle a preflight request with request headers with default config" in withApplication() {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT",
-          ACCESS_CONTROL_REQUEST_HEADERS -> "X-Header1, X-Header2")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT",
+        ACCESS_CONTROL_REQUEST_HEADERS -> "X-Header1, X-Header2")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -375,10 +353,9 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "handle a preflight request with credentials support off" in withApplication(
       conf = noCredentialsConf) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beNone
@@ -408,10 +385,9 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "handle a preflight request with preflight caching off" in withApplication(
       conf = noPreflightCache) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -428,10 +404,9 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "handle a preflight request with custom preflight cache max age" in withApplication(
       conf = customMaxAge) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== OK
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
@@ -449,10 +424,9 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "forbid a preflight request with a retricted request method" in withApplication(
       conf = restrictMethods) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== FORBIDDEN
       mustBeNoAccessControlResponseHeaders(result)
@@ -463,11 +437,10 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "forbid a preflight request with a retricted request header" in withApplication(
       conf = restrictHeaders) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT",
-          ACCESS_CONTROL_REQUEST_HEADERS -> "X-Header1, X-Header2")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT",
+        ACCESS_CONTROL_REQUEST_HEADERS -> "X-Header1, X-Header2")).get
 
       status(result) must_== FORBIDDEN
       mustBeNoAccessControlResponseHeaders(result)
@@ -500,10 +473,9 @@ trait CORSCommonSpec extends PlaySpecification {
 
     "forbid a preflight request with a retricted origin" in withApplication(
       conf = restrictOrigins) {
-      val result = route(
-        fakeRequest("OPTIONS", "/").withHeaders(
-          ORIGIN -> "http://localhost",
-          ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
+      val result = route(fakeRequest("OPTIONS", "/").withHeaders(
+        ORIGIN -> "http://localhost",
+        ACCESS_CONTROL_REQUEST_METHOD -> "PUT")).get
 
       status(result) must_== FORBIDDEN
       mustBeNoAccessControlResponseHeaders(result)

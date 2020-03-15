@@ -63,8 +63,7 @@ class ReviveOffersActorTest
 
   for (reviveEvent <- Seq(
          SchedulerReregisteredEvent("somemaster"),
-         SchedulerRegisteredEvent("frameworkid", "somemaster")
-       )) {
+         SchedulerRegisteredEvent("frameworkid", "somemaster"))) {
     test(s"revive if offers wanted and we receive $reviveEvent") {
       val f = new Fixture()
       Given("a started actor that wants offers")
@@ -123,8 +122,7 @@ class ReviveOffersActorTest
   for (reviveEvent <- Seq(
          SchedulerReregisteredEvent("somemaster"),
          SchedulerRegisteredEvent("frameworkid", "somemaster"),
-         ReviveOffersActor.TimedCheck
-       )) {
+         ReviveOffersActor.TimedCheck)) {
     test(s"DO NOT revive if offers NOT wanted and we receive $reviveEvent") {
       val f = new Fixture()
       Given("a started actor that wants offers")
@@ -298,7 +296,9 @@ class ReviveOffersActorTest
     Mockito.reset(f.actorRef.underlyingActor.cancellable)
 
     And("we have NOT scheduled the next revive")
-    f.actorRef.underlyingActor.scheduled should have size (f.repetitions.toLong - 1)
+    f.actorRef.underlyingActor.scheduled should have size (
+      f.repetitions.toLong - 1
+    )
     f.actorRef.underlyingActor.revivesNeeded should be(0)
 
     f.verifyNoMoreInteractions()
@@ -359,8 +359,7 @@ class ReviveOffersActorTest
           conf,
           actorSystem.eventStream,
           offersWanted,
-          driverHolder
-        ) {
+          driverHolder) {
       var scheduled = Vector.empty[FiniteDuration]
       var cancellable = mock[Cancellable]
 

@@ -196,11 +196,10 @@ trait Printers extends api.Printers { self: SymbolTable =>
     def printModifiers(tree: Tree, mods: Modifiers): Unit =
       printFlags(
         if (tree.symbol == NoSymbol) mods.flags else tree.symbol.flags,
-        "" + (
-          if (tree.symbol == NoSymbol) mods.privateWithin
-          else if (tree.symbol.hasAccessBoundary) tree.symbol.privateWithin.name
-          else ""
-        )
+        "" + (if (tree.symbol == NoSymbol) mods.privateWithin
+              else if (tree.symbol.hasAccessBoundary)
+                tree.symbol.privateWithin.name
+              else "")
       )
 
     def printFlags(flags: Long, privateWithin: String) = {
@@ -488,7 +487,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
           if ((tree.tpe eq null) || (printPositions && tt.original != null)) {
             if (tt.original != null) print("<type: ", tt.original, ">")
             else print("<type ?>")
-          } else if ((tree.tpe.typeSymbol ne null) && tree.tpe.typeSymbol.isAnonymousClass) {
+          } else if ((
+                       tree.tpe.typeSymbol ne null
+                     ) && tree.tpe.typeSymbol.isAnonymousClass) {
             print(tree.tpe.typeSymbol.toString)
           } else { print(tree.tpe.toString) }
 
@@ -841,8 +842,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
               def printConstrParams(ts: List[ValDef]): Unit = {
                 parenthesize() {
                   printImplicitInParamsList(ts)
-                  printSeq(ts)(printParam(_, primaryCtorParam = true))(
-                    print(", "))
+                  printSeq(ts)(printParam(_, primaryCtorParam = true))(print(
+                    ", "))
                 }
               }
               // constructor's params processing (don't print single empty constructor param list)

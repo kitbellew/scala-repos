@@ -321,15 +321,16 @@ class SingleConsumerOnlyMailboxVerificationSpec
   def pathologicalPingPong(dispatcherId: String): Unit = {
     val total = 2000000
     val runner = system.actorOf(Props(new Actor {
-      val a, b = context.watch(context.actorOf(Props(new Actor {
-        var n = total / 2
-        def receive = {
-          case Ping ⇒
-            n -= 1
-            sender() ! Ping
-            if (n == 0) context stop self
-        }
-      }).withDispatcher(dispatcherId)))
+      val a, b = context.watch(context.actorOf(
+        Props(new Actor {
+          var n = total / 2
+          def receive = {
+            case Ping ⇒
+              n -= 1
+              sender() ! Ping
+              if (n == 0) context stop self
+          }
+        }).withDispatcher(dispatcherId)))
       def receive = {
         case Ping ⇒ a.tell(Ping, b)
         case Terminated(`a` | `b`) ⇒

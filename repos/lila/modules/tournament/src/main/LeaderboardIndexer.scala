@@ -42,8 +42,7 @@ private final class LeaderboardIndexer(
       .bulkInsert(
         documents =
           entries.map(BSONHandlers.leaderboardEntryHandler.write).toStream,
-        ordered = false
-      )
+        ordered = false)
       .void
 
   private def generateTour(tour: Tournament): Fu[List[Entry]] =

@@ -254,14 +254,13 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
         TypeDef(
           Modifiers(),
           T1,
-          List(
-            TypeDef(
-              Modifiers(PARAM),
-              T2,
-              List(),
-              TypeBoundsTree(
-                Ident(TypeName("Any")),
-                Ident(TypeName("Nothing"))))),
+          List(TypeDef(
+            Modifiers(PARAM),
+            T2,
+            List(),
+            TypeBoundsTree(
+              Ident(TypeName("Any")),
+              Ident(TypeName("Nothing"))))),
           t)
   }
 
@@ -272,15 +271,14 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
           Modifiers(),
           T,
           List(),
-          CompoundTypeTree(
-            Template(
-              List(Ident(A), Ident(B)),
-              ValDef(
-                Modifiers(PRIVATE),
-                termNames.WILDCARD,
-                TypeTree(),
-                EmptyTree),
-              List())))
+          CompoundTypeTree(Template(
+            List(Ident(A), Ident(B)),
+            ValDef(
+              Modifiers(PRIVATE),
+              termNames.WILDCARD,
+              TypeTree(),
+              EmptyTree),
+            List())))
   }
 
   property("unquote trees into existential type tree") = forAll {
@@ -292,12 +290,11 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
           List(),
           ExistentialTypeTree(
             AppliedTypeTree(Ident(T2), List(Ident(X))),
-            List(
-              TypeDef(
-                Modifiers(DEFERRED),
-                X,
-                List(),
-                TypeBoundsTree(Ident(Lo), Ident(Hi)))))
+            List(TypeDef(
+              Modifiers(DEFERRED),
+              X,
+              List(),
+              TypeBoundsTree(Ident(Lo), Ident(Hi)))))
         )
   }
 

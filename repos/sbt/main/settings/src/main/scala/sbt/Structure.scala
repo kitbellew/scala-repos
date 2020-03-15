@@ -999,12 +999,11 @@ object InputKey {
       rank: Int,
       extend1: Scoped,
       extendN: Scoped*): InputKey[T] =
-    apply(
-      AttributeKey[InputTask[T]](
-        label,
-        description,
-        extendScoped(extend1, extendN),
-        rank))
+    apply(AttributeKey[InputTask[T]](
+      label,
+      description,
+      extendScoped(extend1, extendN),
+      rank))
 
   def apply[T](akey: AttributeKey[InputTask[T]]): InputKey[T] =
     new InputKey[T] {
@@ -1034,12 +1033,11 @@ object TaskKey {
       rank: Int,
       extend1: Scoped,
       extendN: Scoped*): TaskKey[T] =
-    apply(
-      AttributeKey[Task[T]](
-        label,
-        description,
-        extendScoped(extend1, extendN),
-        rank))
+    apply(AttributeKey[Task[T]](
+      label,
+      description,
+      extendScoped(extend1, extendN),
+      rank))
 
   def apply[T](akey: AttributeKey[Task[T]]): TaskKey[T] =
     new TaskKey[T] {

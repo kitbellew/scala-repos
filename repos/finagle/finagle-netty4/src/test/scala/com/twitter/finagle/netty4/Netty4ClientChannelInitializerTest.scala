@@ -51,8 +51,7 @@ class Netty4ClientChannelInitializerTest
         transportP,
         params,
         Some(enc),
-        Some(() => dec)
-      )
+        Some(() => dec))
       server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
       channelInit.initChannel(client)
     }
@@ -60,11 +59,9 @@ class Netty4ClientChannelInitializerTest
     def connect() = {
 
       client
-        .connect(
-          new InetSocketAddress(
-            InetAddress.getLoopbackAddress,
-            server.getLocalPort)
-        )
+        .connect(new InetSocketAddress(
+          InetAddress.getLoopbackAddress,
+          server.getLocalPort))
         .awaitUninterruptibly(timeout.inMilliseconds)
 
       acceptedSocket = server.accept()
@@ -86,14 +83,12 @@ class Netty4ClientChannelInitializerTest
       assert(
         Await.result(clientsideTransport.read(), timeout) == data
           .take(frameSize)
-          .mkString
-      )
+          .mkString)
       assert(
         Await.result(clientsideTransport.read(), timeout) == data
           .drop(frameSize)
           .take(frameSize)
-          .mkString
-      )
+          .mkString)
 
       server.close()
     }
@@ -189,17 +184,14 @@ class Netty4ClientChannelInitializerTest
       transportP,
       Params.empty,
       Some(enc),
-      Some(() => decoder)
-    )
+      Some(() => decoder))
 
     channelInit.initChannel(ctx.client)
     val server = new ServerSocket(0, 50, InetAddress.getLoopbackAddress)
     ctx.client
-      .connect(
-        new InetSocketAddress(
-          InetAddress.getLoopbackAddress,
-          server.getLocalPort)
-      )
+      .connect(new InetSocketAddress(
+        InetAddress.getLoopbackAddress,
+        server.getLocalPort))
       .awaitUninterruptibly(timeout.inMilliseconds)
 
     val acceptedSocket = server.accept()

@@ -19,14 +19,12 @@ class CacheIvyTest extends Properties("CacheIvy") {
     eq(out, m) :| s"Expected: ${str(m)}" :| s"Got: ${str(out)}"
   }
 
-  implicit val arbExclusionRule: Arbitrary[ExclusionRule] = Arbitrary(
-    for {
-      o <- Gen.alphaStr
-      n <- Gen.alphaStr
-      a <- Gen.alphaStr
-      cs <- arbitrary[List[String]]
-    } yield ExclusionRule(o, n, a, cs)
-  )
+  implicit val arbExclusionRule: Arbitrary[ExclusionRule] = Arbitrary(for {
+    o <- Gen.alphaStr
+    n <- Gen.alphaStr
+    a <- Gen.alphaStr
+    cs <- arbitrary[List[String]]
+  } yield ExclusionRule(o, n, a, cs))
 
   implicit val arbCrossVersion: Arbitrary[CrossVersion] = Arbitrary {
     // Actual functions don't matter, just Disabled vs Binary vs Full

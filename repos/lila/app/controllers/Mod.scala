@@ -68,8 +68,7 @@ object Mod extends LilaController {
           title =>
             modApi.setTitle(me.id, username, title) inject redirect(
               username,
-              mod = false)
-        )
+              mod = false))
       else fuccess(authorizationFailed(ctx.req))
     }
 
@@ -86,8 +85,7 @@ object Mod extends LilaController {
               email =>
                 modApi.setEmail(me.id, user.id, email) inject redirect(
                   user.username,
-                  mod = true)
-            )
+                  mod = true))
         else fuccess(authorizationFailed(ctx.req))
       }
     }

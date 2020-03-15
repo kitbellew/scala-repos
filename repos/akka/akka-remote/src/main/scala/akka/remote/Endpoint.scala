@@ -281,7 +281,9 @@ private[remote] class ReliableDeliverySupervisor(
       )
       uidConfirmed = false // Need confirmation of UID again
       if (bufferWasInUse) {
-        if ((resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked.nonEmpty) && bailoutAt.isEmpty)
+        if ((
+              resendBuffer.nacked.nonEmpty || resendBuffer.nonAcked.nonEmpty
+            ) && bailoutAt.isEmpty)
           bailoutAt = Some(Deadline.now + settings.InitialSysMsgDeliveryTimeout)
         context.become(
           gated(writerTerminated = false, earlyUngateRequested = false))
@@ -454,8 +456,10 @@ private[remote] class ReliableDeliverySupervisor(
         localAddress,
         remoteAddress,
         uid,
-        new TimeoutException("Remote system has been silent for too long. " +
-          s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(TimeUnit.HOURS)} hours)"))
+        new TimeoutException(
+          "Remote system has been silent for too long. " +
+            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
+              TimeUnit.HOURS)} hours)"))
     case EndpointWriter.FlushAndStop ⇒ context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
@@ -463,11 +467,10 @@ private[remote] class ReliableDeliverySupervisor(
 
   private def goToIdle(): Unit = {
     if (bufferWasInUse && maxSilenceTimer.isEmpty)
-      maxSilenceTimer = Some(
-        context.system.scheduler.scheduleOnce(
-          settings.QuarantineSilentSystemTimeout,
-          self,
-          TooLongIdle))
+      maxSilenceTimer = Some(context.system.scheduler.scheduleOnce(
+        settings.QuarantineSilentSystemTimeout,
+        self,
+        TooLongIdle))
     context.become(idle)
   }
 
@@ -515,23 +518,22 @@ private[remote] class ReliableDeliverySupervisor(
     }
 
   private def createWriter(): ActorRef = {
-    context.watch(
-      context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(EndpointWriter.props(
-            handleOrActive = currentHandle,
-            localAddress = localAddress,
-            remoteAddress = remoteAddress,
-            refuseUid,
-            transport = transport,
-            settings = settings,
-            AkkaPduProtobufCodec,
-            receiveBuffers = receiveBuffers,
-            reliableDeliverySupervisor = Some(self)
-          ))
-          .withDeploy(Deploy.local),
-        "endpointWriter"
-      ))
+    context.watch(context.actorOf(
+      RARP(context.system)
+        .configureDispatcher(EndpointWriter.props(
+          handleOrActive = currentHandle,
+          localAddress = localAddress,
+          remoteAddress = remoteAddress,
+          refuseUid,
+          transport = transport,
+          settings = settings,
+          AkkaPduProtobufCodec,
+          receiveBuffers = receiveBuffers,
+          reliableDeliverySupervisor = Some(self)
+        ))
+        .withDeploy(Deploy.local),
+      "endpointWriter"
+    ))
   }
 }
 
@@ -555,13 +557,12 @@ private[remote] abstract class EndpointActor(
     settings.RemoteLifecycleEventsLogLevel)
 
   def publishError(reason: Throwable, logLevel: Logging.LogLevel): Unit =
-    tryPublish(
-      AssociationErrorEvent(
-        reason,
-        localAddress,
-        remoteAddress,
-        inbound,
-        logLevel))
+    tryPublish(AssociationErrorEvent(
+      reason,
+      localAddress,
+      remoteAddress,
+      inbound,
+      logLevel))
 
   def publishDisassociated(): Unit =
     tryPublish(DisassociatedEvent(localAddress, remoteAddress, inbound))
@@ -1032,25 +1033,23 @@ private[remote] class EndpointWriter(
     }
 
   private def startReadEndpoint(handle: AkkaProtocolHandle): Some[ActorRef] = {
-    val newReader = context.watch(
-      context.actorOf(
-        RARP(context.system)
-          .configureDispatcher(
-            EndpointReader.props(
-              localAddress,
-              remoteAddress,
-              transport,
-              settings,
-              codec,
-              msgDispatch,
-              inbound,
-              handle.handshakeInfo.uid,
-              reliableDeliverySupervisor,
-              receiveBuffers))
-          .withDeploy(Deploy.local),
-        "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
-          .next()
-      ))
+    val newReader = context.watch(context.actorOf(
+      RARP(context.system)
+        .configureDispatcher(EndpointReader.props(
+          localAddress,
+          remoteAddress,
+          transport,
+          settings,
+          codec,
+          msgDispatch,
+          inbound,
+          handle.handshakeInfo.uid,
+          reliableDeliverySupervisor,
+          receiveBuffers))
+        .withDeploy(Deploy.local),
+      "endpointReader-" + AddressUrlEncoder(remoteAddress) + "-" + readerId
+        .next()
+    ))
     handle.readHandlerPromise.success(ActorHandleEventListener(newReader))
     Some(newReader)
   }
@@ -1230,8 +1229,9 @@ private[remote] class EndpointReader(
         throw InvalidAssociation(
           localAddress,
           remoteAddress,
-          InvalidAssociationException("The remote system has quarantined this system. No further associations " +
-            "to the remote system are possible until this system is restarted."),
+          InvalidAssociationException(
+            "The remote system has quarantined this system. No further associations " +
+              "to the remote system are possible until this system is restarted."),
           Some(AssociationHandle.Quarantined)
         )
     }

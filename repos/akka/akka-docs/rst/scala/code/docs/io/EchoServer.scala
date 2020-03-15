@@ -38,10 +38,9 @@ object EchoServer extends App {
     val watcher = inbox()
     watcher.watch(
       system.actorOf(Props(classOf[EchoManager], classOf[EchoHandler]), "echo"))
-    watcher.watch(
-      system.actorOf(
-        Props(classOf[EchoManager], classOf[SimpleEchoHandler]),
-        "simple"))
+    watcher.watch(system.actorOf(
+      Props(classOf[EchoManager], classOf[SimpleEchoHandler]),
+      "simple"))
     watcher.receive(10.minutes)
   }
 

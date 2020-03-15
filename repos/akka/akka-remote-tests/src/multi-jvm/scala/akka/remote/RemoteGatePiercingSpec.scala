@@ -28,21 +28,18 @@ object RemoteGatePiercingSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(
-    debugConfig(on = false).withFallback(ConfigFactory.parseString(
-      """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(
+    """
       akka.loglevel = INFO
       akka.remote.log-remote-lifecycle-events = INFO
       akka.remote.transport-failure-detector.acceptable-heartbeat-pause = 5 s
                               """)))
 
-  nodeConfig(first)(
-    ConfigFactory.parseString(
-      "akka.remote.retry-gate-closed-for  = 1 d # Keep it long"))
+  nodeConfig(first)(ConfigFactory.parseString(
+    "akka.remote.retry-gate-closed-for  = 1 d # Keep it long"))
 
-  nodeConfig(second)(
-    ConfigFactory.parseString(
-      "akka.remote.retry-gate-closed-for  = 1 s # Keep it short"))
+  nodeConfig(second)(ConfigFactory.parseString(
+    "akka.remote.retry-gate-closed-for  = 1 s # Keep it short"))
 
   testTransport(on = true)
 
@@ -84,8 +81,8 @@ abstract class RemoteGatePiercingSpec
           .warning(pattern = "address is now gated", occurrences = 1)
           .intercept {
             Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
+              RARP(system).provider.transport
+                .managementCommand(ForceDisassociateExplicitly(
                   node(second).address,
                   AssociationHandle.Unknown)),
               3.seconds)

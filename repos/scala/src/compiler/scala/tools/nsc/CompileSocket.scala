@@ -90,8 +90,9 @@ class CompileSocket extends CompileOutputCommon {
     *  @param vmArgs  the argument string to be passed to the java or scala command
     */
   private def serverCommand(vmArgs: Seq[String]): Seq[String] =
-    Seq(vmCommand) ++ vmArgs ++ Seq(
-      serverClass) ++ serverClassArgs filterNot (_ == "")
+    Seq(vmCommand) ++ vmArgs ++ Seq(serverClass) ++ serverClassArgs filterNot (
+      _ == ""
+    )
 
   /** Start a new server. */
   private def startNewServer(vmArgs: String) = {
@@ -212,13 +213,12 @@ class CompileSocket extends CompileOutputCommon {
     catch { case _: NumberFormatException => None }
 
   def getSocket(serverAdr: String): Option[Socket] =
-    (
-      for ((name, portStr) <- splitWhere(
-             serverAdr,
-             _ == ':',
-             doDropIndex = true); port <- parseInt(portStr))
-        yield getSocket(name, port)
-    ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
+    (for ((name, portStr) <- splitWhere(
+            serverAdr,
+            _ == ':',
+            doDropIndex = true); port <- parseInt(portStr))
+      yield getSocket(name, port)) getOrElse fatal(
+      "Malformed server address: %s; exiting" format serverAdr)
 
   def getSocket(hostName: String, port: Int): Option[Socket] = {
     val sock = Socket(hostName, port).opt

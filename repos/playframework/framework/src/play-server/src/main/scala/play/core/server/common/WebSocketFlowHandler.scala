@@ -100,10 +100,9 @@ object WebSocketFlowHandler {
               read.messageType match {
                 case MessageType.Continuation
                     if currentPartialMessage == null =>
-                  serverInitiatedClose(
-                    CloseMessage(
-                      CloseCodes.ProtocolError,
-                      "Unexpected continuation frame"))
+                  serverInitiatedClose(CloseMessage(
+                    CloseCodes.ProtocolError,
+                    "Unexpected continuation frame"))
                   null
                 case MessageType.Continuation
                     if currentPartialMessage.data.size + read.data.size > bufferLimit =>
@@ -123,10 +122,9 @@ object WebSocketFlowHandler {
                     false)
                   null
                 case _ if currentPartialMessage != null =>
-                  serverInitiatedClose(
-                    CloseMessage(
-                      CloseCodes.ProtocolError,
-                      "Received non continuation frame when previous message wasn't finished"))
+                  serverInitiatedClose(CloseMessage(
+                    CloseCodes.ProtocolError,
+                    "Received non continuation frame when previous message wasn't finished"))
                   null
                 case _ if read.isFinal =>
                   toMessage(read.messageType, read.data)

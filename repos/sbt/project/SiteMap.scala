@@ -40,12 +40,11 @@ object SiteMap {
       val es = entries(files)
       if (es.isEmpty) None
       else
-        Some(
-          writeXMLgz(
-            dir / "sitemap.xml",
-            dir / "sitemap.xml.gz",
-            gzip,
-            entriesXML(es)))
+        Some(writeXMLgz(
+          dir / "sitemap.xml",
+          dir / "sitemap.xml.gz",
+          gzip,
+          entriesXML(es)))
     }
     def indexEntryXML(sub: File, relPath: String): xml.Elem = <sitemap>
           <loc>{remoteBase.resolve(relPath).toString}</loc>

@@ -127,8 +127,7 @@ trait TraceSymbolActivity {
             owners
               .take(3)
               .map({ case (k, v) => v + "/" + k })
-              .mkString(", ") + ", ..."
-          )
+              .mkString(", ") + ", ...")
         }
       )
     }

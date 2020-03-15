@@ -74,9 +74,8 @@ object Flow {
       sink: Graph[SinkShape[I], M1],
       source: Graph[SourceShape[O], M2],
       combine: function.Function2[M1, M2, M]): Flow[I, O, M] =
-    new Flow(
-      scaladsl.Flow.fromSinkAndSourceMat(sink, source)(
-        combinerToScala(combine)))
+    new Flow(scaladsl.Flow.fromSinkAndSourceMat(sink, source)(combinerToScala(
+      combine)))
 }
 
 /** Create a `Flow` which can process elements of type `T`. */
@@ -1092,12 +1091,9 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): javadsl.Flow[
-    In,
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+  def prefixAndTail(n: Int): javadsl.Flow[In, akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Flow(delegate.prefixAndTail(n).map {
       case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
     })
@@ -1569,9 +1565,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
       that: Graph[SourceShape[U], Mat2],
       comp: Comparator[U],
       matF: function.Function2[Mat, Mat2, Mat3]): javadsl.Flow[In, U, Mat3] =
-    new Flow(
-      delegate.mergeSortedMat(that)(combinerToScala(matF))(
-        Ordering.comparatorToOrdering(comp)))
+    new Flow(delegate.mergeSortedMat(that)(combinerToScala(matF))(
+      Ordering.comparatorToOrdering(comp)))
 
   /**
     * Combine the elements of current [[Flow]] and the given [[Source]] into a stream of tuples.
@@ -1601,22 +1596,19 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
       matF: function.Function2[Mat, M, M2])
       : javadsl.Flow[In, Out @uncheckedVariance Pair T, M2] =
     this.viaMat(
-      Flow.fromGraph(
-        GraphDSL.create(
-          that,
-          new function.Function2[
-            GraphDSL.Builder[M],
-            SourceShape[T],
-            FlowShape[Out, Out @uncheckedVariance Pair T]] {
-            def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
-                : FlowShape[Out, Out @uncheckedVariance Pair T] = {
-              val zip: FanInShape2[Out, T, Out Pair T] = b.add(
-                Zip.create[Out, T])
-              b.from(s).toInlet(zip.in1)
-              FlowShape(zip.in0, zip.out)
-            }
+      Flow.fromGraph(GraphDSL.create(
+        that,
+        new function.Function2[GraphDSL.Builder[M], SourceShape[T], FlowShape[
+          Out,
+          Out @uncheckedVariance Pair T]] {
+          def apply(b: GraphDSL.Builder[M], s: SourceShape[T])
+              : FlowShape[Out, Out @uncheckedVariance Pair T] = {
+            val zip: FanInShape2[Out, T, Out Pair T] = b.add(Zip.create[Out, T])
+            b.from(s).toInlet(zip.in1)
+            FlowShape(zip.in0, zip.out)
           }
-        )),
+        }
+      )),
       matF
     )
 

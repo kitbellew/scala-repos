@@ -36,8 +36,7 @@ class OffsetCommitRequest(
       requestInfo = scalaMap,
       versionId = versionId,
       correlationId = correlationId,
-      clientId = clientId
-    )
+      clientId = clientId)
   }
 
   def this(

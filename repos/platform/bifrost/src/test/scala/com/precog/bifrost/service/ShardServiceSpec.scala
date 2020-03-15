@@ -124,8 +124,7 @@ trait TestShardService
   val testPermissions = Set[Permission](
     ReadPermission(Path.Root, WrittenByAccount("test")),
     WritePermission(testPath, WriteAsAny),
-    DeletePermission(testPath, WrittenByAny)
-  )
+    DeletePermission(testPath, WrittenByAny))
 
   val expiredPath = Path("expired")
 
@@ -177,10 +176,9 @@ trait TestShardService
         def stubValue(authorities: Authorities)
             : ((Array[Byte], MimeType) \/ Vector[JValue], Authorities) =
           (
-            \/.right(
-              Vector(
-                JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
-                JObject("foo" -> JString("foov2")))),
+            \/.right(Vector(
+              JObject("foo" -> JString("foov"), "bar" -> JNum(1)),
+              JObject("foo" -> JString("foov2")))),
             authorities)
 
         val stubData = ownerMap mapValues { accounts =>
@@ -257,13 +255,12 @@ trait TestShardService
                 response map {
                   case Left(bb) => Left(JString(new String(bb.array, "UTF-8")))
                   case chunk =>
-                    Right(
-                      StreamT.wrapEffect(
-                        chunkToFutureString
-                          .apply(chunk)
-                          .map(s =>
-                            CharBuffer.wrap(JString(s).renderCompact) :: StreamT
-                              .empty[Future, CharBuffer])))
+                    Right(StreamT.wrapEffect(
+                      chunkToFutureString
+                        .apply(chunk)
+                        .map(s =>
+                          CharBuffer.wrap(JString(s).renderCompact) :: StreamT
+                            .empty[Future, CharBuffer])))
                 }
               }
           }
@@ -619,10 +616,9 @@ trait TestPlatform extends ManagedPlatform { self =>
     }))
   }
 
-  def syncExecutorFor(apiKey: APIKey): EitherT[
+  def syncExecutorFor(apiKey: APIKey): EitherT[Future, String, QueryExecutor[
     Future,
-    String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] = {
+    (Option[JobId], StreamT[Future, Slice])]] = {
     EitherT.right(Future(new SyncQueryExecutor {
       val executionContext = self.executionContext
     }))

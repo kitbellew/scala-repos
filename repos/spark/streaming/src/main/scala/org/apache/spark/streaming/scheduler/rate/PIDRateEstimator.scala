@@ -50,8 +50,8 @@ private[streaming] class PIDRateEstimator(
     proportional: Double,
     integral: Double,
     derivative: Double,
-    minRate: Double
-) extends RateEstimator
+    minRate: Double)
+    extends RateEstimator
     with Logging {
 
   private var firstRun: Boolean = true
@@ -83,8 +83,9 @@ private[streaming] class PIDRateEstimator(
       processingDelay: Long, // in milliseconds
       schedulingDelay: Long // in milliseconds
   ): Option[Double] = {
-    logTrace(s"\ntime = $time, # records = $numElements, " +
-      s"processing time = $processingDelay, scheduling delay = $schedulingDelay")
+    logTrace(
+      s"\ntime = $time, # records = $numElements, " +
+        s"processing time = $processingDelay, scheduling delay = $schedulingDelay")
     this.synchronized {
       if (time > latestTime && numElements > 0 && processingDelay > 0) {
 

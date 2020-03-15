@@ -58,8 +58,7 @@ object LabelledGenericTestsAux {
     "Erich Gamma",
     "Richard Helm",
     "Ralph Johnson",
-    "John Vlissides"
-  )
+    "John Vlissides")
 
   val taplRecord =
     ('author ->> "Benjamin Pierce") ::
@@ -140,8 +139,7 @@ object ScalazTaggedAux {
     implicit def hconsTCTagged[K <: Symbol, H, HT, T <: HList](implicit
         key: Witness.Aux[K],
         headTC: Lazy[TC[H @@ HT]],
-        tailTC: Lazy[TC[T]]
-    ): TC[FieldType[K, H @@ HT] :: T] =
+        tailTC: Lazy[TC[T]]): TC[FieldType[K, H @@ HT] :: T] =
       new TC[FieldType[K, H @@ HT] :: T] {
         def apply() =
           s"${key.value.name}: ${headTC.value()} :: ${tailTC.value()}"
@@ -150,8 +148,7 @@ object ScalazTaggedAux {
     implicit def hconsTC[K <: Symbol, H, T <: HList](implicit
         key: Witness.Aux[K],
         headTC: Lazy[TC[H]],
-        tailTC: Lazy[TC[T]]
-    ): TC[FieldType[K, H] :: T] =
+        tailTC: Lazy[TC[T]]): TC[FieldType[K, H] :: T] =
       new TC[FieldType[K, H] :: T] {
         def apply() =
           s"${key.value.name}: ${headTC.value()} :: ${tailTC.value()}"
@@ -159,8 +156,7 @@ object ScalazTaggedAux {
 
     implicit def projectTC[F, G](implicit
         lgen: LabelledGeneric.Aux[F, G],
-        tc: Lazy[TC[G]]
-    ): TC[F] =
+        tc: Lazy[TC[G]]): TC[F] =
       new TC[F] {
         def apply() = s"Proj(${tc.value()})"
       }
@@ -211,8 +207,7 @@ class LabelledGenericTests {
         "Richard Helm",
         "Ralph Johnson",
         "John Vlissides") :: HNil,
-      values
-    )
+      values)
   }
 
   @Test

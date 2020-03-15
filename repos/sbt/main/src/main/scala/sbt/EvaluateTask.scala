@@ -342,8 +342,7 @@ object EvaluateTask {
     Seq(
       (state in GlobalScope) ::= dummyState,
       (streamsManager in GlobalScope) ::= dummyStreamsManager,
-      (executionRoots in GlobalScope) ::= dummyRoots
-    )
+      (executionRoots in GlobalScope) ::= dummyRoots)
 
   def evalPluginDef(
       log: Logger)(pluginDef: BuildStructure, state: State): PluginData = {
@@ -461,8 +460,8 @@ object EvaluateTask {
     Project.showContextKey(state, if (highlight) Some(RED) else None)
   def suppressedMessage(key: ScopedKey[_])(
       implicit display: Show[ScopedKey[_]]): String =
-    "Stack trace suppressed.  Run 'last %s' for the full log.".format(
-      display(key))
+    "Stack trace suppressed.  Run 'last %s' for the full log.".format(display(
+      key))
 
   def getStreams(key: ScopedKey[_], streams: Streams): TaskStreams =
     streams(ScopedKey(Project.fillTaskAxis(key).scope, Keys.streams.key))
@@ -589,13 +588,11 @@ object EvaluateTask {
       root: Task[T]): (State, Result[T]) =
     (stateTransform(results)(state), results(root))
   def stateTransform(results: RMap[Task, Result]): State => State =
-    Function.chain(
-      results.toTypedSeq flatMap {
-        case results.TPair(Task(info, _), Value(v)) =>
-          info.post(v) get transformState
-        case _ => Nil
-      }
-    )
+    Function.chain(results.toTypedSeq flatMap {
+      case results.TPair(Task(info, _), Value(v)) =>
+        info.post(v) get transformState
+      case _ => Nil
+    })
 
   def transformInc[T](result: Result[T]): Result[T] =
     // taskToKey needs to be before liftAnonymous.  liftA only lifts non-keyed (anonymous) Incompletes.
@@ -627,7 +624,9 @@ object EvaluateTask {
   def liftAnonymous: Incomplete => Incomplete = {
     case i @ Incomplete(node, tpe, None, causes, None) =>
       causes.find(inc =>
-        inc.node.isEmpty && (inc.message.isDefined || inc.directCause.isDefined)) match {
+        inc.node.isEmpty && (
+          inc.message.isDefined || inc.directCause.isDefined
+        )) match {
         case Some(lift) =>
           i.copy(directCause = lift.directCause, message = lift.message)
         case None => i

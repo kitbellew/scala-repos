@@ -132,13 +132,11 @@ object JsonApi {
     implicit val GameWrites = Json.writes[Game]
     implicit val WorkIdWrites = Writes[Work.Id] { id => JsString(id.value) }
     implicit val WorkWrites = OWrites[Work] { work =>
-      Json.obj(
-        "work" -> (work match {
-          case a: Analysis => Json.obj("type" -> "analysis", "id" -> work.id)
-          case m: Move =>
-            Json.obj("type" -> "move", "id" -> work.id, "level" -> m.level)
-        })
-      ) ++ Json.toJson(work.game).as[JsObject]
+      Json.obj("work" -> (work match {
+        case a: Analysis => Json.obj("type" -> "analysis", "id" -> work.id)
+        case m: Move =>
+          Json.obj("type" -> "move", "id" -> work.id, "level" -> m.level)
+      })) ++ Json.toJson(work.game).as[JsObject]
     }
   }
 }

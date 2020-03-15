@@ -84,11 +84,10 @@ class KindProjectorSimplifyTypeProjectionInspection
           val valid =
             typeParam.nonEmpty &&
               typeParam.forall(hasNoBounds) &&
-              !typeParam.exists(
-                occursInsideParameterized(
-                  _,
-                  paramType,
-                  isInsideParam = false)) &&
+              !typeParam.exists(occursInsideParameterized(
+                _,
+                paramType,
+                isInsideParam = false)) &&
               typeParam.forall { tpt =>
                 paramType.typeArgs.count(tpt.name == _.presentableText) == 1
               }
@@ -157,17 +156,15 @@ class KindProjectorSimplifyTypeProjectionInspection
                                               } else param.getText
                                           }
                                           if (parameters.length > 1) {
-                                            builder.append(
-                                              parameters.mkString(
-                                                start = "(",
-                                                sep = ",",
-                                                end = ")"))
+                                            builder.append(parameters.mkString(
+                                              start = "(",
+                                              sep = ",",
+                                              end = ")"))
                                           } else
-                                            builder.append(
-                                              parameters.mkString(
-                                                start = "",
-                                                sep = "",
-                                                end = ""))
+                                            builder.append(parameters.mkString(
+                                              start = "",
+                                              sep = "",
+                                              end = ""))
                                           builder.append(" => ")
                                           builder.append(
                                             alias.aliasedType.getOrAny)

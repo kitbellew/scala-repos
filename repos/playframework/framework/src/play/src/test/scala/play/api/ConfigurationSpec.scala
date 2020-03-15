@@ -14,66 +14,56 @@ import scala.util.control.NonFatal
 object ConfigurationSpec extends Specification {
 
   def exampleConfig =
-    Configuration.from(
-      Map(
-        "foo.bar1" -> "value1",
-        "foo.bar2" -> "value2",
-        "foo.bar3" -> null,
-        "blah.0" -> List(true, false, true),
-        "blah.1" -> List(1, 2, 3),
-        "blah.2" -> List(1.1, 2.2, 3.3),
-        "blah.3" -> List(1L, 2L, 3L),
-        "blah.4" -> List("one", "two", "three"),
-        "blah2" -> Map(
-          "blah3" -> Map(
-            "blah4" -> "value6"
-          )
-        )
-      )
-    )
+    Configuration.from(Map(
+      "foo.bar1" -> "value1",
+      "foo.bar2" -> "value2",
+      "foo.bar3" -> null,
+      "blah.0" -> List(true, false, true),
+      "blah.1" -> List(1, 2, 3),
+      "blah.2" -> List(1.1, 2.2, 3.3),
+      "blah.3" -> List(1L, 2L, 3L),
+      "blah.4" -> List("one", "two", "three"),
+      "blah2" -> Map("blah3" -> Map("blah4" -> "value6"))
+    ))
 
   "Configuration" should {
 
     "be accessible as an entry set" in {
       val map = Map(exampleConfig.entrySet.toList: _*)
-      map.keySet must contain(
-        allOf(
-          "foo.bar1",
-          "foo.bar2",
-          "blah.0",
-          "blah.1",
-          "blah.2",
-          "blah.3",
-          "blah.4",
-          "blah2.blah3.blah4"))
+      map.keySet must contain(allOf(
+        "foo.bar1",
+        "foo.bar2",
+        "blah.0",
+        "blah.1",
+        "blah.2",
+        "blah.3",
+        "blah.4",
+        "blah2.blah3.blah4"))
     }
 
     "make all paths accessible" in {
-      exampleConfig.keys must contain(
-        allOf(
-          "foo.bar1",
-          "foo.bar2",
-          "blah.0",
-          "blah.1",
-          "blah.2",
-          "blah.3",
-          "blah.4",
-          "blah2.blah3.blah4"))
+      exampleConfig.keys must contain(allOf(
+        "foo.bar1",
+        "foo.bar2",
+        "blah.0",
+        "blah.1",
+        "blah.2",
+        "blah.3",
+        "blah.4",
+        "blah2.blah3.blah4"))
     }
 
     "make all sub keys accessible" in {
       exampleConfig.subKeys must contain(allOf("foo", "blah", "blah2"))
-      exampleConfig.subKeys must not(
-        contain(
-          anyOf(
-            "foo.bar1",
-            "foo.bar2",
-            "blah.0",
-            "blah.1",
-            "blah.2",
-            "blah.3",
-            "blah.4",
-            "blah2.blah3.blah4")))
+      exampleConfig.subKeys must not(contain(anyOf(
+        "foo.bar1",
+        "foo.bar2",
+        "blah.0",
+        "blah.1",
+        "blah.2",
+        "blah.3",
+        "blah.4",
+        "blah2.blah3.blah4")))
     }
 
     "make all get accessible using scala" in {
@@ -103,9 +93,7 @@ object ConfigurationSpec extends Specification {
         inObjectStream.close()
         copy
       }
-      val conf = Configuration.from(
-        Map("item" -> "uhoh, it's gonna blow")
-      );
+      val conf = Configuration.from(Map("item" -> "uhoh, it's gonna blow"));
       {
         try { conf.getStringList("item") }
         catch { case NonFatal(e) => copyViaSerialize(e) }
@@ -149,8 +137,8 @@ object PlayConfigSpec extends Specification {
     "support getting prototyped seqs" in {
       val seq = config(
         "bars" -> Seq(Map("a" -> "different a")),
-        "prototype.bars" -> Map("a" -> "some a", "b" -> "some b")
-      ).getPrototypedSeq("bars")
+        "prototype.bars" -> Map("a" -> "some a", "b" -> "some b"))
+        .getPrototypedSeq("bars")
       seq must haveSize(1)
       seq.head.get[String]("a") must_== "different a"
       seq.head.get[String]("b") must_== "some b"
@@ -158,8 +146,8 @@ object PlayConfigSpec extends Specification {
     "support getting prototyped maps" in {
       val map = config(
         "bars" -> Map("foo" -> Map("a" -> "different a")),
-        "prototype.bars" -> Map("a" -> "some a", "b" -> "some b")
-      ).getPrototypedMap("bars")
+        "prototype.bars" -> Map("a" -> "some a", "b" -> "some b"))
+        .getPrototypedMap("bars")
       map must haveSize(1)
       val foo = map("foo")
       foo.get[String]("a") must_== "different a"

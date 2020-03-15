@@ -51,10 +51,9 @@ trait PredefinedFromEntityUnmarshallers extends MultipartUnmarshallers {
       (entity, string) ⇒
         if (entity.isKnownEmpty) FormData.Empty
         else {
-          try FormData(
-            Uri.Query(
-              string,
-              Unmarshaller.bestUnmarshallingCharsetFor(entity).nioCharset))
+          try FormData(Uri.Query(
+            string,
+            Unmarshaller.bestUnmarshallingCharsetFor(entity).nioCharset))
           catch {
             case IllegalUriException(info) ⇒
               throw new IllegalArgumentException(

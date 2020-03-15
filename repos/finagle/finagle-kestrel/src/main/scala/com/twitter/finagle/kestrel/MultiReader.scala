@@ -34,8 +34,7 @@ private[finagle] object MultiReaderHelper {
   private[finagle] def merge(
       readHandles: Var[Try[Set[ReadHandle]]],
       trackOutstandingRequests: Boolean = false,
-      statsReceiver: StatsReceiver = NullStatsReceiver
-  ): ReadHandle = {
+      statsReceiver: StatsReceiver = NullStatsReceiver): ReadHandle = {
     val error = new Broker[Throwable]
     val messages = new Broker[ReadMessage]
     val close = new Broker[Unit]
@@ -171,8 +170,7 @@ private[finagle] object MultiReaderHelper {
         _error: Offer[Throwable],
         _closeHandleOf: Offer[Unit],
         _numReadHandlesGauge: Gauge,
-        _outstandingReadsGauge: Gauge
-    ): ReadHandle =
+        _outstandingReadsGauge: Gauge): ReadHandle =
       new ReadHandle {
         val messages = _messages
         val error = _error
@@ -221,8 +219,7 @@ object MultiReaderMemcache {
       case Name.Bound(va) => apply(va, queueName)
       case Name.Path(_) =>
         throw new UnsupportedOperationException(
-          "Failed to bind Name.Path in `MultiReaderMemcache.apply`"
-        )
+          "Failed to bind Name.Path in `MultiReaderMemcache.apply`")
     }
   }
 
@@ -293,8 +290,7 @@ object MultiReaderThrift {
       case Name.Bound(va) => apply(va, queueName, clientId)
       case Name.Path(_) =>
         throw new UnsupportedOperationException(
-          "Failed to bind Name.Path in `MultiReaderThrift.apply`"
-        )
+          "Failed to bind Name.Path in `MultiReaderThrift.apply`")
     }
   }
 
@@ -312,8 +308,7 @@ object MultiReaderThrift {
   def apply(
       va: Var[Addr],
       queueName: String,
-      clientId: Option[ClientId]
-  ): MultiReaderBuilderThrift = {
+      clientId: Option[ClientId]): MultiReaderBuilderThrift = {
     val config = MultiReaderConfig[ThriftClientRequest, Array[Byte]](
       va,
       queueName,
@@ -576,8 +571,9 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
               factory.close()
           }
 
-          logger.info(s"Host ${addr} joined for reading ${config.queueName} " +
-            s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
+          logger.info(
+            s"Host ${addr} joined for reading ${config.queueName} " +
+              s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
 
           (addr, handle)
         }
@@ -638,12 +634,11 @@ class ClusterMultiReaderBuilder private[kestrel] (
       config.toMultiReaderConfig) {
 
   private def this(config: MultiReaderConfig[Command, Response]) =
-    this(
-      ClusterMultiReaderConfig(
-        config.va,
-        config.queueName,
-        config.clientBuilder,
-        config.timer))
+    this(ClusterMultiReaderConfig(
+      config.va,
+      config.queueName,
+      config.clientBuilder,
+      config.timer))
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[Command, Response]): ClusterMultiReaderBuilder =
@@ -676,16 +671,10 @@ class MultiReaderBuilderMemcache private[kestrel] (
   */
 class MultiReaderBuilderThrift private[kestrel] (
     config: MultiReaderConfig[ThriftClientRequest, Array[Byte]])
-    extends MultiReaderBuilder[
-      ThriftClientRequest,
-      Array[Byte],
-      MultiReaderBuilderThrift](config) {
-  type ThriftClientBuilder = ClientBuilder[
-    ThriftClientRequest,
-    Array[Byte],
-    Nothing,
-    ClientConfig.Yes,
-    ClientConfig.Yes]
+    extends MultiReaderBuilder[ThriftClientRequest, Array[
+      Byte], MultiReaderBuilderThrift](config) {
+  type ThriftClientBuilder = ClientBuilder[ThriftClientRequest, Array[
+    Byte], Nothing, ClientConfig.Yes, ClientConfig.Yes]
 
   protected[kestrel] def copy(
       config: MultiReaderConfig[ThriftClientRequest, Array[Byte]])

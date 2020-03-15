@@ -144,8 +144,7 @@ private[hive] class HiveQl(conf: ParserConf)
     "TOK_DESCTABLE",
     "TOK_SHOWTABLES",
     "TOK_TRUNCATETABLE", // truncate table" is a NativeCommand, does not need to explain.
-    "TOK_ALTERTABLE"
-  ) ++ nativeCommands
+    "TOK_ALTERTABLE") ++ nativeCommands
 
   /**
     * Returns the HiveConf
@@ -193,8 +192,7 @@ private[hive] class HiveQl(conf: ParserConf)
         inputFormat = None,
         outputFormat = None,
         serde = None,
-        serdeProperties = Map.empty[String, String]
-      ),
+        serdeProperties = Map.empty[String, String]),
       properties = properties,
       viewOriginalText = Some(originalText),
       viewText = Some(originalText)
@@ -302,8 +300,7 @@ private[hive] class HiveQl(conf: ParserConf)
           allowExisting,
           maybeProperties,
           maybeColumns,
-          maybePartCols
-        ) = getClauses(
+          maybePartCols) = getClauses(
           Seq(
             "TOK_TABNAME",
             "TOK_QUERY",
@@ -394,8 +391,7 @@ private[hive] class HiveQl(conf: ParserConf)
             inputFormat = None,
             outputFormat = None,
             serde = None,
-            serdeProperties = Map.empty[String, String]
-          ),
+            serdeProperties = Map.empty[String, String]),
           schema = Seq.empty[CatalogColumn]
         )
 
@@ -466,17 +462,16 @@ private[hive] class HiveQl(conf: ParserConf)
               // TODO support the nullFormat
               case _ => assert(false)
             }
-            tableDesc = tableDesc.withNewStorage(
-              serdeProperties =
-                tableDesc.storage.serdeProperties ++ serdeParams.asScala)
+            tableDesc = tableDesc.withNewStorage(serdeProperties =
+              tableDesc.storage.serdeProperties ++ serdeParams.asScala)
           case Token("TOK_TABLELOCATION", child :: Nil) =>
             val location = EximUtil.relativeToAbsolutePath(
               hiveConf,
               unescapeSQLString(child.text))
             tableDesc = tableDesc.withNewStorage(locationUri = Option(location))
           case Token("TOK_TABLESERIALIZER", child :: Nil) =>
-            tableDesc = tableDesc.withNewStorage(
-              serde = Option(unescapeSQLString(child.children.head.text)))
+            tableDesc = tableDesc.withNewStorage(serde = Option(
+              unescapeSQLString(child.children.head.text)))
             if (child.numChildren == 2) {
               // This is based on the readProps(..) method in
               // ql/src/java/org/apache/hadoop/hive/ql/parse/BaseSemanticAnalyzer.java:
@@ -494,9 +489,8 @@ private[hive] class HiveQl(conf: ParserConf)
                     (unescapeSQLString(prop), value)
                 }
                 .toMap
-              tableDesc = tableDesc.withNewStorage(
-                serdeProperties =
-                  tableDesc.storage.serdeProperties ++ serdeParams)
+              tableDesc = tableDesc.withNewStorage(serdeProperties =
+                tableDesc.storage.serdeProperties ++ serdeParams)
             }
           case Token("TOK_FILEFORMAT_GENERIC", child :: Nil) =>
             child.text.toLowerCase(Locale.ENGLISH) match {
@@ -507,8 +501,8 @@ private[hive] class HiveQl(conf: ParserConf)
                   outputFormat = Option(
                     "org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat"))
                 if (tableDesc.storage.serde.isEmpty) {
-                  tableDesc = tableDesc.withNewStorage(
-                    serde = Option("org.apache.hadoop.hive.ql.io.orc.OrcSerde"))
+                  tableDesc = tableDesc.withNewStorage(serde = Option(
+                    "org.apache.hadoop.hive.ql.io.orc.OrcSerde"))
                 }
 
               case "parquet" =>
@@ -556,9 +550,8 @@ private[hive] class HiveQl(conf: ParserConf)
                     "org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
                 )
                 if (tableDesc.storage.serde.isEmpty) {
-                  tableDesc = tableDesc.withNewStorage(
-                    serde = Option(
-                      "org.apache.hadoop.hive.serde2.avro.AvroSerDe"))
+                  tableDesc = tableDesc.withNewStorage(serde = Option(
+                    "org.apache.hadoop.hive.serde2.avro.AvroSerDe"))
                 }
 
               case _ =>
@@ -576,9 +569,8 @@ private[hive] class HiveQl(conf: ParserConf)
 
             otherProps match {
               case Token("TOK_TABLEPROPERTIES", list :: Nil) :: Nil =>
-                tableDesc = tableDesc.withNewStorage(
-                  serdeProperties =
-                    tableDesc.storage.serdeProperties ++ getProperties(list))
+                tableDesc = tableDesc.withNewStorage(serdeProperties =
+                  tableDesc.storage.serdeProperties ++ getProperties(list))
               case _ =>
             }
 
@@ -748,13 +740,12 @@ private[hive] class HiveQl(conf: ParserConf)
           recordWriterClass,
           schemaLess)
 
-        Some(
-          logical.ScriptTransformation(
-            inputExprs.map(nodeToExpr),
-            unescapedScript,
-            output,
-            child,
-            schema))
+        Some(logical.ScriptTransformation(
+          inputExprs.map(nodeToExpr),
+          unescapedScript,
+          output,
+          child,
+          schema))
       case _ => None
     }
 

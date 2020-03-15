@@ -182,8 +182,9 @@ class Signature(
     import org.jetbrains.plugins.scala.lang.psi.types.Signature._
 
     var undefSubst = uSubst
-    if (paramLength != other.paramLength && !(paramLength.sum == 0 && other.paramLength.sum == 0))
-      return (false, undefSubst)
+    if (paramLength != other.paramLength && !(
+          paramLength.sum == 0 && other.paramLength.sum == 0
+        )) return (false, undefSubst)
     if (hasRepeatedParam != other.hasRepeatedParam) return (false, undefSubst)
     val unified1 = unify(substitutor, typeParams, typeParams)
     val unified2 = unify(other.substitutor, typeParams, other.typeParams)
@@ -263,10 +264,10 @@ object Signature {
     while (iterator1.hasNext && iterator2.hasNext) {
       val (tp1, tp2) = (iterator1.next(), iterator2.next())
 
-      res = res bindT ((
-        tp2.name,
-        ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
-        .toTypeParameterType(tp1))
+      res = res bindT (
+        (tp2.name, ScalaPsiUtil.getPsiElementId(tp2.ptp)), ScTypeParameterType
+          .toTypeParameterType(tp1)
+      )
     }
     res
   }

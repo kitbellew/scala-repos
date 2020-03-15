@@ -112,9 +112,9 @@ class BlockStoreShuffleReaderSuite
       // fetch shuffle data.
       val shuffleBlockId = ShuffleBlockId(shuffleId, mapId, reduceId)
       when(blockManager.getBlockData(shuffleBlockId)).thenReturn(managedBuffer)
-      when(
-        blockManager
-          .wrapForCompression(meq(shuffleBlockId), isA(classOf[InputStream])))
+      when(blockManager.wrapForCompression(
+        meq(shuffleBlockId),
+        isA(classOf[InputStream])))
         .thenAnswer(dummyCompressionFunction)
 
       managedBuffer
@@ -123,8 +123,10 @@ class BlockStoreShuffleReaderSuite
     // Make a mocked MapOutputTracker for the shuffle reader to use to determine what
     // shuffle data to read.
     val mapOutputTracker = mock(classOf[MapOutputTracker])
-    when(mapOutputTracker
-      .getMapSizesByExecutorId(shuffleId, reduceId, reduceId + 1)).thenReturn {
+    when(mapOutputTracker.getMapSizesByExecutorId(
+      shuffleId,
+      reduceId,
+      reduceId + 1)).thenReturn {
       // Test a scenario where all data is local, to avoid creating a bunch of additional mocks
       // for the code to read data over the network.
       val shuffleBlockIdsAndSizes = (0 until numMaps).map { mapId =>

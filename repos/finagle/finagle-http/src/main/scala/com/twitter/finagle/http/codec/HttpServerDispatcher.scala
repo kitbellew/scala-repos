@@ -83,8 +83,8 @@ class HttpServerDispatcher(
 
       case invalid =>
         eos.setDone()
-        Future.exception(
-          new IllegalArgumentException("Invalid message " + invalid))
+        Future.exception(new IllegalArgumentException(
+          "Invalid message " + invalid))
     }
 
   protected def handle(rep: Response): Future[Unit] = {

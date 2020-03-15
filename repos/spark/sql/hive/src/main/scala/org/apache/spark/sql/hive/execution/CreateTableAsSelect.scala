@@ -57,13 +57,13 @@ private[hive] case class CreateTableAsSelect(
       import org.apache.hadoop.mapred.TextInputFormat
 
       val withFormat = tableDesc.withNewStorage(
-        inputFormat = tableDesc.storage.inputFormat
-          .orElse(Some(classOf[TextInputFormat].getName)),
+        inputFormat = tableDesc.storage.inputFormat.orElse(Some(
+          classOf[TextInputFormat].getName)),
         outputFormat = tableDesc.storage.outputFormat
-          .orElse(
-            Some(classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
-        serde = tableDesc.storage.serde
-          .orElse(Some(classOf[LazySimpleSerDe].getName))
+          .orElse(Some(
+            classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
+        serde = tableDesc.storage.serde.orElse(Some(
+          classOf[LazySimpleSerDe].getName))
       )
 
       val withSchema =

@@ -74,9 +74,8 @@ class RequestHeaderSpec extends Specification {
   }
 
   def accept(value: String) =
-    DummyRequestHeader(
-      headers = Headers("Accept-Language" -> value)
-    ).acceptLanguages
+    DummyRequestHeader(headers = Headers(
+      "Accept-Language" -> value)).acceptLanguages
 
   case class DummyRequestHeader(
       requestMethod: String = "GET",

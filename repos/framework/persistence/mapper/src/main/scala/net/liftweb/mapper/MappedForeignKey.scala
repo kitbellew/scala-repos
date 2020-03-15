@@ -60,18 +60,16 @@ trait BaseForeignKey extends BaseMappedField {
 }
 
 object MappedForeignKey {
-  implicit def getObj[
-      KeyType,
-      MyOwner <: Mapper[MyOwner],
-      Other <: KeyedMapper[KeyType, Other]](
-      in: MappedForeignKey[KeyType, MyOwner, Other]): Box[Other] = in.obj
+  implicit def getObj[KeyType, MyOwner <: Mapper[MyOwner], Other <: KeyedMapper[
+    KeyType,
+    Other]](in: MappedForeignKey[KeyType, MyOwner, Other]): Box[Other] = in.obj
 }
 
 /**
   * The Trait that defines a field that is mapped to a foreign key
   */
-trait MappedForeignKey[
-    KeyType, MyOwner <: Mapper[MyOwner], Other <: KeyedMapper[KeyType, Other]]
+trait MappedForeignKey[KeyType, MyOwner <: Mapper[
+  MyOwner], Other <: KeyedMapper[KeyType, Other]]
     extends MappedField[KeyType, MyOwner]
     with LifecycleCallbacks {
   type FieldType <: KeyType
@@ -280,9 +278,9 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
 
 }
 
-abstract class MappedStringForeignKey[
-    T <: Mapper[T],
-    O <: KeyedMapper[String, O]](
+abstract class MappedStringForeignKey[T <: Mapper[T], O <: KeyedMapper[
+  String,
+  O]](
     override val fieldOwner: T,
     foreign: => KeyedMetaMapper[String, O],
     override val maxLen: Int)

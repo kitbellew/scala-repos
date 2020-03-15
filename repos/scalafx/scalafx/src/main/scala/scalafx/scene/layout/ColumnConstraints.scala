@@ -68,14 +68,13 @@ class ColumnConstraints(
       hgrow: jfxsl.Priority,
       halignment: jfxg.HPos,
       fillWidth: Boolean) =
-    this(
-      new jfxsl.ColumnConstraints(
-        minWidth,
-        prefWidth,
-        maxWidth,
-        hgrow,
-        halignment,
-        fillWidth))
+    this(new jfxsl.ColumnConstraints(
+      minWidth,
+      prefWidth,
+      maxWidth,
+      hgrow,
+      halignment,
+      fillWidth))
 
   /**
     * The horizontal fill policy for the column.

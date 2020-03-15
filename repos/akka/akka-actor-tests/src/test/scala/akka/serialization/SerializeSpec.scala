@@ -469,9 +469,8 @@ class OverriddenSystemMessageSerializationSpec
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class DefaultSerializationWarningSpec
-    extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.warn-about-java-serializer-usage = on")) {
+    extends AkkaSpec(ConfigFactory.parseString(
+      "akka.actor.warn-about-java-serializer-usage = on")) {
 
   val ser = SerializationExtension(system)
   val messagePrefix = "Using the default Java serializer for class.*"

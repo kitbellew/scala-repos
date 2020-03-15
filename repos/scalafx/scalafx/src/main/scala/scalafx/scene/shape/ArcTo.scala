@@ -45,15 +45,14 @@ object ArcTo {
       y: Double,
       largeArcFlag: Boolean,
       sweepFlag: Boolean) =
-    new ArcTo(
-      new jfxss.ArcTo(
-        radiusX,
-        radiusY,
-        xAxisRotation,
-        x,
-        y,
-        largeArcFlag,
-        sweepFlag))
+    new ArcTo(new jfxss.ArcTo(
+      radiusX,
+      radiusY,
+      xAxisRotation,
+      x,
+      y,
+      largeArcFlag,
+      sweepFlag))
 }
 
 class ArcTo(override val delegate: jfxss.ArcTo = new jfxss.ArcTo)

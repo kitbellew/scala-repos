@@ -272,13 +272,11 @@ private[internal] trait GlbLubs {
     *  be further altered. Otherwise, the regular lub.
     */
   def weakLub(tps: List[Type]): Type =
-    (
-      if (tps.isEmpty) NothingTpe
-      else if (tps forall isNumericValueType) numericLub(tps)
-      else if (tps exists typeHasAnnotations)
-        annotationsLub(lub(tps map (_.withoutAnnotations)), tps)
-      else lub(tps)
-    )
+    (if (tps.isEmpty) NothingTpe
+     else if (tps forall isNumericValueType) numericLub(tps)
+     else if (tps exists typeHasAnnotations)
+       annotationsLub(lub(tps map (_.withoutAnnotations)), tps)
+     else lub(tps))
 
   def numericLub(ts: List[Type]) =
     ts reduceLeft ((t1, t2) =>
@@ -367,14 +365,12 @@ private[internal] trait GlbLubs {
           val lubThisType = lubRefined.typeSymbol.thisType
           val narrowts = ts map (_.narrow)
           def excludeFromLub(sym: Symbol) =
-            (
-              sym.isClass
-                || sym.isConstructor
-                || !sym.isPublic
-                || isGetClass(sym)
-                || sym.isFinal
-                || narrowts.exists(t => !refines(t, sym))
-            )
+            (sym.isClass
+              || sym.isConstructor
+              || !sym.isPublic
+              || isGetClass(sym)
+              || sym.isFinal
+              || narrowts.exists(t => !refines(t, sym)))
           def lubsym(proto: Symbol): Symbol = {
             val prototp = lubThisType.memberInfo(proto)
             val syms = narrowts map (t =>
@@ -417,11 +413,9 @@ private[internal] trait GlbLubs {
           // add a refinement symbol for all non-class members of lubBase
           // which are refined by every type in ts.
           for (sym <- lubBase.nonPrivateMembers; if !excludeFromLub(sym)) {
-            try lubsym(sym) andAlso (addMember(
-              lubThisType,
-              lubRefined,
-              _,
-              depth))
+            try lubsym(sym) andAlso (
+              addMember(lubThisType, lubRefined, _, depth)
+            )
             catch {
               case ex: NoCommonType =>
             }
@@ -437,8 +431,7 @@ private[internal] trait GlbLubs {
                 if (settings.debug || printLubs) {
                   Console.println(
                     "Malformed lub: " + lubRefined + "\n" +
-                      "Argument " + t + " does not conform.  Falling back to " + lubBase
-                  )
+                      "Argument " + t + " does not conform.  Falling back to " + lubBase)
                 }
                 false
               }

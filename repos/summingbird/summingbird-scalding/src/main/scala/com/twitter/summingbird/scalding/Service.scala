@@ -93,8 +93,8 @@ private[scalding] object InternalService {
      * 1) There is only one dependant path from join to store.
      * 2) After the join, there are only flatMapValues (later we can handle merges as well)
      */
-    val summerToStore = getSummer[K, V](dag, store)
-      .getOrElse(sys.error("Could not find the Summer for store."))
+    val summerToStore = getSummer[K, V](dag, store).getOrElse(sys.error(
+      "Could not find the Summer for store."))
 
     val depsOfSummer: List[Producer[Scalding, Any]] = Producer
       .transitiveDependenciesOf(summerToStore)
@@ -246,9 +246,9 @@ private[scalding] object InternalService {
 
     val bothPipes = (left.map { case (t, (k, v)) => (k, (t, Left(v))) } ++
       mergeLog.map { case (t, (k, u))            => (k, (t, Right(u))) }).group
-      .withReducers(
-        reducers.getOrElse(-1)
-      ) // jank, but scalding needs a way to maybe set reducers
+      .withReducers(reducers.getOrElse(
+        -1
+      )) // jank, but scalding needs a way to maybe set reducers
       .sorted
       .scanLeft((
         Option.empty[(T, (V, Option[U]))],

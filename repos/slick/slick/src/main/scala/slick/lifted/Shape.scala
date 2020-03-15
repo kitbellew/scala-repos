@@ -202,12 +202,11 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     buildValue(elems.toIndexedSeq)
   }
   def toNode(value: Mixed): Node =
-    ProductNode(
-      ConstArray.from(
-        shapes.iterator
-          .zip(getIterator(value))
-          .map { case (p, f) => p.toNode(f.asInstanceOf[p.Mixed]) }
-          .toIterable))
+    ProductNode(ConstArray.from(
+      shapes.iterator
+        .zip(getIterator(value))
+        .map { case (p, f) => p.toNode(f.asInstanceOf[p.Mixed]) }
+        .toIterable))
 }
 
 /** Base class for ProductNodeShapes with a type mapping */
@@ -227,16 +226,18 @@ abstract class MappedProductShape[
 }
 
 /** Base class for ProductNodeShapes with a type mapping to a type that extends scala.Product */
-abstract class MappedScalaProductShape[Level <: ShapeLevel, C <: Product,
-M <: C, U <: C, P <: C](implicit val classTag: ClassTag[U])
+abstract class MappedScalaProductShape[
+    Level <: ShapeLevel, C <: Product, M <: C, U <: C, P <: C](
+    implicit val classTag: ClassTag[U])
     extends MappedProductShape[Level, C, M, U, P] {
   override def getIterator(value: C) = value.productIterator
   def getElement(value: C, idx: Int) = value.productElement(idx)
 }
 
 /** Shape for Scala tuples of all arities */
-final class TupleShape[Level <: ShapeLevel, M <: Product, U <: Product,
-P <: Product](val shapes: Shape[_, _, _, _]*)
+final class TupleShape[
+    Level <: ShapeLevel, M <: Product, U <: Product, P <: Product](
+    val shapes: Shape[_, _, _, _]*)
     extends ProductNodeShape[Level, Product, M, U, P] {
   override def getIterator(value: Product) = value.productIterator
   def getElement(value: Product, idx: Int) = value.productElement(idx)
@@ -316,15 +317,8 @@ class CaseClassShape[
 class ProductClassShape[E <: Product, C <: Product](
     val shapes: Seq[Shape[_, _, _, _]],
     mapLifted: Seq[Any] => C,
-    mapPlain: Seq[Any] => E
-)(implicit classTag: ClassTag[E])
-    extends MappedScalaProductShape[
-      FlatShapeLevel,
-      Product,
-      C,
-      E,
-      C
-    ] {
+    mapPlain: Seq[Any] => E)(implicit classTag: ClassTag[E])
+    extends MappedScalaProductShape[FlatShapeLevel, Product, C, E, C] {
   override def toMapped(v: Any) =
     mapPlain(v.asInstanceOf[Product].productIterator.toSeq)
   def buildValue(elems: IndexedSeq[Any]) = mapLifted(elems)

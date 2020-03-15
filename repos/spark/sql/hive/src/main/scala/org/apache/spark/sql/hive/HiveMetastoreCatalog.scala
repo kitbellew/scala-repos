@@ -179,8 +179,9 @@ private[hive] class HiveMetastoreCatalog(
               (0 until numCols.toInt).map { index =>
                 table.properties.getOrElse(
                   s"spark.sql.sources.schema.${colType}Col.$index",
-                  throw new AnalysisException(s"Could not read $colType columns from the metastore because it is corrupted " +
-                    s"(missing part $index of it, $numCols parts are expected).")
+                  throw new AnalysisException(
+                    s"Could not read $colType columns from the metastore because it is corrupted " +
+                      s"(missing part $index of it, $numCols parts are expected).")
                 )
               }
             }
@@ -357,8 +358,7 @@ private[hive] class HiveMetastoreCatalog(
           inputFormat = None,
           outputFormat = None,
           serde = None,
-          serdeProperties = options
-        ),
+          serdeProperties = options),
         properties = tableProperties.toMap
       )
     }
@@ -496,8 +496,8 @@ private[hive] class HiveMetastoreCatalog(
         .map(a => SubqueryAlias(a, tableWithQualifiers))
         .getOrElse(tableWithQualifiers)
     } else if (table.tableType == CatalogTableType.VIRTUAL_VIEW) {
-      val viewText = table.viewText.getOrElse(
-        sys.error("Invalid view without text."))
+      val viewText = table.viewText.getOrElse(sys.error(
+        "Invalid view without text."))
       alias match {
         // because hive use things like `_c0` to build the expanded text
         // currently we cannot support view from "create view v1(c1) as ..."
@@ -522,8 +522,7 @@ private[hive] class HiveMetastoreCatalog(
       ParquetRelation.MERGE_SCHEMA -> mergeSchema.toString,
       ParquetRelation.METASTORE_TABLE_NAME -> TableIdentifier(
         metastoreRelation.tableName,
-        Some(metastoreRelation.databaseName)
-      ).unquotedString
+        Some(metastoreRelation.databaseName)).unquotedString
     )
     val tableIdentifier = QualifiedTableName(
       metastoreRelation.databaseName,
@@ -785,9 +784,8 @@ private[hive] class HiveMetastoreCatalog(
             val desc =
               if (table.storage.serde.isEmpty) {
                 // add default serde
-                table.withNewStorage(
-                  serde = Some(
-                    "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"))
+                table.withNewStorage(serde = Some(
+                  "org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe"))
               } else { table }
 
             val QualifiedTableName(dbName, tblName) = getQualifiedTableName(
@@ -1008,31 +1006,30 @@ private[hive] case class MetastoreRelation(
     new HiveTable(tTable)
   }
 
-  @transient override lazy val statistics: Statistics = Statistics(
-    sizeInBytes = {
-      val totalSize = hiveQlTable.getParameters.get(StatsSetupConst.TOTAL_SIZE)
-      val rawDataSize = hiveQlTable.getParameters.get(
-        StatsSetupConst.RAW_DATA_SIZE)
-      // TODO: check if this estimate is valid for tables after partition pruning.
-      // NOTE: getting `totalSize` directly from params is kind of hacky, but this should be
-      // relatively cheap if parameters for the table are populated into the metastore.  An
-      // alternative would be going through Hadoop's FileSystem API, which can be expensive if a lot
-      // of RPCs are involved.  Besides `totalSize`, there are also `numFiles`, `numRows`,
-      // `rawDataSize` keys (see StatsSetupConst in Hive) that we can look at in the future.
-      BigInt(
-        // When table is external,`totalSize` is always zero, which will influence join strategy
-        // so when `totalSize` is zero, use `rawDataSize` instead
-        // if the size is still less than zero, we use default size
-        Option(totalSize)
-          .map(_.toLong)
-          .filter(_ > 0)
-          .getOrElse(
-            Option(rawDataSize)
-              .map(_.toLong)
-              .filter(_ > 0)
-              .getOrElse(sqlContext.conf.defaultSizeInBytes)))
-    }
-  )
+  @transient override lazy val statistics
+      : Statistics = Statistics(sizeInBytes = {
+    val totalSize = hiveQlTable.getParameters.get(StatsSetupConst.TOTAL_SIZE)
+    val rawDataSize = hiveQlTable.getParameters.get(
+      StatsSetupConst.RAW_DATA_SIZE)
+    // TODO: check if this estimate is valid for tables after partition pruning.
+    // NOTE: getting `totalSize` directly from params is kind of hacky, but this should be
+    // relatively cheap if parameters for the table are populated into the metastore.  An
+    // alternative would be going through Hadoop's FileSystem API, which can be expensive if a lot
+    // of RPCs are involved.  Besides `totalSize`, there are also `numFiles`, `numRows`,
+    // `rawDataSize` keys (see StatsSetupConst in Hive) that we can look at in the future.
+    BigInt(
+      // When table is external,`totalSize` is always zero, which will influence join strategy
+      // so when `totalSize` is zero, use `rawDataSize` instead
+      // if the size is still less than zero, we use default size
+      Option(totalSize)
+        .map(_.toLong)
+        .filter(_ > 0)
+        .getOrElse(
+          Option(rawDataSize)
+            .map(_.toLong)
+            .filter(_ > 0)
+            .getOrElse(sqlContext.conf.defaultSizeInBytes)))
+  })
 
   // When metastore partition pruning is turned off, we cache the list of all partitions to
   // mimic the behavior of Spark < 1.5
@@ -1092,8 +1089,7 @@ private[hive] case class MetastoreRelation(
     // substitute some output formats, e.g. substituting SequenceFileOutputFormat to
     // HiveSequenceFileOutputFormat.
     hiveQlTable.getOutputFormatClass,
-    hiveQlTable.getMetadata
-  )
+    hiveQlTable.getMetadata)
 
   implicit class SchemaAttribute(f: CatalogColumn) {
     def toAttribute: AttributeReference =
@@ -1101,8 +1097,7 @@ private[hive] case class MetastoreRelation(
         f.name,
         HiveMetastoreTypes.toDataType(f.dataType),
         // Since data can be dumped in randomly with no validation, everything is nullable.
-        nullable = true
-      )(qualifiers = Seq(alias.getOrElse(tableName)))
+        nullable = true)(qualifiers = Seq(alias.getOrElse(tableName)))
   }
 
   /** PartitionKey attributes */
@@ -1126,9 +1121,8 @@ private[hive] case class MetastoreRelation(
       .toArray
     if (partLocations.nonEmpty) { partLocations }
     else {
-      Array(
-        table.storage.locationUri.getOrElse(
-          sys.error(s"Could not get the location of ${table.qualifiedName}.")))
+      Array(table.storage.locationUri.getOrElse(sys.error(
+        s"Could not get the location of ${table.qualifiedName}.")))
     }
   }
 

@@ -17,8 +17,7 @@ import org.scalatest.junit.JUnitRunner
 class RetryPolicyTest extends FunSpec {
   def getBackoffs(
       policy: RetryPolicy[Try[Nothing]],
-      exceptions: Stream[Exception]
-  ): Stream[Duration] =
+      exceptions: Stream[Exception]): Stream[Duration] =
     exceptions match {
       case Stream.Empty => Stream.empty
       case e #:: tail =>
@@ -46,10 +45,9 @@ class RetryPolicyTest extends FunSpec {
       // it's important that this failure isn't retried, despite being "restartable".
       // interrupted futures should never be retried.
       assert(
-        weo(
-          Throw(Failure(
-            new Exception,
-            Failure.Interrupted | Failure.Restartable))) == false)
+        weo(Throw(Failure(
+          new Exception,
+          Failure.Interrupted | Failure.Restartable))) == false)
       assert(weo(Throw(Failure(new Exception, Failure.Restartable))) == true)
       assert(weo(Throw(timeoutExc)) == false)
     }
@@ -190,16 +188,14 @@ class RetryPolicyTest extends FunSpec {
         WriteException(new Exception),
         WriteException(new Exception),
         new ChannelClosedException(),
-        WriteException(new Exception)
-      )
+        WriteException(new Exception))
 
       val backoffs = getBackoffs(combinedPolicy, exceptions)
       val expectedBackoffs = Stream(
         channelClosedBackoff,
         writeExceptionBackoff,
         writeExceptionBackoff,
-        channelClosedBackoff
-      )
+        channelClosedBackoff)
       assert(backoffs == expectedBackoffs)
     }
   }

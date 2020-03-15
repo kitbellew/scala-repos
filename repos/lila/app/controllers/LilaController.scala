@@ -50,8 +50,7 @@ private[controllers] trait LilaController
   protected def NoCache(res: Result): Result =
     res.withHeaders(
       CACHE_CONTROL -> "no-cache, no-store, must-revalidate",
-      EXPIRES -> "0"
-    )
+      EXPIRES -> "0")
 
   protected def Socket[A: FrameFormatter](
       f: Context => Fu[(Iteratee[A, _], Enumerator[A])]) =
@@ -175,10 +174,8 @@ private[controllers] trait LilaController
           html = Lobby.renderHome(Results.Forbidden),
           api = _ =>
             fuccess {
-              Forbidden(
-                jsonError(
-                  s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games"
-                )) as JSON
+              Forbidden(jsonError(
+                s"Banned from playing for ${ban.remainingMinutes} minutes. Reason: Too many aborts or unplayed games")) as JSON
             }
         )
       }
@@ -192,12 +189,9 @@ private[controllers] trait LilaController
           html = Lobby.renderHome(Results.Forbidden),
           api = _ =>
             fuccess {
-              Forbidden(
-                jsonError(
-                  s"You are already playing ${current.opponent}"
-                )) as JSON
-            }
-        )
+              Forbidden(jsonError(
+                s"You are already playing ${current.opponent}")) as JSON
+            })
       }
     }
 
@@ -229,10 +223,8 @@ private[controllers] trait LilaController
 
   protected def FormFuResult[A, B: Writeable: ContentTypeOf](form: Form[A])(
       err: Form[A] => Fu[B])(op: A => Fu[Result])(implicit req: Request[_]) =
-    form.bindFromRequest.fold(
-      form => err(form) map { BadRequest(_) },
-      data => op(data)
-    )
+    form.bindFromRequest
+      .fold(form => err(form) map { BadRequest(_) }, data => op(data))
 
   protected def FuRedirect(fua: Fu[Call]) = fua map { Redirect(_) }
 

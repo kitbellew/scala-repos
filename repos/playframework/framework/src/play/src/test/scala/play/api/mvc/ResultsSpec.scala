@@ -68,8 +68,10 @@ object ResultsSpec extends Specification {
     "support date headers manipulation" in {
       val Result(ResponseHeader(_, headers, _), _) = Ok("hello")
         .as("text/html")
-        .withDateHeaders(DATE ->
-          new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(DateTimeZone.UTC))
+        .withDateHeaders(
+          DATE ->
+            new DateTime(2015, 4, 1, 0, 0)
+              .withZoneRetainFields(DateTimeZone.UTC))
       headers must havePair(DATE -> "Wed, 01 Apr 2015 00:00:00 GMT")
     }
 

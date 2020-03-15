@@ -184,10 +184,11 @@ class SourceMapTest {
       assert(get(json, 8, "real") == "-9876.543210") /**/
       /**/
       assert(get(json, 8, "comment") == "// /* <!-- --")
-      assert(get(
-        json,
-        8,
-        "jsontext") == "{\"object with 1 member\":[\"array with 1 element\"]}")
+      assert(
+        get(
+          json,
+          8,
+          "jsontext") == "{\"object with 1 member\":[\"array with 1 element\"]}")
       assert(get(json, 19) == "rosebud") /**/
     }
     /**/
@@ -410,8 +411,7 @@ class Json extends Writer2 {
       'f'.toInt -> "\f",
       'n'.toInt -> "\n",
       'r'.toInt -> "\r",
-      't'.toInt -> "\t"
-    )
+      't'.toInt -> "\t")
     // *** Import Shared Data ***
 
     // *** INPUT STRING ***

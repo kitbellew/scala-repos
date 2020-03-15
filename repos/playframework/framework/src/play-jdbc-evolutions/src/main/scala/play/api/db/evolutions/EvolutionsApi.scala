@@ -150,21 +150,19 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
     try {
 
-      Collections.unfoldLeft(
-        executeQuery(
-          """
+      Collections.unfoldLeft(executeQuery(
+        """
             select id, hash, apply_script, revert_script from ${schema}play_evolutions order by id
         """)) { rs =>
         rs.next match {
           case false => None
           case true => {
-            Some(
-              (
-                rs,
-                Evolution(
-                  rs.getInt(1),
-                  Option(rs.getString(3)) getOrElse "",
-                  Option(rs.getString(4)) getOrElse "")))
+            Some((
+              rs,
+              Evolution(
+                rs.getInt(1),
+                Option(rs.getString(3)) getOrElse "",
+                Option(rs.getString(4)) getOrElse "")))
           }
         }
       }
@@ -248,15 +246,12 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
           connection.rollback()
 
           val humanScript =
-            "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript
-                                                                        .isInstanceOf[UpScript])
-                                                                    "Ups"
-                                                                  else
-                                                                    "Downs") + " - " + lastScript.evolution.hash + "\n\n" + (if (lastScript
-                                                                                                                                   .isInstanceOf[UpScript])
-                                                                                                                               lastScript.evolution.sql_up
-                                                                                                                             else
-                                                                                                                               lastScript.evolution.sql_down)
+            "# --- Rev:" + lastScript.evolution.revision + "," + (
+              if (lastScript.isInstanceOf[UpScript]) "Ups" else "Downs"
+            ) + " - " + lastScript.evolution.hash + "\n\n" + (
+              if (lastScript.isInstanceOf[UpScript]) lastScript.evolution.sql_up
+              else lastScript.evolution.sql_down
+            )
 
           throw InconsistentDatabase(
             database.name,
@@ -498,12 +493,11 @@ abstract class ResourceEvolutionsReader extends EvolutionsReader {
               case (_, Nil) => None
               case (context, lines) => {
                 val (some, next) = lines.span(l => !isMarker(l))
-                Some(
-                  (
-                    next.headOption
-                      .map(c => (mapUpsAndDowns(c), next.tail))
-                      .getOrElse("" -> Nil),
-                    context -> some.mkString("\n")))
+                Some((
+                  next.headOption
+                    .map(c => (mapUpsAndDowns(c), next.tail))
+                    .getOrElse("" -> Nil),
+                  context -> some.mkString("\n")))
               }
             }
             .reverse
@@ -551,9 +545,8 @@ class ClassLoaderEvolutionsReader(
     prefix: String = "")
     extends ResourceEvolutionsReader {
   def loadResource(db: String, revision: Int) = {
-    Option(
-      classLoader.getResourceAsStream(
-        prefix + Evolutions.resourceName(db, revision)))
+    Option(classLoader.getResourceAsStream(
+      prefix + Evolutions.resourceName(db, revision)))
   }
 }
 
@@ -623,10 +616,9 @@ case class InconsistentDatabase(
     autocommit: Boolean)
     extends PlayException.RichDescription(
       "Database '" + db + "' is in an inconsistent state!",
-      "An evolution has not been applied properly. Please check the problem and resolve it manually" + (if (autocommit)
-                                                                                                          " before marking it as resolved."
-                                                                                                        else
-                                                                                                          ".")) {
+      "An evolution has not been applied properly. Please check the problem and resolve it manually" + (
+        if (autocommit) " before marking it as resolved." else "."
+      )) {
 
   def subTitle =
     "We got the following error: " + error + ", while trying to run this SQL script:"

@@ -30,22 +30,20 @@ object CircuitBreakerSpec {
   def shortCallTimeoutCb()(implicit
       system: ActorSystem,
       ec: ExecutionContext): Breaker =
-    new Breaker(
-      new CircuitBreaker(
-        system.scheduler,
-        1,
-        50.millis.dilated,
-        500.millis.dilated))
+    new Breaker(new CircuitBreaker(
+      system.scheduler,
+      1,
+      50.millis.dilated,
+      500.millis.dilated))
 
   def shortResetTimeoutCb()(implicit
       system: ActorSystem,
       ec: ExecutionContext): Breaker =
-    new Breaker(
-      new CircuitBreaker(
-        system.scheduler,
-        1,
-        1000.millis.dilated,
-        50.millis.dilated))
+    new Breaker(new CircuitBreaker(
+      system.scheduler,
+      1,
+      1000.millis.dilated,
+      50.millis.dilated))
 
   def longCallTimeoutCb()(implicit
       system: ActorSystem,
@@ -57,22 +55,20 @@ object CircuitBreakerSpec {
   def longResetTimeoutCb()(implicit
       system: ActorSystem,
       ec: ExecutionContext): Breaker =
-    new Breaker(
-      new CircuitBreaker(
-        system.scheduler,
-        1,
-        100.millis.dilated,
-        longResetTimeout))
+    new Breaker(new CircuitBreaker(
+      system.scheduler,
+      1,
+      100.millis.dilated,
+      longResetTimeout))
 
   def multiFailureCb()(implicit
       system: ActorSystem,
       ec: ExecutionContext): Breaker =
-    new Breaker(
-      new CircuitBreaker(
-        system.scheduler,
-        5,
-        200.millis.dilated,
-        500.millis.dilated))
+    new Breaker(new CircuitBreaker(
+      system.scheduler,
+      5,
+      200.millis.dilated,
+      500.millis.dilated))
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])

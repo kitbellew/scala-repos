@@ -40,8 +40,8 @@ class SbtModuleSettingsEditor(state: ModuleConfigurationState)
   def saveData() {}
 
   def createComponentImpl() = {
-    myForm.sbtImportsList.setEmptyText(
-      SbtBundle("sbt.settings.noImplicitImportsFound"))
+    myForm.sbtImportsList.setEmptyText(SbtBundle(
+      "sbt.settings.noImplicitImportsFound"))
     JListCompatibility.setModel(myForm.sbtImportsList, modelWrapper.getModelRaw)
 
     myForm.updateButton.addActionListener(new ActionListener {
@@ -81,8 +81,7 @@ private class ResolversModel(val resolvers: Seq[SbtResolver])
   private val columns = Seq(
     SbtBundle("sbt.settings.resolvers.name"),
     SbtBundle("sbt.settings.resolvers.url"),
-    SbtBundle("sbt.settings.resolvers.updated")
-  )
+    SbtBundle("sbt.settings.resolvers.updated"))
 
   def getColumnCount = columns.size
 

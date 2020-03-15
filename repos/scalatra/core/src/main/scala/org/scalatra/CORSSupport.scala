@@ -243,8 +243,8 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
     }
     val result: Boolean = {
       accessControlRequestMethod.nonBlank &&
-      corsConfig.allowedMethods.contains(
-        accessControlRequestMethod.toUpperCase(ENGLISH))
+      corsConfig.allowedMethods.contains(accessControlRequestMethod.toUpperCase(
+        ENGLISH))
     }
     result
   }

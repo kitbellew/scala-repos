@@ -387,21 +387,17 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   test("merge with metastore schema") {
     // Field type conflict resolution
-    assertResult(
-      StructType(
-        Seq(
-          StructField("lowerCase", StringType),
-          StructField("UPPERCase", DoubleType, nullable = false)))) {
+    assertResult(StructType(Seq(
+      StructField("lowerCase", StringType),
+      StructField("UPPERCase", DoubleType, nullable = false)))) {
 
       ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
-            StructField("lowercase", StringType),
-            StructField("uppercase", DoubleType, nullable = false))),
-        StructType(
-          Seq(
-            StructField("lowerCase", BinaryType),
-            StructField("UPPERCase", IntegerType, nullable = true)))
+        StructType(Seq(
+          StructField("lowercase", StringType),
+          StructField("uppercase", DoubleType, nullable = false))),
+        StructType(Seq(
+          StructField("lowerCase", BinaryType),
+          StructField("UPPERCase", IntegerType, nullable = true)))
       )
     }
 
@@ -411,23 +407,23 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
       ParquetRelation.mergeMetastoreParquetSchema(
         StructType(Seq(StructField("uppercase", DoubleType, nullable = false))),
-        StructType(
-          Seq(
-            StructField("lowerCase", BinaryType),
-            StructField("UPPERCase", IntegerType, nullable = true)))
+        StructType(Seq(
+          StructField("lowerCase", BinaryType),
+          StructField("UPPERCase", IntegerType, nullable = true)))
       )
     }
 
     // Metastore schema contains additional non-nullable fields.
-    assert(intercept[Throwable] {
-      ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
+    assert(
+      intercept[Throwable] {
+        ParquetRelation.mergeMetastoreParquetSchema(
+          StructType(Seq(
             StructField("uppercase", DoubleType, nullable = false),
             StructField("lowerCase", BinaryType, nullable = false))),
-        StructType(Seq(StructField("UPPERCase", IntegerType, nullable = true)))
-      )
-    }.getMessage.contains("detected conflicting schemas"))
+          StructType(
+            Seq(StructField("UPPERCase", IntegerType, nullable = true)))
+        )
+      }.getMessage.contains("detected conflicting schemas"))
 
     // Conflicting non-nullable field names
     intercept[Throwable] {
@@ -440,42 +436,38 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
   test("merge missing nullable fields from Metastore schema") {
     // Standard case: Metastore schema contains additional nullable fields not present
     // in the Parquet file schema.
-    assertResult(
-      StructType(Seq(
-        StructField("firstField", StringType, nullable = true),
-        StructField("secondField", StringType, nullable = true),
-        StructField("thirdfield", StringType, nullable = true)
-      ))) {
+    assertResult(StructType(Seq(
+      StructField("firstField", StringType, nullable = true),
+      StructField("secondField", StringType, nullable = true),
+      StructField("thirdfield", StringType, nullable = true)
+    ))) {
       ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
-            StructField("firstfield", StringType, nullable = true),
-            StructField("secondfield", StringType, nullable = true),
-            StructField("thirdfield", StringType, nullable = true)
-          )),
-        StructType(
-          Seq(
-            StructField("firstField", StringType, nullable = true),
-            StructField("secondField", StringType, nullable = true)))
+        StructType(Seq(
+          StructField("firstfield", StringType, nullable = true),
+          StructField("secondfield", StringType, nullable = true),
+          StructField("thirdfield", StringType, nullable = true)
+        )),
+        StructType(Seq(
+          StructField("firstField", StringType, nullable = true),
+          StructField("secondField", StringType, nullable = true)))
       )
     }
 
     // Merge should fail if the Metastore contains any additional fields that are not
     // nullable.
-    assert(intercept[Throwable] {
-      ParquetRelation.mergeMetastoreParquetSchema(
-        StructType(
-          Seq(
+    assert(
+      intercept[Throwable] {
+        ParquetRelation.mergeMetastoreParquetSchema(
+          StructType(Seq(
             StructField("firstfield", StringType, nullable = true),
             StructField("secondfield", StringType, nullable = true),
             StructField("thirdfield", StringType, nullable = false)
           )),
-        StructType(
-          Seq(
+          StructType(Seq(
             StructField("firstField", StringType, nullable = true),
             StructField("secondField", StringType, nullable = true)))
-      )
-    }.getMessage.contains("detected conflicting schemas"))
+        )
+      }.getMessage.contains("detected conflicting schemas"))
   }
 
   test("schema merging failure error message") {
@@ -521,12 +513,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with nullable element type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group list {
@@ -542,12 +532,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with nullable element type - 2",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group element {
@@ -563,12 +551,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group list {
@@ -584,12 +570,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 2",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group element {
@@ -605,12 +589,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 3",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated int32 element;
@@ -624,16 +606,15 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 4",
-    StructType(
-      Seq(StructField(
-        "f1",
-        ArrayType(
-          StructType(Seq(
-            StructField("str", StringType, nullable = false),
-            StructField("num", IntegerType, nullable = false))),
-          containsNull = false),
-        nullable = true
-      ))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(
+        StructType(Seq(
+          StructField("str", StringType, nullable = false),
+          StructField("num", IntegerType, nullable = false))),
+        containsNull = false),
+      nullable = true
+    ))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group element {
@@ -650,14 +631,12 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 5 - parquet-avro style",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(
-            StructType(Seq(StructField("str", StringType, nullable = false))),
-            containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(
+        StructType(Seq(StructField("str", StringType, nullable = false))),
+        containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group array {
@@ -673,14 +652,12 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: LIST with non-nullable element type - 6 - parquet-thrift style",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(
-            StructType(Seq(StructField("str", StringType, nullable = false))),
-            containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(
+        StructType(Seq(StructField("str", StringType, nullable = false))),
+        containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group f1_tuple {
@@ -742,12 +719,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: LIST with nullable element type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group list {
@@ -763,12 +738,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: LIST with nullable element type - 2 - prior to 1.4.x",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group bag {
@@ -784,12 +757,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: LIST with non-nullable element type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated group list {
@@ -805,12 +776,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: LIST with non-nullable element type - 2 - prior to 1.4.x",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      ArrayType(IntegerType, containsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (LIST) {
       |    repeated int32 array;
@@ -828,12 +797,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with non-nullable value type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group key_value {
@@ -850,12 +817,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with non-nullable value type - 2",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP_KEY_VALUE) {
       |    repeated group map {
@@ -872,12 +837,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with non-nullable value type - 3 - prior to 1.4.x",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group map (MAP_KEY_VALUE) {
@@ -894,12 +857,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with nullable value type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group key_value {
@@ -916,12 +877,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with nullable value type - 2",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP_KEY_VALUE) {
       |    repeated group map {
@@ -938,12 +897,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testParquetToCatalyst(
     "Backwards-compatibility: MAP with nullable value type - 3 - parquet-avro style",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group map (MAP_KEY_VALUE) {
@@ -964,12 +921,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: MAP with non-nullable value type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group key_value {
@@ -986,12 +941,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: MAP with non-nullable value type - 2 - prior to 1.4.x",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = false),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = false),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group map (MAP_KEY_VALUE) {
@@ -1008,12 +961,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: MAP with nullable value type - 1 - standard",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group key_value {
@@ -1030,12 +981,10 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
 
   testCatalystToParquet(
     "Backwards-compatibility: MAP with nullable value type - 3 - prior to 1.4.x",
-    StructType(
-      Seq(
-        StructField(
-          "f1",
-          MapType(IntegerType, StringType, valueContainsNull = true),
-          nullable = true))),
+    StructType(Seq(StructField(
+      "f1",
+      MapType(IntegerType, StringType, valueContainsNull = true),
+      nullable = true))),
     """message root {
       |  optional group f1 (MAP) {
       |    repeated group map (MAP_KEY_VALUE) {
@@ -1178,13 +1127,11 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         actual.checkContains(expected)
       } catch {
         case cause: Throwable =>
-          fail(
-            s"""Expected clipped schema:
+          fail(s"""Expected clipped schema:
              |$expected
              |Actual clipped schema:
              |$actual
-           """.stripMargin,
-            cause)
+           """.stripMargin, cause)
       }
     }
   }

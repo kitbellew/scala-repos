@@ -78,7 +78,9 @@ abstract class MultiNodeConfig {
   }
 
   def deployOn(role: RoleName, deployment: String): Unit =
-    _deployments += role -> ((_deployments get role getOrElse Vector()) :+ deployment)
+    _deployments += role -> (
+      (_deployments get role getOrElse Vector()) :+ deployment
+    )
 
   def deployOnAll(deployment: String): Unit = _allDeploy :+= deployment
 
@@ -105,8 +107,9 @@ abstract class MultiNodeConfig {
         """)
       else ConfigFactory.empty
 
-    val configs =
-      (_nodeConf get myself).toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
+    val configs = (
+      _nodeConf get myself
+    ).toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
     configs reduceLeft (_ withFallback _)
   }
 
@@ -212,11 +215,10 @@ object MultiNodeSpec {
     selfIndex >= 0 && selfIndex < maxNodes,
     "multinode.index is out of bounds: " + selfIndex)
 
-  private[testkit] val nodeConfig = mapToConfig(
-    Map(
-      "akka.actor.provider" -> "akka.remote.RemoteActorRefProvider",
-      "akka.remote.netty.tcp.hostname" -> selfName,
-      "akka.remote.netty.tcp.port" -> selfPort))
+  private[testkit] val nodeConfig = mapToConfig(Map(
+    "akka.actor.provider" -> "akka.remote.RemoteActorRefProvider",
+    "akka.remote.netty.tcp.hostname" -> selfName,
+    "akka.remote.netty.tcp.port" -> selfPort))
 
   private[testkit] val baseConfig: Config = ConfigFactory.parseString(
     """
@@ -243,8 +245,9 @@ object MultiNodeSpec {
   }
 
   private def getCallerName(clazz: Class[_]): String = {
-    val s =
-      Thread.currentThread.getStackTrace map (_.getClassName) drop 1 dropWhile (_ matches ".*MultiNodeSpec.?$")
+    val s = Thread.currentThread.getStackTrace map (
+      _.getClassName
+    ) drop 1 dropWhile (_ matches ".*MultiNodeSpec.?$")
     val reduced = s.lastIndexWhere(_ == clazz.getName) match {
       case -1 ⇒ s
       case z ⇒ s drop (z + 1)
@@ -377,8 +380,8 @@ abstract class MultiNodeSpec(
     */
   def enterBarrier(name: String*): Unit =
     testConductor.enter(
-      Timeout.durationToTimeout(
-        remainingOr(testConductor.Settings.BarrierTimeout.duration)),
+      Timeout.durationToTimeout(remainingOr(
+        testConductor.Settings.BarrierTimeout.duration)),
       name.to[immutable.Seq])
 
   /**
@@ -396,8 +399,8 @@ abstract class MultiNodeSpec(
       sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       def mute(clazz: Class[_]): Unit =
-        sys.eventStream.publish(
-          Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
+        sys.eventStream.publish(Mute(
+          DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses foreach mute
     }

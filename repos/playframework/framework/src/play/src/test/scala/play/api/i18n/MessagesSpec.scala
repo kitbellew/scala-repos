@@ -24,8 +24,8 @@ object MessagesSpec extends Specification {
     new Environment(new File("."), this.getClass.getClassLoader, Mode.Dev),
     Configuration.reference,
     new DefaultLangs(
-      Configuration.reference ++ Configuration.from(
-        Map("play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
+      Configuration.reference ++ Configuration.from(Map(
+        "play.i18n.langs" -> Seq("en", "fr", "fr-CH"))))) {
     override protected def loadAllMessages = testMessages
   }
 
@@ -109,8 +109,8 @@ object MessagesSpec extends Specification {
         new Environment(new File("."), this.getClass.getClassLoader, Mode.Dev),
         Configuration.reference,
         new DefaultLangs(
-          Configuration.reference ++ Configuration.from(
-            Map("play.i18n.langs" -> Seq("invalid_language"))))) must throwA[
+          Configuration.reference ++ Configuration.from(Map(
+            "play.i18n.langs" -> Seq("invalid_language"))))) must throwA[
         PlayException]
     }
   }

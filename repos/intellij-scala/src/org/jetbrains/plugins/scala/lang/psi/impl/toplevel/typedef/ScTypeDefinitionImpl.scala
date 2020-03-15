@@ -71,9 +71,9 @@ abstract class ScTypeDefinitionImpl protected (
         val newMemberText = JavaToScala.convertPsiToText(member).trim()
         val mem: Option[ScMember] = member match {
           case method: PsiMethod =>
-            Some(
-              ScalaPsiElementFactory
-                .createMethodFromText(newMemberText, getManager))
+            Some(ScalaPsiElementFactory.createMethodFromText(
+              newMemberText,
+              getManager))
           case _ => None
         }
         mem match {

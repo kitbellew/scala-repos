@@ -49,8 +49,7 @@ object AllowedHostsFilterSpec extends PlaySpecification {
         bind[Router].to(Router.from {
           case request => Action(result(request))
         }),
-        bind[HttpFilters].to[Filters]
-      )
+        bind[HttpFilters].to[Filters])
       .build()
   }
 
@@ -61,8 +60,8 @@ object AllowedHostsFilterSpec extends PlaySpecification {
   def withServer[T](result: RequestHeader => Result, config: String)(
       block: WSClient => T): T = {
     val app = newApplication(result, config)
-    running(TestServer(TestServerPort, app))(
-      block(app.injector.instanceOf[WSClient]))
+    running(TestServer(TestServerPort, app))(block(
+      app.injector.instanceOf[WSClient]))
   }
 
   "the allowed hosts filter" should {
@@ -152,7 +151,8 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       status(
         request("addons.mozilla.org:@passwordreset.net")) must_== BAD_REQUEST
       status(
-        request("addons.mozilla.org: www.securepasswordreset.com")) must_== BAD_REQUEST
+        request(
+          "addons.mozilla.org: www.securepasswordreset.com")) must_== BAD_REQUEST
     }
 
     "validate hosts in absolute URIs" in withApplication(
@@ -160,14 +160,12 @@ object AllowedHostsFilterSpec extends PlaySpecification {
       """
         |play.filters.hosts.allowed = [".mozilla.org"]
       """.stripMargin) {
-      status(
-        request(
-          "www.securepasswordreset.com",
-          "https://addons.mozilla.org/en-US/firefox/users/pwreset")) must_== OK
-      status(
-        request(
-          "addons.mozilla.org",
-          "https://www.securepasswordreset.com/en-US/firefox/users/pwreset")) must_== BAD_REQUEST
+      status(request(
+        "www.securepasswordreset.com",
+        "https://addons.mozilla.org/en-US/firefox/users/pwreset")) must_== OK
+      status(request(
+        "addons.mozilla.org",
+        "https://www.securepasswordreset.com/en-US/firefox/users/pwreset")) must_== BAD_REQUEST
     }
 
     "not allow bypassing with X-Forwarded-Host header" in withServer(

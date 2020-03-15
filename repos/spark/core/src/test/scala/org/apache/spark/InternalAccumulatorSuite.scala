@@ -141,12 +141,10 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     assert(OUTPUT_METRICS_PREFIX.startsWith(METRICS_PREFIX))
     assert(accums.forall(_.name.get.startsWith(METRICS_PREFIX)))
     // assert they all start with the expected prefixes
-    assert(
-      shuffleReadAccums.forall(
-        _.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
-    assert(
-      shuffleWriteAccums.forall(
-        _.name.get.startsWith(SHUFFLE_WRITE_METRICS_PREFIX)))
+    assert(shuffleReadAccums.forall(
+      _.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
+    assert(shuffleWriteAccums.forall(
+      _.name.get.startsWith(SHUFFLE_WRITE_METRICS_PREFIX)))
     assert(inputAccums.forall(_.name.get.startsWith(INPUT_METRICS_PREFIX)))
     assert(outputAccums.forall(_.name.get.startsWith(OUTPUT_METRICS_PREFIX)))
   }

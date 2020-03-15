@@ -78,6 +78,5 @@ object BubbleChartDemo extends JFXApp {
       name,
       ObservableBuffer(data.map {
         case (x, y, r) => XYChart.Data[Number, Number](x, y, r)
-      })
-    )
+      }))
 }

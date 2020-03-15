@@ -33,8 +33,7 @@ final class RelationApi(
     coll
       .find(
         BSONDocument("u1" -> u1, "u2" -> u2),
-        BSONDocument("r" -> true, "_id" -> false)
-      )
+        BSONDocument("r" -> true, "_id" -> false))
       .one[BSONDocument]
       .map { _.flatMap(_.getAs[Boolean]("r")) }
 
@@ -47,19 +46,16 @@ final class RelationApi(
   def fetchFriends(userId: ID) =
     coll
       .aggregate(
-        Match(
-          BSONDocument(
-            "$or" -> BSONArray(
-              BSONDocument("u1" -> userId),
-              BSONDocument("u2" -> userId)),
-            "r" -> Follow
-          )),
+        Match(BSONDocument(
+          "$or" -> BSONArray(
+            BSONDocument("u1" -> userId),
+            BSONDocument("u2" -> userId)),
+          "r" -> Follow)),
         List(
           Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
           Project(BSONDocument(
-            "_id" -> BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2"))
-          ))
-        )
+            "_id" -> BSONDocument(
+              "$setIntersection" -> BSONArray("$u1", "$u2")))))
       )
       .map {
         ~_.documents.headOption.flatMap(_.getAs[Set[String]]("_id")) - userId

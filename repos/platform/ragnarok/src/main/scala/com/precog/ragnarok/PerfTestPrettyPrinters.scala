@@ -128,9 +128,13 @@ trait PrettyPrinters {
       case NoChange(baseline, stats) =>
         "NO CHANGE  %.1f ms (s = %.1f ms)" format (stats.mean, stats.stdDev)
       case Faster(baseline, stats) =>
-        "FASTER     %.1f ms (%.1 ms faster)" format (stats.mean, baseline.mean - stats.mean)
+        "FASTER     %.1f ms (%.1 ms faster)" format (
+          stats.mean, baseline.mean - stats.mean
+        )
       case Slower(baseline, stats) =>
-        "SLOWER     %.1f ms (%.1 ms slower)" format (stats.mean, stats.mean - baseline.mean)
+        "SLOWER     %.1f ms (%.1 ms slower)" format (
+          stats.mean, stats.mean - baseline.mean
+        )
       case MissingBaseline(stats) =>
         "TOTAL      %.1f ms" format stats.mean
       case MissingStats(_) | Missing =>

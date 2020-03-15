@@ -38,8 +38,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     testOperation(
       input,
       (r: DStream[Int]) => r.map(_.toString),
-      input.map(_.map(_.toString))
-    )
+      input.map(_.map(_.toString)))
   }
 
   test("flatMap") {
@@ -47,8 +46,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     testOperation(
       input,
       (r: DStream[Int]) => r.flatMap(x => Seq(x, x * 2)),
-      input.map(_.flatMap(x => Array(x, x * 2)))
-    )
+      input.map(_.flatMap(x => Array(x, x * 2))))
   }
 
   test("filter") {
@@ -56,8 +54,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     testOperation(
       input,
       (r: DStream[Int]) => r.filter(x => (x % 2 == 0)),
-      input.map(_.filter(x => (x % 2 == 0)))
-    )
+      input.map(_.filter(x => (x % 2 == 0))))
   }
 
   test("glom") {
@@ -68,8 +65,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     val output = Seq(
       Seq(Seq(1, 2), Seq(3, 4)),
       Seq(Seq(5, 6), Seq(7, 8)),
-      Seq(Seq(9, 10), Seq(11, 12))
-    )
+      Seq(Seq(9, 10), Seq(11, 12)))
     val operation = (r: DStream[Int]) => r.glom().map(_.toSeq)
     testOperation(input, operation, output)
   }
@@ -141,24 +137,21 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(Seq("a", "a", "b"), Seq("", ""), Seq()),
       (s: DStream[String]) => s.map(x => (x, 1)).reduceByKey(_ + _),
       Seq(Seq(("a", 2), ("b", 1)), Seq(("", 2)), Seq()),
-      true
-    )
+      true)
   }
 
   test("reduce") {
     testOperation(
       Seq(1 to 4, 5 to 8, 9 to 12),
       (s: DStream[Int]) => s.reduce(_ + _),
-      Seq(Seq(10), Seq(26), Seq(42))
-    )
+      Seq(Seq(10), Seq(26), Seq(42)))
   }
 
   test("count") {
     testOperation(
       Seq(Seq(), 1 to 1, 1 to 2, 1 to 3, 1 to 4),
       (s: DStream[Int]) => s.count(),
-      Seq(Seq(0L), Seq(1L), Seq(2L), Seq(3L), Seq(4L))
-    )
+      Seq(Seq(0L), Seq(1L), Seq(2L), Seq(3L), Seq(4L)))
   }
 
   test("countByValue") {
@@ -170,8 +163,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         Seq((1, 3L)),
         Seq((1, 1L), (2, 1L)),
         Seq((2, 2L), (1, 2L))),
-      true
-    )
+      true)
   }
 
   test("mapValues") {
@@ -201,11 +193,7 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("union") {
     val input = Seq(1 to 4, 101 to 104, 201 to 204)
     val output = Seq(1 to 8, 101 to 108, 201 to 208)
-    testOperation(
-      input,
-      (s: DStream[Int]) => s.union(s.map(_ + 4)),
-      output
-    )
+    testOperation(input, (s: DStream[Int]) => s.union(s.map(_ + 4)), output)
   }
 
   test("union with input stream return None") {
@@ -217,8 +205,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         (s: DStream[Int]) => s.union(s.map(_ + 4)),
         output,
         input.length,
-        false
-      )
+        false)
     }
   }
 
@@ -229,8 +216,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     testOperation(
       input,
       (s: DStream[Int]) => s.context.union(Seq(s, s.map(_ + 4), s.map(_ + 8))),
-      output
-    )
+      output)
   }
 
   test("transform") {
@@ -239,8 +225,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       input,
       (r: DStream[Int]) =>
         r.transform(rdd => rdd.map(_.toString)), // RDD.map in transform
-      input.map(_.map(_.toString))
-    )
+      input.map(_.map(_.toString)))
   }
 
   test("transform with NULL") {
@@ -251,8 +236,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         (r: DStream[Int]) => r.transform(rdd => null.asInstanceOf[RDD[Int]]),
         Seq(Seq()),
         1,
-        false
-      )
+        false)
     }
   }
 
@@ -264,8 +248,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         (r: DStream[Int]) => r.transform(rdd => rdd.map(_.toString)),
         input.filterNot(_ == null).map(_.map(_.toString)),
         input.length,
-        false
-      )
+        false)
     }
   }
 
@@ -276,8 +259,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", (1, "x")), ("b", (1, "x"))),
       Seq(("", (1, "x"))),
       Seq(),
-      Seq()
-    )
+      Seq())
     val operation = (s1: DStream[String], s2: DStream[String]) => {
       val t1 = s1.map(x => (x, 1))
       val t2 = s2.map(x => (x, "x"))
@@ -295,8 +277,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     val outputData = Seq(
       Seq("a", "b", "a", "b"),
       Seq("a", "b", "", ""),
-      Seq("")
-    )
+      Seq(""))
 
     val operation = (s1: DStream[String], s2: DStream[String]) => {
       s1.transformWith( // RDD.join in transform
@@ -324,8 +305,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(rdds.map(
+            _.asInstanceOf[RDD[Int]]
+          )) // union of RDDs
       )
     }
 
@@ -341,8 +323,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(rdds.map(
+            _.asInstanceOf[RDD[Int]]
+          )) // union of RDDs
       )
     }
 
@@ -378,8 +361,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", (1, "x")), ("b", (1, "x"))),
       Seq(("", (1, "x"))),
       Seq(),
-      Seq()
-    )
+      Seq())
     val operation = (s1: DStream[String], s2: DStream[String]) => {
       s1.map(x => (x, 1)).join(s2.map(x => (x, "x")))
     }
@@ -393,8 +375,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", (1, Some("x"))), ("b", (1, Some("x")))),
       Seq(("", (1, Some("x"))), ("a", (1, None))),
       Seq(("", (1, None))),
-      Seq()
-    )
+      Seq())
     val operation = (s1: DStream[String], s2: DStream[String]) => {
       s1.map(x => (x, 1)).leftOuterJoin(s2.map(x => (x, "x")))
     }
@@ -408,8 +389,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", (Some(1), "x")), ("b", (Some(1), "x"))),
       Seq(("", (Some(1), "x")), ("b", (None, "x"))),
       Seq(),
-      Seq(("", (None, "x")))
-    )
+      Seq(("", (None, "x"))))
     val operation = (s1: DStream[String], s2: DStream[String]) => {
       s1.map(x => (x, 1)).rightOuterJoin(s2.map(x => (x, "x")))
     }
@@ -441,8 +421,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(("a", 1)),
@@ -450,8 +429,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", 3), ("b", 2), ("c", 1)),
       Seq(("a", 4), ("b", 3), ("c", 1)),
       Seq(("a", 5), ("b", 3), ("c", 1)),
-      Seq(("a", 5), ("b", 3), ("c", 1))
-    )
+      Seq(("a", 5), ("b", 3), ("c", 1)))
 
     val updateStateOperation = (s: DStream[String]) => {
       val updateFunc = (values: Seq[Int], state: Option[Int]) => {
@@ -472,8 +450,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(("a", 2), ("c", 2)),
@@ -508,8 +485,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq("a", "b", "c"),
       Seq("a", "b"),
       Seq("a"),
-      Seq()
-    )
+      Seq())
 
     val outputData = Seq(
       Seq(("a", 2), ("c", 2)),
@@ -547,8 +523,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq("a", "c", "a"),
       Seq("c"),
       null,
-      null
-    )
+      null)
 
     val outputData = Seq(
       Seq(("a", 1), ("b", 1)),
@@ -556,8 +531,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       Seq(("a", 3), ("c", 1)),
       Seq(("a", 3), ("c", 2)),
       Seq(("c", 2)),
-      Seq()
-    )
+      Seq())
 
     val updateStateOperation = (s: DStream[String]) => {
       class StateObject(var counter: Int = 0, var expireCounter: Int = 0)
@@ -767,8 +741,7 @@ class BasicOperationsSuite extends TestSuiteBase {
       conf2: SparkConf,
       operation: DStream[Int] => DStream[T],
       numExpectedOutput: Int = cleanupTestInput.size,
-      rememberDuration: Duration = null
-  ): DStream[T] = {
+      rememberDuration: Duration = null): DStream[T] = {
 
     // Setup the stream computation
     assert(

@@ -79,10 +79,8 @@ trait BytecodeWriters {
 
   class DirectToJarfileWriter(jfile: JFile) extends BytecodeWriter {
     val jarMainAttrs =
-      (
-        if (settings.mainClass.isDefault) Nil
-        else List(Name.MAIN_CLASS -> settings.mainClass.value)
-      )
+      (if (settings.mainClass.isDefault) Nil
+       else List(Name.MAIN_CLASS -> settings.mainClass.value))
     val writer = new Jar(jfile).jarWriter(jarMainAttrs: _*)
 
     def writeClass(
@@ -123,8 +121,9 @@ trait BytecodeWriters {
         val cnode = new asm.tree.ClassNode()
         val cr = new asm.ClassReader(jclassBytes)
         cr.accept(cnode, 0)
-        val trace = new scala.tools.asm.util.TraceClassVisitor(
-          new java.io.PrintWriter(new java.io.StringWriter()))
+        val trace =
+          new scala.tools.asm.util.TraceClassVisitor(new java.io.PrintWriter(
+            new java.io.StringWriter()))
         cnode.accept(trace)
         trace.p.print(pw)
       } finally pw.close()

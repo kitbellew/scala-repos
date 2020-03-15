@@ -47,7 +47,6 @@ class EnsembleTextField extends EnsembleExample {
           promptText = "So Sad! I am disabled"
           disable = true
           maxWidth = 200
-        }
-      )
+        })
     }
 }

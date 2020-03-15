@@ -81,8 +81,7 @@ object TypeClassesDemo {
             Ctor("otherGrandchild"),
             ExtIndirectADTRec("blah", Option(Ctor("wibble"))),
             RefMutual(Some(RefADT(Ctor("mutual")))),
-            Show2Dep(23)
-          )
+            Show2Dep(23))
         )
       )
     )
@@ -163,8 +162,7 @@ object TypeClassesDemoAux {
     implicit def deriveHCons[K <: Symbol, V, T <: HList](implicit
         key: Witness.Aux[K],
         sv: Lazy[Show[V]],
-        st: Lazy[Show[T]]
-    ): Show[FieldType[K, V] :: T] =
+        st: Lazy[Show[T]]): Show[FieldType[K, V] :: T] =
       new Show[FieldType[K, V] :: T] {
         def show(p: FieldType[K, V] :: T): String = {
           val head = s"${key.value.name} = ${sv.value.show(p.head)}"
@@ -181,8 +179,7 @@ object TypeClassesDemoAux {
     implicit def deriveCCons[K <: Symbol, V, T <: Coproduct](implicit
         key: Witness.Aux[K],
         sv: Lazy[Show[V]],
-        st: Lazy[Show[T]]
-    ): Show[FieldType[K, V] :+: T] =
+        st: Lazy[Show[T]]): Show[FieldType[K, V] :+: T] =
       new Show[FieldType[K, V] :+: T] {
         def show(c: FieldType[K, V] :+: T): String =
           c match {
@@ -215,8 +212,7 @@ object TypeClassesDemoAux {
 
     implicit def deriveHCons[H, T <: HList](implicit
         sv: Lazy[Show2[H]],
-        st: Lazy[Show2[T]]
-    ): Show2[H :: T] =
+        st: Lazy[Show2[T]]): Show2[H :: T] =
       new Show2[H :: T] {
         def show2(p: H :: T): String = {
           val head = sv.value.show2(p.head)

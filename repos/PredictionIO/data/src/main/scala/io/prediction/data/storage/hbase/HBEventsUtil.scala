@@ -78,9 +78,7 @@ object HBEventsUtil {
     md5.digest(Bytes.toBytes(s))
   }
 
-  class RowKey(
-      val b: Array[Byte]
-  ) {
+  class RowKey(val b: Array[Byte]) {
     require((b.size == 32), s"Incorrect b size: ${b.size}")
     lazy val entityHash: Array[Byte] = b.slice(0, 16)
     lazy val millis: Long = Bytes.toLong(b.slice(16, 24))
@@ -157,8 +155,7 @@ object HBEventsUtil {
           entityType = event.entityType,
           entityId = event.entityId,
           millis = event.eventTime.getMillis,
-          uuidLow = uuidLow
-        )
+          uuidLow = uuidLow)
       }
 
     val eBytes = Bytes.toBytes("e")

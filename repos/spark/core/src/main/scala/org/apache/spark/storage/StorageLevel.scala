@@ -195,13 +195,12 @@ object StorageLevel {
       useOffHeap: Boolean,
       deserialized: Boolean,
       replication: Int): StorageLevel = {
-    getCachedStorageLevel(
-      new StorageLevel(
-        useDisk,
-        useMemory,
-        useOffHeap,
-        deserialized,
-        replication))
+    getCachedStorageLevel(new StorageLevel(
+      useDisk,
+      useMemory,
+      useOffHeap,
+      deserialized,
+      replication))
   }
 
   /**

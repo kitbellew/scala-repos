@@ -21,9 +21,9 @@ class ScalaTemplatePreprocessor extends TemplatePreprocessor {
       .map { caretElem =>
         var res = caretElem
         //use loop here so that we hop over error nodes
-        do {
-          res = res.getPrevSiblingNotWhitespace
-        } while (res != null && res.getText.isEmpty)
+        do { res = res.getPrevSiblingNotWhitespace } while (
+          res != null && res.getText.isEmpty
+        )
         res
       }
       .foreach {

@@ -53,8 +53,8 @@ class FlowMapConcatSpec extends AkkaSpec with ScriptedTest {
 
       Source(1 to 5)
         .mapConcat(x ⇒ if (x == 3) throw ex else List(x))
-        .withAttributes(
-          ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .withAttributes(ActorAttributes.supervisionStrategy(
+          Supervision.resumingDecider))
         .runWith(TestSink.probe[Int])
         .request(4)
         .expectNext(1, 2, 4, 5)

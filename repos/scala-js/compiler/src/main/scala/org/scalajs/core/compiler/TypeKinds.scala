@@ -208,15 +208,12 @@ trait TypeKinds extends SubComponent { this: GenJSCode =>
       // debugging such situations this may come in handy.
       // case WildcardType                    => REFERENCE(ObjectClass)
       case norm =>
-        abort(
-          "Unknown type: %s, %s [%s, %s] TypeRef? %s".format(
-            t,
-            norm,
-            t.getClass,
-            norm.getClass,
-            t.isInstanceOf[TypeRef]
-          )
-        )
+        abort("Unknown type: %s, %s [%s, %s] TypeRef? %s".format(
+          t,
+          norm,
+          t.getClass,
+          norm.getClass,
+          t.isInstanceOf[TypeRef]))
     }
 
   /** Return the type kind of a class, possibly an array type.

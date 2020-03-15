@@ -90,8 +90,7 @@ class RemoteServerConnector(
                   "scala",
                   "Cannot run worksheet",
                   s"<html><body>${message.replace("\n", "<br>")}</body></html>",
-                  NotificationType.ERROR
-                )
+                  NotificationType.ERROR)
               }
           }
 
@@ -192,16 +191,14 @@ object RemoteServerConnector {
         case BuildMessage.Kind.WARNING  => CompilerMessageCategory.WARNING
       }
 
-      consumer.message(
-        new CompilerMessageImpl(
-          project,
-          category,
-          finalText,
-          worksheet,
-          line1 getOrElse -1,
-          column1 getOrElse -1,
-          null)
-      )
+      consumer.message(new CompilerMessageImpl(
+        project,
+        category,
+        finalText,
+        worksheet,
+        line1 getOrElse -1,
+        column1 getOrElse -1,
+        null))
     }
 
     override def compilationEnd() { if (!hasErrors) callback.run() }

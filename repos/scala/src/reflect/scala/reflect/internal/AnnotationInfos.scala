@@ -221,8 +221,8 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
   class CompleteAnnotationInfo(
       val atp: Type,
       val args: List[Tree],
-      val assocs: List[(Name, ClassfileAnnotArg)]
-  ) extends AnnotationInfo {
+      val assocs: List[(Name, ClassfileAnnotArg)])
+      extends AnnotationInfo {
     // Classfile annot: args empty. Scala annot: assocs empty.
     assert(args.isEmpty || assocs.isEmpty, atp)
 
@@ -469,10 +469,12 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
             case Nil => Nil
           }
         val atp = tpt.tpe
-        if (atp != null && (atp.typeSymbol isNonBottomSubClass StaticAnnotationClass))
-          AnnotationInfo(atp, args, Nil)
-        else if (atp != null && (atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass))
-          AnnotationInfo(atp, Nil, encodeJavaArgs(args))
+        if (atp != null && (
+              atp.typeSymbol isNonBottomSubClass StaticAnnotationClass
+            )) AnnotationInfo(atp, args, Nil)
+        else if (atp != null && (
+                   atp.typeSymbol isNonBottomSubClass ClassfileAnnotationClass
+                 )) AnnotationInfo(atp, Nil, encodeJavaArgs(args))
         else
           throw new Exception(
             s"unexpected annotation type $atp: only subclasses of StaticAnnotation and ClassfileAnnotation are supported")

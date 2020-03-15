@@ -25,13 +25,10 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
   type EndpointMap = Map[String, InetSocketAddress]
   val EmptyEndpointMap = Map.empty[String, InetSocketAddress]
 
-  def forClient(
-      endpointName: Option[String]
-  )(
+  def forClient(endpointName: Option[String])(
       f: (
           ZookeeperServerSetCluster,
-          (InetSocketAddress, EndpointMap) => Unit) => Unit
-  ) {
+          (InetSocketAddress, EndpointMap) => Unit) => Unit) {
     val serverSet = mock[ServerSet]
     val monitorCaptor = ArgumentCaptor.forClass(
       classOf[HostChangeMonitor[ServiceInstance]])
@@ -53,8 +50,7 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
       val serviceInstance = new ServiceInstance(
         new Endpoint(socketAddr.getHostName, socketAddr.getPort),
         additionalEndpoints.asJava,
-        Status.ALIVE
-      )
+        Status.ALIVE)
       val serviceInstances = ImmutableSet
         .builder[ServiceInstance]
         .add(serviceInstance)
@@ -68,9 +64,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
 
   test("ZookeeperServerSetCluster registers the server with ZooKeeper") {
     val serverSet = mock[ServerSet]
-    when(
-      serverSet.join(anyObject, anyObject, anyObject[Status])
-    ).thenReturn(mock[ServerSet.EndpointStatus])
+    when(serverSet.join(anyObject, anyObject, anyObject[Status]))
+      .thenReturn(mock[ServerSet.EndpointStatus])
 
     val cluster = new ZookeeperServerSetCluster(serverSet)
     cluster.thread.join()
@@ -84,9 +79,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
   test(
     "ZookeeperServerSetCluster registers the server with multiple endpoints") {
     val serverSet = mock[ServerSet]
-    when(
-      serverSet.join(anyObject, anyObject, anyObject[Status])
-    ).thenReturn(mock[ServerSet.EndpointStatus])
+    when(serverSet.join(anyObject, anyObject, anyObject[Status]))
+      .thenReturn(mock[ServerSet.EndpointStatus])
 
     val cluster = new ZookeeperServerSetCluster(serverSet)
     cluster.thread.join()

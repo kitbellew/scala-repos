@@ -73,8 +73,8 @@ trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
   def bundleForName(name: String) =
     context.getBundles
       .find(_.getSymbolicName == name)
-      .getOrElse(
-        fail("Unable to find bundle with symbolic name %s".format(name)))
+      .getOrElse(fail(
+        "Unable to find bundle with symbolic name %s".format(name)))
 
   /**
     * Convenience method to find a service by interface.  If the service is not already available in the OSGi Service

@@ -13,8 +13,7 @@ import scala.collection.mutable.Buffer
 
 private[lease] class Coordinator(
     val counter: ByteCounter,
-    verbose: Boolean = false
-) {
+    verbose: Boolean = false) {
 
   /**
     * Wait until at least 80% of the committed space is
@@ -36,8 +35,7 @@ private[lease] class Coordinator(
         counter, {
           val saved = counter.info.remaining()
           () => saved - 1.byte
-        }
-      )
+        })
     }
   }
 
@@ -67,8 +65,7 @@ private[lease] class Coordinator(
       space: MemorySpace,
       maxWait: Duration,
       npending: () => Int,
-      log: Logger
-  ) {
+      log: Logger) {
     val elapsed = Stopwatch.start()
     // TODO: if grabbing memory info is slow, rewrite this to only check memory info occasionally
     Alarm.armAndExecute(
@@ -83,7 +80,9 @@ private[lease] class Coordinator(
         if (verbose) {
           log.info(
             "DRAIN-LOOP: target=" +
-              ((counter.info.remaining - space.minDiscount) / 100).inBytes + "; n=" + npending() +
+              (
+                (counter.info.remaining - space.minDiscount) / 100
+              ).inBytes + "; n=" + npending() +
               "; counter=" + counter + "; maxMs=" +
               ((maxWait - elapsed()) / 2).inMilliseconds.toInt)
         }
@@ -115,8 +114,8 @@ private[lease] object Coordinator {
     */
   def parallelGc(
       ms: Buffer[MemoryPoolMXBean],
-      cs: Buffer[GarbageCollectorMXBean]
-  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
+      cs: Buffer[GarbageCollectorMXBean])
+      : Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
     for {
       parEden <- ms find (_.getName == "PS Eden Space")
       parScav <- cs find (_.getName == "PS Scavenge")
@@ -128,8 +127,8 @@ private[lease] object Coordinator {
     */
   def parNewCMS(
       ms: Buffer[MemoryPoolMXBean],
-      cs: Buffer[GarbageCollectorMXBean]
-  ): Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
+      cs: Buffer[GarbageCollectorMXBean])
+      : Option[(MemoryPoolMXBean, GarbageCollectorMXBean)] =
     for {
       parEden <- ms find (_.getName == "Par Eden Space")
       parNew <- cs find (_.getName == "ParNew")

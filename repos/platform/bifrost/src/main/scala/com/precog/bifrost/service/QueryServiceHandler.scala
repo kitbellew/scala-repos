@@ -93,10 +93,9 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
     result match {
       case SystemError(error) =>
         logger.error("An error occurred processing the query: " + query, error)
-        HttpResponse[QueryResult](
-          HttpStatus(
-            InternalServerError,
-            "A problem was encountered processing your query. We're looking into it!"))
+        HttpResponse[QueryResult](HttpStatus(
+          InternalServerError,
+          "A problem was encountered processing your query. We're looking into it!"))
 
       case InvalidStateError(error) =>
         HttpResponse[QueryResult](HttpStatus(PreconditionFailed, error))
@@ -195,11 +194,9 @@ class AnalysisServiceHandler(
               headers = HttpHeaders(sqr.cachedAt.toSeq map { lmod =>
                 `Last-Modified`(HttpDateTimes.StandardDateTime(lmod.toDateTime))
               }: _*),
-              content = Some(
-                Right(
-                  ColumnarTableModule.toCharBuffers(
-                    queryOptions.output,
-                    sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
+              content = Some(Right(ColumnarTableModule.toCharBuffers(
+                queryOptions.output,
+                sqr.data.map(_.deref(TransSpecModule.paths.Value)))))
             )
           } valueOr { evaluationError =>
             logger.error(

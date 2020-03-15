@@ -268,8 +268,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
               formatter = new Formatter(
                 useFullPackageNames = true,
                 truncateAt = 1024,
-                prefix = "%s <HH:mm> %s"
-              )
+                prefix = "%s <HH:mm> %s")
             ) :: Nil
           ).apply()
 
@@ -300,12 +299,9 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
               handlers = SyslogHandler(
                 formatter = new SyslogFormatter(
                   serverName = Some("elmo"),
-                  priority = 128
-                ),
+                  priority = 128),
                 server = "example.com",
-                port = 212
-              ) :: Nil
-            ).apply()
+                port = 212) :: Nil).apply()
 
             assert(log.getHandlers.length == 1)
             val h = log.getHandlers()(0).asInstanceOf[SyslogHandler]
@@ -331,33 +327,26 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
               handler = FileHandler(
                 filename = folderName + "/production.log",
                 rollPolicy = Policy.SigHup,
-                formatter = new Formatter(
-                  truncateStackTracesAt = 100
-                )
-              )
+                formatter = new Formatter(truncateStackTracesAt = 100))
             ) :: Nil
           ) :: LoggerFactory(
             node = "w3c",
             level = Some(Level.OFF),
-            useParents = false
-          ) :: LoggerFactory(
+            useParents = false) :: LoggerFactory(
             node = "stats",
             level = Some(Level.INFO),
             useParents = false,
             handlers = ScribeHandler(
               formatter = BareFormatter,
               maxMessagesToBuffer = 100,
-              category = "cuckoo_json"
-            ) :: Nil
+              category = "cuckoo_json") :: Nil
           ) :: LoggerFactory(
             node = "bad_jobs",
             level = Some(Level.INFO),
             useParents = false,
             handlers = FileHandler(
               filename = folderName + "/bad_jobs.log",
-              rollPolicy = Policy.Never
-            ) :: Nil
-          ) :: Nil
+              rollPolicy = Policy.Never) :: Nil) :: Nil
 
           Logger.configure(factories)
           assert(Logger.get("").getLevel == Level.INFO)

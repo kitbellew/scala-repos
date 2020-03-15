@@ -138,10 +138,7 @@ class DynamicTest {
     val x_unknown = x.unknown
     assertJSUndefined(x_unknown)
 
-    val y = obj(
-      inner = obj(name = "inner obj"),
-      fun = { () => 42 }
-    )
+    val y = obj(inner = obj(name = "inner obj"), fun = { () => 42 })
     val y_inner_name = y.inner.name
     assertEquals("inner obj", y_inner_name)
     assertEquals(42, y.fun())
@@ -228,8 +225,7 @@ class DynamicTest {
       obj("'" + quote -> 7357),
       obj(s"'$quote" -> 7357),
       obj("'\"" -> 7357),
-      obj("'" + quote -> 7357)
-    ).foreach { o =>
+      obj("'" + quote -> 7357)).foreach { o =>
       val dict = o.asInstanceOf[js.Dictionary[js.Any]]
       assertEquals(7357, dict("'\""))
       assertEquals(7357, dict("'" + quote))

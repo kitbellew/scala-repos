@@ -43,8 +43,8 @@ import Javap.{JpResult, JpError, Showable, helper, toolArgs, DefaultOptions}
 class JavapClass(
     val loader: ScalaClassLoader,
     val printWriter: PrintWriter,
-    intp: IMain
-) extends Javap {
+    intp: IMain)
+    extends Javap {
   import JavapClass._
 
   lazy val tool = JavapTool()
@@ -94,9 +94,9 @@ class JavapClass(
   /** Assume the string is a path and try to find the classfile it represents.
     */
   def tryFile(path: String): Option[Array[Byte]] =
-    (Try(
-      File(
-        path.asClassResource)) filter (_.exists) map (_.toByteArray())).toOption
+    (
+      Try(File(path.asClassResource)) filter (_.exists) map (_.toByteArray())
+    ).toOption
 
   /** Assume the string is a fully qualified class name and try to
     *  find the class object it represents.
@@ -143,8 +143,7 @@ class JavapClass(
       // take path as a synthetic derived from some Name in scope
         orElse desynthesize(p)
       // just try it plain
-        getOrElse p
-    )
+        getOrElse p)
     load(q)
   }
 
@@ -234,8 +233,7 @@ class JavapClass(
       classOf[JavaFileManager],
       classOf[DiagnosticListener[_]],
       classOf[JIterable[String]],
-      classOf[JIterable[String]]
-    ) orFailed null
+      classOf[JIterable[String]]) orFailed null
 
     class JavaReporter
         extends DiagnosticListener[JavaFileObject]
@@ -402,8 +400,7 @@ object JavapClass {
   def apply(
       loader: ScalaClassLoader = ScalaClassLoader.appLoader,
       printWriter: PrintWriter = new PrintWriter(System.out, true),
-      intp: IMain
-  ) = new JavapClass(loader, printWriter, intp)
+      intp: IMain) = new JavapClass(loader, printWriter, intp)
 
   /** Match foo#bar, both groups are optional (may be null). */
   val HashSplit = "([^#]+)?(?:#(.+)?)?".r

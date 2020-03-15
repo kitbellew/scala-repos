@@ -82,14 +82,12 @@ object CleanWorksheetAction {
     viewer match {
       case viewerEx: EditorImpl =>
         val commonModel = viewerEx.getScrollPane.getVerticalScrollBar.getModel
-        viewerEx.getScrollPane.getVerticalScrollBar.setModel(
-          new DefaultBoundedRangeModel(
+        viewerEx.getScrollPane.getVerticalScrollBar
+          .setModel(new DefaultBoundedRangeModel(
             commonModel.getValue,
             commonModel.getExtent,
             commonModel.getMinimum,
-            commonModel.getMaximum
-          )
-        )
+            commonModel.getMaximum))
       case _ =>
     }
   }

@@ -64,33 +64,27 @@ class ClusterClientTest
     zookeeperServer.startNetwork()
 
     // connect to zookeeper server
-    zookeeperClient = boundedWait(
-      zookeeperServer.createClient(
-        ZooKeeperClient.digestCredentials("user", "pass"))
-    )
+    zookeeperClient = boundedWait(zookeeperServer.createClient(
+      ZooKeeperClient.digestCredentials("user", "pass")))
 
     // create serverset
-    val serverSet = boundedWait(
-      ServerSets.create(
-        zookeeperClient,
-        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        zkPath)
-    )
+    val serverSet = boundedWait(ServerSets.create(
+      zookeeperClient,
+      ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+      zkPath))
     zkServerSetCluster = new ZookeeperServerSetCluster(serverSet)
 
     // start five memcached server and join the cluster
     Await.result(
-      Future.collect(
-        (0 to 4) map { _ =>
-          TestMemcachedServer.start() match {
-            case Some(server) =>
-              testServers :+= server
-              pool { zkServerSetCluster.join(server.address) }
-            case None =>
-              fail("could not start TestMemcachedServer")
-          }
+      Future.collect((0 to 4) map { _ =>
+        TestMemcachedServer.start() match {
+          case Some(server) =>
+            testServers :+= server
+            pool { zkServerSetCluster.join(server.address) }
+          case None =>
+            fail("could not start TestMemcachedServer")
         }
-      ),
+      }),
       TimeOut
     )
 
@@ -133,11 +127,10 @@ class ClusterClientTest
 
   test("Simple ClusterClient using finagle load balancing - many keys") {
     // create simple cluster client
-    val mycluster = new ZookeeperServerSetCluster(
-      ServerSets.create(
-        zookeeperClient,
-        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-        zkPath))
+    val mycluster = new ZookeeperServerSetCluster(ServerSets.create(
+      zookeeperClient,
+      ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+      zkPath))
     Await.result(
       mycluster.ready,
       TimeOut
@@ -317,10 +310,9 @@ class ClusterClientTest
       // the underlying pool will continue trying to connect to zk
       val myPool = initializePool(
         2,
-        Some(
-          scala.collection.immutable.Set(
-            new CacheNode("host1", 11211, 1),
-            new CacheNode("host2", 11212, 1))))
+        Some(scala.collection.immutable.Set(
+          new CacheNode("host1", 11211, 1),
+          new CacheNode("host2", 11212, 1))))
 
       // bring the server back online
       // give it some time we should see the cache pool cluster pick up underlying pool
@@ -384,11 +376,9 @@ class ClusterClientTest
 
       val count = 100
       Await.result(
-        Future.collect(
-          (0 until count) map { n =>
-            client.set("foo" + n, Buf.Utf8("bar" + n))
-          }
-        ),
+        Future.collect((0 until count) map { n =>
+          client.set("foo" + n, Buf.Utf8("bar" + n))
+        }),
         TimeOut)
 
       (0 until count).foreach { n =>
@@ -618,8 +608,7 @@ class ClusterClientTest
   def initializePool(
       expectedSize: Int,
       backupPool: Option[scala.collection.immutable.Set[CacheNode]] = None,
-      ignoreConfigData: Boolean = false
-  ): Cluster[CacheNode] = {
+      ignoreConfigData: Boolean = false): Cluster[CacheNode] = {
     val myCachePool =
       if (!ignoreConfigData)
         CachePoolCluster.newZkCluster(
@@ -650,8 +639,7 @@ class ClusterClientTest
       currentSize: Int,
       expectedPoolSize: Int,
       expectedAdd: Int,
-      expectedRem: Int
-  )(ops: => Unit): Future[Unit] = {
+      expectedRem: Int)(ops: => Unit): Future[Unit] = {
     var addSeen = 0
     var remSeen = 0
     var poolSeen = mutable.HashSet[CacheNode]()

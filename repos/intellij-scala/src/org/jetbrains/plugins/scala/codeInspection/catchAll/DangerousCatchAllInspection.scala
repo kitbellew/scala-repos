@@ -52,15 +52,14 @@ class DangerousCatchAllInspection extends LocalInspectionTool {
           val startElement = isInspection._2.firstChild.orNull
           val endElement = isInspection._2.pattern.orNull
           if (startElement == null || endElement == null) return
-          holder.registerProblem(
-            holder.getManager.createProblemDescriptor(
-              startElement,
-              endElement,
-              InspectionBundle.message("catch.all"),
-              ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-              isOnTheFly,
-              new ReplaceDangerousCatchAllQuickFix(isInspection._2)
-            ))
+          holder.registerProblem(holder.getManager.createProblemDescriptor(
+            startElement,
+            endElement,
+            InspectionBundle.message("catch.all"),
+            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+            isOnTheFly,
+            new ReplaceDangerousCatchAllQuickFix(isInspection._2)
+          ))
         }
       }
     }

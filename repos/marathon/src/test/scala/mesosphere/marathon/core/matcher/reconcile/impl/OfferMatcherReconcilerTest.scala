@@ -56,14 +56,11 @@ class OfferMatcherReconcilerTest
       f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
 
     Then("all resources are destroyed and unreserved")
-    val expectedOps = Iterable(
-      TaskOp.UnreserveAndDestroyVolumes(
-        taskId,
-        oldTask = None,
-        maybeNewTask = None,
-        resources = offer.getResourcesList.asScala.to[Seq]
-      )
-    )
+    val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
+      taskId,
+      oldTask = None,
+      maybeNewTask = None,
+      resources = offer.getResourcesList.asScala.to[Seq]))
 
     // for the nicer error message with diff indication
     matchedTaskOps.ops.mkString("\n") should be(expectedOps.mkString("\n"))
@@ -95,14 +92,11 @@ class OfferMatcherReconcilerTest
       f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
 
     Then("all resources are destroyed and unreserved")
-    val expectedOps = Iterable(
-      TaskOp.UnreserveAndDestroyVolumes(
-        taskId,
-        oldTask = None,
-        maybeNewTask = None,
-        resources = offer.getResourcesList.asScala.to[Seq]
-      )
-    )
+    val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
+      taskId,
+      oldTask = None,
+      maybeNewTask = None,
+      resources = offer.getResourcesList.asScala.to[Seq]))
 
     // for the nicer error message with diff
     matchedTaskOps.ops.mkString("\n") should be(expectedOps.mkString("\n"))
@@ -134,14 +128,11 @@ class OfferMatcherReconcilerTest
       f.reconciler.matchOffer(Timestamp.now() + 1.day, offer).futureValue
 
     Then("all resources are destroyed and unreserved")
-    val expectedOps = Iterable(
-      TaskOp.UnreserveAndDestroyVolumes(
-        taskId,
-        oldTask = Some(bogusTask),
-        maybeNewTask = None,
-        resources = offer.getResourcesList.asScala.to[Seq]
-      )
-    )
+    val expectedOps = Iterable(TaskOp.UnreserveAndDestroyVolumes(
+      taskId,
+      oldTask = Some(bogusTask),
+      maybeNewTask = None,
+      resources = offer.getResourcesList.asScala.to[Seq]))
 
     // for the nicer error message with diff
     matchedTaskOps.ops.mkString("\n") should be(expectedOps.mkString("\n"))
@@ -168,8 +159,7 @@ class OfferMatcherReconcilerTest
       Group.empty.copy(apps = Set(app)))
     And("a matching bogus task")
     f.taskTracker.tasksByApp()(any) returns Future.successful(
-      TasksByApp.forTasks(MarathonTestHelper.mininimalTask(taskId.idString))
-    )
+      TasksByApp.forTasks(MarathonTestHelper.mininimalTask(taskId.idString)))
 
     When("reconciling")
     val matchedTaskOps =

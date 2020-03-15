@@ -90,8 +90,8 @@ private[akka] final case class TailChoppingRoutees(
       }
     }
 
-    val sendTimeout = scheduler.scheduleOnce(within)(
-      promise.tryFailure(new AskTimeoutException(
+    val sendTimeout = scheduler.scheduleOnce(within)(promise.tryFailure(
+      new AskTimeoutException(
         s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
 
     val f = promise.future
@@ -181,12 +181,11 @@ final case class TailChoppingPool(
     this(nrOfInstances = nr, within = within, interval = interval)
 
   override def createRouter(system: ActorSystem): Router =
-    new Router(
-      TailChoppingRoutingLogic(
-        system.scheduler,
-        within,
-        interval,
-        system.dispatchers.lookup(routerDispatcher)))
+    new Router(TailChoppingRoutingLogic(
+      system.scheduler,
+      within,
+      interval,
+      system.dispatchers.lookup(routerDispatcher)))
 
   override def nrOfInstances(sys: ActorSystem) = this.nrOfInstances
 
@@ -278,12 +277,11 @@ final case class TailChoppingGroup(
       interval = interval)
 
   override def createRouter(system: ActorSystem): Router =
-    new Router(
-      TailChoppingRoutingLogic(
-        system.scheduler,
-        within,
-        interval,
-        system.dispatchers.lookup(routerDispatcher)))
+    new Router(TailChoppingRoutingLogic(
+      system.scheduler,
+      within,
+      interval,
+      system.dispatchers.lookup(routerDispatcher)))
 
   override def paths(system: ActorSystem): immutable.Iterable[String] =
     this.paths

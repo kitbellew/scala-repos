@@ -24,11 +24,10 @@ object DottyLibraryDescription extends ScalaLibraryDescription {
     sdksIn(Seq(ivyRepository / "me.d-d", ivyRepository / "jline", ivyScalaRoot))
 
   override protected def mavenSdks =
-    sdksIn(
-      Seq(
-        mavenRepository / "me" / "d-d",
-        mavenRepository / "jline" / "jline",
-        mavenScalaRoot))
+    sdksIn(Seq(
+      mavenRepository / "me" / "d-d",
+      mavenRepository / "jline" / "jline",
+      mavenScalaRoot))
 
   override def dialog(
       parentComponent: JComponent,

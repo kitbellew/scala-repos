@@ -565,10 +565,7 @@ class FutureTest
         }
 
         "accept maps of futures" in {
-          val map = Map(
-            "1" -> Future.value("1"),
-            "2" -> Future.value("2")
-          )
+          val map = Map("1" -> Future.value("1"), "2" -> Future.value("2"))
 
           assert(
             Await.result(Future.collect(map)) == Map("1" -> "1", "2" -> "2"))
@@ -582,8 +579,7 @@ class FutureTest
         "return future exception if one of the map values is future exception" in {
           val map = Map(
             "1" -> Future.value("1"),
-            "2" -> Future.exception(new Exception)
-          )
+            "2" -> Future.exception(new Exception))
 
           intercept[Exception] { Await.result(Future.collect(map)) }
         }
@@ -1290,8 +1286,10 @@ class FutureTest
       }
 
       "willEqual" in {
-        assert(Await
-          .result(const.value(1) willEqual (const.value(1)), 1.second) == true)
+        assert(
+          Await.result(
+            const.value(1) willEqual (const.value(1)),
+            1.second) == true)
       }
 
       "Future() handles exceptions" in {
@@ -1457,8 +1455,7 @@ class FutureTest
           val p = new HandledPromise[Int]
           intercept[TimeoutException] {
             Await.result(
-              p.within(20.milliseconds).raiseWithin(50.milliseconds, skyFall)
-            )
+              p.within(20.milliseconds).raiseWithin(50.milliseconds, skyFall))
           }
           timer.stop()
           assert(p.handled == None)

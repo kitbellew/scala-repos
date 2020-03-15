@@ -23,9 +23,8 @@ object ClusterDeathWatchMultiJvmSpec extends MultiNodeConfig {
   val fourth = role("fourth")
   val fifth = role("fifth")
 
-  commonConfig(
-    debugConfig(on = false).withFallback(
-      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(debugConfig(on = false).withFallback(
+    MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 
   deployOn(fourth, """/hello.remote = "@first@" """)
 
@@ -52,8 +51,8 @@ abstract class ClusterDeathWatchSpec
     super.atStartup()
     if (!log.isDebugEnabled) {
       muteMarkingAsUnreachable()
-      system.eventStream.publish(
-        Mute(EventFilter[java.net.UnknownHostException]()))
+      system.eventStream.publish(Mute(
+        EventFilter[java.net.UnknownHostException]()))
     }
   }
 
@@ -108,8 +107,8 @@ abstract class ClusterDeathWatchSpec
           clusterView.members.map(_.address) should not contain (address(
             third)))
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(third)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(third)))
         expectMsg(path3)
         enterBarrier("third-terminated")
 
@@ -134,8 +133,8 @@ abstract class ClusterDeathWatchSpec
             clusterView.members.map(_.address) should not contain (address(
               second)))
           awaitAssert(
-            clusterView.unreachableMembers.map(
-              _.address) should not contain (address(second)))
+            clusterView.unreachableMembers
+              .map(_.address) should not contain (address(second)))
         }
         enterBarrier("second-terminated")
         enterBarrier("third-terminated")
@@ -220,8 +219,8 @@ abstract class ClusterDeathWatchSpec
         cluster.down(fifth)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(fifth)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(fifth)))
         awaitAssert(
           clusterView.members.map(_.address) should not contain (address(
             fifth)))
@@ -259,8 +258,8 @@ abstract class ClusterDeathWatchSpec
         cluster.down(first)
         // removed
         awaitAssert(
-          clusterView.unreachableMembers.map(
-            _.address) should not contain (address(first)))
+          clusterView.unreachableMembers
+            .map(_.address) should not contain (address(first)))
         awaitAssert(
           clusterView.members.map(_.address) should not contain (address(
             first)))
@@ -273,11 +272,10 @@ abstract class ClusterDeathWatchSpec
         try Await.ready(system.whenTerminated, timeout)
         catch {
           case _: TimeoutException ⇒
-            fail(
-              "Failed to stop [%s] within [%s] \n%s".format(
-                system.name,
-                timeout,
-                system.asInstanceOf[ActorSystemImpl].printTree))
+            fail("Failed to stop [%s] within [%s] \n%s".format(
+              system.name,
+              timeout,
+              system.asInstanceOf[ActorSystemImpl].printTree))
         }
 
         // signal to the first node that fourth is done

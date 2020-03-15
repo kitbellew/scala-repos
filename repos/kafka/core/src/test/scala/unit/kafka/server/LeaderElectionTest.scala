@@ -197,8 +197,7 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
           LeaderAndIsr.initialLeaderEpoch,
           Seq(brokerId1, brokerId2).map(Integer.valueOf).asJava,
           LeaderAndIsr.initialZKVersion,
-          Set(0, 1).map(Integer.valueOf).asJava)
-      )
+          Set(0, 1).map(Integer.valueOf).asJava))
       val leaderAndIsrRequest = new LeaderAndIsrRequest(
         controllerId,
         staleControllerEpoch,

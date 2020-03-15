@@ -80,9 +80,8 @@ class LanguageFeatureInspection
           if e.getModifierList.has(ScalaTokenTypes.kIMPLICIT) &&
             e.parameters.size == 1 &&
             !e.parameterList.clauses.exists(_.isImplicit) =>
-        Option(
-          e.getModifierList.findFirstChildByType(ScalaTokenTypes.kIMPLICIT))
-          .getOrElse(e)
+        Option(e.getModifierList.findFirstChildByType(
+          ScalaTokenTypes.kIMPLICIT)).getOrElse(e)
     },
     Feature(
       "higher-kinded type",

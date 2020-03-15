@@ -99,9 +99,8 @@ object DevServerStart {
               "No play.logger.configurator found: logging must be configured entirely by the application.")
         }
 
-        println(
-          play.utils.Colors.magenta(
-            "--- (Running the application, auto-reloading is enabled) ---"))
+        println(play.utils.Colors.magenta(
+          "--- (Running the application, auto-reloading is enabled) ---"))
         println()
 
         // Create reloadable ApplicationProvider
@@ -160,12 +159,11 @@ object DevServerStart {
                                 def sourceOf(
                                     className: String,
                                     line: Option[Int]) = {
-                                  Option(
-                                    buildLink.findSource(
-                                      className,
-                                      line
-                                        .map(_.asInstanceOf[java.lang.Integer])
-                                        .orNull)).flatMap {
+                                  Option(buildLink.findSource(
+                                    className,
+                                    line
+                                      .map(_.asInstanceOf[java.lang.Integer])
+                                      .orNull)).flatMap {
                                     case Array(file: java.io.File, null) =>
                                       Some((file, None))
                                     case Array(
@@ -230,10 +228,8 @@ object DevServerStart {
             buildDocHandler
               .maybeHandleDocRequest(request)
               .asInstanceOf[Option[Result]]
-              .orElse(
-                currentWebCommands.flatMap(
-                  _.handleWebCommand(request, buildLink, path))
-              )
+              .orElse(currentWebCommands.flatMap(
+                _.handleWebCommand(request, buildLink, path)))
 
           }
 

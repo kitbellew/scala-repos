@@ -158,25 +158,24 @@ Measurement overhead:        %10.02f%%
     val p99 = ptile(0.99)
 
     val ts = timings.sorted.map(_ / (repCount * 1000000000.0))
-    out.println(
-      reportTemplate.format(
-        label,
-        results.size,
-        repCount,
-        ts.head * 1000,
-        mean * 1000,
-        ts.last * 1000,
-        ts(p90) * 1000,
-        ts(p95) * 1000,
-        ts(p99) * 1000,
-        1 / ts.last,
-        1 / meanRepTime,
-        1 / ts.head,
-        1 / ts(p90),
-        1 / ts(p95),
-        1 / ts(p99),
-        baseline * 100.0 / mean
-      ))
+    out.println(reportTemplate.format(
+      label,
+      results.size,
+      repCount,
+      ts.head * 1000,
+      mean * 1000,
+      ts.last * 1000,
+      ts(p90) * 1000,
+      ts(p95) * 1000,
+      ts(p99) * 1000,
+      1 / ts.last,
+      1 / meanRepTime,
+      1 / ts.head,
+      1 / ts(p90),
+      1 / ts(p95),
+      1 / ts(p99),
+      baseline * 100.0 / mean
+    ))
   }
   def ptile(p: Double): Int = { (p * (testRuns - 1)).toInt }
   def meanRepTime(): Double = {
@@ -190,5 +189,4 @@ case class BenchmarkParameters(
     runMillisGoal: Long,
     restBetweenTests: Option[Long] = None,
     gcBetweenTests: Boolean = false,
-    calcOverhead: Boolean = true
-)
+    calcOverhead: Boolean = true)

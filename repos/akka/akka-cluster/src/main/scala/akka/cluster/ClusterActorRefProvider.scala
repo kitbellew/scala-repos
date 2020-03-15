@@ -117,19 +117,17 @@ private[akka] class ClusterDeployer(
 
           deploy.routerConfig match {
             case r: Pool ⇒
-              Some(
-                deploy.copy(
-                  routerConfig = ClusterRouterPool(
-                    r,
-                    ClusterRouterPoolSettings.fromConfig(deploy.config)),
-                  scope = ClusterScope))
+              Some(deploy.copy(
+                routerConfig = ClusterRouterPool(
+                  r,
+                  ClusterRouterPoolSettings.fromConfig(deploy.config)),
+                scope = ClusterScope))
             case r: Group ⇒
-              Some(
-                deploy.copy(
-                  routerConfig = ClusterRouterGroup(
-                    r,
-                    ClusterRouterGroupSettings.fromConfig(deploy.config)),
-                  scope = ClusterScope))
+              Some(deploy.copy(
+                routerConfig = ClusterRouterGroup(
+                  r,
+                  ClusterRouterGroupSettings.fromConfig(deploy.config)),
+                scope = ClusterScope))
             case other ⇒
               throw new IllegalArgumentException(
                 s"Cluster aware router can only wrap Pool or Group, got [${other.getClass.getName}]")

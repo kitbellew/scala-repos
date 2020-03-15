@@ -351,8 +351,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             currentTime,
             pageSize = taskPageSize,
             sortColumn = taskSortColumn,
-            desc = taskSortDesc
-          )
+            desc = taskSortDesc)
           (_taskTable, _taskTable.table(page))
         } catch {
           case e @ (_: IllegalArgumentException |
@@ -671,14 +670,13 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
             "Max")
           // The summary table does not use CSS to stripe rows, which doesn't work with hidden
           // rows (instead, JavaScript in table.js is used to stripe the non-hidden rows).
-          Some(
-            UIUtils.listingTable(
-              quantileHeaders,
-              identity[Seq[Node]],
-              listings,
-              fixedWidth = true,
-              id = Some("task-summary-table"),
-              stripeRowsWithCss = false))
+          Some(UIUtils.listingTable(
+            quantileHeaders,
+            identity[Seq[Node]],
+            listings,
+            fixedWidth = true,
+            id = Some("task-summary-table"),
+            stripeRowsWithCss = false))
         }
 
       val executorTable = new ExecutorTable(stageId, stageAttemptId, parent)
@@ -740,8 +738,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
           .getOrElse(0L)
         val shuffleReadTimeProportion = toProportion(shuffleReadTime)
         val shuffleWriteTime = (metricsOpt
-          .flatMap(_.shuffleWriteMetrics
-            .map(_.writeTime))
+          .flatMap(
+            _.shuffleWriteMetrics
+              .map(_.writeTime))
           .getOrElse(0L) / 1e6).toLong
         val shuffleWriteTimeProportion = toProportion(shuffleWriteTime)
 
@@ -897,8 +896,9 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
     </div> ++
       <script type="text/javascript">
       {
-        Unparsed(s"drawTaskAssignmentTimeline(" +
-          s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
+        Unparsed(
+          s"drawTaskAssignmentTimeline(" +
+            s"$groupArrayStr, $executorsArrayStr, $minLaunchTime, $maxFinishTime)")
       }
     </script>
   }
@@ -1129,53 +1129,46 @@ private[ui] class TaskDataSource(
 
     val input =
       if (hasInput) {
-        Some(
-          TaskTableRowInputData(
-            inputSortable,
-            s"$inputReadable / $inputRecords"))
+        Some(TaskTableRowInputData(
+          inputSortable,
+          s"$inputReadable / $inputRecords"))
       } else { None }
 
     val output =
       if (hasOutput) {
-        Some(
-          TaskTableRowOutputData(
-            outputSortable,
-            s"$outputReadable / $outputRecords"))
+        Some(TaskTableRowOutputData(
+          outputSortable,
+          s"$outputReadable / $outputRecords"))
       } else { None }
 
     val shuffleRead =
       if (hasShuffleRead) {
-        Some(
-          TaskTableRowShuffleReadData(
-            shuffleReadBlockedTimeSortable,
-            shuffleReadBlockedTimeReadable,
-            shuffleReadSortable,
-            s"$shuffleReadReadable / $shuffleReadRecords",
-            shuffleReadRemoteSortable,
-            shuffleReadRemoteReadable
-          ))
+        Some(TaskTableRowShuffleReadData(
+          shuffleReadBlockedTimeSortable,
+          shuffleReadBlockedTimeReadable,
+          shuffleReadSortable,
+          s"$shuffleReadReadable / $shuffleReadRecords",
+          shuffleReadRemoteSortable,
+          shuffleReadRemoteReadable
+        ))
       } else { None }
 
     val shuffleWrite =
       if (hasShuffleWrite) {
-        Some(
-          TaskTableRowShuffleWriteData(
-            writeTimeSortable,
-            writeTimeReadable,
-            shuffleWriteSortable,
-            s"$shuffleWriteReadable / $shuffleWriteRecords"
-          ))
+        Some(TaskTableRowShuffleWriteData(
+          writeTimeSortable,
+          writeTimeReadable,
+          shuffleWriteSortable,
+          s"$shuffleWriteReadable / $shuffleWriteRecords"))
       } else { None }
 
     val bytesSpilled =
       if (hasBytesSpilled) {
-        Some(
-          TaskTableRowBytesSpilledData(
-            memoryBytesSpilledSortable,
-            memoryBytesSpilledReadable,
-            diskBytesSpilledSortable,
-            diskBytesSpilledReadable
-          ))
+        Some(TaskTableRowBytesSpilledData(
+          memoryBytesSpilledSortable,
+          memoryBytesSpilledReadable,
+          diskBytesSpilledSortable,
+          diskBytesSpilledReadable))
       } else { None }
 
     new TaskTableRowData(
@@ -1519,10 +1512,9 @@ private[ui] class TaskPagedTable(
         ("Getting Result Time", TaskDetailsClassNames.GETTING_RESULT_TIME)
       ) ++ {
         if (displayPeakExecutionMemory) {
-          Seq(
-            (
-              "Peak Execution Memory",
-              TaskDetailsClassNames.PEAK_EXECUTION_MEMORY))
+          Seq((
+            "Peak Execution Memory",
+            TaskDetailsClassNames.PEAK_EXECUTION_MEMORY))
         } else { Nil }
       } ++ { if (hasAccumulators) Seq(("Accumulators", "")) else Nil } ++ {
         if (hasInput) Seq(("Input Size / Records", "")) else Nil

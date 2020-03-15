@@ -146,8 +146,7 @@ object ZipkinTracer {
       scribeHost: String = Host().getHostName,
       scribePort: Int = Host().getPort,
       statsReceiver: StatsReceiver = NullStatsReceiver,
-      sampleRate: Float = Sampler.DefaultSampleRate
-  ): Tracer.Factory =
+      sampleRate: Float = Sampler.DefaultSampleRate): Tracer.Factory =
     () => mk(scribeHost, scribePort, statsReceiver, sampleRate)
 
   /**
@@ -160,8 +159,7 @@ object ZipkinTracer {
       host: String = Host().getHostName,
       port: Int = Host().getPort,
       statsReceiver: StatsReceiver = NullStatsReceiver,
-      sampleRate: Float = Sampler.DefaultSampleRate
-  ): Tracer =
+      sampleRate: Float = Sampler.DefaultSampleRate): Tracer =
     new ZipkinTracer(RawZipkinTracer(host, port, statsReceiver), sampleRate)
 
   /**

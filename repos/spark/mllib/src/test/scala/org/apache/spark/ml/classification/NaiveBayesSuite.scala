@@ -171,11 +171,14 @@ class NaiveBayesSuite
     val nPoints = 10000
     val piArray = Array(0.5, 0.3, 0.2).map(math.log)
     val thetaArray = Array(
-      Array(0.50, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.50, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.40), // label 0
-      Array(0.02, 0.70, 0.10, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.02, 0.70, 0.10, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.02), // label 1
-      Array(0.02, 0.02, 0.60, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+      Array(
+        0.02, 0.02, 0.60, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
         0.30) // label 2
     ).map(_.map(math.log))
     val pi = Vectors.dense(piArray)
@@ -228,6 +231,5 @@ object NaiveBayesSuite {
     */
   val allParamSettings: Map[String, Any] = Map(
     "predictionCol" -> "myPrediction",
-    "smoothing" -> 0.1
-  )
+    "smoothing" -> 0.1)
 }

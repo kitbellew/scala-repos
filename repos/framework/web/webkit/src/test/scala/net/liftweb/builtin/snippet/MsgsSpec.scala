@@ -45,8 +45,7 @@ object MsgsSpec extends Specification with XmlMatchers {
         secureXML.loadString(
           Msgs
             .render(
-              <lift:warning_msg>Warning:</lift:warning_msg><lift:notice_class>funky</lift:notice_class>
-            )
+              <lift:warning_msg>Warning:</lift:warning_msg><lift:notice_class>funky</lift:notice_class>)
             .toString)
       }
 

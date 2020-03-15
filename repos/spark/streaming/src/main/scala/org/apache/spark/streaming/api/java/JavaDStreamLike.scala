@@ -144,9 +144,10 @@ trait JavaDStreamLike[
       windowDuration: Duration,
       slideDuration: Duration,
       numPartitions: Int): JavaPairDStream[T, jl.Long] = {
-    JavaPairDStream.scalaToJavaLong(
-      dstream
-        .countByValueAndWindow(windowDuration, slideDuration, numPartitions))
+    JavaPairDStream.scalaToJavaLong(dstream.countByValueAndWindow(
+      windowDuration,
+      slideDuration,
+      numPartitions))
   }
 
   /**
@@ -243,8 +244,7 @@ trait JavaDStreamLike[
   def reduceByWindow(
       reduceFunc: JFunction2[T, T, T],
       windowDuration: Duration,
-      slideDuration: Duration
-  ): JavaDStream[T] = {
+      slideDuration: Duration): JavaDStream[T] = {
     dstream.reduceByWindow(reduceFunc, windowDuration, slideDuration)
   }
 
@@ -268,8 +268,7 @@ trait JavaDStreamLike[
       reduceFunc: JFunction2[T, T, T],
       invReduceFunc: JFunction2[T, T, T],
       windowDuration: Duration,
-      slideDuration: Duration
-  ): JavaDStream[T] = {
+      slideDuration: Duration): JavaDStream[T] = {
     dstream.reduceByWindow(
       reduceFunc,
       invReduceFunc,
@@ -359,8 +358,8 @@ trait JavaDStreamLike[
     */
   def transformWith[U, W](
       other: JavaDStream[U],
-      transformFunc: JFunction3[R, JavaRDD[U], Time, JavaRDD[W]]
-  ): JavaDStream[W] = {
+      transformFunc: JFunction3[R, JavaRDD[U], Time, JavaRDD[W]])
+      : JavaDStream[W] = {
     implicit val cmu: ClassTag[U] = fakeClassTag
     implicit val cmv: ClassTag[W] = fakeClassTag
 
@@ -375,8 +374,8 @@ trait JavaDStreamLike[
     */
   def transformWithToPair[U, K2, V2](
       other: JavaDStream[U],
-      transformFunc: JFunction3[R, JavaRDD[U], Time, JavaPairRDD[K2, V2]]
-  ): JavaPairDStream[K2, V2] = {
+      transformFunc: JFunction3[R, JavaRDD[U], Time, JavaPairRDD[K2, V2]])
+      : JavaPairDStream[K2, V2] = {
     implicit val cmu: ClassTag[U] = fakeClassTag
     implicit val cmk2: ClassTag[K2] = fakeClassTag
     implicit val cmv2: ClassTag[V2] = fakeClassTag
@@ -394,8 +393,8 @@ trait JavaDStreamLike[
     */
   def transformWith[K2, V2, W](
       other: JavaPairDStream[K2, V2],
-      transformFunc: JFunction3[R, JavaPairRDD[K2, V2], Time, JavaRDD[W]]
-  ): JavaDStream[W] = {
+      transformFunc: JFunction3[R, JavaPairRDD[K2, V2], Time, JavaRDD[W]])
+      : JavaDStream[W] = {
     implicit val cmk2: ClassTag[K2] = fakeClassTag
     implicit val cmv2: ClassTag[V2] = fakeClassTag
     implicit val cmw: ClassTag[W] = fakeClassTag
@@ -419,8 +418,7 @@ trait JavaDStreamLike[
         R,
         JavaPairRDD[K2, V2],
         Time,
-        JavaPairRDD[K3, V3]]
-  ): JavaPairDStream[K3, V3] = {
+        JavaPairRDD[K3, V3]]): JavaPairDStream[K3, V3] = {
     implicit val cmk2: ClassTag[K2] = fakeClassTag
     implicit val cmv2: ClassTag[V2] = fakeClassTag
     implicit val cmk3: ClassTag[K3] = fakeClassTag

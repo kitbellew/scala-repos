@@ -52,15 +52,13 @@ with AbstractTestConfigurationProducer {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
       }
-      return Some(
-        (
+      return Some((
+        element,
+        TestConfigurationUtil.packageSettings(
           element,
-          TestConfigurationUtil.packageSettings(
-            element,
-            location,
-            confFactory,
-            ScalaBundle
-              .message("test.in.scope.specs2.presentable.text", name))))
+          location,
+          confFactory,
+          ScalaBundle.message("test.in.scope.specs2.presentable.text", name))))
     }
 
     val parent: ScTypeDefinition = PsiTreeUtil.getParentOfType(

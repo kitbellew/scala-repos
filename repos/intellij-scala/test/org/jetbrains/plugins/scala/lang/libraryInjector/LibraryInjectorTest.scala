@@ -36,8 +36,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
   case class ZDir(name: String, files: Seq[Zipable]) extends Zipable {
     override def zip(toDir: File): File = {
       val file = new File(toDir, LIBRARY_NAME)
-      val zfs = new ZipOutputStream(
-        new BufferedOutputStream(new FileOutputStream(file)))
+      val zfs = new ZipOutputStream(new BufferedOutputStream(
+        new FileOutputStream(file)))
       def doZip(zipable: Zipable): Unit = {
         zipable match {
           case ZDir(zname, zfiles) =>
@@ -78,9 +78,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
       javaSdk = Some(getTestProjectJdk))
 
     scalaLibraryLoader.loadScala(scalaSdkVersion)
-    addLibrary(
-      testData(getTestName(false))
-        .zip(ScalaUtil.createTmpDir("injectorTestLib", "")))
+    addLibrary(testData(getTestName(false)).zip(
+      ScalaUtil.createTmpDir("injectorTestLib", "")))
   }
 
   protected override def tearDown() {
@@ -136,8 +135,7 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
       Seq(
         ZFile(LibraryInjectorLoader.INJECTOR_MANIFEST_NAME, manifest),
         ZFile("Implementation.scala", implementationClass),
-        ZFile("Foo.scala", fooClass)
-      )
+        ZFile("Foo.scala", fooClass))
     )
   }
 

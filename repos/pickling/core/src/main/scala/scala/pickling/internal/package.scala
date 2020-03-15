@@ -50,7 +50,9 @@ package object internal {
     def isEffectivelyPrimitive =
       throw new Exception("use Type.isEffectivelyPrimitive instead")
     def isNotNullable =
-      sym.isClass && (sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass)
+      sym.isClass && (
+        sym.asClass.isPrimitive || sym.asClass.isDerivedValueClass
+      )
     def isNullable = sym.isClass && !isNotNullable
   }
   def currentMirror: ru.Mirror = currentRuntime.currentMirror

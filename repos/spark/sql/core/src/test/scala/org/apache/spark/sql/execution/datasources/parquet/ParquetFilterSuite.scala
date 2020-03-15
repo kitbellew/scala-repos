@@ -507,9 +507,8 @@ class ParquetFilterSuite
 
         // We will remove the temporary metadata when writing Parquet file.
         val schema = sqlContext.read.parquet(pathThree).schema
-        assert(
-          schema.forall(
-            !_.metadata.contains(StructType.metadataKeyForOptionalField)))
+        assert(schema.forall(
+          !_.metadata.contains(StructType.metadataKeyForOptionalField)))
 
         val pathFour = s"${dir.getCanonicalPath}/table4"
         val dfStruct = sparkContext.parallelize(Seq((1, 1))).toDF("a", "b")
@@ -529,35 +528,28 @@ class ParquetFilterSuite
 
         // The fields "s.a" and "s.c" only exist in one Parquet file.
         val field = dfStruct3.schema("s").dataType.asInstanceOf[StructType]
-        assert(
-          field("a").metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
-        assert(
-          field("c").metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
+        assert(field("a").metadata.getBoolean(
+          StructType.metadataKeyForOptionalField))
+        assert(field("c").metadata.getBoolean(
+          StructType.metadataKeyForOptionalField))
 
         val pathSix = s"${dir.getCanonicalPath}/table6"
         dfStruct3.write.parquet(pathSix)
 
         // We will remove the temporary metadata when writing Parquet file.
         val forPathSix = sqlContext.read.parquet(pathSix).schema
-        assert(
-          forPathSix.forall(
-            !_.metadata.contains(StructType.metadataKeyForOptionalField)))
+        assert(forPathSix.forall(
+          !_.metadata.contains(StructType.metadataKeyForOptionalField)))
 
         // sanity test: make sure optional metadata field is not wrongly set.
         val pathSeven = s"${dir.getCanonicalPath}/table7"
-        (1 to 3)
-          .map(i => (i, i.toString))
-          .toDF("a", "b")
-          .write
-          .parquet(pathSeven)
+        (
+          1 to 3
+        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathSeven)
         val pathEight = s"${dir.getCanonicalPath}/table8"
-        (4 to 6)
-          .map(i => (i, i.toString))
-          .toDF("a", "b")
-          .write
-          .parquet(pathEight)
+        (
+          4 to 6
+        ).map(i => (i, i.toString)).toDF("a", "b").write.parquet(pathEight)
 
         val df2 = sqlContext.read
           .parquet(pathSeven, pathEight)
@@ -606,11 +598,9 @@ class ParquetFilterSuite
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"
-        (1 to 5)
-          .map(i => (i, (i % 2).toString))
-          .toDF("a", "b")
-          .write
-          .parquet(path)
+        (
+          1 to 5
+        ).map(i => (i, (i % 2).toString)).toDF("a", "b").write.parquet(path)
 
         checkAnswer(
           sqlContext.read.parquet(path).where("not (a = 2) or not(b in ('1'))"),
@@ -624,18 +614,14 @@ class ParquetFilterSuite
   }
 
   test("SPARK-12218 Converting conjunctions into Parquet filter predicates") {
-    val schema = StructType(
-      Seq(
-        StructField("a", IntegerType, nullable = false),
-        StructField("b", StringType, nullable = true),
-        StructField("c", DoubleType, nullable = true)
-      ))
+    val schema = StructType(Seq(
+      StructField("a", IntegerType, nullable = false),
+      StructField("b", StringType, nullable = true),
+      StructField("c", DoubleType, nullable = true)))
 
-    assertResult(
-      Some(
-        and(
-          lt(intColumn("a"), 10: Integer),
-          gt(doubleColumn("c"), 1.5: java.lang.Double)))) {
+    assertResult(Some(and(
+      lt(intColumn("a"), 10: Integer),
+      gt(doubleColumn("c"), 1.5: java.lang.Double)))) {
       ParquetFilters.createFilter(
         schema,
         sources.And(sources.LessThan("a", 10), sources.GreaterThan("c", 1.5d)))
@@ -652,10 +638,9 @@ class ParquetFilterSuite
     assertResult(None) {
       ParquetFilters.createFilter(
         schema,
-        sources.Not(
-          sources.And(
-            sources.GreaterThan("a", 1),
-            sources.StringContains("b", "prefix"))))
+        sources.Not(sources.And(
+          sources.GreaterThan("a", 1),
+          sources.StringContains("b", "prefix"))))
     }
   }
 
@@ -665,11 +650,9 @@ class ParquetFilterSuite
       withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> "false") {
         withTempPath { dir =>
           val path = s"${dir.getCanonicalPath}/table1"
-          (1 to 5)
-            .map(i => (i.toFloat, i % 3))
-            .toDF("a", "b")
-            .write
-            .parquet(path)
+          (
+            1 to 5
+          ).map(i => (i.toFloat, i % 3)).toDF("a", "b").write.parquet(path)
 
           // When a filter is pushed to Parquet, Parquet can apply it to every row.
           // So, we can check the number of rows returned from the Parquet

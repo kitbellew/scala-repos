@@ -69,8 +69,7 @@ class MasterSuite
       environment = Map.empty,
       classPathEntries = Nil,
       libraryPathEntries = Nil,
-      javaOpts = Nil
-    )
+      javaOpts = Nil)
 
     val appToPersist = new ApplicationInfo(
       startTime = 0,
@@ -86,8 +85,7 @@ class MasterSuite
         coresPerExecutor = None),
       submitDate = new Date(),
       driver = null,
-      defaultCores = 0
-    )
+      defaultCores = 0)
 
     val driverToPersist = new DriverInfo(
       startTime = 0,
@@ -97,10 +95,8 @@ class MasterSuite
         mem = 0,
         cores = 0,
         supervise = false,
-        command = commandToPersist
-      ),
-      submitDate = new Date()
-    )
+        command = commandToPersist),
+      submitDate = new Date())
 
     val workerToPersist = new WorkerInfo(
       id = "test_worker",
@@ -109,8 +105,7 @@ class MasterSuite
       cores = 0,
       memory = 0,
       endpoint = null,
-      webUiAddress = "http://localhost:80"
-    )
+      webUiAddress = "http://localhost:80")
 
     val (rpcEnv, _, _) = Master.startRpcEnvAndEndpoint("127.0.0.1", 0, 0, conf)
 
@@ -555,15 +550,14 @@ class MasterSuite
       }
     )
 
-    master.self.ask(
-      RegisterWorker(
-        "1",
-        "localhost",
-        9999,
-        fakeWorker,
-        10,
-        1024,
-        "http://localhost:8080"))
+    master.self.ask(RegisterWorker(
+      "1",
+      "localhost",
+      9999,
+      fakeWorker,
+      10,
+      1024,
+      "http://localhost:8080"))
     val executors = (0 until 3).map { i =>
       new ExecutorDescription(
         appId = i.toString,

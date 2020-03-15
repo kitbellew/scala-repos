@@ -117,8 +117,7 @@ trait GameHelper {
         player.rating.ifTrue(withRating).fold(u.titleName) { r =>
           s"${u.titleName} ($r)"
         }
-      }
-    ) { level => s"A.I. level $level" }
+      }) { level => s"A.I. level $level" }
 
   val berserkIconSpan = """<span data-icon="`"></span>"""
   val berserkIconSpanHtml = Html(berserkIconSpan)

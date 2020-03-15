@@ -90,13 +90,12 @@ class WriteAggregatorSpec
   "WriteAggregator" must {
     "send to at least N/2+1 replicas when WriteMajority" in {
       val probe = TestProbe()
-      val aggr = system.actorOf(
-        WriteAggregatorSpec.writeAggregatorProps(
-          data,
-          writeMajority,
-          probes(probe.ref),
-          nodes,
-          testActor))
+      val aggr = system.actorOf(WriteAggregatorSpec.writeAggregatorProps(
+        data,
+        writeMajority,
+        probes(probe.ref),
+        nodes,
+        testActor))
 
       probe.expectMsgType[Write]
       probe.lastSender ! WriteAck
@@ -109,13 +108,12 @@ class WriteAggregatorSpec
 
     "send to more when no immediate reply" in {
       val probe = TestProbe()
-      val aggr = system.actorOf(
-        WriteAggregatorSpec.writeAggregatorProps(
-          data,
-          writeMajority,
-          probes(probe.ref),
-          nodes,
-          testActor))
+      val aggr = system.actorOf(WriteAggregatorSpec.writeAggregatorProps(
+        data,
+        writeMajority,
+        probes(probe.ref),
+        nodes,
+        testActor))
 
       probe.expectMsgType[Write]
       // no reply
@@ -133,13 +131,12 @@ class WriteAggregatorSpec
 
     "timeout when less than required acks" in {
       val probe = TestProbe()
-      val aggr = system.actorOf(
-        WriteAggregatorSpec.writeAggregatorProps(
-          data,
-          writeMajority,
-          probes(probe.ref),
-          nodes,
-          testActor))
+      val aggr = system.actorOf(WriteAggregatorSpec.writeAggregatorProps(
+        data,
+        writeMajority,
+        probes(probe.ref),
+        nodes,
+        testActor))
 
       probe.expectMsgType[Write]
       // no reply

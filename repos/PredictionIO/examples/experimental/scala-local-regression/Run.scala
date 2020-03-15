@@ -33,12 +33,8 @@ case class TrainingData(x: Vector[Vector[Double]], y: Vector[Double])
 }
 
 case class LocalDataSource(val dsp: DataSourceParams)
-    extends LDataSource[
-      DataSourceParams,
-      String,
-      TrainingData,
-      Vector[Double],
-      Double] {
+    extends LDataSource[DataSourceParams, String, TrainingData, Vector[
+      Double], Double] {
   override def read()
       : Seq[(String, TrainingData, Seq[(Vector[Double], Double)])] = {
     val lines = Source
@@ -77,12 +73,8 @@ case class LocalPreparator(val pp: PreparatorParams = PreparatorParams())
 }
 
 case class LocalAlgorithm()
-    extends LAlgorithm[
-      EmptyParams,
-      TrainingData,
-      Array[Double],
-      Vector[Double],
-      Double] {
+    extends LAlgorithm[EmptyParams, TrainingData, Array[Double], Vector[
+      Double], Double] {
 
   def train(td: TrainingData): Array[Double] = {
     val xArray: Array[Double] = td.x.foldLeft(Vector[Double]())(_ ++ _).toArray
@@ -114,8 +106,7 @@ class VectorSerializer
         {
           case x: Vector[Double] =>
             JArray(x.toList.map(y => JDouble(y)))
-        }
-      ))
+        }))
 
 object RegressionEngineFactory extends IEngineFactory {
   def apply() = {

@@ -83,10 +83,9 @@ class TestTransport(
         }
 
       case None ⇒
-        Future.failed(
-          new InvalidAssociationException(
-            s"No registered transport: $remoteAddress",
-            null))
+        Future.failed(new InvalidAssociationException(
+          s"No registered transport: $remoteAddress",
+          null))
     }
   }
 

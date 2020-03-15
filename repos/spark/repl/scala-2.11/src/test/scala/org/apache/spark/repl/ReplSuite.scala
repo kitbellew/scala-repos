@@ -204,9 +204,8 @@ class ReplSuite extends SparkFunSuite {
         |file.count()
         |file.count()
         |file.count()
-      """.stripMargin.format(
-        StringEscapeUtils.escapeJava(
-          tempDir.getAbsolutePath + File.separator + "input"))
+      """.stripMargin.format(StringEscapeUtils.escapeJava(
+        tempDir.getAbsolutePath + File.separator + "input"))
     )
     assertDoesNotContain("error:", output)
     assertDoesNotContain("Exception", output)
@@ -255,9 +254,7 @@ class ReplSuite extends SparkFunSuite {
   }
 
   test("SPARK-2452 compound statements.") {
-    val output = runInterpreter(
-      "local",
-      """
+    val output = runInterpreter("local", """
         |val x = 4 ; def f() = x
         |f()
       """.stripMargin)

@@ -27,37 +27,33 @@ class ClientStoreLaws extends WordSpec {
     def earliestTimeOf(batch: BatchID) = Timestamp(0)
   }
 
-  val offline = TestStore[String, (BatchID, Int)](
-    Map(
-      "a" -> Some((BatchID(8), 1)),
-      "b" -> Some((BatchID(9), 1)),
-      "c" -> Some((BatchID(9), 1)),
-      "d" -> None,
-      "e" -> None
-    ))
+  val offline = TestStore[String, (BatchID, Int)](Map(
+    "a" -> Some((BatchID(8), 1)),
+    "b" -> Some((BatchID(9), 1)),
+    "c" -> Some((BatchID(9), 1)),
+    "d" -> None,
+    "e" -> None))
 
-  val online = TestStore[(String, BatchID), Int](
-    Map(
-      ("a", BatchID(6)) -> Some(1),
-      ("a", BatchID(7)) -> Some(1),
-      ("a", BatchID(8)) -> Some(1),
-      ("a", BatchID(9)) -> None,
-      ("a", BatchID(10)) -> Some(1),
-      ("b", BatchID(9)) -> None,
-      ("b", BatchID(10)) -> None,
-      ("c", BatchID(6)) -> Some(1),
-      ("c", BatchID(7)) -> Some(1),
-      ("c", BatchID(8)) -> Some(1),
-      ("c", BatchID(9)) -> None,
-      ("c", BatchID(10)) -> Some(1),
-      ("d", BatchID(8)) -> None,
-      ("d", BatchID(9)) -> None,
-      ("d", BatchID(10)) -> None,
-      ("f", BatchID(8)) -> Some(2),
-      ("f", BatchID(9)) -> Some(3),
-      ("f", BatchID(10)) -> Some(4)
-    )
-  )
+  val online = TestStore[(String, BatchID), Int](Map(
+    ("a", BatchID(6)) -> Some(1),
+    ("a", BatchID(7)) -> Some(1),
+    ("a", BatchID(8)) -> Some(1),
+    ("a", BatchID(9)) -> None,
+    ("a", BatchID(10)) -> Some(1),
+    ("b", BatchID(9)) -> None,
+    ("b", BatchID(10)) -> None,
+    ("c", BatchID(6)) -> Some(1),
+    ("c", BatchID(7)) -> Some(1),
+    ("c", BatchID(8)) -> Some(1),
+    ("c", BatchID(9)) -> None,
+    ("c", BatchID(10)) -> Some(1),
+    ("d", BatchID(8)) -> None,
+    ("d", BatchID(9)) -> None,
+    ("d", BatchID(10)) -> None,
+    ("f", BatchID(8)) -> Some(2),
+    ("f", BatchID(9)) -> Some(3),
+    ("f", BatchID(10)) -> Some(4)
+  ))
   val clientStore = ClientStore(offline, online, 3)
   val keys = Set("a", "b", "c", "d", "e", "f")
   val retMap = clientStore.multiGet(keys)

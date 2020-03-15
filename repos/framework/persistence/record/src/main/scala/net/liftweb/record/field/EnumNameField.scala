@@ -106,10 +106,10 @@ class EnumNameField[OwnerType <: Record[OwnerType], EnumType <: Enumeration](
   protected val valueManifest = m
 }
 
-class OptionalEnumNameField[
-    OwnerType <: Record[OwnerType],
-    EnumType <: Enumeration](rec: OwnerType, protected val enum: EnumType)(
-    implicit m: Manifest[EnumType#Value])
+class OptionalEnumNameField[OwnerType <: Record[
+  OwnerType], EnumType <: Enumeration](
+    rec: OwnerType,
+    protected val enum: EnumType)(implicit m: Manifest[EnumType#Value])
     extends Field[EnumType#Value, OwnerType]
     with OptionalTypedField[EnumType#Value]
     with EnumNameTypedField[EnumType] {

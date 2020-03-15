@@ -33,11 +33,8 @@ class StdReplVals(final val r: ILoop) extends ReplVals {
     val global: intp.global.type = intp.global
   } with ast.TreeDSL {}
 
-  final lazy val typer = analyzer.newTyper(
-    analyzer.rootContext(
-      power.unit("").asInstanceOf[analyzer.global.CompilationUnit]
-    )
-  )
+  final lazy val typer = analyzer.newTyper(analyzer.rootContext(
+    power.unit("").asInstanceOf[analyzer.global.CompilationUnit]))
   def lastRequest = intp.lastRequest
 
   class ReplImplicits extends power.Implicits2 {

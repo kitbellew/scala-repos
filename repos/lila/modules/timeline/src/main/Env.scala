@@ -21,15 +21,13 @@ final class Env(
   lazy val entryRepo = new EntryRepo(coll = entryColl, userMax = UserDisplayMax)
 
   system.actorOf(
-    Props(
-      new Push(
-        lobbySocket = lobbySocket,
-        renderer = renderer,
-        getFriendIds = getFriendIds,
-        getFollowerIds = getFollowerIds,
-        unsubApi = unsubApi,
-        entryRepo = entryRepo
-      )),
+    Props(new Push(
+      lobbySocket = lobbySocket,
+      renderer = renderer,
+      getFriendIds = getFriendIds,
+      getFollowerIds = getFollowerIds,
+      unsubApi = unsubApi,
+      entryRepo = entryRepo)),
     name = UserActorName
   )
 

@@ -186,9 +186,8 @@ object DBIOAction {
       in: TraversableOnce[DBIOAction[R, NoStream, E]])
       : Vector[Vector[DBIOAction[R, NoStream, E]]] = {
     var state = 0 // no current = 0, sync = 1, async = 2
-    var current: mutable.Builder[
-      DBIOAction[R, NoStream, E],
-      Vector[DBIOAction[R, NoStream, E]]] = null
+    var current: mutable.Builder[DBIOAction[R, NoStream, E], Vector[
+      DBIOAction[R, NoStream, E]]] = null
     val total = Vector.newBuilder[Vector[DBIOAction[R, NoStream, E]]]
     (in: TraversableOnce[Any]).foreach { a =>
       val msgState =
@@ -238,8 +237,11 @@ object DBIOAction {
             E] {
             def run(context: BasicBackend#Context) =
               g.head
-                .asInstanceOf[
-                  SynchronousDatabaseAction[R, NoStream, BasicBackend, E]]
+                .asInstanceOf[SynchronousDatabaseAction[
+                  R,
+                  NoStream,
+                  BasicBackend,
+                  E]]
                 .run(context) :: Nil
             override def nonFusedEquivalentAction = g.head.map(_ :: Nil)
           }
@@ -303,8 +305,8 @@ object DBIOAction {
         def run(context: BasicBackend#Context) = {
           g.foreach(
             _.asInstanceOf[
-              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
-              .run(context))
+              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]].run(
+              context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)

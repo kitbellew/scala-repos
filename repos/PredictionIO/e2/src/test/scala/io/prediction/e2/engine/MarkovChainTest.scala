@@ -21,8 +21,7 @@ class MarkovChainTest
     model.n should be(2)
     model.transitionVectors.collect() should contain theSameElementsAs Seq(
       (0, Vectors.sparse(2, Array(0, 1), Array(0.3, 0.7))),
-      (1, Vectors.sparse(2, Array(0, 1), Array(0.5, 0.5)))
-    )
+      (1, Vectors.sparse(2, Array(0, 1), Array(0.5, 0.5))))
   }
 
   it should "contains probabilities of the top N only" in {

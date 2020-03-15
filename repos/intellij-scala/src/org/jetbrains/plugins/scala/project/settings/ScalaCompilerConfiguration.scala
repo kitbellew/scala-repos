@@ -18,8 +18,7 @@ import scala.collection.JavaConverters._
   */
 @State(
   name = "ScalaCompilerConfiguration",
-  storages = Array(new Storage("scala_compiler.xml"))
-)
+  storages = Array(new Storage("scala_compiler.xml")))
 class ScalaCompilerConfiguration(project: Project)
     extends PersistentStateComponent[Element] {
   var incrementalityType: IncrementalityType = IncrementalityType.IDEA
@@ -107,17 +106,19 @@ class ScalaCompilerConfiguration(project: Project)
       .map(it => IncrementalityType.valueOf(it.getAttributeValue("value")))
       .getOrElse(IncrementalityType.IDEA)
 
-    defaultProfile.setSettings(new ScalaCompilerSettings(XmlSerializer
-      .deserialize(configurationElement, classOf[ScalaCompilerSettingsState])))
+    defaultProfile.setSettings(new ScalaCompilerSettings(
+      XmlSerializer.deserialize(
+        configurationElement,
+        classOf[ScalaCompilerSettingsState])))
 
     customProfiles = configurationElement.getChildren("profile").asScala.map {
       profileElement =>
         val profile = new ScalaCompilerSettingsProfile(
           profileElement.getAttributeValue("name"))
 
-        val settings = new ScalaCompilerSettings(
-          XmlSerializer
-            .deserialize(profileElement, classOf[ScalaCompilerSettingsState]))
+        val settings = new ScalaCompilerSettings(XmlSerializer.deserialize(
+          profileElement,
+          classOf[ScalaCompilerSettingsState]))
         profile.setSettings(settings)
 
         val moduleNames = profileElement

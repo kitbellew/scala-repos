@@ -32,8 +32,8 @@ class MutatedSourceJob(args: Args) extends Job(args) {
     override def invert(y: (Int, Int)) = LongIntPacker.lr(y._1, y._2)
   }
 
-  val in0: TypedPipe[(Int, Int)] = TypedPipe.from(
-    BijectedSourceSink(TypedTsv[Long]("input0")))
+  val in0: TypedPipe[(Int, Int)] = TypedPipe.from(BijectedSourceSink(
+    TypedTsv[Long]("input0")))
 
   in0
     .map { tup: (Int, Int) => (tup._1 * 2, tup._2 * 2) }

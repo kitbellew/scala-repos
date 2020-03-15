@@ -295,10 +295,9 @@ object Menu extends DispatchSnippet {
 
     def buildItems(in: Seq[MenuItem]): JsExp = JsArray(in.map(buildItem): _*)
 
-    Script(
-      JsCrVar(
-        S.attr("var") openOr "lift_menu",
-        JsObj("menu" -> buildItems(toRender))))
+    Script(JsCrVar(
+      S.attr("var") openOr "lift_menu",
+      JsObj("menu" -> buildItems(toRender))))
   }
 
   /**

@@ -28,23 +28,14 @@ object FilterArgsSpec extends Specification {
 
   "Reloader.filterArgs" should {
 
-    "support port argument" in {
-      check("1234")(
-        httpPort = Some(1234)
-      )
-    }
+    "support port argument" in { check("1234")(httpPort = Some(1234)) }
 
-    "support disabled port argument" in {
-      check("disabled")(
-        httpPort = None
-      )
-    }
+    "support disabled port argument" in { check("disabled")(httpPort = None) }
 
     "support port property with system property" in {
       check("-Dhttp.port=1234")(
         properties = Seq("http.port" -> "1234"),
-        httpPort = Some(1234)
-      )
+        httpPort = Some(1234))
     }
 
     "support port property with dev setting" in {
@@ -61,23 +52,20 @@ object FilterArgsSpec extends Specification {
     "support disabled port property" in {
       check("-Dhttp.port=disabled")(
         properties = Seq("http.port" -> "disabled"),
-        httpPort = None
-      )
+        httpPort = None)
     }
 
     "support https port property" in {
       check("-Dhttps.port=4321")(
         properties = Seq("https.port" -> "4321"),
-        httpsPort = Some(4321)
-      )
+        httpsPort = Some(4321))
     }
 
     "support https only" in {
       check("-Dhttps.port=4321", "disabled")(
         properties = Seq("https.port" -> "4321"),
         httpPort = None,
-        httpsPort = Some(4321)
-      )
+        httpsPort = Some(4321))
     }
 
     "support https port property with dev setting" in {
@@ -95,15 +83,13 @@ object FilterArgsSpec extends Specification {
       check("-Dhttps.port=disabled", "-Dhttp.port=1234")(
         properties = Seq("https.port" -> "disabled", "http.port" -> "1234"),
         httpPort = Some(1234),
-        httpsPort = None
-      )
+        httpsPort = None)
     }
 
     "support address property" in {
       check("-Dhttp.address=localhost")(
         properties = Seq("http.address" -> "localhost"),
-        httpAddress = "localhost"
-      )
+        httpAddress = "localhost")
     }
 
     "support address property with dev setting" in {

@@ -50,8 +50,8 @@ object CollectionsOnListTest extends CollectionsTestBase {
     }
   }
 
-  private def test_sort_on_comparables[
-      T <: AnyRef with Comparable[T]: ClassTag](
+  private def test_sort_on_comparables[T <: AnyRef with Comparable[
+    T]: ClassTag](
       factory: ListFactory,
       toElem: Int => T,
       absoluteOrder: Boolean = true): Unit = {

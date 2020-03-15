@@ -120,8 +120,7 @@ case class UpgradeArgs(
     from: String = "0.0.0",
     to: String = "0.0.0",
     oldAppId: Int = 0,
-    newAppId: Int = 0
-)
+    newAppId: Int = 0)
 
 object Console extends Logging {
   def main(args: Array[String]): Unit = {
@@ -129,13 +128,14 @@ object Console extends Logging {
       override def showUsageOnError: Boolean = false
       head("PredictionIO Command Line Interface Console", BuildInfo.version)
       help("")
-      note("Note that it is possible to supply pass-through arguments at\n" +
-        "the end of the command by using a '--' separator, e.g.\n\n" +
-        "pio train --params-path params -- --master spark://mycluster:7077\n" +
-        "\nIn the example above, the '--master' argument will be passed to\n" +
-        "underlying spark-submit command. Please refer to the usage section\n" +
-        "for each command for more information.\n\n" +
-        "The following options are common to all commands:\n")
+      note(
+        "Note that it is possible to supply pass-through arguments at\n" +
+          "the end of the command by using a '--' separator, e.g.\n\n" +
+          "pio train --params-path params -- --master spark://mycluster:7077\n" +
+          "\nIn the example above, the '--master' argument will be passed to\n" +
+          "underlying spark-submit command. Please refer to the usage section\n" +
+          "for each command for more information.\n\n" +
+          "The following options are common to all commands:\n")
       opt[String]("pio-home") action { (x, c) =>
         c.copy(common = c.common.copy(pioHome = Some(x)))
       } text ("Root directory of a PredictionIO installation.\n" +
@@ -181,10 +181,8 @@ object Console extends Logging {
       note("")
       cmd("help").action { (_, c) =>
         c.copy(commands = c.commands :+ "help")
-      } children (
-        arg[String]("<command>") optional ()
-          action { (x, c) => c.copy(commands = c.commands :+ x) }
-      )
+      } children (arg[String]("<command>") optional ()
+        action { (x, c) => c.copy(commands = c.commands :+ x) })
       note("")
       cmd("build").text("Build an engine at the current directory.").action {
         (_, c) => c.copy(commands = c.commands :+ "build")
@@ -275,7 +273,9 @@ object Console extends Logging {
           "[<engine-parameters-generator-class>]") optional () action {
           (x, c) =>
             c.copy(common = c.common.copy(engineParamsGenerator = Some(x)))
-        } text ("Optional engine parameters generator class, overriding the first argument"),
+        } text (
+          "Optional engine parameters generator class, overriding the first argument"
+        ),
         opt[String]("batch") action { (x, c) =>
           c.copy(common = c.common.copy(batch = x))
         } text ("Batch label of the run."),
@@ -475,11 +475,9 @@ object Console extends Logging {
         note(""),
         cmd("show").text("Show details of an app.").action { (_, c) =>
           c.copy(commands = c.commands :+ "show")
-        } children (
-          arg[String]("<name>") action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("Name of the app to be shown.")
-        ),
+        } children (arg[String]("<name>") action { (x, c) =>
+          c.copy(app = c.app.copy(name = x))
+        } text ("Name of the app to be shown.")),
         note(""),
         cmd("delete").text("Delete an app.").action { (_, c) =>
           c.copy(commands = c.commands :+ "delete")
@@ -531,7 +529,9 @@ object Console extends Logging {
           } text ("Channel name to be deleted."),
           opt[Unit]("force") abbr ("f") action { (x, c) =>
             c.copy(app = c.app.copy(force = true))
-          } text ("Delete a channel of the app without prompting for confirmation")
+          } text (
+            "Delete a channel of the app without prompting for confirmation"
+          )
         )
       )
       note("")
@@ -549,25 +549,21 @@ object Console extends Logging {
           },
           arg[String]("[<event1> <event2> ...]") unbounded () optional ()
             action { (x, c) =>
-              c.copy(accessKey = c.accessKey.copy(
-                events = c.accessKey.events :+ x))
+              c.copy(accessKey = c.accessKey
+                .copy(events = c.accessKey.events :+ x))
             }
         ),
         cmd("list").text("List all access keys of an app.").action { (_, c) =>
           c.copy(commands = c.commands :+ "list")
-        } children (
-          arg[String]("<app name>") optional () action { (x, c) =>
-            c.copy(app = c.app.copy(name = x))
-          } text ("App name.")
-        ),
+        } children (arg[String]("<app name>") optional () action { (x, c) =>
+          c.copy(app = c.app.copy(name = x))
+        } text ("App name.")),
         note(""),
         cmd("delete").text("Delete an access key.").action { (_, c) =>
           c.copy(commands = c.commands :+ "delete")
-        } children (
-          arg[String]("<access key>") action { (x, c) =>
-            c.copy(accessKey = c.accessKey.copy(accessKey = x))
-          } text ("The access key to be deleted.")
-        )
+        } children (arg[String]("<access key>") action { (x, c) =>
+          c.copy(accessKey = c.accessKey.copy(accessKey = x))
+        } text ("The access key to be deleted."))
       )
       cmd("template").action { (_, c) =>
         c.copy(commands = c.commands :+ "template")
@@ -831,21 +827,17 @@ object Console extends Logging {
   def eventserver(ca: ConsoleArgs): Unit = {
     info(
       s"Creating Event Server at ${ca.eventServer.ip}:${ca.eventServer.port}")
-    EventServer.createEventServer(
-      EventServerConfig(
-        ip = ca.eventServer.ip,
-        port = ca.eventServer.port,
-        stats = ca.eventServer.stats))
+    EventServer.createEventServer(EventServerConfig(
+      ip = ca.eventServer.ip,
+      port = ca.eventServer.port,
+      stats = ca.eventServer.stats))
   }
 
   def adminserver(ca: ConsoleArgs): Unit = {
     info(
       s"Creating Admin Server at ${ca.adminServer.ip}:${ca.adminServer.port}")
     AdminServer.createAdminServer(
-      AdminServerConfig(
-        ip = ca.adminServer.ip,
-        port = ca.adminServer.port
-      ))
+      AdminServerConfig(ip = ca.adminServer.ip, port = ca.adminServer.port))
   }
 
   def undeploy(ca: ConsoleArgs): Int = {
@@ -922,8 +914,9 @@ object Console extends Logging {
         info(s"Uber JAR disabled. Making sure lib/${core.getName} is absent.")
         new File("lib", core.getName).delete()
       } else {
-        info("Uber JAR disabled, but current working directory does not look " +
-          s"like an engine project directory. Please delete lib/${core.getName} manually.")
+        info(
+          "Uber JAR disabled, but current working directory does not look " +
+            s"like an engine project directory. Please delete lib/${core.getName} manually.")
       }
     }
     info(s"Going to run: ${buildCmd}")
@@ -932,10 +925,9 @@ object Console extends Logging {
         if (ca.common.verbose) {
           buildCmd.!(ProcessLogger(line => info(line), line => error(line)))
         } else {
-          buildCmd.!(
-            ProcessLogger(
-              line => outputSbtError(line),
-              line => outputSbtError(line)))
+          buildCmd.!(ProcessLogger(
+            line => outputSbtError(line),
+            line => outputSbtError(line)))
         }
       if (r != 0) {
         error(s"Return code of previous step is ${r}. Aborting.")
@@ -1015,21 +1007,18 @@ object Console extends Logging {
           val parsedMinVersion = Version.apply(sparkMinVersion)
           val parsedCurrentVersion = Version.apply(sparkReleaseVersion)
           if (parsedCurrentVersion >= parsedMinVersion) {
-            info(
-              stripMarginAndNewlines(
-                s"""|Apache Spark $sparkReleaseVersion detected (meets minimum
+            info(stripMarginAndNewlines(
+              s"""|Apache Spark $sparkReleaseVersion detected (meets minimum
                   |requirement of $sparkMinVersion)"""))
           } else {
-            error(
-              stripMarginAndNewlines(
-                s"""|Apache Spark $sparkReleaseVersion detected (does not meet
+            error(stripMarginAndNewlines(
+              s"""|Apache Spark $sparkReleaseVersion detected (does not meet
                   |minimum requirement. Aborting."""))
           }
         }
       } else {
-        warn(
-          stripMarginAndNewlines(
-            s"""|Apache Spark version information cannot be found. If you are
+        warn(stripMarginAndNewlines(
+          s"""|Apache Spark version information cannot be found. If you are
               |using a developmental tree, please make sure you are using a
               |version of at least $sparkMinVersion."""))
       }
@@ -1183,10 +1172,9 @@ object Console extends Logging {
 
   def jarFilesForScala: Array[File] = {
     val libFiles = jarFilesForScalaFilter(jarFilesAt(new File("lib")))
-    val targetFiles = jarFilesForScalaFilter(
-      jarFilesAt(
-        new File("target" +
-          File.separator + s"scala-${scalaVersionNoPatch}")))
+    val targetFiles = jarFilesForScalaFilter(jarFilesAt(new File(
+      "target" +
+        File.separator + s"scala-${scalaVersionNoPatch}")))
     // Use libFiles is target is empty.
     if (targetFiles.size > 0) targetFiles else libFiles
   }

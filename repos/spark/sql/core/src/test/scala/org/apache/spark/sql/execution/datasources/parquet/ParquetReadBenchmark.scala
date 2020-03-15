@@ -301,8 +301,9 @@ object ParquetReadBenchmark {
 
         benchmark.addCase("SQL Parquet Vectorized") { iter =>
           sqlContext
-            .sql("select sum(length(c2)) from tempTable where c1 is " +
-              "not NULL and c2 is not NULL")
+            .sql(
+              "select sum(length(c2)) from tempTable where c1 is " +
+                "not NULL and c2 is not NULL")
             .collect()
         }
 

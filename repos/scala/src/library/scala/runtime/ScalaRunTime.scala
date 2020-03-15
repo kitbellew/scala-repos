@@ -330,10 +330,13 @@ object ScalaRunTime {
     // Special casing Unit arrays, the value class which uses a reference array type.
     def arrayToString(x: AnyRef) = {
       if (x.getClass.getComponentType == classOf[BoxedUnit])
-        0 until (array_length(x) min maxElements) map (_ =>
-          "()") mkString ("Array(", ", ", ")")
+        0 until (
+          array_length(x) min maxElements
+        ) map (_ => "()") mkString ("Array(", ", ", ")")
       else
-        WrappedArray make x take maxElements map inner mkString ("Array(", ", ", ")")
+        WrappedArray make x take maxElements map inner mkString (
+          "Array(", ", ", ")"
+        )
     }
 
     // The recursively applied attempt to prettify Array printing.
@@ -349,11 +352,17 @@ object ScalaRunTime {
         case x if useOwnToString(x)  => x.toString
         case x: AnyRef if isArray(x) => arrayToString(x)
         case x: scala.collection.Map[_, _] =>
-          x.iterator take maxElements map mapInner mkString (x.stringPrefix + "(", ", ", ")")
+          x.iterator take maxElements map mapInner mkString (
+            x.stringPrefix + "(", ", ", ")"
+          )
         case x: GenIterable[_] =>
-          x.iterator take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
+          x.iterator take maxElements map inner mkString (
+            x.stringPrefix + "(", ", ", ")"
+          )
         case x: Traversable[_] =>
-          x take maxElements map inner mkString (x.stringPrefix + "(", ", ", ")")
+          x take maxElements map inner mkString (
+            x.stringPrefix + "(", ", ", ")"
+          )
         case x: Product1[_] if isTuple(x) =>
           "(" + inner(x._1) + ",)" // that special trailing comma
         case x: Product if isTuple(x) =>

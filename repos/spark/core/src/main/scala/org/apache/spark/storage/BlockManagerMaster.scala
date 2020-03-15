@@ -87,8 +87,8 @@ private[spark] class BlockManagerMaster(
   }
 
   def getExecutorEndpointRef(executorId: String): Option[RpcEndpointRef] = {
-    driverEndpoint.askWithRetry[Option[RpcEndpointRef]](
-      GetExecutorEndpointRef(executorId))
+    driverEndpoint.askWithRetry[Option[RpcEndpointRef]](GetExecutorEndpointRef(
+      executorId))
   }
 
   /**

@@ -183,8 +183,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       JsonExtractorOption.Json4sNative,
       json,
       classOf[ScalaQuery],
-      Utils.json4sDefaultFormats + new UpperCaseFormat
-    )
+      Utils.json4sDefaultFormats + new UpperCaseFormat)
 
     query should be(ScalaQuery("QUERY STRING", Some("O"), "D"))
   }
@@ -196,8 +195,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
       extractorOption = JsonExtractorOption.Gson,
       json = json,
       clazz = classOf[JavaQuery],
-      gsonTypeAdapterFactories = Seq(new JavaQueryTypeAdapterFactory)
-    )
+      gsonTypeAdapterFactories = Seq(new JavaQueryTypeAdapterFactory))
 
     query should be(new JavaQuery("QUERY STRING"))
   }
@@ -256,8 +254,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val jValue = JsonExtractor.toJValue(
       JsonExtractorOption.Json4sNative,
       query,
-      Utils.json4sDefaultFormats + new UpperCaseFormat
-    )
+      Utils.json4sDefaultFormats + new UpperCaseFormat)
 
     compact(render(jValue)) should
       be(
@@ -269,8 +266,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val jValue = JsonExtractor.toJValue(
       extractorOption = JsonExtractorOption.Gson,
       o = query,
-      gsonTypeAdapterFactories = Seq(new JavaQueryTypeAdapterFactory)
-    )
+      gsonTypeAdapterFactories = Seq(new JavaQueryTypeAdapterFactory))
 
     compact(render(jValue)) should be("""{"q":"QUERY STRING"}""")
   }

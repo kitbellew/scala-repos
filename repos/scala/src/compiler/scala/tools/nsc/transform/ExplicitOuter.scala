@@ -416,13 +416,11 @@ abstract class ExplicitOuter
       // I added the mixinPrefix.typeArgs.nonEmpty condition to address the
       // crash in SI-4970.  I feel quite sure this can be improved.
       val path =
-        (
-          if (mixinClass.owner.isTerm)
-            gen.mkAttributedThis(mixinClass.owner.enclClass)
-          else if (mixinPrefix.typeArgs.nonEmpty)
-            gen.mkAttributedThis(mixinPrefix.typeSymbol)
-          else gen.mkAttributedQualifier(mixinPrefix)
-        )
+        (if (mixinClass.owner.isTerm)
+           gen.mkAttributedThis(mixinClass.owner.enclClass)
+         else if (mixinPrefix.typeArgs.nonEmpty)
+           gen.mkAttributedThis(mixinPrefix.typeSymbol)
+         else gen.mkAttributedQualifier(mixinPrefix))
       // Need to cast for nested outer refs in presence of self-types. See ticket #3274.
       localTyper typed DefDef(
         outerAcc,
@@ -453,10 +451,8 @@ abstract class ExplicitOuter
                         mc)) newDefs += mixinOuterAccessorDef(mc)
             }
           }
-          super.transform(
-            deriveTemplate(tree)(decls =>
-              if (newDefs.isEmpty) decls else decls ::: newDefs.toList)
-          )
+          super.transform(deriveTemplate(tree)(decls =>
+            if (newDefs.isEmpty) decls else decls ::: newDefs.toList))
         case DefDef(_, _, _, vparamss, _, rhs) =>
           if (sym.isClassConstructor) {
             rhs match {
@@ -499,8 +495,9 @@ abstract class ExplicitOuter
             closestEnclMethod(currentOwner) hasAnnotation ScalaInlineClass
           // SI-8710 The extension method condition reflects our knowledge that a call to `new Meter(12).privateMethod`
           //         with later be rewritten (in erasure) to `Meter.privateMethod$extension(12)`.
-          if ((currentClass != sym.owner || enclMethodIsInline) && !sym.isMethodWithExtension)
-            sym.makeNotPrivate(sym.owner)
+          if ((
+                currentClass != sym.owner || enclMethodIsInline
+              ) && !sym.isMethodWithExtension) sym.makeNotPrivate(sym.owner)
 
           val qsym = qual.tpe.widen.typeSymbol
           if (sym.isProtected && //(4)
@@ -552,9 +549,10 @@ abstract class ExplicitOuter
             // achieves the same as: localTyper typed atPos(tree.pos)(outerPath(base, base.tpe.typeSymbol, outerFor.outerClass))
             // println("(b, tpsym, outerForI, outerFor, outerClass)= "+ (base, base.tpe.typeSymbol, outerFor, sel.symbol.owner, outerFor.outerClass))
             // println("outerSelect = "+ outerSelect)
-            transform(
-              treeCopy
-                .Apply(tree, treeCopy.Select(eqsel, outerSelect, eq), args))
+            transform(treeCopy.Apply(
+              tree,
+              treeCopy.Select(eqsel, outerSelect, eq),
+              args))
           }
 
         case _ =>

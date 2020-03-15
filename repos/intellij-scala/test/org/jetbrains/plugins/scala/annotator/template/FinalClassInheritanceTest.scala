@@ -59,8 +59,7 @@ class FinalClassInheritanceTest
     assertNothing(messages("class C(val x: Int) extends AnyVal; new C"))
     assertMatches(messages("class C(val x: Int) extends AnyVal; new C {}"))(
       expectation)
-    assertMatches(
-      messages("class C(val x: Int) extends AnyVal; class X extends C(2)"))(
-      expectation)
+    assertMatches(messages(
+      "class C(val x: Int) extends AnyVal; class X extends C(2)"))(expectation)
   }
 }

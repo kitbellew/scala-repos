@@ -47,15 +47,14 @@ class LocalConcurrencySpec(_system: ActorSystem)
   import LocalConcurrencySpec._
 
   def this() {
-    this(
-      ActorSystem(
-        "LocalConcurrencySpec",
-        ConfigFactory.parseString(
-          """
+    this(ActorSystem(
+      "LocalConcurrencySpec",
+      ConfigFactory.parseString(
+        """
       akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
       akka.remote.netty.tcp.port=0
       """)
-      ))
+    ))
   }
 
   override def afterAll(): Unit = { shutdown(system) }

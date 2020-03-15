@@ -117,8 +117,7 @@ class ScSubstitutor(
           placer match {
             case t: ScTemplateDefinition =>
               zSubst = zSubst.followed(
-                new ScSubstitutor(Map.empty, Map.empty, Some(ScThisType(t)))
-              )
+                new ScSubstitutor(Map.empty, Map.empty, Some(ScThisType(t))))
             case _ =>
           }
           placer = placer.getContext
@@ -682,8 +681,7 @@ class ScUndefinedSubstitutor(
                         s"_$$${ index += 1; index }",
                         Nil,
                         lower,
-                        absUpper
-                      )
+                        absUpper)
                     ) //todo: why this is right?
                 }
               case ScSkolemizedType(_, _, lower, skoUpper) =>

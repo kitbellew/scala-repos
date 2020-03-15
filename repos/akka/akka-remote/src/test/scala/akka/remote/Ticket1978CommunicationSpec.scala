@@ -69,13 +69,12 @@ object Configuration {
     try {
       //if (true) throw new IllegalArgumentException("Ticket1978*Spec isn't enabled")
 
-      val config = ConfigFactory.parseString(
-        conf.format(
-          localPort,
-          trustStore,
-          keyStore,
-          cipher,
-          enabled.mkString(", ")))
+      val config = ConfigFactory.parseString(conf.format(
+        localPort,
+        trustStore,
+        keyStore,
+        cipher,
+        enabled.mkString(", ")))
       val fullConfig = config
         .withFallback(AkkaSpec.testConf)
         .withFallback(ConfigFactory.load)
@@ -125,19 +124,17 @@ class Ticket1978SHA1PRNGSpec
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class Ticket1978AES128CounterSecureRNGSpec
-    extends Ticket1978CommunicationSpec(
-      getCipherConfig(
-        "AES128CounterSecureRNG",
-        "TLS_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_RSA_WITH_AES_256_CBC_SHA"))
+    extends Ticket1978CommunicationSpec(getCipherConfig(
+      "AES128CounterSecureRNG",
+      "TLS_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_RSA_WITH_AES_256_CBC_SHA"))
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class Ticket1978AES256CounterSecureRNGSpec
-    extends Ticket1978CommunicationSpec(
-      getCipherConfig(
-        "AES256CounterSecureRNG",
-        "TLS_RSA_WITH_AES_128_CBC_SHA",
-        "TLS_RSA_WITH_AES_256_CBC_SHA"))
+    extends Ticket1978CommunicationSpec(getCipherConfig(
+      "AES256CounterSecureRNG",
+      "TLS_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_RSA_WITH_AES_256_CBC_SHA"))
 
 /**
   * Both of the `Inet` variants require access to the Internet to access random.org.

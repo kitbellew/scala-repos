@@ -49,8 +49,8 @@ private[finagle] class ClockedDrainer(
     log: Logger,
     lr: LogsReceiver = NullLogsReceiver,
     statsReceiver: StatsReceiver = NullStatsReceiver,
-    verbose: Boolean = false
-) extends Thread("GcDrainer")
+    verbose: Boolean = false)
+    extends Thread("GcDrainer")
     with Lessor {
 
   private[this] val lessees = Collections.newSetFromMap(
@@ -308,19 +308,13 @@ private[finagle] object ClockedDrainer {
           val rSnooper = new RequestSnooper(
             coord.counter,
             drainerPercentile().toDouble / 100.0,
-            lr
-          )
+            lr)
 
           val (min, max) = drainerDiscountRange()
           assert(min < max)
 
-          val space = new MemorySpace(
-            coord.counter.info,
-            min,
-            max,
-            rSnooper,
-            lr
-          )
+          val space =
+            new MemorySpace(coord.counter.info, min, max, rSnooper, lr)
 
           new ClockedDrainer(
             coord,
@@ -329,8 +323,7 @@ private[finagle] object ClockedDrainer {
             rSnooper,
             log,
             lr,
-            DefaultStatsReceiver.scope("gcdrainer")
-          )
+            DefaultStatsReceiver.scope("gcdrainer"))
       }
     } else {
       log.info("Drainer is disabled; bypassing")

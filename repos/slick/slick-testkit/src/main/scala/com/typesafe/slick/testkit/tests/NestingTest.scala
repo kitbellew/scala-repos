@@ -27,8 +27,7 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       (3, "3", "b", 5),
       (1, "1", "c", 5),
       (2, "2", "c", 5),
-      (3, "3", "c", 5)
-    )
+      (3, "3", "c", 5))
     val res1b = res1.map { case (a, b, c, d) => ((a, b), (c, d)) }
 
     val q1a =
@@ -170,8 +169,7 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       mark("q2c", q2c.result)
         .map(_ shouldBe r.map(t => Some(t._1)).map(_.map(_ + 42))),
       mark("q3c", q3c.result)
-        .map(_ shouldBe r.map(t => t._3).map(_.map(_ + 10)))
-    )
+        .map(_ shouldBe r.map(t => t._3).map(_.map(_ + 10))))
 
     // Use Option.map
     val q1d = q1.map(_.map(_.a))
@@ -180,10 +178,8 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
     val q3d = q3.map(_.map(s => (s, s, 1)))
     val q4d = q4.map(_.filter(_.isDefined).map(_.getOrElse(0)))
     val q1dt: Query[Rep[Option[Int]], _, Seq] = q1d
-    val q1d2t: Query[
-      Rep[Option[(Rep[Int], Rep[String], Rep[Option[Int]])]],
-      _,
-      Seq] = q1d2
+    val q1d2t: Query[Rep[
+      Option[(Rep[Int], Rep[String], Rep[Option[Int]])]], _, Seq] = q1d2
     val q2dt: Query[Rep[Option[Int]], _, Seq] = q2d
     val q3dt
         : Query[Rep[Option[(Rep[Int], Rep[Int], ConstColumn[Int])]], _, Seq] =
@@ -312,7 +308,6 @@ class NestingTest extends AsyncTest[RelationalTestDB] {
       chords.schema.create,
       chords ++= allChords,
       (minorChords ++ otherChords).result
-        .map(_.toSet shouldBe allChords.map(c => (c.name, c.popularOptions)))
-    )
+        .map(_.toSet shouldBe allChords.map(c => (c.name, c.popularOptions))))
   }
 }

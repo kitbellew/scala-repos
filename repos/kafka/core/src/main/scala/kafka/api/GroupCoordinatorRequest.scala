@@ -71,10 +71,9 @@ case class GroupCoordinatorRequest(
       None,
       Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
       correlationId)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, errorResponse)))
   }
 
   def describe(details: Boolean) = {

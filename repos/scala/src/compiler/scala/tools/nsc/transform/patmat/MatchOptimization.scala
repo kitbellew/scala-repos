@@ -73,8 +73,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
               case (priorTest, deps) =>
                 ((simplify(
                   priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
-                  (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
-                ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
+                  (
+                    nonTrivial subsetOf deps
+                  ) // or if it depends on a superset of our conditions
+                ) && (
+                  deps subsetOf tested
+                ) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
             } foreach {
               case (priorTest, _) =>
                 // if so, note the dependency in both tests
@@ -113,7 +117,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         val (sharedPrefix, suffix) = tests span { test =>
           (test.prop == True) || (for (reusedTest <- test.reuses;
                                        nextDeps <- dependencies.get(reusedTest);
-                                       diff <- (nextDeps -- currDeps).headOption;
+                                       diff <- (
+                                         nextDeps -- currDeps
+                                       ).headOption;
                                        _ <- Some(currDeps = nextDeps))
             yield diff).nonEmpty
         }
@@ -429,10 +435,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           if (unguardedComesLastOrAbsent /*(1)*/ && impliesCurr.forall(
                 caseEquals(currCase)
               ) /*(2)*/ ) {
-            collapsed += (
-              if (impliesCurr.isEmpty && !isGuardedCase(currCase)) currCase
-              else collapse(currCase :: impliesCurr, currIsDefault)
-            )
+            collapsed += (if (impliesCurr.isEmpty && !isGuardedCase(currCase))
+                            currCase
+                          else collapse(currCase :: impliesCurr, currIsDefault))
 
             remainingCases = others
           } else { // fail
@@ -677,11 +682,10 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           val scrutToInt: Tree =
             if (scrutSym.tpe =:= IntTpe) REF(scrutSym)
             else (REF(scrutSym) DOT (nme.toInt))
-          Some(
-            BLOCK(
-              ValDef(scrutSym, scrut),
-              Match(scrutToInt, caseDefsWithDefault) // a switch
-            ))
+          Some(BLOCK(
+            ValDef(scrutSym, scrut),
+            Match(scrutToInt, caseDefsWithDefault) // a switch
+          ))
         }
       } else None
     }
@@ -700,13 +704,12 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           x match {
             case tm @ TypeTestTreeMaker(_, _, pt, _)
                 if tm.isPureTypeTest => //  -- TODO: use this if binder does not occur in the body
-              Some(
-                Bind(
-                  tm.nextBinder,
-                  Typed(
-                    Ident(nme.WILDCARD),
-                    TypeTree(pt)
-                  ) /* not used by back-end */ ))
+              Some(Bind(
+                tm.nextBinder,
+                Typed(
+                  Ident(nme.WILDCARD),
+                  TypeTree(pt)
+                ) /* not used by back-end */ ))
             case _ =>
               None
           }
@@ -732,12 +735,11 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
           body: Tree = defaultBody): CaseDef = {
         import CODE._;
         atPos(body.pos) {
-          (CASE(
-            Bind(
-              scrutSym,
-              Typed(
-                Ident(nme.WILDCARD),
-                TypeTree(ThrowableTpe)))) IF guard) ==> body
+          (CASE(Bind(
+            scrutSym,
+            Typed(
+              Ident(nme.WILDCARD),
+              TypeTree(ThrowableTpe)))) IF guard) ==> body
         }
       }
     }
@@ -761,11 +763,9 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         pt: Type): (List[List[TreeMaker]], List[Tree]) = {
       // TODO: do CSE on result of doDCE(prevBinder, cases, pt)
       val optCases = doCSE(prevBinder, cases, pt)
-      val toHoist = (
-        for (treeMakers <- optCases) yield treeMakers.collect {
-          case tm: ReusedCondTreeMaker => tm.treesToHoist
-        }
-      ).flatten.flatten.toList
+      val toHoist = (for (treeMakers <- optCases) yield treeMakers.collect {
+        case tm: ReusedCondTreeMaker => tm.treesToHoist
+      }).flatten.flatten.toList
       (optCases, toHoist)
     }
   }

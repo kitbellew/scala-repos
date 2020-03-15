@@ -89,19 +89,17 @@ abstract class SnapshotStoreSpec(config: Config)
       snapshotStore.tell(
         LoadSnapshot(pid, SnapshotSelectionCriteria.Latest, Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(4), s"s-5")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(4), s"s-5")),
+        Long.MaxValue))
     }
     "load the most recent snapshot matching an upper sequence number bound" in {
       snapshotStore.tell(
         LoadSnapshot(pid, SnapshotSelectionCriteria(13), Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(2), s"s-3")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(2), s"s-3")),
+        Long.MaxValue))
       snapshotStore.tell(
         LoadSnapshot(pid, SnapshotSelectionCriteria.Latest, 13),
         senderProbe.ref)
@@ -115,15 +113,14 @@ abstract class SnapshotStoreSpec(config: Config)
           SnapshotSelectionCriteria(13, metadata(2).timestamp),
           Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(2), s"s-3")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(2), s"s-3")),
+        Long.MaxValue))
       snapshotStore.tell(
         LoadSnapshot(
           pid,
-          SnapshotSelectionCriteria.Latest.copy(maxTimestamp =
-            metadata(2).timestamp),
+          SnapshotSelectionCriteria.Latest
+            .copy(maxTimestamp = metadata(2).timestamp),
           13),
         senderProbe.ref)
       senderProbe.expectMsg(
@@ -131,7 +128,8 @@ abstract class SnapshotStoreSpec(config: Config)
     }
     "delete a single snapshot identified by sequenceNr in snapshot metadata" in {
       val md = metadata(2).copy(timestamp =
-        0L) // don't care about timestamp for delete of single snap
+        0L
+      ) // don't care about timestamp for delete of single snap
       val cmd = DeleteSnapshot(md)
       val sub = TestProbe()
 
@@ -146,10 +144,9 @@ abstract class SnapshotStoreSpec(config: Config)
           SnapshotSelectionCriteria(md.sequenceNr),
           Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(1), s"s-2")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(1), s"s-2")),
+        Long.MaxValue))
     }
     "delete all snapshots matching upper sequence number and timestamp bounds" in {
       val md = metadata(2)
@@ -177,10 +174,9 @@ abstract class SnapshotStoreSpec(config: Config)
             metadata(3).timestamp),
           Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(3), s"s-4")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(3), s"s-4")),
+        Long.MaxValue))
     }
     "not delete snapshots with non-matching upper timestamp bounds" in {
       val md = metadata(3)
@@ -201,10 +197,9 @@ abstract class SnapshotStoreSpec(config: Config)
             metadata(3).timestamp),
           Long.MaxValue),
         senderProbe.ref)
-      senderProbe.expectMsg(
-        LoadSnapshotResult(
-          Some(SelectedSnapshot(metadata(3), s"s-4")),
-          Long.MaxValue))
+      senderProbe.expectMsg(LoadSnapshotResult(
+        Some(SelectedSnapshot(metadata(3), s"s-4")),
+        Long.MaxValue))
     }
     "save and overwrite snapshot with same sequence number" in {
       val md = metadata(4)

@@ -259,9 +259,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Literal(
           """{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
           jsonTupleQuery),
-      InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(
-          UTF8String.fromString))
+      InternalRow.fromSeq(Seq("value13", "2", "value33", "value44", "5.01").map(
+        UTF8String.fromString))
     )
   }
 
@@ -271,9 +270,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         NonFoldableLiteral("""{"f1": "value13", "f4": "value44",
             | "f3": "value33", "f2": 2, "f5": 5.01}""".stripMargin)
           :: jsonTupleQuery),
-      InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(
-          UTF8String.fromString))
+      InternalRow.fromSeq(Seq("value13", "2", "value33", "value44", "5.01").map(
+        UTF8String.fromString))
     )
   }
 
@@ -288,9 +286,8 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
           NonFoldableLiteral("f4") ::
           NonFoldableLiteral("f5") ::
           Nil),
-      InternalRow.fromSeq(
-        Seq("value13", "2", "value33", "value44", "5.01").map(
-          UTF8String.fromString))
+      InternalRow.fromSeq(Seq("value13", "2", "value33", "value44", "5.01").map(
+        UTF8String.fromString))
     )
   }
 

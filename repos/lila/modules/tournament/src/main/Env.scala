@@ -115,27 +115,16 @@ final class Env(
 
   system.actorOf(Props(new ApiActor(api = api)), name = ApiActorName)
 
-  system.actorOf(
-    Props(
-      new CreatedOrganizer(
-        api = api,
-        isOnline = isOnline
-      )))
+  system.actorOf(Props(new CreatedOrganizer(api = api, isOnline = isOnline)))
 
-  private val reminder = system.actorOf(
-    Props(
-      new Reminder(
-        renderer = hub.actor.renderer
-      )))
+  private val reminder = system.actorOf(Props(
+    new Reminder(renderer = hub.actor.renderer)))
 
-  system.actorOf(
-    Props(
-      new StartedOrganizer(
-        api = api,
-        reminder = reminder,
-        isOnline = isOnline,
-        socketHub = socketHub
-      )))
+  system.actorOf(Props(new StartedOrganizer(
+    api = api,
+    reminder = reminder,
+    isOnline = isOnline,
+    socketHub = socketHub)))
 
   system.actorOf(Props(new Scheduler(api)))
 

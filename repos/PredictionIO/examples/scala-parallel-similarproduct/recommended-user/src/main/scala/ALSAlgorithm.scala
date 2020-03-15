@@ -19,8 +19,8 @@ case class ALSAlgorithmParams(
 class ALSModel(
     val similarUserFeatures: Map[Int, Array[Double]],
     val similarUserStringIntMap: BiMap[String, Int],
-    val similarUsers: Map[Int, User]
-) extends Serializable {
+    val similarUsers: Map[Int, User])
+    extends Serializable {
 
   @transient lazy val similarUserIntStringMap = similarUserStringIntMap.inverse
 
@@ -75,8 +75,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val iindex = similarUserStringIntMap.getOrElse(r.followedUser, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
           logger.info(
@@ -118,8 +119,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     new ALSModel(
       similarUserFeatures = m.productFeatures.collectAsMap().toMap,
       similarUserStringIntMap = similarUserStringIntMap,
-      similarUsers = similarUsers
-    )
+      similarUsers = similarUsers)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
@@ -161,18 +161,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           similarUsers = model.similarUsers,
           queryList = queryList,
           whiteList = whiteList,
-          blackList = blackList
-        )
+          blackList = blackList)
     }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
     val similarUserScores = topScores.map {
       case (i, s) =>
-        new similarUserScore(
-          user = model.similarUserIntStringMap(i),
-          score = s
-        )
+        new similarUserScore(user = model.similarUserIntStringMap(i), score = s)
     }
 
     new PredictedResult(similarUserScores)
@@ -217,8 +213,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       similarUsers: Map[Int, User],
       queryList: Set[Int],
       whiteList: Option[Set[Int]],
-      blackList: Option[Set[Int]]
-  ): Boolean = {
+      blackList: Option[Set[Int]]): Boolean = {
     whiteList.map(_.contains(i)).getOrElse(true) &&
     blackList.map(!_.contains(i)).getOrElse(true) &&
     // discard similarUsers in query as well

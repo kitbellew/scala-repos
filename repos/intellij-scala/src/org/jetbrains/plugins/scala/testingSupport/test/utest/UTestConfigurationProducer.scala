@@ -77,14 +77,13 @@ with AbstractTestConfigurationProducer {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
       }
-      return Some(
-        (
+      return Some((
+        element,
+        TestConfigurationUtil.packageSettings(
           element,
-          TestConfigurationUtil.packageSettings(
-            element,
-            location,
-            confFactory,
-            ScalaBundle.message("test.in.scope.utest.presentable.text", name))))
+          location,
+          confFactory,
+          ScalaBundle.message("test.in.scope.utest.presentable.text", name))))
     }
 
     val (testClass, testName) = getLocationClassAndTest(location)
@@ -236,8 +235,7 @@ with AbstractTestConfigurationProducer {
         TestNodeProvider
           .getUTestLeftHandTestDefinition(element)
           .flatMap(getTestSuiteName)
-          .orNull
-      )
+          .orNull)
     (containingObject, testName)
   }
 }

@@ -99,8 +99,7 @@ object ThreadPoolsSpec extends PlaySpecification {
             parallelism-max = 200
           }
         }
-      #my-context-config """
-    ) { implicit app =>
+      #my-context-config """) { implicit app =>
       val akkaSystem = app.actorSystem
       //#my-context-usage
       val myExecutionContext: ExecutionContext = akkaSystem.dispatchers.lookup(
@@ -186,8 +185,7 @@ object ThreadPoolsSpec extends PlaySpecification {
           }
         }
       }
-    #many-specific-config """
-    ) { implicit app =>
+    #many-specific-config """) { implicit app =>
       val akkaSystem = app.actorSystem
       //#many-specific-contexts
       object Contexts {

@@ -21,9 +21,7 @@ import com.zaxxer.hikari.{HikariDataSource, HikariConfig}
   */
 class HikariCPModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[ConnectionPool].to[HikariCPConnectionPool]
-    )
+    Seq(bind[ConnectionPool].to[HikariCPConnectionPool])
   }
 }
 
@@ -124,8 +122,8 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
 
     // Frequently used
     hikariConfig.setAutoCommit(config.get[Boolean]("autoCommit"))
-    hikariConfig.setConnectionTimeout(
-      toMillis(config.get[Duration]("connectionTimeout")))
+    hikariConfig.setConnectionTimeout(toMillis(
+      config.get[Duration]("connectionTimeout")))
     hikariConfig.setIdleTimeout(toMillis(config.get[Duration]("idleTimeout")))
     hikariConfig.setMaxLifetime(toMillis(config.get[Duration]("maxLifetime")))
     config
@@ -153,8 +151,8 @@ class HikariCPConfig(dbConfig: DatabaseConfig, configuration: PlayConfig) {
       .foreach(hikariConfig.setTransactionIsolation)
     hikariConfig.setValidationTimeout(
       config.get[FiniteDuration]("validationTimeout").toMillis)
-    hikariConfig.setLeakDetectionThreshold(
-      toMillis(config.get[Duration]("leakDetectionThreshold")))
+    hikariConfig.setLeakDetectionThreshold(toMillis(
+      config.get[Duration]("leakDetectionThreshold")))
 
     hikariConfig.validate()
     hikariConfig

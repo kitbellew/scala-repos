@@ -179,9 +179,10 @@ trait GenTrees {
         }
 
       case _ =>
-        throw new Error(
-          "internal error: %s (%s, %s) is not supported"
-            .format(tree, tree.productPrefix, tree.getClass))
+        throw new Error("internal error: %s (%s, %s) is not supported".format(
+          tree,
+          tree.productPrefix,
+          tree.getClass))
     }
   }
 
@@ -250,9 +251,10 @@ trait GenTrees {
         reifyBoundType(tree)
 
       case _ =>
-        throw new Error(
-          "internal error: %s (%s, %s) is not supported"
-            .format(tree, tree.productPrefix, tree.getClass))
+        throw new Error("internal error: %s (%s, %s) is not supported".format(
+          tree,
+          tree.productPrefix,
+          tree.getClass))
     }
   }
 

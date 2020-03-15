@@ -133,8 +133,8 @@ object JsMacroImpl {
     // Find an apply method that matches the unapply
     val maybeApply = applies.collectFirst {
       case (apply: MethodSymbol) if hasVarArgs && {
-            val someApplyTypes = apply.paramLists.headOption
-              .map(_.map(_.asTerm.typeSignature))
+            val someApplyTypes = apply.paramLists.headOption.map(_.map(
+              _.asTerm.typeSignature))
             val someInitApply = someApplyTypes.map(_.init)
             val someApplyLast = someApplyTypes.map(_.last)
             val someInitUnapply = unapplyReturnTypes.map(_.init)

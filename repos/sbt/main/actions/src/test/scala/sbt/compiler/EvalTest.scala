@@ -30,12 +30,11 @@ object EvalTest extends Properties("eval") {
   property("type mismatch") = forAll { (i: Int, l: Int) =>
     val line = math.abs(l)
     val src = "mismatch"
-    throws(classOf[RuntimeException])(
-      eval.eval(
-        i.toString,
-        tpeName = Some(BooleanType),
-        line = line,
-        srcName = src)) &&
+    throws(classOf[RuntimeException])(eval.eval(
+      i.toString,
+      tpeName = Some(BooleanType),
+      line = line,
+      srcName = src)) &&
     hasErrors(line + 1, src)
   }
 
@@ -80,16 +79,14 @@ val p = {
   property("wildcard import") = forAll(testImport("import math._" :: Nil))
   property("comma-separated imports") = forAll(
     testImport("import annotation._, math._, meta._" :: Nil))
-  property("multiple imports") = forAll(
-    testImport(
-      "import annotation._" :: "import math._" :: "import meta._" :: Nil))
+  property("multiple imports") = forAll(testImport(
+    "import annotation._" :: "import math._" :: "import meta._" :: Nil))
 
   private[this] def testImport(imports: Seq[String]): Int => Prop =
     i =>
-      value(
-        eval.eval(
-          "abs(" + i + ")",
-          new EvalImports(imports.zipWithIndex, "imp"))) == math.abs(i)
+      value(eval.eval(
+        "abs(" + i + ")",
+        new EvalImports(imports.zipWithIndex, "imp"))) == math.abs(i)
 
   private[this] def local(i: Int) =
     "{ class ETest(val i: Int); new ETest(" + i + ") }"

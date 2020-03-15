@@ -21,13 +21,12 @@ object Test extends DirectTest {
     val classpath =
       List(sys.props("partest.lib"), sys.props("partest.reflect")) mkString sys
         .props("path.separator")
-    compileString(
-      newCompiler(
-        "-language:experimental.macros",
-        "-cp",
-        classpath,
-        "-d",
-        testOutput.path))(macros_1)
+    compileString(newCompiler(
+      "-language:experimental.macros",
+      "-cp",
+      classpath,
+      "-d",
+      testOutput.path))(macros_1)
   }
 
   def test_2 = """

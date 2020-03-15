@@ -177,14 +177,12 @@ final class Eval(
     // TODO - We also encode the source of the setting into the hash to avoid conflicts where the exact SAME setting
     // is defined in multiple evaluated instances with a backing.  This leads to issues with finding a previous
     // value on the classpath when compiling.
-    val hash = Hash.toHex(
-      Hash(
-        bytes(
-          stringSeqBytes(content) :: optBytes(backing)(
-            fileExistsBytes) :: stringSeqBytes(options) ::
-            seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
-            imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
-            bytes(ev.extraHash) :: Nil)))
+    val hash = Hash.toHex(Hash(bytes(
+      stringSeqBytes(content) :: optBytes(backing)(
+        fileExistsBytes) :: stringSeqBytes(options) ::
+        seqBytes(classpath)(fileModifiedBytes) :: stringSeqBytes(
+        imports.strings.map(_._1)) :: optBytes(tpeName)(bytes) ::
+        bytes(ev.extraHash) :: Nil)))
     val moduleName = makeModuleName(hash)
 
     lazy val unit = {
@@ -386,16 +384,14 @@ final class Eval(
         "  Ensure that there are no blank lines within a definition.",
       missingBlank = "  Ensure that definitions are separated by blank lines.",
       extraSemi =
-        "  A trailing semicolon is not permitted for standalone definitions."
-    )
+        "  A trailing semicolon is not permitted for standalone definitions.")
   private[this] def settingErrorStrings =
     new ParseErrorStrings(
       base = "Error parsing expression.",
       extraBlank = "  Ensure that there are no blank lines within a setting.",
       missingBlank = "  Ensure that settings are separated by blank lines.",
       extraSemi =
-        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
-    )
+        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)")
 
   /**
     * Parses the provided compilation `unit` according to `f` and then performs checks on the final parser state

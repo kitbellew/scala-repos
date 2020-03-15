@@ -584,12 +584,11 @@ class Dataset[T] private[sql] (
     // Analyze the self join. The assumption is that the analyzer will disambiguate left vs right
     // by creating a new instance for one of the branch.
     val joined = sqlContext
-      .executePlan(
-        Join(
-          logicalPlan,
-          right.logicalPlan,
-          joinType = JoinType(joinType),
-          None))
+      .executePlan(Join(
+        logicalPlan,
+        right.logicalPlan,
+        joinType = JoinType(joinType),
+        None))
       .analyzed
       .asInstanceOf[Join]
 
@@ -649,12 +648,11 @@ class Dataset[T] private[sql] (
 
     // Trigger analysis so in the case of self-join, the analyzer will clone the plan.
     // After the cloning, left and right side will have distinct expression ids.
-    val plan = withPlan(
-      Join(
-        logicalPlan,
-        right.logicalPlan,
-        JoinType(joinType),
-        Some(joinExprs.expr))).queryExecution.analyzed.asInstanceOf[Join]
+    val plan = withPlan(Join(
+      logicalPlan,
+      right.logicalPlan,
+      JoinType(joinType),
+      Some(joinExprs.expr))).queryExecution.analyzed.asInstanceOf[Join]
 
     // If auto self join alias is disabled, return the plan.
     if (!sqlContext.conf.dataFrameSelfJoinAutoResolveAmbiguity) {

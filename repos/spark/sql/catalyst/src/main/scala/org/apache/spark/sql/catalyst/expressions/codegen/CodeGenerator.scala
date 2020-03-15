@@ -682,21 +682,20 @@ object CodeGenerator extends Logging {
     // Cannot be under package codegen, or fail with java.lang.InstantiationException
     evaluator.setClassName(
       "org.apache.spark.sql.catalyst.expressions.GeneratedClass")
-    evaluator.setDefaultImports(
-      Array(
-        classOf[Platform].getName,
-        classOf[InternalRow].getName,
-        classOf[UnsafeRow].getName,
-        classOf[UTF8String].getName,
-        classOf[Decimal].getName,
-        classOf[CalendarInterval].getName,
-        classOf[ArrayData].getName,
-        classOf[UnsafeArrayData].getName,
-        classOf[MapData].getName,
-        classOf[UnsafeMapData].getName,
-        classOf[MutableRow].getName,
-        classOf[Expression].getName
-      ))
+    evaluator.setDefaultImports(Array(
+      classOf[Platform].getName,
+      classOf[InternalRow].getName,
+      classOf[UnsafeRow].getName,
+      classOf[UTF8String].getName,
+      classOf[Decimal].getName,
+      classOf[CalendarInterval].getName,
+      classOf[ArrayData].getName,
+      classOf[UnsafeArrayData].getName,
+      classOf[MapData].getName,
+      classOf[UnsafeMapData].getName,
+      classOf[MutableRow].getName,
+      classOf[Expression].getName
+    ))
     evaluator.setExtendedClass(classOf[GeneratedClass])
 
     def formatted = CodeFormatter.format(code)

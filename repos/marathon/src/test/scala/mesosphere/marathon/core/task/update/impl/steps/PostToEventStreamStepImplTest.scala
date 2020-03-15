@@ -31,33 +31,28 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
     Then("the appropriate event is posted")
     events should have size 1
-    events should be(
-      Seq(
-        MesosStatusUpdateEvent(
-          slaveId = slaveId.getValue,
-          taskId = taskId,
-          taskStatus = status.getState.name,
-          message = taskStatusMessage,
-          appId = appId,
-          host = host,
-          ipAddresses = Nil,
-          ports = portsList,
-          version = version.toString,
-          timestamp = updateTimestamp.toString
-        )
-      ))
+    events should be(Seq(MesosStatusUpdateEvent(
+      slaveId = slaveId.getValue,
+      taskId = taskId,
+      taskStatus = status.getState.name,
+      message = taskStatusMessage,
+      appId = appId,
+      host = host,
+      ipAddresses = Nil,
+      ports = portsList,
+      version = version.toString,
+      timestamp = updateTimestamp.toString
+    )))
     And("only sending event info gets logged")
     logs should have size 1
     logs.map(_.toString) should be(Seq(
-      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"
-    ))
+      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"))
   }
 
   test("ignore running notification of already running task") {
@@ -74,8 +69,7 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
@@ -114,33 +108,28 @@ class PostToEventStreamStepImplTest
         .processUpdate(
           timestamp = updateTimestamp,
           task = existingTask,
-          status = status
-        )
+          status = status)
         .futureValue
     }
 
     Then("the appropriate event is posted")
     events should have size 1
-    events should be(
-      Seq(
-        MesosStatusUpdateEvent(
-          slaveId = slaveId.getValue,
-          taskId = taskId,
-          taskStatus = status.getState.name,
-          message = taskStatusMessage,
-          appId = appId,
-          host = host,
-          ipAddresses = Nil,
-          ports = portsList,
-          version = version.toString,
-          timestamp = updateTimestamp.toString
-        )
-      ))
+    events should be(Seq(MesosStatusUpdateEvent(
+      slaveId = slaveId.getValue,
+      taskId = taskId,
+      taskStatus = status.getState.name,
+      message = taskStatusMessage,
+      appId = appId,
+      host = host,
+      ipAddresses = Nil,
+      ports = portsList,
+      version = version.toString,
+      timestamp = updateTimestamp.toString
+    )))
     And("only sending event info gets logged")
     logs should have size 1
     logs.map(_.toString) should be(Seq(
-      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"
-    ))
+      s"[INFO] Sending event notification for $taskId of app [$appId]: ${status.getState}"))
   }
 
   private[this] val slaveId = SlaveID.newBuilder().setValue("slave1")

@@ -152,11 +152,10 @@ object FormFieldDirectives extends FormFieldDirectives {
         case Failure(x: UnsupportedContentTypeException) ⇒
           reject(UnsupportedRequestContentTypeRejection(x.supported))
         case Failure(x) ⇒
-          reject(
-            MalformedFormFieldRejection(
-              fieldName,
-              x.getMessage.nullAsEmpty,
-              Option(x.getCause)))
+          reject(MalformedFormFieldRejection(
+            fieldName,
+            x.getMessage.nullAsEmpty,
+            Option(x.getCause)))
       }
 
     //////////////////// "regular" formField extraction ////////////////////
@@ -200,9 +199,9 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameDefaultReceptacle[T], T] { nr ⇒
         filter(nr.name, fu withDefaultValue nr.default)
       }
-    implicit def forNOUR[T](implicit sfu: SFU): FieldDefAux[
-      NameOptionUnmarshallerReceptacle[T],
-      Directive1[Option[T]]] =
+    implicit def forNOUR[T](
+        implicit sfu: SFU): FieldDefAux[NameOptionUnmarshallerReceptacle[
+      T], Directive1[Option[T]]] =
       extractField[NameOptionUnmarshallerReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](
           nr.name,
@@ -260,9 +259,9 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, fu)
       }
-    implicit def forRepVDR[T](implicit sfu: SFU): FieldDefAux[
-      RepeatedValueUnmarshallerReceptacle[T],
-      Directive1[Iterable[T]]] =
+    implicit def forRepVDR[T](
+        implicit sfu: SFU): FieldDefAux[RepeatedValueUnmarshallerReceptacle[
+      T], Directive1[Iterable[T]]] =
       extractField[RepeatedValueUnmarshallerReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, StrictForm.Field.unmarshallerFromFSU(rvr.um))
       }
@@ -279,11 +278,10 @@ object FormFieldDirectives extends FormFieldDirectives {
     object ConvertFieldDefAndConcatenate extends BinaryPolyFunc {
       implicit def from[P, TA, TB](implicit
           fdef: FieldDefAux[P, Directive[TB]],
-          ev: Join[TA, TB]): BinaryPolyFunc.Case[
-        Directive[TA],
-        P,
-        ConvertFieldDefAndConcatenate.type] { type Out = Directive[ev.Out] } =
-        at[Directive[TA], P] { (a, t) ⇒ a & fdef(t) }
+          ev: Join[TA, TB]): BinaryPolyFunc.Case[Directive[
+        TA], P, ConvertFieldDefAndConcatenate.type] {
+        type Out = Directive[ev.Out]
+      } = at[Directive[TA], P] { (a, t) ⇒ a & fdef(t) }
     }
   }
 }

@@ -549,11 +549,10 @@ trait ${typeClassName}Syntax[F[_], S] ${extendsListText("Syntax", cti = "F")} {
     }
     val syntaxSourceFile =
       if (tc.createSyntax) {
-        Some(
-          SourceFile(
-            tc.syntaxPack,
-            typeClassName + "Syntax.scala",
-            syntaxSource))
+        Some(SourceFile(
+          tc.syntaxPack,
+          typeClassName + "Syntax.scala",
+          syntaxSource))
       } else None
 
     TypeClassSource(mainSourceFile, syntaxSourceFile)

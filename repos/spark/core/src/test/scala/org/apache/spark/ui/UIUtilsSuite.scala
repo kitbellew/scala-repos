@@ -67,8 +67,7 @@ class UIUtilsSuite extends SparkFunSuite {
       .filter(_.label == "div")
     val expected = Seq(
       <div class="bar bar-completed" style="width: 75.0%"></div>,
-      <div class="bar bar-running" style="width: 25.0%"></div>
-    )
+      <div class="bar bar-running" style="width: 25.0%"></div>)
     assert(
       generated.sameElements(expected),
       s"\nRunning progress bar should round down\n\nExpected:\n$expected\nGenerated:\n$generated")

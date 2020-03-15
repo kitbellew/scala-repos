@@ -165,8 +165,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
        * }}}
        * the type the method returns is TraversableOps, which has all-abstract symbols. But in reality, it couldn't have
        * any abstract terms, otherwise it would fail compilation. So we reset the DEFERRED flag. */
-      if (!sym.isTrait && (sym hasFlag Flags.DEFERRED) && (!isImplicitlyInherited))
-        fgs += Paragraph(Text("abstract"))
+      if (!sym.isTrait && (sym hasFlag Flags.DEFERRED) && (
+            !isImplicitlyInherited
+          )) fgs += Paragraph(Text("abstract"))
       if (!sym.isModule && (sym hasFlag Flags.FINAL))
         fgs += Paragraph(Text("final"))
       if (sym.isMacro) fgs += Paragraph(Text("macro"))
@@ -221,7 +222,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def isAbstractType = false
     def isAbstract =
       // for the explanation of conversion == null see comment on flags
-      ((!sym.isTrait && ((sym hasFlag Flags.ABSTRACT) || (sym hasFlag Flags.DEFERRED)) && (!isImplicitlyInherited)) ||
+      ((!sym.isTrait && (
+        (sym hasFlag Flags.ABSTRACT) || (sym hasFlag Flags.DEFERRED)
+      ) && (!isImplicitlyInherited)) ||
         sym.isAbstractClass || sym.isAbstractType) && !sym.isSynthetic
 
     def signature = externalSignature(sym)
@@ -380,10 +383,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
 
     /* Subclass cache */
     private lazy val subClassesCache =
-      (
-        if (sym == AnyRefClass || sym == AnyClass) null
-        else mutable.ListBuffer[DocTemplateEntity]()
-      )
+      (if (sym == AnyRefClass || sym == AnyClass) null
+       else mutable.ListBuffer[DocTemplateEntity]())
     def registerSubClass(sc: DocTemplateEntity): Unit = {
       if (subClassesCache != null) subClassesCache += sc
     }
@@ -500,8 +501,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       companionSymbol match {
         case NoSymbol => None
         case comSym
-            if !isEmptyJavaObject(
-              comSym) && (comSym.isClass || comSym.isModule) =>
+            if !isEmptyJavaObject(comSym) && (
+              comSym.isClass || comSym.isModule
+            ) =>
           makeTemplate(comSym) match {
             case d: DocTemplateImpl => Some(d)
             case _                  => None
@@ -654,21 +656,19 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def lo =
       sym.info.bounds match {
         case TypeBounds(lo, hi) if lo.typeSymbol != NothingClass =>
-          Some(
-            makeTypeInTemplateContext(
-              appliedType(lo, sym.info.typeParams map { _.tpe }),
-              inTpl,
-              sym))
+          Some(makeTypeInTemplateContext(
+            appliedType(lo, sym.info.typeParams map { _.tpe }),
+            inTpl,
+            sym))
         case _ => None
       }
     def hi =
       sym.info.bounds match {
         case TypeBounds(lo, hi) if hi.typeSymbol != AnyClass =>
-          Some(
-            makeTypeInTemplateContext(
-              appliedType(hi, sym.info.typeParams map { _.tpe }),
-              inTpl,
-              sym))
+          Some(makeTypeInTemplateContext(
+            appliedType(hi, sym.info.typeParams map { _.tpe }),
+            inTpl,
+            sym))
         case _ => None
       }
   }
@@ -852,10 +852,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         assert(modelFinished) // only created AFTER the model is finished
         if (bSym.isModule || (bSym.isAliasType && bSym.tpe.typeSymbol.isModule))
           new MemberTemplateImpl(bSym, inTpl) with Object {}
-        else if (bSym.isTrait || (bSym.isAliasType && bSym.tpe.typeSymbol.isTrait))
-          new MemberTemplateImpl(bSym, inTpl) with Trait {}
-        else if (bSym.isClass || (bSym.isAliasType && bSym.tpe.typeSymbol.isClass))
-          new MemberTemplateImpl(bSym, inTpl) with Class {}
+        else if (bSym.isTrait || (
+                   bSym.isAliasType && bSym.tpe.typeSymbol.isTrait
+                 )) new MemberTemplateImpl(bSym, inTpl) with Trait {}
+        else if (bSym.isClass || (
+                   bSym.isAliasType && bSym.tpe.typeSymbol.isClass
+                 )) new MemberTemplateImpl(bSym, inTpl) with Class {}
         else
           sys.error(
             "'" + bSym + "' isn't a class, trait or object thus cannot be built as a member template.")
@@ -921,7 +923,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             override def isDef = true
           })
       } else if (bSym.isConstructor)
-        if (conversion.isDefined || (bSym.enclClass.isAbstract && (bSym.enclClass.isSealed || bSym.enclClass.isFinal)))
+        if (conversion.isDefined || (bSym.enclClass.isAbstract && (
+              bSym.enclClass.isSealed || bSym.enclClass.isFinal
+            )))
           // don't list constructors inherited by implicit conversion
           // and don't list constructors of abstract sealed types (they cannot be accessed anyway)
           None
@@ -1067,18 +1071,18 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       def defaultValue =
         if (aSym.hasDefault) {
           // units.filter should return only one element
-          (currentRun.units filter (_.source.file == aSym.sourceFile)).toList match {
+          (
+            currentRun.units filter (_.source.file == aSym.sourceFile)
+          ).toList match {
             case List(unit) =>
               // SI-4922 `sym == aSym` is insufficent if `aSym` is a clone of symbol
               //         of the parameter in the tree, as can happen with type parametric methods.
               def isCorrespondingParam(sym: Symbol) =
-                (
-                  sym != null &&
-                    sym != NoSymbol &&
-                    sym.owner == aSym.owner &&
-                    sym.name == aSym.name &&
-                    sym.isParamWithDefault
-                )
+                (sym != null &&
+                  sym != NoSymbol &&
+                  sym.owner == aSym.owner &&
+                  sym.name == aSym.name &&
+                  sym.isParamWithDefault)
               unit.body find (t => isCorrespondingParam(t.symbol)) collect {
                 case ValDef(_, _, _, rhs) if rhs ne EmptyTree => makeTree(rhs)
               }
@@ -1122,7 +1126,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
           // we don't want to expose too many links to AnyRef, that will just be redundant information
           tpl match {
             case Some(tpl)
-                if (!tpl.sym.isModule && parents.length < 2) || (tpl.sym == AnyValClass) || (tpl.sym == AnyRefClass) || (tpl.sym == AnyClass) =>
+                if (!tpl.sym.isModule && parents.length < 2) || (
+                  tpl.sym == AnyValClass
+                ) || (tpl.sym == AnyRefClass) || (tpl.sym == AnyClass) =>
               parents
             case _ =>
               parents.filterNot((p: Type) => ignoreParents(p.typeSymbol))
@@ -1192,9 +1198,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       localShouldDocument(aSym) &&
       !isEmptyJavaObject(aSym) &&
       // either it's inside the original owner or we can document it later:
-      (!inOriginalOwner(
-        aSym,
-        inTpl) || (aSym.isPackageClass || (aSym.sourceFile != null)))
+      (!inOriginalOwner(aSym, inTpl) || (
+        aSym.isPackageClass || (aSym.sourceFile != null)
+      ))
 
   def membersShouldDocument(sym: Symbol, inTpl: TemplateImpl) = {
     // pruning modules that shouldn't be documented
@@ -1217,7 +1223,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         localShouldDocument(s) && (!s.isConstructor || s.owner == aSym))
 
   def localShouldDocument(aSym: Symbol): Boolean =
-    !aSym.isPrivate && (aSym.isProtected || aSym.privateWithin == NoSymbol) && !aSym.isSynthetic
+    !aSym.isPrivate && (
+      aSym.isProtected || aSym.privateWithin == NoSymbol
+    ) && !aSym.isSynthetic
 
   /** Filter '@bridge' methods only if *they don't override non-bridge methods*. See SI-5373 for details */
   def isPureBridge(sym: Symbol) =

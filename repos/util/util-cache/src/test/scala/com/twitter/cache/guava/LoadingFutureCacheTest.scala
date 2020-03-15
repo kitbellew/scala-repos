@@ -20,15 +20,12 @@ class LoadingFutureCacheTest extends FunSuite {
     val cache = new LoadingFutureCache(
       CacheBuilder
         .newBuilder()
-        .build(
-          new CacheLoader[String, Future[Int]] {
-            override def load(k: String): Future[Int] = {
-              cacheLoaderCount += 1
-              Future.value(k.hashCode)
-            }
+        .build(new CacheLoader[String, Future[Int]] {
+          override def load(k: String): Future[Int] = {
+            cacheLoaderCount += 1
+            Future.value(k.hashCode)
           }
-        )
-    )
+        }))
   }
 
   test("return CacheLoader result for unset keys") {

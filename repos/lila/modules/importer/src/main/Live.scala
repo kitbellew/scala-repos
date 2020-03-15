@@ -59,7 +59,6 @@ final class Live(roundMap: ActorRef) {
         playerId = pov.playerId,
         uci = uci,
         blur = false,
-        lag = 0.millis
-      ))
+        lag = 0.millis))
   }
 }

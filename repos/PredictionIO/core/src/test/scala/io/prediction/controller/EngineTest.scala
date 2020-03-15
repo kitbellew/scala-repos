@@ -50,10 +50,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
     val engine = new Engine(
       classOf[PDataSource2],
       classOf[PPreparator1],
-      Map(
-        "PAlgo2" -> classOf[PAlgo2],
-        "PAlgo3" -> classOf[PAlgo3]
-      ),
+      Map("PAlgo2" -> classOf[PAlgo2], "PAlgo3" -> classOf[PAlgo3]),
       classOf[LServing1])
 
     val engineParams = EngineParams(
@@ -62,8 +59,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
       algorithmParamsList = Seq(
         ("PAlgo2", PAlgo2.Params(2)),
         ("PAlgo3", PAlgo3.Params(21)),
-        ("PAlgo3", PAlgo3.Params(22))
-      ),
+        ("PAlgo3", PAlgo3.Params(22))),
       servingParams = LServing1.Params(3)
     )
 
@@ -90,8 +86,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
       Map(
         "LAlgo1" -> classOf[LAlgo1],
         "LAlgo2" -> classOf[LAlgo2],
-        "LAlgo3" -> classOf[LAlgo3]
-      ),
+        "LAlgo3" -> classOf[LAlgo3]),
       classOf[LServing1])
 
     val engineParams = EngineParams(
@@ -130,8 +125,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
         "PAlgo2" -> classOf[PAlgo2],
         "PAlgo3" -> classOf[PAlgo3],
         "NAlgo2" -> classOf[NAlgo2],
-        "NAlgo3" -> classOf[NAlgo3]
-      ),
+        "NAlgo3" -> classOf[NAlgo3]),
       classOf[LServing1])
 
     val engineParams = EngineParams(
@@ -241,8 +235,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
         "PAlgo2" -> classOf[PAlgo2],
         "PAlgo3" -> classOf[PAlgo3],
         "NAlgo2" -> classOf[NAlgo2],
-        "NAlgo3" -> classOf[NAlgo3]
-      ),
+        "NAlgo3" -> classOf[NAlgo3]),
       classOf[LServing1])
 
     val engineParams = EngineParams(
@@ -275,16 +268,14 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
       sc,
       engineParams,
       engineInstanceId = fakeEngineInstanceId,
-      params = WorkflowParams()
-    )
+      params = WorkflowParams())
 
     val deployableModels = engine.prepareDeploy(
       sc,
       engineParams,
       fakeEngineInstanceId,
       persistedModels,
-      params = WorkflowParams()
-    )
+      params = WorkflowParams())
 
     deployableModels should contain theSameElementsAs Seq(
       model20,
@@ -306,8 +297,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource0(0),
       new PPreparator0(1),
       Seq(new PAlgo0(2), new PAlgo1(3), new PAlgo0(4)),
-      defaultWorkflowParams
-    )
+      defaultWorkflowParams)
 
     val pd = ProcessedData(1, TrainingData(0))
 
@@ -323,8 +313,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new LDataSource0(0),
       new LPreparator0(1),
       Seq(new LAlgo0(2), new LAlgo1(3), new LAlgo0(4)),
-      defaultWorkflowParams
-    )
+      defaultWorkflowParams)
 
     val pd = ProcessedData(1, TrainingData(0))
 
@@ -347,8 +336,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource0(0),
       new PPreparator0(1),
       Seq(new NAlgo0(2), new NAlgo1(3), new NAlgo0(4)),
-      defaultWorkflowParams
-    )
+      defaultWorkflowParams)
 
     val pd = ProcessedData(1, TrainingData(0))
 
@@ -366,8 +354,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource0(0),
       new PPreparator0(1),
       Seq(new PAlgo0(2), new PAlgo1(3), new PAlgo0(4)),
-      workflowParams
-    )
+      workflowParams)
   }
 
   test("Parallel DS/P/Algos Stop-After-Prepare") {
@@ -378,8 +365,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource0(0),
       new PPreparator0(1),
       Seq(new PAlgo0(2), new PAlgo1(3), new PAlgo0(4)),
-      workflowParams
-    )
+      workflowParams)
   }
 
   test("Parallel DS/P/Algos Dirty TrainingData") {
@@ -390,8 +376,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource3(0, error = true),
       new PPreparator0(1),
       Seq(new PAlgo0(2), new PAlgo1(3), new PAlgo0(4)),
-      workflowParams
-    )
+      workflowParams)
   }
 
   test("Parallel DS/P/Algos Dirty TrainingData But Skip Check") {
@@ -402,8 +387,7 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
       new PDataSource3(0, error = true),
       new PPreparator0(1),
       Seq(new PAlgo0(2), new PAlgo1(3), new PAlgo0(4)),
-      workflowParams
-    )
+      workflowParams)
 
     val pd = ProcessedData(1, TrainingData(0, error = true))
 
@@ -507,8 +491,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                 pPs shouldBe Seq(
                   Prediction(id = 3, q = q, models = Some(model0)),
                   Prediction(id = 4, q = q, models = Some(model1)),
-                  Prediction(id = 5, q = q, models = Some(model2))
-                )
+                  Prediction(id = 5, q = q, models = Some(model2)))
               }
             }
         }
@@ -561,8 +544,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                 pPs shouldBe Seq(
                   Prediction(id = 3, q = qSupp, models = Some(model0)),
                   Prediction(id = 4, q = qSupp, models = Some(model1)),
-                  Prediction(id = 5, q = qSupp, models = Some(model2))
-                )
+                  Prediction(id = 5, q = qSupp, models = Some(model2)))
               }
             }
         }
@@ -611,8 +593,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                 pPs shouldBe Seq(
                   Prediction(id = 3, q = q, models = Some(model0)),
                   Prediction(id = 4, q = q, models = Some(model1)),
-                  Prediction(id = 5, q = q, models = Some(model2))
-                )
+                  Prediction(id = 5, q = q, models = Some(model2)))
               }
             }
         }

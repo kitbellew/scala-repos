@@ -198,8 +198,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
           with DateExpression[Timestamp]
           with SquerylRecordNonNumericalExpression[Timestamp]
       case None =>
-        new ConstantExpressionNode[Timestamp](
-          new Timestamp(f.get.getTimeInMillis))(createOutMapperTimestampType)
+        new ConstantExpressionNode[Timestamp](new Timestamp(
+          f.get.getTimeInMillis))(createOutMapperTimestampType)
           with DateExpression[Timestamp]
           with SquerylRecordNonNumericalExpression[Timestamp]
     }
@@ -293,8 +293,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     fieldReference match {
       case Some(e) =>
         new SelectElementReference[Option[Enumeration#Value]](e)(
-          e.createEnumerationOptionMapper(
-            Some(reifySingleton(m).values.iterator.next)))
+          e.createEnumerationOptionMapper(Some(
+            reifySingleton(m).values.iterator.next)))
           with EnumExpression[Option[Enumeration#Value]]
           with SquerylRecordNonNumericalExpression[Option[Enumeration#Value]]
       case None =>

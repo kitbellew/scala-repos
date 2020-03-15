@@ -19,9 +19,9 @@ class VarToValQuickFix(varDef: ScVariableDefinition)
       varDef) {
   def doApplyFix(project: Project): Unit = {
     val varDef = getElement
-    varDef.replace(
-      ScalaPsiElementFactory
-        .createValFromVarDefinition(varDef, varDef.getManager))
+    varDef.replace(ScalaPsiElementFactory.createValFromVarDefinition(
+      varDef,
+      varDef.getManager))
   }
 }
 
@@ -30,9 +30,9 @@ class ValToVarQuickFix(valDef: ScValue) extends IntentionAction {
 
   def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
     val parent = valDef.getContext
-    valDef.replace(
-      ScalaPsiElementFactory
-        .createVarFromValDeclaration(valDef, valDef.getManager))
+    valDef.replace(ScalaPsiElementFactory.createVarFromValDeclaration(
+      valDef,
+      valDef.getManager))
   }
 
   def isAvailable(project: Project, editor: Editor, file: PsiFile): Boolean =

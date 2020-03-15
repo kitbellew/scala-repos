@@ -40,14 +40,15 @@ class ControlAwareDispatcherSpec
     // UnstartedCell and the sent to the PriorityQueue and consumed immediately
     // without the ordering taking place.
     val actor = system.actorOf(Props(new Actor {
-      context.actorOf(Props(new Actor {
+      context.actorOf(
+        Props(new Actor {
 
-        self ! "test"
-        self ! "test2"
-        self ! ImportantMessage
+          self ! "test"
+          self ! "test2"
+          self ! ImportantMessage
 
-        def receive = { case x ⇒ testActor ! x }
-      }).withDispatcher(dispatcherKey))
+          def receive = { case x ⇒ testActor ! x }
+        }).withDispatcher(dispatcherKey))
 
       def receive = Actor.emptyBehavior
 

@@ -89,8 +89,8 @@ class ExecutorAllocationManagerSuite
   test("add executors") {
     sc = createSparkContext(1, 10, 1)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, 1000)))
 
     // Keep adding until the limit is reached
     assert(numExecutorsTarget(manager) === 1)
@@ -152,11 +152,10 @@ class ExecutorAllocationManagerSuite
 
     // Verify that running a task doesn't affect the target
     sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(1, 3)))
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-1",
-        new ExecutorInfo("host1", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-1",
+      new ExecutorInfo("host1", 1, Map.empty)))
     sc.listenerBus.postToAll(
       SparkListenerTaskStart(1, 0, createTaskInfo(0, 0, "executor-1")))
     assert(numExecutorsTarget(manager) === 5)
@@ -272,8 +271,8 @@ class ExecutorAllocationManagerSuite
   test("interleaving add and remove") {
     sc = createSparkContext(5, 10, 5)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, 1000)))
 
     // Add a few executors
     assert(addExecutors(manager) === 1)
@@ -460,8 +459,8 @@ class ExecutorAllocationManagerSuite
     val clock = new ManualClock(2020L)
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, 1000)))
 
     // Scheduler queue backlogged
     onSchedulerBacklogged(manager)
@@ -583,8 +582,8 @@ class ExecutorAllocationManagerSuite
 
     // Starting a stage should start the add timer
     val numTasks = 10
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, numTasks)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, numTasks)))
     assert(addTime(manager) !== NOT_SET)
 
     // Starting a subset of the tasks should not cancel the add timer
@@ -602,10 +601,10 @@ class ExecutorAllocationManagerSuite
 
     // Start two different stages
     // The add timer should be canceled only if all tasks in both stages start running
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(1, numTasks)))
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(2, numTasks)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(1, numTasks)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(2, numTasks)))
     assert(addTime(manager) !== NOT_SET)
     taskInfos.foreach { info =>
       sc.listenerBus.postToAll(SparkListenerTaskStart(1, 0, info))
@@ -638,35 +637,32 @@ class ExecutorAllocationManagerSuite
     assert(!removeTimes(manager).contains("executor-2"))
 
     // Finishing all tasks running on an executor should start the remove timer for that executor
-    sc.listenerBus.postToAll(
-      SparkListenerTaskEnd(
-        0,
-        0,
-        "task-type",
-        Success,
-        createTaskInfo(0, 0, "executor-1"),
-        new TaskMetrics))
-    sc.listenerBus.postToAll(
-      SparkListenerTaskEnd(
-        0,
-        0,
-        "task-type",
-        Success,
-        createTaskInfo(2, 2, "executor-2"),
-        new TaskMetrics))
+    sc.listenerBus.postToAll(SparkListenerTaskEnd(
+      0,
+      0,
+      "task-type",
+      Success,
+      createTaskInfo(0, 0, "executor-1"),
+      new TaskMetrics))
+    sc.listenerBus.postToAll(SparkListenerTaskEnd(
+      0,
+      0,
+      "task-type",
+      Success,
+      createTaskInfo(2, 2, "executor-2"),
+      new TaskMetrics))
     assert(removeTimes(manager).size === 4)
     assert(
       !removeTimes(manager).contains("executor-1")
     ) // executor-1 has not finished yet
     assert(removeTimes(manager).contains("executor-2"))
-    sc.listenerBus.postToAll(
-      SparkListenerTaskEnd(
-        0,
-        0,
-        "task-type",
-        Success,
-        createTaskInfo(1, 1, "executor-1"),
-        new TaskMetrics))
+    sc.listenerBus.postToAll(SparkListenerTaskEnd(
+      0,
+      0,
+      "task-type",
+      Success,
+      createTaskInfo(1, 1, "executor-1"),
+      new TaskMetrics))
     assert(removeTimes(manager).size === 5)
     assert(
       removeTimes(manager).contains("executor-1")
@@ -680,20 +676,18 @@ class ExecutorAllocationManagerSuite
     assert(removeTimes(manager).isEmpty)
 
     // New executors have registered
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-1",
-        new ExecutorInfo("host1", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-1",
+      new ExecutorInfo("host1", 1, Map.empty)))
     assert(executorIds(manager).size === 1)
     assert(executorIds(manager).contains("executor-1"))
     assert(removeTimes(manager).size === 1)
     assert(removeTimes(manager).contains("executor-1"))
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-2",
-        new ExecutorInfo("host2", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-2",
+      new ExecutorInfo("host2", 1, Map.empty)))
     assert(executorIds(manager).size === 2)
     assert(executorIds(manager).contains("executor-2"))
     assert(removeTimes(manager).size === 2)
@@ -720,11 +714,10 @@ class ExecutorAllocationManagerSuite
 
     sc.listenerBus.postToAll(
       SparkListenerTaskStart(0, 0, createTaskInfo(0, 0, "executor-1")))
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-1",
-        new ExecutorInfo("host1", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-1",
+      new ExecutorInfo("host1", 1, Map.empty)))
     assert(executorIds(manager).size === 1)
     assert(executorIds(manager).contains("executor-1"))
     assert(removeTimes(manager).size === 0)
@@ -736,11 +729,10 @@ class ExecutorAllocationManagerSuite
     val manager = sc.executorAllocationManager.get
     assert(executorIds(manager).isEmpty)
     assert(removeTimes(manager).isEmpty)
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-1",
-        new ExecutorInfo("host1", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-1",
+      new ExecutorInfo("host1", 1, Map.empty)))
     sc.listenerBus.postToAll(
       SparkListenerTaskStart(0, 0, createTaskInfo(0, 0, "executor-1")))
 
@@ -748,11 +740,10 @@ class ExecutorAllocationManagerSuite
     assert(executorIds(manager).contains("executor-1"))
     assert(removeTimes(manager).size === 0)
 
-    sc.listenerBus.postToAll(
-      SparkListenerExecutorAdded(
-        0L,
-        "executor-2",
-        new ExecutorInfo("host1", 1, Map.empty)))
+    sc.listenerBus.postToAll(SparkListenerExecutorAdded(
+      0L,
+      "executor-2",
+      new ExecutorInfo("host1", 1, Map.empty)))
     assert(executorIds(manager).size === 2)
     assert(executorIds(manager).contains("executor-2"))
     assert(removeTimes(manager).size === 1)
@@ -778,8 +769,8 @@ class ExecutorAllocationManagerSuite
     adjustRequestedExecutors(manager)
     assert(numExecutorsTarget(manager) === 0)
 
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(1, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(1, 1000)))
     addExecutors(manager)
     assert(numExecutorsTarget(manager) === 16)
   }
@@ -860,8 +851,14 @@ class ExecutorAllocationManagerSuite
     sc.listenerBus.postToAll(SparkListenerStageSubmitted(stageInfo2))
 
     assert(localityAwareTasks(manager) === 5)
-    assert(hostToLocalTaskCount(manager) ===
-      Map("host1" -> 2, "host2" -> 4, "host3" -> 4, "host4" -> 3, "host5" -> 2))
+    assert(
+      hostToLocalTaskCount(manager) ===
+        Map(
+          "host1" -> 2,
+          "host2" -> 4,
+          "host3" -> 4,
+          "host4" -> 3,
+          "host5" -> 2))
 
     sc.listenerBus.postToAll(SparkListenerStageCompleted(stageInfo1))
     assert(localityAwareTasks(manager) === 2)
@@ -898,8 +895,8 @@ class ExecutorAllocationManagerSuite
 
     // Allocation manager is reset when adding executor requests are sent without reporting back
     // executor added.
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 10)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, 10)))
 
     assert(addExecutors(manager) === 1)
     assert(numExecutorsTarget(manager) === 2)
@@ -914,8 +911,8 @@ class ExecutorAllocationManagerSuite
     assert(executorIds(manager) === Set.empty)
 
     // Allocation manager is reset when executors are added.
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 10)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(
+      createStageInfo(0, 10)))
 
     addExecutors(manager)
     addExecutors(manager)
@@ -1035,8 +1032,8 @@ private object ExecutorAllocationManagerSuite extends PrivateMethodTester {
   private def createStageInfo(
       stageId: Int,
       numTasks: Int,
-      taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty
-  ): StageInfo = {
+      taskLocalityPreferences: Seq[Seq[TaskLocation]] = Seq.empty)
+      : StageInfo = {
     new StageInfo(
       stageId,
       0,

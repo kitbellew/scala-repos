@@ -78,8 +78,8 @@ class WholeTextFileRecordReaderSuite
       if (compress) {
         val codec = new GzipCodec
         val path = s"${inputDir.toString}/$fileName${codec.getDefaultExtension}"
-        codec.createOutputStream(
-          new DataOutputStream(new FileOutputStream(path)))
+        codec.createOutputStream(new DataOutputStream(new FileOutputStream(
+          path)))
       } else {
         val path = s"${inputDir.toString}/$fileName"
         new DataOutputStream(new FileOutputStream(path))

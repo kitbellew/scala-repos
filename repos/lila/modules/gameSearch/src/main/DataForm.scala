@@ -46,8 +46,8 @@ private[gameSearch] final class DataForm {
       "sort" -> optional(
         mapping(
           "field" -> stringIn(Sorting.fields),
-          "order" -> stringIn(Sorting.orders)
-        )(SearchSort.apply)(SearchSort.unapply))
+          "order" -> stringIn(Sorting.orders))(SearchSort.apply)(
+          SearchSort.unapply))
     )(SearchData.apply)(SearchData.unapply)) fill SearchData()
 }
 

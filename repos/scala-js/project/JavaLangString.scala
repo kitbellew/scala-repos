@@ -37,12 +37,11 @@ object JavaLangString {
         MethodDef(
           static = false,
           Ident("equals__O__Z", Some("equals__O__Z")),
-          List(
-            ParamDef(
-              Ident("that", Some("that")),
-              AnyType,
-              mutable = false,
-              rest = false)),
+          List(ParamDef(
+            Ident("that", Some("that")),
+            AnyType,
+            mutable = false,
+            rest = false)),
           BooleanType, {
             BinaryOp(
               BinaryOp.===,
@@ -66,12 +65,11 @@ object JavaLangString {
         MethodDef(
           static = false,
           Ident("compareTo__T__I", Some("compareTo__T__I")),
-          List(
-            ParamDef(
-              Ident("that", Some("that")),
-              ThisType,
-              mutable = false,
-              rest = false)),
+          List(ParamDef(
+            Ident("that", Some("that")),
+            ThisType,
+            mutable = false,
+            rest = false)),
           IntType, {
             Apply(
               LoadModule(ClassType("sjsr_RuntimeString$")),
@@ -86,20 +84,18 @@ object JavaLangString {
         MethodDef(
           static = false,
           Ident("compareTo__O__I", Some("compareTo__O__I")),
-          List(
-            ParamDef(
-              Ident("that", Some("that")),
-              AnyType,
-              mutable = false,
-              rest = false)),
+          List(ParamDef(
+            Ident("that", Some("that")),
+            AnyType,
+            mutable = false,
+            rest = false)),
           IntType, {
             Apply(
               This()(ThisType),
               Ident("compareTo__T__I", Some("compareTo__T__I")),
-              List(
-                AsInstanceOf(
-                  VarRef(Ident("that", Some("that")))(AnyType),
-                  ThisType)))(IntType)
+              List(AsInstanceOf(
+                VarRef(Ident("that", Some("that")))(AnyType),
+                ThisType)))(IntType)
           }
         )(OptimizerHints.empty.withInline(true), None),
         /* def toString(): String = this */
@@ -113,12 +109,11 @@ object JavaLangString {
         MethodDef(
           static = false,
           Ident("charAt__I__C", Some("charAt__I__C")),
-          List(
-            ParamDef(
-              Ident("i", Some("i")),
-              IntType,
-              mutable = false,
-              rest = false)),
+          List(ParamDef(
+            Ident("i", Some("i")),
+            IntType,
+            mutable = false,
+            rest = false)),
           IntType, {
             Apply(
               LoadModule(ClassType("sjsr_RuntimeString$")),
@@ -157,8 +152,7 @@ object JavaLangString {
               Ident("end", Some("end")),
               IntType,
               mutable = false,
-              rest = false)
-          ),
+              rest = false)),
           ClassType("jl_CharSequence"), {
             Apply(
               LoadModule(ClassType("sjsr_RuntimeString$")),

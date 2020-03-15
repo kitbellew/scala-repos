@@ -86,9 +86,8 @@ trait DAGTransform extends DAG {
             f(Morph2(m, transformAux(left), transformAux(right))(graph.loc))
 
           case graph @ Join(op, joinSort, left, right) =>
-            f(
-              Join(op, joinSort, transformAux(left), transformAux(right))(
-                graph.loc))
+            f(Join(op, joinSort, transformAux(left), transformAux(right))(
+              graph.loc))
 
           case graph @ Assert(pred, child) =>
             f(Assert(transformAux(pred), transformAux(child))(graph.loc))
@@ -112,9 +111,8 @@ trait DAGTransform extends DAG {
             f(Diff(transformAux(left), transformAux(right))(graph.loc))
 
           case graph @ Filter(cross, target, boolean) =>
-            f(
-              Filter(cross, transformAux(target), transformAux(boolean))(
-                graph.loc))
+            f(Filter(cross, transformAux(target), transformAux(boolean))(
+              graph.loc))
 
           case AddSortKey(parent, sortField, valueField, id) =>
             f(AddSortKey(transformAux(parent), sortField, valueField, id))

@@ -180,10 +180,9 @@ object DisplayAppScalingResults {
     val rows: Seq[IndexedSeq[Any]] = timers.map {
       case (timer: String, jsObject: JsObject) =>
         def d1000(fieldName: String): Any =
-          (jsObject \ fieldName)
-            .asOpt[Double]
-            .map(seconds => (seconds * 1000).round)
-            .getOrElse("-")
+          (
+            jsObject \ fieldName
+          ).asOpt[Double].map(seconds => (seconds * 1000).round).getOrElse("-")
         def dFull(fieldName: String): Any =
           (jsObject \ fieldName).asOpt[Double].map(_.round).getOrElse("-")
 

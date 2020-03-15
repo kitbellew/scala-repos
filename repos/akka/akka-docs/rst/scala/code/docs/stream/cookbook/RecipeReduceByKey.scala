@@ -41,14 +41,13 @@ class RecipeReduceByKey extends RecipeSpec {
 
       Await
         .result(counts.limit(10).runWith(Sink.seq), 3.seconds)
-        .toSet should be(
-        Set(
-          ("hello", 2),
-          ("world", 1),
-          ("and", 1),
-          ("universe", 1),
-          ("akka", 1),
-          ("rocks!", 1000)))
+        .toSet should be(Set(
+        ("hello", 2),
+        ("world", 1),
+        ("and", 1),
+        ("universe", 1),
+        ("akka", 1),
+        ("rocks!", 1000)))
     }
 
     "work generalized" in {
@@ -81,14 +80,13 @@ class RecipeReduceByKey extends RecipeSpec {
 
       Await
         .result(wordCounts.limit(10).runWith(Sink.seq), 3.seconds)
-        .toSet should be(
-        Set(
-          ("hello", 2),
-          ("world", 1),
-          ("and", 1),
-          ("universe", 1),
-          ("akka", 1),
-          ("rocks!", 1000)))
+        .toSet should be(Set(
+        ("hello", 2),
+        ("world", 1),
+        ("and", 1),
+        ("universe", 1),
+        ("akka", 1),
+        ("rocks!", 1000)))
 
     }
   }

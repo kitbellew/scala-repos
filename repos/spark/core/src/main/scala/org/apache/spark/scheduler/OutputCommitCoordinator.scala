@@ -209,9 +209,10 @@ private[spark] object OutputCommitCoordinator {
     override def receiveAndReply(
         context: RpcCallContext): PartialFunction[Any, Unit] = {
       case AskPermissionToCommitOutput(stage, partition, attemptNumber) =>
-        context.reply(
-          outputCommitCoordinator
-            .handleAskPermissionToCommit(stage, partition, attemptNumber))
+        context.reply(outputCommitCoordinator.handleAskPermissionToCommit(
+          stage,
+          partition,
+          attemptNumber))
     }
   }
 }

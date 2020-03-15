@@ -65,9 +65,8 @@ trait DAG extends Instructions {
         stream: Vector[Instruction])
         : Trampoline[Either[StackError, DepGraph]] = {
       @inline def continue(
-          f: List[Either[BucketSpec, DepGraph]] => Either[
-            StackError,
-            List[Either[BucketSpec, DepGraph]]])
+          f: List[Either[BucketSpec, DepGraph]] => Either[StackError, List[
+            Either[BucketSpec, DepGraph]]])
           : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
           M.sequence(f(roots).right map { roots2 =>

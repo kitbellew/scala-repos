@@ -80,8 +80,8 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
     * Transform only the materialized value of this Source, leaving all other properties as they were.
     */
   def mapMaterializedValue[Mat2](f: Mat ⇒ Mat2): ReprMat[Out, Mat2] =
-    new Source[Out, Mat2](
-      module.transformMaterializedValue(f.asInstanceOf[Any ⇒ Any]))
+    new Source[Out, Mat2](module.transformMaterializedValue(
+      f.asInstanceOf[Any ⇒ Any]))
 
   /** INTERNAL API */
   override private[scaladsl] def deprecatedAndThen[U](
@@ -210,11 +210,10 @@ object Source {
     * back-pressure upstream.
     */
   def fromPublisher[T](publisher: Publisher[T]): Source[T, NotUsed] =
-    new Source(
-      new PublisherSource(
-        publisher,
-        DefaultAttributes.publisherSource,
-        shape("PublisherSource")))
+    new Source(new PublisherSource(
+      publisher,
+      DefaultAttributes.publisherSource,
+      shape("PublisherSource")))
 
   /**
     * Helper to create [[Source]] from `Iterator`.
@@ -367,20 +366,18 @@ object Source {
     * Create a `Source` that immediately ends the stream with the `cause` error to every connected `Sink`.
     */
   def failed[T](cause: Throwable): Source[T, NotUsed] =
-    new Source(
-      new PublisherSource(
-        ErrorPublisher(cause, "FailedSource")[T],
-        DefaultAttributes.failedSource,
-        shape("FailedSource")))
+    new Source(new PublisherSource(
+      ErrorPublisher(cause, "FailedSource")[T],
+      DefaultAttributes.failedSource,
+      shape("FailedSource")))
 
   /**
     * Creates a `Source` that is materialized as a [[org.reactivestreams.Subscriber]]
     */
   def asSubscriber[T]: Source[T, Subscriber[T]] =
-    new Source(
-      new SubscriberSource[T](
-        DefaultAttributes.subscriberSource,
-        shape("SubscriberSource")))
+    new Source(new SubscriberSource[T](
+      DefaultAttributes.subscriberSource,
+      shape("SubscriberSource")))
 
   /**
     * Creates a `Source` that is materialized to an [[akka.actor.ActorRef]] which points to an Actor
@@ -391,11 +388,10 @@ object Source {
     require(
       classOf[ActorPublisher[_]].isAssignableFrom(props.actorClass()),
       "Actor must be ActorPublisher")
-    new Source(
-      new ActorPublisherSource(
-        props,
-        DefaultAttributes.actorPublisherSource,
-        shape("ActorPublisherSource")))
+    new Source(new ActorPublisherSource(
+      props,
+      DefaultAttributes.actorPublisherSource,
+      shape("ActorPublisherSource")))
   }
 
   /**
@@ -435,12 +431,11 @@ object Source {
     require(
       overflowStrategy != OverflowStrategies.Backpressure,
       "Backpressure overflowStrategy not supported")
-    new Source(
-      new ActorRefSource(
-        bufferSize,
-        overflowStrategy,
-        DefaultAttributes.actorRefSource,
-        shape("ActorRefSource")))
+    new Source(new ActorRefSource(
+      bufferSize,
+      overflowStrategy,
+      DefaultAttributes.actorRefSource,
+      shape("ActorRefSource")))
   }
 
   /**
@@ -501,7 +496,7 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
-      new QueueSource(bufferSize, overflowStrategy)
-        .withAttributes(DefaultAttributes.queueSource))
+      new QueueSource(bufferSize, overflowStrategy).withAttributes(
+        DefaultAttributes.queueSource))
 
 }

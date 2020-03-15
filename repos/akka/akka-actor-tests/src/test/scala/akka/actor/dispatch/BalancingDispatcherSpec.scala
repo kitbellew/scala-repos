@@ -53,14 +53,12 @@ class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
       val finishedCounter = new CountDownLatch(110)
 
       val slow = system
-        .actorOf(
-          Props(new DelayableActor(50, finishedCounter))
-            .withDispatcher(delayableActorDispatcher))
+        .actorOf(Props(new DelayableActor(50, finishedCounter)).withDispatcher(
+          delayableActorDispatcher))
         .asInstanceOf[ActorRefWithCell]
       val fast = system
-        .actorOf(
-          Props(new DelayableActor(10, finishedCounter))
-            .withDispatcher(delayableActorDispatcher))
+        .actorOf(Props(new DelayableActor(10, finishedCounter)).withDispatcher(
+          delayableActorDispatcher))
         .asInstanceOf[ActorRefWithCell]
 
       var sentToFast = 0

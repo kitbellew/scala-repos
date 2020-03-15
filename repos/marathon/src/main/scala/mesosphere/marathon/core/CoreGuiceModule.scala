@@ -169,8 +169,8 @@ class CoreGuiceModule extends AbstractModule {
 
     // FIXME: Because of cycle breaking in guice, it is hard to not wire it with Guice directly
     bind(classOf[TaskStatusUpdateProcessor])
-      .annotatedWith(
-        Names.named(ThrottlingTaskStatusUpdateProcessor.dependencyTag))
+      .annotatedWith(Names.named(
+        ThrottlingTaskStatusUpdateProcessor.dependencyTag))
       .to(classOf[TaskStatusUpdateProcessorImpl])
       .asEagerSingleton()
 

@@ -211,10 +211,9 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[(Int, String)]
     assert(
       schema === Schema(
-        StructType(
-          Seq(
-            StructField("_1", IntegerType, nullable = false),
-            StructField("_2", StringType, nullable = true))),
+        StructType(Seq(
+          StructField("_1", IntegerType, nullable = false),
+          StructField("_2", StringType, nullable = true))),
         nullable = true))
   }
 

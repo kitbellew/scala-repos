@@ -213,8 +213,7 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       numPartitionsInBM: Int,
       numPartitionsInKinesis: Int,
       testIsBlockValid: Boolean = false,
-      testBlockRemove: Boolean = false
-  ): Unit = {
+      testBlockRemove: Boolean = false): Unit = {
     require(shardIds.size > 1, "Need at least 2 shards to test")
     require(
       numPartitionsInBM <= shardIds.size,
@@ -253,13 +252,11 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
     // Make sure that the left `numPartitionsInBM` blocks are in block manager, and others are not
     require(
       blockIds.take(numPartitionsInBM).forall(blockManager.get(_).nonEmpty),
-      "Expected blocks not in BlockManager"
-    )
+      "Expected blocks not in BlockManager")
 
     require(
       blockIds.drop(numPartitionsInBM).forall(blockManager.get(_).isEmpty),
-      "Unexpected blocks in BlockManager"
-    )
+      "Unexpected blocks in BlockManager")
 
     // Make sure that the right sequence `numPartitionsInKinesis` are configured, and others are not
     require(

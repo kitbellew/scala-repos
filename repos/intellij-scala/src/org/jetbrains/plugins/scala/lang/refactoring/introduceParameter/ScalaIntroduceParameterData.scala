@@ -48,8 +48,7 @@ case class ScalaIntroduceParameterData(
     new JavaExpressionWrapper(
       JavaPsiFacade
         .getElementFactory(methodLike.getProject)
-        .createExpressionFromText(getParameterName, elems.head.getContext)
-    )
+        .createExpressionFromText(getParameterName, elems.head.getContext))
 
   def getMethodToSearchFor: PsiMethod = methodToSearchFor
 

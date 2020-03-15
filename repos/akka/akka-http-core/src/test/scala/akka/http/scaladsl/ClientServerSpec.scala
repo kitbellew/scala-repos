@@ -119,14 +119,13 @@ class ClientServerSpec
       .assertAllStagesStopped {
         for (i ← 1 to 10) withClue(s"iterator $i: ") {
           Source
-            .single(
-              HttpRequest(
-                HttpMethods.POST,
-                "/test",
-                List.empty,
-                HttpEntity(
-                  MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`),
-                  "buh")))
+            .single(HttpRequest(
+              HttpMethods.POST,
+              "/test",
+              List.empty,
+              HttpEntity(
+                MediaTypes.`text/plain`.withCharset(HttpCharsets.`UTF-8`),
+                "buh")))
             .via(Http(actorSystem).outgoingConnection("localhost", 7777))
             .runWith(Sink.head)
             .failed
@@ -158,8 +157,8 @@ class ClientServerSpec
         req.uri.path.toString match {
           case "/slow" ⇒
             receivedSlow.complete(Success(System.nanoTime()))
-            akka.pattern.after(1.seconds, system.scheduler)(
-              Future.successful(HttpResponse()))
+            akka.pattern.after(1.seconds, system.scheduler)(Future.successful(
+              HttpResponse()))
           case "/fast" ⇒
             receivedFast.complete(Success(System.nanoTime()))
             Future.successful(HttpResponse())
@@ -251,8 +250,9 @@ class ClientServerSpec
               Await.result(clientsResponseFuture, 2.second)
             }
 
-            (System
-              .nanoTime() - serverReceivedRequestAtNanos).millis should be >= serverTimeout
+            (
+              System.nanoTime() - serverReceivedRequestAtNanos
+            ).millis should be >= serverTimeout
           } finally Await.result(b1.unbind(), 1.second)
         }
       }
@@ -494,12 +494,11 @@ class ClientServerSpec
             Source(chunks))
 
           val clientOutSub = clientOut.expectSubscription()
-          clientOutSub.sendNext(
-            HttpRequest(
-              POST,
-              "/chunked",
-              List(Accept(MediaRanges.`*/*`)),
-              chunkedEntity))
+          clientOutSub.sendNext(HttpRequest(
+            POST,
+            "/chunked",
+            List(Accept(MediaRanges.`*/*`)),
+            chunkedEntity))
 
           val serverInSub = serverIn.expectSubscription()
           serverInSub.request(1)
@@ -638,17 +637,16 @@ class ClientServerSpec
     def openClientSocket() = new Socket(hostname, port)
 
     def write(socket: Socket, data: String) = {
-      val writer = new BufferedWriter(
-        new OutputStreamWriter(socket.getOutputStream))
+      val writer = new BufferedWriter(new OutputStreamWriter(
+        socket.getOutputStream))
       writer.write(data)
       writer.flush()
       writer
     }
 
     def readAll(socket: Socket)(
-        reader: BufferedReader = new BufferedReader(
-          new InputStreamReader(socket.getInputStream)))
-        : (String, BufferedReader) = {
+        reader: BufferedReader = new BufferedReader(new InputStreamReader(
+          socket.getInputStream))): (String, BufferedReader) = {
       val sb = new java.lang.StringBuilder
       val cbuf = new Array[Char](256)
       @tailrec def drain(): (String, BufferedReader) =

@@ -78,9 +78,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
   // Note that this test uses default configuration,
   // not MultiNodeClusterSpec.clusterConfig
-  commonConfig(
-    ConfigFactory.parseString(
-      """
+  commonConfig(ConfigFactory.parseString(
+    """
     akka.test.cluster-stress-spec {
       infolog = off
       # scale the nr-of-nodes* settings with this factor
@@ -186,11 +185,14 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesJoiningToOneNode =
       getInt("nr-of-nodes-joining-to-one") * nFactor
     // remaining will join to seed nodes
-    val numberOfNodesJoiningToSeedNodes =
-      (totalNumberOfNodes - numberOfSeedNodes -
+    val numberOfNodesJoiningToSeedNodes = (
+      totalNumberOfNodes - numberOfSeedNodes -
         numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
-        numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode) requiring (_ >= 0,
-      s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}")
+        numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode
+    ) requiring (
+      _ >= 0,
+      s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}"
+    )
     val numberOfNodesLeavingOneByOneSmall =
       getInt("nr-of-nodes-leaving-one-by-one-small") * nFactor
     val numberOfNodesLeavingOneByOneLarge =
@@ -839,8 +841,8 @@ abstract class StressSpec
 
   override def muteLog(sys: ActorSystem = system): Unit = {
     super.muteLog(sys)
-    sys.eventStream.publish(
-      Mute(EventFilter[RuntimeException](pattern = ".*Simulated exception.*")))
+    sys.eventStream.publish(Mute(
+      EventFilter[RuntimeException](pattern = ".*Simulated exception.*")))
     muteDeadLetters(
       classOf[SimpleJob],
       classOf[AggregatedClusterResult],
@@ -1272,8 +1274,8 @@ abstract class StressSpec
         runOn(masterRoles: _*) {
           reportResult {
             roles.take(nbrUsedRoles) foreach { r ⇒
-              supervisor ! Props[RemoteChild].withDeploy(
-                Deploy(scope = RemoteScope(address(r))))
+              supervisor ! Props[RemoteChild].withDeploy(Deploy(scope =
+                RemoteScope(address(r))))
             }
             supervisor ! GetChildrenCount
             expectMsgType[ChildrenCount] should ===(

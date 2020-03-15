@@ -108,8 +108,8 @@ case class HandshakeResponse(
     salt: Array[Byte],
     serverCap: Capability,
     charset: Short,
-    maxPacketSize: Int
-) extends Request {
+    maxPacketSize: Int)
+    extends Request {
   import Capability._
   override val seq: Short = 1
 
@@ -164,8 +164,8 @@ class ExecuteRequest(
     val stmtId: Int,
     val params: IndexedSeq[Parameter],
     val hasNewParams: Boolean,
-    val flags: Byte
-) extends CommandRequest(Command.COM_STMT_EXECUTE) {
+    val flags: Byte)
+    extends CommandRequest(Command.COM_STMT_EXECUTE) {
   private[this] val log = Logger.getLogger("finagle-mysql")
 
   private[this] def makeNullBitmap(
@@ -192,9 +192,8 @@ class ExecuteRequest(
     else {
       // Unsupported type. Write the error to log, and write the type as null.
       // This allows us to safely skip writing the parameter without corrupting the buffer.
-      log.warning(
-        "Unknown parameter %s will be treated as SQL NULL.".format(
-          param.getClass.getName))
+      log.warning("Unknown parameter %s will be treated as SQL NULL.".format(
+        param.getClass.getName))
       writer.writeShort(Type.Null)
     }
   }
@@ -257,8 +256,7 @@ object ExecuteRequest {
       stmtId: Int,
       params: IndexedSeq[Parameter] = IndexedSeq.empty,
       hasNewParams: Boolean = true,
-      flags: Byte = 0
-  ) = {
+      flags: Byte = 0) = {
     val sanitizedParams = params.map {
       case null  => Parameter.NullParameter
       case other => other
@@ -268,12 +266,11 @@ object ExecuteRequest {
 
   def unapply(executeRequest: ExecuteRequest)
       : Option[(Int, IndexedSeq[Parameter], Boolean, Byte)] = {
-    Some(
-      (
-        executeRequest.stmtId,
-        executeRequest.params,
-        executeRequest.hasNewParams,
-        executeRequest.flags))
+    Some((
+      executeRequest.stmtId,
+      executeRequest.params,
+      executeRequest.hasNewParams,
+      executeRequest.flags))
   }
 }
 

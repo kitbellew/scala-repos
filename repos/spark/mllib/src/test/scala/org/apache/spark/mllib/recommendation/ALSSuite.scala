@@ -272,16 +272,17 @@ class ALSSuite extends SparkFunSuite with MLlibTestSparkContext {
         val correct = trueRatings(u, p)
         if (math.abs(prediction - correct) > matchThreshold) {
           fail(
-            ("Model failed to predict (%d, %d): %f vs %f\ncorr: %s\npred: %s\nU: %s\n P: %s")
-              .format(
-                u,
-                p,
-                correct,
-                prediction,
-                trueRatings,
-                predictedRatings,
-                predictedU,
-                predictedP))
+            (
+              "Model failed to predict (%d, %d): %f vs %f\ncorr: %s\npred: %s\nU: %s\n P: %s"
+            ).format(
+              u,
+              p,
+              correct,
+              prediction,
+              trueRatings,
+              predictedRatings,
+              predictedU,
+              predictedP))
         }
       }
     } else {

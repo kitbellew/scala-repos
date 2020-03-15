@@ -26,9 +26,7 @@ class DataSource
   @transient lazy val logger = Logger[this.type]
 
   override def readTraining(sc: SparkContext): TrainingData = {
-    new TrainingData(
-      events = sc.parallelize(0 until 100)
-    )
+    new TrainingData(events = sc.parallelize(0 until 100))
   }
 
   override def readEval(sc: SparkContext)
@@ -45,9 +43,7 @@ class DataSource
   }
 }
 
-class TrainingData(
-    val events: RDD[Int]
-) extends Serializable {
+class TrainingData(val events: RDD[Int]) extends Serializable {
   override def toString = {
     s"events: [${events.count()}] (${events.take(2).toList}...)"
   }

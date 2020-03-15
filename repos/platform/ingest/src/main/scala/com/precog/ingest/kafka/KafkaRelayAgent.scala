@@ -70,8 +70,8 @@ object KafkaRelayAgent extends Logging {
       props
     }
 
-    val producer =
-      new Producer[String, Message](new ProducerConfig(centralProperties))
+    val producer = new Producer[String, Message](new ProducerConfig(
+      centralProperties))
 
     val consumerHost = localConfig[String]("broker.host", "localhost")
     val consumerPort = localConfig[String]("broker.port", "9082").toInt
@@ -139,9 +139,9 @@ final class KafkaRelayAgent(
       retries: Int = 5): Unit = {
     if (runnable) {
       if (batch % 100 == 0)
-        logger.debug(
-          "Processing kafka consumer batch %d [%s]"
-            .format(batch, if (waitCount > 0) "IDLE" else "ACTIVE"))
+        logger.debug("Processing kafka consumer batch %d [%s]".format(
+          batch,
+          if (waitCount > 0) "IDLE" else "ACTIVE"))
       val fetchRequest = new FetchRequest(localTopic, 0, offset, bufferSize)
 
       val ingestStep = for {
@@ -158,9 +158,9 @@ final class KafkaRelayAgent(
         val (newOffset, newWaitCount) =
           if (messages.size > 0) {
             val o: Long = messages.last.offset
-            logger.debug(
-              "Kafka consumer batch size: %d offset: %d)"
-                .format(messages.size, o))
+            logger.debug("Kafka consumer batch size: %d offset: %d)".format(
+              messages.size,
+              o))
             (o, 0L)
           } else { (offset, waitCount + 1) }
 
@@ -218,9 +218,8 @@ final class KafkaRelayAgent(
         }
     }
 
-    outgoing.sequence[
-      ({ type λ[α] = Validation[Error, α] })#λ,
-      Future[Authorized]] map { messageFutures =>
+    outgoing.sequence[({ type λ[α] = Validation[Error, α] })#λ, Future[
+      Authorized]] map { messageFutures =>
       Future.sequence(messageFutures) map { messages: List[Authorized] =>
         val identified: List[Message] = messages.flatMap {
           case Authorized(
@@ -249,16 +248,14 @@ final class KafkaRelayAgent(
             val ingestRecords = data map {
               IngestRecord(eventIdSeq.next(offset), _)
             }
-            encodeIngestMessages(
-              List(
-                IngestMessage(
-                  apiKey,
-                  path,
-                  authorities,
-                  ingestRecords,
-                  jobId,
-                  timestamp,
-                  storeMode)))
+            encodeIngestMessages(List(IngestMessage(
+              apiKey,
+              path,
+              authorities,
+              ingestRecords,
+              jobId,
+              timestamp,
+              storeMode)))
 
           case Authorized(event: Ingest, _, None) =>
             // cannot relay event without a resolved owner account ID; fail loudly.
@@ -270,30 +267,26 @@ final class KafkaRelayAgent(
                 archive @ Archive(apiKey, path, jobId, timestamp),
                 offset,
                 _) =>
-            List(
-              centralCodec.toMessage(
-                ArchiveMessage(
-                  apiKey,
-                  path,
-                  jobId,
-                  eventIdSeq.next(offset),
-                  timestamp)))
+            List(centralCodec.toMessage(ArchiveMessage(
+              apiKey,
+              path,
+              jobId,
+              eventIdSeq.next(offset),
+              timestamp)))
 
           case Authorized(
                 StoreFile(apiKey, path, _, jobId, content, timestamp, stream),
                 offset,
                 Some(authorities)) =>
-            List(
-              centralCodec.toMessage(
-                StoreFileMessage(
-                  apiKey,
-                  path,
-                  authorities,
-                  Some(jobId),
-                  eventIdSeq.next(offset),
-                  content,
-                  timestamp,
-                  stream)))
+            List(centralCodec.toMessage(StoreFileMessage(
+              apiKey,
+              path,
+              authorities,
+              Some(jobId),
+              eventIdSeq.next(offset),
+              content,
+              timestamp,
+              stream)))
 
           case Authorized(s: StoreFile, _, None) =>
             sys.error(

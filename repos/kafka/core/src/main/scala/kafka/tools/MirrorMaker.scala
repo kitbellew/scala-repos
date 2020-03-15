@@ -282,14 +282,12 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
               val rebalanceListenerArgs = options.valueOf(
                 rebalanceListenerArgsOpt)
               if (rebalanceListenerArgs != null) {
-                Some(
-                  CoreUtils.createObject[ConsumerRebalanceListener](
-                    customRebalanceListenerClass,
-                    rebalanceListenerArgs))
+                Some(CoreUtils.createObject[ConsumerRebalanceListener](
+                  customRebalanceListenerClass,
+                  rebalanceListenerArgs))
               } else {
-                Some(
-                  CoreUtils.createObject[ConsumerRebalanceListener](
-                    customRebalanceListenerClass))
+                Some(CoreUtils.createObject[ConsumerRebalanceListener](
+                  customRebalanceListenerClass))
               }
             } else { None }
           }
@@ -312,19 +310,22 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
               val rebalanceListenerArgs = options.valueOf(
                 rebalanceListenerArgsOpt)
               if (rebalanceListenerArgs != null) {
-                Some(CoreUtils.createObject[
-                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
-                  customRebalanceListenerClass,
-                  rebalanceListenerArgs))
+                Some(
+                  CoreUtils.createObject[
+                    org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
+                    customRebalanceListenerClass,
+                    rebalanceListenerArgs))
               } else {
-                Some(CoreUtils.createObject[
-                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
-                  customRebalanceListenerClass))
+                Some(
+                  CoreUtils.createObject[
+                    org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
+                    customRebalanceListenerClass))
               }
             } else { None }
           }
-          if (customRebalanceListener.exists(!_.isInstanceOf[
-                org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
+          if (customRebalanceListener.exists(
+                !_.isInstanceOf[
+                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
             throw new IllegalArgumentException(
               "The rebalance listener should be an instance of" +
                 "org.apache.kafka.clients.consumer.ConsumerRebalanceListner")
@@ -505,9 +506,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           try {
             while (!exitingOnSendFailure && !shuttingDown && mirrorMakerConsumer.hasData) {
               val data = mirrorMakerConsumer.receive()
-              trace(
-                "Sending message with value size %d and offset %d"
-                  .format(data.value.length, data.offset))
+              trace("Sending message with value size %d and offset %d".format(
+                data.value.length,
+                data.offset))
               val records = messageHandler.handle(data)
               records.foreach(producer.send)
               maybeFlushAndCommitOffsets()
@@ -719,9 +720,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       extends ConsumerRebalanceListener {
 
     override def beforeReleasingPartitions(
-        partitionOwnership: java.util.Map[
-          String,
-          java.util.Set[java.lang.Integer]]) {
+        partitionOwnership: java.util.Map[String, java.util.Set[
+          java.lang.Integer]]) {
       producer.flush()
       commitOffsets(mirrorMakerConsumer)
       // invoke custom consumer rebalance listener
@@ -802,11 +802,10 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       extends MirrorMakerMessageHandler {
     override def handle(record: BaseConsumerRecord)
         : util.List[ProducerRecord[Array[Byte], Array[Byte]]] = {
-      Collections.singletonList(
-        new ProducerRecord[Array[Byte], Array[Byte]](
-          record.topic,
-          record.key,
-          record.value))
+      Collections.singletonList(new ProducerRecord[Array[Byte], Array[Byte]](
+        record.topic,
+        record.key,
+        record.value))
     }
   }
 

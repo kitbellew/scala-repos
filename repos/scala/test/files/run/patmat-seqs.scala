@@ -24,8 +24,7 @@ object Test {
       Vector(7),
       Seq(),
       Seq(1, 2, 3, 4, 5, "abcd"),
-      "abc"
-    ) map f1
+      "abc") map f1
 
     xs1 foreach println
 
@@ -36,8 +35,7 @@ object Test {
       Seq(1, 6, 7),
       List(5, 6, 7),
       Nil,
-      5
-    ) map f2
+      5) map f2
 
     xs2 foreach println
   }

@@ -84,21 +84,20 @@ object LDAPUtil {
       error = "User LDAP Authentication Failed."
     ) { conn =>
       if (ldapSettings.mailAttribute.getOrElse("").isEmpty) {
-        Right(
-          LDAPUserInfo(
-            userName = userName,
-            fullName = ldapSettings.fullNameAttribute
-              .flatMap { fullNameAttribute =>
-                findFullName(
-                  conn,
-                  userDN,
-                  ldapSettings.userNameAttribute,
-                  userName,
-                  fullNameAttribute)
-              }
-              .getOrElse(userName),
-            mailAddress = createDummyMailAddress(userName)
-          ))
+        Right(LDAPUserInfo(
+          userName = userName,
+          fullName = ldapSettings.fullNameAttribute
+            .flatMap { fullNameAttribute =>
+              findFullName(
+                conn,
+                userDN,
+                ldapSettings.userNameAttribute,
+                userName,
+                fullNameAttribute)
+            }
+            .getOrElse(userName),
+          mailAddress = createDummyMailAddress(userName)
+        ))
       } else {
         findMailAddress(
           conn,
@@ -107,21 +106,20 @@ object LDAPUtil {
           userName,
           ldapSettings.mailAttribute.get) match {
           case Some(mailAddress) =>
-            Right(
-              LDAPUserInfo(
-                userName = getUserNameFromMailAddress(userName),
-                fullName = ldapSettings.fullNameAttribute
-                  .flatMap { fullNameAttribute =>
-                    findFullName(
-                      conn,
-                      userDN,
-                      ldapSettings.userNameAttribute,
-                      userName,
-                      fullNameAttribute)
-                  }
-                  .getOrElse(userName),
-                mailAddress = mailAddress
-              ))
+            Right(LDAPUserInfo(
+              userName = getUserNameFromMailAddress(userName),
+              fullName = ldapSettings.fullNameAttribute
+                .flatMap { fullNameAttribute =>
+                  findFullName(
+                    conn,
+                    userDN,
+                    ldapSettings.userNameAttribute,
+                    userName,
+                    fullNameAttribute)
+                }
+                .getOrElse(userName),
+              mailAddress = mailAddress
+            ))
           case None => Left("Can't find mail address.")
         }
       }
@@ -228,13 +226,12 @@ object LDAPUtil {
       userNameAttribute: String,
       userName: String,
       mailAttribute: String): Option[String] =
-    defining(
-      conn.search(
-        userDN,
-        LDAPConnection.SCOPE_BASE,
-        userNameAttribute + "=" + userName,
-        Array[String](mailAttribute),
-        false)) { results =>
+    defining(conn.search(
+      userDN,
+      LDAPConnection.SCOPE_BASE,
+      userNameAttribute + "=" + userName,
+      Array[String](mailAttribute),
+      false)) { results =>
       if (results.hasMore) {
         Option(results.next.getAttribute(mailAttribute)).map(_.getStringValue)
       } else None
@@ -246,13 +243,12 @@ object LDAPUtil {
       userNameAttribute: String,
       userName: String,
       nameAttribute: String): Option[String] =
-    defining(
-      conn.search(
-        userDN,
-        LDAPConnection.SCOPE_BASE,
-        userNameAttribute + "=" + userName,
-        Array[String](nameAttribute),
-        false)) { results =>
+    defining(conn.search(
+      userDN,
+      LDAPConnection.SCOPE_BASE,
+      userNameAttribute + "=" + userName,
+      Array[String](nameAttribute),
+      false)) { results =>
       if (results.hasMore) {
         Option(results.next.getAttribute(nameAttribute)).map(_.getStringValue)
       } else None

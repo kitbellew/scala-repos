@@ -111,18 +111,17 @@ class SbtProjectResolver
       .map(android => Android(android.targetVersion))
       .orElse(jdk.map(JdkByName))
 
-    projectNode.add(
-      new SbtProjectNode(
-        basePackages,
-        projectJdk,
-        javacOptions,
-        sbtVersion,
-        root))
+    projectNode.add(new SbtProjectNode(
+      basePackages,
+      projectJdk,
+      javacOptions,
+      sbtVersion,
+      root))
 
     val newPlay2Data = projects.flatMap(p =>
       p.play2.map(d => (p.id, p.base, d)))
-    projectNode.add(
-      new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
+    projectNode.add(new Play2ProjectNode(Play2OldStructureAdapter(
+      newPlay2Data)))
 
     val libraryNodes = createLibraries(data, projects)
     projectNode.addAll(libraryNodes)
@@ -144,9 +143,8 @@ class SbtProjectResolver
       moduleFilesDirectory)
     projectNode.addAll(sharedSourceModules)
 
-    projectNode.addAll(
-      projects.map(
-        createBuildModule(_, moduleFilesDirectory, data.localCachePath)))
+    projectNode.addAll(projects.map(
+      createBuildModule(_, moduleFilesDirectory, data.localCachePath)))
     projectNode
   }
 
@@ -158,8 +156,9 @@ class SbtProjectResolver
         moduleProject.dependencies.projects.foreach { dependencyId =>
           val dependency = moduleNodes
             .find(_.getId == dependencyId.project)
-            .getOrElse(throw new ExternalSystemException(
-              "Cannot find project dependency: " + dependencyId.project))
+            .getOrElse(
+              throw new ExternalSystemException(
+                "Cannot find project dependency: " + dependencyId.project))
           val data = new ModuleDependencyNode(moduleNode, dependency)
           data.setScope(scopeFor(dependencyId.configuration))
           data.setExported(true)
@@ -181,10 +180,9 @@ class SbtProjectResolver
       project.android.foreach(a =>
         a.apklibs.foreach(addApklibDirs(contentRootNode, _)))
       moduleNode.add(contentRootNode)
-      moduleNode.addAll(
-        createLibraryDependencies(project.dependencies.modules)(
-          moduleNode,
-          libraryNodes.map(_.data)))
+      moduleNode.addAll(createLibraryDependencies(project.dependencies.modules)(
+        moduleNode,
+        libraryNodes.map(_.data)))
       moduleNode.add(createModuleExtData(project))
       moduleNode.addAll(project.android.map(createFacet(project, _)).toSeq)
       moduleNode.addAll(

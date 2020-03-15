@@ -136,8 +136,7 @@ object JGitUtil {
       newObjectId: Option[String],
       oldMode: String,
       newMode: String,
-      tooLarge: Boolean
-  )
+      tooLarge: Boolean)
 
   /**
     * The file content data for the file content view of the repository viewer.
@@ -289,19 +288,20 @@ object JGitUtil {
           : (ObjectId, FileMode, String, Option[String], RevCommit) =
         tuple match {
           case (oid, FileMode.TREE, name, _, commit) =>
-            (using(new TreeWalk(git.getRepository)) { walk =>
-              walk.addTree(oid)
-              // single tree child, or None
-              if (walk.next() && walk.getFileMode(0) == FileMode.TREE) {
-                Some(
-                  (
+            (
+              using(new TreeWalk(git.getRepository)) { walk =>
+                walk.addTree(oid)
+                // single tree child, or None
+                if (walk.next() && walk.getFileMode(0) == FileMode.TREE) {
+                  Some((
                     walk.getObjectId(0),
                     walk.getFileMode(0),
                     name + "/" + walk.getNameString,
                     None,
                     commit)).filterNot(_ => walk.next())
-              } else { None }
-            }) match {
+                } else { None }
+              }
+            ) match {
               case Some(child) => simplifyPath(child)
               case _           => tuple
             }
@@ -376,8 +376,10 @@ object JGitUtil {
                 .find(_.path == treeWalk.getPathString)
                 .map(_.url)
             } else None
-          fileList +:= (treeWalk.getObjectId(0), treeWalk.getFileMode(
-            0), treeWalk.getNameString, linkUrl)
+          fileList +:= (
+            treeWalk.getObjectId(0), treeWalk.getFileMode(
+              0), treeWalk.getNameString, linkUrl
+          )
         }
       }
       revWalk.markStart(revCommit)
@@ -502,9 +504,9 @@ object JGitUtil {
         else {
           revWalk.markStart(revWalk.parseCommit(objectId))
           if (path.nonEmpty) {
-            revWalk.setTreeFilter(
-              AndTreeFilter
-                .create(PathFilter.create(path), TreeFilter.ANY_DIFF))
+            revWalk.setTreeFilter(AndTreeFilter.create(
+              PathFilter.create(path),
+              TreeFilter.ANY_DIFF))
           }
           Right(getCommitLog(revWalk.iterator, 0, Nil))
         }
@@ -622,41 +624,42 @@ object JGitUtil {
           val buffer = new scala.collection.mutable.ListBuffer[DiffInfo]()
           while (treeWalk.next) {
             val newIsImage = FileUtil.isImage(treeWalk.getPathString)
-            buffer.append(
-              (if (!fetchContent) {
-                 DiffInfo(
-                   changeType = ChangeType.ADD,
-                   oldPath = null,
-                   newPath = treeWalk.getPathString,
-                   oldContent = None,
-                   newContent = None,
-                   oldIsImage = false,
-                   newIsImage = newIsImage,
-                   oldObjectId = None,
-                   newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
-                   oldMode = treeWalk.getFileMode(0).toString,
-                   newMode = treeWalk.getFileMode(0).toString,
-                   tooLarge = false
-                 )
-               } else {
-                 DiffInfo(
-                   changeType = ChangeType.ADD,
-                   oldPath = null,
-                   newPath = treeWalk.getPathString,
-                   oldContent = None,
-                   newContent = JGitUtil
-                     .getContentFromId(git, treeWalk.getObjectId(0), false)
-                     .filter(FileUtil.isText)
-                     .map(convertFromByteArray),
-                   oldIsImage = false,
-                   newIsImage = newIsImage,
-                   oldObjectId = None,
-                   newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
-                   oldMode = treeWalk.getFileMode(0).toString,
-                   newMode = treeWalk.getFileMode(0).toString,
-                   tooLarge = false
-                 )
-               }))
+            buffer.append((
+              if (!fetchContent) {
+                DiffInfo(
+                  changeType = ChangeType.ADD,
+                  oldPath = null,
+                  newPath = treeWalk.getPathString,
+                  oldContent = None,
+                  newContent = None,
+                  oldIsImage = false,
+                  newIsImage = newIsImage,
+                  oldObjectId = None,
+                  newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
+                  oldMode = treeWalk.getFileMode(0).toString,
+                  newMode = treeWalk.getFileMode(0).toString,
+                  tooLarge = false
+                )
+              } else {
+                DiffInfo(
+                  changeType = ChangeType.ADD,
+                  oldPath = null,
+                  newPath = treeWalk.getPathString,
+                  oldContent = None,
+                  newContent = JGitUtil
+                    .getContentFromId(git, treeWalk.getObjectId(0), false)
+                    .filter(FileUtil.isText)
+                    .map(convertFromByteArray),
+                  oldIsImage = false,
+                  newIsImage = newIsImage,
+                  oldObjectId = None,
+                  newObjectId = Option(treeWalk.getObjectId(0)).map(_.name),
+                  oldMode = treeWalk.getFileMode(0).toString,
+                  newMode = treeWalk.getFileMode(0).toString,
+                  tooLarge = false
+                )
+              }
+            ))
           }
           (buffer.toList, None)
         }
@@ -818,8 +821,8 @@ object JGitUtil {
       revstr: String = ""): Option[(ObjectId, String)] = {
     Seq(
       Some(if (revstr.isEmpty) repository.repository.defaultBranch else revstr),
-      repository.branchList.headOption
-    ).flatMap {
+      repository.branchList.headOption)
+      .flatMap {
         case Some(rev) => Some((git.getRepository.resolve(rev), rev))
         case None      => None
       }
@@ -1138,12 +1141,11 @@ object JGitUtil {
               val mergeBase = walk.next()
               walk.reset()
               walk.setRevFilter(RevFilter.ALL)
-              Some(
-                BranchMergeInfo(
-                  ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
-                  behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
-                  isMerged = walk.isMergedInto(branchCommit, defaultCommit)
-                ))
+              Some(BranchMergeInfo(
+                ahead = RevWalkUtils.count(walk, branchCommit, mergeBase),
+                behind = RevWalkUtils.count(walk, defaultCommit, mergeBase),
+                isMerged = walk.isMergedInto(branchCommit, defaultCommit)
+              ))
             }
           BranchInfo(
             branchName,

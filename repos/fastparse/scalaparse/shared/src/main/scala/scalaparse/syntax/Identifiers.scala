@@ -7,8 +7,7 @@ object Identifiers {
 
   val Operator = P(
     !Keywords ~ (!("/*" | "//") ~ (CharsWhile(x =>
-      isOpChar(x) && x != '/') | "/")).rep(1)
-  )
+      isOpChar(x) && x != '/') | "/")).rep(1))
 
   val VarId = VarId0(true)
 
@@ -23,8 +22,9 @@ object Identifiers {
 
   def IdRest(allowDollar: Boolean) = {
     val NonLetterDigitId = if (!allowDollar) "" else "$"
-    val IdUnderscoreChunk = P(CharsWhile(_ == '_', min = 0) ~ CharsWhile(c =>
-      NonLetterDigitId.contains(c) || c.isLetter || c.isDigit))
+    val IdUnderscoreChunk = P(
+      CharsWhile(_ == '_', min = 0) ~ CharsWhile(c =>
+        NonLetterDigitId.contains(c) || c.isLetter || c.isDigit))
     P(
       IdUnderscoreChunk.rep ~ (CharsWhile(_ == '_') ~ CharsWhile(
         isOpChar,
@@ -89,8 +89,7 @@ object Identifiers {
     "#",
     "@",
     "\u21d2",
-    "\u2190"
-  )
+    "\u2190")
   val SymbolicKeywords = P { StringIn(symbolKeywords: _*) ~ !OpChar }
 
   val keywords = alphaKeywords ++ symbolKeywords

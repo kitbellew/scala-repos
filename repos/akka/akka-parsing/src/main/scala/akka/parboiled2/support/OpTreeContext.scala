@@ -136,8 +136,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
     case call @ (Apply(_, _) | Select(_, _) | Ident(_) | TypeApply(_, _)) ⇒
       RuleCall(
         Right(call),
-        Literal(
-          Constant(callName(call) getOrElse c
+        Literal(Constant(
+          callName(call) getOrElse c
             .abort(call.pos, "Illegal rule call: " + call))))
   }
 

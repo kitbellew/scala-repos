@@ -20,8 +20,7 @@ class SpdyRawFrameCodecTest extends FunSuite {
     0x01, // Stream-ID 1, 1 Name/Value Pair
     0x00, 0x00, 0x00, 0x04, 0x6E, 0x61, 0x6D, 0x65, // (4) name
     0x00, 0x00, 0x00, 0x05, 0x76, 0x61, 0x6C, 0x75, // (5) value
-    0x65
-  ).map { _.toByte }
+    0x65).map { _.toByte }
 
   def spdyFrameCodec = new SpdyRawFrameCodec(SpdyVersion.SPDY_3_1, 8192, 16384)
 

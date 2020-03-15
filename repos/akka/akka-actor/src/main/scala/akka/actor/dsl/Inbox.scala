@@ -123,8 +123,8 @@ trait Inbox { this: ActorDSL.type ⇒
           val overdue = clientsByTimeout.iterator.takeWhile(pred)
           while (overdue.hasNext) {
             val toKick = overdue.next()
-            toKick.client ! Status.Failure(
-              new TimeoutException("deadline passed"))
+            toKick.client ! Status.Failure(new TimeoutException(
+              "deadline passed"))
           }
           clients = clients.filterNot(pred)
           clientsByTimeout = clientsByTimeout.from(Get(now))
@@ -218,10 +218,9 @@ trait Inbox { this: ActorDSL.type ⇒
     def select[T](timeout: FiniteDuration = defaultTimeout)(
         predicate: PartialFunction[Any, T]): T = {
       implicit val t = Timeout(timeout + extraTime)
-      predicate(
-        Await.result(
-          receiver ? Select(Deadline.now + timeout, predicate),
-          Duration.Inf))
+      predicate(Await.result(
+        receiver ? Select(Deadline.now + timeout, predicate),
+        Duration.Inf))
     }
 
     /**

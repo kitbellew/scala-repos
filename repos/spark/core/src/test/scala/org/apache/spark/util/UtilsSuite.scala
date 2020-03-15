@@ -800,9 +800,8 @@ class UtilsSuite extends SparkFunSuite with ResetSystemProperties with Logging {
     assert(
       Utils.isDynamicAllocationEnabled(
         conf.set("spark.master", "local")) === false)
-    assert(
-      Utils.isDynamicAllocationEnabled(
-        conf.set("spark.dynamicAllocation.testing", "true")))
+    assert(Utils.isDynamicAllocationEnabled(
+      conf.set("spark.dynamicAllocation.testing", "true")))
   }
 
   test("encodeFileNameToURIRawPath") {

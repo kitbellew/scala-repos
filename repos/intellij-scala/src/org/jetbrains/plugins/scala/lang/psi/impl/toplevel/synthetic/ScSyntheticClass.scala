@@ -118,9 +118,8 @@ class ScSyntheticClass(
       extends mutable.HashMap[String, mutable.Set[ScSyntheticFunction]]
       with mutable.MultiMap[String, ScSyntheticFunction]
   protected object specialMethods
-      extends mutable.HashMap[
-        String,
-        mutable.Set[GlobalSearchScope => ScSyntheticFunction]]
+      extends mutable.HashMap[String, mutable.Set[
+        GlobalSearchScope => ScSyntheticFunction]]
       with mutable.MultiMap[String, GlobalSearchScope => ScSyntheticFunction]
 
   def addMethod(method: ScSyntheticFunction) =
@@ -273,13 +272,12 @@ class SyntheticClasses(project: Project)
     any.addMethod(
       new ScSyntheticFunction(manager, "!=", Boolean, Seq(Seq(Any))))
     any.addMethod(new ScSyntheticFunction(manager, "##", Int, Seq.empty))
-    any.addMethod(
-      new ScSyntheticFunction(
-        manager,
-        "isInstanceOf",
-        Boolean,
-        Seq.empty,
-        Seq(ScalaUtils.typeParameter)))
+    any.addMethod(new ScSyntheticFunction(
+      manager,
+      "isInstanceOf",
+      Boolean,
+      Seq.empty,
+      Seq(ScalaUtils.typeParameter)))
     any.addMethod(
       new ScSyntheticFunction(
         manager,
@@ -302,18 +300,16 @@ class SyntheticClasses(project: Project)
         Any,
         Seq.empty,
         Seq(ScalaUtils.typeParameter)) {
-        override val paramClauses: Seq[Seq[Parameter]] = Seq(
-          Seq(
-            new Parameter(
-              "",
-              None,
-              ScalaPsiManager.typeVariable(typeParams(0)),
-              false,
-              false,
-              false,
-              0)))
-        override val retType: ScType = ScalaPsiManager.typeVariable(
-          typeParams(0))
+        override val paramClauses: Seq[Seq[Parameter]] = Seq(Seq(new Parameter(
+          "",
+          None,
+          ScalaPsiManager.typeVariable(typeParams(0)),
+          false,
+          false,
+          false,
+          0)))
+        override val retType: ScType = ScalaPsiManager.typeVariable(typeParams(
+          0))
       })
 
     registerClass(AnyVal, "AnyVal")
@@ -342,39 +338,35 @@ class SyntheticClasses(project: Project)
         nc.addMethod(
           new ScSyntheticFunction(manager, op, Boolean, Seq(Seq(nc1.t))))
       for (nc1 <- numeric; op <- numeric_arith_ops)
-        nc.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            op,
-            op_type(nc, nc1),
-            Seq(Seq(nc1.t))))
+        nc.addMethod(new ScSyntheticFunction(
+          manager,
+          op,
+          op_type(nc, nc1),
+          Seq(Seq(nc1.t))))
       for (nc1 <- numeric)
-        nc.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            "to" + nc1.className,
-            nc1.t,
-            Seq.empty))
+        nc.addMethod(new ScSyntheticFunction(
+          manager,
+          "to" + nc1.className,
+          nc1.t,
+          Seq.empty))
       for (un_op <- numeric_arith_unary_ops)
-        nc.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            "unary_" + un_op,
-            nc.t match {
-              case Long | Double | Float => nc.t
-              case _                     => Int
-            },
-            Seq.empty))
+        nc.addMethod(new ScSyntheticFunction(
+          manager,
+          "unary_" + un_op,
+          nc.t match {
+            case Long | Double | Float => nc.t
+            case _                     => Int
+          },
+          Seq.empty))
     }
 
     for (ic <- integer) {
       for (ic1 <- integer; op <- bitwise_bin_ops)
-        ic.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            op,
-            op_type(ic, ic1),
-            Seq(Seq(ic1.t))))
+        ic.addMethod(new ScSyntheticFunction(
+          manager,
+          op,
+          op_type(ic, ic1),
+          Seq(Seq(ic1.t))))
       ic.addMethod(new ScSyntheticFunction(manager, "unary_~", ic.t, Seq.empty))
 
       val ret = ic.t match {
@@ -418,19 +410,16 @@ class SyntheticClasses(project: Project)
       syntheticObjects += obj
     }
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Boolean {
  	def box(x: Boolean): java.lang.Boolean = throw new Error()
  	def unbox(x: Object): Boolean = throw new Error()
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Byte {
@@ -439,11 +428,9 @@ object Byte {
   def MinValue = java.lang.Byte.MIN_VALUE
  	def MaxValue = java.lang.Byte.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Char {
@@ -452,11 +439,9 @@ object Char {
  	def MinValue = java.lang.Character.MIN_VALUE
  	def MaxValue = java.lang.Character.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Double {
@@ -473,11 +458,9 @@ object Double {
  	def PositiveInfinity = java.lang.Double.POSITIVE_INFINITY
  	def NegativeInfinity = java.lang.Double.NEGATIVE_INFINITY
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Float {
@@ -494,11 +477,9 @@ object Float {
  	def PositiveInfinity = java.lang.Float.POSITIVE_INFINITY
  	def NegativeInfinity = java.lang.Float.NEGATIVE_INFINITY
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Int {
@@ -507,11 +488,9 @@ object Int {
  	def MinValue = java.lang.Integer.MIN_VALUE
  	def MaxValue = java.lang.Integer.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Long {
@@ -520,11 +499,9 @@ object Long {
  	def MinValue = java.lang.Long.MIN_VALUE
  	def MaxValue = java.lang.Long.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Short {
@@ -533,16 +510,13 @@ object Short {
  	def MinValue = java.lang.Short.MIN_VALUE
  	def MaxValue = java.lang.Short.MAX_VALUE
 }
-"""
-    )
+""")
 
-    registerObject(
-      """
+    registerObject("""
 package scala
 
 object Unit
-"""
-    )
+""")
 
     classesInitialized = true
   }

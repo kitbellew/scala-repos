@@ -72,8 +72,8 @@ class ConstantFoldingSuite extends PlanTest {
           Literal(2) > Literal(3) ||
           Literal(3) > Literal(2))
       .groupBy(
-        Literal(2) * Literal(3) - Literal(6) / (Literal(4) - Literal(2))
-      )(Literal(9) / Literal(3) as Symbol("9/3"))
+        Literal(2) * Literal(3) - Literal(6) / (Literal(4) - Literal(2)))(
+        Literal(9) / Literal(3) as Symbol("9/3"))
 
     val optimized = Optimize.execute(originalQuery.analyze)
 

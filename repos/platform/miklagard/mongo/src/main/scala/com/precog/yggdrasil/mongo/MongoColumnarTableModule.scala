@@ -133,9 +133,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       try { Option(v) orElse { logger.error(nullMessage); None } }
       catch {
         case t: Throwable =>
-          logger.error(
-            "Failure during Mongo query: %s(%s)"
-              .format(t.getClass, t.getMessage)); None
+          logger.error("Failure during Mongo query: %s(%s)".format(
+            t.getClass,
+            t.getMessage)); None
       }
 
     def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
@@ -146,8 +146,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
               M.point {
                 val (slice, nextSkip) = makeSlice(cursorGen, skip)
                 logger.trace(
-                  "Running InLoad: fetched %d rows, next skip = %s"
-                    .format(slice.size, nextSkip))
+                  "Running InLoad: fetched %d rows, next skip = %s".format(
+                    slice.size,
+                    nextSkip))
                 Some(
                   slice,
                   nextSkip
@@ -180,9 +181,9 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                               case invalid =>
                                 logger.error(
-                                  "Invalid user:password for %s: \"%s\""
-                                    .format(dbName, invalid.mkString(":")));
-                                None
+                                  "Invalid user:password for %s: \"%s\"".format(
+                                    dbName,
+                                    invalid.mkString(":"))); None
                             }
                           } else { Some(d) }
                       }

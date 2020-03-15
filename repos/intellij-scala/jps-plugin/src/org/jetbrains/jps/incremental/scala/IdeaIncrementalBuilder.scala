@@ -58,8 +58,8 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     checkIncrementalTypeChange(context)
 
-    context.processMessage(
-      new ProgressMessage("Searching for compilable files..."))
+    context.processMessage(new ProgressMessage(
+      "Searching for compilable files..."))
 
     val sourceDependencies = SourceDependenciesProviderService
       .getSourceDependenciesFor(chunk)

@@ -211,12 +211,11 @@ final class ClusterSingletonProxy(
     identifyId = createIdentifyId(identifyCounter)
     singleton = None
     cancelTimer()
-    identifyTimer = Some(
-      context.system.scheduler.schedule(
-        0 milliseconds,
-        singletonIdentificationInterval,
-        self,
-        ClusterSingletonProxy.TryToIdentifySingleton))
+    identifyTimer = Some(context.system.scheduler.schedule(
+      0 milliseconds,
+      singletonIdentificationInterval,
+      self,
+      ClusterSingletonProxy.TryToIdentifySingleton))
   }
 
   def trackChange(block: () ⇒ Unit): Unit = {

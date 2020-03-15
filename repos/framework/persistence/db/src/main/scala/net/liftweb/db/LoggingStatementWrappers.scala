@@ -379,9 +379,10 @@ object DBLog {
         case ite: java.lang.reflect.InvocationTargetException =>
           throw ite.getCause
         case nsme: NoSuchMethodException =>
-          logger.warn(
-            "Could not locate method %s for %s : %s"
-              .format(method.getName, underlyingClassname, nsme.getMessage))
+          logger.warn("Could not locate method %s for %s : %s".format(
+            method.getName,
+            underlyingClassname,
+            nsme.getMessage))
           throw nsme
       }
 
@@ -571,8 +572,8 @@ object DBLog {
         }
 
         case "setNClob" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(args(
+            1))
           chain(method, args)
         }
 

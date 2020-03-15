@@ -151,8 +151,7 @@ class BasicFieldDescriptor[T](
       e => ValidationError(e).failure,
       o =>
         (o.flatMap(convert(_)) orElse defaultValue)
-          .fold(requiredValidationFailure)(_.success)
-    )
+          .fold(requiredValidationFailure)(_.success))
     val o = original.fold(_ => None, identity)
     BoundFieldDescriptor(o, conv, this)
   }
@@ -419,8 +418,8 @@ object BindingValidators {
   class ValidatableSeq[T <: Seq[_]](b: FieldDescriptor[T]) {
     def notEmpty: FieldDescriptor[T] = notEmpty()
     def notEmpty(messageFormat: String = b.requiredError): FieldDescriptor[T] =
-      b.required.validateWith(
-        BindingValidators.nonEmptyCollection(messageFormat))
+      b.required.validateWith(BindingValidators.nonEmptyCollection(
+        messageFormat))
   }
 
   class ValidatableOrdered[T <% Ordered[T]](b: FieldDescriptor[T]) {
@@ -470,9 +469,10 @@ object BindingValidators {
         allowLocalHost: Boolean,
         messageFormat: String = "%s must be a valid absolute url.",
         schemes: Seq[String] = Seq("http", "https")): FieldDescriptor[String] =
-      b.validateWith(
-        BindingValidators
-          .validAbsoluteUrl(allowLocalHost, messageFormat, schemes))
+      b.validateWith(BindingValidators.validAbsoluteUrl(
+        allowLocalHost,
+        messageFormat,
+        schemes))
 
     def validUrl(
         allowLocalHost: Boolean,

@@ -38,19 +38,17 @@ object arbitrary extends ArbitraryInstances0 {
   implicit def validatedArbitrary[A, B](implicit
       A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[Validated[A, B]] =
-    Arbitrary(
-      Gen.oneOf(
-        A.arbitrary.map(Validated.invalid),
-        B.arbitrary.map(Validated.valid)))
+    Arbitrary(Gen.oneOf(
+      A.arbitrary.map(Validated.invalid),
+      B.arbitrary.map(Validated.valid)))
 
   implicit def iorArbitrary[A, B](implicit
       A: Arbitrary[A],
       B: Arbitrary[B]): Arbitrary[A Ior B] =
-    Arbitrary(
-      Gen.oneOf(
-        A.arbitrary.map(Ior.left),
-        B.arbitrary.map(Ior.right),
-        for { a <- A.arbitrary; b <- B.arbitrary } yield Ior.both(a, b)))
+    Arbitrary(Gen.oneOf(
+      A.arbitrary.map(Ior.left),
+      B.arbitrary.map(Ior.right),
+      for { a <- A.arbitrary; b <- B.arbitrary } yield Ior.both(a, b)))
 
   implicit def kleisliArbitrary[F[_], A, B](
       implicit F: Arbitrary[F[B]]): Arbitrary[Kleisli[F, A, B]] =
@@ -65,11 +63,10 @@ object arbitrary extends ArbitraryInstances0 {
     Arbitrary(F.arbitrary.map(OptionT.apply))
 
   implicit def evalArbitrary[A: Arbitrary]: Arbitrary[Eval[A]] =
-    Arbitrary(
-      Gen.oneOf(
-        getArbitrary[A].map(Eval.now(_)),
-        getArbitrary[A].map(Eval.later(_)),
-        getArbitrary[A].map(Eval.always(_))))
+    Arbitrary(Gen.oneOf(
+      getArbitrary[A].map(Eval.now(_)),
+      getArbitrary[A].map(Eval.later(_)),
+      getArbitrary[A].map(Eval.always(_))))
 
   implicit def prodArbitrary[F[_], G[_], A](implicit
       F: Arbitrary[F[A]],
@@ -97,10 +94,9 @@ object arbitrary extends ArbitraryInstances0 {
   implicit def coproductArbitrary[F[_], G[_], A](implicit
       F: Arbitrary[F[A]],
       G: Arbitrary[G[A]]): Arbitrary[Coproduct[F, G, A]] =
-    Arbitrary(
-      Gen.oneOf(
-        F.arbitrary.map(Coproduct.leftc[F, G, A]),
-        G.arbitrary.map(Coproduct.rightc[F, G, A])))
+    Arbitrary(Gen.oneOf(
+      F.arbitrary.map(Coproduct.leftc[F, G, A]),
+      G.arbitrary.map(Coproduct.rightc[F, G, A])))
 
   implicit def showArbitrary[A: Arbitrary]: Arbitrary[Show[A]] =
     Arbitrary(Show.fromToString[A])

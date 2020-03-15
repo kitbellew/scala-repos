@@ -90,16 +90,24 @@ class QuaternionCheck
     val (br, bi, bj, bk) = (base.r, base.i, base.j, base.k)
     if (br != gr)
       println(
-        s"  r: ${br.repr} != ${gr.repr} (${br.toRational} and ${gr.toRational}) [${(br - gr).signum}] <${br - gr}>")
+        s"  r: ${br.repr} != ${gr.repr} (${br.toRational} and ${gr.toRational}) [${(
+          br - gr
+        ).signum}] <${br - gr}>")
     if (bi != gi)
       println(
-        s"  i: ${bi.repr} != ${gi.repr} (${bi.toRational} and ${gi.toRational}) [${(bi - gi).signum}] <${bi - gi}>")
+        s"  i: ${bi.repr} != ${gi.repr} (${bi.toRational} and ${gi.toRational}) [${(
+          bi - gi
+        ).signum}] <${bi - gi}>")
     if (bj != gj)
       println(
-        s"  j: ${bj.repr} != ${gj.repr} (${bj.toRational} and ${gj.toRational}) [${(bj - gj).signum}] <${bj - gj}>")
+        s"  j: ${bj.repr} != ${gj.repr} (${bj.toRational} and ${gj.toRational}) [${(
+          bj - gj
+        ).signum}] <${bj - gj}>")
     if (bk != gk)
       println(
-        s"  k: ${bk.repr} != ${gk.repr} (${bk.toRational} and ${gk.toRational}) [${(bk - gk).signum}] <${bk - gk}>")
+        s"  k: ${bk.repr} != ${gk.repr} (${bk.toRational} and ${gk.toRational}) [${(
+          bk - gk
+        ).signum}] <${bk - gk}>")
   }
 
   def inexactEq(x: H, y: H): Unit =
@@ -177,9 +185,9 @@ class QuaternionCheck
     }
 
     forAll { (r: Real, i: Real, j: Real, k: Real) =>
-      Quaternion(r, i, j, k) == Complex(
-        r,
-        i) shouldBe (j == Real.zero && k == Real.zero)
+      Quaternion(r, i, j, k) == Complex(r, i) shouldBe (
+        j == Real.zero && k == Real.zero
+      )
     }
   }
 }

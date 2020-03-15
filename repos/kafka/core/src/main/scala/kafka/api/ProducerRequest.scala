@@ -160,10 +160,9 @@ case class ProducerRequest(
       val errorResponse = ProducerResponse(
         correlationId,
         producerResponseStatus)
-      requestChannel.sendResponse(
-        new Response(
-          request,
-          new RequestOrResponseSend(request.connectionId, errorResponse)))
+      requestChannel.sendResponse(new Response(
+        request,
+        new RequestOrResponseSend(request.connectionId, errorResponse)))
     }
   }
 

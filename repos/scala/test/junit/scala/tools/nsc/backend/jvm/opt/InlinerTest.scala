@@ -370,8 +370,9 @@ class InlinerTest extends ClearAfterClass {
       """.stripMargin
     val List(c) = compile(code)
     assert(
-      callGraph.callsites.valuesIterator.flatMap(
-        _.valuesIterator) exists (_.callsiteInstruction.name == "clone"))
+      callGraph.callsites.valuesIterator.flatMap(_.valuesIterator) exists (
+        _.callsiteInstruction.name == "clone"
+      ))
   }
 
   @Test
@@ -1003,9 +1004,8 @@ class InlinerTest extends ClearAfterClass {
         |  def t = System.arraycopy(null, 0, null, 0, 0)
         |}
       """.stripMargin
-    val List(c) = compileClasses(
-      newCompiler(extraArgs =
-        InlinerTest.args + " -Yopt-inline-heuristics:everything"))(code)
+    val List(c) = compileClasses(newCompiler(extraArgs =
+      InlinerTest.args + " -Yopt-inline-heuristics:everything"))(code)
     assertInvoke(getSingleMethod(c, "t"), "java/lang/System", "arraycopy")
   }
 
@@ -1100,11 +1100,10 @@ class InlinerTest extends ClearAfterClass {
     val warning = inliner.canInlineBody(gCall)
     assert(warning.isEmpty, warning)
 
-    inliner.inline(
-      InlineRequest(
-        hCall,
-        post = List(
-          InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
+    inliner.inline(InlineRequest(
+      hCall,
+      post = List(
+        InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
     assertNoInvoke(
       convertMethod(iMeth)
     ) // no invoke in i: first h is inlined, then the inlined call to g is also inlined, etc for f

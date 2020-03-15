@@ -234,8 +234,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
           columns,
           primaryKey.toSeq,
           foreignKeys,
-          indices
-        )
+          indices)
       }
 
       /** Code for enabled definitions in this table class grouped into logical groups. */

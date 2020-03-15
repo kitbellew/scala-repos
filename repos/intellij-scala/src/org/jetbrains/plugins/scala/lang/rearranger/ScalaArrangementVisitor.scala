@@ -55,9 +55,10 @@ class ScalaArrangementVisitor(
   private val splitBodyByExpressions = groupingRules.contains(
     SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
 
-  private val unseparableRanges = mutable.HashMap[
-    ScalaArrangementEntry /*parent*/,
-    mutable.Queue[ScalaArrangementEntry] /*Arrangement blocks*/ ]()
+  private val unseparableRanges = mutable
+    .HashMap[ScalaArrangementEntry /*parent*/, mutable.Queue[
+      ScalaArrangementEntry
+    ] /*Arrangement blocks*/ ]()
 
   /**
     * Traverses method body to build inter-method dependencies.
@@ -341,11 +342,11 @@ class ScalaArrangementVisitor(
     val first = node.getFirstChild
     var currentNode: PsiElement = node
     var range =
-      if (first != null && first
-            .isInstanceOf[PsiComment] && prev != null && (!prev
-            .isInstanceOf[PsiWhiteSpace] ||
-          prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
-            "\n") && prev.getPrevSibling != null)) {
+      if (first != null && first.isInstanceOf[PsiComment] && prev != null && (
+            !prev.isInstanceOf[PsiWhiteSpace] ||
+            prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
+              "\n") && prev.getPrevSibling != null
+          )) {
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)
@@ -446,13 +447,12 @@ class ScalaArrangementVisitor(
         unseparableRanges
           .get(entry)
           .foreach(queue =>
-            queue.enqueue(
-              createNewEntry(
-                body,
-                new TextRange(newOffset, child.getTextRange.getEndOffset),
-                UNSEPARABLE_RANGE,
-                null,
-                canArrange = true)))
+            queue.enqueue(createNewEntry(
+              body,
+              new TextRange(newOffset, child.getTextRange.getEndOffset),
+              UNSEPARABLE_RANGE,
+              null,
+              canArrange = true)))
         None
       } else startOffset
     })
@@ -487,10 +487,12 @@ object ScalaArrangementVisitor {
     method.name.endsWith("_=")
 
   private def hasSetterSignature(method: ScFunction) =
-    method.getParameterList.getParametersCount == 1 && (method.returnType.getOrAny match {
-      case Any                => true
-      case returnType: ScType => returnType == Unit
-    })
+    method.getParameterList.getParametersCount == 1 && (
+      method.returnType.getOrAny match {
+        case Any                => true
+        case returnType: ScType => returnType == Unit
+      }
+    )
 
   private def isJavaGetter(method: ScFunction) =
     hasJavaGetterName(method) && method.getParameterList.getParametersCount == 0

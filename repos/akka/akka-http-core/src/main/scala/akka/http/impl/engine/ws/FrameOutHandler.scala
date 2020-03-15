@@ -35,9 +35,9 @@ private[http] class FrameOutHandler(
         case PeerClosed(code, reason)
             if !code.exists(Protocol.CloseCodes.isError) ⇒
           // let user complete it, FIXME: maybe make configurable? immediately, or timeout
-          become(
-            new WaitingForUserHandlerClosed(FrameEvent
-              .closeFrame(code.getOrElse(Protocol.CloseCodes.Regular), reason)))
+          become(new WaitingForUserHandlerClosed(FrameEvent.closeFrame(
+            code.getOrElse(Protocol.CloseCodes.Regular),
+            reason)))
           ctx.pull()
         case PeerClosed(code, reason) ⇒
           val closeFrame = FrameEvent.closeFrame(
@@ -60,17 +60,15 @@ private[http] class FrameOutHandler(
         case UserHandlerErredOut(e) ⇒
           log.error(e, s"WebSocket handler failed with ${e.getMessage}")
           become(new WaitingForPeerCloseFrame())
-          ctx.push(
-            FrameEvent.closeFrame(
-              Protocol.CloseCodes.UnexpectedCondition,
-              "internal error"))
+          ctx.push(FrameEvent.closeFrame(
+            Protocol.CloseCodes.UnexpectedCondition,
+            "internal error"))
         case Tick ⇒ ctx.pull() // ignore
       }
 
     def onComplete(ctx: Context[FrameStart]): TerminationDirective = {
-      become(
-        new SendOutCloseFrameAndComplete(
-          FrameEvent.closeFrame(Protocol.CloseCodes.Regular)))
+      become(new SendOutCloseFrameAndComplete(
+        FrameEvent.closeFrame(Protocol.CloseCodes.Regular)))
       ctx.absorbTermination()
     }
   }
@@ -100,8 +98,8 @@ private[http] class FrameOutHandler(
       }
 
     def onComplete(ctx: Context[FrameStart]): TerminationDirective =
-      ctx.fail(
-        new IllegalStateException("Mustn't complete before user has completed"))
+      ctx.fail(new IllegalStateException(
+        "Mustn't complete before user has completed"))
   }
 
   /**
@@ -168,9 +166,8 @@ private[http] class FrameOutHandler(
       ctx: Context[FrameStart]): TerminationDirective =
     cause match {
       case p: ProtocolException ⇒
-        become(
-          new SendOutCloseFrameAndComplete(
-            FrameEvent.closeFrame(Protocol.CloseCodes.ProtocolError)))
+        become(new SendOutCloseFrameAndComplete(
+          FrameEvent.closeFrame(Protocol.CloseCodes.ProtocolError)))
         ctx.absorbTermination()
       case _ ⇒ super.onUpstreamFailure(cause, ctx)
     }

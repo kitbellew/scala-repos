@@ -106,11 +106,10 @@ object ParameterDirectives extends ParameterDirectives {
         case Failure(Unmarshaller.NoContentException) ⇒
           reject(MissingQueryParamRejection(paramName))
         case Failure(x) ⇒
-          reject(
-            MalformedQueryParamRejection(
-              paramName,
-              x.getMessage.nullAsEmpty,
-              Option(x.getCause)))
+          reject(MalformedQueryParamRejection(
+            paramName,
+            x.getMessage.nullAsEmpty,
+            Option(x.getCause)))
       }
 
     //////////////////// "regular" parameter extraction //////////////////////
@@ -147,9 +146,8 @@ object ParameterDirectives extends ParameterDirectives {
       extractParameter[NameDefaultReceptacle[T], T] { nr ⇒
         filter[T](nr.name, fsou withDefaultValue nr.default)
       }
-    implicit def forNOUR[T]: ParamDefAux[
-      NameOptionUnmarshallerReceptacle[T],
-      Directive1[Option[T]]] =
+    implicit def forNOUR[T]: ParamDefAux[NameOptionUnmarshallerReceptacle[
+      T], Directive1[Option[T]]] =
       extractParameter[NameOptionUnmarshallerReceptacle[T], Option[T]] { nr ⇒
         filter(nr.name, nr.um: FSOU[T])
       }
@@ -202,9 +200,8 @@ object ParameterDirectives extends ParameterDirectives {
       extractParameter[RepeatedValueReceptacle[T], Iterable[T]] { rvr ⇒
         repeatedFilter(rvr.name, fsu)
       }
-    implicit def forRepVDR[T]: ParamDefAux[
-      RepeatedValueUnmarshallerReceptacle[T],
-      Directive1[Iterable[T]]] =
+    implicit def forRepVDR[T]: ParamDefAux[RepeatedValueUnmarshallerReceptacle[
+      T], Directive1[Iterable[T]]] =
       extractParameter[RepeatedValueUnmarshallerReceptacle[T], Iterable[T]] {
         rvr ⇒ repeatedFilter(rvr.name, rvr.um)
       }
@@ -222,11 +219,10 @@ object ParameterDirectives extends ParameterDirectives {
     object ConvertParamDefAndConcatenate extends BinaryPolyFunc {
       implicit def from[P, TA, TB](implicit
           pdef: ParamDef[P] { type Out = Directive[TB] },
-          ev: Join[TA, TB]): BinaryPolyFunc.Case[
-        Directive[TA],
-        P,
-        ConvertParamDefAndConcatenate.type] { type Out = Directive[ev.Out] } =
-        at[Directive[TA], P] { (a, t) ⇒ a & pdef(t) }
+          ev: Join[TA, TB]): BinaryPolyFunc.Case[Directive[
+        TA], P, ConvertParamDefAndConcatenate.type] {
+        type Out = Directive[ev.Out]
+      } = at[Directive[TA], P] { (a, t) ⇒ a & pdef(t) }
     }
   }
 }

@@ -377,15 +377,15 @@ trait AnyValInstances {
         Order[Long].order(Tag.unwrap(a1), Tag.unwrap(a2))
     }
 
-  implicit val floatInstance: Order[Float] with Show[Float] = new Order[Float]
-    with Show[Float] {
-    override def shows(f: Float) = f.toString
+  implicit val floatInstance: Order[Float] with Show[Float] =
+    new Order[Float] with Show[Float] {
+      override def shows(f: Float) = f.toString
 
-    override def equalIsNatural: Boolean = true
+      override def equalIsNatural: Boolean = true
 
-    def order(x: Float, y: Float) =
-      if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
-  }
+      def order(x: Float, y: Float) =
+        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+    }
 
   implicit val doubleInstance: Order[Double] with Show[Double] =
     new Order[Double] with Show[Double] {

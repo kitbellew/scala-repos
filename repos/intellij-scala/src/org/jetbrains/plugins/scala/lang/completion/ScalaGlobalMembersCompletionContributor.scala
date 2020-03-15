@@ -417,11 +417,10 @@ class ScalaGlobalMembersCompletionContributor
                 val shouldImport = !elemsSetContains(namedElement)
                 showHint(shouldImport)
 
-                result.addElement(
-                  createLookupElement(
-                    namedElement,
-                    containingClass,
-                    shouldImport))
+                result.addElement(createLookupElement(
+                  namedElement,
+                  containingClass,
+                  shouldImport))
               }
             }
           }

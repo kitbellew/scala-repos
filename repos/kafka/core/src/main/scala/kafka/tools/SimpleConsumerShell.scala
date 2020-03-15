@@ -174,8 +174,9 @@ object SimpleConsumerShell extends Logging {
       .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
-        ("Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s")
-          .format(topic, topicsMetadata))
+        (
+          "Error: no valid topic metadata for topic: %s, " + "what we get from server is only: %s"
+        ).format(topic, topicsMetadata))
       System.exit(1)
     }
 
@@ -185,8 +186,9 @@ object SimpleConsumerShell extends Logging {
       p.partitionId == partitionId)
     if (!partitionMetadataOpt.isDefined) {
       System.err.println(
-        "Error: partition %d does not exist for topic %s"
-          .format(partitionId, topic))
+        "Error: partition %d does not exist for topic %s".format(
+          partitionId,
+          topic))
       System.exit(1)
     }
 
@@ -206,8 +208,10 @@ object SimpleConsumerShell extends Logging {
       replicaOpt = replicasForPartition.find(r => r.id == replicaId)
       if (!replicaOpt.isDefined) {
         System.err.println(
-          "Error: replica %d does not exist for partition (%s, %d)"
-            .format(replicaId, topic, partitionId))
+          "Error: replica %d does not exist for partition (%s, %d)".format(
+            replicaId,
+            topic,
+            partitionId))
         System.exit(1)
       }
     }

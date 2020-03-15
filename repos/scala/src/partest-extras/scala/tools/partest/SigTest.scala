@@ -12,10 +12,7 @@ import scala.reflect.{ClassTag, classTag}
   */
 trait SigTest {
   def mstr(m: JMethod) =
-    "  (m) %s%s".format(
-      m.toGenericString,
-      if (m.isBridge) " (bridge)" else ""
-    )
+    "  (m) %s%s".format(m.toGenericString, if (m.isBridge) " (bridge)" else "")
   def fstr(f: JField) = "  (f) %s".format(f.toGenericString)
 
   def isObjectMethodName(name: String) =

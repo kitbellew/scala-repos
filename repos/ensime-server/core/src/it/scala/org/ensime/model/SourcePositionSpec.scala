@@ -14,9 +14,7 @@ class SourcePositionSpec
     with SharedEnsimeConfigFixture
     with SharedEnsimeVFSFixture {
 
-  val original = EnsimeConfigFixture.SimpleTestProject.copy(
-    javaLibs = Nil
-  )
+  val original = EnsimeConfigFixture.SimpleTestProject.copy(javaLibs = Nil)
 
   "SourcePosition" should "resolve FqnSymbols for local files with no line number" in {
     withEnsimeConfig { implicit config =>
@@ -61,9 +59,7 @@ class SourcePositionSpec
 
   def knownJarEntry(implicit config: EnsimeConfig): String = {
     val scalatest = config.subprojects.head.referenceSourceJars
-      .find(
-        _.getName.contains("scalatest_")
-      )
+      .find(_.getName.contains("scalatest_"))
       .get
       .getAbsoluteFile
     "jar:" + scalatest + "!/org/scalatest/FunSpec.scala"

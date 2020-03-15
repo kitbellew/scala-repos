@@ -18,8 +18,7 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
 
     val data = Json.obj(
       "tournament" -> Json.obj("id" -> tour.id),
-      "version" -> version
-    )
+      "version" -> version)
     Json stringify {
       user.fold(data) { u => data ++ Json.obj("username" -> u.username) }
     }
@@ -47,10 +46,9 @@ trait TournamentHelper { self: I18nHelper with DateHelper with UserHelper =>
     private val replacements = List(
       "Lichess " -> "",
       "Marathon" -> icon('\\'),
-      "SuperBlitz" -> icon(lila.rating.PerfType.Blitz.iconChar)
-    ) ::: lila.rating.PerfType.leaderboardable.map { pt =>
-      pt.name -> icon(pt.iconChar)
-    }
+      "SuperBlitz" -> icon(
+        lila.rating.PerfType.Blitz.iconChar)) ::: lila.rating.PerfType.leaderboardable
+      .map { pt => pt.name -> icon(pt.iconChar) }
     def apply(name: String) =
       Html {
         replacements.foldLeft(name) {

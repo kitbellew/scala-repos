@@ -313,10 +313,8 @@ abstract class Delambdafy
         val body =
           Block(
             List(
-              atPos(newClass.pos)(Apply(gen.mkSuperInitCall, Nil))
-            ) ++ assigns,
-            Literal(Constant(())): Tree
-          ) setPos newClass.pos
+              atPos(newClass.pos)(Apply(gen.mkSuperInitCall, Nil))) ++ assigns,
+            Literal(Constant(())): Tree) setPos newClass.pos
 
         (localTyper typed DefDef(
           constrSym,
@@ -346,8 +344,9 @@ abstract class Delambdafy
         val name = unit.freshTypeName(
           s"$oldClassPart$suffix".replace("$anon", "$nestedInAnon"))
 
-        val lambdaClass =
-          pkg newClassSymbol (name, originalFunction.pos, FINAL | SYNTHETIC) addAnnotation SerialVersionUIDAnnotation
+        val lambdaClass = pkg newClassSymbol (
+          name, originalFunction.pos, FINAL | SYNTHETIC
+        ) addAnnotation SerialVersionUIDAnnotation
         lambdaClass.associatedFile = unit.source.file
         // make sure currentRun.compiles(lambdaClass) is true (AddInterfaces does the same for trait impl classes)
         currentRun.symSource(lambdaClass) = funOwner.sourceFile
@@ -558,9 +557,9 @@ abstract class Delambdafy
       def adaptAndPostErase(tree: Tree, pt: Type): (Boolean, Tree) = {
         val (needsAdapt, adaptedTree) = adapt(tree, pt)
         val trans = postErasure.newTransformer(unit)
-        val postErasedTree = trans.atOwner(currentOwner)(
-          trans.transform(adaptedTree)
-        ) // SI-8017 eliminates ErasedValueTypes
+        val postErasedTree = trans.atOwner(currentOwner)(trans.transform(
+          adaptedTree
+        )) // SI-8017 eliminates ErasedValueTypes
         (needsAdapt, postErasedTree)
       }
 
@@ -624,7 +623,9 @@ abstract class Delambdafy
           declared += tree.symbol
         case Ident(_) =>
           val sym = tree.symbol
-          if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared
+          if ((
+                sym != NoSymbol
+              ) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared
                 .contains(sym)) freeVars += sym
         case _ =>
       }
@@ -656,8 +657,9 @@ abstract class Delambdafy
         case tree @ This(encl) if tree.symbol == oldClass && thisProxy.exists =>
           gen mkAttributedSelect (gen mkAttributedThis newClass, thisProxy)
         case Ident(name) if (captureProxies contains tree.symbol) =>
-          gen mkAttributedSelect (gen mkAttributedThis newClass, captureProxies(
-            tree.symbol))
+          gen mkAttributedSelect (
+            gen mkAttributedThis newClass, captureProxies(tree.symbol)
+          )
         case _ => super.transform(tree)
       }
   }

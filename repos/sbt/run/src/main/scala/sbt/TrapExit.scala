@@ -96,8 +96,8 @@ object TrapExit {
   private def safeInterrupt(thread: Thread, log: Logger): Unit = {
     val name = thread.getName
     log.debug("Interrupting thread " + thread.getName)
-    thread.setUncaughtExceptionHandler(
-      new TrapInterrupt(thread.getUncaughtExceptionHandler))
+    thread.setUncaughtExceptionHandler(new TrapInterrupt(
+      thread.getUncaughtExceptionHandler))
     thread.interrupt
     log.debug("\tInterrupted " + thread.getName)
   }

@@ -52,8 +52,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
     coll
       .find(
         BSONDocument("_id" -> userId, "b.0" -> BSONDocument("$exists" -> true)),
-        BSONDocument("_id" -> false, "b" -> BSONDocument("$slice" -> -1))
-      )
+        BSONDocument("_id" -> false, "b" -> BSONDocument("$slice" -> -1)))
       .one[BSONDocument]
       .map { _.flatMap(_.getAs[List[TempBan]]("b")).??(_.find(_.inEffect)) }
 
@@ -61,8 +60,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
     coll
       .find(
         BSONDocument("_id" -> userId, "b.0" -> BSONDocument("$exists" -> true)),
-        BSONDocument("_id" -> false, "b" -> true)
-      )
+        BSONDocument("_id" -> false, "b" -> true))
       .one[BSONDocument]
       .map { ~_.flatMap(_.getAs[List[TempBan]]("b")) }
 
@@ -70,8 +68,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
     coll
       .find(
         BSONDocument("_id" -> BSONDocument("$in" -> userIds)),
-        BSONDocument("b" -> true)
-      )
+        BSONDocument("b" -> true))
       .cursor[BSONDocument]()
       .collect[List]()
       .map {
@@ -90,8 +87,9 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
             selector = BSONDocument("_id" -> userId),
             update = BSONDocument(
               "$push" -> BSONDocument(
-                "o" -> BSONDocument("$each" -> List(outcome), "$slice" -> -20)
-              )),
+                "o" -> BSONDocument(
+                  "$each" -> List(outcome),
+                  "$slice" -> -20))),
             fetchNewObject = true,
             upsert = true
           )
@@ -109,9 +107,7 @@ final class PlaybanApi(coll: Coll, isRematch: String => Boolean) {
           BSONDocument(
             "$unset" -> BSONDocument("o" -> true),
             "$push" -> BSONDocument(
-              "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)
-            )
-          )
+              "b" -> BSONDocument("$each" -> List(ban), "$slice" -> -30)))
         )
         .void
     }

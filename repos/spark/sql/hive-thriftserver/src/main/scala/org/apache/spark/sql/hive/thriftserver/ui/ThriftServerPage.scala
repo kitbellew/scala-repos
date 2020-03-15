@@ -118,15 +118,14 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
         </tr>
         }
 
-        Some(
-          UIUtils.listingTable(
-            headerRow,
-            generateDataRow,
-            dataRows,
-            false,
-            None,
-            Seq(null),
-            false))
+        Some(UIUtils.listingTable(
+          headerRow,
+          generateDataRow,
+          dataRows,
+          false,
+          None,
+          Seq(null),
+          false))
       } else { None }
 
     val content =
@@ -193,15 +192,14 @@ private[ui] class ThriftServerPage(parent: ThriftServerTab)
           <td> {session.totalExecution.toString} </td>
         </tr>
         }
-        Some(
-          UIUtils.listingTable(
-            headerRow,
-            generateDataRow,
-            dataRows,
-            true,
-            None,
-            Seq(null),
-            false))
+        Some(UIUtils.listingTable(
+          headerRow,
+          generateDataRow,
+          dataRows,
+          true,
+          None,
+          Seq(null),
+          false))
       } else { None }
 
     val content =

@@ -109,8 +109,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
     "reject requests with token in body but not in session" in {
       csrfCheckRequest(
         _.withSession("foo" -> "bar")
-          .post(Map("foo" -> "bar", TokenName -> generate))
-      )(_.status must_== errorStatusCode)
+          .post(Map("foo" -> "bar", TokenName -> generate)))(
+        _.status must_== errorStatusCode)
     }
 
     // add to response
@@ -163,9 +163,9 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
 
       "reject requests with unsigned token in body" in {
         csrfCheckRequest(req =>
-          addToken(req, generate).post(
-            Map("foo" -> "bar", TokenName -> "foo")))(
-          _.status must_== FORBIDDEN)
+          addToken(req, generate).post(Map(
+            "foo" -> "bar",
+            TokenName -> "foo")))(_.status must_== FORBIDDEN)
       }
       "reject requests with unsigned token in session" in {
         csrfCheckRequest(req =>
@@ -380,12 +380,11 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
   def withServer[T](config: Seq[(String, String)])(
       router: PartialFunction[(String, String), Handler])(block: => T) = {
     import play.api.inject._
-    running(
-      TestServer(
-        testServerPort,
-        GuiceApplicationBuilder()
-          .configure(Map(config: _*) ++ Map("play.crypto.secret" -> "foobar"))
-          .routes(router)
-          .build()))(block)
+    running(TestServer(
+      testServerPort,
+      GuiceApplicationBuilder()
+        .configure(Map(config: _*) ++ Map("play.crypto.secret" -> "foobar"))
+        .routes(router)
+        .build()))(block)
   }
 }

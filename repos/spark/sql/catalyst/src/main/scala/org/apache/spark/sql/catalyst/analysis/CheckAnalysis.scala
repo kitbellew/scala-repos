@@ -115,8 +115,9 @@ trait CheckAnalysis {
 
         operator match {
           case f: Filter if f.condition.dataType != BooleanType =>
-            failAnalysis(s"filter expression '${f.condition.sql}' " +
-              s"of type ${f.condition.dataType.simpleString} is not a boolean.")
+            failAnalysis(
+              s"filter expression '${f.condition.sql}' " +
+                s"of type ${f.condition.dataType.simpleString} is not a boolean.")
 
           case j @ Join(_, _, UsingJoin(_, cols), _) =>
             val from = operator.inputSet.map(_.name).mkString(", ")

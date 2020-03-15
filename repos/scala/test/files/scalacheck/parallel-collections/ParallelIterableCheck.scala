@@ -170,7 +170,9 @@ abstract class ParallelIterableCheck[T](collName: String)
       val results = for ((pred, ind) <- findPredicates.zipWithIndex) yield {
         val ft = t.find(pred)
         val fcoll = coll.find(pred)
-        ("op index: " + ind) |: ((ft == None && fcoll == None) || (ft != None && fcoll != None))
+        ("op index: " + ind) |: (
+          (ft == None && fcoll == None) || (ft != None && fcoll != None)
+        )
       }
       results.reduceLeft(_ && _)
   }

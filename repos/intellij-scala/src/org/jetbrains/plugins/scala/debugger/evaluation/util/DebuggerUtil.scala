@@ -363,9 +363,9 @@ object DebuggerUtil {
       jvmClassAtPosition(sourcePosition, process) match {
         case Some(refType) => refType.name
         case _ =>
-          throw EvaluationException(
-            DebuggerBundle
-              .message("error.class.not.loaded", getDisplayName(process)))
+          throw EvaluationException(DebuggerBundle.message(
+            "error.class.not.loaded",
+            getDisplayName(process)))
       }
     }
 
@@ -386,10 +386,9 @@ object DebuggerUtil {
       jvmClassAtPosition(position, process) match {
         case Some(refType) => refType.methodsByName("<init>").get(0).signature()
         case None =>
-          throw EvaluationException(
-            DebuggerBundle.message(
-              "error.class.not.loaded",
-              inReadAction(clazz.qualifiedName)))
+          throw EvaluationException(DebuggerBundle.message(
+            "error.class.not.loaded",
+            inReadAction(clazz.qualifiedName)))
       }
     }
 

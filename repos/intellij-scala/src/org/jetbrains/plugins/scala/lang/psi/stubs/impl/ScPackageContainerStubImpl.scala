@@ -14,9 +14,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackageCont
   */
 class ScPackageContainerStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScPackageContainer](parent, elemType)
     with ScPackageContainerStub {
 
@@ -26,9 +25,8 @@ class ScPackageContainerStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       prefix: String,
       ownNamePart: String,
       explicit: Boolean) {
@@ -43,9 +41,8 @@ class ScPackageContainerStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       prefix: StringRef,
       ownNamePart: StringRef,
       explicit: Boolean) {

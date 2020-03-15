@@ -26,8 +26,8 @@ class PersonController @Inject() (
   val personForm: Form[CreatePersonForm] = Form {
     mapping(
       "name" -> nonEmptyText,
-      "age" -> number.verifying(min(0), max(140))
-    )(CreatePersonForm.apply)(CreatePersonForm.unapply)
+      "age" -> number.verifying(min(0), max(140)))(CreatePersonForm.apply)(
+      CreatePersonForm.unapply)
   }
 
   /**

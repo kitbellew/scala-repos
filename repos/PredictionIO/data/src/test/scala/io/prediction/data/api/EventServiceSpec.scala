@@ -35,30 +35,21 @@ class EventServiceSpec extends Specification {
   val accessKeysClient = Storage.getMetaDataAccessKeys()
   val channelsClient = Storage.getMetaDataChannels()
 
-  val eventServiceActor = system.actorOf(
-    Props(
-      new EventServiceActor(
-        eventClient,
-        accessKeysClient,
-        channelsClient,
-        EventServerConfig()
-      )
-    )
-  )
+  val eventServiceActor = system.actorOf(Props(new EventServiceActor(
+    eventClient,
+    accessKeysClient,
+    channelsClient,
+    EventServerConfig())))
 
   "GET / request" should {
     "properly produce OK HttpResponses" in {
       val probe = TestProbe()(system)
       probe.send(eventServiceActor, Get("/"))
-      probe.expectMsg(
-        HttpResponse(
-          200,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"status":"alive"}"""
-          )
-        )
-      )
+      probe.expectMsg(HttpResponse(
+        200,
+        HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          string = """{"status":"alive"}""")))
       success
     }
   }

@@ -397,8 +397,7 @@ object tuple {
         implicit
         gen: Generic.Aux[T, L],
         modifier: hl.ModifierAt.Aux[L, N, U, V, (S, OutL)],
-        tup: hl.Tupler[OutL]
-    ): Aux[T, N, U, V, (S, tup.Out)] =
+        tup: hl.Tupler[OutL]): Aux[T, N, U, V, (S, tup.Out)] =
       new ModifierAt[T, N, U, V] {
 
         type Out = (S, tup.Out)
@@ -477,8 +476,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.Split.Aux[L, N, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, N, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, N, (tpp.Out, tps.Out)] =
       new Split[T, N] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -510,8 +508,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.ReverseSplit.Aux[L, N, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, N, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, N, (tpp.Out, tps.Out)] =
       new ReverseSplit[T, N] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -539,8 +536,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.SplitLeft.Aux[L, U, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, U, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, U, (tpp.Out, tps.Out)] =
       new SplitLeft[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -572,8 +568,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.ReverseSplitLeft.Aux[L, U, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, U, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, U, (tpp.Out, tps.Out)] =
       new ReverseSplitLeft[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -601,8 +596,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.SplitRight.Aux[L, U, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, U, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, U, (tpp.Out, tps.Out)] =
       new SplitRight[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -634,8 +628,7 @@ object tuple {
         gen: Generic.Aux[T, L],
         split: hl.ReverseSplitRight.Aux[L, U, LP, LS],
         tpp: hl.Tupler[LP],
-        tps: hl.Tupler[LS]
-    ): Aux[T, U, (tpp.Out, tps.Out)] =
+        tps: hl.Tupler[LS]): Aux[T, U, (tpp.Out, tps.Out)] =
       new ReverseSplitRight[T, U] {
         type Out = (tpp.Out, tps.Out)
         def apply(t: T): Out = {
@@ -871,8 +864,7 @@ object tuple {
         mpe: hl.Mapper.Aux[productElements.type, L1, L2],
         tps: hl.Transposer.Aux[L2, L3],
         mtp: hl.Mapper.Aux[tupled.type, L3, L4],
-        tp: hl.Tupler[L4]
-    ): Aux[T, tp.Out] =
+        tp: hl.Tupler[L4]): Aux[T, tp.Out] =
       new Transposer[T] {
         type Out = tp.Out
         def apply(t: T): Out =
@@ -900,8 +892,7 @@ object tuple {
         genf: Generic.Aux[FT, FL],
         gena: Generic.Aux[AT, AL],
         zip: hl.ZipApply.Aux[FL, AL, RL],
-        tp: hl.Tupler[RL]
-    ): Aux[FT, AT, tp.Out] =
+        tp: hl.Tupler[RL]): Aux[FT, AT, tp.Out] =
       new ZipApply[FT, AT] {
         type Out = tp.Out
         def apply(ft: FT, at: AT): Out =
@@ -935,8 +926,7 @@ object tuple {
         mpet: hl.Mapper.Aux[productElements.type, TL, TLL],
         zone: hl.ZipOne.Aux[HL, TLL, RLL],
         mtp: hl.Mapper.Aux[tupled.type, RLL, RL],
-        tp: hl.Tupler[RL]
-    ): Aux[HT, TT, tp.Out] =
+        tp: hl.Tupler[RL]): Aux[HT, TT, tp.Out] =
       new ZipOne[HT, TT] {
         type Out = tp.Out
         def apply(h: HT, t: TT): Out =
@@ -1194,8 +1184,7 @@ object tuple {
 
     implicit def hlistToCoproduct[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
-        ut: hl.ToCoproduct[L]
-    ): Aux[T, ut.Out] =
+        ut: hl.ToCoproduct[L]): Aux[T, ut.Out] =
       new ToCoproduct[T] {
         type Out = ut.Out
       }
@@ -1221,8 +1210,7 @@ object tuple {
 
     implicit def hlistToSum[T, L <: HList](implicit
         gen: Generic.Aux[T, L],
-        ut: hl.ToSum[L]
-    ): Aux[T, ut.Out] =
+        ut: hl.ToSum[L]): Aux[T, ut.Out] =
       new ToSum[T] {
         type Out = ut.Out
       }
@@ -1466,8 +1454,7 @@ object tuple {
         OutL <: HList](implicit
         gen: Generic.Aux[T, L],
         grouper: hl.Grouper.Aux[L, N, Step, OutL],
-        tupler: hl.Tupler[OutL]
-    ): Aux[T, N, Step, tupler.Out] =
+        tupler: hl.Tupler[OutL]): Aux[T, N, Step, tupler.Out] =
       new Grouper[T, N, Step] {
         type Out = tupler.Out
 
@@ -1491,9 +1478,9 @@ object tuple {
       with Serializable
 
   object PaddedGrouper {
-    def apply[T, N <: Nat, Step <: Nat, Pad](implicit
-        grouper: PaddedGrouper[T, N, Step, Pad]
-    ): Aux[T, N, Step, Pad, grouper.Out] = grouper
+    def apply[T, N <: Nat, Step <: Nat, Pad](
+        implicit grouper: PaddedGrouper[T, N, Step, Pad])
+        : Aux[T, N, Step, Pad, grouper.Out] = grouper
 
     type Aux[T, N <: Nat, Step <: Nat, Pad, Out0] =
       PaddedGrouper[T, N, Step, Pad] { type Out = Out0 }
@@ -1509,8 +1496,7 @@ object tuple {
         genL: Generic.Aux[T, L],
         genPad: Generic.Aux[Pad, PadL],
         grouper: hl.PaddedGrouper.Aux[L, N, Step, PadL, OutL],
-        tupler: hl.Tupler[OutL]
-    ): Aux[T, N, Step, Pad, tupler.Out] =
+        tupler: hl.Tupler[OutL]): Aux[T, N, Step, Pad, tupler.Out] =
       new PaddedGrouper[T, N, Step, Pad] {
         type Out = tupler.Out
 

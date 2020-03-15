@@ -43,8 +43,7 @@ private[streaming] object MapWithStateRDDRecord {
       mappingFunction: (Time, K, Option[V], State[S]) => Option[E],
       batchTime: Time,
       timeoutThresholdTime: Option[Long],
-      removeTimedoutData: Boolean
-  ): MapWithStateRDDRecord[K, S, E] = {
+      removeTimedoutData: Boolean): MapWithStateRDDRecord[K, S, E] = {
     // Create a new state map by cloning the previous one (if it exists) or by creating an empty one
     val newStateMap = prevRecord.map { _.stateMap.copy() }.getOrElse {
       new EmptyStateMap[K, S]()
@@ -135,13 +134,12 @@ private[streaming] class MapWithStateRDD[
     private var partitionedDataRDD: RDD[(K, V)],
     mappingFunction: (Time, K, Option[V], State[S]) => Option[E],
     batchTime: Time,
-    timeoutThresholdTime: Option[Long]
-) extends RDD[MapWithStateRDDRecord[K, S, E]](
+    timeoutThresholdTime: Option[Long])
+    extends RDD[MapWithStateRDDRecord[K, S, E]](
       partitionedDataRDD.sparkContext,
       List(
         new OneToOneDependency[MapWithStateRDDRecord[K, S, E]](prevStateRDD),
-        new OneToOneDependency(partitionedDataRDD))
-    ) {
+        new OneToOneDependency(partitionedDataRDD))) {
 
   @volatile private var doFullScan = false
 

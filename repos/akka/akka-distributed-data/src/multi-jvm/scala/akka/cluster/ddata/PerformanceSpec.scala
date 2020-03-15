@@ -23,9 +23,8 @@ object PerformanceSpec extends MultiNodeConfig {
   val n4 = role("n4")
   val n5 = role("n5")
 
-  commonConfig(
-    ConfigFactory.parseString(
-      """
+  commonConfig(ConfigFactory.parseString(
+    """
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"

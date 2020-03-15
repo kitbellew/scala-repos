@@ -105,11 +105,9 @@ trait WebSocketSpec
     withServer(app => webSocket(app)(consumed)) { app =>
       import app.materializer
       val result = runWebSocket { (flow) =>
-        sendFrames(
-          TextMessage("a"),
-          TextMessage("b"),
-          CloseMessage(1000)
-        ).via(flow).runWith(Sink.cancelled)
+        sendFrames(TextMessage("a"), TextMessage("b"), CloseMessage(1000))
+          .via(flow)
+          .runWith(Sink.cancelled)
         consumed.future
       }
       result must_== Seq("a", "b")
@@ -127,8 +125,7 @@ trait WebSocketSpec
         exactly(
           textFrame(be_==("a")),
           textFrame(be_==("b")),
-          closeFrame()
-        ).inOrder)
+          closeFrame()).inOrder)
     }
   }
 
@@ -153,10 +150,7 @@ trait WebSocketSpec
           .via(flow)
           .runWith(consumeFrames)
       }
-      frames must contain(
-        exactly(
-          closeFrame()
-        ))
+      frames must contain(exactly(closeFrame()))
     }
   }
 
@@ -266,13 +260,9 @@ trait WebSocketSpec
               SimpleMessage(TextMessage("first frame"), false),
               ContinuationMessage(
                 ByteString(new String(Array.range(1, 65530).map(_ => 'a'))),
-                true)
-            ).via(flow).runWith(consumeFrames)
+                true)).via(flow).runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame(1009)
-            ))
+          frames must contain(exactly(closeFrame(1009)))
         }
       }
 
@@ -283,15 +273,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              BinaryMessage(ByteString("first")),
-              TextMessage("foo")
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(BinaryMessage(ByteString("first")), TextMessage("foo"))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame(1003)
-            ))
+          frames must contain(exactly(closeFrame(1003)))
         }
       }
 
@@ -302,16 +288,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              PingMessage(ByteString("hello")),
-              CloseMessage(1000)
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(PingMessage(ByteString("hello")), CloseMessage(1000))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              pongFrame(be_==("hello")),
-              closeFrame()
-            ))
+          frames must contain(exactly(pongFrame(be_==("hello")), closeFrame()))
         }
       }
 
@@ -322,15 +303,11 @@ trait WebSocketSpec
           }) { app =>
           import app.materializer
           val frames = runWebSocket { flow =>
-            sendFrames(
-              PongMessage(ByteString("hello")),
-              CloseMessage(1000)
-            ).via(flow).runWith(consumeFrames)
+            sendFrames(PongMessage(ByteString("hello")), CloseMessage(1000))
+              .via(flow)
+              .runWith(consumeFrames)
           }
-          frames must contain(
-            exactly(
-              closeFrame()
-            ))
+          frames must contain(exactly(closeFrame()))
         }
       }
 
@@ -362,8 +339,8 @@ trait WebSocketSpec
         WebSocket.using[String] { req =>
           val tick = Enumerator.unfoldM(()) { _ =>
             val p = Promise[Option[(Unit, String)]]()
-            app.actorSystem.scheduler
-              .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
+            app.actorSystem.scheduler.scheduleOnce(100.millis)(p.success(Some(
+              () -> "foo")))
             p.future
           }
           (Iteratee.ignore, tick.onDoneEnumerating { cleanedUp.success(true) })
@@ -457,8 +434,7 @@ trait WebSocketSpec
             Nil,
             "GET",
             "",
-            "/stream")
-        )
+            "/stream"))
         invoker.call(javaHandler)
       }
 
@@ -507,8 +483,7 @@ trait WebSocketSpec
             Nil,
             "GET",
             "",
-            "/stream")
-        )
+            "/stream"))
         invoker.call(javaHandler)
       }
 

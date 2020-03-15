@@ -110,14 +110,13 @@ object GlobalPlugin {
     }
   }
   val globalPluginSettings = Project.inScope(
-    Scope.GlobalScope in LocalRootProject)(
-    Seq(
-      organization := SbtArtifacts.Organization,
-      onLoadMessage <<= Keys.baseDirectory("Loading global plugins from " + _),
-      name := "global-plugin",
-      sbtPlugin := true,
-      version := "0.0"
-    ))
+    Scope.GlobalScope in LocalRootProject)(Seq(
+    organization := SbtArtifacts.Organization,
+    onLoadMessage <<= Keys.baseDirectory("Loading global plugins from " + _),
+    name := "global-plugin",
+    sbtPlugin := true,
+    version := "0.0"
+  ))
 }
 final case class GlobalPluginData(
     projectID: ModuleID,

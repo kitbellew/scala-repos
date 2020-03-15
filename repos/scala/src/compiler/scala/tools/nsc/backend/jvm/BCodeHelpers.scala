@@ -211,11 +211,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           } else some
         case none => none
       }
-      Some(
-        EnclosingMethodEntry(
-          classDesc(enclosingClass),
-          methodOpt.map(_.javaSimpleName.toString).orNull,
-          methodOpt.map(methodDesc).orNull))
+      Some(EnclosingMethodEntry(
+        classDesc(enclosingClass),
+        methodOpt.map(_.javaSimpleName.toString).orNull,
+        methodOpt.map(methodDesc).orNull))
     } else { None }
   }
 
@@ -299,8 +298,10 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
             //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
             //    but non-overridden methods of sealed traits from being inlined.
-            val effectivelyFinal = exitingPickler(
-              methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
+            val effectivelyFinal =
+              exitingPickler(methodSym.isEffectivelyFinalOrNotOverridden) && !(
+                methodSym.owner.isTrait && methodSym.isModule
+              )
 
             val info = MethodInlineInfo(
               effectivelyFinal = effectivelyFinal,
@@ -930,8 +931,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         settings.Ynogenericsig
           || sym.isArtifact
           || sym.isLiftedMethod
-          || sym.isBridge
-      )
+          || sym.isBridge)
 
     /* @return
      *   - `null` if no Java signature is to be added (`null` is what ASM expects in these cases).
@@ -1084,9 +1084,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
        */
       // TODO: evaluate the other flags we might be dropping on the floor here.
       // TODO: ACC_SYNTHETIC ?
-      val flags = GenBCode.PublicStatic | (
-        if (m.isVarargsMethod) asm.Opcodes.ACC_VARARGS else 0
-      )
+      val flags =
+        GenBCode.PublicStatic | (if (m.isVarargsMethod) asm.Opcodes.ACC_VARARGS
+                                 else 0)
 
       // TODO needed? for(ann <- m.annotations) { ann.symbol.initialize }
       val jgensig = staticForwarderGenericSignature(m, module)
@@ -1103,8 +1103,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         mirrorMethodName,
         mdesc,
         jgensig,
-        mkArray(thrownExceptions)
-      )
+        mkArray(thrownExceptions))
 
       emitAnnotations(mirrorMethod, others)
       emitParamAnnotations(mirrorMethod, m.info.params.map(_.annotations))
@@ -1166,7 +1165,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       for (m <- moduleClass.info.membersBasedOnFlags(
              BCodeHelpers.ExcludedForwarderFlags,
              symtab.Flags.METHOD)) {
-        if (m.isType || m.isDeferred || (m.owner eq definitions.ObjectClass) || m.isConstructor)
+        if (m.isType || m.isDeferred || (
+              m.owner eq definitions.ObjectClass
+            ) || m.isConstructor)
           debuglog(
             s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m.owner eq definitions.ObjectClass} || ${m.isConstructor}")
         else if (conflictingNames(m.name))
@@ -1221,8 +1222,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
           "serialVersionUID",
           "J",
           null, // no java-generic-signature
-          new java.lang.Long(id)
-        )
+          new java.lang.Long(id))
         .visitEnd()
     }
   } // end of trait BCClassGen
@@ -1259,8 +1259,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         bType.internalName,
         null /* no java-generic-signature */,
         ObjectRef.internalName,
-        EMPTY_STRING_ARRAY
-      )
+        EMPTY_STRING_ARRAY)
 
       if (emitSource)
         mirrorClass.visitSource(
@@ -1355,8 +1354,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val conJType: BType = MethodBType(
         classBTypeFromSymbol(
           definitions.ClassClass) :: stringArrayJType :: stringArrayJType :: Nil,
-        UNIT
-      )
+        UNIT)
 
       def push(lst: List[String]) {
         var fi = 0
@@ -1450,8 +1448,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         asm.Opcodes.GETSTATIC,
         moduleName,
         strMODULE_INSTANCE_FIELD,
-        "L" + moduleName + ";"
-      )
+        "L" + moduleName + ";")
 
       // INVOKEVIRTUAL `moduleName`.CREATOR() : android.os.Parcelable$Creator;
       val bt = MethodBType(Nil, androidCreatorType)
@@ -1460,16 +1457,14 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         moduleName,
         "CREATOR",
         bt.descriptor,
-        false
-      )
+        false)
 
       // PUTSTATIC `thisName`.CREATOR;
       clinit.visitFieldInsn(
         asm.Opcodes.PUTSTATIC,
         thisName,
         "CREATOR",
-        tdesc_creator
-      )
+        tdesc_creator)
     }
 
   } // end of trait JAndroidBuilder

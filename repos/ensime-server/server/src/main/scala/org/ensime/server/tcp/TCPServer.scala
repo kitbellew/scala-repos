@@ -18,8 +18,8 @@ class TCPServer(
     project: ActorRef,
     broadcaster: ActorRef,
     shutdownOnLastDisconnect: Boolean,
-    preferredPort: Option[Int]
-) extends Actor
+    preferredPort: Option[Int])
+    extends Actor
     with ActorLogging {
 
   import Tcp._

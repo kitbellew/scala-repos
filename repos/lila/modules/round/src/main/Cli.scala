@@ -17,12 +17,9 @@ private[round] final class Cli(
   def process = {
 
     case "round" :: "abort" :: "clock" :: Nil =>
-      $enumerate[Game](
-        $query(
-          play.api.libs.json.Json.obj(
-            Game.BSONFields.status -> chess.Status.Started.id,
-            Game.BSONFields.clock -> $exists(true)
-          ))) { game =>
+      $enumerate[Game]($query(play.api.libs.json.Json.obj(
+        Game.BSONFields.status -> chess.Status.Started.id,
+        Game.BSONFields.clock -> $exists(true)))) { game =>
         roundMap ! lila.hub.actorApi.map
           .Tell(game.id, actorApi.round.AbortForMaintenance)
       } inject "done"

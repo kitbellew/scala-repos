@@ -73,8 +73,8 @@ case class Sort(
       boundSortExpression)
 
     // The generator for prefix
-    val prefixProjection = UnsafeProjection.create(
-      Seq(SortPrefix(boundSortExpression)))
+    val prefixProjection = UnsafeProjection.create(Seq(
+      SortPrefix(boundSortExpression)))
     val prefixComputer = new UnsafeExternalRowSorter.PrefixComputer {
       override def computePrefix(row: InternalRow): Long = {
         prefixProjection.apply(row).getLong(0)

@@ -100,11 +100,9 @@ class InlineParsersTest
       """<a href="http://example.com" title="li)nk&quot; title">link text</a>""")
   )
 
-  val fastLinkTests = List(
-    (
-      """<http://www.example.com?foo=a&bar=b\*>""",
-      """<a href="http://www.example.com?foo=a&amp;bar=b*">http://www.example.com?foo=a&amp;bar=b*</a>""")
-  )
+  val fastLinkTests = List((
+    """<http://www.example.com?foo=a&bar=b\*>""",
+    """<a href="http://www.example.com?foo=a&amp;bar=b*">http://www.example.com?foo=a&amp;bar=b*</a>"""))
 
   val imageTests = List(
     (
@@ -121,15 +119,9 @@ class InlineParsersTest
       """<img src="/src/img.png" alt="alt text" title="i)mg&quot; title" />""")
   )
 
-  val brTests = List(
-    ("  \n", "<br />\n")
-  )
+  val brTests = List(("  \n", "<br />\n"))
 
-  val xmlNameTests = List(
-    ("foo", "foo"),
-    ("foo_bar", "foo_bar"),
-    ("a", "a")
-  )
+  val xmlNameTests = List(("foo", "foo"), ("foo_bar", "foo_bar"), ("a", "a"))
 
   val xmlNameExTests = List(
     "",
@@ -138,8 +130,7 @@ class InlineParsersTest
     "foo>bar",
     "foo\"bar",
     "foo\\bar",
-    "foo bar"
-  )
+    "foo bar")
 
   val xmlStartTagTests = List(
     ("<foo>", "<foo>"),
@@ -155,10 +146,7 @@ class InlineParsersTest
       """<a href='http://www.example.com?p1=a&amp;p2=b'>""")
   )
 
-  val xmlEndTagTests = List(
-    ("</foo>", "</foo>"),
-    ("</a>", "</a>")
-  )
+  val xmlEndTagTests = List(("</foo>", "</foo>"), ("</a>", "</a>"))
 
   val xmlInlineTests = List(
     (
@@ -192,8 +180,7 @@ class InlineParsersTest
   val dummyTests = List(
     ("lorem ipsum ", "lorem ipsum "),
     (" lorem ipsum", " lorem ipsum"),
-    (" lorem \n ipsum ", " lorem \n ipsum ")
-  )
+    (" lorem \n ipsum ", " lorem \n ipsum "))
 
   val allInlineTests = italicTests ++ boldTests ++ entityTest ++
     codeTests ++ linkTests ++ fastLinkTests ++ imageTests ++ brTests ++

@@ -319,11 +319,10 @@ object Gzip {
         val crc = new CRC32
         for {
           headerBytes <- take(10, "Not enough bytes for gzip file", crc)
-          header <- done(
-            Header(
-              littleEndianToShort(headerBytes),
-              headerBytes(2),
-              headerBytes(3)))
+          header <- done(Header(
+            littleEndianToShort(headerBytes),
+            headerBytes(2),
+            headerBytes(3)))
           _ <- if (header.magic != GzipMagic.asInstanceOf[Short])
             Error(
               "Not a gzip file, found header" + headerBytes

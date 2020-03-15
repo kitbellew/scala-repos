@@ -29,25 +29,20 @@ trait SetupHelper { self: I18nHelper =>
   def translatedModeChoices(implicit ctx: Context) =
     List(
       (Mode.Casual.id.toString, trans.casual.str(), none),
-      (Mode.Rated.id.toString, trans.rated.str(), none)
-    )
+      (Mode.Rated.id.toString, trans.rated.str(), none))
 
   def translatedSystemChoices(implicit ctx: Context) =
-    List(
-      System.Arena.id.toString -> "Arena"
-    )
+    List(System.Arena.id.toString -> "Arena")
 
   private def variantTuple(variant: chess.variant.Variant)(
       implicit ctx: Context): (String, String, Option[String]) =
     (variant.id.toString, variant.name, variant.title.some)
 
   def translatedVariantChoices(implicit ctx: Context) =
-    List(
-      (
-        chess.variant.Standard.id.toString,
-        trans.standard.str(),
-        chess.variant.Standard.title.some)
-    )
+    List((
+      chess.variant.Standard.id.toString,
+      trans.standard.str(),
+      chess.variant.Standard.title.some))
 
   def translatedVariantChoicesWithVariants(implicit ctx: Context) =
     translatedVariantChoices(ctx) :+
@@ -102,15 +97,13 @@ trait SetupHelper { self: I18nHelper =>
     List(
       (Pref.Coords.NONE, trans.no.str()),
       (Pref.Coords.INSIDE, trans.insideTheBoard.str()),
-      (Pref.Coords.OUTSIDE, trans.outsideTheBoard.str())
-    )
+      (Pref.Coords.OUTSIDE, trans.outsideTheBoard.str()))
 
   def translatedMoveListWhilePlayingChoices(implicit ctx: Context) =
     List(
       (Pref.Replay.NEVER, trans.never.str()),
       (Pref.Replay.SLOW, trans.onSlowGames.str()),
-      (Pref.Replay.ALWAYS, trans.always.str())
-    )
+      (Pref.Replay.ALWAYS, trans.always.str()))
 
   def translatedClockTenthsChoices(implicit ctx: Context) =
     List(
@@ -125,15 +118,13 @@ trait SetupHelper { self: I18nHelper =>
     List(
       (Pref.Takeback.NEVER, trans.never.str()),
       (Pref.Takeback.ALWAYS, trans.always.str()),
-      (Pref.Takeback.CASUAL, trans.inCasualGamesOnly.str())
-    )
+      (Pref.Takeback.CASUAL, trans.inCasualGamesOnly.str()))
 
   def translatedAutoQueenChoices(implicit ctx: Context) =
     List(
       (Pref.AutoQueen.NEVER, trans.never.str()),
       (Pref.AutoQueen.PREMOVE, trans.whenPremoving.str()),
-      (Pref.AutoQueen.ALWAYS, trans.always.str())
-    )
+      (Pref.AutoQueen.ALWAYS, trans.always.str()))
 
   def translatedAutoThreefoldChoices(implicit ctx: Context) =
     List(
@@ -164,8 +155,7 @@ trait SetupHelper { self: I18nHelper =>
   def confirmResignChoices(implicit ctx: Context) =
     List(
       (Pref.ConfirmResign.NO, trans.no.str()),
-      (Pref.ConfirmResign.YES, trans.yes.str())
-    )
+      (Pref.ConfirmResign.YES, trans.yes.str()))
 
   def translatedChallengeChoices(implicit ctx: Context) =
     List(
@@ -179,8 +169,7 @@ trait SetupHelper { self: I18nHelper =>
     List(
       (Pref.Message.NEVER, trans.never.str()),
       (Pref.Message.FRIEND, trans.onlyFriends.str()),
-      (Pref.Message.ALWAYS, trans.always.str())
-    )
+      (Pref.Message.ALWAYS, trans.always.str()))
 
   def translatedBlindfoldChoices(implicit ctx: Context) =
     List(

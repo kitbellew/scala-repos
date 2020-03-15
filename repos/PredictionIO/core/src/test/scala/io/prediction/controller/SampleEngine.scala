@@ -443,10 +443,9 @@ class Engine1
       Engine1.EvalInfo,
       RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])] = {
     val dsp = engineParams.dataSourceParams._2.asInstanceOf[Engine1.DSP]
-    Seq(
-      (
-        Engine1.EvalInfo(dsp.v),
-        sc.emptyRDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)]))
+    Seq((
+      Engine1.EvalInfo(dsp.v),
+      sc.emptyRDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)]))
   }
 }
 

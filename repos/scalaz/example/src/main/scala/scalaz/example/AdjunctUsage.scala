@@ -96,9 +96,7 @@ object AdjunctUsage extends App {
       Int, // read the accumulated sum
       Writer[
         Int, // write the new sum
-        Writer[Option[Int], A]
-      ]
-    ]
+        Writer[Option[Int], A]]]
   ] // write the next value for computing repeats
 
   // now we can combine our two stateful computations

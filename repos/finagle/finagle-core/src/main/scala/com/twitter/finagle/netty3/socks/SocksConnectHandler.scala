@@ -48,8 +48,7 @@ object SocksConnectHandler {
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
       authenticationSettings: Seq[AuthenticationSetting],
-      pipeline: ChannelPipeline
-  ): SocksConnectHandler = {
+      pipeline: ChannelPipeline): SocksConnectHandler = {
     val handler =
       new SocksConnectHandler(proxyAddr, addr, authenticationSettings)
     pipeline.addFirst("socksConnect", handler)

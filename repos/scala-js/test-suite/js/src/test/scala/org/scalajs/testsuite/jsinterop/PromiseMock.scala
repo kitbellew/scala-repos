@@ -192,38 +192,36 @@ object PromiseMock {
         onRejected: js.UndefOr[js.Function1[scala.Any, B | Thenable[B]]])
         : MockPromise[B] = {
 
-      new MockPromise[B](
-        {
-          (
-              innerResolve: js.Function1[B | Thenable[B], _],
-              innerReject: js.Function1[scala.Any, _]) =>
-            def doFulfilled(value: A): Unit = {
-              tryCatchAny[Unit] { innerResolve(onFulfilled(value)) } { e =>
-                innerReject(e)
+      new MockPromise[B]({
+        (
+            innerResolve: js.Function1[B | Thenable[B], _],
+            innerReject: js.Function1[scala.Any, _]) =>
+          def doFulfilled(value: A): Unit = {
+            tryCatchAny[Unit] { innerResolve(onFulfilled(value)) } { e =>
+              innerReject(e)
+            }
+          }
+
+          def doRejected(reason: Any): Unit = {
+            tryCatchAny[Unit] {
+              onRejected.fold[Unit] { innerReject(reason) } { onRejectedFun =>
+                innerResolve(onRejectedFun(reason))
               }
-            }
+            } { e => innerReject(e) }
+          }
 
-            def doRejected(reason: Any): Unit = {
-              tryCatchAny[Unit] {
-                onRejected.fold[Unit] { innerReject(reason) } { onRejectedFun =>
-                  innerResolve(onRejectedFun(reason))
-                }
-              } { e => innerReject(e) }
-            }
+          state match {
+            case Pending =>
+              fulfillReactions += doFulfilled _
+              rejectReactions += doRejected _
 
-            state match {
-              case Pending =>
-                fulfillReactions += doFulfilled _
-                rejectReactions += doRejected _
+            case Fulfilled(value) =>
+              enqueue(() => doFulfilled(value))
 
-              case Fulfilled(value) =>
-                enqueue(() => doFulfilled(value))
-
-              case Rejected(reason) =>
-                enqueue(() => doRejected(reason))
-            }
-        }
-      )
+            case Rejected(reason) =>
+              enqueue(() => doRejected(reason))
+          }
+      })
     }
 
     def `then`[B >: A](

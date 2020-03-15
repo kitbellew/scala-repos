@@ -68,9 +68,9 @@ object StressTestLog {
       })
 
     while (running.get) {
-      println(
-        "Reader offset = %d, writer offset = %d"
-          .format(reader.offset, writer.offset))
+      println("Reader offset = %d, writer offset = %d".format(
+        reader.offset,
+        writer.offset))
       Thread.sleep(1000)
     }
   }

@@ -44,9 +44,7 @@ trait ApplicativeError[F[_], E] extends Applicative[F] {
     * All non-fatal errors should be handled by this method.
     */
   def attempt[A](fa: F[A]): F[E Xor A] =
-    handleErrorWith(
-      map(fa)(Xor.right[E, A])
-    )(e => pure(Xor.left(e)))
+    handleErrorWith(map(fa)(Xor.right[E, A]))(e => pure(Xor.left(e)))
 
   /**
     * Similar to [[attempt]], but wraps the result in a [[cats.data.XorT]] for

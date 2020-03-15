@@ -44,22 +44,20 @@ object App extends Logging {
           return 1
         }
       }
-      val appid = apps.insert(
-        storage.App(
-          id = ca.app.id.getOrElse(0),
-          name = ca.app.name,
-          description = ca.app.description))
+      val appid = apps.insert(storage.App(
+        id = ca.app.id.getOrElse(0),
+        name = ca.app.name,
+        description = ca.app.description))
       appid map { id =>
         val dbInit = events.init(id)
         val r =
           if (dbInit) {
             info(s"Initialized Event Store for this app ID: ${id}.")
             val accessKeys = storage.Storage.getMetaDataAccessKeys
-            val accessKey = accessKeys.insert(
-              storage.AccessKey(
-                key = ca.accessKey.accessKey,
-                appid = id,
-                events = Seq()))
+            val accessKey = accessKeys.insert(storage.AccessKey(
+              key = ca.accessKey.accessKey,
+              appid = id,
+              events = Seq()))
             accessKey map { k =>
               info("Created new app:")
               info(s"      Name: ${ca.app.name}")
@@ -446,12 +444,10 @@ object App extends Logging {
         1
       } else {
 
-        val channelId = channels.insert(
-          storage.Channel(
-            id = 0, // new id will be assigned
-            appid = app.id,
-            name = newChannel
-          ))
+        val channelId = channels.insert(storage.Channel(
+          id = 0, // new id will be assigned
+          appid = app.id,
+          name = newChannel))
         channelId
           .map { chanId =>
             info(s"Updated Channel meta-data.")

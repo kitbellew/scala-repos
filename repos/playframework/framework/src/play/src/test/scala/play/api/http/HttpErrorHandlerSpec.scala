@@ -23,23 +23,27 @@ object HttpErrorHandlerSpec extends Specification {
     def sharedSpecs(errorHandler: HttpErrorHandler) = {
       "render a bad request" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 400)).header.status must_== 400
+          errorHandler.onClientError(
+            FakeRequest(),
+            400)).header.status must_== 400
       }
       "render forbidden" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 403)).header.status must_== 403
+          errorHandler.onClientError(
+            FakeRequest(),
+            403)).header.status must_== 403
       }
       "render not found" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 404)).header.status must_== 404
+          errorHandler.onClientError(
+            FakeRequest(),
+            404)).header.status must_== 404
       }
       "render a generic client error" in {
         await(
-          errorHandler
-            .onClientError(FakeRequest(), 418)).header.status must_== 418
+          errorHandler.onClientError(
+            FakeRequest(),
+            418)).header.status must_== 418
       }
       "refuse to render something that isn't a client error" in {
         await(
@@ -88,8 +92,8 @@ object HttpErrorHandlerSpec extends Specification {
   }
 
   def handler(handlerClass: String, mode: Mode.Mode) = {
-    val config = Configuration.from(
-      Map("play.http.errorHandler" -> handlerClass))
+    val config = Configuration.from(Map(
+      "play.http.errorHandler" -> handlerClass))
     val env = Environment.simple(mode = mode)
     Fakes
       .injectorFromBindings(

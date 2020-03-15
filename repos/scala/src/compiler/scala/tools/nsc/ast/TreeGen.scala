@@ -35,17 +35,13 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       selector: List[ImportSelector]): Import = {
     assert(qualSym ne null, this)
     val qual = gen.mkAttributedStableRef(qualSym)
-    val importSym = (
-      NoSymbol
-        newImport NoPosition
-        setFlag SYNTHETIC
-        setInfo ImportType(qual)
-    )
-    val importTree = (
-      Import(qual, selector)
-        setSymbol importSym
-        setType NoType
-    )
+    val importSym = (NoSymbol
+      newImport NoPosition
+      setFlag SYNTHETIC
+      setInfo ImportType(qual))
+    val importTree = (Import(qual, selector)
+      setSymbol importSym
+      setType NoType)
     importTree
   }
 
@@ -96,8 +92,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       if (full) FullManifestModule else PartialManifestModule,
       newTermName(constructor),
       List(tparg),
-      args
-    )
+      args)
 
   /** Make a synchronized block on 'monitor'. */
   def mkSynchronized(monitor: Tree, body: Tree): Tree =
@@ -145,8 +140,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
       PredefModule,
       wrapArrayMethodName(elemtp),
       if (isPrimitiveValueType(elemtp)) Nil else List(elemtp),
-      List(tree)
-    )
+      List(tree))
   }
 
   /** Cast `tree` to type `pt` by creating

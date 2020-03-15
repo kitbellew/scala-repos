@@ -42,8 +42,8 @@ class VectorSlicerSuite
     assert(slicer.getNames.length === 0)
     withClue("VectorSlicer should not have any features selected by default") {
       intercept[IllegalArgumentException] {
-        slicer.transformSchema(
-          StructType(Seq(StructField("feature", new VectorUDT, true))))
+        slicer.transformSchema(StructType(
+          Seq(StructField("feature", new VectorUDT, true))))
       }
     }
   }
@@ -76,8 +76,7 @@ class VectorSlicerSuite
       Vectors.dense(2.3, 1.0),
       Vectors.dense(0.0, 0.0),
       Vectors.dense(-1.1, 3.3),
-      Vectors.sparse(2, Seq())
-    )
+      Vectors.sparse(2, Seq()))
 
     val defaultAttr = NumericAttribute.defaultAttr
     val attrs = Array("f0", "f1", "f2", "f3", "f4").map(defaultAttr.withName)

@@ -98,8 +98,7 @@ object Box extends BoxTrait with Tryo {
           failureErrorMessage,
           Empty,
           Full(failureChain),
-          theListOfBoxes
-        )
+          theListOfBoxes)
       } else { Full(theListOfBoxes.flatten) }
     }
   }

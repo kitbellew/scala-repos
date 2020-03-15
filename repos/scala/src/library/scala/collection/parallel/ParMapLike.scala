@@ -28,11 +28,9 @@ import scala.annotation.unchecked.uncheckedVariance
   *  @author Aleksandar Prokopec
   *  @since 2.9
   */
-trait ParMapLike[
-    K,
-    +V,
-    +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[K, V],
-    +Sequential <: Map[K, V] with MapLike[K, V, Sequential]]
+trait ParMapLike[K, +V, +Repr <: ParMapLike[K, V, Repr, Sequential] with ParMap[
+  K,
+  V], +Sequential <: Map[K, V] with MapLike[K, V, Sequential]]
     extends GenMapLike[K, V, Repr]
     with ParIterableLike[(K, V), Repr, Sequential] {
   self =>

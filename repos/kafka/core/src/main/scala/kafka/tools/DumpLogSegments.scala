@@ -189,15 +189,17 @@ object DumpLogSegments {
         var misMatchesSeq = misMatchesForIndexFilesMap.getOrElse(
           file.getAbsolutePath,
           List[(Long, Long)]())
-        misMatchesSeq ::= (entry.offset + index.baseOffset, messageAndOffset.offset)
+        misMatchesSeq ::= (
+          entry.offset + index.baseOffset, messageAndOffset.offset
+        )
         misMatchesForIndexFilesMap.put(file.getAbsolutePath, misMatchesSeq)
       }
       // since it is a sparse file, in the event of a crash there may be many zero entries, stop if we see one
       if (entry.offset == 0 && i > 0) return
       if (!verifyOnly)
-        println(
-          "offset: %d position: %d"
-            .format(entry.offset + index.baseOffset, entry.position))
+        println("offset: %d position: %d".format(
+          entry.offset + index.baseOffset,
+          entry.position))
     }
   }
 
@@ -295,9 +297,9 @@ object DumpLogSegments {
   private def dumpLog(
       file: File,
       printContents: Boolean,
-      nonConsecutivePairsForLogFilesMap: mutable.HashMap[
-        String,
-        List[(Long, Long)]],
+      nonConsecutivePairsForLogFilesMap: mutable.HashMap[String, List[(
+          Long,
+          Long)]],
       isDeepIteration: Boolean,
       maxMessageSize: Int,
       parser: MessageParser[_, _]) {
@@ -340,9 +342,9 @@ object DumpLogSegments {
     }
     val trailingBytes = messageSet.sizeInBytes - validBytes
     if (trailingBytes > 0)
-      println(
-        "Found %d invalid bytes at the end of %s"
-          .format(trailingBytes, file.getName))
+      println("Found %d invalid bytes at the end of %s".format(
+        trailingBytes,
+        file.getName))
   }
 
   private def getIterator(

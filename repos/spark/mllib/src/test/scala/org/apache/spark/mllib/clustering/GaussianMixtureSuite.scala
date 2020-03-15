@@ -26,12 +26,10 @@ import org.apache.spark.util.Utils
 
 class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("single cluster") {
-    val data = sc.parallelize(
-      Array(
-        Vectors.dense(6.0, 9.0),
-        Vectors.dense(5.0, 10.0),
-        Vectors.dense(4.0, 11.0)
-      ))
+    val data = sc.parallelize(Array(
+      Vectors.dense(6.0, 9.0),
+      Vectors.dense(5.0, 10.0),
+      Vectors.dense(4.0, 11.0)))
 
     // expectations
     val Ew = 1.0
@@ -64,8 +62,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
         new MultivariateGaussian(
           Vectors.dense(1.0),
           Matrices.dense(1, 1, Array(1.0)))
-      )
-    )
+      ))
 
     val Ew = Array(1.0 / 3.0, 2.0 / 3.0)
     val Emu = Array(Vectors.dense(-4.3673), Vectors.dense(5.1604))
@@ -101,12 +98,10 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 
   test("single cluster with sparse data") {
-    val data = sc.parallelize(
-      Array(
-        Vectors.sparse(3, Array(0, 2), Array(4.0, 2.0)),
-        Vectors.sparse(3, Array(0, 2), Array(2.0, 4.0)),
-        Vectors.sparse(3, Array(1), Array(6.0))
-      ))
+    val data = sc.parallelize(Array(
+      Vectors.sparse(3, Array(0, 2), Array(4.0, 2.0)),
+      Vectors.sparse(3, Array(0, 2), Array(2.0, 4.0)),
+      Vectors.sparse(3, Array(1), Array(6.0))))
 
     val Ew = 1.0
     val Emu = Vectors.dense(2.0, 2.0, 2.0)
@@ -147,8 +142,7 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
         new MultivariateGaussian(
           Vectors.dense(1.0),
           Matrices.dense(1, 1, Array(1.0)))
-      )
-    )
+      ))
     val Ew = Array(1.0 / 3.0, 2.0 / 3.0)
     val Emu = Array(Vectors.dense(-4.3673), Vectors.dense(5.1604))
     val Esigma = Array(

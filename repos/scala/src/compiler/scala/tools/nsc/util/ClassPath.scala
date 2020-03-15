@@ -222,8 +222,9 @@ abstract class ClassPath[T] extends ClassFileLookup[T] {
           case x: ClassRepresentation[T] => x
           case x =>
             throw new FatalError(
-              "Unexpected ClassRep '%s' found searching for name '%s'"
-                .format(x, name))
+              "Unexpected ClassRep '%s' found searching for name '%s'".format(
+                x,
+                name))
         }
       case _ =>
         classes find (_.name == name)
@@ -349,8 +350,10 @@ class MergedClassPath[T](
     entries flatMap (_.sourcepaths)
 
   override def origin =
-    Some(entries map (x =>
-      x.origin getOrElse x.name) mkString ("Merged(", ", ", ")"))
+    Some(
+      entries map (x => x.origin getOrElse x.name) mkString (
+        "Merged(", ", ", ")"
+      ))
   override def asClassPathString: String =
     join(entries map (_.asClassPathString): _*)
 
@@ -406,9 +409,9 @@ class MergedClassPath[T](
   }
 
   def show() {
-    println(
-      "ClassPath %s has %d entries and results in:\n"
-        .format(name, entries.size))
+    println("ClassPath %s has %d entries and results in:\n".format(
+      name,
+      entries.size))
     asClassPathString split ':' foreach (x => println("  " + x))
   }
 

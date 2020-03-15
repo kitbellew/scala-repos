@@ -163,8 +163,7 @@ trait CachedCaseClassDefns
       tup: Tupler.Aux[Repr0, P0],
       pgen0: Generic.Aux[P0, Repr0],
       typ0: Typeable[C],
-      tag0: ClassTag[C]
-  ) = {
+      tag0: ClassTag[C]) = {
     val fqn = tag0.runtimeClass.getName
     new CaseClassOps {
       type Repr = Repr0

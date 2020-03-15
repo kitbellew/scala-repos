@@ -69,16 +69,11 @@ class SegmentIOAuthSpec extends Specification {
   }
 
   val channelsClient = Storage.getMetaDataChannels()
-  val eventServiceActor = system.actorOf(
-    Props(
-      new EventServiceActor(
-        eventClient,
-        accessKeysClient,
-        channelsClient,
-        EventServerConfig()
-      )
-    )
-  )
+  val eventServiceActor = system.actorOf(Props(new EventServiceActor(
+    eventClient,
+    accessKeysClient,
+    channelsClient,
+    EventServerConfig())))
 
   val base64Encoder = new BASE64Encoder
 
@@ -90,39 +85,23 @@ class SegmentIOAuthSpec extends Specification {
       probe.send(
         eventServiceActor,
         Post("/webhooks/segmentio.json")
-          .withHeaders(
-            List(
-              RawHeader("Authorization", s"Basic $accessKey")
-            )
-          )
-      )
-      probe.expectMsg(
-        HttpResponse(
-          401,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"message":"Invalid accessKey."}"""
-          )
-        )
-      )
+          .withHeaders(List(RawHeader("Authorization", s"Basic $accessKey"))))
+      probe.expectMsg(HttpResponse(
+        401,
+        HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          string = """{"message":"Invalid accessKey."}""")))
       success
     }
 
     "reject with CredentialsMissed without credentials" in {
       val probe = TestProbe()(system)
-      probe.send(
-        eventServiceActor,
-        Post("/webhooks/segmentio.json")
-      )
-      probe.expectMsg(
-        HttpResponse(
-          401,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"message":"Missing accessKey."}"""
-          )
-        )
-      )
+      probe.send(eventServiceActor, Post("/webhooks/segmentio.json"))
+      probe.expectMsg(HttpResponse(
+        401,
+        HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          string = """{"message":"Missing accessKey."}""")))
       success
     }
 
@@ -158,22 +137,15 @@ class SegmentIOAuthSpec extends Specification {
         eventServiceActor,
         Post(
           "/webhooks/segmentio.json",
-          HttpEntity(ContentTypes.`application/json`, jsonReq.getBytes)
-        ).withHeaders(
-          List(
-            RawHeader("Authorization", s"Basic $accessKeyEncoded")
-          )
-        )
+          HttpEntity(ContentTypes.`application/json`, jsonReq.getBytes))
+          .withHeaders(List(
+            RawHeader("Authorization", s"Basic $accessKeyEncoded")))
       )
-      probe.expectMsg(
-        HttpResponse(
-          201,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"eventId":"event_id"}"""
-          )
-        )
-      )
+      probe.expectMsg(HttpResponse(
+        201,
+        HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          string = """{"eventId":"event_id"}""")))
       success
     }
   }

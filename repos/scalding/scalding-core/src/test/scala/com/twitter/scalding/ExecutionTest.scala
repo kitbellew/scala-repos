@@ -160,16 +160,15 @@ class ExecutionTest extends WordSpec with Matchers {
       def doesNotHaveVariable(message: String) =
         Execution.getConfig.flatMap { cfg =>
           if (cfg.get("test.cfg.variable").isDefined)
-            Execution.failed(
-              new Exception(
-                s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
+            Execution.failed(new Exception(
+              s"${message}\n: var: ${cfg.get("test.cfg.variable")}"))
           else Execution.from(())
         }
 
       val hasVariable = Execution.getConfig.flatMap { cfg =>
         if (cfg.get("test.cfg.variable").isEmpty)
-          Execution.failed(
-            new Exception("Should see variable inside of transform"))
+          Execution.failed(new Exception(
+            "Should see variable inside of transform"))
         else Execution.from(())
       }
 
@@ -227,10 +226,9 @@ class ExecutionTest extends WordSpec with Matchers {
       val sink = TypedTsv[Int](sinkF)
       val src = TypedTsv[Int](srcF)
       val operationTP =
-        (TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList))
-          .writeExecution(sink)
-          .getCounters
-          .map(_._2.toMap)
+        (
+          TypedPipe.from(src) ++ TypedPipe.from((1 until 100).toList)
+        ).writeExecution(sink).getCounters.map(_._2.toMap)
 
       def addOption(cfg: Config) = cfg.+("test.cfg.variable", "dummyValue")
 

@@ -509,7 +509,9 @@ trait Scanners extends ScannersCommon {
             if (isIdentifierStart(ch)) charLitOr(getIdentRest)
             else if (isOperatorPart(ch) && (ch != '\\'))
               charLitOr(getOperatorRest)
-            else if (!isAtEnd && (ch != SU && ch != CR && ch != LF || isUnicodeEscape)) {
+            else if (!isAtEnd && (
+                       ch != SU && ch != CR && ch != LF || isUnicodeEscape
+                     )) {
               getLitChar()
               if (ch == '\'') {
                 nextChar()
@@ -734,8 +736,9 @@ trait Scanners extends ScannersCommon {
             "invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
         }
       } else {
-        val isUnclosedLiteral =
-          !isUnicodeEscape && (ch == SU || (!multiLine && (ch == CR || ch == LF)))
+        val isUnclosedLiteral = !isUnicodeEscape && (
+          ch == SU || (!multiLine && (ch == CR || ch == LF))
+        )
         if (isUnclosedLiteral) {
           if (multiLine)
             incompleteInputError("unclosed multi-line string literal")
@@ -823,8 +826,9 @@ trait Scanners extends ScannersCommon {
     }
 
     private def getLitChars(delimiter: Char) = {
-      while (ch != delimiter && !isAtEnd && (ch != SU && ch != CR && ch != LF || isUnicodeEscape))
-        getLitChar()
+      while (ch != delimiter && !isAtEnd && (
+               ch != SU && ch != CR && ch != LF || isUnicodeEscape
+             )) getLitChar()
     }
 
     /** read fractional part and exponent of floating point number

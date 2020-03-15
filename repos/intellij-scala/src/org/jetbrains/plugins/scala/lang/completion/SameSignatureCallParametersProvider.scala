@@ -145,11 +145,10 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                         case p: PsiParameter =>
                           (
                             p.name,
-                            subst.subst(
-                              ScType.create(
-                                p.getType,
-                                position.getProject,
-                                position.getResolveScope)))
+                            subst.subst(ScType.create(
+                              p.getType,
+                              position.getProject,
+                              position.getResolveScope)))
                       }
                   case _ => Seq.empty
                 }
@@ -213,11 +212,10 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                             case p: PsiParameter =>
                               (
                                 p.name,
-                                subst.subst(
-                                  ScType.create(
-                                    p.getType,
-                                    typeElement.getProject,
-                                    typeElement.getResolveScope)))
+                                subst.subst(ScType.create(
+                                  p.getType,
+                                  typeElement.getProject,
+                                  typeElement.getResolveScope)))
                           }
                     }
                     .filter(_.length > 1)

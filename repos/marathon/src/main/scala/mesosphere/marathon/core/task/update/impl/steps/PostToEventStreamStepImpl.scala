@@ -64,29 +64,26 @@ class PostToEventStreamStepImpl @Inject() (
     task.launched.foreach { launched =>
       log.info(
         "Sending event notification for {} of app [{}]: {}",
-        Array[Object](taskId, taskId.appId, status.getState): _*
-      )
-      eventBus.publish(
-        MesosStatusUpdateEvent(
-          slaveId = status.getSlaveId.getValue,
-          taskId = Task.Id(status.getTaskId),
-          taskStatus = status.getState.name,
-          message = if (status.hasMessage) status.getMessage else "",
-          appId = taskId.appId,
-          host = task.agentInfo.host,
-          ipAddresses = launched.networking match {
-            case networkInfoList: Task.NetworkInfoList =>
-              networkInfoList.addresses.to[Seq]
-            case _ => Seq.empty
-          },
-          ports = launched.networking match {
-            case Task.HostPorts(ports) => ports
-            case _                     => Iterable.empty
-          },
-          version = launched.appVersion.toString,
-          timestamp = timestamp.toString
-        )
-      )
+        Array[Object](taskId, taskId.appId, status.getState): _*)
+      eventBus.publish(MesosStatusUpdateEvent(
+        slaveId = status.getSlaveId.getValue,
+        taskId = Task.Id(status.getTaskId),
+        taskStatus = status.getState.name,
+        message = if (status.hasMessage) status.getMessage else "",
+        appId = taskId.appId,
+        host = task.agentInfo.host,
+        ipAddresses = launched.networking match {
+          case networkInfoList: Task.NetworkInfoList =>
+            networkInfoList.addresses.to[Seq]
+          case _ => Seq.empty
+        },
+        ports = launched.networking match {
+          case Task.HostPorts(ports) => ports
+          case _                     => Iterable.empty
+        },
+        version = launched.appVersion.toString,
+        timestamp = timestamp.toString
+      ))
 
     }
   }

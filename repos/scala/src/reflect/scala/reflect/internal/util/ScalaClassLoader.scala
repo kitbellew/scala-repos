@@ -74,10 +74,10 @@ trait ScalaClassLoader extends JClassLoader {
         }
         (ctor.newInstance(args: _*)).asInstanceOf[T]
       } else {
-        errorFn(
-          s"""Loader for ${classTag[T]}:   [${show(classTag[T].runtimeClass.getClassLoader)}]
+        errorFn(s"""Loader for ${classTag[T]}:   [${show(
+                     classTag[T].runtimeClass.getClassLoader)}]
                    |Loader for ${clazz.getName}: [${show(
-               clazz.getClassLoader)}]""".stripMargin)
+                     clazz.getClassLoader)}]""".stripMargin)
         fail(s"Not a ${classTag[T]}: ${path}")
       }
     } catch {

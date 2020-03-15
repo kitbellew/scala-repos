@@ -72,11 +72,10 @@ trait CacheConditionDirectives {
       eTag: Option[EntityTag],
       lastModified: Option[DateTime]): Directive0 = {
     def addResponseHeaders: Directive0 =
-      mapResponse(
-        _.withDefaultHeaders(
-          eTag.map(ETag(_)).toList ++ lastModified
-            .map(`Last-Modified`(_))
-            .toList))
+      mapResponse(_.withDefaultHeaders(
+        eTag.map(ETag(_)).toList ++ lastModified
+          .map(`Last-Modified`(_))
+          .toList))
 
     // TODO: also handle Cache-Control and Vary
     def complete304(): Route =

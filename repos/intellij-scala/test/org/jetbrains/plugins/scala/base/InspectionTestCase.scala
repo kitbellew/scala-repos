@@ -38,12 +38,11 @@ abstract class InspectionTestCase[T <: LocalInspectionTool: ClassTag]
       }
       if (severity == Information) Seq.empty
       else
-        Seq(
-          Highlight(
-            it.getStartOffset,
-            it.getEndOffset,
-            it.getDescription,
-            severity))
+        Seq(Highlight(
+          it.getStartOffset,
+          it.getEndOffset,
+          it.getDescription,
+          severity))
     }
   }
 

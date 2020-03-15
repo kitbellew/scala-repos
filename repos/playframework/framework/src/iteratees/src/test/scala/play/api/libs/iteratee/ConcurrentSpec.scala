@@ -120,17 +120,16 @@ object ConcurrentSpec
     "drop intermediate unused input, swallow even the unused eof forcing u to pass it twice" in {
       testExecution { (flatMapEC, mapEC) =>
         val p = Promise[List[Long]]()
-        val slowIteratee = Iteratee.flatten(
-          timeout(
-            Cont[Long, List[Long]] {
-              case Input.El(e) => Done(List(e), Input.Empty)
-              case in =>
-                throw new MatchError(
-                  in
-                ) // Shouldn't occur, but here to suppress compiler warning
-            },
-            Duration(100, MILLISECONDS)
-          ))
+        val slowIteratee = Iteratee.flatten(timeout(
+          Cont[Long, List[Long]] {
+            case Input.El(e) => Done(List(e), Input.Empty)
+            case in =>
+              throw new MatchError(
+                in
+              ) // Shouldn't occur, but here to suppress compiler warning
+          },
+          Duration(100, MILLISECONDS)
+        ))
         val fastEnumerator =
           Enumerator[Long](1, 2, 3, 4, 5, 6, 7, 8, 9, 10) >>> Enumerator.eof
         val preparedMapEC = mapEC.prepare()
@@ -141,8 +140,8 @@ object ConcurrentSpec
               Iteratee.getChunks.map(l ++ (_: List[Long]))(preparedMapEC)
             }(flatMapEC)
 
-        Await.result(result, Duration.Inf) must not equalTo (List(1, 2, 3, 4, 5,
-            6, 7, 8, 9, 10))
+        Await.result(result, Duration.Inf) must not equalTo (
+          List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
         flatMapEC.executionCount must beGreaterThan(0)
         mapEC.executionCount must equalTo(flatMapEC.executionCount)
       }
@@ -166,8 +165,8 @@ object ConcurrentSpec
       }
 
       val fastEnumerator = Enumerator((1 to 10): _*) >>> Enumerator.eof
-      val result = Try(
-        await(fastEnumerator &> Concurrent.lazyAndErrIfNotReady(
+      val result = Try(await(
+        fastEnumerator &> Concurrent.lazyAndErrIfNotReady(
           50) |>>> slowIteratee))
       // We've got our result (hopefully a timeout), so let the iteratee
       // complete.
@@ -374,9 +373,9 @@ object ConcurrentSpec
       await(remaining |>>> Iteratee.getChunks[String]) must_== Seq("bar")
     }
     "work when there is no input left in the enumerator" in {
-      val (a, remaining) = await(
-        Concurrent
-          .runPartial(Enumerator("foo", "bar"), Iteratee.getChunks[String]))
+      val (a, remaining) = await(Concurrent.runPartial(
+        Enumerator("foo", "bar"),
+        Iteratee.getChunks[String]))
       a must_== Seq("foo", "bar")
       await(remaining |>>> Iteratee.getChunks[String]) must_== Nil
     }

@@ -47,8 +47,7 @@ object TestRelations {
         StructField("duplicateField", StringType) ::
           StructField("duplicateField", StringType) ::
           StructField("differentCase", StringType) ::
-          StructField("differentcase", StringType) :: Nil
-      )
+          StructField("differentcase", StringType) :: Nil)
     )())
 
   val nestedRelation2 = LocalRelation(
@@ -57,8 +56,7 @@ object TestRelations {
       StructType(
         StructField("aField", StringType) ::
           StructField("bField", StringType) ::
-          StructField("cField", StringType) :: Nil
-      ))())
+          StructField("cField", StringType) :: Nil))())
 
   val listRelation = LocalRelation(
     AttributeReference("list", ArrayType(IntegerType))())

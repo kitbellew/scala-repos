@@ -40,12 +40,12 @@ case class DashboardConfig(ip: String = "localhost", port: Int = 9000)
 object Dashboard extends Logging with SSLConfiguration {
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[DashboardConfig]("Dashboard") {
-      opt[String]("ip") action { (x, c) =>
-        c.copy(ip = x)
-      } text ("IP to bind to (default: localhost).")
-      opt[Int]("port") action { (x, c) =>
-        c.copy(port = x)
-      } text ("Port to bind to (default: 9000).")
+      opt[String]("ip") action { (x, c) => c.copy(ip = x) } text (
+        "IP to bind to (default: localhost)."
+      )
+      opt[Int]("port") action { (x, c) => c.copy(port = x) } text (
+        "Port to bind to (default: 9000)."
+      )
     }
 
     parser.parse(args, DashboardConfig()) map { dc => createDashboard(dc) }

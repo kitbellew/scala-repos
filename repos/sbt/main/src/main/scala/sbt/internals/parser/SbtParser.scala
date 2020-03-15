@@ -159,11 +159,10 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
             position.end)
           val statement = parseStatementAgain(t, originalStatement)
           val numberLines = countLines(statement)
-          Some(
-            (
-              statement,
-              t,
-              LineRange(position.line - 1, position.line + numberLines)))
+          Some((
+            statement,
+            t,
+            LineRange(position.line - 1, position.line + numberLines)))
       }
     val stmtTreeLineRange = statements flatMap convertStatement
     val importsLineRange = importsToLineRanges(content, imports)

@@ -69,12 +69,11 @@ case class HIncrBy(key: ChannelBuffer, field: ChannelBuffer, amount: Long)
     extends StrictKeyCommand {
   def command = Commands.HINCRBY
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.HINCRBY,
-        key,
-        field,
-        StringToChannelBuffer(amount.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.HINCRBY,
+      key,
+      field,
+      StringToChannelBuffer(amount.toString)))
 }
 object HIncrBy {
   def apply(args: Seq[Array[Byte]]): Command = {
@@ -156,8 +155,8 @@ case class HScan(
     key: ChannelBuffer,
     cursor: Long,
     count: Option[JLong] = None,
-    pattern: Option[ChannelBuffer] = None
-) extends Command {
+    pattern: Option[ChannelBuffer] = None)
+    extends Command {
   def command = Commands.HSCAN
   def toChannelBuffer = {
     val bufs = Seq(

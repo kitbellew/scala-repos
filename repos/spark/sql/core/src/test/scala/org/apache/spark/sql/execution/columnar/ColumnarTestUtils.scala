@@ -66,8 +66,8 @@ object ColumnarTestUtils {
       case ARRAY(_) =>
         new GenericArrayData(Array[Any](Random.nextInt(), Random.nextInt()))
       case MAP(_) =>
-        ArrayBasedMapData(
-          Map(Random.nextInt() -> UTF8String.fromString(
+        ArrayBasedMapData(Map(
+          Random.nextInt() -> UTF8String.fromString(
             Random.nextString(Random.nextInt(32)))))
       case _ =>
         throw new IllegalArgumentException(s"Unknown column type $columnType")

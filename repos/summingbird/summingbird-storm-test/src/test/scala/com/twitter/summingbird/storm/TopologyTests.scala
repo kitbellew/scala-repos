@@ -80,24 +80,21 @@ class TopologyTests extends WordSpec {
 
     val job = mkJob(
       Storm.source(TraversableSpout(original)),
-      TestStore.createStore[Int, Int]()._2
-    )
+      TestStore.createStore[Int, Int]()._2)
 
     storm.plan(job).topology
   }
 
   "Number of bolts should be as expected" in {
     val stormTopo = funcToPlan(
-      TestGraphs.singleStepJob[Storm, Int, Int, Int](_, _)(testFn)
-    )
+      TestGraphs.singleStepJob[Storm, Int, Int, Int](_, _)(testFn))
     // Final Flatmap + summer
     assert(stormTopo.get_bolts_size() == 2)
   }
 
   "Number of spouts in simple task should be 1" in {
     val stormTopo = funcToPlan(
-      TestGraphs.singleStepJob[Storm, Int, Int, Int](_, _)(testFn)
-    )
+      TestGraphs.singleStepJob[Storm, Int, Int, Int](_, _)(testFn))
     // Source producer
     assert(stormTopo.get_spouts_size() == 1)
   }

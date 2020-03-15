@@ -101,9 +101,8 @@ object Task {
         case TaskStateOp
               .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
             if !hasStartedRunning =>
-          val updated = copy(
-            status = status
-              .copy(startedAt = Some(now), mesosStatus = mesosStatus))
+          val updated = copy(status = status
+            .copy(startedAt = Some(now), mesosStatus = mesosStatus))
           TaskStateChange.Update(updated)
 
         // case 2: terminal
@@ -162,14 +161,13 @@ object Task {
     override def update(update: TaskStateOp): TaskStateChange =
       update match {
         case TaskStateOp.Launch(appVersion, status, networking) =>
-          TaskStateChange.Update(
-            LaunchedOnReservation(
-              taskId,
-              agentInfo,
-              appVersion,
-              status,
-              networking,
-              reservation))
+          TaskStateChange.Update(LaunchedOnReservation(
+            taskId,
+            agentInfo,
+            appVersion,
+            status,
+            networking,
+            reservation))
 
         case TaskStateOp.ReservationTimeout =>
           TaskStateChange.Expunge
@@ -205,21 +203,18 @@ object Task {
         case TaskStateOp
               .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
             if !hasStartedRunning =>
-          val updated = copy(
-            status = status
-              .copy(startedAt = Some(now), mesosStatus = mesosStatus))
+          val updated = copy(status = status
+            .copy(startedAt = Some(now), mesosStatus = mesosStatus))
           TaskStateChange.Update(updated)
 
         // case 2: terminal
         // FIXME (3221): handle task_lost, kill etc differently and set appropriate timeouts (if any)
         case TaskStateOp.MesosUpdate(MarathonTaskStatus.Terminal(_), now) =>
-          TaskStateChange.Update(
-            Task.Reserved(
-              taskId = taskId,
-              agentInfo = agentInfo,
-              reservation = reservation
-                .copy(state = Task.Reservation.State.Suspended(timeout = None))
-            ))
+          TaskStateChange.Update(Task.Reserved(
+            taskId = taskId,
+            agentInfo = agentInfo,
+            reservation = reservation
+              .copy(state = Task.Reservation.State.Suspended(timeout = None))))
 
         // case 3: health or state updated
         case TaskStateOp.MesosUpdate(taskStatus, now) =>
@@ -258,8 +253,9 @@ object Task {
       current: MesosProtos.TaskStatus,
       update: MesosProtos.TaskStatus): Option[MesosProtos.TaskStatus] = {
 
-    val healthy =
-      update.hasHealthy && (!current.hasHealthy || current.getHealthy != update.getHealthy)
+    val healthy = update.hasHealthy && (
+      !current.hasHealthy || current.getHealthy != update.getHealthy
+    )
     val changed = healthy || current.getState != update.getState
     if (changed) { Some(update) }
     else { None }

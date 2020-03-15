@@ -260,12 +260,10 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
     assertTrue(
       encoder.isLegalReplacement(Array(0xef.toByte, 0xbf.toByte, 0xbf.toByte)))
 
-    assertTrue(
-      encoder.isLegalReplacement(
-        Array(0xf0.toByte, 0x90.toByte, 0x80.toByte, 0x80.toByte)))
-    assertTrue(
-      encoder.isLegalReplacement(
-        Array(0xf4.toByte, 0x8f.toByte, 0xbf.toByte, 0xbf.toByte)))
+    assertTrue(encoder.isLegalReplacement(
+      Array(0xf0.toByte, 0x90.toByte, 0x80.toByte, 0x80.toByte)))
+    assertTrue(encoder.isLegalReplacement(
+      Array(0xf4.toByte, 0x8f.toByte, 0xbf.toByte, 0xbf.toByte)))
 
     // The bad ones
 

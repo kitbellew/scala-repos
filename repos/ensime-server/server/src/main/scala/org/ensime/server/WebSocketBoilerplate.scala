@@ -47,15 +47,12 @@ object WebSocketBoilerplate {
     * @param actor see `actorRefAsFlow`
     * @return a `Flow` suitable for use in a `Route`.
     */
-  def jsonWebsocket[Incoming, Outgoing](
-      actor: ActorRef => ActorRef
-  )(implicit
+  def jsonWebsocket[Incoming, Outgoing](actor: ActorRef => ActorRef)(implicit
       m1: RootJsonFormat[Incoming],
       m2: RootJsonFormat[Outgoing],
       mat: Materializer,
       oc: ClassTag[Outgoing],
-      printer: JsonPrinter = PrettyPrinter
-  ): Route = {
+      printer: JsonPrinter = PrettyPrinter): Route = {
     val underlying = actorRefAsFlow[Incoming, Outgoing](actor)
     val marshalled = jsonMarshalledMessageFlow(underlying)
     handleWebsocketMessages(marshalled)
@@ -68,16 +65,10 @@ object WebSocketBoilerplate {
     * @return the actor represented as a `Flow`, suitable for use in akka-stream
     *         with caution.
     */
-  def actorRefAsFlow[Incoming, Outgoing](
-      actor: ActorRef => ActorRef
-  )(implicit
-      mat: Materializer
-  ): Flow[Incoming, Outgoing, Unit] = {
+  def actorRefAsFlow[Incoming, Outgoing](actor: ActorRef => ActorRef)(
+      implicit mat: Materializer): Flow[Incoming, Outgoing, Unit] = {
     val (target, pub) = Source
-      .actorRef[Outgoing](
-        0,
-        OverflowStrategy.fail
-      )
+      .actorRef[Outgoing](0, OverflowStrategy.fail)
       .toMat(Sink.publisher)(Keep.both)
       .run()
     val source = Source(pub)
@@ -93,14 +84,12 @@ object WebSocketBoilerplate {
     * @return a `Flow` using WebSocket `Message`s
     */
   def jsonMarshalledMessageFlow[Incoming, Outgoing](
-      flow: Flow[Incoming, Outgoing, Unit]
-  )(implicit
+      flow: Flow[Incoming, Outgoing, Unit])(implicit
       m1: RootJsonFormat[Incoming],
       m2: RootJsonFormat[Outgoing],
       //mat: Materializer,
       oc: ClassTag[Outgoing],
-      printer: JsonPrinter = PrettyPrinter
-  ): Flow[Message, Message, Unit] = {
+      printer: JsonPrinter = PrettyPrinter): Flow[Message, Message, Unit] = {
     Flow[Message]
       .collect {
         case TextMessage.Strict(msg) =>

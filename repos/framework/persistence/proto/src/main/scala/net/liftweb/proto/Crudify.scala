@@ -157,14 +157,12 @@ trait Crudify {
     * The menu item for listing items (make this "Empty" to disable)
     */
   def showAllMenuLoc: Box[Menu] =
-    Full(
-      Menu(
-        Loc(
-          "List " + Prefix,
-          listPath,
-          showAllMenuName,
-          addlMenuLocParams ::: (locSnippets :: Loc.Template(showAllTemplate) ::
-            showAllMenuLocParams))))
+    Full(Menu(Loc(
+      "List " + Prefix,
+      listPath,
+      showAllMenuName,
+      addlMenuLocParams ::: (locSnippets :: Loc.Template(showAllTemplate) ::
+        showAllMenuLocParams))))
 
   /**
     * Override to include new Params for the show all menu
@@ -175,14 +173,12 @@ trait Crudify {
     * The menu item for creating items (make this "Empty" to disable)
     */
   def createMenuLoc: Box[Menu] =
-    Full(
-      Menu(
-        Loc(
-          "Create " + Prefix,
-          createPath,
-          createMenuName,
-          (addlMenuLocParams ::: (locSnippets :: Loc.Template(createTemplate) ::
-            createMenuLocParams)))))
+    Full(Menu(Loc(
+      "Create " + Prefix,
+      createPath,
+      createMenuName,
+      (addlMenuLocParams ::: (locSnippets :: Loc.Template(createTemplate) ::
+        createMenuLocParams)))))
 
   /**
     * Override to include new Params for the create menu

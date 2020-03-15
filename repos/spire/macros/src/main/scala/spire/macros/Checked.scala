@@ -60,8 +60,8 @@ object Checked {
 
   def checkedImpl[A: c.WeakTypeTag](c: Context)(n: c.Expr[A]): c.Expr[A] = {
     import c.universe._
-    tryOrElseImpl[A](c)(n)(
-      c.Expr[A](q"throw new spire.macros.ArithmeticOverflowException()"))
+    tryOrElseImpl[A](c)(n)(c.Expr[A](
+      q"throw new spire.macros.ArithmeticOverflowException()"))
   }
 
   def optionImpl[A: c.WeakTypeTag](c: Context)(
@@ -138,7 +138,9 @@ private[macros] case class CheckedRewriter[C <: Context](c: C) {
         case Apply(Select(lhs, method), rhs :: Nil) =>
           val lt = lhs.tpe.widen
           val rt = rhs.tpe.widen
-          ((lt weak_<:< tpe) && (rt <:< tpe)) || ((lt <:< tpe) && (rt weak_<:< tpe))
+          ((lt weak_<:< tpe) && (rt <:< tpe)) || (
+            (lt <:< tpe) && (rt weak_<:< tpe)
+          )
         case _ =>
           false
       }

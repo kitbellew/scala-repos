@@ -312,15 +312,11 @@ class IsHCons1Macros(val c: whitebox.Context) extends IsCons1Macros {
       nme: TypeName,
       lTpt: Tree,
       hdTpt: Tree,
-      tlTpt: Tree): (Tree, Tree) =
-    (
-      q"""
+      tlTpt: Tree): (Tree, Tree) = (q"""
         def pack[$nme](u: ($hdTpt, $tlTpt)): $lTpt = _root_.shapeless.::(u._1, u._2)
-      """,
-      q"""
+      """, q"""
         def unpack[$nme](p: $lTpt): ($hdTpt, $tlTpt) = (p.head, p.tail)
-      """
-    )
+      """)
 }
 
 @macrocompat.bundle
@@ -340,21 +336,17 @@ class IsCCons1Macros(val c: whitebox.Context) extends IsCons1Macros {
       nme: TypeName,
       lTpt: Tree,
       hdTpt: Tree,
-      tlTpt: Tree): (Tree, Tree) =
-    (
-      q"""
+      tlTpt: Tree): (Tree, Tree) = (q"""
         def pack[$nme](u: _root_.scala.Either[$hdTpt, $tlTpt]): $lTpt = u match {
           case _root_.scala.Left(hd) => _root_.shapeless.Inl[$hdTpt, $tlTpt](hd)
           case _root_.scala.Right(tl) => _root_.shapeless.Inr[$hdTpt, $tlTpt](tl)
         }
-      """,
-      q"""
+      """, q"""
         def unpack[$nme](p: $lTpt): _root_.scala.Either[$hdTpt, $tlTpt] = p match {
           case _root_.shapeless.Inl(hd) => _root_.scala.Left[$hdTpt, $tlTpt](hd)
           case _root_.shapeless.Inr(tl) => _root_.scala.Right[$hdTpt, $tlTpt](tl)
         }
-      """
-    )
+      """)
 }
 
 @macrocompat.bundle

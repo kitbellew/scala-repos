@@ -137,19 +137,18 @@ trait Metalevels {
               "trimmed %s inlineable free defs from its symbol table: %s"
                 .format(
                   inlinees.length,
-                  inlinees map (inlinee =>
-                    symtab.symName(inlinee)) mkString (", ")))
+                  inlinees map (inlinee => symtab.symName(inlinee)) mkString (
+                    ", "
+                  )))
           withinSplice {
-            super.transform(
-              TreeSplice(
-                ReifiedTree(
-                  universe,
-                  mirror,
-                  symtab1,
-                  rtree,
-                  tpe,
-                  rtpe,
-                  concrete)))
+            super.transform(TreeSplice(ReifiedTree(
+              universe,
+              mirror,
+              symtab1,
+              rtree,
+              tpe,
+              rtpe,
+              concrete)))
           }
         case TreeSplice(splicee) =>
           if (reifyDebug) println("entering splice: " + splicee)
@@ -161,10 +160,9 @@ trait Metalevels {
             // if (settings.logRuntimeSplices.value) reporter.echo(tree.pos, "this splice cannot be resolved statically")
             // withinSplice { super.transform(tree) }
             if (reifyDebug)
-              println(
-                "metalevel breach in %s: %s".format(
-                  tree,
-                  (breaches map (_.symbol)).distinct mkString ", "))
+              println("metalevel breach in %s: %s".format(
+                tree,
+                (breaches map (_.symbol)).distinct mkString ", "))
             CannotReifyRuntimeSplice(tree)
           } else { withinSplice { super.transform(tree) } }
         // todo. also inline usages of `inlineableBindings` in the symtab itself

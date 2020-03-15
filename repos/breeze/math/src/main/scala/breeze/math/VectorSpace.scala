@@ -315,8 +315,7 @@ object VectorField {
       _subVV: OpSub.Impl2[V, V, V],
       _dotVV: OpMulInner.Impl2[V, V, S],
       _neg: OpNeg.Impl[V, V],
-      _ops: V <:< NumericOps[V]
-  ): VectorField[V, S] =
+      _ops: V <:< NumericOps[V]): VectorField[V, S] =
     new VectorField[V, S] {
       def scalars: Field[S] = _field
       override implicit def hasOps(v: V): NumericOps[V] = _ops(v)
@@ -470,8 +469,7 @@ object MutableVectorField {
       _subVV: OpSub.Impl2[V, V, V],
       _neg: OpNeg.Impl[V, V],
       _ops: V <:< NumericOps[V],
-      _dotVV: OpMulInner.Impl2[V, V, S]
-  ): MutableVectorField[V, S] =
+      _dotVV: OpMulInner.Impl2[V, V, S]): MutableVectorField[V, S] =
     new MutableVectorField[V, S] {
 
       def scalars: Field[S] = _field
@@ -524,8 +522,7 @@ object MutableLPVectorField {
       _subVV: OpSub.Impl2[V, V, V],
       _neg: OpNeg.Impl[V, V],
       _ops: V <:< NumericOps[V],
-      _dotVV: OpMulInner.Impl2[V, V, S]
-  ): MutableLPVectorField[V, S] =
+      _dotVV: OpMulInner.Impl2[V, V, S]): MutableLPVectorField[V, S] =
     new MutableLPVectorField[V, S] {
 
       def scalars: Field[S] = _field
@@ -584,8 +581,7 @@ object MutableCoordinateField {
       _traverseVals: CanTraverseValues[V, S],
       _mapVals: CanMapValues[V, S, S, V],
       _mapActiveVals: CanMapActiveValues[V, S, S, V],
-      _scalarOf: ScalarOf[V, S]
-  ): MutableCoordinateField[V, S] =
+      _scalarOf: ScalarOf[V, S]): MutableCoordinateField[V, S] =
     new MutableCoordinateField[V, S] {
 
       def scalars: Field[S] = _field
@@ -662,8 +658,7 @@ object MutableFiniteCoordinateField {
       _traverseVals: CanTraverseValues[V, S],
       _mapVals: CanMapValues[V, S, S, V],
       _mapActiveVals: CanMapActiveValues[V, S, S, V],
-      _scalarOf: ScalarOf[V, S]
-  ): MutableFiniteCoordinateField[V, I, S] =
+      _scalarOf: ScalarOf[V, S]): MutableFiniteCoordinateField[V, I, S] =
     new MutableFiniteCoordinateField[V, I, S] {
       def scalars: Field[S] = _field
 
@@ -742,8 +737,7 @@ object MutableEnumeratedCoordinateField {
       _traverseVals: CanTraverseValues[V, S],
       _mapVals: CanMapValues[V, S, S, V],
       _mapActiveVals: CanMapActiveValues[V, S, S, V],
-      _scalarOf: ScalarOf[V, S]
-  ): MutableEnumeratedCoordinateField[V, I, S] =
+      _scalarOf: ScalarOf[V, S]): MutableEnumeratedCoordinateField[V, I, S] =
     new MutableEnumeratedCoordinateField[V, I, S] {
       def scalars: Field[S] = _field
 
@@ -807,10 +801,8 @@ object MutableOptimizationSpace {
   }
 
   object DenseDoubleOptimizationSpace {
-    implicit def denseDoubleOptSpace: MutableOptimizationSpace[
-      DenseMatrix[Double],
-      DenseVector[Double],
-      Double] = {
+    implicit def denseDoubleOptSpace: MutableOptimizationSpace[DenseMatrix[
+      Double], DenseVector[Double], Double] = {
       val norms = EntrywiseMatrixNorms.make[DenseMatrix[Double], Double]
       import norms.{canInnerProduct, canNorm_Double}
       import DenseMatrix.canMapValues
@@ -821,10 +813,8 @@ object MutableOptimizationSpace {
   }
 
   object SparseDoubleOptimizationSpace {
-    implicit def sparseDoubleOptSpace: MutableOptimizationSpace[
-      CSCMatrix[Double],
-      SparseVector[Double],
-      Double] = {
+    implicit def sparseDoubleOptSpace: MutableOptimizationSpace[CSCMatrix[
+      Double], SparseVector[Double], Double] = {
       val norms = EntrywiseMatrixNorms.make[CSCMatrix[Double], Double]
       import norms.{canInnerProduct, canNorm_Double}
       make[CSCMatrix[Double], SparseVector[Double], Double](
@@ -907,8 +897,8 @@ object MutableOptimizationSpace {
       _mulMMM: OpMulMatrix.Impl2[M, M, M],
       _mulMVV: OpMulMatrix.Impl2[M, V, V],
       _mulVTM: OpMulMatrix.Impl2[V, Transpose[V], M],
-      _canTrans: CanTranspose[V, Transpose[V]]
-  ): MutableOptimizationSpace[M, V, S] =
+      _canTrans: CanTranspose[V, Transpose[V]])
+      : MutableOptimizationSpace[M, V, S] =
     new MutableOptimizationSpace[M, V, S] {
       def toMatrix(v: V): M = toMat(v)
       def toVector(m: M): V = toVec(m)

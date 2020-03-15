@@ -90,21 +90,16 @@ object StormTestRun {
 
     val (id, store) = TestStore.createStore[K, V]()
 
-    val job = mkJob(
-      Storm.source(TraversableSpout(original)),
-      store
-    )
+    val job = mkJob(Storm.source(TraversableSpout(original)), store)
 
-    implicit val s = Storm.local(
-      Map(
-        "DEFAULT" -> Options()
-          .set(CacheSize(4))
-          .set(FlushFrequency(Duration.fromMilliseconds(1)))
-      ))
+    implicit val s = Storm.local(Map(
+      "DEFAULT" -> Options()
+        .set(CacheSize(4))
+        .set(FlushFrequency(Duration.fromMilliseconds(1)))))
 
     apply(job)
-    TestStore[K, V](id).getOrElse(
-      sys.error("Error running test, unable to find store at the end"))
+    TestStore[K, V](id).getOrElse(sys.error(
+      "Error running test, unable to find store at the end"))
   }
 
   def apply(plannedTopology: PlannedTopology) {

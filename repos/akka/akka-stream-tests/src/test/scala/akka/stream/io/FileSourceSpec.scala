@@ -204,8 +204,8 @@ class FileSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
       try {
         val p = FileIO
           .fromFile(manyLines)
-          .withAttributes(
-            ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
+          .withAttributes(ActorAttributes.dispatcher(
+            "akka.actor.default-dispatcher"))
           .runWith(TestSink.probe)(materializer)
 
         materializer

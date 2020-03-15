@@ -13,11 +13,9 @@ trait C {
 }
 class ABC extends A with B with C {
   private def reflected =
-    (
-      Thread.currentThread.getStackTrace
-        takeWhile (_.getMethodName != "main")
-        exists (_.toString contains "sun.reflect.")
-    )
+    (Thread.currentThread.getStackTrace
+      takeWhile (_.getMethodName != "main")
+      exists (_.toString contains "sun.reflect."))
   lazy val y: PQ = new PQ(reflected)
 }
 
@@ -45,8 +43,7 @@ object Gen {
     import p._
     List(
       s"type R1_$idx = $tp",
-      s"type R2_$idx = R1_$idx { val y: (${tp1.elem}) with (${tp2.elem}) }"
-    )
+      s"type R2_$idx = R1_$idx { val y: (${tp1.elem}) with (${tp2.elem}) }")
   }
 
   def mkMethodContent(pre: String)(f: Int => String) =

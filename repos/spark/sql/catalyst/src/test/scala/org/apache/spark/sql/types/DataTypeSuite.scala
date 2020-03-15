@@ -225,11 +225,10 @@ class DataTypeSuite extends SparkFunSuite {
   val metadata = new MetadataBuilder()
     .putString("name", "age")
     .build()
-  val structType = StructType(
-    Seq(
-      StructField("a", IntegerType, nullable = true),
-      StructField("b", ArrayType(DoubleType), nullable = false),
-      StructField("c", DoubleType, nullable = false, metadata)))
+  val structType = StructType(Seq(
+    StructField("a", IntegerType, nullable = true),
+    StructField("b", ArrayType(DoubleType), nullable = false),
+    StructField("c", DoubleType, nullable = false, metadata)))
   checkDataTypeJsonRepr(structType)
 
   def checkDefaultSize(dataType: DataType, expectedDefaultSize: Int): Unit = {

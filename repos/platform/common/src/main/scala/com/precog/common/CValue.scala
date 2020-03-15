@@ -152,8 +152,9 @@ object RValue {
             }
 
           case x =>
-            sys.error("RValue insert would overwrite existing data: " + x + " cannot be updated to " + value + " at " + path +
-              " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
+            sys.error(
+              "RValue insert would overwrite existing data: " + x + " cannot be updated to " + value + " at " + path +
+                " in unsafeInsert of " + rootValue + " at " + rootPath + " in " + rootTarget)
         }
       }
     }

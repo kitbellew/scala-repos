@@ -119,19 +119,16 @@ object Parsing {
                             Done(Done(a, e), inputOrEmpty(ss ++ suffix))),
                         k =>
                           Future.successful(
-                            Cont[
-                              Array[Byte],
-                              Iteratee[MatchInfo[Array[Byte]], A]](
-                              (in: Input[Array[Byte]]) =>
-                                in match {
-                                  case Input.EOF =>
-                                    Done(
-                                      k(Input.El(Unmatched(suffix))),
-                                      Input.EOF
-                                    ) //suffix maybe empty
-                                  case other =>
-                                    step(ss ++ suffix, Cont(k))(other)
-                                })),
+                            Cont[Array[Byte], Iteratee[MatchInfo[
+                              Array[Byte]], A]]((in: Input[Array[Byte]]) =>
+                              in match {
+                                case Input.EOF =>
+                                  Done(
+                                    k(Input.El(Unmatched(suffix))),
+                                    Input.EOF
+                                  ) //suffix maybe empty
+                                case other => step(ss ++ suffix, Cont(k))(other)
+                              })),
                         (err, e) => throw new Exception()
                       )(dec)
                   }(dec)

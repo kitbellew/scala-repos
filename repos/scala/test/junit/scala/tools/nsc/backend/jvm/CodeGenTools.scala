@@ -69,8 +69,9 @@ object CodeGenTools {
       extraArgs: String = ""): Global = {
     def showError(s: String) = throw new Exception(s)
     val settings = new Settings(showError)
-    val args =
-      (CommandLineParser tokenize defaultArgs) ++ (CommandLineParser tokenize extraArgs)
+    val args = (CommandLineParser tokenize defaultArgs) ++ (
+      CommandLineParser tokenize extraArgs
+    )
     val (_, nonSettingsArgs) = settings.processArguments(
       args,
       processAll = true)
@@ -172,8 +173,8 @@ object CodeGenTools {
 
     for (code <- codes) {
       val compiler = newCompilerWithoutVirtualOutdir(extraArgs = argsWithOutDir)
-      new compiler.Run()
-        .compileSources(List(makeSourceFile(code, "unitTestSource.scala")))
+      new compiler.Run().compileSources(List(
+        makeSourceFile(code, "unitTestSource.scala")))
       checkReport(compiler, allowMessage)
       afterEach(outDir)
     }

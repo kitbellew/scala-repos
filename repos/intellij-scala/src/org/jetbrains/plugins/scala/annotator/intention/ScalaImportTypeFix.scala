@@ -130,10 +130,9 @@ class ScalaImportTypeFix(
     val startPosition = editor.xyToLogicalPosition(
       new Point(visibleRectangle.x, visibleRectangle.y))
     val myStartOffset = editor.logicalPositionToOffset(startPosition)
-    val endPosition = editor.xyToLogicalPosition(
-      new Point(
-        visibleRectangle.x + visibleRectangle.width,
-        visibleRectangle.y + visibleRectangle.height))
+    val endPosition = editor.xyToLogicalPosition(new Point(
+      visibleRectangle.x + visibleRectangle.width,
+      visibleRectangle.y + visibleRectangle.height))
     val myEndOffset = editor.logicalPositionToOffset(
       new LogicalPosition(endPosition.line + 1, 0))
     new TextRange(myStartOffset, myEndOffset)
@@ -197,9 +196,9 @@ class ScalaImportTypeFix(
                 if (!ref.isInstanceOf[ScDocResolvableCodeReference])
                   ref.bindToElement(clazz.element)
                 else
-                  ref.replace(
-                    ScalaPsiElementFactory
-                      .createDocLinkValue(clazz.qualifiedName, ref.getManager))
+                  ref.replace(ScalaPsiElementFactory.createDocLinkValue(
+                    clazz.qualifiedName,
+                    ref.getManager))
               }
             },
             clazz.getProject,

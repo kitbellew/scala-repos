@@ -966,10 +966,9 @@ class SerializationTests {
 
   @Test
   def testHMap {
-    assertSerializable(
-      HMap[(Set ~?> Option)#λ](
-        Set("foo") -> Option("bar"),
-        Set(23) -> Option(13)))
+    assertSerializable(HMap[(Set ~?> Option)#λ](
+      Set("foo") -> Option("bar"),
+      Set(23) -> Option(13)))
     assertSerializable(new (Set ~?> Option))
     assertSerializable(implicitly[(Set ~?> Option)#λ[Set[Int], Option[Int]]])
   }
@@ -983,10 +982,8 @@ class SerializationTests {
 
     assertSerializableBeforeAfter(
       implicitly[Lazy[Lazy.Values[Generic[Wibble] :: HNil]]])(_.value)
-    assertSerializableBeforeAfter(
-      implicitly[
-        Lazy[Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(
-      _.value)
+    assertSerializableBeforeAfter(implicitly[Lazy[
+      Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(_.value)
   }
 
   @Test

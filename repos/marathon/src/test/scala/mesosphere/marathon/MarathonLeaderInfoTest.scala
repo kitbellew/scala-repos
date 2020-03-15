@@ -18,8 +18,8 @@ class MarathonLeaderInfoTest
     lazy val maybeCandidate = Some(candidate)
     lazy val leader = new AtomicBoolean(false)
     lazy val eventStream = new EventStream()
-    lazy val metrics = new MarathonLeaderInfoMetrics(
-      new Metrics(new MetricRegistry))
+    lazy val metrics = new MarathonLeaderInfoMetrics(new Metrics(
+      new MetricRegistry))
     lazy val leaderInfo =
       new MarathonLeaderInfo(maybeCandidate, leader, eventStream, metrics)
 

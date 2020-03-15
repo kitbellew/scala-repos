@@ -355,10 +355,9 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (
-              tp.name,
-              ScalaPsiUtil.getPsiElementId(
-                tp.ptp)) == (tpt.name, tpt.getId)) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+              tpt.name, tpt.getId
+            )) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true
@@ -393,10 +392,9 @@ case class ScTypePolymorphicType(
       typez.recursiveUpdate {
         case tpt: ScTypeParameterType =>
           typeParameters.find(tp =>
-            (
-              tp.name,
-              ScalaPsiUtil.getPsiElementId(
-                tp.ptp)) == (tpt.name, tpt.getId)) match {
+            (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+              tpt.name, tpt.getId
+            )) match {
             case None => (true, tpt)
             case _ =>
               hasRecursiveTypeParameters = true

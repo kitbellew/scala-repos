@@ -84,11 +84,9 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
                   true
                 case _ => false
               }
-            (
-              isUniversal && nme.isReplWrapperName(m.prefix.typeSymbol.name)
-              || isUniversal && tabCount == 0 && r.name.isEmpty
-              || viaUniversalExtensionMethod && tabCount == 0 && r.name.isEmpty
-            )
+            (isUniversal && nme.isReplWrapperName(m.prefix.typeSymbol.name)
+            || isUniversal && tabCount == 0 && r.name.isEmpty
+            || viaUniversalExtensionMethod && tabCount == 0 && r.name.isEmpty)
           }
 
           val matching = r.matchingResults().filterNot(shouldHide)
@@ -108,12 +106,9 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
             val memberCompletions =
               camelMatches.map(_.symNameDropLocal.decoded).distinct.sorted
             def allowCompletion =
-              (
-                (memberCompletions.size == 1)
-                  || CompletionResult.camelMatch(r.name)(
-                    r.name.newName(
-                      StringOps.longestCommonPrefix(memberCompletions)))
-              )
+              ((memberCompletions.size == 1)
+                || CompletionResult.camelMatch(r.name)(r.name.newName(
+                  StringOps.longestCommonPrefix(memberCompletions))))
             if (memberCompletions.isEmpty) Completion.NoCandidates
             else if (allowCompletion)
               Candidates(cursor - r.positionDelta, memberCompletions)

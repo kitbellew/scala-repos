@@ -262,13 +262,11 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
       case name =>
         val nn = processName(name)
         print(nn)
-        printMethodType(m.infoType, true)(
-          {
-            if (!m.isDeferred)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
-          }
-        )
+        printMethodType(m.infoType, true)({
+          if (!m.isDeferred)
+            print(
+              " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+        })
     }
     print("\n")
   }

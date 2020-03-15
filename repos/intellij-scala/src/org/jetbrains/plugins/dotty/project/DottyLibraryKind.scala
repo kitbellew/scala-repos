@@ -16,8 +16,8 @@ object DottyLibraryKind
     with ScalaLibraryKind {
   override def createDefaultProperties(): ScalaLibraryProperties = {
     val props = new ScalaLibraryProperties()
-    props.loadState(
-      new ScalaLibraryPropertiesState(ScalaLanguageLevelProxy.Dotty))
+    props.loadState(new ScalaLibraryPropertiesState(
+      ScalaLanguageLevelProxy.Dotty))
     props
   }
 }

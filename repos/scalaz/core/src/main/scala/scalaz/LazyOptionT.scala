@@ -137,9 +137,11 @@ private trait LazyOptionTMonad[F[_]]
 
   override def ap[A, B](fa: => LazyOptionT[F, A])(
       f: => LazyOptionT[F, A => B]): LazyOptionT[F, B] =
-    LazyOptionT(
-      F.bind(f.run)(_ fold (ff => F.map(fa.run)(_ map ((ff: A => B)(_))),
-      F.point(LazyOption.lazyNone))))
+    LazyOptionT(F.bind(f.run)(
+      _ fold (
+        ff => F.map(fa.run)(_ map ((ff: A => B)(_))),
+        F.point(LazyOption.lazyNone)
+      )))
 
   def point[A](a: => A): LazyOptionT[F, A] =
     LazyOptionT[F, A](F.point(LazyOption.lazySome(a)))
@@ -166,8 +168,7 @@ private trait LazyOptionTBindRec[F[_]]
           _.fold(
             _.map(b => LazyOption.lazySome(b)),
             \/.right(LazyOption.lazyNone))
-        })(a)
-    )
+        })(a))
 }
 
 private trait LazyOptionTHoist extends Hoist[LazyOptionT] {

@@ -52,20 +52,19 @@ object PersistentActorDeleteFailureSpec {
 }
 
 class PersistentActorDeleteFailureSpec
-    extends PersistenceSpec(
-      PersistenceSpec.config(
-        "inmem",
-        "SnapshotFailureRobustnessSpec",
-        extraConfig = Some(
-          """
+    extends PersistenceSpec(PersistenceSpec.config(
+      "inmem",
+      "SnapshotFailureRobustnessSpec",
+      extraConfig = Some(
+        """
   akka.persistence.journal.inmem.class = "akka.persistence.PersistentActorDeleteFailureSpec$DeleteFailingInmemJournal"
   """)
-      ))
+    ))
     with ImplicitSender {
   import PersistentActorDeleteFailureSpec._
 
-  system.eventStream.publish(
-    TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
+  system.eventStream.publish(TestEvent.Mute(
+    EventFilter[akka.pattern.AskTimeoutException]()))
 
   "A persistent actor" must {
     "have default warn logging be triggered, when deletion failed" in {

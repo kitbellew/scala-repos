@@ -12,8 +12,8 @@ import org.jboss.netty.handler.codec.http._
   */
 private[twitter] class StreamServerDispatcher[Req: RequestType](
     trans: Transport[Any, Any],
-    service: Service[Req, StreamResponse]
-) extends GenSerialServerDispatcher[Req, StreamResponse, Any, Any](trans) {
+    service: Service[Req, StreamResponse])
+    extends GenSerialServerDispatcher[Req, StreamResponse, Any, Any](trans) {
   import Bijections._
 
   trans.onClose ensure { service.close() }
@@ -36,8 +36,8 @@ private[twitter] class StreamServerDispatcher[Req: RequestType](
         service(RT.specialize(from(httpReq))) ensure eos.setDone()
       case invalid =>
         eos.setDone()
-        Future.exception(
-          new IllegalArgumentException(s"Invalid message: $invalid"))
+        Future.exception(new IllegalArgumentException(
+          s"Invalid message: $invalid"))
     }
 
   protected def handle(rep: StreamResponse) = {

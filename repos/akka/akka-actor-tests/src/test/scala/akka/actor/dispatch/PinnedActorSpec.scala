@@ -40,9 +40,10 @@ class PinnedActorSpec
 
     "support tell" in {
       var oneWay = new CountDownLatch(1)
-      val actor = system.actorOf(Props(new Actor {
-        def receive = { case "OneWay" ⇒ oneWay.countDown() }
-      }).withDispatcher("pinned-dispatcher"))
+      val actor = system.actorOf(
+        Props(new Actor {
+          def receive = { case "OneWay" ⇒ oneWay.countDown() }
+        }).withDispatcher("pinned-dispatcher"))
       val result = actor ! "OneWay"
       assert(oneWay.await(1, TimeUnit.SECONDS))
       system.stop(actor)

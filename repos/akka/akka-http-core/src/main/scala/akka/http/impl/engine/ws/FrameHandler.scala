@@ -65,7 +65,9 @@ private[http] object FrameHandler {
 
       def handleRegularFrameStart(start: FrameStart)(
           implicit ctx: Ctx): SyncDirective = {
-        if ((expectFirstHeader && start.header.opcode == expectedOpcode) // first opcode must be the expected
+        if ((
+              expectFirstHeader && start.header.opcode == expectedOpcode
+            ) // first opcode must be the expected
             || start.header.opcode == Opcode.Continuation) { // further ones continuations
           expectFirstHeader = false
 

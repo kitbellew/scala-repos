@@ -90,16 +90,14 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
           }
         }
       case Get(keys) =>
-        Values(
-          keys.flatMap { key =>
-            map.lock(key) { data =>
-              data.get(key) filter { entry =>
-                if (!entry.valid) data.remove(key) // expired
-                entry.valid
-              } map { entry => Value(key, entry.value) }
-            }
+        Values(keys.flatMap { key =>
+          map.lock(key) { data =>
+            data.get(key) filter { entry =>
+              if (!entry.valid) data.remove(key) // expired
+              entry.valid
+            } map { entry => Value(key, entry.value) }
           }
-        )
+        })
       case Gets(keys) =>
         getByKeys(keys)
       case Delete(key) =>
@@ -140,16 +138,14 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
   }
 
   private def getByKeys(keys: Seq[Buf]): Values = {
-    Values(
-      keys.flatMap { key =>
-        map.lock(key) { data =>
-          data.get(key).filter { entry => entry.valid }.map { entry =>
-            val value = entry.value
-            Value(key, value, Some(generateCasUnique(value)))
-          }
+    Values(keys.flatMap { key =>
+      map.lock(key) { data =>
+        data.get(key).filter { entry => entry.valid }.map { entry =>
+          val value = entry.value
+          Value(key, value, Some(generateCasUnique(value)))
         }
       }
-    )
+    })
   }
 
 }

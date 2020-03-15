@@ -85,10 +85,9 @@ object OptimizationPackage {
 
   class FirstOrderStochasticOptimizationPackage[Vector]()(
       implicit space: MutableFiniteCoordinateField[Vector, _, Double])
-      extends IterableOptimizationPackage[
-        StochasticDiffFunction[Vector],
-        Vector,
-        FirstOrderMinimizer[Vector, StochasticDiffFunction[Vector]]#State] {
+      extends IterableOptimizationPackage[StochasticDiffFunction[
+        Vector], Vector, FirstOrderMinimizer[Vector, StochasticDiffFunction[
+        Vector]]#State] {
     def minimize(
         fn: StochasticDiffFunction[Vector],
         init: Vector,
@@ -111,10 +110,10 @@ object OptimizationPackage {
 
   class FirstOrderBatchOptimizationPackage[Vector]()(
       implicit space: MutableFiniteCoordinateField[Vector, _, Double])
-      extends IterableOptimizationPackage[
-        BatchDiffFunction[Vector],
+      extends IterableOptimizationPackage[BatchDiffFunction[
+        Vector], Vector, FirstOrderMinimizer[
         Vector,
-        FirstOrderMinimizer[Vector, BatchDiffFunction[Vector]]#State] {
+        BatchDiffFunction[Vector]]#State] {
     def minimize(
         fn: BatchDiffFunction[Vector],
         init: Vector,

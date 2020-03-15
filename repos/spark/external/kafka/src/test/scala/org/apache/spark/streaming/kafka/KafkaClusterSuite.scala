@@ -37,8 +37,8 @@ class KafkaClusterSuite extends SparkFunSuite with BeforeAndAfterAll {
 
     kafkaTestUtils.createTopic(topic)
     kafkaTestUtils.sendMessages(topic, Map("a" -> 1))
-    kc = new KafkaCluster(
-      Map("metadata.broker.list" -> kafkaTestUtils.brokerAddress))
+    kc = new KafkaCluster(Map(
+      "metadata.broker.list" -> kafkaTestUtils.brokerAddress))
   }
 
   override def afterAll() {

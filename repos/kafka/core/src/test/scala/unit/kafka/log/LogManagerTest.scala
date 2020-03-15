@@ -259,8 +259,8 @@ class LogManagerTest {
   def testRecoveryDirectoryMappingWithTrailingSlash() {
     logManager.shutdown()
     logDir = TestUtils.tempDir()
-    logManager = TestUtils.createLogManager(
-      logDirs = Array(new File(logDir.getAbsolutePath + File.separator)))
+    logManager = TestUtils.createLogManager(logDirs = Array(
+      new File(logDir.getAbsolutePath + File.separator)))
     logManager.startup
     verifyCheckpointRecovery(Seq(TopicAndPartition("test-a", 1)), logManager)
   }

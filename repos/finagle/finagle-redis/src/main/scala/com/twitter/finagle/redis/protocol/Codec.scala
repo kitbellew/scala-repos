@@ -62,8 +62,7 @@ private[redis] object RedisCodec {
           StringToChannelBuffer(arg.readableBytes.toString),
           EOL_DELIMITER_BA,
           arg,
-          EOL_DELIMITER_BA
-        )
+          EOL_DELIMITER_BA)
       })
       .flatten
     ChannelBuffers.wrappedBuffer((header ++ buffers).toArray: _*)

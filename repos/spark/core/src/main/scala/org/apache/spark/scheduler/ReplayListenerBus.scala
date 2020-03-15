@@ -60,8 +60,9 @@ private[spark] class ReplayListenerBus extends SparkListenerBus with Logging {
             // We can only ignore exception from last line of the file that might be truncated
             if (!maybeTruncated || lines.hasNext) { throw jpe }
             else {
-              logWarning(s"Got JsonParseException from log file $sourceName" +
-                s" at line $lineNumber, the file might not have finished writing cleanly.")
+              logWarning(
+                s"Got JsonParseException from log file $sourceName" +
+                  s" at line $lineNumber, the file might not have finished writing cleanly.")
             }
         }
         lineNumber += 1

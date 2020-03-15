@@ -536,7 +536,9 @@ trait ContentExtractor {
           wordStats: WordStats = StopWords.getStopWordCount(firstParagraph.text)
           paragraphScore: Int = wordStats.getStopWordCount
           siblingBaseLineScore: Double = .30
-          if ((baselineScoreForSiblingParagraphs * siblingBaseLineScore).toDouble < paragraphScore)
+          if ((
+            baselineScoreForSiblingParagraphs * siblingBaseLineScore
+          ).toDouble < paragraphScore)
         } yield {
 
           trace(logPrefix + "This node looks like a good sibling, adding it")

@@ -532,11 +532,10 @@ private[akka] class ActorCell(
 
   def autoReceiveMessage(msg: Envelope): Unit = {
     if (system.settings.DebugAutoReceive)
-      publish(
-        Debug(
-          self.path.toString,
-          clazz(actor),
-          "received AutoReceiveMessage " + msg))
+      publish(Debug(
+        self.path.toString,
+        clazz(actor),
+        "received AutoReceiveMessage " + msg))
 
     msg.message match {
       case t: Terminated ⇒ receivedTerminated(t)
@@ -631,11 +630,10 @@ private[akka] class ActorCell(
       created.aroundPreStart()
       checkReceiveTimeout
       if (system.settings.DebugLifecycle)
-        publish(
-          Debug(
-            self.path.toString,
-            clazz(created),
-            "started (" + created + ")"))
+        publish(Debug(
+          self.path.toString,
+          clazz(created),
+          "started (" + created + ")"))
     } catch {
       case e: InterruptedException ⇒
         clearOutActorIfNonNull()
@@ -672,17 +670,15 @@ private[akka] class ActorCell(
         case Some(crs) ⇒
           handleSupervise(child, async)
           if (system.settings.DebugLifecycle)
-            publish(
-              Debug(
-                self.path.toString,
-                clazz(actor),
-                "now supervising " + child))
-        case None ⇒
-          publish(
-            Error(
+            publish(Debug(
               self.path.toString,
               clazz(actor),
-              "received Supervise from unregistered child " + child + ", this will not end well"))
+              "now supervising " + child))
+        case None ⇒
+          publish(Error(
+            self.path.toString,
+            clazz(actor),
+            "received Supervise from unregistered child " + child + ", this will not end well"))
       }
     }
 

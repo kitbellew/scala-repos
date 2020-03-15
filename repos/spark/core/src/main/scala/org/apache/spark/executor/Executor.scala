@@ -312,10 +312,9 @@ private[spark] class Executor(
               s"Finished $taskName (TID $taskId). Result is larger than maxResultSize " +
                 s"(${Utils.bytesToString(resultSize)} > ${Utils.bytesToString(maxResultSize)}), " +
                 s"dropping it.")
-            ser.serialize(
-              new IndirectTaskResult[Any](
-                TaskResultBlockId(taskId),
-                resultSize))
+            ser.serialize(new IndirectTaskResult[Any](
+              TaskResultBlockId(taskId),
+              resultSize))
           } else if (resultSize > maxDirectResultSize) {
             val blockId = TaskResultBlockId(taskId)
             env.blockManager.putBytes(
@@ -377,11 +376,10 @@ private[spark] class Executor(
             catch {
               case _: NotSerializableException =>
                 // t is not serializable so just send the stacktrace
-                ser.serialize(
-                  new ExceptionFailure(
-                    t,
-                    accumulatorUpdates,
-                    preserveCause = false))
+                ser.serialize(new ExceptionFailure(
+                  t,
+                  accumulatorUpdates,
+                  preserveCause = false))
             }
           }
           execBackend.statusUpdate(

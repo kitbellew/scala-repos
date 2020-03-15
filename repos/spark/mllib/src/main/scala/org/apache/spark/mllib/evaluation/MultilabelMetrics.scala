@@ -111,9 +111,9 @@ class MultilabelMetrics @Since("1.2.0") (
   @Since("1.2.0")
   lazy val f1Measure: Double = predictionAndLabels.map {
     case (predictions, labels) =>
-      2.0 * predictions
-        .intersect(labels)
-        .length / (predictions.length + labels.length)
+      2.0 * predictions.intersect(labels).length / (
+        predictions.length + labels.length
+      )
   }.sum / numDocs
 
   private lazy val tpPerClass = predictionAndLabels

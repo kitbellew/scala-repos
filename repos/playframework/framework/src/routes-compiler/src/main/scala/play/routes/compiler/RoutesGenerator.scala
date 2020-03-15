@@ -106,24 +106,13 @@ object StaticRoutesGenerator extends RoutesGenerator {
       additionalImports: Seq[String],
       rules: List[Rule]) =
     static.twirl
-      .forwardsRouter(
-        sourceInfo,
-        namespace,
-        additionalImports,
-        rules
-      )
+      .forwardsRouter(sourceInfo, namespace, additionalImports, rules)
       .body
 
   private def generateRoutesPrefix(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String]) =
-    static.twirl
-      .routesPrefix(
-        sourceInfo,
-        namespace,
-        _.call.instantiate
-      )
-      .body
+    static.twirl.routesPrefix(sourceInfo, namespace, _.call.instantiate).body
 
   private def generateReverseRouters(
       sourceInfo: RoutesSourceInfo,
@@ -146,8 +135,7 @@ object StaticRoutesGenerator extends RoutesGenerator {
               packageName,
               routes,
               namespaceReverseRouter,
-              _.call.instantiate
-            )
+              _.call.instantiate)
             .body
     }
   }
@@ -174,8 +162,7 @@ object StaticRoutesGenerator extends RoutesGenerator {
               packageName,
               routes,
               namespaceReverseRouter,
-              _.call.instantiate
-            )
+              _.call.instantiate)
             .body
     }
   }
@@ -302,11 +289,10 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       case include: Include =>
         includesDeps(include.router)
       case route: Route =>
-        routesDeps(
-          (
-            route.call.packageName,
-            route.call.controller,
-            route.call.instantiate))
+        routesDeps((
+          route.call.packageName,
+          route.call.controller,
+          route.call.instantiate))
     }.distinct
 
     // Map all the rules to dependency descriptors
@@ -314,11 +300,10 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       case include: Include =>
         includesDeps(include.router).copy(rule = include)
       case route: Route =>
-        routesDeps(
-          (
-            route.call.packageName,
-            route.call.controller,
-            route.call.instantiate)).copy(rule = route)
+        routesDeps((
+          route.call.packageName,
+          route.call.controller,
+          route.call.instantiate)).copy(rule = route)
     }
 
     inject.twirl
@@ -328,21 +313,14 @@ object InjectedRoutesGenerator extends RoutesGenerator {
         additionalImports,
         orderedDeps,
         rulesWithDeps,
-        includesDeps.values.toSeq
-      )
+        includesDeps.values.toSeq)
       .body
   }
 
   private def generateRoutesPrefix(
       sourceInfo: RoutesSourceInfo,
       namespace: Option[String]) =
-    static.twirl
-      .routesPrefix(
-        sourceInfo,
-        namespace,
-        _ => true
-      )
-      .body
+    static.twirl.routesPrefix(sourceInfo, namespace, _ => true).body
 
   private def generateReverseRouters(
       sourceInfo: RoutesSourceInfo,
@@ -365,8 +343,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
               packageName,
               routes,
               namespaceReverseRouter,
-              _ => true
-            )
+              _ => true)
             .body
     }
   }
@@ -393,8 +370,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
               packageName,
               routes,
               namespaceReverseRouter,
-              _ => true
-            )
+              _ => true)
             .body
     }
   }

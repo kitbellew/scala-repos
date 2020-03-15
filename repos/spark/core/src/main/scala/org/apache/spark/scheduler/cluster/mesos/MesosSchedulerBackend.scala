@@ -85,8 +85,7 @@ private[spark] class MesosSchedulerBackend(
       sc.conf,
       sc.conf
         .getOption("spark.mesos.driver.webui.url")
-        .orElse(sc.ui.map(_.appUIAddress))
-    )
+        .orElse(sc.ui.map(_.appUIAddress)))
     startScheduler(driver)
   }
 
@@ -369,12 +368,11 @@ private[spark] class MesosSchedulerBackend(
           slaveIdToWorkerOffer
             .get(slaveId)
             .foreach(o =>
-              listenerBus.post(
-                SparkListenerExecutorAdded(
-                  System.currentTimeMillis(),
-                  slaveId,
-                  // TODO: Add support for log urls for Mesos
-                  new ExecutorInfo(o.host, o.cores, Map.empty))))
+              listenerBus.post(SparkListenerExecutorAdded(
+                System.currentTimeMillis(),
+                slaveId,
+                // TODO: Add support for log urls for Mesos
+                new ExecutorInfo(o.host, o.cores, Map.empty))))
           logTrace(
             s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
           d.launchTasks(
@@ -414,9 +412,10 @@ private[spark] class MesosSchedulerBackend(
       .setExecutor(executorInfo)
       .setName(task.name)
       .addAllResources(cpuResources.asJava)
-      .setData(MesosTaskLaunchData(
-        task.serializedTask,
-        task.attemptNumber).toByteString)
+      .setData(
+        MesosTaskLaunchData(
+          task.serializedTask,
+          task.attemptNumber).toByteString)
       .build()
     (taskInfo, finalResources.asJava)
   }
@@ -460,11 +459,10 @@ private[spark] class MesosSchedulerBackend(
     */
   private def removeExecutor(slaveId: String, reason: String) = {
     synchronized {
-      listenerBus.post(
-        SparkListenerExecutorRemoved(
-          System.currentTimeMillis(),
-          slaveId,
-          reason))
+      listenerBus.post(SparkListenerExecutorRemoved(
+        System.currentTimeMillis(),
+        slaveId,
+        reason))
       slaveIdToExecutorInfo -= slaveId
     }
   }
@@ -489,9 +487,9 @@ private[spark] class MesosSchedulerBackend(
       executorId: ExecutorID,
       slaveId: SlaveID,
       status: Int) {
-    logInfo(
-      "Executor lost: %s, marking slave %s as lost"
-        .format(executorId.getValue, slaveId.getValue))
+    logInfo("Executor lost: %s, marking slave %s as lost".format(
+      executorId.getValue,
+      slaveId.getValue))
     recordSlaveLost(d, slaveId, ExecutorExited(status, exitCausedByApp = true))
   }
 
@@ -503,8 +501,7 @@ private[spark] class MesosSchedulerBackend(
       TaskID
         .newBuilder()
         .setValue(taskId.toString)
-        .build()
-    )
+        .build())
   }
 
   // TODO: query Mesos for number of cores

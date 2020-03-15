@@ -36,12 +36,11 @@ object SerializationBugs extends Specification {
   "plan2.Plan can be serialized (issue 341)" in {
     import plan2._
 
-    val g1 = Game(
-      Map(
-        "a" -> Plan(
-          Some(Action("f1", "s", Array(), None)),
-          Some("A"),
-          Some(Action("f2", "s2", Array(0, 1, 2), None)))))
+    val g1 = Game(Map(
+      "a" -> Plan(
+        Some(Action("f1", "s", Array(), None)),
+        Some("A"),
+        Some(Action("f2", "s2", Array(0, 1, 2), None)))))
     val ser = swrite(g1)
     val g2 = read[Game](ser)
     val plan = g2.buy("a")
@@ -162,11 +161,9 @@ object SerializationBugs extends Specification {
       def serialize(implicit format: Formats) = {
         case SingleValue(x: Double) => JObject(List(JField("val", JDouble(x))))
         case VectorValue(x: Vector[_]) =>
-          JObject(
-            List(
-              JField(
-                "val",
-                JArray(x.asInstanceOf[Vector[Double]].toList.map(JDouble(_))))))
+          JObject(List(JField(
+            "val",
+            JArray(x.asInstanceOf[Vector[Double]].toList.map(JDouble(_))))))
       }
     }
 

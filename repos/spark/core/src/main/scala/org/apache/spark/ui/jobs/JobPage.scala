@@ -116,8 +116,8 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                |  'content': '<div class="executor-event-content"' +
                |    'data-toggle="tooltip" data-placement="bottom"' +
                |    'data-title="Executor ${executorId}<br>' +
-               |    'Removed at ${UIUtils.formatDate(
-                                  new Date(event.finishTime.get))}' +
+               |    'Removed at ${UIUtils.formatDate(new Date(
+                                  event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
                                   s"""<br>Reason: ${event.finishReason.get}"""
                                 } else { "" }}"' +

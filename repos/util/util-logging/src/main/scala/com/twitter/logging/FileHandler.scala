@@ -96,8 +96,7 @@ object FileHandler {
       append: Boolean = true,
       rotateCount: Int = -1,
       formatter: Formatter = new Formatter(),
-      level: Option[Level] = None
-  ) =
+      level: Option[Level] = None) =
     () =>
       new FileHandler(
         filename,
@@ -228,8 +227,9 @@ class FileHandler(
       }
       case Policy.Weekly(weekday) => {
         next.set(Calendar.HOUR_OF_DAY, 0)
-        do { next.add(Calendar.DAY_OF_MONTH, 1) } while (next.get(
-          Calendar.DAY_OF_WEEK) != weekday)
+        do { next.add(Calendar.DAY_OF_MONTH, 1) } while (
+          next.get(Calendar.DAY_OF_WEEK) != weekday
+        )
         Some(next)
       }
     }
@@ -247,13 +247,11 @@ class FileHandler(
       val prefixName = new File(filenamePrefix).getName
       val rotatedFiles = new File(filename)
         .getParentFile()
-        .listFiles(
-          new FilenameFilter {
-            def accept(f: File, fname: String): Boolean =
-              fname != name && fname.startsWith(prefixName) && fname.endsWith(
-                filenameSuffix)
-          }
-        )
+        .listFiles(new FilenameFilter {
+          def accept(f: File, fname: String): Boolean =
+            fname != name && fname.startsWith(prefixName) && fname.endsWith(
+              filenameSuffix)
+        })
         .sortBy(_.getName)
 
       val toDeleteCount = math.max(0, rotatedFiles.length - rotateCount)

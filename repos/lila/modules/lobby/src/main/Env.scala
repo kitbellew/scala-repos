@@ -33,11 +33,10 @@ final class Env(
   import settings._
 
   private val socket = system.actorOf(
-    Props(
-      new Socket(
-        history = history,
-        router = hub.actor.router,
-        uidTtl = SocketUidTtl)),
+    Props(new Socket(
+      history = history,
+      router = hub.actor.router,
+      uidTtl = SocketUidTtl)),
     name = SocketName)
 
   lazy val seekApi = new SeekApi(
@@ -48,16 +47,14 @@ final class Env(
     maxPerUser = SeekMaxPerUser)
 
   val lobby = system.actorOf(
-    Props(
-      new Lobby(
-        socket = socket,
-        seekApi = seekApi,
-        blocking = blocking,
-        playban = playban,
-        onStart = onStart,
-        broomPeriod = BroomPeriod,
-        resyncIdsPeriod = ResyncIdsPeriod
-      )),
+    Props(new Lobby(
+      socket = socket,
+      seekApi = seekApi,
+      blocking = blocking,
+      playban = playban,
+      onStart = onStart,
+      broomPeriod = BroomPeriod,
+      resyncIdsPeriod = ResyncIdsPeriod)),
     name = ActorName
   )
 

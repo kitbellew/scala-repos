@@ -85,8 +85,7 @@ class BucketGenerationalQueue[A](timeout: Duration)
         origin.inMilliseconds,
         span.inMilliseconds,
         age().toString,
-        super.size
-      )
+        super.size)
   }
 
   private[this] val timeSlice = timeout / 3

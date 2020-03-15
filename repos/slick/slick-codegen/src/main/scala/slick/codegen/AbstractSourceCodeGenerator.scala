@@ -26,18 +26,16 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
        } else "") +
       (if (ddlEnabled) {
          "\n/** DDL for all tables. Call .create to execute. */" +
-           (
-             if (tables.length > 5)
-               "\nlazy val schema: profile.SchemaDescription = Array(" + tables
-                 .map(_.TableValue.name + ".schema")
-                 .mkString(", ") + ").reduceLeft(_ ++ _)"
-             else if (tables.nonEmpty)
-               "\nlazy val schema: profile.SchemaDescription = " + tables
-                 .map(_.TableValue.name + ".schema")
-                 .mkString(" ++ ")
-             else
-               "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)"
-           ) +
+           (if (tables.length > 5)
+              "\nlazy val schema: profile.SchemaDescription = Array(" + tables
+                .map(_.TableValue.name + ".schema")
+                .mkString(", ") + ").reduceLeft(_ ++ _)"
+            else if (tables.nonEmpty)
+              "\nlazy val schema: profile.SchemaDescription = " + tables
+                .map(_.TableValue.name + ".schema")
+                .mkString(" ++ ")
+            else
+              "\nlazy val schema: profile.SchemaDescription = profile.DDL(Nil, Nil)") +
            "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")" +
            "\ndef ddl = schema" +
            "\n\n"
@@ -80,9 +78,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
           .map(c =>
             c.default
               .map(v => s"${c.name}: ${c.exposedType} = $v")
-              .getOrElse(
-                s"${c.name}: ${c.exposedType}"
-              ))
+              .getOrElse(s"${c.name}: ${c.exposedType}"))
           .mkString(", ")
         if (classEnabled) {
           val prns =
@@ -104,10 +100,9 @@ def $name($args): $name = {
 
     trait PlainSqlMapperDef extends super.PlainSqlMapperDef {
       def code = {
-        val positional = compoundValue(
-          columnsPositional.map(c =>
-            (if (c.fakeNullable || c.model.nullable) s"<<?[${c.rawType}]"
-             else s"<<[${c.rawType}]")))
+        val positional = compoundValue(columnsPositional.map(c =>
+          (if (c.fakeNullable || c.model.nullable) s"<<?[${c.rawType}]"
+           else s"<<[${c.rawType}]")))
         val dependencies = columns
           .map(_.exposedType)
           .distinct

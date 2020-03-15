@@ -84,9 +84,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       val rep = req.toCompletableFuture
         .get(10, TimeUnit.SECONDS) // AWait result
 
-      rep.getStatus aka "status" must_== 200 and (rep.asJson
-        .path("origin")
-        .textValue must not beNull)
+      rep.getStatus aka "status" must_== 200 and (
+        rep.asJson.path("origin").textValue must not beNull
+      )
     }
 
     "use queryString in url" in withServer { ws =>
@@ -96,11 +96,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
         .toCompletableFuture
         .get(10, TimeUnit.SECONDS)
 
-      rep.getStatus aka "status" must_== 200 and (rep
-        .asJson()
-        .path("args")
-        .path("foo")
-        .textValue() must_== "bar")
+      rep.getStatus aka "status" must_== 200 and (
+        rep.asJson().path("args").path("foo").textValue() must_== "bar"
+      )
     }
 
     "use user:password in url" in Server.withApplication(app) { implicit port =>
@@ -111,10 +109,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
           .toCompletableFuture
           .get(10, TimeUnit.SECONDS)
 
-        rep.getStatus aka "status" must_== 200 and (rep
-          .asJson()
-          .path("authenticated")
-          .booleanValue() must beTrue)
+        rep.getStatus aka "status" must_== 200 and (
+          rep.asJson().path("authenticated").booleanValue() must beTrue
+        )
       }
     }
 
@@ -150,13 +147,9 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
         .toCompletableFuture
         .get(10, TimeUnit.SECONDS)
 
-      empty.asJson
-        .path("args")
-        .path("foo")
-        .textValue() must_== "" and (bar.asJson
-        .path("args")
-        .path("foo")
-        .textValue() must_== "bar")
+      empty.asJson.path("args").path("foo").textValue() must_== "" and (
+        bar.asJson.path("args").path("foo").textValue() must_== "bar"
+      )
     }
 
     "get a streamed response" in withResult(

@@ -59,16 +59,14 @@ class SettingsTest {
       check("-Xlint:-missing-interpolator")(_.warnMissingInterpolator))
 
     // positive overrides negative, but not the other way around
-    assertTrue(
-      check("-Xlint:-missing-interpolator,missing-interpolator")(
-        _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:-missing-interpolator,missing-interpolator")(
+      _.warnMissingInterpolator))
     assertTrue(
       check("-Xlint:-missing-interpolator", "-Xlint:missing-interpolator")(
         _.warnMissingInterpolator))
 
-    assertTrue(
-      check("-Xlint:missing-interpolator,-missing-interpolator")(
-        _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:missing-interpolator,-missing-interpolator")(
+      _.warnMissingInterpolator))
     assertTrue(
       check("-Xlint:missing-interpolator", "-Xlint:-missing-interpolator")(
         _.warnMissingInterpolator))
@@ -76,39 +74,30 @@ class SettingsTest {
     // -Xlint:_ adds all possible choices, but explicit negative settings will override
     assertFalse(
       check("-Xlint:-missing-interpolator,_")(_.warnMissingInterpolator))
-    assertFalse(
-      check("-Xlint:-missing-interpolator", "-Xlint:_")(
-        _.warnMissingInterpolator))
-    assertFalse(
-      check("-Xlint:_", "-Xlint:-missing-interpolator")(
-        _.warnMissingInterpolator))
+    assertFalse(check("-Xlint:-missing-interpolator", "-Xlint:_")(
+      _.warnMissingInterpolator))
+    assertFalse(check("-Xlint:_", "-Xlint:-missing-interpolator")(
+      _.warnMissingInterpolator))
     assertFalse(
       check("-Xlint:_,-missing-interpolator")(_.warnMissingInterpolator))
 
     // -Xlint is the same as -Xlint:_
-    assertFalse(
-      check("-Xlint:-missing-interpolator", "-Xlint")(
-        _.warnMissingInterpolator))
-    assertFalse(
-      check("-Xlint", "-Xlint:-missing-interpolator")(
-        _.warnMissingInterpolator))
+    assertFalse(check("-Xlint:-missing-interpolator", "-Xlint")(
+      _.warnMissingInterpolator))
+    assertFalse(check("-Xlint", "-Xlint:-missing-interpolator")(
+      _.warnMissingInterpolator))
 
     // combination of positive, negative and _
-    assertTrue(
-      check("-Xlint:_,-missing-interpolator,missing-interpolator")(
-        _.warnMissingInterpolator))
-    assertTrue(
-      check("-Xlint:-missing-interpolator,_,missing-interpolator")(
-        _.warnMissingInterpolator))
-    assertTrue(
-      check("-Xlint:-missing-interpolator,missing-interpolator,_")(
-        _.warnMissingInterpolator))
-    assertTrue(
-      check("-Xlint:missing-interpolator,-missing-interpolator,_")(
-        _.warnMissingInterpolator))
-    assertTrue(
-      check("-Xlint:missing-interpolator,_,-missing-interpolator")(
-        _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:_,-missing-interpolator,missing-interpolator")(
+      _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:-missing-interpolator,_,missing-interpolator")(
+      _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:-missing-interpolator,missing-interpolator,_")(
+      _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:missing-interpolator,-missing-interpolator,_")(
+      _.warnMissingInterpolator))
+    assertTrue(check("-Xlint:missing-interpolator,_,-missing-interpolator")(
+      _.warnMissingInterpolator))
   }
 
   @Test def xLintInvalidChoices(): Unit = {
@@ -122,16 +111,14 @@ class SettingsTest {
   @Test def xLintNonColonated(): Unit = {
     assertTrue(
       check("-Xlint", "adapted-args", "-deprecation")(_.warnAdaptedArgs))
-    assertFalse(
-      check("-Xlint", "adapted-args", "-deprecation")(
-        _.warnMissingInterpolator))
+    assertFalse(check("-Xlint", "adapted-args", "-deprecation")(
+      _.warnMissingInterpolator))
     assertTrue(
       check("-Xlint", "adapted-args", "missing-interpolator", "-deprecation")(
         s => s.warnMissingInterpolator && s.warnAdaptedArgs))
     assertThrows[IllegalArgumentException](
       check("-Xlint", "adapted-args", "-missing-interpolator")(
-        _.warnAdaptedArgs
-      )
+        _.warnAdaptedArgs)
     ) // non-colonated: cannot provide negative args
   }
 
@@ -166,12 +153,10 @@ class SettingsTest {
     assertFalse(check("-Ywarn-adapted-args:false")(_.warnAdaptedArgs))
     assertFalse(
       check("-Ywarn-adapted-args:false", "-Xlint:_")(_.warnAdaptedArgs))
-    assertFalse(
-      check("-Ywarn-adapted-args:false", "-Xlint:_,-adapted-args")(
-        _.warnAdaptedArgs))
-    assertTrue(
-      check("-Ywarn-adapted-args:false", "-Xlint:_,adapted-args")(
-        _.warnAdaptedArgs))
+    assertFalse(check("-Ywarn-adapted-args:false", "-Xlint:_,-adapted-args")(
+      _.warnAdaptedArgs))
+    assertTrue(check("-Ywarn-adapted-args:false", "-Xlint:_,adapted-args")(
+      _.warnAdaptedArgs))
   }
 
   @Test def expandingMultichoice(): Unit = {

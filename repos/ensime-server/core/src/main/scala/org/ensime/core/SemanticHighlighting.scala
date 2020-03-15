@@ -148,8 +148,7 @@ class SemanticHighlighting(val global: RichPresentationCompiler)
 
   def symbolDesignationsInRegion(
       p: RangePosition,
-      requestedTypes: List[SourceSymbol]
-  ): SymbolDesignations = {
+      requestedTypes: List[SourceSymbol]): SymbolDesignations = {
     val typed = new Response[Tree]
     // AskLoadedTyped below doesn't wait, since this code should run in the pres. compiler thread.
     askLoadedTyped(p.source, keepLoaded = true, typed)

@@ -305,8 +305,8 @@ trait LogisticRegressionLibModule[M[+_]]
             _.zipWithIndex map {
               case (tbl, idx) =>
                 val modelId = "model" + (idx + 1)
-                tbl.transform(
-                  liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+                tbl.transform(liftToValues(
+                  trans.WrapObject(TransSpec1.Id, modelId)))
             }
           }
 

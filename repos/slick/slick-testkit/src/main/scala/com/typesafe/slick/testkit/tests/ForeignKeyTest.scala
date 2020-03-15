@@ -32,8 +32,7 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
         (1, "Scala"),
         (2, "ScalaQuery"),
         (3, "Windows"),
-        (4, "Software")
-      )
+        (4, "Software"))
       _ <- posts.map(p => (p.title, p.category)) ++= Seq(
         ("Test Post", None),
         ("Formal Language Processing in Scala, Part 5", Some(1)),
@@ -90,15 +89,8 @@ class ForeignKeyTest extends AsyncTest[RelationalTestDB] {
 
     for {
       _ <- (as.schema ++ bs.schema).create
-      _ <- bs ++= Seq(
-        (1, 2, "b12"),
-        (3, 4, "b34"),
-        (5, 6, "b56")
-      )
-      _ <- as ++= Seq(
-        (1, 2, "a12"),
-        (3, 4, "a34")
-      )
+      _ <- bs ++= Seq((1, 2, "b12"), (3, 4, "b34"), (5, 6, "b56"))
+      _ <- as ++= Seq((1, 2, "a12"), (3, 4, "a34"))
       q1 = (for {
         a <- as
         b <- a.bFK

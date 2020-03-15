@@ -160,9 +160,9 @@ class ScalaPullUpProcessor(
         copy.accept(new ScalaRecursiveElementVisitor() {
           override def visitSimpleTypeElement(te: ScSimpleTypeElement) = {
             val tpe = te.calcType
-            te.replace(
-              ScalaPsiElementFactory
-                .createTypeElementFromText(tpe.canonicalText, te.getManager))
+            te.replace(ScalaPsiElementFactory.createTypeElementFromText(
+              tpe.canonicalText,
+              te.getManager))
           }
         })
         Seq(copy.getText)

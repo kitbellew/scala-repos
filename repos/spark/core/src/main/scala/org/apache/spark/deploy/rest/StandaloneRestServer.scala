@@ -157,10 +157,10 @@ private[rest] class StandaloneSubmitRequestServlet(
     val conf = new SparkConf(false)
       .setAll(sparkProperties)
       .set("spark.master", masterUrl)
-    val extraClassPath = driverExtraClassPath.toSeq.flatMap(
-      _.split(File.pathSeparator))
-    val extraLibraryPath = driverExtraLibraryPath.toSeq.flatMap(
-      _.split(File.pathSeparator))
+    val extraClassPath = driverExtraClassPath.toSeq.flatMap(_.split(
+      File.pathSeparator))
+    val extraLibraryPath = driverExtraLibraryPath.toSeq.flatMap(_.split(
+      File.pathSeparator))
     val extraJavaOpts = driverExtraJavaOptions
       .map(Utils.splitCommandString)
       .getOrElse(Seq.empty)

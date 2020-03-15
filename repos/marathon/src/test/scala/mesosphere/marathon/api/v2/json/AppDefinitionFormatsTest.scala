@@ -24,8 +24,7 @@ class AppDefinitionFormatsTest
     val a1 = AppDefinition(
       id = "app1".toPath,
       cmd = Some("sleep 10"),
-      versionInfo = AppDefinition.VersionInfo.OnlyVersion(Timestamp(1))
-    )
+      versionInfo = AppDefinition.VersionInfo.OnlyVersion(Timestamp(1)))
 
     val j1 = Json.parse("""
       {
@@ -84,8 +83,7 @@ class AppDefinitionFormatsTest
       a1.copy(versionInfo = AppDefinition.VersionInfo.FullVersionInfo(
         version = Timestamp(3),
         lastScalingAt = Timestamp(2),
-        lastConfigChangeAt = Timestamp(1)
-      )))
+        lastConfigChangeAt = Timestamp(1))))
     (r1 \ "version").as[String] should equal("1970-01-01T00:00:00.003Z")
     (r1 \ "versionInfo" \ "lastScalingAt").as[String] should equal(
       "1970-01-01T00:00:00.002Z")
@@ -232,21 +230,17 @@ class AppDefinitionFormatsTest
         |  }
         |}""".stripMargin).as[AppDefinition]
 
-    appDef.residency should equal(
-      Some(
-        Residency(
-          300,
-          Protos.ResidencyDefinition.TaskLostBehavior.RELAUNCH_AFTER_TIMEOUT)))
+    appDef.residency should equal(Some(Residency(
+      300,
+      Protos.ResidencyDefinition.TaskLostBehavior.RELAUNCH_AFTER_TIMEOUT)))
   }
 
   test("ToJson should serialize residency") {
     import Fixture._
 
-    val json = Json.toJson(
-      a1.copy(residency = Some(
-        Residency(
-          7200,
-          Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))))
+    val json = Json.toJson(a1.copy(residency = Some(Residency(
+      7200,
+      Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))))
     (json \ "residency" \ "relaunchEscalationTimeoutSeconds")
       .as[Long] should equal(7200)
     (json \ "residency" \ "taskLostBehavior").as[String] should equal(

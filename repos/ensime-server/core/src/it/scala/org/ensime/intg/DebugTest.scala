@@ -20,8 +20,8 @@ class DebugTest
     with IsolatedProjectFixture
     with DebugTestUtils {
 
-  val original = EnsimeConfigFixture.DebugTestProject.copy(
-    javaLibs = Nil // no need to index the JRE
+  val original = EnsimeConfigFixture.DebugTestProject.copy(javaLibs =
+    Nil // no need to index the JRE
   )
 
   // TODO This is broken because step in our case is stepping into
@@ -35,8 +35,7 @@ class DebugTest
           withDebugSession(
             "stepping.ForComprehensionListString",
             "stepping/ForComprehensionListString.scala",
-            9
-          ) { breakpointsFile =>
+            9) { breakpointsFile =>
             import testkit._
 
             checkTopStackFrame(
@@ -64,8 +63,7 @@ class DebugTest
           withDebugSession(
             "breakpoints.Breakpoints",
             "breakpoints/Breakpoints.scala",
-            32
-          ) { breakpointsFile =>
+            32) { breakpointsFile =>
             import testkit._
             val breakpointsPath = breakpointsFile.getAbsolutePath
 
@@ -88,8 +86,7 @@ class DebugTest
                             0,
                             "args",
                             "Array[]",
-                            "java.lang.String[]")
-                        ),
+                            "java.lang.String[]")),
                         1,
                         "breakpoints.Breakpoints$",
                         "main",
@@ -102,8 +99,7 @@ class DebugTest
                         "breakpoints.Breakpoints",
                         "main",
                         LineSourcePosition(`breakpointsFile`, _),
-                        _)
-                    ),
+                        _)),
                     DebugThreadId(1),
                     "main") =>
             }
@@ -195,8 +191,7 @@ class DebugTest
         withDebugSession(
           "breakpoints.Breakpoints",
           "breakpoints/Breakpoints.scala",
-          32
-        ) { breakpointsFile =>
+          32) { breakpointsFile =>
           import testkit._
           val breakpointsPath = breakpointsFile.getAbsolutePath
 
@@ -219,8 +214,7 @@ class DebugTest
             case BreakpointList(activeBreakpoints, pendingBreakpoints) =>
               activeBreakpoints should contain theSameElementsAs Set(
                 Breakpoint(breakpointsFile, 11),
-                Breakpoint(breakpointsFile, 13)
-              )
+                Breakpoint(breakpointsFile, 13))
               pendingBreakpoints shouldBe empty
           }
 
@@ -243,92 +237,89 @@ class DebugTest
       withTestKit { implicit testkit =>
         withProject { (project, asyncHelper) =>
           implicit val p = (project, asyncHelper)
-          withDebugSession(
-            "debug.Variables",
-            "debug/Variables.scala",
-            21
-          ) { variablesFile =>
-            // boolean local
-            getVariableValue(DebugThreadId(1), "a") should matchPattern {
-              case DebugPrimitiveValue("true", "boolean") =>
-            }
+          withDebugSession("debug.Variables", "debug/Variables.scala", 21) {
+            variablesFile =>
+              // boolean local
+              getVariableValue(DebugThreadId(1), "a") should matchPattern {
+                case DebugPrimitiveValue("true", "boolean") =>
+              }
 
-            // char local
-            getVariableValue(DebugThreadId(1), "b") should matchPattern {
-              case DebugPrimitiveValue("'c'", "char") =>
-            }
+              // char local
+              getVariableValue(DebugThreadId(1), "b") should matchPattern {
+                case DebugPrimitiveValue("'c'", "char") =>
+              }
 
-            // short local
-            getVariableValue(DebugThreadId(1), "c") should matchPattern {
-              case DebugPrimitiveValue("3", "short") =>
-            }
+              // short local
+              getVariableValue(DebugThreadId(1), "c") should matchPattern {
+                case DebugPrimitiveValue("3", "short") =>
+              }
 
-            // int local
-            getVariableValue(DebugThreadId(1), "d") should matchPattern {
-              case DebugPrimitiveValue("4", "int") =>
-            }
+              // int local
+              getVariableValue(DebugThreadId(1), "d") should matchPattern {
+                case DebugPrimitiveValue("4", "int") =>
+              }
 
-            // long local
-            getVariableValue(DebugThreadId(1), "e") should matchPattern {
-              case DebugPrimitiveValue("5", "long") =>
-            }
+              // long local
+              getVariableValue(DebugThreadId(1), "e") should matchPattern {
+                case DebugPrimitiveValue("5", "long") =>
+              }
 
-            // float local
-            getVariableValue(DebugThreadId(1), "f") should matchPattern {
-              case DebugPrimitiveValue("1.0", "float") =>
-            }
+              // float local
+              getVariableValue(DebugThreadId(1), "f") should matchPattern {
+                case DebugPrimitiveValue("1.0", "float") =>
+              }
 
-            // double local
-            getVariableValue(DebugThreadId(1), "g") should matchPattern {
-              case DebugPrimitiveValue("2.0", "double") =>
-            }
+              // double local
+              getVariableValue(DebugThreadId(1), "g") should matchPattern {
+                case DebugPrimitiveValue("2.0", "double") =>
+              }
 
-            // String local
-            inside(getVariableValue(DebugThreadId(1), "h")) {
-              case DebugStringInstance(
-                    "\"test\"",
-                    debugFields,
-                    "java.lang.String",
-                    _) =>
-                exactly(1, debugFields) should matchPattern {
-                  case DebugClassField(
-                        _,
-                        "value",
-                        "char[]",
-                        "Array['t', 'e', 's',...]") =>
-                }
-            }
+              // String local
+              inside(getVariableValue(DebugThreadId(1), "h")) {
+                case DebugStringInstance(
+                      "\"test\"",
+                      debugFields,
+                      "java.lang.String",
+                      _) =>
+                  exactly(1, debugFields) should matchPattern {
+                    case DebugClassField(
+                          _,
+                          "value",
+                          "char[]",
+                          "Array['t', 'e', 's',...]") =>
+                  }
+              }
 
-            // primitive array local
-            getVariableValue(DebugThreadId(1), "i") should matchPattern {
-              case DebugArrayInstance(3, "int[]", "int", _) =>
-            }
+              // primitive array local
+              getVariableValue(DebugThreadId(1), "i") should matchPattern {
+                case DebugArrayInstance(3, "int[]", "int", _) =>
+              }
 
-            // type local
-            inside(getVariableValue(DebugThreadId(1), "j")) {
-              case DebugObjectInstance(
-                    "Instance of $colon$colon",
-                    debugFields,
-                    "scala.collection.immutable.$colon$colon",
-                    _) =>
-                exactly(1, debugFields) should matchPattern {
-                  case DebugClassField(
-                        _,
-                        head,
-                        "java.lang.Object",
-                        "Instance of Integer")
-                      if head == "head" | head == "scala$collection$immutable$$colon$colon$$hd" =>
-                }
-            }
+              // type local
+              inside(getVariableValue(DebugThreadId(1), "j")) {
+                case DebugObjectInstance(
+                      "Instance of $colon$colon",
+                      debugFields,
+                      "scala.collection.immutable.$colon$colon",
+                      _) =>
+                  exactly(1, debugFields) should matchPattern {
+                    case DebugClassField(
+                          _,
+                          head,
+                          "java.lang.Object",
+                          "Instance of Integer")
+                        if head == "head" | head == "scala$collection$immutable$$colon$colon$$hd" =>
+                  }
+              }
 
-            // object array local
-            getVariableValue(DebugThreadId(1), "k") should matchPattern {
-              case DebugArrayInstance(
-                    3,
-                    "java.lang.Object[]",
-                    "java.lang.Object",
-                    _) =>
-            }
+              // object array local
+              getVariableValue(DebugThreadId(1), "k") should matchPattern {
+                case DebugArrayInstance(
+                      3,
+                      "java.lang.Object[]",
+                      "java.lang.Object",
+                      _) =>
+              }
           }
         }
       }
@@ -343,18 +334,12 @@ trait DebugTestUtils {
     * @param className containing the main method
     * @param breakLine where to start the session in the fileName
     */
-  def withDebugSession(
-      className: String,
-      fileName: String,
-      breakLine: Int
-  )(
-      f: File => Any
-  )(implicit
+  def withDebugSession(className: String, fileName: String, breakLine: Int)(
+      f: File => Any)(implicit
       config: EnsimeConfig,
       testkit: TestKitFix,
       // don't take an implicit TestActorRef or it steals the implicit sender
-      p: (TestActorRef[Project], TestProbe)
-  ): Any = {
+      p: (TestActorRef[Project], TestProbe)): Any = {
     import testkit._
     val resolvedFile = scalaMain(config) / fileName
     val project = p._1

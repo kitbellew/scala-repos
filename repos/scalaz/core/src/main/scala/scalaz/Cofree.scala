@@ -227,22 +227,20 @@ private trait CofreeZipApply[F[_]]
 
   override final def ap[A, B](fa: => CofreeZip[F, A])(
       f: => CofreeZip[F, A => B]): CofreeZip[F, B] =
-    Tags.Zip(
-      Cofree.applyT(
-        Tag.unwrap(f).head(Tag.unwrap(fa).head),
-        Tag
-          .unwrap(fa)
-          .t
-          .flatMap(fat =>
-            Tag
-              .unwrap(f)
-              .t
-              .map(fab =>
-                F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
-                  Tag.unwrap(ap(a)(b))
-                }))
-      )
-    )
+    Tags.Zip(Cofree.applyT(
+      Tag.unwrap(f).head(Tag.unwrap(fa).head),
+      Tag
+        .unwrap(fa)
+        .t
+        .flatMap(fat =>
+          Tag
+            .unwrap(f)
+            .t
+            .map(fab =>
+              F.apply2(Tags.Zip.subst(fat), Tags.Zip.subst(fab)) { (a, b) =>
+                Tag.unwrap(ap(a)(b))
+              }))
+    ))
 }
 
 private trait CofreeZipApplicative[F[_]]

@@ -73,9 +73,8 @@ trait PullRequestsControllerBase extends ControllerBase {
     "labelNames" -> trim(optional(text()))
   )(PullRequestForm.apply)
 
-  val mergeForm = mapping(
-    "message" -> trim(label("Message", text(required)))
-  )(MergeForm.apply)
+  val mergeForm = mapping("message" -> trim(label("Message", text(required))))(
+    MergeForm.apply)
 
   case class PullRequestForm(
       title: String,
@@ -89,8 +88,7 @@ trait PullRequestsControllerBase extends ControllerBase {
       commitIdTo: String,
       assignedUserName: Option[String],
       milestoneId: Option[Int],
-      labelNames: Option[String]
-  )
+      labelNames: Option[String])
 
   case class MergeForm(message: String)
 
@@ -130,10 +128,10 @@ trait PullRequestsControllerBase extends ControllerBase {
                     .sortWith((a, b) =>
                       a.registeredDate before b.registeredDate),
                   getIssueLabels(owner, name, issueId),
-                  (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                            owner).get.isGroupAccount)
-                                                        Nil
-                                                      else List(owner))).sorted,
+                  (getCollaborators(owner, name) ::: (
+                    if (getAccountByUserName(owner).get.isGroupAccount) Nil
+                    else List(owner)
+                  )).sorted,
                   getMilestonesWithIssueCount(owner, name),
                   getLabels(owner, name),
                   commits,
@@ -239,118 +237,120 @@ trait PullRequestsControllerBase extends ControllerBase {
 
   post("/:owner/:repository/pull/:id/update_branch")(referrersOnly {
     baseRepository =>
-      (for {
-        issueId <- params("id").toIntOpt
-        loginAccount <- context.loginAccount
-        (issue, pullreq) <- getPullRequest(
-          baseRepository.owner,
-          baseRepository.name,
-          issueId)
-        owner = pullreq.requestUserName
-        name = pullreq.requestRepositoryName
-        if hasWritePermission(owner, name, context.loginAccount)
-      } yield {
-        val branchProtection = getProtectedBranchInfo(
-          owner,
-          name,
-          pullreq.requestBranch)
-        if (branchProtection.needStatusCheck(loginAccount.userName)) {
-          flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
-        } else {
-          val repository = getRepository(owner, name).get
-          LockUtil.lock(s"${owner}/${name}") {
-            val alias =
-              if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName) {
-                pullreq.branch
-              } else { s"${pullreq.userName}:${pullreq.branch}" }
-            val existIds =
-              using(Git.open(Directory.getRepositoryDir(owner, name))) { git =>
-                JGitUtil.getAllCommitIds(git)
-              }.toSet
-            pullRemote(
-              owner,
-              name,
-              pullreq.requestBranch,
-              pullreq.userName,
-              pullreq.repositoryName,
-              pullreq.branch,
-              loginAccount,
-              "Merge branch '${alias}' into ${pullreq.requestBranch}"
-            ) match {
-              case None => // conflict
-                flash += "error" -> s"Can't automatic merging branch '${alias}' into ${pullreq.requestBranch}."
-              case Some(oldId) =>
-                // update pull request
-                updatePullRequests(owner, name, pullreq.requestBranch)
-
+      (
+        for {
+          issueId <- params("id").toIntOpt
+          loginAccount <- context.loginAccount
+          (issue, pullreq) <- getPullRequest(
+            baseRepository.owner,
+            baseRepository.name,
+            issueId)
+          owner = pullreq.requestUserName
+          name = pullreq.requestRepositoryName
+          if hasWritePermission(owner, name, context.loginAccount)
+        } yield {
+          val branchProtection = getProtectedBranchInfo(
+            owner,
+            name,
+            pullreq.requestBranch)
+          if (branchProtection.needStatusCheck(loginAccount.userName)) {
+            flash += "error" -> s"branch ${pullreq.requestBranch} is protected need status check."
+          } else {
+            val repository = getRepository(owner, name).get
+            LockUtil.lock(s"${owner}/${name}") {
+              val alias =
+                if (pullreq.repositoryName == pullreq.requestRepositoryName && pullreq.userName == pullreq.requestUserName) {
+                  pullreq.branch
+                } else { s"${pullreq.userName}:${pullreq.branch}" }
+              val existIds =
                 using(Git.open(Directory.getRepositoryDir(owner, name))) {
-                  git =>
-                    //  after update branch
+                  git => JGitUtil.getAllCommitIds(git)
+                }.toSet
+              pullRemote(
+                owner,
+                name,
+                pullreq.requestBranch,
+                pullreq.userName,
+                pullreq.repositoryName,
+                pullreq.branch,
+                loginAccount,
+                "Merge branch '${alias}' into ${pullreq.requestBranch}"
+              ) match {
+                case None => // conflict
+                  flash += "error" -> s"Can't automatic merging branch '${alias}' into ${pullreq.requestBranch}."
+                case Some(oldId) =>
+                  // update pull request
+                  updatePullRequests(owner, name, pullreq.requestBranch)
 
-                    val newCommitId = git.getRepository.resolve(
-                      s"refs/heads/${pullreq.requestBranch}")
-                    val commits = git.log
-                      .addRange(oldId, newCommitId)
-                      .call
-                      .iterator
-                      .asScala
-                      .map(c => new JGitUtil.CommitInfo(c))
-                      .toList
+                  using(Git.open(Directory.getRepositoryDir(owner, name))) {
+                    git =>
+                      //  after update branch
 
-                    commits.foreach { commit =>
-                      if (!existIds.contains(commit.id)) {
-                        createIssueComment(owner, name, commit)
+                      val newCommitId = git.getRepository.resolve(
+                        s"refs/heads/${pullreq.requestBranch}")
+                      val commits = git.log
+                        .addRange(oldId, newCommitId)
+                        .call
+                        .iterator
+                        .asScala
+                        .map(c => new JGitUtil.CommitInfo(c))
+                        .toList
+
+                      commits.foreach { commit =>
+                        if (!existIds.contains(commit.id)) {
+                          createIssueComment(owner, name, commit)
+                        }
                       }
-                    }
 
-                    // record activity
-                    recordPushActivity(
-                      owner,
-                      name,
-                      loginAccount.userName,
-                      pullreq.branch,
-                      commits)
+                      // record activity
+                      recordPushActivity(
+                        owner,
+                        name,
+                        loginAccount.userName,
+                        pullreq.branch,
+                        commits)
 
-                    // close issue by commit message
-                    if (pullreq.requestBranch == repository.repository.defaultBranch) {
-                      commits.map { commit =>
-                        closeIssuesFromMessage(
-                          commit.fullMessage,
-                          loginAccount.userName,
-                          owner,
-                          name)
+                      // close issue by commit message
+                      if (pullreq.requestBranch == repository.repository.defaultBranch) {
+                        commits.map { commit =>
+                          closeIssuesFromMessage(
+                            commit.fullMessage,
+                            loginAccount.userName,
+                            owner,
+                            name)
+                        }
                       }
-                    }
 
-                    // call web hook
-                    callPullRequestWebHookByRequestBranch(
-                      "synchronize",
-                      repository,
-                      pullreq.requestBranch,
-                      baseUrl,
-                      loginAccount)
-                    callWebHookOf(owner, name, WebHook.Push) {
-                      for {
-                        ownerAccount <- getAccountByUserName(owner)
-                      } yield {
-                        WebHookService.WebHookPushPayload(
-                          git,
-                          loginAccount,
-                          pullreq.requestBranch,
-                          repository,
-                          commits,
-                          ownerAccount,
-                          oldId = oldId,
-                          newId = newCommitId)
+                      // call web hook
+                      callPullRequestWebHookByRequestBranch(
+                        "synchronize",
+                        repository,
+                        pullreq.requestBranch,
+                        baseUrl,
+                        loginAccount)
+                      callWebHookOf(owner, name, WebHook.Push) {
+                        for {
+                          ownerAccount <- getAccountByUserName(owner)
+                        } yield {
+                          WebHookService.WebHookPushPayload(
+                            git,
+                            loginAccount,
+                            pullreq.requestBranch,
+                            repository,
+                            commits,
+                            ownerAccount,
+                            oldId = oldId,
+                            newId = newCommitId)
+                        }
                       }
-                    }
-                }
-                flash += "info" -> s"Merge branch '${alias}' into ${pullreq.requestBranch}"
+                  }
+                  flash += "info" -> s"Merge branch '${alias}' into ${pullreq.requestBranch}"
+              }
             }
+            redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
           }
-          redirect(s"/${repository.owner}/${repository.name}/pull/${issueId}")
         }
-      }) getOrElse NotFound
+      ) getOrElse NotFound
   })
 
   post("/:owner/:repository/pull/:id/merge", mergeForm)(collaboratorsOnly {
@@ -469,9 +469,9 @@ trait PullRequestsControllerBase extends ControllerBase {
           originRepository =>
             using(
               Git.open(getRepositoryDir(originUserName, originRepositoryName)),
-              Git.open(
-                getRepositoryDir(forkedRepository.owner, forkedRepository.name))
-            ) {
+              Git.open(getRepositoryDir(
+                forkedRepository.owner,
+                forkedRepository.name))) {
               (oldGit, newGit) =>
                 val newBranch = headBranch.getOrElse(
                   JGitUtil.getDefaultBranch(newGit, forkedRepository).get._2)
@@ -486,9 +486,8 @@ trait PullRequestsControllerBase extends ControllerBase {
         } getOrElse NotFound
       }
       case _ => {
-        using(
-          Git.open(
-            getRepositoryDir(forkedRepository.owner, forkedRepository.name))) {
+        using(Git.open(
+          getRepositoryDir(forkedRepository.owner, forkedRepository.name))) {
           git =>
             JGitUtil.getDefaultBranch(git, forkedRepository).map {
               case (_, defaultBranch) =>
@@ -538,8 +537,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           Git.open(
             getRepositoryDir(originRepository.owner, originRepository.name)),
           Git.open(
-            getRepositoryDir(forkedRepository.owner, forkedRepository.name))
-        ) {
+            getRepositoryDir(forkedRepository.owner, forkedRepository.name))) {
           case (oldGit, newGit) =>
             val (oldId, newId) =
               if (originRepository.branchList.contains(
@@ -615,12 +613,11 @@ trait PullRequestsControllerBase extends ControllerBase {
                     context.loginAccount),
                   (getCollaborators(
                     originRepository.owner,
-                    originRepository.name) ::: (if (getAccountByUserName(
-                                                      originRepository.owner).get.isGroupAccount)
-                                                  Nil
-                                                else
-                                                  List(
-                                                    originRepository.owner))).sorted,
+                    originRepository.name) ::: (
+                    if (getAccountByUserName(
+                          originRepository.owner).get.isGroupAccount) Nil
+                    else List(originRepository.owner)
+                  )).sorted,
                   getMilestones(originRepository.owner, originRepository.name),
                   getLabels(originRepository.owner, originRepository.name)
                 )
@@ -661,8 +658,7 @@ trait PullRequestsControllerBase extends ControllerBase {
           Git.open(
             getRepositoryDir(originRepository.owner, originRepository.name)),
           Git.open(
-            getRepositoryDir(forkedRepository.owner, forkedRepository.name))
-        ) {
+            getRepositoryDir(forkedRepository.owner, forkedRepository.name))) {
           case (oldGit, newGit) =>
             val originBranch = JGitUtil
               .getDefaultBranch(oldGit, originRepository, tmpOriginBranch)
@@ -803,26 +799,30 @@ trait PullRequestsControllerBase extends ControllerBase {
       requestCommitId: String): (Seq[Seq[CommitInfo]], Seq[DiffInfo]) =
     using(
       Git.open(getRepositoryDir(userName, repositoryName)),
-      Git.open(getRepositoryDir(requestUserName, requestRepositoryName))
-    ) { (oldGit, newGit) =>
-      val oldId = oldGit.getRepository.resolve(branch)
-      val newId = newGit.getRepository.resolve(requestCommitId)
+      Git.open(getRepositoryDir(requestUserName, requestRepositoryName))) {
+      (oldGit, newGit) =>
+        val oldId = oldGit.getRepository.resolve(branch)
+        val newId = newGit.getRepository.resolve(requestCommitId)
 
-      val commits = newGit.log
-        .addRange(oldId, newId)
-        .call
-        .iterator
-        .asScala
-        .map { revCommit => new CommitInfo(revCommit) }
-        .toList
-        .splitWith { (commit1, commit2) =>
-          helpers.date(commit1.commitTime) == view.helpers.date(
-            commit2.commitTime)
-        }
+        val commits = newGit.log
+          .addRange(oldId, newId)
+          .call
+          .iterator
+          .asScala
+          .map { revCommit => new CommitInfo(revCommit) }
+          .toList
+          .splitWith { (commit1, commit2) =>
+            helpers.date(commit1.commitTime) == view.helpers.date(
+              commit2.commitTime)
+          }
 
-      val diffs = JGitUtil.getDiffs(newGit, oldId.getName, newId.getName, true)
+        val diffs = JGitUtil.getDiffs(
+          newGit,
+          oldId.getName,
+          newId.getName,
+          true)
 
-      (commits, diffs)
+        (commits, diffs)
     }
 
   private def searchPullRequests(

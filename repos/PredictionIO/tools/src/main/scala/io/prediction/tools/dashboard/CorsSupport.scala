@@ -30,8 +30,7 @@ trait CORSSupport {
 
   private val allowOriginHeader = `Access-Control-Allow-Origin`(AllOrigins)
   private val optionsCorsHeaders = List(
-    `Access-Control-Allow-Headers`(
-      """Origin,
+    `Access-Control-Allow-Headers`("""Origin,
                                       |X-Requested-With,
                                       |Content-Type,
                                       |Accept,
@@ -39,8 +38,9 @@ trait CORSSupport {
                                       |Accept-Language,
                                       |Host,
                                       |Referer,
-                                      |User-Agent""".stripMargin
-        .replace("\n", " ")),
+                                      |User-Agent""".stripMargin.replace(
+      "\n",
+      " ")),
     `Access-Control-Max-Age`(1728000)
   )
 
@@ -61,8 +61,7 @@ trait CORSSupport {
                   HttpMethods.OPTIONS,
                   allowedMethods: _*) ::
                   allowOriginHeader ::
-                  optionsCorsHeaders
-              )
+                  optionsCorsHeaders)
             }
           }
         }

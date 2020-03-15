@@ -290,11 +290,10 @@ object ReplImplicits extends FieldConversions {
     * Convert KeyedListLike to enriched ShellTypedPipe
     * (e.g. allows .snapshot to be called on Grouped, CoGrouped, etc)
     */
-  implicit def keyedListLikeToShellTypedPipe[
-      K,
-      V,
-      T[K, +V] <: KeyedListLike[K, V, T]](kll: KeyedListLike[K, V, T])(
-      implicit state: BaseReplState) =
+  implicit def keyedListLikeToShellTypedPipe[K, V, T[K, +V] <: KeyedListLike[
+    K,
+    V,
+    T]](kll: KeyedListLike[K, V, T])(implicit state: BaseReplState) =
     new ShellTypedPipe(kll.toTypedPipe)(state)
 
   /**

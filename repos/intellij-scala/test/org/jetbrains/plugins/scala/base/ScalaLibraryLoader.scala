@@ -106,9 +106,8 @@ class ScalaLibraryLoader(
       .asJava
 
     val scalaLibrarySrc = TestUtils.getScalaLibrarySrc(sdkVersion)
-    val srcsRoots = Seq(
-      JarFileSystem.getInstance.refreshAndFindFileByPath(
-        scalaLibrarySrc + "!/")).asJava
+    val srcsRoots = Seq(JarFileSystem.getInstance.refreshAndFindFileByPath(
+      scalaLibrarySrc + "!/")).asJava
     val scalaSdkLib = PsiTestUtil.addProjectLibrary(
       module,
       "scala-sdk",

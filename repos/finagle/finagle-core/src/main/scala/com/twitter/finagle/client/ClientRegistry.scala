@@ -69,14 +69,10 @@ private[finagle] object RegistryEntryLifecycle {
 
       val description: String = "Maintains the ClientRegistry for the stack"
       def parameters: Seq[Stack.Param[_]] =
-        Seq(
-          implicitly[Stack.Param[BindingFactory.Dest]]
-        )
+        Seq(implicitly[Stack.Param[BindingFactory.Dest]])
 
-      def make(
-          params: Stack.Params,
-          next: Stack[ServiceFactory[Req, Rep]]
-      ): Stack[ServiceFactory[Req, Rep]] = {
+      def make(params: Stack.Params, next: Stack[ServiceFactory[Req, Rep]])
+          : Stack[ServiceFactory[Req, Rep]] = {
         val BindingFactory.Dest(dest) = params[BindingFactory.Dest]
         val BindingFactory.BaseDtab(baseDtab) = params[BindingFactory.BaseDtab]
 

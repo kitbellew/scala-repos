@@ -89,12 +89,11 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
   }
   def genClusters(): String = {
     val (clusters, producerMappings, producerNames, nodeToShortLookupTable) =
-      dag.nodes.foldLeft(
-        (
-          List[String](),
-          List[String](),
-          emptyNameLookupTable(),
-          Map[Node[P], String]())) {
+      dag.nodes.foldLeft((
+        List[String](),
+        List[String](),
+        emptyNameLookupTable(),
+        Map[Node[P], String]())) {
         case (
               (clusters, producerMappings, nameLookupTable, nodeShortName),
               node) =>
@@ -123,8 +122,9 @@ case class DagViz[P <: Platform[P]](dag: Dag[P]) {
         }
     }
 
-    "digraph summingbirdGraph {\n" + (clusters ++ producerMappings ++ clusterMappings)
-      .mkString("\n") + "\n}"
+    "digraph summingbirdGraph {\n" + (
+      clusters ++ producerMappings ++ clusterMappings
+    ).mkString("\n") + "\n}"
   }
 
   override def toString(): String = genClusters

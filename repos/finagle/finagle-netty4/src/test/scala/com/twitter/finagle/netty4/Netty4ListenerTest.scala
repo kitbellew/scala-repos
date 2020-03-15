@@ -65,8 +65,7 @@ class Netty4ListenerTest
     val p = Params.empty + Label("test") + Stats(sr)
     val listener = Netty4Listener[ByteBuf, ByteBuf](
       p,
-      transportFactory = { _: SocketChannel => new NullTransport }
-    )
+      transportFactory = { _: SocketChannel => new NullTransport })
   }
 
   test(
@@ -100,8 +99,8 @@ class Netty4ListenerTest
     val serveTransport =
       (t: Transport[String, String]) => new SerialServerDispatcher(t, service)
     val server = listener.listen(
-      new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(
-      serveTransport(_))
+      new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(serveTransport(
+      _))
 
     val client = new Socket()
     eventually { client.connect(server.boundAddress) }
@@ -124,8 +123,7 @@ class Netty4ListenerTest
     val p = Params.empty + Label("srv") + Stats(sr)
     val listener = Netty4Listener[ByteBuf, ByteBuf](
       p,
-      transportFactory = { _: SocketChannel => new NullTransport }
-    )
+      transportFactory = { _: SocketChannel => new NullTransport })
     val server1 = listener.listen(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0))(nopDispatch)
     val server2 = listener.listen(

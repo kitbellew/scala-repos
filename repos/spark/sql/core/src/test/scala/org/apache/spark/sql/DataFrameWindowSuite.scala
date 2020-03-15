@@ -78,9 +78,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
-      df.select(
-        lead("value", 2, "n/a").over(
-          Window.partitionBy("key").orderBy("value"))),
+      df.select(lead("value", 2, "n/a").over(
+        Window.partitionBy("key").orderBy("value"))),
       Seq(
         Row("1"),
         Row("1"),
@@ -103,9 +102,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       (2, "2")).toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
-      df.select(
-        lag("value", 2, "n/a").over(
-          Window.partitionBy($"key").orderBy($"value"))),
+      df.select(lag("value", 2, "n/a").over(
+        Window.partitionBy($"key").orderBy($"value"))),
       Seq(
         Row("n/a"),
         Row("n/a"),
@@ -147,9 +145,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       .toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
-      df.select(
-        avg("key").over(
-          Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 2))),
+      df.select(avg("key").over(
+        Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 2))),
       Seq(
         Row(4.0d / 3.0d),
         Row(4.0d / 3.0d),
@@ -164,9 +161,8 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       .toDF("key", "value")
     df.registerTempTable("window_table")
     checkAnswer(
-      df.select(
-        avg("key").over(
-          Window.partitionBy($"value").orderBy($"key").rangeBetween(-1, 1))),
+      df.select(avg("key").over(
+        Window.partitionBy($"value").orderBy($"key").rangeBetween(-1, 1))),
       Seq(
         Row(4.0d / 3.0d),
         Row(4.0d / 3.0d),

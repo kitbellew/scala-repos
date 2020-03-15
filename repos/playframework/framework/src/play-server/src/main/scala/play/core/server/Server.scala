@@ -147,8 +147,7 @@ object Server {
         Environment.simple(path = config.rootDir, mode = config.mode),
         None,
         new DefaultWebCommands(),
-        Configuration(ConfigFactory.load())
-      )) {
+        Configuration(ConfigFactory.load()))) {
       def router = Router.from(routes)
     }.application
     withApplication(application, config)(block)
@@ -168,8 +167,7 @@ private[play] object JavaServerHelper {
         Environment.simple(mode = mode),
         None,
         new DefaultWebCommands(),
-        Configuration(ConfigFactory.load())
-      )) {
+        Configuration(ConfigFactory.load()))) {
       def router = r
     }.application
     Play.start(application)

@@ -10,10 +10,8 @@ import org.jboss.netty.buffer.ChannelBuffer
 
 trait SortedSets { self: BaseClient =>
   private[this] def parseMBulkReply(
-      withScores: JBoolean
-  ): PartialFunction[
-    Reply,
-    Future[Either[ZRangeResults, Seq[ChannelBuffer]]]] = {
+      withScores: JBoolean): PartialFunction[Reply, Future[
+    Either[ZRangeResults, Seq[ChannelBuffer]]]] = {
     val parse
         : PartialFunction[Reply, Either[ZRangeResults, Seq[ChannelBuffer]]] = {
       case MBulkReply(messages) => withScoresHelper(withScores)(messages)
@@ -22,9 +20,8 @@ trait SortedSets { self: BaseClient =>
     parse andThen Future.value
   }
 
-  private[this] def withScoresHelper(
-      withScores: JBoolean
-  )(messages: List[Reply]): Either[ZRangeResults, Seq[ChannelBuffer]] = {
+  private[this] def withScoresHelper(withScores: JBoolean)(
+      messages: List[Reply]): Either[ZRangeResults, Seq[ChannelBuffer]] = {
     val chanBufs = ReplyFormat.toChannelBuffers(messages)
     if (withScores) Left(ZRangeResults(returnPairs(chanBufs)))
     else Right(chanBufs)
@@ -92,11 +89,10 @@ trait SortedSets { self: BaseClient =>
       min: ZInterval,
       max: ZInterval,
       withScores: JBoolean,
-      limit: Option[Limit]
-  ): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
+      limit: Option[Limit]): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
     doRequest(
-      ZRangeByScore(key, min, max, WithScores.option(withScores), limit)
-    )(parseMBulkReply(withScores))
+      ZRangeByScore(key, min, max, WithScores.option(withScores), limit))(
+      parseMBulkReply(withScores))
 
   /**
     * Removes specified member(s) from sorted set at key
@@ -117,11 +113,9 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       start: JLong,
       stop: JLong,
-      withScores: JBoolean
-  ): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
+      withScores: JBoolean): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
     doRequest(ZRevRange(key, start, stop, WithScores.option(withScores)))(
-      parseMBulkReply(withScores)
-    )
+      parseMBulkReply(withScores))
 
   /**
     * Returns elements in sorted set at key with a score between max and min
@@ -135,12 +129,10 @@ trait SortedSets { self: BaseClient =>
       max: ZInterval,
       min: ZInterval,
       withScores: JBoolean,
-      limit: Option[Limit]
-  ): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
+      limit: Option[Limit]): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
     doRequest(
       ZRevRangeByScore(key, max, min, WithScores.option(withScores), limit))(
-      parseMBulkReply(withScores)
-    )
+      parseMBulkReply(withScores))
 
   /**
     * Gets score of member in sorted set
@@ -241,8 +233,7 @@ trait SortedSets { self: BaseClient =>
       key: ChannelBuffer,
       start: JLong,
       stop: JLong,
-      withScores: JBoolean
-  ): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
+      withScores: JBoolean): Future[Either[ZRangeResults, Seq[ChannelBuffer]]] =
     doRequest(ZRange(key, start, stop, WithScores.option(withScores))) {
       parseMBulkReply(withScores)
     }

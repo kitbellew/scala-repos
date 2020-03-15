@@ -69,10 +69,7 @@ private[netty4] class Netty4ChannelInitializer(
       // todo: verify renegotiation works with jsse and openssl (CSL-1973)
       ch.pipeline.addFirst("ssl", handler)
 
-      ch.pipeline.addFirst(
-        "sslShutdown",
-        new TlsShutdownHandler(engine)
-      )
+      ch.pipeline.addFirst("sslShutdown", new TlsShutdownHandler(engine))
     }
   }
 

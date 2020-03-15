@@ -131,26 +131,23 @@ object AutoUpdate {
         super.update(conn, cl)
         conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") {
           rs =>
-            defining(
-              Directory.getAttachedDir(
-                rs.getString("USER_NAME"),
-                rs.getString("REPOSITORY_NAME"))) {
+            defining(Directory.getAttachedDir(
+              rs.getString("USER_NAME"),
+              rs.getString("REPOSITORY_NAME"))) {
               dir =>
                 if (dir.exists && dir.isDirectory) {
                   dir.listFiles.foreach {
                     file =>
                       if (file.getName.indexOf('.') < 0) {
                         val mimeType = MimeUtil2
-                          .getMostSpecificMimeType(
-                            mimeUtil.getMimeTypes(
-                              file,
-                              new MimeType("application/octet-stream")))
+                          .getMostSpecificMimeType(mimeUtil.getMimeTypes(
+                            file,
+                            new MimeType("application/octet-stream")))
                           .toString
                         if (mimeType.startsWith("image/")) {
-                          file.renameTo(
-                            new File(
-                              file.getParent,
-                              file.getName + "." + mimeType.split("/")(1)))
+                          file.renameTo(new File(
+                            file.getParent,
+                            file.getName + "." + mimeType.split("/")(1)))
                         }
                       }
                   }
@@ -175,11 +172,9 @@ object AutoUpdate {
         // Fix wiki repository configuration
         conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") {
           rs =>
-            using(
-              Git.open(
-                getWikiRepositoryDir(
-                  rs.getString("USER_NAME"),
-                  rs.getString("REPOSITORY_NAME")))) { git =>
+            using(Git.open(getWikiRepositoryDir(
+              rs.getString("USER_NAME"),
+              rs.getString("REPOSITORY_NAME")))) { git =>
               defining(git.getRepository.getConfig) { config =>
                 if (!config.getBoolean("http", "receivepack", false)) {
                   config.setBoolean("http", null, "receivepack", true)

@@ -42,7 +42,9 @@ object PomTest extends Build {
             .parseBoolean((dep \\ "optional").text)
           assert(
             opt == actualOpt,
-            "Invalid 'optional' section '" + (dep \\ "optional") + "' for " + id + ", expected optional=" + opt)
+            "Invalid 'optional' section '" + (
+              dep \\ "optional"
+            ) + "' for " + id + ", expected optional=" + opt)
 
           val actualScope = (dep \\ "scope") match {
             case Seq() => None; case x => Some(x.text)
@@ -52,10 +54,14 @@ object PomTest extends Build {
           }
           assert(
             actualScope == scope,
-            "Invalid 'scope' section '" + (dep \\ "scope") + "' for " + id + ", expected scope=" + scope)
+            "Invalid 'scope' section '" + (
+              dep \\ "scope"
+            ) + "' for " + id + ", expected scope=" + scope)
           assert(
             actualClassifier == classifier,
-            "Invalid 'classifier' section '" + (dep \\ "classifier") + "' for " + id + ", expected classifier=" + classifier)
+            "Invalid 'classifier' section '" + (
+              dep \\ "classifier"
+            ) + "' for " + id + ", expected classifier=" + classifier)
       }
     }
 }

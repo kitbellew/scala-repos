@@ -857,18 +857,16 @@ object ScalazProperties {
         af: Arbitrary[F[Int, Int]],
         axy: Arbitrary[(Int => Int)]): Properties =
       newProperties("bifunctor") { p =>
-        p.include(
-          functor.laws[F[?, Int]](
-            F.leftFunctor[Int],
-            implicitly,
-            implicitly,
-            implicitly))
-        p.include(
-          functor.laws[F[Int, ?]](
-            F.rightFunctor[Int],
-            implicitly,
-            implicitly,
-            implicitly))
+        p.include(functor.laws[F[?, Int]](
+          F.leftFunctor[Int],
+          implicitly,
+          implicitly,
+          implicitly))
+        p.include(functor.laws[F[Int, ?]](
+          F.rightFunctor[Int],
+          implicitly,
+          implicitly,
+          implicitly))
       }
   }
 

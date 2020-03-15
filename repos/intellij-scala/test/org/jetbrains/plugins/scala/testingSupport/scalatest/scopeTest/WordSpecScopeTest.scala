@@ -10,10 +10,9 @@ trait WordSpecScopeTest extends WordSpecGenerator {
   def testWordSpecEmptyScope() = {
     addWordSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(13, 10, wordSpecFileName),
-        wordSpecClassName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(13, 10, wordSpecFileName),
+      wordSpecClassName))
   }
 
   def testWordSpecScope() {

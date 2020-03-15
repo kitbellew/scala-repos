@@ -14,8 +14,8 @@ class Foo {
   val g = new GenericRunnerSettings(System.err.println)
   val settings = new Settings()
   val loader = getClass.getClassLoader
-  settings.classpath.value = classpath("app", loader).getOrElse(
-    error("Error: could not find application classpath"))
+  settings.classpath.value = classpath("app", loader).getOrElse(error(
+    "Error: could not find application classpath"))
   settings.bootclasspath.value =
     settings.bootclasspath.value + / + classpath("boot", loader).getOrElse(
       error("Error: could not find boot classpath"))

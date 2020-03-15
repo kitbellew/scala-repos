@@ -113,8 +113,9 @@ trait SegmentFormatSupport {
 
   def genArraySegment(length: Int): Gen[ArraySegment[_]] =
     for {
-      ctype <- genCValueType(
-        2) filter (_ != CBoolean) // Note: CArrayType(CBoolean) is OK!
+      ctype <- genCValueType(2) filter (
+        _ != CBoolean
+      ) // Note: CArrayType(CBoolean) is OK!
       segment <- genArraySegmentForCType(ctype, length)
     } yield segment
 

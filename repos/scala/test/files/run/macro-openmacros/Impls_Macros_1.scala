@@ -22,8 +22,8 @@ object Macros {
       else c.Expr[Unit](Literal(Constant(())))
     c.universe.reify {
       println(
-        c.Expr[String](
-            Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
+        c.Expr[String](Literal(
+            Constant(normalizePaths(c.enclosingMacros.toString))))
           .splice)
       next.splice
     }

@@ -35,8 +35,8 @@ private[streaming] class SocketInputDStream[T: ClassTag](
     host: String,
     port: Int,
     bytesToObjects: InputStream => Iterator[T],
-    storageLevel: StorageLevel
-) extends ReceiverInputDStream[T](_ssc) {
+    storageLevel: StorageLevel)
+    extends ReceiverInputDStream[T](_ssc) {
 
   def getReceiver(): Receiver[T] = {
     new SocketReceiver(host, port, bytesToObjects, storageLevel)
@@ -47,8 +47,8 @@ private[streaming] class SocketReceiver[T: ClassTag](
     host: String,
     port: Int,
     bytesToObjects: InputStream => Iterator[T],
-    storageLevel: StorageLevel
-) extends Receiver[T](storageLevel)
+    storageLevel: StorageLevel)
+    extends Receiver[T](storageLevel)
     with Logging {
 
   private var socket: Socket = _

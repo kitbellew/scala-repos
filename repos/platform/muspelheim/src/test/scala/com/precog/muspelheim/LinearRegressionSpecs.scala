@@ -772,8 +772,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
         case (ids, values) =>
           ids must haveSize(0)
           values mustEqual
-            SObject(
-              Map("model1" -> SObject(Map(
+            SObject(Map(
+              "model1" -> SObject(Map(
                 "residualStandardError" -> SObject(Map(
                   "degreesOfFreedom" -> SDecimal(21),
                   "estimate" -> SDecimal(0.5714938945329378))),
@@ -827,8 +827,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val predResults = prediction collect { case (_, values) => values }
 
       predResults mustEqual Set(
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.2033781409054441),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.29431560466544177),
@@ -837,8 +837,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.0851091500695673),
               SDecimal(1.4918654318804554)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.09168503550146807),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.5851022333835115),
@@ -847,8 +847,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.3785265042883241),
               SDecimal(1.1951564332853881)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.41044957243898667),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.13780702485772428),
@@ -857,8 +857,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-0.8983994376088162),
               SDecimal(1.7192985824867897)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.34350266219169356),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.15613475300076995),
@@ -867,8 +867,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-0.9457366411511546),
               SDecimal(1.6327419655345419)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.3664477456323341),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.23055994092248494),
@@ -877,8 +877,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-0.9635592515031257),
               SDecimal(1.6964547427677938)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.29914967551765137),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.7742788311824955),
@@ -887,8 +887,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.5790903574191737),
               SDecimal(0.9807910063838711)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.022684748200555035),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.4898668510205224),
@@ -897,8 +897,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.2996967104855732),
               SDecimal(1.2543272140844632)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.23185255903279373),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.6846724956403343),
@@ -907,8 +907,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.5036805071503851),
               SDecimal(1.0399753890847976)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.10434021762615728),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.16240567781368945),
@@ -917,8 +917,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.1137130683009206),
               SDecimal(1.322393503553235)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.12491148621376584),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.5735350403390753),
@@ -927,8 +927,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.3952514123515578),
               SDecimal(1.145428439924026)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.07369191728264393),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.5673976301980359),
@@ -936,8 +936,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
             "predictionInterval" -> SArray(
               Vector(SDecimal(-1.276677011015371), SDecimal(1.424060845580659)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.15981827006475147),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.32431880487926934),
@@ -946,8 +946,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.1234935166648408),
               SDecimal(1.4431300567943437)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.17753635730419182),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.6672157676701567),
@@ -956,8 +956,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.4629492713361403),
               SDecimal(1.1078765567277564)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.05314337388394709),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.4396759324088084),
@@ -965,8 +965,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
             "predictionInterval" -> SArray(
               Vector(SDecimal(-1.302906492808298), SDecimal(1.196619745040404)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.31383525200320217),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.7744700890718244),
@@ -975,8 +975,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.588466527213795),
               SDecimal(0.9607960232073907)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.24955772615782634),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.8258596856896088),
@@ -984,8 +984,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
             "predictionInterval" -> SArray(
               Vector(SDecimal(-1.5704000268068927), SDecimal(1.07128457449124)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.28854308478343343),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.17900619990234334),
@@ -994,8 +994,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-0.9886032530470941),
               SDecimal(1.5656894226139608)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.21068040495425405),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.588435827141518),
@@ -1004,8 +1004,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.4577568234690235),
               SDecimal(1.0363960135605153)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.08002882783141475),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.543625794379431),
@@ -1014,8 +1014,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.355733567187771),
               SDecimal(1.1956759115249416)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.16098562305018183),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.2120317372092274),
@@ -1024,8 +1024,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.0846637600743971),
               SDecimal(1.4066350061747608)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.2163660943315413),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.12064440737692839),
@@ -1034,8 +1034,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.0189785996245788),
               SDecimal(1.4517107882876614)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(-0.009355951358066453),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.5430850388059062),
@@ -1044,8 +1044,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.3121863982741837),
               SDecimal(1.2934744955580506)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.23267835643463947),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.17818883336490904),
@@ -1054,8 +1054,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.0248240420829635),
               SDecimal(1.4901807549522426)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.023449692507401948),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.36960590484028055),
@@ -1064,8 +1064,8 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
               SDecimal(-1.2283462721889578),
               SDecimal(1.2752456572037616)))
           )))),
-        SObject(
-          Map("model1" -> SObject(Map(
+        SObject(Map(
+          "model1" -> SObject(Map(
             "fit" -> SDecimal(0.03949810192952638),
             "confidenceInterval" -> SArray(Vector(
               SDecimal(-0.52151233487641),

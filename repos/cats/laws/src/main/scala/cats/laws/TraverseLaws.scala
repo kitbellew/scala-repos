@@ -16,11 +16,9 @@ trait TraverseLaws[F[_]] extends FunctorLaws[F] with FoldableLaws[F] {
   def traverseSequentialComposition[A, B, C, M[_], N[_]](
       fa: F[A],
       f: A => M[B],
-      g: B => N[C]
-  )(implicit
+      g: B => N[C])(implicit
       N: Applicative[N],
-      M: Applicative[M]
-  ): IsEq[M[N[F[C]]]] = {
+      M: Applicative[M]): IsEq[M[N[F[C]]]] = {
     implicit val MN = M.compose(N)
     type MN[Z] = M[N[Z]]
     val lhs: MN[F[C]] = M.map(fa.traverse(f))(fb => fb.traverse(g))
@@ -31,11 +29,9 @@ trait TraverseLaws[F[_]] extends FunctorLaws[F] with FoldableLaws[F] {
   def traverseParallelComposition[A, B, M[_], N[_]](
       fa: F[A],
       f: A => M[B],
-      g: A => N[B]
-  )(implicit
+      g: A => N[B])(implicit
       N: Applicative[N],
-      M: Applicative[M]
-  ): IsEq[(M[F[B]], N[F[B]])] = {
+      M: Applicative[M]): IsEq[(M[F[B]], N[F[B]])] = {
     type MN[Z] = (M[Z], N[Z])
     implicit val MN = new Applicative[MN] {
       def pure[X](x: X): MN[X] = (M.pure(x), N.pure(x))
@@ -59,10 +55,8 @@ trait TraverseLaws[F[_]] extends FunctorLaws[F] with FoldableLaws[F] {
     lhs <-> rhs
   }
 
-  def foldMapDerived[A, B](
-      fa: F[A],
-      f: A => B
-  )(implicit B: Monoid[B]): IsEq[B] = {
+  def foldMapDerived[A, B](fa: F[A], f: A => B)(
+      implicit B: Monoid[B]): IsEq[B] = {
     val lhs: B = fa.traverse[Const[B, ?], B](a => Const(f(a))).getConst
     val rhs: B = fa.foldMap(f)
     lhs <-> rhs

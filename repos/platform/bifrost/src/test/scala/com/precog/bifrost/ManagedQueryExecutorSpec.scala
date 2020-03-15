@@ -253,10 +253,9 @@ trait TestManagedPlatform
     }))
   }
 
-  def syncExecutorFor(apiKey: APIKey): EitherT[
+  def syncExecutorFor(apiKey: APIKey): EitherT[Future, String, QueryExecutor[
     Future,
-    String,
-    QueryExecutor[Future, (Option[JobId], StreamT[Future, Slice])]] = {
+    (Option[JobId], StreamT[Future, Slice])]] = {
     EitherT.right(Future(new SyncQueryExecutor {
       val executionContext = self.executionContext
     }))

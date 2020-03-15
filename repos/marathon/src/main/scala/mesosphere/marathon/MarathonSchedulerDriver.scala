@@ -59,8 +59,8 @@ object MarathonSchedulerDriver {
 
         config.mesosAuthenticationSecretFile.get.foreach { secretFile =>
           try {
-            val secretBytes = ByteString.readFrom(
-              new FileInputStream(secretFile))
+            val secretBytes = ByteString.readFrom(new FileInputStream(
+              secretFile))
             credentialBuilder.setSecret(secretBytes.toStringUtf8)
           } catch {
             case cause: Throwable =>

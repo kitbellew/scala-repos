@@ -261,10 +261,9 @@ class FramingSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         """
       val data = ByteString("abcde")
 
-      (header ++ data) should parseTo(
-        FrameStart(
-          FrameHeader(Opcode.Continuation, None, 5, fin = false),
-          data))
+      (header ++ data) should parseTo(FrameStart(
+        FrameHeader(Opcode.Continuation, None, 5, fin = false),
+        data))
     }
     "a full frame in chunks" in {
       val header = b"""0000       # flags

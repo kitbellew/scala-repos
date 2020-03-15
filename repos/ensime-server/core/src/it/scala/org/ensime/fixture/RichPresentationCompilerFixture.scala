@@ -18,18 +18,15 @@ import scala.tools.nsc.reporters.StoreReporter
 
 trait RichPresentationCompilerFixture {
   def withRichPresentationCompiler(
-      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any
-  ): Any
+      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any)
+      : Any
 }
 
 object RichPresentationCompilerFixture {
-  private[fixture] def create(
-      config: EnsimeConfig,
-      search: SearchService
-  )(implicit
+  private[fixture] def create(config: EnsimeConfig, search: SearchService)(
+      implicit
       system: ActorSystem,
-      vfs: EnsimeVFS
-  ): RichPresentationCompiler = {
+      vfs: EnsimeVFS): RichPresentationCompiler = {
     val scalaLib = config.allJars.find(_.getName.contains("scala-library")).get
 
     val presCompLog = LoggerFactory.getLogger(classOf[Global])
@@ -52,8 +49,7 @@ object RichPresentationCompilerFixture {
       reporter,
       parent.ref,
       indexer.ref,
-      search
-    )
+      search)
   }
 }
 
@@ -64,8 +60,8 @@ trait IsolatedRichPresentationCompilerFixture
     with IsolatedSearchServiceFixture {
 
   override def withRichPresentationCompiler(
-      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any
-  ): Any = {
+      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any)
+      : Any = {
     withVFS { implicit vfs =>
       withTestKit { testkit =>
         import testkit._
@@ -96,6 +92,6 @@ trait SharedRichPresentationCompilerFixture
   }
 
   override def withRichPresentationCompiler(
-      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any
-  ): Any = testCode(_testkit, _config, pc)
+      testCode: (TestKitFix, EnsimeConfig, RichPresentationCompiler) => Any)
+      : Any = testCode(_testkit, _config, pc)
 }

@@ -37,11 +37,10 @@ object ShardCoordinator {
       typeName: String,
       settings: ClusterShardingSettings,
       allocationStrategy: ShardAllocationStrategy): Props =
-    Props(
-      new PersistentShardCoordinator(
-        typeName: String,
-        settings,
-        allocationStrategy)).withDeploy(Deploy.local)
+    Props(new PersistentShardCoordinator(
+      typeName: String,
+      settings,
+      allocationStrategy)).withDeploy(Deploy.local)
 
   /**
     * INTERNAL API
@@ -52,12 +51,11 @@ object ShardCoordinator {
       settings: ClusterShardingSettings,
       allocationStrategy: ShardAllocationStrategy,
       replicator: ActorRef): Props =
-    Props(
-      new DDataShardCoordinator(
-        typeName: String,
-        settings,
-        allocationStrategy,
-        replicator)).withDeploy(Deploy.local)
+    Props(new DDataShardCoordinator(
+      typeName: String,
+      settings,
+      allocationStrategy,
+      replicator)).withDeploy(Deploy.local)
 
   /**
     * Interface of the pluggable shard allocation and rebalancing logic used by the [[ShardCoordinator]].
@@ -133,9 +131,8 @@ object ShardCoordinator {
     def allocateShard(
         requester: ActorRef,
         shardId: String,
-        currentShardAllocations: java.util.Map[
-          ActorRef,
-          immutable.IndexedSeq[String]]): Future[ActorRef]
+        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[
+          String]]): Future[ActorRef]
 
     /**
       * Invoked periodically to decide which shards to rebalance to another location.
@@ -146,9 +143,8 @@ object ShardCoordinator {
       * @return a `Future` of the shards to be migrated, may be empty to skip rebalance in this round
       */
     def rebalance(
-        currentShardAllocations: java.util.Map[
-          ActorRef,
-          immutable.IndexedSeq[String]],
+        currentShardAllocations: java.util.Map[ActorRef, immutable.IndexedSeq[
+          String]],
         rebalanceInProgress: java.util.Set[String])
         : Future[java.util.Set[String]]
   }

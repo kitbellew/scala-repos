@@ -41,10 +41,8 @@ object LockManager {
     CacheBuilder
       .newBuilder()
       .weakValues()
-      .build[A, Semaphore](
-        new CacheLoader[A, Semaphore] {
-          override def load(key: A): Semaphore = new Semaphore(1)
-        }
-      )
+      .build[A, Semaphore](new CacheLoader[A, Semaphore] {
+        override def load(key: A): Semaphore = new Semaphore(1)
+      })
   }
 }

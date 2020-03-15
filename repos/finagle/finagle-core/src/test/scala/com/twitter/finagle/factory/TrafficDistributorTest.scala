@@ -101,16 +101,15 @@ private object TrafficDistributorTest {
     def newDist(
         dest: Var[Activity.State[Set[Address]]],
         eagerEviction: Boolean = true,
-        statsReceiver: StatsReceiver = NullStatsReceiver
-    ): ServiceFactory[Int, Int] = {
+        statsReceiver: StatsReceiver = NullStatsReceiver)
+        : ServiceFactory[Int, Int] = {
       new TrafficDistributor[Int, Int](
         dest = Activity(dest),
         newEndpoint = newEndpoint,
         newBalancer = newBalancer,
         eagerEviction = eagerEviction,
         statsReceiver = statsReceiver,
-        rng = Rng("seed".hashCode)
-      )
+        rng = Rng("seed".hashCode))
     }
 
     def resetCounters() {
@@ -224,8 +223,7 @@ class TrafficDistributorTest extends FunSuite {
     val newAddrs = Set(
       WeightedAddress(Address(6), existingWeight),
       WeightedAddress(Address(7), existingWeight),
-      WeightedAddress(Address(8), existingWeight)
-    )
+      WeightedAddress(Address(8), existingWeight))
     val update: Set[Address] = init ++ newAddrs
     dest() = Activity.Ok(update)
     assert(newEndpointCalls == newAddrs.size)
@@ -359,8 +357,7 @@ class TrafficDistributorTest extends FunSuite {
         new NoBrokersAvailableException("test")),
       eagerEviction = true,
       statsReceiver = NullStatsReceiver,
-      rng = Rng("seed".hashCode)
-    )
+      rng = Rng("seed".hashCode))
 
     assert(dist.status == Status.Open)
   })

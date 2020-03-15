@@ -117,12 +117,11 @@ class ESEngineInstances(
       val builder = client
         .prepareSearch(index)
         .setTypes(estype)
-        .setPostFilter(
-          andFilter(
-            termFilter("status", "COMPLETED"),
-            termFilter("engineId", engineId),
-            termFilter("engineVersion", engineVersion),
-            termFilter("engineVariant", engineVariant)))
+        .setPostFilter(andFilter(
+          termFilter("status", "COMPLETED"),
+          termFilter("engineId", engineId),
+          termFilter("engineVersion", engineVersion),
+          termFilter("engineVariant", engineVariant)))
         .addSort("startTime", SortOrder.DESC)
       ESUtils.getAll[EngineInstance](client, builder)
     } catch {

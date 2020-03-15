@@ -228,8 +228,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     .groupBy { f =>
                       BucketingUtils
                         .getBucketId(f.getPath.getName)
-                        .getOrElse(
-                          sys.error(s"Invalid bucket file ${f.getPath}"))
+                        .getOrElse(sys.error(
+                          s"Invalid bucket file ${f.getPath}"))
                     }
 
                   val bucketedDataMap = bucketed.mapValues { bucketFiles =>
@@ -329,8 +329,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     val bucketed = files.groupBy { f =>
                       BucketingUtils
                         .getBucketId(f.getPath.getName)
-                        .getOrElse(
-                          sys.error(s"Invalid bucket file ${f.getPath}"))
+                        .getOrElse(sys.error(
+                          s"Invalid bucket file ${f.getPath}"))
                     }
 
                     bucketed.map { bucketFiles =>
@@ -500,10 +500,9 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
           iterator.map { input =>
             {
               if (input.isInstanceOf[InternalRow]) {
-                unsafeProjection(
-                  mutableJoinedRow(
-                    input.asInstanceOf[InternalRow],
-                    unsafePartitionValues))
+                unsafeProjection(mutableJoinedRow(
+                  input.asInstanceOf[InternalRow],
+                  unsafePartitionValues))
               } else {
                 require(input.isInstanceOf[ColumnarBatch])
                 val inputBatch = input.asInstanceOf[ColumnarBatch]

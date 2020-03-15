@@ -98,11 +98,10 @@ class ExpandSums extends Phase {
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
               if (left == Disc1) ifDefined
               else
-                IfThenElse(
-                  ConstArray(
-                    Library.Not.typed[Boolean](pred),
-                    ifDefined,
-                    ifEmpty2))
+                IfThenElse(ConstArray(
+                  Library.Not.typed[Boolean](pred),
+                  ifDefined,
+                  ifEmpty2))
           }
           n2.infer()
 
@@ -261,13 +260,12 @@ class ExpandSums extends Phase {
         if (createDisc) {
           val protoDisc = Select(ref, ElementSymbol(1)).infer()
           val rest = Select(ref, ElementSymbol(2))
-          val disc = IfThenElse(
-            ConstArray(
-              Library.==.typed[Boolean](
-                silentCast(OptionType(protoDisc.nodeType), protoDisc),
-                LiteralNode(null)),
-              DiscNone,
-              Disc1))
+          val disc = IfThenElse(ConstArray(
+            Library.==.typed[Boolean](
+              silentCast(OptionType(protoDisc.nodeType), protoDisc),
+              LiteralNode(null)),
+            DiscNone,
+            Disc1))
           ProductNode(ConstArray(disc, rest))
         } else ref
       silentCast(trType(elemType.asInstanceOf[ProductType].children(idx)), v)
@@ -322,10 +320,9 @@ class ExpandSums extends Phase {
       tpe.mapChildren(f) match {
         case t @ OptionType.Primitive(_) => t
         case OptionType(ch) =>
-          ProductType(
-            ConstArray(
-              ScalaBaseType.optionDiscType.optionType,
-              toOptionColumns(ch)))
+          ProductType(ConstArray(
+            ScalaBaseType.optionDiscType.optionType,
+            toOptionColumns(ch)))
         case t => t
       }
     val tpe2 = f(tpe)

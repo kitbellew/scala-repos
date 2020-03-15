@@ -106,10 +106,9 @@ private class TaskTrackerActor(
         log.info("Task loading complete.")
 
         unstashAll()
-        context.become(
-          withTasks(
-            appTasks,
-            TaskCounts(appTasks.allTasks, healthStatuses = Map.empty)))
+        context.become(withTasks(
+          appTasks,
+          TaskCounts(appTasks.allTasks, healthStatuses = Map.empty)))
 
       case Status.Failure(cause) =>
         // escalate this failure

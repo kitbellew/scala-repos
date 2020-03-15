@@ -229,19 +229,16 @@ private object PoolSlot {
         if (inflightRequests.isEmpty && firstContext.isDefined) {
           (error match {
             case Some(err) ⇒
-              ResponseDelivery(
-                ResponseContext(
-                  firstContext.get,
-                  Failure(
-                    new UnexpectedDisconnectException(
-                      "Unexpected (early) disconnect",
-                      err))))
+              ResponseDelivery(ResponseContext(
+                firstContext.get,
+                Failure(new UnexpectedDisconnectException(
+                  "Unexpected (early) disconnect",
+                  err))))
             case _ ⇒
-              ResponseDelivery(
-                ResponseContext(
-                  firstContext.get,
-                  Failure(new UnexpectedDisconnectException(
-                    "Unexpected (early) disconnect"))))
+              ResponseDelivery(ResponseContext(
+                firstContext.get,
+                Failure(new UnexpectedDisconnectException(
+                  "Unexpected (early) disconnect"))))
           }) :: Nil
         } else {
           inflightRequests.map { rc ⇒

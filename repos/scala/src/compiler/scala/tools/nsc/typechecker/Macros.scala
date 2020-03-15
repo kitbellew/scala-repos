@@ -584,7 +584,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
   def pushMacroContext(c: MacroContext) = _openMacros ::= c
   def popMacroContext() = _openMacros = _openMacros.tail
   def enclosingMacroPosition =
-    openMacros map (_.macroApplication.pos) find (_ ne NoPosition) getOrElse NoPosition
+    openMacros map (_.macroApplication.pos) find (
+      _ ne NoPosition
+    ) getOrElse NoPosition
 
   /** Performs macro expansion:
     *
@@ -658,7 +660,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       if (Statistics.canEnable) Statistics.incCounter(macroExpandCount)
       try {
         withInfoLevel(nodePrinters.InfoLevel.Quiet) { // verbose printing might cause recursive macro expansions
-          if (expandee.symbol.isErroneous || (expandee exists (_.isErroneous))) {
+          if (expandee.symbol.isErroneous || (
+                expandee exists (_.isErroneous)
+              )) {
             val reason =
               if (expandee.symbol.isErroneous)
                 "not found or incompatible macro implementation"

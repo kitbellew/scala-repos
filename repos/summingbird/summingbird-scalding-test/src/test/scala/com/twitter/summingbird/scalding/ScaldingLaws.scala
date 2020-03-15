@@ -536,8 +536,9 @@ class ScaldingLaws extends WordSpec {
       val scald = Scalding("scalaCheckleftJoinWithStoreJob")
       val ws = new LoopState(intr)
       val mode: Mode = TestMode(
-        (storeAndService.sourceToBuffer ++ finalStore.sourceToBuffer ++ buffer1 ++ buffer2)
-          .get(_))
+        (
+          storeAndService.sourceToBuffer ++ finalStore.sourceToBuffer ++ buffer1 ++ buffer2
+        ).get(_))
 
       scald.run(ws, mode, summer)
 
@@ -820,8 +821,8 @@ class ScaldingLaws extends WordSpec {
       val scald = Scalding("scalding-diamond-Job")
       val ws = new LoopState(intr)
       val mode: Mode = TestMode(
-        (testStoreA.sourceToBuffer ++ testStoreB.sourceToBuffer ++ buffer)
-          .get(_))
+        (testStoreA.sourceToBuffer ++ testStoreB.sourceToBuffer ++ buffer).get(
+          _))
 
       scald.run(ws, mode, summer)
       // Now check that the inMemory ==

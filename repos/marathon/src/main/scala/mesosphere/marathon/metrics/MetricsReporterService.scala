@@ -123,23 +123,22 @@ class MetricsReporterService @Inject() (
     val expansions = params
       .get("expansions")
       .map(_.split(",").toSeq)
-      .getOrElse(
-        Seq(
-          "count",
-          "meanRate",
-          "1MinuteRate",
-          "5MinuteRate",
-          "15MinuteRate",
-          "min",
-          "mean",
-          "max",
-          "stddev",
-          "median",
-          "p75",
-          "p95",
-          "p98",
-          "p99",
-          "p999"))
+      .getOrElse(Seq(
+        "count",
+        "meanRate",
+        "1MinuteRate",
+        "5MinuteRate",
+        "15MinuteRate",
+        "min",
+        "mean",
+        "max",
+        "stddev",
+        "median",
+        "p75",
+        "p95",
+        "p98",
+        "p99",
+        "p999"))
 
     val interval = params.get("interval").map(_.toLong).getOrElse(10L)
     val prefix = params.getOrElse("prefix", "marathon_test")
@@ -154,9 +153,10 @@ class MetricsReporterService @Inject() (
       .withTransport(transport)
       .withHost(InetAddress.getLocalHost.getHostName)
       .withPrefix(prefix)
-      .withExpansions(util.EnumSet.copyOf(expansions
-        .flatMap(e => Expansion.values().find(_.toString == e))
-        .asJava))
+      .withExpansions(util.EnumSet.copyOf(
+        expansions
+          .flatMap(e => Expansion.values().find(_.toString == e))
+          .asJava))
       .withTags(tags.asJava)
       .build()
 

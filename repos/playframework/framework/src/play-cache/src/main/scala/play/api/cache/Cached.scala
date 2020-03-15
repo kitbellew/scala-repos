@@ -333,8 +333,7 @@ final class CachedBuilder(
     new CachedBuilder(
       cache = cache,
       key = key,
-      caching = caching.orElse(alternative)
-    )
+      caching = caching.orElse(alternative))
 
 }
 
@@ -421,9 +420,6 @@ class UnboundCachedBuilder(
     */
   def compose(alternative: PartialFunction[ResponseHeader, Duration])
       : UnboundCachedBuilder =
-    new UnboundCachedBuilder(
-      key = key,
-      caching = caching.orElse(alternative)
-    )
+    new UnboundCachedBuilder(key = key, caching = caching.orElse(alternative))
 
 }

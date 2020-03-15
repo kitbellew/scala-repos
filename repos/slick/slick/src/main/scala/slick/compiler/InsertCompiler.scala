@@ -63,10 +63,9 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
                 te @ TableExpansion(_, t: TableNode, _),
                 Pure(sel, _)) =>
             setTable(te)
-            tr(
-              sel.replace(
-                { case Ref(s) if s == gen => Ref(expansionRef) },
-                keepType = true))
+            tr(sel.replace(
+              { case Ref(s) if s == gen => Ref(expansionRef) },
+              keepType = true))
           case _ =>
             throw new SlickException(
               "Cannot use node " + n + " for inserting data")

@@ -242,11 +242,10 @@ abstract class Parser(
     } catch {
       case e: Parser.Fail ⇒
         val pos = Position(cursor, input)
-        scheme.parseError(
-          ParseError(
-            pos,
-            pos,
-            RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
+        scheme.parseError(ParseError(
+          pos,
+          pos,
+          RuleTrace(Nil, RuleTrace.Fail(e.expected)) :: Nil))
       case NonFatal(e) ⇒
         scheme.failure(e)
     } finally { phase = null }

@@ -103,10 +103,9 @@ class UISeleniumSuite
         // Check stat table
         val statTableHeaders =
           findAll(cssSelector("#stat-table th")).map(_.text).toSeq
-        statTableHeaders.exists(
-          _.matches(
-            "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")
-        ) should be(true)
+        statTableHeaders.exists(_.matches(
+          "Timelines \\(Last \\d+ batches, \\d+ active, \\d+ completed\\)")) should be(
+          true)
         statTableHeaders should contain("Histograms")
 
         val statTableCells =
@@ -119,9 +118,8 @@ class UISeleniumSuite
         // Check batch tables
         val h4Text = findAll(cssSelector("h4")).map(_.text).toSeq
         h4Text.exists(_.matches("Active Batches \\(\\d+\\)")) should be(true)
-        h4Text.exists(
-          _.matches("Completed Batches \\(last \\d+ out of \\d+\\)")) should be(
-          true)
+        h4Text.exists(_.matches(
+          "Completed Batches \\(last \\d+ out of \\d+\\)")) should be(true)
 
         findAll(cssSelector("""#active-batches-table th"""))
           .map(_.text)
@@ -152,7 +150,9 @@ class UISeleniumSuite
         batchLinks.size should be >= 1
 
         // Check a normal batch page
-        go to (batchLinks.last) // Last should be the first batch, so it will have some jobs
+        go to (
+          batchLinks.last
+        ) // Last should be the first batch, so it will have some jobs
         val summaryText = findAll(cssSelector("li strong")).map(_.text).toSeq
         summaryText should contain("Batch Duration:")
         summaryText should contain("Input data size:")

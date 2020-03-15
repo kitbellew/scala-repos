@@ -102,9 +102,8 @@ case class Dag[P <: Platform[P]](
     nodes: List[Node[P]],
     nodeToName: Map[Node[P], String] = Map[Node[P], String](),
     nameToNode: Map[String, Node[P]] = Map[String, Node[P]](),
-    dependenciesOfM: Map[Node[P], List[Node[P]]] = Map[
-      Node[P],
-      List[Node[P]]](),
+    dependenciesOfM: Map[Node[P], List[Node[P]]] = Map[Node[P], List[
+      Node[P]]](),
     dependantsOfM: Map[Node[P], List[Node[P]]] = Map[
       Node[P],
       List[Node[P]]]()) {
@@ -206,13 +205,12 @@ object Dag {
       }
     }
     val producerToNode = buildProducerToNodeLookUp(registry)
-    val dag = registry.foldLeft(
-      Dag(
-        originalTail,
-        producerToPriorityNames,
-        tail,
-        producerToNode,
-        registry)) { (curDag, stormNode) =>
+    val dag = registry.foldLeft(Dag(
+      originalTail,
+      producerToPriorityNames,
+      tail,
+      producerToNode,
+      registry)) { (curDag, stormNode) =>
       // Here we are building the Dag's connection topology.
       // We visit every producer and connect the Node's represented by its dependant and dependancies.
       // Producers which live in the same node will result in a NOP in connect.

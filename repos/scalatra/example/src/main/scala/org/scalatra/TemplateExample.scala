@@ -154,16 +154,12 @@ class TemplateExample
 
   get("/logout") {
     session.invalidate
-    displayPage(
-      "Scalatra: Session Example",
-      <pre>You have logged out</pre>
+    displayPage("Scalatra: Session Example", <pre>You have logged out</pre>
       <pre>Route: /logout</pre>)
   }
 
   get("/") {
-    displayPage(
-      "Scalatra: Hello World",
-      <h2>Hello world!</h2>
+    displayPage("Scalatra: Hello World", <h2>Hello world!</h2>
       <p>Referer: {(request referrer) map { Text(_) } getOrElse { <i>none</i> }}</p>
       <pre>Route: /</pre>)
   }
@@ -193,8 +189,7 @@ class TemplateExample
   get("/flash-map/result") {
     displayPage(
       title = "Scalatra: Flash  Example",
-      content = <span>Message = {flash.getOrElse("message", "")}</span>
-    )
+      content = <span>Message = {flash.getOrElse("message", "")}</span>)
   }
 
   post("/echo") {

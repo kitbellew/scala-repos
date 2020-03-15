@@ -29,18 +29,15 @@ object MappedToBase {
         "Work-around for SI-8351 leading to illegal macro-invocation -- You should not see this message")
     implicit val eutag = c.TypeTag[E#Underlying](
       e.tpe.member(TypeName("Underlying")).typeSignatureIn(e.tpe))
-    val cons = c.Expr[E#Underlying => E](
-      Function(
-        List(
-          ValDef(
-            Modifiers(Flag.PARAM),
-            TermName("v"), /*Ident(eu.tpe.typeSymbol)*/ TypeTree(),
-            EmptyTree)),
-        Apply(
-          Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
-          List(Ident(TermName("v")))
-        )
-      ))
+    val cons = c.Expr[E#Underlying => E](Function(
+      List(ValDef(
+        Modifiers(Flag.PARAM),
+        TermName("v"), /*Ident(eu.tpe.typeSymbol)*/ TypeTree(),
+        EmptyTree)),
+      Apply(
+        Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
+        List(Ident(TermName("v"))))
+    ))
     val res = reify { new Isomorphism[E, E#Underlying](_.value, cons.splice) }
     try c.typecheck(res.tree)
     catch {

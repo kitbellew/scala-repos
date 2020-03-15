@@ -33,13 +33,11 @@ class ConsoleProducerTest {
     "--property",
     "parse.key=true",
     "--property",
-    "key.separator=#"
-  )
+    "key.separator=#")
 
   val invalidArgs: Array[String] = Array(
     "--t", // not a valid argument
-    "t3"
-  )
+    "t3")
 
   @Test
   def testValidConfigsNewProducer() {

@@ -57,10 +57,9 @@ abstract class GenIncOptimizer private[optimizer] (
     import factory._
 
     callMethods(LongImpl.RuntimeLongClass, LongImpl.AllIntrinsicMethods) ++
-      optional(
-        callMethods(
-          LongImpl.RuntimeLongClass,
-          LongImpl.OptionalIntrinsicMethods)) ++
+      optional(callMethods(
+        LongImpl.RuntimeLongClass,
+        LongImpl.OptionalIntrinsicMethods)) ++
       callMethods(
         Definitions.BoxedIntegerClass,
         Seq("compareTo__jl_Byte__I", "compareTo__jl_Short__I")) ++ // #2184

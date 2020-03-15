@@ -30,8 +30,7 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0.0, 0.0),
       Array(0.0, 1.0),
       Array(1.0, 0.0),
-      Array(1.0, 1.0)
-    )
+      Array(1.0, 1.0))
     val outputs = Array(0.0, 1.0, 1.0, 0.0)
     val data = inputs.zip(outputs).map {
       case (features, label) =>
@@ -66,14 +65,12 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
       Array(0.0, 0.0),
       Array(0.0, 1.0),
       Array(1.0, 0.0),
-      Array(1.0, 1.0)
-    )
+      Array(1.0, 1.0))
     val outputs = Array(
       Array(1.0, 0.0),
       Array(0.0, 1.0),
       Array(0.0, 1.0),
-      Array(1.0, 0.0)
-    )
+      Array(1.0, 0.0))
     val data = inputs.zip(outputs).map {
       case (features, label) =>
         (Vectors.dense(features), Vectors.dense(label))

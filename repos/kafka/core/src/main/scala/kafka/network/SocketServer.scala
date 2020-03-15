@@ -339,10 +339,9 @@ private[kafka] class Acceptor(
     serverChannel.socket().setReceiveBufferSize(recvBufferSize)
     try {
       serverChannel.socket.bind(socketAddress)
-      info(
-        "Awaiting socket connections on %s:%d.".format(
-          socketAddress.getHostString,
-          serverChannel.socket.getLocalPort))
+      info("Awaiting socket connections on %s:%d.".format(
+        socketAddress.getHostString,
+        serverChannel.socket.getLocalPort))
     } catch {
       case e: SocketException =>
         throw new KafkaException(
@@ -452,8 +451,10 @@ private[kafka] class Processor(
       def value = {
         metrics
           .metrics()
-          .get(metrics
-            .metricName("io-wait-ratio", "socket-server-metrics", metricTags))
+          .get(metrics.metricName(
+            "io-wait-ratio",
+            "socket-server-metrics",
+            metricTags))
           .value()
       }
     },

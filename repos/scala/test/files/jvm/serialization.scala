@@ -63,7 +63,9 @@ object Test1_scala {
     println("_e1 = " + _e1)
     println("e1 eq _e1: " + (e1 eq _e1) + ", _e1 eq e1: " + (_e1 eq e1))
     println(
-      "e1 equals _e1: " + (e1 equals _e1) + ", _e1 equals e1: " + (_e1 equals e1))
+      "e1 equals _e1: " + (e1 equals _e1) + ", _e1 equals e1: " + (
+        _e1 equals e1
+      ))
     println()
 
     // Enumeration
@@ -100,15 +102,21 @@ object Test1_scala {
     println("y10 = " + y10)
     println("x10 eq y10: " + (x10 eq y10) + ", y10 eq x10: " + (y10 eq x10))
     println(
-      "x10 equals y10: " + (x10 equals y10) + ", y10 equals x10: " + (y10 equals x10))
+      "x10 equals y10: " + (x10 equals y10) + ", y10 equals x10: " + (
+        y10 equals x10
+      ))
     println()
 
     println("x9 eq x10: " + (x9 eq x10) + ", x10 eq x9: " + (x10 eq x9))
     println(
-      "x9 equals x10: " + (x9 equals x10) + ", x10 equals x9: " + (x10 equals x9))
+      "x9 equals x10: " + (x9 equals x10) + ", x10 equals x9: " + (
+        x10 equals x9
+      ))
     println("x9 eq y10: " + (x9 eq y10) + ", y10 eq x9: " + (y10 eq x9))
     println(
-      "x9 equals y10: " + (x9 equals y10) + ", y10 equals x9: " + (y10 equals x9))
+      "x9 equals y10: " + (x9 equals y10) + ", y10 equals x9: " + (
+        y10 equals x9
+      ))
     println()
 
     // Function
@@ -126,7 +134,9 @@ object Test1_scala {
     println("_xs0 = " + _xs0)
     println("xs0 eq _xs0: " + (xs0 eq _xs0) + ", _xs0 eq xs0: " + (_xs0 eq xs0))
     println(
-      "xs0 equals _xs0: " + (xs0 equals _xs0) + ", _xs0 equals xs0: " + (_xs0 equals xs0))
+      "xs0 equals _xs0: " + (xs0 equals _xs0) + ", _xs0 equals xs0: " + (
+        _xs0 equals xs0
+      ))
     println()
 
     val xs1 = Nil
@@ -150,7 +160,9 @@ object Test1_scala {
     println("_o2 = " + _o2)
     println("o2 eq _o2: " + (o2 eq _o2) + ", _o2 eq o2: " + (_o2 eq o2))
     println(
-      "o2 equals _o2: " + (o2 equals _o2) + ", _o2 equals o2: " + (_o2 equals o2))
+      "o2 equals _o2: " + (o2 equals _o2) + ", _o2 equals o2: " + (
+        _o2 equals o2
+      ))
     println()
     /*
     // Responder
@@ -165,7 +177,9 @@ object Test1_scala {
     println("_s1 = " + _s1)
     println("s1 eq _s1: " + (s1 eq _s1) + ", _s1 eq s1: " + (_s1 eq s1))
     println(
-      "s1 equals _s1: " + (s1 equals _s1) + ", _s1 equals s1: " + (_s1 equals s1))
+      "s1 equals _s1: " + (s1 equals _s1) + ", _s1 equals s1: " + (
+        _s1 equals s1
+      ))
     println()
 
     // Tuple
@@ -175,7 +189,9 @@ object Test1_scala {
     println("_t1 = " + _t1)
     println("t1 eq _t1: " + (t1 eq _t1) + ", _t1 eq t1: " + (_t1 eq t1))
     println(
-      "t1 equals _t1: " + (t1 equals _t1) + ", _t1 equals t1: " + (_t1 equals t1))
+      "t1 equals _t1: " + (t1 equals _t1) + ", _t1 equals t1: " + (
+        _t1 equals t1
+      ))
     println()
   } catch {
     case e: Exception =>

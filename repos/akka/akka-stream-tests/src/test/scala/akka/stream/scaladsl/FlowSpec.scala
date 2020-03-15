@@ -33,9 +33,8 @@ object FlowSpec {
 }
 
 class FlowSpec
-    extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
+    extends AkkaSpec(ConfigFactory.parseString(
+      "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
   import FlowSpec._
 
   val settings = ActorMaterializerSettings(system)

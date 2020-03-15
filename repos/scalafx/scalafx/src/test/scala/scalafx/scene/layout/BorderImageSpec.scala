@@ -57,7 +57,6 @@ class BorderImageSpec
       BorderWidths.Default,
       true,
       BorderRepeat.Repeat,
-      BorderRepeat.Repeat
-    )
+      BorderRepeat.Repeat)
 
 }

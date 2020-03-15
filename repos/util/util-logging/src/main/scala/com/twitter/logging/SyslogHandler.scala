@@ -74,8 +74,8 @@ object SyslogHandler {
       server: String = "localhost",
       port: Int = SyslogHandler.DEFAULT_PORT,
       formatter: Formatter = new Formatter(),
-      level: Option[Level] = None
-  ) = () => new SyslogHandler(server, port, formatter, level)
+      level: Option[Level] = None) =
+    () => new SyslogHandler(server, port, formatter, level)
 }
 
 class SyslogHandler(

@@ -46,8 +46,7 @@ object TreeTableViewWithOneColumn extends JFXApp {
     children = Seq(
       new TreeItem("Child Node 1"),
       new TreeItem("Child Node 2"),
-      new TreeItem("Child Node 3")
-    )
+      new TreeItem("Child Node 3"))
   }
 
   // Creating a stage with tree table view

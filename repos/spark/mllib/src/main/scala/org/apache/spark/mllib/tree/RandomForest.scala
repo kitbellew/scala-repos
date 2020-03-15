@@ -228,12 +228,11 @@ private class RandomForest(
     // At first, all the rows belong to the root nodes (node Id == 1).
     val nodeIdCache =
       if (strategy.useNodeIdCache) {
-        Some(
-          NodeIdCache.init(
-            data = baggedInput,
-            numTrees = numTrees,
-            checkpointInterval = strategy.checkpointInterval,
-            initVal = 1))
+        Some(NodeIdCache.init(
+          data = baggedInput,
+          numTrees = numTrees,
+          checkpointInterval = strategy.checkpointInterval,
+          initVal = 1))
       } else { None }
 
     // FIFO queue of nodes to train: (treeIndex, node)

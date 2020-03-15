@@ -44,11 +44,11 @@ class ConsumerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
 class ConsumerTopicStats(clientId: String) extends Logging {
   private val valueFactory = (k: ClientIdAndTopic) =>
     new ConsumerTopicMetrics(k)
-  private val stats =
-    new Pool[ClientIdAndTopic, ConsumerTopicMetrics](Some(valueFactory))
-  private val allTopicStats = new ConsumerTopicMetrics(
-    new ClientIdAllTopics(clientId)
-  ) // to differentiate from a topic named AllTopics
+  private val stats = new Pool[ClientIdAndTopic, ConsumerTopicMetrics](Some(
+    valueFactory))
+  private val allTopicStats = new ConsumerTopicMetrics(new ClientIdAllTopics(
+    clientId
+  )) // to differentiate from a topic named AllTopics
 
   def getConsumerAllTopicStats(): ConsumerTopicMetrics = allTopicStats
 
@@ -62,8 +62,8 @@ class ConsumerTopicStats(clientId: String) extends Logging {
   */
 object ConsumerTopicStatsRegistry {
   private val valueFactory = (k: String) => new ConsumerTopicStats(k)
-  private val globalStats =
-    new Pool[String, ConsumerTopicStats](Some(valueFactory))
+  private val globalStats = new Pool[String, ConsumerTopicStats](Some(
+    valueFactory))
 
   def getConsumerTopicStat(clientId: String) = {
     globalStats.getAndMaybePut(clientId)

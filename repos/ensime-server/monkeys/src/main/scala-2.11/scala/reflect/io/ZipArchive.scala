@@ -196,8 +196,8 @@ final class URLZipArchive(val url: URL) extends ZipArchive(null) {
   def iterator: Iterator[Entry] = {
     val root = new DirEntry("/")
     val dirs = mutable.HashMap[String, DirEntry]("/" -> root)
-    val in = new ZipInputStream(
-      new ByteArrayInputStream(Streamable.bytes(input)))
+    val in = new ZipInputStream(new ByteArrayInputStream(
+      Streamable.bytes(input)))
 
     @tailrec def loop(): Unit = {
       val zipEntry = in.getNextEntry()

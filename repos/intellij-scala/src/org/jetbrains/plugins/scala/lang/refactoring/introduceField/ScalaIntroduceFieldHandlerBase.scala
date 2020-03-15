@@ -49,26 +49,24 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       classes.size match {
         case 0 =>
         case 1 =>
-          action(
-            new IntroduceFieldContext[T](
-              project,
-              editor,
-              file,
-              elem,
-              types,
-              classes(0).asInstanceOf[ScTemplateDefinition]))
+          action(new IntroduceFieldContext[T](
+            project,
+            editor,
+            file,
+            elem,
+            types,
+            classes(0).asInstanceOf[ScTemplateDefinition]))
         case _ =>
           val selection = classes(0)
           val processor = new PsiElementProcessor[PsiClass] {
             def execute(aClass: PsiClass): Boolean = {
-              action(
-                new IntroduceFieldContext[T](
-                  project,
-                  editor,
-                  file,
-                  elem,
-                  types,
-                  aClass.asInstanceOf[ScTemplateDefinition]))
+              action(new IntroduceFieldContext[T](
+                project,
+                editor,
+                file,
+                elem,
+                types,
+                aClass.asInstanceOf[ScTemplateDefinition]))
               false
             }
           }

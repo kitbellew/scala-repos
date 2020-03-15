@@ -35,8 +35,7 @@ object JavaFqn {
     JavaFqn(
       if (pack.isEmpty) None else Some(pack),
       if (tpe.isEmpty) None else Some(tpe),
-      fieldOrMethod
-    )
+      fieldOrMethod)
   }
 }
 

@@ -113,8 +113,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
       l.from,
       ldefs,
       1L,
-      Pure(
-        StructNode(ldefs.map {
+      Pure(StructNode(
+        ldefs.map {
           case (f, _) =>
             (lmap(f) -> FwdPath(List(l2sym, ElementSymbol(1), f)))
         } :+
@@ -126,8 +126,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
       r.from,
       rdefs,
       1L,
-      Pure(
-        StructNode(rdefs.map {
+      Pure(StructNode(
+        rdefs.map {
           case (f, _) =>
             (rmap(f) -> FwdPath(List(r2sym, ElementSymbol(1), f)))
         } :+

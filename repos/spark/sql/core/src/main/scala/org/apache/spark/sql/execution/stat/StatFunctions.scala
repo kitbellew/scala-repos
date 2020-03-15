@@ -71,10 +71,9 @@ private[sql] object StatFunctions extends Logging {
           " is not supported.")
       Column(Cast(Column(colName).expr, DoubleType))
     }
-    val emptySummaries = Array.fill(cols.size)(
-      new QuantileSummaries(
-        QuantileSummaries.defaultCompressThreshold,
-        relativeError))
+    val emptySummaries = Array.fill(cols.size)(new QuantileSummaries(
+      QuantileSummaries.defaultCompressThreshold,
+      relativeError))
 
     // Note that it works more or less by accident as `rdd.aggregate` is not a pure function:
     // this function returns the same array as given in the input (because `aggregate` reuses
@@ -175,9 +174,10 @@ private[sql] object StatFunctions extends Logging {
         // If it is the first one to insert, of if it is the last one
         currentCount += 1
         val delta =
-          if (newSamples.isEmpty || (sampleIdx == sampled.size && opsIdx == sorted.length - 1)) {
-            0
-          } else { math.floor(2 * relativeError * currentCount).toInt }
+          if (newSamples.isEmpty || (
+                sampleIdx == sampled.size && opsIdx == sorted.length - 1
+              )) { 0 }
+          else { math.floor(2 * relativeError * currentCount).toInt }
 
         val tuple = Stats(currentSample, 1, delta)
         newSamples.append(tuple)

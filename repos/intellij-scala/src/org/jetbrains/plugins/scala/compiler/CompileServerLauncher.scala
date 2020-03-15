@@ -81,13 +81,12 @@ class CompileServerLauncher extends ApplicationComponent {
         val title = "Cannot start Scala compile server"
         val content =
           s"<html><body>${error.replace("\n", "<br>")} <a href=''>Configure</a></body></html>"
-        Notifications.Bus.notify(
-          new Notification(
-            "scala",
-            title,
-            content,
-            NotificationType.ERROR,
-            ConfigureLinkListener))
+        Notifications.Bus.notify(new Notification(
+          "scala",
+          title,
+          content,
+          NotificationType.ERROR,
+          ConfigureLinkListener))
         false
       case Right(_) =>
         ApplicationManager.getApplication invokeLater new Runnable {
@@ -154,12 +153,11 @@ class CompileServerLauncher extends ApplicationComponent {
           .right
           .map { process =>
             val watcher = new ProcessWatcher(process, "scalaCompileServer")
-            serverInstance = Some(
-              ServerInstance(
-                watcher,
-                freePort,
-                builder.directory(),
-                withTimestamps(bootCp)))
+            serverInstance = Some(ServerInstance(
+              watcher,
+              freePort,
+              builder.directory(),
+              withTimestamps(bootCp)))
             watcher.startNotify()
             process
           }

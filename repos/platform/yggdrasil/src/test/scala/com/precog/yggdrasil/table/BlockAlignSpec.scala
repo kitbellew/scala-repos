@@ -126,13 +126,12 @@ trait BlockAlignSpec[M[+_]]
 
     val sample = SampleData(
       elements.toStream,
-      Some(
-        (
-          2,
-          List(
-            (JPath(".q"), CNum),
-            (JPath(".hw"), CEmptyArray),
-            (JPath(".fr8y"), CNum)))))
+      Some((
+        2,
+        List(
+          (JPath(".q"), CNum),
+          (JPath(".hw"), CEmptyArray),
+          (JPath(".fr8y"), CNum)))))
 
     testAlign(sample.sortBy(_ \ "key"))
   }
@@ -324,13 +323,12 @@ trait BlockAlignSpec[M[+_]]
 
     val sample = SampleData(
       elements.toStream,
-      Some(
-        (
-          3,
-          List(
-            (JPath(".xb5hs2ckjajs0k44x"), CDouble),
-            (JPath(".zzTqxfzwzacakwjqeGFcnhpkzd5akfobsg2nxump"), CEmptyArray),
-            (JPath(".sp7hpv"), CEmptyObject))))
+      Some((
+        3,
+        List(
+          (JPath(".xb5hs2ckjajs0k44x"), CDouble),
+          (JPath(".zzTqxfzwzacakwjqeGFcnhpkzd5akfobsg2nxump"), CEmptyArray),
+          (JPath(".sp7hpv"), CEmptyObject))))
     )
     testAlign(sample.sortBy(_ \ "key"))
   }
@@ -407,25 +405,24 @@ trait BlockAlignSpec[M[+_]]
         [[12],{ "000001":42, "000000":7 },{ "a":7, "b":42 }]
       ]""")
 
-      val lsortedOn = OuterObjectConcat(
-        WrapObject(
-          DerefObjectStatic(
-            OuterObjectConcat(
-              WrapObject(
-                DerefObjectStatic(
-                  DerefArrayStatic(Leaf(Source), CPathIndex(1)),
-                  CPathField("000001")),
-                "000000"),
-              WrapObject(
-                DerefObjectStatic(
-                  DerefArrayStatic(Leaf(Source), CPathIndex(1)),
-                  CPathField("000000")),
-                "000001")
-            ),
-            CPathField("000000")
+      val lsortedOn = OuterObjectConcat(WrapObject(
+        DerefObjectStatic(
+          OuterObjectConcat(
+            WrapObject(
+              DerefObjectStatic(
+                DerefArrayStatic(Leaf(Source), CPathIndex(1)),
+                CPathField("000001")),
+              "000000"),
+            WrapObject(
+              DerefObjectStatic(
+                DerefArrayStatic(Leaf(Source), CPathIndex(1)),
+                CPathField("000000")),
+              "000001")
           ),
-          "000000"
-        ))
+          CPathField("000000")
+        ),
+        "000000"
+      ))
 
       val JArray(rjson) = JParser.parseUnsafe("""[
         [[3],{ "000000":1 },{ "b":1 }],
@@ -460,25 +457,24 @@ trait BlockAlignSpec[M[+_]]
         [[13],{ "000001":12, "000000":42 },{ "a":42, "b":12 }]
       ]""")
 
-      val lsortedOn = OuterObjectConcat(
-        WrapObject(
-          DerefObjectStatic(
-            OuterObjectConcat(
-              WrapObject(
-                DerefObjectStatic(
-                  DerefArrayStatic(Leaf(Source), CPathIndex(1)),
-                  CPathField("000000")),
-                "000000"),
-              WrapObject(
-                DerefObjectStatic(
-                  DerefArrayStatic(Leaf(Source), CPathIndex(1)),
-                  CPathField("000001")),
-                "000001")
-            ),
-            CPathField("000000")
+      val lsortedOn = OuterObjectConcat(WrapObject(
+        DerefObjectStatic(
+          OuterObjectConcat(
+            WrapObject(
+              DerefObjectStatic(
+                DerefArrayStatic(Leaf(Source), CPathIndex(1)),
+                CPathField("000000")),
+              "000000"),
+            WrapObject(
+              DerefObjectStatic(
+                DerefArrayStatic(Leaf(Source), CPathIndex(1)),
+                CPathField("000001")),
+              "000001")
           ),
-          "000000"
-        ))
+          CPathField("000000")
+        ),
+        "000000"
+      ))
 
       val JArray(rjson) = JParser.parseUnsafe(
         """[

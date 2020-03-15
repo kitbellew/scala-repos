@@ -15,8 +15,7 @@ trait CategoryTests[F[_, _]] extends ComposeTests[F] {
       ArbFBC: Arbitrary[F[B, C]],
       ArbFCD: Arbitrary[F[C, D]],
       EqFAB: Eq[F[A, B]],
-      EqFAD: Eq[F[A, D]]
-  ): RuleSet =
+      EqFAD: Eq[F[A, D]]): RuleSet =
     new DefaultRuleSet(
       name = "category",
       parent = Some(compose[A, B, C, D]),

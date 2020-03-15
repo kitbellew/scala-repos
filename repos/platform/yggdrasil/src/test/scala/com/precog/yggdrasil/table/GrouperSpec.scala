@@ -602,8 +602,8 @@ trait GrouperSpec[M[+_]]
         gs1Json must haveSize(rawData1.count(_ == keyBigInt.toInt))
         gs2Json must haveSize(rawData2.count(_ == keyBigInt.toInt))
 
-        fromJson(
-          Stream(JObject(JField("key", key.toJValue(tic_aj)) ::
+        fromJson(Stream(JObject(
+          JField("key", key.toJValue(tic_aj)) ::
             JField("value", JNum(gs1Json.size + gs2Json.size)) :: Nil)))
       }
     }
@@ -696,13 +696,11 @@ trait GrouperSpec[M[+_]]
           (row \ "a") must beLike { case JNum(i) => i mustEqual keyBigInt }
         }
 
-        fromJson(
-          Stream(
-            JObject(
-              JField(
-                "key",
-                JArray(key.toJValue(tic_aj) :: key.toJValue(tic_bj) :: Nil)) ::
-                JField("value", JNum(gs1Json.size + gs2Json.size)) :: Nil)))
+        fromJson(Stream(JObject(
+          JField(
+            "key",
+            JArray(key.toJValue(tic_aj) :: key.toJValue(tic_bj) :: Nil)) ::
+            JField("value", JNum(gs1Json.size + gs2Json.size)) :: Nil)))
       }
     }
 
@@ -815,8 +813,8 @@ trait GrouperSpec[M[+_]]
           (row \ "a") must beLike { case JNum(i) => i mustEqual kaValue }
         }
 
-        val result = fromJson(
-          Stream(JObject(JField("key", key.toJValue(tic_aj)) ::
+        val result = fromJson(Stream(JObject(
+          JField("key", key.toJValue(tic_aj)) ::
             JField("value", JNum(gs1Json.size + gs2Json.size)) :: Nil)))
 
         elapsed += (System.currentTimeMillis - start)
@@ -980,13 +978,12 @@ trait GrouperSpec[M[+_]]
         barPJson must not(beEmpty)
         bazPJson must not(beEmpty)
 
-        val result = Stream(
-          JObject(
-            JField("a", a) ::
-              JField("b", b) ::
-              JField("foo", JNum(fooPJson.size)) ::
-              JField("bar", JNum(barPJson.size)) ::
-              JField("baz", JNum(bazPJson.size)) :: Nil))
+        val result = Stream(JObject(
+          JField("a", a) ::
+            JField("b", b) ::
+            JField("foo", JNum(fooPJson.size)) ::
+            JField("bar", JNum(barPJson.size)) ::
+            JField("baz", JNum(bazPJson.size)) :: Nil))
 
         fromJson(result)
       }
@@ -1062,16 +1059,17 @@ trait GrouperSpec[M[+_]]
       Stream(1948335811, -528723320, 1))
     "compute ctr with simple datasets" in testCtr(
       Stream(1, 2147483647, 2126441435, -1, 0, 0),
-      Stream(2006322377, -2147483648, -1456034303, 2147483647, 0, 2147483647,
+      Stream(
+        2006322377, -2147483648, -1456034303, 2147483647, 0, 2147483647,
         -1904025337))
 
     "compute ctr on one field of a composite value" >> {
       "and" >> propNoShrink(testCtrPartialJoinAnd _)
       "and with un-joinable datasets" >> testCtrPartialJoinAnd(
         Stream((0, Some(1)), (1123021019, Some(-2147483648))),
-        Stream(-1675865668, 889796884, 2147483647, -1099860336, -2147483648,
-          -2147483648, 1, 1496400141)
-      )
+        Stream(
+          -1675865668, 889796884, 2147483647, -1099860336, -2147483648,
+          -2147483648, 1, 1496400141))
       "and with joinable datasets" >> testCtrPartialJoinAnd(
         Stream(
           (-1, Some(-1771882715)),
@@ -1086,7 +1084,8 @@ trait GrouperSpec[M[+_]]
           (0, Some(-2147483648)),
           (1286585203, Some(560695941))
         ),
-        Stream(0, -297579588, -1, 2147483647, -1, -1536865491, 1049246142,
+        Stream(
+          0, -297579588, -1, 2147483647, -1, -1536865491, 1049246142,
           -2147483648, -2147483648, 766980226, -1047565460)
       )
       "and with repeated group keys in joinable datasets" >> testCtrPartialJoinAnd(
@@ -1104,8 +1103,9 @@ trait GrouperSpec[M[+_]]
           (2147483647, Some(-1)),
           (-1775980054, Some(2147483647))
         ),
-        Stream(1, -1, -2005746103, 720318134, 852618110, 1813748094, -1,
-          -1676020815, -627348537, 2147483647, -2147483648)
+        Stream(
+          1, -1, -2005746103, 720318134, 852618110, 1813748094, -1, -1676020815,
+          -627348537, 2147483647, -2147483648)
       )
 
       // TODO: the performance of the following is too awful to run under scalacheck, even with a minimal
@@ -1117,12 +1117,10 @@ trait GrouperSpec[M[+_]]
         Stream())
       "or with un-joinable datasets" >> testCtrPartialJoinOr(
         Stream((-2, Some(1))),
-        Stream(-1)
-      )
+        Stream(-1))
       "or with a join in datasets" >> testCtrPartialJoinOr(
         Stream((2, Some(-1)), (1, Some(-1)), (3, Some(4)), (1, Some(-1))),
-        Stream(-2, 1, 1, 5, 0, 6)
-      )
+        Stream(-2, 1, 1, 5, 0, 6))
 
       // runs a bit long
       "or with a pathological example" >> {
@@ -1210,12 +1208,13 @@ trait GrouperSpec[M[+_]]
           (2147483647, Some(0))
         )
 
-        val s2 = Stream(0, 0, 0, 1, 1, 434608913, 193294286, 0, -1921860406,
-          2147483647, -2147483648, 1, -1, 0, -2147483648, 0, -113276442,
-          -1564947365, 2147483647, -54676151, -1, 49986682, -391210112, 1, -1,
-          2147483647, 0, -1, 0, 0, 2147483647, -225140804, 1245119802, 1,
-          -548778232, -1138847365, 1, 73483948, 0, -1, -996046474, -695581403,
-          2147483647, -2147483648, -1, 1563916971, -2147483648, 0, 1, 607908889,
+        val s2 = Stream(
+          0, 0, 0, 1, 1, 434608913, 193294286, 0, -1921860406, 2147483647,
+          -2147483648, 1, -1, 0, -2147483648, 0, -113276442, -1564947365,
+          2147483647, -54676151, -1, 49986682, -391210112, 1, -1, 2147483647, 0,
+          -1, 0, 0, 2147483647, -225140804, 1245119802, 1, -548778232,
+          -1138847365, 1, 73483948, 0, -1, -996046474, -695581403, 2147483647,
+          -2147483648, -1, 1563916971, -2147483648, 0, 1, 607908889,
           -2009071663, -1382431435, 778550183, 2147483647, -2147483648, 0, -1)
 
         //println("s1.size = %d, s2.size = %d".format(s1.size, s2.size))

@@ -77,8 +77,7 @@ trait QuirrelCache extends AST { parser: Parser =>
       Keep("b", boolRe),
       Keep("s", strRe),
       Keep("p", pathRe),
-      Ignore(wordRe)
-    )
+      Ignore(wordRe))
 
     def fromString(input: String): (String, IndexedSeq[Binding]) = {
       var counter = 1
@@ -153,7 +152,9 @@ trait QuirrelCache extends AST { parser: Parser =>
             else if (s.startsWith("false")) ("b", 5)
             else {
               sys.error(
-                "error recovering boolean literal from %s (%s at %s)" format (s, original, i))
+                "error recovering boolean literal from %s (%s at %s)" format (
+                  s, original, i
+                ))
             }
           case _: NumLit =>
             parser.numLiteralRegex
@@ -161,7 +162,9 @@ trait QuirrelCache extends AST { parser: Parser =>
               .map(x => ("n", x.length))
               .getOrElse {
                 sys.error(
-                  "error recovering number literal from %s (%s at %s)" format (s, original, i))
+                  "error recovering number literal from %s (%s at %s)" format (
+                    s, original, i
+                  ))
               }
           case _: StrLit =>
             parser.pathLiteralRegex
@@ -179,7 +182,9 @@ trait QuirrelCache extends AST { parser: Parser =>
               }
               .getOrElse {
                 sys.error(
-                  "error recovering string literal from %s (%s at %s)" format (s, original, i))
+                  "error recovering string literal from %s (%s at %s)" format (
+                    s, original, i
+                  ))
               }
         }
       }

@@ -11,8 +11,7 @@ import java.io.File
   */
 case class RpcResponseEnvelope(
     callId: Option[Int],
-    payload: EnsimeServerMessage
-)
+    payload: EnsimeServerMessage)
 
 sealed trait EnsimeServerMessage
 
@@ -32,14 +31,12 @@ case object DebuggerShutdownEvent
 sealed trait DebugVmStatus extends RpcResponse
 
 // must have redundant status: String to match legacy API
-case class DebugVmSuccess(
-    status: String = "success"
-) extends DebugVmStatus
+case class DebugVmSuccess(status: String = "success") extends DebugVmStatus
 case class DebugVmError(
     errorCode: Int,
     details: String,
-    status: String = "error"
-) extends DebugVmStatus
+    status: String = "error")
+    extends DebugVmStatus
 
 sealed trait GeneralSwankEvent extends EnsimeEvent
 sealed trait DebugEvent extends EnsimeEvent
@@ -49,10 +46,8 @@ sealed trait DebugEvent extends EnsimeEvent
   *
   * NOTE: codes will be deprecated, preferring sealed families.
   */
-case class SendBackgroundMessageEvent(
-    detail: String,
-    code: Int = 105
-) extends GeneralSwankEvent
+case class SendBackgroundMessageEvent(detail: String, code: Int = 105)
+    extends GeneralSwankEvent
 
 /** The presentation compiler is ready to accept requests. */
 case object AnalyzerReadyEvent extends GeneralSwankEvent
@@ -79,36 +74,32 @@ case class Note(
     beg: Int,
     end: Int,
     line: Int,
-    col: Int
-) extends RpcResponse
+    col: Int)
+    extends RpcResponse
 
 /** The presentation compiler is providing notes: e.g. errors, warnings. */
-case class NewScalaNotesEvent(
-    isFull: Boolean,
-    notes: List[Note]
-) extends GeneralSwankEvent
+case class NewScalaNotesEvent(isFull: Boolean, notes: List[Note])
+    extends GeneralSwankEvent
 
 /** The presentation compiler is providing notes: e.g. errors, warnings. */
-case class NewJavaNotesEvent(
-    isFull: Boolean,
-    notes: List[Note]
-) extends GeneralSwankEvent
+case class NewJavaNotesEvent(isFull: Boolean, notes: List[Note])
+    extends GeneralSwankEvent
 
 /** The debugged VM has stepped to a new location and is now paused awaiting control. */
 case class DebugStepEvent(
     threadId: DebugThreadId,
     threadName: String,
     file: File,
-    line: Int
-) extends DebugEvent
+    line: Int)
+    extends DebugEvent
 
 /** The debugged VM has stopped at a breakpoint. */
 case class DebugBreakEvent(
     threadId: DebugThreadId,
     threadName: String,
     file: File,
-    line: Int
-) extends DebugEvent
+    line: Int)
+    extends DebugEvent
 
 /** The debugged VM has started. */
 case object DebugVMStartEvent extends DebugEvent
@@ -122,8 +113,8 @@ case class DebugExceptionEvent(
     threadId: DebugThreadId,
     threadName: String,
     file: Option[File],
-    line: Option[Int]
-) extends DebugEvent
+    line: Option[Int])
+    extends DebugEvent
 
 /** A new thread has started. */
 case class DebugThreadStartEvent(threadId: DebugThreadId) extends DebugEvent
@@ -169,8 +160,8 @@ case class RefactorResult(
 case class RefactorDiffEffect(
     procedureId: Int,
     refactorType: RefactorType,
-    diff: File
-) extends RpcResponse
+    diff: File)
+    extends RpcResponse
     with RefactorProcedure
 
 sealed abstract class RefactorDesc(val refactorType: RefactorType)
@@ -205,21 +196,11 @@ sealed trait PatchOp {
   def start: Int
 }
 
-case class PatchInsert(
-    start: Int,
-    text: String
-) extends PatchOp
+case class PatchInsert(start: Int, text: String) extends PatchOp
 
-case class PatchDelete(
-    start: Int,
-    end: Int
-) extends PatchOp
+case class PatchDelete(start: Int, end: Int) extends PatchOp
 
-case class PatchReplace(
-    start: Int,
-    end: Int,
-    text: String
-) extends PatchOp
+case class PatchReplace(start: Int, end: Int, text: String) extends PatchOp
 
 sealed trait EntityInfo extends RpcResponse {
   def name: String
@@ -282,8 +263,8 @@ case class PackageInfo(
     name: String,
     fullName: String,
     // n.b. members should be sorted by name for consistency
-    members: Seq[EntityInfo]
-) extends EntityInfo {
+    members: Seq[EntityInfo])
+    extends EntityInfo {
   require(members == members.sortBy(_.name), "members should be sorted by name")
 }
 
@@ -298,16 +279,16 @@ case class TypeSearchResult(
     name: String,
     localName: String,
     declAs: DeclaredAs,
-    pos: Option[SourcePosition]
-) extends SymbolSearchResult
+    pos: Option[SourcePosition])
+    extends SymbolSearchResult
 
 case class MethodSearchResult(
     name: String,
     localName: String,
     declAs: DeclaredAs,
     pos: Option[SourcePosition],
-    ownerName: String
-) extends SymbolSearchResult
+    ownerName: String)
+    extends SymbolSearchResult
 
 // what is the point of these types?
 case class ImportSuggestions(symLists: List[List[SymbolSearchResult]])
@@ -315,31 +296,22 @@ case class ImportSuggestions(symLists: List[List[SymbolSearchResult]])
 case class SymbolSearchResults(syms: List[SymbolSearchResult])
     extends RpcResponse
 
-case class SymbolDesignations(
-    file: File,
-    syms: List[SymbolDesignation]
-) extends RpcResponse
+case class SymbolDesignations(file: File, syms: List[SymbolDesignation])
+    extends RpcResponse
 
-case class SymbolDesignation(
-    start: Int,
-    end: Int,
-    symType: SourceSymbol
-)
+case class SymbolDesignation(start: Int, end: Int, symType: SourceSymbol)
 
 case class SymbolInfo(
     name: String,
     localName: String,
     declPos: Option[SourcePosition],
     `type`: TypeInfo,
-    isCallable: Boolean
-) extends RpcResponse {
+    isCallable: Boolean)
+    extends RpcResponse {
   def tpe = `type`
 }
 
-case class Op(
-    op: String,
-    description: String
-)
+case class Op(op: String, description: String)
 
 case class MethodBytecode(
     className: String,
@@ -347,27 +319,23 @@ case class MethodBytecode(
     methodSignature: Option[String],
     byteCode: List[Op],
     startLine: Int,
-    endLine: Int
-)
+    endLine: Int)
 
 case class CompletionSignature(
     sections: List[List[(String, String)]],
     result: String,
-    hasImplicit: Boolean
-)
+    hasImplicit: Boolean)
 
 case class CompletionInfo(
     name: String,
     typeSig: CompletionSignature,
     isCallable: Boolean,
     relevance: Int,
-    toInsert: Option[String]
-) extends RpcResponse
+    toInsert: Option[String])
+    extends RpcResponse
 
-case class CompletionInfoList(
-    prefix: String,
-    completions: List[CompletionInfo]
-) extends RpcResponse
+case class CompletionInfoList(prefix: String, completions: List[CompletionInfo])
+    extends RpcResponse
 
 case class Breakpoint(file: File, line: Int) extends RpcResponse
 case class BreakpointList(active: List[Breakpoint], pending: List[Breakpoint])
@@ -428,49 +396,45 @@ sealed trait DebugValue extends RpcResponse {
   def typeName: String
 }
 
-case class DebugNullValue(
-    typeName: String
-) extends DebugValue
+case class DebugNullValue(typeName: String) extends DebugValue
 
-case class DebugPrimitiveValue(
-    summary: String,
-    typeName: String
-) extends DebugValue
+case class DebugPrimitiveValue(summary: String, typeName: String)
+    extends DebugValue
 
 case class DebugObjectInstance(
     summary: String,
     fields: List[DebugClassField],
     typeName: String,
-    objectId: DebugObjectId
-) extends DebugValue
+    objectId: DebugObjectId)
+    extends DebugValue
 
 case class DebugStringInstance(
     summary: String,
     fields: List[DebugClassField],
     typeName: String,
-    objectId: DebugObjectId
-) extends DebugValue
+    objectId: DebugObjectId)
+    extends DebugValue
 
 case class DebugArrayInstance(
     length: Int,
     typeName: String,
     elementTypeName: String,
-    objectId: DebugObjectId
-) extends DebugValue
+    objectId: DebugObjectId)
+    extends DebugValue
 
 case class DebugClassField(
     index: Int,
     name: String,
     typeName: String,
-    summary: String
-) extends RpcResponse
+    summary: String)
+    extends RpcResponse
 
 case class DebugStackLocal(
     index: Int,
     name: String,
     summary: String,
-    typeName: String
-) extends RpcResponse
+    typeName: String)
+    extends RpcResponse
 
 case class DebugStackFrame(
     index: Int,
@@ -479,22 +443,22 @@ case class DebugStackFrame(
     className: String,
     methodName: String,
     pcLocation: LineSourcePosition,
-    thisObjectId: DebugObjectId
-) extends RpcResponse
+    thisObjectId: DebugObjectId)
+    extends RpcResponse
 
 case class DebugBacktrace(
     frames: List[DebugStackFrame],
     threadId: DebugThreadId,
-    threadName: String
-) extends RpcResponse
+    threadName: String)
+    extends RpcResponse
 
 case class NamedTypeMemberInfo(
     name: String,
     `type`: TypeInfo,
     pos: Option[SourcePosition],
     signatureString: Option[String],
-    declAs: DeclaredAs
-) extends EntityInfo {
+    declAs: DeclaredAs)
+    extends EntityInfo {
   override def members = List.empty
   def tpe = `type`
 }
@@ -517,14 +481,14 @@ case class BasicTypeInfo(
     fullName: String,
     typeArgs: Iterable[TypeInfo],
     members: Iterable[EntityInfo],
-    pos: Option[SourcePosition]
-) extends TypeInfo
+    pos: Option[SourcePosition])
+    extends TypeInfo
 
 case class ArrowTypeInfo(
     name: String,
     resultType: TypeInfo,
-    paramSections: Iterable[ParamSectionInfo]
-) extends TypeInfo {
+    paramSections: Iterable[ParamSectionInfo])
+    extends TypeInfo {
   def declAs = DeclaredAs.Nil
   def fullName = name
   def typeArgs = List.empty
@@ -534,13 +498,10 @@ case class ArrowTypeInfo(
 
 case class ParamSectionInfo(
     params: Iterable[(String, TypeInfo)],
-    isImplicit: Boolean
-)
+    isImplicit: Boolean)
 
-case class InterfaceInfo(
-    `type`: TypeInfo,
-    viaView: Option[String]
-) extends RpcResponse {
+case class InterfaceInfo(`type`: TypeInfo, viaView: Option[String])
+    extends RpcResponse {
   def tpe = `type`
 }
 
@@ -558,30 +519,25 @@ case class ERangePositions(positions: List[ERangePosition]) extends RpcResponse
 
 case class FileRange(file: String, start: Int, end: Int) extends RpcResponse
 
-case class EnsimeImplementation(
-    name: String
-)
+case class EnsimeImplementation(name: String)
 case class ConnectionInfo(
     pid: Option[Int] = None,
     implementation: EnsimeImplementation = EnsimeImplementation("ENSIME"),
-    version: String = "0.8.20"
-) extends RpcResponse
+    version: String = "0.8.20")
+    extends RpcResponse
 
 sealed trait ImplicitInfo
 
-case class ImplicitConversionInfo(
-    start: Int,
-    end: Int,
-    fun: SymbolInfo
-) extends ImplicitInfo
+case class ImplicitConversionInfo(start: Int, end: Int, fun: SymbolInfo)
+    extends ImplicitInfo
 
 case class ImplicitParamInfo(
     start: Int,
     end: Int,
     fun: SymbolInfo,
     params: List[SymbolInfo],
-    funIsImplicit: Boolean
-) extends ImplicitInfo
+    funIsImplicit: Boolean)
+    extends ImplicitInfo
 
 case class ImplicitInfos(infos: List[ImplicitInfo]) extends RpcResponse
 
@@ -596,5 +552,4 @@ case class StructureViewMember(
     keyword: String,
     name: String,
     position: SourcePosition,
-    members: List[StructureViewMember]
-)
+    members: List[StructureViewMember])

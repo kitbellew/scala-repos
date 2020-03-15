@@ -131,14 +131,13 @@ trait MergeSpec[M[+_]]
         GroupingSource(
           bar,
           DerefObjectStatic(Leaf(Source), keyField),
-          Some(
-            InnerObjectConcat(
-              ObjectDelete(Leaf(Source), Set(valueField)),
-              WrapObject(
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  cField),
-                "value"))),
+          Some(InnerObjectConcat(
+            ObjectDelete(Leaf(Source), Set(valueField)),
+            WrapObject(
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                cField),
+              "value"))),
           0,
           GroupKeySpecOr(
             GroupKeySpecSource(
@@ -285,14 +284,13 @@ trait MergeSpec[M[+_]]
         GroupingSource(
           medals,
           DerefObjectStatic(Leaf(Source), keyField),
-          Some(
-            InnerObjectConcat(
-              ObjectDelete(Leaf(Source), Set(valueField)),
-              WrapObject(
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  genderField),
-                "value"))),
+          Some(InnerObjectConcat(
+            ObjectDelete(Leaf(Source), Set(valueField)),
+            WrapObject(
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                genderField),
+              "value"))),
           0,
           GroupKeySpecAnd(
             GroupKeySpecSource(
@@ -322,14 +320,13 @@ trait MergeSpec[M[+_]]
         GroupingSource(
           medals,
           DerefObjectStatic(Leaf(Source), keyField),
-          Some(
-            InnerObjectConcat(
-              ObjectDelete(Leaf(Source), Set(valueField)),
-              WrapObject(
-                DerefObjectStatic(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  genderField),
-                "value"))),
+          Some(InnerObjectConcat(
+            ObjectDelete(Leaf(Source), Set(valueField)),
+            WrapObject(
+              DerefObjectStatic(
+                DerefObjectStatic(Leaf(Source), valueField),
+                genderField),
+              "value"))),
           2,
           GroupKeySpecAnd(
             GroupKeySpecSource(

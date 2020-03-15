@@ -55,17 +55,23 @@ object HeadHelper {
 
       e match {
         case e: Elem
-            if (e.label == "script") && (src != null) && (jsSources contains src) =>
+            if (e.label == "script") && (src != null) && (
+              jsSources contains src
+            ) =>
           NodeSeq.Empty
         case e: Elem
-            if (e.label == "script") && (src != null) && (!(jsSources contains src)) =>
+            if (e.label == "script") && (src != null) && (
+              !(jsSources contains src)
+            ) =>
           jsSources += src; e
 
         case e: Elem
             if (e.label == "link") && (href != null) && (hrefs contains href) =>
           NodeSeq.Empty
         case e: Elem
-            if (e.label == "link") && (href != null) && !(hrefs contains href) =>
+            if (e.label == "link") && (href != null) && !(
+              hrefs contains href
+            ) =>
           hrefs += href; e
 
         case e: Text if (e.text.trim.length == 0) => NodeSeq.Empty

@@ -523,8 +523,8 @@ private[parquet] class CatalystSchemaConverter(
           .addField(
             Types
               .repeatedGroup()
-              .addField(
-                convertField(StructField("element", elementType, containsNull)))
+              .addField(convertField(
+                StructField("element", elementType, containsNull)))
               .named("list"))
           .named(field.name)
 
@@ -541,8 +541,8 @@ private[parquet] class CatalystSchemaConverter(
           .addField(
             Types
               .repeatedGroup()
-              .addField(
-                convertField(StructField("key", keyType, nullable = false)))
+              .addField(convertField(
+                StructField("key", keyType, nullable = false)))
               .addField(convertField(
                 StructField("value", valueType, valueContainsNull)))
               .named("key_value"))

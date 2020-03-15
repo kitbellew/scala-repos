@@ -18,20 +18,17 @@ object JsonSpec extends org.specs2.mutable.Specification {
   case class User(id: Long, name: String, friends: List[User])
 
   implicit val UserFormat: Format[User] =
-    (
-      (__ \ 'id).format[Long] and
-        (__ \ 'name).format[String] and
-        (__ \ 'friends)
-          .lazyFormat(Reads.list(UserFormat), Writes.list(UserFormat))
-    )(User, unlift(User.unapply))
+    ((__ \ 'id).format[Long] and
+      (__ \ 'name).format[String] and
+      (__ \ 'friends).lazyFormat(
+        Reads.list(UserFormat),
+        Writes.list(UserFormat)))(User, unlift(User.unapply))
 
   case class Car(id: Long, models: Map[String, String])
 
   implicit val CarFormat =
-    (
-      (__ \ 'id).format[Long] and
-        (__ \ 'models).format[Map[String, String]]
-    )(Car, unlift(Car.unapply))
+    ((__ \ 'id).format[Long] and
+      (__ \ 'models).format[Map[String, String]])(Car, unlift(Car.unapply))
 
   import java.text.SimpleDateFormat
   val dateFormat =
@@ -41,28 +38,20 @@ object JsonSpec extends org.specs2.mutable.Specification {
   case class Post(body: String, created_at: Option[Date])
 
   implicit val PostFormat: Format[Post] =
-    (
-      (__ \ 'body).format[String] and
-        (__ \ 'created_at)
-          .formatNullable[Option[Date]](
-            Format(
-              Reads.optionWithNull(Reads.dateReads(dateFormat)),
-              Writes.optionWithNull(Writes.dateWrites(dateFormat))
-            )
-          )
-          .inmap(optopt => optopt.flatten, (opt: Option[Date]) => Some(opt))
-    )(Post, unlift(Post.unapply))
+    ((__ \ 'body).format[String] and
+      (__ \ 'created_at)
+        .formatNullable[Option[Date]](Format(
+          Reads.optionWithNull(Reads.dateReads(dateFormat)),
+          Writes.optionWithNull(Writes.dateWrites(dateFormat))))
+        .inmap(optopt => optopt.flatten, (opt: Option[Date]) => Some(opt)))(
+      Post,
+      unlift(Post.unapply))
 
   val LenientPostFormat: Format[Post] =
-    (
-      (__ \ 'body).format[String] and
-        (__ \ 'created_at).formatNullable[Date](
-          Format(
-            Reads.IsoDateReads,
-            Writes.dateWrites(dateFormat)
-          )
-        )
-    )(Post, unlift(Post.unapply))
+    ((__ \ 'body).format[String] and
+      (__ \ 'created_at).formatNullable[Date](Format(
+        Reads.IsoDateReads,
+        Writes.dateWrites(dateFormat))))(Post, unlift(Post.unapply))
 
   val mapper = new ObjectMapper()
 
@@ -74,19 +63,14 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "field3" -> Json.obj(
           "field31" -> true,
           "field32" -> 123.45,
-          "field33" -> Json.arr("blabla", 456L, JsNull)
-        )
-      ) must beEqualTo(
+          "field33" -> Json.arr("blabla", 456L, JsNull))) must beEqualTo(
         Json.obj(
           "field2" -> "beta",
           "field3" -> Json.obj(
             "field31" -> true,
             "field33" -> Json.arr("blabla", 456L, JsNull),
-            "field32" -> 123.45
-          ),
-          "field1" -> 123
-        )
-      )
+            "field32" -> 123.45),
+          "field1" -> 123))
 
       Json.obj(
         "field1" -> 123,
@@ -94,19 +78,13 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "field3" -> Json.obj(
           "field31" -> true,
           "field32" -> 123.45,
-          "field33" -> Json.arr("blabla", JsNull)
-        )
-      ) must not equalTo (
-        Json.obj(
-          "field2" -> "beta",
-          "field3" -> Json.obj(
-            "field31" -> true,
-            "field33" -> Json.arr("blabla", 456L),
-            "field32" -> 123.45
-          ),
-          "field1" -> 123
-        )
-      )
+          "field33" -> Json.arr("blabla", JsNull))) must not equalTo (Json.obj(
+        "field2" -> "beta",
+        "field3" -> Json.obj(
+          "field31" -> true,
+          "field33" -> Json.arr("blabla", 456L),
+          "field32" -> 123.45),
+        "field1" -> 123))
 
       Json.obj(
         "field1" -> 123,
@@ -114,17 +92,13 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "field3" -> Json.obj(
           "field31" -> true,
           "field32" -> 123.45,
-          "field33" -> Json.arr("blabla", 456L, JsNull)
-        )
-      ) must not equalTo (
+          "field33" -> Json.arr("blabla", 456L, JsNull))) must not equalTo (
         Json.obj(
           "field3" -> Json.obj(
             "field31" -> true,
             "field33" -> Json.arr("blabla", 456L, JsNull),
-            "field32" -> 123.45
-          ),
-          "field1" -> 123
-        )
+            "field32" -> 123.45),
+          "field1" -> 123)
       )
     }
 
@@ -269,8 +243,9 @@ object JsonSpec extends org.specs2.mutable.Specification {
       val t = 1330950829160L
       val m = Map("timestamp" -> t)
       val jsonM = toJson(m)
-      (jsonM \ "timestamp")
-        .as[Long] must_== t and (jsonM.toString must_== """{"timestamp":1330950829160}""")
+      (jsonM \ "timestamp").as[Long] must_== t and (
+        jsonM.toString must_== """{"timestamp":1330950829160}"""
+      )
     }
 
     "Serialize short integers correctly" in {
@@ -354,17 +329,11 @@ object JsonSpec extends org.specs2.mutable.Specification {
 
     "Can parse recursive object" in {
       val recursiveJson = """{"foo": {"foo":["bar"]}, "bar": {"foo":["bar"]}}"""
-      val expectedJson = JsObject(
-        List(
-          "foo" -> JsObject(
-            List(
-              "foo" -> JsArray(List[JsValue](JsString("bar")))
-            )),
-          "bar" -> JsObject(
-            List(
-              "foo" -> JsArray(List[JsValue](JsString("bar")))
-            ))
-        ))
+      val expectedJson = JsObject(List(
+        "foo" -> JsObject(
+          List("foo" -> JsArray(List[JsValue](JsString("bar"))))),
+        "bar" -> JsObject(
+          List("foo" -> JsArray(List[JsValue](JsString("bar")))))))
       Json.parse(recursiveJson) must equalTo(expectedJson)
     }
 
@@ -380,8 +349,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
       val js = Json.obj(
         "key1" -> "toto",
         "key2" -> Json.obj("key21" -> "tata", "key22" -> 123),
-        "key3" -> Json.arr(1, "tutu")
-      )
+        "key3" -> Json.arr(1, "tutu"))
 
       Json.prettyPrint(js) must beEqualTo("""{
   "key1" : "toto",
@@ -402,8 +370,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "key1" -> "\u2028\u2029\u2030",
         "key2" -> "\u00E1\u00E9\u00ED\u00F3\u00FA",
         "key3" -> "\u00A9\u00A3",
-        "key4" -> "\u6837\u54C1"
-      )
+        "key4" -> "\u6837\u54C1")
       Json.asciiStringify(js) must beEqualTo(
         "{\"key1\":\"\\u2028\\u2029\\u2030\"," +
           "\"key2\":\"\\u00E1\\u00E9\\u00ED\\u00F3\\u00FA\"," +
@@ -412,10 +379,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
     }
 
     "asciiStringify should escape ascii characters properly" in {
-      val js = Json.obj(
-        "key1" -> "ab\n\tcd",
-        "key2" -> "\"\r"
-      )
+      val js = Json.obj("key1" -> "ab\n\tcd", "key2" -> "\"\r")
       Json.asciiStringify(js) must beEqualTo(
         """{"key1":"ab\n\tcd","key2":"\"\r"}""")
     }
@@ -428,8 +392,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "key4" -> Json.arr(1, 2.5, "value2", false, JsNull),
         "key5" -> Json.obj(
           "key6" -> "こんにちは",
-          "key7" -> BigDecimal("12345678901234567890.123456789")
-        )
+          "key7" -> BigDecimal("12345678901234567890.123456789"))
       )
       val stream =
         new java.io.ByteArrayInputStream(js.toString.getBytes("UTF-8"))
@@ -444,8 +407,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
         "key4" -> Json.arr(1, 2.5, "value2", false, JsNull),
         "key5" -> Json.obj(
           "key6" -> "こんにちは",
-          "key7" -> BigDecimal("12345678901234567890.123456789")
-        )
+          "key7" -> BigDecimal("12345678901234567890.123456789"))
       )
       val originalString = Json.stringify(original)
       val parsed = Json.parse(originalString)
@@ -466,27 +428,21 @@ object JsonSpec extends org.specs2.mutable.Specification {
       Json.toJson(Map("key1" -> "value1", "key2" -> "value2")) must beEqualTo(
         Json.obj("key1" -> "value1", "key2" -> "value2"))
 
-      implicit val myWrites = (
-        (__ \ 'key1).write(constraints.list[Int]) and
-          (__ \ 'key2).write(constraints.set[String]) and
-          (__ \ 'key3).write(constraints.seq[String]) and
-          (__ \ 'key4).write(constraints.map[String])
-      ).tupled
+      implicit val myWrites = ((__ \ 'key1).write(constraints.list[Int]) and
+        (__ \ 'key2).write(constraints.set[String]) and
+        (__ \ 'key3).write(constraints.seq[String]) and
+        (__ \ 'key4).write(constraints.map[String])).tupled
 
-      Json.toJson(
-        (
-          List(1, 2, 3),
-          Set("alpha", "beta", "gamma"),
-          Seq("alpha", "beta", "gamma"),
-          Map("key1" -> "value1", "key2" -> "value2")
-        )) must beEqualTo(
-        Json.obj(
-          "key1" -> Json.arr(1, 2, 3),
-          "key2" -> Json.arr("alpha", "beta", "gamma"),
-          "key3" -> Json.arr("alpha", "beta", "gamma"),
-          "key4" -> Json.obj("key1" -> "value1", "key2" -> "value2")
-        )
-      )
+      Json.toJson((
+        List(1, 2, 3),
+        Set("alpha", "beta", "gamma"),
+        Seq("alpha", "beta", "gamma"),
+        Map("key1" -> "value1", "key2" -> "value2"))) must beEqualTo(Json.obj(
+        "key1" -> Json.arr(1, 2, 3),
+        "key2" -> Json.arr("alpha", "beta", "gamma"),
+        "key3" -> Json.arr("alpha", "beta", "gamma"),
+        "key4" -> Json.obj("key1" -> "value1", "key2" -> "value2")
+      ))
     }
 
     "write in 2nd level" in {
@@ -494,72 +450,60 @@ object JsonSpec extends org.specs2.mutable.Specification {
 
       val js = Json.obj(
         "id" -> "my-id",
-        "data" -> Json.obj(
-          "attr1" -> "foo",
-          "attr2" -> "bar"
-        )
-      )
+        "data" -> Json.obj("attr1" -> "foo", "attr2" -> "bar"))
 
       implicit val testCaseWrites: Writes[TestCase] =
-        (
-          (__ \ "id").write[String] and
-            (__ \ "data" \ "attr1").write[String] and
-            (__ \ "data" \ "attr2").write[String]
-        )(unlift(TestCase.unapply))
+        ((__ \ "id").write[String] and
+          (__ \ "data" \ "attr1").write[String] and
+          (__ \ "data" \ "attr2").write[String])(unlift(TestCase.unapply))
 
       Json.toJson(TestCase("my-id", "foo", "bar")) must beEqualTo(js)
     }
 
     "keep the insertion order on ListMap" in {
       val test = Json.toJson(
-        ListMap(
-          "name" -> "foo",
-          "zip" -> "foo",
-          "city" -> "foo"
-        ))
+        ListMap("name" -> "foo", "zip" -> "foo", "city" -> "foo"))
       val req = """{"name":"foo", "zip":"foo", "city":"foo"}"""
       test.toString must beEqualTo(Json.parse(req).toString).ignoreSpace
     }
     "keep insertion order on large ListMap" in {
-      val test = Json.toJson(
-        ListMap(
-          "name" -> "a",
-          "zip" -> "foo",
-          "city" -> "foo",
-          "address" -> "foo",
-          "phone" -> "foo",
-          "latitude" -> "foo",
-          "longitude" -> "foo",
-          "hny" -> "foo",
-          "hz" -> "foo",
-          "hek" -> "foo",
-          "hev" -> "foo",
-          "kny" -> "foo",
-          "kz" -> "foo",
-          "kek" -> "foo",
-          "kev" -> "foo",
-          "szeny" -> "foo",
-          "szez" -> "foo",
-          "szeek" -> "foo",
-          "szeev" -> "foo",
-          "csny" -> "foo",
-          "csz" -> "foo",
-          "csek" -> "foo",
-          "csev" -> "foo",
-          "pny" -> "foo",
-          "pz" -> "foo",
-          "pek" -> "foo",
-          "pev" -> "foo",
-          "szony" -> "foo",
-          "szoz" -> "foo",
-          "szoek" -> "foo",
-          "szoev" -> "foo",
-          "vny" -> "foo",
-          "vz" -> "foo",
-          "vek" -> "foo",
-          "vev" -> "foo"
-        )
-      )
+      val test = Json.toJson(ListMap(
+        "name" -> "a",
+        "zip" -> "foo",
+        "city" -> "foo",
+        "address" -> "foo",
+        "phone" -> "foo",
+        "latitude" -> "foo",
+        "longitude" -> "foo",
+        "hny" -> "foo",
+        "hz" -> "foo",
+        "hek" -> "foo",
+        "hev" -> "foo",
+        "kny" -> "foo",
+        "kz" -> "foo",
+        "kek" -> "foo",
+        "kev" -> "foo",
+        "szeny" -> "foo",
+        "szez" -> "foo",
+        "szeek" -> "foo",
+        "szeev" -> "foo",
+        "csny" -> "foo",
+        "csz" -> "foo",
+        "csek" -> "foo",
+        "csev" -> "foo",
+        "pny" -> "foo",
+        "pz" -> "foo",
+        "pek" -> "foo",
+        "pev" -> "foo",
+        "szony" -> "foo",
+        "szoz" -> "foo",
+        "szoek" -> "foo",
+        "szoev" -> "foo",
+        "vny" -> "foo",
+        "vz" -> "foo",
+        "vek" -> "foo",
+        "vev" -> "foo"
+      ))
       val req =
         """{"name": "a", "zip": "foo", "city": "foo", "address": "foo", "phone": "foo", "latitude": "foo", "longitude": "foo", "hny": "foo", "hz": "foo", "hek": "foo", "hev": "foo", "kny": "foo", "kz": "foo", "kek": "foo", "kev": "foo", "szeny": "foo", "szez": "foo", "szeek": "foo", "szeev": "foo", "csny": "foo", "csz": "foo", "csek": "foo", "csev": "foo", "pny": "foo", "pz": "foo", "pek": "foo", "pev": "foo", "szony": "foo", "szoz": "foo", "szoek": "foo", "szoev": "foo", "vny": "foo", "vz": "foo", "vek": "foo", "vev": "foo"}"""
       test.toString must beEqualTo(Json.parse(req).toString).ignoreSpace

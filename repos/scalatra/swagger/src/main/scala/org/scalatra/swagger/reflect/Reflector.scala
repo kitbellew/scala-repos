@@ -193,12 +193,11 @@ object Reflector {
           case x =>
             val st = scalaTypeOf(x)
             if (st.erasure == classOf[java.lang.Object]) {
-              scalaTypeOf(
-                ScalaSigReader.readConstructor(
-                  name,
-                  owner,
-                  idxes getOrElse List(index),
-                  ctorParameterNames))
+              scalaTypeOf(ScalaSigReader.readConstructor(
+                name,
+                owner,
+                idxes getOrElse List(index),
+                ctorParameterNames))
             } else st
         }
       }
@@ -248,9 +247,8 @@ object Reflector {
 
   def defaultValue(compClass: Class[_], compObj: AnyRef, argIndex: Int) = {
     allCatch.withApply(_ => None) {
-      Option(
-        compClass.getMethod(
-          "%s$%d".format(ConstructorDefault, argIndex + 1))) map { meth => () =>
+      Option(compClass.getMethod(
+        "%s$%d".format(ConstructorDefault, argIndex + 1))) map { meth => () =>
         meth.invoke(compObj)
       }
     }

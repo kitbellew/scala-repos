@@ -35,10 +35,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
   import testImplicits._
 
   private def createTestDataFrame: DataFrame = {
-    Seq(
-      (1, 1),
-      (2, 2)
-    ).toDF().filter("_1 > 1")
+    Seq((1, 1), (2, 2)).toDF().filter("_1 > 1")
   }
 
   private def createProperties(executionId: Long): Properties = {
@@ -56,8 +53,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       numTasks = 0,
       rddInfos = Nil,
       parentIds = Nil,
-      details = ""
-    )
+      details = "")
 
   private def createTaskInfo(taskId: Int, attemptNumber: Int): TaskInfo =
     new TaskInfo(
@@ -69,8 +65,7 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       executorId = "",
       host = "",
       taskLocality = null,
-      speculative = false
-    )
+      speculative = false)
 
   private def createTaskMetrics(
       accumulatorUpdates: Map[Long, Long]): TaskMetrics = {
@@ -108,169 +103,139 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
       (id, accumulatorValue)
     }.toMap
 
-    listener.onOtherEvent(
-      SparkListenerSQLExecutionStart(
-        executionId,
-        "test",
-        "test",
-        df.queryExecution.toString,
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
-        System.currentTimeMillis()))
+    listener.onOtherEvent(SparkListenerSQLExecutionStart(
+      executionId,
+      "test",
+      "test",
+      df.queryExecution.toString,
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
+      System.currentTimeMillis()))
 
     val executionUIData = listener.executionIdToData(0)
 
-    listener.onJobStart(
-      SparkListenerJobStart(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        stageInfos = Seq(
-          createStageInfo(0, 0),
-          createStageInfo(1, 0)
-        ),
-        createProperties(executionId)))
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(0, 0)))
+    listener.onJobStart(SparkListenerJobStart(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      stageInfos = Seq(createStageInfo(0, 0), createStageInfo(1, 0)),
+      createProperties(executionId)))
+    listener.onStageSubmitted(SparkListenerStageSubmitted(
+      createStageInfo(0, 0)))
 
     assert(listener.getExecutionMetrics(0).isEmpty)
 
-    listener.onExecutorMetricsUpdate(
-      SparkListenerExecutorMetricsUpdate(
-        "",
-        Seq(
-          // (task id, stage id, stage attempt, accum updates)
-          (
-            0L,
-            0,
-            0,
-            createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
-          (1L, 0, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
-        )
-      ))
+    listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
+      "",
+      Seq(
+        // (task id, stage id, stage attempt, accum updates)
+        (0L, 0, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
+        (1L, 0, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
+      )
+    ))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 2))
 
-    listener.onExecutorMetricsUpdate(
-      SparkListenerExecutorMetricsUpdate(
-        "",
-        Seq(
-          // (task id, stage id, stage attempt, accum updates)
-          (
-            0L,
-            0,
-            0,
-            createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
-          (
-            1L,
-            0,
-            0,
-            createTaskMetrics(accumulatorUpdates.mapValues(_ * 2))
-              .accumulatorUpdates())
-        )
-      ))
+    listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
+      "",
+      Seq(
+        // (task id, stage id, stage attempt, accum updates)
+        (0L, 0, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
+        (
+          1L,
+          0,
+          0,
+          createTaskMetrics(accumulatorUpdates.mapValues(_ * 2))
+            .accumulatorUpdates())
+      )
+    ))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 3))
 
     // Retrying a stage should reset the metrics
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(0, 1)))
+    listener.onStageSubmitted(SparkListenerStageSubmitted(
+      createStageInfo(0, 1)))
 
-    listener.onExecutorMetricsUpdate(
-      SparkListenerExecutorMetricsUpdate(
-        "",
-        Seq(
-          // (task id, stage id, stage attempt, accum updates)
-          (
-            0L,
-            0,
-            1,
-            createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
-          (1L, 0, 1, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
-        )
-      ))
+    listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
+      "",
+      Seq(
+        // (task id, stage id, stage attempt, accum updates)
+        (0L, 0, 1, createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
+        (1L, 0, 1, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
+      )
+    ))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 2))
 
     // Ignore the task end for the first attempt
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        stageId = 0,
-        stageAttemptId = 0,
-        taskType = "",
-        reason = null,
-        createTaskInfo(0, 0),
-        createTaskMetrics(accumulatorUpdates.mapValues(_ * 100))))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      stageId = 0,
+      stageAttemptId = 0,
+      taskType = "",
+      reason = null,
+      createTaskInfo(0, 0),
+      createTaskMetrics(accumulatorUpdates.mapValues(_ * 100))))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 2))
 
     // Finish two tasks
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        stageId = 0,
-        stageAttemptId = 1,
-        taskType = "",
-        reason = null,
-        createTaskInfo(0, 0),
-        createTaskMetrics(accumulatorUpdates.mapValues(_ * 2))))
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        stageId = 0,
-        stageAttemptId = 1,
-        taskType = "",
-        reason = null,
-        createTaskInfo(1, 0),
-        createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      stageId = 0,
+      stageAttemptId = 1,
+      taskType = "",
+      reason = null,
+      createTaskInfo(0, 0),
+      createTaskMetrics(accumulatorUpdates.mapValues(_ * 2))))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      stageId = 0,
+      stageAttemptId = 1,
+      taskType = "",
+      reason = null,
+      createTaskInfo(1, 0),
+      createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 5))
 
     // Summit a new stage
-    listener.onStageSubmitted(
-      SparkListenerStageSubmitted(createStageInfo(1, 0)))
+    listener.onStageSubmitted(SparkListenerStageSubmitted(
+      createStageInfo(1, 0)))
 
-    listener.onExecutorMetricsUpdate(
-      SparkListenerExecutorMetricsUpdate(
-        "",
-        Seq(
-          // (task id, stage id, stage attempt, accum updates)
-          (
-            0L,
-            1,
-            0,
-            createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
-          (1L, 1, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
-        )
-      ))
+    listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
+      "",
+      Seq(
+        // (task id, stage id, stage attempt, accum updates)
+        (0L, 1, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates()),
+        (1L, 1, 0, createTaskMetrics(accumulatorUpdates).accumulatorUpdates())
+      )
+    ))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
       accumulatorUpdates.mapValues(_ * 7))
 
     // Finish two tasks
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        stageId = 1,
-        stageAttemptId = 0,
-        taskType = "",
-        reason = null,
-        createTaskInfo(0, 0),
-        createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        stageId = 1,
-        stageAttemptId = 0,
-        taskType = "",
-        reason = null,
-        createTaskInfo(1, 0),
-        createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      stageId = 1,
+      stageAttemptId = 0,
+      taskType = "",
+      reason = null,
+      createTaskInfo(0, 0),
+      createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      stageId = 1,
+      stageAttemptId = 0,
+      taskType = "",
+      reason = null,
+      createTaskInfo(1, 0),
+      createTaskMetrics(accumulatorUpdates.mapValues(_ * 3))))
 
     checkAnswer(
       listener.getExecutionMetrics(0),
@@ -280,12 +245,10 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     assert(executionUIData.succeededJobs.isEmpty)
     assert(executionUIData.failedJobs.isEmpty)
 
-    listener.onJobEnd(
-      SparkListenerJobEnd(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+    listener.onJobEnd(SparkListenerJobEnd(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      JobSucceeded))
     listener.onOtherEvent(
       SparkListenerSQLExecutionEnd(executionId, System.currentTimeMillis()))
 
@@ -302,28 +265,24 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val listener = new SQLListener(sqlContext.sparkContext.conf)
     val executionId = 0
     val df = createTestDataFrame
-    listener.onOtherEvent(
-      SparkListenerSQLExecutionStart(
-        executionId,
-        "test",
-        "test",
-        df.queryExecution.toString,
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
-        System.currentTimeMillis()))
-    listener.onJobStart(
-      SparkListenerJobStart(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        stageInfos = Nil,
-        createProperties(executionId)))
+    listener.onOtherEvent(SparkListenerSQLExecutionStart(
+      executionId,
+      "test",
+      "test",
+      df.queryExecution.toString,
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
+      System.currentTimeMillis()))
+    listener.onJobStart(SparkListenerJobStart(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      stageInfos = Nil,
+      createProperties(executionId)))
     listener.onOtherEvent(
       SparkListenerSQLExecutionEnd(executionId, System.currentTimeMillis()))
-    listener.onJobEnd(
-      SparkListenerJobEnd(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+    listener.onJobEnd(SparkListenerJobEnd(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      JobSucceeded))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -335,41 +294,34 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val listener = new SQLListener(sqlContext.sparkContext.conf)
     val executionId = 0
     val df = createTestDataFrame
-    listener.onOtherEvent(
-      SparkListenerSQLExecutionStart(
-        executionId,
-        "test",
-        "test",
-        df.queryExecution.toString,
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
-        System.currentTimeMillis()))
-    listener.onJobStart(
-      SparkListenerJobStart(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        stageInfos = Nil,
-        createProperties(executionId)))
-    listener.onJobEnd(
-      SparkListenerJobEnd(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+    listener.onOtherEvent(SparkListenerSQLExecutionStart(
+      executionId,
+      "test",
+      "test",
+      df.queryExecution.toString,
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
+      System.currentTimeMillis()))
+    listener.onJobStart(SparkListenerJobStart(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      stageInfos = Nil,
+      createProperties(executionId)))
+    listener.onJobEnd(SparkListenerJobEnd(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      JobSucceeded))
 
-    listener.onJobStart(
-      SparkListenerJobStart(
-        jobId = 1,
-        time = System.currentTimeMillis(),
-        stageInfos = Nil,
-        createProperties(executionId)))
+    listener.onJobStart(SparkListenerJobStart(
+      jobId = 1,
+      time = System.currentTimeMillis(),
+      stageInfos = Nil,
+      createProperties(executionId)))
     listener.onOtherEvent(
       SparkListenerSQLExecutionEnd(executionId, System.currentTimeMillis()))
-    listener.onJobEnd(
-      SparkListenerJobEnd(
-        jobId = 1,
-        time = System.currentTimeMillis(),
-        JobSucceeded
-      ))
+    listener.onJobEnd(SparkListenerJobEnd(
+      jobId = 1,
+      time = System.currentTimeMillis(),
+      JobSucceeded))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -381,28 +333,24 @@ class SQLListenerSuite extends SparkFunSuite with SharedSQLContext {
     val listener = new SQLListener(sqlContext.sparkContext.conf)
     val executionId = 0
     val df = createTestDataFrame
-    listener.onOtherEvent(
-      SparkListenerSQLExecutionStart(
-        executionId,
-        "test",
-        "test",
-        df.queryExecution.toString,
-        SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
-        System.currentTimeMillis()))
-    listener.onJobStart(
-      SparkListenerJobStart(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        stageInfos = Seq.empty,
-        createProperties(executionId)))
+    listener.onOtherEvent(SparkListenerSQLExecutionStart(
+      executionId,
+      "test",
+      "test",
+      df.queryExecution.toString,
+      SparkPlanInfo.fromSparkPlan(df.queryExecution.executedPlan),
+      System.currentTimeMillis()))
+    listener.onJobStart(SparkListenerJobStart(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      stageInfos = Seq.empty,
+      createProperties(executionId)))
     listener.onOtherEvent(
       SparkListenerSQLExecutionEnd(executionId, System.currentTimeMillis()))
-    listener.onJobEnd(
-      SparkListenerJobEnd(
-        jobId = 0,
-        time = System.currentTimeMillis(),
-        JobFailed(new RuntimeException("Oops"))
-      ))
+    listener.onJobEnd(SparkListenerJobEnd(
+      jobId = 0,
+      time = System.currentTimeMillis(),
+      JobFailed(new RuntimeException("Oops"))))
 
     val executionUIData = listener.executionIdToData(0)
     assert(executionUIData.runningJobs.isEmpty)
@@ -503,10 +451,7 @@ class SQLListenerMemoryLeakSuite extends SparkFunSuite {
         // Run 100 successful executions and 100 failed executions.
         // Each execution only has one job and one stage.
         for (i <- 0 until 100) {
-          val df = Seq(
-            (1, 1),
-            (2, 2)
-          ).toDF()
+          val df = Seq((1, 1), (2, 2)).toDF()
           df.collect()
           try { df.foreach(_ => throw new RuntimeException("Oops")) }
           catch {

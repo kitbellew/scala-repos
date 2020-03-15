@@ -29,10 +29,7 @@ private[setup] object UserConfigRepo {
 
   def filter(user: User): Fu[FilterConfig] =
     userConfigTube.coll
-      .find(
-        BSONDocument("_id" -> user.id),
-        BSONDocument("filter" -> true)
-      )
+      .find(BSONDocument("_id" -> user.id), BSONDocument("filter" -> true))
       .one[BSONDocument] map {
       _ flatMap (_.getAs[FilterConfig]("filter")) getOrElse FilterConfig.default
     }

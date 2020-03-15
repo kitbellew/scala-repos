@@ -91,9 +91,7 @@ trait Reshape {
       tree.attachments.get[analyzer.MacroExpansionAttachment] match {
         case Some(analyzer.MacroExpansionAttachment(original, _)) =>
           def mkImplicitly(tp: Type) =
-            atPos(tree.pos)(
-              gen.mkNullaryCall(Predef_implicitly, List(tp))
-            )
+            atPos(tree.pos)(gen.mkNullaryCall(Predef_implicitly, List(tp)))
           val sym = original.symbol
           original match {
             // this hack is necessary until I fix implicit macros
@@ -175,9 +173,8 @@ trait Reshape {
         if (reifyDebug)
           println("TypeTree, essential: %s (%s)".format(tt.tpe, tt.tpe.kind))
         if (reifyDebug)
-          println(
-            "verdict: rolled back to original %s".format(
-              tt.original.toString.replaceAll("\\s+", " ")))
+          println("verdict: rolled back to original %s".format(
+            tt.original.toString.replaceAll("\\s+", " ")))
         transform(tt.original)
       } else {
         // type is deemed to be non-essential

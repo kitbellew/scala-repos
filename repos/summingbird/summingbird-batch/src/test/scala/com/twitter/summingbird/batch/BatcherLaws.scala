@@ -59,9 +59,7 @@ object BatcherLaws extends Properties("Batcher") {
     forAll { (d: Timestamp) =>
       val b = batcher.batchOf(d)
       val list = BatchID
-        .toIterable(
-          batcher.batchesCoveredBy(batcher.toInterval(b))
-        )
+        .toIterable(batcher.batchesCoveredBy(batcher.toInterval(b)))
         .toList
       list == List(b)
     }
@@ -107,11 +105,10 @@ object BatcherLaws extends Properties("Batcher") {
   property("UTC 1H obeys laws") = batcherLaws(CalendarBatcher.ofHoursUtc(1))
   property("UTC 1D obeys laws") = batcherLaws(CalendarBatcher.ofDaysUtc(1))
 
-  property("Combined obeys laws") = batcherLaws(
-    new CombinedBatcher(
-      Batcher.ofHours(1),
-      ExclusiveUpper(Timestamp.now),
-      Batcher.ofMinutes(10)))
+  property("Combined obeys laws") = batcherLaws(new CombinedBatcher(
+    Batcher.ofHours(1),
+    ExclusiveUpper(Timestamp.now),
+    Batcher.ofMinutes(10)))
 
   val millisPerHour = 1000 * 60 * 60
 

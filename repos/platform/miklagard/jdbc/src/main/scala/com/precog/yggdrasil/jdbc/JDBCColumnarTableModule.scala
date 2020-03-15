@@ -278,8 +278,9 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
 
                 case other =>
                   logger.warn(
-                    "Encountered unknown data from PostgreSQL: %s (%s)"
-                      .format(other, other.getClass))
+                    "Encountered unknown data from PostgreSQL: %s (%s)".format(
+                      other,
+                      other.getClass))
               }
 
           }
@@ -369,12 +370,11 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
             case InLoad(connGen, query, skip, remaining) =>
               M.point {
                 val (slice, nextSkip) = makeSlice(connGen, query, skip)
-                Some(
-                  (
-                    slice,
-                    nextSkip
-                      .map(InLoad(connGen, query, _, remaining))
-                      .getOrElse(InitialLoad(remaining))))
+                Some((
+                  slice,
+                  nextSkip
+                    .map(InLoad(connGen, query, _, remaining))
+                    .getOrElse(InitialLoad(remaining))))
               }
 
             case InitialLoad(path :: xs) =>

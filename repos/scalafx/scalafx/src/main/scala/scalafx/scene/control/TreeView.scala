@@ -64,13 +64,12 @@ object TreeView {
         treeItem: TreeItem[T],
         oldValue: T,
         newValue: T) =
-      this(
-        new jfxsc.TreeView.EditEvent[T](
-          source,
-          eventType,
-          treeItem,
-          oldValue,
-          newValue))
+      this(new jfxsc.TreeView.EditEvent[T](
+        source,
+        eventType,
+        treeItem,
+        oldValue,
+        newValue))
 
     /**
       * Returns the new value input into the TreeItem by the end user.

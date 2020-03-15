@@ -102,13 +102,11 @@ trait ScNamedElement
         case elem @ (_: ScEnumerator | _: ScGenerator) =>
           Option(
             PsiTreeUtil.getContextOfType(elem, true, classOf[ScForStatement]))
-            .orElse(
-              Option(
-                PsiTreeUtil.getContextOfType(
-                  elem,
-                  true,
-                  classOf[ScBlock],
-                  classOf[ScMember])))
+            .orElse(Option(PsiTreeUtil.getContextOfType(
+              elem,
+              true,
+              classOf[ScBlock],
+              classOf[ScMember])))
             .map(new LocalSearchScope(_))
         case _ => None
       }

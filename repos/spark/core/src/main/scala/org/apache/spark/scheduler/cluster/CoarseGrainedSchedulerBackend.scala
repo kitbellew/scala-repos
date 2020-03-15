@@ -160,8 +160,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
       case RegisterExecutor(executorId, executorRef, cores, logUrls) =>
         if (executorDataMap.contains(executorId)) {
-          context.reply(
-            RegisterExecutorFailed("Duplicate executor ID: " + executorId))
+          context.reply(RegisterExecutorFailed(
+            "Duplicate executor ID: " + executorId))
         } else {
           // If the executor's rpc env is not listening for incoming connections, `hostPort`
           // will be null, and the client connection should be used to contact the executor.
@@ -192,11 +192,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
           }
           // Note: some tests expect the reply to come after we put the executor in the map
           context.reply(RegisteredExecutor(executorAddress.host))
-          listenerBus.post(
-            SparkListenerExecutorAdded(
-              System.currentTimeMillis(),
-              executorId,
-              data))
+          listenerBus.post(SparkListenerExecutorAdded(
+            System.currentTimeMillis(),
+            executorId,
+            data))
           makeOffers()
         }
 
@@ -239,13 +238,13 @@ private[spark] class CoarseGrainedSchedulerBackend(
     override def onDisconnected(remoteAddress: RpcAddress): Unit = {
       addressToExecutorId
         .get(remoteAddress)
-        .foreach(
-          removeExecutor(
-            _,
-            SlaveLost("Remote RPC client disassociated. Likely due to " +
+        .foreach(removeExecutor(
+          _,
+          SlaveLost(
+            "Remote RPC client disassociated. Likely due to " +
               "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
               "messages.")
-          ))
+        ))
     }
 
     // Make fake resource offers on just one executor
@@ -253,11 +252,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
       // Filter out executors under killing
       if (executorIsAlive(executorId)) {
         val executorData = executorDataMap(executorId)
-        val workOffers = Seq(
-          new WorkerOffer(
-            executorId,
-            executorData.executorHost,
-            executorData.freeCores))
+        val workOffers = Seq(new WorkerOffer(
+          executorId,
+          executorData.executorHost,
+          executorData.freeCores))
         launchTasks(scheduler.resourceOffers(workOffers))
       }
     }
@@ -297,8 +295,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
             s"Launching task ${task.taskId} on executor id: ${task.executorId} hostname: " +
               s"${executorData.executorHost}.")
 
-          executorData.executorEndpoint.send(
-            LaunchTask(new SerializableBuffer(serializedTask)))
+          executorData.executorEndpoint.send(LaunchTask(
+            new SerializableBuffer(serializedTask)))
         }
       }
     }
@@ -320,11 +318,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
           scheduler.executorLost(
             executorId,
             if (killed) ExecutorKilled else reason)
-          listenerBus.post(
-            SparkListenerExecutorRemoved(
-              System.currentTimeMillis(),
-              executorId,
-              reason.toString))
+          listenerBus.post(SparkListenerExecutorRemoved(
+            System.currentTimeMillis(),
+            executorId,
+            reason.toString))
         case None =>
           logInfo(s"Asked to remove non-existent executor $executorId")
       }
@@ -520,8 +517,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
   final override def requestTotalExecutors(
       numExecutors: Int,
       localityAwareTasks: Int,
-      hostToLocalTaskCount: Map[String, Int]
-  ): Boolean =
+      hostToLocalTaskCount: Map[String, Int]): Boolean =
     synchronized {
       if (numExecutors < 0) {
         throw new IllegalArgumentException(

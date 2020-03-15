@@ -145,9 +145,8 @@ object Concurrent {
           .sequence(ready)
           .map[Iteratee[E, Unit]] { commitReady =>
             val downToZero = atomic { implicit txn =>
-              iteratees.transform(commitReady.collect {
-                case Some(s) => s
-              } ++ _)
+              iteratees.transform(
+                commitReady.collect { case Some(s) => s } ++ _)
               (interested.length > 0 && iteratees().length <= 0)
             }
 
@@ -276,14 +275,12 @@ object Concurrent {
                   it.unflatten.map(Left(_))(dec) :: timeoutFuture(
                     Right(()),
                     timeout,
-                    unit) :: Nil
-                )(dec)
+                    unit) :: Nil)(dec)
                 .map {
                   case Left(Step.Cont(k)) => Cont(step(k(other)))
                   case Left(done)         => Done(done.it, other)
                   case Right(_)           => Error("iteratee is taking too long", other)
-                }(dec)
-            )
+                }(dec))
         }
         Cont(step(inner))
       }
@@ -355,29 +352,30 @@ object Concurrent {
             Iteratee.flatten(last.future)
 
           case other =>
-            Iteratee.flatten(Future(length(other))(pec).map { chunkLength =>
-              val s = state.single.getAndTransform {
-                case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
-                  Queueing(q.enqueue(other), l + chunkLength)
+            Iteratee.flatten(
+              Future(length(other))(pec).map { chunkLength =>
+                val s = state.single.getAndTransform {
+                  case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
+                    Queueing(q.enqueue(other), l + chunkLength)
 
-                case Queueing(q, l) => Queueing(Queue(Input.EOF), l)
+                  case Queueing(q, l) => Queueing(Queue(Input.EOF), l)
 
-                case Waiting(p) => Queueing(Queue(), 0)
+                  case Waiting(p) => Queueing(Queue(), 0)
 
-                case d @ DoneIt(it) => d
+                  case d @ DoneIt(it) => d
 
-              }
-              s match {
-                case Waiting(p) =>
-                  p.success(other)
-                  Cont(step)
-                case DoneIt(it) => it
-                case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
-                  Cont(step)
-                case Queueing(_, _) => Error("buffer overflow", other)
+                }
+                s match {
+                  case Waiting(p) =>
+                    p.success(other)
+                    Cont(step)
+                  case DoneIt(it) => it
+                  case Queueing(q, l) if maxBuffer > 0 && l <= maxBuffer =>
+                    Cont(step)
+                  case Queueing(_, _) => Error("buffer overflow", other)
 
-              }
-            }(dec))
+                }
+              }(dec))
         }
 
         def moreInput[A](k: K[E, A]): Iteratee[E, Iteratee[E, A]] = {
@@ -396,11 +394,12 @@ object Concurrent {
               case _ => throw new Exception("can't get here")
             }
           }
-          Iteratee.flatten(in.map { in =>
-            (new CheckDone[E, E] {
-              def continue[A](cont: K[E, A]) = moreInput(cont)
-            } &> k(in))
-          }(dec))
+          Iteratee.flatten(
+            in.map { in =>
+              (new CheckDone[E, E] {
+                def continue[A](cont: K[E, A]) = moreInput(cont)
+              } &> k(in))
+            }(dec))
 
         }
         (new CheckDone[E, E] {
@@ -447,31 +446,30 @@ object Concurrent {
               if (!busy.single()) {
                 val readyOrNot
                     : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] = Future
-                  .firstCompletedOf(
-                    Seq(
-                      inner
-                        .pureFold[Iteratee[E, Iteratee[E, A]]] {
-                          case Step.Done(a, e) => Done(Done(a, e), Input.Empty)
-                          case Step.Cont(k) =>
-                            Cont { in =>
-                              val next = k(in)
-                              Cont(step(next))
-                            }
-                          case Step.Error(msg, e) =>
-                            Done(Error(msg, e), Input.Empty)
-                        }(dec)
-                        .map(i => { busy.single() = false; Left(i) })(dec),
-                      timeoutFuture(Right(()), duration, unit)
-                    )
-                  )(dec)
+                  .firstCompletedOf(Seq(
+                    inner
+                      .pureFold[Iteratee[E, Iteratee[E, A]]] {
+                        case Step.Done(a, e) => Done(Done(a, e), Input.Empty)
+                        case Step.Cont(k) =>
+                          Cont { in =>
+                            val next = k(in)
+                            Cont(step(next))
+                          }
+                        case Step.Error(msg, e) =>
+                          Done(Error(msg, e), Input.Empty)
+                      }(dec)
+                      .map(i => { busy.single() = false; Left(i) })(dec),
+                    timeoutFuture(Right(()), duration, unit)
+                  ))(dec)
 
-                Iteratee.flatten(readyOrNot.map {
-                  case Left(ready) =>
-                    Iteratee.flatten(ready.feed(in))
-                  case Right(_) =>
-                    busy.single() = true
-                    Cont(step(inner))
-                }(dec))
+                Iteratee.flatten(
+                  readyOrNot.map {
+                    case Left(ready) =>
+                      Iteratee.flatten(ready.feed(in))
+                    case Right(_) =>
+                      busy.single() = true
+                      Cont(step(inner))
+                  }(dec))
               } else Cont(step(inner))
           }
         }
@@ -700,21 +698,22 @@ object Concurrent {
         }
         .fold(Future.successful(())) { (s, p) => s.flatMap(_ => p)(dec) }
 
-      Iteratee.flatten(ready.flatMap { _ =>
-        val downToZero = atomic { implicit txn =>
-          val ready = commitReady().toMap
-          iteratees.transform(commitReady().map(_._2) ++ _)
-          (interested.length > 0 && iteratees().length <= 0)
+      Iteratee.flatten(
+        ready.flatMap { _ =>
+          val downToZero = atomic { implicit txn =>
+            val ready = commitReady().toMap
+            iteratees.transform(commitReady().map(_._2) ++ _)
+            (interested.length > 0 && iteratees().length <= 0)
 
-        }
-        def result(): Iteratee[E, Unit] =
-          if (in == Input.EOF || closeFlag) Done((), Input.Empty)
-          else Cont(step)
-        if (downToZero)
-          Future(interestIsDownToZero())(pec).map(_ => result())(dec)
-        else Future.successful(result())
+          }
+          def result(): Iteratee[E, Unit] =
+            if (in == Input.EOF || closeFlag) Done((), Input.Empty)
+            else Cont(step)
+          if (downToZero)
+            Future(interestIsDownToZero())(pec).map(_ => result())(dec)
+          else Future.successful(result())
 
-      }(dec))
+        }(dec))
     }
 
     new Hub[E] {

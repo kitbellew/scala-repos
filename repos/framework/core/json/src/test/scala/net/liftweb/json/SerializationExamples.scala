@@ -194,8 +194,8 @@ object SerializationExamples extends Specification {
 }
 
 object ShortTypeHintExamples extends TypeHintExamples {
-  implicit val formats = Serialization.formats(
-    ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil))
+  implicit val formats = Serialization.formats(ShortTypeHints(
+    classOf[Fish] :: classOf[Dog] :: Nil))
 
   "Deserialization succeeds even if jsonClass is not the first field" in {
     val ser = """{"animals":[],"pet":{"name":"pluto","jsonClass":"Dog"}}"""
@@ -206,14 +206,12 @@ object ShortTypeHintExamples extends TypeHintExamples {
 object FullTypeHintExamples extends TypeHintExamples {
   import Serialization.{read, write => swrite}
 
-  implicit val formats = Serialization.formats(
-    FullTypeHints(
-      List[Class[_]](
-        classOf[Animal],
-        classOf[True],
-        classOf[False],
-        classOf[Falcon],
-        classOf[Chicken])))
+  implicit val formats = Serialization.formats(FullTypeHints(List[Class[_]](
+    classOf[Animal],
+    classOf[True],
+    classOf[False],
+    classOf[Falcon],
+    classOf[Chicken])))
 
   "Ambiguous field decomposition example" in {
     val a = Ambiguous(False())
@@ -313,8 +311,7 @@ object CustomSerializerExamples extends Specification {
               JObject(
                 JField("start", JInt(BigInt(x.startTime))) ::
                   JField("end", JInt(BigInt(x.endTime))) :: Nil)
-          }
-        ))
+          }))
 
   class PatternSerializer
       extends CustomSerializer[Pattern](format =>
@@ -326,8 +323,7 @@ object CustomSerializerExamples extends Specification {
           {
             case x: Pattern =>
               JObject(JField("$pattern", JString(x.pattern)) :: Nil)
-          }
-        ))
+          }))
 
   class DateSerializer
       extends CustomSerializer[Date](format =>
@@ -343,8 +339,7 @@ object CustomSerializerExamples extends Specification {
             case x: Date =>
               JObject(
                 JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
-          }
-        ))
+          }))
 
   class IndexedSeqSerializer extends Serializer[IndexedSeq[_]] {
     def deserialize(implicit formats: Formats) = {

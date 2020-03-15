@@ -137,22 +137,19 @@ trait Reifiers { self: Quasiquotes =>
               Nil,
               Nil,
               noSelfType,
-              List(
-                DefDef(
+              List(DefDef(
+                NoMods,
+                nme.unapply,
+                Nil,
+                List(List(ValDef(
                   NoMods,
-                  nme.unapply,
-                  Nil,
-                  List(
-                    List(
-                      ValDef(
-                        NoMods,
-                        nme.tree,
-                        TypeTree(AnyClass.toType),
-                        EmptyTree))),
-                  TypeTree(),
-                  SyntacticBlock(
-                    unlifters.preamble() :+ Match(Ident(nme.tree), cases))
-                ))
+                  nme.tree,
+                  TypeTree(AnyClass.toType),
+                  EmptyTree))),
+                TypeTree(),
+                SyntacticBlock(
+                  unlifters.preamble() :+ Match(Ident(nme.tree), cases))
+              ))
             ),
             nme.unapply
           ),

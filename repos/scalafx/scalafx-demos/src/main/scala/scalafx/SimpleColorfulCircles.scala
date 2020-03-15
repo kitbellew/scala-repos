@@ -74,7 +74,8 @@ object SimpleColorfulCircles extends JFXApp {
           0,
           true,
           NoCycle,
-          Stops(0xf8bd55, 0xc0fe56, 0x5dfbc1, 0x64c2f8, 0xbe4af7, 0xed5fc2,
+          Stops(
+            0xf8bd55, 0xc0fe56, 0x5dfbc1, 0x64c2f8, 0xbe4af7, 0xed5fc2,
             0xef504c, 0xf2660f))
         blendMode = Overlay
       }
@@ -84,10 +85,7 @@ object SimpleColorfulCircles extends JFXApp {
     cycleCount = Indefinite
     autoReverse = true
     keyFrames = for (circle <- circles) yield at(40 s) {
-      Set(
-        circle.centerX -> random * 800,
-        circle.centerY -> random * 600
-      )
+      Set(circle.centerX -> random * 800, circle.centerY -> random * 600)
     }
   }.play()
 }

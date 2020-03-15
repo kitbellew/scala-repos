@@ -306,9 +306,12 @@ class LogCleaner(
             .format(
               mb(stats.bytesRead),
               stats.elapsedSecs - stats.elapsedIndexSecs,
-              mb(
-                stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
-              100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble / stats.elapsedSecs
+              mb(stats.bytesRead) / (
+                stats.elapsedSecs - stats.elapsedIndexSecs
+              ),
+              100 * (
+                stats.elapsedSecs - stats.elapsedIndexSecs
+              ).toDouble / stats.elapsedSecs
             ) +
           "\tStart size: %,.1f MB (%,d messages)%n".format(
             mb(stats.bytesRead),
@@ -321,9 +324,8 @@ class LogCleaner(
             100.0 * (1.0 - stats.messagesWritten.toDouble / stats.messagesRead))
       info(message)
       if (stats.invalidMessagesRead > 0) {
-        warn(
-          "\tFound %d invalid messages during compaction.".format(
-            stats.invalidMessagesRead))
+        warn("\tFound %d invalid messages during compaction.".format(
+          stats.invalidMessagesRead))
       }
     }
 
@@ -397,9 +399,9 @@ private[log] class Cleaner(
       }
 
     // group the segments and clean the groups
-    info(
-      "Cleaning log %s (discarding tombstones prior to %s)..."
-        .format(log.name, new Date(deleteHorizonMs)))
+    info("Cleaning log %s (discarding tombstones prior to %s)...".format(
+      log.name,
+      new Date(deleteHorizonMs)))
     for (group <- groupSegmentsBySize(
            log.logSegments(0, endOffset),
            log.config.segmentSize,
@@ -483,11 +485,10 @@ private[log] class Cleaner(
       cleaned.lastModified = modified
 
       // swap in new segment
-      info(
-        "Swapping in cleaned segment %d for segment(s) %s in log %s.".format(
-          cleaned.baseOffset,
-          segments.map(_.baseOffset).mkString(","),
-          log.name))
+      info("Swapping in cleaned segment %d for segment(s) %s in log %s.".format(
+        cleaned.baseOffset,
+        segments.map(_.baseOffset).mkString(","),
+        log.name))
       log.replaceSegments(cleaned, segments)
     } catch {
       case e: LogCleaningAbortedException =>
@@ -613,10 +614,9 @@ private[log] class Cleaner(
       val firstAbsoluteOffset = firstMessageOffset.offset
       var offset = -1L
       val timestampType = firstMessageOffset.message.timestampType
-      val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+      val messageWriter = new MessageWriter(math.min(
+        math.max(MessageSet.messageSetSize(messages) / 2, 1024),
+        1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,

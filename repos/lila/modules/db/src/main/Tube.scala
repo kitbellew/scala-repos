@@ -71,16 +71,10 @@ case class JsTube[Doc](
     }
 
   def toMongo(doc: Doc): JsResult[JsObject] =
-    flag(_.NoId)(
-      write(doc),
-      write(doc) flatMap JsTube.toMongoId
-    )
+    flag(_.NoId)(write(doc), write(doc) flatMap JsTube.toMongoId)
 
   def fromMongo(js: JsObject): JsResult[Doc] =
-    flag(_.NoId)(
-      read(js),
-      JsTube.depath(JsTube fromMongoId js) flatMap read
-    )
+    flag(_.NoId)(read(js), JsTube.depath(JsTube fromMongoId js) flatMap read)
 
   def inColl(c: Coll): JsTubeInColl[Doc] =
     new JsTube[Doc](reader, writer, flags) with InColl[Doc] {
@@ -129,9 +123,9 @@ object JsTube {
     }
 
     def rename(from: Symbol, to: Symbol) =
-      __.json update (
-        (__ \ to).json copyFrom (__ \ from).json.pick
-      ) andThen (__ \ from).json.prune
+      __.json update ((__ \ to).json copyFrom (__ \ from).json.pick) andThen (
+        __ \ from
+      ).json.prune
 
     def readDate(field: Symbol) =
       (__ \ field).json.update(of[JsObject] map { o =>

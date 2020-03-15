@@ -17,32 +17,28 @@ class OptionEqualsSomeTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"${START}Option(1) == Some(2)$END",
       "Option(1) == Some(2)",
-      "Option(1).contains(2)"
-    )
+      "Option(1).contains(2)")
   }
 
   def test2(): Unit = {
     doTest(
       s"${START}Option(1) equals Some(2)$END",
       "Option(1) equals Some(2)",
-      "Option(1).contains(2)"
-    )
+      "Option(1).contains(2)")
   }
 
   def test3(): Unit = {
     doTest(
       s"${START}Some(2) == Option(1)$END",
       "Some(2) == Option(1)",
-      "Option(1).contains(2)"
-    )
+      "Option(1).contains(2)")
   }
 
   def test4(): Unit = {
     doTest(
       s"${START}Option(1).equals(Some(2))$END",
       "Option(1).equals(Some(2))",
-      "Option(1).contains(2)"
-    )
+      "Option(1).contains(2)")
   }
 }
 
@@ -58,16 +54,14 @@ class OptionNotEqualsSomeTest extends OperationsOnCollectionInspectionTest {
     doTest(
       s"${START}Option(1) != Some(2)$END",
       "Option(1) != Some(2)",
-      "!Option(1).contains(2)"
-    )
+      "!Option(1).contains(2)")
   }
 
   def test2(): Unit = {
     doTest(
       s"${START}Some(2) != Option(1)$END",
       "Some(2) != Option(1)",
-      "!Option(1).contains(2)"
-    )
+      "!Option(1).contains(2)")
   }
 }
 

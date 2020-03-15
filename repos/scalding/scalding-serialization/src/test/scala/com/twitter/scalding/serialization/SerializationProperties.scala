@@ -162,24 +162,19 @@ object SerializationProperties extends Properties("SerializationProperties") {
   include(
     LawTester("(Int, Int) Ordered", OrderedSerialization.allLaws[(Int, Int)]))
   include(LawTester("String Ordered", OrderedSerialization.allLaws[String]))
-  include(
-    LawTester(
-      "(String, Int) Ordered",
-      OrderedSerialization.allLaws[(String, Int)]))
-  include(
-    LawTester(
-      "(Int, String) Ordered",
-      OrderedSerialization.allLaws[(Int, String)]))
-  include(
-    LawTester(
-      "(String, String) Ordered",
-      OrderedSerialization.allLaws[(String, String)]))
-  include(
-    LawTester(
-      "IntWrapperClass Ordered",
-      OrderedSerialization.allLaws[IntWrapperClass]))
-  include(
-    LawTester(
-      "IntTryWrapperClass Ordered",
-      OrderedSerialization.allLaws[IntTryWrapperClass]))
+  include(LawTester(
+    "(String, Int) Ordered",
+    OrderedSerialization.allLaws[(String, Int)]))
+  include(LawTester(
+    "(Int, String) Ordered",
+    OrderedSerialization.allLaws[(Int, String)]))
+  include(LawTester(
+    "(String, String) Ordered",
+    OrderedSerialization.allLaws[(String, String)]))
+  include(LawTester(
+    "IntWrapperClass Ordered",
+    OrderedSerialization.allLaws[IntWrapperClass]))
+  include(LawTester(
+    "IntTryWrapperClass Ordered",
+    OrderedSerialization.allLaws[IntTryWrapperClass]))
 }

@@ -48,8 +48,8 @@ object LambdaDeserializer {
       val funcInterfaceSignature = parseDescriptor(
         getFunctionalInterfaceMethodSignature)
       val instantiated = parseDescriptor(getInstantiatedMethodType)
-      val functionalInterfaceClass = loader.loadClass(
-        slashDot(getFunctionalInterfaceClass))
+      val functionalInterfaceClass = loader.loadClass(slashDot(
+        getFunctionalInterfaceClass))
 
       val implMethodSig = parseDescriptor(getImplMethodSignature)
       // Construct the invoked type from the impl method type. This is the type of a factory

@@ -138,9 +138,8 @@ object GraphStages {
   }
 
   object Breaker
-      extends GraphStageWithMaterializedValue[
-        FlowShape[Any, Any],
-        Future[Breaker]] {
+      extends GraphStageWithMaterializedValue[FlowShape[Any, Any], Future[
+        Breaker]] {
     sealed trait Operation
     case object Complete extends Operation
     case object Cancel extends Operation

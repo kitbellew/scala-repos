@@ -375,9 +375,8 @@ object RandBasis {
     */
   def mt0 = {
     val int = new AtomicInteger()
-    new RandBasis(
-      new ThreadLocalRandomGenerator(
-        new MersenneTwister(int.getAndIncrement())))
+    new RandBasis(new ThreadLocalRandomGenerator(new MersenneTwister(
+      int.getAndIncrement())))
   }
 
   /**
@@ -385,9 +384,8 @@ object RandBasis {
     */
   def withSeed(seed: Int) = {
     val int = new AtomicInteger(seed)
-    new RandBasis(
-      new ThreadLocalRandomGenerator(
-        new MersenneTwister(int.getAndIncrement())))
+    new RandBasis(new ThreadLocalRandomGenerator(new MersenneTwister(
+      int.getAndIncrement())))
   }
 
 }

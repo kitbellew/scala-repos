@@ -182,10 +182,9 @@ class MapOutputTrackerSuite extends SparkFunSuite {
     slaveTracker.updateEpoch(masterTracker.getEpoch)
     assert(
       slaveTracker.getMapSizesByExecutorId(10, 0) ===
-        Seq(
-          (
-            BlockManagerId("a", "hostA", 1000),
-            ArrayBuffer((ShuffleBlockId(10, 0, 0), size1000)))))
+        Seq((
+          BlockManagerId("a", "hostA", 1000),
+          ArrayBuffer((ShuffleBlockId(10, 0, 0), size1000)))))
 
     masterTracker.unregisterMapOutput(10, 0, BlockManagerId("a", "hostA", 1000))
     masterTracker.incrementEpoch()

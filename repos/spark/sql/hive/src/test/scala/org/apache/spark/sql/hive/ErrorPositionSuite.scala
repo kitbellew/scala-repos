@@ -69,64 +69,40 @@ class ErrorPositionSuite
 
   positionTest("unresolved attribute 3", "SELECT key, x FROM src", "x")
 
-  positionTest(
-    "unresolved attribute 4",
-    """SELECT key,
+  positionTest("unresolved attribute 4", """SELECT key,
       |x FROM src
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "unresolved attribute 5",
-    """SELECT key,
+  positionTest("unresolved attribute 5", """SELECT key,
       |  x FROM src
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "unresolved attribute 6",
-    """SELECT key,
+  positionTest("unresolved attribute 6", """SELECT key,
       |
       |  1 + x FROM src
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "unresolved attribute 7",
-    """SELECT key,
+  positionTest("unresolved attribute 7", """SELECT key,
       |
       |  1 + x + 1 FROM src
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "multi-char unresolved attribute",
-    """SELECT key,
+  positionTest("multi-char unresolved attribute", """SELECT key,
       |
       |  1 + abcd + 1 FROM src
-    """.stripMargin,
-    "abcd")
+    """.stripMargin, "abcd")
 
-  positionTest(
-    "unresolved attribute group by",
-    """SELECT key FROM src GROUP BY
+  positionTest("unresolved attribute group by", """SELECT key FROM src GROUP BY
        |x
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "unresolved attribute order by",
-    """SELECT key FROM src ORDER BY
+  positionTest("unresolved attribute order by", """SELECT key FROM src ORDER BY
       |x
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
-  positionTest(
-    "unresolved attribute where",
-    """SELECT key FROM src
+  positionTest("unresolved attribute where", """SELECT key FROM src
       |WHERE x = true
-    """.stripMargin,
-    "x")
+    """.stripMargin, "x")
 
   positionTest("unresolved attribute backticks", "SELECT `x` FROM src", "`x`")
 
@@ -166,8 +142,7 @@ class ErrorPositionSuite
         .getOrElse(sys.error(s"Invalid test. Token $token not in $query"))
       val actualLine = error.line.getOrElse {
         fail(
-          s"line not returned for error '${error.getMessage}' on token $token\n$parseTree"
-        )
+          s"line not returned for error '${error.getMessage}' on token $token\n$parseTree")
       }
       assert(actualLine === expectedLineNum, "wrong line")
 

@@ -427,9 +427,8 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
         proj.actualElement match {
           case c: PsiClass => Some(p)
           case t: ScTypeAliasDefinition =>
-            projectionOption(
-              proj.actualSubst.subst(
-                t.aliasedType(TypingContext.empty).getOrElse(return None)))
+            projectionOption(proj.actualSubst.subst(
+              t.aliasedType(TypingContext.empty).getOrElse(return None)))
           case t: ScTypeAliasDeclaration => Some(p)
           case _                         => None
         }
@@ -539,11 +538,10 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case _ =>
             element.getContext match {
               case _: ScTemplateBody | _: ScEarlyDefinitions =>
-                Option(
-                  ScalaPsiUtil.contextOfType(
-                    element,
-                    strict = true,
-                    classOf[ScTemplateDefinition]))
+                Option(ScalaPsiUtil.contextOfType(
+                  element,
+                  strict = true,
+                  classOf[ScTemplateDefinition]))
               case _ => None
             }
         }

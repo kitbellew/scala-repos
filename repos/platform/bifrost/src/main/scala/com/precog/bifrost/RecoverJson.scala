@@ -59,23 +59,9 @@ object RecoverJson {
       offset: Int,
       stack: Stack[Balanced]) {
     def increment(balanced: Balanced) =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack push balanced
-      )
-    def decrement =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack pop
-      )
-    def skip =
-      BalancedStackState(
-        bufferIndex,
-        offset + 1,
-        stack
-      )
+      BalancedStackState(bufferIndex, offset + 1, stack push balanced)
+    def decrement = BalancedStackState(bufferIndex, offset + 1, stack pop)
+    def skip = BalancedStackState(bufferIndex, offset + 1, stack)
   }
 
   private def balancedStack(buffers: Vector[CharBuffer]) = {
@@ -83,12 +69,10 @@ object RecoverJson {
         accum: BalancedStackState): BalancedStackState =
       if (accum.bufferIndex >= buffers.length) accum
       else if (accum.offset >= buffers(accum.bufferIndex).limit)
-        buildState(
-          BalancedStackState(
-            accum.bufferIndex + 1,
-            accum.offset % buffers(accum.bufferIndex).limit,
-            accum.stack
-          ))
+        buildState(BalancedStackState(
+          accum.bufferIndex + 1,
+          accum.offset % buffers(accum.bufferIndex).limit,
+          accum.stack))
       else {
         val buffer = buffers(accum.bufferIndex)
         var char = buffer.get(accum.offset)
@@ -124,11 +108,7 @@ object RecoverJson {
               findEndString(buffers, next.bufferIndex, next.offset + 1) map {
                 case (bufferIndex, offset) =>
                   // Jump over the string
-                  BalancedStackState(
-                    bufferIndex,
-                    offset + 1,
-                    next.stack
-                  )
+                  BalancedStackState(bufferIndex, offset + 1, next.stack)
               } getOrElse {
                 // String didn't end
                 val lastBuffer = buffers(buffers.length - 1)
@@ -137,8 +117,7 @@ object RecoverJson {
                 BalancedStackState(
                   buffers.length,
                   0,
-                  if (lastCharacter == '\\') quoted push EscapeChar else quoted
-                )
+                  if (lastCharacter == '\\') quoted push EscapeChar else quoted)
               })
 
           case _ => buildState(accum.skip)

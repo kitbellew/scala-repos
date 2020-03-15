@@ -19,9 +19,8 @@ class MuxCancelledCategorizerTest extends FunSuite {
         new Exception(new ClientDiscardedRequestException(""))) == Some(
         "cancelled"))
     assert(
-      categorizer(new Exception(
-        new Exception(new ClientDiscardedRequestException("")))) == Some(
-        "cancelled"))
+      categorizer(new Exception(new Exception(
+        new ClientDiscardedRequestException("")))) == Some("cancelled"))
 
     assert(
       categorizer(

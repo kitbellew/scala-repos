@@ -216,7 +216,9 @@ abstract class BTypes {
       * anonymous classes whose outerClass is classNode.name.
       */
     def nestedInCurrentClass(innerClassNode: InnerClassNode): Boolean = {
-      (innerClassNode.outerName != null && innerClassNode.outerName == classNode.name) ||
+      (
+        innerClassNode.outerName != null && innerClassNode.outerName == classNode.name
+      ) ||
       (innerClassNode.outerName == null && {
         val classNodeForInnerClass = byteCodeRepository
           .classNode(innerClassNode.name)
@@ -255,14 +257,13 @@ abstract class BTypes {
 
     val inlineInfo = inlineInfoFromClassfile(classNode)
 
-    classBType.info = Right(
-      ClassInfo(
-        superClass,
-        interfaces,
-        flags,
-        nestedClasses,
-        nestedInfo,
-        inlineInfo))
+    classBType.info = Right(ClassInfo(
+      superClass,
+      interfaces,
+      flags,
+      nestedClasses,
+      nestedInfo,
+      inlineInfo))
     classBType
   }
 
@@ -956,8 +957,7 @@ abstract class BTypes {
       )
       assert(
         info.get.interfaces.forall(c => ifInit(c)(_.isInterface.get)),
-        s"Invalid interfaces in $this: ${info.get.interfaces}"
-      )
+        s"Invalid interfaces in $this: ${info.get.interfaces}")
 
       assert(
         info.get.nestedClasses.forall(c => ifInit(c)(_.isNestedClass.get)),
@@ -1135,13 +1135,9 @@ abstract class BTypes {
       "scala/Int",
       "scala/Float",
       "scala/Long",
-      "scala/Double"
-    )
+      "scala/Double")
 
-    private val isInternalPhantomType = Set(
-      "scala/Null",
-      "scala/Nothing"
-    )
+    private val isInternalPhantomType = Set("scala/Null", "scala/Nothing")
   }
 
   /**

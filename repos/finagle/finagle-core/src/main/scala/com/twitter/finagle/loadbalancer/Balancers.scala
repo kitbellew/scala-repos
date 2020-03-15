@@ -38,14 +38,12 @@ object Balancers {
     */
   def p2c(
       maxEffort: Int = MaxEffort,
-      rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
+      rng: Rng = Rng.threadLocal): LoadBalancerFactory =
     new LoadBalancerFactory {
       def newBalancer[Req, Rep](
           endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
           sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] =
+          exc: NoBrokersAvailableException): ServiceFactory[Req, Rep] =
         new P2CBalancer(endpoints, maxEffort, rng, sr, exc) {
           private[this] val gauge = sr.addGauge("p2c")(1)
         }
@@ -77,14 +75,12 @@ object Balancers {
   def p2cPeakEwma(
       decayTime: Duration = 10.seconds,
       maxEffort: Int = MaxEffort,
-      rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
+      rng: Rng = Rng.threadLocal): LoadBalancerFactory =
     new LoadBalancerFactory {
       def newBalancer[Req, Rep](
           endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
           sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] =
+          exc: NoBrokersAvailableException): ServiceFactory[Req, Rep] =
         new P2CBalancerPeakEwma(endpoints, decayTime, maxEffort, rng, sr, exc) {
           private[this] val gauge = sr.addGauge("p2cPeakEwma")(1)
           override def close(when: Time): Future[Unit] = {
@@ -107,8 +103,7 @@ object Balancers {
       def newBalancer[Req, Rep](
           endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
           sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] = {
+          exc: NoBrokersAvailableException): ServiceFactory[Req, Rep] = {
         new HeapBalancer(endpoints, sr, exc, rng) {
           private[this] val gauge = sr.addGauge("heap")(1)
           override def close(when: Time): Future[Unit] = {
@@ -142,14 +137,12 @@ object Balancers {
       minAperture: Int = 1,
       timer: Timer = DefaultTimer.twitter,
       maxEffort: Int = MaxEffort,
-      rng: Rng = Rng.threadLocal
-  ): LoadBalancerFactory =
+      rng: Rng = Rng.threadLocal): LoadBalancerFactory =
     new LoadBalancerFactory {
       def newBalancer[Req, Rep](
           endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
           sr: StatsReceiver,
-          exc: NoBrokersAvailableException
-      ): ServiceFactory[Req, Rep] = {
+          exc: NoBrokersAvailableException): ServiceFactory[Req, Rep] = {
         new ApertureLoadBandBalancer(
           endpoints,
           smoothWin,

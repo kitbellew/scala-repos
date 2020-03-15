@@ -153,11 +153,10 @@ object TypeAdjuster extends ApplicationAdapter {
                 .initial(newTypeEl)
                 .copy(origTypeElem = info.origTypeElem))
           } else
-            Some(
-              CompoundInfo(
-                info.origTypeElem,
-                newTypeEl,
-                subTypeElems.map(ReplacementInfo.initial)))
+            Some(CompoundInfo(
+              info.origTypeElem,
+              newTypeEl,
+              subTypeElems.map(ReplacementInfo.initial)))
         } else None
       }
     }

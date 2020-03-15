@@ -208,11 +208,10 @@ class ScObjectImpl protected (
     ScalaPsiUtil.getCompanionModule(this) match {
       case Some(module) => None
       case None =>
-        Some(
-          new PsiClassWrapper(
-            this,
-            getQualifiedName.substring(0, getQualifiedName.length() - 1),
-            getName.substring(0, getName.length() - 1)))
+        Some(new PsiClassWrapper(
+          this,
+          getQualifiedName.substring(0, getQualifiedName.length() - 1),
+          getName.substring(0, getName.length() - 1)))
     }
   }
 
@@ -237,8 +236,7 @@ class ScObjectImpl protected (
           .getElementFactory
           .createFieldFromText(
             "public final static " + getQualifiedName + " MODULE$",
-            this
-          ),
+            this),
         this)
       field.setNavigationElement(this)
       Some(field)

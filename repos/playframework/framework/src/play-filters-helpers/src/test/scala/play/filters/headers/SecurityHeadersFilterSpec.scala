@@ -37,8 +37,7 @@ object SecurityHeadersFilterSpec extends PlaySpecification {
       _.configure(configure(config))
         .overrides(
           bind[Router].to(Router.from { case _ => Action(result) }),
-          bind[HttpFilters].to[Filters]
-        ))(_ => block)
+          bind[HttpFilters].to[Filters]))(_ => block)
   }
 
   "security headers" should {

@@ -652,10 +652,8 @@ object DenseVector
   }
 
   implicit object canDaxpy
-      extends scaleAdd.InPlaceImpl3[
-        DenseVector[Double],
-        Double,
-        DenseVector[Double]]
+      extends scaleAdd.InPlaceImpl3[DenseVector[Double], Double, DenseVector[
+        Double]]
       with Serializable {
     def apply(y: DenseVector[Double], a: Double, x: DenseVector[Double]) {
       require(x.length == y.length, s"Vectors must have same length")
@@ -668,16 +666,11 @@ object DenseVector
     }
 
   }
-  implicitly[TernaryUpdateRegistry[
-    Vector[Double],
-    Double,
-    Vector[Double],
-    scaleAdd.type]].register(canDaxpy)
+  implicitly[TernaryUpdateRegistry[Vector[Double], Double, Vector[
+    Double], scaleAdd.type]].register(canDaxpy)
 
-  implicit val canAddD: OpAdd.Impl2[
-    DenseVector[Double],
-    DenseVector[Double],
-    DenseVector[Double]] = { pureFromUpdate_Double(canAddIntoD) }
+  implicit val canAddD: OpAdd.Impl2[DenseVector[Double], DenseVector[
+    Double], DenseVector[Double]] = { pureFromUpdate_Double(canAddIntoD) }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpAdd.type, Vector[Double]]]
     .register(canAddD)
@@ -694,10 +687,8 @@ object DenseVector
     }
 
   }
-  implicit val canSubD: OpSub.Impl2[
-    DenseVector[Double],
-    DenseVector[Double],
-    DenseVector[Double]] = { pureFromUpdate_Double(canSubIntoD) }
+  implicit val canSubD: OpSub.Impl2[DenseVector[Double], DenseVector[
+    Double], DenseVector[Double]] = { pureFromUpdate_Double(canSubIntoD) }
   implicitly[
     BinaryRegistry[Vector[Double], Vector[Double], OpSub.type, Vector[Double]]]
     .register(canSubD)
@@ -722,7 +713,9 @@ object DenseVector
     private def blasPath(
         a: DenseVector[Double],
         b: DenseVector[Double]): Double = {
-      if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
+      if ((
+            a.length <= 300 || !usingNatives
+          ) && a.stride == 1 && b.stride == 1) {
         DenseVectorSupportMethods.dotProduct_Double(
           a.data,
           a.offset,

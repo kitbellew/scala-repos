@@ -164,9 +164,8 @@ private[server] class NettyModelConversion(
         if (content.isEmpty) { None }
         else { Some(Source.single(content)) }
       case streamed: StreamedHttpRequest =>
-        Some(
-          Source.fromPublisher(
-            SynchronousMappedStreams.map(streamed, httpContentToByteString)))
+        Some(Source.fromPublisher(
+          SynchronousMappedStreams.map(streamed, httpContentToByteString)))
     }
   }
 

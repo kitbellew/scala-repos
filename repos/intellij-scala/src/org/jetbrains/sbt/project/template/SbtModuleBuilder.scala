@@ -86,17 +86,16 @@ class SbtModuleBuilder
     sbtVersionComboBox.setItems(sbtVersions)
     scalaVersionComboBox.setItems(scalaVersions)
 
-    val resolveClassifiersCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveClassifiers"))
-    val resolveJavadocsCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveJavadocs"))
-    val resolveSbtClassifiersCheckBox = new JCheckBox(
-      SbtBundle("sbt.settings.resolveSbtClassifiers"))
+    val resolveClassifiersCheckBox = new JCheckBox(SbtBundle(
+      "sbt.settings.resolveClassifiers"))
+    val resolveJavadocsCheckBox = new JCheckBox(SbtBundle(
+      "sbt.settings.resolveJavadocs"))
+    val resolveSbtClassifiersCheckBox = new JCheckBox(SbtBundle(
+      "sbt.settings.resolveSbtClassifiers"))
     val useAutoImportCheckBox = new JCheckBox(
       ExternalSystemBundle.message("settings.label.use.auto.import"))
-    val createContentDirsCheckBox = new JCheckBox(
-      ExternalSystemBundle.message(
-        "settings.label.create.empty.content.root.directories"))
+    val createContentDirsCheckBox = new JCheckBox(ExternalSystemBundle.message(
+      "settings.label.create.empty.content.root.directories"))
 
     val step = new SdkSettingsStep(
       settingsStep,
@@ -203,8 +202,7 @@ class SbtModuleBuilder
           ExternalSystemUtil.refreshProjects(
             new ImportSpecBuilder(model.getProject, SbtProjectSystem.Id)
               .forceWhenUptodate()
-              .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC)
-          )
+              .use(ProgressExecutionMode.IN_BACKGROUND_ASYNC))
       })
     }
   }

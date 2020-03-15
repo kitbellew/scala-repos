@@ -99,14 +99,11 @@ class Eval(target: Option[File]) {
       Seq(
         new ClassScopedResolver(getClass),
         new FilesystemResolver(new File(".")),
-        new FilesystemResolver(new File("." + File.separator + "config"))
-      ) ++ (
+        new FilesystemResolver(new File("." + File.separator + "config"))) ++ (
         Option(System.getProperty("com.twitter.util.Eval.includePath")) map {
           path => new FilesystemResolver(new File(path))
         }
-      )
-    )
-  )
+      )))
 
   // For derived classes to provide an alternate compiler message handler.
   protected lazy val compilerMessageHandler: Option[Reporter] = None
@@ -366,23 +363,21 @@ class Eval(target: Option[File]) {
     val currentClassPath = classPath.head
 
     // if there's just one thing in the classpath, and it's a jar, assume an executable jar.
-    currentClassPath ::: (if (currentClassPath.size == 1 && currentClassPath(0)
-                                .endsWith(".jar")) {
-                            val jarFile = currentClassPath(0)
-                            val relativeRoot = new File(jarFile).getParentFile()
-                            val nestedClassPath =
-                              new JarFile(jarFile).getManifest.getMainAttributes
-                                .getValue("Class-Path")
-                            if (nestedClassPath eq null) { Nil }
-                            else {
-                              nestedClassPath
-                                .split(" ")
-                                .map { f =>
-                                  new File(relativeRoot, f).getAbsolutePath
-                                }
-                                .toList
-                            }
-                          } else { Nil }) ::: classPath.tail.flatten
+    currentClassPath ::: (
+      if (currentClassPath.size == 1 && currentClassPath(0).endsWith(".jar")) {
+        val jarFile = currentClassPath(0)
+        val relativeRoot = new File(jarFile).getParentFile()
+        val nestedClassPath = new JarFile(jarFile).getManifest.getMainAttributes
+          .getValue("Class-Path")
+        if (nestedClassPath eq null) { Nil }
+        else {
+          nestedClassPath
+            .split(" ")
+            .map { f => new File(relativeRoot, f).getAbsolutePath }
+            .toList
+        }
+      } else { Nil }
+    ) ::: classPath.tail.flatten
   }
 
   trait Preprocessor {

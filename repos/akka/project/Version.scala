@@ -12,24 +12,23 @@ import sbt.Keys._
 object Version {
 
   def versionSettings: Seq[Setting[_]] =
-    inConfig(Compile)(
-      Seq(
-        resourceGenerators <+= generateVersion(
-          resourceManaged,
-          _ / "version.conf",
-          """|akka.version = "%s"
+    inConfig(Compile)(Seq(
+      resourceGenerators <+= generateVersion(
+        resourceManaged,
+        _ / "version.conf",
+        """|akka.version = "%s"
          |"""),
-        sourceGenerators <+= generateVersion(
-          sourceManaged,
-          _ / "akka" / "Version.scala",
-          """|package akka
+      sourceGenerators <+= generateVersion(
+        sourceManaged,
+        _ / "akka" / "Version.scala",
+        """|package akka
          |
          |object Version {
          |  val current: String = "%s"
          |}
          |"""
-        )
-      ))
+      )
+    ))
 
   def generateVersion(
       dir: SettingKey[File],

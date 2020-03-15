@@ -105,9 +105,9 @@ object ActorModelSpec {
       }
       case Interrupt ⇒ {
         ack();
-        sender() ! Status.Failure(
-          new ActorInterruptedException(new InterruptedException("Ping!")));
-        busy.switchOff(()); throw new InterruptedException("Ping!")
+        sender() ! Status.Failure(new ActorInterruptedException(
+          new InterruptedException("Ping!"))); busy.switchOff(());
+        throw new InterruptedException("Ping!")
       }
       case InterruptNicely(msg) ⇒ {
         ack(); sender() ! msg; busy.switchOff(());
@@ -187,13 +187,12 @@ object ActorModelSpec {
     try { await(deadline)(stops == dispatcher.stops.get) }
     catch {
       case e: Throwable ⇒
-        system.eventStream.publish(
-          Error(
-            e,
-            dispatcher.toString,
-            dispatcher.getClass,
-            "actual: stops=" + dispatcher.stops.get +
-              " required: stops=" + stops))
+        system.eventStream.publish(Error(
+          e,
+          dispatcher.toString,
+          dispatcher.getClass,
+          "actual: stops=" + dispatcher.stops.get +
+            " required: stops=" + stops))
         throw e
     }
   }
@@ -260,15 +259,14 @@ object ActorModelSpec {
       await(deadline)(stats.restarts.get() == restarts)
     } catch {
       case e: Throwable ⇒
-        system.eventStream.publish(
-          Error(
-            e,
-            Option(dispatcher).toString,
-            (Option(dispatcher) getOrElse this).getClass,
-            "actual: " + stats + ", required: InterceptorStats(susp=" + suspensions +
-              ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
-              ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
-          ))
+        system.eventStream.publish(Error(
+          e,
+          Option(dispatcher).toString,
+          (Option(dispatcher) getOrElse this).getClass,
+          "actual: " + stats + ", required: InterceptorStats(susp=" + suspensions +
+            ",res=" + resumes + ",reg=" + registers + ",unreg=" + unregisters +
+            ",recv=" + msgsReceived + ",proc=" + msgsProcessed + ",restart=" + restarts
+        ))
         throw e
     }
   }
@@ -450,14 +448,15 @@ abstract class ActorModelSpec(config: String)
         val stopLatch = new CountDownLatch(num)
         val keepAliveLatch = new CountDownLatch(1)
         val waitTime = (20 seconds).dilated.toMillis
-        val boss = system.actorOf(Props(new Actor {
-          def receive = {
-            case "run" ⇒
-              for (_ ← 1 to num)(context.watch(
-                context.actorOf(props))) ! cachedMessage
-            case Terminated(child) ⇒ stopLatch.countDown()
-          }
-        }).withDispatcher("boss"))
+        val boss = system.actorOf(
+          Props(new Actor {
+            def receive = {
+              case "run" ⇒
+                for (_ ← 1 to num)(context.watch(
+                  context.actorOf(props))) ! cachedMessage
+              case Terminated(child) ⇒ stopLatch.countDown()
+            }
+          }).withDispatcher("boss"))
         try {
           // this future is meant to keep the dispatcher alive until the end of the test run even if
           // the boss doesn't create children fast enough to keep the dispatcher from becoming empty
@@ -501,8 +500,9 @@ abstract class ActorModelSpec(config: String)
 
                   System.err.println(
                     "Mailbox: " + mq.numberOfMessages + " " + mq.hasMessages)
-                  Iterator.continually(
-                    mq.dequeue) takeWhile (_ ne null) foreach System.err.println
+                  Iterator.continually(mq.dequeue) takeWhile (
+                    _ ne null
+                  ) foreach System.err.println
                 case _ ⇒
               }
 

@@ -21,8 +21,9 @@ final class ChallengeApi(
   import Challenge._
 
   def allFor(userId: User.ID): Fu[AllChallenges] =
-    createdByDestId(userId) zip createdByChallengerId(
-      userId) map (AllChallenges.apply _).tupled
+    createdByDestId(userId) zip createdByChallengerId(userId) map (
+      AllChallenges.apply _
+    ).tupled
 
   def create(c: Challenge): Funit = {
     repo like c flatMap { _ ?? repo.cancel }
@@ -69,22 +70,21 @@ final class ChallengeApi(
         destUserOption <- pov.opponent.userId ?? UserRepo.byId
         success <- (destUserOption |@| challengerOption).tupled ?? {
           case (destUser, challenger) =>
-            create(
-              Challenge.make(
-                variant = pov.game.variant,
-                initialFen = initialFen,
-                timeControl = (pov.game.clock, pov.game.daysPerTurn) match {
-                  case (Some(clock), _) =>
-                    TimeControl.Clock(clock.limit, clock.increment)
-                  case (_, Some(days)) => TimeControl.Correspondence(days)
-                  case _               => TimeControl.Unlimited
-                },
-                mode = pov.game.mode,
-                color = (!pov.color).name,
-                challenger = Right(challenger),
-                destUser = Some(destUser),
-                rematchOf = pov.game.id.some
-              )) inject true
+            create(Challenge.make(
+              variant = pov.game.variant,
+              initialFen = initialFen,
+              timeControl = (pov.game.clock, pov.game.daysPerTurn) match {
+                case (Some(clock), _) =>
+                  TimeControl.Clock(clock.limit, clock.increment)
+                case (_, Some(days)) => TimeControl.Correspondence(days)
+                case _               => TimeControl.Unlimited
+              },
+              mode = pov.game.mode,
+              color = (!pov.color).name,
+              challenger = Right(challenger),
+              destUser = Some(destUser),
+              rematchOf = pov.game.id.some
+            )) inject true
         }
       } yield success
     }

@@ -39,8 +39,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
       val warnings = inline(request)
       for (warning <- warnings) {
-        if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
-              .emitWarning(compilerSettings)) {
+        if ((
+              callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed
+            ) || warning.emitWarning(compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline) " is annotated @inline but" else ""
           val msg = s"${BackendReporting.methodSignature(
@@ -197,18 +198,17 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       }
       val staticCallsite = callsite.copy(
         callsiteInstruction = newCallsiteInstruction,
-        callee = Right(
-          Callee(
-            callee = implClassMethod,
-            calleeDeclarationClass = implClassBType,
-            safeToInline = true,
-            safeToRewrite = false,
-            canInlineFromSource = canInlineFromSource,
-            annotatedInline = annotatedInline,
-            annotatedNoInline = annotatedNoInline,
-            samParamTypes = staticCallSamParamTypes,
-            calleeInfoWarning = infoWarning
-          ))
+        callee = Right(Callee(
+          callee = implClassMethod,
+          calleeDeclarationClass = implClassBType,
+          safeToInline = true,
+          safeToRewrite = false,
+          canInlineFromSource = canInlineFromSource,
+          annotatedInline = annotatedInline,
+          annotatedNoInline = annotatedNoInline,
+          samParamTypes = staticCallSamParamTypes,
+          calleeInfoWarning = infoWarning
+        ))
       )
       callGraph.addCallsite(staticCallsite)
     }
@@ -638,20 +638,18 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     if (isSynchronizedMethod(callee)) {
       // Could be done by locking on the receiver, wrapping the inlined code in a try and unlocking
       // in finally. But it's probably not worth the effort, scala never emits synchronized methods.
-      Some(
-        SynchronizedMethod(
-          calleeDeclarationClass.internalName,
-          callee.name,
-          callee.desc))
+      Some(SynchronizedMethod(
+        calleeDeclarationClass.internalName,
+        callee.name,
+        callee.desc))
     } else if (isStrictfpMethod(callsiteMethod) != isStrictfpMethod(callee)) {
-      Some(
-        StrictfpMismatch(
-          calleeDeclarationClass.internalName,
-          callee.name,
-          callee.desc,
-          callsiteClass.internalName,
-          callsiteMethod.name,
-          callsiteMethod.desc))
+      Some(StrictfpMismatch(
+        calleeDeclarationClass.internalName,
+        callee.name,
+        callee.desc,
+        callsiteClass.internalName,
+        callsiteMethod.name,
+        callsiteMethod.desc))
     } else None
   }
 
@@ -714,23 +712,21 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     }
 
     if (codeSizeOKForInlining(callsiteMethod, callee)) {
-      Some(
-        ResultingMethodTooLarge(
-          calleeDeclarationClass.internalName,
-          callee.name,
-          callee.desc,
-          callsiteClass.internalName,
-          callsiteMethod.name,
-          callsiteMethod.desc))
+      Some(ResultingMethodTooLarge(
+        calleeDeclarationClass.internalName,
+        callee.name,
+        callee.desc,
+        callsiteClass.internalName,
+        callsiteMethod.name,
+        callsiteMethod.desc))
     } else if (!callee.tryCatchBlocks.isEmpty && stackHasNonParameters) {
-      Some(
-        MethodWithHandlerCalledOnNonEmptyStack(
-          calleeDeclarationClass.internalName,
-          callee.name,
-          callee.desc,
-          callsiteClass.internalName,
-          callsiteMethod.name,
-          callsiteMethod.desc))
+      Some(MethodWithHandlerCalledOnNonEmptyStack(
+        calleeDeclarationClass.internalName,
+        callee.name,
+        callee.desc,
+        callsiteClass.internalName,
+        callsiteMethod.name,
+        callsiteMethod.desc))
     } else
       findIllegalAccess(
         callee.instructions,

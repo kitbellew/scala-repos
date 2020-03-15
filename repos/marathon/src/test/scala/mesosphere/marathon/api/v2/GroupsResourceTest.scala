@@ -208,8 +208,8 @@ class GroupsResourceTest
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
     groupManager.versions(PathId.empty) returns Future.successful(
       groupVersions.toIterable)
-    groupManager.group(PathId.empty) returns Future.successful(
-      Some(Group(PathId.empty)))
+    groupManager.group(PathId.empty) returns Future.successful(Some(
+      Group(PathId.empty)))
 
     When("The versions are queried")
     val rootVersionsResponse = groupsResource.group(

@@ -78,8 +78,8 @@ import org.apache.spark.util.random.{
   */
 abstract class RDD[T: ClassTag](
     @transient private var _sc: SparkContext,
-    @transient private var deps: Seq[Dependency[_]]
-) extends Serializable
+    @transient private var deps: Seq[Dependency[_]])
+    extends Serializable
     with Logging {
 
   if (classOf[RDD[_]].isAssignableFrom(elementClassTag.runtimeClass)) {

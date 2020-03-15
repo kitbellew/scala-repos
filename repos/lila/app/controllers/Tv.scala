@@ -26,9 +26,12 @@ object Tv extends LilaController {
             Env.tv.tv.getChampions zip
               Env.game.crosstableApi(pov.game) map {
               case (champions, crosstable) =>
-                Ok(
-                  html.tv
-                    .sides(channel, champions, pov, crosstable, streams = Nil))
+                Ok(html.tv.sides(
+                  channel,
+                  champions,
+                  pov,
+                  crosstable,
+                  streams = Nil))
             }
           }
       }
@@ -138,12 +141,10 @@ object Tv extends LilaController {
       Env.tv.tv.getBest map {
         case None => NotFound
         case Some(game) =>
-          Ok(
-            views.html.tv.embed(
-              Pov first game,
-              get("bg", req) | "light",
-              lila.pref.Theme(~get("theme", req)).cssClass
-            ))
+          Ok(views.html.tv.embed(
+            Pov first game,
+            get("bg", req) | "light",
+            lila.pref.Theme(~get("theme", req)).cssClass))
       }
     }
 }

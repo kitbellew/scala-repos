@@ -68,8 +68,7 @@ private[sird] object QueryStringParameterMacros {
         // the parameter name to it
         val call = TermName(extractorName)
         c.Expr(
-          q"_root_.play.api.routing.sird.QueryStringParameterExtractor.$call($paramName)"
-        )
+          q"_root_.play.api.routing.sird.QueryStringParameterExtractor.$call($paramName)")
 
       case _ =>
         c.abort(c.enclosingPosition, "Invalid use of query string extractor")

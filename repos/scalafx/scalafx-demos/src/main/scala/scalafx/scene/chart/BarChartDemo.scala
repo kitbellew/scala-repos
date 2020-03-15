@@ -43,8 +43,7 @@ object BarChartDemo extends JFXApp {
         data = ObservableBuffer(
           xySeries("Apples", Seq(567, 1292, 1290)),
           xySeries("Lemons", Seq(956, 1665, 2559)),
-          xySeries("Oranges", Seq(1154, 1927, 2774))
-        )
+          xySeries("Oranges", Seq(1154, 1927, 2774)))
       }
     }
   }
@@ -56,7 +55,6 @@ object BarChartDemo extends JFXApp {
       name,
       ObservableBuffer(series.map {
         case (x, y) => XYChart.Data[String, Number](x, y)
-      })
-    )
+      }))
   }
 }

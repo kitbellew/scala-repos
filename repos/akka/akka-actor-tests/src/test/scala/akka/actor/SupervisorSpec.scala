@@ -118,40 +118,35 @@ class SupervisorSpec
     Await.result((supervisor ? props).mapTo[ActorRef], timeout.duration)
 
   def temporaryActorAllForOne = {
-    val supervisor = system.actorOf(
-      Props(
-        new Supervisor(
-          AllForOneStrategy(maxNrOfRetries = 0)(List(classOf[Exception])))))
+    val supervisor = system.actorOf(Props(new Supervisor(
+      AllForOneStrategy(maxNrOfRetries = 0)(List(classOf[Exception])))))
     val temporaryActor = child(supervisor, Props(new PingPongActor(testActor)))
 
     (temporaryActor, supervisor)
   }
 
   def singleActorAllForOne = {
-    val supervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+    val supervisor = system.actorOf(Props(new Supervisor(
+      AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+        List(classOf[Exception])))))
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong, supervisor)
   }
 
   def singleActorOneForOne = {
-    val supervisor = system.actorOf(
-      Props(new Supervisor(
-        OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+    val supervisor = system.actorOf(Props(new Supervisor(
+      OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+        List(classOf[Exception])))))
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong, supervisor)
   }
 
   def multipleActorsAllForOne = {
-    val supervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+    val supervisor = system.actorOf(Props(new Supervisor(
+      AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+        List(classOf[Exception])))))
     val pingpong1, pingpong2,
         pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
@@ -159,10 +154,9 @@ class SupervisorSpec
   }
 
   def multipleActorsOneForOne = {
-    val supervisor = system.actorOf(
-      Props(new Supervisor(
-        OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+    val supervisor = system.actorOf(Props(new Supervisor(
+      OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+        List(classOf[Exception])))))
     val pingpong1, pingpong2,
         pingpong3 = child(supervisor, Props(new PingPongActor(testActor)))
 
@@ -170,10 +164,9 @@ class SupervisorSpec
   }
 
   def nestedSupervisorsAllForOne = {
-    val topSupervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+    val topSupervisor = system.actorOf(Props(new Supervisor(
+      AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+        List(classOf[Exception])))))
     val pingpong1 = child(topSupervisor, Props(new PingPongActor(testActor)))
 
     val middleSupervisor = child(
@@ -188,8 +181,8 @@ class SupervisorSpec
   }
 
   override def atStartup() {
-    system.eventStream.publish(
-      Mute(EventFilter[RuntimeException](ExceptionMessage)))
+    system.eventStream.publish(Mute(
+      EventFilter[RuntimeException](ExceptionMessage)))
   }
 
   override def beforeEach() = {}
@@ -406,11 +399,9 @@ class SupervisorSpec
 
     "attempt restart when exception during restart" in {
       val inits = new AtomicInteger(0)
-      val supervisor = system.actorOf(
-        Props(
-          new Supervisor(
-            OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 10 seconds)(
-              classOf[Exception] :: Nil))))
+      val supervisor = system.actorOf(Props(new Supervisor(
+        OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 10 seconds)(
+          classOf[Exception] :: Nil))))
 
       val dyingProps = Props(new Actor {
         val init = inits.getAndIncrement()
@@ -455,21 +446,20 @@ class SupervisorSpec
           case e: IllegalStateException if e.getMessage == "OHNOES" ⇒ throw e
           case _ ⇒ SupervisorStrategy.Restart
         })
-        val child = context.watch(
-          context.actorOf(
-            Props(new Actor {
-              override def postRestart(reason: Throwable): Unit =
-                testActor ! "child restarted"
-              def receive = {
-                case l: TestLatch ⇒ {
-                  Await.ready(l, 5 seconds);
-                  throw new IllegalStateException("OHNOES")
-                }
-                case "test" ⇒ sender() ! "child green"
+        val child = context.watch(context.actorOf(
+          Props(new Actor {
+            override def postRestart(reason: Throwable): Unit =
+              testActor ! "child restarted"
+            def receive = {
+              case l: TestLatch ⇒ {
+                Await.ready(l, 5 seconds);
+                throw new IllegalStateException("OHNOES")
               }
-            }),
-            "child"
-          ))
+              case "test" ⇒ sender() ! "child green"
+            }
+          }),
+          "child"
+        ))
 
         override def postRestart(reason: Throwable): Unit =
           testActor ! "parent restarted"

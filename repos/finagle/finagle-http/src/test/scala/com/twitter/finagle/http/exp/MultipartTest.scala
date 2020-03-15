@@ -39,13 +39,9 @@ class MultipartTest extends FunSuite {
     req.contentString = "abc=foo&def=123&abc=bar"
 
     assert(
-      req.multipart == Some(
-        Multipart(
-          Map(
-            "abc" -> Seq("foo", "bar"),
-            "def" -> Seq("123")
-          ),
-          Map.empty[String, Seq[Multipart.FileUpload]])))
+      req.multipart == Some(Multipart(
+        Map("abc" -> Seq("foo", "bar"), "def" -> Seq("123")),
+        Map.empty[String, Seq[Multipart.FileUpload]])))
   }
 
   test("Attribute") {

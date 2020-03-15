@@ -42,8 +42,7 @@ object RequestSemaphoreFilter {
                 sr.addGauge("request_concurrency") {
                   max - sem.numPermitsAvailable
                 },
-                sr.addGauge("request_queue_size") { sem.numWaiters }
-              )
+                sr.addGauge("request_queue_size") { sem.numWaiters })
             }
             filter andThen next
         }

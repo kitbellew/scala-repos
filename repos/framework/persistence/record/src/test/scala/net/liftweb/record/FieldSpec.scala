@@ -326,17 +326,23 @@ object FieldSpec extends Specification {
     "support java.lang.Boolean" in {
       rec.mandatoryBooleanField.setFromAny(java.lang.Boolean.TRUE)
       rec.optionalBooleanField.setFromAny(java.lang.Boolean.TRUE)
-      (rec.mandatoryBooleanField.get && (rec.optionalBooleanField.get getOrElse false)) must_== true
+      (rec.mandatoryBooleanField.get && (
+        rec.optionalBooleanField.get getOrElse false
+      )) must_== true
     }
     "support Full(java.lang.Boolean)" in {
       rec.mandatoryBooleanField.setFromAny(Full(java.lang.Boolean.TRUE))
       rec.optionalBooleanField.setFromAny(Full(java.lang.Boolean.TRUE))
-      (rec.mandatoryBooleanField.get && (rec.optionalBooleanField.get getOrElse false)) must_== true
+      (rec.mandatoryBooleanField.get && (
+        rec.optionalBooleanField.get getOrElse false
+      )) must_== true
     }
     "support Some(java.lang.Boolean)" in {
       rec.mandatoryBooleanField.setFromAny(Some(java.lang.Boolean.TRUE))
       rec.optionalBooleanField.setFromAny(Some(java.lang.Boolean.TRUE))
-      (rec.mandatoryBooleanField.get && (rec.optionalBooleanField.get getOrElse false)) must_== true
+      (rec.mandatoryBooleanField.get && (
+        rec.optionalBooleanField.get getOrElse false
+      )) must_== true
     }
   }
 
@@ -609,10 +615,10 @@ object FieldSpec extends Specification {
     "require a nonempty password" in S.initIfUninitted(session) {
       val rec = PasswordTestRecord.createRecord.password("")
 
-      rec.validate must_== (
-        FieldError(rec.password, Text(S.?("password.must.be.set"))) ::
-          Nil
-      )
+      rec.validate must_== (FieldError(
+        rec.password,
+        Text(S.?("password.must.be.set"))) ::
+        Nil)
     }
 
     "correctly validate the unencrypted value" in S.initIfUninitted(session) {
@@ -620,10 +626,10 @@ object FieldSpec extends Specification {
       rec.validate must_== Nil
 
       rec.password("1234")
-      rec.validate must_== (
-        FieldError(rec.password, Text(S.?("password.too.short"))) ::
-          Nil
-      )
+      rec.validate must_== (FieldError(
+        rec.password,
+        Text(S.?("password.too.short"))) ::
+        Nil)
     }
 
     "match with encrypted value" in {
@@ -708,12 +714,10 @@ object FieldSpec extends Specification {
     "honor validators configured in the usual way" in {
       val rec = StringTestRecord.createRecord
 
-      rec.validate must_== (
-        FieldError(
-          rec.string,
-          Text("String field name must be at least 3 characters.")) ::
-          Nil
-      )
+      rec.validate must_== (FieldError(
+        rec.string,
+        Text("String field name must be at least 3 characters.")) ::
+        Nil)
     }
 
     "honor harnessed validators" in {

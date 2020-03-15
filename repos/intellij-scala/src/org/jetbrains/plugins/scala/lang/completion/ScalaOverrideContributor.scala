@@ -32,13 +32,11 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       keyword: String) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(
-            new NotFilter(new LeftNeighbour(new TextContainFilter("override"))),
-            new AndFilter(
-              new NotFilter(new LeftNeighbour(new TextFilter("."))),
-              filter)))),
+      PlatformPatterns.psiElement.and(new FilterPattern(new AndFilter(
+        new NotFilter(new LeftNeighbour(new TextContainFilter("override"))),
+        new AndFilter(
+          new NotFilter(new LeftNeighbour(new TextFilter("."))),
+          filter)))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,
@@ -156,10 +154,9 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
   class MyInsertHandler() extends InsertHandler[LookupElement] {
     def handleInsert(context: InsertionContext, item: LookupElement) = {
       def makeInsertion(): Unit = {
-        val elementOption = Option(
-          PsiTreeUtil.getContextOfType(
-            context.getFile.findElementAt(context.getStartOffset),
-            classOf[ScModifierListOwner]))
+        val elementOption = Option(PsiTreeUtil.getContextOfType(
+          context.getFile.findElementAt(context.getStartOffset),
+          classOf[ScModifierListOwner]))
 
         elementOption.foreach { element =>
           TypeAdjuster.markToAdjust(element)

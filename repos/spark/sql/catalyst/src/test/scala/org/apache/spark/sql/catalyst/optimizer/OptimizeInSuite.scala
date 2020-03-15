@@ -72,18 +72,16 @@ class OptimizeInSuite extends PlanTest {
   test(
     "OptimizedIn test: In clause not optimized in case filter has attributes") {
     val originalQuery = testRelation
-      .where(
-        In(
-          UnresolvedAttribute("a"),
-          Seq(Literal(1), Literal(2), UnresolvedAttribute("b"))))
+      .where(In(
+        UnresolvedAttribute("a"),
+        Seq(Literal(1), Literal(2), UnresolvedAttribute("b"))))
       .analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)
     val correctAnswer = testRelation
-      .where(
-        In(
-          UnresolvedAttribute("a"),
-          Seq(Literal(1), Literal(2), UnresolvedAttribute("b"))))
+      .where(In(
+        UnresolvedAttribute("a"),
+        Seq(Literal(1), Literal(2), UnresolvedAttribute("b"))))
       .analyze
 
     comparePlans(optimized, correctAnswer)
@@ -107,10 +105,9 @@ class OptimizeInSuite extends PlanTest {
     "OptimizedIn test: Inset optimization disabled as " +
       "list expression contains attribute)") {
     val originalQuery = testRelation
-      .where(
-        In(
-          Literal.create(null, StringType),
-          Seq(Literal(1), UnresolvedAttribute("b"))))
+      .where(In(
+        Literal.create(null, StringType),
+        Seq(Literal(1), UnresolvedAttribute("b"))))
       .analyze
 
     val optimized = Optimize.execute(originalQuery.analyze)

@@ -446,14 +446,12 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
 
     val response =
       if (length > 0) {
-        Ok.sendEntity(
-          HttpEntity.Streamed(
-            akka.stream.scaladsl.Source
-              .fromPublisher(Streams.enumeratorToPublisher(resourceData))
-              .map(ByteString.apply),
-            Some(length),
-            Some(mimeType)
-          ))
+        Ok.sendEntity(HttpEntity.Streamed(
+          akka.stream.scaladsl.Source
+            .fromPublisher(Streams.enumeratorToPublisher(resourceData))
+            .map(ByteString.apply),
+          Some(length),
+          Some(mimeType)))
       } else {
         Ok.sendEntity(HttpEntity.Strict(ByteString.empty, Some(mimeType)))
       }
@@ -537,8 +535,7 @@ class AssetsBuilder(errorHandler: HttpErrorHandler) extends Controller {
                   assetInfo.mimeType,
                   resourceData,
                   gzipRequested,
-                  assetInfo.gzipUrl.isDefined)
-              )
+                  assetInfo.gzipUrl.isDefined))
             })
         }
       case None => notFound

@@ -229,7 +229,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getFloat(byteOrder)
     input.getFloats(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getFloat(byteOrder)
-    ((decoded.toSeq map floatToRawIntBits) == (reference.toSeq map floatToRawIntBits)) &&
+    ((decoded.toSeq map floatToRawIntBits) == (
+      reference.toSeq map floatToRawIntBits
+    )) &&
     (input.toSeq == bytes.drop(n * elemSize))
   }
 
@@ -246,7 +248,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
     for (i ← 0 until a) decoded(i) = input.getDouble(byteOrder)
     input.getDoubles(decoded, a, b - a)(byteOrder)
     for (i ← b until n) decoded(i) = input.getDouble(byteOrder)
-    ((decoded.toSeq map doubleToRawLongBits) == (reference.toSeq map doubleToRawLongBits)) &&
+    ((decoded.toSeq map doubleToRawLongBits) == (
+      reference.toSeq map doubleToRawLongBits
+    )) &&
     (input.toSeq == bytes.drop(n * elemSize))
   }
 
@@ -308,7 +312,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
             if byteOrder == ByteOrder.LITTLE_ENDIAN && i % elemSize < nBytes ⇒
           r
         case (r, i)
-            if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (elemSize - nBytes) ⇒
+            if byteOrder == ByteOrder.BIG_ENDIAN && i % elemSize >= (
+              elemSize - nBytes
+            ) ⇒
           r
       })
       .toSeq == builder.result
@@ -690,10 +696,9 @@ class ByteStringSpec extends WordSpec with Matchers with Checkers {
 
           (output.toSeq.drop(a) == bytes.drop(a)) &&
           (input.asInputStream.read() == -1) &&
-          ((output.length < 1) || (input.asInputStream.read(
-            output,
-            0,
-            1) == -1))
+          ((output.length < 1) || (
+            input.asInputStream.read(output, 0, 1) == -1
+          ))
         }
       }
 

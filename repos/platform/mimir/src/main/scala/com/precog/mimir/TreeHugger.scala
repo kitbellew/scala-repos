@@ -46,8 +46,9 @@ class Code extends UsefulStuff {
   val imports = BLOCK(
     IMPORT("bytecode.Library") :: IMPORT("bytecode.BuiltInFunc1") :: IMPORT(
       "java.lang.Math") :: IMPORT("java.lang.String") :: IMPORT(
-      "bytecode.BuiltInFunc2") :: IMPORT(
-      "yggdrasil._") :: Nil: _*) inPackage ("mimir") inPackage ("com.precog")
+      "bytecode.BuiltInFunc2") :: IMPORT("yggdrasil._") :: Nil: _*) inPackage (
+    "mimir"
+  ) inPackage ("com.precog")
 
   val methods: Array[String] = classOf[Math].getMethods.map(_.getName)
   val parameters = classOf[Math].getMethods.map(_.getParameterTypes)
@@ -79,8 +80,7 @@ class Code extends UsefulStuff {
         "super._mathlib1") SEQ_++ (sym.Set UNAPPLY (ID(m1)))) ::
         (DEF("_mathlib2") withFlags (Flags.OVERRIDE) := REF(
           "super._mathlib2") SEQ_++ (sym.Set UNAPPLY (ID(m2)))) ::
-        methodsAll: _*
-    )
+        methodsAll: _*)
   }
 
   def objects1(method: String): Tree = {

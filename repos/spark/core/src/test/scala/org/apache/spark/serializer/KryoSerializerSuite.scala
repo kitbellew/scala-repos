@@ -154,15 +154,13 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     check(mutable.Map("one" -> 1, "two" -> 2))
     check(mutable.HashMap(1 -> "one", 2 -> "two"))
     check(mutable.HashMap("one" -> 1, "two" -> 2))
-    check(
-      List(
-        Some(mutable.HashMap(1 -> 1, 2 -> 2)),
-        None,
-        Some(mutable.HashMap(3 -> 4))))
-    check(
-      List(
-        mutable.HashMap("one" -> 1, "two" -> 2),
-        mutable.HashMap(1 -> "one", 2 -> "two", 3 -> "three")))
+    check(List(
+      Some(mutable.HashMap(1 -> 1, 2 -> 2)),
+      None,
+      Some(mutable.HashMap(3 -> 4))))
+    check(List(
+      mutable.HashMap("one" -> 1, "two" -> 2),
+      mutable.HashMap(1 -> "one", 2 -> "two", 3 -> "three")))
   }
 
   test("Bug: SPARK-10251") {
@@ -191,15 +189,13 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     check(mutable.Map("one" -> 1, "two" -> 2))
     check(mutable.HashMap(1 -> "one", 2 -> "two"))
     check(mutable.HashMap("one" -> 1, "two" -> 2))
-    check(
-      List(
-        Some(mutable.HashMap(1 -> 1, 2 -> 2)),
-        None,
-        Some(mutable.HashMap(3 -> 4))))
-    check(
-      List(
-        mutable.HashMap("one" -> 1, "two" -> 2),
-        mutable.HashMap(1 -> "one", 2 -> "two", 3 -> "three")))
+    check(List(
+      Some(mutable.HashMap(1 -> 1, 2 -> 2)),
+      None,
+      Some(mutable.HashMap(3 -> 4))))
+    check(List(
+      mutable.HashMap("one" -> 1, "two" -> 2),
+      mutable.HashMap(1 -> "one", 2 -> "two", 3 -> "three")))
   }
 
   test("ranges") {
@@ -289,9 +285,9 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
 
   test("kryo with collect for specialized tuples") {
     assert(
-      sc.parallelize(Array((1, 11), (2, 22), (3, 33)))
-        .collect()
-        .head === (1, 11))
+      sc.parallelize(Array((1, 11), (2, 22), (3, 33))).collect().head === (
+        1, 11
+      ))
   }
 
   test("kryo with SerializableHyperLogLog") {
@@ -370,10 +366,9 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     val denseBlockSizes = new Array[Long](5000)
     val sparseBlockSizes = Array[Long](0L, 1L, 0L, 2L)
     Seq(denseBlockSizes, sparseBlockSizes).foreach { blockSizes =>
-      ser.serialize(
-        HighlyCompressedMapStatus(
-          BlockManagerId("exec-1", "host", 1234),
-          blockSizes))
+      ser.serialize(HighlyCompressedMapStatus(
+        BlockManagerId("exec-1", "host", 1234),
+        blockSizes))
     }
   }
 

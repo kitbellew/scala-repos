@@ -87,20 +87,19 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
       case JArray(array) =>
-        setBox(
-          Full(
-            (array
-              .map {
-                case JsonObjectId(objectId) => objectId
-                case JsonRegex(regex)       => regex
-                case JsonUUID(uuid)         => uuid
-                case JsonDateTime(dt)
-                    if (mf.toString == "org.joda.time.DateTime") =>
-                  dt
-                case JsonDate(date) => date
-                case other          => other.values
-              })
-              .asInstanceOf[MyType]))
+        setBox(Full(
+          (array
+            .map {
+              case JsonObjectId(objectId) => objectId
+              case JsonRegex(regex)       => regex
+              case JsonUUID(uuid)         => uuid
+              case JsonDateTime(dt)
+                  if (mf.toString == "org.joda.time.DateTime") =>
+                dt
+              case JsonDate(date) => date
+              case other          => other.values
+            })
+            .asInstanceOf[MyType]))
       case other => setBox(FieldHelpers.expectedA("JArray", other))
     }
 
@@ -117,11 +116,9 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 
   private def elem = {
     def elem0 =
-      SHtml.multiSelectObj[ListType](
-        options,
-        value,
-        set(_)
-      ) % ("tabindex" -> tabIndex.toString)
+      SHtml.multiSelectObj[ListType](options, value, set(_)) % (
+        "tabindex" -> tabIndex.toString
+      )
 
     SHtml.hidden(() => set(Nil)) ++ (uniqueFieldId match {
       case Full(id) => (elem0 % ("id" -> id))
@@ -168,9 +165,8 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
 /*
  * List of JsonObject case classes
  */
-class MongoJsonObjectListField[
-    OwnerType <: BsonRecord[OwnerType],
-    JObjectType <: JsonObject[JObjectType]](
+class MongoJsonObjectListField[OwnerType <: BsonRecord[
+  OwnerType], JObjectType <: JsonObject[JObjectType]](
     rec: OwnerType,
     valueMeta: JsonObjectMeta[JObjectType])(implicit mf: Manifest[JObjectType])
     extends MongoListField[OwnerType, JObjectType](rec: OwnerType) {
@@ -178,9 +174,8 @@ class MongoJsonObjectListField[
   override def asDBObject: DBObject = {
     val dbl = new BasicDBList
     value.foreach { v =>
-      dbl.add(
-        JObjectParser
-          .parse(v.asJObject()(owner.meta.formats))(owner.meta.formats))
+      dbl.add(JObjectParser.parse(v.asJObject()(owner.meta.formats))(
+        owner.meta.formats))
     }
     dbl
   }

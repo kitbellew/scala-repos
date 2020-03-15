@@ -272,8 +272,7 @@ final class GuiceInjectorBuilder(
       overrides,
       disabled,
       binderOptions,
-      eagerly
-    ) {
+      eagerly) {
 
   // extra constructor for creating from Java
   def this() = this(environment = Environment.simple())
@@ -333,8 +332,7 @@ object GuiceableModule extends GuiceableModuleConversions {
       case unknown =>
         throw new PlayException(
           "Unknown module type",
-          s"Module [$unknown] is not a Play module or a Guice module"
-        )
+          s"Module [$unknown] is not a Play module or a Guice module")
     }
 
   /**

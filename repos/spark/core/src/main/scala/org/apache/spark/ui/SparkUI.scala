@@ -84,12 +84,11 @@ private[spark] class SparkUI private (
     attachHandler(createRedirectHandler("/", "/jobs/", basePath = basePath))
     attachHandler(ApiRootResource.getServletHandler(this))
     // This should be POST only, but, the YARN AM proxy won't proxy POSTs
-    attachHandler(
-      createRedirectHandler(
-        "/stages/stage/kill",
-        "/stages/",
-        stagesTab.handleKillRequest,
-        httpMethods = Set("GET", "POST")))
+    attachHandler(createRedirectHandler(
+      "/stages/stage/kill",
+      "/stages/",
+      stagesTab.handleKillRequest,
+      httpMethods = Set("GET", "POST")))
   }
   initialize()
 
@@ -115,25 +114,21 @@ private[spark] class SparkUI private (
   }
 
   def getApplicationInfoList: Iterator[ApplicationInfo] = {
-    Iterator(
-      new ApplicationInfo(
-        id = appId,
-        name = appName,
-        coresGranted = None,
-        maxCores = None,
-        coresPerExecutor = None,
-        memoryPerExecutorMB = None,
-        attempts = Seq(
-          new ApplicationAttemptInfo(
-            attemptId = None,
-            startTime = new Date(startTime),
-            endTime = new Date(-1),
-            duration = 0,
-            lastUpdated = new Date(startTime),
-            sparkUser = "",
-            completed = false
-          ))
-      ))
+    Iterator(new ApplicationInfo(
+      id = appId,
+      name = appName,
+      coresGranted = None,
+      maxCores = None,
+      coresPerExecutor = None,
+      memoryPerExecutorMB = None,
+      attempts = Seq(new ApplicationAttemptInfo(
+        attemptId = None,
+        startTime = new Date(startTime),
+        endTime = new Date(-1),
+        duration = 0,
+        lastUpdated = new Date(startTime),
+        sparkUser = "",
+        completed = false))))
   }
 }
 

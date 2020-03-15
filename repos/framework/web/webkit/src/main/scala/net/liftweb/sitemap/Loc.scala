@@ -418,10 +418,8 @@ trait Loc[T] {
   def doesMatch_?(req: Req): Boolean = {
     link.isDefinedAt(req) &&
     testAllParams(allParams, req) &&
-    (
-      currentValue.isDefined ||
-      params.contains(Loc.MatchWithoutCurrentValue)
-    )
+    (currentValue.isDefined ||
+    params.contains(Loc.MatchWithoutCurrentValue))
   }
 
   def breadCrumbs: List[Loc[_]] = _menu.breadCrumbs ::: List(this)
@@ -444,8 +442,7 @@ trait Loc[T] {
       allParams.flatMap {
         case v: Loc.LocInfo[_] => List(v())
         case _                 => Nil
-      }
-    )
+      })
 
   def buildMenu: CompleteMenu = {
     CompleteMenu(
@@ -472,8 +469,7 @@ trait Loc[T] {
             case _                 => Nil
           },
           placeHolder_?,
-          this
-        )
+          this)
       }
 
       case _ => Empty
@@ -539,8 +535,8 @@ object Loc {
       override val name: String,
       override val link: Link[Unit],
       override val text: LinkText[Unit],
-      override val params: List[LocParam[Unit]]
-  ) extends Loc[Unit] {
+      override val params: List[LocParam[Unit]])
+      extends Loc[Unit] {
     override def defaultValue: Box[Unit] = Full(())
 
     init()
@@ -551,8 +547,8 @@ object Loc {
       override val link: Link[T],
       override val text: LinkText[T],
       override val defaultValue: Box[T],
-      xparams: LocParam[T]*
-  ) extends Loc[T] {
+      xparams: LocParam[T]*)
+      extends Loc[T] {
     override val params = xparams.toList
 
     init()
@@ -583,8 +579,7 @@ object Loc {
         new LiftRules.HttpAuthProtectedResourcePF() {
           def isDefinedAt(in: Req) = in.path.partPath == loc.link.uriList
           def apply(in: Req): Box[Role] = role(in)
-        }
-      )
+        })
     }
   }
 
@@ -971,8 +966,7 @@ object Loc {
     () => {
       RedirectWithState(
         LiftRules.siteMapFailRedirectLocation.mkString("/", "/", ""),
-        RedirectState(Empty, in -> NoticeType.Error)
-      )
+        RedirectState(Empty, in -> NoticeType.Error))
     }
 
   implicit def strFuncToFailMsg(in: () => String): FailMsg = strToFailMsg(in())

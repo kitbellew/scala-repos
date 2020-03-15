@@ -727,8 +727,9 @@ trait Params extends Identifiable with Serializable {
     shouldOwn(param)
     get(param)
       .orElse(getDefault(param))
-      .getOrElse(throw new NoSuchElementException(
-        s"Failed to find a default value for ${param.name}"))
+      .getOrElse(
+        throw new NoSuchElementException(
+          s"Failed to find a default value for ${param.name}"))
   }
 
   /** An alias for [[getOrDefault()]]. */

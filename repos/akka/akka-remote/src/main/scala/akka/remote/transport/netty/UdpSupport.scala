@@ -112,10 +112,9 @@ private[remote] class UdpAssociationHandle(
 
   override def write(payload: ByteString): Boolean = {
     if (!channel.isConnected)
-      channel.connect(
-        new InetSocketAddress(
-          InetAddress.getByName(remoteAddress.host.get),
-          remoteAddress.port.get))
+      channel.connect(new InetSocketAddress(
+        InetAddress.getByName(remoteAddress.host.get),
+        remoteAddress.port.get))
 
     if (channel.isWritable && channel.isOpen) {
       channel.write(ChannelBuffers.wrappedBuffer(payload.asByteBuffer))

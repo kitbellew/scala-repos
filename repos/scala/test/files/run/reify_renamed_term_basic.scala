@@ -12,11 +12,7 @@ object Test extends App {
   import A.B.{c => y}
   import X.{c => z}
 
-  val expr = reify(
-    X.c,
-    y,
-    z
-  )
+  val expr = reify(X.c, y, z)
 
   println(expr.eval)
 }

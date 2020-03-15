@@ -35,8 +35,7 @@ class ModelValidationTest
       Set(
         createServicePortApp("/a".toPath, 0),
         createServicePortApp("/b".toPath, 0),
-        createServicePortApp("/c".toPath, 0)
-      ))
+        createServicePortApp("/c".toPath, 0)))
 
     val failedResult = Group.validGroupWithConfig(Some(2)).apply(group)
     failedResult.isFailure should be(true)
@@ -138,16 +137,11 @@ class ModelValidationTest
   private def createServicePortApp(id: PathId, servicePort: Int) =
     AppDefinition(
       id,
-      container = Some(
-        Container(
-          docker = Some(
-            Docker(
-              image = "demothing",
-              network = Some(Network.BRIDGE),
-              portMappings = Some(
-                Seq(PortMapping(2000, servicePort = servicePort)))
-            ))
-        ))
+      container = Some(Container(docker = Some(Docker(
+        image = "demothing",
+        network = Some(Network.BRIDGE),
+        portMappings = Some(
+          Seq(PortMapping(2000, servicePort = servicePort)))))))
     )
 
   case class ImportantTitle(name: String)

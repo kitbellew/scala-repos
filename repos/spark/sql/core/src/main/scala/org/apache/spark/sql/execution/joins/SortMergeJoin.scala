@@ -140,8 +140,7 @@ case class SortMergeJoin(
               rightKeyGenerator,
               keyOrdering,
               RowIterator.fromScala(leftIter),
-              RowIterator.fromScala(rightIter)
-            )
+              RowIterator.fromScala(rightIter))
             private[this] val joinRow = new JoinedRow
             private[this] val resultProjection: (InternalRow) => InternalRow =
               UnsafeProjection.create(schema)
@@ -185,8 +184,7 @@ case class SortMergeJoin(
             bufferedKeyGenerator = createRightKeyGenerator(),
             keyOrdering,
             streamedIter = RowIterator.fromScala(leftIter),
-            bufferedIter = RowIterator.fromScala(rightIter)
-          )
+            bufferedIter = RowIterator.fromScala(rightIter))
           val rightNullRow = new GenericInternalRow(right.output.length)
           new LeftOuterIterator(
             smjScanner,
@@ -201,8 +199,7 @@ case class SortMergeJoin(
             bufferedKeyGenerator = createLeftKeyGenerator(),
             keyOrdering,
             streamedIter = RowIterator.fromScala(rightIter),
-            bufferedIter = RowIterator.fromScala(leftIter)
-          )
+            bufferedIter = RowIterator.fromScala(leftIter))
           val leftNullRow = new GenericInternalRow(left.output.length)
           new RightOuterIterator(
             smjScanner,
@@ -701,9 +698,11 @@ private[joins] class SortMergeJoinScanner(
       bufferedMatches += bufferedRow
         .copy() // need to copy mutable rows before buffering them
       advancedBufferedToRowWithNullFreeJoinKey()
-    } while (bufferedRow != null && keyOrdering.compare(
-      streamedRowKey,
-      bufferedRowKey) == 0)
+    } while (
+      bufferedRow != null && keyOrdering.compare(
+        streamedRowKey,
+        bufferedRowKey) == 0
+    )
   }
 }
 

@@ -79,8 +79,7 @@ class LogRecoveryTest extends ZooKeeperTestHarness {
       TestUtils.getBrokerListStrFromServers(servers),
       retries = 5,
       keySerializer = new IntegerSerializer,
-      valueSerializer = new StringSerializer
-    )
+      valueSerializer = new StringSerializer)
   }
 
   @Before

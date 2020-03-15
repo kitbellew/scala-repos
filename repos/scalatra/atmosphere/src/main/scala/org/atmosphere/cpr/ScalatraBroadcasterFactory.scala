@@ -106,7 +106,9 @@ class ScalatraBroadcasterFactory(
       throw new IllegalStateException(msg)
     }
 
-    if ((bOpt.isEmpty && createIfNull) || (bOpt.isDefined && bOpt.get.isDestroyed)) {
+    if ((
+          bOpt.isEmpty && createIfNull
+        ) || (bOpt.isDefined && bOpt.get.isDestroyed)) {
       if (bOpt.isDefined) {
         val b = bOpt.get
         logger.debug("Removing destroyed Broadcaster %s" format b.getID)

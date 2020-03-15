@@ -176,8 +176,8 @@ class ScalaClassRenameDialog(
       chbRenameCompanion.setText(
         ScalaBundle.message("rename.companion.module", companionType.get))
       chbRenameCompanion.setSelected(true)
-      val panel = Option(super.createCenterPanel())
-        .getOrElse(new JPanel(new BorderLayout()))
+      val panel = Option(super.createCenterPanel()).getOrElse(new JPanel(
+        new BorderLayout()))
       panel.add(chbRenameCompanion, BorderLayout.WEST)
       panel
     } else null

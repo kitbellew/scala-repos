@@ -146,33 +146,30 @@ class FsHistoryProviderSuite
             ApplicationAttemptInfo(None, start, end, lastMod, user, completed)))
       }
 
-      list(0) should be(
-        makeAppInfo(
-          "new-app-complete",
-          newAppComplete.getName(),
-          1L,
-          5L,
-          newAppComplete.lastModified(),
-          "test",
-          true))
-      list(1) should be(
-        makeAppInfo(
-          "new-complete-lzf",
-          newAppCompressedComplete.getName(),
-          1L,
-          4L,
-          newAppCompressedComplete.lastModified(),
-          "test",
-          true))
-      list(2) should be(
-        makeAppInfo(
-          "new-incomplete",
-          newAppIncomplete.getName(),
-          1L,
-          -1L,
-          newAppIncomplete.lastModified(),
-          "test",
-          false))
+      list(0) should be(makeAppInfo(
+        "new-app-complete",
+        newAppComplete.getName(),
+        1L,
+        5L,
+        newAppComplete.lastModified(),
+        "test",
+        true))
+      list(1) should be(makeAppInfo(
+        "new-complete-lzf",
+        newAppCompressedComplete.getName(),
+        1L,
+        4L,
+        newAppCompressedComplete.lastModified(),
+        "test",
+        true))
+      list(2) should be(makeAppInfo(
+        "new-incomplete",
+        newAppIncomplete.getName(),
+        1L,
+        -1L,
+        newAppIncomplete.lastModified(),
+        "test",
+        false))
 
       // Make sure the UI can be rendered.
       list.foreach {
@@ -432,8 +429,8 @@ class FsHistoryProviderSuite
       val outputStream = new ZipOutputStream(underlyingStream)
       provider.writeEventLogs("downloadApp1", Some(s"attempt$i"), outputStream)
       outputStream.close()
-      val inputStream = new ZipInputStream(
-        new ByteArrayInputStream(underlyingStream.toByteArray))
+      val inputStream = new ZipInputStream(new ByteArrayInputStream(
+        underlyingStream.toByteArray))
       var totalEntries = 0
       var entry = inputStream.getNextEntry
       entry should not be null

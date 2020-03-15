@@ -90,19 +90,18 @@ class Tables(val profile: JdbcProfile) {
 
   /** Tests slick term name collision */
   class X(tag: Tag)
-      extends Table[
-        (
-            Int,
-            Int,
-            Option[Int],
-            Int,
-            Double,
-            String,
-            Option[Int],
-            Option[Int],
-            Option[String],
-            Option[String],
-            Option[String])](tag, "X") {
+      extends Table[(
+          Int,
+          Int,
+          Option[Int],
+          Int,
+          Double,
+          String,
+          Option[Int],
+          Option[Int],
+          Option[String],
+          Option[String],
+          Option[String])](tag, "X") {
     def pk = column[Int]("pk")
     def pk2 = column[Int]("pk2")
     def pkpk = primaryKey("", (pk, pk2)) // pk column collision
@@ -192,8 +191,7 @@ class Tables(val profile: JdbcProfile) {
               Option[java.sql.Timestamp],
               Option[java.util.UUID],
               Option[java.sql.Blob] //,Option[java.sql.Clob]
-          )
-      )](tag, "TYPE_TEST") {
+          ))](tag, "TYPE_TEST") {
     def `type` = column[String]("type") // <- test escaping of keywords
     def Boolean = column[Boolean]("Boolean", O.Default(true))
     def Byte = column[Byte]("Byte")
@@ -277,8 +275,7 @@ class Tables(val profile: JdbcProfile) {
           Option_java_sql_Timestamp,
           Option_java_util_UUID,
           Option_java_sql_Blob //,Option_java_sql_Clob
-        )
-      )
+        ))
     def pk = primaryKey("PK", (Int, Long))
   }
   val typeTest = TableQuery[TypeTest]
@@ -339,8 +336,7 @@ class Tables(val profile: JdbcProfile) {
         (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
         (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6),
         (p5i1, p5i2, p5i3, p5i4, p5i5, p5i6),
-        (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)
-      ).shaped <> ({
+        (p6i1, p6i2, p6i3, p6i4, p6i5, p6i6)).shaped <> ({
         case (id, p1, p2, p3, p4, p5, p6) =>
           // We could do this without .shaped but then we'd have to write a type annotation for the parameters
           Whole(

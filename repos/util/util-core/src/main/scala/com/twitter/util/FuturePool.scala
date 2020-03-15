@@ -46,8 +46,7 @@ object FuturePool {
   }
 
   private lazy val defaultExecutor = Executors.newCachedThreadPool(
-    new NamedPoolThreadFactory("UnboundedFuturePool", makeDaemons = true)
-  )
+    new NamedPoolThreadFactory("UnboundedFuturePool", makeDaemons = true))
 
   /**
     * The default future pool, using a cached threadpool, provided by

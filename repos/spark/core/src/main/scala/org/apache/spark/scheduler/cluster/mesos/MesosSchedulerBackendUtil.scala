@@ -111,8 +111,9 @@ private[mesos] object MesosSchedulerBackendUtil extends Logging {
                 .setContainerPort(container_port.toInt)
                 .setProtocol(protocol))
           case spec => {
-            logWarning(s"Unable to parse port mapping specs: $portmaps. "
-              + "Expected form: \"host_port:container_port[:udp|:tcp](, ...)\"")
+            logWarning(
+              s"Unable to parse port mapping specs: $portmaps. "
+                + "Expected form: \"host_port:container_port[:udp|:tcp](, ...)\"")
             None
           }
         }

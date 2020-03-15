@@ -86,8 +86,8 @@ private[clustering] trait BisectingKMeansParams
 @Experimental
 class BisectingKMeansModel private[ml] (
     @Since("2.0.0") override val uid: String,
-    private val parentModel: MLlibBisectingKMeansModel
-) extends Model[BisectingKMeansModel]
+    private val parentModel: MLlibBisectingKMeansModel)
+    extends Model[BisectingKMeansModel]
     with BisectingKMeansParams {
 
   @Since("2.0.0")

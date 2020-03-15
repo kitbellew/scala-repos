@@ -17,10 +17,9 @@ class Plugin(val global: Global) extends NscPlugin {
         typer: Typer,
         ddef: DefDef): Option[Tree] = {
       val DefDef(_, _, _, _, _, Literal(Constant(num: Int))) = ddef
-      Some(
-        standardTypedMacroBody(
-          typer,
-          copyDefDef(ddef)(rhs = Ident(TermName("impl" + num)))))
+      Some(standardTypedMacroBody(
+        typer,
+        copyDefDef(ddef)(rhs = Ident(TermName("impl" + num)))))
     }
   }
 }

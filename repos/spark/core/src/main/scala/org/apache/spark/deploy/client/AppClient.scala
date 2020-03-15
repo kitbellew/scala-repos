@@ -132,24 +132,23 @@ private[spark] class AppClient(
       */
     private def registerWithMaster(nthRetry: Int) {
       registerMasterFutures.set(tryRegisterAllMasters())
-      registrationRetryTimer.set(
-        registrationRetryThread.schedule(
-          new Runnable {
-            override def run(): Unit = {
-              if (registered.get) {
-                registerMasterFutures.get.foreach(_.cancel(true))
-                registerMasterThreadPool.shutdownNow()
-              } else if (nthRetry >= REGISTRATION_RETRIES) {
-                markDead("All masters are unresponsive! Giving up.")
-              } else {
-                registerMasterFutures.get.foreach(_.cancel(true))
-                registerWithMaster(nthRetry + 1)
-              }
+      registrationRetryTimer.set(registrationRetryThread.schedule(
+        new Runnable {
+          override def run(): Unit = {
+            if (registered.get) {
+              registerMasterFutures.get.foreach(_.cancel(true))
+              registerMasterThreadPool.shutdownNow()
+            } else if (nthRetry >= REGISTRATION_RETRIES) {
+              markDead("All masters are unresponsive! Giving up.")
+            } else {
+              registerMasterFutures.get.foreach(_.cancel(true))
+              registerWithMaster(nthRetry + 1)
             }
-          },
-          REGISTRATION_TIMEOUT_SECONDS,
-          TimeUnit.SECONDS
-        ))
+          }
+        },
+        REGISTRATION_TIMEOUT_SECONDS,
+        TimeUnit.SECONDS
+      ))
     }
 
     /**
@@ -191,9 +190,11 @@ private[spark] class AppClient(
             cores: Int,
             memory: Int) =>
         val fullId = appId + "/" + id
-        logInfo(
-          "Executor added: %s on %s (%s) with %d cores"
-            .format(fullId, workerId, hostPort, cores))
+        logInfo("Executor added: %s on %s (%s) with %d cores".format(
+          fullId,
+          workerId,
+          hostPort,
+          cores))
         listener.executorAdded(fullId, workerId, hostPort, cores, memory)
 
       case ExecutorUpdated(id, state, message, exitStatus) =>

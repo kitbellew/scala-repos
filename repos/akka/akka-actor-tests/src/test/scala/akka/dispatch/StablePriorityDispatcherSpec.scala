@@ -68,19 +68,20 @@ class StablePriorityDispatcherSpec
       // UnstartedCell and then sent to the StablePriorityQueue and consumed immediately
       // without the ordering taking place.
       val actor = system.actorOf(Props(new Actor {
-        context.actorOf(Props(new Actor {
+        context.actorOf(
+          Props(new Actor {
 
-          val acc = scala.collection.mutable.ListBuffer[Int]()
+            val acc = scala.collection.mutable.ListBuffer[Int]()
 
-          shuffled foreach { m ⇒ self ! m }
+            shuffled foreach { m ⇒ self ! m }
 
-          self.tell('Result, testActor)
+            self.tell('Result, testActor)
 
-          def receive = {
-            case i: Int ⇒ acc += i
-            case 'Result ⇒ sender() ! acc.toList
-          }
-        }).withDispatcher(dispatcherKey))
+            def receive = {
+              case i: Int ⇒ acc += i
+              case 'Result ⇒ sender() ! acc.toList
+            }
+          }).withDispatcher(dispatcherKey))
 
         def receive = Actor.emptyBehavior
 

@@ -454,7 +454,9 @@ trait KMediansCoreSetClustering {
 
         require(
           j < sideLengths.length,
-          "Point (%d) found outside of grid (%d). What to do..." format (j, sideLengths.length))
+          "Point (%d) found outside of grid (%d). What to do..." format (
+            j, sideLengths.length
+          ))
 
         val sideLength = sideLengths(j)
         val scaledPoint = {
@@ -591,8 +593,8 @@ trait ClusteringLibModule[M[+_]]
       def reducerKS: CReducer[KS] =
         new CReducer[KS] {
           def reduce(schema: CSchema, range: Range): KS = {
-            val columns = schema.columns(
-              JObjectFixedT(Map("value" -> JNumberT)))
+            val columns = schema.columns(JObjectFixedT(
+              Map("value" -> JNumberT)))
             val cols: List[Int] = (columns flatMap {
               case lc: LongColumn =>
                 range collect {
@@ -693,10 +695,9 @@ trait ClusteringLibModule[M[+_]]
       def morph1Apply(ks: List[Int]): Morph1Apply =
         new Morph1Apply {
           def apply(table0: Table, ctx: MorphContext): M[Table] = {
-            val table = table0.transform(
-              DerefObjectStatic(
-                trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
-                paths.Value))
+            val table = table0.transform(DerefObjectStatic(
+              trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble),
+              paths.Value))
 
             val defaultNumber = new java.util.concurrent.atomic.AtomicInteger(1)
 
@@ -738,10 +739,9 @@ trait ClusteringLibModule[M[+_]]
 
             val tables: StreamT[M, Table] = res.foldLeft(
               StreamT.empty[M, Table])(_ ++ _)
-            val modelConcat = buildConstantWrapSpec(
-              OuterObjectConcat(
-                DerefObjectStatic(Leaf(SourceLeft), paths.Value),
-                DerefObjectStatic(Leaf(SourceRight), paths.Value)))
+            val modelConcat = buildConstantWrapSpec(OuterObjectConcat(
+              DerefObjectStatic(Leaf(SourceLeft), paths.Value),
+              DerefObjectStatic(Leaf(SourceRight), paths.Value)))
 
             def merge(
                 table: Option[Table],

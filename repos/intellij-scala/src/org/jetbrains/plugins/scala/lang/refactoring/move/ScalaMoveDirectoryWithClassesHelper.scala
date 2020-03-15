@@ -59,14 +59,13 @@ class ScalaMoveDirectoryWithClassesHelper
             ref <- ReferencesSearch.search(named).findAll()
           } {
             val range = ref.getRangeInElement
-            usages.add(
-              new MoveRenameUsageInfo(
-                ref.getElement,
-                ref,
-                range.getStartOffset,
-                range.getEndOffset,
-                named,
-                false))
+            usages.add(new MoveRenameUsageInfo(
+              ref.getElement,
+              ref,
+              range.getStartOffset,
+              range.getEndOffset,
+              named,
+              false))
           }
 
           packageNames.add(packageName(sf))

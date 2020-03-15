@@ -44,20 +44,17 @@ class SeqIdFilterTest
 
     test(
       "SeqIdFilter(%s) maintain seqids passed in by the client".format(how)) {
-      val f = filtered(
-        new ThriftClientRequest(
-          mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
-          false))
+      val f = filtered(new ThriftClientRequest(
+        mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
+        false))
       assert(f.poll == None)
 
       val req = ArgumentCaptor.forClass(classOf[ThriftClientRequest])
       verify(service).apply(req.capture)
-      p.setValue(
-        mkmsg(
-          new TMessage(
-            "proc",
-            TMessageType.REPLY,
-            getmsg(req.getValue.message).seqid)))
+      p.setValue(mkmsg(new TMessage(
+        "proc",
+        TMessageType.REPLY,
+        getmsg(req.getValue.message).seqid)))
 
       f.poll match {
         case Some(Return(buf)) => assert(getmsg(buf).seqid == seqId)
@@ -70,10 +67,9 @@ class SeqIdFilterTest
         val filtered = new SeqIdFilter andThen service
         val expected = (new scala.util.Random(Time.now.inMilliseconds))
           .nextInt()
-        val f = filtered(
-          new ThriftClientRequest(
-            mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
-            false))
+        val f = filtered(new ThriftClientRequest(
+          mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
+          false))
         val req = ArgumentCaptor.forClass(classOf[ThriftClientRequest])
         verify(service).apply(req.capture)
         assert(getmsg(req.getValue.message).seqid == expected)
@@ -86,10 +82,9 @@ class SeqIdFilterTest
         val filtered = new SeqIdFilter andThen service
         val expected = (new scala.util.Random(Time.now.inMilliseconds))
           .nextInt()
-        val f = filtered(
-          new ThriftClientRequest(
-            mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
-            false))
+        val f = filtered(new ThriftClientRequest(
+          mkmsg(new TMessage("proc", TMessageType.CALL, seqId)),
+          false))
         p.setValue(mkmsg(new TMessage("proc", TMessageType.REPLY, 1111)))
         assert(f.poll match {
           case Some(Throw(SeqMismatchException(1111, expected))) => true
@@ -106,9 +101,8 @@ class SeqIdFilterTest
       }
     }
 
-    test(
-      "SeqIdFilter(%s) must not modify the underlying request buffer".format(
-        how)) {
+    test("SeqIdFilter(%s) must not modify the underlying request buffer".format(
+      how)) {
       val reqBuf = mkmsg(new TMessage("proc", TMessageType.CALL, 0))
       val origBuf = reqBuf.clone()
       filtered(new ThriftClientRequest(reqBuf, false))

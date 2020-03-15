@@ -46,8 +46,7 @@ trait PEvents extends Serializable {
       untilTime = untilTime,
       entityType = entityType,
       entityId = entityId,
-      eventNames = None
-    )(sc)
+      eventNames = None)(sc)
   }
 
   /** :: DeveloperApi ::
@@ -144,8 +143,7 @@ trait PEvents extends Serializable {
       entityType = entityType,
       startTime = startTime,
       untilTime = untilTime,
-      required = required
-    )(sc)
+      required = required)(sc)
       .map {
         case (id, dm) =>
           try { (id, extract(dm)) }

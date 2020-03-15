@@ -30,11 +30,9 @@ class RestartStrategySpec
   "A RestartStrategy" must {
 
     "ensure that slave stays dead after max restarts within time range" in {
-      val boss = system.actorOf(
-        Props(
-          new Supervisor(
-            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(
-              List(classOf[Throwable])))))
+      val boss = system.actorOf(Props(new Supervisor(
+        OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 1 second)(List(
+          classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val secondRestartLatch = new TestLatch
@@ -78,8 +76,8 @@ class RestartStrategySpec
     }
 
     "ensure that slave is immortal without max restarts and time range" in {
-      val boss = system.actorOf(
-        Props(new Supervisor(OneForOneStrategy()(List(classOf[Throwable])))))
+      val boss = system.actorOf(Props(
+        new Supervisor(OneForOneStrategy()(List(classOf[Throwable])))))
 
       val countDownLatch = new TestLatch(100)
 
@@ -101,11 +99,9 @@ class RestartStrategySpec
     }
 
     "ensure that slave restarts after number of crashes not within time range" in {
-      val boss = system.actorOf(
-        Props(
-          new Supervisor(
-            OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 500 millis)(
-              List(classOf[Throwable])))))
+      val boss = system.actorOf(Props(new Supervisor(
+        OneForOneStrategy(maxNrOfRetries = 2, withinTimeRange = 500 millis)(
+          List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val secondRestartLatch = new TestLatch
@@ -159,9 +155,8 @@ class RestartStrategySpec
     }
 
     "ensure that slave is not restarted after max retries" in {
-      val boss = system.actorOf(
-        Props(new Supervisor(
-          OneForOneStrategy(maxNrOfRetries = 2)(List(classOf[Throwable])))))
+      val boss = system.actorOf(Props(new Supervisor(
+        OneForOneStrategy(maxNrOfRetries = 2)(List(classOf[Throwable])))))
 
       val restartLatch = new TestLatch
       val secondRestartLatch = new TestLatch

@@ -124,9 +124,10 @@ case class SetCommand(kv: Option[(String, Option[String])])
 
       case Some((SQLConf.Deprecated.USE_SQL_AGGREGATE2, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(s"Property ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} is deprecated and " +
-            s"will be ignored. ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} will " +
-            s"continue to be true.")
+          logWarning(
+            s"Property ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} is deprecated and " +
+              s"will be ignored. ${SQLConf.Deprecated.USE_SQL_AGGREGATE2} will " +
+              s"continue to be true.")
           Seq(Row(SQLConf.Deprecated.USE_SQL_AGGREGATE2, "true"))
         }
         (keyValueOutput, runFunc)
@@ -167,10 +168,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
         }
         (keyValueOutput, runFunc)
 
-      case Some(
-            (
-              SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
-              Some(value))) =>
+      case Some((
+            SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
+            Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
           logWarning(
             s"Property ${SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED} is " +
@@ -216,10 +216,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
           logWarning(
             s"Property ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} is deprecated, " +
               s"showing ${SQLConf.SHUFFLE_PARTITIONS.key} instead.")
-          Seq(
-            Row(
-              SQLConf.SHUFFLE_PARTITIONS.key,
-              sqlContext.conf.numShufflePartitions.toString))
+          Seq(Row(
+            SQLConf.SHUFFLE_PARTITIONS.key,
+            sqlContext.conf.numShufflePartitions.toString))
         }
         (keyValueOutput, runFunc)
 

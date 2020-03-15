@@ -116,9 +116,9 @@ object CreateServer extends Logging {
 
   def main(args: Array[String]): Unit = {
     val parser = new scopt.OptionParser[ServerConfig]("CreateServer") {
-      opt[String]("batch") action { (x, c) =>
-        c.copy(batch = x)
-      } text ("Batch label of the deployment.")
+      opt[String]("batch") action { (x, c) => c.copy(batch = x) } text (
+        "Batch label of the deployment."
+      )
       opt[String]("engineId") action { (x, c) =>
         c.copy(engineId = Some(x))
       } text ("Engine ID.")
@@ -129,19 +129,19 @@ object CreateServer extends Logging {
         c.copy(engineVariant = x)
       } text ("Engine variant JSON.")
       opt[String]("ip") action { (x, c) => c.copy(ip = x) }
-      opt[String]("env") action { (x, c) =>
-        c.copy(env = Some(x))
-      } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-        "format) to pass to the Spark execution environment.")
-      opt[Int]("port") action { (x, c) =>
-        c.copy(port = x)
-      } text ("Port to bind to (default: 8000).")
+      opt[String]("env") action { (x, c) => c.copy(env = Some(x)) } text (
+        "Comma-separated list of environmental variables (in 'FOO=BAR' " +
+          "format) to pass to the Spark execution environment."
+      )
+      opt[Int]("port") action { (x, c) => c.copy(port = x) } text (
+        "Port to bind to (default: 8000)."
+      )
       opt[String]("engineInstanceId") required () action { (x, c) =>
         c.copy(engineInstanceId = x)
       } text ("Engine instance ID.")
-      opt[Unit]("feedback") action { (_, c) =>
-        c.copy(feedback = true)
-      } text ("Enable feedback loop to event server.")
+      opt[Unit]("feedback") action { (_, c) => c.copy(feedback = true) } text (
+        "Enable feedback loop to event server."
+      )
       opt[String]("event-server-ip") action { (x, c) =>
         c.copy(eventServerIp = x)
       }
@@ -154,12 +154,12 @@ object CreateServer extends Logging {
       opt[String]("log-url") action { (x, c) => c.copy(logUrl = Some(x)) }
       opt[String]("log-prefix") action { (x, c) => c.copy(logPrefix = Some(x)) }
       opt[String]("log-file") action { (x, c) => c.copy(logFile = Some(x)) }
-      opt[Unit]("verbose") action { (x, c) =>
-        c.copy(verbose = true)
-      } text ("Enable verbose output.")
-      opt[Unit]("debug") action { (x, c) =>
-        c.copy(debug = true)
-      } text ("Enable debug output.")
+      opt[Unit]("verbose") action { (x, c) => c.copy(verbose = true) } text (
+        "Enable verbose output."
+      )
+      opt[Unit]("debug") action { (x, c) => c.copy(debug = true) } text (
+        "Enable debug output."
+      )
       opt[String]("json-extractor") action { (x, c) =>
         c.copy(jsonExtractor = JsonExtractorOption.withName(x))
       }
@@ -230,8 +230,7 @@ object CreateServer extends Logging {
       engineParams,
       engineInstance.id,
       modelsFromEngineInstance,
-      params = WorkflowParams()
-    )
+      params = WorkflowParams())
 
     val algorithms = engineParams.algorithmParamsList.map {
       case (n, p) =>
@@ -244,22 +243,21 @@ object CreateServer extends Logging {
       engine.servingClassMap(servingParamsWithName._1),
       servingParamsWithName._2)
 
-    actorSystem.actorOf(
-      Props(
-        classOf[ServerActor[Q, P]],
-        sc,
-        engineInstance,
-        engine,
-        engineLanguage,
-        manifest,
-        engineParams.dataSourceParams._2,
-        engineParams.preparatorParams._2,
-        algorithms,
-        engineParams.algorithmParamsList.map(_._2),
-        models,
-        serving,
-        engineParams.servingParams._2
-      ))
+    actorSystem.actorOf(Props(
+      classOf[ServerActor[Q, P]],
+      sc,
+      engineInstance,
+      engine,
+      engineLanguage,
+      manifest,
+      engineParams.dataSourceParams._2,
+      engineParams.preparatorParams._2,
+      algorithms,
+      engineParams.algorithmParamsList.map(_._2),
+      models,
+      serving,
+      engineParams.servingParams._2
+    ))
   }
 }
 
@@ -460,8 +458,9 @@ class ServerActor[Q, P](
     try {
       scalaj.http
         .Http(logUrl)
-        .postData(logPrefix + write(
-          Map("engineInstance" -> engineInstance, "message" -> message)))
+        .postData(
+          logPrefix + write(
+            Map("engineInstance" -> engineInstance, "message" -> message)))
         .asString
     } catch {
       case e: Throwable =>
@@ -521,8 +520,7 @@ class ServerActor[Q, P](
                   queryString,
                   algorithms.head.queryClass,
                   algorithms.head.querySerializer,
-                  algorithms.head.gsonTypeAdapterFactories
-                )
+                  algorithms.head.gsonTypeAdapterFactories)
                 val queryJValue = JsonExtractor.toJValue(
                   jsonExtractorOption,
                   query,
@@ -628,7 +626,9 @@ class ServerActor[Q, P](
                 // Bookkeeping
                 val servingEndTime = DateTime.now
                 lastServingSec =
-                  (servingEndTime.getMillis - servingStartTime.getMillis) / 1000.0
+                  (
+                    servingEndTime.getMillis - servingStartTime.getMillis
+                  ) / 1000.0
                 avgServingSec =
                   ((avgServingSec * requestCount) + lastServingSec) /
                     (requestCount + 1)
@@ -690,24 +690,25 @@ class ServerActor[Q, P](
         get {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
-              Map("plugins" -> Map(
-                "outputblockers" -> pluginContext.outputBlockers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName,
-                      "params" -> pluginContext.pluginParams(p.pluginName))
-                },
-                "outputsniffers" -> pluginContext.outputSniffers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName,
-                      "params" -> pluginContext.pluginParams(p.pluginName))
-                }
-              ))
+              Map(
+                "plugins" -> Map(
+                  "outputblockers" -> pluginContext.outputBlockers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName,
+                        "params" -> pluginContext.pluginParams(p.pluginName))
+                  },
+                  "outputsniffers" -> pluginContext.outputSniffers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName,
+                        "params" -> pluginContext.pluginParams(p.pluginName))
+                  }
+                ))
             }
           }
         }

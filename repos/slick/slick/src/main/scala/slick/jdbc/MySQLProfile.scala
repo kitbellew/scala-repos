@@ -180,9 +180,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
         Bind(
           new AnonSymbol,
           Pure(StructNode(ConstArray.empty)),
-          Pure(
-            StructNode(
-              ConstArray(new AnonSymbol -> RowNumGen(countSym, offset - 1))))),
+          Pure(StructNode(
+            ConstArray(new AnonSymbol -> RowNumGen(countSym, offset - 1))))),
         JoinType.Inner,
         LiteralNode(true)
       )
@@ -291,13 +290,17 @@ trait MySQLProfile extends JdbcProfile { profile =>
                                                   java.lang.Integer.MAX_VALUE))
       val start = seq._start.getOrElse(if (desc) maxValue else minValue)
       val beforeStart = start - increment
-      if (!seq._cycle && (seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc))
+      if (!seq._cycle && (
+            seq._minValue.isDefined && desc || seq._maxValue.isDefined && !desc
+          ))
         throw new SlickException(
           "Sequences with limited size and without CYCLE are not supported by MySQLProfile's sequence emulation")
       val incExpr =
         if (seq._cycle) {
           if (desc)
-            "if(id-" + (-increment) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
+            "if(id-" + (
+              -increment
+            ) + "<" + minValue + "," + maxValue + ",id-" + (-increment) + ")"
           else
             "if(id+" + increment + ">" + maxValue + "," + minValue + ",id+" + increment + ")"
         } else { "id+(" + increment + ")" }

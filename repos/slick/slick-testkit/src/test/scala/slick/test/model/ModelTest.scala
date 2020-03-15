@@ -17,36 +17,32 @@ class ModelTest {
     val b_a_id = Column("a_id", B, "Int", false, Set())
 
     // avoid failing on duplicate foreign key None names (e.g. happens on sqlite)
-    Model(
-      Seq(
-        Table(
-          B,
-          Seq(
-            b_id,
-            b_a_id
-          ),
-          None,
-          Seq(
-            ForeignKey(
-              None,
-              B,
-              Seq(b_a_id),
-              A,
-              Seq(a_id),
-              ForeignKeyAction.NoAction,
-              ForeignKeyAction.NoAction),
-            ForeignKey(
-              None,
-              B,
-              Seq(b_a_id),
-              A,
-              Seq(a_id),
-              ForeignKeyAction.NoAction,
-              ForeignKeyAction.NoAction)
-          ),
-          Seq()
+    Model(Seq(
+      Table(
+        B,
+        Seq(b_id, b_a_id),
+        None,
+        Seq(
+          ForeignKey(
+            None,
+            B,
+            Seq(b_a_id),
+            A,
+            Seq(a_id),
+            ForeignKeyAction.NoAction,
+            ForeignKeyAction.NoAction),
+          ForeignKey(
+            None,
+            B,
+            Seq(b_a_id),
+            A,
+            Seq(a_id),
+            ForeignKeyAction.NoAction,
+            ForeignKeyAction.NoAction)
         ),
-        Table(A, Seq(a_id), None, Seq(), Seq())
-      )).assertConsistency
+        Seq()
+      ),
+      Table(A, Seq(a_id), None, Seq(), Seq())
+    )).assertConsistency
   }
 }

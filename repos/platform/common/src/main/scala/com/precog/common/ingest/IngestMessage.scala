@@ -160,8 +160,9 @@ object IngestMessage {
     IngestMessage.unapply _)
 
   val schemaV1 =
-    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: ("streamRef" ||| StreamRef.Append
-      .asInstanceOf[StreamRef]) :: HNil
+    "apiKey" :: "path" :: "writeAs" :: "data" :: "jobId" :: "timestamp" :: (
+      "streamRef" ||| StreamRef.Append.asInstanceOf[StreamRef]
+    ) :: HNil
   implicit def seqExtractor[A: Extractor]: Extractor[Seq[A]] =
     implicitly[Extractor[List[A]]].map(_.toSeq)
 
@@ -187,30 +188,27 @@ object IngestMessage {
             }
             ingest.writeAs map { authorities =>
               assert(ingest.data.size == 1)
-              \/.right(
-                IngestMessage(
-                  ingest.apiKey,
-                  ingest.path,
-                  authorities,
-                  eventRecords,
-                  ingest.jobId,
-                  defaultTimestamp,
-                  StreamRef.Append))
+              \/.right(IngestMessage(
+                ingest.apiKey,
+                ingest.path,
+                authorities,
+                eventRecords,
+                ingest.jobId,
+                defaultTimestamp,
+                StreamRef.Append))
             } getOrElse {
-              \/.left(
-                (
-                  ingest.apiKey,
-                  ingest.path,
-                  (authorities: Authorities) =>
-                    IngestMessage(
-                      ingest.apiKey,
-                      ingest.path,
-                      authorities,
-                      eventRecords,
-                      ingest.jobId,
-                      defaultTimestamp,
-                      StreamRef.Append))
-              )
+              \/.left((
+                ingest.apiKey,
+                ingest.path,
+                (authorities: Authorities) =>
+                  IngestMessage(
+                    ingest.apiKey,
+                    ingest.path,
+                    authorities,
+                    eventRecords,
+                    ingest.jobId,
+                    defaultTimestamp,
+                    StreamRef.Append)))
             }
           }
         }

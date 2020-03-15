@@ -80,8 +80,7 @@ private[spark] object AllRDDResource {
             address = status.blockManagerId.hostPort,
             memoryUsed = status.memUsedByRdd(rddId),
             memoryRemaining = status.memRemaining,
-            diskUsed = status.diskUsedByRdd(rddId)
-          )
+            diskUsed = status.diskUsedByRdd(rddId))
         })
       } else { None }
     val partitions =
@@ -93,8 +92,7 @@ private[spark] object AllRDDResource {
               storageLevel = block.storageLevel.description,
               memoryUsed = block.memSize,
               diskUsed = block.diskSize,
-              executors = locations
-            )
+              executors = locations)
         })
       } else { None }
 
@@ -107,7 +105,6 @@ private[spark] object AllRDDResource {
       memoryUsed = rddInfo.memSize,
       diskUsed = rddInfo.diskSize,
       dataDistribution = dataDistribution,
-      partitions = partitions
-    )
+      partitions = partitions)
   }
 }

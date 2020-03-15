@@ -33,9 +33,9 @@ trait ForumHelper { self: UserHelper with StringHelper =>
       post: Post,
       cssClass: Option[String] = None,
       withOnline: Boolean = true) =
-    post.userId.fold(
-      Html("""<span class="%s">%s</span>""".format(~cssClass, authorName(post)))
-    ) { userId =>
-      userIdLink(userId.some, cssClass = cssClass, withOnline = withOnline)
+    post.userId.fold(Html(
+      """<span class="%s">%s</span>""".format(~cssClass, authorName(post)))) {
+      userId =>
+        userIdLink(userId.some, cssClass = cssClass, withOnline = withOnline)
     }
 }

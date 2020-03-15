@@ -533,8 +533,8 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
         .foldLeft(0)(maxf)
 
       def createRow(r: Int): String =
-        ("%" + { if (vlen > 0) vlen else 1 } + "s\n")
-          .format(scalarTag.show(apply(r)))
+        ("%" + { if (vlen > 0) vlen else 1 } + "s\n").format(scalarTag.show(
+          apply(r)))
       buf append util.buildStr(len, length, createRow, " ... \n")
     }
 

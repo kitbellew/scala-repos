@@ -451,12 +451,11 @@ trait ColumnarTableModule[M[+_]]
       val gen: StreamT[M, Slice] = StreamT.unfoldM[M, Slice, MmixPrng](init) {
         prng =>
           val (column, nextGen) = Column.uniformDistribution(prng)
-          Some(
-            (
-              Slice(
-                Map(ColumnRef(CPath.Identity, CDouble) -> column),
-                yggConfig.maxSliceSize),
-              nextGen)).point[M]
+          Some((
+            Slice(
+              Map(ColumnRef(CPath.Identity, CDouble) -> column),
+              yggConfig.maxSliceSize),
+            nextGen)).point[M]
       }
 
       Table(gen, InfiniteSize)
@@ -546,22 +545,20 @@ trait ColumnarTableModule[M[+_]]
         sliceTransform: SliceTransform1[A],
         slices: StreamT[M, Slice]): StreamT[M, Slice] = {
       def stream(state: A, slices: StreamT[M, Slice]): StreamT[M, Slice] =
-        StreamT(
-          for {
-            head <- slices.uncons
+        StreamT(for {
+          head <- slices.uncons
 
-            back <- {
-              head map {
-                case (s, sx) => {
-                  sliceTransform.f(state, s) map {
-                    case (nextState, s0) =>
-                      StreamT.Yield(s0, stream(nextState, sx))
-                  }
+          back <- {
+            head map {
+              case (s, sx) => {
+                sliceTransform.f(state, s) map {
+                  case (nextState, s0) =>
+                    StreamT.Yield(s0, stream(nextState, sx))
                 }
-              } getOrElse { M.point(StreamT.Done) }
-            }
-          } yield back
-        )
+              }
+            } getOrElse { M.point(StreamT.Done) }
+          }
+        } yield back)
 
       stream(sliceTransform.initial, slices)
     }
@@ -765,8 +762,7 @@ trait ColumnarTableModule[M[+_]]
         StreamT.unfoldM(values) { events =>
           M.point { (!events.isEmpty) option { makeSlice(events.toStream) } }
         },
-        ExactSize(values.length)
-      )
+        ExactSize(values.length))
     }
 
     def join(left: Table, right: Table, orderHint: Option[JoinOrder] = None)(
@@ -813,8 +809,7 @@ trait ColumnarTableModule[M[+_]]
           readStarts.getAndIncrement
           slices0.map(s => { blockReads.getAndIncrement; s })
         })
-        .point[M]
-    )
+        .point[M])
 
     /**
       * Folds over the table to produce a single value (stored in a singleton table).
@@ -1508,13 +1503,12 @@ trait ColumnarTableModule[M[+_]]
                       }
 
                     case None =>
-                      continue(
-                        buildRemappings(
-                          left.pos,
-                          right.pos,
-                          rightStart,
-                          rightEnd,
-                          true))
+                      continue(buildRemappings(
+                        left.pos,
+                        right.pos,
+                        rightStart,
+                        rightEnd,
+                        true))
                   }
 
                 case SkipRight(left, rightEnd) =>
@@ -1669,38 +1663,38 @@ trait ColumnarTableModule[M[+_]]
           // Note that this is still memory efficient, as the columns are re-used
           // between all slices.
 
-          val results = (0 until lhead.size by lrowsPerSlice)
-            .foldLeft(M.point((a0, List.empty[Slice]))) {
-              case (accM, offset) =>
-                accM flatMap {
-                  case (a, acc) =>
-                    val rows = math.min(
-                      sliceSize,
-                      (lhead.size - offset) * rhead.size)
+          val results = (0 until lhead.size by lrowsPerSlice).foldLeft(M.point(
+            (a0, List.empty[Slice]))) {
+            case (accM, offset) =>
+              accM flatMap {
+                case (a, acc) =>
+                  val rows = math.min(
+                    sliceSize,
+                    (lhead.size - offset) * rhead.size)
 
-                    val lslice = new Slice {
-                      val size = rows
-                      val columns = lhead.columns.lazyMapValues(Remap({ i =>
-                        offset + (i / rhead.size)
-                      })(_).get)
-                    }
+                  val lslice = new Slice {
+                    val size = rows
+                    val columns = lhead.columns.lazyMapValues(Remap({ i =>
+                      offset + (i / rhead.size)
+                    })(_).get)
+                  }
 
-                    val rslice = new Slice {
-                      val size = rows
-                      val columns =
-                        if (rhead.size == 0)
-                          rhead.columns.lazyMapValues(Empty(_).get)
-                        else
-                          rhead.columns.lazyMapValues(
-                            Remap(_ % rhead.size)(_).get)
-                    }
+                  val rslice = new Slice {
+                    val size = rows
+                    val columns =
+                      if (rhead.size == 0)
+                        rhead.columns.lazyMapValues(Empty(_).get)
+                      else
+                        rhead.columns.lazyMapValues(
+                          Remap(_ % rhead.size)(_).get)
+                  }
 
-                    transform.f(a, lslice, rslice) map {
-                      case (b, resultSlice) =>
-                        (b, resultSlice :: acc)
-                    }
-                }
-            }
+                  transform.f(a, lslice, rslice) map {
+                    case (b, resultSlice) =>
+                      (b, resultSlice :: acc)
+                  }
+              }
+          }
 
           results map {
             case (a1, slices) =>
@@ -1781,14 +1775,12 @@ trait ColumnarTableModule[M[+_]]
                       }
                     } else if (lempty) {
                       // left side is a small set, so restart it in memory
-                      M.point(
-                        crossLeftSingle(lhead, rhead :: rtail)(
-                          transform.initial))
+                      M.point(crossLeftSingle(lhead, rhead :: rtail)(
+                        transform.initial))
                     } else if (rempty) {
                       // right side is a small set, so restart it in memory
-                      M.point(
-                        crossRightSingle(lhead :: ltail, rhead)(
-                          transform.initial))
+                      M.point(crossRightSingle(lhead :: ltail, rhead)(
+                        transform.initial))
                     } else {
                       // both large sets, so just walk the left restarting the right.
                       M.point(crossBoth(lhead :: ltail, rhead :: rtail))
@@ -1840,36 +1832,34 @@ trait ColumnarTableModule[M[+_]]
         def stream(
             state: (Option[Slice], T),
             slices: StreamT[M, Slice]): StreamT[M, Slice] =
-          StreamT(
-            for {
-              head <- slices.uncons
+          StreamT(for {
+            head <- slices.uncons
 
-              back <- {
-                head map {
-                  case (s, sx) => {
-                    for {
-                      pairPrev <- id.f(state._1, s)
-                      (prevFilter, cur) = pairPrev
+            back <- {
+              head map {
+                case (s, sx) => {
+                  for {
+                    pairPrev <- id.f(state._1, s)
+                    (prevFilter, cur) = pairPrev
 
-                      // TODO use an Applicative
-                      pairNext <- filter.f(state._2, s)
-                      (nextT, curFilter) = pairNext
-                    } yield {
-                      val next = cur.distinct(prevFilter, curFilter)
+                    // TODO use an Applicative
+                    pairNext <- filter.f(state._2, s)
+                    (nextT, curFilter) = pairNext
+                  } yield {
+                    val next = cur.distinct(prevFilter, curFilter)
 
-                      StreamT.Yield(
-                        next,
-                        stream(
-                          (
-                            if (next.size > 0) Some(curFilter) else prevFilter,
-                            nextT),
-                          sx))
-                    }
+                    StreamT.Yield(
+                      next,
+                      stream(
+                        (
+                          if (next.size > 0) Some(curFilter) else prevFilter,
+                          nextT),
+                        sx))
                   }
-                } getOrElse { M.point(StreamT.Done) }
-              }
-            } yield back
-          )
+                }
+              } getOrElse { M.point(StreamT.Done) }
+            }
+          } yield back)
 
         val slices0 = StreamT.wrapEffect(this.sort(spec) map { sorted =>
           stream((id.initial, filter.initial), sorted.slices)
@@ -2027,8 +2017,7 @@ trait ColumnarTableModule[M[+_]]
 
       val keyTrans = OuterObjectConcat(
         WrapObject(partitionBy, "0"),
-        WrapObject(Leaf(Source), "1")
-      )
+        WrapObject(Leaf(Source), "1"))
 
       this.transform(keyTrans).compact(TransSpec1.Id).slices.uncons map {
         case Some((head, tail)) =>

@@ -72,9 +72,9 @@ object CreateWorkflow extends Logging {
 
   val parser = new scopt.OptionParser[WorkflowConfig]("CreateWorkflow") {
     override def errorOnUnknownArgument: Boolean = false
-    opt[String]("batch") action { (x, c) =>
-      c.copy(batch = x)
-    } text ("Batch label of the workflow run.")
+    opt[String]("batch") action { (x, c) => c.copy(batch = x) } text (
+      "Batch label of the workflow run."
+    )
     opt[String]("engine-id") required () action { (x, c) =>
       c.copy(engineId = x)
     } text ("Engine's ID.")
@@ -90,16 +90,16 @@ object CreateWorkflow extends Logging {
     opt[String]("engine-params-generator-class") action { (x, c) =>
       c.copy(engineParamsGeneratorClass = Some(x))
     } text ("Path to evaluator parameters")
-    opt[String]("env") action { (x, c) =>
-      c.copy(env = Some(x))
-    } text ("Comma-separated list of environmental variables (in 'FOO=BAR' " +
-      "format) to pass to the Spark execution environment.")
-    opt[Unit]("verbose") action { (x, c) =>
-      c.copy(verbose = true)
-    } text ("Enable verbose output.")
-    opt[Unit]("debug") action { (x, c) =>
-      c.copy(debug = true)
-    } text ("Enable debug output.")
+    opt[String]("env") action { (x, c) => c.copy(env = Some(x)) } text (
+      "Comma-separated list of environmental variables (in 'FOO=BAR' " +
+        "format) to pass to the Spark execution environment."
+    )
+    opt[Unit]("verbose") action { (x, c) => c.copy(verbose = true) } text (
+      "Enable verbose output."
+    )
+    opt[Unit]("debug") action { (x, c) => c.copy(debug = true) } text (
+      "Enable debug output."
+    )
     opt[Unit]("skip-sanity-check") action { (x, c) =>
       c.copy(skipSanityCheck = true)
     }

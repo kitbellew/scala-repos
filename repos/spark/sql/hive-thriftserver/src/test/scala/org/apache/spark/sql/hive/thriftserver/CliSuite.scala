@@ -114,8 +114,8 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
         } else {
           errorResponses.foreach { r =>
             if (line.contains(r)) {
-              foundAllExpectedAnswers.tryFailure(
-                new RuntimeException(s"Failed with error line '$line'"))
+              foundAllExpectedAnswers.tryFailure(new RuntimeException(
+                s"Failed with error line '$line'"))
             }
           }
         }
@@ -191,8 +191,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       "CREATE TABLE hive_test(key INT, val STRING);"
         -> "OK",
       "SHOW TABLES;"
-        -> "hive_test"
-    )
+        -> "hive_test")
 
     runCliWithin(
       2.minute,
@@ -200,8 +199,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
       ""
         -> "OK",
       ""
-        -> "hive_test"
-    )
+        -> "hive_test")
   }
 
   test("Commands using SerDe provided in --jars") {
@@ -237,8 +235,7 @@ class CliSuite extends SparkFunSuite with BeforeAndAfterAll with Logging {
   test("SPARK-11188 Analysis error reporting") {
     runCliWithin(timeout = 2.minute, errorResponses = Seq("AnalysisException"))(
       "select * from nonexistent_table;"
-        -> "Error in query: Table not found: nonexistent_table;"
-    )
+        -> "Error in query: Table not found: nonexistent_table;")
   }
 
   test("SPARK-11624 Spark SQL CLI should set sessionState only once") {

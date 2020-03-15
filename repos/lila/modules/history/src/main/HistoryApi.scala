@@ -40,8 +40,7 @@ final class HistoryApi(coll: Coll) {
         BSONDocument("$set" -> BSONDocument(changes.map {
           case (perf, rating) => s"$perf.$days" -> BSONInteger(rating)
         })),
-        upsert = true
-      )
+        upsert = true)
       .void
   }
 

@@ -217,9 +217,8 @@ object LBFGS extends Logging {
 
     val lossHistoryArray = lossHistory.result()
 
-    logInfo(
-      "LBFGS.runLBFGS finished. Last 10 losses %s".format(
-        lossHistoryArray.takeRight(10).mkString(", ")))
+    logInfo("LBFGS.runLBFGS finished. Last 10 losses %s".format(
+      lossHistoryArray.takeRight(10).mkString(", ")))
 
     (weights, lossHistoryArray)
   }

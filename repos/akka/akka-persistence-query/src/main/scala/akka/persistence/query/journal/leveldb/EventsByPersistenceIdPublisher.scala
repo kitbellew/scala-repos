@@ -28,22 +28,20 @@ private[akka] object EventsByPersistenceIdPublisher {
       writeJournalPluginId: String): Props = {
     refreshInterval match {
       case Some(interval) ⇒
-        Props(
-          new LiveEventsByPersistenceIdPublisher(
-            persistenceId,
-            fromSequenceNr,
-            toSequenceNr,
-            interval,
-            maxBufSize,
-            writeJournalPluginId))
+        Props(new LiveEventsByPersistenceIdPublisher(
+          persistenceId,
+          fromSequenceNr,
+          toSequenceNr,
+          interval,
+          maxBufSize,
+          writeJournalPluginId))
       case None ⇒
-        Props(
-          new CurrentEventsByPersistenceIdPublisher(
-            persistenceId,
-            fromSequenceNr,
-            toSequenceNr,
-            maxBufSize,
-            writeJournalPluginId))
+        Props(new CurrentEventsByPersistenceIdPublisher(
+          persistenceId,
+          fromSequenceNr,
+          toSequenceNr,
+          maxBufSize,
+          writeJournalPluginId))
     }
   }
 
@@ -225,8 +223,9 @@ private[akka] class CurrentEventsByPersistenceIdPublisher(
   override def receiveRecoverySuccess(highestSeqNr: Long): Unit = {
     deliverBuf()
     if (highestSeqNr < toSequenceNr) toSeqNr = highestSeqNr
-    if (buf.isEmpty && (currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr))
-      onCompleteThenStop()
+    if (buf.isEmpty && (
+          currSeqNo > toSequenceNr || currSeqNo == fromSequenceNr
+        )) onCompleteThenStop()
     else self ! Continue // more to fetch
     context.become(idle)
   }

@@ -239,12 +239,11 @@ private[camel] class ConsumerRegistrar(activationTracker: ActorRef)
     case Register(consumer, endpointUri, Some(consumerConfig)) ⇒
       try {
         // if this throws, the supervisor stops the consumer and de-registers it on termination
-        camelContext.addRoutes(
-          new ConsumerActorRouteBuilder(
-            endpointUri,
-            consumer,
-            consumerConfig,
-            camel.settings))
+        camelContext.addRoutes(new ConsumerActorRouteBuilder(
+          endpointUri,
+          consumer,
+          consumerConfig,
+          camel.settings))
         activationTracker ! EndpointActivated(consumer)
       } catch {
         case NonFatal(e) ⇒ throw new ActorActivationException(consumer, e)

@@ -229,8 +229,8 @@ trait CoGrouped[K, +R]
      * we have (key1, value1), but they are then discarded:
      */
     def outFields(inCount: Int): Fields =
-      List("key", "value") ++ (0 until (2 * (inCount - 1)))
-        .map("null%d".format(_))
+      List("key", "value") ++ (0 until (2 * (inCount - 1))).map("null%d".format(
+        _))
 
     // Make this stable so the compiler does not make a closure
     val ord = keyOrdering
@@ -249,17 +249,17 @@ trait CoGrouped[K, +R]
               */
             val NUM_OF_SELF_JOINS = firstCount - 1
             new CoGroup(
-              assignName(
-                inputs.head
-                  .toPipe[(K, Any)](("key", "value"))(flowDef, mode, tupset)),
+              assignName(inputs.head.toPipe[(K, Any)](("key", "value"))(
+                flowDef,
+                mode,
+                tupset)),
               ordKeyField,
               NUM_OF_SELF_JOINS,
               outFields(firstCount),
-              WrappedJoiner(
-                new DistinctCoGroupJoiner(
-                  firstCount,
-                  Grouped.keyGetter(ord),
-                  joinFunction)))
+              WrappedJoiner(new DistinctCoGroupJoiner(
+                firstCount,
+                Grouped.keyGetter(ord),
+                joinFunction)))
           } else if (firstCount == 1) {
 
             def keyId(idx: Int): String = "key%d".format(idx)

@@ -57,8 +57,7 @@ case class Average(child: Expression) extends DeclarativeAggregate {
 
   override lazy val initialValues = Seq(
     /* sum = */ Cast(Literal(0), sumDataType),
-    /* count = */ Literal(0L)
-  )
+    /* count = */ Literal(0L))
 
   override lazy val updateExpressions = Seq(
     /* sum = */
@@ -66,13 +65,11 @@ case class Average(child: Expression) extends DeclarativeAggregate {
       sum,
       Coalesce(
         Cast(child, sumDataType) :: Cast(Literal(0), sumDataType) :: Nil)),
-    /* count = */ If(IsNull(child), count, count + 1L)
-  )
+    /* count = */ If(IsNull(child), count, count + 1L))
 
   override lazy val mergeExpressions = Seq(
     /* sum = */ sum.left + sum.right,
-    /* count = */ count.left + count.right
-  )
+    /* count = */ count.left + count.right)
 
   // If all input are nulls, count will be 0 and we will get null after the division.
   override lazy val evaluateExpression = child.dataType match {

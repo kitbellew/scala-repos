@@ -21,10 +21,11 @@ trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>
   def makeTree(rhs: Tree): TreeEntity = {
 
     val expr = new StringBuilder
-    var refs = new immutable.TreeMap[
-      Int,
-      (Entity, Int)
-    ] // start, (Entity to be linked to , end)
+    var refs =
+      new immutable.TreeMap[
+        Int,
+        (Entity, Int)
+      ] // start, (Entity to be linked to , end)
 
     rhs.pos match {
       case pos: RangePosition => {

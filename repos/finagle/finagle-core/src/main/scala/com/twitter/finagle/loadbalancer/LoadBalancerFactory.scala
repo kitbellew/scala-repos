@@ -230,8 +230,7 @@ object LoadBalancerFactory {
           newEndpoint = newEndpoint,
           newBalancer = newBalancer,
           eagerEviction = !probationEnabled,
-          statsReceiver = balancerStats
-        )
+          statsReceiver = balancerStats)
       )
     }
   }
@@ -322,8 +321,7 @@ abstract class LoadBalancerFactory {
   def newBalancer[Req, Rep](
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
       statsReceiver: StatsReceiver,
-      emptyException: NoBrokersAvailableException
-  ): ServiceFactory[Req, Rep]
+      emptyException: NoBrokersAvailableException): ServiceFactory[Req, Rep]
 }
 
 /**
@@ -370,8 +368,7 @@ object DefaultBalancerFactory extends LoadBalancerFactory {
   def newBalancer[Req, Rep](
       endpoints: Activity[Set[ServiceFactory[Req, Rep]]],
       statsReceiver: StatsReceiver,
-      emptyException: NoBrokersAvailableException
-  ): ServiceFactory[Req, Rep] = {
+      emptyException: NoBrokersAvailableException): ServiceFactory[Req, Rep] = {
     underlying.newBalancer(endpoints, statsReceiver, emptyException)
   }
 }

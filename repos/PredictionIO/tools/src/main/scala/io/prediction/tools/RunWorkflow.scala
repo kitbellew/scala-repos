@@ -119,8 +119,9 @@ object RunWorkflow extends Logging {
           "--engine-variant",
           if (deployMode == "cluster") {
             hdfs
-              .makeQualified(new Path((engineLocation :+ variantJson.getName)
-                .mkString(Path.SEPARATOR)))
+              .makeQualified(new Path(
+                (engineLocation :+ variantJson.getName).mkString(
+                  Path.SEPARATOR)))
               .toString
           } else { variantJson.getCanonicalPath },
           "--verbosity",

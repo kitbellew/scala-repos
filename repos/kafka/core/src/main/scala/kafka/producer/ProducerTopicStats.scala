@@ -54,11 +54,11 @@ class ProducerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
   "0.10.0.0")
 class ProducerTopicStats(clientId: String) {
   private val valueFactory = (k: ClientIdTopic) => new ProducerTopicMetrics(k)
-  private val stats =
-    new Pool[ClientIdTopic, ProducerTopicMetrics](Some(valueFactory))
-  private val allTopicsStats = new ProducerTopicMetrics(
-    new ClientIdAllTopics(clientId)
-  ) // to differentiate from a topic named AllTopics
+  private val stats = new Pool[ClientIdTopic, ProducerTopicMetrics](Some(
+    valueFactory))
+  private val allTopicsStats = new ProducerTopicMetrics(new ClientIdAllTopics(
+    clientId
+  )) // to differentiate from a topic named AllTopics
 
   def getProducerAllTopicsStats(): ProducerTopicMetrics = allTopicsStats
 
@@ -75,8 +75,8 @@ class ProducerTopicStats(clientId: String) {
   "0.10.0.0")
 object ProducerTopicStatsRegistry {
   private val valueFactory = (k: String) => new ProducerTopicStats(k)
-  private val globalStats =
-    new Pool[String, ProducerTopicStats](Some(valueFactory))
+  private val globalStats = new Pool[String, ProducerTopicStats](Some(
+    valueFactory))
 
   def getProducerTopicStats(clientId: String) = {
     globalStats.getAndMaybePut(clientId)

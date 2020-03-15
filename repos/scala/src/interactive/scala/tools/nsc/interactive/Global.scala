@@ -289,9 +289,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
     *  and errors will be reported against it. */
   def enableIgnoredFile(file: AbstractFile) {
     ignoredFiles -= file
-    debugLog(
-      "Removed crashed file %s. Still in the ignored buffer: %s"
-        .format(file, ignoredFiles))
+    debugLog("Removed crashed file %s. Still in the ignored buffer: %s".format(
+      file,
+      ignoredFiles))
   }
 
   /** The currently active typer run */
@@ -338,10 +338,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
     *  @param  result   The transformed node
     */
   override def signalDone(context: Context, old: Tree, result: Tree) {
-    val canObserveTree = (
-      interruptsEnabled
-        && analyzer.lockedCount == 0
-        && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
+    val canObserveTree = (interruptsEnabled
+      && analyzer.lockedCount == 0
+      && !context.bufferErrors // SI-7558 look away during exploratory typing in "silent mode"
     )
     if (canObserveTree) {
       if (context.unit.exists &&
@@ -484,9 +483,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
                   // don't forget to service interrupt requests
                   scheduler.dequeueAllInterrupts(_.execute())
 
-                  debugLog(
-                    "ShutdownReq: cleaning work queue (%d items)".format(
-                      units.size))
+                  debugLog("ShutdownReq: cleaning work queue (%d items)".format(
+                    units.size))
                   debugLog(
                     "Cleanup up responses (%d loadedType pending, %d parsedEntered pending)"
                       .format(
@@ -611,9 +609,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
           lastException = Some(ex)
           ignoredFiles += unit.source.file
-          println(
-            "[%s] marking unit as crashed (crashedFiles: %s)"
-              .format(unit, ignoredFiles))
+          println("[%s] marking unit as crashed (crashedFiles: %s)".format(
+            unit,
+            ignoredFiles))
 
           reporter.error(
             unit.body.pos,
@@ -903,12 +901,14 @@ with ContextTrees with RichCompilationUnits with Picklers {
       sym.isType || {
         try {
           val tp1 = pre.memberType(alt) onTypeError NoType
-          val tp2 = adaptToNewRunMap(
-            sym.tpe) substSym (originalTypeParams, sym.owner.typeParams)
+          val tp2 = adaptToNewRunMap(sym.tpe) substSym (
+            originalTypeParams, sym.owner.typeParams
+          )
           matchesType(tp1, tp2, alwaysMatchSimple = false) || {
             debugLog(s"findMirrorSymbol matchesType($tp1, $tp2) failed")
-            val tp3 = adaptToNewRunMap(
-              sym.tpe) substSym (originalTypeParams, alt.owner.typeParams)
+            val tp3 = adaptToNewRunMap(sym.tpe) substSym (
+              originalTypeParams, alt.owner.typeParams
+            )
             matchesType(tp1, tp3, alwaysMatchSimple = false) || {
               debugLog(
                 s"findMirrorSymbol fallback matchesType($tp1, $tp3) failed")
@@ -1234,8 +1234,9 @@ with ContextTrees with RichCompilationUnits with Picklers {
 
     /** Cursor Offset - positionDelta == position of the start of the name */
     def positionDelta: Int
-    def matchingResults(nameMatcher: (Name) => Name => Boolean = entered =>
-      candidate => candidate.startsWith(entered)): List[M] = {
+    def matchingResults(
+        nameMatcher: (Name) => Name => Boolean = entered =>
+          candidate => candidate.startsWith(entered)): List[M] = {
       val enteredName = if (name == nme.ERROR) nme.EMPTY else name
       val matcher = nameMatcher(enteredName)
       results filter { (member: Member) =>
@@ -1248,8 +1249,11 @@ with ContextTrees with RichCompilationUnits with Picklers {
           symbol.name.isEmpty || !isIdentifierStart(
             member.sym.name.charAt(0)
           ) // e.g. <byname>
-        !isJunk && member.accessible && !symbol.isConstructor && (name.isEmpty || matcher(
-          member.sym.name) && (symbol.name.isTermName == name.isTermName || name.isTypeName && isStable))
+        !isJunk && member.accessible && !symbol.isConstructor && (
+          name.isEmpty || matcher(member.sym.name) && (
+            symbol.name.isTermName == name.isTermName || name.isTypeName && isStable
+          )
+        )
       }
     }
   }

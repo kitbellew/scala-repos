@@ -169,10 +169,9 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           _.zipWithIndex map {
             case (tbl, idx) =>
               val modelId = "model" + (idx + 1)
-              tbl.transform(
-                trans.WrapObject(
-                  DerefObjectStatic(TransSpec1.Id, paths.Value),
-                  modelId))
+              tbl.transform(trans.WrapObject(
+                DerefObjectStatic(TransSpec1.Id, paths.Value),
+                modelId))
           }
         }
 

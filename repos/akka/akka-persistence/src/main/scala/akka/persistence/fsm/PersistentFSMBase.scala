@@ -504,12 +504,11 @@ trait PersistentFSMBase[S, D, E]
       if (currentState.stateName != nextState.stateName || nextState.notifies) {
         this.nextState = nextState
         handleTransition(currentState.stateName, nextState.stateName)
-        gossip(
-          Transition(
-            self,
-            currentState.stateName,
-            nextState.stateName,
-            nextState.timeout))
+        gossip(Transition(
+          self,
+          currentState.stateName,
+          nextState.stateName,
+          nextState.timeout))
         this.nextState = null
       }
       currentState = nextState
@@ -520,9 +519,10 @@ trait PersistentFSMBase[S, D, E]
         val t = timeout.get
         if (t.isFinite && t.length >= 0) {
           import context.dispatcher
-          timeoutFuture = Some(
-            context.system.scheduler
-              .scheduleOnce(t, self, TimeoutMarker(generation)))
+          timeoutFuture = Some(context.system.scheduler.scheduleOnce(
+            t,
+            self,
+            TimeoutMarker(generation)))
         }
       }
     }

@@ -43,11 +43,10 @@ object MsgSpec extends Specification with XmlMatchers {
         S.notice("foo", "Notice")
 
         // We reparse due to inconsistencies with UnparsedAttributes
-        val result = S.withAttrs(
-          new UnprefixedAttribute(
-            "id",
-            Text("foo"),
-            new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
+        val result = S.withAttrs(new UnprefixedAttribute(
+          "id",
+          Text("foo"),
+          new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
           secureXML.loadString(Msg.render(<div/>).toString)
         }
 
@@ -64,11 +63,10 @@ object MsgSpec extends Specification with XmlMatchers {
         S.notice("foo", "Notice")
 
         // We reparse due to inconsistencies with UnparsedAttributes
-        val result = S.withAttrs(
-          new UnprefixedAttribute(
-            "id",
-            Text("foo"),
-            new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
+        val result = S.withAttrs(new UnprefixedAttribute(
+          "id",
+          Text("foo"),
+          new UnprefixedAttribute("noticeClass", Text("funky"), Null))) {
           Msg.render(<div/>).toString // render this first so attrs get captured
           LiftRules.noticesToJsCmd().toString.replace("\n", "")
         }

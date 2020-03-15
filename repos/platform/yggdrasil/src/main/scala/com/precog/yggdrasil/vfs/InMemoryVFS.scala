@@ -126,21 +126,18 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     def blockSize(slice: Slice) = slice.size
     def pathStructure(selector: CPath)(implicit M: Monad[M]) = {
       (projection: Projection) =>
-        EitherT.right(
-          for (columnRefs <- projection.structure) yield {
-            val types: Map[CType, Long] = columnRefs
-              .collect {
-                // FIXME: This should use real counts
-                case ColumnRef(selector, ctype)
-                    if selector.hasPrefix(selector) =>
-                  (ctype, 0L)
-              }
-              .groupBy(_._1)
-              .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
+        EitherT.right(for (columnRefs <- projection.structure) yield {
+          val types: Map[CType, Long] = columnRefs
+            .collect {
+              // FIXME: This should use real counts
+              case ColumnRef(selector, ctype) if selector.hasPrefix(selector) =>
+                (ctype, 0L)
+            }
+            .groupBy(_._1)
+            .map { case (tpe, values) => (tpe, values.map(_._2).sum) }
 
-            PathStructure(types, columnRefs.map(_.selector))
-          }
-        )
+          PathStructure(types, columnRefs.map(_.selector))
+        })
     }
   }
 
@@ -193,8 +190,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       case (p, (r, auth)) =>
         (p, Version.Current) -> r.fold(
           BinaryRecord(_, auth, newVersion),
-          JsonRecord(_, auth, newVersion)
-        )
+          JsonRecord(_, auth, newVersion))
     }
 
     def toResource(record: Record): M[Resource] = M point { record.resource }
@@ -294,10 +290,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
 
                     case record =>
                       // replace when id is not recognized, or when record is binary
-                      acc + ((
-                        path,
-                        Version.Archived(
-                          record.versionId)) -> record) + (currentKey -> JsonRecord(
+                      acc + (
+                        (path, Version.Archived(record.versionId)) -> record
+                      ) + (currentKey -> JsonRecord(
                         Vector(records.map(_.value): _*),
                         writeAs,
                         id))
@@ -356,8 +351,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       EitherT {
         data
           .get((path, version))
-          .toRightDisjunction(NotFound("No data found for path %s version %s"
-            .format(path.path, version))) traverse { toResource }
+          .toRightDisjunction(NotFound(
+            "No data found for path %s version %s".format(
+              path.path,
+              version))) traverse { toResource }
       }
     }
 
@@ -366,11 +363,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         val childPath = path / Path(p0.elements.headOption.toList)
         val isDir = p0.length > 1
         data.get((childPath, Version.Current)) map { record =>
-          Set(
-            PathMetadata(
-              p0,
-              if (isDir) DataDir(record.resource.mimeType)
-              else DataOnly(record.resource.mimeType)))
+          Set(PathMetadata(
+            p0,
+            if (isDir) DataDir(record.resource.mimeType)
+            else DataOnly(record.resource.mimeType)))
         } getOrElse {
           // no current version
           if (isDir) Set(PathMetadata(p0, PathOnly))
@@ -390,11 +386,10 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
         M point {
           val isDir = childMetadata(path).nonEmpty
           data.get((path, Version.Current)) map { record =>
-            \/.right(
-              PathMetadata(
-                path,
-                if (isDir) DataDir(record.resource.mimeType)
-                else DataOnly(record.resource.mimeType)))
+            \/.right(PathMetadata(
+              path,
+              if (isDir) DataDir(record.resource.mimeType)
+              else DataOnly(record.resource.mimeType)))
           } getOrElse {
             if (isDir) \/.right(PathMetadata(path, PathOnly))
             else \/.left(NotFound("Path not fournd: %s".format(path.path)))

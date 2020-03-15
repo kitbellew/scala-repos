@@ -331,9 +331,8 @@ trait Erasure {
       val psyms = parents map (_.typeSymbol)
       if (psyms contains ArrayClass) {
         // treat arrays specially
-        arrayType(
-          intersectionDominator(
-            parents filter (_.typeSymbol == ArrayClass) map (_.typeArgs.head)))
+        arrayType(intersectionDominator(
+          parents filter (_.typeSymbol == ArrayClass) map (_.typeArgs.head)))
       } else {
         // implement new spec for erasure of refined types.
         def isUnshadowed(psym: Symbol) =

@@ -300,9 +300,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def logError(msg: String, t: Throwable): Unit = ()
 
   override def shouldLogAtThisPhase =
-    settings.log.isSetByUser && (
-      (settings.log containsPhase globalPhase) || (settings.log containsPhase phase)
-    )
+    settings.log.isSetByUser && ((settings.log containsPhase globalPhase) || (
+      settings.log containsPhase phase
+    ))
   // Over 200 closure objects are eliminated by inlining this.
   @inline final def log(msg: => AnyRef) {
     if (shouldLogAtThisPhase)
@@ -366,8 +366,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   if (settings.verbose || settings.Ylogcp)
     reporter.echo(
       s"[search path for source files: ${classPath.asSourcePathString}]\n" +
-        s"[search path for class files: ${classPath.asClassPathString}]"
-    )
+        s"[search path for class files: ${classPath.asClassPathString}]")
 
   // The current division between scala.reflect.* and scala.tools.nsc.* is pretty
   // clunky.  It is often difficult to have a setting influence something without having
@@ -632,8 +631,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   object typer
       extends analyzer.Typer(
-        analyzer.NoContext.make(EmptyTree, RootClass, newScope)
-      )
+        analyzer.NoContext.make(EmptyTree, RootClass, newScope))
 
   /** Add the internal compiler phases to the phases set.
     *  This implementation creates a description map at the same time.
@@ -672,8 +670,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   // and attractive -Xshow-phases output is unlikely if the descs span 20 files anyway.
   private val otherPhaseDescriptions = Map(
     "flatten" -> "eliminate inner classes",
-    "jvm" -> "generate JVM bytecode"
-  ) withDefaultValue ""
+    "jvm" -> "generate JVM bytecode") withDefaultValue ""
 
   protected def computePlatformPhases() =
     platform.platformPhases foreach { sub =>
@@ -771,11 +768,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
     def dotfmt(s: String) =
       new Formattable {
         def elliptically(s: String, max: Int) =
-          (
-            if (max < 0 || s.length <= max) s
-            else if (max < 4) s.take(max)
-            else s.take(max - 3) + "..."
-          )
+          (if (max < 0 || s.length <= max) s
+           else if (max < 4) s.take(max)
+           else s.take(max - 3) + "...")
         override def formatTo(
             formatter: Formatter,
             flags: Int,
@@ -799,12 +794,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
     // phase id in run, or suitable icon
     def idOf(p: SubComponent) =
-      (
-        if (settings.skip contains p.phaseName)
-          "oo" // (currentRun skipPhase p.phaseName)
-        else if (!p.enabled) "xx"
-        else p.ownPhase.id.toString
-      )
+      (if (settings.skip contains p.phaseName)
+         "oo" // (currentRun skipPhase p.phaseName)
+       else if (!p.enabled) "xx"
+       else p.ownPhase.id.toString)
     def mkText(p: SubComponent) = {
       val (name, text) =
         if (elliptically) (dotfmt(p.phaseName), dotfmt(describe(p)))
@@ -1035,16 +1028,12 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
   def currentFreshNameCreator = currentUnit.fresh
 
   def isGlobalInitialized =
-    (
-      definitions.isDefinitionsInitialized
-        && rootMirror.isMirrorInitialized
-    )
+    (definitions.isDefinitionsInitialized
+      && rootMirror.isMirrorInitialized)
   override def isPastTyper =
-    (
-      (curRun ne null)
-        && isGlobalInitialized // defense against init order issues
-        && (globalPhase.id > currentRun.typerPhase.id)
-    )
+    ((curRun ne null)
+      && isGlobalInitialized // defense against init order issues
+      && (globalPhase.id > currentRun.typerPhase.id))
 
   // TODO - trim these to the absolute minimum.
   @inline final def exitingErasure[T](op: => T): T =
@@ -1092,17 +1081,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
   // Owners which aren't package classes.
   private def ownerChainString(sym: Symbol): String =
-    (
-      if (sym == null) ""
-      else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> "
-    )
+    (if (sym == null) ""
+     else sym.ownerChain takeWhile (!_.isPackageClass) mkString " -> ")
 
   private def formatExplain(pairs: (String, Any)*): String =
-    (
-      pairs.toList collect {
-        case (k, v) if v != null => "%20s: %s".format(k, v)
-      } mkString "\n"
-    )
+    (pairs.toList collect {
+      case (k, v) if v != null => "%20s: %s".format(k, v)
+    } mkString "\n")
 
   /** Don't want to introduce new errors trying to report errors,
     *  so swallow exceptions.
@@ -1154,9 +1139,13 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
           s.defString + s" (a ${s.shortSymbolClass})"),
         "symbol package" -> sym.enclosingPackage.fullName,
         "symbol owners" -> ownerChainString(sym),
-        "call site" -> (site.fullLocationString + " in " + site.enclosingPackage)
+        "call site" -> (
+          site.fullLocationString + " in " + site.enclosingPackage
+        )
       )
-      ("\n  " + errorMessage + "\n" + info1) :: info2 :: context_s :: Nil mkString "\n\n"
+      (
+        "\n  " + errorMessage + "\n" + info1
+      ) :: info2 :: context_s :: Nil mkString "\n\n"
     } catch { case _: Exception | _: TypeError => errorMessage }
 
   /** The id of the currently active run
@@ -1314,10 +1303,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         for (p <- specs.flatten.to[Set]) {
           setting.value = List(p)
           val count =
-            (
-              if (including) first.iterator count (setting containsPhase _)
-              else phaseDescriptors count (setting contains _.phaseName)
-            )
+            (if (including) first.iterator count (setting containsPhase _)
+             else phaseDescriptors count (setting contains _.phaseName))
           if (count == 0) warning(s"'$p' specifies no phase")
           if (count > 1 && !isSpecial(p)) warning(s"'$p' selects $count phases")
           if (!including && isSpecial(p))
@@ -1570,8 +1557,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
 
         // progress update
         informTime(globalPhase.description, startTime)
-        if ((settings.Xprint containsPhase globalPhase) || settings.printLate && runIsAt(
-              cleanupPhase)) {
+        if ((
+              settings.Xprint containsPhase globalPhase
+            ) || settings.printLate && runIsAt(cleanupPhase)) {
           // print trees
           if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
             nodePrinters.printAll()
@@ -1710,8 +1698,9 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       // The name as given was not found, so we'll sift through every symbol in
       // the run looking for plausible matches.
       case NoSymbol =>
-        phased(currentRun.symSource.keys map (sym =>
-          findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
+        phased(
+          currentRun.symSource.keys map (sym =>
+            findNamedMember(fullName, sym)) filterNot (_ == NoSymbol) toList)
       // The name as given matched, so show only that.
       case sym => List(sym)
     }
@@ -1738,12 +1727,10 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       source: AbstractFile,
       segments: Array[String],
       suffix: String): File = {
-    val outDir = Path(
-      settings.outputDirs.outputDirFor(source).path match {
-        case ""   => "."
-        case path => path
-      }
-    )
+    val outDir = Path(settings.outputDirs.outputDirFor(source).path match {
+      case ""   => "."
+      case path => path
+    })
     val dir = segments.init.foldLeft(outDir)(_ / _).createDirectory()
     new File(dir.path, segments.last + suffix)
   }

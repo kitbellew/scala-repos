@@ -88,8 +88,9 @@ class ControllerChannelManager(
             QueueItem(apiKey, apiVersion, request, callback))
         case None =>
           warn(
-            "Not sending request %s to broker %d, since it is offline."
-              .format(request, brokerId))
+            "Not sending request %s to broker %d, since it is offline.".format(
+              request,
+              brokerId))
       }
     }
   }
@@ -110,9 +111,9 @@ class ControllerChannelManager(
 
   private def addNewBroker(broker: Broker) {
     val messageQueue = new LinkedBlockingQueue[QueueItem]
-    debug(
-      "Controller %d trying to connect to broker %d"
-        .format(config.brokerId, broker.id))
+    debug("Controller %d trying to connect to broker %d".format(
+      config.brokerId,
+      broker.id))
     val brokerEndPoint = broker.getBrokerEndPoint(
       config.interBrokerSecurityProtocol)
     val brokerNode =
@@ -130,8 +131,7 @@ class ControllerChannelManager(
           config.interBrokerSecurityProtocol,
           Mode.CLIENT,
           LoginType.SERVER,
-          config.values)
-      )
+          config.values))
       new NetworkClient(
         selector,
         new ManualMetadataUpdater(Seq(brokerNode).asJava),
@@ -141,8 +141,7 @@ class ControllerChannelManager(
         Selectable.USE_DEFAULT_BUFFER_SIZE,
         Selectable.USE_DEFAULT_BUFFER_SIZE,
         config.requestTimeoutMs,
-        time
-      )
+        time)
     }
     val threadName = threadNamePrefix match {
       case None =>

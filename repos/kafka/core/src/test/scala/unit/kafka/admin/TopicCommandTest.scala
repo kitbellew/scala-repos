@@ -43,16 +43,15 @@ class TopicCommandTest
     val brokers = List(0, 1, 2)
     TestUtils.createBrokersInZk(zkUtils, brokers)
     // create the topic
-    val createOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitionsOriginal.toString,
-        "--replication-factor",
-        "1",
-        "--config",
-        cleanupKey + "=" + cleanupVal,
-        "--topic",
-        topic))
+    val createOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitionsOriginal.toString,
+      "--replication-factor",
+      "1",
+      "--config",
+      cleanupKey + "=" + cleanupVal,
+      "--topic",
+      topic))
     TopicCommand.createTopic(zkUtils, createOpts)
     val props = AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
     assertTrue(
@@ -93,14 +92,13 @@ class TopicCommandTest
     TestUtils.createBrokersInZk(zkUtils, brokers)
 
     // create the NormalTopic
-    val createOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitionsOriginal.toString,
-        "--replication-factor",
-        "1",
-        "--topic",
-        normalTopic))
+    val createOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitionsOriginal.toString,
+      "--replication-factor",
+      "1",
+      "--topic",
+      normalTopic))
     TopicCommand.createTopic(zkUtils, createOpts)
 
     // delete the NormalTopic
@@ -115,14 +113,13 @@ class TopicCommandTest
       zkUtils.zkClient.exists(deletePath))
 
     // create the offset topic
-    val createOffsetTopicOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitionsOriginal.toString,
-        "--replication-factor",
-        "1",
-        "--topic",
-        TopicConstants.GROUP_METADATA_TOPIC_NAME))
+    val createOffsetTopicOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitionsOriginal.toString,
+      "--replication-factor",
+      "1",
+      "--topic",
+      TopicConstants.GROUP_METADATA_TOPIC_NAME))
     TopicCommand.createTopic(zkUtils, createOffsetTopicOpts)
 
     // try to delete the TopicConstants.GROUP_METADATA_TOPIC_NAME and make sure it doesn't
@@ -188,14 +185,13 @@ class TopicCommandTest
     val numPartitions = 1
 
     // create the topic
-    val createOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitions.toString,
-        "--replication-factor",
-        "1",
-        "--topic",
-        topic))
+    val createOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitions.toString,
+      "--replication-factor",
+      "1",
+      "--topic",
+      topic))
     TopicCommand.createTopic(zkUtils, createOpts)
 
     // try to re-create the topic without --if-not-exists
@@ -204,15 +200,14 @@ class TopicCommandTest
     }
 
     // try to re-create the topic with --if-not-exists
-    val createNotExistsOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitions.toString,
-        "--replication-factor",
-        "1",
-        "--topic",
-        topic,
-        "--if-not-exists"))
+    val createNotExistsOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitions.toString,
+      "--replication-factor",
+      "1",
+      "--topic",
+      topic,
+      "--if-not-exists"))
     TopicCommand.createTopic(zkUtils, createNotExistsOpts)
   }
 
@@ -229,14 +224,13 @@ class TopicCommandTest
 
     val numPartitions = 18
     val replicationFactor = 3
-    val createOpts = new TopicCommandOptions(
-      Array(
-        "--partitions",
-        numPartitions.toString,
-        "--replication-factor",
-        replicationFactor.toString,
-        "--topic",
-        "foo"))
+    val createOpts = new TopicCommandOptions(Array(
+      "--partitions",
+      numPartitions.toString,
+      "--replication-factor",
+      replicationFactor.toString,
+      "--topic",
+      "foo"))
     TopicCommand.createTopic(zkUtils, createOpts)
 
     var assignment = zkUtils.getReplicaAssignmentForTopics(Seq("foo")).map {

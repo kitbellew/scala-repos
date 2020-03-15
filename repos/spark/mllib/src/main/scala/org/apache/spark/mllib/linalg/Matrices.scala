@@ -169,25 +169,24 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
     // be added for which values are not needed.
     // the sparse matrix needs colPtrs and rowIndices, which are set as
     // null, while building the dense matrix.
-    StructType(
-      Seq(
-        StructField("type", ByteType, nullable = false),
-        StructField("numRows", IntegerType, nullable = false),
-        StructField("numCols", IntegerType, nullable = false),
-        StructField(
-          "colPtrs",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true),
-        StructField(
-          "rowIndices",
-          ArrayType(IntegerType, containsNull = false),
-          nullable = true),
-        StructField(
-          "values",
-          ArrayType(DoubleType, containsNull = false),
-          nullable = true),
-        StructField("isTransposed", BooleanType, nullable = false)
-      ))
+    StructType(Seq(
+      StructField("type", ByteType, nullable = false),
+      StructField("numRows", IntegerType, nullable = false),
+      StructField("numCols", IntegerType, nullable = false),
+      StructField(
+        "colPtrs",
+        ArrayType(IntegerType, containsNull = false),
+        nullable = true),
+      StructField(
+        "rowIndices",
+        ArrayType(IntegerType, containsNull = false),
+        nullable = true),
+      StructField(
+        "values",
+        ArrayType(DoubleType, containsNull = false),
+        nullable = true),
+      StructField("isTransposed", BooleanType, nullable = false)
+    ))
   }
 
   override def serialize(obj: Matrix): InternalRow = {

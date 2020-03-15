@@ -158,18 +158,18 @@ object AdminUtils extends Logging {
       if (fixedStartIndex >= 0) fixedStartIndex
       else rand.nextInt(brokerArray.length)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % brokerArray.length == 0))
-        nextReplicaShift += 1
+      if (currentPartitionId > 0 && (
+            currentPartitionId % brokerArray.length == 0
+          )) nextReplicaShift += 1
       val firstReplicaIndex =
         (currentPartitionId + startIndex) % brokerArray.length
       val replicaBuffer = mutable.ArrayBuffer(brokerArray(firstReplicaIndex))
       for (j <- 0 until replicationFactor - 1)
-        replicaBuffer += brokerArray(
-          replicaIndex(
-            firstReplicaIndex,
-            nextReplicaShift,
-            j,
-            brokerArray.length))
+        replicaBuffer += brokerArray(replicaIndex(
+          firstReplicaIndex,
+          nextReplicaShift,
+          j,
+          brokerArray.length))
       ret.put(currentPartitionId, replicaBuffer)
       currentPartitionId += 1
     }
@@ -198,8 +198,9 @@ object AdminUtils extends Logging {
       if (fixedStartIndex >= 0) fixedStartIndex
       else rand.nextInt(arrangedBrokerList.size)
     for (_ <- 0 until nPartitions) {
-      if (currentPartitionId > 0 && (currentPartitionId % arrangedBrokerList.size == 0))
-        nextReplicaShift += 1
+      if (currentPartitionId > 0 && (
+            currentPartitionId % arrangedBrokerList.size == 0
+          )) nextReplicaShift += 1
       val firstReplicaIndex =
         (currentPartitionId + startIndex) % arrangedBrokerList.size
       val leader = arrangedBrokerList(firstReplicaIndex)
@@ -210,12 +211,11 @@ object AdminUtils extends Logging {
       for (_ <- 0 until replicationFactor - 1) {
         var done = false
         while (!done) {
-          val broker = arrangedBrokerList(
-            replicaIndex(
-              firstReplicaIndex,
-              nextReplicaShift * numRacks,
-              k,
-              arrangedBrokerList.size))
+          val broker = arrangedBrokerList(replicaIndex(
+            firstReplicaIndex,
+            nextReplicaShift * numRacks,
+            k,
+            arrangedBrokerList.size))
           val rack = brokerRackMap(broker)
           // Skip this broker if
           // 1. there is already a broker in the same rack that has assigned a replica AND there is one or more racks
@@ -523,8 +523,9 @@ object AdminUtils extends Logging {
           Topic.hasCollision(topic, t))
         if (collidingTopics.nonEmpty) {
           throw new InvalidTopicException(
-            "Topic \"%s\" collides with existing topics: %s"
-              .format(topic, collidingTopics.mkString(", ")))
+            "Topic \"%s\" collides with existing topics: %s".format(
+              topic,
+              collidingTopics.mkString(", ")))
         }
       }
     }
@@ -566,9 +567,9 @@ object AdminUtils extends Logging {
         info("Topic update " + jsonPartitionData.toString)
         zkUtils.updatePersistentPath(zkPath, jsonPartitionData)
       }
-      debug(
-        "Updated path %s with %s for replica assignment"
-          .format(zkPath, jsonPartitionData))
+      debug("Updated path %s with %s for replica assignment".format(
+        zkPath,
+        jsonPartitionData))
     } catch {
       case e: ZkNodeExistsException =>
         throw new TopicExistsException("topic %s already exists".format(topic))

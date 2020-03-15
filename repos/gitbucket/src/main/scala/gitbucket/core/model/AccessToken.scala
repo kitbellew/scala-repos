@@ -10,16 +10,13 @@ trait AccessTokenComponent { self: Profile =>
     val tokenHash = column[String]("TOKEN_HASH")
     val note = column[String]("NOTE")
     def * =
-      (
-        accessTokenId,
-        userName,
-        tokenHash,
-        note) <> (AccessToken.tupled, AccessToken.unapply)
+      (accessTokenId, userName, tokenHash, note) <> (
+        AccessToken.tupled, AccessToken.unapply
+      )
   }
 }
 case class AccessToken(
     accessTokenId: Int = 0,
     userName: String,
     tokenHash: String,
-    note: String
-)
+    note: String)

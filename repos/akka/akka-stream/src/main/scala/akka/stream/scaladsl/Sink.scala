@@ -111,11 +111,10 @@ object Sink {
     * Helper to create [[Sink]] from `Subscriber`.
     */
   def fromSubscriber[T](subscriber: Subscriber[T]): Sink[T, NotUsed] =
-    new Sink(
-      new SubscriberSink(
-        subscriber,
-        DefaultAttributes.subscriberSink,
-        shape("SubscriberSink")))
+    new Sink(new SubscriberSink(
+      subscriber,
+      DefaultAttributes.subscriberSink,
+      shape("SubscriberSink")))
 
   /**
     * A `Sink` that immediately cancels its upstream after materialization.
@@ -136,9 +135,8 @@ object Sink {
       .fromGraph(new HeadOptionStage[T])
       .withAttributes(DefaultAttributes.headSink)
       .mapMaterializedValue(e ⇒
-        e.map(
-          _.getOrElse(
-            throw new NoSuchElementException("head of empty stream")))(
+        e.map(_.getOrElse(
+          throw new NoSuchElementException("head of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
 
   /**
@@ -165,9 +163,8 @@ object Sink {
       .fromGraph(new LastOptionStage[T])
       .withAttributes(DefaultAttributes.lastSink)
       .mapMaterializedValue(e ⇒
-        e.map(
-          _.getOrElse(
-            throw new NoSuchElementException("last of empty stream")))(
+        e.map(_.getOrElse(
+          throw new NoSuchElementException("last of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
 
   /**
@@ -344,12 +341,11 @@ object Sink {
     * limiting stage in front of this `Sink`.
     */
   def actorRef[T](ref: ActorRef, onCompleteMessage: Any): Sink[T, NotUsed] =
-    new Sink(
-      new ActorRefSink(
-        ref,
-        onCompleteMessage,
-        DefaultAttributes.actorRefSink,
-        shape("ActorRefSink")))
+    new Sink(new ActorRefSink(
+      ref,
+      onCompleteMessage,
+      DefaultAttributes.actorRefSink,
+      shape("ActorRefSink")))
 
   /**
     * Sends the elements of the stream to the given `ActorRef` that sends back back-pressure signal.
@@ -370,13 +366,12 @@ object Sink {
       ackMessage: Any,
       onCompleteMessage: Any,
       onFailureMessage: (Throwable) ⇒ Any = Status.Failure): Sink[T, NotUsed] =
-    Sink.fromGraph(
-      new ActorRefBackpressureSinkStage(
-        ref,
-        onInitMessage,
-        ackMessage,
-        onCompleteMessage,
-        onFailureMessage))
+    Sink.fromGraph(new ActorRefBackpressureSinkStage(
+      ref,
+      onInitMessage,
+      ackMessage,
+      onCompleteMessage,
+      onFailureMessage))
 
   /**
     * Creates a `Sink` that is materialized to an [[akka.actor.ActorRef]] which points to an Actor
@@ -387,11 +382,10 @@ object Sink {
     require(
       classOf[ActorSubscriber].isAssignableFrom(props.actorClass()),
       "Actor must be ActorSubscriber")
-    new Sink(
-      new ActorSubscriberSink(
-        props,
-        DefaultAttributes.actorSubscriberSink,
-        shape("ActorSubscriberSink")))
+    new Sink(new ActorSubscriberSink(
+      props,
+      DefaultAttributes.actorSubscriberSink,
+      shape("ActorSubscriberSink")))
   }
 
   /**

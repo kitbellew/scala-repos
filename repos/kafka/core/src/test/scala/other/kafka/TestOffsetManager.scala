@@ -122,8 +122,14 @@ object TestOffsetManager {
         case e1: ClosedByInterruptException =>
           offsetsChannel.disconnect()
         case e2: IOException =>
-          println("Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s."
-            .format(id, offsetsChannel.host, offsetsChannel.port, groupId, e2))
+          println(
+            "Commit thread %d: Error while committing offsets to %s:%d for group %s due to %s."
+              .format(
+                id,
+                offsetsChannel.host,
+                offsetsChannel.port,
+                groupId,
+                e2))
           offsetsChannel.disconnect()
       } finally { Thread.sleep(commitIntervalMs) }
     }
@@ -206,17 +212,19 @@ object TestOffsetManager {
             channel.disconnect()
             channels.remove(coordinatorId)
           case e2: IOException =>
-            println(
-              "Error while fetching offset from %s:%d due to %s."
-                .format(channel.host, channel.port, e2))
+            println("Error while fetching offset from %s:%d due to %s.".format(
+              channel.host,
+              channel.port,
+              e2))
             channel.disconnect()
             channels.remove(coordinatorId)
         }
       } catch {
         case e: IOException =>
           println(
-            "Error while querying %s:%d - shutting down query channel."
-              .format(metadataChannel.host, metadataChannel.port))
+            "Error while querying %s:%d - shutting down query channel.".format(
+              metadataChannel.host,
+              metadataChannel.port))
           metadataChannel.disconnect()
           println("Creating new query channel.")
           metadataChannel = ClientUtils.channelToAnyBroker(

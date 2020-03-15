@@ -222,9 +222,10 @@ object Rational extends RationalInstances {
         val dShared = d >> dLowerLength
 
         val addBit =
-          if (nShared < dShared || (nShared == dShared && d.toBigInteger.getLowestSetBit < dLowerLength)) {
-            1
-          } else { 0 }
+          if (nShared < dShared || (
+                nShared == dShared && d.toBigInteger.getLowestSetBit < dLowerLength
+              )) { 1 }
+          else { 0 }
 
         val e = d.bitLength - n.bitLength + addBit
         val ln = n << (53 + e) // We add 1 bit for rounding.

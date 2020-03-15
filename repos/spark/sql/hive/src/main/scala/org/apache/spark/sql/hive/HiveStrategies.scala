@@ -155,11 +155,10 @@ private[hive] trait HiveStrategies {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
         case describe: DescribeCommand =>
-          ExecutedCommand(
-            DescribeHiveTableCommand(
-              describe.table,
-              describe.output,
-              describe.isExtended)) :: Nil
+          ExecutedCommand(DescribeHiveTableCommand(
+            describe.table,
+            describe.output,
+            describe.isExtended)) :: Nil
         case _ => Nil
       }
   }

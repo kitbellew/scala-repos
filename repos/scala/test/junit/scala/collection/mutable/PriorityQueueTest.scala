@@ -30,8 +30,8 @@ class PriorityQueueTest {
     new ObjectOutputStream(outputStream).writeObject(priorityQueue)
     val bytes = outputStream.toByteArray
 
-    val objectInputStream = new ObjectInputStream(
-      new ByteArrayInputStream(bytes))
+    val objectInputStream = new ObjectInputStream(new ByteArrayInputStream(
+      bytes))
     val deserializedPriorityQueue = objectInputStream
       .readObject()
       .asInstanceOf[PriorityQueue[Int]]

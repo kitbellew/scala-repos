@@ -18,8 +18,7 @@ object MiMa extends AutoPlugin {
     mimaPreviousArtifacts := akkaPreviousArtifacts(
       name.value,
       organization.value,
-      scalaBinaryVersion.value)
-  )
+      scalaBinaryVersion.value))
 
   def akkaPreviousArtifacts(
       projectName: String,

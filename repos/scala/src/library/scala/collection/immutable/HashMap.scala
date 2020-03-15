@@ -369,8 +369,8 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
   class HashTrieMap[A, +B](
       private[collection] val bitmap: Int,
       private[collection] val elems: Array[HashMap[A, B @uV]],
-      private[collection] val size0: Int
-  ) extends HashMap[A, B @uV] {
+      private[collection] val size0: Int)
+      extends HashMap[A, B @uV] {
 
     // assert(Integer.bitCount(bitmap) == elems.length)
     // assert(elems.length > 1 || (elems.length == 1 && elems(0).isInstanceOf[HashTrieMap[_,_]]))

@@ -27,8 +27,8 @@ class JavaCompiler(
     val reportHandler: ReportHandler,
     val indexer: ActorRef,
     val search: SearchService,
-    val vfs: EnsimeVFS
-) extends JavaDocFinding
+    val vfs: EnsimeVFS)
+    extends JavaDocFinding
     with JavaCompletion
     with JavaSourceFinding
     with Helpers
@@ -50,8 +50,7 @@ class JavaCompiler(
   def getTask(
       lint: String,
       listener: DiagnosticListener[JavaFileObject],
-      files: java.lang.Iterable[JavaFileObject]
-  ): JavacTask = {
+      files: java.lang.Iterable[JavaFileObject]): JavacTask = {
     val compiler = ToolProvider.getSystemJavaCompiler()
 
     // Try to re-use file manager.
@@ -72,12 +71,7 @@ class JavaCompiler(
         null,
         fileManager,
         listener,
-        List(
-          "-cp",
-          cp,
-          "-Xlint:" + lint,
-          "-proc:none"
-        ).asJava,
+        List("-cp", cp, "-Xlint:" + lint, "-proc:none").asJava,
         null,
         files)
       .asInstanceOf[JavacTask]
@@ -121,14 +115,13 @@ class JavaCompiler(
             List.empty,
             List.empty,
             None)
-          Some(
-            SymbolInfo(
-              fqn(info, path).map(_.toFqnString).getOrElse(name),
-              name,
-              findDeclPos(info, path),
-              tpeMirror.map(typeMirrorToTypeInfo).getOrElse(nullTpe),
-              tpeMirror.map(_.getKind == TypeKind.EXECUTABLE).getOrElse(false)
-            ))
+          Some(SymbolInfo(
+            fqn(info, path).map(_.toFqnString).getOrElse(name),
+            name,
+            findDeclPos(info, path),
+            tpeMirror.map(typeMirrorToTypeInfo).getOrElse(nullTpe),
+            tpeMirror.map(_.getKind == TypeKind.EXECUTABLE).getOrElse(false)
+          ))
         }
         path.getLeaf match {
           case t: IdentifierTree   => withName(t.getName.toString)
@@ -151,8 +144,9 @@ class JavaCompiler(
       file: SourceFileInfo,
       offset: Int,
       maxResults: Int,
-      caseSens: Boolean
-  ): CompletionInfoList = { completionsAt(file, offset, maxResults, caseSens) }
+      caseSens: Boolean): CompletionInfoList = {
+    completionsAt(file, offset, maxResults, caseSens)
+  }
 
   protected def pathToPoint(
       file: SourceFileInfo,
@@ -261,26 +255,23 @@ class JavaCompiler(
       extends DiagnosticListener[JavaFileObject]
       with ReportHandler {
     def report(diag: Diagnostic[_ <: JavaFileObject]): Unit = {
-      reportHandler.reportJavaNotes(
-        List(
-          Note(
-            diag.getSource().getName(),
-            diag.getMessage(Locale.ENGLISH),
-            diag.getKind() match {
-              case Diagnostic.Kind.ERROR             => NoteError
-              case Diagnostic.Kind.WARNING           => NoteWarn
-              case Diagnostic.Kind.MANDATORY_WARNING => NoteWarn
-              case _                                 => NoteInfo
-            },
-            diag.getStartPosition() match {
-              case x if x > -1 => x.toInt
-              case _           => diag.getPosition().toInt
-            },
-            diag.getEndPosition().toInt,
-            diag.getLineNumber().toInt,
-            diag.getColumnNumber().toInt
-          )
-        ))
+      reportHandler.reportJavaNotes(List(Note(
+        diag.getSource().getName(),
+        diag.getMessage(Locale.ENGLISH),
+        diag.getKind() match {
+          case Diagnostic.Kind.ERROR             => NoteError
+          case Diagnostic.Kind.WARNING           => NoteWarn
+          case Diagnostic.Kind.MANDATORY_WARNING => NoteWarn
+          case _                                 => NoteInfo
+        },
+        diag.getStartPosition() match {
+          case x if x > -1 => x.toInt
+          case _           => diag.getPosition().toInt
+        },
+        diag.getEndPosition().toInt,
+        diag.getLineNumber().toInt,
+        diag.getColumnNumber().toInt
+      )))
     }
   }
 

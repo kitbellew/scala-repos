@@ -58,21 +58,24 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
     GroupResources -> Array("--group", "testGroup-1", "--group", "testGroup-2")
   )
 
-  private val ResourceToOperations = Map[
-    Set[Resource],
-    (Set[Operation], Array[String])](
-    TopicResources -> (Set(Read, Write, Describe), Array(
-      "--operation",
-      "Read",
-      "--operation",
-      "Write",
-      "--operation",
-      "Describe")),
-    Set(Resource.ClusterResource) -> (Set(Create, ClusterAction), Array(
-      "--operation",
-      "Create",
-      "--operation",
-      "ClusterAction")),
+  private val ResourceToOperations = Map[Set[
+    Resource], (Set[Operation], Array[String])](
+    TopicResources -> (
+      Set(Read, Write, Describe), Array(
+        "--operation",
+        "Read",
+        "--operation",
+        "Write",
+        "--operation",
+        "Describe")
+    ),
+    Set(Resource.ClusterResource) -> (
+      Set(Create, ClusterAction), Array(
+        "--operation",
+        "Create",
+        "--operation",
+        "ClusterAction")
+    ),
     GroupResources -> (Set(Read).toSet[Operation], Array("--operation", "Read"))
   )
 
@@ -86,12 +89,10 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
   private val ConsumerResourceToAcls = Map[Set[Resource], Set[Acl]](
     TopicResources -> AclCommand
       .getAcls(Users, Allow, Set(Read, Describe), Hosts),
-    GroupResources -> AclCommand.getAcls(Users, Allow, Set(Read), Hosts)
-  )
+    GroupResources -> AclCommand.getAcls(Users, Allow, Set(Read), Hosts))
 
-  private val CmdToResourcesToAcl = Map[
-    Array[String],
-    Map[Set[Resource], Set[Acl]]](
+  private val CmdToResourcesToAcl = Map[Array[String], Map[Set[Resource], Set[
+    Acl]]](
     Array[String]("--producer") -> ProducerResourceToAcls,
     Array[String]("--consumer") -> ConsumerResourceToAcls,
     Array[String]("--producer", "--consumer") -> ConsumerResourceToAcls.map {
@@ -173,8 +174,8 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       args: Array[String],
       brokerProps: Properties) {
     for (resource <- resources) {
-      Console.withIn(
-        new StringReader(s"y${AclCommand.Newline}" * resources.size)) {
+      Console.withIn(new StringReader(
+        s"y${AclCommand.Newline}" * resources.size)) {
         AclCommand.main(args ++ resourceCmd :+ "--remove")
         withAuthorizer(brokerProps) { authorizer =>
           TestUtils.waitAndVerifyAcls(Set.empty[Acl], authorizer, resource)

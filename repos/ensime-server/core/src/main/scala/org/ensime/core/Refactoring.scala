@@ -23,8 +23,8 @@ abstract class RefactoringEnvironment(file: String, start: Int, end: Int) {
   def performRefactoring(
       procId: Int,
       tpe: RefactorType,
-      parameters: refactoring.RefactoringParameters
-  ): Either[RefactorFailure, RefactorEffect] = {
+      parameters: refactoring.RefactoringParameters)
+      : Either[RefactorFailure, RefactorEffect] = {
 
     val af = AbstractFile.getFile(file)
 
@@ -77,11 +77,7 @@ trait RefactoringHandler { self: Analyzer =>
       case Right(effect: RefactorEffect) => {
         FileUtils.writeDiffChanges(effect.changes, cs) match {
           case Right(f) =>
-            new RefactorDiffEffect(
-              effect.procedureId,
-              effect.refactorType,
-              f
-            )
+            new RefactorDiffEffect(effect.procedureId, effect.refactorType, f)
           case Left(err) => RefactorFailure(effect.procedureId, err.toString)
         }
       }
@@ -154,20 +150,17 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
 
   def askPrepareRefactor(
       procId: Int,
-      refactor: RefactorDesc
-  ): Either[RefactorFailure, RefactorEffect] = {
-    askOption(prepareRefactor(procId, refactor))
-      .getOrElse(Left(RefactorFailure(procId, "Refactor call failed")))
+      refactor: RefactorDesc): Either[RefactorFailure, RefactorEffect] = {
+    askOption(prepareRefactor(procId, refactor)).getOrElse(Left(
+      RefactorFailure(procId, "Refactor call failed")))
   }
 
   def askExecRefactor(
       procId: Int,
       tpe: RefactorType,
-      effect: RefactorEffect
-  ): Either[RefactorFailure, RefactorResult] = {
-    askOption(execRefactor(procId, tpe, effect)).getOrElse(
-      Left(RefactorFailure(procId, "Refactor exec call failed."))
-    ) match {
+      effect: RefactorEffect): Either[RefactorFailure, RefactorResult] = {
+    askOption(execRefactor(procId, tpe, effect)).getOrElse(Left(
+      RefactorFailure(procId, "Refactor exec call failed."))) match {
       case Right(result) =>
         // Reload all files touched by refactoring, so subsequent refactorings
         // will see consistent state.
@@ -276,8 +269,7 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
             refactoring.SimplifyWildcards,
             refactoring.RemoveDuplicates,
             refactoring.GroupImports(List("java", "scala"))
-          )
-        )
+          ))
       )
     }.result
 
@@ -298,11 +290,10 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
 
     val af = AbstractFile.getFile(file.getPath)
     val modifications = refactoring.addImport(af, qualName)
-    Right(
-      new RefactorEffect(
-        procId,
-        tpe,
-        modifications.map(FileEditHelper.fromChange)))
+    Right(new RefactorEffect(
+      procId,
+      tpe,
+      modifications.map(FileEditHelper.fromChange)))
   }
 
   protected def reloadAndType(f: File) =
@@ -347,8 +338,7 @@ trait RefactoringImpl { self: RichPresentationCompiler =>
   protected def execRefactor(
       procId: Int,
       refactorType: RefactorType,
-      effect: RefactorEffect
-  ): Either[RefactorFailure, RefactorResult] = {
+      effect: RefactorEffect): Either[RefactorFailure, RefactorResult] = {
     logger.info("Applying changes: " + effect.changes)
     writeChanges(effect.changes, charset) match {
       case Right(touchedFiles) =>

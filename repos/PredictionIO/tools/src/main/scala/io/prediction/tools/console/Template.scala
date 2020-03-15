@@ -317,8 +317,8 @@ object Template extends Logging {
     val zipFilename =
       s"${ca.template.repository.replace('/', '-')}-${tag.name}.zip"
     FileUtils.writeByteArrayToFile(new File(zipFilename), finalTrial.body)
-    val zis = new ZipInputStream(
-      new BufferedInputStream(new FileInputStream(zipFilename)))
+    val zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(
+      zipFilename)))
     val bufferSize = 4096
     val filesToModify = collection.mutable.ListBuffer[String]()
     var ze = zis.getNextEntry
@@ -406,8 +406,9 @@ object Template extends Logging {
 
     metadata.pioVersionMin.foreach { pvm =>
       if (Version(BuildInfo.version) < Version(pvm)) {
-        error(s"This engine template requires at least PredictionIO $pvm. " +
-          s"The template may not work with PredictionIO ${BuildInfo.version}.")
+        error(
+          s"This engine template requires at least PredictionIO $pvm. " +
+            s"The template may not work with PredictionIO ${BuildInfo.version}.")
         sys.exit(1)
       }
     }

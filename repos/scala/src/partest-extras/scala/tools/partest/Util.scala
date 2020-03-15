@@ -32,29 +32,28 @@ object Util {
     //   a.splice
     // }
 
-    c.Expr(
-      Block(
+    c.Expr(Block(
+      List(Apply(
+        Select(Ident(PredefModule), TermName("println")),
         List(Apply(
-          Select(Ident(PredefModule), TermName("println")),
-          List(Apply(
-            Select(
-              Apply(
-                Select(Ident(ScalaPackage), TermName("StringContext")),
-                List(
-                  Literal(Constant("trace> ")),
-                  Literal(Constant("\\nres: ")),
-                  Literal(Constant(" = ")),
-                  Literal(Constant("\\n")))
-              ),
-              TermName("s")
+          Select(
+            Apply(
+              Select(Ident(ScalaPackage), TermName("StringContext")),
+              List(
+                Literal(Constant("trace> ")),
+                Literal(Constant("\\nres: ")),
+                Literal(Constant(" = ")),
+                Literal(Constant("\\n")))
             ),
-            List(
-              Literal(Constant(show(a.tree))),
-              Literal(Constant(show(a.actualType))),
-              a.tree)
-          ))
-        )),
-        a.tree
-      ))
+            TermName("s")
+          ),
+          List(
+            Literal(Constant(show(a.tree))),
+            Literal(Constant(show(a.actualType))),
+            a.tree)
+        ))
+      )),
+      a.tree
+    ))
   }
 }

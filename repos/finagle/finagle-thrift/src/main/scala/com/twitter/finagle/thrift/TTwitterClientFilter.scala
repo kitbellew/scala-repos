@@ -96,10 +96,8 @@ private[thrift] class TTwitterClientFilter(
     new ThriftClientRequest(
       ByteArrays.concat(
         OutputBuffer.messageToArray(header, protocolFactory),
-        baseRequest.message
-      ),
-      baseRequest.oneway
-    )
+        baseRequest.message),
+      baseRequest.oneway)
   }
 
   def apply(

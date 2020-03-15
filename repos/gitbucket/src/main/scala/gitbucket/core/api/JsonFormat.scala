@@ -27,8 +27,7 @@ object JsonFormat {
         {
           case x: Date =>
             JString(parserISO.print(new DateTime(x).withZone(DateTimeZone.UTC)))
-        }
-      )) + FieldSerializer[ApiUser]() +
+        })) + FieldSerializer[ApiUser]() +
       FieldSerializer[ApiPullRequest]() +
       FieldSerializer[ApiRepository]() +
       FieldSerializer[ApiCommitListItem.Parent]() +
@@ -52,8 +51,7 @@ object JsonFormat {
           case JString(s) =>
             throw new MappingException("Can't convert " + s + " to ApiPath")
         },
-        { case ApiPath(path) => JString(c.baseUrl + path) }
-      ))
+        { case ApiPath(path) => JString(c.baseUrl + path) }))
 
   /**
     * convert object to json string

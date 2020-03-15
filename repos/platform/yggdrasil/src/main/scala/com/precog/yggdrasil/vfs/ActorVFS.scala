@@ -145,8 +145,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       } yield {
         nihdbV.disjunction leftMap {
           ResourceError.fromExtractorError(
-            "Failed to create NIHDB in %s as %s"
-              .format(versionDir.toString, authorities))
+            "Failed to create NIHDB in %s as %s".format(
+              versionDir.toString,
+              authorities))
         } map { NIHDBResource(_) }
       }
     }
@@ -164,8 +165,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               "Failed to open NIHDB from %s".format(descriptorDir.toString))
           }
         } getOrElse {
-          \/.left(
-            NotFound("No NIHDB projection found in %s".format(descriptorDir)))
+          \/.left(NotFound(
+            "No NIHDB projection found in %s".format(descriptorDir)))
         }
       }
     }
@@ -462,8 +463,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       MaxSize(maxOpenPaths),
       OnRemoval({ (p: Path, _: Unit, _: RemovalCause) =>
         pathActors.get(p).foreach(_ ! ReceiveTimeout)
-      })
-    )
+      }))
 
     private[this] var pathActors = Map.empty[Path, ActorRef]
 
@@ -480,16 +480,14 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           vlog <- VersionLog.open(pathDir)
           actorV <- vlog traverse { versionLog =>
             logger.debug("Creating new PathManagerActor for " + path)
-            context.actorOf(
-              Props(
-                new PathManagerActor(
-                  path,
-                  VFSPathUtils.versionsSubdir(pathDir),
-                  versionLog,
-                  shutdownTimeout,
-                  quiescenceTimeout,
-                  clock,
-                  self))) tap { newActor =>
+            context.actorOf(Props(new PathManagerActor(
+              path,
+              VFSPathUtils.versionsSubdir(pathDir),
+              versionLog,
+              shutdownTimeout,
+              quiescenceTimeout,
+              clock,
+              self))) tap { newActor =>
               IO { pathActors += (path -> newActor); pathLRU += (path -> ()) }
             }
           }
@@ -660,8 +658,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             } yield resource
         } getOrElse {
           left(
-            IO(Corrupt("No version %s found to exist for resource %s."
-              .format(version, path.path))))
+            IO(Corrupt("No version %s found to exist for resource %s.".format(
+              version,
+              path.path))))
         }
       }
     }
@@ -700,8 +699,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
       } yield {
         created.fold(
           error => PathOpFailure(path, error),
-          (_: Resource) => UpdateSuccess(path)
-        )
+          (_: Resource) => UpdateSuccess(path))
       }
     }
 
@@ -744,9 +742,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         msgs: Stream[(Long, EventMessage)],
         permissions: Map[APIKey, Set[WritePermission]],
         requestor: ActorRef): IO[PrecogUnit] = {
-      logger.debug(
-        "About to persist %d messages; replying to %s"
-          .format(msgs.size, requestor.toString))
+      logger.debug("About to persist %d messages; replying to %s".format(
+        msgs.size,
+        requestor.toString))
 
       def openNIHDB(
           version: UUID): EitherT[IO, ResourceError, ProjectionResource] = {
@@ -755,8 +753,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
             blob =>
               left(IO(NotFound(
                 "Located resource on %s is a BLOB, not a projection" format path.path))),
-            db => right(IO(db))
-          )
+            db => right(IO(db)))
         }
       }
 
@@ -866,8 +863,11 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 terminal)
 
             case StreamRef.Replace(streamId, terminal) =>
-              logger.trace("Received replace for %s stream %s: complete: %b"
-                .format(path.path, streamId, versionLog.isCompleted(streamId)))
+              logger.trace(
+                "Received replace for %s stream %s: complete: %b".format(
+                  path.path,
+                  streamId,
+                  versionLog.isCompleted(streamId)))
               persistNIHDB(
                 !versionLog.isCompleted(streamId),
                 offset,
@@ -968,11 +968,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               openResource(v.id)
                 .fold(PathOpFailure(path, _), ReadSuccess(path, _))
             } getOrElse {
-              IO(
-                PathOpFailure(
-                  path,
-                  NotFound(
-                    "No current version found for path %s".format(path.path))))
+              IO(PathOpFailure(
+                path,
+                NotFound(
+                  "No current version found for path %s".format(path.path))))
             }
 
           case Version.Archived(id) =>

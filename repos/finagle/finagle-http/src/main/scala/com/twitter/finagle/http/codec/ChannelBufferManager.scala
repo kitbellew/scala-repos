@@ -16,8 +16,7 @@ import com.twitter.conversions.storage._
   */
 class ChannelBufferUsageTracker(
     limit: StorageUnit,
-    statsReceiver: StatsReceiver = NullStatsReceiver
-) {
+    statsReceiver: StatsReceiver = NullStatsReceiver) {
   private[this] object state {
     var currentUsage = 0L
     var maxUsage = 0L

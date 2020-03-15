@@ -33,8 +33,9 @@ trait EntityPage extends HtmlPage {
     val s = universe.settings
     (if (!s.doctitle.isDefault) s.doctitle.value + " " else "") +
       (if (!s.docversion.isDefault) s.docversion.value else "") +
-      (if ((!s.doctitle.isDefault || !s.docversion.isDefault) && tpl.qualifiedName != "_root_")
-         " - " + tpl.qualifiedName
+      (if ((
+             !s.doctitle.isDefault || !s.docversion.isDefault
+           ) && tpl.qualifiedName != "_root_") " - " + tpl.qualifiedName
        else "")
   }
 
@@ -163,10 +164,9 @@ trait EntityPage extends HtmlPage {
         .filter(x =>
           !x.isPackage && (x.isTrait || x.isClass || x.isAbstractType))
         .sortBy(_.name)
-        .map(
-          entityToUl(
-            _,
-            (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
+        .map(entityToUl(
+          _,
+          (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
       val currSubLis = tpl.templates
         .filter(_.isPackage)
         .sortBy(_.name)
@@ -307,10 +307,9 @@ trait EntityPage extends HtmlPage {
             <span class="filtertype">Ordering</span>
             <ol>
               {
-          if (!universe.settings.docGroups.value || (tpl.members
-                .map(_.group)
-                .distinct
-                .length == 1)) NodeSeq.Empty
+          if (!universe.settings.docGroups.value || (
+                tpl.members.map(_.group).distinct.length == 1
+              )) NodeSeq.Empty
           else <li class="group out"><span>Grouped</span></li>
         }
               <li class="alpha in"><span>Alphabetic</span></li>
@@ -430,14 +429,15 @@ trait EntityPage extends HtmlPage {
         <div id="inheritedMembers">
         {
       // linearization
-      NodeSeq fromSeq (for ((
-                              superTpl,
-                              superType) <- (tpl.linearizationTemplates zip tpl.linearizationTypes))
-        yield <div class="parent" name={superTpl.qualifiedName}>
+      NodeSeq fromSeq (
+        for ((superTpl, superType) <- (
+               tpl.linearizationTemplates zip tpl.linearizationTypes
+             )) yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
           typeToHtmlWithStupidTypes(tpl, superTpl, superType)
         }</h3>
-            </div>)
+            </div>
+      )
     }
         {
       // implicitly inherited
@@ -492,8 +492,7 @@ trait EntityPage extends HtmlPage {
       mbr: MemberEntity,
       inTpl: DocTemplateEntity,
       isParent: Boolean = false,
-      indentation: Int = 0
-  ): NodeSeq = {
+      indentation: Int = 0): NodeSeq = {
     // Sometimes it's same, do we need signatureCompat still?
     val sig =
       if (mbr.signature == mbr.signatureCompat) { <a id={mbr.signature}/> }
@@ -698,7 +697,9 @@ trait EntityPage extends HtmlPage {
             val shadowingSuggestion = {
               val params = mbr match {
                 case d: Def =>
-                  d.valueParams map (_ map (_ name) mkString ("(", ", ", ")")) mkString
+                  d.valueParams map (
+                    _ map (_ name) mkString ("(", ", ", ")")
+                  ) mkString
                 case _ => "" // no parameters
               }
               <br/> ++ scala.xml.Text("To access this member you can use a ") ++
@@ -716,9 +717,10 @@ trait EntityPage extends HtmlPage {
                   "This implicitly inherited member is shadowed by one or more members in this " +
                     "class.") ++ shadowingSuggestion
               else if (mbr.isAmbiguousImplicit)
-                scala.xml.Text("This implicitly inherited member is ambiguous. One or more implicitly " +
-                  "inherited members have similar signatures, so calling this member may produce an ambiguous " +
-                  "implicit conversion compiler error.") ++ shadowingSuggestion
+                scala.xml.Text(
+                  "This implicitly inherited member is ambiguous. One or more implicitly " +
+                    "inherited members have similar signatures, so calling this member may produce an ambiguous " +
+                    "implicit conversion compiler error.") ++ shadowingSuggestion
               else NodeSeq.Empty
 
             <dt class="implicit">Shadowing</dt> ++
@@ -806,7 +808,9 @@ trait EntityPage extends HtmlPage {
 
     val sourceLink: NodeSeq = mbr match {
       case dtpl: DocTemplateEntity
-          if (isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced) =>
+          if (
+            isSelf && dtpl.sourceUrl.isDefined && dtpl.inSource.isDefined && !isReduced
+          ) =>
         val (absFile, _) = dtpl.inSource.get
         <dt>Source</dt>
         <dd>{
@@ -1018,25 +1022,19 @@ trait EntityPage extends HtmlPage {
       case PrivateInTemplate(owner) if (owner == mbr.inTemplate) =>
         Some(Paragraph(CText("private")))
       case PrivateInTemplate(owner) =>
-        Some(
-          Paragraph(
-            Chain(
-              List(
-                CText("private["),
-                EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
-                CText("]")))))
+        Some(Paragraph(Chain(List(
+          CText("private["),
+          EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
+          CText("]")))))
       case ProtectedInInstance() =>
         Some(Paragraph(CText("protected[this]")))
       case ProtectedInTemplate(owner) if (owner == mbr.inTemplate) =>
         Some(Paragraph(CText("protected")))
       case ProtectedInTemplate(owner) =>
-        Some(
-          Paragraph(
-            Chain(
-              List(
-                CText("protected["),
-                EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
-                CText("]")))))
+        Some(Paragraph(Chain(List(
+          CText("protected["),
+          EntityLink(comment.Text(owner.qualifiedName), LinkToTpl(owner)),
+          CText("]")))))
       case Public() =>
         None
     }
@@ -1340,8 +1338,7 @@ object EntityPage {
       uni: doc.Universe,
       gen: DiagramGenerator,
       docTpl: DocTemplateEntity,
-      rep: ScalaDocReporter
-  ): EntityPage =
+      rep: ScalaDocReporter): EntityPage =
     new EntityPage {
       def universe = uni
       def generator = gen

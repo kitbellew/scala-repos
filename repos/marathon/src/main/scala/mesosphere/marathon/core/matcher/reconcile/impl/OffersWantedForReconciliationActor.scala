@@ -24,13 +24,11 @@ private[reconcile] object OffersWantedForReconciliationActor {
       clock: Clock,
       eventStream: EventStream,
       offersWanted: Observer[Boolean]): Props =
-    Props(
-      new OffersWantedForReconciliationActor(
-        reviveOffersConfig,
-        clock,
-        eventStream,
-        offersWanted
-      ))
+    Props(new OffersWantedForReconciliationActor(
+      reviveOffersConfig,
+      clock,
+      eventStream,
+      offersWanted))
 
   private case class RequestOffers(reason: String)
   case object RecheckInterest
@@ -77,8 +75,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
           .map(_.id)
           .mkString(", ")
         self ! OffersWantedForReconciliationActor.RequestOffers(
-          s"terminated resident app(s) $terminatedResidentAppsString"
-        )
+          s"terminated resident app(s) $terminatedResidentAppsString")
       }
   }
 
@@ -95,8 +92,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
     context.system.scheduler.scheduleOnce(
       interestDuration,
       self,
-      OffersWantedForReconciliationActor.RecheckInterest
-    )(context.dispatcher)
+      OffersWantedForReconciliationActor.RecheckInterest)(context.dispatcher)
   }
 
   private[this] def subscribedToOffers(

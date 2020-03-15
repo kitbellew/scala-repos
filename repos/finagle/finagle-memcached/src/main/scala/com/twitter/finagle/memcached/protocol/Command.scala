@@ -26,8 +26,9 @@ private object KeyValidation {
 
     if (tooLong(key))
       throw new IllegalArgumentException(
-        "Invalid keys: key cannot be longer than %d bytes (%d)"
-          .format(MaxKeyLength, key.length))
+        "Invalid keys: key cannot be longer than %d bytes (%d)".format(
+          MaxKeyLength,
+          key.length))
 
     val index = invalidByteIndex(key)
     if (index != -1) {

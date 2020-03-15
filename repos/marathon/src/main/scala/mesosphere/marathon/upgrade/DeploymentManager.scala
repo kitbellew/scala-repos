@@ -110,18 +110,16 @@ class DeploymentManager(
           taskQueue,
           storage,
           healthCheckManager,
-          eventBus
-        ),
-        plan.id
-      )
+          eventBus),
+        plan.id)
       runningDeployments += plan.id -> DeploymentInfo(ref, plan)
 
     case stepInfo: DeploymentStepInfo =>
       deploymentStatus += stepInfo.plan.id -> stepInfo
 
     case _: PerformDeployment =>
-      sender() ! Status.Failure(
-        new ConcurrentTaskUpgradeException("Deployment is already in progress"))
+      sender() ! Status.Failure(new ConcurrentTaskUpgradeException(
+        "Deployment is already in progress"))
 
     case RetrieveRunningDeployments =>
       sender() ! RunningDeployments(deploymentStatus.values.to[Seq])

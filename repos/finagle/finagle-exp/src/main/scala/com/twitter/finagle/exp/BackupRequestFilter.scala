@@ -96,8 +96,7 @@ class BackupRequestFilter[Req, Rep] private[exp] (
       clipDuration: Duration,
       timer: Timer,
       statsReceiver: StatsReceiver,
-      history: Duration
-  ) =
+      history: Duration) =
     this(
       quantile,
       clipDuration,
@@ -106,8 +105,7 @@ class BackupRequestFilter[Req, Rep] private[exp] (
       history,
       BackupRequestFilter.DefaultNowMs,
       BackupRequestFilter.DefaultRecalcWindow,
-      BackupRequestFilter.defaultError(clipDuration)
-    )
+      BackupRequestFilter.defaultError(clipDuration))
 
   require(quantile > 0 && quantile < 100)
   require(clipDuration < 1.hour)

@@ -35,10 +35,7 @@ trait LoopCommands {
   abstract class LoopCommand(val name: String, val help: String)
       extends (String => Result) {
     def usage: String = ""
-    def usageMsg: String =
-      ":" + name + (
-        if (usage == "") "" else " " + usage
-      )
+    def usageMsg: String = ":" + name + (if (usage == "") "" else " " + usage)
     def apply(line: String): Result
 
     // called if no args are given

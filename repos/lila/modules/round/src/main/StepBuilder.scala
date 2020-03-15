@@ -64,13 +64,12 @@ object StepBuilder {
     steps.zipWithIndex map {
       case (step, index) =>
         analysis.infos.lift(index - 1).fold(step) { info =>
-          step.copy(
-            eval = Step
-              .Eval(
-                cp = info.score.map(_.ceiled.centipawns),
-                mate = info.mate,
-                best = info.best)
-              .some)
+          step.copy(eval = Step
+            .Eval(
+              cp = info.score.map(_.ceiled.centipawns),
+              mate = info.mate,
+              best = info.best)
+            .some)
         }
     }
 

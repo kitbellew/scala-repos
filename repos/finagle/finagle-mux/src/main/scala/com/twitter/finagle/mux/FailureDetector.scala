@@ -107,8 +107,7 @@ object FailureDetector {
   private[mux] def apply(
       config: Config,
       ping: () => Future[Unit],
-      statsReceiver: StatsReceiver
-  ): FailureDetector = {
+      statsReceiver: StatsReceiver): FailureDetector = {
     config match {
       case NullConfig => NullFailureDetector
 
@@ -133,8 +132,7 @@ object FailureDetector {
   private def parseConfigFromFlags(
       ping: () => Future[Unit],
       nanoTime: () => Long = System.nanoTime,
-      statsReceiver: StatsReceiver = NullStatsReceiver
-  ): FailureDetector = {
+      statsReceiver: StatsReceiver = NullStatsReceiver): FailureDetector = {
     sessionFailureDetector() match {
       case list(
             "threshold",

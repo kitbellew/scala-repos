@@ -434,9 +434,8 @@ private[spark] class BlockManager(
       blockIds: Array[BlockId]): Array[Seq[BlockManagerId]] = {
     val startTimeMs = System.currentTimeMillis
     val locations = master.getLocations(blockIds).toArray
-    logDebug(
-      "Got multiple block location in %s".format(
-        Utils.getUsedTimeMs(startTimeMs)))
+    logDebug("Got multiple block location in %s".format(
+      Utils.getUsedTimeMs(startTimeMs)))
     locations
   }
 
@@ -495,11 +494,10 @@ private[spark] class BlockManager(
       val shuffleBlockResolver = shuffleManager.shuffleBlockResolver
       // TODO: This should gracefully handle case where local block is not available. Currently
       // downstream code will throw an exception.
-      Option(
-        new ChunkedByteBuffer(
-          shuffleBlockResolver
-            .getBlockData(blockId.asInstanceOf[ShuffleBlockId])
-            .nioByteBuffer()))
+      Option(new ChunkedByteBuffer(
+        shuffleBlockResolver
+          .getBlockData(blockId.asInstanceOf[ShuffleBlockId])
+          .nioByteBuffer()))
     } else {
       blockInfoManager.lockForReading(blockId).map { info =>
         doGetLocalBytes(blockId, info)
@@ -860,9 +858,9 @@ private[spark] class BlockManager(
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
       }
-      logDebug(
-        "Put block %s locally took %s"
-          .format(blockId, Utils.getUsedTimeMs(startTimeMs)))
+      logDebug("Put block %s locally took %s".format(
+        blockId,
+        Utils.getUsedTimeMs(startTimeMs)))
       if (level.replication > 1) {
         // Wait for asynchronous replication to finish
         Await.ready(replicationFuture, Duration.Inf)
@@ -993,9 +991,9 @@ private[spark] class BlockManager(
           c.taskMetrics()
             .incUpdatedBlockStatuses(Seq((blockId, putBlockStatus)))
         }
-        logDebug(
-          "Put block %s locally took %s"
-            .format(blockId, Utils.getUsedTimeMs(startTimeMs)))
+        logDebug("Put block %s locally took %s".format(
+          blockId,
+          Utils.getUsedTimeMs(startTimeMs)))
         if (level.replication > 1) {
           val remoteStartTime = System.currentTimeMillis
           val bytesToReplicate = doGetLocalBytes(blockId, putBlockInfo)
@@ -1211,8 +1209,9 @@ private[spark] class BlockManager(
       s"Replicating $blockId of ${data.size} bytes to " +
         s"${peersReplicatedTo.size} peer(s) took $timeTakeMs ms")
     if (peersReplicatedTo.size < numPeersToReplicateTo) {
-      logWarning(s"Block $blockId replicated to only " +
-        s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
+      logWarning(
+        s"Block $blockId replicated to only " +
+          s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
     }
   }
 

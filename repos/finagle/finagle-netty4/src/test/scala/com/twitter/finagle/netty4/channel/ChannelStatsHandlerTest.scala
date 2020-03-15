@@ -35,8 +35,8 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
     when(chan.isWritable).thenReturn(false, true, false)
     when(ctx.channel).thenReturn(chan)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
-      .thenReturn(mkAttr(true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(mkAttr(
+      true))
     when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
       .thenReturn(mkAttr(Stopwatch.start()))
   }
@@ -86,8 +86,8 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
     when(durationAttr.get).thenReturn(() => Time.now - start)
     when(ctx.attr(ChannelStatsHandler.ConnectionDurationKey))
       .thenReturn(durationAttr)
-    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey))
-      .thenReturn(mkAttr(true))
+    when(ctx.attr(ChannelStatsHandler.ChannelWasWritableKey)).thenReturn(mkAttr(
+      true))
     when(ctx.attr(ChannelStatsHandler.ChannelWritableDurationKey))
       .thenReturn(mkAttr(Stopwatch.start()))
   }
@@ -117,8 +117,7 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
   def channelLifeCycleTest(
       counterName: String,
-      f: (ChannelDuplexHandler, ChannelHandlerContext) => Unit
-  ) =
+      f: (ChannelDuplexHandler, ChannelHandlerContext) => Unit) =
     test(s"ChannelStatsHandler counts $counterName") {
       val tc = new TestContext {}
       import tc._
@@ -130,18 +129,13 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
 
   channelLifeCycleTest(
     "closes",
-    (handler, ctx) => handler.close(ctx, mock[ChannelPromise])
-  )
+    (handler, ctx) => handler.close(ctx, mock[ChannelPromise]))
 
   channelLifeCycleTest(
     "closechans",
-    (handler, ctx) => handler.channelInactive(ctx)
-  )
+    (handler, ctx) => handler.channelInactive(ctx))
 
-  channelLifeCycleTest(
-    "connects",
-    (handler, ctx) => handler.channelActive(ctx)
-  )
+  channelLifeCycleTest("connects", (handler, ctx) => handler.channelActive(ctx))
 
   test("ChannelStatsHandler records connection duration") {
     Time.withCurrentTimeFrozen { control =>

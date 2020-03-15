@@ -43,9 +43,8 @@ trait SharedSearchServiceFixture
     super.afterAll()
   }
 
-  def withSearchService(
-      testCode: (EnsimeConfig, SearchService) => Any
-  ): Unit = testCode(_config, _search)
+  def withSearchService(testCode: (EnsimeConfig, SearchService) => Any): Unit =
+    testCode(_config, _search)
 
   def withSearchService(testCode: SearchService => Any): Unit =
     testCode(_search)

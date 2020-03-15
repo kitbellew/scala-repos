@@ -33,10 +33,10 @@ object CallingThreadDispatcherModelSpec {
       prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(config, prerequisites) {
 
-    private val instance: MessageDispatcher = new CallingThreadDispatcher(this)
-      with MessageDispatcherInterceptor {
-      override def id: String = config.getString("id")
-    }
+    private val instance: MessageDispatcher =
+      new CallingThreadDispatcher(this) with MessageDispatcherInterceptor {
+        override def id: String = config.getString("id")
+      }
 
     override def dispatcher(): MessageDispatcher = instance
 

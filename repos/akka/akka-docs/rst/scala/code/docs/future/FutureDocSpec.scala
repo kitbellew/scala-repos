@@ -20,8 +20,8 @@ object FutureDocSpec {
     def receive = {
       case x: String => sender() ! x.toUpperCase
       case x: Int if x < 0 =>
-        sender() ! Status.Failure(
-          new ArithmeticException("Negative values not supported"))
+        sender() ! Status.Failure(new ArithmeticException(
+          "Negative values not supported"))
       case x: Int => sender() ! x
     }
   }
@@ -390,8 +390,8 @@ class FutureDocSpec extends AkkaSpec {
     val future = Future.successful("Yay!")
     //#successful
     //#failed
-    val otherFuture = Future.failed[String](
-      new IllegalArgumentException("Bang!"))
+    val otherFuture = Future.failed[String](new IllegalArgumentException(
+      "Bang!"))
     //#failed
     //#promise
     val promise = Promise[String]()

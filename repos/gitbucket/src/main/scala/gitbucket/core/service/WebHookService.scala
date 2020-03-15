@@ -446,8 +446,8 @@ object WebHookService {
       before: String,
       after: String,
       commits: List[ApiCommit],
-      repository: ApiRepository
-  ) extends FieldSerializable
+      repository: ApiRepository)
+      extends FieldSerializable
       with WebHookPayload {
     val compare = commits.size match {
       case 0 =>
@@ -503,8 +503,8 @@ object WebHookService {
       number: Int,
       repository: ApiRepository,
       pull_request: ApiPullRequest,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookPullRequestPayload {
     def apply(
@@ -531,8 +531,7 @@ object WebHookService {
         number = issue.issueId,
         repository = pr.base.repo,
         pull_request = pr,
-        sender = senderPayload
-      )
+        sender = senderPayload)
     }
   }
 
@@ -542,8 +541,8 @@ object WebHookService {
       repository: ApiRepository,
       issue: ApiIssue,
       comment: ApiComment,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookIssueCommentPayload {
     def apply(
@@ -574,8 +573,8 @@ object WebHookService {
       comment: ApiPullRequestReviewComment,
       pull_request: ApiPullRequest,
       repository: ApiRepository,
-      sender: ApiUser
-  ) extends WebHookPayload
+      sender: ApiUser)
+      extends WebHookPayload
 
   object WebHookPullRequestReviewCommentPayload {
     def apply(
@@ -588,8 +587,7 @@ object WebHookService {
         headOwner: Account,
         baseRepository: RepositoryInfo,
         baseOwner: Account,
-        sender: Account
-    ): WebHookPullRequestReviewCommentPayload = {
+        sender: Account): WebHookPullRequestReviewCommentPayload = {
       val headRepoPayload = ApiRepository(headRepository, headOwner)
       val baseRepoPayload = ApiRepository(baseRepository, baseOwner)
       val senderPayload = ApiUser(sender)

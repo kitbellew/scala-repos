@@ -41,13 +41,12 @@ trait SecureFlagSpec
   def withServer[T](action: EssentialAction, sslPort: Option[Int] = None)(
       block: Port => T) = {
     val port = testServerPort
-    running(
-      TestServer(
-        port,
-        sslPort = sslPort,
-        application = GuiceApplicationBuilder()
-          .routes { case _ => action }
-          .build())) { block(port) }
+    running(TestServer(
+      port,
+      sslPort = sslPort,
+      application = GuiceApplicationBuilder()
+        .routes { case _ => action }
+        .build())) { block(port) }
   }
 
   "Play https server" should {
@@ -75,34 +74,29 @@ trait SecureFlagSpec
     "not show that requests are not secure in the absence of X_FORWARDED_PROTO" in withServer(
       secureFlagAction) { port =>
       val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest("GET", "/", "HTTP/1.1", Map(), "foo")
-      )
+        BasicRequest("GET", "/", "HTTP/1.1", Map(), "foo"))
       responses.length must_== 1
       responses(0).body must_== Left("false")
     }
     "show that requests are secure if X_FORWARDED_PROTO is https" in withServer(
       secureFlagAction) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.1",
-          Map(X_FORWARDED_FOR -> "127.0.0.1", X_FORWARDED_PROTO -> "https"),
-          "foo")
-      )
+      val responses = BasicHttpClient.makeRequests(port)(BasicRequest(
+        "GET",
+        "/",
+        "HTTP/1.1",
+        Map(X_FORWARDED_FOR -> "127.0.0.1", X_FORWARDED_PROTO -> "https"),
+        "foo"))
       responses.length must_== 1
       responses(0).body must_== Left("true")
     }
     "not show that requests are secure if X_FORWARDED_PROTO is http" in withServer(
       secureFlagAction) { port =>
-      val responses = BasicHttpClient.makeRequests(port)(
-        BasicRequest(
-          "GET",
-          "/",
-          "HTTP/1.1",
-          Map((X_FORWARDED_PROTO, "http")),
-          "foo")
-      )
+      val responses = BasicHttpClient.makeRequests(port)(BasicRequest(
+        "GET",
+        "/",
+        "HTTP/1.1",
+        Map((X_FORWARDED_PROTO, "http")),
+        "foo"))
       responses.length must_== 1
       responses(0).body must_== Left("false")
     }

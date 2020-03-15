@@ -44,8 +44,8 @@ object FromString {
       def apply(s: String): Directory =
         if (isDefinedAt(s)) resolve(s)
         else
-          cmd.runAndExit(
-            println("'%s' is not an existing directory." format resolve(s)))
+          cmd.runAndExit(println(
+            "'%s' is not an existing directory." format resolve(s)))
     }
 
   /** Argument expander, i.e. turns single argument "foo bar baz" into argument

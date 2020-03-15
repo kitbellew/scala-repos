@@ -26,14 +26,10 @@ private[api] final class UserApi(
       engine: Option[Boolean]): Fu[JsObject] =
     lila.team.MemberRepo userIdsByTeam teamId map (_ take makeNb(
       nb)) flatMap UserRepo.enabledByIds map { users =>
-      Json.obj(
-        "list" -> JsArray(
-          users map { u =>
-            jsonView(u) ++
-              Json.obj("url" -> makeUrl(s"@/${u.username}"))
-          }
-        )
-      )
+      Json.obj("list" -> JsArray(users map { u =>
+        jsonView(u) ++
+          Json.obj("url" -> makeUrl(s"@/${u.username}"))
+      }))
     }
 
   def one(username: String)(implicit ctx: Context): Fu[Option[JsObject]] =
@@ -76,13 +72,11 @@ private[api] final class UserApi(
                   "bookmark" -> bookmarkApi.countByUser(u),
                   "me" -> nbGamesWithMe
                 )
-              ) ++ ctx.isAuth.??(
-                Json.obj(
-                  "followable" -> followable,
-                  "following" -> relation.contains(true),
-                  "blocking" -> relation.contains(false),
-                  "followsYou" -> isFollowed
-                ))
+              ) ++ ctx.isAuth.??(Json.obj(
+                "followable" -> followable,
+                "following" -> relation.contains(true),
+                "blocking" -> relation.contains(false),
+                "followsYou" -> isFollowed))
             }.noNull
         } map (_.some)
     }

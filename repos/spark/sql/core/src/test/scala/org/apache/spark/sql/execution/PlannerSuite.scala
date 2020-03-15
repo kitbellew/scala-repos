@@ -146,11 +146,10 @@ class PlannerSuite extends SharedSQLContext {
         ArrayType(StringType, false) ::
         MapType(IntegerType, StringType, true) ::
         MapType(IntegerType, ArrayType(DoubleType), false) ::
-        StructType(
-          Seq(
-            StructField("a", IntegerType, nullable = true),
-            StructField("b", ArrayType(DoubleType), nullable = false),
-            StructField("c", DoubleType, nullable = false))) :: Nil
+        StructType(Seq(
+          StructField("a", IntegerType, nullable = true),
+          StructField("b", ArrayType(DoubleType), nullable = false),
+          StructField("c", DoubleType, nullable = false))) :: Nil
 
     withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "901617") {
       checkPlan(complexTypes)
@@ -192,9 +191,8 @@ class PlannerSuite extends SharedSQLContext {
       withTempTable("testPushed") {
         val exp = sql(
           "select * from testPushed where key = 15").queryExecution.sparkPlan
-        assert(
-          exp.toString.contains(
-            "PushedFilters: [IsNotNull(key), EqualTo(key,15)]"))
+        assert(exp.toString.contains(
+          "PushedFilters: [IsNotNull(key), EqualTo(key,15)]"))
       }
     }
   }
@@ -251,31 +249,29 @@ class PlannerSuite extends SharedSQLContext {
       // Disable broadcast join
       withSQLConf(SQLConf.AUTO_BROADCASTJOIN_THRESHOLD.key -> "-1") {
         {
-          val numExchanges = sql(
-            """
+          val numExchanges =
+            sql("""
               |SELECT *
               |FROM
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (small.key = tiny.key)
-            """.stripMargin
-          ).queryExecution.executedPlan.collect {
-            case exchange: ShuffleExchange => exchange
-          }.length
+            """.stripMargin).queryExecution.executedPlan.collect {
+              case exchange: ShuffleExchange => exchange
+            }.length
           assert(numExchanges === 5)
         }
 
         {
           // This second query joins on different keys:
-          val numExchanges = sql(
-            """
+          val numExchanges =
+            sql("""
               |SELECT *
               |FROM
               |  normal JOIN small ON (normal.key = small.key)
               |  JOIN tiny ON (normal.key = tiny.key)
-            """.stripMargin
-          ).queryExecution.executedPlan.collect {
-            case exchange: ShuffleExchange => exchange
-          }.length
+            """.stripMargin).queryExecution.executedPlan.collect {
+              case exchange: ShuffleExchange => exchange
+            }.length
           assert(numExchanges === 5)
         }
 
@@ -344,8 +340,7 @@ class PlannerSuite extends SharedSQLContext {
     val inputPlan = DummySparkPlan(
       children = Seq(
         DummySparkPlan(outputPartitioning = leftPartitioning),
-        DummySparkPlan(outputPartitioning = rightPartitioning)
-      ),
+        DummySparkPlan(outputPartitioning = rightPartitioning)),
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
@@ -366,8 +361,7 @@ class PlannerSuite extends SharedSQLContext {
     val inputPlan = DummySparkPlan(
       children = Seq(
         DummySparkPlan(outputPartitioning = HashPartitioning(clustering, 1)),
-        DummySparkPlan(outputPartitioning = HashPartitioning(clustering, 2))
-      ),
+        DummySparkPlan(outputPartitioning = HashPartitioning(clustering, 2))),
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
@@ -386,8 +380,7 @@ class PlannerSuite extends SharedSQLContext {
     val inputPlan = DummySparkPlan(
       children = Seq(
         DummySparkPlan(outputPartitioning = childPartitioning),
-        DummySparkPlan(outputPartitioning = childPartitioning)
-      ),
+        DummySparkPlan(outputPartitioning = childPartitioning)),
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
@@ -408,8 +401,7 @@ class PlannerSuite extends SharedSQLContext {
     val inputPlan = DummySparkPlan(
       children = Seq(
         DummySparkPlan(outputPartitioning = childPartitioning),
-        DummySparkPlan(outputPartitioning = childPartitioning)
-      ),
+        DummySparkPlan(outputPartitioning = childPartitioning)),
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(Seq.empty, Seq.empty)
     )
@@ -433,8 +425,7 @@ class PlannerSuite extends SharedSQLContext {
     val inputPlan = DummySparkPlan(
       children = Seq(
         DummySparkPlan(outputPartitioning = SinglePartition),
-        DummySparkPlan(outputPartitioning = SinglePartition)
-      ),
+        DummySparkPlan(outputPartitioning = SinglePartition)),
       requiredChildDistribution = Seq(distribution, distribution),
       requiredChildOrdering = Seq(outputOrdering, outputOrdering)
     )
@@ -610,8 +601,8 @@ private case class DummySparkPlan(
     override val outputOrdering: Seq[SortOrder] = Nil,
     override val outputPartitioning: Partitioning = UnknownPartitioning(0),
     override val requiredChildDistribution: Seq[Distribution] = Nil,
-    override val requiredChildOrdering: Seq[Seq[SortOrder]] = Nil
-) extends SparkPlan {
+    override val requiredChildOrdering: Seq[Seq[SortOrder]] = Nil)
+    extends SparkPlan {
   override protected def doExecute(): RDD[InternalRow] =
     throw new NotImplementedError
   override def output: Seq[Attribute] = Seq.empty

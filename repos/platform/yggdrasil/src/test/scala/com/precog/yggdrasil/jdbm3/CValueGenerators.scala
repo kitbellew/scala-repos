@@ -79,10 +79,9 @@ trait CValueGenerators {
         for {
           scale <- arbInt.arbitrary
           bigInt <- arbBigInt.arbitrary
-        } yield CNum(
-          BigDecimal(
-            new java.math.BigDecimal(bigInt.bigInteger, scale - 1),
-            java.math.MathContext.UNLIMITED))
+        } yield CNum(BigDecimal(
+          new java.math.BigDecimal(bigInt.bigInteger, scale - 1),
+          java.math.MathContext.UNLIMITED))
       case CDate =>
         choose[Long](0, Long.MaxValue) map (new DateTime(_)) map (CDate(_))
       case CArrayType(elemType) =>

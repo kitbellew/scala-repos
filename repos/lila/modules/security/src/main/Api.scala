@@ -20,10 +20,8 @@ final class Api(
 
   def loginForm =
     Form(
-      mapping(
-        "username" -> nonEmptyText,
-        "password" -> nonEmptyText
-      )(authenticateUser)(_.map(u => (u.username, "")))
+      mapping("username" -> nonEmptyText, "password" -> nonEmptyText)(
+        authenticateUser)(_.map(u => (u.username, "")))
         .verifying("Invalid username or password", _.isDefined))
 
   def saveAuthentication(userId: String, apiVersion: Option[Int])(
@@ -88,8 +86,7 @@ final class Api(
         field,
         BSONDocument(
           "user" -> userId,
-          field -> BSONDocument("$exists" -> true)).some
-      )
+          field -> BSONDocument("$exists" -> true)).some)
       .flatMap {
         case Nil => fuccess(Nil)
         case values =>
@@ -97,9 +94,8 @@ final class Api(
             "user",
             BSONDocument(
               field -> BSONDocument("$in" -> values),
-              "user" -> BSONDocument("$ne" -> userId)
-            ).some
-          ) map lila.db.BSON.asStrings
+              "user" -> BSONDocument(
+                "$ne" -> userId)).some) map lila.db.BSON.asStrings
       }
 
   def recentUserIdsByFingerprint = recentUserIdsByField("fp") _
@@ -112,9 +108,8 @@ final class Api(
       "user",
       BSONDocument(
         field -> value,
-        "date" -> BSONDocument("$gt" -> DateTime.now.minusYears(1))
-      ).some
-    ) map lila.db.BSON.asStrings
+        "date" -> BSONDocument(
+          "$gt" -> DateTime.now.minusYears(1))).some) map lila.db.BSON.asStrings
 }
 
 object Api {

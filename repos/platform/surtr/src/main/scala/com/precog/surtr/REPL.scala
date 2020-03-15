@@ -280,12 +280,10 @@ trait REPL
 
   // %%
 
-  lazy val prompt: Parser[Command] = (
-    expr ^^ { t => Eval(t) }
-      | ":tree" ~ expr ^^ { (_, t) => PrintTree(t) }
-      | ":help" ^^^ Help
-      | ":quit" ^^^ Quit
-  )
+  lazy val prompt: Parser[Command] = (expr ^^ { t => Eval(t) }
+    | ":tree" ~ expr ^^ { (_, t) => PrintTree(t) }
+    | ":help" ^^^ Help
+    | ":quit" ^^^ Quit)
 
   sealed trait Command
 
@@ -321,11 +319,9 @@ object Console extends App {
 
           val accessControl = new DirectAPIKeyFinder(apiKeyManager)
 
-          val masterChef = actorSystem.actorOf(
-            Props(
-              Chef(
-                VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-                VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+          val masterChef = actorSystem.actorOf(Props(Chef(
+            VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+            VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
           val jobManager = new InMemoryJobManager[Future]
           val permissionsFinder = new PermissionsFinder(
@@ -339,14 +335,12 @@ object Console extends App {
             yggConfig.cookThreshold,
             storageTimeout)
 
-          val projectionsActor = actorSystem.actorOf(
-            Props(
-              new PathRoutingActor(
-                yggConfig.dataDir,
-                Duration(300, "seconds"),
-                Duration(300, "seconds"),
-                100,
-                yggConfig.clock)))
+          val projectionsActor = actorSystem.actorOf(Props(new PathRoutingActor(
+            yggConfig.dataDir,
+            Duration(300, "seconds"),
+            Duration(300, "seconds"),
+            100,
+            yggConfig.clock)))
 
           val actorVFS = new ActorVFS(
             projectionsActor,
@@ -392,9 +386,8 @@ object Console extends App {
       } yield PrecogUnit
 
     case scalaz.Failure(error) =>
-      IO(
-        sys.error(
-          "An error occurred deserializing a database descriptor: " + error))
+      IO(sys.error(
+        "An error occurred deserializing a database descriptor: " + error))
   }
 
   run.unsafePerformIO

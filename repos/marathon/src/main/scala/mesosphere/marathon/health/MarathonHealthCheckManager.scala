@@ -82,15 +82,14 @@ class MarathonHealthCheckManager @Inject() (
           appRepository.app(appId, appVersion),
           zkConf.zkTimeoutDuration) match {
           case Some(app: AppDefinition) =>
-            val ref = system.actorOf(
-              Props(
-                classOf[HealthCheckActor],
-                app,
-                driverHolder,
-                scheduler,
-                healthCheck,
-                taskTracker,
-                eventBus))
+            val ref = system.actorOf(Props(
+              classOf[HealthCheckActor],
+              app,
+              driverHolder,
+              scheduler,
+              healthCheck,
+              taskTracker,
+              eventBus))
             val newHealthChecksForApp =
               healthChecksForApp + ActiveHealthCheck(healthCheck, ref)
 
@@ -252,8 +251,7 @@ class MarathonHealthCheckManager @Inject() (
               case ActiveHealthCheck(_, actor) =>
                 (actor ? GetTaskHealth(taskId)).mapTo[Health]
             }
-            .to[Seq]
-        )
+            .to[Seq])
     }
   }
 

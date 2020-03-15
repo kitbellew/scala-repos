@@ -159,21 +159,19 @@ object TypeDefinitionMembers {
                     s,
                     noResolve = true)
                   if (beanProperty) {
-                    addSignature(
-                      new Signature(
-                        "get" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "get" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   } else if (booleanBeanProperty) {
-                    addSignature(
-                      new Signature(
-                        "is" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "is" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   }
                 case _ =>
               }
@@ -190,21 +188,19 @@ object TypeDefinitionMembers {
                     s,
                     noResolve = true)
                   if (beanProperty) {
-                    addSignature(
-                      new Signature(
-                        "get" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "get" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   } else if (booleanBeanProperty) {
-                    addSignature(
-                      new Signature(
-                        "is" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "is" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   }
                 case _ =>
               }
@@ -221,21 +217,19 @@ object TypeDefinitionMembers {
                 param,
                 noResolve = true)
               if (beanProperty) {
-                addSignature(
-                  new Signature(
-                    "get" + param.name.capitalize,
-                    Seq.empty,
-                    0,
-                    subst,
-                    param))
+                addSignature(new Signature(
+                  "get" + param.name.capitalize,
+                  Seq.empty,
+                  0,
+                  subst,
+                  param))
               } else if (booleanBeanProperty) {
-                addSignature(
-                  new Signature(
-                    "is" + param.name.capitalize,
-                    Seq.empty,
-                    0,
-                    subst,
-                    param))
+                addSignature(new Signature(
+                  "is" + param.name.capitalize,
+                  Seq.empty,
+                  0,
+                  subst,
+                  param))
               }
             }
           case f: ScFunction
@@ -478,30 +472,27 @@ object TypeDefinitionMembers {
                     s,
                     noResolve = true)
                   if (beanProperty) {
-                    addSignature(
-                      new Signature(
-                        "get" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "get" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   } else if (booleanBeanProperty) {
-                    addSignature(
-                      new Signature(
-                        "is" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "is" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   }
                   if (beanProperty || booleanBeanProperty) {
-                    addSignature(
-                      new Signature(
-                        "set" + dcl.name.capitalize,
-                        Seq(() => t),
-                        1,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "set" + dcl.name.capitalize,
+                      Seq(() => t),
+                      1,
+                      subst,
+                      dcl))
                   }
                 case _ =>
               }
@@ -518,21 +509,19 @@ object TypeDefinitionMembers {
                     s,
                     noResolve = true)
                   if (beanProperty) {
-                    addSignature(
-                      new Signature(
-                        "get" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "get" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   } else if (booleanBeanProperty) {
-                    addSignature(
-                      new Signature(
-                        "is" + dcl.name.capitalize,
-                        Seq.empty,
-                        0,
-                        subst,
-                        dcl))
+                    addSignature(new Signature(
+                      "is" + dcl.name.capitalize,
+                      Seq.empty,
+                      0,
+                      subst,
+                      dcl))
                   }
                 case _ =>
               }
@@ -544,13 +533,12 @@ object TypeDefinitionMembers {
               addSignature(
                 new Signature(param.name, Seq.empty, 0, subst, param))
               if (!param.isStable)
-                addSignature(
-                  new Signature(
-                    param.name + "_=",
-                    Seq(() => t),
-                    1,
-                    subst,
-                    param))
+                addSignature(new Signature(
+                  param.name + "_=",
+                  Seq(() => t),
+                  1,
+                  subst,
+                  param))
               val beanProperty = ScalaPsiUtil.isBeanProperty(
                 param,
                 noResolve = true)
@@ -558,38 +546,34 @@ object TypeDefinitionMembers {
                 param,
                 noResolve = true)
               if (beanProperty) {
-                addSignature(
-                  new Signature(
-                    "get" + param.name.capitalize,
-                    Seq.empty,
-                    0,
+                addSignature(new Signature(
+                  "get" + param.name.capitalize,
+                  Seq.empty,
+                  0,
+                  subst,
+                  param))
+                if (!param.isStable) {
+                  addSignature(new Signature(
+                    "set" + param.name.capitalize,
+                    Seq(() => t),
+                    1,
                     subst,
                     param))
-                if (!param.isStable) {
-                  addSignature(
-                    new Signature(
-                      "set" + param.name.capitalize,
-                      Seq(() => t),
-                      1,
-                      subst,
-                      param))
                 }
               } else if (booleanBeanProperty) {
-                addSignature(
-                  new Signature(
-                    "is" + param.name.capitalize,
-                    Seq.empty,
-                    0,
+                addSignature(new Signature(
+                  "is" + param.name.capitalize,
+                  Seq.empty,
+                  0,
+                  subst,
+                  param))
+                if (!param.isStable) {
+                  addSignature(new Signature(
+                    "set" + param.name.capitalize,
+                    Seq(() => t),
+                    1,
                     subst,
                     param))
-                if (!param.isStable) {
-                  addSignature(
-                    new Signature(
-                      "set" + param.name.capitalize,
-                      Seq(() => t),
-                      1,
-                      subst,
-                      param))
                 }
               }
             }

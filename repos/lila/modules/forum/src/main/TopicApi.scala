@@ -92,8 +92,7 @@ private[forum] final class TopicApi(
     Paginator(
       adapter = new Adapter[Topic](
         selector = TopicRepo(troll) byCategQuery categ,
-        sort = Seq($sort.updatedDesc)
-      ) mapFuture { topic =>
+        sort = Seq($sort.updatedDesc)) mapFuture { topic =>
         $find.byId[Post](topic lastPostId troll) map { post =>
           TopicView(categ, topic, post, env.postApi lastPageOf topic, troll)
         }
@@ -134,15 +133,14 @@ private[forum] final class TopicApi(
       lastPost ← PostRepo lastByTopics List(topic)
       nbPostsTroll ← PostRepoTroll countByTopics List(topic)
       lastPostTroll ← PostRepoTroll lastByTopics List(topic)
-      _ ← $update(
-        topic.copy(
-          nbPosts = nbPosts,
-          lastPostId = lastPost ?? (_.id),
-          updatedAt = lastPost.fold(topic.updatedAt)(_.createdAt),
-          nbPostsTroll = nbPostsTroll,
-          lastPostIdTroll = lastPostTroll ?? (_.id),
-          updatedAtTroll = lastPostTroll.fold(topic.updatedAtTroll)(_.createdAt)
-        ))
+      _ ← $update(topic.copy(
+        nbPosts = nbPosts,
+        lastPostId = lastPost ?? (_.id),
+        updatedAt = lastPost.fold(topic.updatedAt)(_.createdAt),
+        nbPostsTroll = nbPostsTroll,
+        lastPostIdTroll = lastPostTroll ?? (_.id),
+        updatedAtTroll = lastPostTroll.fold(topic.updatedAtTroll)(_.createdAt)
+      ))
     } yield ()
 
   def denormalize: Funit =

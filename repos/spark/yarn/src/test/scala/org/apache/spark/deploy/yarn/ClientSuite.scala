@@ -251,10 +251,9 @@ class ClientSuite
 
     assert(
       sparkConf.get(SPARK_JARS) ===
-        Some(
-          Seq(
-            s"local:${jar4.getPath()}",
-            s"local:${single.getAbsolutePath()}/*")))
+        Some(Seq(
+          s"local:${jar4.getPath()}",
+          s"local:${single.getAbsolutePath()}/*")))
 
     verify(client).copyFileToRemote(
       any(classOf[Path]),

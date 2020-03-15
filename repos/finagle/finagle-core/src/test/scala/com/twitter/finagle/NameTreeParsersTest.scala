@@ -105,9 +105,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
         IndexedSeq(Dentry(Path.empty, NameTree.Fail))))
     assert(
       NameTreeParsers.parseDtab("/=>!;/foo=>/bar") ==
-        Dtab(
-          IndexedSeq(
-            Dentry(Path.empty, NameTree.Fail),
-            Dentry(Path.Utf8("foo"), NameTree.Leaf(Path.Utf8("bar"))))))
+        Dtab(IndexedSeq(
+          Dentry(Path.empty, NameTree.Fail),
+          Dentry(Path.Utf8("foo"), NameTree.Leaf(Path.Utf8("bar"))))))
   }
 }

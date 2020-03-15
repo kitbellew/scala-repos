@@ -66,14 +66,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -132,14 +131,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -192,14 +190,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -240,8 +237,7 @@ class TaskReplaceActorTest
       id = "myApp".toPath,
       instances = 3,
       healthChecks = Set(HealthCheck()),
-      upgradeStrategy = UpgradeStrategy(0.5)
-    )
+      upgradeStrategy = UpgradeStrategy(0.5))
 
     val driver = mock[SchedulerDriver]
     val taskA = MarathonTestHelper.runningTask("taskA_id")
@@ -276,14 +272,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -332,8 +327,7 @@ class TaskReplaceActorTest
       id = "myApp".toPath,
       instances = 3,
       healthChecks = Set(HealthCheck()),
-      upgradeStrategy = UpgradeStrategy(0.5, 0.0)
-    )
+      upgradeStrategy = UpgradeStrategy(0.5, 0.0))
 
     val driver = mock[SchedulerDriver]
     val taskA = MarathonTestHelper.runningTask("taskA_id")
@@ -368,14 +362,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -464,14 +457,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -522,8 +514,7 @@ class TaskReplaceActorTest
       id = "myApp".toPath,
       instances = 3,
       healthChecks = Set(HealthCheck()),
-      upgradeStrategy = UpgradeStrategy(1.0, 0.7)
-    )
+      upgradeStrategy = UpgradeStrategy(1.0, 0.7))
 
     val driver = mock[SchedulerDriver]
     val taskA = MarathonTestHelper.runningTask("taskA_id")
@@ -558,14 +549,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -624,14 +614,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -684,14 +673,13 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
@@ -734,29 +722,27 @@ class TaskReplaceActorTest
 
     val promise = Promise[Unit]()
 
-    val ref = TestActorRef(
-      new TaskReplaceActor(
-        driver,
-        queue,
-        tracker,
-        system.eventStream,
-        app,
-        promise))
+    val ref = TestActorRef(new TaskReplaceActor(
+      driver,
+      queue,
+      tracker,
+      system.eventStream,
+      app,
+      promise))
 
     watch(ref)
 
     for (i <- 0 until app.instances)
-      ref.receive(
-        MesosStatusUpdateEvent(
-          "",
-          Task.Id(s"task_$i"),
-          "TASK_RUNNING",
-          "",
-          app.id,
-          "",
-          Nil,
-          Nil,
-          app.version.toString))
+      ref.receive(MesosStatusUpdateEvent(
+        "",
+        Task.Id(s"task_$i"),
+        "TASK_RUNNING",
+        "",
+        app.id,
+        "",
+        Nil,
+        Nil,
+        app.version.toString))
 
     verify(queue, Mockito.timeout(1000)).resetDelay(app)
     verify(driver, Mockito.timeout(1000)).killTask(taskA.launchedMesosId.get)
@@ -765,17 +751,16 @@ class TaskReplaceActorTest
     promise.isCompleted should be(false)
 
     for (oldTask <- Iterable(taskA, taskB))
-      ref.receive(
-        MesosStatusUpdateEvent(
-          "",
-          oldTask.taskId,
-          "TASK_KILLED",
-          "",
-          app.id,
-          "",
-          Nil,
-          Nil,
-          app.version.toString))
+      ref.receive(MesosStatusUpdateEvent(
+        "",
+        oldTask.taskId,
+        "TASK_KILLED",
+        "",
+        app.id,
+        "",
+        Nil,
+        Nil,
+        app.version.toString))
 
     Await.result(promise.future, 0.second)
   }

@@ -63,15 +63,15 @@ trait CompletionControl {
       source: SourceFile,
       offset: Int,
       prefix: String,
-      constructing: Boolean
-  ) extends CompletionContext
+      constructing: Boolean)
+      extends CompletionContext
 
   case class MemberContext(
       source: SourceFile,
       offset: Int,
       prefix: String,
-      constructing: Boolean
-  ) extends CompletionContext
+      constructing: Boolean)
+      extends CompletionContext
 
   import CompletionUtil._
 
@@ -90,10 +90,8 @@ trait CompletionControl {
     } else {
       val maxResults = if (maxResultsArg == 0) Int.MaxValue else maxResultsArg
 
-      val preceding = inputP.source.content.slice(
-        Math.max(0, inputP.point - 100),
-        inputP.point
-      )
+      val preceding = inputP.source.content
+        .slice(Math.max(0, inputP.point - 100), inputP.point)
 
       val defaultPrefix = IdentRegexp.findFirstMatchIn(preceding) match {
         case Some(m) => m.group(1)
@@ -137,21 +135,19 @@ trait CompletionControl {
             case Apply(fun, _) =>
               fun match {
                 case Select(qualifier: New, name) =>
-                  Some(
-                    ScopeContext(
-                      src,
-                      qualifier.pos.endOrCursor,
-                      defaultPrefix,
-                      constructing = true))
+                  Some(ScopeContext(
+                    src,
+                    qualifier.pos.endOrCursor,
+                    defaultPrefix,
+                    constructing = true))
                 case Select(qual, name)
                     if qual.pos.isDefined && qual.pos.isRange =>
                   val prefix = if (patched) "" else name.decoded
-                  Some(
-                    MemberContext(
-                      src,
-                      qual.pos.endOrCursor,
-                      prefix,
-                      constructing))
+                  Some(MemberContext(
+                    src,
+                    qual.pos.endOrCursor,
+                    prefix,
+                    constructing))
                 case _ =>
                   val prefix =
                     if (patched) ""
@@ -159,46 +155,41 @@ trait CompletionControl {
                       src.content
                         .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
                         .mkString
-                  Some(
-                    ScopeContext(
-                      src,
-                      fun.pos.endOrCursor,
-                      prefix,
-                      constructing))
+                  Some(ScopeContext(
+                    src,
+                    fun.pos.endOrCursor,
+                    prefix,
+                    constructing))
               }
             case Literal(Constant(_)) => None
             case New(name) =>
-              Some(
-                ScopeContext(
-                  src,
-                  name.pos.endOrCursor,
-                  defaultPrefix,
-                  constructing = true))
+              Some(ScopeContext(
+                src,
+                name.pos.endOrCursor,
+                defaultPrefix,
+                constructing = true))
             case Select(qualifier, name)
                 if qualifier.pos.isDefined && qualifier.pos.isRange =>
-              Some(
-                MemberContext(
-                  src,
-                  qualifier.pos.endOrCursor,
-                  defaultPrefix,
-                  constructing))
+              Some(MemberContext(
+                src,
+                qualifier.pos.endOrCursor,
+                defaultPrefix,
+                constructing))
             case Import(expr, _) =>
               val topLevel =
                 ImportTopLevelRegexp.findFirstMatchIn(preceding).isDefined
               if (topLevel) {
-                Some(
-                  ScopeContext(
-                    src,
-                    expr.pos.endOrCursor,
-                    defaultPrefix,
-                    constructing = false))
+                Some(ScopeContext(
+                  src,
+                  expr.pos.endOrCursor,
+                  defaultPrefix,
+                  constructing = false))
               } else {
-                Some(
-                  MemberContext(
-                    src,
-                    expr.pos.endOrCursor,
-                    defaultPrefix,
-                    constructing = false))
+                Some(MemberContext(
+                  src,
+                  expr.pos.endOrCursor,
+                  defaultPrefix,
+                  constructing = false))
               }
             case other =>
               Some(ScopeContext(src, p.point, defaultPrefix, constructing))
@@ -234,8 +225,7 @@ trait CompletionControl {
         sym: Symbol,
         tpe: Type,
         inherited: Boolean,
-        viaView: Symbol
-    ): List[CompletionInfo] = {
+        viaView: Symbol): List[CompletionInfo] = {
 
       var score = 0
       if (sym.nameString.startsWith(context.prefix)) score += 10
@@ -310,8 +300,9 @@ trait CompletionControl {
         m match {
           case m @ ScopeMember(sym, tpe, accessible, viaView) =>
             val p = sym.pos
-            val inSymbol =
-              p.isRange && (context.offset >= p.startOrCursor && context.offset <= p.endOrCursor)
+            val inSymbol = p.isRange && (
+              context.offset >= p.startOrCursor && context.offset <= p.endOrCursor
+            )
             if (!sym.isConstructor && !inSymbol) {
               buff ++= toCompletionInfo(
                 context,
@@ -414,13 +405,12 @@ trait Completion { self: RichPresentationCompiler =>
               if (s.hasPackageFlag) { s.nameString }
               else { typeShortName(s) }
             if (name.startsWith(prefix))
-              Some(
-                CompletionInfo(
-                  name,
-                  CompletionSignature(List.empty, "", false),
-                  isCallable = false,
-                  50,
-                  None))
+              Some(CompletionInfo(
+                name,
+                CompletionSignature(List.empty, "", false),
+                isCallable = false,
+                50,
+                None))
             else None
           }
           .toList
@@ -470,8 +460,7 @@ object CompletionUtil {
               CompletionSignature(List.empty, s.name, false),
               isCallable = false,
               40,
-              None
-            )
+              None)
           }
         case unknown =>
           throw new IllegalStateException(

@@ -8,9 +8,8 @@ class FailureDetectorRegistrySpec extends AkkaSpec("akka.loglevel = INFO") {
 
   def fakeTimeGenerator(timeIntervals: Seq[Long]): Clock =
     new Clock {
-      @volatile var times = timeIntervals.tail.foldLeft(
-        List[Long](timeIntervals.head))((acc, c) ⇒
-        acc ::: List[Long](acc.last + c))
+      @volatile var times = timeIntervals.tail.foldLeft(List[Long](
+        timeIntervals.head))((acc, c) ⇒ acc ::: List[Long](acc.last + c))
       override def apply(): Long = {
         val currentTime = times.head
         times = times.tail
@@ -93,8 +92,8 @@ class FailureDetectorRegistrySpec extends AkkaSpec("akka.loglevel = INFO") {
   }
 
   "fail after configured acceptable missing heartbeats" in {
-    val timeInterval = List[Long](0, 1000, 1000, 1000, 1000, 1000, 500, 500,
-      5000)
+    val timeInterval = List[Long](
+      0, 1000, 1000, 1000, 1000, 1000, 500, 500, 5000)
     val fd = createFailureDetectorRegistry(
       acceptableLostDuration = 3.seconds,
       clock = fakeTimeGenerator(timeInterval))
@@ -125,8 +124,8 @@ class FailureDetectorRegistrySpec extends AkkaSpec("akka.loglevel = INFO") {
   }
 
   "mark node as available after explicit removal of connection and receiving heartbeat again" in {
-    val timeInterval = List[Long](0, 1000, 100, 1100, 1100, 1100, 1100, 1100,
-      100)
+    val timeInterval = List[Long](
+      0, 1000, 100, 1100, 1100, 1100, 1100, 1100, 100)
     val fd = createFailureDetectorRegistry(clock = fakeTimeGenerator(
       timeInterval))
     fd.isMonitoring("resource1") should ===(false)

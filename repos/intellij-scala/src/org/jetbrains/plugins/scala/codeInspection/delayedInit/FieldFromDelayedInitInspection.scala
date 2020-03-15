@@ -52,11 +52,10 @@ class FieldFromDelayedInitInspection
         case Both(
               (_: ScPatternDefinition | _: ScVariableDefinition),
               ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
-          if (srr.fromType.exists(
-                InspectionsUtil.conformsToTypeFromClass(
-                  _,
-                  "scala.DelayedInit",
-                  clazz.getProject))) Some(clazz)
+          if (srr.fromType.exists(InspectionsUtil.conformsToTypeFromClass(
+                _,
+                "scala.DelayedInit",
+                clazz.getProject))) Some(clazz)
           else None
         case _ => None
       }

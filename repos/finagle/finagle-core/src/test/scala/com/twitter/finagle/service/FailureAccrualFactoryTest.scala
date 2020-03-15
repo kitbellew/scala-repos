@@ -701,9 +701,10 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // replaced
-    Await.ready(s
-      .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
-      .toService(10))
+    Await.ready(
+      s.make(
+          ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
+        .toService(10))
     assert(
       !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 

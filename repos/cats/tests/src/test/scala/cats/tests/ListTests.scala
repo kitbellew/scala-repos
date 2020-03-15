@@ -30,9 +30,9 @@ class ListTests extends CatsSuite {
     TraverseTests[List].traverse[Int, Int, Int, List[Int], Option, Option])
   checkAll("Traverse[List]", SerializableTests.serializable(Traverse[List]))
 
-  test("nel => list => nel returns original nel")(
-    forAll { fa: NonEmptyList[Int] => fa.unwrap.toNel should ===(Some(fa)) }
-  )
+  test("nel => list => nel returns original nel")(forAll {
+    fa: NonEmptyList[Int] => fa.unwrap.toNel should ===(Some(fa))
+  })
 
   test("toNel on empty list returns None") {
     List.empty[Int].toNel should ===(None)

@@ -352,19 +352,18 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       })
 
       // Print parameter clauses
-      print(
-        paramEntries.mkString(
-          "(" + (mt match {
-            case _: ImplicitMethodType => "implicit "
-            //for Scala 2.9
-            case mt: MethodType
-                if mt.paramSymbols.nonEmpty && mt.paramSymbols.head.isImplicit =>
-              "implicit "
-            case _ => ""
-          }),
-          ", ",
-          ")"
-        ))
+      print(paramEntries.mkString(
+        "(" + (mt match {
+          case _: ImplicitMethodType => "implicit "
+          //for Scala 2.9
+          case mt: MethodType
+              if mt.paramSymbols.nonEmpty && mt.paramSymbols.head.isImplicit =>
+            "implicit "
+          case _ => ""
+        }),
+        ", ",
+        ")"
+      ))
 
       // Print result type
       mt.resultType match {
@@ -426,13 +425,11 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           case Some(c: ClassSymbol) if refinementClass(c) => false
           case _                                          => true
         })
-        printMethodType(m.infoType, printResult = true)(
-          {
-            if (printBody)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
-          }
-        )
+        printMethodType(m.infoType, printResult = true)({
+          if (printBody)
+            print(
+              " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+        })
     }
     print("\n")
   }
@@ -530,9 +527,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
           if exSymbol.name == "<root>" =>
         sep + processName(symbol.name) + ".type"
       case SingleType(ThisType(exSymbol: ExternalSymbol), symbol) =>
-        sep + StringUtil.cutSubstring(
-          StringUtil.trimStart(processName(exSymbol.path), "<empty>."))(
-          ".`package`") + "." +
+        sep + StringUtil.cutSubstring(StringUtil.trimStart(
+          processName(exSymbol.path),
+          "<empty>."))(".`package`") + "." +
           processName(symbol.name) + ".type"
       case SingleType(NoPrefixType, symbol) =>
         sep + processName(symbol.name) + ".type"
@@ -674,10 +671,9 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         lbs + ubs
       case RefinedType(classSym: ClassSymbol, typeRefs) =>
         val classStr = getClassString(0, classSym)
-        sep + typeRefs
-          .map(toString)
-          .mkString("", " with ", "") + (if (classStr == " {\n}") ""
-                                         else classStr)
+        sep + typeRefs.map(toString).mkString("", " with ", "") + (
+          if (classStr == " {\n}") "" else classStr
+        )
       case RefinedType(classSym, typeRefs) =>
         sep + typeRefs.map(toString).mkString("", " with ", "")
       case ClassInfoType(symbol, typeRefs) =>

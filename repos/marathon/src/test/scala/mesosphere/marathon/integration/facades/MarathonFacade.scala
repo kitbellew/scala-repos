@@ -97,15 +97,15 @@ class MarathonFacade(
   implicit lazy val itTaskQueueFormat = Json.format[ITTaskQueue]
 
   implicit lazy val itEnrichedTaskFormat: Format[ITEnrichedTask] =
-    (
-      (__ \ "appId").format[String] ~
-        (__ \ "id").format[String] ~
-        (__ \ "host").format[String] ~
-        (__ \ "ports").formatNullable[Seq[Int]] ~
-        (__ \ "startedAt").formatNullable[Date] ~
-        (__ \ "stagedAt").formatNullable[Date] ~
-        (__ \ "version").formatNullable[String]
-    )(ITEnrichedTask(_, _, _, _, _, _, _), unlift(ITEnrichedTask.unapply))
+    ((__ \ "appId").format[String] ~
+      (__ \ "id").format[String] ~
+      (__ \ "host").format[String] ~
+      (__ \ "ports").formatNullable[Seq[Int]] ~
+      (__ \ "startedAt").formatNullable[Date] ~
+      (__ \ "stagedAt").formatNullable[Date] ~
+      (__ \ "version").formatNullable[String])(
+      ITEnrichedTask(_, _, _, _, _, _, _),
+      unlift(ITEnrichedTask.unapply))
 
   def isInBaseGroup(pathId: PathId): Boolean = {
     pathId.path.startsWith(baseGroup.path)

@@ -52,12 +52,11 @@ private[worker] class WorkerWebUI(
     attachPage(new WorkerPage(this))
     attachHandler(
       createStaticHandler(WorkerWebUI.STATIC_RESOURCE_BASE, "/static"))
-    attachHandler(
-      createServletHandler(
-        "/log",
-        (request: HttpServletRequest) => logPage.renderLog(request),
-        worker.securityMgr,
-        worker.conf))
+    attachHandler(createServletHandler(
+      "/log",
+      (request: HttpServletRequest) => logPage.renderLog(request),
+      worker.securityMgr,
+      worker.conf))
   }
 }
 

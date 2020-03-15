@@ -86,8 +86,7 @@ object Compatibility {
                   .getCachedClass(
                     "scala.Function1",
                     place.getResolveScope,
-                    ScalaPsiManager.ClassCategory.TYPE
-                  ) match {
+                    ScalaPsiManager.ClassCategory.TYPE) match {
                   case function1: ScTrait =>
                     ScParameterizedType(
                       ScType.designator(function1),
@@ -209,8 +208,8 @@ object Compatibility {
     val clashedAssignments = clashedAssignmentsIn(exprs)
 
     if (clashedAssignments.nonEmpty) {
-      val problems = clashedAssignments.map(
-        new ParameterSpecifiedMultipleTimes(_))
+      val problems = clashedAssignments.map(new ParameterSpecifiedMultipleTimes(
+        _))
       return ConformanceExtResult(problems)
     }
 
@@ -436,11 +435,10 @@ object Compatibility {
             checkWeak = true)
           if (!conforms) {
             return ConformanceExtResult(
-              Seq(
-                new ElementApplicabilityProblem(
-                  exprs(k).expr,
-                  exprType,
-                  paramType)),
+              Seq(new ElementApplicabilityProblem(
+                exprs(k).expr,
+                exprType,
+                paramType)),
               undefSubst,
               defaultParameterUsed,
               matched,

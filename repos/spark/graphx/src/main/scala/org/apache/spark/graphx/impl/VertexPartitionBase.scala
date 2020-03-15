@@ -85,7 +85,7 @@ private[graphx] abstract class VertexPartitionBase[
   * A typeclass for subclasses of `VertexPartitionBase` representing the ability to wrap them in a
   * `VertexPartitionBaseOps`.
   */
-private[graphx] trait VertexPartitionBaseOpsConstructor[
-    T[X] <: VertexPartitionBase[X]] {
+private[graphx] trait VertexPartitionBaseOpsConstructor[T[
+    X] <: VertexPartitionBase[X]] {
   def toOps[VD: ClassTag](partition: T[VD]): VertexPartitionBaseOps[VD, T]
 }

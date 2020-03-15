@@ -28,12 +28,11 @@ object Test extends App {
     List(List()),
     TypeTree(),
     Block(
-      List(
-        Apply(
-          Select(
-            Super(This(typeNames.EMPTY), typeNames.EMPTY),
-            termNames.CONSTRUCTOR),
-          List())),
+      List(Apply(
+        Select(
+          Super(This(typeNames.EMPTY), typeNames.EMPTY),
+          termNames.CONSTRUCTOR),
+        List())),
       Literal(Constant(())))
   )
   val module = ModuleDef(

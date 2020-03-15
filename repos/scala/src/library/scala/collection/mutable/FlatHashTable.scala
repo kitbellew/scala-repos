@@ -370,8 +370,7 @@ trait FlatHashTable[A] extends FlatHashTable.HashUtils[A] {
       tableSize,
       threshold,
       seedvalue,
-      sizemap
-    )
+      sizemap)
 
   protected def initWithContents(c: FlatHashTable.Contents[A]) = {
     if (c != null) {
@@ -425,8 +424,7 @@ private[collection] object FlatHashTable {
       val tableSize: Int,
       val threshold: Int,
       val seedvalue: Int,
-      val sizemap: Array[Int]
-  )
+      val sizemap: Array[Int])
 
   trait HashUtils[A] {
     protected final def sizeMapBucketBitSize = 5

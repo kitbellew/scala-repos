@@ -32,10 +32,8 @@ case class MemcacheRequest(
   }
 }
 
-case class MemcacheResponse(
-    line: String,
-    data: Option[ByteBuffer] = None
-) extends Codec.Signalling {
+case class MemcacheResponse(line: String, data: Option[ByteBuffer] = None)
+    extends Codec.Signalling {
   override def toString = {
     "<Response: " + line + (data match {
       case None    => ""
@@ -98,11 +96,10 @@ object MemcacheCodec {
         buffer.readBytes(bytes)
         bytes.flip()
         buffer.skipBytes(2)
-        emit(
-          MemcacheRequest(
-            segments.toList,
-            Some(bytes),
-            line.length + dataBytes + 4))
+        emit(MemcacheRequest(
+          segments.toList,
+          Some(bytes),
+          line.length + dataBytes + 4))
       }
     } else { emit(MemcacheRequest(segments.toList, None, line.length + 2)) }
   }

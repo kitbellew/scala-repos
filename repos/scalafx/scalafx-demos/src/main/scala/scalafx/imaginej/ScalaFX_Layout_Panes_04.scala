@@ -99,8 +99,7 @@ object ScalaFX_Layout_Panes_04 extends JFXApp {
       new Rectangle {
         width = 200
       },
-      stackPane
-    )
+      stackPane)
   }
   val data = List(
     new Text {

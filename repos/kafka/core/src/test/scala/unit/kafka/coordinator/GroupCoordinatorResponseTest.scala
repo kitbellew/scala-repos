@@ -90,9 +90,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
 
     zkUtils = EasyMock.createNiceMock(classOf[ZkUtils])
     EasyMock
-      .expect(
-        zkUtils.getPartitionAssignmentForTopics(
-          Seq(TopicConstants.GROUP_METADATA_TOPIC_NAME)))
+      .expect(zkUtils.getPartitionAssignmentForTopics(Seq(
+        TopicConstants.GROUP_METADATA_TOPIC_NAME)))
       .andReturn(ret)
     EasyMock.replay(zkUtils)
 
@@ -1161,22 +1160,20 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       .newCapture()
 
     EasyMock
-      .expect(
-        replicaManager.appendMessages(
-          EasyMock.anyLong(),
-          EasyMock.anyShort(),
-          EasyMock.anyBoolean(),
-          EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
-          EasyMock.capture(capturedArgument)
-        ))
+      .expect(replicaManager.appendMessages(
+        EasyMock.anyLong(),
+        EasyMock.anyShort(),
+        EasyMock.anyBoolean(),
+        EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
+        EasyMock.capture(capturedArgument)
+      ))
       .andAnswer(new IAnswer[Unit] {
         override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
+          capturedArgument.getValue.apply(Map(
+            new TopicPartition(
               TopicConstants.GROUP_METADATA_TOPIC_NAME,
               groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
+              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP)))
       })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))
@@ -1286,22 +1283,20 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       .newCapture()
 
     EasyMock
-      .expect(
-        replicaManager.appendMessages(
-          EasyMock.anyLong(),
-          EasyMock.anyShort(),
-          EasyMock.anyBoolean(),
-          EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
-          EasyMock.capture(capturedArgument)
-        ))
+      .expect(replicaManager.appendMessages(
+        EasyMock.anyLong(),
+        EasyMock.anyShort(),
+        EasyMock.anyBoolean(),
+        EasyMock.anyObject().asInstanceOf[Map[TopicPartition, MessageSet]],
+        EasyMock.capture(capturedArgument)
+      ))
       .andAnswer(new IAnswer[Unit] {
         override def answer =
-          capturedArgument.getValue.apply(
-            Map(new TopicPartition(
+          capturedArgument.getValue.apply(Map(
+            new TopicPartition(
               TopicConstants.GROUP_METADATA_TOPIC_NAME,
               groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
-          )
+              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP)))
       })
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))
@@ -1324,10 +1319,9 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val (responseFuture, responseCallback) = setupHeartbeatCallback
 
     EasyMock
-      .expect(
-        replicaManager.getPartition(
-          TopicConstants.GROUP_METADATA_TOPIC_NAME,
-          groupPartitionId))
+      .expect(replicaManager.getPartition(
+        TopicConstants.GROUP_METADATA_TOPIC_NAME,
+        groupPartitionId))
       .andReturn(None)
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))

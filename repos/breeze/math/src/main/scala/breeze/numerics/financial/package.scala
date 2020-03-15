@@ -191,8 +191,7 @@ package object financial {
 
     val realRes = DenseVector[Double](
       for (c: Complex <- res.toArray
-           if ((c.im() == 0) && (0 < c.re()))) yield c.re()
-    )
+           if ((c.im() == 0) && (0 < c.re()))) yield c.re())
     val rates = realRes.mapValues(v => 1.0 / v - 1.0)
 
     val rate =
@@ -217,9 +216,9 @@ package object financial {
 
     val inflowNPV: Double = netPresentValue(reinvestRate, positives)
     val outflowNPV: Double = netPresentValue(financeRate, negatives)
-    val mirr = (pow(
-      math.abs(inflowNPV / outflowNPV),
-      (1.0 / (n - 1))) * (1.0 + reinvestRate) - 1.0)
+    val mirr = (pow(math.abs(inflowNPV / outflowNPV), (1.0 / (n - 1))) * (
+      1.0 + reinvestRate
+    ) - 1.0)
     mirr
   }
 
@@ -277,7 +276,9 @@ package object financial {
       nper * t2 * pv - pmt * (t1 - 1.0) * (1.0 + rate * when.t) / pow(
         rate,
         2.0) +
-        nper * pmt * t2 * (1.0 + rate * when.t) / rate + pmt * (t1 - 1) * when.t / rate
+        nper * pmt * t2 * (1.0 + rate * when.t) / rate + pmt * (
+        t1 - 1
+      ) * when.t / rate
     val fDivGradF = annuityF / gradAnnuityF
     fDivGradF
   }

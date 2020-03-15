@@ -214,9 +214,10 @@ trait StreamTest extends QueryTest with Timeouts {
       actions.zipWithIndex
         .map {
           case (a, i) =>
-            if ((pos == i && startedManually) || (pos == (i + 1) && !startedManually)) {
-              "=> " + a.toString
-            } else { "   " + a.toString }
+            if ((pos == i && startedManually) || (
+                  pos == (i + 1) && !startedManually
+                )) { "=> " + a.toString }
+            else { "   " + a.toString }
         }
         .mkString("\n")
 
@@ -502,8 +503,7 @@ trait StreamTest extends QueryTest with Timeouts {
     def test(
         expectedBehavior: ExpectedBehavior,
         awaitTermFunc: () => Unit,
-        testTimeout: Span = DEFAULT_TEST_TIMEOUT
-    ): Unit = {
+        testTimeout: Span = DEFAULT_TEST_TIMEOUT): Unit = {
 
       expectedBehavior match {
         case ExpectNotBlocked =>

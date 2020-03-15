@@ -22,5 +22,4 @@ case class SshKey(
     userName: String,
     sshKeyId: Int = 0,
     title: String,
-    publicKey: String
-)
+    publicKey: String)

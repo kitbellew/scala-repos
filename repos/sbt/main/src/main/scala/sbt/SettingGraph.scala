@@ -18,11 +18,10 @@ object SettingGraph {
       basedir: File,
       scoped: ScopedKey[_],
       generation: Int)(implicit display: Show[ScopedKey[_]]): SettingGraph = {
-    val cMap = flattenLocals(
-      compiled(structure.settings, false)(
-        structure.delegates,
-        structure.scopeLocal,
-        display))
+    val cMap = flattenLocals(compiled(structure.settings, false)(
+      structure.delegates,
+      structure.scopeLocal,
+      display))
     def loop(scoped: ScopedKey[_], generation: Int): SettingGraph = {
       val key = scoped.key
       val scope = scoped.scope

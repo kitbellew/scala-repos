@@ -62,8 +62,8 @@ class BufTest extends FunSuite {
   }
 
   test("ChannelBufferBuf.coerce(ChannelBufferBuf)") {
-    val cb = ChannelBuffers.wrappedBuffer(
-      Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9))
+    val cb = ChannelBuffers.wrappedBuffer(Array[Byte](
+      1, 2, 3, 4, 5, 6, 7, 8, 9))
     val orig = ChannelBufferBuf.Owned(cb)
     val coerced = ChannelBufferBuf.coerce(orig)
     assert(coerced eq orig)
@@ -76,9 +76,10 @@ class BufTest extends FunSuite {
   }
 
   test("ByteArray.coerce(ChannelBufferBuf)") {
-    val orig = ChannelBufferBuf.Owned(
-      ChannelBuffers
-        .wrappedBuffer(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9), 2, 4))
+    val orig = ChannelBufferBuf.Owned(ChannelBuffers.wrappedBuffer(
+      Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9),
+      2,
+      4))
     val coerced = Buf.ByteArray.coerce(orig)
     assert(coerced == orig)
     val Buf.ByteArray.Owned(bytes, begin, end) = coerced

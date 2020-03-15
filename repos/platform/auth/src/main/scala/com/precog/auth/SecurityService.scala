@@ -62,10 +62,9 @@ trait SecurityService
                 import context._
                 val securityConfig = config.detach("security")
                 val (apiKeyManager, stoppable) = APIKeyManager(securityConfig)
-                M.point(
-                  State(
-                    new SecurityServiceHandlers(apiKeyManager, clock),
-                    stoppable))
+                M.point(State(
+                  new SecurityServiceHandlers(apiKeyManager, clock),
+                  stoppable))
               } ->
                 request {
                   case State(handlers, stoppable) =>

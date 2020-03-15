@@ -196,8 +196,9 @@ object Framing {
         firstSeparatorByte,
         from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
-        ctx.fail(new FramingException(s"Read ${buffer.size} bytes " +
-          s"which is more than $maximumLineBytes without seeing a line terminator"))
+        ctx.fail(new FramingException(
+          s"Read ${buffer.size} bytes " +
+            s"which is more than $maximumLineBytes without seeing a line terminator"))
       else {
         if (possibleMatchPos == -1) {
           // No matching character, we need to accumulate more bytes into the buffer

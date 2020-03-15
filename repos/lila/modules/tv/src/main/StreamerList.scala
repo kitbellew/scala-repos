@@ -59,17 +59,15 @@ final class StreamerList(val store: {
     import play.api.data._
     import play.api.data.Forms._
     import play.api.data.validation._
-    Form(
-      single(
-        "text" -> text.verifying(
-          Constraint[String]("constraint.text_parsable") { t =>
-            validate(t) match {
-              case (_, Nil) => Valid
-              case (_, errs) =>
-                Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
-            }
-          })
-      ))
+    Form(single(
+      "text" -> text.verifying(Constraint[String]("constraint.text_parsable") {
+        t =>
+          validate(t) match {
+            case (_, Nil) => Valid
+            case (_, errs) =>
+              Invalid(ValidationError(errs.map(_.getMessage) mkString ","))
+          }
+      })))
   }
 }
 

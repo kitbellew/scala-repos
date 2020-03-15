@@ -152,8 +152,8 @@ object ShardServiceCombinators extends Logging {
 
   private def getSortOrder(
       request: HttpRequest[_]): Validation[String, DesiredSortOrder] = {
-    request.parameters.get(
-      'sortOrder) filter (_ != null) map (_.toLowerCase) map {
+    request.parameters
+      .get('sortOrder) filter (_ != null) map (_.toLowerCase) map {
       case "asc" | "\"asc\"" | "ascending" | "\"ascending\"" =>
         success(TableModule.SortAscending)
       case "desc" | "\"desc\"" | "descending" | "\"descending\"" =>
@@ -239,19 +239,13 @@ trait ShardServiceCombinators
             Path,
             Query,
             QueryOptions) => Future[HttpResponse[B]]])(
-      implicit executor: ExecutionContext): HttpService[
-    ByteChunk,
-    ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] = {
-    new DelegatingService[
-      ByteChunk,
-      ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]],
-      ByteChunk,
-      (
-          APIKey,
-          AccountDetails,
-          Path,
-          Query,
-          QueryOptions) => Future[HttpResponse[B]]] {
+      implicit executor: ExecutionContext)
+      : HttpService[ByteChunk, ((APIKey, AccountDetails), Path) => Future[
+        HttpResponse[B]]] = {
+    new DelegatingService[ByteChunk, ((APIKey, AccountDetails), Path) => Future[
+      HttpResponse[
+        B]], ByteChunk, (APIKey, AccountDetails, Path, Query, QueryOptions) => Future[
+      HttpResponse[B]]] {
       val delegate = next
       val metadata = NoMetadata
       val service: HttpRequest[ByteChunk] => Validation[
@@ -264,7 +258,9 @@ trait ShardServiceCombinators
               for {
                 header <- request.headers.header[`Content-Type`]
                 if header.mimeTypes exists { t =>
-                  t == text / plain || (t.maintype == "text" && t.subtype == "x-quirrel-script")
+                  t == text / plain || (
+                    t.maintype == "text" && t.subtype == "x-quirrel-script"
+                  )
                 }
                 content <- request.content
               } yield content
@@ -278,9 +274,10 @@ trait ShardServiceCombinators
                     .get('q)
                     .filter(_ != null)
                     .map(Promise.successful)
-                    .orElse(quirrelContent(request).map(ByteChunk
-                      .forceByteArray(_: ByteChunk)
-                      .map(new String(_: Array[Byte], "UTF-8"))))
+                    .orElse(quirrelContent(request).map(
+                      ByteChunk
+                        .forceByteArray(_: ByteChunk)
+                        .map(new String(_: Array[Byte], "UTF-8"))))
 
                   val result: Future[HttpResponse[B]] = query map { q =>
                     q flatMap { f(apiKey, account, path, _: String, opts) }
@@ -307,23 +304,20 @@ trait ShardServiceCombinators
             Path,
             Query,
             QueryOptions) => Future[HttpResponse[B]]])(
-      implicit executor: ExecutionContext): HttpService[
-    ByteChunk,
-    ((APIKey, AccountDetails)) => Future[HttpResponse[B]]] = {
-    new DelegatingService[
-      ByteChunk,
-      ((APIKey, AccountDetails)) => Future[HttpResponse[B]],
-      ByteChunk,
-      ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] {
+      implicit executor: ExecutionContext)
+      : HttpService[ByteChunk, ((APIKey, AccountDetails)) => Future[
+        HttpResponse[B]]] = {
+    new DelegatingService[ByteChunk, ((APIKey, AccountDetails)) => Future[
+      HttpResponse[B]], ByteChunk, ((APIKey, AccountDetails), Path) => Future[
+      HttpResponse[B]]] {
       val delegate = query[B](next)
       val service = { (request: HttpRequest[ByteChunk]) =>
         val path = request.parameters
           .get('prefixPath)
           .filter(_ != null)
           .getOrElse("")
-        delegate.service(
-          request
-            .copy(parameters = request.parameters + ('sync -> "async"))) map {
+        delegate.service(request.copy(parameters =
+          request.parameters + ('sync -> "async"))) map {
           f => { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
         }
       }
@@ -333,9 +327,8 @@ trait ShardServiceCombinators
   }
 
   def requireAccount[A, B](accountFinder: AccountFinder[Future])(
-      service: HttpService[
-        A,
-        ((APIKey, AccountDetails)) => Future[HttpResponse[B]]])(implicit
+      service: HttpService[A, ((APIKey, AccountDetails)) => Future[
+        HttpResponse[B]]])(implicit
       inj: JValue => B,
       M: Monad[Future]): HttpService[A, APIKey => Future[HttpResponse[B]]] = {
     val service0 = service map {

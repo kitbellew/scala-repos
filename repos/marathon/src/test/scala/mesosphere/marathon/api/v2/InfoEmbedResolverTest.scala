@@ -14,8 +14,8 @@ class InfoEmbedResolverTest
   for (prefix <- prefixes) {
     test(s"resolve ${prefix}lastTaskFailure") {
       When(s"embed=${prefix}lastTaskFailure")
-      val resolved = InfoEmbedResolver.resolveApp(
-        Set(s"${prefix}lastTaskFailure"))
+      val resolved = InfoEmbedResolver.resolveApp(Set(
+        s"${prefix}lastTaskFailure"))
       Then("it should resolve correctly")
       resolved should be(Set(AppInfo.Embed.LastTaskFailure))
     }
@@ -53,11 +53,10 @@ class InfoEmbedResolverTest
       When(s"embed=${prefix}failures")
       val resolved = InfoEmbedResolver.resolveApp(Set(s"${prefix}failures"))
       Then("it should resolve correctly")
-      resolved should be(
-        Set(
-          AppInfo.Embed.Tasks,
-          AppInfo.Embed.Deployments,
-          AppInfo.Embed.LastTaskFailure))
+      resolved should be(Set(
+        AppInfo.Embed.Tasks,
+        AppInfo.Embed.Deployments,
+        AppInfo.Embed.LastTaskFailure))
     }
   }
 
@@ -88,14 +87,13 @@ class InfoEmbedResolverTest
 
   test("App / Group resolving works") {
     When("We resolve group embed infos")
-    val (app, group) = InfoEmbedResolver.resolveAppGroup(
-      Set(
-        "group.groups",
-        "group.apps",
-        "group.apps.tasks",
-        "group.apps.unknown",
-        "group.unknown",
-        "unknown"))
+    val (app, group) = InfoEmbedResolver.resolveAppGroup(Set(
+      "group.groups",
+      "group.apps",
+      "group.apps.tasks",
+      "group.apps.unknown",
+      "group.unknown",
+      "unknown"))
 
     Then("The embed parameter are resolved correctly")
     group should be(Set(GroupInfo.Embed.Apps, GroupInfo.Embed.Groups))

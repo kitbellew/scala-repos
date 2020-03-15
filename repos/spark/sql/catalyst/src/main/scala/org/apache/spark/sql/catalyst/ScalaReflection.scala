@@ -404,8 +404,7 @@ object ScalaReflection extends ScalaReflection {
             expressions.If(
               IsNull(getPath),
               expressions.Literal.create(null, ObjectType(cls)),
-              newInstance
-            )
+              newInstance)
           } else { newInstance }
 
         case t

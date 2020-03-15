@@ -114,8 +114,7 @@ object Promise {
           case e: NonLocalReturnControl[_] =>
             Future.exception(new FutureNonLocalReturnControl(e))
           case NonFatal(e) => Future.exception(e)
-        }
-      )
+        })
     }
 
     def apply(result: Try[A]) {
@@ -392,8 +391,7 @@ class Promise[A]
       private[this] def runDepth2Plus(
           rest: List[K[A]],
           result: Try[A],
-          maxDepth: Int
-      ): Unit = {
+          maxDepth: Int): Unit = {
         // empirically via JMH `FutureBenchmark.runqSize` the performance
         // is better once the the list gets larger. that cutoff point
         // was 14 in tests. however, it should be noted that this number

@@ -78,8 +78,8 @@ case class CSRFConfig(
       checkContentType: ju.function.Predicate[Optional[String]]) =
     copy(checkContentType = checkContentType.asScala.compose(_.asJava))
   def withShouldProtect(shouldProtect: ju.function.Predicate[JRequestHeader]) =
-    copy(shouldProtect = shouldProtect.asScala.compose(
-      new JRequestHeaderImpl(_)))
+    copy(shouldProtect = shouldProtect.asScala.compose(new JRequestHeaderImpl(
+      _)))
   def withBypassCorsTrustedOrigins(bypass: Boolean) =
     copy(bypassCorsTrustedOrigins = bypass)
 }
@@ -316,8 +316,9 @@ class CSRFModule extends Module {
     Seq(
       bind[CSRFConfig].toProvider[CSRFConfigProvider],
       bind[CSRF.TokenProvider].toProvider[CSRF.TokenProviderProvider],
-      bind[CSRFFilter].toSelf
-    ) ++ ErrorHandler.bindingsFromConfiguration(environment, configuration)
+      bind[CSRFFilter].toSelf) ++ ErrorHandler.bindingsFromConfiguration(
+      environment,
+      configuration)
   }
 }
 

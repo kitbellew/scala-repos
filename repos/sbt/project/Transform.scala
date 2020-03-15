@@ -29,15 +29,13 @@ object Transform {
             "No managed boot.properties file.")
         copyConscriptProperties(source, src / "conscript")
         ()
-      }
-    )
+      })
   def copyConscriptProperties(source: File, conscriptBase: File): Seq[File] = {
     IO.delete(conscriptBase)
     val pairs = Seq(
       "sbt.xMain" -> "sbt",
       "sbt.ScriptMain" -> "scalas",
-      "sbt.ConsoleMain" -> "screpl"
-    )
+      "sbt.ConsoleMain" -> "screpl")
     for ((main, dir) <- pairs) yield {
       val file = conscriptBase / dir / "launchconfig"
       copyPropertiesFile(source, main, file)
@@ -54,8 +52,7 @@ object Transform {
     transSourceSettings ++ Seq(
       sourceProperties := Map(
         "cross.package0" -> "sbt",
-        "cross.package1" -> "cross")
-    )
+        "cross.package1" -> "cross"))
   def transSourceSettings =
     Seq(
       inputSourceDirectory := sourceDirectory.value / "input_sources",
@@ -83,8 +80,7 @@ object Transform {
         scalaVersion,
         isSnapshot) map { (org, v, sv, isSnapshot) =>
         Map("org" -> org, "sbt.version" -> v, "scala.version" -> sv)
-      }
-    )
+      })
   def transResourceSettings =
     Seq(
       inputResourceDirectory := sourceDirectory.value / "input_resources",

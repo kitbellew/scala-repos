@@ -181,14 +181,13 @@ object TestPurgatoryPerformance {
     val gcCounts = gcMXBeans.map(_.getCollectionCount)
     val gcTimes = gcMXBeans.map(_.getCollectionTime)
 
-    println(
-      "%d\t%f\t%f\t%d\t%s\t%s".format(
-        done - start,
-        targetRate,
-        actualRate,
-        cpuTime.getOrElse(-1L),
-        gcCounts.mkString(" "),
-        gcTimes.mkString(" ")))
+    println("%d\t%f\t%f\t%d\t%s\t%s".format(
+      done - start,
+      targetRate,
+      actualRate,
+      cpuTime.getOrElse(-1L),
+      gcCounts.mkString(" "),
+      gcTimes.mkString(" ")))
 
     purgatory.shutdown()
   }
@@ -253,8 +252,11 @@ object TestPurgatoryPerformance {
       val p50 = samples.sorted.apply((sampleSize.toDouble * 0.5d).toInt)
 
       println(
-        "# latency samples: pct75 = %d, pct50 = %d, min = %d, max = %d"
-          .format(p75, p50, samples.min, samples.max))
+        "# latency samples: pct75 = %d, pct50 = %d, min = %d, max = %d".format(
+          p75,
+          p50,
+          samples.min,
+          samples.max))
     }
   }
 
@@ -282,8 +284,7 @@ object TestPurgatoryPerformance {
           .format(
             1000d / (samples.map(_.toDouble).sum / sampleSize.toDouble),
             samples.min,
-            samples.max)
-      )
+            samples.max))
     }
   }
 

@@ -110,9 +110,7 @@ class AhcCurlRequestLoggerSpec
         val client = wsUrl("/")
         val logger = mock[Logger]
         val requestLogger = AhcCurlRequestLogger(logger)
-        val headers = Seq(
-          "Content-Type" -> "text/plain; charset=utf-8"
-        )
+        val headers = Seq("Content-Type" -> "text/plain; charset=utf-8")
 
         val responseFuture = client
           .withRequestFilter(AhcCurlRequestLogger(logger))

@@ -348,11 +348,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val nodesForGroup = Map((0, Array(topNode)))
     val treeToNodeToIndexInfo = Map(
-      (
-        0,
-        Map(
-          (topNode.id, new RandomForest.NodeIndexInfo(0, None))
-        )))
+      (0, Map((topNode.id, new RandomForest.NodeIndexInfo(0, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -406,11 +402,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val nodesForGroup = Map((0, Array(topNode)))
     val treeToNodeToIndexInfo = Map(
-      (
-        0,
-        Map(
-          (topNode.id, new RandomForest.NodeIndexInfo(0, None))
-        )))
+      (0, Map((topNode.id, new RandomForest.NodeIndexInfo(0, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -503,14 +495,11 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     // Single group second level tree construction.
     val nodesForGroup = Map(
       (0, Array(rootNode1.leftNode.get, rootNode1.rightNode.get)))
-    val treeToNodeToIndexInfo = Map(
-      (
-        0,
-        Map(
-          (rootNode1.leftNode.get.id, new RandomForest.NodeIndexInfo(0, None)),
-          (
-            rootNode1.rightNode.get.id,
-            new RandomForest.NodeIndexInfo(1, None)))))
+    val treeToNodeToIndexInfo = Map((
+      0,
+      Map(
+        (rootNode1.leftNode.get.id, new RandomForest.NodeIndexInfo(0, None)),
+        (rootNode1.rightNode.get.id, new RandomForest.NodeIndexInfo(1, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -1219,29 +1208,26 @@ object DecisionTreeSuite extends SparkFunSuite {
       isLeaf = false)
     featureType match {
       case Continuous =>
-        node.split = Some(
-          new Split(
-            feature = 0,
-            threshold = 0.5,
-            Continuous,
-            categories = List.empty[Double]))
+        node.split = Some(new Split(
+          feature = 0,
+          threshold = 0.5,
+          Continuous,
+          categories = List.empty[Double]))
       case Categorical =>
-        node.split = Some(
-          new Split(
-            feature = 1,
-            threshold = 0.0,
-            Categorical,
-            categories = List(0.0, 1.0)))
+        node.split = Some(new Split(
+          feature = 1,
+          threshold = 0.0,
+          Categorical,
+          categories = List(0.0, 1.0)))
     }
     // TODO: The information gain stats should be consistent with info in children: SPARK-7131
-    node.stats = Some(
-      new InformationGainStats(
-        gain = 0.1,
-        impurity = 0.2,
-        leftImpurity = 0.3,
-        rightImpurity = 0.4,
-        new Predict(1.0, 0.4),
-        new Predict(0.0, 0.6)))
+    node.stats = Some(new InformationGainStats(
+      gain = 0.1,
+      impurity = 0.2,
+      leftImpurity = 0.3,
+      rightImpurity = 0.4,
+      new Predict(1.0, 0.4),
+      new Predict(0.0, 0.6)))
     node
   }
 

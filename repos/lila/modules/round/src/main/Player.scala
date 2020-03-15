@@ -87,8 +87,7 @@ private[round] final class Player(
                   moveFinish(progress.game, game.turnColor) map {
                     progress.events ::: _
                   },
-                  fuccess(progress.events)
-                )
+                  fuccess(progress.events))
           }
       else
         requestFishnet(game) >> fufail(

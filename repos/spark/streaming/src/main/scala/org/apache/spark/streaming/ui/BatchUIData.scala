@@ -117,8 +117,7 @@ private[ui] object BatchUIData {
       batchInfo.submissionTime,
       batchInfo.processingStartTime,
       batchInfo.processingEndTime,
-      outputOperations
-    )
+      outputOperations)
   }
 }
 

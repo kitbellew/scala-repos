@@ -77,13 +77,12 @@ trait NIHDBSnapshot {
       .map { reader =>
         val snapshot = reader.snapshotRef(cols)
         if (logger.isTraceEnabled) {
-          logger.trace(
-            "Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
-              id0,
-              reader,
-              reader.hashCode,
-              cols,
-              snapshot.segments.map(_.toString).mkString("\n  ")))
+          logger.trace("Block after %s, %s (%s)\nSnapshot on %s:\n  %s".format(
+            id0,
+            reader,
+            reader.hashCode,
+            cols,
+            snapshot.segments.map(_.toString).mkString("\n  ")))
         }
         snapshot
       }

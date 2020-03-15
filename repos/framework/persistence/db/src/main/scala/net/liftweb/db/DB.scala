@@ -103,10 +103,9 @@ trait DB extends Loggable {
       },
       () => {
         logger.trace("Trying JNDI lookup on %s".format(name.jndiName))
-        (new InitialContext)
-          .lookup(name.jndiName)
-          .asInstanceOf[DataSource]
-          .getConnection
+        (
+          new InitialContext
+        ).lookup(name.jndiName).asInstanceOf[DataSource].getConnection
 
       }
     )
@@ -212,8 +211,8 @@ trait DB extends Loggable {
       })
 
     val cmConn = for {
-      connectionManager <- threadLocalConnectionManagers.box.flatMap(
-        _.get(name)) or Box(connectionManagers.get(name))
+      connectionManager <- threadLocalConnectionManagers.box.flatMap(_.get(
+        name)) or Box(connectionManagers.get(name))
       connection <- cmSuperConnection(connectionManager)
     } yield connection
 
@@ -351,9 +350,10 @@ trait DB extends Loggable {
   private def releaseConnectionNamed(
       name: ConnectionIdentifier,
       rollback: Boolean) {
-    logger.trace(
-      "Request to release %s on thread %s, auto rollback=%s"
-        .format(name, Thread.currentThread, rollback))
+    logger.trace("Request to release %s on thread %s, auto rollback=%s".format(
+      name,
+      Thread.currentThread,
+      rollback))
 
     (info.get(name): @unchecked) match {
       case Some(ConnectionHolder(c, 1, post, manualRollback)) => {
@@ -370,8 +370,9 @@ trait DB extends Loggable {
           info -= name
           val rolledback = rollback | manualRollback
           logger.trace(
-            "Invoking %d postTransaction functions. rollback=%s"
-              .format(post.size, rolledback))
+            "Invoking %d postTransaction functions. rollback=%s".format(
+              post.size,
+              rolledback))
           post.reverse.foreach(f => tryo(f(!rolledback)))
           logger.trace(
             "Released %s on thread %s".format(name, Thread.currentThread))
@@ -379,7 +380,9 @@ trait DB extends Loggable {
       }
       case Some(ConnectionHolder(c, n, post, rb)) =>
         logger.trace(
-          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (n - 1))
+          "Did not release " + name + " on thread " + Thread.currentThread + " count " + (
+            n - 1
+          ))
         info(name) = ConnectionHolder(c, n - 1, post, rb)
       case x =>
       // ignore
@@ -398,8 +401,9 @@ trait DB extends Loggable {
       case Some(ConnectionHolder(c, n, post, rb)) =>
         info(name) = ConnectionHolder(c, n, func :: post, rb)
         logger.trace(
-          "Appended postTransaction function on %s, new count=%d"
-            .format(name, post.size + 1))
+          "Appended postTransaction function on %s, new count=%d".format(
+            name,
+            post.size + 1))
       case _ =>
         throw new IllegalStateException(
           "Tried to append postTransaction function on illegal ConnectionIdentifer or outside transaction context")
@@ -1267,9 +1271,9 @@ trait ProtoDBVendor extends ConnectionManager {
           val ret = createOne
           ret.foreach(_.setAutoCommit(false))
           poolSize = poolSize + 1
-          logger.debug(
-            "Created new pool entry. name=%s, poolSize=%d"
-              .format(name, poolSize))
+          logger.debug("Created new pool entry. name=%s, poolSize=%d".format(
+            name,
+            poolSize))
           ret
 
         case Nil =>
@@ -1280,8 +1284,9 @@ trait ProtoDBVendor extends ConnectionManager {
           if (pool.isEmpty && poolSize == curSize && canExpand_?) {
             tempMaxSize += 1
             logger.debug(
-              "Temporarily expanding pool. name=%s, tempMaxSize=%d"
-                .format(name, tempMaxSize))
+              "Temporarily expanding pool. name=%s, tempMaxSize=%d".format(
+                name,
+                tempMaxSize))
           }
           newConnection(name)
 

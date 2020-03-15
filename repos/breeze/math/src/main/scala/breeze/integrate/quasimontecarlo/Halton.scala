@@ -90,8 +90,8 @@ class BaseUniformHaltonGenerator(val dimension: Int)
   def getNextUnsafe = {
     cfor(0)(j => j < dimension, j => j + 1)(j => {
       var lIndex: Int = 0
-      while ((lIndex < counters(j).size()) && (counters(j).get(
-               lIndex) == (bases(j) - 1))) {
+      while ((lIndex < counters(j).size()) && (counters(j)
+               .get(lIndex) == (bases(j) - 1))) {
         counters(j).set(lIndex, 0)
         lIndex += 1
       }

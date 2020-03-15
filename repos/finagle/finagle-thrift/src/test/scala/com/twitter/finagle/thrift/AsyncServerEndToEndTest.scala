@@ -17,11 +17,10 @@ class AsyncServerEndToEndTest extends FunSuite {
   test("async Thrift server should work") {
     // Set up the server.
 
-    ThriftTypes.add(
-      new ThriftCallFactory[Silly.bleep_args, Silly.bleep_result](
-        "bleep",
-        classOf[Silly.bleep_args],
-        classOf[Silly.bleep_result]))
+    ThriftTypes.add(new ThriftCallFactory[Silly.bleep_args, Silly.bleep_result](
+      "bleep",
+      classOf[Silly.bleep_args],
+      classOf[Silly.bleep_result]))
 
     val serverBootstrap =
       new ServerBootstrap(new DefaultLocalServerChannelFactory())

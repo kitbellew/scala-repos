@@ -151,15 +151,13 @@ trait Unapplies extends ast.TreeDSL {
     val tparams = constrTparamsInvariant(cdef)
     val cparamss = constrParamss(cdef)
     def classtpe = classType(cdef, tparams)
-    atPos(cdef.pos.focus)(
-      DefDef(
-        mods,
-        name,
-        tparams,
-        cparamss,
-        classtpe,
-        New(classtpe, mmap(cparamss)(gen.paramToArg)))
-    )
+    atPos(cdef.pos.focus)(DefDef(
+      mods,
+      name,
+      tparams,
+      cparamss,
+      classtpe,
+      New(classtpe, mmap(cparamss)(gen.paramToArg))))
   }
 
   /** The apply method corresponding to a case class
@@ -176,12 +174,11 @@ trait Unapplies extends ast.TreeDSL {
         nme.unapplySeq
       case _ => nme.unapply
     }
-    val cparams = List(
-      ValDef(
-        Modifiers(PARAM | SYNTHETIC),
-        unapplyParamName,
-        classType(cdef, tparams),
-        EmptyTree))
+    val cparams = List(ValDef(
+      Modifiers(PARAM | SYNTHETIC),
+      unapplyParamName,
+      classType(cdef, tparams),
+      EmptyTree))
     val resultType =
       if (!settings.isScala212) TypeTree()
       else { // fix for SI-6541 under -Xsource:2.12
@@ -210,8 +207,7 @@ trait Unapplies extends ast.TreeDSL {
       ifNull)(Ident(unapplyParamName))
 
     atPos(cdef.pos.focus)(
-      DefDef(caseMods, method, tparams, List(cparams), resultType, body)
-    )
+      DefDef(caseMods, method, tparams, List(cparams), resultType, body))
   }
 
   /**
@@ -269,15 +265,13 @@ trait Unapplies extends ast.TreeDSL {
       val classTpe = classType(cdef, tparams)
       val argss = mmap(paramss)(toIdent)
       val body: Tree = New(classTpe, argss)
-      val copyDefDef = atPos(cdef.pos.focus)(
-        DefDef(
-          Modifiers(SYNTHETIC),
-          nme.copy,
-          tparams,
-          paramss,
-          TypeTree(),
-          body)
-      )
+      val copyDefDef = atPos(cdef.pos.focus)(DefDef(
+        Modifiers(SYNTHETIC),
+        nme.copy,
+        tparams,
+        paramss,
+        TypeTree(),
+        body))
       Some(copyDefDef)
     }
   }

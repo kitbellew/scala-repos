@@ -175,8 +175,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
 
     val req1 = Request(Path.empty, buf(1))
     val p1 = new Promise[Response]
-    when(service(req1))
-      .thenReturn(Future.exception(Failure.rejected("come back tomorrow")))
+    when(service(req1)).thenReturn(Future.exception(
+      Failure.rejected("come back tomorrow")))
 
     client(req1).poll match {
       case Some(Throw(f: Failure)) => assert(f.isFlagged(Failure.Restartable))
@@ -220,12 +220,10 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val ctx = new Ctx
     import ctx._
 
-    when(service(any[Request])).thenAnswer(
-      new Answer[Future[Response]]() {
-        def answer(invocation: InvocationOnMock) =
-          Future.value(Response(Buf.Utf8(Trace.id.toString)))
-      }
-    )
+    when(service(any[Request])).thenAnswer(new Answer[Future[Response]]() {
+      def answer(invocation: InvocationOnMock) =
+        Future.value(Response(Buf.Utf8(Trace.id.toString)))
+    })
 
     val id = Trace.nextId
     val resp = Trace.letId(id) { client(Request(Path.empty, buf(1))) }
@@ -238,15 +236,13 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
     val ctx = new Ctx
     import ctx._
 
-    when(service(any[Request])).thenAnswer(
-      new Answer[Future[Response]] {
-        def answer(invocation: InvocationOnMock) = {
-          val buf = ChannelBuffers.directBuffer(8)
-          buf.writeLong(Trace.id.flags.toLong)
-          Future.value(Response(ChannelBufferBuf.Owned(buf)))
-        }
+    when(service(any[Request])).thenAnswer(new Answer[Future[Response]] {
+      def answer(invocation: InvocationOnMock) = {
+        val buf = ChannelBuffers.directBuffer(8)
+        buf.writeLong(Trace.id.flags.toLong)
+        Future.value(Response(ChannelBufferBuf.Owned(buf)))
       }
-    )
+    })
 
     val flags = Flags().setDebug
     val id = Trace.nextId.copy(flags = flags)
@@ -315,16 +311,13 @@ class ClientServerTestDispatch extends ClientServerTest(true) {
     val ctx = new Ctx
     import ctx._
 
-    when(service(any[Request])).thenAnswer(
-      new Answer[Future[Response]] {
-        def answer(invocation: InvocationOnMock) =
-          Future.value(
-            Response(
-              Contexts.broadcast
-                .get(testContext)
-                .getOrElse(Buf.Empty)))
-      }
-    )
+    when(service(any[Request])).thenAnswer(new Answer[Future[Response]] {
+      def answer(invocation: InvocationOnMock) =
+        Future.value(Response(
+          Contexts.broadcast
+            .get(testContext)
+            .getOrElse(Buf.Empty)))
+    })
 
     // No context set
     assert(Await.result(client(Request(Path.empty, Buf.Empty))).body.isEmpty)

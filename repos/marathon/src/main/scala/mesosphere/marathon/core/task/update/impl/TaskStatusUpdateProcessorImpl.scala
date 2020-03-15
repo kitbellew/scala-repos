@@ -68,8 +68,7 @@ class TaskStatusUpdateProcessorImpl @Inject() (
             timestamp = now,
             appId = taskId.appId,
             task = task,
-            mesosStatus = status
-          ).flatMap(_ => acknowledge(status))
+            mesosStatus = status).flatMap(_ => acknowledge(status))
         case _ =>
           killUnknownTaskTimer {
             if (status.getState != MesosProtos.TaskState.TASK_LOST) {
@@ -106,8 +105,7 @@ class TaskStatusUpdateProcessorImpl @Inject() (
           nextStep.processUpdate(timestamp, task, mesosStatus).map { _ =>
             log.debug(
               "Done with executing {} for [{}]",
-              Array[Object](nextStep.name, mesosStatus.getTaskId.getValue): _*
-            )
+              Array[Object](nextStep.name, mesosStatus.getTaskId.getValue): _*)
           }
         }
       }

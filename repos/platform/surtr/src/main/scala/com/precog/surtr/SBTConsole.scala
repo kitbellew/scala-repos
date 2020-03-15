@@ -160,11 +160,9 @@ object SBTConsole {
 
     val storageTimeout = yggConfig.storageTimeout
 
-    val masterChef = actorSystem.actorOf(
-      Props(
-        Chef(
-          VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-          VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+    val masterChef = actorSystem.actorOf(Props(Chef(
+      VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+      VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
     val resourceBuilder = new ResourceBuilder(
       actorSystem,
@@ -172,14 +170,12 @@ object SBTConsole {
       masterChef,
       yggConfig.cookThreshold,
       yggConfig.storageTimeout)
-    val projectionsActor = actorSystem.actorOf(
-      Props(
-        new PathRoutingActor(
-          yggConfig.dataDir,
-          yggConfig.storageTimeout.duration,
-          yggConfig.quiescenceTimeout,
-          100,
-          yggConfig.clock)))
+    val projectionsActor = actorSystem.actorOf(Props(new PathRoutingActor(
+      yggConfig.dataDir,
+      yggConfig.storageTimeout.duration,
+      yggConfig.quiescenceTimeout,
+      100,
+      yggConfig.clock)))
 
     val jobManager = new InMemoryJobManager[Future]
     val actorVFS = new ActorVFS(

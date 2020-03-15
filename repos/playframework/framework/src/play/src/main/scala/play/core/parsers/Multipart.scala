@@ -93,9 +93,10 @@ object Multipart {
       partParser(maxMemoryBufferSize) {
         val handleFileParts = Flow[Part[Source[ByteString, _]]].mapAsync(1) {
           case filePart: FilePart[Source[ByteString, _]] =>
-            filePartHandler(
-              FileInfo(filePart.key, filePart.filename, filePart.contentType))
-              .run(filePart.ref)
+            filePartHandler(FileInfo(
+              filePart.key,
+              filePart.filename,
+              filePart.contentType)).run(filePart.ref)
           case other: Part[Nothing] => Future.successful(other)
         }
 
@@ -238,8 +239,8 @@ object Multipart {
       msg: String,
       status: Int = BAD_REQUEST): RequestHeader => Future[Either[Result, A]] = {
     request =>
-      Play.privateMaybeApplication.fold(
-        Future.successful(Left(Results.Status(status): Result)))(
+      Play.privateMaybeApplication.fold(Future.successful(Left(
+        Results.Status(status): Result)))(
         _.errorHandler.onClientError(request, status, msg).map(Left(_)))
   }
 
@@ -469,21 +470,21 @@ object Multipart {
         if (newMemoryBufferSize > maxMemoryBufferSize) {
           bufferExceeded("Memory buffer full on part " + partName)
         } else if (crlf(input, needleEnd)) {
-          emit(
-            DataPart(
-              partName,
-              input.slice(partStart, currentPartEnd).utf8String))
+          emit(DataPart(
+            partName,
+            input.slice(partStart, currentPartEnd).utf8String))
           parseHeader(input, needleEnd + 2, newMemoryBufferSize)
         } else if (doubleDash(input, needleEnd)) {
-          emit(
-            DataPart(
-              partName,
-              input.slice(partStart, currentPartEnd).utf8String))
+          emit(DataPart(
+            partName,
+            input.slice(partStart, currentPartEnd).utf8String))
           terminate()
         } else { fail("Unexpected boundary") }
       } catch {
         case NotEnoughDataException =>
-          if (memoryBufferSize + (input.length - partStart - needle.length) > maxMemoryBufferSize) {
+          if (memoryBufferSize + (
+                input.length - partStart - needle.length
+              ) > maxMemoryBufferSize) {
             bufferExceeded("Memory buffer full on part " + partName)
           }
           continue(input, partStart)(

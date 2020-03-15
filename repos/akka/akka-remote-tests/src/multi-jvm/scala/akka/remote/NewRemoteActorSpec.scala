@@ -24,8 +24,8 @@ object NewRemoteActorMultiJvmSpec extends MultiNodeConfig {
     def receive = { case "identify" ⇒ sender() ! self }
   }
 
-  commonConfig(debugConfig(on = false).withFallback(
-    ConfigFactory.parseString("akka.remote.log-remote-lifecycle-events = off")))
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(
+    "akka.remote.log-remote-lifecycle-events = off")))
 
   val master = role("master")
   val slave = role("slave")

@@ -155,16 +155,15 @@ package Generic1TestsAux {
 
     implicit def isCPointedSingleSingleton[C](implicit
         w: Witness.Aux[C],
-        pf: Lazy[Pointed[Const[C]#λ]]
-    ): Pointed[({ type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A] })#λ] =
+        pf: Lazy[Pointed[Const[C]#λ]])
+        : Pointed[({ type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A] })#λ] =
       new Pointed[({ type λ[A] = Const[C]#λ[A] :+: Const[CNil]#λ[A] })#λ] {
         def point[A](a: A): Const[C]#λ[A] :+: Const[CNil]#λ[A] =
           Inl(pf.value.point(a))
       }
 
-    implicit def isCPointedSingle[F[_]](implicit
-        pf: Lazy[Pointed[F]]
-    ): Pointed[({ type λ[A] = F[A] :+: Const[CNil]#λ[A] })#λ] =
+    implicit def isCPointedSingle[F[_]](implicit pf: Lazy[Pointed[F]])
+        : Pointed[({ type λ[A] = F[A] :+: Const[CNil]#λ[A] })#λ] =
       new Pointed[({ type λ[A] = F[A] :+: Const[CNil]#λ[A] })#λ] {
         def point[A](a: A): F[A] :+: Const[CNil]#λ[A] = Inl(pf.value.point(a))
       }
@@ -406,24 +405,12 @@ class Generic1Tests {
     assertEquals(expectedProd, p1)
 
     // Any ADT has a Functor ... even with recursion
-    val tree = Node(
-      Leaf("quux"),
-      Node(
-        Leaf("foo"),
-        Leaf("wibble")
-      )
-    )
+    val tree = Node(Leaf("quux"), Node(Leaf("foo"), Leaf("wibble")))
 
     val t0 = transform(tree)(_.length)
     val t1 = tree.map(_.length) // they also have Functor syntax ...
 
-    val expectedTree = Node(
-      Leaf(4),
-      Node(
-        Leaf(3),
-        Leaf(6)
-      )
-    )
+    val expectedTree = Node(Leaf(4), Node(Leaf(3), Leaf(6)))
     assertEquals(expectedTree, t0)
     assertEquals(expectedTree, t1)
   }
@@ -565,17 +552,17 @@ class Generic1Tests {
     materialize2[List]
 
     def materialize3[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
+        : Unit = ()
     def materialize4[F[_]](implicit
-    ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
+        : Unit = ()
     def materialize5[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
+        : Unit = ()
     def materialize6[F[_]](implicit
-    ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
+        : Unit = ()
 
     type H[t] = t :: scala.collection.immutable.List[t] :: HNil
 
@@ -585,17 +572,17 @@ class Generic1Tests {
     materialize6[H]
 
     def materialize7[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
-      ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
+        : Unit = ()
     def materialize8[F[_]](implicit
-    ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
-      ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
+        : Unit = ()
     def materialize9[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
+        : Unit = ()
     def materialize10[F[_]](implicit
-    ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
-      ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
+        : Unit = ()
 
     type C[t] = scala.collection.immutable.::[t] :+: Nil.type :+: CNil
 

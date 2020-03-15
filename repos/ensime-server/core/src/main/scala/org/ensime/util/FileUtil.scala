@@ -72,12 +72,10 @@ object FileUtils {
       val deleteFiles = changes.collect { case ed: DeleteFile => ed }
       for (ed <- deleteFiles) { ed.file.delete() }
 
-      Right(
-        for { (file, contents) <- rewriteList } yield {
-          file.writeString(contents)(cs)
-          file
-        }
-      )
+      Right(for { (file, contents) <- rewriteList } yield {
+        file.writeString(contents)(cs)
+        file
+      })
     } catch { case e: Exception => Left(e) }
   }
 

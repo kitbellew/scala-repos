@@ -190,10 +190,9 @@ sealed trait Execution[+T] extends java.io.Serializable {
     * always code smell. Very seldom should you need to wait on a future.
     */
   def waitFor(conf: Config, mode: Mode): Try[T] =
-    Try(
-      Await.result(
-        run(conf, mode)(ConcurrentExecutionContext.global),
-        scala.concurrent.duration.Duration.Inf))
+    Try(Await.result(
+      run(conf, mode)(ConcurrentExecutionContext.global),
+      scala.concurrent.duration.Duration.Inf))
 
   /**
     * This is here to silence warnings in for comprehensions, but is

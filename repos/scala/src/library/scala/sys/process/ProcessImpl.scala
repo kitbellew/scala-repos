@@ -50,27 +50,27 @@ private[process] trait ProcessImpl {
   private[process] class AndProcess(
       a: ProcessBuilder,
       b: ProcessBuilder,
-      io: ProcessIO
-  ) extends SequentialProcess(a, b, io, _ == 0)
+      io: ProcessIO)
+      extends SequentialProcess(a, b, io, _ == 0)
 
   private[process] class OrProcess(
       a: ProcessBuilder,
       b: ProcessBuilder,
-      io: ProcessIO
-  ) extends SequentialProcess(a, b, io, _ != 0)
+      io: ProcessIO)
+      extends SequentialProcess(a, b, io, _ != 0)
 
   private[process] class ProcessSequence(
       a: ProcessBuilder,
       b: ProcessBuilder,
-      io: ProcessIO
-  ) extends SequentialProcess(a, b, io, _ => true)
+      io: ProcessIO)
+      extends SequentialProcess(a, b, io, _ => true)
 
   private[process] class SequentialProcess(
       a: ProcessBuilder,
       b: ProcessBuilder,
       io: ProcessIO,
-      evaluateSecondProcess: Int => Boolean
-  ) extends CompoundProcess {
+      evaluateSecondProcess: Int => Boolean)
+      extends CompoundProcess {
 
     protected[this] override def runAndExitValue() = {
       val first = a.run(io)
@@ -100,11 +100,7 @@ private[process] trait ProcessImpl {
       code set None
       val thread = Spawn(code set runAndExitValue())
 
-      (
-        thread,
-        Future { thread.join(); code.get },
-        () => thread.interrupt()
-      )
+      (thread, Future { thread.join(); code.get }, () => thread.interrupt())
     }
 
     /** Start and block until the exit value is available and then return it in Some.  Return None if destroyed (use 'run')*/
@@ -252,13 +248,17 @@ private[process] trait ProcessImpl {
       try p.waitFor() // wait for the process to terminate
       finally inputThread
         .interrupt() // we interrupt the input thread to notify it that it can terminate
-      outputThreads foreach (_.join()) // this ensures that all output is complete before returning (waitFor does not ensure this)
+      outputThreads foreach (
+        _.join()
+      ) // this ensures that all output is complete before returning (waitFor does not ensure this)
 
       p.exitValue()
     }
     override def destroy() = {
       try {
-        outputThreads foreach (_.interrupt()) // on destroy, don't bother consuming any more output
+        outputThreads foreach (
+          _.interrupt()
+        ) // on destroy, don't bother consuming any more output
         p.destroy()
       } finally inputThread.interrupt()
     }

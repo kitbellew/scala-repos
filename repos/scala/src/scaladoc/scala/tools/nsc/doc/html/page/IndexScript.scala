@@ -123,16 +123,13 @@ class IndexScript(universe: doc.Universe) extends Page {
       *  script can use to render search results
       */
     def jsonObject(m: MemberEntity): JSONObject =
-      JSONObject(
-        Map(
-          "label" -> m.definitionName.replaceAll(".*#", ""), // member name
-          "member" -> m.definitionName
-            .replaceFirst("#", "."), // full member name
-          "tail" -> memberTail(m),
-          "kind" -> memberKindToString(m), // modifiers i.e. "abstract def"
-          "link" -> memberToUrl(m)
-        )
-      ) // permalink to the member
+      JSONObject(Map(
+        "label" -> m.definitionName.replaceAll(".*#", ""), // member name
+        "member" -> m.definitionName.replaceFirst("#", "."), // full member name
+        "tail" -> memberTail(m),
+        "kind" -> memberKindToString(m), // modifiers i.e. "abstract def"
+        "link" -> memberToUrl(m)
+      )) // permalink to the member
 
     mbr match {
       case d: Def => jsonObject(d)

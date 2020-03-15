@@ -130,8 +130,7 @@ abstract class TailCalls extends Transform {
           "Creating new `this` during tailcalls\n  method: %s\n  current class: %s"
             .format(
               method.ownerChain.mkString(" -> "),
-              currentClass.ownerChain.mkString(" -> ")
-            )
+              currentClass.ownerChain.mkString(" -> "))
         logResult(msg)(
           method
             .newValue(nme.THIS, pos, SYNTHETIC) setInfo currentClass.typeOfThis)
@@ -332,14 +331,12 @@ abstract class TailCalls extends Transform {
               val newThis = newCtx.newThis(tree.pos)
               val vpSyms = vparamss0.flatten map (_.symbol)
 
-              typedPos(tree.pos)(
-                Block(
-                  List(ValDef(newThis, This(currentClass))),
-                  LabelDef(
-                    newCtx.label,
-                    newThis :: vpSyms,
-                    mkAttributedCastHack(newRHS, newCtx.label.tpe.resultType))
-                ))
+              typedPos(tree.pos)(Block(
+                List(ValDef(newThis, This(currentClass))),
+                LabelDef(
+                  newCtx.label,
+                  newThis :: vpSyms,
+                  mkAttributedCastHack(newRHS, newCtx.label.tpe.resultType))))
             } else {
               if (newCtx.isMandatory && (newCtx containsRecursiveCall newRHS))
                 tailrecFailure(newCtx)
@@ -356,7 +353,9 @@ abstract class TailCalls extends Transform {
           val transformedPrologue = noTailTransforms(prologue)
           val transformedCases = transformTrees(cases)
           val transformedStats =
-            if ((prologue eq transformedPrologue) && (cases eq transformedCases))
+            if ((prologue eq transformedPrologue) && (
+                  cases eq transformedCases
+                ))
               stats // allow reuse of `tree` if the subtransform was an identity
             else transformedPrologue ++ transformedCases
           treeCopy.Block(tree, transformedStats, transform(expr))

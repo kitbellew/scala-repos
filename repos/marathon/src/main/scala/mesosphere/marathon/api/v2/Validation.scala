@@ -41,13 +41,11 @@ object Validation {
 
         if (violations.isEmpty) Success
         else
-          Failure(
-            Set(
-              GroupViolation(
-                seq,
-                "Seq contains elements, which are not valid.",
-                None,
-                violations.toSet)))
+          Failure(Set(GroupViolation(
+            seq,
+            "Seq contains elements, which are not valid.",
+            None,
+            violations.toSet)))
       }
     }
   }
@@ -63,8 +61,7 @@ object Validation {
             case (description, ruleViolation) =>
               Json.obj(
                 "path" -> description,
-                "errors" -> ruleViolation.map(r => JsString(r.constraint))
-              )
+                "errors" -> ruleViolation.map(r => JsString(r.constraint)))
           }
       }
     )
@@ -133,9 +130,8 @@ object Validation {
               other.getInputStream
               Success //if we come here, we could read the stream
           }
-        }.getOrElse(
-          Failure(Set(RuleViolation(url, "URL could not be resolved.", None)))
-        )
+        }.getOrElse(Failure(
+          Set(RuleViolation(url, "URL could not be resolved.", None))))
       }
     }
   }
@@ -208,12 +204,10 @@ object Validation {
 
             if (n == 1) Success
             else
-              Failure(
-                Set(
-                  RuleViolation(
-                    product,
-                    s"not allowed in conjunction with other properties.",
-                    None)))
+              Failure(Set(RuleViolation(
+                product,
+                s"not allowed in conjunction with other properties.",
+                None)))
           case None => Success
         }
       }
@@ -223,16 +217,14 @@ object Validation {
     import ViolationBuilder._
     new NullSafeValidator[T](
       test = options.contains,
-      failure = _ -> s"is not one of (${options.mkString(",")})"
-    )
+      failure = _ -> s"is not one of (${options.mkString(",")})")
   }
 
   def oneOf[T <: AnyRef](options: T*): Validator[T] = {
     import ViolationBuilder._
     new NullSafeValidator[T](
       test = options.contains,
-      failure = _ -> s"is not one of (${options.mkString(",")})"
-    )
+      failure = _ -> s"is not one of (${options.mkString(",")})")
   }
 
   def configValueSet[T <: AnyRef](config: String*): Validator[T] =

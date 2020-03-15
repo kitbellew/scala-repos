@@ -188,16 +188,15 @@ class JsonProtocolSuite extends SparkFunSuite {
     testRDDInfo(makeRddInfo(2, 3, 4, 5L, 6L))
     testStageInfo(makeStageInfo(10, 20, 30, 40L, 50L))
     testTaskInfo(makeTaskInfo(999L, 888, 55, 777L, false))
-    testTaskMetrics(
-      makeTaskMetrics(
-        33333L,
-        44444L,
-        55555L,
-        66666L,
-        7,
-        8,
-        hasHadoopInput = false,
-        hasOutput = false))
+    testTaskMetrics(makeTaskMetrics(
+      33333L,
+      44444L,
+      55555L,
+      66666L,
+      7,
+      8,
+      hasHadoopInput = false,
+      hasOutput = false))
     testBlockManagerId(BlockManagerId("Hong", "Kong", 500))
     testExecutorInfo(new ExecutorInfo("host", 43, logUrlMap))
 

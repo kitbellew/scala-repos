@@ -47,15 +47,14 @@ object CircuitBreakerProxy {
       circuitEventListener: Option[ActorRef],
       failureDetector: Any ⇒ Boolean,
       failureMap: CircuitOpenFailure ⇒ Any) =
-    Props(
-      new CircuitBreakerProxy(
-        target,
-        maxFailures,
-        callTimeout,
-        resetTimeout,
-        circuitEventListener,
-        failureDetector,
-        failureMap))
+    Props(new CircuitBreakerProxy(
+      target,
+      maxFailures,
+      callTimeout,
+      resetTimeout,
+      circuitEventListener,
+      failureDetector,
+      failureMap))
 
   sealed trait CircuitBreakerCommand
 

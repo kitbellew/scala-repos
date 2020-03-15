@@ -143,8 +143,8 @@ case class ResponseClassifier(
     (this, ResponseClassifier.param)
 }
 object ResponseClassifier {
-  implicit val param = Stack.Param(
-    ResponseClassifier(com.twitter.finagle.service.ResponseClassifier.Default))
+  implicit val param = Stack.Param(ResponseClassifier(
+    com.twitter.finagle.service.ResponseClassifier.Default))
 }
 
 /**

@@ -18,8 +18,7 @@ final class DataForm(
     mapping(
       "comment" -> optional(nonEmptyText),
       "gameId" -> nonEmptyText,
-      "move" -> nonEmptyText
-    )(TransMetadata.apply)(TransMetadata.unapply)
+      "move" -> nonEmptyText)(TransMetadata.apply)(TransMetadata.unapply)
       .verifying(captchaFailMessage, validateCaptcha _))
 
   def translationWithCaptcha = withCaptcha(translation)

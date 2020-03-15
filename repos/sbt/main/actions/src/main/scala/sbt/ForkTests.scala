@@ -29,11 +29,10 @@ private[sbt] object ForkTests {
 
     val main =
       if (opts.tests.isEmpty)
-        constant(
-          TestOutput(
-            TestResult.Passed,
-            Map.empty[String, SuiteResult],
-            Iterable.empty))
+        constant(TestOutput(
+          TestResult.Passed,
+          Map.empty[String, SuiteResult],
+          Iterable.empty))
       else
         mainTestTask(runners, opts, classpath, fork, log, config.parallel)
           .tagw(config.tags: _*)

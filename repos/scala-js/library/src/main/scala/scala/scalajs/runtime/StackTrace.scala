@@ -110,23 +110,21 @@ object StackTrace {
         val mtch1 = NormalizedFrameLineWithColumn.exec(line)
         if (mtch1 ne null) {
           val (className, methodName) = extractClassMethod(mtch1(1).get)
-          trace.push(
-            JSStackTraceElem(
-              className,
-              methodName,
-              mtch1(2).get,
-              mtch1(3).get.toInt,
-              mtch1(4).get.toInt))
+          trace.push(JSStackTraceElem(
+            className,
+            methodName,
+            mtch1(2).get,
+            mtch1(3).get.toInt,
+            mtch1(4).get.toInt))
         } else {
           val mtch2 = NormalizedFrameLine.exec(line)
           if (mtch2 ne null) {
             val (className, methodName) = extractClassMethod(mtch2(1).get)
-            trace.push(
-              JSStackTraceElem(
-                className,
-                methodName,
-                mtch2(2).get,
-                mtch2(3).get.toInt))
+            trace.push(JSStackTraceElem(
+              className,
+              methodName,
+              mtch2(2).get,
+              mtch2(3).get.toInt))
           } else {
             // just in case
             trace.push(JSStackTraceElem("<jscode>", line, null, -1))
@@ -558,8 +556,7 @@ object StackTrace {
           methodName = methodName,
           fileName = fileName,
           lineNumber = lineNumber,
-          columnNumber = columnNumber
-        )
+          columnNumber = columnNumber)
         .asInstanceOf[JSStackTraceElem]
     }
   }

@@ -20,9 +20,8 @@ private[http4] object ReaderUtils {
         Future.value(Some(ByteBufAsBuf.Owned(chunk.content.duplicate)))
 
       case invalid =>
-        Future.exception(
-          new IllegalArgumentException("invalid message \"%s\"".format(invalid))
-        )
+        Future.exception(new IllegalArgumentException(
+          "invalid message \"%s\"".format(invalid)))
     }
 
   /**
@@ -39,8 +38,7 @@ private[http4] object ReaderUtils {
       trans: Transport[Any, Any],
       r: Reader,
       // TODO Find a better number for bufSize, e.g. 32KiB - Buf overhead
-      bufSize: Int = Int.MaxValue
-  ): Future[Unit] = {
+      bufSize: Int = Int.MaxValue): Future[Unit] = {
     r.read(bufSize).flatMap {
       case None =>
         trans.write(NettyHttp.LastHttpContent.EMPTY_LAST_CONTENT)

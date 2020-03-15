@@ -79,8 +79,7 @@ object ScalaJSPlugin extends AutoPlugin {
     def NodeJSEnv(
         executable: String = "node",
         args: Seq[String] = Seq.empty,
-        env: Map[String, String] = Map.empty
-    ): Def.Initialize[Task[NodeJSEnv]] =
+        env: Map[String, String] = Map.empty): Def.Initialize[Task[NodeJSEnv]] =
       Def.task { new NodeJSEnv(executable, args, env) }
 
     /**
@@ -103,8 +102,7 @@ object ScalaJSPlugin extends AutoPlugin {
         executable: String = "phantomjs",
         args: Seq[String] = Seq.empty,
         env: Map[String, String] = Map.empty,
-        autoExit: Boolean = true
-    ): Def.Initialize[Task[PhantomJSEnv]] =
+        autoExit: Boolean = true): Def.Initialize[Task[PhantomJSEnv]] =
       Def.task {
         val loader = scalaJSPhantomJSClassLoader.value
         new PhantomJSEnv(executable, args, env, autoExit, loader)
@@ -122,14 +120,14 @@ object ScalaJSPlugin extends AutoPlugin {
       "Link all compiled JavaScript into a single file and fully optimize",
       APlusTask)
 
-    val scalaJSIR = TaskKey[
-      Attributed[Seq[VirtualScalaJSIRFile with RelativeVirtualFile]]](
+    val scalaJSIR = TaskKey[Attributed[
+      Seq[VirtualScalaJSIRFile with RelativeVirtualFile]]](
       "scalaJSIR",
       "All the *.sjsir files on the classpath",
       CTask)
 
-    val scalaJSNativeLibraries = TaskKey[
-      Attributed[Seq[VirtualJSFile with RelativeVirtualFile]]](
+    val scalaJSNativeLibraries = TaskKey[Attributed[
+      Seq[VirtualJSFile with RelativeVirtualFile]]](
       "scalaJSNativeLibraries",
       "All the *.js files on the classpath",
       CTask)
@@ -160,8 +158,8 @@ object ScalaJSPlugin extends AutoPlugin {
       "Writes the JS_DEPENDENCIES file.",
       DTask)
 
-    val jsDependencyManifests = TaskKey[
-      Attributed[Traversable[JSDependencyManifest]]](
+    val jsDependencyManifests = TaskKey[Attributed[
+      Traversable[JSDependencyManifest]]](
       "jsDependencyManifests",
       "All the JS_DEPENDENCIES on the classpath",
       DTask)
@@ -309,13 +307,10 @@ object ScalaJSPlugin extends AutoPlugin {
     super.globalSettings ++ Seq(
       scalaJSStage := Stage.FastOpt,
       scalaJSUseRhino := true,
-      scalaJSClearCacheStats := globalIRCache.clearStats()
-    )
+      scalaJSClearCacheStats := globalIRCache.clearStats())
   }
 
   override def projectSettings: Seq[Setting[_]] =
-    (
-      scalaJSAbstractSettings ++
-        scalaJSEcosystemSettings
-    )
+    (scalaJSAbstractSettings ++
+      scalaJSEcosystemSettings)
 }

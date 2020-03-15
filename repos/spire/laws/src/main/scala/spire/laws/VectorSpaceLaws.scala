@@ -52,8 +52,7 @@ trait VectorSpaceLaws[V, A] extends Laws {
       name = "vector space",
       sl = _.field(V.scalar),
       vl = _.abGroup(V.additive),
-      parents = Seq(module)
-    )
+      parents = Seq(module))
 
   def metricSpace(implicit
       V: MetricSpace[V, A],
@@ -70,8 +69,7 @@ trait VectorSpaceLaws[V, A] extends Laws {
       "symmetric" → forAll((x: V, y: V) =>
         V.distance(x, y) === V.distance(y, x)),
       "triangle inequality" → forAll((x: V, y: V, z: V) =>
-        V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z)))
-    )
+        V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z))))
 
   def normedVectorSpace(implicit
       V: NormedVectorSpace[V, A],
@@ -84,15 +82,13 @@ trait VectorSpaceLaws[V, A] extends Laws {
       parents = Seq(vectorSpace, metricSpace),
       "scalable" → forAll((a: A, v: V) => a.abs * v.norm === (a.abs *: v).norm),
       "only 1 zero" → forAll((v: V) => // This is covered by metricSpace...
-        if (v === V.zero) v.norm === Rng[A].zero else v.norm > Rng[A].zero)
-    )
+        if (v === V.zero) v.norm === Rng[A].zero else v.norm > Rng[A].zero))
 
   def linearity(f: V => A)(implicit V: Module[V, A]) =
     new SimpleRuleSet(
       name = "linearity",
       "homogeneity" → forAll((r: A, v: V) => f(r *: v) === r * f(v)),
-      "additivity" → forAll((v: V, w: V) => f(v + w) === f(v) + f(w))
-    )
+      "additivity" → forAll((v: V, w: V) => f(v + w) === f(v) + f(w)))
 
   def innerProductSpace(implicit
       V: InnerProductSpace[V, A],
@@ -120,8 +116,8 @@ trait VectorSpaceLaws[V, A] extends Laws {
       val sl: scalarLaws.type => scalarLaws.RuleSet,
       val vl: vectorLaws.type => vectorLaws.RuleSet,
       val parents: Seq[SpaceProperties],
-      val props: (String, Prop)*
-  ) extends RuleSet {
+      val props: (String, Prop)*)
+      extends RuleSet {
     val bases = Seq("scalar" → sl(scalarLaws), "vector" → vl(vectorLaws))
   }
 

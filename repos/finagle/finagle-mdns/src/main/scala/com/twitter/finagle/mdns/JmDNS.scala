@@ -37,8 +37,7 @@ private class JmDNSAnnouncer extends MDNSAnnouncerIface {
       addr: InetSocketAddress,
       name: String,
       regType: String,
-      domain: String
-  ): Future[Announcement] = {
+      domain: String): Future[Announcement] = {
     val info = ServiceInfo.create(
       regType + "." + domain,
       name,

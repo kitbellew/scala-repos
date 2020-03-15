@@ -66,8 +66,7 @@ class ExampleFormConnectorSpec extends Specification with ConnectorTestUtil {
         "userId" -> "as34smg4",
         "event" -> "do_something",
         "anotherProperty1" -> "100",
-        "timestamp" -> "2015-01-02T00:30:12.984Z"
-      )
+        "timestamp" -> "2015-01-02T00:30:12.984Z")
 
       // expected converted Event JSON
       val expected = """

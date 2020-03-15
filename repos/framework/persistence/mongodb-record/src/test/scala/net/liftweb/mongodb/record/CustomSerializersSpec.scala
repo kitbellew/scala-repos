@@ -192,29 +192,23 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
         JsObj(("name", Str("Jill")), ("birthdate", Str("2010-11-03T00:08:00.000Z")))
       )*/
 
-      mother.children.asJValue mustEqual JArray(
-        List(
-          JObject(
-            List(
-              JField("name", JString("Jack")),
-              JField("birthdate", JString("2010-11-02T23:58:00.000Z"))
-            )),
-          JObject(
-            List(
-              JField("name", JString("Jill")),
-              JField("birthdate", JString("2010-11-03T00:08:00.000Z"))))
-        ))
+      mother.children.asJValue mustEqual JArray(List(
+        JObject(List(
+          JField("name", JString("Jack")),
+          JField("birthdate", JString("2010-11-02T23:58:00.000Z")))),
+        JObject(List(
+          JField("name", JString("Jill")),
+          JField("birthdate", JString("2010-11-03T00:08:00.000Z"))))
+      ))
       mother.children.toForm must beEmpty
       /*
       mother.firstBorn.asJs mustEqual
         JsObj(("name", Str("Jack")), ("birthdate", Str("2010-11-02T23:58:00.000Z")))
        */
       mother.firstBorn.asJValue mustEqual
-        JObject(
-          List(
-            JField("name", JString("Jack")),
-            JField("birthdate", JString("2010-11-02T23:58:00.000Z"))
-          ))
+        JObject(List(
+          JField("name", JString("Jack")),
+          JField("birthdate", JString("2010-11-02T23:58:00.000Z"))))
       mother.firstBorn.toForm must beEmpty
     }
 
@@ -250,25 +244,19 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
         JsObj(("name", Str("Jill")), ("birthdate", JsObj(("$dt", Str("2010-11-03T00:08:00.000Z")))))
       )*/
 
-      mother.children.asJValue mustEqual JArray(
-        List(
-          JObject(
-            List(
-              JField("name", JString("Jack")),
-              JField(
-                "birthdate",
-                JObject(
-                  List(JField("$dt", JString("2010-11-02T23:58:00.000Z")))))
-            )),
-          JObject(
-            List(
-              JField("name", JString("Jill")),
-              JField(
-                "birthdate",
-                JObject(
-                  List(JField("$dt", JString("2010-11-03T00:08:00.000Z")))))
-            ))
-        ))
+      mother.children.asJValue mustEqual JArray(List(
+        JObject(List(
+          JField("name", JString("Jack")),
+          JField(
+            "birthdate",
+            JObject(
+              List(JField("$dt", JString("2010-11-02T23:58:00.000Z"))))))),
+        JObject(List(
+          JField("name", JString("Jill")),
+          JField(
+            "birthdate",
+            JObject(List(JField("$dt", JString("2010-11-03T00:08:00.000Z")))))))
+      ))
       mother.children.toForm must beEmpty
 
       /*
@@ -277,13 +265,11 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
        */
 
       mother.firstBorn.asJValue mustEqual
-        JObject(
-          List(
-            JField("name", JString("Jack")),
-            JField(
-              "birthdate",
-              JObject(List(JField("$dt", JString("2010-11-02T23:58:00.000Z")))))
-          ))
+        JObject(List(
+          JField("name", JString("Jack")),
+          JField(
+            "birthdate",
+            JObject(List(JField("$dt", JString("2010-11-02T23:58:00.000Z")))))))
       mother.firstBorn.toForm must beEmpty
     }
 
@@ -420,8 +406,8 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       nfl.id.setFromString("garbage")
       nfl.id.valueBox mustEqual Failure("Invalid ObjectId string: garbage")
 
-      nfl.id.setFromJValue(
-        JObject(List(JField("$oid", JString(nflid.toString)))))
+      nfl.id.setFromJValue(JObject(
+        List(JField("$oid", JString(nflid.toString)))))
       nfl.id.value mustEqual nflid
 
       nfl.id.setFromAny(nflid)

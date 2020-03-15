@@ -56,15 +56,15 @@ class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
         (1 to 100) foreach { i ⇒
           batchable {
             if (callingThreadLock.get != 0)
-              p.tryFailure(
-                new IllegalStateException("Batch was executed inline!"))
+              p.tryFailure(new IllegalStateException(
+                "Batch was executed inline!"))
             else if (count.incrementAndGet == 100) p.trySuccess(()) //Done
             else if (lock.compareAndSet(0, 1)) {
               try Thread.sleep(10)
               finally lock.compareAndSet(1, 0)
             } else
-              p.tryFailure(
-                new IllegalStateException("Executed batch in parallel!"))
+              p.tryFailure(new IllegalStateException(
+                "Executed batch in parallel!"))
           }
         }
         callingThreadLock.compareAndSet(1, 0) // Disable the lock

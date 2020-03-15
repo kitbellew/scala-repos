@@ -57,8 +57,8 @@ object Decompiler {
             val bytes = parts.reduceLeft(Array.concat(_, _))
 
             val length = ByteCodecs.decode(bytes)
-            val scalaSig = ScalaSigAttributeParsers.parse(
-              ByteCode(bytes.take(length)))
+            val scalaSig = ScalaSigAttributeParsers.parse(ByteCode(
+              bytes.take(length)))
             scalaSig
         }
       case Some(other) => other

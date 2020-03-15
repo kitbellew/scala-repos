@@ -716,9 +716,7 @@ object tuple extends TupleInstances {
 private trait Tuple1Semigroup[A1] extends Semigroup[Tuple1[A1]] {
   implicit def _1: Semigroup[A1]
   def append(f1: Tuple1[A1], f2: => Tuple1[A1]) =
-    (
-      Tuple1(Semigroup[A1].append(f1._1, f2._1))
-    )
+    (Tuple1(Semigroup[A1].append(f1._1, f2._1)))
 }
 
 private trait Tuple2Semigroup[A1, A2] extends Semigroup[(A1, A2)] {
@@ -726,10 +724,7 @@ private trait Tuple2Semigroup[A1, A2] extends Semigroup[(A1, A2)] {
   implicit def _2: Semigroup[A2]
   def append(f1: (A1, A2), _f2: => (A1, A2)) = {
     lazy val f2 = _f2
-    (
-      _1.append(f1._1, f2._1),
-      _2.append(f1._2, f2._2)
-    )
+    (_1.append(f1._1, f2._1), _2.append(f1._2, f2._2))
   }
 }
 private trait Tuple3Semigroup[A1, A2, A3] extends Semigroup[(A1, A2, A3)] {
@@ -738,11 +733,7 @@ private trait Tuple3Semigroup[A1, A2, A3] extends Semigroup[(A1, A2, A3)] {
   implicit def _3: Semigroup[A3]
   def append(f1: (A1, A2, A3), _f2: => (A1, A2, A3)) = {
     lazy val f2 = _f2
-    (
-      _1.append(f1._1, f2._1),
-      _2.append(f1._2, f2._2),
-      _3.append(f1._3, f2._3)
-    )
+    (_1.append(f1._1, f2._1), _2.append(f1._2, f2._2), _3.append(f1._3, f2._3))
   }
 }
 private trait Tuple4Semigroup[A1, A2, A3, A4]
@@ -757,8 +748,7 @@ private trait Tuple4Semigroup[A1, A2, A3, A4]
       _1.append(f1._1, f2._1),
       _2.append(f1._2, f2._2),
       _3.append(f1._3, f2._3),
-      _4.append(f1._4, f2._4)
-    )
+      _4.append(f1._4, f2._4))
   }
 }
 private trait Tuple5Semigroup[A1, A2, A3, A4, A5]
@@ -775,8 +765,7 @@ private trait Tuple5Semigroup[A1, A2, A3, A4, A5]
       _2.append(f1._2, f2._2),
       _3.append(f1._3, f2._3),
       _4.append(f1._4, f2._4),
-      _5.append(f1._5, f2._5)
-    )
+      _5.append(f1._5, f2._5))
   }
 }
 private trait Tuple6Semigroup[A1, A2, A3, A4, A5, A6]
@@ -795,8 +784,7 @@ private trait Tuple6Semigroup[A1, A2, A3, A4, A5, A6]
       _3.append(f1._3, f2._3),
       _4.append(f1._4, f2._4),
       _5.append(f1._5, f2._5),
-      _6.append(f1._6, f2._6)
-    )
+      _6.append(f1._6, f2._6))
   }
 }
 private trait Tuple7Semigroup[A1, A2, A3, A4, A5, A6, A7]
@@ -819,8 +807,7 @@ private trait Tuple7Semigroup[A1, A2, A3, A4, A5, A6, A7]
       _4.append(f1._4, f2._4),
       _5.append(f1._5, f2._5),
       _6.append(f1._6, f2._6),
-      _7.append(f1._7, f2._7)
-    )
+      _7.append(f1._7, f2._7))
   }
 }
 private trait Tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8]
@@ -845,8 +832,7 @@ private trait Tuple8Semigroup[A1, A2, A3, A4, A5, A6, A7, A8]
       _5.append(f1._5, f2._5),
       _6.append(f1._6, f2._6),
       _7.append(f1._7, f2._7),
-      _8.append(f1._8, f2._8)
-    )
+      _8.append(f1._8, f2._8))
   }
 }
 private trait Tuple1Functor extends Traverse[Tuple1] {

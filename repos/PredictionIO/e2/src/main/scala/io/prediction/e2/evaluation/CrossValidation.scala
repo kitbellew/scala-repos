@@ -61,8 +61,7 @@ object CommonHelperFunctions {
       (
         trainingDataCreator(trainingPoints),
         evaluatorInfo,
-        testingPoints.map { d => (queryCreator(d), actualCreator(d)) }
-      )
+        testingPoints.map { d => (queryCreator(d), actualCreator(d)) })
     }
   }
 }

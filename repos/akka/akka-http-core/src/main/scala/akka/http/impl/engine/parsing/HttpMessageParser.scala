@@ -155,16 +155,15 @@ private[http] abstract class HttpMessageParser[
         } catch { case NotEnoughDataException ⇒ null }
       resultHeader match {
         case null ⇒
-          continue(input, lineStart)(
-            parseHeaderLinesAux(
-              headers,
-              headerCount,
-              ch,
-              clh,
-              cth,
-              teh,
-              e100c,
-              hh))
+          continue(input, lineStart)(parseHeaderLinesAux(
+            headers,
+            headerCount,
+            ch,
+            clh,
+            cth,
+            teh,
+            e100c,
+            hh))
 
         case EmptyHeader ⇒
           val close = HttpMessage.connectionCloseExpected(protocol, ch)
@@ -383,10 +382,9 @@ private[http] abstract class HttpMessageParser[
     if (remainingInputBytes > 0) {
       if (remainingInputBytes < remainingBodyBytes) {
         emit(EntityPart(input.drop(bodyStart).compact))
-        continue(
-          parseFixedLengthBody(
-            remainingBodyBytes - remainingInputBytes,
-            isLastMessage))
+        continue(parseFixedLengthBody(
+          remainingBodyBytes - remainingInputBytes,
+          isLastMessage))
       } else {
         val offset = bodyStart + remainingBodyBytes.toInt
         emit(EntityPart(input.slice(bodyStart, offset).compact))
@@ -439,10 +437,9 @@ private[http] abstract class HttpMessageParser[
       if (chunkSize > 0) {
         val chunkBodyEnd = cursor + chunkSize
         def result(terminatorLen: Int) = {
-          emit(
-            EntityChunk(
-              HttpEntity
-                .Chunk(input.slice(cursor, chunkBodyEnd).compact, extension)))
+          emit(EntityChunk(HttpEntity.Chunk(
+            input.slice(cursor, chunkBodyEnd).compact,
+            extension)))
           Trampoline(_ ⇒
             parseChunk(
               input,
@@ -567,10 +564,9 @@ private[http] abstract class HttpMessageParser[
       input: ByteString,
       bodyStart: Int,
       contentLength: Int) =
-    StrictEntityCreator(
-      HttpEntity.Strict(
-        contentType(cth),
-        input.slice(bodyStart, bodyStart + contentLength)))
+    StrictEntityCreator(HttpEntity.Strict(
+      contentType(cth),
+      input.slice(bodyStart, bodyStart + contentLength)))
 
   def defaultEntity[A <: ParserOutput](
       cth: Option[`Content-Type`],
@@ -616,10 +612,9 @@ private[http] object HttpMessageParser {
   type CompletionHandling = () ⇒ Option[ErrorOutput]
   val CompletionOk: CompletionHandling = () ⇒ None
   val CompletionIsMessageStartError: CompletionHandling = () ⇒
-    Some(
-      ParserOutput.MessageStartError(
-        StatusCodes.BadRequest,
-        ErrorInfo("Illegal HTTP message start")))
+    Some(ParserOutput.MessageStartError(
+      StatusCodes.BadRequest,
+      ErrorInfo("Illegal HTTP message start")))
   val CompletionIsEntityStreamError: CompletionHandling = () ⇒
     Some(ParserOutput.EntityStreamError(ErrorInfo("Entity stream truncation")))
 }

@@ -155,14 +155,12 @@ class ResidentTaskIntegrationTest
 
   test("Restart") { f =>
     Given("a resident app with 5 instances")
-    val app = f.createSuccessfully(
-      f.residentApp(
-        instances = 5,
-        // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
-        // probably related to our recycling of the task ID (but unconfirmed)
-        backoffDuration = 300.milliseconds
-      )
-    )
+    val app = f.createSuccessfully(f.residentApp(
+      instances = 5,
+      // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
+      // probably related to our recycling of the task ID (but unconfirmed)
+      backoffDuration = 300.milliseconds
+    ))
 
     When("we restart the app")
     val newVersion = f.restartSuccessfully(app)
@@ -180,14 +178,12 @@ class ResidentTaskIntegrationTest
 
   test("Config Change") { f =>
     Given("a resident app with 5 instances")
-    val app = f.createSuccessfully(
-      f.residentApp(
-        instances = 5,
-        // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
-        // probably related to our recycling of the task ID (but unconfirmed)
-        backoffDuration = 300.milliseconds
-      )
-    )
+    val app = f.createSuccessfully(f.residentApp(
+      instances = 5,
+      // FIXME: we need to retry starting tasks since there is a race-condition in Mesos,
+      // probably related to our recycling of the task ID (but unconfirmed)
+      backoffDuration = 300.milliseconds
+    ))
 
     When("we change the config")
     val newVersion =
@@ -270,22 +266,17 @@ class ResidentTaskIntegrationTest
       val persistentVolume: Volume = PersistentVolume(
         containerPath = containerPath,
         persistent = PersistentVolumeInfo(size = persistentVolumeSize),
-        mode = Mesos.Volume.Mode.RW
-      )
+        mode = Mesos.Volume.Mode.RW)
 
       val app = AppDefinition(
         appId,
         instances = instances,
-        residency = Some(
-          Residency(
-            Residency.defaultRelaunchEscalationTimeoutSeconds,
-            Residency.defaultTaskLostBehaviour
-          )),
-        container = Some(
-          Container(
-            `type` = Mesos.ContainerInfo.Type.MESOS,
-            volumes = Seq(persistentVolume)
-          )),
+        residency = Some(Residency(
+          Residency.defaultRelaunchEscalationTimeoutSeconds,
+          Residency.defaultTaskLostBehaviour)),
+        container = Some(Container(
+          `type` = Mesos.ContainerInfo.Type.MESOS,
+          volumes = Seq(persistentVolume))),
         cmd = Some(cmd),
         executor = "",
         // cpus, mem and disk are really small because otherwise we'll soon run out of reservable resources

@@ -66,8 +66,8 @@ object JavaResults
     Concurrent.unicast[A](
       onStart = (channel: Channel[A]) => onConnected.accept(channel),
       onComplete = onDisconnected.run(),
-      onError = (_: String, _: Input[A]) => onDisconnected.run()
-    )(internalContext)
+      onError = (_: String, _: Input[A]) => onDisconnected.run())(
+      internalContext)
   }
   //play.api.libs.iteratee.Enumerator.imperative[A](onComplete = onDisconnected)
   def chunked(
@@ -129,8 +129,7 @@ object JavaResultExtractor {
           Cookies
             .fromSetCookieHeader(
               responseHeader.headers.get(HeaderNames.SET_COOKIE))
-            .get(Session.COOKIE_NAME)
-        )
+            .get(Session.COOKIE_NAME))
         .data
         .asJava)
 
@@ -141,8 +140,7 @@ object JavaResultExtractor {
           Cookies
             .fromSetCookieHeader(
               responseHeader.headers.get(HeaderNames.SET_COOKIE))
-            .get(Flash.COOKIE_NAME)
-        )
+            .get(Flash.COOKIE_NAME))
         .data
         .asJava)
 

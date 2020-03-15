@@ -178,37 +178,23 @@ class OrcSourceSuite extends OrcSuite {
 
   test("SPARK-12218 Converting conjunctions into ORC SearchArguments") {
     // The `LessThan` should be converted while the `StringContains` shouldn't
-    assertResult(
-      """leaf-0 = (LESS_THAN a 10)
+    assertResult("""leaf-0 = (LESS_THAN a 10)
         |expr = leaf-0
-      """.stripMargin.trim
-    ) {
+      """.stripMargin.trim) {
       OrcFilters
-        .createFilter(
-          Array(
-            LessThan("a", 10),
-            StringContains("b", "prefix")
-          ))
+        .createFilter(Array(LessThan("a", 10), StringContains("b", "prefix")))
         .get
         .toString
     }
 
     // The `LessThan` should be converted while the whole inner `And` shouldn't
-    assertResult(
-      """leaf-0 = (LESS_THAN a 10)
+    assertResult("""leaf-0 = (LESS_THAN a 10)
         |expr = leaf-0
-      """.stripMargin.trim
-    ) {
+      """.stripMargin.trim) {
       OrcFilters
-        .createFilter(
-          Array(
-            LessThan("a", 10),
-            Not(
-              And(
-                GreaterThan("a", 1),
-                StringContains("b", "prefix")
-              ))
-          ))
+        .createFilter(Array(
+          LessThan("a", 10),
+          Not(And(GreaterThan("a", 1), StringContains("b", "prefix")))))
         .get
         .toString
     }

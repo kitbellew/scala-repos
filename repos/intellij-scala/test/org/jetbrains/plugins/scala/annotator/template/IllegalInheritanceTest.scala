@@ -14,27 +14,20 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
       messages("trait X; trait T { self: X => }; class C extends X with T"))
     assertNothing(
       messages("trait X; trait T { self: X => }; class C extends T with X"))
-    assertNothing(
-      messages(
-        "trait X; trait T { self: X => }; class C extends T { self: X => }"))
+    assertNothing(messages(
+      "trait X; trait T { self: X => }; class C extends T { self: X => }"))
     assertNothing(messages(
       "trait X; trait Y extends X; trait T { self: X => }; class C extends T { self: Y => }"))
-    assertNothing(
-      messages(
-        "trait U; trait X[A]; trait Y[A] { self: X[A] => }; class Z extends X[U]; " +
-          "object A {new Z with Y[U]}"))
-    assertNothing(
-      messages(
-        """
+    assertNothing(messages(
+      "trait U; trait X[A]; trait Y[A] { self: X[A] => }; class Z extends X[U]; " +
+        "object A {new Z with Y[U]}"))
+    assertNothing(messages("""
         |object C {
         |  trait A {self: X => };
         |  trait X extends A
         |}
-      """.stripMargin
-      ))
-    assertNothing(
-      messages(
-        """
+      """.stripMargin))
+    assertNothing(messages("""
         |object S {
         |  trait A
         |  trait B {
@@ -45,8 +38,7 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
         |    this: C =>
         |  }
         |}
-      """.stripMargin
-      ))
+      """.stripMargin))
   }
 
   def testIllegalInheritance() {
@@ -57,9 +49,8 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
     }
 
     val m2 = IllegalInheritance.Message("Holder.C", "Holder.X")
-    assertMatches(
-      messages(
-        "trait X; trait T { self: X => }; class C extends Object with T")) {
+    assertMatches(messages(
+      "trait X; trait T { self: X => }; class C extends Object with T")) {
       case Error("T", _) :: Nil =>
     }
 

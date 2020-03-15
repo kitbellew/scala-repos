@@ -171,12 +171,11 @@ class ClusterDomainEventPublisherSpec
         subscriber.ref,
         InitialStateAsEvents,
         Set(classOf[MemberEvent], classOf[ReachabilityEvent]))
-      subscriber.receiveN(4).toSet should be(
-        Set(
-          MemberUp(aUp),
-          MemberUp(cUp),
-          MemberUp(dUp),
-          MemberExited(bExiting)))
+      subscriber.receiveN(4).toSet should be(Set(
+        MemberUp(aUp),
+        MemberUp(cUp),
+        MemberUp(dUp),
+        MemberExited(bExiting)))
       subscriber.expectMsg(UnreachableMember(dUp))
       subscriber.expectNoMsg(500 millis)
     }

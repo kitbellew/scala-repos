@@ -96,9 +96,9 @@ object ScalaRefactoringUtil {
     var end = editor.getSelectionModel.getSelectionEnd
     if (start == end) return
     while (file.findElementAt(start).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(start)
-             .isInstanceOf[PsiComment] && trimComments) ||
+           (
+             file.findElementAt(start).isInstanceOf[PsiComment] && trimComments
+           ) ||
            file.getText.charAt(start) == '\n' ||
            file.getText.charAt(start) == ' ') start = start + 1
     while (file.findElementAt(end - 1).isInstanceOf[PsiWhiteSpace] ||
@@ -1167,10 +1167,9 @@ object ScalaRefactoringUtil {
             prevElemType) || ScalaTokenTypes.KEYWORDS.contains(prevElemType)
         }
         shift =
-          pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (if (afterWord)
-                                                                                    1
-                                                                                  else
-                                                                                    0)
+          pars.getTextRange.getStartOffset - inner.getTextRange.getStartOffset + (
+            if (afterWord) 1 else 0
+          )
         document.replaceString(
           textRange.getStartOffset,
           textRange.getEndOffset,
@@ -1284,9 +1283,10 @@ object ScalaRefactoringUtil {
       }
       result || needBraces(parExpr, nextParent)
     }
-    val interpolated = Option(
-      PsiTreeUtil
-        .getParentOfType(elem, classOf[ScInterpolatedStringLiteral], false))
+    val interpolated = Option(PsiTreeUtil.getParentOfType(
+      elem,
+      classOf[ScInterpolatedStringLiteral],
+      false))
     val expr = interpolated getOrElse PsiTreeUtil.getParentOfType(
       elem,
       classOf[ScExpression],

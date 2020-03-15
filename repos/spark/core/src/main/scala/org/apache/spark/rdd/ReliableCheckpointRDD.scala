@@ -35,14 +35,14 @@ import org.apache.spark.util.{SerializableConfiguration, Utils}
 private[spark] class ReliableCheckpointRDD[T: ClassTag](
     sc: SparkContext,
     val checkpointPath: String,
-    _partitioner: Option[Partitioner] = None
-) extends CheckpointRDD[T](sc) {
+    _partitioner: Option[Partitioner] = None)
+    extends CheckpointRDD[T](sc) {
 
   @transient private val hadoopConf = sc.hadoopConfiguration
   @transient private val cpath = new Path(checkpointPath)
   @transient private val fs = cpath.getFileSystem(hadoopConf)
-  private val broadcastedConf = sc.broadcast(
-    new SerializableConfiguration(hadoopConf))
+  private val broadcastedConf = sc.broadcast(new SerializableConfiguration(
+    hadoopConf))
 
   // Fail fast if checkpoint directory does not exist
   require(
@@ -79,8 +79,8 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     // Fail fast if input files are invalid
     inputFiles.zipWithIndex.foreach {
       case (path, i) =>
-        if (!path.toString.endsWith(
-              ReliableCheckpointRDD.checkpointFileName(i))) {
+        if (!path.toString.endsWith(ReliableCheckpointRDD.checkpointFileName(
+              i))) {
           throw new SparkException(s"Invalid checkpoint file: $path")
         }
     }
@@ -92,10 +92,9 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     */
   protected override def getPreferredLocations(
       split: Partition): Seq[String] = {
-    val status = fs.getFileStatus(
-      new Path(
-        checkpointPath,
-        ReliableCheckpointRDD.checkpointFileName(split.index)))
+    val status = fs.getFileStatus(new Path(
+      checkpointPath,
+      ReliableCheckpointRDD.checkpointFileName(split.index)))
     val locations = fs.getFileBlockLocations(status, 0, status.getLen)
     locations.headOption.toList.flatMap(_.getHosts).filter(_ != "localhost")
   }
@@ -142,8 +141,8 @@ private[spark] object ReliableCheckpointRDD extends Logging {
     }
 
     // Save to file, and reload it as an RDD
-    val broadcastedConf = sc.broadcast(
-      new SerializableConfiguration(sc.hadoopConfiguration))
+    val broadcastedConf = sc.broadcast(new SerializableConfiguration(
+      sc.hadoopConfiguration))
     // TODO: This is expensive because it computes the RDD again unnecessarily (SPARK-8582)
     sc.runJob(
       originalRDD,

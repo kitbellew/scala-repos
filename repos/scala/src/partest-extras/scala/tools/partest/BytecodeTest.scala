@@ -126,8 +126,8 @@ abstract class BytecodeTest {
     val classBytes: InputStream = classpath
       .findClassFile(name)
       .map(_.input)
-      .getOrElse(
-        sys.error(s"failed to load class '$name'; classpath = $classpath"))
+      .getOrElse(sys.error(
+        s"failed to load class '$name'; classpath = $classpath"))
 
     val cr = new ClassReader(classBytes)
     val cn = new ClassNode()

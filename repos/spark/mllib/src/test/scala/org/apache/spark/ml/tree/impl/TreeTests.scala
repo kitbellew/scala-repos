@@ -165,14 +165,13 @@ private[ml] object TreeTests extends SparkFunSuite {
     * Create some toy data for testing feature importances.
     */
   def featureImportanceData(sc: SparkContext): RDD[LabeledPoint] =
-    sc.parallelize(
-      Seq(
-        new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 1)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 1, 0)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0)),
-        new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 0)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0))
-      ))
+    sc.parallelize(Seq(
+      new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 1)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 1, 0)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0)),
+      new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 0)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0))
+    ))
 
   /**
     * Mapping from all Params to valid settings which differ from the defaults.

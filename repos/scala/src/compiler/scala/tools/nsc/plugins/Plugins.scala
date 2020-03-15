@@ -80,7 +80,9 @@ trait Plugins { global: Global =>
         fail("[disabling plugin: %s]")
       else if (!commonPhases.isEmpty)
         fail(
-          "[skipping plugin %s because it repeats phase names: " + (commonPhases mkString ", ") + "]")
+          "[skipping plugin %s because it repeats phase names: " + (
+            commonPhases mkString ", "
+          ) + "]")
       else {
         note("[loaded plugin %s]")
         withPlug

@@ -19,17 +19,11 @@ object PlayTime {
       case Some(pt) => fuccess(pt)
       case None => {
           gameTube.coll
-            .find(
-              BSONDocument(
-                Game.BSONFields.playerUids -> user.id,
-                Game.BSONFields.status -> BSONDocument(
-                  "$gte" -> chess.Status.Mate.id)
-              ))
-            .projection(
-              BSONDocument(
-                moveTimeField -> true,
-                tvField -> true
-              ))
+            .find(BSONDocument(
+              Game.BSONFields.playerUids -> user.id,
+              Game.BSONFields.status -> BSONDocument(
+                "$gte" -> chess.Status.Mate.id)))
+            .projection(BSONDocument(moveTimeField -> true, tvField -> true))
             .cursor[BSONDocument]()
             .enumerate() |>>> (Iteratee.fold(User.PlayTime(0, 0)) {
             case (pt, doc) =>

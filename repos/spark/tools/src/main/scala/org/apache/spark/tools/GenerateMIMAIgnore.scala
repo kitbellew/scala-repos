@@ -71,9 +71,8 @@ object GenerateMIMAIgnore {
         lazy val indirectlyPrivateSpark = {
           val maybeOuter = className.toString.takeWhile(_ != '$')
           if (maybeOuter != className) {
-            isPackagePrivate(
-              mirror.classSymbol(
-                Class.forName(maybeOuter, false, classLoader))) ||
+            isPackagePrivate(mirror.classSymbol(
+              Class.forName(maybeOuter, false, classLoader))) ||
             isPackagePrivateModule(mirror.staticModule(maybeOuter))
           } else { false }
         }

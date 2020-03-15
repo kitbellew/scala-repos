@@ -35,10 +35,8 @@ object MonoidTest extends SpecLite {
     ss.toList must_=== (List("1", "2", "4", "8"))
   }
 
-  "intercalate empty" in (
-    Foldable[List].intercalate(List[String](), "oops")
-      must_=== ("")
-  )
+  "intercalate empty" in (Foldable[List].intercalate(List[String](), "oops")
+    must_=== (""))
 
   "intercalate" in {
     val xs = List(

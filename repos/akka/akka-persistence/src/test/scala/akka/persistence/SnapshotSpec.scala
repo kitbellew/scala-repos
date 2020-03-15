@@ -93,12 +93,11 @@ class SnapshotSpec
 
   "A persistentActor" must {
     "recover state starting from the most recent snapshot" in {
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          Recovery(),
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        Recovery(),
+        testActor))
       val persistenceId = name
 
       expectMsgPF() {
@@ -113,12 +112,11 @@ class SnapshotSpec
       expectMsg(RecoveryCompleted)
     }
     "recover state starting from the most recent snapshot matching an upper sequence number bound" in {
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          Recovery(toSequenceNr = 3),
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        Recovery(toSequenceNr = 3),
+        testActor))
       val persistenceId = name
 
       expectMsgPF() {
@@ -132,12 +130,11 @@ class SnapshotSpec
       expectMsg(RecoveryCompleted)
     }
     "recover state starting from the most recent snapshot matching an upper sequence number bound (without further replay)" in {
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          Recovery(toSequenceNr = 4),
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        Recovery(toSequenceNr = 4),
+        testActor))
       val persistenceId = name
 
       persistentActor ! "done"
@@ -155,12 +152,11 @@ class SnapshotSpec
     "recover state starting from the most recent snapshot matching criteria" in {
       val recovery = Recovery(
         fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2))
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
       val persistenceId = name
 
       expectMsgPF() {
@@ -180,12 +176,11 @@ class SnapshotSpec
       val recovery = Recovery(
         fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 2),
         toSequenceNr = 3)
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
       val persistenceId = name
 
       expectMsgPF() {
@@ -202,12 +197,11 @@ class SnapshotSpec
       val recovery = Recovery(
         fromSnapshot = SnapshotSelectionCriteria.None,
         toSequenceNr = 3)
-      val persistentActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor = system.actorOf(Props(
+        classOf[LoadSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
 
       expectMsg("a-1")
       expectMsg("b-2")
@@ -219,12 +213,11 @@ class SnapshotSpec
 
       // recover persistentActor from 3rd snapshot and then delete snapshot
       val recovery = Recovery(toSequenceNr = 4)
-      val persistentActor1 = system.actorOf(
-        Props(
-          classOf[DeleteSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor1 = system.actorOf(Props(
+        classOf[DeleteSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
       val persistenceId = name
 
       system.eventStream.subscribe(deleteProbe.ref, classOf[DeleteSnapshot])
@@ -249,12 +242,11 @@ class SnapshotSpec
       }
 
       // recover persistentActor from 2nd snapshot (3rd was deleted) plus replayed messages
-      val persistentActor2 = system.actorOf(
-        Props(
-          classOf[DeleteSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor2 = system.actorOf(Props(
+        classOf[DeleteSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
 
       expectMsgPF(hint =
         "" + SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, 0), null)) {
@@ -272,12 +264,11 @@ class SnapshotSpec
       val deleteProbe = TestProbe()
 
       val recovery = Recovery(toSequenceNr = 4)
-      val persistentActor1 = system.actorOf(
-        Props(
-          classOf[DeleteSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor1 = system.actorOf(Props(
+        classOf[DeleteSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
       val persistenceId = name
 
       system.eventStream.subscribe(deleteProbe.ref, classOf[DeleteSnapshots])
@@ -296,12 +287,11 @@ class SnapshotSpec
       expectMsgPF() { case DeleteSnapshotsSuccess(`criteria`) ⇒ }
 
       // recover persistentActor from replayed messages (all snapshots deleted)
-      val persistentActor2 = system.actorOf(
-        Props(
-          classOf[DeleteSnapshotTestPersistentActor],
-          name,
-          recovery,
-          testActor))
+      val persistentActor2 = system.actorOf(Props(
+        classOf[DeleteSnapshotTestPersistentActor],
+        name,
+        recovery,
+        testActor))
 
       expectMsg("a-1")
       expectMsg("b-2")

@@ -24,8 +24,8 @@ object Jetty9Test {
     val jsEnv = (loadedJSEnv in Compile).value.asInstanceOf[ComJSEnv]
     val jsConsole = scalaJSConsole.value
 
-    val code = new MemVirtualJSFile("runner.js").withContent(
-      """
+    val code = new MemVirtualJSFile("runner.js")
+      .withContent("""
       scalajsCom.init(function(msg) {
         jQuery.ajax({
           url: msg,
@@ -39,8 +39,7 @@ object Jetty9Test {
           }
         });
       });
-      """
-    )
+      """)
 
     val runner = jsEnv.comRunner(code)
 

@@ -92,9 +92,11 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         path: Path,
         readMode: ReadMode): Resource => EitherT[M, ResourceError, Resource] = {
       resource =>
-        logger.debug(
-          "Verifying access to %s as %s on %s (mode %s)"
-            .format(resource, apiKey, path, readMode))
+        logger.debug("Verifying access to %s as %s on %s (mode %s)".format(
+          resource,
+          apiKey,
+          path,
+          readMode))
         import AccessMode._
         val permissions: Set[Permission] = resource.authorities.accountIds map {
           accountId =>
@@ -113,10 +115,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             Some(clock.now())) map {
             case true => \/.right(resource)
             case false =>
-              \/.left(
-                permissionsError(
-                  "API key %s does not provide %s permission to resource at path %s."
-                    .format(apiKey, readMode.name, path.path)))
+              \/.left(permissionsError(
+                "API key %s does not provide %s permission to resource at path %s."
+                  .format(apiKey, readMode.name, path.path)))
           }
         }
     }
@@ -235,9 +236,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
       EitherT.right(vfs.currentVersion(cachePath)) flatMap {
         case Some(VersionEntry(id, _, timestamp))
             if maxAge.forall(ms => timestamp.plus(ms) >= clock.instant()) =>
-          logger.debug(
-            "Found fresh cache entry (%s) for query on %s"
-              .format(timestamp, path))
+          logger.debug("Found fresh cache entry (%s) for query on %s".format(
+            timestamp,
+            path))
           val recacheAction =
             (
               recacheAfter
@@ -261,8 +262,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                     cachePath,
                     None) leftMap invalidState
                   _ = logger.debug(
-                    "Cache refresh scheduled for query %s, as id %s."
-                      .format(path.path, taskId))
+                    "Cache refresh scheduled for query %s, as id %s.".format(
+                      path.path,
+                      taskId))
                 } yield taskId
               }
 
@@ -329,26 +331,22 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                   /// here, we just terminate the computation early if no write permissions are available.
                   if (pset.nonEmpty) \/.right(PrecogUnit)
                   else
-                    \/.left(
-                      storageError(
-                        PermissionsError(
-                          "API key %s has no permission to write to the caching path %s."
-                            .format(ctx.apiKey, cachePath)))
-                    )
+                    \/.left(storageError(PermissionsError(
+                      "API key %s has no permission to write to the caching path %s."
+                        .format(ctx.apiKey, cachePath))))
                 }
               }
-              job <- EitherT.right(
-                jobManager.createJob(
-                  ctx.apiKey,
-                  jobName getOrElse "Cache run for path %s".format(path.path),
-                  "Cached query run.",
-                  None,
-                  Some(clock.now()))
-              )
+              job <- EitherT.right(jobManager.createJob(
+                ctx.apiKey,
+                jobName getOrElse "Cache run for path %s".format(path.path),
+                "Cached query run.",
+                None,
+                Some(clock.now())))
             } yield {
               logger.debug(
-                "Building caching stream for path %s writing to %s"
-                  .format(path.path, cachePath.path))
+                "Building caching stream for path %s writing to %s".format(
+                  path.path,
+                  cachePath.path))
               // FIXME: determination of authorities with which to write the cached data needs to be implemented;
               // for right now, simply using the authorities with which the query itself was written is probably
               // best.
@@ -427,8 +425,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
 
             case None =>
               logger.debug(
-                "Persist stream for query by %s writing to %s complete."
-                  .format(apiKey, path.path))
+                "Persist stream for query by %s writing to %s complete.".format(
+                  apiKey,
+                  path.path))
               None.point[M]
           }
       }

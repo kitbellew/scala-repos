@@ -634,7 +634,9 @@ trait EvaluatorModule
             case (l, r) => CoproductProvenance(l, r)
           }
 
-          merged ++ (leftRec drop merged.length) ++ (rightRec drop merged.length)
+          merged ++ (leftRec drop merged.length) ++ (
+            rightRec drop merged.length
+          )
         }
 
         case prov => prov :: Nil

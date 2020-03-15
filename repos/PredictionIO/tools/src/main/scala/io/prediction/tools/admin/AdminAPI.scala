@@ -126,10 +126,7 @@ class AdminServerActor(val commandClient: CommandClient) extends Actor {
   }
 }
 
-case class AdminServerConfig(
-    ip: String = "localhost",
-    port: Int = 7071
-)
+case class AdminServerConfig(ip: String = "localhost", port: Int = 7071)
 
 object AdminServer {
   def createAdminServer(config: AdminServerConfig): Unit = {
@@ -138,8 +135,7 @@ object AdminServer {
     val commandClient = new CommandClient(
       appClient = Storage.getMetaDataApps,
       accessKeyClient = Storage.getMetaDataAccessKeys,
-      eventClient = Storage.getLEvents()
-    )
+      eventClient = Storage.getLEvents())
 
     val serverActor = system.actorOf(
       Props(classOf[AdminServerActor], commandClient),

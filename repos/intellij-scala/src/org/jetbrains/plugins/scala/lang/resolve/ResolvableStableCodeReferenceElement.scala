@@ -176,7 +176,8 @@ trait ResolvableStableCodeReferenceElement
         val fromType = s.subst(
           typed
             .getType(TypingContext.empty)
-            .getOrElse(return
+            .getOrElse(
+              return
             ))
         processor.processType(
           fromType,
@@ -261,10 +262,9 @@ trait ResolvableStableCodeReferenceElement
         x = true
         //todo: improve checking for this and super
         val refText: String = ref.getText
-        if (!refText.contains("this") && !refText.contains("super") && (
-              refText.contains(".") || ref.getContext
-                .isInstanceOf[ScStableCodeReferenceElement]
-            )) {
+        if (!refText.contains("this") && !refText
+              .contains("super") && (refText.contains(".") || ref.getContext
+              .isInstanceOf[ScStableCodeReferenceElement])) {
           //so this is full qualified reference => findClass, or findPackage
           val facade = JavaPsiFacade.getInstance(getProject)
           val manager = ScalaPsiManager.instance(getProject)

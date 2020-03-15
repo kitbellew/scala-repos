@@ -107,8 +107,7 @@ private[finagle] object Handshake {
       trans: Transport[ChannelBuffer, ChannelBuffer],
       version: Short,
       headers: Headers,
-      negotiate: Negotiator
-  ): Transport[Message, Message] = {
+      negotiate: Negotiator): Transport[Message, Message] = {
     // Since the handshake happens at the start of a session, we can safely
     // enc/dec messages without having to worry about any special session
     // features.
@@ -168,8 +167,7 @@ private[finagle] object Handshake {
       trans: Transport[ChannelBuffer, ChannelBuffer],
       version: Short,
       headers: Headers => Headers,
-      negotiate: Negotiator
-  ): Transport[Message, Message] = {
+      negotiate: Negotiator): Transport[Message, Message] = {
     // Since the handshake happens at the start of a session, we can safely enc/dec
     // messages without having to worry about any special features (e.g. fragments).
     val msgTrans = trans.map(Message.encode, Message.decode)

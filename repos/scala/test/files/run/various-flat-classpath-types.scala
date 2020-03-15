@@ -180,16 +180,15 @@ object Test {
       zipsDir.path + "/Src.zip",
       jarsDir.path + "/Src.jar")
 
-    compiler.process(
-      Array(
-        classPathImplFlag,
-        "-cp",
-        classPath,
-        "-sourcepath",
-        sourcePath,
-        "-d",
-        outDir.path,
-        s"${srcDir.path}/Main.scala"))
+    compiler.process(Array(
+      classPathImplFlag,
+      "-cp",
+      classPath,
+      "-sourcepath",
+      sourcePath,
+      "-d",
+      outDir.path,
+      s"${srcDir.path}/Main.scala"))
   }
 
   private def runApp(): Unit = {
@@ -234,15 +233,14 @@ object Test {
       baseFileName: String,
       destination: JFile = outDir): Unit = {
     val srcDirPath = srcDir.path
-    compiler.process(
-      Array(
-        classPathImplFlag,
-        "-cp",
-        javaClassPath,
-        "-d",
-        destination.path,
-        s"$srcDirPath/$baseFileName.scala",
-        s"$srcDirPath/nested/Nested$baseFileName.scala"))
+    compiler.process(Array(
+      classPathImplFlag,
+      "-cp",
+      javaClassPath,
+      "-d",
+      destination.path,
+      s"$srcDirPath/$baseFileName.scala",
+      s"$srcDirPath/nested/Nested$baseFileName.scala"))
   }
 
   private def cleanDir(dir: JFile): Unit =

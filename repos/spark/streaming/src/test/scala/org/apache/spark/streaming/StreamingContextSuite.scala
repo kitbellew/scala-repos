@@ -114,8 +114,10 @@ class StreamingContextSuite
     addInputStream(ssc1).register()
     ssc1.start()
     val cp = new Checkpoint(ssc1, Time(1000))
-    assert(Utils.timeStringAsSeconds(
-      cp.sparkConfPairs.toMap.getOrElse("spark.dummyTimeConfig", "-1")) === 10)
+    assert(
+      Utils.timeStringAsSeconds(cp.sparkConfPairs.toMap.getOrElse(
+        "spark.dummyTimeConfig",
+        "-1")) === 10)
     ssc1.stop()
     val newCp = Utils.deserialize[Checkpoint](Utils.serialize(cp))
     assert(
@@ -324,8 +326,7 @@ class StreamingContextSuite
       assert(
         TestReceiver.counter.get() == runningCount + 1,
         "Received records = " + TestReceiver.counter.get() + ", " +
-          "processed records = " + runningCount
-      )
+          "processed records = " + runningCount)
       Thread.sleep(100)
     }
   }
@@ -735,9 +736,9 @@ class StreamingContextSuite
   }
 
   test("multiple streaming contexts") {
-    sc = new SparkContext(
-      conf.clone
-        .set("spark.streaming.clock", "org.apache.spark.util.ManualClock"))
+    sc = new SparkContext(conf.clone.set(
+      "spark.streaming.clock",
+      "org.apache.spark.util.ManualClock"))
     ssc = new StreamingContext(sc, Seconds(1))
     val input = addInputStream(ssc)
     input.foreachRDD { rdd => rdd.count }
@@ -821,10 +822,9 @@ class StreamingContextSuite
         creatingFunction _)
     }
     // StreamingContext.validate changes the message, so use "contains" here
-    assert(
-      e.getCause.getMessage.contains(
-        "queueStream doesn't support checkpointing. " +
-          "Please don't use queueStream when checkpointing is enabled."))
+    assert(e.getCause.getMessage.contains(
+      "queueStream doesn't support checkpointing. " +
+        "Please don't use queueStream when checkpointing is enabled."))
   }
 
   test("Creating an InputDStream but not using it should not crash") {

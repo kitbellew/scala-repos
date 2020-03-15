@@ -34,8 +34,8 @@ private object StackClientTest {
 
     protected def copy1(
         stack: Stack[ServiceFactory[String, String]] = this.stack,
-        params: Stack.Params = this.params
-    ): LocalCheckingStringClient = copy(localKey, stack, params)
+        params: Stack.Params = this.params): LocalCheckingStringClient =
+      copy(localKey, stack, params)
 
     protected type In = String
     protected type Out = String
@@ -44,12 +44,11 @@ private object StackClientTest {
       Netty3Transporter(StringClientPipeline, params)
 
     protected def newDispatcher(
-        transport: Transport[In, Out]
-    ): Service[String, String] = {
+        transport: Transport[In, Out]): Service[String, String] = {
       Contexts.local.get(localKey) match {
         case Some(s) =>
-          Service.constant(Future.exception(
-            new IllegalStateException("should not have a local context: " + s)))
+          Service.constant(Future.exception(new IllegalStateException(
+            "should not have a local context: " + s)))
         case None =>
           new SerialClientDispatcher(transport)
       }
@@ -286,8 +285,7 @@ class StackClientTest
 
     val stk = client.stack.replace(
       LoadBalancerFactory.role,
-      (_: ServiceFactory[String, String]) => stubLB
-    )
+      (_: ServiceFactory[String, String]) => stubLB)
 
     val cl = client
       .withStack(stk)
@@ -333,9 +331,7 @@ class StackClientTest
     new RequeueCtx {
       override val stubLB = new ServiceFactory[String, String] {
         def apply(conn: ClientConnection) =
-          Future.exception(
-            Failure.rejected("unable to establish session")
-          )
+          Future.exception(Failure.rejected("unable to establish session"))
         def close(deadline: Time) = Future.Done
       }
 
@@ -348,9 +344,7 @@ class StackClientTest
     new RequeueCtx {
       override val stubLB = new ServiceFactory[String, String] {
         def apply(conn: ClientConnection) =
-          Future.exception(
-            Failure("don't restart this!")
-          )
+          Future.exception(Failure("don't restart this!"))
         def close(deadline: Time) = Future.Done
       }
 
@@ -402,10 +396,9 @@ class StackClientTest
           dtab: Dtab,
           path: Path): Activity[NameTree[Name.Bound]] = {
         assert(dtab == baseDtab)
-        Activity.value(
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Name.bound(addr1))),
-            NameTree.Weighted(1d, NameTree.Leaf(Name.bound(addr2)))))
+        Activity.value(NameTree.Union(
+          NameTree.Weighted(1d, NameTree.Leaf(Name.bound(addr1))),
+          NameTree.Weighted(1d, NameTree.Leaf(Name.bound(addr2)))))
       }
     }
 
@@ -435,12 +428,11 @@ class StackClientTest
 
     val sr = new InMemoryStatsReceiver
 
-    val service = new FactoryToService(
-      stack.make(
-        Stack.Params.empty +
-          FactoryToService.Enabled(true) +
-          param.Stats(sr) +
-          BindingFactory.BaseDtab(() => baseDtab)))
+    val service = new FactoryToService(stack.make(
+      Stack.Params.empty +
+        FactoryToService.Enabled(true) +
+        param.Stats(sr) +
+        BindingFactory.BaseDtab(() => baseDtab)))
 
     intercept[ChannelWriteException] { Await.result(service(()), 5.seconds) }
 

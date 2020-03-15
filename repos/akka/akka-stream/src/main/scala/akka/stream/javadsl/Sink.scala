@@ -216,13 +216,12 @@ object Sink {
       ackMessage: Any,
       onCompleteMessage: Any,
       onFailureMessage: function.Function[Throwable, Any]): Sink[In, NotUsed] =
-    new Sink(
-      scaladsl.Sink.actorRefWithAck[In](
-        ref,
-        onInitMessage,
-        ackMessage,
-        onCompleteMessage,
-        onFailureMessage.apply))
+    new Sink(scaladsl.Sink.actorRefWithAck[In](
+      ref,
+      onInitMessage,
+      ackMessage,
+      onCompleteMessage,
+      onFailureMessage.apply))
 
   /**
     * Creates a `Sink` that is materialized to an [[akka.actor.ActorRef]] which points to an Actor
@@ -249,9 +248,9 @@ object Sink {
       output1: Sink[U, _],
       output2: Sink[U, _],
       rest: java.util.List[Sink[U, _]],
-      strategy: function.Function[
-        java.lang.Integer,
-        Graph[UniformFanOutShape[T, U], NotUsed]]): Sink[T, NotUsed] = {
+      strategy: function.Function[java.lang.Integer, Graph[
+        UniformFanOutShape[T, U],
+        NotUsed]]): Sink[T, NotUsed] = {
     import scala.collection.JavaConverters._
     val seq = if (rest != null) rest.asScala.map(_.asScala) else Seq()
     new Sink(

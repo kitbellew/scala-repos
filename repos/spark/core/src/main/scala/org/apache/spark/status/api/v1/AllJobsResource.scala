@@ -92,8 +92,7 @@ private[v1] object AllJobsResource {
         numActiveStages = job.numActiveStages,
         numCompletedStages = job.completedStageIndices.size,
         numSkippedStages = job.numSkippedStages,
-        numFailedStages = job.numFailedStages
-      )
+        numFailedStages = job.numFailedStages)
     }
   }
 }

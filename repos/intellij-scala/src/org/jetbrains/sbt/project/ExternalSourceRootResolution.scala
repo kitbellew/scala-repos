@@ -66,18 +66,18 @@ trait ExternalSourceRootResolution { self: SbtProjectResolver =>
 
       val uniqueModuleDependencies =
         projects.flatMap(_.dependencies.modules).distinct
-      moduleNode.addAll(
-        createLibraryDependencies(uniqueModuleDependencies)(
-          moduleNode,
-          libraryNodes.map(_.data)))
+      moduleNode.addAll(createLibraryDependencies(uniqueModuleDependencies)(
+        moduleNode,
+        libraryNodes.map(_.data)))
 
       val uniqueProjectDependencies =
         projects.flatMap(_.dependencies.projects).distinct
       uniqueProjectDependencies.foreach { dependencyId =>
         val dependency = projectToModuleNode.values
           .find(_.getId == dependencyId.project)
-          .getOrElse(throw new ExternalSystemException(
-            "Cannot find project dependency: " + dependencyId.project))
+          .getOrElse(
+            throw new ExternalSystemException(
+              "Cannot find project dependency: " + dependencyId.project))
 
         val dependencyNode = new ModuleDependencyNode(moduleNode, dependency)
         dependencyNode.setScope(scopeFor(dependencyId.configuration))

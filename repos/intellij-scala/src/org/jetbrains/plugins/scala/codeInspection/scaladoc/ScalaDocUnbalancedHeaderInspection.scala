@@ -26,19 +26,20 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
 
         if (firstChildElementType == null) { return }
 
-        if (firstChildElementType == VALID_DOC_HEADER && (lastChildElementType == VALID_DOC_HEADER ||
-            lastChildElementType == DOC_HEADER)) {
+        if (firstChildElementType == VALID_DOC_HEADER && (
+              lastChildElementType == VALID_DOC_HEADER ||
+              lastChildElementType == DOC_HEADER
+            )) {
           if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength) {
-            holder.registerProblem(
-              holder.getManager.createProblemDescriptor(
-                s.getLastChild,
-                getDisplayName,
-                true,
-                ProblemHighlightType.GENERIC_ERROR,
-                isOnTheFly,
-                new ScalaDocHeaderBalanceQuickFix(
-                  s.getFirstChild,
-                  s.getLastChild)))
+            holder.registerProblem(holder.getManager.createProblemDescriptor(
+              s.getLastChild,
+              getDisplayName,
+              true,
+              ProblemHighlightType.GENERIC_ERROR,
+              isOnTheFly,
+              new ScalaDocHeaderBalanceQuickFix(
+                s.getFirstChild,
+                s.getLastChild)))
           }
 
           var sibl = s.getNextSibling
@@ -47,15 +48,14 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
                  sibl.getNode.getElementType != DOC_WHITESPACE) {
             val highlightedElement =
               if (s.getNextSibling != null) s.getNextSibling else s
-            holder.registerProblem(
-              holder.getManager.createProblemDescriptor(
-                highlightedElement,
-                highlightedElement,
-                "All text from header closing tag to end of line will be lost",
-                ProblemHighlightType.WEAK_WARNING,
-                isOnTheFly,
-                new ScalaDocMoveTextToNewLineQuickFix(firstSibl)
-              ))
+            holder.registerProblem(holder.getManager.createProblemDescriptor(
+              highlightedElement,
+              highlightedElement,
+              "All text from header closing tag to end of line will be lost",
+              ProblemHighlightType.WEAK_WARNING,
+              isOnTheFly,
+              new ScalaDocMoveTextToNewLineQuickFix(firstSibl)
+            ))
             sibl = sibl.getNextSibling
           }
         }
@@ -80,9 +80,9 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
         cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) { return }
 
-    cl.replace(
-      ScalaPsiElementFactory
-        .createDocHeaderElement(op.getText.length(), op.getManager))
+    cl.replace(ScalaPsiElementFactory.createDocHeaderElement(
+      op.getText.length(),
+      op.getManager))
   }
 }
 

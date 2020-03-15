@@ -318,13 +318,12 @@ class PinnedDispatcherConfigurator(
   private val threadPoolConfig: ThreadPoolConfig = configureExecutor() match {
     case e: ThreadPoolExecutorConfigurator ⇒ e.threadPoolConfig
     case other ⇒
-      prerequisites.eventStream.publish(
-        Warning(
-          "PinnedDispatcherConfigurator",
-          this.getClass,
-          "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config."
-            .format(config.getString("id"))
-        ))
+      prerequisites.eventStream.publish(Warning(
+        "PinnedDispatcherConfigurator",
+        this.getClass,
+        "PinnedDispatcher [%s] not configured to use ThreadPoolExecutor, falling back to default config."
+          .format(config.getString("id"))
+      ))
       ThreadPoolConfig()
   }
 

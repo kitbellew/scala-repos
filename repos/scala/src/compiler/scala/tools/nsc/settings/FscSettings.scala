@@ -55,8 +55,7 @@ class FscSettings(error: String => Unit) extends Settings(error) {
       server,
       port,
       preferIPv4,
-      idleMins
-    )
+      idleMins)
   val isFscSpecific: String => Boolean = fscSpecific map (_.name)
 
   /** If a setting (other than a PathSetting) represents a path or paths.
@@ -83,8 +82,8 @@ class FscSettings(error: String => Unit) extends Settings(error) {
   def absolutize() {
     userSetSettings foreach {
       case p: OutputSetting =>
-        p.outputDirs setSingleOutput AbstractFile.getDirectory(
-          absolutizePath(p.value))
+        p.outputDirs setSingleOutput AbstractFile.getDirectory(absolutizePath(
+          p.value))
       case p: PathSetting => p.value = ClassPath.map(p.value, absolutizePath)
       case p: StringSetting =>
         if (holdsPath(p)) p.value = absolutizePath(p.value)

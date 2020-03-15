@@ -19,10 +19,9 @@ class FlowSplitWhenSpec extends AkkaSpec {
 
   val settings = ActorMaterializerSettings(system)
     .withInputBuffer(initialSize = 2, maxSize = 2)
-    .withSubscriptionTimeoutSettings(
-      StreamSubscriptionTimeoutSettings(
-        StreamSubscriptionTimeoutTerminationMode.cancel,
-        1.second))
+    .withSubscriptionTimeoutSettings(StreamSubscriptionTimeoutSettings(
+      StreamSubscriptionTimeoutTerminationMode.cancel,
+      1.second))
 
   implicit val materializer = ActorMaterializer(settings)
 
@@ -272,9 +271,9 @@ class FlowSplitWhenSpec extends AkkaSpec {
         Source(1 to 100)
           .splitWhen(_ ⇒ true)
           .lift
-          .mapAsync(1)(
-            _.runWith(Sink.head)
-          ) // Please note that this line *also* implicitly asserts nonempty substreams
+          .mapAsync(1)(_.runWith(
+            Sink.head
+          )) // Please note that this line *also* implicitly asserts nonempty substreams
           .grouped(200)
           .runWith(Sink.head),
         3.second
@@ -300,10 +299,9 @@ class FlowSplitWhenSpec extends AkkaSpec {
     "fail stream if substream not materialized in time" in assertAllStagesStopped {
       val tightTimeoutMaterializer = ActorMaterializer(
         ActorMaterializerSettings(system)
-          .withSubscriptionTimeoutSettings(
-            StreamSubscriptionTimeoutSettings(
-              StreamSubscriptionTimeoutTerminationMode.cancel,
-              500.millisecond)))
+          .withSubscriptionTimeoutSettings(StreamSubscriptionTimeoutSettings(
+            StreamSubscriptionTimeoutTerminationMode.cancel,
+            500.millisecond)))
 
       val testSource = Source.single(1).concat(Source.maybe).splitWhen(_ ⇒ true)
 

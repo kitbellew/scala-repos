@@ -126,8 +126,8 @@ class TasksResourceTest
     val body = s"""{"ids": ["$taskId1", "$taskId2", "$taskId3"]}""".getBytes
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(
+      AppDefinition(appId)))
 
     When(s"kill task is called")
     val killTasks = taskResource.killTasks(
@@ -205,12 +205,11 @@ class TasksResourceTest
       groupManager,
       healthCheckManager,
       auth.auth,
-      auth.auth
-    )
+      auth.auth)
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(
+      AppDefinition(appId)))
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.empty
 
     When(s"kill task is called")
@@ -273,8 +272,7 @@ class TasksResourceTest
       groupManager,
       healthCheckManager,
       auth.auth,
-      auth.auth
-    )
+      auth.auth)
   }
 
 }

@@ -42,8 +42,8 @@ trait SchemasSpec[M[+_]]
   def testSingleSchema = {
     val expected = Set(
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JTextT, "c" -> JNullT)))
-    val trivialData = Stream.fill(100)(
-      JParser.parseUnsafe("""{ "a": 1, "b": "x", "c": null }"""))
+    val trivialData = Stream.fill(100)(JParser.parseUnsafe(
+      """{ "a": 1, "b": "x", "c": null }"""))
     val sample = SampleData(trivialData)
     val table = fromSample(sample, Some(10))
     table.schemas.copoint must_== expected
@@ -60,8 +60,7 @@ trait SchemasSpec[M[+_]]
   def testCrossSliceSchema = {
     val expected = Set(
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JTextT)),
-      JObjectFixedT(Map("a" -> JTextT, "b" -> JNumberT))
-    )
+      JObjectFixedT(Map("a" -> JTextT, "b" -> JNumberT)))
     val data =
       Stream.fill(10)(JParser.parseUnsafe("""{ "a": 1, "b": "2" }""")) ++
         Stream.fill(10)(JParser.parseUnsafe("""{ "a": "x", "b": 2 }"""))
@@ -73,10 +72,9 @@ trait SchemasSpec[M[+_]]
     val expected = Set(
       JObjectFixedT(Map("a" -> JArrayFixedT(Map.empty), "b" -> JTextT)),
       JObjectFixedT(Map("a" -> JNullT, "b" -> JTextT)),
-      JObjectFixedT(
-        Map(
-          "a" -> JArrayFixedT(Map(0 -> JNumberT, 1 -> JNumberT)),
-          "b" -> JArrayFixedT(Map(0 -> JTextT, 1 -> JObjectFixedT(Map.empty)))))
+      JObjectFixedT(Map(
+        "a" -> JArrayFixedT(Map(0 -> JNumberT, 1 -> JNumberT)),
+        "b" -> JArrayFixedT(Map(0 -> JTextT, 1 -> JObjectFixedT(Map.empty)))))
     )
     val data = Stream.tabulate(30) {
       case i if i % 3 == 0 => JParser.parseUnsafe("""{ "a": [], "b": "2" }""")
@@ -92,8 +90,7 @@ trait SchemasSpec[M[+_]]
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JNumberT)),
       JObjectFixedT(Map("a" -> JNumberT)),
       JObjectFixedT(Map("b" -> JNumberT)),
-      JObjectFixedT(Map.empty)
-    )
+      JObjectFixedT(Map.empty))
 
     val data = Stream.tabulate(100) {
       case i if i % 4 == 0 =>

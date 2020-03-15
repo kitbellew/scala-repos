@@ -35,8 +35,7 @@ object DeltaExamples extends App {
     Bar(true, "foo", Some(Bar(true, "bar", None)))
       .delta(Bar(false, "food", Some(Bar(true, "barf", None)))) ==
       false :: ("foo", "food") :: Inl(
-        Some(true :: ("bar", "barf") :: Inl(None) :: HNil)) :: HNil
-  )
+        Some(true :: ("bar", "barf") :: Inl(None) :: HNil)) :: HNil)
 }
 
 trait Delta[In] {
@@ -48,8 +47,7 @@ trait Delta[In] {
 trait Delta0 {
   implicit def generic[F, G](implicit
       gen: Generic.Aux[F, G],
-      genDelta: Lazy[Delta[G]]
-  ): Delta.Aux[F, genDelta.value.Out] =
+      genDelta: Lazy[Delta[G]]): Delta.Aux[F, genDelta.value.Out] =
     new Delta[F] {
       type Out = genDelta.value.Out
 
@@ -85,9 +83,8 @@ object Delta extends Delta0 {
         (before, after)
     }
 
-  implicit def optionDelta[T](implicit
-      deltaT: Lazy[Delta[T]]
-  ): Delta.Aux[Option[T], Option[deltaT.value.Out] :+: T :+: T :+: CNil] =
+  implicit def optionDelta[T](implicit deltaT: Lazy[Delta[T]])
+      : Delta.Aux[Option[T], Option[deltaT.value.Out] :+: T :+: T :+: CNil] =
     new Delta[Option[T]] {
       type Out = Option[deltaT.value.Out] :+: T :+: T :+: CNil
 
@@ -109,8 +106,8 @@ object Delta extends Delta0 {
 
   implicit def deriveHCons[H, T <: HList](implicit
       deltaH: Delta[H],
-      deltaT: Lazy[Delta[T] { type Out <: HList }]
-  ): Delta.Aux[H :: T, deltaH.Out :: deltaT.value.Out] =
+      deltaT: Lazy[Delta[T] { type Out <: HList }])
+      : Delta.Aux[H :: T, deltaH.Out :: deltaT.value.Out] =
     new Delta[H :: T] {
       type Out = deltaH.Out :: deltaT.value.Out
 

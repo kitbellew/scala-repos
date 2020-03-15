@@ -8,6 +8,5 @@ class Test {
   def slowFlow(
       f: Flow[String, String]#Repr[String]#Repr[String]#Repr[String]#Repr[
         String]#Repr[String]#Repr[String]#Repr[String]#Repr[String]#Repr[
-        String]#Repr[String]#Repr[String]
-  ) = { f.map }
+        String]#Repr[String]#Repr[String]) = { f.map }
 }

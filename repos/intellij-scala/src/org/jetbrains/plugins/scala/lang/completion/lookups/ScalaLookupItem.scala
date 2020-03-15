@@ -147,11 +147,9 @@ class ScalaLookupItem(
           if (isAssignment) {
             " = " + presentationString(fun.paramClauses, substitutor)
           } else {
-            tailText + (
-              if (!isOverloadedForClassName)
-                presentationString(fun.paramClauses, substitutor)
-              else "(...)"
-            ) + (
+            tailText + (if (!isOverloadedForClassName)
+                          presentationString(fun.paramClauses, substitutor)
+                        else "(...)") + (
               if (shouldImport && isClassName && containingClass != null)
                 " " + containingClass.getPresentation.getLocationString
               else if (isClassName && containingClass != null)
@@ -169,15 +167,13 @@ class ScalaLookupItem(
           .mkString
         presentation.setTailText(tailText + paramClausesText)
       case bind: ScBindingPattern =>
-        presentation.setTypeText(
-          presentationString(
-            bind.getType(TypingContext.empty).getOrAny,
-            substitutor))
+        presentation.setTypeText(presentationString(
+          bind.getType(TypingContext.empty).getOrAny,
+          substitutor))
       case f: ScFieldId =>
-        presentation.setTypeText(
-          presentationString(
-            f.getType(TypingContext.empty).getOrAny,
-            substitutor))
+        presentation.setTypeText(presentationString(
+          f.getType(TypingContext.empty).getOrAny,
+          substitutor))
       case param: ScParameter =>
         val str: String = presentationString(
           param.getRealParameterType(TypingContext.empty).getOrAny,
@@ -348,8 +344,7 @@ class ScalaLookupItem(
                     context.getEditor,
                     new Condition[PsiFile] {
                       def value(t: PsiFile): Boolean = t == context.getFile
-                    }
-                  )
+                    })
               }
             })
           }

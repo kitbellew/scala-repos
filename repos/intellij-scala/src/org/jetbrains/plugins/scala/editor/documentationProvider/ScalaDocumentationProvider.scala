@@ -573,8 +573,9 @@ object ScalaDocumentationProvider {
             .append(" ")
             .append(parameterName.substring(1, parameterName.length - 1))
             .append(" ")
-            .append(descriptionText
-              .substring(0, descriptionText.lastIndexOf("\n") + 1))
+            .append(descriptionText.substring(
+              0,
+              descriptionText.lastIndexOf("\n") + 1))
         } else {
           buffer
             .append(leadingAsterisks)
@@ -703,13 +704,11 @@ object ScalaDocumentationProvider {
     buffer.append(if (escape) escapeHtml(param.name) else param.name)
 
     val arrow = ScalaPsiUtil.functionArrow(param.getProject)
-    buffer.append(
-      parseType(
-        param,
-        t => {
-          (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(
-            t)
-        }))
+    buffer.append(parseType(
+      param,
+      t => {
+        (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(t)
+      }))
     if (param.isRepeatedParameter) buffer.append("*")
     if (param.isDefaultParam) {
       buffer.append(" = ")
@@ -814,8 +813,8 @@ object ScalaDocumentationProvider {
     def parseAnnotation(elem: ScAnnotation): String = {
       val res = new StringBuilder("@")
       val constr: ScConstructor = elem.constructor
-      res.append(
-        typeToString(constr.typeElement.getType(TypingContext.empty).getOrAny))
+      res.append(typeToString(
+        constr.typeElement.getType(TypingContext.empty).getOrAny))
 
       val attrs = elem.annotationExpr.getAnnotationParameters
       if (attrs.nonEmpty)
@@ -1050,7 +1049,9 @@ object ScalaDocumentationProvider {
             }
           case _
               if replaceWikiScheme.contains(element.getText) &&
-                (element.getParent.getFirstChild == element || element.getParent.getLastChild == element) =>
+                (
+                  element.getParent.getFirstChild == element || element.getParent.getLastChild == element
+                ) =>
             val prefix =
               if (element.getParent.getFirstChild == element) "<" else "</"
             result.append(prefix + replaceWikiScheme.get(element.getText).get)
@@ -1175,9 +1176,10 @@ object ScalaDocumentationProvider {
       case clazz: ScClass =>
         clazz.constructor match {
           case Some(x: ScPrimaryConstructor) =>
-            buffer.append(
-              StructureViewUtil
-                .getParametersAsString(x.parameterList, short = false, subst))
+            buffer.append(StructureViewUtil.getParametersAsString(
+              x.parameterList,
+              short = false,
+              subst))
           case None =>
         }
       case _ =>

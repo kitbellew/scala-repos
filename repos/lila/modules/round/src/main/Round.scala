@@ -78,9 +78,7 @@ private[round] final class Round(
         pov.game.goBerserk(color) ?? { progress =>
           messenger.system(
             pov.game,
-            (_.untranslated(
-              s"${pov.color.name.capitalize} is going berserk!"
-            )))
+            (_.untranslated(s"${pov.color.name.capitalize} is going berserk!")))
           GameRepo.save(progress) >> GameRepo.goBerserk(
             pov) inject progress.events
         }
@@ -171,9 +169,9 @@ private[round] final class Round(
           val progress = (pov.game withClock newClock) + Event.Clock(newClock)
           messenger.system(
             pov.game,
-            (_.untranslated(
-              "%s + %d seconds".format(!pov.color, moretimeDuration.toSeconds)
-            )))
+            (_.untranslated("%s + %d seconds".format(
+              !pov.color,
+              moretimeDuration.toSeconds))))
           GameRepo save progress inject progress.events
         }
       }
@@ -238,9 +236,8 @@ private[round] final class Round(
     handleGame(GameRepo game gameId)(op)
 
   protected def handle(playerId: String)(op: Pov => Fu[Events]): Funit =
-    handlePov(
-      (GameRepo pov PlayerRef(gameId, playerId))
-        .mon(_.round.move.segment.fetch))(op)
+    handlePov((GameRepo pov PlayerRef(gameId, playerId)).mon(
+      _.round.move.segment.fetch))(op)
 
   protected def handle(color: Color)(op: Pov => Fu[Events]): Funit =
     handlePov(GameRepo pov PovRef(gameId, color))(op)

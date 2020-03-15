@@ -154,8 +154,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       try {
         if (sym == RootPackage) { Some(root) }
         else if (sym.hasPackageFlag) { Some(fromSymbol(sym)) }
-        else if (!sym.nameString.contains(
-                   "$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
+        else if (!sym.nameString
+                   .contains("$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
           if (sym.isClass || sym.isTrait || sym.isModule ||
               sym.isModuleClass || sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))
@@ -189,8 +189,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           typeFullName(tpe),
           tpe.typeArgs.map(TypeInfo(_)),
           members,
-          symPos
-        )
+          symPos)
       }
       tpe match {
         case tpe: MethodType        => ArrowTypeInfo(tpe)
@@ -216,8 +215,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     def apply(params: Iterable[Symbol]): ParamSectionInfo = {
       new ParamSectionInfo(
         params.map { s => (s.nameString, TypeInfo(s.tpe)) },
-        params.exists(_.isImplicit)
-      )
+        params.exists(_.isImplicit))
     }
   }
 
@@ -243,8 +241,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         localName,
         locateSymbolPos(sym, PosNeededYes),
         TypeInfo(tpe, PosNeededAvail),
-        isArrowType(tpe)
-      )
+        isArrowType(tpe))
     }
   }
 
@@ -255,15 +252,8 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         tpeSig: CompletionSignature,
         isCallable: Boolean,
         relevance: Int,
-        toInsert: Option[String]
-    ) =
-      new CompletionInfo(
-        name,
-        tpeSig,
-        isCallable,
-        relevance,
-        toInsert
-      )
+        toInsert: Option[String]) =
+      new CompletionInfo(name, tpeSig, isCallable, relevance, toInsert)
 
     def fromSymbol(sym: Symbol, relevance: Int): CompletionInfo =
       CompletionInfo.fromSymbolAndType(sym, sym.tpe, relevance)
@@ -277,8 +267,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         completionSignatureForType(tpe),
         isArrowType(tpe.underlying),
         relevance,
-        None
-      )
+        None)
     }
 
   }
@@ -324,8 +313,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       new ArrowTypeInfo(
         tpe.toString(),
         TypeInfo(tpe.finalResultType),
-        paramSections
-      )
+        paramSections)
     }
 
     def nullInfo() = { new ArrowTypeInfo("NA", TypeInfo.nullInfo, List.empty) }
@@ -376,10 +364,9 @@ object OffsetSourcePositionHelper {
     p match {
       case NoPosition => None
       case realPos =>
-        Some(
-          new OffsetSourcePosition(
-            File(realPos.source.file.path).canon,
-            realPos.point))
+        Some(new OffsetSourcePosition(
+          File(realPos.source.file.path).canon,
+          realPos.point))
     }
 }
 

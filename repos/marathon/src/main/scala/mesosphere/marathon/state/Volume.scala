@@ -23,14 +23,12 @@ object Volume {
         PersistentVolume(
           containerPath = containerPath,
           persistent = persistentVolumeInfo,
-          mode = mode
-        )
+          mode = mode)
       case None =>
         DockerVolume(
           containerPath = containerPath,
           hostPath = hostPath.getOrElse(""),
-          mode = mode
-        )
+          mode = mode)
     }
 
   def apply(proto: Protos.Volume): Volume = {
@@ -44,14 +42,12 @@ object Volume {
         PersistentVolume(
           containerPath = proto.getContainerPath,
           persistent = persistentVolumeInfo,
-          mode = proto.getMode
-        )
+          mode = proto.getMode)
       case None =>
         DockerVolume(
           containerPath = proto.getContainerPath,
           hostPath = proto.getHostPath,
-          mode = proto.getMode
-        )
+          mode = proto.getMode)
     }
   }
 
@@ -59,26 +55,23 @@ object Volume {
     DockerVolume(
       containerPath = proto.getContainerPath,
       hostPath = proto.getHostPath,
-      mode = proto.getMode
-    )
+      mode = proto.getMode)
 
   def unapply(volume: Volume): Option[
     (String, Option[String], Mesos.Volume.Mode, Option[PersistentVolumeInfo])] =
     volume match {
       case persistentVolume: PersistentVolume =>
-        Some(
-          (
-            persistentVolume.containerPath,
-            None,
-            persistentVolume.mode,
-            Some(persistentVolume.persistent)))
+        Some((
+          persistentVolume.containerPath,
+          None,
+          persistentVolume.mode,
+          Some(persistentVolume.persistent)))
       case dockerVolume: DockerVolume =>
-        Some(
-          (
-            dockerVolume.containerPath,
-            Some(dockerVolume.hostPath),
-            dockerVolume.mode,
-            None))
+        Some((
+          dockerVolume.containerPath,
+          Some(dockerVolume.hostPath),
+          dockerVolume.mode,
+          None))
     }
 
   implicit val validVolume: Validator[Volume] = new Validator[Volume] {

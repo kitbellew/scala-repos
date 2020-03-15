@@ -34,13 +34,11 @@ object Twitch {
           c.status,
           StreamerList.findTwitch(streamers)(c.display_name)) match {
           case (Some(url), Some(status), Some(streamer)) =>
-            Some(
-              StreamOnAir(
-                name = status,
-                streamer = streamer,
-                url = url,
-                streamId = c.name
-              ))
+            Some(StreamOnAir(
+              name = status,
+              streamer = streamer,
+              url = url,
+              streamId = c.name))
           case _ => None
         }
       }

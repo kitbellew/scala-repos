@@ -71,19 +71,17 @@ class MergeToComprehensions extends Phase {
             case (None, None) => (None, Some(count2))
             case (Some(t), None) =>
               (
-                Some(
-                  constOp[Long]("max")(math.max)(
-                    LiteralNode(0L).infer(),
-                    constOp[Long]("-")(_ - _)(t, count2))),
+                Some(constOp[Long]("max")(math.max)(
+                  LiteralNode(0L).infer(),
+                  constOp[Long]("-")(_ - _)(t, count2))),
                 Some(count2))
             case (None, Some(d)) =>
               (None, Some(constOp[Long]("+")(_ + _)(d, count2)))
             case (Some(t), Some(d)) =>
               (
-                Some(
-                  constOp[Long]("max")(math.max)(
-                    LiteralNode(0L).infer(),
-                    constOp[Long]("-")(_ - _)(t, count2))),
+                Some(constOp[Long]("max")(math.max)(
+                  LiteralNode(0L).infer(),
+                  constOp[Long]("-")(_ - _)(t, count2))),
                 Some(constOp[Long]("+")(_ + _)(d, count2)))
           }
           val c2 = c1.copy(fetch = fetch2, offset = offset2) :@ c1.nodeType

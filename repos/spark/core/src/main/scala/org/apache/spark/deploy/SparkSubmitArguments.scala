@@ -504,8 +504,7 @@ private[deploy] class SparkSubmitArguments(
     outStream.println(command)
 
     val mem_mb = Utils.DEFAULT_DRIVER_MEM_MB
-    outStream.println(
-      s"""
+    outStream.println(s"""
         |Options:
         |  --master MASTER_URL         spark://host:port, mesos://host:port, yarn, or local.
         |  --deploy-mode DEPLOY_MODE   Whether to launch the driver program locally ("client") or
@@ -579,8 +578,7 @@ private[deploy] class SparkSubmitArguments(
         |                              the node running the Application Master via the Secure
         |                              Distributed Cache, for renewing the login tickets and the
         |                              delegation tokens periodically.
-      """.stripMargin
-    )
+      """.stripMargin)
 
     if (SparkSubmit.isSqlShell(mainClass)) {
       outStream.println("CLI options:")

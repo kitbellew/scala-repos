@@ -44,17 +44,16 @@ import org.apache.spark.util.{ShutdownHookManager, Utils}
 
 // SPARK-3729: Test key required to check for initialization errors with config.
 object TestHive
-    extends TestHiveContext(
-      new SparkContext(
-        System.getProperty("spark.sql.test.master", "local[1]"),
-        "TestSQLContext",
-        new SparkConf()
-          .set("spark.sql.test", "")
-          .set(
-            "spark.sql.hive.metastore.barrierPrefixes",
-            "org.apache.spark.sql.hive.execution.PairSerDe")
-          // SPARK-8910
-          .set("spark.ui.enabled", "false")))
+    extends TestHiveContext(new SparkContext(
+      System.getProperty("spark.sql.test.master", "local[1]"),
+      "TestSQLContext",
+      new SparkConf()
+        .set("spark.sql.test", "")
+        .set(
+          "spark.sql.hive.metastore.barrierPrefixes",
+          "org.apache.spark.sql.hive.execution.PairSerDe")
+        // SPARK-8910
+        .set("spark.ui.enabled", "false")))
 
 trait TestHiveSingleton {
   protected val sqlContext: SQLContext = TestHive
@@ -523,6 +522,5 @@ private[hive] object TestHiveContext {
     */
   val overrideConfs: Map[String, String] = Map(
     // Fewer shuffle partitions to speed up testing.
-    SQLConf.SHUFFLE_PARTITIONS.key -> "5"
-  )
+    SQLConf.SHUFFLE_PARTITIONS.key -> "5")
 }

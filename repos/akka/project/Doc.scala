@@ -31,13 +31,11 @@ object Scaladoc extends AutoPlugin {
     "Validate generated scaladoc diagrams")
 
   override lazy val projectSettings = {
-    inTask(doc)(
-      Seq(
-        scalacOptions in Compile <++= (
-          version,
-          baseDirectory in ThisBuild) map scaladocOptions,
-        autoAPIMappings := CliOptions.scaladocAutoAPI.get
-      )) ++
+    inTask(doc)(Seq(
+      scalacOptions in Compile <++= (
+        version,
+        baseDirectory in ThisBuild) map scaladocOptions,
+      autoAPIMappings := CliOptions.scaladocAutoAPI.get)) ++
       Seq(validateDiagrams in Compile := true) ++
       CliOptions.scaladocDiagramsEnabled.ifTrue(doc in Compile := {
         val docs = (doc in Compile).value
@@ -104,8 +102,7 @@ object ScaladocNoVerificationOfDiagrams extends AutoPlugin {
   override def requires = Scaladoc
 
   override lazy val projectSettings = Seq(
-    Scaladoc.validateDiagrams in Compile := false
-  )
+    Scaladoc.validateDiagrams in Compile := false)
 }
 
 /**
@@ -138,12 +135,11 @@ object UnidocRoot extends AutoPlugin {
       _ -- inProjects(_)
     }
 
-    inTask(unidoc)(
-      Seq(
-        unidocProjectFilter in ScalaUnidoc := docProjectFilter,
-        unidocProjectFilter in JavaUnidoc := docProjectFilter,
-        apiMappings in ScalaUnidoc := (apiMappings in (Compile, doc)).value
-      ))
+    inTask(unidoc)(Seq(
+      unidocProjectFilter in ScalaUnidoc := docProjectFilter,
+      unidocProjectFilter in JavaUnidoc := docProjectFilter,
+      apiMappings in ScalaUnidoc := (apiMappings in (Compile, doc)).value
+    ))
   }
 
   override lazy val projectSettings =
@@ -178,7 +174,6 @@ object Unidoc extends AutoPlugin {
         // FIXME: see #18056
         sources in (Genjavadoc, doc) ~= (_.filterNot(
           _.getPath.contains("Access$minusControl$minusAllow$minusOrigin")))
-      )
-    )
+      ))
     .getOrElse(Seq.empty)
 }

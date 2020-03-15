@@ -187,16 +187,16 @@ trait TypeHints {
           (
             th.hintFor(clazz),
             th.classFor(th.hintFor(clazz))
-              .getOrElse(
-                sys.error("hintFor/classFor not invertible for " + th))))
+              .getOrElse(sys.error(
+                "hintFor/classFor not invertible for " + th))))
         .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)
         .head
         ._1
 
     def classFor(hint: String): Option[Class[_]] = {
       def hasClass(h: TypeHints) =
-        scala.util.control.Exception.allCatch opt (h.classFor(
-          hint)) map (_.isDefined) getOrElse (false)
+        scala.util.control.Exception.allCatch opt (h
+          .classFor(hint)) map (_.isDefined) getOrElse (false)
 
       components find (hasClass) flatMap (_.classFor(hint))
     }

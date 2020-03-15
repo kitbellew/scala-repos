@@ -96,9 +96,8 @@ class ProjectedQuasiNewton(
     val gamma: Double,
     val projection: DenseVector[Double] => DenseVector[Double])(
     implicit space: MutableInnerProductModule[DenseVector[Double], Double])
-    extends FirstOrderMinimizer[
-      DenseVector[Double],
-      DiffFunction[DenseVector[Double]]](convergenceCheck)
+    extends FirstOrderMinimizer[DenseVector[Double], DiffFunction[
+      DenseVector[Double]]](convergenceCheck)
     with Projecting[DenseVector[Double]]
     with SerializableLogging {
   type BDV = DenseVector[Double]
@@ -131,9 +130,7 @@ class ProjectedQuasiNewton(
         bbMemory = 5,
         initFeas = true,
         fvalMemory = 10,
-        projection = projection
-      )
-    )
+        projection = projection))
 
   type History = CompactHessian
 

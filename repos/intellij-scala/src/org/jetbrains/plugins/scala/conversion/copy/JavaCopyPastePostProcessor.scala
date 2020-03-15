@@ -171,11 +171,10 @@ class JavaCopyPastePostProcessor
           file.getText.substring(a, b))
         val attachments = selections.zipWithIndex.map(p =>
           new Attachment("Selection-%d.java".format(p._2 + 1), p._1))
-        Log.error(
-          LogMessageEx.createEvent(
-            e.getMessage,
-            ExceptionUtil.getThrowableText(e),
-            attachments: _*))
+        Log.error(LogMessageEx.createEvent(
+          e.getMessage,
+          ExceptionUtil.getThrowableText(e),
+          attachments: _*))
         null
     }
   }

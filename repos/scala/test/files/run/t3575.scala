@@ -2,8 +2,7 @@
 // the output is endorsed.
 case class Two[
     @specialized(Specializable.Everything) A,
-    @specialized(Specializable.Everything) B
-](v: A, w: B)
+    @specialized(Specializable.Everything) B](v: A, w: B)
 
 case class TwoLong[
     @specialized(
@@ -27,23 +26,19 @@ case class TwoLong[
       Float,
       Double,
       Unit,
-      AnyRef) B
-](v: A, w: B)
+      AnyRef) B](v: A, w: B)
 
 case class TwoCool[
     @specialized(Specializable.Everything) A,
-    @specialized(Specializable.Everything) B
-](v: A, w: B)
+    @specialized(Specializable.Everything) B](v: A, w: B)
 
 case class TwoShort[
     @specialized(Specializable.Everything) A,
-    @specialized(Specializable.Everything) B
-](v: A, w: B)
+    @specialized(Specializable.Everything) B](v: A, w: B)
 
-case class TwoMinimal[
-    @specialized(Int, AnyRef) A,
-    @specialized(Int, AnyRef) B
-](v: A, w: B)
+case class TwoMinimal[@specialized(Int, AnyRef) A, @specialized(Int, AnyRef) B](
+    v: A,
+    w: B)
 
 object Test {
   def main(args: Array[String]): Unit = {

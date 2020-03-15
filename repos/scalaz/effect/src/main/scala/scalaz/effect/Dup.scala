@@ -3,11 +3,9 @@ package effect
 
 /**Duplicate a handle in the parent region. */
 trait Dup[H[_[_]]] {
-  def dup[PP[_]: MonadIO, CS, PS]
-      : H[RegionT[CS, RegionT[PS, PP, ?], ?]] => RegionT[
-        CS,
-        RegionT[PS, PP, ?],
-        H[RegionT[PS, PP, ?]]]
+  def dup[PP[_]: MonadIO, CS, PS]: H[
+    RegionT[CS, RegionT[PS, PP, ?], ?]] => RegionT[CS, RegionT[PS, PP, ?], H[
+    RegionT[PS, PP, ?]]]
 }
 
 sealed abstract class DupInstances {
@@ -22,11 +20,9 @@ sealed abstract class DupInstances {
             FinalizerHandle[RegionT[PS, PP, ?]]] =
         h =>
           RegionT[CS, RegionT[PS, PP, ?], FinalizerHandle[RegionT[PS, PP, ?]]](
-            Kleisli[
-              RegionT[PS, PP, ?],
-              IORef[List[RefCountedFinalizer]],
-              FinalizerHandle[RegionT[PS, PP, ?]]](hsIORef =>
-              copy[PS, PP, RegionT[CS, RegionT[PS, PP, ?], ?]](h)))
+            Kleisli[RegionT[PS, PP, ?], IORef[
+              List[RefCountedFinalizer]], FinalizerHandle[RegionT[PS, PP, ?]]](
+              hsIORef => copy[PS, PP, RegionT[CS, RegionT[PS, PP, ?], ?]](h)))
     }
 }
 

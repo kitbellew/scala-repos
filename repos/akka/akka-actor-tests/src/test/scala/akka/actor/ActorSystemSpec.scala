@@ -188,9 +188,8 @@ class ActorSystemSpec
     }
 
     "allow valid names" in {
-      shutdown(
-        ActorSystem(
-          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"))
+      shutdown(ActorSystem(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_"))
     }
 
     "support extensions" in {

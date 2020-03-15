@@ -150,10 +150,8 @@ import scala.collection.parallel.ParallelCollectionImplicits._
   *  @define Coll `ParIterable`
   *  @define coll parallel iterable
   */
-trait ParIterableLike[
-    +T,
-    +Repr <: ParIterable[T],
-    +Sequential <: Iterable[T] with IterableLike[T, Sequential]]
+trait ParIterableLike[+T, +Repr <: ParIterable[T], +Sequential <: Iterable[
+  T] with IterableLike[T, Sequential]]
     extends GenIterableLike[T, Repr]
     with CustomParallelizable[T, Repr]
     with Parallel
@@ -704,8 +702,7 @@ trait ParIterableLike[
         combinerFactory,
         splitter) mapResult { p =>
         (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
-      }
-    )
+      })
   }
 
   def groupBy[K](f: T => K): immutable.ParMap[K, Repr] = {
@@ -782,8 +779,7 @@ trait ParIterableLike[
     tasksupport.executeAndWaitResult(
       new SplitAt(n, combinerFactory, combinerFactory, splitter) mapResult {
         p => (p._1.resultWithTaskSupport, p._2.resultWithTaskSupport)
-      }
-    )
+      })
   }
 
   /** Computes a prefix scan of the elements of the collection.
@@ -913,8 +909,7 @@ trait ParIterableLike[
         pred,
         combinerFactory,
         combinerFactory,
-        splitter assign cntx) mapResult { _._2.resultWithTaskSupport }
-    )
+        splitter assign cntx) mapResult { _._2.resultWithTaskSupport })
   }
 
   def copyToArray[U >: T](xs: Array[U]) = copyToArray(xs, 0)
@@ -956,8 +951,7 @@ trait ParIterableLike[
           thatElem,
           combinerFactory(() => bf(repr).asCombiner),
           splitter,
-          thatseq.splitter) mapResult { _.resultWithTaskSupport }
-      )
+          thatseq.splitter) mapResult { _.resultWithTaskSupport })
     } else
       setTaskSupport(
         seq.zipAll(that, thisElem, thatElem)(bf2seq(bf)),
@@ -1394,8 +1388,8 @@ trait ParIterableLike[
   protected[this] class GroupBy[K, U >: T](
       f: U => K,
       mcf: () => HashMapCombiner[K, U],
-      protected[this] val pit: IterableSplitter[T]
-  ) extends Transformer[HashMapCombiner[K, U], GroupBy[K, U]] {
+      protected[this] val pit: IterableSplitter[T])
+      extends Transformer[HashMapCombiner[K, U], GroupBy[K, U]] {
     @volatile var result: Result = null
     final def leaf(prev: Option[Result]) = {
       // note: HashMapCombiner doesn't merge same keys until evaluation
@@ -1799,8 +1793,7 @@ trait ParIterableLike[
         case ScanNode(left, right) =>
           Seq(
             new FromScanTree(left, z, op, cbf),
-            new FromScanTree(right, z, op, cbf)
-          )
+            new FromScanTree(right, z, op, cbf))
         case _ =>
           throw new UnsupportedOperationException("Cannot be split further")
       }

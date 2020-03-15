@@ -73,8 +73,9 @@ class FileSourceTest extends WordSpec with Matchers {
           outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
         }
       }
-      .sink[(String, Int)](
-        WritableSequenceFile("output1", ('query, 'queryStats))) { outBuf =>
+      .sink[(String, Int)](WritableSequenceFile(
+        "output1",
+        ('query, 'queryStats))) { outBuf =>
         "writable sequence file input" in {
           outBuf should have length 2
           outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))

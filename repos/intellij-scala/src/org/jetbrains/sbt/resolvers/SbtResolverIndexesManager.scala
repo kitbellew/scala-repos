@@ -79,10 +79,9 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
                 case exc: ResolverException =>
                   notifyWarning(exc.getMessage)
                 case exc: LockReleaseFailedException =>
-                  notifyWarning(
-                    SbtBundle(
-                      "sbt.resolverIndexer.luceneLockException",
-                      exc.getMessage))
+                  notifyWarning(SbtBundle(
+                    "sbt.resolverIndexer.luceneLockException",
+                    exc.getMessage))
               } finally {
                 updatingIndexes synchronized { updatingIndexes -= index }
               }
@@ -93,10 +92,9 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
   private def loadIndexes() {
     indexesDir.mkdirs()
     if (!indexesDir.exists || !indexesDir.isDirectory) {
-      notifyWarning(
-        SbtBundle(
-          "sbt.resolverIndexer.cantCreateIndexesDir",
-          indexesDir.absolutePath))
+      notifyWarning(SbtBundle(
+        "sbt.resolverIndexer.cantCreateIndexesDir",
+        indexesDir.absolutePath))
       return
     }
 
@@ -121,16 +119,14 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
   private def cleanUpCorruptedIndex(indexDir: File): Unit = {
     try {
       FileUtil.delete(indexDir)
-      notifyWarning(
-        SbtBundle(
-          "sbt.resolverIndexer.indexDirIsCorruptedAndRemoved",
-          indexDir.getAbsolutePath))
+      notifyWarning(SbtBundle(
+        "sbt.resolverIndexer.indexDirIsCorruptedAndRemoved",
+        indexDir.getAbsolutePath))
     } catch {
       case _: Throwable =>
-        notifyWarning(
-          SbtBundle(
-            "sbt.resolverIndexer.indexDirIsCorruptedCantBeRemoved",
-            indexDir.getAbsolutePath))
+        notifyWarning(SbtBundle(
+          "sbt.resolverIndexer.indexDirIsCorruptedCantBeRemoved",
+          indexDir.getAbsolutePath))
     }
   }
 

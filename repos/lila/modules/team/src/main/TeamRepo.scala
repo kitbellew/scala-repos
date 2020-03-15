@@ -26,11 +26,9 @@ object TeamRepo {
     $primitive.one($select(id), "name")(_.asOpt[String])
 
   def userHasCreatedSince(userId: String, duration: Period): Fu[Boolean] =
-    $count.exists(
-      Json.obj(
-        "createdAt" -> $gt($date(DateTime.now minus duration)),
-        "createdBy" -> userId
-      ))
+    $count.exists(Json.obj(
+      "createdAt" -> $gt($date(DateTime.now minus duration)),
+      "createdBy" -> userId))
 
   def ownerOf(teamId: String): Fu[Option[String]] =
     $primitive.one($select(teamId), "createdBy")(_.asOpt[String])

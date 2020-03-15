@@ -156,8 +156,7 @@ trait MatchTranslation {
             // Statically conforms to paramType
             if (this ensureConformsTo paramType)
               treeMaker(binder, false, pos) :: Nil
-            else typeTest :: extraction :: Nil
-          )
+            else typeTest :: extraction :: Nil)
         step(makers: _*)(extractor.subBoundTrees: _*)
       }
 
@@ -201,10 +200,8 @@ trait MatchTranslation {
       // infers a weird type for an unapply call. By going back to the parameterType for the
       // extractor call we get a saner type, so let's just do that for now.
       def ensureConformsTo(paramType: Type): Boolean =
-        (
-          (tpe =:= paramType)
-            || (tpe <:< paramType) && setInfo(paramType)
-        )
+        ((tpe =:= paramType)
+          || (tpe <:< paramType) && setInfo(paramType))
 
       private def concreteType = tpe.bounds.hi
       private def unbound = unbind(tree)
@@ -532,11 +529,9 @@ trait MatchTranslation {
       // referenced by `binder`
       protected def subPatRefsSeq(binder: Symbol): List[Tree] = {
         def lastTrees: List[Tree] =
-          (
-            if (!aligner.isStar) Nil
-            else if (expectedLength == 0) seqTree(binder) :: Nil
-            else genDrop(binder, expectedLength)
-          )
+          (if (!aligner.isStar) Nil
+           else if (expectedLength == 0) seqTree(binder) :: Nil
+           else genDrop(binder, expectedLength))
         // this error-condition has already been checked by checkStarPatOK:
         //   if(isSeq) assert(firstIndexingBinder + nbIndexingIndices + (if(lastIsStar) 1 else 0) == totalArity, "(resultInMonad, ts, subPatTypes, subPats)= "+(resultInMonad, ts, subPatTypes, subPats))
 
@@ -552,10 +547,8 @@ trait MatchTranslation {
       // the trees that select the subpatterns on the extractor's result, referenced by `binder`
       // require (nbSubPats > 0 && (!lastIsStar || isSeq))
       protected def subPatRefs(binder: Symbol): List[Tree] =
-        (
-          if (totalArity > 0 && isSeq) subPatRefsSeq(binder)
-          else productElemsToN(binder, totalArity)
-        )
+        (if (totalArity > 0 && isSeq) subPatRefsSeq(binder)
+         else productElemsToN(binder, totalArity))
 
       private def compareInts(t1: Tree, t2: Tree) =
         gen.mkMethodCall(
@@ -625,20 +618,18 @@ trait MatchTranslation {
           case _       => false
         }
         val mutableBinders =
-          (
-            if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
-                (paramAccessors exists (x =>
-                  x.isMutable || definitions.isRepeated(x)))) {
+          (if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
+               (paramAccessors exists (x =>
+                 x.isMutable || definitions.isRepeated(x)))) {
 
-              subPatBinders.zipWithIndex.flatMap {
-                case (binder, idx) =>
-                  val param = paramAccessorAt(idx)
-                  if (param.isMutable || (definitions.isRepeated(
-                        param) && !aligner.isStar)) binder :: Nil
-                  else Nil
-              }
-            } else Nil
-          )
+             subPatBinders.zipWithIndex.flatMap {
+               case (binder, idx) =>
+                 val param = paramAccessorAt(idx)
+                 if (param.isMutable || (definitions.isRepeated(
+                       param) && !aligner.isStar)) binder :: Nil
+                 else Nil
+             }
+           } else Nil)
 
         // checks binder ne null before chaining to the next extractor
         ProductExtractorTreeMaker(binder, lengthGuard(binder))(
@@ -703,8 +694,7 @@ trait MatchTranslation {
           aligner.isBool,
           checkedLength,
           patBinderOrCasted,
-          ignoredSubPatBinders
-        )
+          ignoredSubPatBinders)
       }
 
       override protected def seqTree(binder: Symbol): Tree =

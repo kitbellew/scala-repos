@@ -776,18 +776,16 @@ object DecisionTree extends Serializable with Logging {
               (Node.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
             val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
             val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
-            node.leftNode = Some(
-              Node(
-                Node.leftChildIndex(nodeIndex),
-                stats.leftPredict,
-                stats.leftImpurity,
-                leftChildIsLeaf))
-            node.rightNode = Some(
-              Node(
-                Node.rightChildIndex(nodeIndex),
-                stats.rightPredict,
-                stats.rightImpurity,
-                rightChildIsLeaf))
+            node.leftNode = Some(Node(
+              Node.leftChildIndex(nodeIndex),
+              stats.leftPredict,
+              stats.leftImpurity,
+              leftChildIsLeaf))
+            node.rightNode = Some(Node(
+              Node.rightChildIndex(nodeIndex),
+              stats.rightPredict,
+              stats.rightImpurity,
+              rightChildIsLeaf))
 
             if (nodeIdCache.nonEmpty) {
               val nodeIndexUpdater = NodeIndexUpdater(

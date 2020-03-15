@@ -77,15 +77,15 @@ abstract class VersionedBatchStoreBase[K, V](val rootPath: String)
         lastBatch(exclusiveUB, hdfs)
           .map { Right(_) }
           .getOrElse {
-            Left(
-              List("No last batch available < %s for VersionedBatchStore(%s)"
-                .format(exclusiveUB, rootPath)))
+            Left(List(
+              "No last batch available < %s for VersionedBatchStore(%s)".format(
+                exclusiveUB,
+                rootPath)))
           }
       case _ =>
-        Left(
-          List(
-            "Mode: %s not supported for VersionedBatchStore(%s)"
-              .format(mode, rootPath)))
+        Left(List("Mode: %s not supported for VersionedBatchStore(%s)".format(
+          mode,
+          rootPath)))
     }
   }
 

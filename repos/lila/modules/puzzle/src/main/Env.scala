@@ -40,11 +40,7 @@ final class Env(
 
   lazy val forms = DataForm
 
-  lazy val daily = new Daily(
-    puzzleColl,
-    renderer,
-    system.scheduler
-  ).apply _
+  lazy val daily = new Daily(puzzleColl, renderer, system.scheduler).apply _
 
   lazy val pngExport = PngExport(PngExecPath) _
 

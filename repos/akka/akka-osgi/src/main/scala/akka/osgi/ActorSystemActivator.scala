@@ -57,10 +57,9 @@ abstract class ActorSystemActivator extends BundleActivator {
       def serviceChanged(event: ServiceEvent) {
         event.getType match {
           case ServiceEvent.REGISTERED ⇒
-            system.eventStream.publish(
-              serviceForReference[LogService](
-                context,
-                event.getServiceReference))
+            system.eventStream.publish(serviceForReference[LogService](
+              context,
+              event.getServiceReference))
           case ServiceEvent.UNREGISTERING ⇒
             system.eventStream.publish(UnregisteringLogService)
         }
@@ -108,11 +107,10 @@ abstract class ActorSystemActivator extends BundleActivator {
     registration.foreach(_.unregister()) //Cleanup
     val properties = new Properties()
     properties.put("name", system.name)
-    registration = Some(
-      context.registerService(
-        classOf[ActorSystem].getName,
-        system,
-        properties.asInstanceOf[Dictionary[String, Any]]))
+    registration = Some(context.registerService(
+      classOf[ActorSystem].getName,
+      system,
+      properties.asInstanceOf[Dictionary[String, Any]]))
   }
 
   /**

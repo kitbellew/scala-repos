@@ -541,20 +541,18 @@ class DDLCommandSuite extends PlanTest {
     val expected1 = AlterTableAddCol(
       tableIdent,
       Some(Map("dt" -> "2008-08-08", "country" -> "us")),
-      StructType(
-        Seq(
-          StructField("new_col1", IntegerType, nullable = true, meta1),
-          StructField("new_col2", LongType, nullable = true, meta2))),
+      StructType(Seq(
+        StructField("new_col1", IntegerType, nullable = true, meta1),
+        StructField("new_col2", LongType, nullable = true, meta2))),
       restrict = false,
       cascade = true
     )(sql1)
     val expected2 = AlterTableReplaceCol(
       tableIdent,
       None,
-      StructType(
-        Seq(
-          StructField("new_col1", IntegerType, nullable = true, meta1),
-          StructField("new_col2", LongType, nullable = true, meta2))),
+      StructType(Seq(
+        StructField("new_col1", IntegerType, nullable = true, meta1),
+        StructField("new_col2", LongType, nullable = true, meta2))),
       restrict = true,
       cascade = false
     )(sql2)

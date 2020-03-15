@@ -263,7 +263,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       conf <- report.configurations
       if conf.configuration == "compile"
       m <- conf.modules
-      if (m.module.name contains "akka-actor") && !(m.module.name contains "testkit")
+      if (m.module.name contains "akka-actor") && !(
+        m.module.name contains "testkit"
+      )
       (a, f) <- m.artifacts
       if a.extension == "jar"
     } yield f
@@ -271,7 +273,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
       conf <- report.configurations
       if conf.configuration == "compile"
       m <- conf.modules
-      if (m.module.name contains "akka-actor") && (m.module.name contains "testkit")
+      if (m.module.name contains "akka-actor") && (
+        m.module.name contains "testkit"
+      )
       (a, f) <- m.artifacts
       if a.extension == "jar"
     } yield f
@@ -304,10 +308,9 @@ class MavenResolutionSpec extends BaseIvySpecification {
   def resolveSourceAndJavadoc = {
     val m = module(
       ModuleID("com.example", "foo", "0.1.0", Some("sources")),
-      Seq(
-        akkaActor.artifacts(
-          Artifact(akkaActor.name, "javadoc"),
-          Artifact(akkaActor.name, "sources"))),
+      Seq(akkaActor.artifacts(
+        Artifact(akkaActor.name, "javadoc"),
+        Artifact(akkaActor.name, "sources"))),
       Some("2.10.2"),
       defaultUpdateOptions
     )
@@ -330,8 +333,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
       ModuleID("com.example", "test-it", "1.0-SNAPSHOT", Some("compile")),
       Seq(),
       None,
-      defaultUpdateOptions.withLatestSnapshots(true)
-    )
+      defaultUpdateOptions.withLatestSnapshots(true))
     sbt.io.IO.withTemporaryDirectory { dir =>
       val pomFile = new java.io.File(dir, "pom.xml")
       sbt.io.IO.write(
@@ -354,8 +356,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
           Resolver.publishMavenLocal,
           Map(
             Artifact("test-it-1.0-SNAPSHOT.jar") -> pomFile,
-            Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile
-          ))
+            Artifact("test-it-1.0-SNAPSHOT.pom", "pom", "pom") -> jarFile))
       )
     }
     val baseLocalMavenDir: java.io.File = Resolver.publishMavenLocal.rootFile

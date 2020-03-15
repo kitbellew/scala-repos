@@ -39,9 +39,8 @@ class Migration @Inject() (
   def migrations: List[MigrationAction] =
     List(
       StorageVersions(0, 7, 0) -> { () =>
-        Future.failed(
-          new IllegalStateException(
-            "migration from 0.7.x not supported anymore"))
+        Future.failed(new IllegalStateException(
+          "migration from 0.7.x not supported anymore"))
       },
       StorageVersions(0, 11, 0) -> { () =>
         new MigrationTo0_11(groupRepo, appRepo).migrateApps().recover {
@@ -84,8 +83,7 @@ class Migration @Inject() (
           resultsFuture.flatMap { res =>
             log.info(
               s"Migration for storage: ${from.str} to current: ${current.str}: " +
-                s"apply change for version: ${migrateVersion.str} "
-            )
+                s"apply change for version: ${migrateVersion.str} ")
             change.apply().map(_ => res :+ migrateVersion)
           }
       }
@@ -324,8 +322,8 @@ class MigrationTo0_13(taskRepository: TaskRepository, store: PersistentStore) {
           entityStore.expunge(legacyKey).map(_ => ())
         }
       case _ =>
-        Future.failed[Unit](
-          new RuntimeException(s"Unable to load entity with key = $legacyKey"))
+        Future.failed[Unit](new RuntimeException(
+          s"Unable to load entity with key = $legacyKey"))
     }
   }
 
@@ -409,8 +407,8 @@ class MigrationTo0_16(
             groupRepository.group(id, version).flatMap {
               case Some(group) => groupRepository.store(id, group).map(_ => ())
               case None =>
-                Future.failed(
-                  new MigrationFailedException(s"Group $id:$version not found"))
+                Future.failed(new MigrationFailedException(
+                  s"Group $id:$version not found"))
             }
           }
         }
@@ -449,11 +447,7 @@ object StorageVersions {
   def current: StorageVersion = {
     BuildInfo.version match {
       case VersionRegex(major, minor, patch) =>
-        StorageVersions(
-          major.toInt,
-          minor.toInt,
-          patch.toInt
-        )
+        StorageVersions(major.toInt, minor.toInt, patch.toInt)
     }
   }
 

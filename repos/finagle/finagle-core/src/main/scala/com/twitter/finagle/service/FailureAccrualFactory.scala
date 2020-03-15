@@ -19,10 +19,8 @@ object FailureAccrualFactory {
       label: String,
       logger: Logger,
       endpoint: Address,
-      responseClassifier: ResponseClassifier
-  )(
-      timer: Timer
-  ): ServiceFactoryWrapper = {
+      responseClassifier: ResponseClassifier)(
+      timer: Timer): ServiceFactoryWrapper = {
     new ServiceFactoryWrapper {
       def andThen[Req, Rep](factory: ServiceFactory[Req, Rep]) =
         new FailureAccrualFactory(
@@ -61,8 +59,7 @@ object FailureAccrualFactory {
   def perturb(
       markDeadFor: Duration,
       perturbation: Float = 0.1f,
-      rand: Random = rng
-  ): () => Duration =
+      rand: Random = rng): () => Duration =
     () => {
       val ms = markDeadFor.inMilliseconds
       (ms + ms * rand.nextFloat() * perturbation).toInt.milliseconds
@@ -264,8 +261,7 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       label: String,
       logger: Logger,
       endpoint: Address,
-      responseClassifier: ResponseClassifier
-  ) =
+      responseClassifier: ResponseClassifier) =
     this(
       underlying,
       FailureAccrualPolicy
@@ -285,8 +281,7 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
       statsReceiver: StatsReceiver,
       label: String,
       logger: Logger,
-      endpoint: Address
-  ) =
+      endpoint: Address) =
     this(
       underlying,
       FailureAccrualPolicy

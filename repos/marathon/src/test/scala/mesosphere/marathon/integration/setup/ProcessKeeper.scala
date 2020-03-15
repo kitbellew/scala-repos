@@ -128,8 +128,7 @@ object ProcessKeeper {
       "-Dakka.loglevel=DEBUG",
       "-Dakka.actor.debug.receive=true",
       "-Dakka.actor.debug.autoreceive=true",
-      "-Dakka.actor.debug.lifecycle=true"
-    )
+      "-Dakka.actor.debug.lifecycle=true")
 
     val marathonWorkDir: String = "/tmp/marathon-itest-marathon"
     val marathonWorkDirFile: File = new File(marathonWorkDir)
@@ -146,8 +145,7 @@ object ProcessKeeper {
       "--mesos_role",
       "foo",
       "--mesos_authentication_secret_file",
-      s"$secretPath"
-    )
+      s"$secretPath")
 
     val argsWithMain = mainClass :: arguments ++ authSettings
 

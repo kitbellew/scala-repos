@@ -19,12 +19,11 @@ case class HookConfig(
     extends HumanConfig {
 
   def fixColor =
-    copy(
-      color =
-        if (mode == Mode.Rated &&
-            lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
-            color != Color.Random) Color.Random
-        else color)
+    copy(color =
+      if (mode == Mode.Rated &&
+          lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
+          color != Color.Random) Color.Random
+      else color)
 
   // allowAnons -> membersOnly
   def >> =
@@ -54,19 +53,18 @@ case class HookConfig(
       blocking: Set[String]): Either[Hook, Option[Seek]] =
     timeMode match {
       case TimeMode.RealTime =>
-        Left(
-          Hook.make(
-            uid = uid,
-            variant = variant,
-            clock = justMakeClock,
-            mode = mode,
-            allowAnon = allowAnon,
-            color = color.name,
-            user = user,
-            blocking = blocking,
-            sid = sid,
-            ratingRange = ratingRange
-          ))
+        Left(Hook.make(
+          uid = uid,
+          variant = variant,
+          clock = justMakeClock,
+          mode = mode,
+          allowAnon = allowAnon,
+          color = color.name,
+          user = user,
+          blocking = blocking,
+          sid = sid,
+          ratingRange = ratingRange
+        ))
       case _ =>
         Right(user map { u =>
           Seek.make(

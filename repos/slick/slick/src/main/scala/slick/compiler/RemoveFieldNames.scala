@@ -60,25 +60,25 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                     else
                       ProductNode(
                         ConstArray
-                          .from(ch
-                            .map {
-                              case (s, n) =>
-                                (requiredSyms.getOrElse(s, Int.MaxValue), n)
-                            }
-                            .toSeq
-                            .sortBy(_._1))
+                          .from(
+                            ch.map {
+                                case (s, n) =>
+                                  (requiredSyms.getOrElse(s, Int.MaxValue), n)
+                              }
+                              .toSeq
+                              .sortBy(_._1))
                           .map(_._2))
                   (Pure(sel, pts), pts)
                 case Pure(StructNode(ch), pts) if pts == top =>
                   val sel = StructNode(
                     ConstArray
-                      .from(ch
-                        .map {
-                          case (s, n) =>
-                            (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
-                        }
-                        .toSeq
-                        .sortBy(_._1))
+                      .from(
+                        ch.map {
+                            case (s, n) =>
+                              (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
+                          }
+                          .toSeq
+                          .sortBy(_._1))
                       .map(_._2))
                   (Pure(sel, pts), pts)
               }

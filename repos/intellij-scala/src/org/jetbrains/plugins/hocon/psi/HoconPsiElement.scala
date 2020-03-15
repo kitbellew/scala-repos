@@ -161,14 +161,12 @@ sealed trait HKeyedField
       keyedField => keyedField.fieldsInAllPathsBackward,
       objectField =>
         objectField.parent
-          .map(
-            _.forParent(
-              file => Stream.empty,
-              obj =>
-                obj.prefixingField
-                  .map(_.fieldsInAllPathsBackward)
-                  .getOrElse(Stream.empty)
-            ))
+          .map(_.forParent(
+            file => Stream.empty,
+            obj =>
+              obj.prefixingField
+                .map(_.fieldsInAllPathsBackward)
+                .getOrElse(Stream.empty)))
           .get
     )
 
@@ -301,12 +299,11 @@ final class HIncluded(ast: ASTNode)
         // - unqualified includes in classpath (source or library) files
         // - relative unqualified includes in non-classpath files
         if (!absolute || fromClasspath)
-          Some(
-            new IncludedFileReferenceSet(
-              strVal,
-              hs,
-              forcedAbsolute,
-              fromClasspath))
+          Some(new IncludedFileReferenceSet(
+            strVal,
+            hs,
+            forcedAbsolute,
+            fromClasspath))
         else None
       }
     } yield rs
@@ -320,16 +317,12 @@ final class HKey(ast: ASTNode) extends HoconPsiElement(ast) with HInnerElement {
     }
 
   def allKeysFromToplevel: Option[List[HKey]] =
-    forParent(
-      path => path.allKeys,
-      keyedEntry => keyedEntry.keysInAllPaths
-    )
+    forParent(path => path.allKeys, keyedEntry => keyedEntry.keysInAllPaths)
 
   def enclosingEntries: HObjectEntries =
     forParent(
       path => getContainingFile.toplevelEntries,
-      keyedField => keyedField.enclosingEntries
-    )
+      keyedField => keyedField.enclosingEntries)
 
   def stringValue =
     allChildren.collect {
@@ -406,8 +399,7 @@ sealed trait HValue extends HoconPsiElement with HInnerElement {
     forParent(
       vf => if (vf.isArrayAppend) None else Some(vf),
       arr => None,
-      concat => concat.prefixingField
-    )
+      concat => concat.prefixingField)
 }
 
 final class HObject(ast: ASTNode)

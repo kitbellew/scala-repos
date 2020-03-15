@@ -214,8 +214,7 @@ class ZookeeperSystemCoordination(
           new DataUpdater[Array[Byte]] {
             def update(cur: Array[Byte]): Array[Byte] =
               toNodeData(initialState.serialize)
-          }
-        )
+          })
 
         logger.debug("%s: NEW".format(initialState))
         Success(initialState)
@@ -253,8 +252,7 @@ class ZookeeperSystemCoordination(
       relayAgentPath(agent),
       new DataUpdater[Array[Byte]] {
         def update(cur: Array[Byte]): Array[Byte] = toNodeData(state.serialize)
-      }
-    )
+      })
 
     logger.debug("%s: SAVE".format(state))
     Success(state)
@@ -265,27 +263,25 @@ class ZookeeperSystemCoordination(
     if (yggCheckpointsEnabled) {
       val checkpointPath = shardCheckpointPath(bifrost)
 
-      Some(
-        acquireActivePath(checkpointPath) flatMap { _ =>
-          val bytes = zkc.readData(checkpointPath).asInstanceOf[Array[Byte]]
-          if (bytes != null && bytes.length != 0) {
-            val checkpoint = fromNodeData(bytes).validated[YggCheckpoint]
-            logger.debug("yggCheckpoint %s: RESTORED".format(checkpoint))
-            checkpoint
+      Some(acquireActivePath(checkpointPath) flatMap { _ =>
+        val bytes = zkc.readData(checkpointPath).asInstanceOf[Array[Byte]]
+        if (bytes != null && bytes.length != 0) {
+          val checkpoint = fromNodeData(bytes).validated[YggCheckpoint]
+          logger.debug("yggCheckpoint %s: RESTORED".format(checkpoint))
+          checkpoint
+        } else {
+          if (createOk) {
+            logger.warn("Creating initial ingest checkpoint!")
+            val checkpoint = YggCheckpoint.Empty
+            saveYggCheckpoint(bifrost, checkpoint)
+            Success(checkpoint)
           } else {
-            if (createOk) {
-              logger.warn("Creating initial ingest checkpoint!")
-              val checkpoint = YggCheckpoint.Empty
-              saveYggCheckpoint(bifrost, checkpoint)
-              Success(checkpoint)
-            } else {
-              // this case MUST return a failure - if a checkpoint is missing for a bifrost,
-              // it must be created manually via Ratatoskr
-              Failure(Invalid("No checkpoint information found in Zookeeper!"))
-            }
+            // this case MUST return a failure - if a checkpoint is missing for a bifrost,
+            // it must be created manually via Ratatoskr
+            Failure(Invalid("No checkpoint information found in Zookeeper!"))
           }
         }
-      )
+      })
     } else {
       logger.debug("Checkpoints disabled, skipping load")
       None
@@ -307,8 +303,7 @@ class ZookeeperSystemCoordination(
         new DataUpdater[Array[Byte]] {
           def update(cur: Array[Byte]): Array[Byte] =
             toNodeData(checkpoint.serialize)
-        }
-      )
+        })
 
       logger.debug("%s: SAVE".format(checkpoint))
     } else { logger.debug("Skipping yggCheckpoint save") }

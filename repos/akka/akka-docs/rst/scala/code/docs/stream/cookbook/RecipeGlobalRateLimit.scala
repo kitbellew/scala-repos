@@ -24,11 +24,10 @@ class RecipeGlobalRateLimit extends RecipeSpec {
           maxAvailableTokens: Int,
           tokenRefreshPeriod: FiniteDuration,
           tokenRefreshAmount: Int): Props =
-        Props(
-          new Limiter(
-            maxAvailableTokens,
-            tokenRefreshPeriod,
-            tokenRefreshAmount))
+        Props(new Limiter(
+          maxAvailableTokens,
+          tokenRefreshPeriod,
+          tokenRefreshAmount))
     }
 
     class Limiter(
@@ -81,8 +80,8 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       override def postStop(): Unit = {
         replenishTimer.cancel()
-        waitQueue foreach (_ ! Status.Failure(
-          new IllegalStateException("limiter stopped")))
+        waitQueue foreach (_ ! Status.Failure(new IllegalStateException(
+          "limiter stopped")))
       }
     }
     //#global-limiter-actor

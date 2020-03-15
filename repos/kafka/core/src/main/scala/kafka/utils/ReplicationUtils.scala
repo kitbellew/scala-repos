@@ -38,9 +38,10 @@ object ReplicationUtils extends Logging {
       newLeaderAndIsr: LeaderAndIsr,
       controllerEpoch: Int,
       zkVersion: Int): (Boolean, Int) = {
-    debug(
-      "Updated ISR for partition [%s,%d] to %s"
-        .format(topic, partitionId, newLeaderAndIsr.isr.mkString(",")))
+    debug("Updated ISR for partition [%s,%d] to %s".format(
+      topic,
+      partitionId,
+      newLeaderAndIsr.isr.mkString(",")))
     val path = getTopicPartitionLeaderAndIsrPath(topic, partitionId)
     val newLeaderData = zkUtils.leaderAndIsrZkData(
       newLeaderAndIsr,
@@ -124,10 +125,9 @@ object ReplicationUtils extends Logging {
       debug(
         "Leader %d, Epoch %d, Isr %s, Zk path version %d for leaderAndIsrPath %s"
           .format(leader, epoch, isr.toString(), zkPathVersion, path))
-      Some(
-        LeaderIsrAndControllerEpoch(
-          LeaderAndIsr(leader, epoch, isr, zkPathVersion),
-          controllerEpoch))
+      Some(LeaderIsrAndControllerEpoch(
+        LeaderAndIsr(leader, epoch, isr, zkPathVersion),
+        controllerEpoch))
     }
   }
 
@@ -136,10 +136,9 @@ object ReplicationUtils extends Logging {
     val partitions = isrChanges
       .map(tp => Map("topic" -> tp.topic, "partition" -> tp.partition))
       .toArray
-    Json.encode(
-      Map(
-        "version" -> IsrChangeNotificationListener.version,
-        "partitions" -> partitions))
+    Json.encode(Map(
+      "version" -> IsrChangeNotificationListener.version,
+      "partitions" -> partitions))
   }
 
 }

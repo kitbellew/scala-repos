@@ -66,11 +66,10 @@ object Supervision {
     def apply(actorRef: ActorRef, lifeCycle: LifeCycle) =
       new Supervise(actorRef, lifeCycle, false)
     def unapply(supervise: Supervise) =
-      Some(
-        (
-          supervise.actorRef,
-          supervise.lifeCycle,
-          supervise.registerAsRemoteService))
+      Some((
+        supervise.actorRef,
+        supervise.lifeCycle,
+        supervise.registerAsRemoteService))
   }
 
   object AllForOneStrategy {

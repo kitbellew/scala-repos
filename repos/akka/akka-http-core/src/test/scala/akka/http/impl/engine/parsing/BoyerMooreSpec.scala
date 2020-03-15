@@ -30,8 +30,8 @@ class BoyerMooreSpec extends WordSpec with Matchers {
         val alphabet = alphabetBase.take(
           4 + random.nextInt(5)
         ) // 4 to 8 distinct alphanumeric chars
-        val randomAlphabetChars = Stream.continually(
-          alphabet(random.nextInt(alphabet.length)))
+        val randomAlphabetChars = Stream.continually(alphabet(
+          random.nextInt(alphabet.length)))
         def randomBytes(num: Int): ByteString =
           ByteString(randomAlphabetChars.take(num): _*)
         val haystack = randomBytes(haystackLen)

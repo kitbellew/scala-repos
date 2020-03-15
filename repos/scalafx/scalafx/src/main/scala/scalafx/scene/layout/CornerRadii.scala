@@ -65,13 +65,12 @@ class CornerRadii(override val delegate: jfxsl.CornerRadii)
       bottomRight: Double,
       bottomLeft: Double,
       asPercent: Boolean) =
-    this(
-      new jfxsl.CornerRadii(
-        topLeft,
-        topRight,
-        bottomRight,
-        bottomLeft,
-        asPercent))
+    this(new jfxsl.CornerRadii(
+      topLeft,
+      topRight,
+      bottomRight,
+      bottomLeft,
+      asPercent))
 
   /**
     * Creates a new `CornerRadii`, allowing for specification of each component of each corner radii
@@ -94,24 +93,23 @@ class CornerRadii(override val delegate: jfxsl.CornerRadii)
       bottomRightVerticalRadiusAsPercent: Boolean,
       bottomLeftVerticalRadiusAsPercent: Boolean,
       bottomLeftHorizontalRadiusAsPercent: Boolean) =
-    this(
-      new jfxsl.CornerRadii(
-        topLeftHorizontalRadius,
-        topLeftVerticalRadius,
-        topRightVerticalRadius,
-        topRightHorizontalRadius,
-        bottomRightHorizontalRadius,
-        bottomRightVerticalRadius,
-        bottomLeftVerticalRadius,
-        bottomLeftHorizontalRadius,
-        topLeftHorizontalRadiusAsPercent,
-        topLeftVerticalRadiusAsPercent,
-        topRightVerticalRadiusAsPercent,
-        topRightHorizontalRadiusAsPercent,
-        bottomRightHorizontalRadiusAsPercent,
-        bottomRightVerticalRadiusAsPercent,
-        bottomLeftVerticalRadiusAsPercent,
-        bottomLeftHorizontalRadiusAsPercent))
+    this(new jfxsl.CornerRadii(
+      topLeftHorizontalRadius,
+      topLeftVerticalRadius,
+      topRightVerticalRadius,
+      topRightHorizontalRadius,
+      bottomRightHorizontalRadius,
+      bottomRightVerticalRadius,
+      bottomLeftVerticalRadius,
+      bottomLeftHorizontalRadius,
+      topLeftHorizontalRadiusAsPercent,
+      topLeftVerticalRadiusAsPercent,
+      topRightVerticalRadiusAsPercent,
+      topRightHorizontalRadiusAsPercent,
+      bottomRightHorizontalRadiusAsPercent,
+      bottomRightVerticalRadiusAsPercent,
+      bottomLeftVerticalRadiusAsPercent,
+      bottomLeftHorizontalRadiusAsPercent))
 
   /**
     * The length of the horizontal radii of the bottom-left corner.

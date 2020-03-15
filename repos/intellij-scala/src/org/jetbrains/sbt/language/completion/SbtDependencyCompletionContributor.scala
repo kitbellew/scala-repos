@@ -34,8 +34,8 @@ class SbtDependencyCompletionContributor extends ScalaCompletionContributor {
         val place = positionFromParameters(parameters)
         val infixExpr = place.getContext.getContext.asInstanceOf[ScInfixExpr]
 
-        val resolversToUse = SbtResolverUtils.getProjectResolvers(
-          Option(ScalaPsiUtil.fileContext(place)))
+        val resolversToUse = SbtResolverUtils.getProjectResolvers(Option(
+          ScalaPsiUtil.fileContext(place)))
         val indexManager = SbtResolverIndexesManager()
         val indexes = resolversToUse.flatMap(indexManager.find).toSet
         if (indexes.isEmpty) return

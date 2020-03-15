@@ -47,8 +47,8 @@ object ThrottledHandler {
   def apply(
       handler: HandlerFactory,
       duration: Duration = 0.seconds,
-      maxToDisplay: Int = Int.MaxValue
-  ) = () => new ThrottledHandler(handler(), duration, maxToDisplay)
+      maxToDisplay: Int = Int.MaxValue) =
+    () => new ThrottledHandler(handler(), duration, maxToDisplay)
 }
 
 /**
@@ -69,8 +69,8 @@ object ThrottledHandler {
 class ThrottledHandler(
     handler: Handler,
     val duration: Duration,
-    val maxToDisplay: Int
-) extends ProxyHandler(handler) {
+    val maxToDisplay: Int)
+    extends ProxyHandler(handler) {
 
   private class Throttle(startTime: Time, name: String, level: javalog.Level) {
     private[this] var expired = false
@@ -149,8 +149,7 @@ class ThrottledHandler(
       val throttle = synchronized {
         throttleMap.getOrElseUpdate(
           key,
-          new Throttle(now, record.getLoggerName(), record.getLevel())
-        )
+          new Throttle(now, record.getLoggerName(), record.getLevel()))
       }
 
       // catch the case where throttle is removed before we had a chance to add

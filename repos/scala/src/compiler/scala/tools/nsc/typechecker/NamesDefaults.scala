@@ -43,8 +43,7 @@ trait NamesDefaults { self: Analyzer =>
       qual: Option[Tree],
       targs: List[Tree],
       vargss: List[List[Tree]],
-      blockTyper: Typer
-  ) {}
+      blockTyper: Typer) {}
 
   private def nameOfNamedArg(arg: Tree) =
     Some(arg) collect { case AssignOrNamedArg(Ident(name), _) => name }
@@ -175,15 +174,16 @@ trait NamesDefaults { self: Analyzer =>
       def blockWithQualifier(qual: Tree, selected: Name) = {
         val sym = blockTyper.context.owner.newValue(
           unit.freshTermName(nme.QUAL_PREFIX),
-          newFlags = ARTIFACT) setInfo uncheckedBounds(
-          qual.tpe) setPos (qual.pos.makeTransparent)
+          newFlags = ARTIFACT) setInfo uncheckedBounds(qual.tpe) setPos (
+          qual.pos.makeTransparent
+        )
         blockTyper.context.scope enter sym
         val vd = atPos(sym.pos)(ValDef(sym, qual) setType NoType)
         // it stays in Vegas: SI-5720, SI-5727
         qual changeOwner (blockTyper.context.owner -> sym)
 
-        val newQual = atPos(qual.pos.focus)(
-          blockTyper.typedQualifier(Ident(sym.name)))
+        val newQual = atPos(qual.pos.focus)(blockTyper.typedQualifier(Ident(
+          sym.name)))
         val baseFunTransformed = atPos(baseFun.pos.makeTransparent) {
           // setSymbol below is important because the 'selected' function might be overloaded. by
           // assigning the correct method symbol, typedSelect will just assign the type. the reason
@@ -309,18 +309,16 @@ trait NamesDefaults { self: Analyzer =>
           case _ =>
             val byName = isByNameParamType(paramTpe)
             val repeated = isScalaRepeatedParamType(paramTpe)
-            val argTpe = (
-              if (repeated) arg match {
-                case WildcardStarArg(expr) => expr.tpe
-                case _                     => seqType(arg.tpe)
-              }
-              else {
-                // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
-                //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
-                //      which is important for (at least) macros.
-                arg.tpe
-              }
-            ).widen // have to widen or types inferred from literal defaults will be singletons
+            val argTpe = (if (repeated) arg match {
+                            case WildcardStarArg(expr) => expr.tpe
+                            case _                     => seqType(arg.tpe)
+                          }
+                          else {
+                            // TODO In 83c9c764b, we tried to a stable type here to fix SI-7234. But the resulting TypeTree over a
+                            //      singleton type without an original TypeTree fails to retypecheck after a resetAttrs (SI-7516),
+                            //      which is important for (at least) macros.
+                            arg.tpe
+                          }).widen // have to widen or types inferred from literal defaults will be singletons
             val s = context.owner.newValue(
               unit.freshTermName(nme.NAMEDARG_PREFIX),
               arg.pos,
@@ -423,10 +421,9 @@ trait NamesDefaults { self: Analyzer =>
                 val block = Block(stats ::: valDefs.flatten, res)
                   .setType(res.tpe)
                   .setPos(tree.pos.makeTransparent)
-                context.namedApplyBlockInfo = Some(
-                  (
-                    block,
-                    NamedApplyInfo(qual, targs, vargss :+ refArgs, blockTyper)))
+                context.namedApplyBlockInfo = Some((
+                  block,
+                  NamedApplyInfo(qual, targs, vargss :+ refArgs, blockTyper)))
                 block
               case _ => tree
             }

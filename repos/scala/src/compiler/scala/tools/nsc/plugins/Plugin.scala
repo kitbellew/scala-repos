@@ -44,7 +44,9 @@ abstract class Plugin {
   def options: List[String] = {
     // Process plugin options of form plugin:option
     def namec = name + ":"
-    global.settings.pluginOptions.value filter (_ startsWith namec) map (_ stripPrefix namec)
+    global.settings.pluginOptions.value filter (_ startsWith namec) map (
+      _ stripPrefix namec
+    )
   }
 
   /** Handle any plugin-specific options.
@@ -123,15 +125,13 @@ object Plugin {
     try { Success[AnyClass](loader loadClass classname) }
     catch {
       case NonFatal(e) =>
-        Failure(
-          new PluginLoadException(
-            classname,
-            s"Error: unable to load class: $classname"))
+        Failure(new PluginLoadException(
+          classname,
+          s"Error: unable to load class: $classname"))
       case e: NoClassDefFoundError =>
-        Failure(
-          new PluginLoadException(
-            classname,
-            s"Error: class not found: ${e.getMessage} required by $classname"))
+        Failure(new PluginLoadException(
+          classname,
+          s"Error: class not found: ${e.getMessage} required by $classname"))
     }
   }
 
@@ -185,10 +185,9 @@ object Plugin {
     val enabled = (fromPaths ::: fromDirs) map {
       case Success((pd, loader)) if seen(pd.classname) =>
         // a nod to SI-7494, take the plugin classes distinctly
-        Failure(
-          new PluginLoadException(
-            pd.name,
-            s"Ignoring duplicate plugin ${pd.name} (${pd.classname})"))
+        Failure(new PluginLoadException(
+          pd.name,
+          s"Ignoring duplicate plugin ${pd.name} (${pd.classname})"))
       case Success((pd, loader)) if ignoring contains pd.name =>
         Failure(
           new PluginLoadException(pd.name, s"Disabling plugin ${pd.name}"))

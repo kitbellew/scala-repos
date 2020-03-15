@@ -137,10 +137,8 @@ object Resolvers {
   def run(command: String*): Unit = run(None, command: _*)
 
   def run(cwd: Option[File], command: String*): Unit = {
-    val result = Process(
-      if (onWindows) "cmd" +: "/c" +: command else command,
-      cwd
-    ) !;
+    val result =
+      Process(if (onWindows) "cmd" +: "/c" +: command else command, cwd) !;
     if (result != 0)
       sys.error("Nonzero exit code (" + result + "): " + command.mkString(" "))
   }

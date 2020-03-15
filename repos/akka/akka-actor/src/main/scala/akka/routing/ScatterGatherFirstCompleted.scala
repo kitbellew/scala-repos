@@ -48,8 +48,8 @@ private[akka] final case class ScatterGatherFirstCompletedRoutees(
   override def send(message: Any, sender: ActorRef): Unit =
     if (routees.isEmpty) {
       implicit val ec = ExecutionContexts.sameThreadExecutionContext
-      val reply = Future.failed(
-        new TimeoutException("Timeout due to no routees"))
+      val reply = Future.failed(new TimeoutException(
+        "Timeout due to no routees"))
       reply.pipeTo(sender)
     } else {
       implicit val ec = ExecutionContexts.sameThreadExecutionContext

@@ -120,9 +120,9 @@ abstract class DefaultDatabase(
   lazy val driver: Option[Driver] = {
     databaseConfig.driver.map { driverClassName =>
       try {
-        val proxyDriver = new ProxyDriver(
-          Reflect
-            .createInstance[Driver](driverClassName, environment.classLoader))
+        val proxyDriver = new ProxyDriver(Reflect.createInstance[Driver](
+          driverClassName,
+          environment.classLoader))
         DriverManager.registerDriver(proxyDriver)
         proxyDriver
       } catch {

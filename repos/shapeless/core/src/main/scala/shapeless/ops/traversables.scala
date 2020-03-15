@@ -74,8 +74,7 @@ object traversable {
   object ToSizedHList {
 
     def apply[CC[T] <: GenTraversable[T], A, N <: Nat](implicit
-        ev: ToSizedHList[CC, A, N]
-    ): ToSizedHList.Aux[CC, A, N, ev.Out] = ev
+        ev: ToSizedHList[CC, A, N]): ToSizedHList.Aux[CC, A, N, ev.Out] = ev
 
     import syntax.sized._
     import ops.nat._
@@ -88,8 +87,7 @@ object traversable {
         gt: CC[A] => GenTraversableLike[A, CC[A]],
         ac: AdditiveCollection[CC[A]],
         ti: ToInt[N],
-        th: ToHList[CC[A], N]
-    ): Aux[CC, A, N, Option[th.Out]] =
+        th: ToHList[CC[A], N]): Aux[CC, A, N, Option[th.Out]] =
       new ToSizedHList[CC, A, N] {
         type Out = Option[th.Out]
         def apply(as: CC[A]): Out = as.sized[N].map(_.toHList)

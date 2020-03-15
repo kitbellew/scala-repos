@@ -57,8 +57,7 @@ object MathTests extends TestSuite {
       )
       check(
         "1+-",
-        """ expr:1:1 / addSub:1:1 / divMul:1:3 / factor:1:3 / (number | parens):1:3 ..."-" """
-      )
+        """ expr:1:1 / addSub:1:1 / divMul:1:3 / factor:1:3 / (number | parens):1:3 ..."-" """)
       check(
         "(1+(2+3x))+4",
         """ expr:1:1 / addSub:1:1 / divMul:1:1 / factor:1:1 / parens:1:1 / addSub:1:2""" +

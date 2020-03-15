@@ -285,13 +285,11 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   )
 
   /** Power user commands */
-  lazy val powerCommands: List[LoopCommand] = List(
-    cmd(
-      "phase",
-      "<phase>",
-      "set the implicit phase for power commands",
-      phaseCommand)
-  )
+  lazy val powerCommands: List[LoopCommand] = List(cmd(
+    "phase",
+    "<phase>",
+    "set the implicit phase for power commands",
+    phaseCommand))
 
   private def importsCommand(line: String): Result = {
     val tokens = words(line)
@@ -308,18 +306,15 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val implicitMsg = if (imps.isEmpty) "" else imps.size + " are implicit"
         val foundMsg =
           if (found.isEmpty) "" else found.mkString(" // imports: ", ", ", "")
-        val statsMsg = List(
-          typeMsg,
-          termMsg,
-          implicitMsg) filterNot (_ == "") mkString ("(", ", ", ")")
+        val statsMsg = List(typeMsg, termMsg, implicitMsg) filterNot (
+          _ == ""
+        ) mkString ("(", ", ", ")")
 
-        intp.reporter.printMessage(
-          "%2d) %-30s %s%s".format(
-            idx + 1,
-            handler.importString,
-            statsMsg,
-            foundMsg
-          ))
+        intp.reporter.printMessage("%2d) %-30s %s%s".format(
+          idx + 1,
+          handler.importString,
+          statsMsg,
+          foundMsg))
     }
   }
 
@@ -427,9 +422,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   /** Available commands */
   def commands: List[LoopCommand] =
-    standardCommands ++ (
-      if (isReplPower) powerCommands else Nil
-    )
+    standardCommands ++ (if (isReplPower) powerCommands else Nil)
 
   val replayQuestionMessage =
     """|That entry seems to have slain the compiler.  Shall I replay
@@ -440,10 +433,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private val crashRecovery: PartialFunction[Throwable, Boolean] = {
     case ex: Throwable =>
       val (err, explain) =
-        (
-          if (intp.isInitializeComplete) (intp.global.throwableAsString(ex), "")
-          else (ex.getMessage, "The compiler did not initialize.\n")
-        )
+        (if (intp.isInitializeComplete) (intp.global.throwableAsString(ex), "")
+         else (ex.getMessage, "The compiler did not initialize.\n"))
       echo(err)
 
       ex match {
@@ -699,11 +690,9 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   }
 
   def saveCommand(filename: String): Result =
-    (
-      if (filename.isEmpty) echo("File name is required.")
-      else if (replayCommandStack.isEmpty) echo("No replay commands in session")
-      else File(filename).printlnAll(replayCommands: _*)
-    )
+    (if (filename.isEmpty) echo("File name is required.")
+     else if (replayCommandStack.isEmpty) echo("No replay commands in session")
+     else File(filename).printlnAll(replayCommands: _*))
 
   @deprecated(
     "Use reset, replay or require to update class path",
@@ -713,12 +702,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     if (f.exists) {
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)
-      echo(
-        "Added '%s' to classpath."
-          .format(f.path, intp.global.classPath.asClassPathString))
-      repldbg(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClassPathString))
+      echo("Added '%s' to classpath.".format(
+        f.path,
+        intp.global.classPath.asClassPathString))
+      repldbg("Added '%s'.  Your new classpath is:\n\"%s\"".format(
+        f.path,
+        intp.global.classPath.asClassPathString))
     } else echo("The path '" + f + "' doesn't seem to exist.")
   }
 
@@ -766,12 +755,12 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     else {
       addedClasspath = ClassPath.join(addedClasspath, f.path)
       intp.addUrlsToClassPath(f.toURI.toURL)
-      echo(
-        "Added '%s' to classpath."
-          .format(f.path, intp.global.classPath.asClassPathString))
-      repldbg(
-        "Added '%s'.  Your new classpath is:\n\"%s\""
-          .format(f.path, intp.global.classPath.asClassPathString))
+      echo("Added '%s' to classpath.".format(
+        f.path,
+        intp.global.classPath.asClassPathString))
+      repldbg("Added '%s'.  Your new classpath is:\n\"%s\"".format(
+        f.path,
+        intp.global.classPath.asClassPathString))
     }
   }
 
@@ -868,12 +857,10 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         val delimiter = eof orElse replProps.pasteDelimiter.option
         val input =
           readWhile(s => delimiter.isEmpty || delimiter.get != s) mkString "\n"
-        val text = (
-          margin filter (_.nonEmpty) map {
-            case "-" => input.lines map (_.trim) mkString "\n"
-            case m   => input stripMargin m.head // ignore excess chars in "<<||"
-          } getOrElse input
-        ).trim
+        val text = (margin filter (_.nonEmpty) map {
+          case "-" => input.lines map (_.trim) mkString "\n"
+          case m   => input stripMargin m.head // ignore excess chars in "<<||"
+        } getOrElse input).trim
         if (text.isEmpty) echo("\n// Nothing pasted, nothing gained.\n")
         else echo("\n// Exiting paste mode, now interpreting.\n")
         text

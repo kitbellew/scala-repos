@@ -135,9 +135,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
         .filter { m =>
           val name = m.getName
           val arity = m.getParameterTypes.length
-          !superMethods(methodSignature(m)) && (
-            (arity == 0 && isGetter(name)) || (arity == 1 && isSetter(name))
-          )
+          !superMethods(methodSignature(m)) && ((arity == 0 && isGetter(
+            name)) || (arity == 1 && isSetter(name)))
         }
         .filter { m =>
           (!cls.getName.endsWith("Service") || !m.getName.equals(
@@ -180,14 +179,13 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                 else if (name.equals("enabled")) Some("")
                 else None
 
-              Some(
-                AndroidProperty(
-                  name,
-                  tpe,
-                  getter,
-                  setters,
-                  switch,
-                  nameClashes))
+              Some(AndroidProperty(
+                name,
+                tpe,
+                getter,
+                setters,
+                switch,
+                nameClashes))
             }
         }
         .flatten
@@ -224,8 +222,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           cm.retType,
           cm.argTypes,
           false,
-          cm.isDeprecated
-        )
+          cm.isDeprecated)
       }
 
       def listenerName(
@@ -281,8 +278,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
       }
 
     val constructorNames: Map[List[String], List[String]] = {
-      val constRegex =
-        ("public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])""").r
+      val constRegex = (
+        "public +" + clsName + """(?:\<[\w\<\>\[\]]+)? *\(([^)]*)\) *(?:\{?|[^;])"""
+      ).r
       val argRegex = """(.+?) +([a-z][^\[,. ]*)(?:,|$)""".r
 
       constRegex

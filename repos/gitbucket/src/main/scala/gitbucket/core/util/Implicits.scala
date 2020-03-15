@@ -86,8 +86,9 @@ object Implicits {
 
     def baseUrl: String = {
       val url = request.getRequestURL.toString
-      val len =
-        url.length - (request.getRequestURI.length - request.getContextPath.length)
+      val len = url.length - (
+        request.getRequestURI.length - request.getContextPath.length
+      )
       url.substring(0, len).stripSuffix("/")
     }
   }

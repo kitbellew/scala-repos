@@ -93,22 +93,19 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       h.length must_== 3
 
       val segs1 = h.snapshot(None).segments
-      segs1 must contain(
-        ArraySegment(
-          blockid,
-          CPath(".a"),
-          CNum,
-          bitset(0, 1, 2),
-          decs(123, 9999.0, 0)))
+      segs1 must contain(ArraySegment(
+        blockid,
+        CPath(".a"),
+        CNum,
+        bitset(0, 1, 2),
+        decs(123, 9999.0, 0)))
       segs1 must contain(
         BooleanSegment(blockid, CPath(".b"), bitset(0, 2), bitset(0), 3))
 
       val segs1R = h.snapshotRef(None).segments
       segs1R mustEqual segs1
 
-      h.write(
-        17,
-        json("""
+      h.write(17, json("""
         999
         123.0
         "cat"
@@ -388,13 +385,12 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       a1.toSet must_== Set()
       a2.toSet must_== Set(
         ArraySegment(blockid, cpa, CString, bitset(0, 1), Array("foo", "bar")))
-      a3.toSet must_== Set(
-        ArraySegment(
-          blockid,
-          cpa,
-          CString,
-          bitset(0, 1, 2, 3),
-          Array("foo", "bar", "qux", "baz")))
+      a3.toSet must_== Set(ArraySegment(
+        blockid,
+        cpa,
+        CString,
+        bitset(0, 1, 2, 3),
+        Array("foo", "bar", "qux", "baz")))
       a3 mustEqual a3R
 
       a3REmpty.toSet must_== Set()

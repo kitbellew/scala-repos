@@ -48,9 +48,8 @@ class PackageObjectsData extends Serializable {
   def save(context: CompileContext): Unit = {
     val file = PackageObjectsData.storageFile(context)
     PackageObjectsData.synchronized {
-      using(
-        new ObjectOutputStream(
-          new BufferedOutputStream(new FileOutputStream(file)))) { stream =>
+      using(new ObjectOutputStream(new BufferedOutputStream(
+        new FileOutputStream(file)))) { stream =>
         stream.writeObject(this)
         stream.flush()
       }
@@ -81,9 +80,8 @@ object PackageObjectsData {
     def tryToReadData(file: File) = {
       synchronized {
         try {
-          using(
-            new ObjectInputStream(
-              new BufferedInputStream(new FileInputStream(file)))) { stream =>
+          using(new ObjectInputStream(new BufferedInputStream(
+            new FileInputStream(file)))) { stream =>
             stream.readObject().asInstanceOf[PackageObjectsData]
           }
         } catch {

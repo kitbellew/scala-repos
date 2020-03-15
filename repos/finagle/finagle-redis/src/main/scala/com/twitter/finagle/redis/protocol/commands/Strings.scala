@@ -167,12 +167,11 @@ case class GetRange(key: ChannelBuffer, start: Long, end: Long)
     extends StrictKeyCommand {
   val command = Commands.GETRANGE
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.GETRANGE,
-        key,
-        StringToChannelBuffer(start.toString),
-        StringToChannelBuffer(end.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.GETRANGE,
+      key,
+      StringToChannelBuffer(start.toString),
+      StringToChannelBuffer(end.toString)))
 }
 object GetRange {
   def apply(args: Seq[Array[Byte]]) = {
@@ -287,12 +286,11 @@ case class PSetEx(key: ChannelBuffer, millis: Long, value: ChannelBuffer)
   val command = Commands.PSETEX
   RequireClientProtocol(millis > 0, "Milliseconds must be greater than 0")
   def toChannelBuffer = {
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.PSETEX,
-        key,
-        StringToChannelBuffer(millis.toString),
-        value))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.PSETEX,
+      key,
+      StringToChannelBuffer(millis.toString),
+      value))
   }
 }
 object PSetEx {
@@ -331,8 +329,7 @@ case class Set(
             Seq(Set.PxBytes, StringToChannelBuffer(millis.toString))
           case _ => Seq()
         }) ++ (if (nx) Seq(Set.NxBytes) else Seq()) ++
-        (if (xx) Seq(Set.XxBytes) else Seq())
-    )
+        (if (xx) Seq(Set.XxBytes) else Seq()))
 }
 object Set {
   private val Ex = "EX"
@@ -398,12 +395,11 @@ case class SetBit(key: ChannelBuffer, offset: Int, value: Int)
     extends StrictKeyCommand {
   val command = Commands.SETBIT
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.SETBIT,
-        key,
-        StringToChannelBuffer(offset.toString),
-        StringToChannelBuffer(value.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.SETBIT,
+      key,
+      StringToChannelBuffer(offset.toString),
+      StringToChannelBuffer(value.toString)))
 }
 object SetBit {
   def apply(args: Seq[Array[Byte]]) = {
@@ -420,13 +416,11 @@ case class SetEx(key: ChannelBuffer, seconds: Long, value: ChannelBuffer)
   val command = Commands.SETEX
   RequireClientProtocol(seconds > 0, "Seconds must be greater than 0")
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.SETEX,
-        key,
-        StringToChannelBuffer(seconds.toString),
-        value
-      ))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.SETEX,
+      key,
+      StringToChannelBuffer(seconds.toString),
+      value))
 }
 object SetEx {
   def apply(args: Seq[Array[Byte]]) = {
@@ -437,8 +431,7 @@ object SetEx {
     new SetEx(
       ChannelBuffers.wrappedBuffer(args(0)),
       seconds,
-      ChannelBuffers.wrappedBuffer(list(2))
-    )
+      ChannelBuffers.wrappedBuffer(list(2)))
   }
 }
 
@@ -463,13 +456,11 @@ case class SetRange(key: ChannelBuffer, offset: Int, value: ChannelBuffer)
     with StrictValueCommand {
   val command = Commands.SETRANGE
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.SETRANGE,
-        key,
-        StringToChannelBuffer(offset.toString),
-        value
-      ))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.SETRANGE,
+      key,
+      StringToChannelBuffer(offset.toString),
+      value))
 }
 object SetRange {
   def apply(args: Seq[Array[Byte]]) = {
@@ -481,8 +472,7 @@ object SetRange {
     new SetRange(
       ChannelBuffers.wrappedBuffer(list(0)),
       offset,
-      ChannelBuffers.wrappedBuffer(value)
-    )
+      ChannelBuffers.wrappedBuffer(value))
   }
 }
 

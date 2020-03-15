@@ -33,15 +33,14 @@ private[akka] object TLSActor {
       closing: TLSClosing,
       hostInfo: Option[(String, Int)],
       tracing: Boolean = false): Props =
-    Props(
-      new TLSActor(
-        settings,
-        sslContext,
-        firstSession,
-        role,
-        closing,
-        hostInfo,
-        tracing)).withDeploy(Deploy.local)
+    Props(new TLSActor(
+      settings,
+      sslContext,
+      firstSession,
+      role,
+      closing,
+      hostInfo,
+      tracing)).withDeploy(Deploy.local)
 
   final val TransportIn = 0
   final val TransportOut = 0

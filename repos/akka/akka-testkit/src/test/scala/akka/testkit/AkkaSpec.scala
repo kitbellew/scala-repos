@@ -68,10 +68,9 @@ abstract class AkkaSpec(_system: ActorSystem)
     testKitSettings.DefaultTimeout.duration)
 
   def this(config: Config) =
-    this(
-      ActorSystem(
-        AkkaSpec.getCallerName(getClass),
-        ConfigFactory.load(config.withFallback(AkkaSpec.testConf))))
+    this(ActorSystem(
+      AkkaSpec.getCallerName(getClass),
+      ConfigFactory.load(config.withFallback(AkkaSpec.testConf))))
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 
@@ -112,8 +111,8 @@ abstract class AkkaSpec(_system: ActorSystem)
       sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
       def mute(clazz: Class[_]): Unit =
-        sys.eventStream.publish(
-          Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
+        sys.eventStream.publish(Mute(
+          DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses foreach mute
     }

@@ -155,7 +155,9 @@ final object Aggregation {
       log: Logger): String = {
     val ss = if (s.isEmpty) "" else s + " "
     val nowString = format.format(new java.util.Date(endTime))
-    "Total " + ss + "time: " + (endTime - startTime + 500) / 1000 + " s, completed " + nowString
+    "Total " + ss + "time: " + (
+      endTime - startTime + 500
+    ) / 1000 + " s, completed " + nowString
   }
   def defaultFormat = {
     import java.text.DateFormat

@@ -89,20 +89,18 @@ object PathData {
               MimeTypes
                 .parseMimeTypes(mimeString)
                 .headOption
-                .toSuccess(
-                  Extractor.Error.invalid(
-                    "No recognized mimeType values foundin %s".format(
-                      v.renderCompact)))
+                .toSuccess(Extractor.Error.invalid(
+                  "No recognized mimeType values foundin %s".format(
+                    v.renderCompact)))
           }
 
           (v.validated[String]("type") tuple mimeTypeV) flatMap {
             case ("blob", mimeType)                  => success(BLOB(mimeType))
             case ("nihdb", FileContent.XQuirrelData) => success(NIHDB)
             case (unknownType, mimeType) =>
-              failure(
-                Extractor.Error.invalid(
-                  "Data type %s (mimetype %s) is not a recognized PathData datatype"
-                    .format(unknownType, mimeType.toString)))
+              failure(Extractor.Error.invalid(
+                "Data type %s (mimetype %s) is not a recognized PathData datatype"
+                  .format(unknownType, mimeType.toString)))
           }
         }
       }

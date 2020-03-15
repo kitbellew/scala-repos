@@ -217,10 +217,10 @@ class ScaloidCodeGenerator(
 
   def commonListener(l: AndroidListener, args: String = "") = {
     val dp = if (l.isDeprecated) deprecatedDecl else ""
-    dp + "@inline def " + l.name + (
-      if (l.retType.name == "Unit") s"[U](f: $args => U): This = {"
-      else s"(f: $args => ${genType(l.retType)}): This = {"
-    ) + s"\n  basis.${l.setter}(new ${l.callbackClassName} {"
+    dp + "@inline def " + l.name + (if (l.retType.name == "Unit")
+                                      s"[U](f: $args => U): This = {"
+                                    else
+                                      s"(f: $args => ${genType(l.retType)}): This = {") + s"\n  basis.${l.setter}(new ${l.callbackClassName} {"
   }
 
   def fullListener(l: AndroidListener) =
@@ -385,34 +385,30 @@ object ScaloidCodeGenerator {
   type PredefinedCodeMapping = (String, (AndroidClass => String))
   type PredefinedCodeMappings = Seq[PredefinedCodeMapping]
 
-  val constTypeParams: PredefinedCodeMappings = List(
-    "View" -> { cls =>
-      val sClassName = "S" + cls.name
-      s"LP <: ViewGroupLayoutParams[_, $sClassName]"
-    }
-  )
+  val constTypeParams: PredefinedCodeMappings = List("View" -> { cls =>
+    val sClassName = "S" + cls.name
+    s"LP <: ViewGroupLayoutParams[_, $sClassName]"
+  })
 
-  val genericArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ => "[V <: android.view.View, T <: AnyRef]" }
-  )
+  val genericArgs: PredefinedCodeMappings = List("ArrayAdapter" -> { _ =>
+    "[V <: android.view.View, T <: AnyRef]"
+  })
 
-  val simpleGenericArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ => "[V, T]" }
-  )
+  val simpleGenericArgs: PredefinedCodeMappings = List("ArrayAdapter" -> { _ =>
+    "[V, T]"
+  })
 
-  val ClassExplicitArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ =>
-      "items: java.util.List[T], textViewResourceId: Int = android.R.layout.simple_spinner_item"
-    }
-  )
+  val ClassExplicitArgs: PredefinedCodeMappings = List("ArrayAdapter" -> { _ =>
+    "items: java.util.List[T], textViewResourceId: Int = android.R.layout.simple_spinner_item"
+  })
 
-  val BaseClassArgs: PredefinedCodeMappings = List(
-    "ArrayAdapter" -> { _ => "context, textViewResourceId, items" }
-  )
+  val BaseClassArgs: PredefinedCodeMappings = List("ArrayAdapter" -> { _ =>
+    "context, textViewResourceId, items"
+  })
 
-  val ClassImplicitArgs: PredefinedCodeMappings = List(
-    "View" -> { _ => "parentVGroup: TraitViewGroup[_] = null" }
-  )
+  val ClassImplicitArgs: PredefinedCodeMappings = List("View" -> { _ =>
+    "parentVGroup: TraitViewGroup[_] = null"
+  })
 
   val CustomClassBodies: PredefinedCodeMappings = List(
     "View" -> { _ => "override val parentViewGroup = parentVGroup" },
@@ -456,13 +452,13 @@ object ScaloidCodeGenerator {
     }
   )
 
-  val ConstImplicitArgs: PredefinedCodeMappings = List(
-    "View" -> { cls => s"defaultLayoutParam: S${cls.name} => LP" }
-  )
+  val ConstImplicitArgs: PredefinedCodeMappings = List("View" -> { cls =>
+    s"defaultLayoutParam: S${cls.name} => LP"
+  })
 
-  val ConstImplicitBodies: PredefinedCodeMappings = List(
-    "View" -> { _ => "v.<<.parent.+=(v)" }
-  )
+  val ConstImplicitBodies: PredefinedCodeMappings = List("View" -> { _ =>
+    "v.<<.parent.+=(v)"
+  })
 
   val companionObjectExtends: PredefinedCodeMappings = List(
     "TextView" -> { cls =>

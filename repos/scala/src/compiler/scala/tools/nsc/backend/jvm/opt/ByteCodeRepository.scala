@@ -202,12 +202,11 @@ class ByteCodeRepository[BT <: BTypes](
 
     // In a MethodInsnNode, the `owner` field may be an array descriptor, for example when invoking `clone`. We don't have a method node to return in this case.
     if (ownerInternalNameOrArrayDescriptor.charAt(0) == '[')
-      Left(
-        MethodNotFound(
-          name,
-          descriptor,
-          ownerInternalNameOrArrayDescriptor,
-          Nil))
+      Left(MethodNotFound(
+        name,
+        descriptor,
+        ownerInternalNameOrArrayDescriptor,
+        Nil))
     else
       methodNodeImpl(ownerInternalNameOrArrayDescriptor).left.map(
         MethodNotFound(name, descriptor, ownerInternalNameOrArrayDescriptor, _))

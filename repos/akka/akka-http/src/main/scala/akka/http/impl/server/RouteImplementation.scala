@@ -244,10 +244,11 @@ private[http] object RouteImplementation
           runToRoute)
 
       case o: OpaqueRoute ⇒
-        (ctx ⇒
-          o.handle(new RequestContextImpl(ctx))
-            .asInstanceOf[RouteResultImpl]
-            .underlying)
+        (
+            ctx ⇒
+              o.handle(new RequestContextImpl(ctx))
+                .asInstanceOf[RouteResultImpl]
+                .underlying)
       case p: Product ⇒
         extractExecutionContext { implicit ec ⇒
           complete((500, s"Not implemented: ${p.productPrefix}"))

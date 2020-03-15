@@ -11,10 +11,7 @@ object Test {
       x.toFloat,
       x.toDouble,
       BigInt(x),
-      BigDecimal(x)
-    ) ::: (
-      if (x < 0) Nil else List(x.toChar)
-    )
+      BigDecimal(x)) ::: (if (x < 0) Nil else List(x.toChar))
   def makeFromDouble(x: Double) =
     List(
       x.toShort,
@@ -23,8 +20,7 @@ object Test {
       x.toFloat,
       x.toDouble,
       BigInt(x.toInt),
-      BigDecimal(x)
-    )
+      BigDecimal(x))
 
   def main(args: Array[String]): Unit = {
     var xs = makeFromInt(5)

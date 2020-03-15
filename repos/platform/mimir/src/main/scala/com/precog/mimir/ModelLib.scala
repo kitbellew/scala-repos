@@ -271,35 +271,32 @@ trait ModelLibModule[M[+_]] {
           val interceptPaths = modelNames.map { modelName =>
             (
               modelName,
-              Set(
-                CPath(
-                  paths.Value,
-                  CPathField(modelName),
-                  CPathField(`coefficients`),
-                  CPathIndex(1),
-                  CPathField(`estimate`))))
+              Set(CPath(
+                paths.Value,
+                CPathField(modelName),
+                CPathField(`coefficients`),
+                CPathIndex(1),
+                CPathField(`estimate`))))
           }.toMap
 
           val stdErrPaths = modelNames.map { modelName =>
             (
               modelName,
-              Set(
-                CPath(
-                  paths.Value,
-                  CPathField(modelName),
-                  CPathField(`residualStandardError`),
-                  CPathField(`estimate`))))
+              Set(CPath(
+                paths.Value,
+                CPathField(modelName),
+                CPathField(`residualStandardError`),
+                CPathField(`estimate`))))
           }.toMap
 
           val dofPaths = modelNames.map { modelName =>
             (
               modelName,
-              Set(
-                CPath(
-                  paths.Value,
-                  CPathField(modelName),
-                  CPathField(`residualStandardError`),
-                  CPathField(`degreesOfFreedom`))))
+              Set(CPath(
+                paths.Value,
+                CPathField(modelName),
+                CPathField(`residualStandardError`),
+                CPathField(`degreesOfFreedom`))))
           }.toMap
 
           val covarPaths = schema.columnRefs
@@ -455,13 +452,12 @@ trait ModelLibModule[M[+_]] {
           val interceptPaths = modelNames.map { modelName =>
             (
               modelName,
-              Set(
-                CPath(
-                  paths.Value,
-                  CPathField(modelName),
-                  CPathField(`coefficients`),
-                  CPathIndex(1),
-                  CPathField(`estimate`))))
+              Set(CPath(
+                paths.Value,
+                CPathField(modelName),
+                CPathField(`coefficients`),
+                CPathIndex(1),
+                CPathField(`estimate`))))
           }.toMap
 
           val featuresPaths = schema.columnRefs

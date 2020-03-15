@@ -114,12 +114,11 @@ trait ParSeqLike[
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MaxValue)
       tasksupport
-        .executeAndWaitResult(
-          new SegmentLength(
-            p,
-            0,
-            splitter.psplitWithSignalling(realfrom, length - realfrom)(
-              1) assign ctx))
+        .executeAndWaitResult(new SegmentLength(
+          p,
+          0,
+          splitter.psplitWithSignalling(realfrom, length - realfrom)(
+            1) assign ctx))
         ._1
     }
 
@@ -140,12 +139,11 @@ trait ParSeqLike[
       val realfrom = if (from < 0) 0 else from
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MaxValue)
-      tasksupport.executeAndWaitResult(
-        new IndexWhere(
-          p,
-          realfrom,
-          splitter.psplitWithSignalling(realfrom, length - realfrom)(
-            1) assign ctx))
+      tasksupport.executeAndWaitResult(new IndexWhere(
+        p,
+        realfrom,
+        splitter.psplitWithSignalling(realfrom, length - realfrom)(
+          1) assign ctx))
     }
 
   /** Finds the last element satisfying some predicate.
@@ -165,11 +163,10 @@ trait ParSeqLike[
       val until = if (end >= length) length else end + 1
       val ctx = new DefaultSignalling with AtomicIndexFlag
       ctx.setIndexFlag(Int.MinValue)
-      tasksupport.executeAndWaitResult(
-        new LastIndexWhere(
-          p,
-          0,
-          splitter.psplitWithSignalling(until, length - until)(0) assign ctx))
+      tasksupport.executeAndWaitResult(new LastIndexWhere(
+        p,
+        0,
+        splitter.psplitWithSignalling(until, length - until)(0) assign ctx))
     }
 
   def reverse: Repr = {
@@ -186,8 +183,7 @@ trait ParSeqLike[
         new ReverseMap[S, That](
           f,
           () => bf(repr).asCombiner,
-          splitter) mapResult { _.resultWithTaskSupport }
-      )
+          splitter) mapResult { _.resultWithTaskSupport })
     } else setTaskSupport(seq.reverseMap(f)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new ReverseMap[S, That](f, pbf, splitter) mapResult { _.result })
@@ -209,11 +205,9 @@ trait ParSeqLike[
       else if (pthat.length > length - offset) false
       else {
         val ctx = new DefaultSignalling with VolatileAbort
-        tasksupport.executeAndWaitResult(
-          new SameElements(
-            splitter.psplitWithSignalling(offset, pthat.length)(1) assign ctx,
-            pthat.splitter)
-        )
+        tasksupport.executeAndWaitResult(new SameElements(
+          splitter.psplitWithSignalling(offset, pthat.length)(1) assign ctx,
+          pthat.splitter))
       }
     } otherwise seq.startsWith(that, offset)
 
@@ -239,18 +233,18 @@ trait ParSeqLike[
       else {
         val ctx = new DefaultSignalling with VolatileAbort
         val tlen = that.length
-        tasksupport.executeAndWaitResult(
-          new SameElements(
-            splitter.psplitWithSignalling(length - tlen, tlen)(1) assign ctx,
-            pthat.splitter))
+        tasksupport.executeAndWaitResult(new SameElements(
+          splitter.psplitWithSignalling(length - tlen, tlen)(1) assign ctx,
+          pthat.splitter))
       }
     } otherwise seq.endsWith(that)
 
   def patch[U >: T, That](from: Int, patch: GenSeq[U], replaced: Int)(
       implicit bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
-    if (patch.isParSeq && bf(
-          repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
+    if (patch.isParSeq && bf(repr).isCombiner && (
+          size - realreplaced + patch.size
+        ) > MIN_FOR_COPY) {
       val that = patch.asParSeq
       val pits = splitter.psplitWithSignalling(
         from,
@@ -292,8 +286,7 @@ trait ParSeqLike[
           index,
           elem,
           combinerFactory(() => bf(repr).asCombiner),
-          splitter) mapResult { _.resultWithTaskSupport }
-      )
+          splitter) mapResult { _.resultWithTaskSupport })
     } else setTaskSupport(seq.updated(index, elem)(bf2seq(bf)), tasksupport)
   /*bf ifParallel { pbf =>
     tasksupport.executeAndWaitResult(new Updated(index, elem, pbf, splitter) mapResult { _.result })
@@ -324,8 +317,7 @@ trait ParSeqLike[
           length min thatseq.length,
           combinerFactory(() => bf(repr).asCombiner),
           splitter,
-          thatseq.splitter) mapResult { _.resultWithTaskSupport }
-      )
+          thatseq.splitter) mapResult { _.resultWithTaskSupport })
     } else super.zip(that)(bf)
 
   /** Tests whether every element of this $coll relates to the
@@ -568,8 +560,7 @@ trait ParSeqLike[
       val opits = otherpit.psplitWithSignalling(fp, sp)
       Seq(
         new Zip(fp, cf, pits(0), opits(0)),
-        new Zip(sp, cf, pits(1), opits(1))
-      )
+        new Zip(sp, cf, pits(1), opits(1)))
     }
     override def merge(that: Zip[U, S, That]) =
       result = result combine that.result

@@ -72,11 +72,10 @@ class LogOffsetTest extends ZooKeeperTestHarness {
   @Test
   def testGetOffsetsForUnknownTopic() {
     val topicAndPartition = TopicAndPartition("foo", 0)
-    val request = OffsetRequest(
-      Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.LatestTime,
-          10)))
+    val request = OffsetRequest(Map(
+      topicAndPartition -> PartitionOffsetRequestInfo(
+        OffsetRequest.LatestTime,
+        10)))
     val offsetResponse = simpleConsumer.getOffsetsBefore(request)
     assertEquals(
       Errors.UNKNOWN_TOPIC_OR_PARTITION.code,
@@ -156,11 +155,10 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     var offsetChanged = false
     for (i <- 1 to 14) {
       val topicAndPartition = TopicAndPartition(topic, 0)
-      val offsetRequest = OffsetRequest(
-        Map(
-          topicAndPartition -> PartitionOffsetRequestInfo(
-            OffsetRequest.EarliestTime,
-            1)))
+      val offsetRequest = OffsetRequest(Map(
+        topicAndPartition -> PartitionOffsetRequestInfo(
+          OffsetRequest.EarliestTime,
+          1)))
       val consumerOffsets = simpleConsumer
         .getOffsetsBefore(offsetRequest)
         .partitionErrorAndOffsets(topicAndPartition)
@@ -245,11 +243,10 @@ class LogOffsetTest extends ZooKeeperTestHarness {
       () => isLeaderLocalOnBroker(topic, part, server),
       "Leader should be elected")
     val topicAndPartition = TopicAndPartition(topic, part)
-    val offsetRequest = OffsetRequest(
-      Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          OffsetRequest.EarliestTime,
-          10)))
+    val offsetRequest = OffsetRequest(Map(
+      topicAndPartition -> PartitionOffsetRequestInfo(
+        OffsetRequest.EarliestTime,
+        10)))
     val consumerOffsets = simpleConsumer
       .getOffsetsBefore(offsetRequest)
       .partitionErrorAndOffsets(topicAndPartition)

@@ -84,9 +84,12 @@ class HoconPsiParser extends PsiParser {
     def advanceLexer(): Unit = { builder.advanceLexer() }
 
     def matches(matcher: Matcher) =
-      (matcher.tokenSet.contains(
-        builder.getTokenType) && (!matcher.requireNoNewLine || !newLinesBeforeCurrentToken)) ||
-        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (matcher.matchEof && builder.eof)
+      (matcher.tokenSet.contains(builder.getTokenType) && (
+        !matcher.requireNoNewLine || !newLinesBeforeCurrentToken
+      )) ||
+        (matcher.matchNewLine && newLinesBeforeCurrentToken) || (
+        matcher.matchEof && builder.eof
+      )
 
     def matchesUnquoted(str: String) =
       matches(UnquotedChars) && builder.getTokenText == str
@@ -98,9 +101,9 @@ class HoconPsiParser extends PsiParser {
 
     def pass(matcher: Matcher): Boolean = {
       val result = matches(matcher)
-      if (result && (!matcher.matchNewLine || !newLinesBeforeCurrentToken) && (!matcher.matchEof || !builder.eof)) {
-        advanceLexer()
-      }
+      if (result && (!matcher.matchNewLine || !newLinesBeforeCurrentToken) && (
+            !matcher.matchEof || !builder.eof
+          )) { advanceLexer() }
       result
     }
 
@@ -439,7 +442,9 @@ class HoconPsiParser extends PsiParser {
           } catch { case e: NumberFormatException => false }
         }
 
-        (!gotPeriod || noPeriodWhitespace) && (!gotDecimalPart || noDecimalPartWhitespace) && isValid
+        (!gotPeriod || noPeriodWhitespace) && (
+          !gotDecimalPart || noDecimalPartWhitespace
+        ) && isValid
       }
 
     def parseArray(): Unit = {

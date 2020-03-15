@@ -35,14 +35,13 @@ object PCAOnSourceVectorExample {
     val sc = new SparkContext(conf)
 
     // $example on$
-    val data: RDD[LabeledPoint] = sc.parallelize(
-      Seq(
-        new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 1)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 1, 0)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0)),
-        new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 0)),
-        new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0))
-      ))
+    val data: RDD[LabeledPoint] = sc.parallelize(Seq(
+      new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 1)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 1, 0)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0)),
+      new LabeledPoint(0, Vectors.dense(1, 0, 0, 0, 0)),
+      new LabeledPoint(1, Vectors.dense(1, 1, 0, 0, 0))
+    ))
 
     // Compute the top 5 principal components.
     val pca = new PCA(5).fit(data.map(_.features))

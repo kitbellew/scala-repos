@@ -340,17 +340,19 @@ class LogisticRegression @Since("1.2.0") (
         logError(msg)
         throw new SparkException(msg)
       } else if ($(fitIntercept) && numClasses == 2 && histogram(0) == 0.0) {
-        logWarning(s"All labels are one and fitIntercept=true, so the coefficients will be " +
-          s"zeros and the intercept will be positive infinity; as a result, " +
-          s"training is not needed.")
+        logWarning(
+          s"All labels are one and fitIntercept=true, so the coefficients will be " +
+            s"zeros and the intercept will be positive infinity; as a result, " +
+            s"training is not needed.")
         (
           Vectors.sparse(numFeatures, Seq()),
           Double.PositiveInfinity,
           Array.empty[Double])
       } else if ($(fitIntercept) && numClasses == 1) {
-        logWarning(s"All labels are zero and fitIntercept=true, so the coefficients will be " +
-          s"zeros and the intercept will be negative infinity; as a result, " +
-          s"training is not needed.")
+        logWarning(
+          s"All labels are zero and fitIntercept=true, so the coefficients will be " +
+            s"zeros and the intercept will be negative infinity; as a result, " +
+            s"training is not needed.")
         (
           Vectors.sparse(numFeatures, Seq()),
           Double.NegativeInfinity,
@@ -936,8 +938,7 @@ class BinaryLogisticRegressionSummary private[classification] (
     predictions.select(probabilityCol, labelCol).rdd.map {
       case Row(score: Vector, label: Double) => (score(1), label)
     },
-    100
-  )
+    100)
 
   /**
     * Returns the receiver operating characteristic (ROC) curve,
@@ -1088,8 +1089,9 @@ private class LogisticAggregator(
 
             features.foreachActive { (index, value) =>
               if (featuresStd(index) != 0.0 && value != 0.0) {
-                localGradientSumArray(
-                  index) += multiplier * (value / featuresStd(index))
+                localGradientSumArray(index) += multiplier * (
+                  value / featuresStd(index)
+                )
               }
             }
 
@@ -1183,14 +1185,12 @@ private class LogisticCostFun(
       val combOp = (c1: LogisticAggregator, c2: LogisticAggregator) =>
         c1.merge(c2)
 
-      instances.treeAggregate(
-        new LogisticAggregator(
-          coeffs,
-          numClasses,
-          fitIntercept,
-          featuresStd,
-          featuresMean)
-      )(seqOp, combOp)
+      instances.treeAggregate(new LogisticAggregator(
+        coeffs,
+        numClasses,
+        fitIntercept,
+        featuresStd,
+        featuresMean))(seqOp, combOp)
     }
 
     val totalGradientArray = logisticAggregator.gradient.toArray

@@ -78,11 +78,10 @@ trait MilestonesControllerBase extends ControllerBase {
       milestoneId =>
         getMilestone(repository.owner, repository.name, milestoneId).map {
           milestone =>
-            updateMilestone(
-              milestone.copy(
-                title = form.title,
-                description = form.description,
-                dueDate = form.dueDate))
+            updateMilestone(milestone.copy(
+              title = form.title,
+              description = form.description,
+              dueDate = form.dueDate))
             redirect(
               s"/${repository.owner}/${repository.name}/issues/milestones")
         }

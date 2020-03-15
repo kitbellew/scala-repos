@@ -188,10 +188,9 @@ abstract class SQLImplicits {
         row: InternalRow
       }
     }
-    DataFrameHolder(
-      _sqlContext.internalCreateDataFrame(
-        rows,
-        StructType(StructField("_1", dataType) :: Nil)))
+    DataFrameHolder(_sqlContext.internalCreateDataFrame(
+      rows,
+      StructType(StructField("_1", dataType) :: Nil)))
   }
 
   /**
@@ -207,10 +206,9 @@ abstract class SQLImplicits {
         row: InternalRow
       }
     }
-    DataFrameHolder(
-      _sqlContext.internalCreateDataFrame(
-        rows,
-        StructType(StructField("_1", dataType) :: Nil)))
+    DataFrameHolder(_sqlContext.internalCreateDataFrame(
+      rows,
+      StructType(StructField("_1", dataType) :: Nil)))
   }
 
   /**
@@ -227,9 +225,8 @@ abstract class SQLImplicits {
         row: InternalRow
       }
     }
-    DataFrameHolder(
-      _sqlContext.internalCreateDataFrame(
-        rows,
-        StructType(StructField("_1", dataType) :: Nil)))
+    DataFrameHolder(_sqlContext.internalCreateDataFrame(
+      rows,
+      StructType(StructField("_1", dataType) :: Nil)))
   }
 }

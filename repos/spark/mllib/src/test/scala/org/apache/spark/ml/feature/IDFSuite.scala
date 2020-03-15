@@ -61,8 +61,7 @@ class IDFSuite
     val data = Array(
       Vectors.sparse(numOfFeatures, Array(1, 3), Array(1.0, 2.0)),
       Vectors.dense(0.0, 1.0, 2.0, 3.0),
-      Vectors.sparse(numOfFeatures, Array(1), Array(1.0))
-    )
+      Vectors.sparse(numOfFeatures, Array(1), Array(1.0)))
     val numOfData = data.size
     val idf = Vectors.dense(Array(0, 3, 1, 2).map { x =>
       math.log((numOfData + 1.0) / (x + 1.0))
@@ -91,8 +90,7 @@ class IDFSuite
     val data = Array(
       Vectors.sparse(numOfFeatures, Array(1, 3), Array(1.0, 2.0)),
       Vectors.dense(0.0, 1.0, 2.0, 3.0),
-      Vectors.sparse(numOfFeatures, Array(1), Array(1.0))
-    )
+      Vectors.sparse(numOfFeatures, Array(1), Array(1.0)))
     val numOfData = data.size
     val idf = Vectors.dense(Array(0, 3, 1, 2).map { x =>
       if (x > 0) math.log((numOfData + 1.0) / (x + 1.0)) else 0

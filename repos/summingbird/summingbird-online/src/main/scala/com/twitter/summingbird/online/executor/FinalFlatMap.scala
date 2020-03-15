@@ -77,9 +77,7 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
     implicitly[Semigroup[(Seq[S], Value)]])
 
   // Lazy transient as const futures are not serializable
-  @transient private[this] lazy val noData = List(
-    (List(), Future.value(Nil))
-  )
+  @transient private[this] lazy val noData = List((List(), Future.value(Nil)))
 
   private def formatResult(outData: Map[Key, (Seq[S], Value)])
       : TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])] = {
@@ -121,11 +119,7 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
           })
           .map(formatResult(_))
       } else { // Here we handle mapping to nothing, option map et. al
-        Future.value(
-          List(
-            (List(state), Future.value(Nil))
-          )
-        )
+        Future.value(List((List(state), Future.value(Nil))))
       }
     } catch { case NonFatal(e) => Future.exception(e) }
 

@@ -53,8 +53,7 @@ object FreeTListOption {
         .freeTGen[List, Option, A](
           Gen
             .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f)))
-        )
+            .flatMap(Gen.listOfN(_, freeTListOptionArb[A].arbitrary.map(_.f))))
         .map(FreeTListOption.apply))
 
   implicit def freeTListOptionEq[A](
@@ -95,9 +94,8 @@ object FreeTTest extends SpecLite {
 
     "not stack overflow with 50k left-associated binds" in {
       val expected = Applicative[FreeTListOption].point(())
-      val result = (0 until 50000).foldLeft(
-        Applicative[FreeTListOption].point(()))((fu, i) =>
-        fu.flatMap(u => Applicative[FreeTListOption].point(u)))
+      val result = (0 until 50000).foldLeft(Applicative[FreeTListOption].point(
+        ()))((fu, i) => fu.flatMap(u => Applicative[FreeTListOption].point(u)))
 
       Equal[FreeTListOption[Unit]].equal(expected, result)
     }
@@ -134,9 +132,8 @@ object FreeTTest extends SpecLite {
 
   object instances {
     def bind[S[_]: Functor, F[_]: Applicative] = Bind[FreeT[S, F, ?]]
-    def foldable[
-        S[_]: Foldable: Functor,
-        F[_]: Foldable: Applicative: BindRec] = Foldable[FreeT[S, F, ?]]
+    def foldable[S[_]: Foldable: Functor, F[
+        _]: Foldable: Applicative: BindRec] = Foldable[FreeT[S, F, ?]]
     def traverse[S[_]: Traverse, F[_]: Traverse: Applicative: BindRec] =
       Traverse[FreeT[S, F, ?]]
     def monad[S[_]: Functor, F[_]: Applicative] = Monad[FreeT[S, F, ?]]

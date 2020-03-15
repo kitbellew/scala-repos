@@ -409,13 +409,12 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       originalHandle,
       context.actorOf(
         RARP(context.system)
-          .configureDispatcher(
-            Props(
-              classOf[ThrottledAssociation],
-              managerRef,
-              listener,
-              originalHandle,
-              inbound))
+          .configureDispatcher(Props(
+            classOf[ThrottledAssociation],
+            managerRef,
+            listener,
+            originalHandle,
+            inbound))
           .withDeploy(Deploy.local),
         "throttler" + nextId()
       )
@@ -552,9 +551,9 @@ private[transport] class ThrottledAssociation(
       if (mode == Blackhole) throttledMessages = Queue.empty[ByteString]
       cancelTimer(DequeueTimerName)
       if (throttledMessages.nonEmpty)
-        scheduleDequeue(
-          inboundThrottleMode
-            .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
+        scheduleDequeue(inboundThrottleMode.timeToAvailable(
+          System.nanoTime(),
+          throttledMessages.head.length))
       sender() ! SetThrottleAck
       stay()
     case Event(InboundPayload(p), _) ⇒
@@ -570,8 +569,9 @@ private[transport] class ThrottledAssociation(
           .tryConsumeTokens(System.nanoTime(), payload.length)
           ._1
         if (throttledMessages.nonEmpty)
-          scheduleDequeue(inboundThrottleMode
-            .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
+          scheduleDequeue(inboundThrottleMode.timeToAvailable(
+            System.nanoTime(),
+            throttledMessages.head.length))
       }
       stay()
 

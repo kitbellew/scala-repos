@@ -73,8 +73,7 @@ object ServerBuilder {
     */
   def safeBuild[Req, Rep](
       serviceFactory: ServiceFactory[Req, Rep],
-      builder: Complete[Req, Rep]
-  ): Server =
+      builder: Complete[Req, Rep]): Server =
     builder.build(serviceFactory)(ServerConfigEvidence.FullyConfigured)
 }
 
@@ -193,8 +192,7 @@ private[builder] final class ServerConfig[
   */
 class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     val params: Stack.Params,
-    mk: Stack.Params => FinagleServer[Req, Rep]
-) {
+    mk: Stack.Params => FinagleServer[Req, Rep]) {
   import ServerConfig._
   import com.twitter.finagle.param._
 
@@ -210,32 +208,28 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
 
   protected def copy[Req1, Rep1, HasCodec1, HasBindTo1, HasName1](
       ps: Stack.Params,
-      newServer: Stack.Params => FinagleServer[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, HasCodec1, HasBindTo1, HasName1] =
+      newServer: Stack.Params => FinagleServer[Req1, Rep1])
+      : ServerBuilder[Req1, Rep1, HasCodec1, HasBindTo1, HasName1] =
     new ServerBuilder(ps, newServer)
 
   protected def configured[P: Stack.Param, HasCodec1, HasBindTo1, HasName1](
-      param: P
-  ): ServerBuilder[Req, Rep, HasCodec1, HasBindTo1, HasName1] =
+      param: P): ServerBuilder[Req, Rep, HasCodec1, HasBindTo1, HasName1] =
     copy(params + param, mk)
 
-  def codec[Req1, Rep1](
-      codec: Codec[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
+  def codec[Req1, Rep1](codec: Codec[Req1, Rep1])
+      : ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
     this
       .codec((_: ServerCodecConfig) => codec)
       .configured(ProtocolLibrary(codec.protocolLibraryName))
 
-  def codec[Req1, Rep1](
-      codecFactory: CodecFactory[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
+  def codec[Req1, Rep1](codecFactory: CodecFactory[Req1, Rep1])
+      : ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
     this
       .codec(codecFactory.server)
       .configured(ProtocolLibrary(codecFactory.protocolLibraryName))
 
-  def codec[Req1, Rep1](
-      codecFactory: CodecFactory[Req1, Rep1]#Server
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
+  def codec[Req1, Rep1](codecFactory: CodecFactory[Req1, Rep1]#Server)
+      : ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] =
     stack({ ps =>
       val Label(label) = ps[Label]
       val BindTo(addr) = ps[BindTo]
@@ -247,21 +241,19 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
         .replace(
           StackServer.Role.preparer,
           (next: ServiceFactory[Req1, Rep1]) =>
-            codec.prepareConnFactory(next, ps + Stats(stats.scope(label)))
-        )
+            codec.prepareConnFactory(next, ps + Stats(stats.scope(label))))
         .replace(TraceInitializerFilter.role, codec.newTraceInitializer)
 
       case class Server(
           stack: Stack[ServiceFactory[Req1, Rep1]] = newStack,
-          params: Stack.Params = ps
-      ) extends StdStackServer[Req1, Rep1, Server] {
+          params: Stack.Params = ps)
+          extends StdStackServer[Req1, Rep1, Server] {
         protected type In = Any
         protected type Out = Any
 
         protected def copy1(
             stack: Stack[ServiceFactory[Req1, Rep1]] = this.stack,
-            params: Stack.Params = this.params
-        ) = copy(stack, params)
+            params: Stack.Params = this.params) = copy(stack, params)
 
         protected def newListener(): Listener[Any, Any] =
           Netty3Listener(codec.pipelineFactory, params)
@@ -299,10 +291,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
         if (proto != ProtocolLibrary.param.default) ps
         else ps + ProtocolLibrary(codec.protocolLibraryName)
 
-      Server(
-        stack = newStack,
-        params = serverParams
-      )
+      Server(stack = newStack, params = serverParams)
     })
 
   /**
@@ -316,9 +305,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     * implementation.
     */
   @deprecated("Use stack(server: StackBasedServer)", "7.0.0")
-  def stack[Req1, Rep1](
-      mk: Stack.Params => FinagleServer[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] = copy(params, mk)
+  def stack[Req1, Rep1](mk: Stack.Params => FinagleServer[Req1, Rep1])
+      : ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] = copy(params, mk)
 
   /**
     * Overrides the stack and [[com.twitter.finagle.Server]] that will be used
@@ -330,9 +318,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     * builder parameters will be used by the resultant `Server`; it is up to the
     * discretion of `server` itself and the protocol implementation.
     */
-  def stack[Req1, Rep1](
-      server: StackBasedServer[Req1, Rep1]
-  ): ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] = {
+  def stack[Req1, Rep1](server: StackBasedServer[Req1, Rep1])
+      : ServerBuilder[Req1, Rep1, Yes, HasBindTo, HasName] = {
     val withParams: Stack.Params => FinagleServer[Req1, Rep1] = { ps =>
       server.withParams(server.params ++ ps)
     }
@@ -536,8 +523,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
         HasCodec,
         HasBindTo,
-        HasName]
-  ): Server = build(ServiceFactory.const(service))
+        HasName]): Server = build(ServiceFactory.const(service))
 
   @deprecated("Used for ABI compat", "5.0.1")
   def build(
@@ -553,8 +539,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: () => Service[Req, Rep])(implicit
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): Server =
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
+      : Server =
     build((_: ClientConnection) => serviceFactory())(
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION)
 
@@ -565,8 +551,8 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
     */
   @deprecated("Use the ServiceFactory variant instead", "5.0.1")
   def build(serviceFactory: (ClientConnection) => Service[Req, Rep])(implicit
-      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig
-  ): Server =
+      THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ThisConfig =:= FullySpecifiedConfig)
+      : Server =
     build(
       new ServiceFactory[Req, Rep] {
         def apply(conn: ClientConnection) = Future.value(serviceFactory(conn))
@@ -584,8 +570,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
       THE_BUILDER_IS_NOT_FULLY_SPECIFIED_SEE_ServerBuilder_DOCUMENTATION: ServerConfigEvidence[
         HasCodec,
         HasBindTo,
-        HasName]
-  ): Server = {
+        HasName]): Server = {
 
     val Label(lbl) = params[Label]
     val label = if (lbl == "") "server" else lbl

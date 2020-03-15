@@ -42,8 +42,7 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
     frequency(
       (1, genSimple),
       (1, wrap(choose(0, 5) flatMap genArray)),
-      (1, wrap(choose(0, 5) flatMap genObject))
-    )
+      (1, wrap(choose(0, 5) flatMap genObject)))
 
   def genPath: Gen[Path] =
     Gen.resize(10, Gen.containerOf[List, String](alphaStr)) map { elements =>
@@ -123,10 +122,7 @@ trait ArbitraryEventMessage extends ArbitraryJValue {
       archive.timestamp)
 
   def genRandomEventMessage: Gen[EventMessage] =
-    frequency(
-      (1, genRandomArchiveMessage),
-      (10, genRandomIngestMessage)
-    )
+    frequency((1, genRandomArchiveMessage), (10, genRandomIngestMessage))
 }
 
 trait RealisticEventMessage extends ArbitraryEventMessage {

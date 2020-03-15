@@ -148,8 +148,8 @@ package mongotestdocs {
       bytefield: Byte,
       booleanfield: Boolean,
       shortfield: Short,
-      datefield: Date
-  ) extends MongoDocument[Primitive] {
+      datefield: Date)
+      extends MongoDocument[Primitive] {
 
     def meta = Primitive
   }

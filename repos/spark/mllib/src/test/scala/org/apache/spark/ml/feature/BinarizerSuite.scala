@@ -90,10 +90,8 @@ class BinarizerSuite
     val defaultBinarized: Array[Double] = data.map(x =>
       if (x > 0.0) 1.0 else 0.0)
     val dataFrame: DataFrame = sqlContext
-      .createDataFrame(
-        Seq(
-          (Vectors.dense(data), Vectors.dense(defaultBinarized))
-        ))
+      .createDataFrame(Seq(
+        (Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
     val binarizer: Binarizer = new Binarizer()
@@ -115,10 +113,8 @@ class BinarizerSuite
     val defaultBinarized: Array[Double] = data.map(x =>
       if (x > threshold) 1.0 else 0.0)
     val dataFrame: DataFrame = sqlContext
-      .createDataFrame(
-        Seq(
-          (Vectors.dense(data), Vectors.dense(defaultBinarized))
-        ))
+      .createDataFrame(Seq(
+        (Vectors.dense(data), Vectors.dense(defaultBinarized))))
       .toDF("feature", "expected")
 
     val binarizer: Binarizer = new Binarizer()

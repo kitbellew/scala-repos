@@ -54,8 +54,7 @@ private[twitter] object Init {
       "finagle-core",
       "finagle-core_2.10",
       "finagle-core_2.11",
-      "finagle-core_2.12"
-    )
+      "finagle-core_2.12")
     candidates.flatMap { c =>
       tryProps(s"/com/twitter/$c/build.properties")
     }.headOption
@@ -69,12 +68,10 @@ private[twitter] object Init {
     _finagleVersion.set(p.getProperty("version", unknownVersion))
     _finagleBuildRevision.set(p.getProperty("build_revision", unknownVersion))
 
-    log.info(
-      "Finagle version %s (rev=%s) built at %s".format(
-        finagleVersion,
-        finagleBuildRevision,
-        p.getProperty("build_name", "?")
-      ))
+    log.info("Finagle version %s (rev=%s) built at %s".format(
+      finagleVersion,
+      finagleBuildRevision,
+      p.getProperty("build_name", "?")))
   }
 
   /**

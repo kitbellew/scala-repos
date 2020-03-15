@@ -53,12 +53,11 @@ trait ProtectedBranchService {
       includeAdministrators: Boolean,
       contexts: Seq[String])(implicit session: Session): Unit = {
     disableBranchProtection(owner, repository, branch)
-    ProtectedBranches.insert(
-      new ProtectedBranch(
-        owner,
-        repository,
-        branch,
-        includeAdministrators && contexts.nonEmpty))
+    ProtectedBranches.insert(new ProtectedBranch(
+      owner,
+      repository,
+      branch,
+      includeAdministrators && contexts.nonEmpty))
     contexts.map { context =>
       ProtectedBranchContexts.insert(
         new ProtectedBranchContext(owner, repository, branch, context))

@@ -102,11 +102,10 @@ object PhysicalOperation extends PredicateHelper {
       case a: AttributeReference =>
         aliases
           .get(a)
-          .map(
-            Alias(_, a.name)(
-              a.exprId,
-              a.qualifiers,
-              isGenerated = a.isGenerated))
+          .map(Alias(_, a.name)(
+            a.exprId,
+            a.qualifiers,
+            isGenerated = a.isGenerated))
           .getOrElse(a)
     }
   }
@@ -147,16 +146,14 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
           // be joined together
           case EqualNullSafe(l, r)
               if canEvaluate(l, left) && canEvaluate(r, right) =>
-            Some(
-              (
-                Coalesce(Seq(l, Literal.default(l.dataType))),
-                Coalesce(Seq(r, Literal.default(r.dataType)))))
+            Some((
+              Coalesce(Seq(l, Literal.default(l.dataType))),
+              Coalesce(Seq(r, Literal.default(r.dataType)))))
           case EqualNullSafe(l, r)
               if canEvaluate(l, right) && canEvaluate(r, left) =>
-            Some(
-              (
-                Coalesce(Seq(r, Literal.default(r.dataType))),
-                Coalesce(Seq(l, Literal.default(l.dataType)))))
+            Some((
+              Coalesce(Seq(r, Literal.default(r.dataType))),
+              Coalesce(Seq(l, Literal.default(l.dataType)))))
           case other => None
         }
         val otherPredicates = predicates.filterNot {
@@ -169,14 +166,13 @@ object ExtractEquiJoinKeys extends Logging with PredicateHelper {
         if (joinKeys.nonEmpty) {
           val (leftKeys, rightKeys) = joinKeys.unzip
           logDebug(s"leftKeys:$leftKeys | rightKeys:$rightKeys")
-          Some(
-            (
-              joinType,
-              leftKeys,
-              rightKeys,
-              otherPredicates.reduceOption(And),
-              left,
-              right))
+          Some((
+            joinType,
+            leftKeys,
+            rightKeys,
+            otherPredicates.reduceOption(And),
+            left,
+            right))
         } else { None }
       case _ => None
     }

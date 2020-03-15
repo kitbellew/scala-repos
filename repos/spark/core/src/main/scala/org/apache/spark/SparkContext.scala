@@ -181,14 +181,13 @@ class SparkContext(config: SparkConf)
       sparkHome: String = null,
       jars: Seq[String] = Nil,
       environment: Map[String, String] = Map()) = {
-    this(
-      SparkContext.updatedConf(
-        new SparkConf(),
-        master,
-        appName,
-        sparkHome,
-        jars,
-        environment))
+    this(SparkContext.updatedConf(
+      new SparkConf(),
+      master,
+      appName,
+      sparkHome,
+      jars,
+      environment))
   }
 
   // NOTE: The below constructors could be consolidated using default arguments. Due to
@@ -514,15 +513,14 @@ class SparkContext(config: SparkConf)
 
     _ui =
       if (conf.getBoolean("spark.ui.enabled", true)) {
-        Some(
-          SparkUI.createLiveUI(
-            this,
-            _conf,
-            listenerBus,
-            _jobProgressListener,
-            _env.securityManager,
-            appName,
-            startTime = startTime))
+        Some(SparkUI.createLiveUI(
+          this,
+          _conf,
+          listenerBus,
+          _jobProgressListener,
+          _env.securityManager,
+          appName,
+          startTime = startTime))
       } else {
         // For tests, do not enable the UI
         None
@@ -541,8 +539,9 @@ class SparkContext(config: SparkConf)
     _executorMemory = _conf
       .getOption("spark.executor.memory")
       .orElse(Option(System.getenv("SPARK_EXECUTOR_MEMORY")))
-      .orElse(Option(System.getenv("SPARK_MEM"))
-        .map(warnSparkMem))
+      .orElse(
+        Option(System.getenv("SPARK_MEM"))
+          .map(warnSparkMem))
       .map(Utils.memoryStringToMb)
       .getOrElse(1024)
 
@@ -550,8 +549,8 @@ class SparkContext(config: SparkConf)
     // since we can't set env vars directly in sbt.
     for {
       (envKey, propKey) <- Seq(("SPARK_TESTING", "spark.testing"))
-      value <- Option(System.getenv(envKey))
-        .orElse(Option(System.getProperty(propKey)))
+      value <- Option(System.getenv(envKey)).orElse(Option(
+        System.getProperty(propKey)))
     } { executorEnvs(envKey) = value }
     Option(System.getenv("SPARK_PREPEND_CLASSES")).foreach { v =>
       executorEnvs("SPARK_PREPEND_CLASSES") = v
@@ -801,9 +800,10 @@ class SparkContext(config: SparkConf)
       val numElements: BigInt = {
         val safeStart = BigInt(start)
         val safeEnd = BigInt(end)
-        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
-          (safeEnd - safeStart) / step
-        } else {
+        if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (
+              step > 0
+            )) { (safeEnd - safeStart) / step }
+        else {
           // the remainder has the same sign with range, could add 1 more
           (safeEnd - safeStart) / step + 1
         }
@@ -1396,9 +1396,8 @@ class SparkContext(config: SparkConf)
     * Growable and TraversableOnce are the standard APIs that guarantee += and ++=, implemented by
     * standard mutable collections. So you can use this with mutable Map, Set, etc.
     */
-  def accumulableCollection[
-      R <% Growable[T] with TraversableOnce[T] with Serializable: ClassTag,
-      T](initialValue: R): Accumulable[R, T] = {
+  def accumulableCollection[R <% Growable[T] with TraversableOnce[
+    T] with Serializable: ClassTag, T](initialValue: R): Accumulable[R, T] = {
     val param = new GrowableAccumulableParam[R, T]
     val acc = new Accumulable(initialValue, param)
     cleaner.foreach(_.registerAccumulatorForCleanup(acc))
@@ -1516,8 +1515,8 @@ class SparkContext(config: SparkConf)
   private[spark] override def requestTotalExecutors(
       numExecutors: Int,
       localityAwareTasks: Int,
-      hostToLocalTaskCount: scala.collection.immutable.Map[String, Int]
-  ): Boolean = {
+      hostToLocalTaskCount: scala.collection.immutable.Map[String, Int])
+      : Boolean = {
     schedulerBackend match {
       case b: CoarseGrainedSchedulerBackend =>
         b.requestTotalExecutors(
@@ -1870,8 +1869,7 @@ class SparkContext(config: SparkConf)
     CallSite(
       Option(getLocalProperty(CallSite.SHORT_FORM))
         .getOrElse(callSite.shortForm),
-      Option(getLocalProperty(CallSite.LONG_FORM)).getOrElse(callSite.longForm)
-    )
+      Option(getLocalProperty(CallSite.LONG_FORM)).getOrElse(callSite.longForm))
   }
 
   /**
@@ -1995,7 +1993,9 @@ class SparkContext(config: SparkConf)
       timeout,
       localProperties.get)
     logInfo(
-      "Job finished: " + callSite.shortForm + ", took " + (System.nanoTime - start) / 1e9 + " s")
+      "Job finished: " + callSite.shortForm + ", took " + (
+        System.nanoTime - start
+      ) / 1e9 + " s")
     result
   }
 
@@ -2192,14 +2192,13 @@ class SparkContext(config: SparkConf)
   private def postApplicationStart() {
     // Note: this code assumes that the task scheduler has been initialized and has contacted
     // the cluster manager to get an application ID (in case the cluster manager provides one).
-    listenerBus.post(
-      SparkListenerApplicationStart(
-        appName,
-        Some(applicationId),
-        startTime,
-        sparkUser,
-        applicationAttemptId,
-        schedulerBackend.getDriverLogUrls))
+    listenerBus.post(SparkListenerApplicationStart(
+      appName,
+      Some(applicationId),
+      startTime,
+      sparkUser,
+      applicationAttemptId,
+      schedulerBackend.getDriverLogUrls))
   }
 
   /** Post the application end event */

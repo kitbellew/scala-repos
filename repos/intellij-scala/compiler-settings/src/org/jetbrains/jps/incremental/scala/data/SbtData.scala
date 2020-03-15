@@ -55,8 +55,8 @@ object SbtData {
                     readSbtVersionFrom(classLoader)
                       .toRight("Unable to read SBT version from JVM classpath")
                       .map { sbtVersion =>
-                        val checksum = DatatypeConverter.printHexBinary(
-                          md5(sourceJar))
+                        val checksum = DatatypeConverter.printHexBinary(md5(
+                          sourceJar))
                         val interfacesHome = new File(
                           compilerInterfacesDir,
                           sbtVersion + "-idea-" + checksum)

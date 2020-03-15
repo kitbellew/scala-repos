@@ -75,8 +75,7 @@ object EventService {
       fileCreateHandler: FileStoreHandler,
       archiveHandler: ArchiveServiceHandler[ByteChunk],
       shardClient: HttpClient[ByteChunk],
-      stop: Stoppable
-  )
+      stop: Stoppable)
 
   case class ServiceConfig(
       serviceLocation: ServiceLocation,
@@ -85,8 +84,7 @@ object EventService {
       ingestBatchSize: Int,
       ingestMaxFields: Int,
       ingestTmpDir: File,
-      deleteTimeout: Timeout
-  )
+      deleteTimeout: Timeout)
 
   object ServiceConfig {
     def fromConfiguration(config: Configuration) = {
@@ -103,8 +101,8 @@ object EventService {
           ingestTmpDir = config
             .get[String]("ingest.tmpdir")
             .map(new File(_))
-            .orElse(
-              Option(File.createTempFile("ingest.tmpfile", null).getParentFile))
+            .orElse(Option(
+              File.createTempFile("ingest.tmpfile", null).getParentFile))
             .get, //fail fast
           deleteTimeout = akka.util.Timeout(
             config[Long]("delete.timeout", 10000L))
@@ -200,10 +198,8 @@ trait EventService
                 .compose[({ type l[a] = Function2[APIKey, Path, a] })#l]
 
               allowOrigin("*", executionContext) {
-                encode[
-                  ByteChunk,
-                  Future[HttpResponse[JValue]],
-                  Future[HttpResponse[ByteChunk]]] {
+                encode[ByteChunk, Future[HttpResponse[JValue]], Future[
+                  HttpResponse[ByteChunk]]] {
                   produce(application / json) {
                     //jsonp {
                     fsService(state) ~

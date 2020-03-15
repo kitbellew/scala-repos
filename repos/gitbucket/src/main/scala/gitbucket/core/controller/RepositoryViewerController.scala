@@ -75,23 +75,20 @@ trait RepositoryViewerControllerBase extends ControllerBase {
       charset: String,
       lineSeparator: String,
       newFileName: String,
-      oldFileName: Option[String]
-  )
+      oldFileName: Option[String])
 
   case class DeleteForm(
       branch: String,
       path: String,
       message: Option[String],
-      fileName: String
-  )
+      fileName: String)
 
   case class CommentForm(
       fileName: Option[String],
       oldLineNumber: Option[Int],
       newLineNumber: Option[Int],
       content: String,
-      issueId: Option[Int]
-  )
+      issueId: Option[Int])
 
   val editorForm = mapping(
     "branch" -> trim(label("Branch", text(required))),
@@ -562,21 +559,19 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                   x.repositoryName)
             } getOrElse {
               contentType = formats("json")
-              org.json4s.jackson.Serialization.write(
-                Map(
-                  "content" -> view.Markdown.toHtml(
-                    markdown = x.content,
-                    repository = repository,
-                    enableWikiLink = false,
-                    enableRefsLink = true,
-                    enableAnchor = true,
-                    enableLineBreaks = true,
-                    hasWritePermission = isEditable(
-                      x.userName,
-                      x.repositoryName,
-                      x.commentedUserName)
-                  )
-                ))
+              org.json4s.jackson.Serialization.write(Map(
+                "content" -> view.Markdown.toHtml(
+                  markdown = x.content,
+                  repository = repository,
+                  enableWikiLink = false,
+                  enableRefsLink = true,
+                  enableAnchor = true,
+                  enableLineBreaks = true,
+                  hasWritePermission = isEditable(
+                    x.userName,
+                    x.repositoryName,
+                    x.commentedUserName)
+                )))
             }
           } else Unauthorized
       } getOrElse NotFound
@@ -619,8 +614,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
         owner = repository.owner,
         name = repository.name,
         defaultBranch = repository.repository.defaultBranch,
-        origin = repository.repository.originUserName.isEmpty
-      )
+        origin = repository.repository.originUserName.isEmpty)
       .sortBy(br => (br.mergeInfo.isEmpty, br.commitTime))
       .map(br =>
         (
@@ -869,20 +863,18 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
           JGitUtil.processTree(git, headTip) { (path, tree) =>
             if (!newPath.exists(_ == path) && !oldPath.exists(_ == path)) {
-              builder.add(
-                JGitUtil.createDirCacheEntry(
-                  path,
-                  tree.getEntryFileMode,
-                  tree.getEntryObjectId))
+              builder.add(JGitUtil.createDirCacheEntry(
+                path,
+                tree.getEntryFileMode,
+                tree.getEntryObjectId))
             }
           }
 
           newPath.foreach { newPath =>
-            builder.add(
-              JGitUtil.createDirCacheEntry(
-                newPath,
-                FileMode.REGULAR_FILE,
-                inserter.insert(Constants.OBJ_BLOB, content.getBytes(charset))))
+            builder.add(JGitUtil.createDirCacheEntry(
+              newPath,
+              FileMode.REGULAR_FILE,
+              inserter.insert(Constants.OBJ_BLOB, content.getBytes(charset))))
           }
           builder.finish()
 

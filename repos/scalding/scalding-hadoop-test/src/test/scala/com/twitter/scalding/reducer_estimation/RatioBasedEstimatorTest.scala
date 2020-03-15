@@ -95,12 +95,11 @@ object ValidHistoryService extends HistoryServiceWithData {
       info: FlowStrategyInfo,
       maxHistory: Int): Try[Seq[FlowStepHistory]] =
     // past reducer ratio 0.5
-    Success(
-      Seq(
-        makeHistory(10, 1), // below threshold, ignored
-        makeHistory(inputSize, inputSize / 2),
-        makeHistory(inputSize, inputSize / 2),
-        makeHistory(inputSize, inputSize / 2)))
+    Success(Seq(
+      makeHistory(10, 1), // below threshold, ignored
+      makeHistory(inputSize, inputSize / 2),
+      makeHistory(inputSize, inputSize / 2),
+      makeHistory(inputSize, inputSize / 2)))
 }
 
 object InvalidHistoryService extends HistoryServiceWithData {

@@ -14,11 +14,10 @@ trait UTestStaticStringTest extends UTestTestCase {
       lineNumber: Int,
       position: Int,
       expectedName: String) = {
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(lineNumber, position, staticStringTestFileName),
-        staticStringTestName,
-        "tests" + (if (expectedName.isEmpty) "" else "\\" + expectedName)))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(lineNumber, position, staticStringTestFileName),
+      staticStringTestName,
+      "tests" + (if (expectedName.isEmpty) "" else "\\" + expectedName)))
   }
 
   protected def addTest(): Unit = {
@@ -69,10 +68,9 @@ trait UTestStaticStringTest extends UTestTestCase {
 
   def testNonConst(): Unit = {
     addTest()
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(11, 10, staticStringTestFileName),
-        staticStringTestName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(11, 10, staticStringTestFileName),
+      staticStringTestName))
   }
 
   def testTrim() = {

@@ -153,14 +153,13 @@ private[spark] class LocalBackend(
     localEndpoint = rpcEnv.setupEndpoint(
       "LocalBackendEndpoint",
       executorEndpoint)
-    listenerBus.post(
-      SparkListenerExecutorAdded(
-        System.currentTimeMillis,
-        executorEndpoint.localExecutorId,
-        new ExecutorInfo(
-          executorEndpoint.localExecutorHostname,
-          totalCores,
-          Map.empty)))
+    listenerBus.post(SparkListenerExecutorAdded(
+      System.currentTimeMillis,
+      executorEndpoint.localExecutorId,
+      new ExecutorInfo(
+        executorEndpoint.localExecutorHostname,
+        totalCores,
+        Map.empty)))
     launcherBackend.setAppId(appId)
     launcherBackend.setState(SparkAppHandle.State.RUNNING)
   }

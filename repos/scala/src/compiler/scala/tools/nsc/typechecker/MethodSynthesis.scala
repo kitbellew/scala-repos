@@ -25,8 +25,7 @@ trait MethodSynthesis {
     def mkThis = This(clazz) setPos clazz.pos.focus
     def mkThisSelect(sym: Symbol) =
       atPos(clazz.pos.focus)(
-        if (clazz.isClass) Select(This(clazz), sym) else Ident(sym)
-      )
+        if (clazz.isClass) Select(This(clazz), sym) else Ident(sym))
 
     private def isOverride(name: TermName) =
       clazzMember(name).alternatives exists (sym =>
@@ -43,10 +42,8 @@ trait MethodSynthesis {
     }
 
     private def finishMethod(method: Symbol, f: Symbol => Tree): Tree =
-      localTyper typed (
-        if (method.isLazy) ValDef(method, f(method))
-        else DefDef(method, f(method))
-      )
+      localTyper typed (if (method.isLazy) ValDef(method, f(method))
+                        else DefDef(method, f(method)))
 
     private def createInternal(
         name: Name,
@@ -205,11 +202,10 @@ trait MethodSynthesis {
             if deriveAccessors(vd) && !vd.symbol.isModuleVar =>
           // If we don't save the annotations, they seem to wander off.
           val annotations = stat.symbol.initialize.annotations
-          val trees = (
-            (field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
+          val trees =
+            ((field(vd) ::: standardAccessors(vd) ::: beanAccessors(vd))
               map (acc => atPos(vd.pos.focus)(acc derive annotations))
-              filterNot (_ eq EmptyTree)
-          )
+              filterNot (_ eq EmptyTree))
           // Verify each annotation landed safely somewhere, else warn.
           // Filtering when isParamAccessor is a necessary simplification
           // because there's a bunch of unwritten annotation code involving
@@ -469,7 +465,9 @@ trait MethodSynthesis {
           // Range position errors ensue if we don't duplicate this in some
           // circumstances (at least: concrete vals with existential types.)
           case _: ExistentialType =>
-            TypeTree() setOriginal (tree.tpt.duplicate setPos tree.tpt.pos.focus)
+            TypeTree() setOriginal (
+              tree.tpt.duplicate setPos tree.tpt.pos.focus
+            )
           case _ if isDeferred =>
             TypeTree() setOriginal tree.tpt // keep type tree of original abstract field
           case _ => TypeTree(getterTp)
@@ -627,10 +625,8 @@ trait MethodSynthesis {
 
       if (hasBP || hasBoolBP) {
         val getter =
-          (
-            if (hasBP) new BeanGetter(tree) with NoSymbolBeanGetter
-            else new BooleanBeanGetter(tree) with NoSymbolBeanGetter
-          )
+          (if (hasBP) new BeanGetter(tree) with NoSymbolBeanGetter
+           else new BooleanBeanGetter(tree) with NoSymbolBeanGetter)
         getter :: { if (mods.isMutable) List(BeanSetter(tree)) else Nil }
       } else Nil
     }

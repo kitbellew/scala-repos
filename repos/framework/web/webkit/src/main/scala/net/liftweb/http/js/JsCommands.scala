@@ -305,9 +305,12 @@ object JE {
     */
   case class ElemById(id: String, thenStr: String*) extends JsExp {
     override def toJsCmd =
-      "document.getElementById(" + id.encJs + ")" + (
-        if (thenStr.isEmpty) "" else thenStr.mkString(".", ".", "")
-      )
+      "document.getElementById(" + id.encJs + ")" + (if (thenStr.isEmpty) ""
+                                                     else
+                                                       thenStr.mkString(
+                                                         ".",
+                                                         ".",
+                                                         ""))
   }
 
   /**
@@ -340,8 +343,7 @@ object JE {
             name + ".appendChild(lift$.swappable(" + AnonFunc(
               JsCmds.JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
                 addToDocFrag("df", visible.toList) &
-                JE.JsRaw("return df").cmd
-            ).toJsCmd
+                JE.JsRaw("return df").cmd).toJsCmd
               + "(), " + AnonFunc(
               JsCmds.JsCrVar("df", JsRaw("document.createDocumentFragment()")) &
                 addToDocFrag("df", hidden.toList) &
@@ -682,11 +684,7 @@ trait HtmlFixer {
     val xhtml =
       S.session.map { session =>
         session.normalizeHtmlAndAppendEventHandlers(
-          session.processSurroundAndInclude(
-            s"JS SetHTML id: $uid",
-            content
-          )
-        )
+          session.processSurroundAndInclude(s"JS SetHTML id: $uid", content))
       } openOr { content }
 
     import scala.collection.mutable.ListBuffer

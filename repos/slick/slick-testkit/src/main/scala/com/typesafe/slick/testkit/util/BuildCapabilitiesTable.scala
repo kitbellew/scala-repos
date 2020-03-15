@@ -62,8 +62,8 @@ object BuildCapabilitiesTable extends App {
 
   val out = new FileOutputStream(args(0))
   try {
-    val wr = new PrintWriter(
-      new BufferedWriter(new OutputStreamWriter(out, "UTF-8")))
+    val wr = new PrintWriter(new BufferedWriter(
+      new OutputStreamWriter(out, "UTF-8")))
     wr.println(
       "Capability," + profileNames.map(n => s":api:`$n`").mkString(","))
     for ((cap, link) <- capabilities) {

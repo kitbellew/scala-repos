@@ -226,8 +226,8 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         logInfo("Doing the fetch; tracker endpoint = " + trackerEndpoint)
         // This try-finally prevents hangs due to timeouts:
         try {
-          val fetchedBytes = askTracker[Array[Byte]](
-            GetMapOutputStatuses(shuffleId))
+          val fetchedBytes = askTracker[Array[Byte]](GetMapOutputStatuses(
+            shuffleId))
           fetchedStatuses = MapOutputTracker.deserializeMapStatuses(
             fetchedBytes)
           logInfo("Got the output locations")
@@ -466,9 +466,9 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
     // If we got here, we failed to find the serialized locations in the cache, so we pulled
     // out a snapshot of the locations as "statuses"; let's serialize and return that
     val bytes = MapOutputTracker.serializeMapStatuses(statuses)
-    logInfo(
-      "Size of output statuses for shuffle %d is %d bytes"
-        .format(shuffleId, bytes.length))
+    logInfo("Size of output statuses for shuffle %d is %d bytes".format(
+      shuffleId,
+      bytes.length))
     // Add them into the table only if the epoch hasn't changed while we were working
     epochLock.synchronized {
       if (epoch == epochGotten) { cachedSerializedStatuses(shuffleId) = bytes }
@@ -513,8 +513,8 @@ private[spark] object MapOutputTracker extends Logging {
 
   // Opposite of serializeMapStatuses.
   def deserializeMapStatuses(bytes: Array[Byte]): Array[MapStatus] = {
-    val objIn = new ObjectInputStream(
-      new GZIPInputStream(new ByteArrayInputStream(bytes)))
+    val objIn = new ObjectInputStream(new GZIPInputStream(
+      new ByteArrayInputStream(bytes)))
     Utils.tryWithSafeFinally {
       objIn.readObject().asInstanceOf[Array[MapStatus]]
     } { objIn.close() }

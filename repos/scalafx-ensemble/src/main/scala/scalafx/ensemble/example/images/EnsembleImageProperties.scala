@@ -46,13 +46,12 @@ class EnsembleImageProperties extends EnsembleExample {
     val url = this.getClass
       .getResource("/scalafx/ensemble/images/sanfran.jpg")
       .toExternalForm
-    val sample1 = new ImageView(
-      new Image(
-        url,
-        requestedWidth = 30,
-        requestedHeight = 70,
-        preserveRatio = false,
-        smooth = true))
+    val sample1 = new ImageView(new Image(
+      url,
+      requestedWidth = 30,
+      requestedHeight = 70,
+      preserveRatio = false,
+      smooth = true))
 
     val sample2 = new ImageView(new Image(url)) {
       // Image can be resized to preferred width
@@ -92,8 +91,7 @@ class EnsembleImageProperties extends EnsembleExample {
           spacing = 5
           children = List(sample1, sample3, sample4, sample5)
         },
-        sample2
-      )
+        sample2)
     }
   }
 }

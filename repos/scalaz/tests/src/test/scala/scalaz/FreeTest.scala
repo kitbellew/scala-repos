@@ -44,8 +44,7 @@ object FreeList extends FreeListInstances {
         .freeGen[List, A](
           Gen
             .choose(0, 2)
-            .flatMap(Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f)))
-        )
+            .flatMap(Gen.listOfN(_, freeListArb[A].arbitrary.map(_.f))))
         .map(FreeList.apply))
 
   implicit def freeListEq[A](implicit A: Equal[A]): Equal[FreeList[A]] =
@@ -91,10 +90,10 @@ object FreeOption {
         .freeGen[Option, A](
           Gen
             .choose(0, 1)
-            .flatMap(Gen
-              .listOfN(_, freeOptionArb[A].arbitrary.map(_.f))
-              .map(_.headOption))
-        )
+            .flatMap(
+              Gen
+                .listOfN(_, freeOptionArb[A].arbitrary.map(_.f))
+                .map(_.headOption)))
         .map(FreeOption.apply))
 
   implicit def freeOptionEq[A](implicit A: Equal[A]): Equal[FreeOption[A]] =
@@ -109,8 +108,7 @@ object FreeTest extends SpecLite {
       implicit A: Arbitrary[A]): Gen[Free[F, A]] =
     Gen.frequency(
       (1, Functor[Arbitrary].map(A)(Free.pure[F, A](_)).arbitrary),
-      (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary)
-    )
+      (1, Functor[Arbitrary].map(Arbitrary(g))(Free[F, A](_)).arbitrary))
 
   "Option" should { checkAll(bindRec.laws[FreeOption]) }
 

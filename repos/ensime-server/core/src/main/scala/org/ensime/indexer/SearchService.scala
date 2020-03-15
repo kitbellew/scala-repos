@@ -23,13 +23,10 @@ import scala.concurrent.duration._
   * We have an H2 database for storing relational information
   * and Lucene for advanced indexing.
   */
-class SearchService(
-    config: EnsimeConfig,
-    resolver: SourceResolver
-)(implicit
+class SearchService(config: EnsimeConfig, resolver: SourceResolver)(implicit
     actorSystem: ActorSystem,
-    vfs: EnsimeVFS
-) extends ClassfileIndexer
+    vfs: EnsimeVFS)
+    extends ClassfileIndexer
     with FileChangeListener
     with SLF4JLogging {
 
@@ -293,8 +290,7 @@ class SearchService(
   // deletion in both Lucene and H2 is really slow, batching helps
   def deleteInBatches(
       files: List[FileObject],
-      batchSize: Int = 1000
-  ): Future[Int] = {
+      batchSize: Int = 1000): Future[Int] = {
     val removing = files.grouped(batchSize).map(delete)
     Future.sequence(removing).map(_.sum)
   }

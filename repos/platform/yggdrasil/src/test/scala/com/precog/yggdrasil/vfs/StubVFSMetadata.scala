@@ -65,8 +65,7 @@ class StubVFSMetadata[M[+_]](
               Path(key.components(path.length)),
               if (key.length == path.length + 1)
                 DataOnly(FileContent.XQuirrelData)
-              else PathOnly
-            )
+              else PathOnly)
         }
       }
     }

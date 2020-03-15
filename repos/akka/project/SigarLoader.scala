@@ -39,11 +39,9 @@ object SigarLoader {
 
   def locateSigarArtifact =
     update map { report =>
-      val artifactList = report.matching(
-        moduleFilter(
-          organization = sigarLoader.organization,
-          name = sigarLoader.name)
-      )
+      val artifactList = report.matching(moduleFilter(
+        organization = sigarLoader.organization,
+        name = sigarLoader.name))
       require(
         artifactList.size == 1,
         "Expecting single artifact, while found: " + artifactList)
@@ -62,12 +60,8 @@ object SigarLoader {
       fork in Test := true
     ) ++ (
       // Invoke Sigar agent at JVM init time, to extract and load native Sigar library.
-      if (sigarTestEnabled)
-        Seq(
-          javaOptions in Test += sigarOptions.value
-        )
-      else Seq()
-    )
+      if (sigarTestEnabled) Seq(javaOptions in Test += sigarOptions.value)
+      else Seq())
   }
 
 }

@@ -10,11 +10,9 @@ final case class TracedT[W[_], A, B](run: W[A => B]) {
   def cobind[C](f: TracedT[W, A, B] => C)(implicit
       W: Cobind[W],
       A: Semigroup[A]): TracedT[W, A, C] =
-    TracedT(
-      W.extend(run) { wf => m =>
-        f(TracedT(W.map(wf)(_.compose(A.append(_, m)))))
-      }
-    )
+    TracedT(W.extend(run) { wf => m =>
+      f(TracedT(W.map(wf)(_.compose(A.append(_, m)))))
+    })
 
   def trans[M[_]](f: W ~> M): TracedT[M, A, B] = TracedT(f(run))
 
@@ -121,8 +119,8 @@ object TracedT extends TracedTInstances {
   def tracedTU[WAB, AB, A0, B0](wab: WAB)(implicit
       U1: Unapply[Functor, WAB] { type A = AB },
       U2: Unapply2[Profunctor, AB] { type A = A0; type B = B0 },
-      L: Leibniz.===[AB, A0 => B0]
-  ): TracedT[U1.M, A0, B0] = TracedT(L.subst[U1.M](U1(wab)))
+      L: Leibniz.===[AB, A0 => B0]): TracedT[U1.M, A0, B0] =
+    TracedT(L.subst[U1.M](U1(wab)))
 
   import scalaz.Isomorphism._
 
@@ -149,11 +147,9 @@ private trait TracedTDistributive[W[_], C]
 
   override final def distributeImpl[G[_], A, B](fa: G[A])(
       f: A => TracedT[W, C, B])(implicit G: Functor[G]) =
-    TracedT(
-      W.map(W.cosequence(G.map(fa)(f(_).run))) {
-        Distributive[C => ?].cosequence(_)
-      }
-    )
+    TracedT(W.map(W.cosequence(G.map(fa)(f(_).run))) {
+      Distributive[C => ?].cosequence(_)
+    })
 }
 
 private trait TracedTApply[W[_], C]
@@ -163,11 +159,7 @@ private trait TracedTApply[W[_], C]
 
   override final def ap[A, B](fa: => TracedT[W, C, A])(
       f: => TracedT[W, C, A => B]) =
-    TracedT(
-      W.ap(fa.run)(
-        W.map(f.run)(cab => ca => c => cab(c).apply(ca(c)))
-      )
-    )
+    TracedT(W.ap(fa.run)(W.map(f.run)(cab => ca => c => cab(c).apply(ca(c)))))
 }
 
 private trait TracedTApplicative[W[_], C]

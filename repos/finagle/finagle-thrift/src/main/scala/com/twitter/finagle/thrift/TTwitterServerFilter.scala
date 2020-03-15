@@ -10,8 +10,8 @@ import org.apache.thrift.protocol.{TMessage, TMessageType, TProtocolFactory}
 
 private[finagle] class TTwitterServerFilter(
     serviceName: String,
-    protocolFactory: TProtocolFactory
-) extends SimpleFilter[Array[Byte], Array[Byte]] {
+    protocolFactory: TProtocolFactory)
+    extends SimpleFilter[Array[Byte], Array[Byte]] {
   // Concurrency is not an issue here since we have an instance per
   // channel, and receive only one request at a time (thrift does no
   // pipelining).  Furthermore, finagle will guarantee this by
@@ -34,8 +34,7 @@ private[finagle] class TTwitterServerFilter(
 
   def apply(
       request: Array[Byte],
-      service: Service[Array[Byte], Array[Byte]]
-  ): Future[Array[Byte]] = {
+      service: Service[Array[Byte], Array[Byte]]): Future[Array[Byte]] = {
     // What to do on exceptions here?
     if (isUpgraded) {
       val header = new thrift.RequestHeader

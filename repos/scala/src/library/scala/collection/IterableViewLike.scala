@@ -27,10 +27,9 @@ import scala.language.implicitConversions
   *  @tparam Coll the type of the underlying collection containing the elements.
   *  @tparam This the type of the view itself
   */
-trait IterableViewLike[
-    +A,
-    +Coll,
-    +This <: IterableView[A, Coll] with IterableViewLike[A, Coll, This]]
+trait IterableViewLike[+A, +Coll, +This <: IterableView[
+  A,
+  Coll] with IterableViewLike[A, Coll, This]]
     extends Iterable[A]
     with IterableLike[A, This]
     with TraversableView[A, Coll]

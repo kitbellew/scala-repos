@@ -72,8 +72,9 @@ object StrictForm {
             fsu(value.entity.data.decodeString(charsetName))
         })
 
-    @implicitNotFound("In order to unmarshal a `StrictForm.Field` to type `${T}` you need to supply a " +
-      "`FromStringUnmarshaller[${T}]` and/or a `FromEntityUnmarshaller[${T}]`")
+    @implicitNotFound(
+      "In order to unmarshal a `StrictForm.Field` to type `${T}` you need to supply a " +
+        "`FromStringUnmarshaller[${T}]` and/or a `FromEntityUnmarshaller[${T}]`")
     sealed trait FieldUnmarshaller[T] {
       def unmarshalString(value: String)(implicit
           ec: ExecutionContext,
@@ -159,9 +160,8 @@ object StrictForm {
         case Unmarshaller.UnsupportedContentTypeException(supported1) ⇒
           tryUnmarshalToMultipartForm.fast.recoverWith {
             case Unmarshaller.UnsupportedContentTypeException(supported2) ⇒
-              FastFuture.failed(
-                Unmarshaller.UnsupportedContentTypeException(
-                  supported1 ++ supported2))
+              FastFuture.failed(Unmarshaller.UnsupportedContentTypeException(
+                supported1 ++ supported2))
           }
       }
     }

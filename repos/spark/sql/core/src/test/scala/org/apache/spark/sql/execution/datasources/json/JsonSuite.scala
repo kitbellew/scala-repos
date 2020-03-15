@@ -290,8 +290,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val expectedSchema = StructType(
       StructField(
         "headers",
-        StructType(StructField("Charset", StringType, true) ::
-          StructField("Host", StringType, true) :: Nil),
+        StructType(
+          StructField("Charset", StringType, true) ::
+            StructField("Host", StringType, true) :: Nil),
         true) ::
         StructField("ip", StringType, true) ::
         StructField("nullstr", StringType, true) :: Nil)
@@ -301,8 +302,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     checkAnswer(
       sql("select nullstr, headers.Host from jsonTable"),
-      Seq(Row("", "1.abc.com"), Row("", null), Row("", null), Row(null, null))
-    )
+      Seq(Row("", "1.abc.com"), Row("", null), Row("", null), Row(null, null)))
   }
 
   test("Primitive field and type inferring") {
@@ -359,21 +359,24 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         StructField(
           "arrayOfStruct",
           ArrayType(
-            StructType(StructField("field1", BooleanType, true) ::
-              StructField("field2", StringType, true) ::
-              StructField("field3", StringType, true) :: Nil),
+            StructType(
+              StructField("field1", BooleanType, true) ::
+                StructField("field2", StringType, true) ::
+                StructField("field3", StringType, true) :: Nil),
             true),
           true
         ) ::
         StructField(
           "struct",
-          StructType(StructField("field1", BooleanType, true) ::
-            StructField("field2", DecimalType(20, 0), true) :: Nil),
+          StructType(
+            StructField("field1", BooleanType, true) ::
+              StructField("field2", DecimalType(20, 0), true) :: Nil),
           true) ::
         StructField(
           "structWithArrayFields",
-          StructType(StructField("field1", ArrayType(LongType, true), true) ::
-            StructField("field2", ArrayType(StringType, true), true) :: Nil),
+          StructType(
+            StructField("field1", ArrayType(LongType, true), true) ::
+              StructField("field2", ArrayType(StringType, true), true) :: Nil),
           true
         ) :: Nil)
 
@@ -385,14 +388,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
-      Row("str1", "str2", null)
-    )
+      Row("str1", "str2", null))
 
     // Access an array of null values.
     checkAnswer(
       sql("select arrayOfNull from jsonTable"),
-      Row(Seq(null, null, null, null))
-    )
+      Row(Seq(null, null, null, null)))
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
@@ -407,20 +408,17 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray1[0], arrayOfArray1[1] from jsonTable"),
-      Row(Seq("1", "2", "3"), Seq("str1", "str2"))
-    )
+      Row(Seq("1", "2", "3"), Seq("str1", "str2")))
 
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray2[0], arrayOfArray2[1] from jsonTable"),
-      Row(Seq(1.0, 2.0, 3.0), Seq(1.1, 2.1, 3.1))
-    )
+      Row(Seq(1.0, 2.0, 3.0), Seq(1.1, 2.1, 3.1)))
 
     // Access elements of an array inside a filed with the type of ArrayType(ArrayType).
     checkAnswer(
       sql("select arrayOfArray1[1][1], arrayOfArray2[1][1] from jsonTable"),
-      Row("str2", 2.1)
-    )
+      Row("str2", 2.1))
 
     // Access elements of an array of structs.
     checkAnswer(
@@ -447,15 +445,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
-      Row(Seq(4, 5, 6), Seq("str1", "str2"))
-    )
+      Row(Seq(4, 5, 6), Seq("str1", "str2")))
 
     // Access elements of an array field of a struct.
     checkAnswer(
       sql(
         "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
-      Row(5, null)
-    )
+      Row(5, null))
   }
 
   test("GetField operation on complex data type") {
@@ -465,14 +461,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
-      Row(true, "str1")
-    )
+      Row(true, "str1"))
 
     // Getting all values of a specific field from an array of structs.
     checkAnswer(
       sql("select arrayOfStruct.field1, arrayOfStruct.field2 from jsonTable"),
-      Row(Seq(true, false, null), Seq("str1", null, null))
-    )
+      Row(Seq(true, false, null), Seq("str1", null, null)))
   }
 
   test("Type conflict in primitive field values") {
@@ -513,51 +507,43 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Number and Boolean conflict: resolve the type as number in this query.
     checkAnswer(
       sql("select num_bool - 10 from jsonTable where num_bool > 11"),
-      Row(2)
-    )
+      Row(2))
 
     // Widening to LongType
     checkAnswer(
       sql("select num_num_1 - 100 from jsonTable where num_num_1 > 11"),
-      Row(21474836370L) :: Row(21474836470L) :: Nil
-    )
+      Row(21474836370L) :: Row(21474836470L) :: Nil)
 
     checkAnswer(
       sql("select num_num_1 - 100 from jsonTable where num_num_1 > 10"),
-      Row(-89) :: Row(21474836370L) :: Row(21474836470L) :: Nil
-    )
+      Row(-89) :: Row(21474836370L) :: Row(21474836470L) :: Nil)
 
     // Widening to DecimalType
     checkAnswer(
       sql("select num_num_2 + 1.3 from jsonTable where num_num_2 > 1.1"),
       Row(21474836472.2) ::
-        Row(92233720368547758071.3) :: Nil
-    )
+        Row(92233720368547758071.3) :: Nil)
 
     // Widening to Double
     checkAnswer(
       sql("select num_num_3 + 1.2 from jsonTable where num_num_3 > 1.1"),
-      Row(101.2) :: Row(21474836471.2) :: Nil
-    )
+      Row(101.2) :: Row(21474836471.2) :: Nil)
 
     // Number and String conflict: resolve the type as number in this query.
     checkAnswer(
       sql("select num_str + 1.2 from jsonTable where num_str > 14"),
-      Row(BigDecimal("92233720368547758071.2"))
-    )
+      Row(BigDecimal("92233720368547758071.2")))
 
     // Number and String conflict: resolve the type as number in this query.
     checkAnswer(
       sql(
         "select num_str + 1.2 from jsonTable where num_str >= 92233720368547758060"),
-      Row(new java.math.BigDecimal("92233720368547758071.2"))
-    )
+      Row(new java.math.BigDecimal("92233720368547758071.2")))
 
     // String and Boolean conflict: resolve the type as string.
     checkAnswer(
       sql("select * from jsonTable where str_bool = 'str1'"),
-      Row("true", 11L, null, 1.1, "13.1", "str1")
-    )
+      Row("true", 11L, null, 1.1, "13.1", "str1"))
   }
 
   ignore("Type conflict in primitive field values (Ignored)") {
@@ -568,25 +554,19 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Number and Boolean conflict: resolve the type as boolean in this query.
     checkAnswer(
       sql("select num_bool from jsonTable where NOT num_bool"),
-      Row(false)
-    )
+      Row(false))
 
     checkAnswer(
       sql("select str_bool from jsonTable where NOT str_bool"),
-      Row(false)
-    )
+      Row(false))
 
     // Right now, the analyzer does not know that num_bool should be treated as a boolean.
     // Number and Boolean conflict: resolve the type as boolean in this query.
-    checkAnswer(
-      sql("select num_bool from jsonTable where num_bool"),
-      Row(true)
-    )
+    checkAnswer(sql("select num_bool from jsonTable where num_bool"), Row(true))
 
     checkAnswer(
       sql("select str_bool from jsonTable where str_bool"),
-      Row(false)
-    )
+      Row(false))
 
     // The plan of the following DSL is
     // Project [(CAST(num_str#65:4, DoubleType) + 1.2) AS num#78]
@@ -610,8 +590,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql("select num_str + 1.2 from jsonTable where num_str > 13"),
       Row(BigDecimal("14.3")) :: Row(
-        BigDecimal("92233720368547758071.2")) :: Nil
-    )
+        BigDecimal("92233720368547758071.2")) :: Nil)
   }
 
   test("Type conflict in complex field values") {
@@ -683,8 +662,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Treat an element as a number.
     checkAnswer(
       sql("select array1[0] + 1 from jsonTable where array1 is not null"),
-      Row(2)
-    )
+      Row(2))
   }
 
   test("Handling missing fields") {
@@ -772,8 +750,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         "10",
         "21474836470",
         null,
-        "this is a simple string.")
-    )
+        "this is a simple string."))
   }
 
   test(
@@ -801,21 +778,24 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         StructField(
           "arrayOfStruct",
           ArrayType(
-            StructType(StructField("field1", StringType, true) ::
-              StructField("field2", StringType, true) ::
-              StructField("field3", StringType, true) :: Nil),
+            StructType(
+              StructField("field1", StringType, true) ::
+                StructField("field2", StringType, true) ::
+                StructField("field3", StringType, true) :: Nil),
             true),
           true
         ) ::
         StructField(
           "struct",
-          StructType(StructField("field1", StringType, true) ::
-            StructField("field2", StringType, true) :: Nil),
+          StructType(
+            StructField("field1", StringType, true) ::
+              StructField("field2", StringType, true) :: Nil),
           true) ::
         StructField(
           "structWithArrayFields",
-          StructType(StructField("field1", ArrayType(StringType, true), true) ::
-            StructField("field2", ArrayType(StringType, true), true) :: Nil),
+          StructType(
+            StructField("field1", ArrayType(StringType, true), true) ::
+              StructField("field2", ArrayType(StringType, true), true) :: Nil),
           true
         ) :: Nil)
 
@@ -827,14 +807,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
-      Row("str1", "str2", null)
-    )
+      Row("str1", "str2", null))
 
     // Access an array of null values.
     checkAnswer(
       sql("select arrayOfNull from jsonTable"),
-      Row(Seq(null, null, null, null))
-    )
+      Row(Seq(null, null, null, null)))
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
@@ -846,20 +824,17 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray1[0], arrayOfArray1[1] from jsonTable"),
-      Row(Seq("1", "2", "3"), Seq("str1", "str2"))
-    )
+      Row(Seq("1", "2", "3"), Seq("str1", "str2")))
 
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray2[0], arrayOfArray2[1] from jsonTable"),
-      Row(Seq("1", "2", "3"), Seq("1.1", "2.1", "3.1"))
-    )
+      Row(Seq("1", "2", "3"), Seq("1.1", "2.1", "3.1")))
 
     // Access elements of an array inside a filed with the type of ArrayType(ArrayType).
     checkAnswer(
       sql("select arrayOfArray1[1][1], arrayOfArray2[1][1] from jsonTable"),
-      Row("str2", "2.1")
-    )
+      Row("str2", "2.1"))
 
     // Access elements of an array of structs.
     checkAnswer(
@@ -879,22 +854,19 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       Row(
         Row("true", "92233720368547758070"),
         "true",
-        "92233720368547758070") :: Nil
-    )
+        "92233720368547758070") :: Nil)
 
     // Access an array field of a struct.
     checkAnswer(
       sql(
         "select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
-      Row(Seq("4", "5", "6"), Seq("str1", "str2"))
-    )
+      Row(Seq("4", "5", "6"), Seq("str1", "str2")))
 
     // Access elements of an array field of a struct.
     checkAnswer(
       sql(
         "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
-      Row("5", null)
-    )
+      Row("5", null))
   }
 
   test(
@@ -1027,8 +999,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         Row(Map("b" -> 2)) ::
         Row(Map("c" -> 3)) ::
         Row(Map("c" -> 1, "d" -> 4)) ::
-        Row(Map("e" -> null)) :: Nil
-    )
+        Row(Map("e" -> null)) :: Nil)
 
     checkAnswer(
       sql("select `map`['c'] from jsonWithSimpleMap"),
@@ -1036,8 +1007,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         Row(null) ::
         Row(3) ::
         Row(1) ::
-        Row(null) :: Nil
-    )
+        Row(null) :: Nil)
 
     val innerStruct = StructType(
       StructField("field1", ArrayType(IntegerType, true), true) ::
@@ -1080,8 +1050,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
-      Row(true, "str1")
-    )
+      Row(true, "str1"))
     checkAnswer(
       sql("""
           |select complexArrayOfStruct[0].field1[1].inner2[0], complexArrayOfStruct[1].field2[0][1]
@@ -1161,10 +1130,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val jsonDFOne = sqlContext.read
       .option("mode", "DROPMALFORMED")
       .json(corruptRecords)
-    checkAnswer(
-      jsonDFOne,
-      Row("str_a_4", "str_b_4", "str_c_4") :: Nil
-    )
+    checkAnswer(jsonDFOne, Row("str_a_4", "str_b_4", "str_c_4") :: Nil)
     assert(jsonDFOne.schema === schemaOne)
 
     val jsonDFTwo = sqlContext.read
@@ -1309,8 +1275,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val schema2 = StructType(
       StructField(
         "f1",
-        StructType(StructField("f11", IntegerType, false) ::
-          StructField("f12", BooleanType, false) :: Nil),
+        StructType(
+          StructField("f11", IntegerType, false) ::
+            StructField("f12", BooleanType, false) :: Nil),
         false) ::
         StructField("f2", MapType(StringType, IntegerType, true), false) :: Nil)
 
@@ -1354,14 +1321,12 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from complexTable"),
-      Row("str1", "str2", null)
-    )
+      Row("str1", "str2", null))
 
     // Access an array of null values.
     checkAnswer(
       sql("select arrayOfNull from complexTable"),
-      Row(Seq(null, null, null, null))
-    )
+      Row(Seq(null, null, null, null)))
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
@@ -1377,20 +1342,17 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray1[0], arrayOfArray1[1] from complexTable"),
-      Row(Seq("1", "2", "3"), Seq("str1", "str2"))
-    )
+      Row(Seq("1", "2", "3"), Seq("str1", "str2")))
 
     // Access elements of an array of arrays.
     checkAnswer(
       sql("select arrayOfArray2[0], arrayOfArray2[1] from complexTable"),
-      Row(Seq(1.0, 2.0, 3.0), Seq(1.1, 2.1, 3.1))
-    )
+      Row(Seq(1.0, 2.0, 3.0), Seq(1.1, 2.1, 3.1)))
 
     // Access elements of an array inside a filed with the type of ArrayType(ArrayType).
     checkAnswer(
       sql("select arrayOfArray1[1][1], arrayOfArray2[1][1] from complexTable"),
-      Row("str2", 2.1)
-    )
+      Row("str2", 2.1))
 
     // Access a struct and fields inside of it.
     checkAnswer(
@@ -1405,16 +1367,14 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     checkAnswer(
       sql(
         "select structWithArrayFields.field1, structWithArrayFields.field2 from complexTable"),
-      Row(Seq(4, 5, 6), Seq("str1", "str2"))
-    )
+      Row(Seq(4, 5, 6), Seq("str1", "str2")))
 
     // Access elements of an array field of a struct.
     checkAnswer(
       sql(
         "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] " +
           "from complexTable"),
-      Row(5, null)
-    )
+      Row(5, null))
   }
 
   test("JSONRelation equality test") {
@@ -1645,8 +1605,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
           .format("json")
           .schema(schema)
           .load(path.getCanonicalPath),
-        expectedResult
-      )
+        expectedResult)
     }
   }
 
@@ -1730,9 +1689,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       val schema = StructType(
         StructField(
           "a",
-          StructType(
-            StructField("b", StringType) :: Nil
-          )) :: Nil)
+          StructType(StructField("b", StringType) :: Nil)) :: Nil)
       val jsonDF = sqlContext.read.schema(schema).json(path)
       assert(jsonDF.count() == 2)
     }
@@ -1835,8 +1792,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
       checkAnswer(
         sql("select ts from jsonTable"),
-        Row(java.sql.Timestamp.valueOf("2016-01-02 03:04:05"))
-      )
+        Row(java.sql.Timestamp.valueOf("2016-01-02 03:04:05")))
     }
   }
 }

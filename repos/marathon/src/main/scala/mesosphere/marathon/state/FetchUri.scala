@@ -31,8 +31,7 @@ object FetchUri {
       uri = uri.getValue,
       executable = uri.getExecutable,
       extract = uri.getExtract,
-      cache = uri.getCache
-    )
+      cache = uri.getCache)
 
   def isExtract(uri: String): Boolean = {
     uri.endsWith(".tgz") ||

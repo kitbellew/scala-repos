@@ -51,8 +51,7 @@ object MenuButtonDemo extends JFXApp {
                   { println(ae.eventType + " occurred on Menu Item A") }
                 }
               },
-              new MenuItem("MenuItem B")
-            )
+              new MenuItem("MenuItem B"))
           },
           new MenuButton {
             text = "MenuButton 2"
@@ -62,8 +61,7 @@ object MenuButtonDemo extends JFXApp {
                   { println(ae.eventType + " occurred on Menu Item C") }
                 }
               },
-              new MenuItem("MenuItem D")
-            )
+              new MenuItem("MenuItem D"))
           }
         )
       }

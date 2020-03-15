@@ -36,8 +36,7 @@ final case class GuiceApplicationBuilder(
       overrides,
       disabled,
       binderOptions,
-      eagerly
-    ) {
+      eagerly) {
 
   // extra constructor for creating from Java
   def this() = this(environment = Environment.simple())
@@ -125,8 +124,7 @@ final case class GuiceApplicationBuilder(
       .bindings(
         bind[GlobalSettings.Deprecated] to globalSettings,
         bind[OptionalSourceMapper] to new OptionalSourceMapper(None),
-        bind[WebCommands] to new DefaultWebCommands
-      )
+        bind[WebCommands] to new DefaultWebCommands)
       .createModule()
   }
 

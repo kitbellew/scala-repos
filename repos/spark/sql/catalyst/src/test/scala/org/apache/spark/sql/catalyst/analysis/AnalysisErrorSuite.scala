@@ -115,8 +115,8 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "scalar subquery with 2 columns",
     testRelation.select(
-      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1))
-        .as('a)),
+      (ScalarSubquery(testRelation.select('a, dateLit.as('b))) + Literal(1)).as(
+        'a)),
     "Scalar subquery must return only one column, but got 2" :: Nil
   )
 
@@ -251,8 +251,7 @@ class AnalysisErrorSuite extends AnalysisTest {
   errorTest(
     "missing group by",
     testRelation2.groupBy('a)('b),
-    "'`b`'" :: "group by" :: Nil
-  )
+    "'`b`'" :: "group by" :: Nil)
 
   errorTest(
     "ambiguous field",
@@ -329,9 +328,8 @@ class AnalysisErrorSuite extends AnalysisTest {
     val error = intercept[AnalysisException] {
       SimpleAnalyzer.checkAnalysis(join)
     }
-    assert(
-      error.message.contains(
-        "Failure when resolving conflicting references in Join"))
+    assert(error.message.contains(
+      "Failure when resolving conflicting references in Join"))
     assert(error.message.contains("Conflicting attributes"))
   }
 
@@ -426,10 +424,9 @@ class AnalysisErrorSuite extends AnalysisTest {
         AttributeReference("c", BinaryType)(exprId = ExprId(4)),
         AttributeReference("d", IntegerType)(exprId = ExprId(3))),
       Inner,
-      Some(
-        EqualTo(
-          AttributeReference("a", BinaryType)(exprId = ExprId(2)),
-          AttributeReference("c", BinaryType)(exprId = ExprId(4))))
+      Some(EqualTo(
+        AttributeReference("a", BinaryType)(exprId = ExprId(2)),
+        AttributeReference("c", BinaryType)(exprId = ExprId(4))))
     )
 
     assertAnalysisError(
@@ -446,12 +443,11 @@ class AnalysisErrorSuite extends AnalysisTest {
           ExprId(4)),
         AttributeReference("d", IntegerType)(exprId = ExprId(3))),
       Inner,
-      Some(
-        EqualTo(
-          AttributeReference("a", MapType(IntegerType, StringType))(exprId =
-            ExprId(2)),
-          AttributeReference("c", MapType(IntegerType, StringType))(exprId =
-            ExprId(4))))
+      Some(EqualTo(
+        AttributeReference("a", MapType(IntegerType, StringType))(exprId =
+          ExprId(2)),
+        AttributeReference("c", MapType(IntegerType, StringType))(exprId =
+          ExprId(4))))
     )
 
     assertAnalysisError(

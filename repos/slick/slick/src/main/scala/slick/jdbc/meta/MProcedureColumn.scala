@@ -29,12 +29,11 @@ object MProcedureColumn {
   def getProcedureColumns(
       procedurePattern: MQName,
       columnNamePattern: String = "%") =
-    ResultSetAction[MProcedureColumn](
-      _.metaData.getProcedureColumns(
-        procedurePattern.catalog_?,
-        procedurePattern.schema_?,
-        procedurePattern.name,
-        columnNamePattern)) { r =>
+    ResultSetAction[MProcedureColumn](_.metaData.getProcedureColumns(
+      procedurePattern.catalog_?,
+      procedurePattern.schema_?,
+      procedurePattern.name,
+      columnNamePattern)) { r =>
       MProcedureColumn(
         MQName.from(r),
         r.<<,

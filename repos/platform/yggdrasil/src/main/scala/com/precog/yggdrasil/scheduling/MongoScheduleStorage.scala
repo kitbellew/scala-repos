@@ -44,8 +44,7 @@ case class MongoScheduleStorageSettings(
     tasks: String = "tasks",
     deletedTasks: String = "tasks_deleted",
     reports: String = "reports",
-    timeout: Long = 10000
-)
+    timeout: Long = 10000)
 
 object MongoScheduleStorageSettings {
   val defaults = MongoScheduleStorageSettings()
@@ -119,9 +118,8 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
     }
 
   def reportRun(report: ScheduledRunReport) =
-    database(
-      insert(report.serialize.asInstanceOf[JObject])
-        .into(settings.reports)) map { _ => PrecogUnit }
+    database(insert(report.serialize.asInstanceOf[JObject]).into(
+      settings.reports)) map { _ => PrecogUnit }
 
   def statusFor(id: UUID, limit: Option[Int]) = {
     database(

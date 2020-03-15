@@ -70,8 +70,8 @@ trait MergeService {
           getRepositoryDir(
             requestUserName,
             requestRepositoryName).toURI.toString)
-        .setRefSpecs(
-          new RefSpec(s"refs/heads/${requestBranch}:refs/pull/${issueId}/head"))
+        .setRefSpecs(new RefSpec(
+          s"refs/heads/${requestBranch}:refs/pull/${issueId}/head"))
         .call
     }
   }
@@ -251,8 +251,8 @@ object MergeService {
       val conflicted =
         try { !merger.merge(mergeBaseTip, mergeTip) }
         catch { case e: NoMergeBaseException => true }
-      val mergeTipCommit = using(new RevWalk(repository))(
-        _.parseCommit(mergeTip))
+      val mergeTipCommit = using(new RevWalk(repository))(_.parseCommit(
+        mergeTip))
       val committer = mergeTipCommit.getCommitterIdent;
       def updateBranch(treeId: ObjectId, message: String, branchName: String) {
         // creates merge commit

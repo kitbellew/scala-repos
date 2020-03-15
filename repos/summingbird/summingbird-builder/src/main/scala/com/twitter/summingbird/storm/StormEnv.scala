@@ -47,7 +47,6 @@ case class StormEnv(override val jobName: String, override val args: Args)
       .withConfigUpdater { c => c.updated(ajob.transformConfig(c.toMap)) }
       .run(
         builder.node.name(builder.id).asInstanceOf[TailProducer[Storm, _]],
-        classSuffix
-      )
+        classSuffix)
   }
 }

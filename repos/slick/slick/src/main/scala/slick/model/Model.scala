@@ -26,8 +26,7 @@ case class Table(
     primaryKey: Option[PrimaryKey],
     foreignKeys: Seq[ForeignKey],
     indices: Seq[Index],
-    options: Set[TableOption[_]] = Set()
-) {
+    options: Set[TableOption[_]] = Set()) {
   require(name.table != "", "name cannot be empty string")
 }
 
@@ -37,8 +36,7 @@ case class Column(
     table: QualifiedName,
     tpe: String,
     nullable: Boolean,
-    options: Set[ColumnOption[_]] = Set()
-) {
+    options: Set[ColumnOption[_]] = Set()) {
   require(name != "", "name cannot be empty string")
 }
 
@@ -46,8 +44,7 @@ case class PrimaryKey(
     name: Option[String],
     table: QualifiedName,
     columns: Seq[Column],
-    options: Set[PrimaryKeyOption[_]] = Set()
-) {
+    options: Set[PrimaryKeyOption[_]] = Set()) {
   require(!name.contains(""), "name cannot be empty string")
 }
 
@@ -59,8 +56,7 @@ case class ForeignKey(
     referencedColumns: Seq[Column],
     onUpdate: ForeignKeyAction,
     onDelete: ForeignKeyAction,
-    options: Set[ForeignKeyOption[_]] = Set()
-) {
+    options: Set[ForeignKeyOption[_]] = Set()) {
   require(!name.contains(""), "name cannot be empty string")
 }
 
@@ -79,8 +75,7 @@ case class Index(
     table: QualifiedName,
     columns: Seq[Column],
     unique: Boolean,
-    options: Set[IndexOption[_]] = Set()
-) {
+    options: Set[IndexOption[_]] = Set()) {
   require(!name.contains(""), "name cannot be empty string")
 }
 
@@ -89,10 +84,7 @@ case class Index(
   * The model can have circular references (e.g. a table has a foreign key which points back to the table).
   * The references are broken apart by using names instead of object references for back references.
   */
-case class Model(
-    tables: Seq[Table],
-    options: Set[ModelOption[_]] = Set()
-) {
+case class Model(tables: Seq[Table], options: Set[ModelOption[_]] = Set()) {
   lazy val tablesByName = tables.map(t => t.name -> t).toMap
 
   /**

@@ -24,10 +24,8 @@ trait TestMemcachedServer {
 private[memcached] object InternalMemcached {
   def start(address: Option[InetSocketAddress]): Option[TestMemcachedServer] = {
     try {
-      val server = new InProcessMemcached(
-        address.getOrElse(
-          new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
-      )
+      val server = new InProcessMemcached(address.getOrElse(
+        new InetSocketAddress(InetAddress.getLoopbackAddress, 0)))
       Some(new TestMemcachedServer {
         val address = server
           .start()
@@ -62,9 +60,7 @@ private[memcached] object ExternalMemcached { self =>
       sys.error("Couldn't get an address for the external memcached")
 
     takenPorts += address
-      .getOrElse(
-        new InetSocketAddress(InetAddress.getLoopbackAddress, 0)
-      )
+      .getOrElse(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
       .getPort
     address
   }

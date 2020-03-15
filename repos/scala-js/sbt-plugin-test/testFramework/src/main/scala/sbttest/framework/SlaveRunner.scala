@@ -6,8 +6,8 @@ final class SlaveRunner(
     args: Array[String],
     remoteArgs: Array[String],
     testClassLoader: ClassLoader,
-    send: String => Unit
-) extends BaseRunner(args, remoteArgs, testClassLoader) {
+    send: String => Unit)
+    extends BaseRunner(args, remoteArgs, testClassLoader) {
 
   /** Number of tasks completed on this node */
   private[this] var doneCount = 0

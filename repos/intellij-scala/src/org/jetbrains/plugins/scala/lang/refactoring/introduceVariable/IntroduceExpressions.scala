@@ -64,12 +64,11 @@ trait IntroduceExpressions {
         INTRODUCE_VARIABLE_REFACTORING_NAME)
       val (expr: ScExpression, types: Array[ScType]) = ScalaRefactoringUtil
         .getExpression(project, editor, file, startOffset, endOffset)
-        .getOrElse(
-          showErrorMessageWithException(
-            ScalaBundle.message("cannot.refactor.not.expression"),
-            project,
-            editor,
-            INTRODUCE_VARIABLE_REFACTORING_NAME))
+        .getOrElse(showErrorMessageWithException(
+          ScalaBundle.message("cannot.refactor.not.expression"),
+          project,
+          editor,
+          INTRODUCE_VARIABLE_REFACTORING_NAME))
 
       ScalaRefactoringUtil.checkCanBeIntroduced(
         expr,
@@ -378,8 +377,9 @@ trait IntroduceExpressions {
     val parentExprs =
       if (occCount == 1)
         ScalaRefactoringUtil.findParentExpr(file, firstRange) match {
-          case _ childOf ((block: ScBlock) childOf ((_) childOf (call: ScMethodCall)))
-              if isFunExpr && block.statements.size == 1 =>
+          case _ childOf (
+                (block: ScBlock) childOf ((_) childOf (call: ScMethodCall))
+              ) if isFunExpr && block.statements.size == 1 =>
             Seq(call)
           case _ childOf ((block: ScBlock) childOf (infix: ScInfixExpr))
               if isFunExpr && block.statements.size == 1 =>
@@ -601,8 +601,8 @@ trait IntroduceExpressions {
       if (occurrences.length > 1) {
         WindowManager.getInstance
           .getStatusBar(project)
-          .setInfo(
-            ScalaBundle.message("press.escape.to.remove.the.highlighting"))
+          .setInfo(ScalaBundle.message(
+            "press.escape.to.remove.the.highlighting"))
       }
     }
 
@@ -625,12 +625,11 @@ trait IntroduceExpressions {
 
     val (expr: ScExpression, types: Array[ScType]) = ScalaRefactoringUtil
       .getExpression(project, editor, file, startOffset, endOffset)
-      .getOrElse(
-        showErrorMessageWithException(
-          ScalaBundle.message("cannot.refactor.not.expression"),
-          project,
-          editor,
-          INTRODUCE_VARIABLE_REFACTORING_NAME))
+      .getOrElse(showErrorMessageWithException(
+        ScalaBundle.message("cannot.refactor.not.expression"),
+        project,
+        editor,
+        INTRODUCE_VARIABLE_REFACTORING_NAME))
 
     ScalaRefactoringUtil.checkCanBeIntroduced(
       expr,

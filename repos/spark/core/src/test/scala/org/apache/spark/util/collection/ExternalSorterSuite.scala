@@ -304,8 +304,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       (1 to size).iterator.map(i => (i.toString, i.toString)) ++ Iterator(
         (null.asInstanceOf[String], "1"),
         ("1", null.asInstanceOf[String]),
-        (null.asInstanceOf[String], null.asInstanceOf[String])
-      ))
+        (null.asInstanceOf[String], null.asInstanceOf[String])))
     assert(sorter.numSpills > 0, "sorter did not spill")
     val it = sorter.iterator
     while (it.hasNext) {
@@ -661,11 +660,10 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext("local", "test", conf)
     val agg =
       if (withPartialAgg) {
-        Some(
-          new Aggregator[Int, Int, Int](
-            i => i,
-            (i, j) => i + j,
-            (i, j) => i + j))
+        Some(new Aggregator[Int, Int, Int](
+          i => i,
+          (i, j) => i + j,
+          (i, j) => i + j))
       } else { None }
     val ord = if (withOrdering) Some(implicitly[Ordering[Int]]) else None
     val context = MemoryTestingUtils.fakeTaskContext(sc.env)
@@ -681,10 +679,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       case (p, vs) => (p, vs.toSet)
     }.toSet
     val expected = (0 until 3).map { p =>
-      var v = (0 until size)
-        .map { i => (i / 4, i) }
-        .filter { case (k, _) => k % 3 == p }
-        .toSet
+      var v = (
+        0 until size
+      ).map { i => (i / 4, i) }.filter { case (k, _) => k % 3 == p }.toSet
       if (withPartialAgg) {
         v = v.groupBy(_._1).mapValues { s => s.map(_._2).sum }.toSet
       }
@@ -727,9 +724,8 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     }
 
     assert(thrown.getClass === classOf[IllegalArgumentException])
-    assert(
-      thrown.getMessage.contains(
-        "Comparison method violates its general contract"))
+    assert(thrown.getMessage.contains(
+      "Comparison method violates its general contract"))
     sorter1.stop()
 
     // Using aggregation and external spill to make sure ExternalSorter using

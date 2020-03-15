@@ -38,12 +38,10 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
   import org.apache.spark.mllib.clustering.KMeans.{K_MEANS_PARALLEL, RANDOM}
 
   test("single cluster") {
-    val data = sc.parallelize(
-      Array(
-        Vectors.dense(1.0, 2.0, 6.0),
-        Vectors.dense(1.0, 3.0, 0.0),
-        Vectors.dense(1.0, 4.0, 6.0)
-      ))
+    val data = sc.parallelize(Array(
+      Vectors.dense(1.0, 2.0, 6.0),
+      Vectors.dense(1.0, 3.0, 0.0),
+      Vectors.dense(1.0, 4.0, 6.0)))
 
     val center = Vectors.dense(1.0, 3.0, 4.0)
 
@@ -142,8 +140,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val smallData = Array(
       Vectors.dense(1.0, 2.0, 6.0),
       Vectors.dense(1.0, 3.0, 0.0),
-      Vectors.dense(1.0, 4.0, 6.0)
-    )
+      Vectors.dense(1.0, 4.0, 6.0))
     val data = sc.parallelize((1 to 100).flatMap(_ => smallData), 4)
 
     // No matter how many runs or iterations we use, we should get one cluster,
@@ -259,8 +256,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       Vectors.dense(1.0, 3.0, 0.0),
       Vectors.dense(1.0, 4.0, 6.0),
       Vectors.dense(1.0, 0.0, 1.0),
-      Vectors.dense(1.0, 1.0, 1.0)
-    )
+      Vectors.dense(1.0, 1.0, 1.0))
     val rdd = sc.parallelize(points)
 
     // K-means|| initialization should place all clusters into distinct centers because
@@ -299,8 +295,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       Vectors.dense(0.1, 0.0),
       Vectors.dense(9.0, 0.0),
       Vectors.dense(9.0, 0.2),
-      Vectors.dense(9.2, 0.0)
-    )
+      Vectors.dense(9.2, 0.0))
     val rdd = sc.parallelize(points, 3)
 
     for (initMode <- Seq(RANDOM, K_MEANS_PARALLEL)) {
@@ -343,8 +338,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
       Vectors.dense(0.0, 0.0),
       Vectors.dense(1.0, 0.0),
       Vectors.dense(0.0, 1.0),
-      Vectors.dense(1.0, 1.0)
-    )
+      Vectors.dense(1.0, 1.0))
     val rdd = sc.parallelize(points, 3)
     // creating an initial model
     val initialModel = new KMeansModel(Array(points(0), points(2)))

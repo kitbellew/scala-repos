@@ -109,8 +109,7 @@ class ConsoleConsumerTest extends JUnitSuite {
       "--topic",
       "test",
       "--consumer.config",
-      propsFile.getAbsolutePath
-    )
+      propsFile.getAbsolutePath)
 
     val config = new ConsoleConsumer.ConsumerConfig(args)
 

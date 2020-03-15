@@ -160,13 +160,12 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SArray(d)) if ids.length == 0 => d
       }
 
-      result2 must contain(
-        Vector(
-          SDecimal(1),
-          SDecimal(12),
-          SDecimal(13),
-          SDecimal(42),
-          SDecimal(77)))
+      result2 must contain(Vector(
+        SDecimal(1),
+        SDecimal(12),
+        SDecimal(13),
+        SDecimal(42),
+        SDecimal(77)))
     }.pendingUntilFixed
 
     "assign dummy variables to loaded dataset" >> {
@@ -255,8 +254,7 @@ trait StatsLibSpecs[M[+_]]
         morpher(Rank, "rank"),
         morpher(DenseRank, "denseRank"),
         morpher(IndexedRank, "indexedRank"),
-        wrapper(data, "point")
-      ).reduceLeft(joiner)
+        wrapper(data, "point")).reduceLeft(joiner)
 
       // sort a tuple by its first (Long) field
       val ordering = scala.math.Ordering.by[(SValue, _), SValue](_._1)
@@ -367,8 +365,7 @@ trait StatsLibSpecs[M[+_]]
         morpher(Rank, "rank"),
         morpher(DenseRank, "denseRank"),
         morpher(IndexedRank, "indexedRank"),
-        wrapper(data, "point")
-      ).reduceLeft(joiner)
+        wrapper(data, "point")).reduceLeft(joiner)
 
       // sort a tuple by its first (Long) field
       val ordering = scala.math.Ordering.by[(SValue, _), SValue](_._1)
@@ -834,8 +831,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-        16, 17).only
+      result2 must contain(
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17).only
     }
 
     "compute rank heterogenously" in {
@@ -845,8 +842,7 @@ trait StatsLibSpecs[M[+_]]
         JoinArray,
         IdentitySort,
         Operate(WrapArray, data)(line),
-        Operate(WrapArray, dag.Morph1(Rank, data)(line))(line)
-      )(line)
+        Operate(WrapArray, dag.Morph1(Rank, data)(line))(line))(line)
 
       val result = testEval(input).map(_._2)
 
@@ -1749,13 +1745,12 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SArray(d)) if ids.length == 0 => d
       }
 
-      result2 must contain(
-        Vector(
-          SDecimal(1),
-          SDecimal(12),
-          SDecimal(13),
-          SDecimal(42),
-          SDecimal(77)))
+      result2 must contain(Vector(
+        SDecimal(1),
+        SDecimal(12),
+        SDecimal(13),
+        SDecimal(42),
+        SDecimal(77)))
     }.pendingUntilFixed
 
     "compute rank" in {
@@ -1849,8 +1844,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(10, 14, 6, 21, 13, 17, 22, 7, 3, 18, 16, 23, 8, 4,
-        15).only
+      result2 must contain(
+        10, 14, 6, 21, 13, 17, 22, 7, 3, 18, 16, 23, 8, 4, 15).only
     }
 
     "compute denseRank" in {
@@ -1869,8 +1864,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(5, 10, 14, 1, 6, 9, 13, 2, 12, 7, 3, 11, 8, 4,
-        0).only
+      result2 must contain(
+        5, 10, 14, 1, 6, 9, 13, 2, 12, 7, 3, 11, 8, 4, 0).only
     }
 
     "compute denseRank within a filter" in {
@@ -1921,8 +1916,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(5, 10, 14, 6, 9, 13, 17, 12, 7, 3, 16, 11, 8, 4,
-        15).only
+      result2 must contain(
+        5, 10, 14, 6, 9, 13, 17, 12, 7, 3, 16, 11, 8, 4, 15).only
     }
 
     "compute covariance" in {
@@ -2212,8 +2207,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(0, 10, 20, 1, 6, 9, 13, 2, 17, 7, 3, 18, 16, 11, 8,
-        19, 4, 15).only
+      result2 must contain(
+        0, 10, 20, 1, 6, 9, 13, 2, 17, 7, 3, 18, 16, 11, 8, 19, 4, 15).only
     }
 
     "compute rank within an equals filter" in {
@@ -2320,8 +2315,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(5, 10, 14, 20, 6, 21, 9, 13, 22, 12, 7, 3, 18, 16,
-        11, 23, 19, 4).only
+      result2 must contain(
+        5, 10, 14, 20, 6, 21, 9, 13, 22, 12, 7, 3, 18, 16, 11, 23, 19, 4).only
     }
 
     "compute denseRank" in {
@@ -2340,8 +2335,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(0, 5, 10, 14, 1, 6, 9, 13, 2, 17, 12, 7, 3, 16, 11,
-        8, 4, 15).only
+      result2 must contain(
+        0, 5, 10, 14, 1, 6, 9, 13, 2, 17, 12, 7, 3, 16, 11, 8, 4, 15).only
     }
 
     "compute denseRank within an equals filter" in {
@@ -2420,8 +2415,8 @@ trait StatsLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 1 => d.toInt
       }
 
-      result2 must contain(5, 10, 14, 20, 6, 9, 13, 17, 12, 7, 3, 18, 16, 11, 8,
-        19, 4, 15).only
+      result2 must contain(
+        5, 10, 14, 20, 6, 9, 13, 17, 12, 7, 3, 18, 16, 11, 8, 19, 4, 15).only
     }
 
     "compute covariance" in {

@@ -142,8 +142,9 @@ object Actor extends ListenerManagement {
   lazy val remote: RemoteSupport = {
     ReflectiveAccess.Remote.defaultRemoteSupport
       .map(_())
-      .getOrElse(throw new UnsupportedOperationException(
-        "You need to have akka-remote.jar on classpath"))
+      .getOrElse(
+        throw new UnsupportedOperationException(
+          "You need to have akka-remote.jar on classpath"))
   }
 
   private[akka] val TIMEOUT =
@@ -261,7 +262,8 @@ object Actor extends ListenerManagement {
     *  </pre>
     */
   def spawn(body: => Unit)(implicit
-  dispatcher: MessageDispatcher = Dispatchers.defaultGlobalDispatcher): Unit = {
+      dispatcher: MessageDispatcher = Dispatchers.defaultGlobalDispatcher)
+      : Unit = {
     case object Spawn
     actorOf(new Actor() {
       self.dispatcher = dispatcher

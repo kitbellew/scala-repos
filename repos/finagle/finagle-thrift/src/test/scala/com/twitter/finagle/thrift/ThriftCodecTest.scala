@@ -19,8 +19,7 @@ class ThriftCodecTest extends FunSuite {
       method: String,
       `type`: Byte,
       seqId: Int,
-      message: { def write(p: TProtocol) }
-  ): ChannelBuffer = {
+      message: { def write(p: TProtocol) }): ChannelBuffer = {
     val buffer = ChannelBuffers.dynamicBuffer()
     val transport = new ChannelBufferToTransport(buffer)
     val protocol = new TBinaryProtocol(transport, true, true)
@@ -37,11 +36,10 @@ class ThriftCodecTest extends FunSuite {
       pipeline
     }
 
-  ThriftTypes.add(
-    new ThriftCallFactory[Silly.bleep_args, Silly.bleep_result](
-      "bleep",
-      classOf[Silly.bleep_args],
-      classOf[Silly.bleep_result]))
+  ThriftTypes.add(new ThriftCallFactory[Silly.bleep_args, Silly.bleep_result](
+    "bleep",
+    classOf[Silly.bleep_args],
+    classOf[Silly.bleep_result]))
 
   test("thrift server encoder should encode replys") {
     val protocolFactory = new TBinaryProtocol.Factory()

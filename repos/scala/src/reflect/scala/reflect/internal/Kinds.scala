@@ -22,8 +22,7 @@ trait Kinds {
   case class KindErrors(
       arity: List[SymPair] = Nil,
       variance: List[SymPair] = Nil,
-      strictness: List[SymPair] = Nil
-  ) {
+      strictness: List[SymPair] = Nil) {
     def isEmpty = arity.isEmpty && variance.isEmpty && strictness.isEmpty
 
     def arityError(syms: SymPair) = copy(arity = arity :+ syms)
@@ -34,8 +33,7 @@ trait Kinds {
       KindErrors(
         arity ++ errs.arity,
         variance ++ errs.variance,
-        strictness ++ errs.strictness
-      )
+        strictness ++ errs.strictness)
     // @M TODO this method is duplicated all over the place (varianceString)
     private def varStr(s: Symbol): String =
       if (s.isCovariant) "covariant"
@@ -75,25 +73,22 @@ trait Kinds {
         "%s is %s, but %s is declared %s".format(_, varStr(a), _, varStr(p)))
 
     private def arityMessage(a: Symbol, p: Symbol) =
-      kindMessage(a, p)(
-        "%s has %s, but %s has %s".format(
-          _,
-          countElementsAsString(a.typeParams.length, "type parameter"),
-          _,
-          countAsString(p.typeParams.length)))
+      kindMessage(a, p)("%s has %s, but %s has %s".format(
+        _,
+        countElementsAsString(a.typeParams.length, "type parameter"),
+        _,
+        countAsString(p.typeParams.length)))
 
     private def buildMessage(xs: List[SymPair], f: (Symbol, Symbol) => String) =
-      (
-        if (xs.isEmpty) "" else xs map f.tupled mkString ("\n", ", ", "")
-      )
+      (if (xs.isEmpty) "" else xs map f.tupled mkString ("\n", ", ", ""))
 
     def errorMessage(targ: Type, tparam: Symbol): String =
-      (
-        (targ + "'s type parameters do not match " + tparam + "'s expected parameters:")
-          + buildMessage(arity, arityMessage)
-          + buildMessage(variance, varianceMessage)
-          + buildMessage(strictness, strictnessMessage)
+      ((
+        targ + "'s type parameters do not match " + tparam + "'s expected parameters:"
       )
+        + buildMessage(arity, arityMessage)
+        + buildMessage(variance, varianceMessage)
+        + buildMessage(strictness, strictnessMessage))
   }
   val NoKindErrors = KindErrors(Nil, Nil, Nil)
 
@@ -112,10 +107,8 @@ trait Kinds {
     *  If `sym2` is invariant, `sym1`'s variance is irrelevant. Otherwise they must be equal.
     */
   private def variancesMatch(sym1: Symbol, sym2: Symbol) =
-    (
-      sym2.variance.isInvariant
-        || sym1.variance == sym2.variance
-    )
+    (sym2.variance.isInvariant
+      || sym1.variance == sym2.variance)
 
   /** Check well-kindedness of type application (assumes arities are already checked) -- @M
     *
@@ -137,8 +130,7 @@ trait Kinds {
       targs: List[Type],
       pre: Type,
       owner: Symbol,
-      explainErrors: Boolean
-  ): List[(Type, Symbol, KindErrors)] = {
+      explainErrors: Boolean): List[(Type, Symbol, KindErrors)] = {
 
     // instantiate type params that come from outside the abstract type we're currently checking
     def transform(tp: Type, clazz: Symbol): Type = tp.asSeenFrom(pre, clazz)
@@ -151,8 +143,7 @@ trait Kinds {
         param: Symbol,
         paramowner: Symbol,
         underHKParams: List[Symbol],
-        withHKArgs: List[Symbol]
-    ): KindErrors = {
+        withHKArgs: List[Symbol]): KindErrors = {
 
       var kindErrors: KindErrors = NoKindErrors
       def bindHKParams(tp: Type) = tp.substSym(underHKParams, withHKArgs)
@@ -210,8 +201,7 @@ trait Kinds {
                 " declared bounds: " + declaredBounds +
                 " after instantiating earlier hkparams: " + declaredBoundsInst + "\n" +
                 "checkKindBoundsHK base case: " + hkarg +
-                " has bounds: " + argumentBounds
-            )
+                " has bounds: " + argumentBounds)
           } else {
             hkarg.initialize // SI-7902 otherwise hkarg.typeParams yields List(NoSymbol)!
             debuglog(
@@ -222,8 +212,7 @@ trait Kinds {
               hkparam,
               paramowner,
               underHKParams ++ hkparam.typeParams,
-              withHKArgs ++ hkarg.typeParams
-            )
+              withHKArgs ++ hkarg.typeParams)
           }
           if (!explainErrors && !kindErrors.isEmpty) return kindErrors
         }
@@ -233,8 +222,7 @@ trait Kinds {
     if (settings.debug && (tparams.nonEmpty || targs.nonEmpty))
       log(
         "checkKindBounds0(" + tparams + ", " + targs + ", " + pre + ", "
-          + owner + ", " + explainErrors + ")"
-      )
+          + owner + ", " + explainErrors + ")")
 
     flatMap2(tparams, targs) { (tparam, targ) =>
       // Prevent WildcardType from causing kind errors, as typevars may be higher-order
@@ -252,8 +240,7 @@ trait Kinds {
             tparam,
             tparam.owner,
             tparam.typeParams,
-            tparamsHO
-          )
+            tparamsHO)
           if (kindErrors.isEmpty) Nil
           else {
             if (explainErrors) List((targ, tparam, kindErrors))

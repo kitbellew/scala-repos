@@ -48,8 +48,7 @@ object MacroSupportInterpolationImpl {
                       skipParens,
                       TermName(NameTransformer.encode("unary_!"))),
                     append(Literal(Constant(c2))),
-                    ctx.universe.EmptyTree
-                  )
+                    ctx.universe.EmptyTree)
                 case '{' => // optional open parentheses with indent
                   flushSB
                   exprs += If(
@@ -59,8 +58,7 @@ object MacroSupportInterpolationImpl {
                     Block(
                       List(
                         append(Literal(Constant('('))),
-                        Select(sqlBuilder, TermName("newLineIndent"))
-                      ),
+                        Select(sqlBuilder, TermName("newLineIndent"))),
                       Literal(Constant(()))),
                     ctx.universe.EmptyTree
                   )
@@ -73,8 +71,7 @@ object MacroSupportInterpolationImpl {
                     Block(
                       List(
                         Select(sqlBuilder, TermName("newLineDedent")),
-                        append(Literal(Constant(')')))
-                      ),
+                        append(Literal(Constant(')')))),
                       Literal(Constant(()))),
                     ctx.universe.EmptyTree
                   )
@@ -129,16 +126,17 @@ object MacroSupportInterpolationImpl {
           //println("### tpe: "+ae.actualType)
           //println("### is String: "+(ae.actualType <:< stringType))
           //println("### is Node: "+(ae.actualType <:< nodeType))
-          exprs += (
-            if (ae.actualType <:< stringType) append(a)
-            else if (ae.actualType <:< definitions.AnyValTpe) append(toStr(a))
-            else if (ae.actualType <:< nodeType)
-              Apply(Ident(TermName("expr")), List(a, Literal(Constant(false))))
-            else
-              ctx.abort(
-                ae.tree.pos,
-                "Unknown type. Must be Node, String or AnyVal.")
-          )
+          exprs += (if (ae.actualType <:< stringType) append(a)
+                    else if (ae.actualType <:< definitions.AnyValTpe)
+                      append(toStr(a))
+                    else if (ae.actualType <:< nodeType)
+                      Apply(
+                        Ident(TermName("expr")),
+                        List(a, Literal(Constant(false))))
+                    else
+                      ctx.abort(
+                        ae.tree.pos,
+                        "Unknown type. Must be Node, String or AnyVal."))
       }
     }
     exprs ++= appendString(pit.next())

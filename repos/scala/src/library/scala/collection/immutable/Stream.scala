@@ -372,8 +372,7 @@ abstract class Stream[+A]
     // we assume there is no other builder factory on streams and therefore know that That = Stream[A]
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) that.toStream else cons(head, asStream[A](tail ++ that))
-      )
+        if (isEmpty) that.toStream else cons(head, asStream[A](tail ++ that)))
     else super.++(that)(bf)
 
   override def +:[B >: A, That](elem: B)(
@@ -399,8 +398,7 @@ abstract class Stream[+A]
     if (isStreamBuilder(bf))
       asThat(
         if (isEmpty) Stream(z)
-        else cons(z, asStream[B](tail.scanLeft(op(z, head))(op)))
-      )
+        else cons(z, asStream[B](tail.scanLeft(op(z, head))(op))))
     else super.scanLeft(z)(op)(bf)
 
   /** Returns the stream resulting from applying the given function `f` to each
@@ -421,8 +419,7 @@ abstract class Stream[+A]
       implicit bf: CanBuildFrom[Stream[A], B, That]): That = {
     if (isStreamBuilder(bf))
       asThat(
-        if (isEmpty) Stream.Empty else cons(f(head), asStream[B](tail map f))
-      )
+        if (isEmpty) Stream.Empty else cons(f(head), asStream[B](tail map f)))
     else super.map(f)(bf)
   }
 
@@ -504,8 +501,7 @@ abstract class Stream[+A]
 
           if (nonEmptyPrefix.isEmpty) Stream.empty
           else prefix append asStream[B](nonEmptyPrefix.tail flatMap f)
-        }
-      )
+        })
     else super.flatMap(f)(bf)
 
   override private[scala] def filterImpl(
@@ -642,8 +638,7 @@ abstract class Stream[+A]
         else
           cons(
             (this.head, that.head),
-            asStream[(A1, B)](this.tail zip that.tail))
-      )
+            asStream[(A1, B)](this.tail zip that.tail)))
     else super.zip(that)(bf)
 
   /** Zips this iterable with its indices. `s.zipWithIndex` is equivalent to `s
@@ -810,8 +805,7 @@ abstract class Stream[+A]
       // of working with a lazy-but-not-really sequence.
       if (n <= 0 || isEmpty) Stream.empty
       else if (n == 1) cons(head, Stream.empty)
-      else cons(head, tail take n - 1)
-    )
+      else cons(head, tail take n - 1))
 
   @tailrec final override def drop(n: Int): Stream[A] =
     if (n <= 0 || isEmpty) this else tail drop n - 1

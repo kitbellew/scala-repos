@@ -36,8 +36,8 @@ import org.apache.spark.util.Utils
 private[spark] case class NarrowCoGroupSplitDep(
     @transient rdd: RDD[_],
     @transient splitIndex: Int,
-    var split: Partition
-) extends Serializable {
+    var split: Partition)
+    extends Serializable {
 
   @throws(classOf[IOException])
   private def writeObject(oos: ObjectOutputStream): Unit =

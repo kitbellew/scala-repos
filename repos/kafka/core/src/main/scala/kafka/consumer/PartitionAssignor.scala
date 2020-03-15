@@ -84,8 +84,8 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
     val valueFactory = (topic: String) =>
       new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
     val partitionAssignment =
-      new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](
-        Some(valueFactory))
+      new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](Some(
+        valueFactory))
 
     if (ctx.consumersForTopic.size > 0) {
       // check conditions (a) and (b)
@@ -157,8 +157,8 @@ class RangeAssignor() extends PartitionAssignor with Logging {
     val valueFactory = (topic: String) =>
       new mutable.HashMap[TopicAndPartition, ConsumerThreadId]
     val partitionAssignment =
-      new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](
-        Some(valueFactory))
+      new Pool[String, mutable.Map[TopicAndPartition, ConsumerThreadId]](Some(
+        valueFactory))
     for (topic <- ctx.myTopicThreadIds.keySet) {
       val curConsumers = ctx.consumersForTopic(topic)
       val curPartitions: Seq[Int] = ctx.partitionsForTopic(topic)
@@ -176,10 +176,9 @@ class RangeAssignor() extends PartitionAssignor with Logging {
         val startPart =
           nPartsPerConsumer * myConsumerPosition + myConsumerPosition.min(
             nConsumersWithExtraPart)
-        val nParts =
-          nPartsPerConsumer + (if (myConsumerPosition + 1 > nConsumersWithExtraPart)
-                                 0
-                               else 1)
+        val nParts = nPartsPerConsumer + (
+          if (myConsumerPosition + 1 > nConsumersWithExtraPart) 0 else 1
+        )
 
         /**
           *   Range-partition the sorted partitions to consumers for better locality.

@@ -181,10 +181,9 @@ private[serverset2] class ApacheZooKeeper private[apache] (
           stat: zookeeper.data.Stat) =
         ApacheKeeperException(ret, Option(path)) match {
           case None =>
-            rv.setValue(
-              Watched(
-                Node.Data(fromZKData(data), ApacheData.Stat(stat)),
-                watcher.state))
+            rv.setValue(Watched(
+              Node.Data(fromZKData(data), ApacheData.Stat(stat)),
+              watcher.state))
           case Some(e) => rv.setException(e)
         }
     }
@@ -231,10 +230,9 @@ private[serverset2] class ApacheZooKeeper private[apache] (
           stat: zookeeper.data.Stat) =
         ApacheKeeperException(ret, Option(path)) match {
           case None =>
-            rv.setValue(
-              Node.ACL(
-                acl.asScala.toList map (ApacheData.ACL(_)),
-                ApacheData.Stat(stat)))
+            rv.setValue(Node.ACL(
+              acl.asScala.toList map (ApacheData.ACL(_)),
+              ApacheData.Stat(stat)))
           case Some(e) => rv.setException(e)
         }
     }
@@ -311,10 +309,9 @@ private[serverset2] class ApacheZooKeeper private[apache] (
           stat: zookeeper.data.Stat) =
         ApacheKeeperException(ret, Option(path)) match {
           case None =>
-            rv.setValue(
-              Watched(
-                Node.Children(children.asScala, ApacheData.Stat(stat)),
-                watcher.state))
+            rv.setValue(Watched(
+              Node.Children(children.asScala, ApacheData.Stat(stat)),
+              watcher.state))
           case Some(e) => rv.setException(e)
         }
     }
@@ -362,17 +359,15 @@ private[serverset2] object ApacheZooKeeper {
       watcher.state,
       statsReceiver,
       5.seconds,
-      config.timer
-    )
+      config.timer)
     val zk = (config.sessionId, config.password) match {
       case (Some(id), Some(pw)) =>
-        new ApacheZooKeeper(
-          new zookeeper.ZooKeeper(
-            config.hosts,
-            timeoutInMs,
-            watcher,
-            id,
-            toByteArray(pw)))
+        new ApacheZooKeeper(new zookeeper.ZooKeeper(
+          config.hosts,
+          timeoutInMs,
+          watcher,
+          id,
+          toByteArray(pw)))
       case _ =>
         new ApacheZooKeeper(
           new zookeeper.ZooKeeper(config.hosts, timeoutInMs, watcher))

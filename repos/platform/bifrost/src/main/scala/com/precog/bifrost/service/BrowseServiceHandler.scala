@@ -70,22 +70,20 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
   def browse(apiKey: APIKey, path: Path): EitherT[M, ResourceError, JArray] = {
     import PathMetadata._
     vfs.findDirectChildren(apiKey, path) map { paths =>
-      JArray(
-        (paths map { p =>
-          val fields: Map[String, JValue] = p.pathType match {
-            case DataDir(contentType) =>
-              Map(
-                "contentType" -> JString(contentType.value),
-                "type" -> JArray(JString("file"), JString("directory")))
-            case DataOnly(contentType) =>
-              Map(
-                "contentType" -> JString(contentType.value),
-                "type" -> JArray(JString("file")))
-            case PathOnly => Map("type" -> JArray(JString("directory")))
-          }
-          JObject(fields + ("name" -> JString(p.path.path.substring(1))))
-        }).toSeq: _*
-      )
+      JArray((paths map { p =>
+        val fields: Map[String, JValue] = p.pathType match {
+          case DataDir(contentType) =>
+            Map(
+              "contentType" -> JString(contentType.value),
+              "type" -> JArray(JString("file"), JString("directory")))
+          case DataOnly(contentType) =>
+            Map(
+              "contentType" -> JString(contentType.value),
+              "type" -> JArray(JString("file")))
+          case PathOnly => Map("type" -> JArray(JString("directory")))
+        }
+        JObject(fields + ("name" -> JString(p.path.path.substring(1))))
+      }).toSeq: _*)
     }
   }
 
@@ -117,10 +115,9 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
           },
           {
             case PathStructure(types, children) =>
-              \/.right(
-                JObject(
-                  "children" -> children.serialize,
-                  "types" -> JObject(normalizeTypes(types))))
+              \/.right(JObject(
+                "children" -> children.serialize,
+                "types" -> JObject(normalizeTypes(types))))
           }
         )
     }
@@ -156,9 +153,9 @@ class BrowseServiceHandler[A](
           }
 
       } getOrElse {
-        logger.debug(
-          "Retrieving all available metadata for %s as %s"
-            .format(path.path, apiKey))
+        logger.debug("Retrieving all available metadata for %s as %s".format(
+          path.path,
+          apiKey))
         for {
           sz <- size(apiKey, path)
           children <- if (legacy) children(apiKey, path)
@@ -187,17 +184,18 @@ class BrowseServiceHandler[A](
             case ResourceError.NotFound(message) =>
               HttpResponse[JValue](
                 HttpStatusCodes.NotFound,
-                content = Some(JObject("errors" -> JArray(
-                  "Could not find any resource that corresponded to path %s: %s"
-                    .format(path.path, message)
-                    .serialize)))
+                content = Some(JObject(
+                  "errors" -> JArray(
+                    "Could not find any resource that corresponded to path %s: %s"
+                      .format(path.path, message)
+                      .serialize)))
               )
 
             case PermissionsError(message) =>
               HttpResponse[JValue](
                 Forbidden,
-                content = Some(
-                  JObject("errors" -> JArray(
+                content = Some(JObject(
+                  "errors" -> JArray(
                     "API key %s does not have the ability to browse path %s: %s"
                       .format(apiKey, path.path, message)
                       .serialize)))
@@ -209,9 +207,8 @@ class BrowseServiceHandler[A](
                   .format(request.shows, unexpected))
               HttpResponse[JValue](
                 InternalServerError,
-                content = Some(
-                  JObject(
-                    "errors" -> "sorry, we're looking into it!".serialize)))
+                content = Some(JObject(
+                  "errors" -> "sorry, we're looking into it!".serialize)))
           }
         )
       }

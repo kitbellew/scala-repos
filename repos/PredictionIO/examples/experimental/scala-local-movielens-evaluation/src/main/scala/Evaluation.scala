@@ -47,11 +47,10 @@ object CommonParams {
     appId = 9,
     actions = Set("rate"),
     attributeNames = CommonParams.DataSourceAttributeNames,
-    slidingEval = Some(
-      new EventsSlidingEvalParams(
-        firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
-        evalDuration = Duration.standardDays(7),
-        evalCount = 12))
+    slidingEval = Some(new EventsSlidingEvalParams(
+      firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
+      evalDuration = Duration.standardDays(7),
+      evalCount = 12))
   )
 }
 
@@ -64,19 +63,17 @@ object Evaluation1 {
       appId = 9,
       actions = Set("rate"),
       attributeNames = CommonParams.DataSourceAttributeNames,
-      slidingEval = Some(
-        new EventsSlidingEvalParams(
-          firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
-          evalDuration = Duration.standardDays(7),
-          evalCount = 3))
+      slidingEval = Some(new EventsSlidingEvalParams(
+        firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
+        evalDuration = Duration.standardDays(7),
+        evalCount = 3))
     )
 
     val engineParams = new EngineParams(
       dataSourceParams = dsp,
       preparatorParams = CommonParams.PreparatorParams,
       algorithmParamsList = Seq(
-        ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-    )
+        ("mahoutItemBased", CommonParams.MahoutAlgoParams0)))
 
     // Evaluator Setting
     val evaluatorParams = new DetailedEvaluatorParams(
@@ -84,8 +81,7 @@ object Evaluation1 {
         actionsMap = Map("rate" -> None),
         goodThreshold = 3),
       measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+      measureK = 10)
 
     // Run
     Workflow.runEngine(
@@ -107,8 +103,7 @@ object Evaluation2 {
       dataSourceParams = CommonParams.CompleteDataSourceParams,
       preparatorParams = CommonParams.PreparatorParams,
       algorithmParamsList = Seq(
-        ("mahoutItemBased", CommonParams.MahoutAlgoParams0))
-    )
+        ("mahoutItemBased", CommonParams.MahoutAlgoParams0)))
 
     // Evaluator Setting
     val evaluatorParams = new DetailedEvaluatorParams(
@@ -116,8 +111,7 @@ object Evaluation2 {
         actionsMap = Map("rate" -> None),
         goodThreshold = 3),
       measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+      measureK = 10)
 
     // Run
     Workflow.runEngine(

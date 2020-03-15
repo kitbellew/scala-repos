@@ -149,11 +149,9 @@ trait JobManagerSpec[M[+_]] extends Specification {
     }
 
     "create jobs with data" in {
-      val data: JValue = JObject(
-        List(
-          JField("a", JArray(JString("a"), JNum(2))),
-          JField("b", JNum(1.675))
-        ))
+      val data: JValue = JObject(List(
+        JField("a", JArray(JString("a"), JNum(2))),
+        JField("b", JNum(1.675))))
 
       val job = jobs
         .createJob(validAPIKey, "name", "job type", Some(data), None)
@@ -304,11 +302,9 @@ trait JobManagerSpec[M[+_]] extends Specification {
         jobs.createJob(validAPIKey, "b", "c", None, Some(new DateTime)).copoint
 
       def say(name: String, message: String): JValue =
-        JObject(
-          List(
-            JField("name", JString(name)),
-            JField("message", JString(message))
-          ))
+        JObject(List(
+          JField("name", JString(name)),
+          JField("message", JString(message))))
 
       val m1 = jobs.addMessage(job.id, "chat", say("Tom", "Hello")).copoint
       val m2 = jobs.addMessage(job.id, "chat", say("Bob", "Hi")).copoint

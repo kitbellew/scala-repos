@@ -95,8 +95,8 @@ class BindingSpec extends Specification {
         implicitly[TypeConverterFactory[String]])(
         manifest[String],
         builder.valueManifest)
-      container(
-        Right(Some("joske"
+      container(Right(Some(
+        "joske"
           .asInstanceOf[container.S]))).validation must_== "joske".success
     }
 

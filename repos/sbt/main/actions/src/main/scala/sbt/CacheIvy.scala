@@ -197,8 +197,7 @@ object CacheIvy {
           a.configurations.toSeq,
           a.url,
           a.extraAttributes),
-      { case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e) }
-    )
+      { case (n, t, x, c, cs, u, e) => Artifact(n, t, x, c, cs, u, e) })
   }
   implicit def organizationArtifactReportFormat(implicit
       sf: Format[String],

@@ -50,13 +50,9 @@ object AsyncMeter {
     *
     * @param maxWaiters: the number of allowable waiters at a given time
     */
-  def newMeter(
-      burstSize: Int,
-      burstDuration: Duration,
-      maxWaiters: Int
-  )(implicit
-      timer: Timer
-  ): AsyncMeter = new AsyncMeter(burstSize, burstDuration, maxWaiters)
+  def newMeter(burstSize: Int, burstDuration: Duration, maxWaiters: Int)(
+      implicit timer: Timer): AsyncMeter =
+    new AsyncMeter(burstSize, burstDuration, maxWaiters)
 
   /**
     * Allows the user to `await` on requests that have a wider width than the

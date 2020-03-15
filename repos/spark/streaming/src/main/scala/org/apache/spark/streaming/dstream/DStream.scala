@@ -57,8 +57,8 @@ import org.apache.spark.util.{CallSite, Utils}
   *  - A function that is used to generate an RDD after each time interval
   */
 abstract class DStream[T: ClassTag](
-    @transient private[streaming] var ssc: StreamingContext
-) extends Serializable
+    @transient private[streaming] var ssc: StreamingContext)
+    extends Serializable
     with Logging {
 
   validateAtInit()
@@ -301,7 +301,9 @@ abstract class DStream[T: ClassTag](
   }
 
   private[streaming] def remember(duration: Duration) {
-    if (duration != null && (rememberDuration == null || duration > rememberDuration)) {
+    if (duration != null && (
+          rememberDuration == null || duration > rememberDuration
+        )) {
       rememberDuration = duration
       logInfo(
         s"Duration for remembering RDDs set to $rememberDuration for $this")
@@ -315,8 +317,9 @@ abstract class DStream[T: ClassTag](
       throw new SparkException(this + " has not been initialized")
     } else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(
                  slideDuration)) {
-      logInfo(s"Time $time is invalid as zeroTime is $zeroTime" +
-        s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
+      logInfo(
+        s"Time $time is invalid as zeroTime is $zeroTime" +
+          s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
       false
     } else {
       logDebug(s"Time $time is valid")
@@ -389,8 +392,7 @@ abstract class DStream[T: ClassTag](
     // restore them later after setting our own.
     val prevCallSite = CallSite(
       ssc.sparkContext.getLocalProperty(CallSite.SHORT_FORM),
-      ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM)
-    )
+      ssc.sparkContext.getLocalProperty(CallSite.LONG_FORM))
     val prevScope = ssc.sparkContext.getLocalProperty(scopeKey)
     val prevScopeNoOverride = ssc.sparkContext.getLocalProperty(
       scopeNoOverrideKey)
@@ -598,8 +600,7 @@ abstract class DStream[T: ClassTag](
     */
   def mapPartitions[U: ClassTag](
       mapPartFunc: Iterator[T] => Iterator[U],
-      preservePartitioning: Boolean = false
-  ): DStream[U] =
+      preservePartitioning: Boolean = false): DStream[U] =
     ssc.withScope {
       new MapPartitionedDStream(
         this,
@@ -720,8 +721,7 @@ abstract class DStream[T: ClassTag](
     */
   def transformWith[U: ClassTag, V: ClassTag](
       other: DStream[U],
-      transformFunc: (RDD[T], RDD[U]) => RDD[V]
-  ): DStream[V] =
+      transformFunc: (RDD[T], RDD[U]) => RDD[V]): DStream[V] =
     ssc.withScope {
       // because the DStream is reachable from the outer object here, and because
       // DStreams can't be serialized with closures, we can't proactively check
@@ -738,8 +738,7 @@ abstract class DStream[T: ClassTag](
     */
   def transformWith[U: ClassTag, V: ClassTag](
       other: DStream[U],
-      transformFunc: (RDD[T], RDD[U], Time) => RDD[V]
-  ): DStream[V] =
+      transformFunc: (RDD[T], RDD[U], Time) => RDD[V]): DStream[V] =
     ssc.withScope {
       // because the DStream is reachable from the outer object here, and because
       // DStreams can't be serialized with closures, we can't proactively check
@@ -818,8 +817,7 @@ abstract class DStream[T: ClassTag](
   def reduceByWindow(
       reduceFunc: (T, T) => T,
       windowDuration: Duration,
-      slideDuration: Duration
-  ): DStream[T] =
+      slideDuration: Duration): DStream[T] =
     ssc.withScope {
       this
         .reduce(reduceFunc)
@@ -847,8 +845,7 @@ abstract class DStream[T: ClassTag](
       reduceFunc: (T, T) => T,
       invReduceFunc: (T, T) => T,
       windowDuration: Duration,
-      slideDuration: Duration
-  ): DStream[T] =
+      slideDuration: Duration): DStream[T] =
     ssc.withScope {
       this
         .map(x => (1, x))
@@ -906,8 +903,7 @@ abstract class DStream[T: ClassTag](
           windowDuration,
           slideDuration,
           numPartitions,
-          (x: (T, Long)) => x._2 != 0L
-        )
+          (x: (T, Long)) => x._2 != 0L)
     }
 
   /**
@@ -1028,7 +1024,9 @@ object DStream {
       // If the class is a spark example class or a streaming test class then it is considered
       // as a streaming application class and don't exclude. Otherwise, exclude any
       // non-Spark and non-Scala class, as the rest would streaming application classes.
-      (isSparkClass || isScalaClass) && !isSparkExampleClass && !isSparkStreamingTestClass
+      (
+        isSparkClass || isScalaClass
+      ) && !isSparkExampleClass && !isSparkStreamingTestClass
     }
     org.apache.spark.util.Utils.getCallSite(streamingExclustionFunction)
   }

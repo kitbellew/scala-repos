@@ -283,13 +283,11 @@ abstract class AggregationQuerySuite
   }
 
   test("only do grouping") {
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT key
           |FROM agg1
           |GROUP BY key
-        """.stripMargin),
-      Row(1) :: Row(2) :: Row(3) :: Row(null) :: Nil)
+        """.stripMargin), Row(1) :: Row(2) :: Row(3) :: Row(null) :: Nil)
 
     checkAnswer(
       sqlContext.sql("""
@@ -450,11 +448,9 @@ abstract class AggregationQuerySuite
       Row(21.5, 11) :: Row(1.0, 12) :: Row(null, 13) :: Row(11.5, null) :: Nil
     )
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT avg(value) FROM agg1
-        """.stripMargin),
-      Row(11.125) :: Nil)
+        """.stripMargin), Row(11.125) :: Nil)
   }
 
   test("first_value and last_value") {
@@ -525,17 +521,13 @@ abstract class AggregationQuerySuite
       Row(60.0, 1) :: Row(-1.0, 2) :: Row(null, 3) :: Row(30.0, null) :: Nil
     )
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT mydoublesum(value) FROM agg1
-        """.stripMargin),
-      Row(89.0) :: Nil)
+        """.stripMargin), Row(89.0) :: Nil)
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT mydoublesum(null)
-        """.stripMargin),
-      Row(null) :: Nil)
+        """.stripMargin), Row(null) :: Nil)
   }
 
   test("interpreted and expression-based aggregation functions") {
@@ -803,23 +795,17 @@ abstract class AggregationQuerySuite
 
     covar_tab.registerTempTable("covar_tab")
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT corr(b, c) FROM covar_tab WHERE a < 1
-        """.stripMargin),
-      Row(null) :: Nil)
+        """.stripMargin), Row(null) :: Nil)
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT corr(b, c) FROM covar_tab WHERE a < 3
-        """.stripMargin),
-      Row(null) :: Nil)
+        """.stripMargin), Row(null) :: Nil)
 
-    checkAnswer(
-      sqlContext.sql("""
+    checkAnswer(sqlContext.sql("""
           |SELECT corr(b, c) FROM covar_tab WHERE a = 3
-        """.stripMargin),
-      Row(Double.NaN) :: Nil)
+        """.stripMargin), Row(Double.NaN) :: Nil)
 
     checkAnswer(
       sqlContext.sql("""
@@ -972,8 +958,7 @@ abstract class AggregationQuerySuite
         checkAnswer(
           df.groupBy().agg(udaf(allColumns: _*)),
           // udaf returns a Row as the output value.
-          Row(expectedAnswer)
-        )
+          Row(expectedAnswer))
     }
   }
 
@@ -1004,12 +989,10 @@ abstract class AggregationQuerySuite
         Row(1, 21) :: Row(2, -10) :: Nil
       )
 
-      checkAnswer(
-        sqlContext.sql("""
+      checkAnswer(sqlContext.sql("""
             |SELECT noInputSchema(myArray)
             |FROM noInputSchemaUDAF
-          """.stripMargin),
-        Row(11) :: Nil)
+          """.stripMargin), Row(11) :: Nil)
     }
   }
 }

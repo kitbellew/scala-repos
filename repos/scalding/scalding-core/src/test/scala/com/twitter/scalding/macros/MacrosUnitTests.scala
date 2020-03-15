@@ -248,11 +248,10 @@ class MacrosUnitTests extends WordSpec with Matchers {
   "MacroGenerated TupleSetter and TupleConverter" should {
     "round trip class -> tupleentry -> class" in {
       shouldRoundTrip(SampleClassA(100, "onehundred"))
-      shouldRoundTrip(
-        SampleClassB(
-          SampleClassA(100, "onehundred"),
-          SampleClassA(-1, "zero"),
-          "what"))
+      shouldRoundTrip(SampleClassB(
+        SampleClassA(100, "onehundred"),
+        SampleClassA(-1, "zero"),
+        "what"))
       val a = SampleClassA(73, "hrmA1")
       val b = SampleClassB(a, a, "hrmB1")
       val c = SampleClassC(

@@ -39,13 +39,12 @@ class LocalFSModels(f: File, config: StorageClientConfig, prefix: String)
 
   def get(id: String): Option[Model] = {
     try {
-      Some(
-        Model(
-          id = id,
-          models = Source
-            .fromFile(new File(f, s"${prefix}${id}"))(scala.io.Codec.ISO8859)
-            .map(_.toByte)
-            .toArray))
+      Some(Model(
+        id = id,
+        models = Source
+          .fromFile(new File(f, s"${prefix}${id}"))(scala.io.Codec.ISO8859)
+          .map(_.toByte)
+          .toArray))
     } catch {
       case e: Throwable =>
         error(e.getMessage)

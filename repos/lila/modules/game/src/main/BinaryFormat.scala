@@ -26,8 +26,9 @@ object BinaryFormat {
 
     private type MT = Int // tenths of seconds
     private val size = 16
-    private val encodeList: List[(MT, Int)] = List(1, 5, 10, 15, 20, 30, 40, 50,
-      60, 80, 100, 150, 200, 300, 400, 600).zipWithIndex
+    private val encodeList: List[(MT, Int)] = List(
+      1, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100, 150, 200, 300, 400,
+      600).zipWithIndex
     private val encodeMap: Map[MT, Int] = encodeList.toMap
     private val decodeList: List[(Int, MT)] = encodeList.map(x => x._2 -> x._1)
     private val decodeMap: Map[Int, MT] = decodeList.toMap
@@ -159,8 +160,7 @@ object BinaryFormat {
 
       val ints = Array(
         (castleInt << 4) + (lastMoveInt >> 8),
-        (lastMoveInt & 255)
-      ) ++ writeInt24(time) ++ clmt.check.map(posInt)
+        (lastMoveInt & 255)) ++ writeInt24(time) ++ clmt.check.map(posInt)
 
       ByteArray(ints.map(_.toByte))
     }

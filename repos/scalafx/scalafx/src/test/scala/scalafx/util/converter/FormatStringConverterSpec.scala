@@ -44,16 +44,15 @@ import scalafx.testutil.SimpleSFXDelegateSpec
   */
 @RunWith(classOf[JUnitRunner])
 class FormatStringConverterSpec
-    extends SimpleSFXDelegateSpec[
-      jfxuc.FormatStringConverter[Number],
-      FormatStringConverter[Number]](
+    extends SimpleSFXDelegateSpec[jfxuc.FormatStringConverter[
+      Number], FormatStringConverter[Number]](
       classOf[jfxuc.FormatStringConverter[Number]],
       classOf[FormatStringConverter[Number]]) {
 
   override protected def getJavaClassInstance = getScalaClassInstance
   override protected def getScalaClassInstance =
-    new FormatStringConverter[Number](
-      NumberFormat.getCurrencyInstance(Locale.US))
+    new FormatStringConverter[Number](NumberFormat.getCurrencyInstance(
+      Locale.US))
 
   def getConverterForExample: FormatStringConverter[Number] =
     getScalaClassInstance
@@ -61,8 +60,7 @@ class FormatStringConverterSpec
   val examples = List[(Number, String)](
     (0.0, "$0.00"),
     (123.45, "$123.45"),
-    (-123.45, "($123.45)")
-  )
+    (-123.45, "($123.45)"))
 
   private def runConverterForExamples() {
 

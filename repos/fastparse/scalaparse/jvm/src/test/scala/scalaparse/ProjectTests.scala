@@ -30,9 +30,8 @@ object ProjectTests extends TestSuite {
           filename <- f0
         } yield Future {
           if (filename.endsWith(".scala") && filter(filename)) {
-            val code = new String(
-              java.nio.file.Files
-                .readAllBytes(java.nio.file.Paths.get(filename)))
+            val code = new String(java.nio.file.Files.readAllBytes(
+              java.nio.file.Paths.get(filename)))
             if (!ScalacParser.checkParseFails(code)) {
               print(".")
               TestUtil.check(code, tag = filename)
@@ -46,9 +45,8 @@ object ProjectTests extends TestSuite {
 
       'test - {
         val testSource = scala.io.Source
-          .fromInputStream(
-            getClass.getResourceAsStream("/scalaparse/Test.scala")
-          )
+          .fromInputStream(getClass.getResourceAsStream(
+            "/scalaparse/Test.scala"))
           .mkString
         TestUtil.check(testSource)
       }
@@ -101,9 +99,8 @@ object ProjectTests extends TestSuite {
       "ensime/ensime-server" - checkRepo()
       "GravityLabs/goose" - checkRepo()
       "ornicar/lila" - checkRepo(x =>
-        !Seq(
-          "target/repos/lila/modules/lobby/src/main/SocketHandler.scala"
-        ).exists(x.startsWith))
+        !Seq("target/repos/lila/modules/lobby/src/main/SocketHandler.scala")
+          .exists(x.startsWith))
       "precog/platform" - checkRepo()
       "twitter/util" - checkRepo()
       "scala/pickling" - checkRepo()

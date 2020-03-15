@@ -150,8 +150,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private def loadJarCache(f: File): InjectorPersistentCache = {
     var stream: ObjectInputStream = null
     try {
-      stream = new ObjectInputStream(
-        new BufferedInputStream(new FileInputStream(f)))
+      stream = new ObjectInputStream(new BufferedInputStream(
+        new FileInputStream(f)))
       val cache = stream.readObject().asInstanceOf[InjectorPersistentCache]
       LOG.trace(s"Loaded cache with ${cache.cache.size()} entries")
       cache
@@ -167,8 +167,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   }
 
   private def saveJarCache(c: InjectorPersistentCache, f: File) = {
-    val stream = new ObjectOutputStream(
-      new BufferedOutputStream(new FileOutputStream(f)))
+    val stream = new ObjectOutputStream(new BufferedOutputStream(
+      new FileOutputStream(f)))
     try {
       stream.writeObject(c)
       stream.flush()
@@ -347,8 +347,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       loadedInjectors
         .getOrElseUpdate(
           getClass.getClassLoader.loadClass(injector.iface),
-          mutable.HashSet(injector.impl)
-        ) += injector.impl
+          mutable.HashSet(injector.impl)) += injector.impl
     }
   }
 
@@ -434,8 +433,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
                       new File(manifest.jarPath),
                       injectorDescriptor),
                     getInjectorCacheDir(manifest)(injectorDescriptor),
-                    module
-                  )
+                    module)
                   numSuccessful += 1
                   loadInjector(manifest, injectorDescriptor)
                   jarCache.cache.put(manifest.jarPath, manifest)

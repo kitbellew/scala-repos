@@ -342,10 +342,9 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail to create actor when an unbounded dequeu message queue is configured as mailbox overriding RequestMailbox" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[BoundedQueueReportingActor],
-          "default-unbounded-deque-override-trait"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[BoundedQueueReportingActor],
+        "default-unbounded-deque-override-trait"))
     }
 
     "get an unbounded message queue when defined in dispatcher" in {
@@ -356,10 +355,9 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail to create actor when an unbounded message queue is defined in dispatcher overriding RequestMailbox" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[BoundedQueueReportingActor],
-          "unbounded-default-override-trait"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[BoundedQueueReportingActor],
+        "unbounded-default-override-trait"))
     }
 
     "get a bounded message queue when it's configured as mailbox overriding unbounded in dispatcher" in {
@@ -408,17 +406,15 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail with a unbounded deque-based message queue if configured and required" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor],
-          "bounded-deque-require-unbounded-configured"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor],
+        "bounded-deque-require-unbounded-configured"))
     }
 
     "fail with a bounded deque-based message queue if not configured" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor],
-          "bounded-deque-require-unbounded-unconfigured"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor],
+        "bounded-deque-require-unbounded-unconfigured"))
     }
 
     "get a bounded deque-based message queue if configured and required with Props" in {
@@ -432,21 +428,19 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail with a unbounded deque-based message queue if configured and required with Props" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor]
-            .withDispatcher("requiring-bounded-dispatcher")
-            .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
-          "bounded-deque-require-unbounded-configured-props"
-        ))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor]
+          .withDispatcher("requiring-bounded-dispatcher")
+          .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+        "bounded-deque-require-unbounded-configured-props"
+      ))
     }
 
     "fail with a bounded deque-based message queue if not configured with Props" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor]
-            .withDispatcher("requiring-bounded-dispatcher"),
-          "bounded-deque-require-unbounded-unconfigured-props"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor]
+          .withDispatcher("requiring-bounded-dispatcher"),
+        "bounded-deque-require-unbounded-unconfigured-props"))
     }
 
     "get a bounded deque-based message queue if configured and required with Props (dispatcher)" in {
@@ -459,19 +453,17 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail with a unbounded deque-based message queue if configured and required with Props (dispatcher)" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor]
-            .withDispatcher("requiring-bounded-dispatcher"),
-          "bounded-deque-require-unbounded-configured-props-disp"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor]
+          .withDispatcher("requiring-bounded-dispatcher"),
+        "bounded-deque-require-unbounded-configured-props-disp"))
     }
 
     "fail with a bounded deque-based message queue if not configured with Props (dispatcher)" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor]
-            .withDispatcher("requiring-bounded-dispatcher"),
-          "bounded-deque-require-unbounded-unconfigured-props-disp"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor]
+          .withDispatcher("requiring-bounded-dispatcher"),
+        "bounded-deque-require-unbounded-unconfigured-props-disp"))
     }
 
     "get a bounded deque-based message queue if configured and required with Props (mailbox)" in {
@@ -484,18 +476,16 @@ class ActorMailboxSpec(conf: Config)
     }
 
     "fail with a unbounded deque-based message queue if configured and required with Props (mailbox)" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor]
-            .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
-          "bounded-deque-require-unbounded-configured-props-mail"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor]
+          .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+        "bounded-deque-require-unbounded-configured-props-mail"))
     }
 
     "fail with a bounded deque-based message queue if not configured with Props (mailbox)" in {
-      intercept[ConfigurationException](
-        system.actorOf(
-          Props[StashQueueReportingActor],
-          "bounded-deque-require-unbounded-unconfigured-props-mail"))
+      intercept[ConfigurationException](system.actorOf(
+        Props[StashQueueReportingActor],
+        "bounded-deque-require-unbounded-unconfigured-props-mail"))
     }
 
     "get an unbounded message queue with a balancing dispatcher" in {

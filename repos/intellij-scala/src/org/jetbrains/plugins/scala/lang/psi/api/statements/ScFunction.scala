@@ -213,8 +213,10 @@ trait ScFunction
             Some(
               typeParamSubst
                 .followed(subst)
-                .subst(ScType
-                  .create(fun.getReturnType, getProject, getResolveScope)))
+                .subst(ScType.create(
+                  fun.getReturnType,
+                  getProject,
+                  getResolveScope)))
           case _ => None
         }
         superReturnType
@@ -581,8 +583,9 @@ trait ScFunction
         .getSignatures(clazz)
         .forName(name)
         ._1
-        .fastPhysicalSignatureGet(
-          new PhysicalSignature(this, ScSubstitutor.empty))
+        .fastPhysicalSignatureGet(new PhysicalSignature(
+          this,
+          ScSubstitutor.empty))
       if (option.isEmpty) return None
       option.get.primarySuper
         .filter(_.info.isInstanceOf[PhysicalSignature])
@@ -826,8 +829,8 @@ trait ScFunction
     while (i >= 0) {
       val cl = paramClauses.clauses.apply(i)
       if (!cl.isImplicit) {
-        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters.map(
-          _.getType(TypingContext.empty))
+        val paramTypes: Seq[TypeResult[ScType]] = cl.parameters.map(_.getType(
+          TypingContext.empty))
         if (paramTypes.exists(_.isEmpty)) return None
         res += paramTypes.map(_.get)
       }

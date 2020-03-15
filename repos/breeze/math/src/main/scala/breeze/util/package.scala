@@ -21,8 +21,8 @@ package object util {
     * Deserializes an object using java serialization
     */
   def readObject[T](loc: File, ignoreSerialVersionUID: Boolean) = {
-    val stream = new BufferedInputStream(
-      new GZIPInputStream(new FileInputStream(loc)))
+    val stream = new BufferedInputStream(new GZIPInputStream(
+      new FileInputStream(loc)))
     val oin = nonstupidObjectInputStream(stream, ignoreSerialVersionUID)
     try { oin.readObject().asInstanceOf[T] }
     finally { oin.close() }
@@ -96,8 +96,8 @@ package object util {
     * Serializes an object using java serialization
     */
   def writeObject[T](out: File, parser: T): Unit = {
-    val stream = new ObjectOutputStream(
-      new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(out))))
+    val stream = new ObjectOutputStream(new BufferedOutputStream(
+      new GZIPOutputStream(new FileOutputStream(out))))
     stream.writeObject(parser)
     stream.close()
   }

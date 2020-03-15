@@ -58,10 +58,7 @@ class BindingFactoryTest
   }
 
   trait Ctx {
-    def withExpectedTrace(
-        f: => Unit,
-        expected: Seq[Annotation]
-    ) {
+    def withExpectedTrace(f: => Unit, expected: Seq[Annotation]) {
       val tracer: Tracer = spy(new NullTracer)
       val captor: ArgumentCaptor[Record] = ArgumentCaptor.forClass(
         classOf[Record])
@@ -136,8 +133,7 @@ class BindingFactoryTest
           assert(factory.status == status)
         }
       }
-    }
-  )
+    })
 
   test("stats")(Time.withCurrentTimeFrozen { tc =>
     new Ctx {
@@ -154,9 +150,7 @@ class BindingFactoryTest
       v() = Activity.Ok(NameTree.Leaf(Name.Path(Path.read("/test1010"))))
       Await.result(Await.result(f).close())
 
-      val expected = Map(
-        Seq("bind_latency_us") -> Seq(5678.0)
-      )
+      val expected = Map(Seq("bind_latency_us") -> Seq(5678.0))
 
       assert(imsr.stats == expected)
     }
@@ -476,8 +470,7 @@ class DynNameFactoryTest extends FunSuite with MockitoSugar {
         namew.notify(Return(NameTree.Leaf(Name.empty)))
         assert(dyn.status == status)
       }
-    }
-  )
+    })
 
   test("queue requests until name is nonpending (ok)")(new Ctx {
     when(cache(any[NameTree[Name.Bound]], any[ClientConnection]))
@@ -605,15 +598,14 @@ class NameTreeFactoryTest extends FunSuite {
           })
       ).isAvailable
 
-    assert(
-      isAvailable(NameTree.Union(
-        NameTree.Weighted(
-          1d,
-          NameTree.Union(
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
-            NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
-        NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
-      )))
+    assert(isAvailable(NameTree.Union(
+      NameTree.Weighted(
+        1d,
+        NameTree.Union(
+          NameTree.Weighted(1d, NameTree.Leaf(Status.Open)),
+          NameTree.Weighted(1d, NameTree.Leaf(Status.Open)))),
+      NameTree.Weighted(1d, NameTree.Leaf(Status.Open))
+    )))
 
     assert(
       !isAvailable(NameTree.Union(

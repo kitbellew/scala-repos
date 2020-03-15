@@ -50,12 +50,11 @@ object Bakery {
               List(List()),
               TypeTree(),
               Block(
-                List(
-                  Apply(
-                    Select(
-                      Super(This(typeNames.EMPTY), typeNames.EMPTY),
-                      termNames.CONSTRUCTOR),
-                    List())),
+                List(Apply(
+                  Select(
+                    Super(This(typeNames.EMPTY), typeNames.EMPTY),
+                    termNames.CONSTRUCTOR),
+                  List())),
                 Literal(Constant(())))
             ),
             DefDef(
@@ -74,9 +73,8 @@ object Bakery {
         Select(New(Ident(newTypeName("eval"))), termNames.CONSTRUCTOR),
         List())
 
-    c.eval(
-      c.Expr[Any](
-        c.untypecheck(Block(composeDSL(Literal(Constant(1))), constructor))))
+    c.eval(c.Expr[Any](c.untypecheck(
+      Block(composeDSL(Literal(Constant(1))), constructor))))
 
     c.Expr[Any](Literal(Constant(1)))
   }

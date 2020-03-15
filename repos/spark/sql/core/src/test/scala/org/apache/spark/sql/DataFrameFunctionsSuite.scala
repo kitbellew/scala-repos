@@ -58,11 +58,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val row = df.select(struct("a", "b")).first()
 
-    val expectedType = StructType(
-      Seq(
-        StructField("a", IntegerType, nullable = false),
-        StructField("b", StringType)
-      ))
+    val expectedType = StructType(Seq(
+      StructField("a", IntegerType, nullable = false),
+      StructField("b", StringType)))
     assert(row.schema(0).dataType === expectedType)
     assert(row.getAs[Row](0) === Row(1, "str"))
   }
@@ -71,11 +69,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val row = df.select(struct((col("a") * 2).as("c"), col("b"))).first()
 
-    val expectedType = StructType(
-      Seq(
-        StructField("c", IntegerType, nullable = false),
-        StructField("b", StringType)
-      ))
+    val expectedType = StructType(Seq(
+      StructField("c", IntegerType, nullable = false),
+      StructField("b", StringType)))
     assert(row.schema(0).dataType === expectedType)
     assert(row.getAs[Row](0) === Row(2, "str"))
   }
@@ -84,11 +80,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str")).toDF("a", "b")
     val result = df.select(struct((col("a") * 2), col("b")))
 
-    val expectedType = StructType(
-      Seq(
-        StructField("col1", IntegerType, nullable = false),
-        StructField("b", StringType)
-      ))
+    val expectedType = StructType(Seq(
+      StructField("col1", IntegerType, nullable = false),
+      StructField("b", StringType)))
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Row(Row(2, "str")))
   }
@@ -97,11 +91,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str1"), (2, "str2")).toDF("a", "b")
     val result = df.select(struct((col("a") * 2), lit(5.0)))
 
-    val expectedType = StructType(
-      Seq(
-        StructField("col1", IntegerType, nullable = false),
-        StructField("col2", DoubleType, nullable = false)
-      ))
+    val expectedType = StructType(Seq(
+      StructField("col1", IntegerType, nullable = false),
+      StructField("col2", DoubleType, nullable = false)))
 
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Seq(Row(Row(2, 5.0)), Row(Row(4, 5.0))))
@@ -111,25 +103,17 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((1, "str1"), (2, "str2")).toDF("a", "b")
     val result = df.select(struct(lit("v"), lit(5.0)))
 
-    val expectedType = StructType(
-      Seq(
-        StructField("col1", StringType, nullable = false),
-        StructField("col2", DoubleType, nullable = false)
-      ))
+    val expectedType = StructType(Seq(
+      StructField("col1", StringType, nullable = false),
+      StructField("col2", DoubleType, nullable = false)))
 
     assert(result.first.schema(0).dataType === expectedType)
     checkAnswer(result, Seq(Row(Row("v", 5.0)), Row(Row("v", 5.0))))
   }
 
   test("constant functions") {
-    checkAnswer(
-      sql("SELECT E()"),
-      Row(scala.math.E)
-    )
-    checkAnswer(
-      sql("SELECT PI()"),
-      Row(scala.math.Pi)
-    )
+    checkAnswer(sql("SELECT E()"), Row(scala.math.E))
+    checkAnswer(sql("SELECT PI()"), Row(scala.math.Pi))
   }
 
   test("bitwiseNOT") {
@@ -231,161 +215,112 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   test("conditional function: least") {
     checkAnswer(
       testData2.select(least(lit(-1), lit(0), col("a"), col("b"))).limit(1),
-      Row(-1)
-    )
+      Row(-1))
     checkAnswer(
       sql("SELECT least(a, 2) as l from testData2 order by l"),
-      Seq(Row(1), Row(1), Row(2), Row(2), Row(2), Row(2))
-    )
+      Seq(Row(1), Row(1), Row(2), Row(2), Row(2), Row(2)))
   }
 
   test("conditional function: greatest") {
     checkAnswer(
       testData2.select(greatest(lit(2), lit(3), col("a"), col("b"))).limit(1),
-      Row(3)
-    )
+      Row(3))
     checkAnswer(
       sql("SELECT greatest(a, 2) as g from testData2 order by g"),
-      Seq(Row(2), Row(2), Row(2), Row(2), Row(3), Row(3))
-    )
+      Seq(Row(2), Row(2), Row(2), Row(2), Row(3), Row(3)))
   }
 
   test("pmod") {
     val intData = Seq((7, 3), (-7, 3)).toDF("a", "b")
-    checkAnswer(
-      intData.select(pmod('a, 'b)),
-      Seq(Row(1), Row(2))
-    )
-    checkAnswer(
-      intData.select(pmod('a, lit(3))),
-      Seq(Row(1), Row(2))
-    )
-    checkAnswer(
-      intData.select(pmod(lit(-7), 'b)),
-      Seq(Row(2), Row(2))
-    )
-    checkAnswer(
-      intData.selectExpr("pmod(a, b)"),
-      Seq(Row(1), Row(2))
-    )
-    checkAnswer(
-      intData.selectExpr("pmod(a, 3)"),
-      Seq(Row(1), Row(2))
-    )
-    checkAnswer(
-      intData.selectExpr("pmod(-7, b)"),
-      Seq(Row(2), Row(2))
-    )
+    checkAnswer(intData.select(pmod('a, 'b)), Seq(Row(1), Row(2)))
+    checkAnswer(intData.select(pmod('a, lit(3))), Seq(Row(1), Row(2)))
+    checkAnswer(intData.select(pmod(lit(-7), 'b)), Seq(Row(2), Row(2)))
+    checkAnswer(intData.selectExpr("pmod(a, b)"), Seq(Row(1), Row(2)))
+    checkAnswer(intData.selectExpr("pmod(a, 3)"), Seq(Row(1), Row(2)))
+    checkAnswer(intData.selectExpr("pmod(-7, b)"), Seq(Row(2), Row(2)))
     val doubleData = Seq((7.2, 4.1)).toDF("a", "b")
     checkAnswer(
       doubleData.select(pmod('a, 'b)),
       Seq(Row(3.1000000000000005)) // same as hive
     )
-    checkAnswer(
-      doubleData.select(pmod(lit(2), lit(Int.MaxValue))),
-      Seq(Row(2))
-    )
+    checkAnswer(doubleData.select(pmod(lit(2), lit(Int.MaxValue))), Seq(Row(2)))
   }
 
   test("sort_array function") {
     val df = Seq(
       (Array[Int](2, 1, 3), Array("b", "c", "a")),
       (Array[Int](), Array[String]()),
-      (null, null)
-    ).toDF("a", "b")
+      (null, null)).toDF("a", "b")
     checkAnswer(
       df.select(sort_array($"a"), sort_array($"b")),
       Seq(
         Row(Seq(1, 2, 3), Seq("a", "b", "c")),
         Row(Seq[Int](), Seq[String]()),
-        Row(null, null))
-    )
+        Row(null, null)))
     checkAnswer(
       df.select(sort_array($"a", false), sort_array($"b", false)),
       Seq(
         Row(Seq(3, 2, 1), Seq("c", "b", "a")),
         Row(Seq[Int](), Seq[String]()),
-        Row(null, null))
-    )
+        Row(null, null)))
     checkAnswer(
       df.selectExpr("sort_array(a)", "sort_array(b)"),
       Seq(
         Row(Seq(1, 2, 3), Seq("a", "b", "c")),
         Row(Seq[Int](), Seq[String]()),
-        Row(null, null))
-    )
+        Row(null, null)))
     checkAnswer(
       df.selectExpr("sort_array(a, true)", "sort_array(b, false)"),
       Seq(
         Row(Seq(1, 2, 3), Seq("c", "b", "a")),
         Row(Seq[Int](), Seq[String]()),
-        Row(null, null))
-    )
+        Row(null, null)))
 
     val df2 = Seq(
       (Array[Array[Int]](Array(2), Array(1), Array(2, 4), null), "x"))
       .toDF("a", "b")
     checkAnswer(
       df2.selectExpr("sort_array(a, true)", "sort_array(a, false)"),
-      Seq(
-        Row(
-          Seq[Seq[Int]](null, Seq(1), Seq(2), Seq(2, 4)),
-          Seq[Seq[Int]](Seq(2, 4), Seq(2), Seq(1), null)))
+      Seq(Row(
+        Seq[Seq[Int]](null, Seq(1), Seq(2), Seq(2, 4)),
+        Seq[Seq[Int]](Seq(2, 4), Seq(2), Seq(1), null)))
     )
 
     val df3 = Seq(("xxx", "x")).toDF("a", "b")
-    assert(intercept[AnalysisException] {
-      df3.selectExpr("sort_array(a)").collect()
-    }.getMessage().contains("only supports array input"))
+    assert(
+      intercept[AnalysisException] { df3.selectExpr("sort_array(a)").collect() }
+        .getMessage()
+        .contains("only supports array input"))
   }
 
   test("array size function") {
     val df = Seq(
       (Seq[Int](1, 2), "x"),
       (Seq[Int](), "y"),
-      (Seq[Int](1, 2, 3), "z")
-    ).toDF("a", "b")
-    checkAnswer(
-      df.select(size($"a")),
-      Seq(Row(2), Row(0), Row(3))
-    )
-    checkAnswer(
-      df.selectExpr("size(a)"),
-      Seq(Row(2), Row(0), Row(3))
-    )
+      (Seq[Int](1, 2, 3), "z")).toDF("a", "b")
+    checkAnswer(df.select(size($"a")), Seq(Row(2), Row(0), Row(3)))
+    checkAnswer(df.selectExpr("size(a)"), Seq(Row(2), Row(0), Row(3)))
   }
 
   test("map size function") {
     val df = Seq(
       (Map[Int, Int](1 -> 1, 2 -> 2), "x"),
       (Map[Int, Int](), "y"),
-      (Map[Int, Int](1 -> 1, 2 -> 2, 3 -> 3), "z")
-    ).toDF("a", "b")
-    checkAnswer(
-      df.select(size($"a")),
-      Seq(Row(2), Row(0), Row(3))
-    )
-    checkAnswer(
-      df.selectExpr("size(a)"),
-      Seq(Row(2), Row(0), Row(3))
-    )
+      (Map[Int, Int](1 -> 1, 2 -> 2, 3 -> 3), "z")).toDF("a", "b")
+    checkAnswer(df.select(size($"a")), Seq(Row(2), Row(0), Row(3)))
+    checkAnswer(df.selectExpr("size(a)"), Seq(Row(2), Row(0), Row(3)))
   }
 
   test("array contains function") {
-    val df = Seq(
-      (Seq[Int](1, 2), "x"),
-      (Seq[Int](), "x")
-    ).toDF("a", "b")
+    val df = Seq((Seq[Int](1, 2), "x"), (Seq[Int](), "x")).toDF("a", "b")
 
     // Simple test cases
     checkAnswer(
       df.select(array_contains(df("a"), 1)),
-      Seq(Row(true), Row(false))
-    )
+      Seq(Row(true), Row(false)))
     checkAnswer(
       df.selectExpr("array_contains(a, 1)"),
-      Seq(Row(true), Row(false))
-    )
+      Seq(Row(true), Row(false)))
 
     // In hive, this errors because null has no type information
     intercept[AnalysisException] { df.select(array_contains(df("a"), null)) }
@@ -394,11 +329,9 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       df.selectExpr("array_contains(array(array(1), null)[0], 1)"),
-      Seq(Row(true), Row(true))
-    )
+      Seq(Row(true), Row(true)))
     checkAnswer(
       df.selectExpr("array_contains(array(1, null), array(1, null)[0])"),
-      Seq(Row(true), Row(true))
-    )
+      Seq(Row(true), Row(true)))
   }
 }

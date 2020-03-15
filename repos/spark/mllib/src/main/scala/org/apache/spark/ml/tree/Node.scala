@@ -215,14 +215,13 @@ final class InternalNode private[ml] (
       Some(split.toOld),
       Some(leftChild.toOld(OldNode.leftChildIndex(id))),
       Some(rightChild.toOld(OldNode.rightChildIndex(id))),
-      Some(
-        new OldInformationGainStats(
-          gain,
-          impurity,
-          leftChild.impurity,
-          rightChild.impurity,
-          new OldPredict(leftChild.prediction, prob = 0.0),
-          new OldPredict(rightChild.prediction, prob = 0.0))))
+      Some(new OldInformationGainStats(
+        gain,
+        impurity,
+        leftChild.impurity,
+        rightChild.impurity,
+        new OldPredict(leftChild.prediction, prob = 0.0),
+        new OldPredict(rightChild.prediction, prob = 0.0))))
   }
 
   override private[ml] def maxSplitFeatureIndex(): Int = {

@@ -64,8 +64,8 @@ object WriterUsage extends App {
   resultFappend.written.map(println)
 
   // <++: and <<++: work like :++>, :++>> only to prepend information
-  val resultPrepend: Logger[Person] = sherlockHolmes.<++:(
-    List("Starting to create a Person"))
+  val resultPrepend: Logger[Person] = sherlockHolmes.<++:(List(
+    "Starting to create a Person"))
   resultPrepend.written.map(println)
 
   // reset your log to zero

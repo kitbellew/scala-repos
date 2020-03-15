@@ -55,11 +55,8 @@ import org.apache.spark.rdd.RDD
   */
 object PowerIterationClusteringExample {
 
-  case class Params(
-      k: Int = 2,
-      numPoints: Int = 10,
-      maxIterations: Int = 15
-  ) extends AbstractParams[Params]
+  case class Params(k: Int = 2, numPoints: Int = 10, maxIterations: Int = 15)
+      extends AbstractParams[Params]
 
   def main(args: Array[String]) {
     val defaultParams = Params()

@@ -177,7 +177,9 @@ class SecurityServiceSpec
     authService.query("apiKey", authAPIKey).get("/permissions/fs/" + path)
 
   def equalGrant(g1: Grant, g2: Grant) =
-    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (g1.expirationDate == g2.expirationDate)
+    (g1.grantId == g2.grantId) && (g1.permissions == g2.permissions) && (
+      g1.expirationDate == g2.expirationDate
+    )
 
   def mkNewGrantRequest(grant: Grant) =
     grant match {
@@ -199,10 +201,9 @@ class SecurityServiceSpec
     }
 
   def standardGrant(accountId: AccountId) =
-    mkNewGrantRequest(
-      Await.result(
-        apiKeyManager.newStandardAccountGrant(accountId, Path(accountId)),
-        to))
+    mkNewGrantRequest(Await.result(
+      apiKeyManager.newStandardAccountGrant(accountId, Path(accountId)),
+      to))
   def standardPermissions(accountId: AccountId) =
     standardGrant(accountId).permissions
 
@@ -272,21 +273,18 @@ class SecurityServiceSpec
   val rootPermissions = Set[Permission](
     WritePermission(Path.Root, WriteAsAny),
     ReadPermission(Path.Root, WrittenByAny),
-    DeletePermission(Path.Root, WrittenByAny)
-  )
+    DeletePermission(Path.Root, WrittenByAny))
 
   val rootGrants = {
-    Set(
-      Grant(
-        rootGrantId,
-        Some("root-grant"),
-        Some("The root grant"),
-        rootAPIKey,
-        Set(),
-        rootPermissions,
-        new Instant(0L),
-        None
-      ))
+    Set(Grant(
+      rootGrantId,
+      Some("root-grant"),
+      Some("The root grant"),
+      rootAPIKey,
+      Set(),
+      rootPermissions,
+      new Instant(0L),
+      None))
   }
 
   val rootGrantRequests = rootGrants map mkNewGrantRequest

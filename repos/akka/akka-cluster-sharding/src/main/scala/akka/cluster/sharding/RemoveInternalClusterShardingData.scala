@@ -117,12 +117,11 @@ object RemoveInternalClusterShardingData {
       typeNames: Set[String],
       completion: Promise[Unit],
       remove2dot3Data: Boolean): Props =
-    Props(
-      new RemoveInternalClusterShardingData(
-        journalPluginId,
-        typeNames,
-        completion,
-        remove2dot3Data))
+    Props(new RemoveInternalClusterShardingData(
+      journalPluginId,
+      typeNames,
+      completion,
+      remove2dot3Data))
       .withDeploy(Deploy.local)
 
   /**
@@ -133,11 +132,10 @@ object RemoveInternalClusterShardingData {
         journalPluginId: String,
         persistenceId: String,
         replyTo: ActorRef): Props =
-      Props(
-        new RemoveOnePersistenceId(
-          journalPluginId,
-          persistenceId: String,
-          replyTo))
+      Props(new RemoveOnePersistenceId(
+        journalPluginId,
+        persistenceId: String,
+        replyTo))
 
     case class Result(removals: Try[Removals])
     case class Removals(events: Boolean, snapshots: Boolean)

@@ -188,8 +188,8 @@ class Partition(
       val newInSyncReplicas =
         partitionStateInfo.isr.asScala.map(r => getOrCreateReplica(r)).toSet
       // remove assigned replicas that have been removed by the controller
-      (assignedReplicas().map(_.brokerId) -- allReplicas)
-        .foreach(removeReplica(_))
+      (assignedReplicas().map(_.brokerId) -- allReplicas).foreach(removeReplica(
+        _))
       inSyncReplicas = newInSyncReplicas
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
@@ -234,8 +234,8 @@ class Partition(
       // add replicas that are new
       allReplicas.foreach(r => getOrCreateReplica(r))
       // remove assigned replicas that have been removed by the controller
-      (assignedReplicas().map(_.brokerId) -- allReplicas)
-        .foreach(removeReplica(_))
+      (assignedReplicas().map(_.brokerId) -- allReplicas).foreach(removeReplica(
+        _))
       inSyncReplicas = Set.empty[Replica]
       leaderEpoch = partitionStateInfo.leaderEpoch
       zkVersion = partitionStateInfo.zkVersion
@@ -268,15 +268,16 @@ class Partition(
               TopicAndPartition(topic, partitionId)))
       case None =>
         throw new NotAssignedReplicaException(
-          ("Leader %d failed to record follower %d's position %d since the replica" +
-            " is not recognized to be one of the assigned replicas %s for partition %s.")
-            .format(
-              localBrokerId,
-              replicaId,
-              logReadResult.info.fetchOffsetMetadata.messageOffset,
-              assignedReplicas().map(_.brokerId).mkString(","),
-              TopicAndPartition(topic, partitionId)
-            ))
+          (
+            "Leader %d failed to record follower %d's position %d since the replica" +
+              " is not recognized to be one of the assigned replicas %s for partition %s."
+          ).format(
+            localBrokerId,
+            replicaId,
+            logReadResult.info.fetchOffsetMetadata.messageOffset,
+            assignedReplicas().map(_.brokerId).mkString(","),
+            TopicAndPartition(topic, partitionId)
+          ))
     }
   }
 
@@ -333,17 +334,20 @@ class Partition(
         val curInSyncReplicas = inSyncReplicas
         val numAcks = curInSyncReplicas.count(r => {
           if (!r.isLocal) if (r.logEndOffset.messageOffset >= requiredOffset) {
-            trace(
-              "Replica %d of %s-%d received offset %d"
-                .format(r.brokerId, topic, partitionId, requiredOffset))
+            trace("Replica %d of %s-%d received offset %d".format(
+              r.brokerId,
+              topic,
+              partitionId,
+              requiredOffset))
             true
           } else false
           else true /* also count the local (leader) replica */
         })
 
-        trace(
-          "%d acks satisfied for %s-%d with acks = -1"
-            .format(numAcks, topic, partitionId))
+        trace("%d acks satisfied for %s-%d with acks = -1".format(
+          numAcks,
+          topic,
+          partitionId))
 
         val minIsr = leaderReplica.log.get.config.minInSyncReplicas
 
@@ -379,9 +383,10 @@ class Partition(
     if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark
           .onOlderSegment(newHighWatermark)) {
       leaderReplica.highWatermark = newHighWatermark
-      debug(
-        "High watermark for partition [%s,%d] updated to %s"
-          .format(topic, partitionId, newHighWatermark))
+      debug("High watermark for partition [%s,%d] updated to %s".format(
+        topic,
+        partitionId,
+        newHighWatermark))
       true
     } else {
       debug(
@@ -416,12 +421,11 @@ class Partition(
           if (outOfSyncReplicas.size > 0) {
             val newInSyncReplicas = inSyncReplicas -- outOfSyncReplicas
             assert(newInSyncReplicas.size > 0)
-            info(
-              "Shrinking ISR for partition [%s,%d] from %s to %s".format(
-                topic,
-                partitionId,
-                inSyncReplicas.map(_.brokerId).mkString(","),
-                newInSyncReplicas.map(_.brokerId).mkString(",")))
+            info("Shrinking ISR for partition [%s,%d] from %s to %s".format(
+              topic,
+              partitionId,
+              inSyncReplicas.map(_.brokerId).mkString(","),
+              newInSyncReplicas.map(_.brokerId).mkString(",")))
             // update ISR in zk and in cache
             updateIsr(newInSyncReplicas)
             // we may need to increment high watermark since ISR could be down to 1
@@ -459,10 +463,9 @@ class Partition(
     val laggingReplicas = candidateReplicas.filter(r =>
       (time.milliseconds - r.lastCaughtUpTimeMs) > maxLagMs)
     if (laggingReplicas.size > 0)
-      debug(
-        "Lagging replicas for partition %s are %s".format(
-          TopicAndPartition(topic, partitionId),
-          laggingReplicas.map(_.brokerId).mkString(",")))
+      debug("Lagging replicas for partition %s are %s".format(
+        TopicAndPartition(topic, partitionId),
+        laggingReplicas.map(_.brokerId).mkString(",")))
 
     laggingReplicas
   }
@@ -523,9 +526,9 @@ class Partition(
       replicaManager.recordIsrChange(new TopicAndPartition(topic, partitionId))
       inSyncReplicas = newIsr
       zkVersion = newVersion
-      trace(
-        "ISR updated to [%s] and zkVersion updated to [%d]"
-          .format(newIsr.mkString(","), zkVersion))
+      trace("ISR updated to [%s] and zkVersion updated to [%d]".format(
+        newIsr.mkString(","),
+        zkVersion))
     } else {
       info(
         "Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR"

@@ -79,11 +79,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
     protected[this] val exe = createQueryExecutor[R](tree, param)
     def result: ProfileAction[R, S, Effect.Read] =
       new StreamingProfileAction[R, Any, Effect.Read]
-        with SynchronousDatabaseAction[
-          R,
-          Streaming[Any],
-          Backend#This,
-          Effect.Read] {
+        with SynchronousDatabaseAction[R, Streaming[
+          Any], Backend#This, Effect.Read] {
         def run(ctx: Backend#Context) = exe.run(ctx.session)
         def getDumpInfo = DumpInfo("DistributedProfile.ProfileAction")
         def head: ResultAction[Any, NoStream, Effect.Read] = ??
@@ -138,8 +135,9 @@ class DistributedProfile(val profiles: RelationalProfile*)
       tpe match {
         case ProductType(ts) =>
           val p = value.asInstanceOf[Product]
-          new ProductValue((0 until p.productArity).map(i =>
-            wrapScalaValue(p.productElement(i), ts(i)))(collection.breakOut))
+          new ProductValue(
+            (0 until p.productArity).map(i =>
+              wrapScalaValue(p.productElement(i), ts(i)))(collection.breakOut))
         case CollectionType(_, elType) =>
           val v = value.asInstanceOf[Traversable[_]]
           val b = v.companion.newBuilder[Any]

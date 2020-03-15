@@ -2,10 +2,7 @@ package com.test
 
 import org.scalatest._
 
-class NestedSpecs
-    extends Suites(
-      new TestSpec
-    )
+class NestedSpecs extends Suites(new TestSpec)
 
 @DoNotDiscover
 class TestSpec extends Spec {

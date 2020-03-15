@@ -74,10 +74,9 @@ case class TopicMetadataRequest(
       Seq(),
       topicMetadata,
       correlationId)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, errorResponse)))
   }
 
   override def describe(details: Boolean): String = {

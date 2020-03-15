@@ -161,83 +161,80 @@ trait Slice { source =>
         !cols.isEmpty && Loop.forall(cols)(_ isDefinedAt row)
 
       val columns: Map[ColumnRef, Column] = {
-        Map(
-          (
-            ColumnRef(CPath(CPathArray), CArrayType(tpe0)),
-            tpe0 match {
-              case CLong =>
-                val longcols = cols.collect {
-                  case (col: LongColumn) => col
-                }.toArray
+        Map((
+          ColumnRef(CPath(CPathArray), CArrayType(tpe0)),
+          tpe0 match {
+            case CLong =>
+              val longcols = cols.collect {
+                case (col: LongColumn) => col
+              }.toArray
 
-                new HomogeneousArrayColumn[Long] {
-                  private val cols: Array[Int => Long] = longcols map { col =>
-                    col.apply _
-                  }
-
-                  val tpe = CArrayType(CLong)
-                  def isDefinedAt(row: Int) =
-                    loopForall[LongColumn](longcols)(row)
-                  def apply(row: Int): Array[Long] = inflate(cols, row)
+              new HomogeneousArrayColumn[Long] {
+                private val cols: Array[Int => Long] = longcols map { col =>
+                  col.apply _
                 }
-              case CDouble =>
-                val doublecols = cols.collect {
-                  case (col: DoubleColumn) => col
-                }.toArray
-                new HomogeneousArrayColumn[Double] {
-                  private val cols: Array[Int => Double] = doublecols map { x =>
-                    x(_)
-                  }
 
-                  val tpe = CArrayType(CDouble)
-                  def isDefinedAt(row: Int) =
-                    loopForall[DoubleColumn](doublecols)(row)
-                  def apply(row: Int): Array[Double] = inflate(cols, row)
+                val tpe = CArrayType(CLong)
+                def isDefinedAt(row: Int) =
+                  loopForall[LongColumn](longcols)(row)
+                def apply(row: Int): Array[Long] = inflate(cols, row)
+              }
+            case CDouble =>
+              val doublecols = cols.collect {
+                case (col: DoubleColumn) => col
+              }.toArray
+              new HomogeneousArrayColumn[Double] {
+                private val cols: Array[Int => Double] = doublecols map { x =>
+                  x(_)
                 }
-              case CNum =>
-                val numcols = cols.collect {
-                  case (col: NumColumn) => col
-                }.toArray
-                new HomogeneousArrayColumn[BigDecimal] {
-                  private val cols: Array[Int => BigDecimal] = numcols map {
-                    x => x(_)
-                  }
 
-                  val tpe = CArrayType(CNum)
-                  def isDefinedAt(row: Int) =
-                    loopForall[NumColumn](numcols)(row)
-                  def apply(row: Int): Array[BigDecimal] = inflate(cols, row)
+                val tpe = CArrayType(CDouble)
+                def isDefinedAt(row: Int) =
+                  loopForall[DoubleColumn](doublecols)(row)
+                def apply(row: Int): Array[Double] = inflate(cols, row)
+              }
+            case CNum =>
+              val numcols = cols.collect {
+                case (col: NumColumn) => col
+              }.toArray
+              new HomogeneousArrayColumn[BigDecimal] {
+                private val cols: Array[Int => BigDecimal] = numcols map { x =>
+                  x(_)
                 }
-              case CBoolean =>
-                val boolcols = cols.collect {
-                  case (col: BoolColumn) => col
-                }.toArray
-                new HomogeneousArrayColumn[Boolean] {
-                  private val cols: Array[Int => Boolean] = boolcols map { x =>
-                    x(_)
-                  }
 
-                  val tpe = CArrayType(CBoolean)
-                  def isDefinedAt(row: Int) =
-                    loopForall[BoolColumn](boolcols)(row)
-                  def apply(row: Int): Array[Boolean] = inflate(cols, row)
+                val tpe = CArrayType(CNum)
+                def isDefinedAt(row: Int) = loopForall[NumColumn](numcols)(row)
+                def apply(row: Int): Array[BigDecimal] = inflate(cols, row)
+              }
+            case CBoolean =>
+              val boolcols = cols.collect {
+                case (col: BoolColumn) => col
+              }.toArray
+              new HomogeneousArrayColumn[Boolean] {
+                private val cols: Array[Int => Boolean] = boolcols map { x =>
+                  x(_)
                 }
-              case CString =>
-                val strcols = cols.collect {
-                  case (col: StrColumn) => col
-                }.toArray
-                new HomogeneousArrayColumn[String] {
-                  private val cols: Array[Int => String] = strcols map { x =>
-                    x(_)
-                  }
 
-                  val tpe = CArrayType(CString)
-                  def isDefinedAt(row: Int) =
-                    loopForall[StrColumn](strcols)(row)
-                  def apply(row: Int): Array[String] = inflate(cols, row)
+                val tpe = CArrayType(CBoolean)
+                def isDefinedAt(row: Int) =
+                  loopForall[BoolColumn](boolcols)(row)
+                def apply(row: Int): Array[Boolean] = inflate(cols, row)
+              }
+            case CString =>
+              val strcols = cols.collect {
+                case (col: StrColumn) => col
+              }.toArray
+              new HomogeneousArrayColumn[String] {
+                private val cols: Array[Int => String] = strcols map { x =>
+                  x(_)
                 }
-              case _ => sys.error("unsupported type")
-            }))
+
+                val tpe = CArrayType(CString)
+                def isDefinedAt(row: Int) = loopForall[StrColumn](strcols)(row)
+                def apply(row: Int): Array[String] = inflate(cols, row)
+              }
+            case _ => sys.error("unsupported type")
+          }))
       }
     }
 
@@ -251,87 +248,85 @@ trait Slice { source =>
     new Slice {
       val size = source.size
       val columns = {
-        Map(
-          value match {
-            case CString(s) =>
-              (
-                ColumnRef(CPath.Identity, CString),
-                new StrColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = s
-                })
-            case CBoolean(b) =>
-              (
-                ColumnRef(CPath.Identity, CBoolean),
-                new BoolColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = b
-                })
-            case CLong(l) =>
-              (
-                ColumnRef(CPath.Identity, CLong),
-                new LongColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = l
-                })
-            case CDouble(d) =>
-              (
-                ColumnRef(CPath.Identity, CDouble),
-                new DoubleColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = d
-                })
-            case CNum(n) =>
-              (
-                ColumnRef(CPath.Identity, CNum),
-                new NumColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = n
-                })
-            case CDate(d) =>
-              (
-                ColumnRef(CPath.Identity, CDate),
-                new DateColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = d
-                })
-            case CPeriod(p) =>
-              (
-                ColumnRef(CPath.Identity, CPeriod),
-                new PeriodColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = p
-                })
-            case value: CArray[a] =>
-              (
-                ColumnRef(CPath.Identity, value.cType),
-                new HomogeneousArrayColumn[a] {
-                  val tpe = value.cType
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                  def apply(row: Int) = value.value
-                })
-            case CNull =>
-              (
-                ColumnRef(CPath.Identity, CNull),
-                new NullColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                })
-            case CEmptyObject =>
-              (
-                ColumnRef(CPath.Identity, CEmptyObject),
-                new EmptyObjectColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                })
-            case CEmptyArray =>
-              (
-                ColumnRef(CPath.Identity, CEmptyArray),
-                new EmptyArrayColumn {
-                  def isDefinedAt(row: Int) = source.isDefinedAt(row)
-                })
-            case CUndefined =>
-              sys.error("Cannot define a constant undefined value")
-          }
-        )
+        Map(value match {
+          case CString(s) =>
+            (
+              ColumnRef(CPath.Identity, CString),
+              new StrColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = s
+              })
+          case CBoolean(b) =>
+            (
+              ColumnRef(CPath.Identity, CBoolean),
+              new BoolColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = b
+              })
+          case CLong(l) =>
+            (
+              ColumnRef(CPath.Identity, CLong),
+              new LongColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = l
+              })
+          case CDouble(d) =>
+            (
+              ColumnRef(CPath.Identity, CDouble),
+              new DoubleColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = d
+              })
+          case CNum(n) =>
+            (
+              ColumnRef(CPath.Identity, CNum),
+              new NumColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = n
+              })
+          case CDate(d) =>
+            (
+              ColumnRef(CPath.Identity, CDate),
+              new DateColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = d
+              })
+          case CPeriod(p) =>
+            (
+              ColumnRef(CPath.Identity, CPeriod),
+              new PeriodColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = p
+              })
+          case value: CArray[a] =>
+            (
+              ColumnRef(CPath.Identity, value.cType),
+              new HomogeneousArrayColumn[a] {
+                val tpe = value.cType
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+                def apply(row: Int) = value.value
+              })
+          case CNull =>
+            (
+              ColumnRef(CPath.Identity, CNull),
+              new NullColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+              })
+          case CEmptyObject =>
+            (
+              ColumnRef(CPath.Identity, CEmptyObject),
+              new EmptyObjectColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+              })
+          case CEmptyArray =>
+            (
+              ColumnRef(CPath.Identity, CEmptyArray),
+              new EmptyArrayColumn {
+                def isDefinedAt(row: Int) = source.isDefinedAt(row)
+              })
+          case CUndefined =>
+            sys.error("Cannot define a constant undefined value")
+        })
       }
     }
 
@@ -421,10 +416,9 @@ trait Slice { source =>
 
         (jType, cType, cPath) match {
           case (JUnionT(aJType, bJType), _, _) =>
-            flattenDeleteTree(
-              aJType,
-              cType,
-              cPath) andThen (_ flatMap flattenDeleteTree(bJType, cType, cPath))
+            flattenDeleteTree(aJType, cType, cPath) andThen (
+              _ flatMap flattenDeleteTree(bJType, cType, cPath)
+            )
           case (JTextT, CString, CPath.Identity) =>
             delete
           case (JBooleanT, CBoolean, CPath.Identity) =>
@@ -484,16 +478,15 @@ trait Slice { source =>
               ref @ ColumnRef(cpath, ctype: CArrayType[a]),
               col: HomogeneousArrayColumn[_]) if ctype == col.tpe =>
           val trans = flattenDeleteTree(jtype, ctype, cpath)
-          Some(
-            (
-              ref,
-              new HomogeneousArrayColumn[a] {
-                val tpe = ctype
-                def isDefinedAt(row: Int) = col.isDefinedAt(row)
-                def apply(row: Int): Array[a] =
-                  trans(col(row).asInstanceOf[Array[a]]) getOrElse sys.error(
-                    "Oh dear, this cannot be happening to me.")
-              }))
+          Some((
+            ref,
+            new HomogeneousArrayColumn[a] {
+              val tpe = ctype
+              def isDefinedAt(row: Int) = col.isDefinedAt(row)
+              def apply(row: Int): Array[a] =
+                trans(col(row).asInstanceOf[Array[a]]) getOrElse sys.error(
+                  "Oh dear, this cannot be happening to me.")
+            }))
 
         case (ref, col) =>
           Some((ref, col))
@@ -1379,7 +1372,9 @@ trait Slice { source =>
               case '\t' => pushStr("\\t")
 
               case c => {
-                if ((c >= '\u0000' && c < '\u001f') || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                if ((c >= '\u0000' && c < '\u001f') || (
+                      c >= '\u0080' && c < '\u00a0'
+                    ) || (c >= '\u2000' && c < '\u2100')) {
                   pushStr("\\u")
                   pushStr("%04x".format(Character.codePointAt(str, idx)))
                 } else { push(c) }

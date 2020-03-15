@@ -46,8 +46,7 @@ class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testOtherTo(): Unit = {
-    checkTextHasNoErrors(
-      s"""
+    checkTextHasNoErrors(s"""
          |class A {
          |  def to(i: Int): Int = i
          |}
@@ -55,7 +54,6 @@ class ReplaceToWithUntilTest extends OperationsOnCollectionInspectionTest {
          |val a = new A
          |val x = 42
          |a to x - 1
-       """.stripMargin
-    )
+       """.stripMargin)
   }
 }

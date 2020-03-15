@@ -346,8 +346,7 @@ trait BodyParsers {
       when(
         _.contentType.exists(_.equalsIgnoreCase("text/plain")),
         tolerantText(maxLength),
-        createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE)
-      )
+        createBadResult("Expecting text/plain body", UNSUPPORTED_MEDIA_TYPE))
 
     /**
       * Parse the body as text if the Content-Type is text/plain.
@@ -523,8 +522,7 @@ trait BodyParsers {
                 // to RFC 2616, we use that.
                 case mt if mt.mediaType == "text" => "iso-8859-1"
                 // Otherwise, there should be no default, it will be detected by the XML parser.
-              }
-            )
+              })
             .foreach { charset => inputSource.setEncoding(charset) }
           Play.XML.load(inputSource)
       }
@@ -613,8 +611,8 @@ trait BodyParsers {
       */
     def urlFormEncoded(maxLength: Int): BodyParser[Map[String, Seq[String]]] =
       when(
-        _.contentType.exists(
-          _.equalsIgnoreCase("application/x-www-form-urlencoded")),
+        _.contentType.exists(_.equalsIgnoreCase(
+          "application/x-www-form-urlencoded")),
         tolerantFormUrlEncoded(maxLength),
         createBadResult(
           "Expecting application/x-www-form-urlencoded body",
@@ -658,8 +656,8 @@ trait BodyParsers {
 
         def maxLengthOrDefault = maxLength.fold(DefaultMaxTextLength)(_.toInt)
         def maxLengthOrDefaultLarge = maxLength.getOrElse(DefaultMaxDiskLength)
-        val contentType: Option[String] = request.contentType.map(
-          _.toLowerCase(Locale.ENGLISH))
+        val contentType: Option[String] = request.contentType.map(_.toLowerCase(
+          Locale.ENGLISH))
         contentType match {
           case Some("text/plain") =>
             logger.trace("Parsing AnyContent as text")
@@ -841,10 +839,8 @@ trait BodyParsers {
         enforceMaxLength(
           request,
           maxLength,
-          Accumulator(
-            Sink.fold[ByteString, ByteString](ByteString.empty)((state, bs) =>
-              state ++ bs)
-          ) mapFuture { bytes =>
+          Accumulator(Sink.fold[ByteString, ByteString](ByteString.empty)(
+            (state, bs) => state ++ bs)) mapFuture { bytes =>
             try { Future.successful(Right(parser(request, bytes))) }
             catch {
               case NonFatal(e) =>

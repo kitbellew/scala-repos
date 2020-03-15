@@ -245,8 +245,7 @@ object NullLogger
         val jLog = javalog.Logger.getLogger("null")
         jLog.setLevel(Level.OFF)
         jLog
-      }
-    )
+      })
 
 object Logger extends Iterable[Logger] {
 

@@ -762,8 +762,7 @@ private[collection] object RedBlackTree {
           if (tree eq null) popNext()
           else
             find(
-              if (ordering.lteq(key, tree.key)) goLeft(tree) else goRight(tree)
-            )
+              if (ordering.lteq(key, tree.key)) goLeft(tree) else goRight(tree))
         find(root)
       }
 

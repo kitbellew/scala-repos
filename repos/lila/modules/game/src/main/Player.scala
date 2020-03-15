@@ -54,15 +54,10 @@ case class Player(
   def goBerserk = copy(berserk = true)
 
   def finish(winner: Boolean) =
-    copy(
-      isWinner = if (winner) Some(true) else None
-    )
+    copy(isWinner = if (winner) Some(true) else None)
 
   def offerDraw(turn: Int) =
-    copy(
-      isOfferingDraw = true,
-      lastDrawOffer = Some(turn)
-    )
+    copy(isOfferingDraw = true, lastDrawOffer = Some(turn))
 
   def removeDrawOffer = copy(isOfferingDraw = false)
 

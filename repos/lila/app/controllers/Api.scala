@@ -14,21 +14,18 @@ object Api extends LilaController {
     Action { req =>
       val api = lila.api.Mobile.Api
       val app = lila.api.Mobile.App
-      Ok(
-        Json.obj(
-          "api" -> Json.obj(
-            "current" -> api.currentVersion,
-            "olds" -> api.oldVersions.map { old =>
-              Json.obj(
-                "version" -> old.version,
-                "deprecatedAt" -> old.deprecatedAt,
-                "unsupportedAt" -> old.unsupportedAt)
-            }
-          ),
-          "app" -> Json.obj(
-            "current" -> app.currentVersion
-          )
-        )) as JSON
+      Ok(Json.obj(
+        "api" -> Json.obj(
+          "current" -> api.currentVersion,
+          "olds" -> api.oldVersions.map { old =>
+            Json.obj(
+              "version" -> old.version,
+              "deprecatedAt" -> old.deprecatedAt,
+              "unsupportedAt" -> old.unsupportedAt)
+          }
+        ),
+        "app" -> Json.obj("current" -> app.currentVersion)
+      )) as JSON
     }
 
   def user(name: String) = ApiResult { implicit ctx => userApi one name }
@@ -40,8 +37,7 @@ object Api extends LilaController {
           .list(
             teamId = teamId,
             engine = getBoolOpt("engine"),
-            nb = getInt("nb")
-          )
+            nb = getInt("nb"))
           .map(_.some)
       }
     }

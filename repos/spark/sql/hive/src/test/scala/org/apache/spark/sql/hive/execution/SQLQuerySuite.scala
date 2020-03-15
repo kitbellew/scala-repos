@@ -97,8 +97,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     "SPARK-13651: generator outputs shouldn't be resolved from its child's output") {
     withTempTable("src") {
       Seq(("id1", "value1")).toDF("key", "value").registerTempTable("src")
-      val query = sql("SELECT genoutput.* FROM src " +
-        "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
+      val query = sql(
+        "SELECT genoutput.* FROM src " +
+          "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
       checkAnswer(query, Row("key1", 100) :: Row("key2", 200) :: Nil)
     }
   }
@@ -418,8 +419,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     checkAnswer(
       sql(
         "SELECT * FROM (SELECT key + key AS a FROM src SORT BY value) t ORDER BY t.a"),
-      sql("SELECT key + key as a FROM src ORDER BY a").collect().toSeq
-    )
+      sql("SELECT key + key as a FROM src ORDER BY a").collect().toSeq)
   }
 
   test("CTAS without serde") {
@@ -812,8 +812,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
     checkAnswer(
       sql("SELECT * FROM nullValuesInInnerComplexTypes"),
-      Row(Row(null, null, null))
-    )
+      Row(Row(null, null, null)))
 
     sql("DROP TABLE nullValuesInInnerComplexTypes")
     dropTempTable("testTable")
@@ -901,8 +900,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         s"INSERT OVERWRITE TABLE explodeTest SELECT explode(a) AS val FROM data")
       checkAnswer(
         sql("SELECT key from explodeTest"),
-        (1 to 5).flatMap(i => Row(i) :: Row(i + 1) :: Nil)
-      )
+        (1 to 5).flatMap(i => Row(i) :: Row(i + 1) :: Nil))
 
       sql("DROP TABLE explodeTest")
       dropTempTable("data")
@@ -934,10 +932,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("test script transform for stdout") {
     val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
-    assert(100000 ===
-      sql(
-        "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
-        .count())
+    assert(
+      100000 ===
+        sql(
+          "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+          .count())
   }
 
   test("test script transform for stderr") {
@@ -969,8 +968,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 10)
-    )
+      WindowData(6, "c", 10))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -984,8 +982,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         ("b", 7, 15),
         ("b", 8, 15),
         ("c", 9, 19),
-        ("c", 10, 19)
-      ).map(i => Row(i._1, i._2, i._3))
+        ("c", 10, 19)).map(i => Row(i._1, i._2, i._3))
     )
 
     checkAnswer(
@@ -999,8 +996,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         ("b", 6, 15),
         ("b", 7, 15),
         ("c", 8, 19),
-        ("c", 9, 19)
-      ).map(i => Row(i._1, i._2, i._3))
+        ("c", 9, 19)).map(i => Row(i._1, i._2, i._3))
     )
 
     checkAnswer(
@@ -1014,8 +1010,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         ("b", 7, 7d / 15),
         ("b", 8, 8d / 15),
         ("c", 10, 10d / 19),
-        ("c", 9, 9d / 19)
-      ).map(i => Row(i._1, i._2, i._3))
+        ("c", 9, 9d / 19)).map(i => Row(i._1, i._2, i._3))
     )
 
     checkAnswer(
@@ -1029,8 +1024,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         ("b", 7, 7d / 13),
         ("b", 8, 8d / 13),
         ("c", 10, 10d / 17),
-        ("c", 9, 9d / 17)
-      ).map(i => Row(i._1, i._2, i._3))
+        ("c", 9, 9d / 17)).map(i => Row(i._1, i._2, i._3))
     )
   }
 
@@ -1041,8 +1035,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 10)
-    )
+      WindowData(6, "c", 10))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -1050,14 +1043,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |select area, rank() over (partition by area order by tmp.month) + tmp.tmp1 as c1
           |from (select month, area, product, 1 as tmp1 from windowData) tmp
         """.stripMargin),
-      Seq(
-        ("a", 2),
-        ("a", 3),
-        ("b", 2),
-        ("b", 3),
-        ("c", 2),
-        ("c", 3)
-      ).map(i => Row(i._1, i._2))
+      Seq(("a", 2), ("a", 3), ("b", 2), ("b", 3), ("c", 2), ("c", 3)).map(i =>
+        Row(i._1, i._2))
     )
   }
 
@@ -1068,8 +1055,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 10)
-    )
+      WindowData(6, "c", 10))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -1083,8 +1069,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (3, "b", 7, 51),
         (4, "b", 8, 51),
         (5, "c", 9, 51),
-        (6, "c", 10, 51)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (6, "c", 10, 51)).map(i => Row(i._1, i._2, i._3, i._4))
     )
 
     checkAnswer(
@@ -1099,8 +1084,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (3, "b", 7, 16),
         (4, "b", 8, 18),
         (5, "c", 9, 9),
-        (6, "c", 10, 10)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (6, "c", 10, 10)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 
@@ -1111,8 +1095,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 10)
-    )
+      WindowData(6, "c", 10))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     val e = intercept[AnalysisException] {
@@ -1131,8 +1114,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 10)
-    )
+      WindowData(6, "c", 10))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -1147,8 +1129,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (3, "b", 1, 7),
         (4, "b", 0, 8),
         (5, "c", 1, 5),
-        (6, "c", 0, 6)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (6, "c", 0, 6)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 
@@ -1191,8 +1172,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 11)
-    )
+      WindowData(6, "c", 11))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -1204,8 +1184,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (4, 8, 57),
         (5, 9, 57),
         (6, 11, 57),
-        (1, 10, 57)
-      ).map(i => Row(i._1, i._2, i._3))
+        (1, 10, 57)).map(i => Row(i._1, i._2, i._3))
     )
 
     checkAnswer(
@@ -1213,14 +1192,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |select area, rank() over (partition by area order by tmp.month) + tmp.tmp1 as c1
           |from (select month, area, product as p, 1 as tmp1 from windowData) tmp order by p
         """.stripMargin),
-      Seq(
-        ("a", 2),
-        ("b", 2),
-        ("b", 3),
-        ("c", 2),
-        ("d", 2),
-        ("c", 3)
-      ).map(i => Row(i._1, i._2))
+      Seq(("a", 2), ("b", 2), ("b", 3), ("c", 2), ("d", 2), ("c", 3)).map(i =>
+        Row(i._1, i._2))
     )
 
     checkAnswer(
@@ -1228,14 +1201,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         |select area, rank() over (partition by area order by month) as c1
         |from windowData group by product, area, month order by product, area
       """.stripMargin),
-      Seq(
-        ("a", 1),
-        ("b", 1),
-        ("b", 2),
-        ("c", 1),
-        ("d", 1),
-        ("c", 2)
-      ).map(i => Row(i._1, i._2))
+      Seq(("a", 1), ("b", 1), ("b", 2), ("c", 1), ("d", 1), ("c", 2)).map(i =>
+        Row(i._1, i._2))
     )
 
     checkAnswer(
@@ -1249,8 +1216,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         ("b", 0.4666666666666667),
         ("b", 0.5333333333333333),
         ("c", 0.45),
-        ("c", 0.55)
-      ).map(i => Row(i._1, i._2))
+        ("c", 0.55)).map(i => Row(i._1, i._2))
     )
   }
 
@@ -1263,8 +1229,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       WindowData(3, "b", 7),
       WindowData(4, "b", 8),
       WindowData(5, "c", 9),
-      WindowData(6, "c", 11)
-    )
+      WindowData(6, "c", 11))
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
@@ -1273,14 +1238,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |where product > 3 group by area, product
           |having avg(month) > 0 order by avg(month), product
         """.stripMargin),
-      Seq(
-        ("a", 51),
-        ("b", 51),
-        ("b", 51),
-        ("c", 51),
-        ("c", 51),
-        ("d", 51)
-      ).map(i => Row(i._1, i._2))
+      Seq(("a", 51), ("b", 51), ("b", 51), ("c", 51), ("c", 51), ("d", 51)).map(
+        i => Row(i._1, i._2))
     )
   }
 
@@ -1520,10 +1479,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       Row(CalendarInterval.fromString("interval 10 years 9 months")))
     checkAnswer(
       sql("select interval '20 15:40:32.99899999' day to second"),
-      Row(
-        CalendarInterval.fromString(
-          "interval 2 weeks 6 days 15 hours 40 minutes " +
-            "32 seconds 99 milliseconds 899 microseconds"))
+      Row(CalendarInterval.fromString(
+        "interval 2 weeks 6 days 15 hours 40 minutes " +
+          "32 seconds 99 milliseconds 899 microseconds"))
     )
     checkAnswer(
       sql("select interval '30' year"),
@@ -1542,9 +1500,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       Row(CalendarInterval.fromString("interval 1 hour 20 minutes")))
     checkAnswer(
       sql("select interval '299.889987299' second"),
-      Row(
-        CalendarInterval.fromString(
-          "interval 4 minutes 59 seconds 889 milliseconds 987 microseconds")))
+      Row(CalendarInterval.fromString(
+        "interval 4 minutes 59 seconds 889 milliseconds 987 microseconds")))
   }
 
   test("specifying database name for a temporary table is not allowed") {
@@ -1567,9 +1524,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           |)
         """.stripMargin)
       }.getMessage
-      assert(
-        message.contains(
-          "Specifying database name or other qualifiers are not allowed"))
+      assert(message.contains(
+        "Specifying database name or other qualifiers are not allowed"))
 
       // If you use backticks to quote the name of a temporary table having dot in it.
       sqlContext.sql(s"""
@@ -1591,14 +1547,14 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       |from (select '{"layer1": {"layer2": "text inside layer 2"}}' json) test
       |lateral view json_tuple(json, 'layer1') insideLayer1 as json
       |lateral view json_tuple(insideLayer1.json, 'layer2') insideLayer2 as json
-    """.stripMargin
-    )
+    """.stripMargin)
 
     checkAnswer(df, Row("text inside layer 2") :: Nil)
   }
 
-  test("SPARK-10310: " +
-    "script transformation using default input/output SerDe and record reader/writer") {
+  test(
+    "SPARK-10310: " +
+      "script transformation using default input/output SerDe and record reader/writer") {
     sqlContext
       .range(5)
       .selectExpr("id AS a", "id AS b")
@@ -1903,8 +1859,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (500, null, 1),
         (84, 1, 0),
         (105, 2, 0),
-        (107, 4, 0)
-      ).map(i => Row(i._1, i._2, i._3))
+        (107, 4, 0)).map(i => Row(i._1, i._2, i._3))
     )
   }
 
@@ -1926,8 +1881,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (1, 0, 100, 0),
         (1, 0, 140, 0),
         (1, 0, 145, 0),
-        (1, 0, 150, 0)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (1, 0, 150, 0)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 
@@ -1949,8 +1903,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (1, 0, 100, 0),
         (1, 0, 140, 0),
         (1, 0, 145, 0),
-        (1, 0, 150, 0)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (1, 0, 150, 0)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 
@@ -1964,8 +1917,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (500, null, 1),
         (84, 1, 0),
         (105, 2, 0),
-        (107, 4, 0)
-      ).map(i => Row(i._1, i._2, i._3))
+        (107, 4, 0)).map(i => Row(i._1, i._2, i._3))
     )
   }
 
@@ -1987,8 +1939,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (1, null, 12, 2),
         (1, null, 14, 2),
         (1, null, 15, 2),
-        (1, null, 22, 2)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (1, null, 22, 2)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 
@@ -2010,8 +1961,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         (1, null, 12, 2),
         (1, null, 14, 2),
         (1, null, 15, 2),
-        (1, null, 22, 2)
-      ).map(i => Row(i._1, i._2, i._3, i._4))
+        (1, null, 22, 2)).map(i => Row(i._1, i._2, i._3, i._4))
     )
   }
 

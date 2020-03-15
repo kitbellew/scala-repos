@@ -36,16 +36,14 @@ class FlowSupervisionSpec extends AkkaSpec {
     }
 
     "support resume " in {
-      val result = run(
-        failingMap.withAttributes(
-          supervisionStrategy(Supervision.resumingDecider)))
+      val result = run(failingMap.withAttributes(supervisionStrategy(
+        Supervision.resumingDecider)))
       result should be(List(1, 2, 4, 5, 1, 2, 4, 5))
     }
 
     "support restart " in {
-      val result = run(
-        failingMap.withAttributes(
-          supervisionStrategy(Supervision.restartingDecider)))
+      val result = run(failingMap.withAttributes(supervisionStrategy(
+        Supervision.restartingDecider)))
       result should be(List(1, 2, 4, 5, 1, 2, 4, 5))
     }
 

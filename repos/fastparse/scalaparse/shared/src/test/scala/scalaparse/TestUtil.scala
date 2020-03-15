@@ -21,14 +21,11 @@ object TestUtil {
         val parsedExpected = f.extra.traced.expected
         val parsedFound = input.slice(f.index, f.index + 10)
         val stack = f.extra.traced.trace
-        assert(
-          {
-            implicitly(input)
-            implicitly(stack)
-            parsedExpected.trim == expected.trim && parsedFound.startsWith(
-              found)
-          }
-        )
+        assert({
+          implicitly(input)
+          implicitly(stack)
+          parsedExpected.trim == expected.trim && parsedFound.startsWith(found)
+        })
       case s: Parsed.Success[_] => assert { implicitly(input); false }
     }
   }

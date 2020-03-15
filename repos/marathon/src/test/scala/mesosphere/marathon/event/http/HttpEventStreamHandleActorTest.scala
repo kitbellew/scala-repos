@@ -79,9 +79,7 @@ class HttpEventStreamHandleActorTest
       events ::= args(0).asInstanceOf[String]; latch.await()
     }
     handleActor = TestActorRef(
-      Props(
-        new HttpEventStreamHandleActor(handle, stream, 50)
-      ))
+      Props(new HttpEventStreamHandleActor(handle, stream, 50)))
     val attached = EventStreamAttached("remote")
     val detached = EventStreamDetached("remote")
     val subscribe = Subscribe("ip", "url")
@@ -112,8 +110,6 @@ class HttpEventStreamHandleActorTest
     handle = mock[HttpEventStreamHandle]
     stream = mock[EventStream]
     handleActor = TestActorRef(
-      Props(
-        new HttpEventStreamHandleActor(handle, stream, 1)
-      ))
+      Props(new HttpEventStreamHandleActor(handle, stream, 1)))
   }
 }

@@ -7,8 +7,7 @@ trait X {
       f"a\15c",
       f"a\42c",
       f"a\134c",
-      f"a\15151515c"
-    )
+      f"a\15151515c")
 }
 
 object Test extends App with X {

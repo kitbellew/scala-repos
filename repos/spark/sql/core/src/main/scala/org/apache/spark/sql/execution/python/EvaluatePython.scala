@@ -179,8 +179,7 @@ object EvaluatePython {
         if (array.length != fields.length) {
           throw new IllegalStateException(
             s"Input row doesn't have expected number of values required by the schema. " +
-              s"${fields.length} fields are required while ${array.length} values are provided."
-          )
+              s"${fields.length} fields are required while ${array.length} values are provided.")
         }
         new GenericInternalRow(
           array.zip(fields).map { case (e, f) => fromJava(e, f.dataType) })
@@ -205,9 +204,8 @@ object EvaluatePython {
 
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       out.write(Opcodes.GLOBAL)
-      out.write(
-        (module + "\n" + "_parse_datatype_json_string" + "\n")
-          .getBytes(StandardCharsets.UTF_8))
+      out.write((module + "\n" + "_parse_datatype_json_string" + "\n").getBytes(
+        StandardCharsets.UTF_8))
       val schema = obj.asInstanceOf[StructType]
       pickler.save(schema.json)
       out.write(Opcodes.TUPLE1)
@@ -232,8 +230,8 @@ object EvaluatePython {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
-          (module + "\n" + "_create_row_inbound_converter" + "\n")
-            .getBytes(StandardCharsets.UTF_8))
+          (module + "\n" + "_create_row_inbound_converter" + "\n").getBytes(
+            StandardCharsets.UTF_8))
       } else {
         // it will be memorized by Pickler to save some bytes
         pickler.save(this)

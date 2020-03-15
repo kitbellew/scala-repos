@@ -192,16 +192,14 @@ abstract class TreeGen {
 
   /** Computes stable type for a tree if possible */
   def stableTypeFor(tree: Tree): Type =
-    (
-      if (!treeInfo.admitsTypeSelection(tree)) NoType
-      else
-        tree match {
-          case This(_)         => ThisType(tree.symbol)
-          case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
-          case Select(qual, _) => singleType(qual.tpe, tree.symbol)
-          case _               => NoType
-        }
-    )
+    (if (!treeInfo.admitsTypeSelection(tree)) NoType
+     else
+       tree match {
+         case This(_)         => ThisType(tree.symbol)
+         case Ident(_)        => singleType(tree.symbol.owner.thisType, tree.symbol)
+         case Select(qual, _) => singleType(qual.tpe, tree.symbol)
+         case _               => NoType
+       })
 
   /** Builds a reference with stable type to given symbol */
   def mkAttributedStableRef(pre: Type, sym: Symbol): Tree =
@@ -217,8 +215,9 @@ abstract class TreeGen {
 
   def mkAttributedSelect(qual: Tree, sym: Symbol): RefTree = {
     // Tests involving the repl fail without the .isEmptyPackage condition.
-    if (qual.symbol != null && (qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage))
-      mkAttributedIdent(sym)
+    if (qual.symbol != null && (
+          qual.symbol.isEffectiveRoot || qual.symbol.isEmptyPackage
+        )) mkAttributedIdent(sym)
     else {
       // Have to recognize anytime a selection is made on a package
       // so it can be rewritten to foo.bar.`package`.name rather than
@@ -226,15 +225,14 @@ abstract class TreeGen {
       // TODO - factor out the common logic between this and
       // the Typers method "isInPackageObject", used in typedIdent.
       val qualsym =
-        (
-          if (qual.tpe ne null) qual.tpe.typeSymbol
-          else if (qual.symbol ne null) qual.symbol
-          else NoSymbol
-        )
-      val needsPackageQualifier = (
-        (sym ne null)
-          && qualsym.hasPackageFlag
-          && !(sym.isDefinedInPackage || sym.moduleClass.isDefinedInPackage) // SI-7817 work around strangeness in post-flatten `Symbol#owner`
+        (if (qual.tpe ne null) qual.tpe.typeSymbol
+         else if (qual.symbol ne null) qual.symbol
+         else NoSymbol)
+      val needsPackageQualifier = ((sym ne null)
+        && qualsym.hasPackageFlag
+        && !(
+          sym.isDefinedInPackage || sym.moduleClass.isDefinedInPackage
+        ) // SI-7817 work around strangeness in post-flatten `Symbol#owner`
       )
       val pkgQualifier =
         if (needsPackageQualifier) {
@@ -422,7 +420,9 @@ abstract class TreeGen {
     var vparamss1 = mmap(vparamss) { vd =>
       val param = atPos(vd.pos.makeTransparent) {
         val mods = Modifiers(
-          vd.mods.flags & (IMPLICIT | DEFAULTPARAM | BYNAMEPARAM) | PARAM | PARAMACCESSOR)
+          vd.mods.flags & (
+            IMPLICIT | DEFAULTPARAM | BYNAMEPARAM
+          ) | PARAM | PARAMACCESSOR)
         ValDef(
           mods withAnnotations vd.mods.annotations,
           vd.name,
@@ -453,15 +453,13 @@ abstract class TreeGen {
       if (constrMods.isTrait) {
         if (body forall treeInfo.isInterfaceMember) None
         else
-          Some(
-            atPos(wrappingPos(superPos, lvdefs))(
-              DefDef(
-                NoMods,
-                nme.MIXIN_CONSTRUCTOR,
-                Nil,
-                ListOfNil,
-                TypeTree(),
-                Block(lvdefs, Literal(Constant(()))))))
+          Some(atPos(wrappingPos(superPos, lvdefs))(DefDef(
+            NoMods,
+            nme.MIXIN_CONSTRUCTOR,
+            Nil,
+            ListOfNil,
+            TypeTree(),
+            Block(lvdefs, Literal(Constant(()))))))
       } else {
         // convert (implicit ... ) to ()(implicit ... ) if it's the only parameter section
         if (vparamss1.isEmpty || !vparamss1.head.isEmpty && vparamss1.head.head.mods.isImplicit)
@@ -477,14 +475,13 @@ abstract class TreeGen {
           atPos(
             wrappingPos(
               superPos,
-              lvdefs ::: vparamss1.flatten).makeTransparent)(
-            DefDef(
-              constrMods,
-              nme.CONSTRUCTOR,
-              List(),
-              vparamss1,
-              TypeTree(),
-              Block(lvdefs ::: List(superCall), Literal(Constant(()))))))
+              lvdefs ::: vparamss1.flatten).makeTransparent)(DefDef(
+            constrMods,
+            nme.CONSTRUCTOR,
+            List(),
+            vparamss1,
+            TypeTree(),
+            Block(lvdefs ::: List(superCall), Literal(Constant(()))))))
       }
     }
     constr foreach (ensureNonOverlapping(_, parents ::: gvdefs, focus = false))
@@ -903,14 +900,9 @@ abstract class TreeGen {
         val matchExpr = atPos((pat1.pos union rhs.pos).makeTransparent) {
           Match(
             rhs1,
-            List(
-              atPos(pat1.pos) {
-                CaseDef(
-                  pat1,
-                  EmptyTree,
-                  mkTuple(vars map (_._1) map Ident.apply))
-              }
-            ))
+            List(atPos(pat1.pos) {
+              CaseDef(pat1, EmptyTree, mkTuple(vars map (_._1) map Ident.apply))
+            }))
         }
         vars match {
           case List((vname, tpt, pos)) =>
@@ -954,8 +946,7 @@ abstract class TreeGen {
     else {
       val cases = List(
         CaseDef(pat.duplicate, EmptyTree, Literal(Constant(true))),
-        CaseDef(Ident(nme.WILDCARD), EmptyTree, Literal(Constant(false)))
-      )
+        CaseDef(Ident(nme.WILDCARD), EmptyTree, Literal(Constant(false))))
       val visitor = mkVisitor(
         cases,
         checkExhaustive = false,

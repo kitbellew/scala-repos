@@ -104,9 +104,9 @@ private[kafka] class ZookeeperConsumerConnector(
   }
 
   def createMessageStreams(
-      topicCountMap: java.util.Map[String, java.lang.Integer]): java.util.Map[
-    String,
-    java.util.List[KafkaStream[Array[Byte], Array[Byte]]]] =
+      topicCountMap: java.util.Map[String, java.lang.Integer])
+      : java.util.Map[String, java.util.List[KafkaStream[Array[Byte], Array[
+        Byte]]]] =
     createMessageStreams(
       topicCountMap,
       new DefaultDecoder(),

@@ -105,21 +105,20 @@ class AddScheduledQueryServiceHandler(
     M: Monad[Future],
     executor: ExecutionContext,
     addTimeout: Timeout)
-    extends CustomHttpService[
-      Future[JValue],
-      APIKey => Future[HttpResponse[JValue]]]
+    extends CustomHttpService[Future[JValue], APIKey => Future[
+      HttpResponse[JValue]]]
     with Logging {
-  val service: HttpRequest[Future[JValue]] => Validation[
-    NotServed,
-    APIKey => Future[HttpResponse[JValue]]] =
-    (request: HttpRequest[Future[JValue]]) =>
-      Success({ apiKey: APIKey =>
-        val permissionsFinder = new PermissionsFinder[Future](
-          apiKeyFinder,
-          accountFinder,
-          clock.instant)
-        request.content map { contentFuture =>
-          val responseVF = for {
+  val service
+      : HttpRequest[Future[JValue]] => Validation[NotServed, APIKey => Future[
+        HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) =>
+    Success({ apiKey: APIKey =>
+      val permissionsFinder = new PermissionsFinder[Future](
+        apiKeyFinder,
+        accountFinder,
+        clock.instant)
+      request.content map { contentFuture =>
+        val responseVF =
+          for {
             sreq <- EitherT {
               contentFuture map { jv =>
                 jv.validated[AddScheduledQueryRequest].disjunction leftMap {
@@ -147,18 +146,17 @@ class AddScheduledQueryServiceHandler(
               }
             }
             okToRead = okToReads.exists(_ == true)
-            okToWrite <- EitherT.right(
-              permissionsFinder.checkWriteAuthorities(
-                authorities,
-                apiKey,
-                sreq.sink,
-                clock.instant))
+            okToWrite <- EitherT.right(permissionsFinder.checkWriteAuthorities(
+              authorities,
+              apiKey,
+              sreq.sink,
+              clock.instant))
 
-            readError = (!okToRead).option(
-              nels("The API Key does not have permission to execute %s".format(
+            readError = (!okToRead).option(nels(
+              "The API Key does not have permission to execute %s".format(
                 sreq.source.path)))
-            writeError = (!okToWrite).option(
-              nels("The API Key does not have permission to write to %s as %s"
+            writeError = (!okToWrite).option(nels(
+              "The API Key does not have permission to write to %s as %s"
                 .format(sreq.sink.path, authorities.render)))
 
             taskId <- (readError |+| writeError) match {
@@ -183,12 +181,12 @@ class AddScheduledQueryServiceHandler(
             }
           } yield { HttpResponse(content = Some(taskId.serialize)) }
 
-          responseVF.fold(a => a, a => a)
-        } getOrElse {
-          Promise successful badRequest(
-            "Missing body for scheduled query submission")
-        }
-      })
+        responseVF.fold(a => a, a => a)
+      } getOrElse {
+        Promise successful badRequest(
+          "Missing body for scheduled query submission")
+      }
+    })
 
   val metadata = DescriptionMetadata("Add a new scheduled query")
 }
@@ -257,8 +255,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
             "nextRun" -> (nextTime.map(_.serialize) getOrElse {
               JString("never")
             }),
-            "history" -> reports.toList.serialize
-          )
+            "history" -> reports.toList.serialize)
 
           ok(Some(body))
 

@@ -27,17 +27,7 @@ object Test extends App {
 
   def createTempValDef(value: Tree, tpe: Type): (Option[Tree], Tree) = {
     val local = gensym("temp")
-    (
-      Some(
-        ValDef(
-          NoMods,
-          local,
-          TypeTree(tpe),
-          value
-        )
-      ),
-      Ident(local)
-    )
+    (Some(ValDef(NoMods, local, TypeTree(tpe), value)), Ident(local))
   }
 
   def tree_printf(format: Tree, params: Tree*) = {
@@ -56,14 +46,9 @@ object Test extends App {
       for ((_, ref) <- parsed)
         yield Apply(
           Select(
-            Select(
-              Ident(TermName("scala")),
-              TermName("Predef")
-            ),
-            TermName("print")
-          ),
-          List(ref)
-        ): Tree
+            Select(Ident(TermName("scala")), TermName("Predef")),
+            TermName("print")),
+          List(ref)): Tree
     Block((evals ++ prints).toList, Literal(Constant(())))
   }
 }

@@ -355,12 +355,11 @@ trait RestHelper extends LiftRules.DispatchPF {
               if (cvt.isDefinedAt((selType, resp, r)))
                 Full(cvt((selType, resp, r)))
               else
-                emptyToResp(
-                  ParamFailure(
-                    "Unabled to convert the message",
-                    Empty,
-                    Empty,
-                    500))
+                emptyToResp(ParamFailure(
+                  "Unabled to convert the message",
+                  Empty,
+                  Empty,
+                  500))
 
             case e: EmptyBox => emptyToResp(e)
           }
@@ -551,17 +550,14 @@ trait RestHelper extends LiftRules.DispatchPF {
     * @return Nothing
     */
   protected implicit def asyncToResponse[AsyncResolvableType, T](
-      asyncContainer: AsyncResolvableType
-  )(implicit
+      asyncContainer: AsyncResolvableType)(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, T],
-      responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
+      responseCreator: T => LiftResponse): () => Box[LiftResponse] =
     () => {
       RestContinuation.async(reply => {
         asyncResolveProvider.resolveAsync(
           asyncContainer,
-          { resolved => reply(responseCreator(resolved)) }
-        )
+          { resolved => reply(responseCreator(resolved)) })
       })
     }
 
@@ -573,19 +569,16 @@ trait RestHelper extends LiftRules.DispatchPF {
     * @return Nothing
     */
   protected implicit def asyncBoxToResponse[AsyncResolvableType, T](
-      asyncBoxContainer: AsyncResolvableType
-  )(implicit
+      asyncBoxContainer: AsyncResolvableType)(implicit
       asyncResolveProvider: CanResolveAsync[AsyncResolvableType, Box[T]],
-      responseCreator: T => LiftResponse
-  ): () => Box[LiftResponse] =
+      responseCreator: T => LiftResponse): () => Box[LiftResponse] =
     () => {
       RestContinuation.async(reply => {
         asyncResolveProvider.resolveAsync(
           asyncBoxContainer,
           { resolvedBox =>
             boxToResp(resolvedBox).apply() openOr NotFoundResponse()
-          }
-        )
+          })
       })
     }
 
@@ -605,14 +598,13 @@ trait RestHelper extends LiftRules.DispatchPF {
   protected def emptyToResp(eb: EmptyBox): Box[LiftResponse] =
     eb match {
       case ParamFailure(msg, _, _, code: Int) =>
-        Full(
-          InMemoryResponse(
-            msg.getBytes("UTF-8"),
-            ("Content-Type" ->
-              "text/plain; charset=utf-8") ::
-              Nil,
+        Full(InMemoryResponse(
+          msg.getBytes("UTF-8"),
+          ("Content-Type" ->
+            "text/plain; charset=utf-8") ::
             Nil,
-            code))
+          Nil,
+          code))
 
       case Failure(msg, _, _) =>
         Full(NotFoundResponse(msg))
@@ -642,14 +634,13 @@ trait RestHelper extends LiftRules.DispatchPF {
     () => {
       in() match {
         case ParamFailure(msg, _, _, code: Int) =>
-          Full(
-            InMemoryResponse(
-              msg.getBytes("UTF-8"),
-              ("Content-Type" ->
-                "text/plain; charset=utf-8") ::
-                Nil,
+          Full(InMemoryResponse(
+            msg.getBytes("UTF-8"),
+            ("Content-Type" ->
+              "text/plain; charset=utf-8") ::
               Nil,
-              code))
+            Nil,
+            code))
 
         case Failure(msg, _, _) =>
           Full(NotFoundResponse(msg))

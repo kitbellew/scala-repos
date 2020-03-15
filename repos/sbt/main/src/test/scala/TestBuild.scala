@@ -135,8 +135,7 @@ object TestBuild {
       inheritProject,
       inheritConfig,
       inheritTask,
-      (ref, mp) => Nil
-    )
+      (ref, mp) => Nil)
     lazy val allFullScopes: Seq[Scope] = for {
       (ref, p) <- (Global, root.root) +: allProjects.map {
         case (ref, p) => (Select(ref), p)
@@ -191,10 +190,9 @@ object TestBuild {
       project <- oneOf(build.projects)
       cAxis <- oneOrGlobal(project.configurations map toConfigKey)
       tAxis <- oneOrGlobal(env.tasks map getKey)
-      pAxis <- orGlobal(
-        frequency(
-          (1, BuildRef(build.uri)),
-          (3, ProjectRef(build.uri, project.id))))
+      pAxis <- orGlobal(frequency(
+        (1, BuildRef(build.uri)),
+        (3, ProjectRef(build.uri, project.id))))
     } yield Scope(pAxis, cAxis, tAxis, Global)
 
   def orGlobal[T](gen: Gen[T]): Gen[ScopeAxis[T]] =

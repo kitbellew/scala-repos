@@ -124,10 +124,9 @@ class DefaultSource extends FileFormat with DataSourceRegister {
       sqlContext: SQLContext,
       options: Map[String, String],
       files: Seq[FileStatus]): Option[StructType] = {
-    Some(
-      StructType(
-        StructField("label", DoubleType, nullable = false) ::
-          StructField("features", new VectorUDT(), nullable = false) :: Nil))
+    Some(StructType(
+      StructField("label", DoubleType, nullable = false) ::
+        StructField("features", new VectorUDT(), nullable = false) :: Nil))
   }
 
   override def prepareWrite(

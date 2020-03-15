@@ -27,8 +27,7 @@ class StopOnFirstMatchingOfferMatcherTest
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
         offerMatcher(someMatch),
-        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId))
-      )
+        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId)))
     }
 
     When("matching")
@@ -43,8 +42,7 @@ class StopOnFirstMatchingOfferMatcherTest
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
         offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(offer.getId)),
-        offerMatcher(someMatch)
-      )
+        offerMatcher(someMatch))
     }
 
     When("matching")
@@ -58,12 +56,12 @@ class StopOnFirstMatchingOfferMatcherTest
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true)),
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false))
+        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
+          offer.getId,
+          resendThisOffer = true)),
+        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
+          offer.getId,
+          resendThisOffer = false))
       )
     }
 
@@ -79,12 +77,12 @@ class StopOnFirstMatchingOfferMatcherTest
     Given("a sequence of matchers, the second matching")
     val f = new Fixture {
       override lazy val matchers: Seq[OfferMatcher] = Seq(
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = false)),
-        offerMatcher(
-          OfferMatcher.MatchedTaskOps
-            .noMatch(offer.getId, resendThisOffer = true))
+        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
+          offer.getId,
+          resendThisOffer = false)),
+        offerMatcher(OfferMatcher.MatchedTaskOps.noMatch(
+          offer.getId,
+          resendThisOffer = true))
       )
     }
 
@@ -106,8 +104,7 @@ class StopOnFirstMatchingOfferMatcherTest
       MatchedTaskOps(
         offer.getId,
         Seq(mock[TaskOpWithSource]),
-        resendThisOffer = true
-      )
+        resendThisOffer = true)
     }
 
     def offerMatcher(matching: OfferMatcher.MatchedTaskOps): OfferMatcher =

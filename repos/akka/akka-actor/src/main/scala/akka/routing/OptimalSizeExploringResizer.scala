@@ -175,8 +175,9 @@ case class DefaultOptimalSizeExploringResizer(
   checkParamAsPositiveNum(upperBound, "upperBound")
   if (upperBound < lowerBound)
     throw new IllegalArgumentException(
-      "upperBound must be >= lowerBound, was: [%s] < [%s]"
-        .format(upperBound, lowerBound))
+      "upperBound must be >= lowerBound, was: [%s] < [%s]".format(
+        upperBound,
+        lowerBound))
 
   checkParamLowerBound(
     numOfAdjacentSizesToConsiderDuringOptimization,
@@ -233,12 +234,11 @@ case class DefaultOptimalSizeExploringResizer(
     val newUnderutilizationStreak =
       if (fullyUtilized) None
       else
-        Some(
-          UnderUtilizationStreak(
-            record.underutilizationStreak.fold(now)(_.start),
-            Math.max(
-              record.underutilizationStreak.fold(0)(_.highestUtilization),
-              utilized)))
+        Some(UnderUtilizationStreak(
+          record.underutilizationStreak.fold(now)(_.start),
+          Math.max(
+            record.underutilizationStreak.fold(0)(_.highestUtilization),
+            utilized)))
 
     val newPerformanceLog: PerformanceLog =
       if (fullyUtilized && record.underutilizationStreak.isEmpty && record.checkTime > 0) {
@@ -251,7 +251,9 @@ case class DefaultOptimalSizeExploringResizer(
           val last: Duration = duration / totalProcessed
           //exponentially decrease the weight of old last metrics data
           val toUpdate = performanceLog.get(currentSize).fold(last) { oldSpeed ⇒
-            (oldSpeed * (1.0 - weightOfLatestMetric)) + (last * weightOfLatestMetric)
+            (oldSpeed * (1.0 - weightOfLatestMetric)) + (
+              last * weightOfLatestMetric
+            )
           }
           performanceLog + (currentSize → toUpdate)
         } else performanceLog
@@ -271,10 +273,11 @@ case class DefaultOptimalSizeExploringResizer(
     val currentSize = currentRoutees.length
     val now = LocalDateTime.now
     val proposedChange =
-      if (record.underutilizationStreak.fold(false)(_.start.isBefore(
-            now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
-        val downsizeTo =
-          (record.underutilizationStreak.get.highestUtilization * downsizeRatio).toInt
+      if (record.underutilizationStreak.fold(false)(_.start.isBefore(now.minus(
+            downsizeAfterUnderutilizedFor.asJava)))) {
+        val downsizeTo = (
+          record.underutilizationStreak.get.highestUtilization * downsizeRatio
+        ).toInt
         Math.min(downsizeTo - currentSize, 0)
       } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {
         0

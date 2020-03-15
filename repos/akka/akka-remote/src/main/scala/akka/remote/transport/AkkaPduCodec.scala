@@ -227,32 +227,28 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     val ackOption =
       if (ackAndEnvelope.hasAck) {
         import scala.collection.JavaConverters._
-        Some(
-          Ack(
-            SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
-            ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
+        Some(Ack(
+          SeqNo(ackAndEnvelope.getAck.getCumulativeAck),
+          ackAndEnvelope.getAck.getNacksList.asScala.map(SeqNo(_)).toSet))
       } else None
 
     val messageOption =
       if (ackAndEnvelope.hasEnvelope) {
         val msgPdu = ackAndEnvelope.getEnvelope
-        Some(
-          Message(
-            recipient = provider.resolveActorRefWithLocalAddress(
-              msgPdu.getRecipient.getPath,
-              localAddress),
-            recipientAddress = AddressFromURIString(
-              msgPdu.getRecipient.getPath),
-            serializedMessage = msgPdu.getMessage,
-            senderOption =
-              if (msgPdu.hasSender)
-                Some(
-                  provider.resolveActorRefWithLocalAddress(
-                    msgPdu.getSender.getPath,
-                    localAddress))
-              else None,
-            seqOption = if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq)) else None
-          ))
+        Some(Message(
+          recipient = provider.resolveActorRefWithLocalAddress(
+            msgPdu.getRecipient.getPath,
+            localAddress),
+          recipientAddress = AddressFromURIString(msgPdu.getRecipient.getPath),
+          serializedMessage = msgPdu.getMessage,
+          senderOption =
+            if (msgPdu.hasSender)
+              Some(provider.resolveActorRefWithLocalAddress(
+                msgPdu.getSender.getPath,
+                localAddress))
+            else None,
+          seqOption = if (msgPdu.hasSeq) Some(SeqNo(msgPdu.getSeq)) else None
+        ))
       } else None
 
     (ackOption, messageOption)
@@ -265,11 +261,10 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
         val handshakeInfo = controlPdu.getHandshakeInfo
         val cookie =
           if (handshakeInfo.hasCookie) Some(handshakeInfo.getCookie) else None
-        Associate(
-          HandshakeInfo(
-            decodeAddress(handshakeInfo.getOrigin),
-            handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
-            cookie))
+        Associate(HandshakeInfo(
+          decodeAddress(handshakeInfo.getOrigin),
+          handshakeInfo.getUid.toInt, // 64 bits are allocated in the wire formats, but we use only 32 for now
+          cookie))
       case CommandType.DISASSOCIATE ⇒ Disassociate(AssociationHandle.Unknown)
       case CommandType.DISASSOCIATE_SHUTTING_DOWN ⇒
         Disassociate(AssociationHandle.Shutdown)

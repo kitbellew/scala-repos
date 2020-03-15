@@ -54,8 +54,7 @@ private[niocharset] object UTF_8
     // 11110uuu
     4, 4, 4, 4, 4, 4, 4, 4,
     // > 11110111
-    -1, -1, -1, -1, -1, -1, -1, -1
-  )
+    -1, -1, -1, -1, -1, -1, -1, -1)
 
   @inline
   private class DecodedMultiByte(

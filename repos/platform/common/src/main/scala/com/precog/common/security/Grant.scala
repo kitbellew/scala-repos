@@ -85,9 +85,10 @@ case class Grant(
 object Grant extends Logging {
   implicit val grantIso = Iso.hlist(Grant.apply _, Grant.unapply _)
 
-  val schemaV1 =
-    "grantId" :: "name" :: "description" :: ("issuerKey" ||| "(undefined)") :: "parentIds" :: "permissions" :: ("createdAt" ||| new Instant(
-      0L)) :: "expirationDate" :: HNil
+  val schemaV1 = "grantId" :: "name" :: "description" :: (
+    "issuerKey" ||| "(undefined)"
+  ) :: "parentIds" :: "permissions" :: ("createdAt" ||| new Instant(
+    0L)) :: "expirationDate" :: HNil
 
   val decomposerV1: Decomposer[Grant] = decomposerV[Grant](
     schemaV1,

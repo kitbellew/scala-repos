@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger
 final class MasterRunner(
     args: Array[String],
     remoteArgs: Array[String],
-    testClassLoader: ClassLoader
-) extends BaseRunner(args, remoteArgs, testClassLoader) {
+    testClassLoader: ClassLoader)
+    extends BaseRunner(args, remoteArgs, testClassLoader) {
 
   /** Number of tasks registered in the whole system */
   private[this] val registeredCount = new AtomicInteger(0)

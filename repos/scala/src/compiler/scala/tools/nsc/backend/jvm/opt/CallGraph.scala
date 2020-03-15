@@ -53,9 +53,9 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     * optimizer: finding callsites to re-write requires running a producers-consumers analysis on
     * the method. Here the closure instantiations are already grouped by method.
     */
-  val closureInstantiations: mutable.Map[
-    MethodNode,
-    Map[InvokeDynamicInsnNode, ClosureInstantiation]] = recordPerRunCache(
+  val closureInstantiations: mutable.Map[MethodNode, Map[
+    InvokeDynamicInsnNode,
+    ClosureInstantiation]] = recordPerRunCache(
     concurrent.TrieMap.empty withDefaultValue Map.empty)
 
   def removeCallsite(
@@ -89,8 +89,9 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
   def addClosureInstantiation(closureInit: ClosureInstantiation) = {
     val methodClosureInits = closureInstantiations(closureInit.ownerMethod)
-    closureInstantiations(closureInit.ownerMethod) =
-      methodClosureInits + (closureInit.lambdaMetaFactoryCall.indy -> closureInit)
+    closureInstantiations(closureInit.ownerMethod) = methodClosureInits + (
+      closureInit.lambdaMetaFactoryCall.indy -> closureInit
+    )
   }
 
   def addClass(classNode: ClassNode): Unit = {
@@ -116,11 +117,10 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       val analyzer = {
         if (compilerSettings.YoptNullnessTracking && AsmAnalyzer
               .sizeOKForNullness(methodNode)) {
-          Some(
-            new AsmAnalyzer(
-              methodNode,
-              definingClass.internalName,
-              new NullnessAnalyzer(btypes)))
+          Some(new AsmAnalyzer(
+            methodNode,
+            definingClass.internalName,
+            new NullnessAnalyzer(btypes)))
         } else if (AsmAnalyzer.sizeOKForBasicValue(methodNode)) {
           Some(new AsmAnalyzer(methodNode, definingClass.internalName))
         } else None
@@ -382,8 +382,8 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
           val isRewritableTraitCall = false
 
           val warning =
-            calleeDeclarationClassBType.info.orThrow.inlineInfo.warning.map(
-              MethodInlineInfoIncomplete(
+            calleeDeclarationClassBType.info.orThrow.inlineInfo.warning
+              .map(MethodInlineInfoIncomplete(
                 calleeDeclarationClassBType.internalName,
                 calleeMethodNode.name,
                 calleeMethodNode.desc,
@@ -637,15 +637,14 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
                   paramTypes: _*)
               }
 
-              val isIndyLambda = (
-                Type.getType(
-                  implMethod.getDesc) == expectedImplMethodType // (1)
-                  && (isStatic || implMethod.getOwner == indyParamTypes(
-                    0).getInternalName) // (2)
-                  && samMethodType.getArgumentTypes.corresponds(
-                    instantiatedMethodArgTypes)((samArgType, instArgType) =>
-                    samArgType == instArgType || isReference(
-                      samArgType) && isReference(instArgType)) // (3)
+              val isIndyLambda = (Type.getType(
+                implMethod.getDesc) == expectedImplMethodType // (1)
+                && (isStatic || implMethod.getOwner == indyParamTypes(
+                  0).getInternalName) // (2)
+                && samMethodType.getArgumentTypes.corresponds(
+                  instantiatedMethodArgTypes)((samArgType, instArgType) =>
+                  samArgType == instArgType || isReference(
+                    samArgType) && isReference(instArgType)) // (3)
               )
 
               if (isIndyLambda)

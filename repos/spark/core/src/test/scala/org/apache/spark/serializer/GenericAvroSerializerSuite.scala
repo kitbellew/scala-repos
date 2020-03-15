@@ -83,8 +83,7 @@ class GenericAvroSerializerSuite extends SparkFunSuite with SharedSparkContext {
       ByteBuffer.wrap(compressedSchema))
 
     assert(compressedSchema.eq(genericSer.compress(schema)))
-    assert(
-      decompressedSchema.eq(
-        genericSer.decompress(ByteBuffer.wrap(compressedSchema))))
+    assert(decompressedSchema.eq(
+      genericSer.decompress(ByteBuffer.wrap(compressedSchema))))
   }
 }

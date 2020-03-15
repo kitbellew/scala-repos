@@ -134,22 +134,19 @@ object Streams {
 
           def readText(a: Key, sid: String = default): BufferedReader =
             make(a, sid)(f =>
-              new BufferedReader(
-                new InputStreamReader(
-                  new FileInputStream(f),
-                  IO.defaultCharset)))
+              new BufferedReader(new InputStreamReader(
+                new FileInputStream(f),
+                IO.defaultCharset)))
 
           def readBinary(a: Key, sid: String = default): BufferedInputStream =
             make(a, sid)(f => new BufferedInputStream(new FileInputStream(f)))
 
           def text(sid: String = default): PrintWriter =
             make(a, sid)(f =>
-              new PrintWriter(
-                new DeferredWriter(
-                  new BufferedWriter(
-                    new OutputStreamWriter(
-                      new FileOutputStream(f),
-                      IO.defaultCharset)))))
+              new PrintWriter(new DeferredWriter(new BufferedWriter(
+                new OutputStreamWriter(
+                  new FileOutputStream(f),
+                  IO.defaultCharset)))))
 
           def binary(sid: String = default): BufferedOutputStream =
             make(a, sid)(f => new BufferedOutputStream(new FileOutputStream(f)))

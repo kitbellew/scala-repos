@@ -51,10 +51,9 @@ private[regression] object GLMRegressionModel {
       import sqlContext.implicits._
 
       // Create JSON metadata.
-      val metadata = compact(
-        render(
-          ("class" -> modelClass) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> weights.size)))
+      val metadata = compact(render(
+        ("class" -> modelClass) ~ ("version" -> thisFormatVersion) ~
+          ("numFeatures" -> weights.size)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.

@@ -56,12 +56,11 @@ class EmptyLabelsAndLineNumbersTest {
 
   @Test
   def removeEmptyLabels(): Unit = {
-    val handler = List(
-      ExceptionHandler(
-        Label(4),
-        Label(5),
-        Label(6),
-        Some("java/lang/Throwable")))
+    val handler = List(ExceptionHandler(
+      Label(4),
+      Label(5),
+      Label(6),
+      Some("java/lang/Throwable")))
     def ops(
         target1: Int,
         target2: Int,

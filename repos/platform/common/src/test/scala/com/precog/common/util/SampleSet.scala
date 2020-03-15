@@ -211,15 +211,12 @@ object AdSamples {
       cpm <- chooseNum(1, 100)
       ageRange <- gaussianIndex(ageRangeArrays.size).map { ageRangeArrays(_) }
     } yield {
-      JObject(
-        Map(
-          "gender" -> JString(gender),
-          "platform" -> JString(plat),
-          "campaign" -> JString(camp),
-          "cpm" -> JNum(cpm),
-          "ageRange" -> ageRange
-        )
-      )
+      JObject(Map(
+        "gender" -> JString(gender),
+        "platform" -> JString(plat),
+        "campaign" -> JString(camp),
+        "cpm" -> JNum(cpm),
+        "ageRange" -> ageRange))
     }
 
   def adOrganizationSample =
@@ -229,14 +226,11 @@ object AdSamples {
       cat <- oneOf(category)
       camp <- gaussianIndex(campaigns.size).map { campaigns(_) }
     } yield {
-      JObject(
-        Map(
-          "employees" -> JString(emps),
-          "revenue" -> JString(rev),
-          "category" -> JString(cat),
-          "campaign" -> JString(camp)
-        )
-      )
+      JObject(Map(
+        "employees" -> JString(emps),
+        "revenue" -> JString(rev),
+        "category" -> JString(cat),
+        "campaign" -> JString(camp)))
     }
 
   def interactionSample =
@@ -247,15 +241,12 @@ object AdSamples {
       pid <- oneOf(pageId)
       uid <- oneOf(userId)
     } yield {
-      JObject(
-        Map(
-          "time" -> JNum(time),
-          "timeZone" -> JString(tz),
-          "timeString" -> JString(toISO8601(time, tz)),
-          "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
-      )
+      JObject(Map(
+        "time" -> JNum(time),
+        "timeZone" -> JString(tz),
+        "timeString" -> JString(toISO8601(time, tz)),
+        "pageId" -> JString(pid),
+        "userId" -> JString(uid)))
     }
 
   def interactionSample2 =
@@ -265,14 +256,11 @@ object AdSamples {
       pid <- oneOf(pageId)
       uid <- oneOf(userId)
     } yield {
-      JObject(
-        Map(
-          "time" -> JNum(time),
-          "timeZone" -> JString(tz),
-          "pageId" -> JString(pid),
-          "userId" -> JString(uid)
-        )
-      )
+      JObject(Map(
+        "time" -> JNum(time),
+        "timeZone" -> JString(tz),
+        "pageId" -> JString(pid),
+        "userId" -> JString(uid)))
     }
 
   def eventsSample =
@@ -281,13 +269,10 @@ object AdSamples {
       platform <- oneOf(platforms)
       eventName <- oneOf(eventNames)
     } yield {
-      JObject(
-        Map(
-          "time" -> JString(time),
-          "platform" -> JString(platform),
-          "eventName" -> JString(eventName)
-        )
-      )
+      JObject(Map(
+        "time" -> JString(time),
+        "platform" -> JString(platform),
+        "eventName" -> JString(eventName)))
     }
 
   def usersSample =
@@ -296,13 +281,10 @@ object AdSamples {
       income <- chooseNum(10, 250).map { _ * 1000 }
       state <- oneOf(states)
     } yield {
-      JObject(
-        Map(
-          "age" -> JNum(age),
-          "income" -> JNum(income),
-          "location" -> JObject(Map("state" -> JString(state)))
-        )
-      )
+      JObject(Map(
+        "age" -> JNum(age),
+        "income" -> JNum(income),
+        "location" -> JObject(Map("state" -> JString(state)))))
     }
 
   def ordersSample =
@@ -314,16 +296,13 @@ object AdSamples {
       handling <- oneOf(handlingCharges)
       val total = subTotal * taxRate + shipping + handling
     } yield {
-      JObject(
-        Map(
-          "userId" -> JNum(userId),
-          "total" -> JNum(total),
-          "taxRate" -> JNum(taxRate),
-          "subTotal" -> JNum(subTotal),
-          "shipping" -> JNum(shipping),
-          "handling" -> JNum(handling)
-        )
-      )
+      JObject(Map(
+        "userId" -> JNum(userId),
+        "total" -> JNum(total),
+        "taxRate" -> JNum(taxRate),
+        "subTotal" -> JNum(subTotal),
+        "shipping" -> JNum(shipping),
+        "handling" -> JNum(handling)))
     }
 
   def recipientsSample =
@@ -337,11 +316,10 @@ object AdSamples {
       recipients <- recipientsSample
       amount <- chooseNum(500, 5000).map(_.toDouble / 100)
     } yield {
-      JObject(
-        Map(
-          "date" -> JNum(date),
-          "recipients" -> recipients,
-          "amount" -> JNum(amount)))
+      JObject(Map(
+        "date" -> JNum(date),
+        "recipients" -> recipients,
+        "amount" -> JNum(amount)))
     }
 
   def pageViewsSample =

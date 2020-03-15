@@ -72,9 +72,8 @@ object Crypto {
     Play.privateMaybeApplication.fold {
       val config = new CryptoConfigParser(
         Environment.simple(),
-        Configuration.from(
-          Map("play.crypto.aes.transformation" -> "AES/CTR/NoPadding"))
-      ).get
+        Configuration.from(Map(
+          "play.crypto.aes.transformation" -> "AES/CTR/NoPadding"))).get
       val cookieSigner = new CookieSignerProvider(config).get
       val tokenSigner = new CSRFTokenSignerProvider(cookieSigner).get
       val crypter = new AESCTRCrypter(config)

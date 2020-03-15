@@ -168,11 +168,9 @@ class HistoryServerSuite
             subStrings.mkString(",")
           } else { jsonOrg }
 
-        val exp = IOUtils.toString(
-          new FileInputStream(
-            new File(
-              expRoot,
-              HistoryServerSuite.sanitizePath(name) + "_expectation.json")))
+        val exp = IOUtils.toString(new FileInputStream(new File(
+          expRoot,
+          HistoryServerSuite.sanitizePath(name) + "_expectation.json")))
         // compare the ASTs so formatting differences don't cause failures
         import org.json4s._
         import org.json4s.jackson.JsonMethods._
@@ -251,8 +249,8 @@ class HistoryServerSuite
     val badQuantiles = getContentAndCode(
       "applications/local-1430917381534/stages/0/0/taskSummary?quantiles=foo,0.1")
     badQuantiles._1 should be(HttpServletResponse.SC_BAD_REQUEST)
-    badQuantiles._3 should be(
-      Some("Bad value for parameter \"quantiles\".  Expected a double, " +
+    badQuantiles._3 should be(Some(
+      "Bad value for parameter \"quantiles\".  Expected a double, " +
         "got \"foo\""))
 
     getContentAndCode("foobar")._1 should be(HttpServletResponse.SC_NOT_FOUND)
@@ -489,8 +487,8 @@ class HistoryServerSuite
   def getContentAndCode(
       path: String,
       port: Int = port): (Int, Option[String], Option[String]) = {
-    HistoryServerSuite.getContentAndCode(
-      new URL(s"http://localhost:$port/api/v1/$path"))
+    HistoryServerSuite.getContentAndCode(new URL(
+      s"http://localhost:$port/api/v1/$path"))
   }
 
   def getUrl(path: String): String = {

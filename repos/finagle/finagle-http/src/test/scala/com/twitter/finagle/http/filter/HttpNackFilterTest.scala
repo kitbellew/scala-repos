@@ -40,8 +40,8 @@ class HttpNackFilterTest extends FunSuite {
       val client = Http.client
         .configured(Stats(clientSr))
         .newService(
-          Name.bound(
-            Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+          Name.bound(Address(
+            server.boundAddress.asInstanceOf[InetSocketAddress])),
           "http")
 
       assert(Await.result(client(request)).status == Status.Ok)
@@ -92,8 +92,8 @@ class HttpNackFilterTest extends FunSuite {
       val client = Http.client
         .configured(Stats(clientSr))
         .newService(
-          Name.bound(
-            Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+          Name.bound(Address(
+            server.boundAddress.asInstanceOf[InetSocketAddress])),
           "http")
 
       assert(Await.result(client(request)).status == Status.Ok)
@@ -116,8 +116,8 @@ class HttpNackFilterTest extends FunSuite {
       val client = Http.client
         .configured(Stats(clientSr))
         .newService(
-          Name.bound(
-            Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+          Name.bound(Address(
+            server.boundAddress.asInstanceOf[InetSocketAddress])),
           "http-client")
 
       val rep = Await.result(client(request))
@@ -144,8 +144,8 @@ class HttpNackFilterTest extends FunSuite {
       val client = Http.client
         .configured(Stats(clientSr))
         .newService(
-          Name.bound(
-            Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+          Name.bound(Address(
+            server.boundAddress.asInstanceOf[InetSocketAddress])),
           "http-client")
 
       val rep = Await.result(client(request))

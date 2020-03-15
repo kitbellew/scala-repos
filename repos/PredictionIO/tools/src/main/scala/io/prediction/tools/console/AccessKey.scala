@@ -25,11 +25,10 @@ object AccessKey extends Logging {
     val apps = storage.Storage.getMetaDataApps
     apps.getByName(ca.app.name) map { app =>
       val accessKeys = storage.Storage.getMetaDataAccessKeys
-      val accessKey = accessKeys.insert(
-        storage.AccessKey(
-          key = ca.accessKey.accessKey,
-          appid = app.id,
-          events = ca.accessKey.events))
+      val accessKey = accessKeys.insert(storage.AccessKey(
+        key = ca.accessKey.accessKey,
+        appid = app.id,
+        events = ca.accessKey.events))
       accessKey map { k =>
         info(s"Created new access key: ${k}")
         0

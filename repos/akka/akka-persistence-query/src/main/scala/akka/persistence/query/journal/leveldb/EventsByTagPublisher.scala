@@ -30,22 +30,20 @@ private[akka] object EventsByTagPublisher {
       writeJournalPluginId: String): Props = {
     refreshInterval match {
       case Some(interval) ⇒
-        Props(
-          new LiveEventsByTagPublisher(
-            tag,
-            fromOffset,
-            toOffset,
-            interval,
-            maxBufSize,
-            writeJournalPluginId))
+        Props(new LiveEventsByTagPublisher(
+          tag,
+          fromOffset,
+          toOffset,
+          interval,
+          maxBufSize,
+          writeJournalPluginId))
       case None ⇒
-        Props(
-          new CurrentEventsByTagPublisher(
-            tag,
-            fromOffset,
-            toOffset,
-            maxBufSize,
-            writeJournalPluginId))
+        Props(new CurrentEventsByTagPublisher(
+          tag,
+          fromOffset,
+          toOffset,
+          maxBufSize,
+          writeJournalPluginId))
     }
   }
 

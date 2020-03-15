@@ -92,8 +92,10 @@ trait Config extends Serializable {
       try {
         Success(
           // Make sure we are using the class-loader for the current thread
-          Class
-            .forName(str, true, Thread.currentThread().getContextClassLoader))
+          Class.forName(
+            str,
+            true,
+            Thread.currentThread().getContextClassLoader))
       } catch { case err: Throwable => Failure(err) }
     }
 
@@ -174,9 +176,8 @@ trait Config extends Serializable {
    * Left((classOf[serialization.KryoHadoop], myInstance))
    */
   def setSerialization(
-      kryo: Either[
-        (Class[_ <: KryoInstantiator], KryoInstantiator),
-        Class[_ <: KryoInstantiator]],
+      kryo: Either[(Class[_ <: KryoInstantiator], KryoInstantiator), Class[
+        _ <: KryoInstantiator]],
       userHadoop: Seq[Class[_ <: HSerialization[_]]] = Nil): Config = {
 
     // Hadoop and Cascading should come first
@@ -507,10 +508,9 @@ object Config {
         // Again, the _ causes problem with Try
         try {
           val cls = classOf[Class[_]].cast(clazz)
-          Success(
-            (
-              nonStrings - AppProps.APP_JAR_CLASS,
-              initConf.setCascadingAppJar(cls)))
+          Success((
+            nonStrings - AppProps.APP_JAR_CLASS,
+            initConf.setCascadingAppJar(cls)))
         } catch { case err: Throwable => Failure(err) }
       case None => Success((nonStrings, initConf))
     }).flatMap {

@@ -56,9 +56,8 @@ class QueryDeleteHandler[A](jobManager: JobManager[Future], clock: Clock)(
             HttpResponse[A](Accepted)
         }
       } getOrElse {
-        Future(
-          HttpResponse[A](
-            HttpStatus(BadRequest, "Missing required 'jobId parameter.")))
+        Future(HttpResponse[A](
+          HttpStatus(BadRequest, "Missing required 'jobId parameter.")))
       }
     })
   }

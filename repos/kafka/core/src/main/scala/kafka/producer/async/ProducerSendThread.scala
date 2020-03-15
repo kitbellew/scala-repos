@@ -70,10 +70,9 @@ class ProducerSendThread[K, V](
 
     // drain the queue until you get a shutdown command
     Iterator
-      .continually(
-        queue.poll(
-          scala.math.max(0, (lastSend + queueTime) - SystemTime.milliseconds),
-          TimeUnit.MILLISECONDS))
+      .continually(queue.poll(
+        scala.math.max(0, (lastSend + queueTime) - SystemTime.milliseconds),
+        TimeUnit.MILLISECONDS))
       .takeWhile(item => if (item != null) item ne shutdownCommand else true)
       .foreach { currentQueueItem =>
         val elapsed = (SystemTime.milliseconds - lastSend)

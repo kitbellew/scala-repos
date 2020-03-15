@@ -168,8 +168,11 @@ private[spark] class PythonRunner(
               val finish = finishTime - initTime
               val total = finishTime - startTime
               logInfo(
-                "Times: total = %s, boot = %s, init = %s, finish = %s"
-                  .format(total, boot, init, finish))
+                "Times: total = %s, boot = %s, init = %s, finish = %s".format(
+                  total,
+                  boot,
+                  init,
+                  finish))
               val memoryBytesSpilled = stream.readLong()
               val diskBytesSpilled = stream.readLong()
               context.taskMetrics.incMemoryBytesSpilled(memoryBytesSpilled)
@@ -515,8 +518,8 @@ private[spark] object PythonRDD extends Logging {
     val kc = Utils.classForName(keyClass).asInstanceOf[Class[K]]
     val vc = Utils.classForName(valueClass).asInstanceOf[Class[V]]
     val rdd = sc.sc.sequenceFile[K, V](path, kc, vc, minSplits)
-    val confBroadcasted = sc.sc.broadcast(
-      new SerializableConfiguration(sc.hadoopConfiguration()))
+    val confBroadcasted = sc.sc.broadcast(new SerializableConfiguration(
+      sc.hadoopConfiguration()))
     val converted = convertRDD(
       rdd,
       keyConverterClass,
@@ -549,8 +552,8 @@ private[spark] object PythonRDD extends Logging {
       keyClass,
       valueClass,
       mergedConf)
-    val confBroadcasted = sc.sc.broadcast(
-      new SerializableConfiguration(mergedConf))
+    val confBroadcasted = sc.sc.broadcast(new SerializableConfiguration(
+      mergedConf))
     val converted = convertRDD(
       rdd,
       keyConverterClass,
@@ -631,8 +634,8 @@ private[spark] object PythonRDD extends Logging {
       keyClass,
       valueClass,
       mergedConf)
-    val confBroadcasted = sc.sc.broadcast(
-      new SerializableConfiguration(mergedConf))
+    val confBroadcasted = sc.sc.broadcast(new SerializableConfiguration(
+      mergedConf))
     val converted = convertRDD(
       rdd,
       keyConverterClass,

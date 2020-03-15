@@ -66,8 +66,7 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     List(
       sstring("", theRest),
       sstring("\nAdditional debug settings:", debugs),
-      sstring("\nDeprecated settings:", deprecateds)
-    ).flatten mkString "\n"
+      sstring("\nDeprecated settings:", deprecateds)).flatten mkString "\n"
   }
 
   def createUsageMsg(
@@ -77,8 +76,7 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     val prefix = List(
       Some(shortUsage),
       Some(explainAdvanced) filter (_ => shouldExplain),
-      Some(label + " options include:")
-    ).flatten mkString "\n"
+      Some(label + " options include:")).flatten mkString "\n"
 
     prefix + createUsageMsg(cond)
   }
@@ -109,9 +107,8 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
     else if (Yhelp) yusageMsg
     else if (showPlugins) global.pluginDescriptions
     else if (showPhases)
-      global.phaseDescriptions + (
-        if (debug) "\n" + global.phaseFlagDescriptions else ""
-      )
+      global.phaseDescriptions + (if (debug) "\n" + global.phaseFlagDescriptions
+                                  else "")
     else if (genPhaseGraph.isSetByUser) {
       val components =
         global.phaseNames // global.phaseDescriptors // one initializes

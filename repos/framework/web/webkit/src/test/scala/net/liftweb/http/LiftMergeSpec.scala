@@ -91,8 +91,7 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
         <script src="testscript"></script>,
         <script src="testscript2"></script>,
         <link href="testlink" />,
-        <link href="testlink2" />
-      ): NodeSeq)
+        <link href="testlink2" />): NodeSeq)
     }
 
     "merge tail segments in the page body in order at the end of the body" in new WithRules(
@@ -125,8 +124,7 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
       (result \ "body" \ "_").takeRight(3) must_== (Seq(
         <script src="testscript2"></script>,
         <link href="testlink" />,
-        <link href="testlink2" />
-      ): NodeSeq)
+        <link href="testlink2" />): NodeSeq)
     }
 
     "not merge tail segments in the head" in new WithRules(testRules) {
@@ -160,8 +158,7 @@ class LiftMergeSpec extends Specification with XmlMatchers with Mockito {
       (result \ "body" \ "_").takeRight(3) must_== (Seq(
         <script src="testscript2"></script>,
         <link href="testlink" />,
-        <link href="testlink2" />
-      ): NodeSeq)
+        <link href="testlink2" />): NodeSeq)
     }
 
     "normalize absolute link hrefs everywhere" in new WithLiftContext(

@@ -67,14 +67,13 @@ class RowConstraints(
       vgrow: jfxsl.Priority,
       valignment: jfxg.VPos,
       fillHeight: Boolean) =
-    this(
-      new jfxsl.RowConstraints(
-        minHeight,
-        prefHeight,
-        maxHeight,
-        vgrow,
-        valignment,
-        fillHeight))
+    this(new jfxsl.RowConstraints(
+      minHeight,
+      prefHeight,
+      maxHeight,
+      vgrow,
+      valignment,
+      fillHeight))
 
   /**
     * The vertical fill policy for the row.

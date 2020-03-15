@@ -33,9 +33,7 @@ final class RankingApi(
   def save(userId: User.ID, perfType: PerfType, perf: Perf): Funit =
     (perf.nb >= 2) ?? coll
       .update(
-        BSONDocument(
-          "_id" -> s"$userId:${perfType.id}"
-        ),
+        BSONDocument("_id" -> s"$userId:${perfType.id}"),
         BSONDocument(
           "user" -> userId,
           "perf" -> perfType.id,
@@ -51,12 +49,11 @@ final class RankingApi(
     UserRepo byId userId flatMap {
       _ ?? { user =>
         coll
-          .remove(
-            BSONDocument(
-              "_id" -> BSONDocument("$in" -> PerfType.leaderboardable
+          .remove(BSONDocument(
+            "_id" -> BSONDocument(
+              "$in" -> PerfType.leaderboardable
                 .filter { pt => user.perfs(pt).nonEmpty }
-                .map { pt => s"${user.id}:${pt.id}" })
-            ))
+                .map { pt => s"${user.id}:${pt.id}" })))
           .void
       }
     }
@@ -97,8 +94,7 @@ final class RankingApi(
       val enumerator = coll
         .find(
           BSONDocument("perf" -> perfId, "stable" -> true),
-          BSONDocument("user" -> true, "_id" -> false)
-        )
+          BSONDocument("user" -> true, "_id" -> false))
         .sort(BSONDocument("rating" -> -1))
         .cursor[BSONDocument]()
         .enumerate()
@@ -134,16 +130,13 @@ final class RankingApi(
           .aggregate(
             Match(BSONDocument("perf" -> perfId)),
             List(
-              Project(
-                BSONDocument(
-                  "_id" -> false,
-                  "r" -> BSONDocument(
-                    "$subtract" -> BSONArray(
-                      "$rating",
-                      BSONDocument("$mod" -> BSONArray("$rating", Stat.group))
-                    )
-                  )
-                )),
+              Project(BSONDocument(
+                "_id" -> false,
+                "r" -> BSONDocument(
+                  "$subtract" -> BSONArray(
+                    "$rating",
+                    BSONDocument(
+                      "$mod" -> BSONArray("$rating", Stat.group)))))),
               GroupField("r")("nb" -> SumValue(1))
             )
           )

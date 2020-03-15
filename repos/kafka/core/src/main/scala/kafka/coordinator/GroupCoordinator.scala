@@ -230,18 +230,17 @@ class GroupCoordinator(
                 // member is joining with the same metadata (which could be because it failed to
                 // receive the initial JoinGroup response), so just return current group information
                 // for the current generation.
-                responseCallback(
-                  JoinGroupResult(
-                    members =
-                      if (memberId == group.leaderId) {
-                        group.currentMemberMetadata
-                      } else { Map.empty },
-                    memberId = memberId,
-                    generationId = group.generationId,
-                    subProtocol = group.protocol,
-                    leaderId = group.leaderId,
-                    errorCode = Errors.NONE.code
-                  ))
+                responseCallback(JoinGroupResult(
+                  members =
+                    if (memberId == group.leaderId) {
+                      group.currentMemberMetadata
+                    } else { Map.empty },
+                  memberId = memberId,
+                  generationId = group.generationId,
+                  subProtocol = group.protocol,
+                  leaderId = group.leaderId,
+                  errorCode = Errors.NONE.code
+                ))
               } else {
                 // member has changed metadata, so force a rebalance
                 updateMemberAndRebalance(
@@ -276,14 +275,13 @@ class GroupCoordinator(
               } else {
                 // for followers with no actual change to their metadata, just return group information
                 // for the current generation which will allow them to issue SyncGroup
-                responseCallback(
-                  JoinGroupResult(
-                    members = Map.empty,
-                    memberId = memberId,
-                    generationId = group.generationId,
-                    subProtocol = group.protocol,
-                    leaderId = group.leaderId,
-                    errorCode = Errors.NONE.code))
+                responseCallback(JoinGroupResult(
+                  members = Map.empty,
+                  memberId = memberId,
+                  generationId = group.generationId,
+                  subProtocol = group.protocol,
+                  leaderId = group.leaderId,
+                  errorCode = Errors.NONE.code))
               }
             }
         }
@@ -355,28 +353,27 @@ class GroupCoordinator(
               val assignment =
                 groupAssignment ++ missing.map(_ -> Array.empty[Byte]).toMap
 
-              delayedGroupStore = Some(
-                groupManager.prepareStoreGroup(
-                  group,
-                  assignment,
-                  (errorCode: Short) => {
-                    group synchronized {
-                      // another member may have joined the group while we were awaiting this callback,
-                      // so we must ensure we are still in the AwaitingSync state and the same generation
-                      // when it gets invoked. if we have transitioned to another state, then do nothing
-                      if (group.is(
-                            AwaitingSync) && generationId == group.generationId) {
-                        if (errorCode != Errors.NONE.code) {
-                          resetAndPropagateAssignmentError(group, errorCode)
-                          maybePrepareRebalance(group)
-                        } else {
-                          setAndPropagateAssignment(group, assignment)
-                          group.transitionTo(Stable)
-                        }
+              delayedGroupStore = Some(groupManager.prepareStoreGroup(
+                group,
+                assignment,
+                (errorCode: Short) => {
+                  group synchronized {
+                    // another member may have joined the group while we were awaiting this callback,
+                    // so we must ensure we are still in the AwaitingSync state and the same generation
+                    // when it gets invoked. if we have transitioned to another state, then do nothing
+                    if (group.is(
+                          AwaitingSync) && generationId == group.generationId) {
+                      if (errorCode != Errors.NONE.code) {
+                        resetAndPropagateAssignmentError(group, errorCode)
+                        maybePrepareRebalance(group)
+                      } else {
+                        setAndPropagateAssignment(group, assignment)
+                        group.transitionTo(Stable)
                       }
                     }
                   }
-                ))
+                }
+              ))
             }
 
           case Stable =>
@@ -491,13 +488,12 @@ class GroupCoordinator(
       if (group == null) {
         if (generationId < 0)
           // the group is not relying on Kafka for partition management, so allow the commit
-          delayedOffsetStore = Some(
-            groupManager.prepareStoreOffsets(
-              groupId,
-              memberId,
-              generationId,
-              offsetMetadata,
-              responseCallback))
+          delayedOffsetStore = Some(groupManager.prepareStoreOffsets(
+            groupId,
+            memberId,
+            generationId,
+            offsetMetadata,
+            responseCallback))
         else
           // the group has failed over to this coordinator (which will be handled in KAFKA-2017),
           // or this is a request coming from an older generation. either way, reject the commit
@@ -518,13 +514,12 @@ class GroupCoordinator(
             responseCallback(
               offsetMetadata.mapValues(_ => Errors.ILLEGAL_GENERATION.code))
           } else {
-            delayedOffsetStore = Some(
-              groupManager.prepareStoreOffsets(
-                groupId,
-                memberId,
-                generationId,
-                offsetMetadata,
-                responseCallback))
+            delayedOffsetStore = Some(groupManager.prepareStoreOffsets(
+              groupId,
+              memberId,
+              generationId,
+              offsetMetadata,
+              responseCallback))
           }
         }
       }
@@ -610,10 +605,9 @@ class GroupCoordinator(
         case PreparingRebalance =>
           for (member <- group.allMemberMetadata) {
             if (member.awaitingJoinCallback != null) {
-              member.awaitingJoinCallback(
-                joinError(
-                  member.memberId,
-                  Errors.NOT_COORDINATOR_FOR_GROUP.code))
+              member.awaitingJoinCallback(joinError(
+                member.memberId,
+                Errors.NOT_COORDINATOR_FOR_GROUP.code))
               member.awaitingJoinCallback = null
             }
           }
@@ -772,9 +766,9 @@ class GroupCoordinator(
       resetAndPropagateAssignmentError(group, Errors.REBALANCE_IN_PROGRESS.code)
 
     group.transitionTo(PreparingRebalance)
-    info(
-      "Preparing to restabilize group %s with old generation %s"
-        .format(group.groupId, group.generationId))
+    info("Preparing to restabilize group %s with old generation %s".format(
+      group.groupId,
+      group.generationId))
 
     val rebalanceTimeout = group.rebalanceTimeout
     val delayedRebalance = new DelayedJoin(this, group, rebalanceTimeout)
@@ -817,16 +811,16 @@ class GroupCoordinator(
         if (group.isEmpty) {
           group.transitionTo(Dead)
           groupManager.removeGroup(group)
-          info(
-            "Group %s generation %s is dead and removed"
-              .format(group.groupId, group.generationId))
+          info("Group %s generation %s is dead and removed".format(
+            group.groupId,
+            group.generationId))
         }
       }
       if (!group.is(Dead)) {
         group.initNextGeneration()
-        info(
-          "Stabilized group %s generation %s"
-            .format(group.groupId, group.generationId))
+        info("Stabilized group %s generation %s".format(
+          group.groupId,
+          group.generationId))
 
         // trigger the awaiting join group response callback for all the members after rebalancing
         for (member <- group.allMemberMetadata) {

@@ -239,9 +239,8 @@ private[niflheim] object NIHDBActor extends Logging {
 
     currentState map {
       _ map { s =>
-        actorSystem.actorOf(
-          Props(
-            new NIHDBActor(s, baseDir, chef, cookThreshold, txLogScheduler)))
+        actorSystem.actorOf(Props(
+          new NIHDBActor(s, baseDir, chef, cookThreshold, txLogScheduler)))
       }
     }
   }
@@ -450,14 +449,12 @@ private[niflheim] class NIHDBActor private (
       state.blockState = state.blockState.copy(
         cooked = CookedReader.load(cookedDir, file) :: state.blockState.cooked
           .filterNot(_.id == id),
-        pending = state.blockState.pending - id
-      )
+        pending = state.blockState.pending - id)
 
       state.currentBlocks = computeBlockMap(state.blockState)
 
-      currentState = currentState.copy(
-        cookedMap = currentState.cookedMap + (id -> file.getPath)
-      )
+      currentState = currentState.copy(cookedMap =
+        currentState.cookedMap + (id -> file.getPath))
 
       logger.debug("Cook complete on %d".format(id))
 
@@ -466,17 +463,17 @@ private[niflheim] class NIHDBActor private (
 
     case Insert(batch, responseRequested) =>
       if (batch.isEmpty) {
-        logger.warn(
-          "Skipping insert with an empty batch on %s".format(
-            baseDir.getCanonicalPath))
+        logger.warn("Skipping insert with an empty batch on %s".format(
+          baseDir.getCanonicalPath))
         if (responseRequested) sender ! Skipped
       } else {
         val (skipValues, keepValues) = batch.partition(
           _.offset <= currentState.maxOffset)
         if (keepValues.isEmpty) {
           logger.warn(
-            "Skipping entirely seen batch of %d rows prior to offset %d"
-              .format(batch.flatMap(_.values).size, currentState.maxOffset))
+            "Skipping entirely seen batch of %d rows prior to offset %d".format(
+              batch.flatMap(_.values).size,
+              currentState.maxOffset))
           if (responseRequested) sender ! Skipped
         } else {
           val values = keepValues.flatMap(_.values)
@@ -494,9 +491,8 @@ private[niflheim] class NIHDBActor private (
           currentState = currentState.copy(maxOffset = offset)
 
           if (state.blockState.rawLog.length >= cookThreshold) {
-            logger.debug(
-              "Starting cook on %s after threshold exceeded".format(
-                baseDir.getCanonicalPath))
+            logger.debug("Starting cook on %s after threshold exceeded".format(
+              baseDir.getCanonicalPath))
             state.blockState.rawLog.close
             val toCook = state.blockState.rawLog
             val newRaw = RawHandler.empty(
@@ -514,9 +510,10 @@ private[niflheim] class NIHDBActor private (
               toCook)
           }
 
-          logger.debug(
-            "Insert complete on %d rows at offset %d for %s"
-              .format(values.length, offset, baseDir.getCanonicalPath))
+          logger.debug("Insert complete on %d rows at offset %d for %s".format(
+            values.length,
+            offset,
+            baseDir.getCanonicalPath))
           if (responseRequested) sender ! Inserted(offset, values.length)
         }
       }

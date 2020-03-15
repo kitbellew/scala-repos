@@ -48,10 +48,9 @@ abstract class MappedLongIndex[T <: Mapper[T]](theOwner: T)
   def convertKey(in: String): Box[Long] = {
     if (in eq null) Empty
     else
-      tryo(
-        toLong(
-          if (in.startsWith(name + "=")) in.substring((name + "=").length)
-          else in))
+      tryo(toLong(
+        if (in.startsWith(name + "=")) in.substring((name + "=").length)
+        else in))
   }
 
   override def dbDisplay_? = false

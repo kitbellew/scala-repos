@@ -274,8 +274,9 @@ trait TypedPipe[+T] extends Serializable {
     * }
     * The latter creates 1 map/reduce phase rather than 2
     */
-  @annotation.implicitNotFound(msg =
-    "For distinct method to work, the type in TypedPipe must have an Ordering.")
+  @annotation.implicitNotFound(
+    msg =
+      "For distinct method to work, the type in TypedPipe must have an Ordering.")
   def distinct(implicit ord: Ordering[_ >: T]): TypedPipe[T] =
     asKeys(ord.asInstanceOf[Ordering[T]]).sum.keys
 
@@ -937,10 +938,9 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       .read(flowDef, mode)
 
   private[this] def toSourcePipe =
-    TypedPipe.from(
-      IterableSource[T](iterable, new Fields("0"))(
-        singleSetter,
-        singleConverter))
+    TypedPipe.from(IterableSource[T](iterable, new Fields("0"))(
+      singleSetter,
+      singleConverter))
 
   override def toIterableExecution: Execution[Iterable[T]] =
     Execution.from(iterable)
@@ -962,8 +962,9 @@ object TypedPipeFactory {
           case (memoMode, pipe) if memoMode == m => pipe
           case (memoMode, pipe) =>
             sys.error(
-              "FlowDef reused on different Mode. Original: %s, now: %s"
-                .format(memoMode, m))
+              "FlowDef reused on different Mode. Original: %s, now: %s".format(
+                memoMode,
+                m))
         }
       }
     }

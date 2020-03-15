@@ -270,8 +270,7 @@ class SolvingTest {
     val expected = Seq(
       Map(pSym -> false, qSym -> false),
       Map(pSym -> true, qSym -> false),
-      Map(pSym -> true, qSym -> true)
-    ).sorted
+      Map(pSym -> true, qSym -> true)).sorted
 
     assertEquals(expected, expanded)
   }

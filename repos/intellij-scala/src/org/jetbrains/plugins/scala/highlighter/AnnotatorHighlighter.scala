@@ -87,9 +87,9 @@ object AnnotatorHighlighter {
       holder: AnnotationHolder) {
 
     def annotateCollectionByType(resolvedType: ScType) {
-      if (ScalaNamesUtil.isOperatorName(resolvedType.presentableText
-            .substring(0, resolvedType.presentableText.prefixLength(_ != '.'))))
-        return
+      if (ScalaNamesUtil.isOperatorName(resolvedType.presentableText.substring(
+            0,
+            resolvedType.presentableText.prefixLength(_ != '.')))) return
 
       val scalaProjectSettings: ScalaProjectSettings = ScalaProjectSettings
         .getInstance(refElement.getProject)

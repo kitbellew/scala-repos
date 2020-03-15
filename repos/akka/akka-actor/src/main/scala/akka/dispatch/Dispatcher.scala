@@ -44,8 +44,9 @@ class Dispatcher(
 
   @volatile private var executorServiceDelegate: LazyExecutorServiceDelegate =
     new LazyExecutorServiceDelegate(
-      executorServiceFactoryProvider
-        .createExecutorServiceFactory(id, threadFactory))
+      executorServiceFactoryProvider.createExecutorServiceFactory(
+        id,
+        threadFactory))
 
   protected final def executorService: ExecutorServiceDelegate =
     executorServiceDelegate
@@ -82,12 +83,11 @@ class Dispatcher(
         try { executorService execute invocation }
         catch {
           case e2: RejectedExecutionException ⇒
-            eventStream.publish(
-              Error(
-                e,
-                getClass.getName,
-                getClass,
-                "executeTask was rejected twice!"))
+            eventStream.publish(Error(
+              e,
+              getClass.getName,
+              getClass,
+              "executeTask was rejected twice!"))
             throw e2
         }
     }
@@ -140,12 +140,11 @@ class Dispatcher(
             } catch { //Retry once
               case e: RejectedExecutionException ⇒
                 mbox.setAsIdle()
-                eventStream.publish(
-                  Error(
-                    e,
-                    getClass.getName,
-                    getClass,
-                    "registerForExecution was rejected twice!"))
+                eventStream.publish(Error(
+                  e,
+                  getClass.getName,
+                  getClass,
+                  "registerForExecution was rejected twice!"))
                 throw e
             }
         }

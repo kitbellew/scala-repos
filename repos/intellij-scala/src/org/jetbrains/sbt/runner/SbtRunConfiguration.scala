@@ -131,12 +131,12 @@ class SbtRunConfiguration(
         configuration.getProject)
       if (sbtSystemSettings.getCustomLauncherEnabled) {
         params.getClassPath.add(sbtSystemSettings.getCustomLauncherPath)
-        params.setMainClass(
-          determineMainClass(sbtSystemSettings.getCustomLauncherPath))
+        params.setMainClass(determineMainClass(
+          sbtSystemSettings.getCustomLauncherPath))
       } else {
         params.getClassPath.add(SbtRunner.getDefaultLauncher)
-        params.setMainClass(
-          determineMainClass(SbtRunner.getDefaultLauncher.getAbsolutePath))
+        params.setMainClass(determineMainClass(
+          SbtRunner.getDefaultLauncher.getAbsolutePath))
       }
       params.setEnv(envirnomentVariables)
       params.getVMParametersList.addParametersString(javaOptions)

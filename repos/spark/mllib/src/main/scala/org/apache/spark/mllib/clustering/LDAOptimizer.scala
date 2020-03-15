@@ -634,7 +634,9 @@ private[clustering] object OnlineLDAOptimizer {
     while (meanGammaChange > 1e-3) {
       val lastgamma = gammad.copy
       //        K                  K * ids               ids
-      gammad := (expElogthetad :* (expElogbetad.t * (ctsVector :/ phiNorm))) :+ alpha
+      gammad := (
+        expElogthetad :* (expElogbetad.t * (ctsVector :/ phiNorm))
+      ) :+ alpha
       expElogthetad := exp(LDAUtils.dirichletExpectation(gammad))
       // TODO: Keep more values in log space, and only exponentiate when needed.
       phiNorm := expElogbetad * expElogthetad :+ 1e-100

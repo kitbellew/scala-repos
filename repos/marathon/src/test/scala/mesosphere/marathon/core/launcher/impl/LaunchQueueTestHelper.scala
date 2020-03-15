@@ -9,6 +9,5 @@ object LaunchQueueTestHelper {
     tasksLeftToLaunch = 0,
     taskLaunchesInFlight = 0,
     tasksLaunched = 0,
-    backOffUntil = Timestamp(0)
-  )
+    backOffUntil = Timestamp(0))
 }

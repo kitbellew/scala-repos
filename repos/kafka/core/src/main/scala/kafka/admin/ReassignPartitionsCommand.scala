@@ -85,15 +85,13 @@ object ReassignPartitionsCommand extends Logging {
     reassignedPartitionsStatus.foreach { partition =>
       partition._2 match {
         case ReassignmentCompleted =>
-          println(
-            "Reassignment of partition %s completed successfully".format(
-              partition._1))
+          println("Reassignment of partition %s completed successfully".format(
+            partition._1))
         case ReassignmentFailed =>
           println("Reassignment of partition %s failed".format(partition._1))
         case ReassignmentInProgress =>
-          println(
-            "Reassignment of partition %s is still in progress".format(
-              partition._1))
+          println("Reassignment of partition %s is still in progress".format(
+            partition._1))
       }
     }
   }
@@ -124,12 +122,10 @@ object ReassignPartitionsCommand extends Logging {
       brokerListToReassign,
       topicsToMoveJsonString,
       disableRackAware)
-    println(
-      "Current partition replica assignment\n\n%s".format(
-        zkUtils.getPartitionReassignmentZkData(currentAssignments)))
-    println(
-      "Proposed partition reassignment configuration\n\n%s".format(
-        zkUtils.getPartitionReassignmentZkData(proposedAssignments)))
+    println("Current partition replica assignment\n\n%s".format(
+      zkUtils.getPartitionReassignmentZkData(currentAssignments)))
+    println("Proposed partition reassignment configuration\n\n%s".format(
+      zkUtils.getPartitionReassignmentZkData(proposedAssignments)))
   }
 
   def generateAssignment(

@@ -163,28 +163,18 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
     findAndAssert(
       false,
-      new SerializableClassWithWriteReplace(
-        new ExternalizableClass(
-          new SerializableSubclass(
-            new SerializableArray(
-              Array(
-                new SerializableClass1,
-                new SerializableClass2(new NotSerializable))
-            )
-          )))
+      new SerializableClassWithWriteReplace(new ExternalizableClass(
+        new SerializableSubclass(new SerializableArray(Array(
+          new SerializableClass1,
+          new SerializableClass2(new NotSerializable))))))
     )
 
     findAndAssert(
       true,
-      new SerializableClassWithWriteReplace(
-        new ExternalizableClass(
-          new SerializableSubclass(
-            new SerializableArray(
-              Array(
-                new SerializableClass1,
-                new SerializableClass2(new SerializableClass1))
-            )
-          )))
+      new SerializableClassWithWriteReplace(new ExternalizableClass(
+        new SerializableSubclass(new SerializableArray(Array(
+          new SerializableClass1,
+          new SerializableClass2(new SerializableClass1))))))
     )
   }
 

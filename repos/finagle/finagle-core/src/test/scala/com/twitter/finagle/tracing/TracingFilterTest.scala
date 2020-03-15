@@ -50,8 +50,7 @@ class TracingFilterTest
 
   def testAnnotatingTracingFilter(
       prefix: String,
-      mkFilter: String => Filter[Int, Int, Int, Int]
-  ): Unit = {
+      mkFilter: String => Filter[Int, Int, Int, Int]): Unit = {
     test(s"$prefix: should trace service name") {
       val services = record(mkFilter("")) collect {
         case Record(_, _, Annotation.ServiceName(svc), _) => svc

@@ -58,15 +58,9 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-case class Rating(
-    user: String,
-    item: String,
-    rating: Double
-)
+case class Rating(user: String, item: String, rating: Double)
 
-class TrainingData(
-    val ratings: RDD[Rating]
-) extends Serializable {
+class TrainingData(val ratings: RDD[Rating]) extends Serializable {
   override def toString = {
     s"ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"
   }

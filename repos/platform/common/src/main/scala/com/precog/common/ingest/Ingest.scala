@@ -175,10 +175,12 @@ case class Archive(
 object Archive {
   implicit val archiveIso = Iso.hlist(Archive.apply _, Archive.unapply _)
 
-  val schemaV1 =
-    "apiKey" :: "path" :: "jobId" :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
-  val schemaV0 =
-    "tokenId" :: "path" :: Omit :: ("timestamp" ||| EventMessage.defaultTimestamp) :: HNil
+  val schemaV1 = "apiKey" :: "path" :: "jobId" :: (
+    "timestamp" ||| EventMessage.defaultTimestamp
+  ) :: HNil
+  val schemaV0 = "tokenId" :: "path" :: Omit :: (
+    "timestamp" ||| EventMessage.defaultTimestamp
+  ) :: HNil
 
   val decomposerV1: Decomposer[Archive] = decomposerV[Archive](
     schemaV1,
@@ -263,11 +265,9 @@ object StreamRef {
       jv match {
         case JString("append") => Success(Append)
         case other =>
-          ((other \? "create") map { jv =>
-            (jv, Create.apply _)
-          }) orElse ((other \? "replace") map { jv =>
-            (jv, Replace.apply _)
-          }) map {
+          ((other \? "create") map { jv => (jv, Create.apply _) }) orElse (
+            (other \? "replace") map { jv => (jv, Replace.apply _) }
+          ) map {
             case (jv, f) =>
               (jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
                 "terminal")) { f }

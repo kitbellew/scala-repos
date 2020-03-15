@@ -38,8 +38,7 @@ trait Notifier
         // participants
         issue.openedUserName ::
         getComments(issue.userName, issue.repositoryName, issue.issueId).map(
-          _.commentedUserName)
-    ).distinct
+          _.commentedUserName)).distinct
       .withFilter(
         _ != context.loginAccount.get.userName
       ) // the operation in person is excluded
@@ -94,15 +93,13 @@ class Mailer(private val smtp: Smtp) extends Notifier {
       database withSession { implicit session =>
         defining(
           s"[${r.name}] ${issue.title} (#${issue.issueId})" ->
-            msg(
-              Markdown.toHtml(
-                markdown = content,
-                repository = r,
-                enableWikiLink = false,
-                enableRefsLink = true,
-                enableAnchor = false,
-                enableLineBreaks = false
-              ))) {
+            msg(Markdown.toHtml(
+              markdown = content,
+              repository = r,
+              enableWikiLink = false,
+              enableRefsLink = true,
+              enableAnchor = false,
+              enableLineBreaks = false))) {
           case (subject, msg) =>
             recipients(issue) { to =>
               val email = new HtmlEmail
@@ -114,8 +111,9 @@ class Mailer(private val smtp: Smtp) extends Notifier {
               }
               smtp.ssl.foreach { ssl => email.setSSLOnConnect(ssl) }
               smtp.fromAddress
-                .map(_ -> smtp.fromName.getOrElse(
-                  context.loginAccount.get.userName))
+                .map(
+                  _ -> smtp.fromName.getOrElse(
+                    context.loginAccount.get.userName))
                 .orElse(Some(
                   "notifications@gitbucket.com" -> context.loginAccount.get.userName))
                 .foreach {

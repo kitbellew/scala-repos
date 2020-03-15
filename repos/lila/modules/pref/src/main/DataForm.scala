@@ -143,43 +143,25 @@ private[pref] final class DataForm {
 
   def miniPrefOf(p: Pref): Form[MiniPrefData] = miniPref fill MiniPrefData(p)
 
-  val theme = Form(
-    single(
-      "theme" -> nonEmptyText.verifying(Theme contains _)
-    ))
+  val theme = Form(single("theme" -> nonEmptyText.verifying(Theme contains _)))
 
   val pieceSet = Form(
-    single(
-      "set" -> nonEmptyText.verifying(PieceSet contains _)
-    ))
+    single("set" -> nonEmptyText.verifying(PieceSet contains _)))
 
   val theme3d = Form(
-    single(
-      "theme" -> nonEmptyText.verifying(Theme3d contains _)
-    ))
+    single("theme" -> nonEmptyText.verifying(Theme3d contains _)))
 
   val pieceSet3d = Form(
-    single(
-      "set" -> nonEmptyText.verifying(PieceSet3d contains _)
-    ))
+    single("set" -> nonEmptyText.verifying(PieceSet3d contains _)))
 
   val soundSet = Form(
-    single(
-      "set" -> nonEmptyText.verifying(SoundSet contains _)
-    ))
+    single("set" -> nonEmptyText.verifying(SoundSet contains _)))
 
   val bg = Form(
-    single(
-      "bg" -> text.verifying(List("light", "dark", "transp") contains _)
-    ))
+    single("bg" -> text.verifying(List("light", "dark", "transp") contains _)))
 
-  val bgImg = Form(
-    single(
-      "bgImg" -> nonEmptyText
-    ))
+  val bgImg = Form(single("bgImg" -> nonEmptyText))
 
   val is3d = Form(
-    single(
-      "is3d" -> text.verifying(List("true", "false") contains _)
-    ))
+    single("is3d" -> text.verifying(List("true", "false") contains _)))
 }

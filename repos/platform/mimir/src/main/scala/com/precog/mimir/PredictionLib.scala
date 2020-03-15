@@ -95,10 +95,9 @@ trait PredictionLibModule[M[+_]]
 
                         val res = Model
                           .filteredRange(scannerPrelims.includedModel, range)
-                          .foldLeft(
-                            Intervals(
-                              new Array[Double](range.end),
-                              new Array[Double](range.end))) {
+                          .foldLeft(Intervals(
+                            new Array[Double](range.end),
+                            new Array[Double](range.end))) {
                             case (Intervals(arrConf, arrPred), i) =>
                               val includedDoubles =
                                 1.0 +: (scannerPrelims.cpaths map {

@@ -19,11 +19,7 @@ class VectorTest {
   val bigbig = Vector.tabulate(2 * bigVec.length)(i => (i % bigVec.length))
 
   val vecs = List(noVec, smallVec, bigVec)
-  val ans = List(
-    vecs,
-    List(smallVec, smsm, smbig),
-    List(bigVec, bigsm, bigbig)
-  )
+  val ans = List(vecs, List(smallVec, smsm, smbig), List(bigVec, bigsm, bigbig))
 
   @Test
   def vectorCat() {

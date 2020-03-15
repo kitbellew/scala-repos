@@ -64,8 +64,7 @@ class TaskBuilder(
       log.info(
         s"Offer [${offer.getId.getValue}]. Insufficient resources for [${app.id}] (need cpus=${app.cpus}, " +
           s"mem=${app.mem}, disk=${app.disk}, $portsString, available in offer: " +
-          s"[${TextFormat.shortDebugString(offer)}]"
-      )
+          s"[${TextFormat.shortDebugString(offer)}]")
     }
 
     resourceMatchOpt match {
@@ -136,13 +135,12 @@ class TaskBuilder(
     val envPrefix: Option[String] = config.envVarsPrefix.get
     executor match {
       case CommandExecutor() =>
-        builder.setCommand(
-          TaskBuilder.commandInfo(
-            app,
-            Some(taskId),
-            host,
-            resourceMatch.hostPorts,
-            envPrefix))
+        builder.setCommand(TaskBuilder.commandInfo(
+          app,
+          Some(taskId),
+          host,
+          resourceMatch.hostPorts,
+          envPrefix))
         containerProto.foreach(builder.setContainer)
 
       case PathExecutor(path) =>
@@ -188,8 +186,7 @@ class TaskBuilder(
       log.warn(
         "Mesos supports one command health check per task.\n" +
           s"Task [$taskId] will run without " +
-          s"$numUnusedChecks of its defined health checks."
-      )
+          s"$numUnusedChecks of its defined health checks.")
     }
 
     mesosHealthChecks.headOption.foreach(builder.setHealthCheck)
@@ -260,9 +257,7 @@ class TaskBuilder(
         val containerWithPortMappings = portMappings match {
           case None => c
           case Some(newMappings) =>
-            c.copy(
-              docker = c.docker.map { _.copy(portMappings = newMappings) }
-            )
+            c.copy(docker = c.docker.map { _.copy(portMappings = newMappings) })
         }
         builder.mergeFrom(
           ContainerSerializer.toMesos(containerWithPortMappings))

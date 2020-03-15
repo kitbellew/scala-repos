@@ -143,16 +143,14 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
     RootActorPath(addressA) / "temp" / sysMsgVerifierA.path.name)
 
   override def atStartup() = {
-    systemA.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead .*")))
-    systemB.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead .*")))
+    systemA.eventStream.publish(TestEvent.Mute(
+      EventFilter[EndpointException](),
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(pattern = "received dead .*")))
+    systemB.eventStream.publish(TestEvent.Mute(
+      EventFilter[EndpointException](),
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(pattern = "received dead .*")))
 
     systemA.eventStream.subscribe(probeA.ref, classOf[QuarantinedEvent])
     systemB.eventStream.subscribe(probeB.ref, classOf[QuarantinedEvent])
@@ -174,33 +172,29 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
 
       // Schedule peridodic disassociates
       systemA.scheduler.schedule(3.second, 8.seconds) {
-        transportA.managementCommand(
-          ForceDisassociateExplicitly(
-            addressB,
-            reason = AssociationHandle.Unknown))
+        transportA.managementCommand(ForceDisassociateExplicitly(
+          addressB,
+          reason = AssociationHandle.Unknown))
       }
 
       systemB.scheduler.schedule(7.seconds, 8.seconds) {
-        transportB.managementCommand(
-          ForceDisassociateExplicitly(
-            addressA,
-            reason = AssociationHandle.Unknown))
+        transportB.managementCommand(ForceDisassociateExplicitly(
+          addressA,
+          reason = AssociationHandle.Unknown))
       }
 
-      systemB.actorOf(
-        Props(
-          classOf[SystemMessageSender],
-          msgCount,
-          burstSize,
-          burstDelay,
-          targetForB))
-      systemA.actorOf(
-        Props(
-          classOf[SystemMessageSender],
-          msgCount,
-          burstSize,
-          burstDelay,
-          targetForA))
+      systemB.actorOf(Props(
+        classOf[SystemMessageSender],
+        msgCount,
+        burstSize,
+        burstDelay,
+        targetForB))
+      systemA.actorOf(Props(
+        classOf[SystemMessageSender],
+        msgCount,
+        burstSize,
+        burstDelay,
+        targetForA))
 
       val toSend = (0 until msgCount).toList
       var maxDelay = 0L
@@ -217,21 +211,19 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
   }
 
   override def beforeTermination() {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.warning(
-          source = "akka://AkkaProtocolStressTest/user/$a",
-          start = "received dead letter"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
-    systemB.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
+    system.eventStream.publish(TestEvent.Mute(
+      EventFilter.warning(
+        source = "akka://AkkaProtocolStressTest/user/$a",
+        start = "received dead letter"),
+      EventFilter.warning(pattern =
+        "received dead letter.*(InboundPayload|Disassociate)")
+    ))
+    systemB.eventStream.publish(TestEvent.Mute(
+      EventFilter[EndpointException](),
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(pattern =
+        "received dead letter.*(InboundPayload|Disassociate)")
+    ))
   }
 
   override def afterTermination(): Unit = shutdown(systemB)

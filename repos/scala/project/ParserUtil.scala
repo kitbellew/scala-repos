@@ -43,8 +43,9 @@ object ParserUtil {
             ensureSuffix(f1.getPath, "/")
           else f1.getPath
         }
-        val childFilter = GlobFilter(
-          preFile.name + "*") && ((IsDirectoryFilter && dirFilter) || fileFilter)
+        val childFilter = GlobFilter(preFile.name + "*") && (
+          (IsDirectoryFilter && dirFilter) || fileFilter
+        )
         val children = parent.*(childFilter).get
         children.map(pathOf).toList
       } else Nil
@@ -59,11 +60,11 @@ object ParserUtil {
             case Nil => displayPath
             case x :: Nil =>
               if (fileFilter.accept(file(x)))
-                Completions.strict(
-                  Set(Completion.tokenDisplay(x.stripPrefix(seen), x)))
+                Completions.strict(Set(
+                  Completion.tokenDisplay(x.stripPrefix(seen), x)))
               else
-                Completions.strict(
-                  Set(Completion.suggestion(x.stripPrefix(seen))))
+                Completions.strict(Set(
+                  Completion.suggestion(x.stripPrefix(seen))))
             case xs =>
               Completions.strict(
                 xs.map(x => Completion.tokenDisplay(x.stripPrefix(seen), x))

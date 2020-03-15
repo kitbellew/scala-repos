@@ -111,11 +111,10 @@ class TestTapFactory(src: Source, sinkMode: SinkMode) extends Serializable {
               (new MemorySourceTap(buffer.toList.asJava, fields))
                 .asInstanceOf[Tap[JobConf, _, _]]
             } else {
-              CastHfsTap(
-                new Hfs(
-                  hdfsScheme.get,
-                  hdfsTest.getWritePathFor(src),
-                  sinkMode))
+              CastHfsTap(new Hfs(
+                hdfsScheme.get,
+                hdfsTest.getWritePathFor(src),
+                sinkMode))
             }
           }
           case Write => {

@@ -36,8 +36,7 @@ object DefaultRenderer extends Renderer {
   override def render(request: RenderRequest): Html = {
     import request._
     Html(
-      s"<tt>${fileContent.split("(\\r\\n)|\\n").map(xml.Utility.escape(_)).mkString("<br/>")}</tt>"
-    )
+      s"<tt>${fileContent.split("(\\r\\n)|\\n").map(xml.Utility.escape(_)).mkString("<br/>")}</tt>")
   }
 }
 
@@ -49,5 +48,4 @@ case class RenderRequest(
     enableWikiLink: Boolean,
     enableRefsLink: Boolean,
     enableAnchor: Boolean,
-    context: Context
-)
+    context: Context)

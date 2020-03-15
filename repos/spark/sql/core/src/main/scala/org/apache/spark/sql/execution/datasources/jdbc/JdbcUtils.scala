@@ -127,10 +127,9 @@ object JdbcUtils extends Logging {
         Option(JdbcType("TIMESTAMP", java.sql.Types.TIMESTAMP))
       case DateType => Option(JdbcType("DATE", java.sql.Types.DATE))
       case t: DecimalType =>
-        Option(
-          JdbcType(
-            s"DECIMAL(${t.precision},${t.scale})",
-            java.sql.Types.DECIMAL))
+        Option(JdbcType(
+          s"DECIMAL(${t.precision},${t.scale})",
+          java.sql.Types.DECIMAL))
       case _ => None
     }
   }
@@ -139,8 +138,9 @@ object JdbcUtils extends Logging {
     dialect
       .getJDBCType(dt)
       .orElse(getCommonJDBCType(dt))
-      .getOrElse(throw new IllegalArgumentException(
-        s"Can't get JDBC type for ${dt.simpleString}"))
+      .getOrElse(
+        throw new IllegalArgumentException(
+          s"Can't get JDBC type for ${dt.simpleString}"))
   }
 
   /**

@@ -53,7 +53,9 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       caretOffset,
       caretOffset + whiteSpaceAfterCaret.length)
 
-    if ((ch1 != '(' || ch2 != ')') && (ch1 != '{' || ch2 != '}') || !CodeInsightSettings.getInstance.SMART_INDENT_ON_ENTER)
+    if ((ch1 != '(' || ch2 != ')') && (
+          ch1 != '{' || ch2 != '}'
+        ) || !CodeInsightSettings.getInstance.SMART_INDENT_ON_ENTER)
       return Result.Continue
 
     originalHandler.execute(
@@ -96,10 +98,9 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
       return Result.Continue
 
     def getLineByNumber(number: Int): String =
-      document.getText(
-        new TextRange(
-          document.getLineStartOffset(number),
-          document.getLineEndOffset(number)))
+      document.getText(new TextRange(
+        document.getLineStartOffset(number),
+        document.getLineEndOffset(number)))
 
     def getSpaces(count: Int) = StringUtil.repeat(" ", count)
 
@@ -121,9 +122,9 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         val line = getLineByNumber(document.getLineNumber(nlOffset))
         var i = 0
         def charToCheck = line.charAt(line.length - 1 - i)
-        while (i <= line.length - 1 && (charToCheck == ' ' || charToCheck == '\t')) {
-          i += 1
-        }
+        while (i <= line.length - 1 && (
+                 charToCheck == ' ' || charToCheck == '\t'
+               )) { i += 1 }
         document.deleteString(nlOffset - i, nlOffset)
       }
     }
@@ -160,8 +161,8 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
         literal.getText.indexOf("\n") == literal.getText.lastIndexOf("\n")
       val lines = literal.getText.split("\n")
 
-      val marginCharFromSettings = selectBySettings[Option[Char]](None)(
-        Some(marginChar))
+      val marginCharFromSettings = selectBySettings[Option[Char]](None)(Some(
+        marginChar))
       val marginCharOpt = marginCharFromSettings match {
         case Some(mChar)
             if hasMarginChars(element, mChar.toString) ||

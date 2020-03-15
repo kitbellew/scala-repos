@@ -240,14 +240,13 @@ class ORSetSpec extends WordSpec with Matchers {
     "verify subtractDots" in {
       val dot = VersionVector(
         TreeMap(nodeA -> 3L, nodeB -> 2L, nodeD -> 14L, nodeG -> 22L))
-      val vvector = VersionVector(
-        TreeMap(
-          nodeA -> 4L,
-          nodeB -> 1L,
-          nodeC -> 1L,
-          nodeD -> 14L,
-          nodeE -> 5L,
-          nodeF -> 2L))
+      val vvector = VersionVector(TreeMap(
+        nodeA -> 4L,
+        nodeB -> 1L,
+        nodeC -> 1L,
+        nodeD -> 14L,
+        nodeE -> 5L,
+        nodeF -> 2L))
       val expected = VersionVector(TreeMap(nodeB -> 2L, nodeG -> 22L))
       ORSet.subtractDots(dot, vvector) should be(expected)
     }

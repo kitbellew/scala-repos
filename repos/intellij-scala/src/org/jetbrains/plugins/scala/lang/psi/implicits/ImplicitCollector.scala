@@ -94,9 +94,9 @@ object ImplicitCollector {
       isImplicitConversion: Boolean,
       isExtensionConversion: Boolean,
       searchImplicitsRecursively: Int,
-      predicate: Option[(
+      predicate: Option[(ScalaResolveResult, ScSubstitutor) => Option[(
           ScalaResolveResult,
-          ScSubstitutor) => Option[(ScalaResolveResult, ScSubstitutor)]],
+          ScSubstitutor)]],
       previousRecursionState: Option[RecursionMap])
 }
 
@@ -115,9 +115,9 @@ class ImplicitCollector(
     isImplicitConversion: Boolean,
     isExtensionConversion: Boolean,
     searchImplicitsRecursively: Int = 0,
-    predicate: Option[(
+    predicate: Option[(ScalaResolveResult, ScSubstitutor) => Option[(
         ScalaResolveResult,
-        ScSubstitutor) => Option[(ScalaResolveResult, ScSubstitutor)]] = None,
+        ScSubstitutor)]] = None,
     previousRecursionState: Option[RecursionMap] = None) {
   def this(state: ImplicitState) {
     this(
@@ -239,12 +239,11 @@ class ImplicitCollector(
           placeCalculated = true
           if (!isPredefPriority && !ResolveUtils.isAccessible(o, getPlace))
             return true
-          addResult(
-            new ScalaResolveResult(
-              o,
-              subst,
-              getImports(state),
-              implicitSearchState = Some(collectorState)))
+          addResult(new ScalaResolveResult(
+            o,
+            subst,
+            getImports(state),
+            implicitSearchState = Some(collectorState)))
         case param: ScParameter if param.isImplicitParameter =>
           placeCalculated = true
           param match {
@@ -253,12 +252,11 @@ class ImplicitCollector(
                 return true
             case _ =>
           }
-          addResult(
-            new ScalaResolveResult(
-              param,
-              subst,
-              getImports(state),
-              implicitSearchState = Some(collectorState)))
+          addResult(new ScalaResolveResult(
+            param,
+            subst,
+            getImports(state),
+            implicitSearchState = Some(collectorState)))
         case f: ScFieldId =>
           val memb = ScalaPsiUtil.getContextOfType(
             f,
@@ -271,12 +269,11 @@ class ImplicitCollector(
               if (!isPredefPriority && !ResolveUtils.isAccessible(
                     memb,
                     getPlace)) return true
-              addResult(
-                new ScalaResolveResult(
-                  named,
-                  subst,
-                  getImports(state),
-                  implicitSearchState = Some(collectorState)))
+              addResult(new ScalaResolveResult(
+                named,
+                subst,
+                getImports(state),
+                implicitSearchState = Some(collectorState)))
             case _ =>
           }
         case patt: ScBindingPattern =>
@@ -291,12 +288,11 @@ class ImplicitCollector(
               if (!isPredefPriority && !ResolveUtils.isAccessible(
                     memb,
                     getPlace)) return true
-              addResult(
-                new ScalaResolveResult(
-                  named,
-                  subst,
-                  getImports(state),
-                  implicitSearchState = Some(collectorState)))
+              addResult(new ScalaResolveResult(
+                named,
+                subst,
+                getImports(state),
+                implicitSearchState = Some(collectorState)))
             case _ =>
           }
         case function: ScFunction if function.hasModifierProperty("implicit") =>
@@ -304,12 +300,11 @@ class ImplicitCollector(
           if (isPredefPriority || (ScImplicitlyConvertible
                 .checkFucntionIsEligible(function, place) &&
               ResolveUtils.isAccessible(function, getPlace))) {
-            addResult(
-              new ScalaResolveResult(
-                named,
-                subst,
-                getImports(state),
-                implicitSearchState = Some(collectorState)))
+            addResult(new ScalaResolveResult(
+              named,
+              subst,
+              getImports(state),
+              implicitSearchState = Some(collectorState)))
           }
         case _ =>
       }
@@ -406,7 +401,9 @@ class ImplicitCollector(
             }
           case fun: ScFunction
               if !PsiTreeUtil.isContextAncestor(fun, place, false) =>
-            if (isImplicitConversion && (fun.name == "conforms" || fun.name == "$conforms") &&
+            if (isImplicitConversion && (
+                  fun.name == "conforms" || fun.name == "$conforms"
+                ) &&
                 fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef")
               return None
             if (!fun.hasTypeParameters && withLocalTypeInference) return None
@@ -539,7 +536,9 @@ class ImplicitCollector(
                               .getInstance(place.getProject)
                               .getImplicitParametersSearchDepth
                             if (lastImplicit.isDefined &&
-                                (depth < 0 || searchImplicitsRecursively < depth)) {
+                                (
+                                  depth < 0 || searchImplicitsRecursively < depth
+                                )) {
                               predicate match {
                                 case Some(predicateFunction)
                                     if isExtensionConversion =>
@@ -855,28 +854,27 @@ class ImplicitCollector(
         abstractsToUpper(ScCompoundType(comps, Map.empty, Map.empty))
           .removeUndefines()
       case ScExistentialType(quant, wilds) =>
-        abstractsToUpper(
-          ScExistentialType(
-            quant.recursiveUpdate {
-              case tp @ ScTypeVariable(name) =>
-                wilds
-                  .find(_.name == name)
-                  .map(w => (true, w.upperBound))
-                  .getOrElse((false, tp))
-              case tp @ ScDesignatorType(element) =>
-                element match {
-                  case a: ScTypeAlias
-                      if a.getContext.isInstanceOf[ScExistentialClause] =>
-                    wilds
-                      .find(_.name == a.name)
-                      .map(w => (true, w.upperBound))
-                      .getOrElse((false, tp))
-                  case _ => (false, tp)
-                }
-              case other => (false, other)
-            },
-            wilds
-          )).removeUndefines()
+        abstractsToUpper(ScExistentialType(
+          quant.recursiveUpdate {
+            case tp @ ScTypeVariable(name) =>
+              wilds
+                .find(_.name == name)
+                .map(w => (true, w.upperBound))
+                .getOrElse((false, tp))
+            case tp @ ScDesignatorType(element) =>
+              element match {
+                case a: ScTypeAlias
+                    if a.getContext.isInstanceOf[ScExistentialClause] =>
+                  wilds
+                    .find(_.name == a.name)
+                    .map(w => (true, w.upperBound))
+                    .getOrElse((false, tp))
+                case _ => (false, tp)
+              }
+            case other => (false, other)
+          },
+          wilds
+        )).removeUndefines()
       case _ => abstractsToUpper(tp).removeUndefines()
     }
   }

@@ -130,9 +130,8 @@ class ZookeeperConsumerConnectorTest
 
   def getMessages(
       nMessagesPerThread: Int,
-      jTopicMessageStreams: java.util.Map[
-        String,
-        java.util.List[KafkaStream[String, String]]]): List[String] = {
+      jTopicMessageStreams: java.util.Map[String, java.util.List[
+        KafkaStream[String, String]]]): List[String] = {
     var messages: List[String] = Nil
     import scala.collection.JavaConversions._
     val topicMessageStreams = jTopicMessageStreams.mapValues(_.toList)

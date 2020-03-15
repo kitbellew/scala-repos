@@ -194,8 +194,8 @@ object StateChangeLogMerger extends Logging {
                 endDate) || date.before(endDate))) {
             topicPartitionRegex.findFirstMatchIn(nextLine) match {
               case Some(matcher) =>
-                if ((topic == null || topic == matcher.group(
-                      1)) && (partitions.isEmpty || partitions.contains(
+                if ((topic == null || topic == matcher
+                      .group(1)) && (partitions.isEmpty || partitions.contains(
                       matcher.group(3).toInt)))
                   return new LineIterator(nextLine, itr)
               case None =>

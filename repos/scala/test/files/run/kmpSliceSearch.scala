@@ -48,14 +48,12 @@ object Test {
       Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
       Vector(99, 2, 99, 99, 2, 99, 99, 99, 2, 99, 99, 99, 99, 2),
       List(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-      1 to 15
-    )
+      1 to 15)
     val needles = List[Seq[Int]](
       Array(7, 8, 9, 10),
       Vector(99, 99, 99),
       List(1, 1, 1, 1, 1, 2),
-      5 to 9
-    )
+      5 to 9)
     (haystacks zip needles) foreach {
       case (hay, nee) =>
         println(hay.indexOfSlice(nee, 2) + " " + hay.lastIndexOfSlice(nee, 13))

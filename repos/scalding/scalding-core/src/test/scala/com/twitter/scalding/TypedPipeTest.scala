@@ -248,10 +248,9 @@ class TypedPipeDistinctByTest extends WordSpec with Matchers {
         "correctly count unique item sizes" in {
           val outSet = outputBuffer.toSet
           outSet should have size 3
-          List(outSet) should contain oneOf (Set((0, 1), (2, 2), (2, 5)), Set(
-            (1, 1),
-            (2, 2),
-            (2, 5)))
+          List(outSet) should contain oneOf (
+            Set((0, 1), (2, 2), (2, 5)), Set((1, 1), (2, 2), (2, 5))
+          )
         }
       }
       .run
@@ -527,10 +526,10 @@ class TNiceJoinByCountJob(args: Args) extends Job(args) {
     .write(TypedText.tsv[(Int, Int, Int)]("out2"))
 
   //Also check simple leftJoins:
-  (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
-    leftJoinBy TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))(
-    _._1,
-    _._1)
+  (
+    TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
+      leftJoinBy TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1))
+  )(_._1, _._1)
   //Flatten out to three values:
   .toTypedPipe
     .map { kvw: (Int, ((Int, Int), Option[(Int, Int)])) =>
@@ -1022,10 +1021,9 @@ class TypedLookupJobTest extends WordSpec with Matchers {
       .typedSink(TypedText.tsv[(Int, String)]("output")) { outBuf =>
         "correctly TypedPipe.hashLookup" in {
           val data = mk.groupBy(_._1)
-          val correct = (-1 to 100)
-            .flatMap { k => data.get(k).getOrElse(List((k, ""))) }
-            .toList
-            .sorted
+          val correct = (
+            -1 to 100
+          ).flatMap { k => data.get(k).getOrElse(List((k, ""))) }.toList.sorted
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
         }
@@ -1064,10 +1062,9 @@ class TypedLookupReduceJobTest extends WordSpec with Matchers {
               val (k, v) = kvs.maxBy(_._2)
               (k, v)
             }
-          val correct = (-1 to 100)
-            .map { k => data.get(k).getOrElse((k, "")) }
-            .toList
-            .sorted
+          val correct = (
+            -1 to 100
+          ).map { k => data.get(k).getOrElse((k, "")) }.toList.sorted
           outBuf should have size (correct.size)
           outBuf.toList.sorted shouldBe correct
         }
@@ -1363,9 +1360,9 @@ class TypedSelfLeftCrossTest extends WordSpec with Matchers {
           outBuf should have size (input.size)
           val sum = input.reduceOption(_ + _)
           // toString to deal with our hadoop testing jank
-          outBuf.toList
-            .sortBy(_._1)
-            .toString shouldBe (input.sorted.map((_, sum)).toString)
+          outBuf.toList.sortBy(_._1).toString shouldBe (
+            input.sorted.map((_, sum)).toString
+          )
         }
         idx += 1
       }(implicitly[TypeDescriptor[(Int, Option[Int])]].converter)

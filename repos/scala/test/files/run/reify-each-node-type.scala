@@ -113,13 +113,13 @@ object Test {
   object N extends s.NN {
     def act[T](expr: Expr[T]): Unit = {
       idx += 1
-      val ts = expr.tree filter (_ =>
-        true) map (_.getClass.getName split "[.$]" last) filterNot seen distinct;
-      println(
-        "%2d  %60s  %s".format(
-          idx,
-          expr.tree.toString.replaceAll("""\s+""", " ").take(60),
-          ts mkString " "))
+      val ts = expr.tree filter (_ => true) map (
+        _.getClass.getName split "[.$]" last
+      ) filterNot seen distinct;
+      println("%2d  %60s  %s".format(
+        idx,
+        expr.tree.toString.replaceAll("""\s+""", " ").take(60),
+        ts mkString " "))
       seen ++= ts
     }
   }

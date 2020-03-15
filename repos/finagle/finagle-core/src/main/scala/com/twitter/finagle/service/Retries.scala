@@ -104,8 +104,7 @@ object Retries {
           statsP: param.Stats,
           budgetP: Budget,
           timerP: HighResTimer,
-          next: ServiceFactory[Req, Rep]
-      ): ServiceFactory[Req, Rep] = {
+          next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
         val statsRecv = statsP.statsReceiver
         val scoped = statsRecv.scope("retries")
         val requeues = scoped.counter("requeues")
@@ -118,8 +117,7 @@ object Retries {
           withdrawsOnly = false,
           scoped,
           timer,
-          next
-        )
+          next)
         svcFactory(retryBudget, filters, scoped, requeues, next)
       }
     }
@@ -138,13 +136,9 @@ object Retries {
     */
   private[finagle] def moduleWithRetryPolicy[Req, Rep]
       : Stackable[ServiceFactory[Req, Rep]] =
-    new Stack.Module4[
-      Stats,
-      Budget,
-      Policy,
-      HighResTimer,
-      ServiceFactory[Req, Rep]
-    ] {
+    new Stack.Module4[Stats, Budget, Policy, HighResTimer, ServiceFactory[
+      Req,
+      Rep]] {
       def role: Stack.Role = Retries.Role
 
       def description: String =
@@ -156,8 +150,7 @@ object Retries {
           budgetP: Budget,
           policyP: Policy,
           timerP: HighResTimer,
-          next: ServiceFactory[Req, Rep]
-      ): ServiceFactory[Req, Rep] = {
+          next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
         val statsRecv = statsP.statsReceiver
         val scoped = statsRecv.scope("retries")
         val requeues = scoped.counter("requeues")
@@ -186,8 +179,7 @@ object Retries {
               withdrawsOnly = true,
               scoped,
               timerP.timer,
-              next
-            )
+              next)
             retryFilter.andThen(requeueFilter)
           }
 
@@ -201,8 +193,7 @@ object Retries {
       withdrawsOnly: Boolean,
       statsReceiver: StatsReceiver,
       timer: Timer,
-      next: ServiceFactory[Req, Rep]
-  ): RequeueFilter[Req, Rep] = {
+      next: ServiceFactory[Req, Rep]): RequeueFilter[Req, Rep] = {
     val budget =
       if (withdrawsOnly) new WithdrawOnlyRetryBudget(retryBudget)
       else retryBudget
@@ -222,8 +213,7 @@ object Retries {
       filters: Filter[Req, Rep, Req, Rep],
       statsReceiver: StatsReceiver,
       requeuesCounter: Counter,
-      next: ServiceFactory[Req, Rep]
-  ): ServiceFactory[Req, Rep] = {
+      next: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] = {
     new ServiceFactoryProxy(next) {
       // We define the gauge inside of the ServiceFactory so that their lifetimes
       // are tied together.

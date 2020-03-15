@@ -105,9 +105,8 @@ class SbtRunner(
             processBuilder.environment().put(name, value)
         }
         val process = processBuilder.start()
-        using(
-          new PrintWriter(new BufferedWriter(
-            new OutputStreamWriter(process.getOutputStream, "UTF-8")))) {
+        using(new PrintWriter(new BufferedWriter(
+          new OutputStreamWriter(process.getOutputStream, "UTF-8")))) {
           writer =>
             sbtCommands.foreach(writer.println)
             writer.flush()

@@ -54,8 +54,9 @@ package object common
 
   def getUniqueId(implicit activity: Activity): Int = {
     var candidate: Int = 0
-    do { candidate = idSequence.incrementAndGet } while (activity.findViewById(
-      candidate) != null)
+    do { candidate = idSequence.incrementAndGet } while (
+      activity.findViewById(candidate) != null
+    )
     candidate
   }
 

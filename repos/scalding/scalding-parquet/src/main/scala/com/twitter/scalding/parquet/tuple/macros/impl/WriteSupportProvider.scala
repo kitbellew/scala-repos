@@ -25,9 +25,7 @@ object WriteSupportProvider {
         fValue: Tree,
         groupName: TermName): (Int, Tree) = {
       def writePrimitiveField(wTree: Tree) =
-        (
-          idx + 1,
-          q"""rc.startField($groupName.getFieldName($idx), $idx)
+        (idx + 1, q"""rc.startField($groupName.getFieldName($idx), $idx)
                       $wTree
                       rc.endField($groupName.getFieldName($idx), $idx)""")
 
@@ -71,16 +69,14 @@ object WriteSupportProvider {
             innerType,
             q"$cacheName",
             groupName)
-          (
-            idx + 1,
-            q"""if($fValue.isDefined) {
+          (idx + 1, q"""if($fValue.isDefined) {
                           val $cacheName = $fValue.get
                           $subTree
                         }
                      """)
         case tpe
-            if tpe.erasure =:= typeOf[List[Any]] || tpe.erasure =:= typeOf[
-              Set[_]] =>
+            if tpe.erasure =:= typeOf[List[Any]] || tpe.erasure =:= typeOf[Set[
+              _]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           val newGroupName = createGroupName()
           val (_, subTree) = matchField(0, innerType, q"element", newGroupName)
@@ -123,9 +119,7 @@ object WriteSupportProvider {
         case tpe if IsCaseClassImpl.isCaseClassType(ctx)(tpe) =>
           val newGroupName = createGroupName()
           val (_, subTree) = expandMethod(tpe, fValue, newGroupName)
-          (
-            idx + 1,
-            q"""
+          (idx + 1, q"""
                val $newGroupName = $groupName.getType($idx).asGroupType()
                ${writeGroupField(subTree)}""")
 
@@ -149,9 +143,7 @@ object WriteSupportProvider {
               getter.returnType,
               q"$pValueTree.$getter",
               groupName)
-            (
-              newIdx,
-              q"""
+            (newIdx, q"""
                       $existingTree
                       $subTree
                     """)

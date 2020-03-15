@@ -65,8 +65,7 @@ object FailureAccrualPolicy {
   def successRate(
       requiredSuccessRate: Double,
       window: Int,
-      markDeadFor: Stream[Duration]
-  ): FailureAccrualPolicy =
+      markDeadFor: Stream[Duration]): FailureAccrualPolicy =
     new FailureAccrualPolicy {
 
       // Pad the back of the stream to mark dead for a constant amount (300 seconds)
@@ -117,8 +116,7 @@ object FailureAccrualPolicy {
     */
   def consecutiveFailures(
       numFailures: Int,
-      markDeadFor: Stream[Duration]
-  ): FailureAccrualPolicy =
+      markDeadFor: Stream[Duration]): FailureAccrualPolicy =
     new FailureAccrualPolicy {
 
       // Pad the back of the stream to mark dead for a constant amount (300 seconds)

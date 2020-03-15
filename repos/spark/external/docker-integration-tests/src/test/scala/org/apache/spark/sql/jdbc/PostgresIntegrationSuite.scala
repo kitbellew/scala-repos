@@ -29,9 +29,7 @@ import org.apache.spark.tags.DockerTest
 class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
   override val db = new DatabaseOnDocker {
     override val imageName = "postgres:9.4.5"
-    override val env = Map(
-      "POSTGRES_PASSWORD" -> "rootpass"
-    )
+    override val env = Map("POSTGRES_PASSWORD" -> "rootpass")
     override val jdbcPort = 5432
     override def getJdbcUrl(ip: String, port: Int): String =
       s"jdbc:postgresql://$ip:$port/postgres?user=postgres&password=rootpass"
@@ -84,14 +82,12 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
     assert(rows(0).getLong(3) == 123456789012345L)
     assert(!rows(0).getBoolean(4))
     // BIT(10)'s come back as ASCII strings of ten ASCII 0's and 1's...
-    assert(
-      java.util.Arrays.equals(
-        rows(0).getAs[Array[Byte]](5),
-        Array[Byte](49, 48, 48, 48, 49, 48, 48, 49, 48, 49)))
-    assert(
-      java.util.Arrays.equals(
-        rows(0).getAs[Array[Byte]](6),
-        Array[Byte](0xDE.toByte, 0xAD.toByte, 0xBE.toByte, 0xEF.toByte)))
+    assert(java.util.Arrays.equals(
+      rows(0).getAs[Array[Byte]](5),
+      Array[Byte](49, 48, 48, 48, 49, 48, 48, 49, 48, 49)))
+    assert(java.util.Arrays.equals(
+      rows(0).getAs[Array[Byte]](6),
+      Array[Byte](0xDE.toByte, 0xAD.toByte, 0xBE.toByte, 0xEF.toByte)))
     assert(rows(0).getBoolean(7))
     assert(rows(0).getString(8) == "172.16.0.42")
     assert(rows(0).getString(9) == "192.168.0.0/16")

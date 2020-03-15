@@ -73,9 +73,7 @@ object FakesSpec extends PlaySpecification {
       val bytes = ByteString(xml.toString, "utf-16le")
       val req = FakeRequest(PUT, "/process")
         .withRawBody(bytes)
-        .withHeaders(
-          CONTENT_TYPE -> "text/xml;charset=utf-16le"
-        )
+        .withHeaders(CONTENT_TYPE -> "text/xml;charset=utf-16le")
       route(req) aka "response" must beSome.which { resp =>
         contentAsString(resp) aka "content" must_== "text/xml;charset=utf-16le"
       }

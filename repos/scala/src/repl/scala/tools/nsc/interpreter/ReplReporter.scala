@@ -50,11 +50,8 @@ class ReplReporter(intp: IMain)
 
   override def print(pos: Position, msg: String, severity: Severity) {
     val prefix =
-      (
-        if (replProps.colorOk)
-          severityColor(severity) + clabel(severity) + RESET
-        else clabel(severity)
-      )
+      (if (replProps.colorOk) severityColor(severity) + clabel(severity) + RESET
+       else clabel(severity))
     printMessage(pos, prefix + msg)
   }
 

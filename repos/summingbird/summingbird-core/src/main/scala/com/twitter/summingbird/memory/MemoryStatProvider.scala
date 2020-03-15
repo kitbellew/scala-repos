@@ -93,7 +93,9 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
       countersForJob.putIfAbsent(jobID, memoryCounters) match {
         case null => () // The jobID was not present
         case previous
-            if (previous.keySet & m.keySet).nonEmpty => // Key intersection nonempty
+            if (
+              previous.keySet & m.keySet
+            ).nonEmpty => // Key intersection nonempty
           // prefer the old values
           if (countersForJob.replace(jobID, previous, (m ++ previous))) ()
           else put(m)

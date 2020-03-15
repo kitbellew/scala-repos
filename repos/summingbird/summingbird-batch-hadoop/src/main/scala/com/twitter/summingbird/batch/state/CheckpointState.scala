@@ -124,12 +124,11 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
             case Some(leftClosedRightOpenIntersection) =>
               val batchToken: T = checkpointStore.checkpointBatchStart(
                 leftClosedRightOpenIntersection)
-              Right(
-                new CheckpointRunningState(
-                  this,
-                  intersection,
-                  hasStarted,
-                  batchToken))
+              Right(new CheckpointRunningState(
+                this,
+                intersection,
+                hasStarted,
+                batchToken))
             case _ => Left(waitingState)
           }
         case _ => Left(waitingState)
@@ -150,8 +149,7 @@ trait CheckpointState[T] extends WaitingState[Interval[Timestamp]] {
     private def setStopped() =
       require(
         isRunning.compareAndSet(true, false),
-        "Concurrent modification of HDFSState!"
-      )
+        "Concurrent modification of HDFSState!")
 
     /**
       * On success, checkpoint successful batches

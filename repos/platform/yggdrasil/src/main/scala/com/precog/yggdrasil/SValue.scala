@@ -229,8 +229,7 @@ trait SValueInstances {
           str = stringOrder,
           bool = boolOrder,
           num = numOrder,
-          nul = EQ
-        )
+          nul = EQ)
     }
 
   implicit def equal: Equal[SValue] =
@@ -262,8 +261,7 @@ trait SValueInstances {
           str = stringEqual,
           bool = boolEqual,
           num = numEqual,
-          nul = true
-        )
+          nul = true)
     }
 
   implicit def scalaOrder: scala.math.Ordering[SValue] = order.toScalaOrdering
@@ -298,9 +296,8 @@ object SValue extends SValueInstances {
   def fromJValue(jv: JValue): SValue =
     jv match {
       case JObject(fields) =>
-        SObject(
-          fields.map { case JField(name, v) => (name, fromJValue(v)) }(
-            collection.breakOut))
+        SObject(fields.map { case JField(name, v) => (name, fromJValue(v)) }(
+          collection.breakOut))
       case JArray(elements) =>
         SArray((elements map fromJValue)(collection.breakOut))
       case JString(s) => SString(s)

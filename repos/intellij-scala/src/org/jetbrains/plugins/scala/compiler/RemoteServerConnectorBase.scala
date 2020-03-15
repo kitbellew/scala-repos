@@ -147,9 +147,8 @@ abstract class RemoteServerConnectorBase(
     module.scalaCompilerSettings
 
   private def scalaSdk =
-    module.scalaSdk.getOrElse(
-      configurationError(
-        "No Scala SDK configured for module: " + module.getName))
+    module.scalaSdk.getOrElse(configurationError(
+      "No Scala SDK configured for module: " + module.getName))
 
   private def findJdk =
     scala.compiler.findJdkByName(settings.COMPILE_SERVER_SDK) match {

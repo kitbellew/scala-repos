@@ -267,10 +267,12 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         if (node.getPsi.isInstanceOf[ScArgumentExprList]) return "(...)"
       }
     }
-    if (node.getTreeParent != null && (ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
-        || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
-        || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
-        || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType)) {
+    if (node.getTreeParent != null && (
+          ScalaElementTypes.ARG_EXPRS == node.getTreeParent.getElementType
+          || ScalaElementTypes.INFIX_EXPR == node.getTreeParent.getElementType
+          || ScalaElementTypes.PATTERN_DEFINITION == node.getTreeParent.getElementType
+          || ScalaElementTypes.VARIABLE_DEFINITION == node.getTreeParent.getElementType
+        )) {
       node.getPsi match {
         case _: ScBlockExpr => return "{...}"
         case _              => return null
@@ -381,8 +383,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
               ScalaCodeFoldingSettings
                 .getInstance()
                 .isCollapseMethodCallBodies &&
-              isMultilineFuncBody(node.getTreeParent.getPsi
-                .asInstanceOf[ScFunctionDefinition])._1 =>
+              isMultilineFuncBody(
+                node.getTreeParent.getPsi
+                  .asInstanceOf[ScFunctionDefinition])._1 =>
           true
         case _
             if node.getPsi.isInstanceOf[ScTypeProjection] &&
@@ -468,8 +471,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         val isCorrectRange = range.getStartOffset + 1 < range.getEndOffset
         return (isCorrectRange, range, "{...}")
       case _ =>
-        val isMultilineBody = (body.getText.indexOf(
-          "\n") != -1) && (range.getStartOffset + 1 < range.getEndOffset)
+        val isMultilineBody = (body.getText.indexOf("\n") != -1) && (
+          range.getStartOffset + 1 < range.getEndOffset
+        )
         val textRange = if (isMultilineBody) range else null
         return (isMultilineBody, textRange, "...")
     }
@@ -557,9 +561,9 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         val elementType: IElementType = node.getElementType
         if (elementType == ScalaTokenTypes.tLINE_COMMENT && isCustomRegionEnd(
               node.getText) && !isWorksheetResults(node)) {
-          if ((isTagRegion && isTagRegionEnd(
-                node.getText)) || (!isTagRegion && isSimpleRegionEnd(
-                node.getText))) {
+          if ((
+                isTagRegion && isTagRegionEnd(node.getText)
+              ) || (!isTagRegion && isSimpleRegionEnd(node.getText))) {
             if (!processedRegions.contains(current) && stack.isEmpty) {
               end = current
               processedRegions.add(current)

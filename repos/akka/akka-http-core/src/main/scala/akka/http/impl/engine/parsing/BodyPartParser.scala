@@ -96,8 +96,8 @@ private[http] final class BodyPartParser(
     else if (ctx.isFinishing) {
       if (terminated) ctx.finish()
       else
-        ctx.pushAndFinish(
-          ParseError(ErrorInfo("Unexpected end of multipart entity")))
+        ctx.pushAndFinish(ParseError(
+          ErrorInfo("Unexpected end of multipart entity")))
     } else ctx.pull()
   }
 
@@ -200,24 +200,22 @@ private[http] final class BodyPartParser(
       contentType: ContentType,
       emitPartChunk: (List[HttpHeader], ContentType, ByteString) ⇒ Unit = {
         (headers, ct, bytes) ⇒
-          emit(
-            BodyPartStart(
-              headers,
-              entityParts ⇒
-                HttpEntity.IndefiniteLength(
-                  ct,
-                  entityParts.collect { case EntityPart(data) ⇒ data })))
+          emit(BodyPartStart(
+            headers,
+            entityParts ⇒
+              HttpEntity.IndefiniteLength(
+                ct,
+                entityParts.collect { case EntityPart(data) ⇒ data })))
           emit(bytes)
       },
       emitFinalPartChunk: (List[HttpHeader], ContentType, ByteString) ⇒ Unit = {
         (headers, ct, bytes) ⇒
-          emit(
-            BodyPartStart(
-              headers,
-              { rest ⇒
-                SubSource.kill(rest)
-                HttpEntity.Strict(ct, bytes)
-              }))
+          emit(BodyPartStart(
+            headers,
+            { rest ⇒
+              SubSource.kill(rest)
+              HttpEntity.Strict(ct, bytes)
+            }))
       })(input: ByteString, offset: Int): StateResult =
     try {
       @tailrec def rec(index: Int): StateResult = {
@@ -248,12 +246,11 @@ private[http] final class BodyPartParser(
           continue(input drop emitEnd, 0)(
             parseEntity(null, null, simpleEmit, simpleEmit))
         } else
-          continue(input, offset)(
-            parseEntity(
-              headers,
-              contentType,
-              emitPartChunk,
-              emitFinalPartChunk))
+          continue(input, offset)(parseEntity(
+            headers,
+            contentType,
+            emitPartChunk,
+            emitFinalPartChunk))
     }
 
   def emit(bytes: ByteString): Unit =

@@ -82,8 +82,9 @@ class ClosureCleanerSuite extends SparkFunSuite {
       catch {
         case rse: ReturnStatementInClosureException => // Success!
         case e @ (_: NotSerializableException | _: SparkException) =>
-          fail(s"Expected ReturnStatementInClosureException, but got $e.\n" +
-            "This means the closure provided by user is not actually cleaned.")
+          fail(
+            s"Expected ReturnStatementInClosureException, but got $e.\n" +
+              "This means the closure provided by user is not actually cleaned.")
       }
     }
 
@@ -364,8 +365,7 @@ private object TestUserClosuresActuallyCleaned {
       .combineByKey(
         { _ => return; 1 }: Int => Int,
         { case (_, _) => return; 1 }: (Int, Int) => Int,
-        { case (_, _) => return; 1 }: (Int, Int) => Int
-      )
+        { case (_, _) => return; 1 }: (Int, Int) => Int)
       .count()
   }
   def testAggregateByKey(rdd: RDD[(Int, Int)]): Unit = {
@@ -424,8 +424,7 @@ private object TestUserClosuresActuallyCleaned {
       { _ => return; 1 }: Iterator[Int] => Int,
       Seq.empty,
       { case (_, _) => return }: (Int, Int) => Unit,
-      { return }
-    )
+      { return })
   }
 }
 

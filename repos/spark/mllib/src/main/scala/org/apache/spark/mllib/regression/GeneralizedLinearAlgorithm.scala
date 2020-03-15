@@ -276,8 +276,8 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
       */
     val scaler =
       if (useFeatureScaling) {
-        new StandardScaler(withStd = true, withMean = false)
-          .fit(input.map(_.features))
+        new StandardScaler(withStd = true, withMean = false).fit(input.map(
+          _.features))
       } else { null }
 
     // Prepend an extra variable consisting of all 1.0's for the intercept.

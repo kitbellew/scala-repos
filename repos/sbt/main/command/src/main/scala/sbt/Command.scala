@@ -153,9 +153,9 @@ object Command {
       bs: Seq[String],
       maxDistance: Int = 3,
       maxSuggestions: Int = 3): Seq[String] =
-    bs.map { b =>
-      (b, distance(a, b))
-    } filter (_._2 <= maxDistance) sortBy (_._2) take (maxSuggestions) map (_._1)
+    bs.map { b => (b, distance(a, b)) } filter (_._2 <= maxDistance) sortBy (
+      _._2
+    ) take (maxSuggestions) map (_._1)
   def distance(a: String, b: String): Int =
     EditDistance.levenshtein(
       a,

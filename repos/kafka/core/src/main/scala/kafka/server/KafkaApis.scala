@@ -162,10 +162,9 @@ class KafkaApis(
           if (response == null)
             requestChannel.closeConnection(request.processor, request)
           else
-            requestChannel.sendResponse(
-              new Response(
-                request,
-                new ResponseSend(request.connectionId, respHeader, response)))
+            requestChannel.sendResponse(new Response(
+              request,
+              new ResponseSend(request.connectionId, respHeader, response)))
 
           error("Error when handling request %s".format(request.body), e)
         }
@@ -219,13 +218,12 @@ class KafkaApis(
             result.asJava)
         }
 
-      requestChannel.sendResponse(
-        new Response(
-          request,
-          new ResponseSend(
-            request.connectionId,
-            responseHeader,
-            leaderAndIsrResponse)))
+      requestChannel.sendResponse(new Response(
+        request,
+        new ResponseSend(
+          request.connectionId,
+          responseHeader,
+          leaderAndIsrResponse)))
     } catch {
       case e: KafkaStorageException =>
         fatal("Disk error during leadership change.", e)
@@ -255,10 +253,9 @@ class KafkaApis(
           result.asJava)
       }
 
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new ResponseSend(request.connectionId, responseHeader, response)))
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, response)))
     replicaManager.replicaFetcherManager.shutdownIdleFetcherThreads()
   }
 
@@ -278,13 +275,12 @@ class KafkaApis(
       }
 
     val responseHeader = new ResponseHeader(correlationId)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new ResponseSend(
-          request.connectionId,
-          responseHeader,
-          updateMetadataResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new ResponseSend(
+        request.connectionId,
+        responseHeader,
+        updateMetadataResponse)))
   }
 
   def handleControlledShutdownRequest(request: RequestChannel.Request) {
@@ -302,12 +298,11 @@ class KafkaApis(
       controlledShutdownRequest.correlationId,
       Errors.NONE.code,
       partitionsRemaining)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(
-          request.connectionId,
-          controlledShutdownResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(
+        request.connectionId,
+        controlledShutdownResponse)))
   }
 
   /**
@@ -328,10 +323,9 @@ class KafkaApis(
       }.toMap
       val responseHeader = new ResponseHeader(header.correlationId)
       val responseBody = new OffsetCommitResponse(results.asJava)
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     } else {
       // filter non-existent topics
       val invalidRequestsInfo = offsetCommitRequest.offsetData.asScala.filter {
@@ -430,8 +424,7 @@ class KafkaApis(
               if (partitionData.timestamp == OffsetCommitRequest.DEFAULT_TIMESTAMP)
                 defaultExpireTimestamp
               else offsetRetention + partitionData.timestamp
-            }
-          )
+            })
         }
 
         // call coordinator to handle commit offset
@@ -511,8 +504,7 @@ class KafkaApis(
             info(
               s"Closing connection due to error during produce request with correlation id ${request.header.correlationId} " +
                 s"from client id ${request.header.clientId} with ack=0\n" +
-                s"Topic and partition to exceptions: $exceptionsSummary"
-            )
+                s"Topic and partition to exceptions: $exceptionsSummary")
             requestChannel.closeConnection(request.processor, request)
           } else { requestChannel.noOperation(request.processor, request) }
         } else {
@@ -531,10 +523,9 @@ class KafkaApis(
                 s"Version `$version` of ProduceRequest is not handled. Code must be updated.")
           }
 
-          requestChannel.sendResponse(
-            new RequestChannel.Response(
-              request,
-              new ResponseSend(request.connectionId, respHeader, respBody)))
+          requestChannel.sendResponse(new RequestChannel.Response(
+            request,
+            new ResponseSend(request.connectionId, respHeader, respBody)))
         }
       }
 
@@ -655,17 +646,17 @@ class KafkaApis(
       }
 
       def fetchResponseCallback(delayTimeMs: Int) {
-        trace(s"Sending fetch response to client ${fetchRequest.clientId} of " +
-          s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
+        trace(
+          s"Sending fetch response to client ${fetchRequest.clientId} of " +
+            s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
         val response = FetchResponse(
           fetchRequest.correlationId,
           mergedPartitionData,
           fetchRequest.versionId,
           delayTimeMs)
-        requestChannel.sendResponse(
-          new RequestChannel.Response(
-            request,
-            new FetchResponseSend(request.connectionId, response)))
+        requestChannel.sendResponse(new RequestChannel.Response(
+          request,
+          new FetchResponseSend(request.connectionId, response)))
       }
 
       // When this callback is triggered, the remote API call has completed
@@ -785,10 +776,9 @@ class KafkaApis(
     val responseHeader = new ResponseHeader(correlationId)
     val response = new ListOffsetResponse(mergedResponseMap.asJava)
 
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new ResponseSend(request.connectionId, responseHeader, response)))
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, response)))
   }
 
   def fetchOffsets(
@@ -831,8 +821,9 @@ class KafkaApis(
         startIndex = 0
       case _ =>
         var isFound = false
-        debug("Offset time array = " + offsetTimeArray.foreach(o =>
-          "%d, %d".format(o._1, o._2)))
+        debug(
+          "Offset time array = " + offsetTimeArray.foreach(o =>
+            "%d, %d".format(o._1, o._2)))
         startIndex = offsetTimeArray.length - 1
         while (startIndex >= 0 && !isFound) {
           if (offsetTimeArray(startIndex)._2 <= timestamp) isFound = true
@@ -996,12 +987,10 @@ class KafkaApis(
     val responseHeader = new ResponseHeader(request.header.correlationId)
     val responseBody = new MetadataResponse(
       brokers.map(_.getNode(request.securityProtocol)).asJava,
-      (topicMetadata ++ unauthorizedTopicMetadata).asJava
-    )
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      (topicMetadata ++ unauthorizedTopicMetadata).asJava)
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, responseBody)))
   }
 
   /*
@@ -1101,13 +1090,12 @@ class KafkaApis(
 
     trace(
       s"Sending offset fetch response $offsetFetchResponse for correlation id ${header.correlationId} to client ${header.clientId}.")
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new ResponseSend(
-          request.connectionId,
-          responseHeader,
-          offsetFetchResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new ResponseSend(
+        request.connectionId,
+        responseHeader,
+        offsetFetchResponse)))
   }
 
   def handleGroupCoordinatorRequest(request: RequestChannel.Request) {
@@ -1122,10 +1110,9 @@ class KafkaApis(
       val responseBody = new GroupCoordinatorResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code,
         Node.noNode)
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     } else {
       val partition = coordinator.partitionFor(groupCoordinatorRequest.groupId)
 
@@ -1161,10 +1148,9 @@ class KafkaApis(
             responseBody,
             request.header.correlationId,
             request.header.clientId))
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     }
   }
 
@@ -1206,10 +1192,9 @@ class KafkaApis(
       .toMap
 
     val responseBody = new DescribeGroupsResponse(groups.asJava)
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new ResponseSend(request.connectionId, responseHeader, responseBody)))
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, responseBody)))
   }
 
   def handleListGroupsRequest(request: RequestChannel.Request) {
@@ -1224,10 +1209,9 @@ class KafkaApis(
         }
         new ListGroupsResponse(error.code, allGroups.asJava)
       }
-    requestChannel.sendResponse(
-      new RequestChannel.Response(
-        request,
-        new ResponseSend(request.connectionId, responseHeader, responseBody)))
+    requestChannel.sendResponse(new RequestChannel.Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, responseBody)))
   }
 
   def handleJoinGroupRequest(request: RequestChannel.Request) {
@@ -1256,10 +1240,9 @@ class KafkaApis(
             responseBody,
             request.header.correlationId,
             request.header.clientId))
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     }
 
     if (!authorize(
@@ -1273,10 +1256,9 @@ class KafkaApis(
         JoinGroupResponse.UNKNOWN_MEMBER_ID, // memberId
         JoinGroupResponse.UNKNOWN_MEMBER_ID, // leaderId
         Map.empty[String, ByteBuffer])
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     } else {
       // let the coordinator to handle join-group
       val protocols = joinGroupRequest
@@ -1305,10 +1287,9 @@ class KafkaApis(
       val responseBody =
         new SyncGroupResponse(errorCode, ByteBuffer.wrap(memberState))
       val responseHeader = new ResponseHeader(request.header.correlationId)
-      requestChannel.sendResponse(
-        new Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+      requestChannel.sendResponse(new Response(
+        request,
+        new ResponseSend(request.connectionId, responseHeader, responseBody)))
     }
 
     if (!authorize(
@@ -1342,10 +1323,9 @@ class KafkaApis(
             response,
             request.header.correlationId,
             request.header.clientId))
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, respHeader, response)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, respHeader, response)))
     }
 
     if (!authorize(
@@ -1414,10 +1394,9 @@ class KafkaApis(
             response,
             request.header.correlationId,
             request.header.clientId))
-      requestChannel.sendResponse(
-        new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, respHeader, response)))
+      requestChannel.sendResponse(new RequestChannel.Response(
+        request,
+        new ResponseSend(request.connectionId, respHeader, response)))
     }
 
     if (!authorize(

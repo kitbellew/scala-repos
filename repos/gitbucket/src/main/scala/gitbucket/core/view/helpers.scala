@@ -31,8 +31,7 @@ object helpers
     (1000L * 60 * 60, "hour"),
     (1000L * 60 * 60 * 24, "day"),
     (1000L * 60 * 60 * 24 * 30, "month"),
-    (1000L * 60 * 60 * 24 * 365, "year")
-  ).reverse
+    (1000L * 60 * 60 * 24 * 365, "year")).reverse
 
   /**
     * Format java.util.Date to "x {seconds/minutes/hours/days/months/years} ago"
@@ -99,18 +98,17 @@ object helpers
       enableTaskList: Boolean = false,
       hasWritePermission: Boolean = false,
       pages: List[String] = Nil)(implicit context: Context): Html =
-    Html(
-      Markdown.toHtml(
-        markdown = markdown,
-        repository = repository,
-        enableWikiLink = enableWikiLink,
-        enableRefsLink = enableRefsLink,
-        enableAnchor = enableAnchor,
-        enableLineBreaks = enableLineBreaks,
-        enableTaskList = enableTaskList,
-        hasWritePermission = hasWritePermission,
-        pages = pages
-      ))
+    Html(Markdown.toHtml(
+      markdown = markdown,
+      repository = repository,
+      enableWikiLink = enableWikiLink,
+      enableRefsLink = enableRefsLink,
+      enableAnchor = enableAnchor,
+      enableLineBreaks = enableLineBreaks,
+      enableTaskList = enableTaskList,
+      hasWritePermission = hasWritePermission,
+      pages = pages
+    ))
 
   /**
     * Render the given source (only markdown is supported in default) as HTML.
@@ -128,16 +126,15 @@ object helpers
     val fileName = filePath.reverse.head.toLowerCase
     val extension = FileUtil.getExtension(fileName)
     val renderer = PluginRegistry().getRenderer(extension)
-    renderer.render(
-      RenderRequest(
-        filePath,
-        fileContent,
-        branch,
-        repository,
-        enableWikiLink,
-        enableRefsLink,
-        enableAnchor,
-        context))
+    renderer.render(RenderRequest(
+      filePath,
+      fileContent,
+      branch,
+      repository,
+      enableWikiLink,
+      enableRefsLink,
+      enableAnchor,
+      context))
   }
 
   /**
@@ -397,8 +394,7 @@ object helpers
             if (pos < m.start)
               Some(HtmlFormat.escape(text.substring(pos, m.start)))
             else None,
-            Some(Html(s"""<a href="${href}">${url}</a>"""))
-          ).flatten),
+            Some(Html(s"""<a href="${href}">${url}</a>"""))).flatten),
           m.end)
     }
     // append rest fragment

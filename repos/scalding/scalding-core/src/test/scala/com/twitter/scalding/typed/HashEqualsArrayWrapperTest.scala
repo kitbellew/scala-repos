@@ -67,30 +67,22 @@ class HashArrayEqualsWrapperProps
   }
 
   property("Specialized orderings obey all laws for wrapped Arrays") {
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsLongOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsIntOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsShortOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsCharOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsByteOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsBooleanOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsFloatOrdering))
-    check(
-      HashArrayEqualsWrapperLaws.check2(
-        HashEqualsArrayWrapper.hashEqualsDoubleOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsLongOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsIntOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsShortOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsCharOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsByteOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsBooleanOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsFloatOrdering))
+    check(HashArrayEqualsWrapperLaws.check2(
+      HashEqualsArrayWrapper.hashEqualsDoubleOrdering))
   }
 
 }

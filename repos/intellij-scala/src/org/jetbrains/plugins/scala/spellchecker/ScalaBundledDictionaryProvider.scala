@@ -7,9 +7,5 @@ import com.intellij.spellchecker.BundledDictionaryProvider
   * Date: 10.01.12
   */
 class ScalaBundledDictionaryProvider extends BundledDictionaryProvider {
-  def getBundledDictionaries: Array[String] = {
-    Array(
-      "scala.dic"
-    )
-  }
+  def getBundledDictionaries: Array[String] = { Array("scala.dic") }
 }

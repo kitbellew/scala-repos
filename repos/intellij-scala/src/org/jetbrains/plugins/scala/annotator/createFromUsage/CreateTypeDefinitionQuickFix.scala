@@ -88,8 +88,8 @@ abstract class CreateTypeDefinitionQuickFix(
       case dirs =>
         val currentDir = dirs
           .find(PsiTreeUtil.isAncestor(_, ref, true))
-          .orElse(
-            dirs.find(ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
+          .orElse(dirs.find(
+            ScalaPsiUtil.getModule(_) == ScalaPsiUtil.getModule(ref)))
         currentDir.getOrElse(dirs(0))
     }
     createClassInDirectory(directory)
@@ -97,9 +97,8 @@ abstract class CreateTypeDefinitionQuickFix(
 
   private def createInnerClassIn(target: ScTemplateDefinition): Unit = {
     val extBlock = target.extendsBlock
-    val targetBody = extBlock.templateBody.getOrElse(
-      extBlock.add(
-        ScalaPsiElementFactory.createTemplateBody(target.getManager)))
+    val targetBody = extBlock.templateBody.getOrElse(extBlock.add(
+      ScalaPsiElementFactory.createTemplateBody(target.getManager)))
     createClassIn(targetBody, Some(targetBody.getLastChild))
   }
 

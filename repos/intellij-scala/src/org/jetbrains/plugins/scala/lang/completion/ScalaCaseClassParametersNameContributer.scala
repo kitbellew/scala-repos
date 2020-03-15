@@ -137,12 +137,13 @@ class ScalaCaseClassParametersNameContributer
         val me = PsiTreeUtil.getContextOfType(position, classOf[ScPattern])
         if (me == null) return ParameterWithPosition(None, -1)
 
-        val patterns = Option(
-          PsiTreeUtil
-            .getContextOfType(position, classOf[ScPatternArgumentList]))
-          .map(_.patterns)
+        val patterns = Option(PsiTreeUtil.getContextOfType(
+          position,
+          classOf[ScPatternArgumentList])).map(_.patterns)
 
-        if (patterns.isEmpty || (patterns.isDefined && patterns.get.length > classParams.length))
+        if (patterns.isEmpty || (
+              patterns.isDefined && patterns.get.length > classParams.length
+            ))
           return ParameterWithPosition(
             None,
             -1

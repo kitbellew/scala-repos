@@ -37,9 +37,7 @@ final class TeamApi(
         (cached.teamIdsCache invalidate me.id)
         (forum ! MakeTeam(team.id, team.name))
         (indexer ! InsertTeam(team))
-        (timeline ! Propagate(
-          TeamCreate(me.id, team.id)
-        ).toFollowersOf(me.id))
+        (timeline ! Propagate(TeamCreate(me.id, team.id)).toFollowersOf(me.id))
       } inject team
     }
 
@@ -82,8 +80,9 @@ final class TeamApi(
       teamOption ← $find.byId[Team](teamId)
       result ← ~(teamOption |@| ctx.me.filter(_.canTeam))({
         case (team, user) if team.open =>
-          (doJoin(team, user.id) inject Joined(team).some): Fu[
-            Option[Requesting]]
+          (
+            doJoin(team, user.id) inject Joined(team).some
+          ): Fu[Option[Requesting]]
         case (team, user) =>
           fuccess(Motivate(team).some: Option[Requesting])
       })

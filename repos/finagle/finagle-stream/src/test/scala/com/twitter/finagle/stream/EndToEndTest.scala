@@ -39,8 +39,8 @@ class EndToEndTest extends FunSuite {
   case class MyStreamResponse(
       info: StreamResponse.Info,
       messages: Offer[Buf],
-      error: Offer[Throwable]
-  ) extends StreamResponse {
+      error: Offer[Throwable])
+      extends StreamResponse {
 
     val released = new Promise[Unit]
     def release() = released.updateIfEmpty(Return.Unit)
@@ -116,9 +116,8 @@ class EndToEndTest extends FunSuite {
       client.close()
     }
 
-    test(
-      "Streams %s: the client does not admit concurrent requests".format(
-        what)) {
+    test("Streams %s: the client does not admit concurrent requests".format(
+      what)) {
       val c = new WorkItContext()
       import c._
       val (client, _) = mkClient(serverRes)
@@ -131,9 +130,8 @@ class EndToEndTest extends FunSuite {
     }
 
     if (!sys.props.contains("SKIP_FLAKY"))
-      test(
-        "Streams %s: the server does not admit concurrent requests".format(
-          what)) {
+      test("Streams %s: the server does not admit concurrent requests".format(
+        what)) {
         val c = new WorkItContext()
         import c._
         val (client, address) = mkClient(serverRes)
@@ -142,10 +140,9 @@ class EndToEndTest extends FunSuite {
         // pipeline.
 
         val recvd = new Broker[ChannelEvent]
-        val bootstrap = new ClientBootstrap(
-          new NioClientSocketChannelFactory(
-            Executors.newCachedThreadPool(),
-            Executors.newCachedThreadPool()))
+        val bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
+          Executors.newCachedThreadPool(),
+          Executors.newCachedThreadPool()))
         bootstrap.setPipelineFactory(new ChannelPipelineFactory {
           override def getPipeline() = {
             val pipeline = Channels.pipeline()
@@ -187,7 +184,9 @@ class EndToEndTest extends FunSuite {
 
         assert(Await.result(recvd ?, 1.second) match {
           case e: ChannelStateEvent =>
-            e.getState == ChannelState.OPEN && (java.lang.Boolean.TRUE equals e.getValue)
+            e.getState == ChannelState.OPEN && (
+              java.lang.Boolean.TRUE equals e.getValue
+            )
           case _ => false
         })
 
@@ -245,7 +244,9 @@ class EndToEndTest extends FunSuite {
         // And finally it's closed.
         assert(Await.result(recvd ?, 1.second) match {
           case e: ChannelStateEvent =>
-            e.getState == ChannelState.OPEN && (java.lang.Boolean.FALSE equals e.getValue)
+            e.getState == ChannelState.OPEN && (
+              java.lang.Boolean.FALSE equals e.getValue
+            )
           case _ => false
         })
 

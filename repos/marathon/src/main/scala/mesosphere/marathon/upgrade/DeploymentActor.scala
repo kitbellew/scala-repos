@@ -109,19 +109,16 @@ private class DeploymentActor(
 
   def startApp(app: AppDefinition, scaleTo: Int): Future[Unit] = {
     val promise = Promise[Unit]()
-    context.actorOf(
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        eventBus,
-        app,
-        scaleTo,
-        promise
-      )
-    )
+    context.actorOf(Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      eventBus,
+      app,
+      scaleTo,
+      promise))
     promise.future
   }
 
@@ -144,19 +141,16 @@ private class DeploymentActor(
     def startTasksIfNeeded: Future[Unit] =
       tasksToStart.fold(Future.successful(())) { _ =>
         val promise = Promise[Unit]()
-        context.actorOf(
-          Props(
-            classOf[TaskStartActor],
-            driver,
-            scheduler,
-            taskQueue,
-            taskTracker,
-            eventBus,
-            app,
-            scaleTo,
-            promise
-          )
-        )
+        context.actorOf(Props(
+          classOf[TaskStartActor],
+          driver,
+          scheduler,
+          taskQueue,
+          taskTracker,
+          eventBus,
+          app,
+          scaleTo,
+          promise))
         promise.future
       }
 
@@ -165,14 +159,13 @@ private class DeploymentActor(
 
   def killTasks(appId: PathId, tasks: Seq[Task]): Future[Unit] = {
     val promise = Promise[Unit]()
-    context.actorOf(
-      TaskKillActor.props(
-        driver,
-        appId,
-        taskTracker,
-        eventBus,
-        tasks.map(_.taskId),
-        promise))
+    context.actorOf(TaskKillActor.props(
+      driver,
+      appId,
+      taskTracker,
+      eventBus,
+      tasks.map(_.taskId),
+      promise))
     promise.future
   }
 
@@ -187,15 +180,13 @@ private class DeploymentActor(
     if (app.instances == 0) { Future.successful(()) }
     else {
       val promise = Promise[Unit]()
-      context.actorOf(
-        Props(
-          new TaskReplaceActor(
-            driver,
-            taskQueue,
-            taskTracker,
-            eventBus,
-            app,
-            promise)))
+      context.actorOf(Props(new TaskReplaceActor(
+        driver,
+        taskQueue,
+        taskTracker,
+        eventBus,
+        app,
+        promise)))
       promise.future
     }
   }
@@ -230,18 +221,16 @@ object DeploymentActor {
       eventBus: EventStream): Props = {
     // scalastyle:on parameter.number
 
-    Props(
-      new DeploymentActor(
-        parent,
-        receiver,
-        driver,
-        scheduler,
-        plan,
-        taskTracker,
-        taskQueue,
-        storage,
-        healthCheckManager,
-        eventBus
-      ))
+    Props(new DeploymentActor(
+      parent,
+      receiver,
+      driver,
+      scheduler,
+      plan,
+      taskTracker,
+      taskQueue,
+      storage,
+      healthCheckManager,
+      eventBus))
   }
 }

@@ -141,8 +141,8 @@ private[stream] object Stages {
 
     protected def supervision(attributes: Attributes): Decider =
       attributes
-        .get[SupervisionStrategy](
-          SupervisionStrategy(Supervision.stoppingDecider))
+        .get[SupervisionStrategy](SupervisionStrategy(
+          Supervision.stoppingDecider))
         .decider
 
   }

@@ -20,9 +20,8 @@ import akka.stream.testkit.scaladsl.TestSource
 import akka.testkit.AkkaSpec
 
 class FlowStageSpec
-    extends AkkaSpec(
-      ConfigFactory.parseString(
-        "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
+    extends AkkaSpec(ConfigFactory.parseString(
+      "akka.actor.debug.receive=off\nakka.loglevel=INFO")) {
 
   val settings = ActorMaterializerSettings(system)
     .withInputBuffer(initialSize = 2, maxSize = 2)

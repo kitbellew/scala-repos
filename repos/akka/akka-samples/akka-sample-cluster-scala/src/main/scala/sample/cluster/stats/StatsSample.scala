@@ -27,8 +27,8 @@ object StatsSample {
       // Override the configuration of the port when specified as program argument
       val config = ConfigFactory
         .parseString(s"akka.remote.netty.tcp.port=" + port)
-        .withFallback(
-          ConfigFactory.parseString("akka.cluster.roles = [compute]"))
+        .withFallback(ConfigFactory.parseString(
+          "akka.cluster.roles = [compute]"))
         .withFallback(ConfigFactory.load("stats1"))
 
       val system = ActorSystem("ClusterSystem", config)

@@ -354,10 +354,12 @@ trait StandardLiftables { self: Universe =>
       T14,
       T15]] =
       Liftable { t =>
-        SyntacticTuple(liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(
-          t._4) :: liftT5(t._5) :: liftT6(t._6) :: liftT7(t._7) :: liftT8(
-          t._8) :: liftT9(t._9) :: liftT10(t._10) :: liftT11(t._11) :: liftT12(
-          t._12) :: liftT13(t._13) :: liftT14(t._14) :: liftT15(t._15) :: Nil)
+        SyntacticTuple(
+          liftT1(t._1) :: liftT2(t._2) :: liftT3(t._3) :: liftT4(
+            t._4) :: liftT5(t._5) :: liftT6(t._6) :: liftT7(t._7) :: liftT8(
+            t._8) :: liftT9(t._9) :: liftT10(t._10) :: liftT11(
+            t._11) :: liftT12(t._12) :: liftT13(t._13) :: liftT14(
+            t._14) :: liftT15(t._15) :: Nil)
       }
     implicit def liftTuple16[
         T1,

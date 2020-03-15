@@ -133,9 +133,8 @@ abstract class MongoAccountManager(
           Some(creationDate),
           profile)
 
-        database(
-          insert(account0.serialize.asInstanceOf[JObject])
-            .into(settings.accounts)) map { _ => account0 }
+        database(insert(account0.serialize.asInstanceOf[JObject]).into(
+          settings.accounts)) map { _ => account0 }
       }
     } yield account
   }
@@ -206,8 +205,8 @@ abstract class MongoAccountManager(
     findOneMatching[ResetToken]("tokenId", tokenId, settings.resetTokens)
 
   def findAccountByAPIKey(apiKey: String) =
-    findOneMatching[Account]("apiKey", apiKey, settings.accounts)
-      .map(_.map(_.accountId))
+    findOneMatching[Account]("apiKey", apiKey, settings.accounts).map(_.map(
+      _.accountId))
 
   def findAccountById(accountId: String) =
     findOneMatching[Account]("accountId", accountId, settings.accounts)
@@ -234,9 +233,8 @@ abstract class MongoAccountManager(
     findAccountById(accountId).flatMap {
       case ot @ Some(account) =>
         for {
-          _ <- database(
-            insert(account.serialize.asInstanceOf[JObject])
-              .into(settings.deletedAccounts))
+          _ <- database(insert(account.serialize.asInstanceOf[JObject]).into(
+            settings.deletedAccounts))
           _ <- database(
             remove.from(settings.accounts).where("accountId" === accountId))
         } yield { ot }

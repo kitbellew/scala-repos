@@ -103,24 +103,22 @@ class ScalaPropertyFoldingBuilder extends FoldingBuilderEx {
                 i
               }
               if (ok) {
-                result.add(
-                  new FoldingDescriptor(
-                    ObjectUtils.assertNotNull(parent.getParent.getNode),
-                    parent.getParent.getTextRange,
-                    null,
-                    set))
+                result.add(new FoldingDescriptor(
+                  ObjectUtils.assertNotNull(parent.getParent.getNode),
+                  parent.getParent.getTextRange,
+                  null,
+                  set))
                 return
               }
             }
           }
         case _ =>
       }
-      result.add(
-        new FoldingDescriptor(
-          ObjectUtils.assertNotNull(expression.getNode),
-          expression.getTextRange,
-          null,
-          set))
+      result.add(new FoldingDescriptor(
+        ObjectUtils.assertNotNull(expression.getNode),
+        expression.getTextRange,
+        null,
+        set))
     }
   }
 }

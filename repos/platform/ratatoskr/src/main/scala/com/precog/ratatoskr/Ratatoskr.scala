@@ -115,8 +115,7 @@ object Ratatoskr {
     ZookeeperTools,
     ImportTools,
     CSVTools,
-    APIKeyTools
-  )
+    APIKeyTools)
 
   val commandMap: Map[String, Command] = commands
     .map(c => (c.name, c))(collection.breakOut)
@@ -381,8 +380,9 @@ object KafkaTools extends Command {
           if (pendingTimes.nonEmpty) {
             //println("Updating pending times: " + pendingTimes)
             interpolationMap ++= pendingTimes.map { interp =>
-              val interpFraction =
-                (interp.index - lastTimestamp.index).toDouble / (newTimestamp.index - lastTimestamp.index)
+              val interpFraction = (
+                interp.index - lastTimestamp.index
+              ).toDouble / (newTimestamp.index - lastTimestamp.index)
               val timeSpanSize = newTimestamp.time - lastTimestamp.time
               val interpTS =
                 (interpFraction * timeSpanSize + lastTimestamp.time).toLong
@@ -485,11 +485,10 @@ object KafkaTools extends Command {
               case i: Interpolated    => interpolationMap.get(i)
             }).foreach { timestamp =>
               //println(index + " => " + timestamp)
-              println(
-                "%d,%d,%s".format(
-                  timestamp,
-                  accountTotals.sum,
-                  accountTotals.mkString(",")))
+              println("%d,%d,%s".format(
+                timestamp,
+                accountTotals.sum,
+                accountTotals.mkString(",")))
             }
         }
       } else {
@@ -601,9 +600,10 @@ object KafkaTools extends Command {
 
       message.get(bytes)
 
-      println(
-        "Type: %d, offset: %d, payload: %s"
-          .format(tpe, msg.offset, new String(bytes, "UTF-8")))
+      println("Type: %d, offset: %d, payload: %s".format(
+        tpe,
+        msg.offset,
+        new String(bytes, "UTF-8")))
     }
   }
 
@@ -612,14 +612,18 @@ object KafkaTools extends Command {
       EventEncoding.read(msg.message.payload) match {
         case Success(Ingest(apiKey, path, ownerAccountId, data, _, _, _)) =>
           println(
-            "Ingest-%06d Offset: %d Path: %s APIKey: %s Owner: %s --"
-              .format(i + 1, msg.offset, path, apiKey, ownerAccountId))
+            "Ingest-%06d Offset: %d Path: %s APIKey: %s Owner: %s --".format(
+              i + 1,
+              msg.offset,
+              path,
+              apiKey,
+              ownerAccountId))
           data.foreach(v => println(v.renderPretty))
 
         case other =>
-          println(
-            "Message %d: %s was not an ingest request."
-              .format(i + 1, other.toString))
+          println("Message %d: %s was not an ingest request.".format(
+            i + 1,
+            other.toString))
       }
     }
   }
@@ -638,9 +642,9 @@ object KafkaTools extends Command {
 
       parsed.valueOr {
         case other =>
-          println(
-            "Message %d: %s was not an ingest request."
-              .format(i + 1, other.toString))
+          println("Message %d: %s was not an ingest request.".format(
+            i + 1,
+            other.toString))
       }
     }
   }
@@ -846,10 +850,10 @@ object IngestTools extends Command {
   val relayAgentPath = "/test/com/precog/ingest/v1/relay_agent/qclus-demo01"
 
   def process(conn: ZkConnection, client: ZkClient, config: Config) {
-    val relayRaw = getJsonAt(config.relayZkPath, client)
-      .getOrElse(sys.error("Error reading relay agent state"))
-    val shardRaw = getJsonAt(config.shardZkPath, client)
-      .getOrElse(sys.error("Error reading bifrost state"))
+    val relayRaw = getJsonAt(config.relayZkPath, client).getOrElse(sys.error(
+      "Error reading relay agent state"))
+    val shardRaw = getJsonAt(config.shardZkPath, client).getOrElse(sys.error(
+      "Error reading bifrost state"))
 
     val relayState = relayRaw.deserialize[EventRelayState]
     val shardState = shardRaw.deserialize[YggCheckpoint]
@@ -860,9 +864,10 @@ object IngestTools extends Command {
     val relaySID = (relayState.nextSequenceId - 1).toString
 
     println("Messaging State")
-    println(
-      "PID: %d Shard SID: %s Ingest (relay) SID: %s"
-        .format(pid, shardSID, relaySID))
+    println("PID: %d Shard SID: %s Ingest (relay) SID: %s".format(
+      pid,
+      shardSID,
+      relaySID))
 
     val syncDelta =
       relayState.nextSequenceId - 1 - shardValues.get(pid).getOrElse(0)
@@ -873,24 +878,22 @@ object IngestTools extends Command {
       sys.exit(1)
     }
 
-    val relayStat = getStatAt(relayAgentPath, conn).getOrElse(
-      sys.error("Unable to stat relay agent state"))
-    val shardStat = getStatAt(shardCheckpointPath, conn).getOrElse(
-      sys.error("Unable to stat bifrost state"))
+    val relayStat = getStatAt(relayAgentPath, conn).getOrElse(sys.error(
+      "Unable to stat relay agent state"))
+    val shardStat = getStatAt(shardCheckpointPath, conn).getOrElse(sys.error(
+      "Unable to stat bifrost state"))
 
     val relayModified = new DateTime(relayStat.getMtime, DateTimeZone.UTC)
     val shardModified = new DateTime(shardStat.getMtime, DateTimeZone.UTC)
 
     if (isOlderThan(config.lag, relayModified)) {
-      println(
-        "Relay state exceeds acceptable lag. (Last Updated: %s)".format(
-          relayModified))
+      println("Relay state exceeds acceptable lag. (Last Updated: %s)".format(
+        relayModified))
       sys.exit(2)
     }
     if (isOlderThan(config.lag, shardModified)) {
-      println(
-        "Shard state exceeds acceptable lag. (Last updated: %s)".format(
-          shardModified))
+      println("Shard state exceeds acceptable lag. (Last updated: %s)".format(
+        shardModified))
       sys.exit(3)
     }
   }
@@ -931,8 +934,7 @@ object ImportTools extends Command with Logging {
       var accountId: AccountId = "not-a-real-account",
       var verbose: Boolean = false,
       var storageRoot: File = new File("./data"),
-      var archiveRoot: File = new File("./archive")
-  )
+      var archiveRoot: File = new File("./archive"))
 
   def run(args: Array[String]) {
     val config = new Config
@@ -1000,11 +1002,9 @@ object ImportTools extends Command with Logging {
       Configuration.parse("precog.storage.root = " + config.storageRoot))
 
     val chefs = (1 to 8).map { _ =>
-      actorSystem.actorOf(
-        Props(
-          Chef(
-            VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-            VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+      actorSystem.actorOf(Props(Chef(
+        VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+        VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
     }
     val masterChef = actorSystem.actorOf(
       Props[Chef].withRouter(RoundRobinRouter(chefs)))
@@ -1038,14 +1038,12 @@ object ImportTools extends Command with Logging {
         yggConfig.storageTimeout)
 
       logger.info("Starting Projections Actor")
-      val projectionsActor = actorSystem.actorOf(
-        Props(
-          new PathRoutingActor(
-            yggConfig.dataDir,
-            yggConfig.storageTimeout.duration,
-            yggConfig.quiescenceTimeout,
-            100,
-            yggConfig.clock)))
+      val projectionsActor = actorSystem.actorOf(Props(new PathRoutingActor(
+        yggConfig.dataDir,
+        yggConfig.storageTimeout.duration,
+        yggConfig.quiescenceTimeout,
+        100,
+        yggConfig.clock)))
 
       logger.info("Shard module complete")
     }
@@ -1102,25 +1100,23 @@ object ImportTools extends Command with Logging {
 
             if (!errors.isEmpty) {
               sys.error(
-                "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
-                  .take(5)))
+                "found %d parse errors.\nfirst 5 were: %s" format (
+                  errors.length, errors.take(5)
+                ))
             } else if (results.size > 0) {
               val eventidobj = EventId(pid, sid.getAndIncrement)
               logger.info("Sending %d events".format(results.size))
               val records = results map { IngestRecord(eventidobj, _) }
-              val update = IngestData(
-                Seq(
-                  (
-                    offset,
-                    IngestMessage(
-                      apiKey,
-                      path,
-                      authorities,
-                      records,
-                      None,
-                      yggConfig.clock.instant,
-                      StreamRef.Append)))
-              )
+              val update = IngestData(Seq((
+                offset,
+                IngestMessage(
+                  apiKey,
+                  path,
+                  authorities,
+                  records,
+                  None,
+                  yggConfig.clock.instant,
+                  StreamRef.Append))))
 
               (vfsModule.projectionsActor ? update) flatMap { _ =>
                 logger.info("Batch saved")
@@ -1287,13 +1283,11 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
         MongoAPIKeyManager.createRootAPIKey(
           database,
           config.mongoSettings.apiKeys,
-          config.mongoSettings.grants
-        )
+          config.mongoSettings.grants)
       } else {
         MongoAPIKeyManager.findRootAPIKey(
           database,
-          config.mongoSettings.apiKeys
-        )
+          config.mongoSettings.apiKeys)
       }
 
     rootKey map { k =>
@@ -1376,8 +1370,7 @@ object APIKeyTools extends Command with AkkaDefaults with Logging {
     def mongoSettings: MongoAPIKeyManagerSettings =
       MongoAPIKeyManagerSettings(
         apiKeys = collection,
-        deletedAPIKeys = deletedCollection
-      )
+        deletedAPIKeys = deletedCollection)
 
     def mongoConfig: Configuration = {
       Configuration.parse("servers = %s".format(mongoServers))

@@ -322,8 +322,7 @@ object SetOperationPushDown extends Rule[LogicalPlan] with PredicateHelper {
           nondeterministic,
           Except(
             Filter(deterministic, left),
-            Filter(pushToRight(deterministic, rewrites), right)
-          ))
+            Filter(pushToRight(deterministic, rewrites), right)))
     }
 }
 
@@ -353,9 +352,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
           .copy(projectList = p2.projectList.filter(p.references.contains)))
       case p @ Project(_, a: Aggregate)
           if (a.outputSet -- p.references).nonEmpty =>
-        p.copy(
-          child = a.copy(aggregateExpressions = a.aggregateExpressions.filter(
-            p.references.contains)))
+        p.copy(child = a.copy(aggregateExpressions = a.aggregateExpressions
+          .filter(p.references.contains)))
       case a @ Project(_, e @ Expand(_, _, grandChild))
           if (e.outputSet -- a.references).nonEmpty =>
         val newOutput = e.output.filter(a.references.contains(_))
@@ -420,9 +418,8 @@ object ColumnPruning extends Rule[LogicalPlan] {
       // Prune unnecessary window expressions
       case p @ Project(_, w: Window)
           if (w.windowOutputSet -- p.references).nonEmpty =>
-        p.copy(child = w.copy(
-          windowExpressions = w.windowExpressions.filter(
-            p.references.contains)))
+        p.copy(child = w.copy(windowExpressions = w.windowExpressions.filter(
+          p.references.contains)))
 
       // Eliminate no-op Window
       case w: Window if w.windowExpressions.isEmpty => w.child
@@ -468,9 +465,10 @@ object CollapseProject extends Rule[LogicalPlan] {
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
-        val hasNondeterministic = projectList1.exists(_.collect {
-          case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
-        }.exists(!_.deterministic))
+        val hasNondeterministic = projectList1.exists(
+          _.collect {
+            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+          }.exists(!_.deterministic))
 
         if (hasNondeterministic) { p }
         else {
@@ -501,9 +499,10 @@ object CollapseProject extends Rule[LogicalPlan] {
 
         // We only collapse these two Projects if their overlapped expressions are all
         // deterministic.
-        val hasNondeterministic = projectList1.exists(_.collect {
-          case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
-        }.exists(!_.deterministic))
+        val hasNondeterministic = projectList1.exists(
+          _.collect {
+            case a: Attribute if aliasMap.contains(a) => aliasMap(a).child
+          }.exists(!_.deterministic))
 
         if (hasNondeterministic) { p }
         else {
@@ -1274,10 +1273,9 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, RightOuter, newJoinCond)
 
-            (leftFilterConditions ++ commonFilterCondition)
-              .reduceLeftOption(And)
-              .map(Filter(_, newJoin))
-              .getOrElse(newJoin)
+            (
+              leftFilterConditions ++ commonFilterCondition
+            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case _ @(LeftOuter | LeftSemi) =>
             // push down the left side only `where` condition
             val newLeft = leftFilterConditions
@@ -1288,10 +1286,9 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
             val newJoinCond = joinCondition
             val newJoin = Join(newLeft, newRight, joinType, newJoinCond)
 
-            (rightFilterConditions ++ commonFilterCondition)
-              .reduceLeftOption(And)
-              .map(Filter(_, newJoin))
-              .getOrElse(newJoin)
+            (
+              rightFilterConditions ++ commonFilterCondition
+            ).reduceLeftOption(And).map(Filter(_, newJoin)).getOrElse(newJoin)
           case FullOuter       => f // DO Nothing for Full Outer Join
           case NaturalJoin(_)  => sys.error("Untransformed NaturalJoin node")
           case UsingJoin(_, _) => sys.error("Untransformed Using join node")

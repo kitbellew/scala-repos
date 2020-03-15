@@ -130,8 +130,7 @@ object BlendMode extends SFXEnumDelegateCompanion[jfxse.BlendMode, BlendMode] {
       Exclusion,
       Red,
       Green,
-      Blue
-    )
+      Blue)
 }
 
 sealed case class BlendMode(override val delegate: jfxse.BlendMode)

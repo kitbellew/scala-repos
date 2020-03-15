@@ -132,10 +132,9 @@ private[util] class BatchedWriteAheadLog(
     batchedWriterThread.join()
     while (!walWriteQueue.isEmpty) {
       val Record(_, time, promise) = walWriteQueue.poll()
-      promise.failure(
-        new IllegalStateException(
-          "close() was called on BatchedWriteAheadLog " +
-            s"before write request with time $time could be fulfilled."))
+      promise.failure(new IllegalStateException(
+        "close() was called on BatchedWriteAheadLog " +
+          s"before write request with time $time could be fulfilled."))
     }
     wrappedLog.close()
   }
@@ -212,9 +211,8 @@ private[util] object BatchedWriteAheadLog {
 
   /** Aggregate multiple serialized ReceivedBlockTrackerLogEvents in a single ByteBuffer. */
   def aggregate(records: Seq[Record]): ByteBuffer = {
-    ByteBuffer.wrap(
-      Utils.serialize[Array[Array[Byte]]](
-        records.map(record => JavaUtils.bufferToArray(record.data)).toArray))
+    ByteBuffer.wrap(Utils.serialize[Array[Array[Byte]]](
+      records.map(record => JavaUtils.bufferToArray(record.data)).toArray))
   }
 
   /**

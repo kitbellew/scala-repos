@@ -61,10 +61,8 @@ object AssertUtil {
       actual: GenIterable[B],
       message: String = ""): Unit =
     if (!(expected sameElements actual))
-      fail(
-        f"${if (message.nonEmpty) s"$message " else ""}expected:<${stringOf(
-          expected)}> but was:<${stringOf(actual)}>"
-      )
+      fail(f"${if (message.nonEmpty) s"$message " else ""}expected:<${stringOf(
+        expected)}> but was:<${stringOf(actual)}>")
 
   /** Convenient for testing iterators.
     */

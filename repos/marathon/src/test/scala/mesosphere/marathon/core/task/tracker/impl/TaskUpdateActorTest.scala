@@ -33,8 +33,7 @@ class TaskUpdateActorTest
       f.oneSecondInFuture,
       f.opInitiator.ref,
       taskId,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
 
     And("a processor that fails immediately")
     val processingFailure: RuntimeException =
@@ -65,8 +64,7 @@ class TaskUpdateActorTest
       f.clock.now,
       f.opInitiator.ref,
       taskId,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
 
     And("a processor that succeeds immediately")
     f.processor.process(eq(op))(any) returns Future.successful(())
@@ -105,8 +103,7 @@ class TaskUpdateActorTest
       f.oneSecondInFuture,
       f.opInitiator.ref,
       taskId,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
 
     And("a processor that processes it immediately")
     f.processor.process(eq(op))(any) returns Future.successful(())
@@ -135,8 +132,7 @@ class TaskUpdateActorTest
       f.oneSecondInFuture,
       f.opInitiator.ref,
       taskId,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
 
     And("a processor that does not return")
     f.processor.process(eq(op))(any) returns Promise[Unit]().future
@@ -165,15 +161,13 @@ class TaskUpdateActorTest
       f.oneSecondInFuture,
       f.opInitiator.ref,
       task1Id,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
     val task2Id = Task.Id.forApp(appId)
     val op2 = TaskOpProcessor.Operation(
       f.oneSecondInFuture,
       f.opInitiator.ref,
       task2Id,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
 
     And("a processor that does not return")
     val op1Promise: Promise[Unit] = Promise[Unit]()
@@ -220,14 +214,12 @@ class TaskUpdateActorTest
       f.oneSecondInFuture,
       f.opInitiator.ref,
       task1Id,
-      TaskOpProcessor.Action.Expunge
-    )
+      TaskOpProcessor.Action.Expunge)
     val op2 = TaskOpProcessor.Operation(
       f.oneSecondInFuture,
       f.opInitiator.ref,
       task1Id,
-      TaskOpProcessor.Action.Noop
-    )
+      TaskOpProcessor.Action.Noop)
 
     And("a processor that does not return")
     val op1Promise: Promise[Unit] = Promise[Unit]()

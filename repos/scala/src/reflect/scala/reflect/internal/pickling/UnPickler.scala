@@ -345,15 +345,13 @@ abstract class UnPickler {
         markFlagsCompleted(sym)(mask = AllFlags)
         sym.privateWithin = privateWithin
         sym.info =
-          (
-            if (atEnd) {
-              assert(!sym.isSuperAccessor, sym)
-              newLazyTypeRef(inforef)
-            } else {
-              assert(sym.isSuperAccessor || sym.isParamAccessor, sym)
-              newLazyTypeRefAndAlias(inforef, readNat())
-            }
-          )
+          (if (atEnd) {
+             assert(!sym.isSuperAccessor, sym)
+             newLazyTypeRef(inforef)
+           } else {
+             assert(sym.isSuperAccessor || sym.isParamAccessor, sym)
+             newLazyTypeRefAndAlias(inforef, readNat())
+           })
         if (shouldEnterInOwnerScope) symScope(sym.owner) enter sym
 
         sym
@@ -364,12 +362,10 @@ abstract class UnPickler {
           owner.newNonClassSymbol(name.toTypeName, NoPosition, pflags)
         case CLASSsym =>
           val sym =
-            (
-              if (isClassRoot) {
-                if (isModuleFlag) moduleRoot.moduleClass setFlag pflags
-                else classRoot setFlag pflags
-              } else owner.newClassSymbol(name.toTypeName, NoPosition, pflags)
-            )
+            (if (isClassRoot) {
+               if (isModuleFlag) moduleRoot.moduleClass setFlag pflags
+               else classRoot setFlag pflags
+             } else owner.newClassSymbol(name.toTypeName, NoPosition, pflags))
           if (!atEnd) sym.typeOfThis = newLazyTypeRef(readNat())
 
           sym
@@ -404,10 +400,8 @@ abstract class UnPickler {
       // Only happen for trees, "case Apply" in readTree() takes care of selecting the correct
       // alternative after parsing the arguments.
       def MethodTypeRef(restpe: Type, params: List[Symbol]): Type =
-        (
-          if (restpe == NoType || (params contains NoSymbol)) NoType
-          else MethodType(params, restpe)
-        )
+        (if (restpe == NoType || (params contains NoSymbol)) NoType
+         else MethodType(params, restpe))
       def PolyOrNullaryType(restpe: Type, tparams: List[Symbol]): Type =
         tparams match {
           case Nil => NullaryMethodType(restpe)

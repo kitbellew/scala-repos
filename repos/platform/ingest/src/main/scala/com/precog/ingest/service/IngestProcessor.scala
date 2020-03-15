@@ -191,14 +191,13 @@ class DefaultIngestProcessingSelectors(
               maxFields,
               ingestStore)
         } orElse {
-          Some(
-            new JSONIngestProcessing(
-              apiKey,
-              path,
-              authorities,
-              JSONValueStyle,
-              maxFields,
-              ingestStore))
+          Some(new JSONIngestProcessing(
+            apiKey,
+            path,
+            authorities,
+            JSONValueStyle,
+            maxFields,
+            ingestStore))
         }
       } else { None }
     }
@@ -210,6 +209,5 @@ class DefaultIngestProcessingSelectors(
       authorities: Authorities): List[IngestProcessingSelector] =
     List(
       new MimeIngestProcessingSelector(apiKey, path, authorities),
-      new JSONIngestProcessingSelector(apiKey, path, authorities)
-    )
+      new JSONIngestProcessingSelector(apiKey, path, authorities))
 }

@@ -85,22 +85,13 @@ class LastIndexToLastTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testIndexedSeq(): Unit = {
-    checkTextHasNoErrors(
-      """val seq = scala.collection.IndexedSeq(1, 2)
-        |seq(seq.size - 1)""".stripMargin,
-      hint,
-      inspectionClass)
-    checkTextHasNoErrors(
-      """import scala.collection.immutable.Vector
+    checkTextHasNoErrors("""val seq = scala.collection.IndexedSeq(1, 2)
+        |seq(seq.size - 1)""".stripMargin, hint, inspectionClass)
+    checkTextHasNoErrors("""import scala.collection.immutable.Vector
         |val v = Vector(1, 2)
-        |v(v.length - 1)""".stripMargin,
-      hint,
-      inspectionClass)
-    checkTextHasNoErrors(
-      """val buf = scala.collection.mutable.ArrayBuffer(1, 2)
-        |buf(buf.size - 1)""".stripMargin,
-      hint,
-      inspectionClass)
+        |v(v.length - 1)""".stripMargin, hint, inspectionClass)
+    checkTextHasNoErrors("""val buf = scala.collection.mutable.ArrayBuffer(1, 2)
+        |buf(buf.size - 1)""".stripMargin, hint, inspectionClass)
   }
 
 }

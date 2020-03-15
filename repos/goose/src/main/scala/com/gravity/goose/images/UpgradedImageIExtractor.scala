@@ -241,7 +241,9 @@ class UpgradedImageIExtractor(
           fileExtension = locallyStoredImage.fileExtension
           if (fileExtension != ".gif" && fileExtension != "NA")
           imageSrc = locallyStoredImage.imgSrc
-          if ((depthLevel >= 1 && locallyStoredImage.width > 300) || depthLevel < 1)
+          if ((
+            depthLevel >= 1 && locallyStoredImage.width > 300
+          ) || depthLevel < 1)
           if (!isBannerDimensions(width, height))
         } {
           val sequenceScore: Float = 1.0f / cnt
@@ -363,7 +365,9 @@ class UpgradedImageIExtractor(
           case Some(locallyStoredImage) => {
 
             val bytes = locallyStoredImage.bytes
-            if ((bytes == 0 || bytes > minBytesForImages) && bytes < MAX_BYTES_SIZE) {
+            if ((
+                  bytes == 0 || bytes > minBytesForImages
+                ) && bytes < MAX_BYTES_SIZE) {
               trace(
                 "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image
                   .attr("src"))
@@ -570,9 +574,8 @@ object UpgradedImageIExtractor {
   // place images into, allows for higher accuracy of image extraction
   lazy val customSiteMapping = {
     val lines = Source
-      .fromInputStream(
-        getClass.getResourceAsStream(
-          "/com/gravity/goose/images/known-image-css.txt"))
+      .fromInputStream(getClass.getResourceAsStream(
+        "/com/gravity/goose/images/known-image-css.txt"))
       .getLines()
     (for (line <- lines) yield {
       val Array(domain, css) = delimRegex.split(line)

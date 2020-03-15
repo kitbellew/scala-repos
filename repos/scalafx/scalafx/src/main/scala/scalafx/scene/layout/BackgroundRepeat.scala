@@ -50,12 +50,7 @@ object BackgroundRepeat
   val Space = new BackgroundRepeat(jfxsl.BackgroundRepeat.SPACE)
 
   protected override def unsortedValues: Array[BackgroundRepeat] =
-    Array(
-      NoRepeat,
-      Repeat,
-      Round,
-      Space
-    )
+    Array(NoRepeat, Repeat, Round, Space)
 }
 
 /**

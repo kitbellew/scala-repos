@@ -175,7 +175,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     } else if (c == '"' && elementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
       moveCaret()
       return Result.STOP
-    } else if ((c == '>' || c == '/') && elementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END) {
+    } else if ((
+                 c == '>' || c == '/'
+               ) && elementType == ScalaXmlTokenTypes.XML_EMPTY_ELEMENT_END) {
       moveCaret()
       return Result.STOP
     } else if (c == '>' && elementType == ScalaXmlTokenTypes.XML_TAG_END) {
@@ -296,9 +298,9 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
     if (element.getNode.getElementType == tLBRACE &&
         Option(element.getParent.getPrevSibling)
           .exists(_.getNode.getElementType == tINTERPOLATED_STRING_INJECTION) &&
-        (element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE)) {
-      insertAndCommit(offset, "}", document, project)
-    }
+        (
+          element.getNextSibling == null || element.getNextSibling.getNode.getElementType != tRBRACE
+        )) { insertAndCommit(offset, "}", document, project) }
   }
 
   private def completeXmlAttributeQuote(editor: Editor)(
@@ -538,8 +540,7 @@ class ScalaTypedHandler extends TypedHandlerDelegate {
         editor,
         new Condition[PsiFile] {
           def value(t: PsiFile): Boolean = t == file
-        }
-      )
+        })
   }
 
   private def startAutopopupCompletionInInterpolatedString(

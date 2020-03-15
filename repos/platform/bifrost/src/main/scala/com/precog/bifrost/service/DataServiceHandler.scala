@@ -50,9 +50,8 @@ import scalaz.effect.IO
 class DataServiceHandler[A](
     platform: Platform[Future, Slice, StreamT[Future, Slice]])(
     implicit M: Monad[Future])
-    extends CustomHttpService[
-      A,
-      (APIKey, Path) => Future[HttpResponse[ByteChunk]]]
+    extends CustomHttpService[A, (APIKey, Path) => Future[
+      HttpResponse[ByteChunk]]]
     with Logging {
 
   val service = (request: HttpRequest[A]) =>
@@ -118,9 +117,12 @@ class DataServiceHandler[A](
                           // although the returned content is actually application/json, the HTTP spec only allows for text/plain to be returned
                           // in violation of accept headers, so I think the best thing to do here is lie.
                           headers = HttpHeaders(`Content-Type`(text / plain)),
-                          content = Some(Left(JObject(
-                            "errors" -> JArray(userError.messages.list.map(
-                              JString(_)): _*)).renderPretty.getBytes("UTF-8")))
+                          content = Some(Left(
+                            JObject(
+                              "errors" -> JArray(
+                                userError.messages.list.map(
+                                  JString(_)): _*)).renderPretty
+                              .getBytes("UTF-8")))
                         )
                     )
                 }
@@ -134,10 +136,9 @@ class DataServiceHandler[A](
                     content = Some(Right(byteStream)))
 
                 case None =>
-                  HttpResponse(
-                    HttpStatus(
-                      HttpStatusCodes.NotFound,
-                      "Could not locate content for path " + path))
+                  HttpResponse(HttpStatus(
+                    HttpStatusCodes.NotFound,
+                    "Could not locate content for path " + path))
               }
           )
         } recover {

@@ -41,9 +41,8 @@ class PingPongActorSystemActivatorTest
   import ActorSystemActivatorTest._
 
   val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
-    List(
-      bundle(TEST_BUNDLE_NAME).withActivator(
-        classOf[PingPongActorSystemActivator])))
+    List(bundle(TEST_BUNDLE_NAME).withActivator(
+      classOf[PingPongActorSystemActivator])))
 
   "PingPongActorSystemActivator" must {
 
@@ -79,9 +78,8 @@ class RuntimeNameActorSystemActivatorTest
   import ActorSystemActivatorTest._
 
   val testBundles: immutable.Seq[BundleDescriptor] = buildTestBundles(
-    List(
-      bundle(TEST_BUNDLE_NAME).withActivator(
-        classOf[RuntimeNameActorSystemActivator])))
+    List(bundle(TEST_BUNDLE_NAME).withActivator(
+      classOf[RuntimeNameActorSystemActivator])))
 
   "RuntimeNameActorSystemActivator" must {
 

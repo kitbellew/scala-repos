@@ -12,8 +12,7 @@ import sbt._
 
 final class CrossClasspathDependency(
     val project: CrossProject,
-    val configuration: Option[String]
-) {
+    val configuration: Option[String]) {
   def jvm: ClasspathDependency = ClasspathDependency(project.jvm, configuration)
   def js: ClasspathDependency = ClasspathDependency(project.js, configuration)
 }

@@ -74,8 +74,7 @@ class TaskKiller @Inject() (
         updateGroup,
         Timestamp.now(),
         force = force,
-        toKill = appTasks
-      )
+        toKill = appTasks)
 
     appTasks.keys
       .find(id => !taskTracker.hasAppTasksSync(id))

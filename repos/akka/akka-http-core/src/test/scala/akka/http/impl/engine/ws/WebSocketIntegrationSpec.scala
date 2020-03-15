@@ -94,8 +94,8 @@ class WebSocketIntegrationSpec
         val ((response, breaker), sink) = Source.empty
           .viaMat {
             Http()
-              .webSocketClientLayer(
-                WebSocketRequest("ws://localhost:" + myPort))
+              .webSocketClientLayer(WebSocketRequest(
+                "ws://localhost:" + myPort))
               .atop(TLSPlacebo())
               .joinMat(
                 Flow
@@ -197,8 +197,8 @@ class WebSocketIntegrationSpec
         val (breaker, completion) = Source.maybe
           .viaMat {
             Http()
-              .webSocketClientLayer(
-                WebSocketRequest("ws://localhost:" + myPort))
+              .webSocketClientLayer(WebSocketRequest(
+                "ws://localhost:" + myPort))
               .atop(TLSPlacebo())
               // the resource leak of #19398 existed only for severed websocket connections
               .atopMat(GraphStages.bidiBreaker[ByteString, ByteString])(

@@ -38,8 +38,8 @@ trait Codec[Req, Rep] {
     * modifications to the service at the top of the network stack.
     */
   def prepareServiceFactory(
-      underlying: ServiceFactory[Req, Rep]
-  ): ServiceFactory[Req, Rep] = underlying
+      underlying: ServiceFactory[Req, Rep]): ServiceFactory[Req, Rep] =
+    underlying
 
   /**
     * Prepare a connection factory. Used to allow codec modifications
@@ -51,8 +51,7 @@ trait Codec[Req, Rep] {
 
   def prepareConnFactory(
       underlying: ServiceFactory[Req, Rep],
-      params: Stack.Params
-  ): ServiceFactory[Req, Rep] = underlying
+      params: Stack.Params): ServiceFactory[Req, Rep] = underlying
 
   /**
     * Note: the below ("raw") interfaces are low level, and require a
@@ -70,18 +69,15 @@ trait Codec[Req, Rep] {
 
   def newClientDispatcher(
       transport: Transport[Any, Any],
-      params: Stack.Params
-  ): Service[Req, Rep] =
+      params: Stack.Params): Service[Req, Rep] =
     new SerialClientDispatcher(
       Transport.cast[Req, Rep](transport),
       params[param.Stats].statsReceiver
-        .scope(GenSerialClientDispatcher.StatsScope)
-    )
+        .scope(GenSerialClientDispatcher.StatsScope))
 
   def newServerDispatcher(
       transport: Transport[Any, Any],
-      service: Service[Req, Rep]
-  ): Closable =
+      service: Service[Req, Rep]): Closable =
     new SerialServerDispatcher[Req, Rep](
       Transport.cast[Rep, Req](transport),
       service)

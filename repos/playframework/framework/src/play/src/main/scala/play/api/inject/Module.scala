@@ -119,12 +119,11 @@ object Modules {
           val defaultModuleClass = environment.classLoader
             .loadClass(DefaultModuleName)
             .asInstanceOf[Class[Any]]
-          Some(
-            constructModule(
-              environment,
-              configuration,
-              DefaultModuleName,
-              () => defaultModuleClass))
+          Some(constructModule(
+            environment,
+            configuration,
+            DefaultModuleName,
+            () => defaultModuleClass))
         } catch { case e: ClassNotFoundException => None }
 
     moduleClassNames.map { className =>

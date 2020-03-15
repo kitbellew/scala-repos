@@ -16,9 +16,8 @@ class RequestSemaphoreFilterTest extends FunSuite {
       def apply(req: Int) = Future.never
     })
 
-    val stk: StackBuilder[ServiceFactory[Int, Int]] = new StackBuilder(
-      Stack.Leaf(Stack.Role("never"), neverFactory)
-    )
+    val stk: StackBuilder[ServiceFactory[Int, Int]] =
+      new StackBuilder(Stack.Leaf(Stack.Role("never"), neverFactory))
 
     stk.push(RequestSemaphoreFilter.module[Int, Int])
 

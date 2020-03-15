@@ -71,10 +71,8 @@ private object PoolFlow {
 
    */
   def apply(
-      connectionFlow: Flow[
-        HttpRequest,
-        HttpResponse,
-        Future[Http.OutgoingConnection]],
+      connectionFlow: Flow[HttpRequest, HttpResponse, Future[
+        Http.OutgoingConnection]],
       remoteAddress: InetSocketAddress,
       settings: ConnectionPoolSettings,
       log: LoggingAdapter)(implicit

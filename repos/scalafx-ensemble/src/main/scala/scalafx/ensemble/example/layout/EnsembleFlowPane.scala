@@ -48,9 +48,8 @@ class EnsembleFlowPane extends EnsembleExample {
   // @stage-property resizable = false
 
   def getContent = {
-    val image = new Image(
-      this.getClass
-        .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+    val image = new Image(this.getClass.getResourceAsStream(
+      "/scalafx/ensemble/images/icon-48x48.png"))
 
     val flowPane = new FlowPane(2, 4) {
       prefWrapLength = 200
@@ -59,8 +58,7 @@ class EnsembleFlowPane extends EnsembleExample {
         children ++= Seq(
           new Label("Short label"),
           new Label("I am a slightly longer label."),
-          new ImageView(image)
-        )
+          new ImageView(image))
       }
     }
 

@@ -23,8 +23,7 @@ class BufTest
     Charsets.Utf8,
     Charsets.Utf16,
     Charsets.Utf16BE,
-    Charsets.Utf16LE
-  )
+    Charsets.Utf16LE)
 
   test("Buf.ByteArray.slice") {
     val arr = Array.range(0, 16).map(_.toByte)
@@ -148,8 +147,9 @@ class BufTest
     val bytes = new Array[Byte](21)
     buf.write(bytes, 0)
 
-    val expected = Array[Byte](-17, -65, -68, -17, -65, -68, -17, -65, -68, -17,
-      -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68)
+    val expected = Array[Byte](
+      -17, -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68, -17, -65, -68,
+      -17, -65, -68, -17, -65, -68)
 
     assert(bytes.toSeq == expected.toSeq)
 

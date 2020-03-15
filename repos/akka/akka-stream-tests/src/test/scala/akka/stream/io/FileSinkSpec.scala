@@ -144,8 +144,8 @@ class FileSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
           Source
             .fromIterator(() ⇒ Iterator.continually(TestByteStrings.head))
             .to(FileIO.toFile(f))
-            .withAttributes(
-              ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
+            .withAttributes(ActorAttributes.dispatcher(
+              "akka.actor.default-dispatcher"))
             .run()(materializer)
 
           materializer

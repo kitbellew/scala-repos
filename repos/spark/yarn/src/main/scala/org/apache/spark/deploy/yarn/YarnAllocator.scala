@@ -114,10 +114,9 @@ private[yarn] class YarnAllocator(
   // Additional memory overhead.
   protected val memoryOverhead: Int = sparkConf
     .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(
-      math.max(
-        (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
-        MEMORY_OVERHEAD_MIN))
+    .getOrElse(math.max(
+      (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
+      MEMORY_OVERHEAD_MIN))
     .toInt
   // Number of cores per executor.
   protected val executorCores = args.executorCores
@@ -141,14 +140,13 @@ private[yarn] class YarnAllocator(
   // reflection because it's only available in later versions of YARN.
   private val nodeLabelConstructor = labelExpression.flatMap { expr =>
     try {
-      Some(
-        classOf[ContainerRequest].getConstructor(
-          classOf[Resource],
-          classOf[Array[String]],
-          classOf[Array[String]],
-          classOf[Priority],
-          classOf[Boolean],
-          classOf[String]))
+      Some(classOf[ContainerRequest].getConstructor(
+        classOf[Resource],
+        classOf[Array[String]],
+        classOf[Array[String]],
+        classOf[Priority],
+        classOf[Boolean],
+        classOf[String]))
     } catch {
       case e: NoSuchMethodException => {
         logWarning(
@@ -506,9 +504,9 @@ private[yarn] class YarnAllocator(
 
       assert(container.getResource.getMemory >= resource.getMemory)
 
-      logInfo(
-        "Launching container %s for on host %s"
-          .format(containerId, executorHostname))
+      logInfo("Launching container %s for on host %s".format(
+        containerId,
+        executorHostname))
       executorIdToContainer(executorId) = container
       containerIdToExecutorId(container.getId) = executorId
 
@@ -661,9 +659,8 @@ private[yarn] class YarnAllocator(
       } else {
         logWarning(
           s"Tried to get the loss reason for non-existent executor $eid")
-        context.sendFailure(
-          new SparkException(
-            s"Fail to find loss reason for non-existent executor $eid"))
+        context.sendFailure(new SparkException(
+          s"Fail to find loss reason for non-existent executor $eid"))
       }
     }
 
@@ -690,8 +687,10 @@ private[yarn] class YarnAllocator(
     */
   private def splitPendingAllocationsByLocality(
       hostToLocalTaskCount: Map[String, Int],
-      pendingAllocations: Seq[ContainerRequest]
-  ): (Seq[ContainerRequest], Seq[ContainerRequest], Seq[ContainerRequest]) = {
+      pendingAllocations: Seq[ContainerRequest]): (
+      Seq[ContainerRequest],
+      Seq[ContainerRequest],
+      Seq[ContainerRequest]) = {
     val localityMatched = ArrayBuffer[ContainerRequest]()
     val localityUnMatched = ArrayBuffer[ContainerRequest]()
     val localityFree = ArrayBuffer[ContainerRequest]()

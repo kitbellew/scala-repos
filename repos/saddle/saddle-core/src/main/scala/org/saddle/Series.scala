@@ -926,13 +926,11 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
       def createVal(r: Int) =
         ("%" + vlen + "s\n").format(vsca.show(values.raw(r)))
 
-      buf.append(
-        util.buildStr(
-          len,
-          length,
-          (i: Int) => createIx(i) + " -> " + createVal(i), {
-            resetRowLabels(0); " ... \n"
-          }))
+      buf.append(util.buildStr(
+        len,
+        length,
+        (i: Int) => createIx(i) + " -> " + createVal(i),
+        { resetRowLabels(0); " ... \n" }))
     }
 
     buf.toString()
@@ -951,7 +949,9 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
   override def equals(other: Any): Boolean =
     other match {
       case s: Series[_, _] =>
-        (this eq s) || (length == s.length) && index == s.index && values == s.values
+        (this eq s) || (
+          length == s.length
+        ) && index == s.index && values == s.values
       case _ => false
     }
 

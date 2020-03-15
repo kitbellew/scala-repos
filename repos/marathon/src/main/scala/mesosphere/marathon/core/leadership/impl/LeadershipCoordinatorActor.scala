@@ -61,31 +61,27 @@ private class LeadershipCoordinatorActor(var whenLeaderActors: Set[ActorRef])
     } else {
       LoggingReceive.withLabel("preparingForStart") {
         case PreparationMessages.PrepareForStart =>
-          context.become(
-            preparingForStart(
-              ackStartRefs + sender(),
-              whenLeaderActorsWithoutAck))
+          context.become(preparingForStart(
+            ackStartRefs + sender(),
+            whenLeaderActorsWithoutAck))
 
         case PreparationMessages.Prepared(whenLeaderRef) =>
-          context.become(
-            preparingForStart(
-              ackStartRefs,
-              whenLeaderActorsWithoutAck - whenLeaderRef))
+          context.become(preparingForStart(
+            ackStartRefs,
+            whenLeaderActorsWithoutAck - whenLeaderRef))
 
         case Terminated(actorRef) =>
           log.error("unexpected death of {}", actorRef)
           whenLeaderActors -= actorRef
-          context.become(
-            preparingForStart(
-              ackStartRefs - actorRef,
-              whenLeaderActorsWithoutAck - actorRef))
+          context.become(preparingForStart(
+            ackStartRefs - actorRef,
+            whenLeaderActorsWithoutAck - actorRef))
 
         case WhenLeaderActor.Stop =>
           whenLeaderActors.foreach(_ ! Stop)
           ackStartRefs.foreach { ackStartRef =>
-            ackStartRef ! Status.Failure(
-              new IllegalStateException(
-                s"Stopped while still preparing to start ($self)"))
+            ackStartRef ! Status.Failure(new IllegalStateException(
+              s"Stopped while still preparing to start ($self)"))
           }
           context.become(suspended)
       }

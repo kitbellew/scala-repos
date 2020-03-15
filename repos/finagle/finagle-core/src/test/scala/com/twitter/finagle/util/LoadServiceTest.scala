@@ -46,11 +46,9 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
     GlobalRegistry.withRegistry(simple) {
       assert(LoadService[Resolver]().nonEmpty)
       assert(
-        GlobalRegistry.get.toSet == Set(
-          Entry(
-            Seq("loadservice", "com.twitter.finagle.Resolver"),
-            "com.twitter.finagle.TestResolver,com.twitter.finagle.TestAsyncInetResolver")
-        ))
+        GlobalRegistry.get.toSet == Set(Entry(
+          Seq("loadservice", "com.twitter.finagle.Resolver"),
+          "com.twitter.finagle.TestResolver,com.twitter.finagle.TestAsyncInetResolver")))
     }
   }
 
@@ -70,13 +68,11 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
     GlobalRegistry.withRegistry(simple) {
       val randomIfaces = LoadService[LoadServiceMaybeInterface]()
       assert(
-        GlobalRegistry.get.toSet == Set(
-          Entry(
-            Seq(
-              "loadservice",
-              "com.twitter.finagle.util.LoadServiceMaybeInterface"),
-            "com.twitter.finagle.util.LoadServiceGoodClass")
-        ))
+        GlobalRegistry.get.toSet == Set(Entry(
+          Seq(
+            "loadservice",
+            "com.twitter.finagle.util.LoadServiceMaybeInterface"),
+          "com.twitter.finagle.util.LoadServiceGoodClass")))
     }
   }
 
@@ -188,8 +184,7 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
   test("LoadService should respect Denied if provided") {
     val denied1and2 = Set(
       "com.twitter.finagle.util.LoadServiceMultipleImpls1",
-      "com.twitter.finagle.util.LoadServiceMultipleImpls2"
-    )
+      "com.twitter.finagle.util.LoadServiceMultipleImpls2")
     loadServiceDenied.let(denied1and2) {
       val loaded = LoadService[LoadServiceMultipleImpls]()
       assert(1 == loaded.size)

@@ -52,8 +52,7 @@ object ReplicationClient {
       pools: Seq[Cluster[CacheNode]],
       clientBuilder: Option[ClientBuilder[_, _, _, _, ClientConfig.Yes]] = None,
       hashName: Option[String] = None,
-      failureAccrualParams: (Int, () => Duration) = (5, () => 30.seconds)
-  ) = {
+      failureAccrualParams: (Int, () => Duration) = (5, () => 30.seconds)) = {
     val underlyingClients = pools map { pool =>
       Await.result(pool.ready)
       KetamaClientBuilder(
@@ -73,14 +72,12 @@ object ReplicationClient {
       pools: Seq[Cluster[CacheNode]],
       clientBuilder: Option[ClientBuilder[_, _, _, _, ClientConfig.Yes]] = None,
       hashName: Option[String] = None,
-      failureAccrualParams: (Int, () => Duration) = (5, () => 30.seconds)
-  ) = {
-    new SimpleReplicationClient(
-      newBaseReplicationClient(
-        pools,
-        clientBuilder,
-        hashName,
-        failureAccrualParams))
+      failureAccrualParams: (Int, () => Duration) = (5, () => 30.seconds)) = {
+    new SimpleReplicationClient(newBaseReplicationClient(
+      pools,
+      clientBuilder,
+      hashName,
+      failureAccrualParams))
   }
 }
 
@@ -219,8 +216,7 @@ class BaseReplicationClient(
   private[this] def attachCas(
       valueStatus: ReplicationStatus[Option[Buf]],
       underlyingResults: Seq[GetsResult],
-      key: String
-  ): ReplicationStatus[Option[(Buf, ReplicaCasUnique)]] =
+      key: String): ReplicationStatus[Option[(Buf, ReplicaCasUnique)]] =
     valueStatus match {
       case ConsistentReplication(Some(v)) =>
         val allReplicasCas = underlyingResults map {
@@ -444,8 +440,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
             if resultsSeq.forall(_.isReturn) =>
           GetsResult(GetResult(misses = Set(key)))
         case (key, _) =>
-          GetsResult(
-            GetResult(failures = Map(key -> SimpleReplicationFailure(
+          GetsResult(GetResult(failures = Map(
+            key -> SimpleReplicationFailure(
               "One or more underlying replica failed gets"))))
       }
       GetResult.merged(getsResultSeq.toSeq)
@@ -517,9 +513,8 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
           if resultsSeq.forall(_.isReturn) =>
         Future.value(default)
       case _ =>
-        Future.exception(
-          SimpleReplicationFailure(
-            "One or more underlying replica failed op: " + name))
+        Future.exception(SimpleReplicationFailure(
+          "One or more underlying replica failed op: " + name))
     }
 
   def append(

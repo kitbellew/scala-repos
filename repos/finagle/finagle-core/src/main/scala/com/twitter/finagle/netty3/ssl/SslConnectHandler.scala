@@ -68,8 +68,8 @@ private[netty3] class SslListenerConnectionHandler(
   */
 class SslConnectHandler(
     sslHandler: SslHandler,
-    sessionError: SSLSession => Option[Throwable] = Function.const(None)
-) extends SimpleChannelHandler {
+    sessionError: SSLSession => Option[Throwable] = Function.const(None))
+    extends SimpleChannelHandler {
   private[this] val connectFuture = new AtomicReference[ChannelFuture](null)
 
   private[this] def fail(c: Channel, t: Throwable) {

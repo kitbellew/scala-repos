@@ -145,10 +145,9 @@ private[http] class HttpRequestParser(
           headers: List[HttpHeader] = headers) = {
         val allHeaders0 =
           if (rawRequestUriHeader)
-            `Raw-Request-URI`(
-              new String(
-                uriBytes,
-                HttpCharsets.`US-ASCII`.nioCharset)) :: headers
+            `Raw-Request-URI`(new String(
+              uriBytes,
+              HttpCharsets.`US-ASCII`.nioCharset)) :: headers
           else headers
 
         val allHeaders =
@@ -160,15 +159,14 @@ private[http] class HttpRequestParser(
             }
           } else allHeaders0
 
-        emit(
-          RequestStart(
-            method,
-            uri,
-            protocol,
-            allHeaders,
-            createEntity,
-            expect100continue,
-            closeAfterResponseCompletion))
+        emit(RequestStart(
+          method,
+          uri,
+          protocol,
+          allHeaders,
+          createEntity,
+          expect100continue,
+          closeAfterResponseCompletion))
       }
 
       teh match {

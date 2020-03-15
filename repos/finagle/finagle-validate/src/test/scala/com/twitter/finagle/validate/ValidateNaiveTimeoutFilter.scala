@@ -55,8 +55,7 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
           } ensure { num += 1 }
       }: (Duration, Future[Boolean]) => Unit,
       filter,
-      timer
-    )
+      timer)
     gen.execute()
     assert(num == total)
   }

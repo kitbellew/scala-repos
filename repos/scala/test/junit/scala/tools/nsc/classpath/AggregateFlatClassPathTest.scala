@@ -247,12 +247,10 @@ class AggregateFlatClassPathTest {
     val cp = createDefaultTestClasspath()
 
     assertEquals(
-      Some(
-        ClassAndSourceFilesEntry(
-          classFile(dir2, pkg1, "A"),
-          sourceFile(dir1, pkg1, "A"))),
-      cp.findClass(s"$pkg1.A")
-    )
+      Some(ClassAndSourceFilesEntry(
+        classFile(dir2, pkg1, "A"),
+        sourceFile(dir1, pkg1, "A"))),
+      cp.findClass(s"$pkg1.A"))
     assertEquals(
       Some(classFileEntry(dir3, pkg1, "D")),
       cp.findClass(s"$pkg1.D"))

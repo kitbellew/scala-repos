@@ -105,11 +105,9 @@ package scala.collection.immutable.redblacktree {
       t match {
         case null => true
         case ne =>
-          (
-            blackNodesToLeaves(ne).distinct.size == 1
-              && areBlackNodesToLeavesEqual(ne.left)
-              && areBlackNodesToLeavesEqual(ne.right)
-          )
+          (blackNodesToLeaves(ne).distinct.size == 1
+            && areBlackNodesToLeavesEqual(ne.left)
+            && areBlackNodesToLeavesEqual(ne.right))
       }
 
     def orderIsPreserved[A](t: Tree[String, A]): Boolean =

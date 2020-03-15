@@ -31,7 +31,9 @@ object QaComment extends QaController {
   def answer(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
       IfCanComment {
-        (api.question findById questionId) zip (api.answer findById answerId) flatMap {
+        (api.question findById questionId) zip (
+          api.answer findById answerId
+        ) flatMap {
           case (Some(q), Some(a)) =>
             implicit val req = ctx.body
             forms.comment.bindFromRequest.fold(

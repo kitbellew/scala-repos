@@ -62,9 +62,9 @@ class AdminClient(
       if (future.succeeded()) return future.value().responseBody()
 
       now = time.milliseconds()
-    } while (now < deadline && future
-      .exception()
-      .isInstanceOf[SendFailedException])
+    } while (
+      now < deadline && future.exception().isInstanceOf[SendFailedException]
+    )
 
     throw future.exception()
   }

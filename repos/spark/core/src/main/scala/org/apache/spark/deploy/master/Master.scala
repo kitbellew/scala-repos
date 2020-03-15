@@ -459,8 +459,11 @@ private[deploy] class Master(
           cores,
           memory,
           workerWebUiUrl) => {
-      logInfo("Registering worker %s:%d with %d cores, %s RAM"
-        .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
+      logInfo("Registering worker %s:%d with %d cores, %s RAM".format(
+        workerHost,
+        workerPort,
+        cores,
+        Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) { context.reply(MasterInStandby) }
       else if (idToWorker.contains(id)) {
         context.reply(RegisterWorkerFailed("Duplicate worker ID"))
@@ -482,10 +485,9 @@ private[deploy] class Master(
           logWarning(
             "Worker registration failed. Attempted to re-register worker at same " +
               "address: " + workerAddress)
-          context.reply(
-            RegisterWorkerFailed(
-              "Attempted to re-register worker at same address: "
-                + workerAddress))
+          context.reply(RegisterWorkerFailed(
+            "Attempted to re-register worker at same address: "
+              + workerAddress))
         }
       }
     }
@@ -506,12 +508,11 @@ private[deploy] class Master(
         // TODO: It might be good to instead have the submission client poll the master to determine
         //       the current status of the driver. For now it's simply "fire and forget".
 
-        context.reply(
-          SubmitDriverResponse(
-            self,
-            true,
-            Some(driver.id),
-            s"Driver successfully submitted as ${driver.id}"))
+        context.reply(SubmitDriverResponse(
+          self,
+          true,
+          Some(driver.id),
+          s"Driver successfully submitted as ${driver.id}"))
       }
     }
 
@@ -552,23 +553,21 @@ private[deploy] class Master(
       if (state != RecoveryState.ALIVE) {
         val msg = s"${Utils.BACKUP_STANDALONE_MASTER_PREFIX}: $state. " +
           "Can only request driver status in ALIVE state."
-        context.reply(
-          DriverStatusResponse(
-            found = false,
-            None,
-            None,
-            None,
-            Some(new Exception(msg))))
+        context.reply(DriverStatusResponse(
+          found = false,
+          None,
+          None,
+          None,
+          Some(new Exception(msg))))
       } else {
         (drivers ++ completedDrivers).find(_.id == driverId) match {
           case Some(driver) =>
-            context.reply(
-              DriverStatusResponse(
-                found = true,
-                Some(driver.state),
-                driver.worker.map(_.id),
-                driver.worker.map(_.hostPort),
-                driver.exception))
+            context.reply(DriverStatusResponse(
+              found = true,
+              Some(driver.state),
+              driver.worker.map(_.id),
+              driver.worker.map(_.hostPort),
+              driver.exception))
           case None =>
             context.reply(
               DriverStatusResponse(found = false, None, None, None, None))
@@ -577,17 +576,16 @@ private[deploy] class Master(
     }
 
     case RequestMasterState => {
-      context.reply(
-        MasterStateResponse(
-          address.host,
-          address.port,
-          restServerBoundPort,
-          workers.toArray,
-          apps.toArray,
-          completedApps.toArray,
-          drivers.toArray,
-          completedDrivers.toArray,
-          state))
+      context.reply(MasterStateResponse(
+        address.host,
+        address.port,
+        restServerBoundPort,
+        workers.toArray,
+        apps.toArray,
+        completedApps.toArray,
+        drivers.toArray,
+        completedDrivers.toArray,
+        state))
     }
 
     case BoundPortsRequest => {
@@ -856,21 +854,19 @@ private[deploy] class Master(
   private def launchExecutor(worker: WorkerInfo, exec: ExecutorDesc): Unit = {
     logInfo("Launching executor " + exec.fullId + " on worker " + worker.id)
     worker.addExecutor(exec)
-    worker.endpoint.send(
-      LaunchExecutor(
-        masterUrl,
-        exec.application.id,
-        exec.id,
-        exec.application.desc,
-        exec.cores,
-        exec.memory))
-    exec.application.driver.send(
-      ExecutorAdded(
-        exec.id,
-        worker.id,
-        worker.hostPort,
-        exec.cores,
-        exec.memory))
+    worker.endpoint.send(LaunchExecutor(
+      masterUrl,
+      exec.application.id,
+      exec.id,
+      exec.application.desc,
+      exec.cores,
+      exec.memory))
+    exec.application.driver.send(ExecutorAdded(
+      exec.id,
+      worker.id,
+      worker.hostPort,
+      exec.cores,
+      exec.memory))
   }
 
   private def registerWorker(worker: WorkerInfo): Boolean = {
@@ -878,7 +874,9 @@ private[deploy] class Master(
     // remove them.
     workers
       .filter { w =>
-        (w.host == worker.host && w.port == worker.port) && (w.state == WorkerState.DEAD)
+        (w.host == worker.host && w.port == worker.port) && (
+          w.state == WorkerState.DEAD
+        )
       }
       .foreach { w => workers -= w }
 
@@ -1120,8 +1118,8 @@ private[deploy] class Master(
         appAttemptId = None,
         compressionCodecName = app.desc.eventLogCodec)
       val fs = Utils.getHadoopFileSystem(eventLogDir, hadoopConf)
-      val inProgressExists = fs.exists(
-        new Path(eventLogFilePrefix +
+      val inProgressExists = fs.exists(new Path(
+        eventLogFilePrefix +
           EventLoggingListener.IN_PROGRESS))
 
       val eventLogFile =
@@ -1204,11 +1202,14 @@ private[deploy] class Master(
     for (worker <- toRemove) {
       if (worker.state != WorkerState.DEAD) {
         logWarning(
-          "Removing %s because we got no heartbeat in %d seconds"
-            .format(worker.id, WORKER_TIMEOUT_MS / 1000))
+          "Removing %s because we got no heartbeat in %d seconds".format(
+            worker.id,
+            WORKER_TIMEOUT_MS / 1000))
         removeWorker(worker)
       } else {
-        if (worker.lastHeartbeat < currentTime - ((REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS)) {
+        if (worker.lastHeartbeat < currentTime - (
+              (REAPER_ITERATIONS + 1) * WORKER_TIMEOUT_MS
+            )) {
           workers -= worker // we've seen this DEAD worker in the UI, etc. for long enough; cull it
         }
       }

@@ -184,8 +184,8 @@ class IsotonicRegression @Since("1.5.0") (
     val handlePersistence = dataset.rdd.getStorageLevel == StorageLevel.NONE
     if (handlePersistence) instances.persist(StorageLevel.MEMORY_AND_DISK)
 
-    val isotonicRegression = new MLlibIsotonicRegression()
-      .setIsotonic($(isotonic))
+    val isotonicRegression = new MLlibIsotonicRegression().setIsotonic($(
+      isotonic))
     val oldModel = isotonicRegression.run(instances)
 
     copyValues(new IsotonicRegressionModel(uid, oldModel).setParent(this))
@@ -285,8 +285,8 @@ object IsotonicRegressionModel extends MLReadable[IsotonicRegressionModel] {
 
   /** [[MLWriter]] instance for [[IsotonicRegressionModel]] */
   private[IsotonicRegressionModel] class IsotonicRegressionModelWriter(
-      instance: IsotonicRegressionModel
-  ) extends MLWriter
+      instance: IsotonicRegressionModel)
+      extends MLWriter
       with Logging {
 
     private case class Data(

@@ -267,7 +267,9 @@ class TraceTest
                   _,
                   Some(_sampled),
                   Flags(0))
-                if (_traceId == parentId.traceId) && (_parentId == parentId.spanId) &&
+                if (
+                  _traceId == parentId.traceId
+                ) && (_parentId == parentId.spanId) &&
                   (_sampled == parentId.sampled.get) =>
               true
             case _ => false
@@ -323,12 +325,11 @@ class TraceTest
           assert(Trace.tracers == List(tracer))
           verify(tracer, never()).sampleTrace(currentId)
           Trace.record("Hello world")
-          verify(tracer, times(1)).record(
-            Record(
-              currentId,
-              Time.now,
-              Annotation.Message("Hello world"),
-              None))
+          verify(tracer, times(1)).record(Record(
+            currentId,
+            Time.now,
+            Annotation.Message("Hello world"),
+            None))
         }
       }
     }

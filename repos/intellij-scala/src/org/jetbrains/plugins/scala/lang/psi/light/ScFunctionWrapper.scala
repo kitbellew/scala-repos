@@ -369,11 +369,10 @@ object ScFunctionWrapper {
                 builder.append(psiType.getCanonicalText)
                 builder.append(">")
               case Success(tp, _) =>
-                builder.append(
-                  JavaConversionUtil.typeText(
-                    subst.subst(tp),
-                    function.getProject,
-                    function.getResolveScope))
+                builder.append(JavaConversionUtil.typeText(
+                  subst.subst(tp),
+                  function.getProject,
+                  function.getResolveScope))
               case _ => builder.append("java.lang.Object")
             }
 

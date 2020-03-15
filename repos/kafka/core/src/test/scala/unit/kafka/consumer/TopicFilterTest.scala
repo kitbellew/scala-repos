@@ -40,19 +40,17 @@ class TopicFilterTest extends JUnitSuite {
     val topicFilter2 = new Whitelist(".+")
     assertTrue(
       topicFilter2.isTopicAllowed("alltopics", excludeInternalTopics = true))
-    assertFalse(
-      topicFilter2.isTopicAllowed(
-        TopicConstants.GROUP_METADATA_TOPIC_NAME,
-        excludeInternalTopics = true))
-    assertTrue(
-      topicFilter2.isTopicAllowed(
-        TopicConstants.GROUP_METADATA_TOPIC_NAME,
-        excludeInternalTopics = false))
+    assertFalse(topicFilter2.isTopicAllowed(
+      TopicConstants.GROUP_METADATA_TOPIC_NAME,
+      excludeInternalTopics = true))
+    assertTrue(topicFilter2.isTopicAllowed(
+      TopicConstants.GROUP_METADATA_TOPIC_NAME,
+      excludeInternalTopics = false))
 
     val topicFilter3 = new Whitelist("white_listed-topic.+")
-    assertTrue(
-      topicFilter3
-        .isTopicAllowed("white_listed-topic1", excludeInternalTopics = true))
+    assertTrue(topicFilter3.isTopicAllowed(
+      "white_listed-topic1",
+      excludeInternalTopics = true))
     assertFalse(
       topicFilter3.isTopicAllowed("black1", excludeInternalTopics = true))
 
@@ -75,14 +73,12 @@ class TopicFilterTest extends JUnitSuite {
     assertFalse(
       topicFilter1.isTopicAllowed("black1", excludeInternalTopics = false))
 
-    assertFalse(
-      topicFilter1.isTopicAllowed(
-        TopicConstants.GROUP_METADATA_TOPIC_NAME,
-        excludeInternalTopics = true))
-    assertTrue(
-      topicFilter1.isTopicAllowed(
-        TopicConstants.GROUP_METADATA_TOPIC_NAME,
-        excludeInternalTopics = false))
+    assertFalse(topicFilter1.isTopicAllowed(
+      TopicConstants.GROUP_METADATA_TOPIC_NAME,
+      excludeInternalTopics = true))
+    assertTrue(topicFilter1.isTopicAllowed(
+      TopicConstants.GROUP_METADATA_TOPIC_NAME,
+      excludeInternalTopics = false))
   }
 
   @Test

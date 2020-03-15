@@ -65,11 +65,10 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
       finally { if (threwException) { remove(blockId) } }
     }
     val finishTime = System.currentTimeMillis
-    logDebug(
-      "Block %s stored as %s file on disk in %d ms".format(
-        file.getName,
-        Utils.bytesToString(file.length()),
-        finishTime - startTime))
+    logDebug("Block %s stored as %s file on disk in %d ms".format(
+      file.getName,
+      Utils.bytesToString(file.length()),
+      finishTime - startTime))
   }
 
   def putBytes(blockId: BlockId, bytes: ChunkedByteBuffer): Unit = {
@@ -89,8 +88,9 @@ private[spark] class DiskStore(conf: SparkConf, diskManager: DiskBlockManager)
         channel.position(0)
         while (buf.remaining() != 0) {
           if (channel.read(buf) == -1) {
-            throw new IOException("Reached EOF before filling buffer\n" +
-              s"offset=0\nfile=${file.getAbsolutePath}\nbuf.remaining=${buf.remaining}")
+            throw new IOException(
+              "Reached EOF before filling buffer\n" +
+                s"offset=0\nfile=${file.getAbsolutePath}\nbuf.remaining=${buf.remaining}")
           }
         }
         buf.flip()

@@ -145,8 +145,7 @@ trait EvaluatorModule[M[+_]]
         List(
           inlineStatics(_, ctx),
           optimizeJoins(_, ctx),
-          rewriteConditionals(_)
-        ))
+          rewriteConditionals(_)))
     }
 
     def fullRewriteDAG(
@@ -241,13 +240,12 @@ trait EvaluatorModule[M[+_]]
                 } yield {
                   // TODO FIXME if the target has forcing points, targetTrans is insufficient
                   val Some(trans) = mkTransSpec(target, reducedTarget, ctx)
-                  N.point(
-                    GroupingSource(
-                      resultTargetTable,
-                      SourceKey.Single,
-                      Some(liftToValues(trans)),
-                      id,
-                      subSpec))
+                  N.point(GroupingSource(
+                    resultTargetTable,
+                    SourceKey.Single,
+                    Some(liftToValues(trans)),
+                    id,
+                    subSpec))
                 }
 
               case None =>
@@ -490,10 +488,9 @@ trait EvaluatorModule[M[+_]]
             } else {
               val components =
                 for (i <- ids)
-                  yield trans.WrapArray(
-                    DerefArrayStatic(
-                      SourceKey.Single,
-                      CPathIndex(i))): TransSpec1
+                  yield trans.WrapArray(DerefArrayStatic(
+                    SourceKey.Single,
+                    CPathIndex(i))): TransSpec1
               components reduceLeft { trans.InnerArrayConcat(_, _) }
             }
           }
@@ -523,10 +520,10 @@ trait EvaluatorModule[M[+_]]
           def join0(
               pendingTableLeft: PendingTable,
               pendingTableRight: PendingTable): M[PendingTable] = {
-            val leftResult = pendingTableLeft.table.transform(
-              liftToValues(pendingTableLeft.trans))
-            val rightResult = pendingTableRight.table.transform(
-              liftToValues(pendingTableRight.trans))
+            val leftResult = pendingTableLeft.table.transform(liftToValues(
+              pendingTableLeft.trans))
+            val rightResult = pendingTableRight.table.transform(liftToValues(
+              pendingTableRight.trans))
 
             def adjustTableOrder(order: TableOrder)(f: Int => Int) =
               order match {
@@ -698,10 +695,9 @@ trait EvaluatorModule[M[+_]]
             case dag.New(parent) =>
               for {
                 pendingTable <- prepareEval(parent, splits)
-                idSpec = makeTableTrans(
-                  Map(
-                    paths.Key -> trans.WrapArray(
-                      Scan(Leaf(Source), freshIdScanner))))
+                idSpec = makeTableTrans(Map(
+                  paths.Key -> trans.WrapArray(
+                    Scan(Leaf(Source), freshIdScanner))))
                 tableM2 = pendingTable.table
                   .transform(liftToValues(pendingTable.trans))
                   .transform(idSpec)
@@ -716,8 +712,8 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 Path(prefixStr) = ctx.basePath
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(prefixStr.replaceAll("([^/])$", "$1/")))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(CString(
+                  prefixStr.replaceAll("([^/])$", "$1/")))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
@@ -754,8 +750,8 @@ trait EvaluatorModule[M[+_]]
                 fullPrefix = prefixStr.replaceAll("([^/])$", "$1/") + midStr
                   .replaceAll("([^/])$", "$1/")
 
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(fullPrefix))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(CString(
+                  fullPrefix))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
@@ -786,11 +782,10 @@ trait EvaluatorModule[M[+_]]
             case dag.Morph1(mor, parent) =>
               for {
                 pendingTable <- prepareEval(parent, splits)
-                back <- transState liftM mn(
-                  mor(
-                    pendingTable.table.transform(
-                      liftToValues(pendingTable.trans)),
-                    MorphContext(ctx, graph)))
+                back <- transState liftM mn(mor(
+                  pendingTable.table.transform(liftToValues(
+                    pendingTable.trans)),
+                  MorphContext(ctx, graph)))
               } yield {
                 PendingTable(
                   back,
@@ -846,10 +841,10 @@ trait EvaluatorModule[M[+_]]
                       splits)).tupled
                     pair flatMap {
                       case (ptLeft, ptRight) =>
-                        val leftTable = ptLeft.table.transform(
-                          liftToValues(ptLeft.trans))
-                        val rightTable = ptRight.table.transform(
-                          liftToValues(ptRight.trans))
+                        val leftTable = ptLeft.table.transform(liftToValues(
+                          ptLeft.trans))
+                        val rightTable = ptRight.table.transform(liftToValues(
+                          ptRight.trans))
                         def sort(policy: IdentityPolicy): TableOrder =
                           policy match {
                             case IdentityPolicy.Retain.Left  => ptLeft.sort
@@ -891,10 +886,9 @@ trait EvaluatorModule[M[+_]]
               }
 
             case dag.Distinct(parent) =>
-              val idSpec = makeTableTrans(
-                Map(
-                  paths.Key -> trans.WrapArray(
-                    Scan(Leaf(Source), freshIdScanner))))
+              val idSpec = makeTableTrans(Map(
+                paths.Key -> trans.WrapArray(
+                  Scan(Leaf(Source), freshIdScanner))))
 
               for {
                 pending <- prepareEval(parent, splits)
@@ -959,8 +953,7 @@ trait EvaluatorModule[M[+_]]
                   state.copy(
                     assume =
                       state.assume + (m -> (wrapped, IdentityOrder.empty)),
-                    reductions = state.reductions + (m -> rvalue)
-                  )
+                    reductions = state.reductions + (m -> rvalue))
                 }
               } yield {
                 PendingTable(
@@ -974,11 +967,10 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 liftedTrans = liftToValues(pendingTable.trans)
-                result <- transState liftM mn(
-                  red(
-                    pendingTable.table.transform(
-                      DerefObjectStatic(liftedTrans, paths.Value)),
-                    MorphContext(ctx, graph)))
+                result <- transState liftM mn(red(
+                  pendingTable.table.transform(
+                    DerefObjectStatic(liftedTrans, paths.Value)),
+                  MorphContext(ctx, graph)))
                 wrapped = result transform buildConstantWrapSpec(Leaf(Source))
               } yield PendingTable(
                 wrapped,
@@ -987,10 +979,9 @@ trait EvaluatorModule[M[+_]]
                 IdentityOrder(graph))
 
             case s @ dag.Split(spec, child, id) =>
-              val idSpec = makeTableTrans(
-                Map(
-                  paths.Key -> trans.WrapArray(
-                    Scan(Leaf(Source), freshIdScanner))))
+              val idSpec = makeTableTrans(Map(
+                paths.Key -> trans.WrapArray(
+                  Scan(Leaf(Source), freshIdScanner))))
 
               val params = child.foldDown(true) {
                 case param: dag.SplitParam if param.parentId == id => Set(param)
@@ -1066,10 +1057,10 @@ trait EvaluatorModule[M[+_]]
 
                 keyValueSpec = TransSpec1.PruneToKeyValue
 
-                leftTable = leftPending.table.transform(
-                  liftToValues(leftPending.trans))
-                rightTable = rightPending.table.transform(
-                  liftToValues(rightPending.trans))
+                leftTable = leftPending.table.transform(liftToValues(
+                  leftPending.trans))
+                rightTable = rightPending.table.transform(liftToValues(
+                  rightPending.trans))
 
                 leftSortedM = transState liftM mn(
                   leftTable.sort(keyValueSpec, SortAscending))
@@ -1102,10 +1093,10 @@ trait EvaluatorModule[M[+_]]
                   prepareEval(right, splits))
                 (leftPending, rightPending) = pair
 
-                leftTable = leftPending.table.transform(
-                  liftToValues(leftPending.trans))
-                rightTable = rightPending.table.transform(
-                  liftToValues(rightPending.trans))
+                leftTable = leftPending.table.transform(liftToValues(
+                  leftPending.trans))
+                rightTable = rightPending.table.transform(liftToValues(
+                  rightPending.trans))
 
                 // this transspec prunes everything that is not a key or a value.
                 keyValueSpec = TransSpec1.PruneToKeyValue
@@ -1584,8 +1575,7 @@ trait EvaluatorModule[M[+_]]
     private case class EvaluatorState(
         assume: Map[DepGraph, (Table, TableOrder)] = Map.empty,
         reductions: Map[DepGraph, Option[RValue]] = Map.empty,
-        extraCount: Int = 0
-    )
+        extraCount: Int = 0)
 
     private sealed trait TableOrder {
       def ids: Vector[Int]

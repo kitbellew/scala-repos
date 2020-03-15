@@ -147,8 +147,7 @@ final case class DeploymentPlan(
     DeploymentPlan(
       original = Group.empty.mergeFromProto(msg.getOriginal),
       target = Group.empty.mergeFromProto(msg.getTarget),
-      version = Timestamp(msg.getVersion)
-    ).copy(id = msg.getId)
+      version = Timestamp(msg.getVersion)).copy(id = msg.getId)
 
   override def toProto: Protos.DeploymentPlanDefinition =
     Protos.DeploymentPlanDefinition.newBuilder
@@ -251,11 +250,10 @@ object DeploymentPlan {
 
               // Scale-only change.
               case Some(oldApp) if oldApp.isOnlyScaleChange(newApp) =>
-                Some(
-                  ScaleApplication(
-                    newApp,
-                    newApp.instances,
-                    toKill.get(newApp.id)))
+                Some(ScaleApplication(
+                  newApp,
+                  newApp.instances,
+                  toKill.get(newApp.id)))
 
               // Update or restart an existing app.
               case Some(oldApp) if oldApp.needsRestart(newApp) =>
@@ -305,8 +303,7 @@ object DeploymentPlan {
     steps += DeploymentStep(
       (originalApps -- targetApps.keys).valuesIterator
         .map { oldApp => StopApplication(oldApp) }
-        .to[Seq]
-    )
+        .to[Seq])
 
     // 2. Start apps that do not exist in the original, requiring only 0
     //    instances.  These are scaled as needed in the dependency-ordered
@@ -314,8 +311,7 @@ object DeploymentPlan {
     steps += DeploymentStep(
       (targetApps -- originalApps.keys).valuesIterator
         .map { newApp => StartApplication(newApp, 0) }
-        .to[Seq]
-    )
+        .to[Seq])
 
     // 3. For each app in each dependency class,
     //
@@ -337,8 +333,7 @@ object DeploymentPlan {
       original,
       target,
       steps.result().filter(_.actions.nonEmpty),
-      version
-    )
+      version)
 
     result
   }

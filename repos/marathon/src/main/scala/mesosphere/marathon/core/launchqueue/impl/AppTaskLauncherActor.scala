@@ -48,17 +48,16 @@ private[launchqueue] object AppTaskLauncherActor {
       rateLimiterActor: ActorRef)(
       app: AppDefinition,
       initialCount: Int): Props = {
-    Props(
-      new AppTaskLauncherActor(
-        config,
-        offerMatcherManager,
-        clock,
-        taskOpFactory,
-        maybeOfferReviver,
-        taskTracker,
-        rateLimiterActor,
-        app,
-        initialCount))
+    Props(new AppTaskLauncherActor(
+      config,
+      offerMatcherManager,
+      clock,
+      taskOpFactory,
+      maybeOfferReviver,
+      taskTracker,
+      rateLimiterActor,
+      app,
+      initialCount))
   }
   // scalastyle:on parameter.number
 
@@ -175,8 +174,7 @@ private class AppTaskLauncherActor(
         receiveTaskStatusUpdate,
         receiveGetCurrentCount,
         receiveAddCount,
-        receiveProcessOffers
-      ).reduce(_.orElse[Any, Unit](_))
+        receiveProcessOffers).reduce(_.orElse[Any, Unit](_))
     }
 
   private[this] def receiveWaitingForInFlight: Receive =
@@ -214,12 +212,10 @@ private class AppTaskLauncherActor(
         val now: Timestamp = clock.now()
         if (backOffUntil.exists(_ > now)) {
           import context.dispatcher
-          recheckBackOff = Some(
-            context.system.scheduler.scheduleOnce(
-              now until delayUntil,
-              self,
-              RecheckIfBackOffUntilReached)
-          )
+          recheckBackOff = Some(context.system.scheduler.scheduleOnce(
+            now until delayUntil,
+            self,
+            RecheckIfBackOffUntilReached))
         }
 
         OfferMatcherRegistration.manageOfferMatcherStatus()
@@ -330,8 +326,7 @@ private class AppTaskLauncherActor(
             "getting new app definition config for '{}', version {} with {} initial tasks",
             app.id,
             app.version,
-            addCount
-          )
+            addCount)
 
           suspendMatchingUntilWeGetBackoffDelayUpdate()
 
@@ -340,8 +335,7 @@ private class AppTaskLauncherActor(
             "scaling change for '{}', version {} with {} initial tasks",
             app.id,
             app.version,
-            addCount
-          )
+            addCount)
         }
       } else { tasksToLaunch += addCount }
 
@@ -432,8 +426,7 @@ private class AppTaskLauncherActor(
   private[this] def scheduleTaskOpTimeout(taskOp: TaskOp): Unit = {
     val reject = TaskOpSourceDelegate.TaskOpRejected(
       taskOp,
-      AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON
-    )
+      AppTaskLauncherActor.TASK_OP_REJECTED_TIMEOUT_REASON)
     val cancellable = scheduleTaskOperationTimeout(context, reject)
     inFlightTaskOperations += taskOp.taskId -> cancellable
   }

@@ -83,8 +83,9 @@ object Templates {
       val ignore: Set[String] = ignoreTemplateFiles.value.to[Set]
       val outDir: File = target.value / "prepared-templates"
 
-      streams.value.log.info("Preparing templates for Play " + params(
-        "PLAY_VERSION") + " with Scala " + params("SCALA_VERSION"))
+      streams.value.log.info(
+        "Preparing templates for Play " + params(
+          "PLAY_VERSION") + " with Scala " + params("SCALA_VERSION"))
 
       // Don't sync directories or .gitkeep files. We can remove
       // .gitkeep files. These files are only there to make sure we preserve
@@ -116,13 +117,13 @@ object Templates {
               val parent: java.io.File = f.getParentFile
               if (f.getParent == null) f else topDir(parent)
             }
-            val rebasedFile = (file relativeTo outDir).getOrElse(
-              sys.error(s"Can't rebase prepared template $file to dir $outDir"))
+            val rebasedFile = (file relativeTo outDir).getOrElse(sys.error(
+              s"Can't rebase prepared template $file to dir $outDir"))
             val templateName: String = topDir(rebasedFile).getName
             val templateSources: TemplateSources = templateSourcesList
               .find(_.name == templateName)
-              .getOrElse(
-                sys.error(s"Couldn't find template named $templateName"))
+              .getOrElse(sys.error(
+                s"Couldn't find template named $templateName"))
             templateSources.params
           }
           val allParams: Map[String, String] = params ++ templateParams

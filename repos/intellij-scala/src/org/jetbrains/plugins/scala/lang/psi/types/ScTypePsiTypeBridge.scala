@@ -116,12 +116,11 @@ trait ScTypePsiTypeBridge {
                               visitedRawTypes + clazz)
                           case _ =>
                             ScCompoundType(
-                              arrayOfTypes.map(
-                                create(
-                                  _,
-                                  project,
-                                  scope,
-                                  visitedRawTypes + clazz)),
+                              arrayOfTypes.map(create(
+                                _,
+                                project,
+                                scope,
+                                visitedRawTypes + clazz)),
                               Map.empty,
                               Map.empty)
                         }
@@ -239,14 +238,13 @@ trait ScTypePsiTypeBridge {
         }
       case p: PsiIntersectionType =>
         ScCompoundType(
-          p.getConjuncts.map(
-            create(
-              _,
-              project,
-              scope,
-              visitedRawTypes,
-              paramTopLevel,
-              treatJavaObjectAsAny)),
+          p.getConjuncts.map(create(
+            _,
+            project,
+            scope,
+            visitedRawTypes,
+            paramTopLevel,
+            treatJavaObjectAsAny)),
           Map.empty,
           Map.empty)
       case _ =>

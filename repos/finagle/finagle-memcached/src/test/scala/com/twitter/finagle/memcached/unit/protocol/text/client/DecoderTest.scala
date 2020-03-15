@@ -61,14 +61,13 @@ class DecoderTest extends FunSuite with MockitoSugar {
     decoder.decode(null, null, buffer)
     decoder.decode(null, null, buffer)
     assert(
-      decoder.decode(null, null, buffer) == ValueLines(
-        Seq(
-          TokensWithData(
-            Seq("VALUE", "foo", "0", "1") map { Buf.Utf8(_) },
-            Buf.Utf8("1")),
-          TokensWithData(
-            Seq("VALUE", "bar", "0", "2") map { Buf.Utf8(_) },
-            Buf.Utf8("12")))))
+      decoder.decode(null, null, buffer) == ValueLines(Seq(
+        TokensWithData(
+          Seq("VALUE", "foo", "0", "1") map { Buf.Utf8(_) },
+          Buf.Utf8("1")),
+        TokensWithData(
+          Seq("VALUE", "bar", "0", "2") map { Buf.Utf8(_) },
+          Buf.Utf8("12")))))
   }
 
   test("decode data with flag") {
@@ -84,14 +83,13 @@ class DecoderTest extends FunSuite with MockitoSugar {
     decoder.decode(null, null, buffer)
     decoder.decode(null, null, buffer)
     assert(
-      decoder.decode(null, null, buffer) == ValueLines(
-        Seq(
-          TokensWithData(
-            Seq("VALUE", "foo", "20", "1") map { Buf.Utf8(_) },
-            Buf.Utf8("1")),
-          TokensWithData(
-            Seq("VALUE", "bar", "10", "2") map { Buf.Utf8(_) },
-            Buf.Utf8("12")))))
+      decoder.decode(null, null, buffer) == ValueLines(Seq(
+        TokensWithData(
+          Seq("VALUE", "foo", "20", "1") map { Buf.Utf8(_) },
+          Buf.Utf8("1")),
+        TokensWithData(
+          Seq("VALUE", "bar", "10", "2") map { Buf.Utf8(_) },
+          Buf.Utf8("12")))))
   }
 
   test("decode end") {

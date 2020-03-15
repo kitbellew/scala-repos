@@ -29,12 +29,11 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
       fvalMemory: Int = 100,
       relativeTolerance: Boolean = true)(
       implicit space: NormedModule[T, Double]) =
-    this(
-      FirstOrderMinimizer.defaultConvergenceCheck[T](
-        maxIter,
-        tolerance,
-        relativeTolerance,
-        fvalMemory))
+    this(FirstOrderMinimizer.defaultConvergenceCheck[T](
+      maxIter,
+      tolerance,
+      relativeTolerance,
+      fvalMemory))
 
   /**
     * Any history the derived minimization function needs to do its updates. typically an approximation
@@ -93,8 +92,9 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         val x = takeStep(state, dir, stepSize)
         val (value, grad) = calculateObjective(adjustedFun, x, state.history)
         val (adjValue, adjGrad) = adjust(x, grad, value)
-        val oneOffImprovement =
-          (state.adjustedValue - adjValue) / (state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs)
+        val oneOffImprovement = (state.adjustedValue - adjValue) / (
+          state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs
+        )
         logger.info(
           f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
         val history = updateHistory(x, grad, value, adjustedFun, state)
@@ -311,10 +311,9 @@ object FirstOrderMinimizer {
     override def apply(
         state: State[T, _, _],
         info: IndexedSeq[Double]): Option[ConvergenceReason] = {
-      if (info.length >= 2 && (state.adjustedValue - info.max).abs <= tolerance * (if (relative)
-                                                                                     state.initialAdjVal
-                                                                                   else
-                                                                                     1.0)) {
+      if (info.length >= 2 && (
+            state.adjustedValue - info.max
+          ).abs <= tolerance * (if (relative) state.initialAdjVal else 1.0)) {
         Some(FunctionValuesConverged)
       } else { None }
     }
@@ -404,12 +403,10 @@ object FirstOrderMinimizer {
       relative: Boolean = true,
       fvalMemory: Int = 20)(
       implicit space: NormedModule[T, Double]): ConvergenceCheck[T] =
-    (
-      maxIterationsReached[T](maxIter) ||
-        functionValuesConverged(tolerance, relative, fvalMemory) ||
-        gradientConverged[T](tolerance, relative) ||
-        searchFailed
-    )
+    (maxIterationsReached[T](maxIter) ||
+      functionValuesConverged(tolerance, relative, fvalMemory) ||
+      gradientConverged[T](tolerance, relative) ||
+      searchFailed)
 
   /**
     * OptParams is a Configuration-compatible case class that can be used to select optimization
@@ -439,8 +436,8 @@ object FirstOrderMinimizer {
       tolerance: Double = 1e-5,
       useStochastic: Boolean = false,
       randomSeed: Int = 0) {
-    private implicit val random = new RandBasis(
-      new ThreadLocalRandomGenerator(new MersenneTwister(randomSeed)))
+    private implicit val random = new RandBasis(new ThreadLocalRandomGenerator(
+      new MersenneTwister(randomSeed)))
 
     @deprecated(
       "Use breeze.optimize.minimize(f, init, params) instead.",
@@ -504,10 +501,9 @@ object FirstOrderMinimizer {
         new OWLQN[K, T](maxIterations, 5, regularization, tolerance)(space)
           .iterations(f, init)
       else
-        (new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space))
-          .iterations(
-            DiffFunction.withL2Regularization(f, regularization),
-            init)
+        (
+          new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space)
+        ).iterations(DiffFunction.withL2Regularization(f, regularization), init)
     }
   }
 }

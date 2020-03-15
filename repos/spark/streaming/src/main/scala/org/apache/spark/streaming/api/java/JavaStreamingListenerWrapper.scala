@@ -48,8 +48,7 @@ private[streaming] class JavaStreamingListenerWrapper(
       streamInputInfo.inputStreamId,
       streamInputInfo.numRecords: Long,
       streamInputInfo.metadata.asJava,
-      streamInputInfo.metadataDescription.orNull
-    )
+      streamInputInfo.metadataDescription.orNull)
   }
 
   private def toJavaOutputOperationInfo(
@@ -85,50 +84,49 @@ private[streaming] class JavaStreamingListenerWrapper(
   override def onReceiverStarted(
       receiverStarted: StreamingListenerReceiverStarted): Unit = {
     javaStreamingListener.onReceiverStarted(
-      new JavaStreamingListenerReceiverStarted(
-        toJavaReceiverInfo(receiverStarted.receiverInfo)))
+      new JavaStreamingListenerReceiverStarted(toJavaReceiverInfo(
+        receiverStarted.receiverInfo)))
   }
 
   override def onReceiverError(
       receiverError: StreamingListenerReceiverError): Unit = {
     javaStreamingListener.onReceiverError(
-      new JavaStreamingListenerReceiverError(
-        toJavaReceiverInfo(receiverError.receiverInfo)))
+      new JavaStreamingListenerReceiverError(toJavaReceiverInfo(
+        receiverError.receiverInfo)))
   }
 
   override def onReceiverStopped(
       receiverStopped: StreamingListenerReceiverStopped): Unit = {
     javaStreamingListener.onReceiverStopped(
-      new JavaStreamingListenerReceiverStopped(
-        toJavaReceiverInfo(receiverStopped.receiverInfo)))
+      new JavaStreamingListenerReceiverStopped(toJavaReceiverInfo(
+        receiverStopped.receiverInfo)))
   }
 
   override def onBatchSubmitted(
       batchSubmitted: StreamingListenerBatchSubmitted): Unit = {
     javaStreamingListener.onBatchSubmitted(
-      new JavaStreamingListenerBatchSubmitted(
-        toJavaBatchInfo(batchSubmitted.batchInfo)))
+      new JavaStreamingListenerBatchSubmitted(toJavaBatchInfo(
+        batchSubmitted.batchInfo)))
   }
 
   override def onBatchStarted(
       batchStarted: StreamingListenerBatchStarted): Unit = {
-    javaStreamingListener.onBatchStarted(
-      new JavaStreamingListenerBatchStarted(
-        toJavaBatchInfo(batchStarted.batchInfo)))
+    javaStreamingListener.onBatchStarted(new JavaStreamingListenerBatchStarted(
+      toJavaBatchInfo(batchStarted.batchInfo)))
   }
 
   override def onBatchCompleted(
       batchCompleted: StreamingListenerBatchCompleted): Unit = {
     javaStreamingListener.onBatchCompleted(
-      new JavaStreamingListenerBatchCompleted(
-        toJavaBatchInfo(batchCompleted.batchInfo)))
+      new JavaStreamingListenerBatchCompleted(toJavaBatchInfo(
+        batchCompleted.batchInfo)))
   }
 
   override def onOutputOperationStarted(
       outputOperationStarted: StreamingListenerOutputOperationStarted): Unit = {
     javaStreamingListener.onOutputOperationStarted(
-      new JavaStreamingListenerOutputOperationStarted(
-        toJavaOutputOperationInfo(outputOperationStarted.outputOperationInfo)))
+      new JavaStreamingListenerOutputOperationStarted(toJavaOutputOperationInfo(
+        outputOperationStarted.outputOperationInfo)))
   }
 
   override def onOutputOperationCompleted(

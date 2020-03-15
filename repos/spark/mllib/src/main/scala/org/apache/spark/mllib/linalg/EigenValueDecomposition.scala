@@ -79,7 +79,9 @@ private[mllib] object EigenValueDecomposition {
     iparam(6) = 1
 
     require(
-      n * ncv.toLong <= Integer.MAX_VALUE && ncv * (ncv.toLong + 8) <= Integer.MAX_VALUE,
+      n * ncv.toLong <= Integer.MAX_VALUE && ncv * (
+        ncv.toLong + 8
+      ) <= Integer.MAX_VALUE,
       s"k = $k and/or n = $n are too large to compute an eigendecomposition")
 
     var ido = new intW(0)

@@ -18,9 +18,8 @@ class StatsFilterTest extends FunSuite {
   val BasicExceptions =
     new CategorizingExceptionStatsHandler(_ => None, _ => None, rollup = false)
 
-  def getService(
-      exceptionStatsHandler: ExceptionStatsHandler = BasicExceptions
-  ): (Promise[String], InMemoryStatsReceiver, Service[String, String]) = {
+  def getService(exceptionStatsHandler: ExceptionStatsHandler = BasicExceptions)
+      : (Promise[String], InMemoryStatsReceiver, Service[String, String]) = {
     val receiver = new InMemoryStatsReceiver()
     val statsFilter =
       new StatsFilter[String, String](receiver, exceptionStatsHandler)
@@ -88,12 +87,11 @@ class StatsFilterTest extends FunSuite {
     assert(unsourced.size == 2)
     assert(unsourced(Seq("failures")) == 1)
     assert(
-      unsourced(
-        Seq(
-          "failures",
-          classOf[ChannelWriteException].getName(),
-          classOf[RequestException].getName(),
-          classOf[Exception].getName())) == 1)
+      unsourced(Seq(
+        "failures",
+        classOf[ChannelWriteException].getName(),
+        classOf[RequestException].getName(),
+        classOf[Exception].getName())) == 1)
   }
 
   test("source failures") {
@@ -209,11 +207,10 @@ class StatsFilterTest extends FunSuite {
     assert(
       unsourced(Seq("failures", classOf[ChannelWriteException].getName())) == 1)
     assert(
-      unsourced(
-        Seq(
-          "failures",
-          classOf[ChannelWriteException].getName(),
-          classOf[Exception].getName())) == 1)
+      unsourced(Seq(
+        "failures",
+        classOf[ChannelWriteException].getName(),
+        classOf[Exception].getName())) == 1)
   }
 
   test("respects ResponseClassifier") {

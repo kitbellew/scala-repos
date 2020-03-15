@@ -351,8 +351,8 @@ trait LowPriorityMkSelectDynamicOptic {
       infer: InferProduct.Aux[C, K, I],
       mkCSel: MkCtorPrism[A, I],
       mkPSel: MkFieldLens.Aux[I, K, E],
-      compose: OpticComposer[Prism[A, E], R]
-  ): Aux[R, A, K, Nothing, compose.Out] =
+      compose: OpticComposer[Prism[A, E], R])
+      : Aux[R, A, K, Nothing, compose.Out] =
     new MkSelectDynamicOptic[R, A, K, Nothing] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkPSel() compose mkCSel(), r)
@@ -361,8 +361,7 @@ trait LowPriorityMkSelectDynamicOptic {
   implicit def mkSelFieldCtor[R, A, K, B, C](implicit
       mkPSel: MkFieldLens.Aux[A, K, C],
       mkCSel: MkCtorPrism[C, B],
-      compose: OpticComposer[Prism[A, B], R]
-  ): Aux[R, A, K, B, compose.Out] =
+      compose: OpticComposer[Prism[A, B], R]): Aux[R, A, K, B, compose.Out] =
     new MkSelectDynamicOptic[R, A, K, B] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkCSel() compose mkPSel(), r)
@@ -372,8 +371,8 @@ trait LowPriorityMkSelectDynamicOptic {
 object MkSelectDynamicOptic extends LowPriorityMkSelectDynamicOptic {
   implicit def mkSelField[R, A, K, E](implicit
       mkLens: MkFieldLens.Aux[A, K, E],
-      compose: OpticComposer[Lens[A, E], R]
-  ): Aux[R, A, K, Nothing, compose.Out] =
+      compose: OpticComposer[Lens[A, E], R])
+      : Aux[R, A, K, Nothing, compose.Out] =
     new MkSelectDynamicOptic[R, A, K, Nothing] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkLens(), r)
@@ -381,8 +380,8 @@ object MkSelectDynamicOptic extends LowPriorityMkSelectDynamicOptic {
 
   implicit def mkSelCtor[R, A, B](implicit
       mkPrism: MkCtorPrism[A, B],
-      compose: OpticComposer[Prism[A, B], R]
-  ): Aux[R, A, Nothing, B, compose.Out] =
+      compose: OpticComposer[Prism[A, B], R])
+      : Aux[R, A, Nothing, B, compose.Out] =
     new MkSelectDynamicOptic[R, A, Nothing, B] {
       type Out = compose.Out
       def apply(r: R): Out = compose(mkPrism(), r)
@@ -535,8 +534,8 @@ trait LowPriorityMkPathOptic {
       infer: InferProduct.Aux[C, K, I],
       mkPrism: MkCtorPrism[A, I],
       mkLens: MkFieldLens.Aux[I, K, E],
-      compose: OpticComposer[Prism[A, E], R]
-  ): Aux[S, Select[K] :: P, compose.Out, E] =
+      compose: OpticComposer[Prism[A, E], R])
+      : Aux[S, Select[K] :: P, compose.Out, E] =
     new MkPathOptic[S, Select[K] :: P] {
       type Out = compose.Out
       type Elem = E
@@ -555,8 +554,8 @@ object MkPathOptic extends LowPriorityMkPathOptic {
   implicit def mkSelPathOptic[S, P <: HList, K, A, E, R](implicit
       mkPrefix: Aux[S, P, R, A],
       mkLens: MkFieldLens.Aux[A, K, E],
-      compose: OpticComposer[Lens[A, E], R]
-  ): Aux[S, Select[K] :: P, compose.Out, E] =
+      compose: OpticComposer[Lens[A, E], R])
+      : Aux[S, Select[K] :: P, compose.Out, E] =
     new MkPathOptic[S, Select[K] :: P] {
       type Out = compose.Out
       type Elem = E
@@ -566,8 +565,8 @@ object MkPathOptic extends LowPriorityMkPathOptic {
   implicit def mkCoselPathOptic[S, P <: HList, B, A, R](implicit
       mkPrefix: Aux[S, P, R, A],
       mkPrism: MkCtorPrism[A, B],
-      compose: OpticComposer[Prism[A, B], R]
-  ): Aux[S, Coselect[B] :: P, compose.Out, B] =
+      compose: OpticComposer[Prism[A, B], R])
+      : Aux[S, Coselect[B] :: P, compose.Out, B] =
     new MkPathOptic[S, Coselect[B] :: P] {
       type Out = compose.Out
       type Elem = B

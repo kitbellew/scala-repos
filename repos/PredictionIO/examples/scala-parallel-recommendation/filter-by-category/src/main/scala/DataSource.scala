@@ -28,10 +28,7 @@ class DataSource(val dsp: DataSourceParams)
     val eventsDb = Storage.getPEvents()
 
     val itemsRDD: RDD[Item] = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "item"
-      )(sc)
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
       .map {
         case (entityId, properties) =>
           try {
@@ -82,21 +79,12 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-case class Item(
-    id: String,
-    categories: List[String]
-)
+case class Item(id: String, categories: List[String])
 
-case class Rating(
-    user: String,
-    item: String,
-    rating: Double
-)
+case class Rating(user: String, item: String, rating: Double)
 
-class TrainingData(
-    val items: RDD[Item],
-    val ratings: RDD[Rating]
-) extends Serializable {
+class TrainingData(val items: RDD[Item], val ratings: RDD[Rating])
+    extends Serializable {
   override def toString = {
     s"items: [${items.count()}] (${items.take(2).toList}...)" +
       s" ratings: [${ratings.count()}] (${ratings.take(2).toList}...)"

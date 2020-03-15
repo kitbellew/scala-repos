@@ -36,12 +36,10 @@ final class Env(
     maxBlock = MaxBlock)
 
   private[relation] val actor = system.actorOf(
-    Props(
-      new RelationActor(
-        getOnlineUserIds = getOnlineUserIds,
-        lightUser = lightUser,
-        api = api
-      )),
+    Props(new RelationActor(
+      getOnlineUserIds = getOnlineUserIds,
+      lightUser = lightUser,
+      api = api)),
     name = ActorName)
 
   {

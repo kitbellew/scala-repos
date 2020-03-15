@@ -35,8 +35,8 @@ class ServiceDiscovererTest
   class ServiceDiscovererWithExposedCache(
       varZkSession: Var[ZkSession],
       statsReceiver: StatsReceiver,
-      timer: Timer = DefaultTimer.twitter
-  ) extends ServiceDiscoverer(
+      timer: Timer = DefaultTimer.twitter)
+      extends ServiceDiscoverer(
         varZkSession,
         statsReceiver,
         ForeverEpoch,
@@ -78,11 +78,10 @@ class ServiceDiscovererTest
     val port1 = 80 // not bound
     val port2 = 53 // ditto
     val ents = Seq[Entry](ep(port1), ep(port2), ep(3), ep(4))
-    val v1 = Vector(
-      Seq(
-        Descriptor(Selector.Host("localhost", port1), 1.1, 1),
-        Descriptor(Selector.Host("localhost", port2), 1.4, 1),
-        Descriptor(Selector.Member("3"), 3.1, 1)))
+    val v1 = Vector(Seq(
+      Descriptor(Selector.Host("localhost", port1), 1.1, 1),
+      Descriptor(Selector.Host("localhost", port2), 1.4, 1),
+      Descriptor(Selector.Member("3"), 3.1, 1)))
     val v2 = Vector(Seq(Descriptor(Selector.Member(port2.toString), 2.0, 1)))
     val vecs = Seq(v1, v2)
 
@@ -111,10 +110,9 @@ class ServiceDiscovererTest
       Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-    gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+    gw.res() = Return(Watched(
+      Node.Children(Seq("member_1"), null),
+      Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
 
@@ -145,10 +143,9 @@ class ServiceDiscovererTest
     assert(cache.keys == Set.empty)
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-    gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(new WatchState.Determined(NodeEvent.Created))))
+    gw.res() = Return(Watched(
+      Node.Children(Seq("member_1"), null),
+      Var.value(new WatchState.Determined(NodeEvent.Created))))
 
     val gd @ GetData("/foo/bar/member_1") = watchedZk.value.opq(2)
     gd.res() = Return(Node.Data(None, null))
@@ -156,18 +153,16 @@ class ServiceDiscovererTest
     assert(cache.keys == Set("member_1"))
 
     val gw2 @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(3)
-    gw2.res() = Return(
-      Watched(
-        Node.Children(Seq.empty, null),
-        Var.value(new WatchState.Determined(NodeEvent.Created))))
+    gw2.res() = Return(Watched(
+      Node.Children(Seq.empty, null),
+      Var.value(new WatchState.Determined(NodeEvent.Created))))
 
     assert(cache.keys == Set.empty)
 
     val gw3 @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(4)
-    gw3.res() = Return(
-      Watched(
-        Node.Children(Seq("member_2"), null),
-        Var.value(new WatchState.Determined(NodeEvent.Created))))
+    gw3.res() = Return(Watched(
+      Node.Children(Seq("member_2"), null),
+      Var.value(new WatchState.Determined(NodeEvent.Created))))
 
     val gd2 @ GetData("/foo/bar/member_2") = watchedZk.value.opq(5)
     gd2.res() = Return(Node.Data(None, null))
@@ -175,10 +170,9 @@ class ServiceDiscovererTest
     assert(cache.keys == Set("member_2"))
 
     val gw4 @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(6)
-    gw4.res() = Return(
-      Watched(
-        Node.Children(Seq("member_3", "member_4"), null),
-        Var.value(new WatchState.Determined(NodeEvent.Created))))
+    gw4.res() = Return(Watched(
+      Node.Children(Seq("member_3", "member_4"), null),
+      Var.value(new WatchState.Determined(NodeEvent.Created))))
 
     val gd3 @ GetData("/foo/bar/member_3") = watchedZk.value.opq(7)
     gd3.res() = Return(Node.Data(None, null))
@@ -205,10 +199,9 @@ class ServiceDiscovererTest
       Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-    gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1", "member_2"), null),
-        Var.value(new WatchState.Determined(NodeEvent.Created))))
+    gw.res() = Return(Watched(
+      Node.Children(Seq("member_1", "member_2"), null),
+      Var.value(new WatchState.Determined(NodeEvent.Created))))
 
     val gd @ GetData("/foo/bar/member_1") = watchedZk.value.opq(2)
     gd.res() = Throw(new Exception)
@@ -244,10 +237,9 @@ class ServiceDiscovererTest
         Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
       val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-      gw.res() = Return(
-        Watched(
-          Node.Children(Seq("member_1", "member_2"), null),
-          Var.value(WatchState.Pending)))
+      gw.res() = Return(Watched(
+        Node.Children(Seq("member_1", "member_2"), null),
+        Var.value(WatchState.Pending)))
 
       val gd @ GetData("/foo/bar/member_1") = watchedZk.value.opq(2)
       gd.res() = Throw(new Exception)
@@ -301,10 +293,9 @@ class ServiceDiscovererTest
       Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-    gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+    gw.res() = Return(Watched(
+      Node.Children(Seq("member_1"), null),
+      Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
     assert(!f2.isDefined)
@@ -342,10 +333,9 @@ class ServiceDiscovererTest
       Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
-    gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+    gw.res() = Return(Watched(
+      Node.Children(Seq("member_1"), null),
+      Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
     assert(!f2.isDefined)

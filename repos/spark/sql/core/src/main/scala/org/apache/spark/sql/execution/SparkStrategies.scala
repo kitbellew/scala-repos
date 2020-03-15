@@ -103,15 +103,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               CanBroadcast(right)) =>
-          Seq(
-            joins.BroadcastHashJoin(
-              leftKeys,
-              rightKeys,
-              LeftSemi,
-              BuildRight,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.BroadcastHashJoin(
+            leftKeys,
+            rightKeys,
+            LeftSemi,
+            BuildRight,
+            condition,
+            planLater(left),
+            planLater(right)))
         // Find left semi joins where at least some predicates can be evaluated by matching join keys
         case ExtractEquiJoinKeys(
               LeftSemi,
@@ -120,15 +119,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               right) =>
-          Seq(
-            joins.ShuffledHashJoin(
-              leftKeys,
-              rightKeys,
-              LeftSemi,
-              BuildRight,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.ShuffledHashJoin(
+            leftKeys,
+            rightKeys,
+            LeftSemi,
+            BuildRight,
+            condition,
+            planLater(left),
+            planLater(right)))
         case _ => Nil
       }
   }
@@ -205,15 +203,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               CanBroadcast(right)) =>
-          Seq(
-            joins.BroadcastHashJoin(
-              leftKeys,
-              rightKeys,
-              Inner,
-              BuildRight,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.BroadcastHashJoin(
+            leftKeys,
+            rightKeys,
+            Inner,
+            BuildRight,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               Inner,
@@ -222,15 +219,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               CanBroadcast(left),
               right) =>
-          Seq(
-            joins.BroadcastHashJoin(
-              leftKeys,
-              rightKeys,
-              Inner,
-              BuildLeft,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.BroadcastHashJoin(
+            leftKeys,
+            rightKeys,
+            Inner,
+            BuildLeft,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               Inner,
@@ -247,15 +243,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             if (right.statistics.sizeInBytes <= left.statistics.sizeInBytes) {
               BuildRight
             } else { BuildLeft }
-          Seq(
-            joins.ShuffledHashJoin(
-              leftKeys,
-              rightKeys,
-              Inner,
-              buildSide,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.ShuffledHashJoin(
+            leftKeys,
+            rightKeys,
+            Inner,
+            buildSide,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               Inner,
@@ -281,15 +276,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               left,
               CanBroadcast(right)) =>
-          Seq(
-            joins.BroadcastHashJoin(
-              leftKeys,
-              rightKeys,
-              LeftOuter,
-              BuildRight,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.BroadcastHashJoin(
+            leftKeys,
+            rightKeys,
+            LeftOuter,
+            BuildRight,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               RightOuter,
@@ -298,15 +292,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               condition,
               CanBroadcast(left),
               right) =>
-          Seq(
-            joins.BroadcastHashJoin(
-              leftKeys,
-              rightKeys,
-              RightOuter,
-              BuildLeft,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.BroadcastHashJoin(
+            leftKeys,
+            rightKeys,
+            RightOuter,
+            BuildLeft,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               LeftOuter,
@@ -318,15 +311,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             if !conf.preferSortMergeJoin && canBuildHashMap(
               right) && muchSmaller(right, left) ||
               !RowOrdering.isOrderable(leftKeys) =>
-          Seq(
-            joins.ShuffledHashJoin(
-              leftKeys,
-              rightKeys,
-              LeftOuter,
-              BuildRight,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.ShuffledHashJoin(
+            leftKeys,
+            rightKeys,
+            LeftOuter,
+            BuildRight,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               RightOuter,
@@ -338,15 +330,14 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             if !conf.preferSortMergeJoin && canBuildHashMap(
               left) && muchSmaller(left, right) ||
               !RowOrdering.isOrderable(leftKeys) =>
-          Seq(
-            joins.ShuffledHashJoin(
-              leftKeys,
-              rightKeys,
-              RightOuter,
-              BuildLeft,
-              condition,
-              planLater(left),
-              planLater(right)))
+          Seq(joins.ShuffledHashJoin(
+            leftKeys,
+            rightKeys,
+            RightOuter,
+            BuildLeft,
+            condition,
+            planLater(left),
+            planLater(right)))
 
         case ExtractEquiJoinKeys(
               joinType,
@@ -450,8 +441,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
                   .map(_.aggregateFunction)
                   .exists(!_.supportsPartial)) {
               if (functionsWithDistinct.nonEmpty) {
-                sys.error("Distinct columns cannot exist in Aggregate operator containing " +
-                  "aggregate functions which don't support partial aggregation.")
+                sys.error(
+                  "Distinct columns cannot exist in Aggregate operator containing " +
+                    "aggregate functions which don't support partial aggregation.")
               } else {
                 aggregate.Utils.planAggregateWithoutPartial(
                   namedGroupingExpressions.map(_._2),
@@ -698,12 +690,11 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               opts,
               false,
               _) =>
-          ExecutedCommand(
-            CreateTempTableUsing(
-              tableIdent,
-              userSpecifiedSchema,
-              provider,
-              opts)) :: Nil
+          ExecutedCommand(CreateTempTableUsing(
+            tableIdent,
+            userSpecifiedSchema,
+            provider,
+            opts)) :: Nil
         case c: CreateTableUsing if !c.temporary =>
           sys.error(
             "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")

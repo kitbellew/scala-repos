@@ -61,9 +61,10 @@ object AtLeastOnceDeliveryCrashSpec {
 }
 
 class AtLeastOnceDeliveryCrashSpec
-    extends AkkaSpec(
-      PersistenceSpec
-        .config("inmem", "AtLeastOnceDeliveryCrashSpec", serialization = "off"))
+    extends AkkaSpec(PersistenceSpec.config(
+      "inmem",
+      "AtLeastOnceDeliveryCrashSpec",
+      serialization = "off"))
     with ImplicitSender {
   import AtLeastOnceDeliveryCrashSpec._
   "At least once delivery" should {

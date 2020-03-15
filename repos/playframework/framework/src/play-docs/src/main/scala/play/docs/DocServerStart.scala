@@ -46,31 +46,25 @@ class DocServerStart {
         buildDocHandler
           .maybeHandleDocRequest(request)
           .asInstanceOf[Option[Result]]
-          .orElse(
-            if (request.path == "/@report") {
-              if (request.getQueryString("force").isDefined) {
-                forceTranslationReport.call()
-                Some(Results.Redirect("/@report"))
-              } else {
-                Some(
-                  Results.Ok.sendFile(
-                    translationReport.call(),
-                    inline = true,
-                    fileName = _ => "report.html"))
-              }
-            } else None
-          )
-          .orElse(
-            Some(Results.Redirect("/@documentation"))
-          )
+          .orElse(if (request.path == "/@report") {
+            if (request.getQueryString("force").isDefined) {
+              forceTranslationReport.call()
+              Some(Results.Redirect("/@report"))
+            } else {
+              Some(Results.Ok.sendFile(
+                translationReport.call(),
+                inline = true,
+                fileName = _ => "report.html"))
+            }
+          } else None)
+          .orElse(Some(Results.Redirect("/@documentation")))
     }
 
     val config = ServerConfig(
       rootDir = projectPath,
       port = Some(port),
       mode = Mode.Test,
-      properties = System.getProperties
-    )
+      properties = System.getProperties)
     val serverProvider: ServerProvider = ServerProvider.fromConfiguration(
       getClass.getClassLoader,
       config.configuration)
@@ -79,8 +73,7 @@ class DocServerStart {
       applicationProvider,
       application.actorSystem,
       application.materializer,
-      stopHook = () => Future.successful(())
-    )
+      stopHook = () => Future.successful(()))
     serverProvider.createServer(context)
 
   }

@@ -170,8 +170,8 @@ object PlayForkRun extends AutoPlugin {
 
   def publishUrlTask =
     Def.task[String => Unit] { url =>
-      SendEventServiceKeys.sendEventService.value
-        .sendEvent(PlayServerStarted(url))(Serializers.playServerStartedPickler)
+      SendEventServiceKeys.sendEventService.value.sendEvent(PlayServerStarted(
+        url))(Serializers.playServerStartedPickler)
     }
 
   def compileTask =

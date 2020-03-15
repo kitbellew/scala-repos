@@ -370,13 +370,12 @@ private[persistence] trait Eventsourced
     pendingInvocations addLast StashingHandlerInvocation(
       event,
       handler.asInstanceOf[Any ⇒ Unit])
-    eventBatch ::= AtomicWrite(
-      PersistentRepr(
-        event,
-        persistenceId = persistenceId,
-        sequenceNr = nextSequenceNr(),
-        writerUuid = writerUuid,
-        sender = sender()))
+    eventBatch ::= AtomicWrite(PersistentRepr(
+      event,
+      persistenceId = persistenceId,
+      sequenceNr = nextSequenceNr(),
+      writerUuid = writerUuid,
+      sender = sender()))
   }
 
   /**
@@ -395,14 +394,12 @@ private[persistence] trait Eventsourced
           event,
           handler.asInstanceOf[Any ⇒ Unit])
       }
-      eventBatch ::= AtomicWrite(
-        events.map(
-          PersistentRepr.apply(
-            _,
-            persistenceId = persistenceId,
-            sequenceNr = nextSequenceNr(),
-            writerUuid = writerUuid,
-            sender = sender())))
+      eventBatch ::= AtomicWrite(events.map(PersistentRepr.apply(
+        _,
+        persistenceId = persistenceId,
+        sequenceNr = nextSequenceNr(),
+        writerUuid = writerUuid,
+        sender = sender())))
     }
   }
 
@@ -437,13 +434,12 @@ private[persistence] trait Eventsourced
     pendingInvocations addLast AsyncHandlerInvocation(
       event,
       handler.asInstanceOf[Any ⇒ Unit])
-    eventBatch ::= AtomicWrite(
-      PersistentRepr(
-        event,
-        persistenceId = persistenceId,
-        sequenceNr = nextSequenceNr(),
-        writerUuid = writerUuid,
-        sender = sender()))
+    eventBatch ::= AtomicWrite(PersistentRepr(
+      event,
+      persistenceId = persistenceId,
+      sequenceNr = nextSequenceNr(),
+      writerUuid = writerUuid,
+      sender = sender()))
   }
 
   /**
@@ -461,14 +457,12 @@ private[persistence] trait Eventsourced
           event,
           handler.asInstanceOf[Any ⇒ Unit])
       }
-      eventBatch ::= AtomicWrite(
-        events.map(
-          PersistentRepr(
-            _,
-            persistenceId = persistenceId,
-            sequenceNr = nextSequenceNr(),
-            writerUuid = writerUuid,
-            sender = sender())))
+      eventBatch ::= AtomicWrite(events.map(PersistentRepr(
+        _,
+        persistenceId = persistenceId,
+        sequenceNr = nextSequenceNr(),
+        writerUuid = writerUuid,
+        sender = sender())))
     }
 
   @deprecated("use persistAllAsync instead", "2.4")

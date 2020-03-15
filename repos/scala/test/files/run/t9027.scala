@@ -2,13 +2,10 @@
 object Test extends App {
   import reflect.runtime._, universe._
 
-  val trees = List(
-    q"""<a/><b/>
-      println("hello, world.")""",
-    q"""<a/>
+  val trees = List(q"""<a/><b/>
+      println("hello, world.")""", q"""<a/>
       <b/>
       <c/>
-      println("hello, world.")"""
-  )
+      println("hello, world.")""")
   trees foreach println
 }

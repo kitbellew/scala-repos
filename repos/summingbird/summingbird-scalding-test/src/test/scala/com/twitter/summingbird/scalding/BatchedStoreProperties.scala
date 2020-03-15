@@ -56,17 +56,16 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
   implicit val arbitraryPipeFactory: Arbitrary[PipeFactory[Nothing]] = {
     Arbitrary {
       Gen.const {
-        StateWithError[
-          (Interval[Timestamp], Mode),
-          List[FailureReason],
-          FlowToPipe[Nothing]] { (timeMode: (Interval[Timestamp], Mode)) =>
-          {
-            val (time: Interval[Timestamp], mode: Mode) = timeMode
-            val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
-              TypedPipe.empty
+        StateWithError[(Interval[Timestamp], Mode), List[
+          FailureReason], FlowToPipe[Nothing]] {
+          (timeMode: (Interval[Timestamp], Mode)) =>
+            {
+              val (time: Interval[Timestamp], mode: Mode) = timeMode
+              val a: FlowToPipe[Nothing] = Reader { (fdM: (FlowDef, Mode)) =>
+                TypedPipe.empty
+              }
+              Right((timeMode, a))
             }
-            Right((timeMode, a))
-          }
         }
       }
     }
@@ -111,14 +110,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           (interval, mode))
 
         result match {
-          case Right(
+          case Right((
                 (
-                  (
-                    Intersection(
-                      InclusiveLower(readIntervalLower),
-                      ExclusiveUpper(_)),
-                    _),
-                  _)) => {
+                  Intersection(
+                    InclusiveLower(readIntervalLower),
+                    ExclusiveUpper(_)),
+                  _),
+                _)) => {
             //readInterval should start from the last written interval in the store
             val start: Timestamp = batcher.earliestTimeOf(
               testStore.initBatch.next)
@@ -147,14 +145,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           (interval, mode))
 
         result match {
-          case Right(
+          case Right((
                 (
-                  (
-                    Intersection(
-                      InclusiveLower(_),
-                      ExclusiveUpper(readIntervalUpper)),
-                    _),
-                  _)) => {
+                  Intersection(
+                    InclusiveLower(_),
+                    ExclusiveUpper(readIntervalUpper)),
+                  _),
+                _)) => {
             //readInterval should start from the last written interval in the store
             implicitly[Ordering[Timestamp]]
               .lteq(readIntervalUpper, interval.upper.upper)
@@ -184,14 +181,13 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
           commutativity,
           10)((interval, mode))
         mergeResult.isRight ==> {
-          val Right(
+          val Right((
             (
-              (
-                Intersection(
-                  InclusiveLower(_),
-                  ExclusiveUpper(readIntervalUpper)),
-                _),
-              _)) = mergeResult
+              Intersection(
+                InclusiveLower(_),
+                ExclusiveUpper(readIntervalUpper)),
+              _),
+            _)) = mergeResult
           val requestedEndingTimestamp: Timestamp = interval.upper.upper
           val readIntervalEndingTimestamp: Timestamp = readIntervalUpper
           implicitly[Ordering[Timestamp]]
@@ -252,8 +248,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
               val flowToPipe: FlowToPipe[(Int, Int)] = Reader {
                 (fdM: (FlowDef, Mode)) =>
-                  TypedPipe
-                    .from[(Timestamp, (Int, Int))](Seq((Timestamp(10), (2, 3))))
+                  TypedPipe.from[(Timestamp, (Int, Int))](Seq(
+                    (Timestamp(10), (2, 3))))
               }
               Right(((readTime, mode), flowToPipe))
             }

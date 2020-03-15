@@ -63,16 +63,21 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val setup = seq(
       (suppliersStd.schema ++ coffeesStd.schema).create,
-      suppliersStd += (101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"),
-      suppliersStd += (49, "Superior Coffee", "1 Party Place", "Mendocino", "CA", "95460"),
-      suppliersStd += (150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966"),
+      suppliersStd += (
+        101, "Acme, Inc.", "99 Market Street", "Groundsville", "CA", "95199"
+      ),
+      suppliersStd += (
+        49, "Superior Coffee", "1 Party Place", "Mendocino", "CA", "95460"
+      ),
+      suppliersStd += (
+        150, "The High Ground", "100 Coffee Lane", "Meadows", "CA", "93966"
+      ),
       coffeesStd ++= Seq(
         ("Colombian", 101, 799, 1, 0),
         ("French_Roast", 49, 799, 2, 0),
         ("Espresso", 150, 999, 3, 0),
         ("Colombian_Decaf", 101, 849, 4, 0),
-        ("French_Roast_Decaf", 49, 999, 5, 0)
-      )
+        ("French_Roast_Decaf", 49, 999, 5, 0))
     ).named("setup")
 
     val qa = for { c <- coffees.take(3) } yield (c.supID, (c.name, 42))
@@ -134,8 +139,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             ("French_Roast", 49, 799, 2, 0),
             ("Espresso", 150, 999, 3, 0),
             ("Colombian_Decaf", 101, 849, 4, 0),
-            ("French_Roast_Decaf", 49, 999, 5, 0)
-          )
+            ("French_Roast_Decaf", 49, 999, 5, 0))
         },
         mark("q1", q1.result)
           .named("q1: Plain implicit join")
@@ -181,8 +185,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
               r1b.toSet shouldBe Set(
                 ("French_Roast", "Mendocino", "Colombian"),
                 ("French_Roast", "Mendocino", "French_Roast"),
-                ("French_Roast", "Mendocino", "Colombian_Decaf")
-              )
+                ("French_Roast", "Mendocino", "Colombian_Decaf"))
             }
         }
       )
@@ -238,8 +241,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
           r2 shouldBe Set(
             ("Colombian", "Acme, Inc."),
             ("French_Roast", "Superior Coffee"),
-            ("Colombian_Decaf", "Acme, Inc.")
-          )
+            ("Colombian_Decaf", "Acme, Inc."))
         }
         _ <- q3.result.named("Lifting scalar values").map(_.toSet).map { r3 =>
           r3 shouldBe Set(
@@ -302,8 +304,9 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
           .map { r5b =>
             r5b shouldBe Set(
               (("Colombian", 101, 799, 1, 0), ("Colombian", 101, 799, 1, 0)),
-              (("French_Roast", 49, 799, 2, 0), ("French_Roast", 49, 799, 2, 0))
-            )
+              (
+                ("French_Roast", 49, 799, 2, 0),
+                ("French_Roast", 49, 799, 2, 0)))
           },
         mark("q6", q6.result)
           .named("q6: Unused outer query result, unbound TableQuery")
@@ -312,8 +315,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             r6 shouldBe Set(
               (101, "Acme, Inc.", "99 Market Street"),
               (49, "Superior Coffee", "1 Party Place"),
-              (150, "The High Ground", "100 Coffee Lane")
-            )
+              (150, "The High Ground", "100 Coffee Lane"))
           }
       )
 
@@ -343,25 +345,20 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             ("Colombian", 101, 0),
             ("French_Roast", 49, 0),
             ("Espresso", 150, 0),
-            ("French_Roast_Decaf", 49, 0)
-          )
+            ("French_Roast_Decaf", 49, 0))
         },
         q7.result.named("Union").map(_.toSet).map { r7 =>
           r7 shouldBe Set(
             ("Colombian", 101, 1),
             ("French_Roast", 49, 1),
             ("Espresso", 150, 2),
-            ("French_Roast_Decaf", 49, 2)
-          )
+            ("French_Roast_Decaf", 49, 2))
         },
         q71.result
           .named("Transitive push-down without union")
           .map(_.toSet)
           .map { r71 =>
-            r71 shouldBe Set(
-              ("Colombian", 101, 1),
-              ("French_Roast", 49, 1)
-            )
+            r71 shouldBe Set(("Colombian", 101, 1), ("French_Roast", 49, 1))
           }
       )
 
@@ -385,22 +382,18 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     def a6 =
       seq(
-        q7b.result
-          .named("Union with filter on the outside")
-          .map(_.toSet)
-          .map { r7b =>
+        q7b.result.named("Union with filter on the outside").map(_.toSet).map {
+          r7b =>
             r7b shouldBe Set(
               ("French_Roast", 49, 1),
               ("Espresso", 150, 2),
-              ("French_Roast_Decaf", 49, 2)
-            )
-          },
+              ("French_Roast_Decaf", 49, 2))
+        },
         q8.result.named("Outer join").map(_.toSet).map { r8 =>
           r8 shouldBe Set(
             ("Colombian", Some("Colombian")),
             ("French_Roast", Some("French_Roast")),
-            ("Colombian_Decaf", None)
-          )
+            ("Colombian_Decaf", None))
         },
         q8b.result.named("Nested outer join").map(_.toSet).map { r8b =>
           r8b shouldBe Set(
@@ -473,8 +466,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       q6a.result,
       q6b.result,
       q6c.result,
-      (users.schema ++ orders.schema).drop
-    )
+      (users.schema ++ orders.schema).drop)
   }
 
   def testAdvancedFusion = {
@@ -546,8 +538,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       _ <- as.map(a => (a.id, a.a, a.b)) ++= Seq(
         (1, "a1", "b1"),
         (2, "a2", "b2"),
-        (3, "a3", "b3")
-      )
+        (3, "a3", "b3"))
 
       q1 = as.map(identity).filter(_.b === "b3")
       _ <- q1.result.named("q1").map(r1 => r1.toSet shouldBe Set((3, "a3")))

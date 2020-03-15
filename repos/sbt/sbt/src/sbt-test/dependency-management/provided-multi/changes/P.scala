@@ -4,9 +4,7 @@ import Import._
 
 object P extends Build {
   override def settings =
-    super.settings ++ Seq(
-      scalaBinaryVersion in update := "2.9.0"
-    )
+    super.settings ++ Seq(scalaBinaryVersion in update := "2.9.0")
 
   def configIvyScala = ivyScala ~= { _.map(_.copy(checkExplicit = false)) }
 

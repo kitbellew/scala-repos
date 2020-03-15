@@ -14,7 +14,8 @@ class MergeTest(args: Args) extends Job(args) {
     //Now, let's get the top 10 words:
     .groupAll {
       _.mapReduceMap(('word, 'size) -> 'list) /* map1 */ {
-        tup: (String, Long) => List(tup)
+        tup: (String, Long) =>
+          List(tup)
       } /* reduce */ { (l1: List[(String, Long)], l2: List[(String, Long)]) =>
         mergeSort2(l1, l2, 10, cmpTup)
       } /* map2 */ { lout: List[(String, Long)] => lout }

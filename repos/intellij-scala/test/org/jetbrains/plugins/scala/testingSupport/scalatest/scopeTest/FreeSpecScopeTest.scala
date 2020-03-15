@@ -10,10 +10,9 @@ trait FreeSpecScopeTest extends FreeSpecGenerator {
   def testFreeSpecEmptyScope() {
     addComplexFreeSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(31, 7, "ComplexFreeSpec.scala"),
-        "ComplexFreeSpec"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(31, 7, "ComplexFreeSpec.scala"),
+      "ComplexFreeSpec"))
   }
 
   def testFreeSpecScope() {

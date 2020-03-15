@@ -48,8 +48,7 @@ trait ExternalMarathonIntegrationTest {
       cwd,
       env,
       List("--http_port", port.toString, "--zk", config.zk) ++ args.toList,
-      processName = s"marathon_$port"
-    )
+      processName = s"marathon_$port")
   }
 
   def handleEvent(event: CallbackEvent): Unit

@@ -266,22 +266,20 @@ private[akka] class UnstartedCell(
         val cell = self.underlying
         if (cellIsReady(cell)) { cell.sendMessage(msg) }
         else if (!queue.offer(msg)) {
-          system.eventStream.publish(
-            Warning(
-              self.path.toString,
-              getClass,
-              "dropping message of type " + msg.message.getClass + " due to enqueue failure"))
+          system.eventStream.publish(Warning(
+            self.path.toString,
+            getClass,
+            "dropping message of type " + msg.message.getClass + " due to enqueue failure"))
           system.deadLetters
             .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
         } else if (Mailbox.debug)
           println(s"$self temp queueing ${msg.message} from ${msg.sender}")
       } finally lock.unlock()
     } else {
-      system.eventStream.publish(
-        Warning(
-          self.path.toString,
-          getClass,
-          "dropping message of type" + msg.message.getClass + " due to lock timeout"))
+      system.eventStream.publish(Warning(
+        self.path.toString,
+        getClass,
+        "dropping message of type" + msg.message.getClass + " due to lock timeout"))
       system.deadLetters
         .tell(DeadLetter(msg.message, msg.sender, self), msg.sender)
     }

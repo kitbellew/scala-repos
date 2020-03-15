@@ -88,10 +88,7 @@ object MergeOperations {
       nowBatch: BatchID,
       batchesToKeep: Int): Iterable[BatchID] = {
     val initBatch = Semigroup
-      .plus(
-        Some(nowBatch - (batchesToKeep - 1)),
-        offlineReturn
-      )
+      .plus(Some(nowBatch - (batchesToKeep - 1)), offlineReturn)
       .get // This will never throw, as this option can never be None
     // (because we included an explicit "Some" inside)
     BatchID.range(initBatch, nowBatch)
@@ -102,10 +99,8 @@ object MergeOperations {
       implicit collect: FutureCollector[(K, Iterable[BatchID])])
       : Future[Set[(K, BatchID)]] =
     for {
-      collected <- collect(
-        ks.map { k =>
-          lookup(k).map { k -> expand(_, nowBatch, batchesToKeep) }
-        }
-      )
+      collected <- collect(ks.map { k =>
+        lookup(k).map { k -> expand(_, nowBatch, batchesToKeep) }
+      })
     } yield pivot.invert(collected.toMap).toSet
 }

@@ -290,10 +290,9 @@ trait ColumnarTableLibModule[M[+_]]
                 val left = x.extract(r._1)
                 val right = acc.extract(r._2)
 
-                left.cross(right)(
-                  OuterArrayConcat(
-                    WrapArray(Leaf(SourceLeft)),
-                    Leaf(SourceRight)))
+                left.cross(right)(OuterArrayConcat(
+                  WrapArray(Leaf(SourceLeft)),
+                  Leaf(SourceRight)))
               }
 
               // TODO: Can't translate this into a CValue. Evaluator

@@ -25,8 +25,8 @@ trait PrepJSExports { this: PrepJSInterop =>
       jsName: String,
       pos: Position,
       isNamed: Boolean,
-      ignoreInvalid: Boolean
-  ) extends jsInterop.ExportInfo
+      ignoreInvalid: Boolean)
+      extends jsInterop.ExportInfo
 
   /** Generate the exporter for the given DefDef
     *

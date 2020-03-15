@@ -62,7 +62,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
         right.provenance)
 
       val (provenance, contribErrors, contribConstr) = {
-        if ((left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance) && expr.disallowsInfinite) {
+        if ((
+              left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance
+            ) && expr.disallowsInfinite) {
           val provenance = NullProvenance
           val errors = Set(Error(expr, CannotUseDistributionWithoutSampling))
 
@@ -123,7 +125,9 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
             val unified = unifyProvenance(relations)(prov1, prov2)
 
-            if ((prov1 == InfiniteProvenance || prov2 == InfiniteProvenance) && expr.disallowsInfinite) {
+            if ((
+                  prov1 == InfiniteProvenance || prov2 == InfiniteProvenance
+                ) && expr.disallowsInfinite) {
               val errors = Set(
                 Error(expr, CannotUseDistributionWithoutSampling))
               (NullProvenance, addedConstr, addedErrors ++ errors)
@@ -213,8 +217,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
             pred.provenance,
             right.provenance)
 
-          (leftUnified |@| rightUnified)(
-            handleUnionLike(CondProvenanceDifferentLength)) getOrElse {
+          (leftUnified |@| rightUnified)(handleUnionLike(
+            CondProvenanceDifferentLength)) getOrElse {
             (NullProvenance, Set(Error(expr, OperationOnUnrelatedSets)), Set())
           }
         }
@@ -679,8 +683,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
               val constrErrors = mapped collect { case Left(error)   => error }
               val constraints3 = mapped collect { case Right(constr) => constr }
 
-              expr.provenance = resolveUnifications(relations)(
-                sub(let.resultProvenance))
+              expr.provenance = resolveUnifications(relations)(sub(
+                let.resultProvenance))
 
               val finalErrors = actualErrors ++ constrErrors
               if (!finalErrors.isEmpty) { expr.provenance = NullProvenance }

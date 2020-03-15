@@ -640,9 +640,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def htmlProperties: HtmlProperties = {
     session.map(_.requestHtmlProperties.is) openOr
-      LiftRules.htmlProperties.vend(
-        S.request openOr Req.nil
-      )
+      LiftRules.htmlProperties.vend(S.request openOr Req.nil)
   }
 
   /**
@@ -857,8 +855,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     requestCometVersions.set(
       requestCometVersions.is + CVP(
         cometActor.uniqueId,
-        cometActor.lastRenderTime)
-    )
+        cometActor.lastRenderTime))
   }
 
   /**
@@ -877,8 +874,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometName: Box[String] = Empty,
       cometHtml: NodeSeq = NodeSeq.Empty,
       cometAttributes: Map[String, String] = Map.empty,
-      receiveUpdatesOnPage: Boolean = false
-  ): Box[LiftCometActor] = {
+      receiveUpdatesOnPage: Boolean = false): Box[LiftCometActor] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
       cometActor <- session.findOrCreateComet(
@@ -908,8 +904,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       cometName: Box[String],
       cometHtml: NodeSeq,
       cometAttributes: Map[String, String],
-      receiveUpdatesOnPage: Boolean
-  )(implicit cometManifest: Manifest[T]): Box[T] = {
+      receiveUpdatesOnPage: Boolean)(
+      implicit cometManifest: Manifest[T]): Box[T] = {
     for {
       session <- session ?~ "Comet lookup and creation requires a session."
       cometActor <- session
@@ -969,18 +965,15 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
         js.JE
           .Call(
             "lift.registerComets",
-            js.JE.JsObj(
-              cometVersions.toList.map {
-                case CometVersionPair(guid, version) =>
-                  (guid, js.JE.Num(version))
-              }: _*
-            ),
+            js.JE.JsObj(cometVersions.toList.map {
+              case CometVersionPair(guid, version) =>
+                (guid, js.JE.Num(version))
+            }: _*),
             // Don't kick off a new comet request client-side if we're responding
             // to a comet request right now.
             !currentCometActor.isDefined
           )
-          .cmd
-      )
+          .cmd)
     } else { Nil }
   }
 
@@ -1120,41 +1113,44 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   def resourceBundles(loc: Locale): List[ResourceBundle] = {
     _resBundle.box match {
       case Full(Nil) => {
-        _resBundle.set(LiftRules.resourceForCurrentLoc.vend() :::
-          LiftRules.resourceNames.flatMap(name =>
-            tryo {
-              if (Props.devMode) {
-                tryo {
-                  val clz = this.getClass.getClassLoader
-                    .loadClass("java.util.ResourceBundle")
-                  val meth = clz.getDeclaredMethods
-                    .filter { m =>
-                      m.getName == "clearCache" && m.getParameterTypes.length == 0
-                    }
-                    .toList
-                    .head
-                  meth.invoke(null)
+        _resBundle.set(
+          LiftRules.resourceForCurrentLoc.vend() :::
+            LiftRules.resourceNames.flatMap(name =>
+              tryo {
+                if (Props.devMode) {
+                  tryo {
+                    val clz = this.getClass.getClassLoader
+                      .loadClass("java.util.ResourceBundle")
+                    val meth = clz.getDeclaredMethods
+                      .filter { m =>
+                        m.getName == "clearCache" && m.getParameterTypes.length == 0
+                      }
+                      .toList
+                      .head
+                    meth.invoke(null)
+                  }
                 }
-              }
-              List(ResourceBundle.getBundle(name, loc))
-            }.openOr(
-              NamedPF
-                .applyBox((name, loc), LiftRules.resourceBundleFactories.toList)
-                .map(List(_)) openOr Nil
-            )))
+                List(ResourceBundle.getBundle(name, loc))
+              }.openOr(
+                NamedPF
+                  .applyBox(
+                    (name, loc),
+                    LiftRules.resourceBundleFactories.toList)
+                  .map(List(_)) openOr Nil)))
         _resBundle.value
       }
       case Full(bundles) => bundles
       case _ =>
-        throw new IllegalStateException("Attempted to use resource bundles outside of an initialized S scope. " +
-          "S only usable when initialized, such as during request processing. " +
-          "Did you call S.? from Boot?")
+        throw new IllegalStateException(
+          "Attempted to use resource bundles outside of an initialized S scope. " +
+            "S only usable when initialized, such as during request processing. " +
+            "Did you call S.? from Boot?")
     }
   }
 
   private object _liftCoreResBundle
-      extends RequestVar[Box[ResourceBundle]](
-        tryo(ResourceBundle.getBundle(LiftRules.liftCoreResourceName, locale)))
+      extends RequestVar[Box[ResourceBundle]](tryo(
+        ResourceBundle.getBundle(LiftRules.liftCoreResourceName, locale)))
 
   /**
     * Get the lift core resource bundle for the current locale as defined by the
@@ -1316,10 +1312,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       NamedPF.applyBox(
         (Props.mode, req, orig),
         LiftRules.exceptionHandler.toList);
-    } openOr Full(
-      PlainTextResponse(
-        "An error has occurred while processing an error using the functions in LiftRules.exceptionHandler. Check the log for details.",
-        500))
+    } openOr Full(PlainTextResponse(
+      "An error has occurred while processing an error using the functions in LiftRules.exceptionHandler. Check the log for details.",
+      500))
   }
 
   private object _skipXmlHeader extends TransientRequestVar(false)
@@ -1814,7 +1809,9 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private def doStatefulRewrite(old: Box[Req]): Box[Req] = {
     // Don't even try to rewrite Req.nil
     old.map { req =>
-      if (statefulRequest_? && req.path.partPath.nonEmpty && (req.request ne null)) {
+      if (statefulRequest_? && req.path.partPath.nonEmpty && (
+            req.request ne null
+          )) {
         Req(
           req,
           S.sessionRewriter.map(_.rewrite) :::

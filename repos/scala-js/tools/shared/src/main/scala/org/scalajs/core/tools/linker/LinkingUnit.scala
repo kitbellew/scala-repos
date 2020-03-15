@@ -11,8 +11,7 @@ final class LinkingUnit(
     val esLevel: ESLevel,
     val classDefs: List[LinkedClass],
     val infos: Map[String, Infos.ClassInfo],
-    val isComplete: Boolean
-) {
+    val isComplete: Boolean) {
 
   import LinkingUnit._
 
@@ -22,9 +21,8 @@ final class LinkingUnit(
       .fold { GlobalInfo(isParentDataAccessed = false) } { classClassDef =>
         val methodNames =
           classClassDef.memberMethods.map(_.info.encodedName).toSet
-        GlobalInfo(
-          isParentDataAccessed = methodNames.contains(
-            "getSuperclass__jl_Class"))
+        GlobalInfo(isParentDataAccessed = methodNames.contains(
+          "getSuperclass__jl_Class"))
       }
   }
 
@@ -43,13 +41,13 @@ object LinkingUnit {
         *  This is true iff the java.lang.Class.getSuperclass() method exists,
         *  since it is the only one that can do it.
         */
-      val isParentDataAccessed: Boolean
-  )
+      val isParentDataAccessed: Boolean)
 
   object GlobalInfo {
     private[LinkingUnit] def apply(
-        isParentDataAccessed: Boolean
-    ): GlobalInfo = { new GlobalInfo(isParentDataAccessed) }
+        isParentDataAccessed: Boolean): GlobalInfo = {
+      new GlobalInfo(isParentDataAccessed)
+    }
   }
 
 }

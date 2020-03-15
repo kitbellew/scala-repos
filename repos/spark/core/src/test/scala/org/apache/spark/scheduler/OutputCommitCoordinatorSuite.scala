@@ -217,9 +217,10 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
       attemptNumber = authorizedCommitter,
       reason = TaskKilled)
     // A new task should now be allowed to become the authorized committer
-    assert(
-      outputCommitCoordinator
-        .canCommit(stage, partition, nonAuthorizedCommitter + 2))
+    assert(outputCommitCoordinator.canCommit(
+      stage,
+      partition,
+      nonAuthorizedCommitter + 2))
     // There can only be one authorized committer
     assert(
       !outputCommitCoordinator

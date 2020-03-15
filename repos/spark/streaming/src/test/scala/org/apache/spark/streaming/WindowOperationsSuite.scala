@@ -43,8 +43,7 @@ class WindowOperationsSuite extends TestSuiteBase {
     Seq(("a", 3)),
     Seq(("a", 10)),
     Seq(("a", 18)),
-    Seq(("a", 11))
-  )
+    Seq(("a", 11)))
 
   val bigInput = Seq(
     Seq(("a", 1)),
@@ -117,32 +116,28 @@ class WindowOperationsSuite extends TestSuiteBase {
   testWindow(
     "basic window",
     Seq(Seq(0), Seq(1), Seq(2), Seq(3), Seq(4), Seq(5)),
-    Seq(Seq(0), Seq(0, 1), Seq(1, 2), Seq(2, 3), Seq(3, 4), Seq(4, 5))
-  )
+    Seq(Seq(0), Seq(0, 1), Seq(1, 2), Seq(2, 3), Seq(3, 4), Seq(4, 5)))
 
   testWindow(
     "tumbling window",
     Seq(Seq(0), Seq(1), Seq(2), Seq(3), Seq(4), Seq(5)),
     Seq(Seq(0, 1), Seq(2, 3), Seq(4, 5)),
     Seconds(2),
-    Seconds(2)
-  )
+    Seconds(2))
 
   testWindow(
     "larger window",
     Seq(Seq(0), Seq(1), Seq(2), Seq(3), Seq(4), Seq(5)),
     Seq(Seq(0, 1), Seq(0, 1, 2, 3), Seq(2, 3, 4, 5), Seq(4, 5)),
     Seconds(4),
-    Seconds(2)
-  )
+    Seconds(2))
 
   testWindow(
     "non-overlapping window",
     Seq(Seq(0), Seq(1), Seq(2), Seq(3), Seq(4), Seq(5)),
     Seq(Seq(1, 2), Seq(4, 5)),
     Seconds(2),
-    Seconds(3)
-  )
+    Seconds(3))
 
   test("window - persistence level") {
     val input = Seq(Seq(0), Seq(1), Seq(2), Seq(3), Seq(4), Seq(5))
@@ -162,34 +157,29 @@ class WindowOperationsSuite extends TestSuiteBase {
   testReduceByKeyAndWindow(
     "basic reduction",
     Seq(Seq(("a", 1), ("a", 3))),
-    Seq(Seq(("a", 4)))
-  )
+    Seq(Seq(("a", 4))))
 
   testReduceByKeyAndWindow(
     "key already in window and new value added into window",
     Seq(Seq(("a", 1)), Seq(("a", 1))),
-    Seq(Seq(("a", 1)), Seq(("a", 2)))
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2))))
 
   testReduceByKeyAndWindow(
     "new key added into window",
     Seq(Seq(("a", 1)), Seq(("a", 1), ("b", 1))),
-    Seq(Seq(("a", 1)), Seq(("a", 2), ("b", 1)))
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2), ("b", 1))))
 
   testReduceByKeyAndWindow(
     "key removed from window",
     Seq(Seq(("a", 1)), Seq(("a", 1)), Seq(), Seq()),
-    Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 1)), Seq())
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 1)), Seq()))
 
   testReduceByKeyAndWindow(
     "larger slide time",
     largerSlideInput,
     largerSlideReduceOutput,
     Seconds(4),
-    Seconds(2)
-  )
+    Seconds(2))
 
   testReduceByKeyAndWindow("big test", bigInput, bigReduceOutput)
 
@@ -198,34 +188,29 @@ class WindowOperationsSuite extends TestSuiteBase {
   testReduceByKeyAndWindowWithInverse(
     "basic reduction",
     Seq(Seq(("a", 1), ("a", 3))),
-    Seq(Seq(("a", 4)))
-  )
+    Seq(Seq(("a", 4))))
 
   testReduceByKeyAndWindowWithInverse(
     "key already in window and new value added into window",
     Seq(Seq(("a", 1)), Seq(("a", 1))),
-    Seq(Seq(("a", 1)), Seq(("a", 2)))
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2))))
 
   testReduceByKeyAndWindowWithInverse(
     "new key added into window",
     Seq(Seq(("a", 1)), Seq(("a", 1), ("b", 1))),
-    Seq(Seq(("a", 1)), Seq(("a", 2), ("b", 1)))
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2), ("b", 1))))
 
   testReduceByKeyAndWindowWithInverse(
     "key removed from window",
     Seq(Seq(("a", 1)), Seq(("a", 1)), Seq(), Seq()),
-    Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 1)), Seq(("a", 0)))
-  )
+    Seq(Seq(("a", 1)), Seq(("a", 2)), Seq(("a", 1)), Seq(("a", 0))))
 
   testReduceByKeyAndWindowWithInverse(
     "larger slide time",
     largerSlideInput,
     largerSlideReduceOutput,
     Seconds(4),
-    Seconds(2)
-  )
+    Seconds(2))
 
   testReduceByKeyAndWindowWithInverse("big test", bigInput, bigReduceInvOutput)
 
@@ -282,8 +267,7 @@ class WindowOperationsSuite extends TestSuiteBase {
       input: Seq[Seq[Int]],
       expectedOutput: Seq[Seq[Int]],
       windowDuration: Duration = Seconds(2),
-      slideDuration: Duration = Seconds(1)
-  ) {
+      slideDuration: Duration = Seconds(1)) {
     test("window - " + name) {
       val numBatches =
         expectedOutput.size * (slideDuration / batchDuration).toInt
@@ -298,8 +282,7 @@ class WindowOperationsSuite extends TestSuiteBase {
       input: Seq[Seq[(String, Int)]],
       expectedOutput: Seq[Seq[(String, Int)]],
       windowDuration: Duration = Seconds(2),
-      slideDuration: Duration = Seconds(1)
-  ) {
+      slideDuration: Duration = Seconds(1)) {
     test("reduceByKeyAndWindow - " + name) {
       logInfo("reduceByKeyAndWindow - " + name)
       val numBatches =
@@ -319,17 +302,16 @@ class WindowOperationsSuite extends TestSuiteBase {
       input: Seq[Seq[(String, Int)]],
       expectedOutput: Seq[Seq[(String, Int)]],
       windowDuration: Duration = Seconds(2),
-      slideDuration: Duration = Seconds(1)
-  ) {
+      slideDuration: Duration = Seconds(1)) {
     test("reduceByKeyAndWindow with inverse function - " + name) {
       logInfo("reduceByKeyAndWindow with inverse function - " + name)
       val numBatches =
         expectedOutput.size * (slideDuration / batchDuration).toInt
       val operation = (s: DStream[(String, Int)]) => {
         s.reduceByKeyAndWindow(_ + _, _ - _, windowDuration, slideDuration)
-          .checkpoint(
-            Seconds(100)
-          ) // Large value to avoid effect of RDD checkpointing
+          .checkpoint(Seconds(
+            100
+          )) // Large value to avoid effect of RDD checkpointing
       }
       testOperation(input, operation, expectedOutput, numBatches, true)
     }
@@ -340,8 +322,7 @@ class WindowOperationsSuite extends TestSuiteBase {
       input: Seq[Seq[(String, Int)]],
       expectedOutput: Seq[Seq[(String, Int)]],
       windowDuration: Duration = Seconds(2),
-      slideDuration: Duration = Seconds(1)
-  ) {
+      slideDuration: Duration = Seconds(1)) {
     test("reduceByKeyAndWindow with inverse and filter functions - " + name) {
       logInfo(
         "reduceByKeyAndWindow with inverse and filter functions - " + name)
@@ -356,9 +337,9 @@ class WindowOperationsSuite extends TestSuiteBase {
             slideDuration,
             filterFunc = filterFunc)
           .persist()
-          .checkpoint(
-            Seconds(100)
-          ) // Large value to avoid effect of RDD checkpointing
+          .checkpoint(Seconds(
+            100
+          )) // Large value to avoid effect of RDD checkpointing
       }
       testOperation(input, operation, expectedOutput, numBatches, true)
     }

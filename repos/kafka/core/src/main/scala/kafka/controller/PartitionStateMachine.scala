@@ -157,9 +157,9 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       targetState: PartitionState,
       leaderSelector: PartitionLeaderSelector = noOpPartitionLeaderSelector,
       callbacks: Callbacks = (new CallbackBuilder).build) {
-    info(
-      "Invoking state change to %s for partitions %s"
-        .format(targetState, partitions.mkString(",")))
+    info("Invoking state change to %s for partitions %s".format(
+      targetState,
+      partitions.mkString(",")))
     try {
       brokerRequestBatch.newBatch()
       partitions.foreach { topicAndPartition =>
@@ -389,17 +389,17 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             .format(controllerId, controller.epoch) + failMsg)
         throw new StateChangeFailedException(failMsg)
       case _ =>
-        debug(
-          "Live assigned replicas for partition %s are: [%s]"
-            .format(topicAndPartition, liveAssignedReplicas))
+        debug("Live assigned replicas for partition %s are: [%s]".format(
+          topicAndPartition,
+          liveAssignedReplicas))
         // make the first replica in the list of assigned replicas, the leader
         val leader = liveAssignedReplicas.head
         val leaderIsrAndControllerEpoch = new LeaderIsrAndControllerEpoch(
           new LeaderAndIsr(leader, liveAssignedReplicas.toList),
           controller.epoch)
-        debug(
-          "Initializing leader and isr for partition %s to %s"
-            .format(topicAndPartition, leaderIsrAndControllerEpoch))
+        debug("Initializing leader and isr for partition %s to %s".format(
+          topicAndPartition,
+          leaderIsrAndControllerEpoch))
         try {
           zkUtils.createPersistentPath(
             getTopicPartitionLeaderAndIsrPath(
@@ -531,9 +531,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             .format(controllerId, controller.epoch) + failMsg)
         throw new StateChangeFailedException(failMsg, sce)
     }
-    debug(
-      "After leader election, leader cache is updated to %s".format(
-        controllerContext.partitionLeadershipInfo.map(l => (l._1, l._2))))
+    debug("After leader election, leader cache is updated to %s".format(
+      controllerContext.partitionLeadershipInfo.map(l => (l._1, l._2))))
   }
 
   private def registerTopicChangeListener() = {
@@ -662,9 +661,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           import JavaConversions._
           (children: Buffer[String]).toSet
         }
-        debug(
-          "Delete topics listener fired for topics %s to be deleted".format(
-            topicsToBeDeleted.mkString(",")))
+        debug("Delete topics listener fired for topics %s to be deleted".format(
+          topicsToBeDeleted.mkString(",")))
         val nonExistentTopics = topicsToBeDeleted.filter(t =>
           !controllerContext.allTopics.contains(t))
         if (nonExistentTopics.size > 0) {
@@ -690,8 +688,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 .map(_.topic)
                 .contains(topic)
             if (preferredReplicaElectionInProgress || partitionReassignmentInProgress)
-              controller.deleteTopicManager.markTopicIneligibleForDeletion(
-                Set(topic))
+              controller.deleteTopicManager.markTopicIneligibleForDeletion(Set(
+                topic))
           }
           // add topic to deletion list
           controller.deleteTopicManager.enqueueTopicsForDeletion(

@@ -81,8 +81,7 @@ private[twitter] object ThriftUtil {
       cls: Class[_],
       protocolFactory: TProtocolFactory,
       sr: StatsReceiver,
-      responseClassifier: ResponseClassifier
-  ): Iface = {
+      responseClassifier: ResponseClassifier): Iface = {
     val clsName = cls.getName
 
     def tryThriftFinagleClient: Option[Iface] =
@@ -163,8 +162,7 @@ private[twitter] object ThriftUtil {
       protocolFactory: TProtocolFactory,
       stats: StatsReceiver,
       maxThriftBufferSize: Int,
-      label: String
-  ): BinaryService = {
+      label: String): BinaryService = {
     def tryThriftFinagleService(iface: Class[_]): Option[BinaryService] =
       for {
         baseName <- findRootWithSuffix(iface.getName, "$ServiceIface")
@@ -430,18 +428,16 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
     * @param dest Address of the service to connect to, in the format accepted by [[Resolver.eval]].
     * @param label Assign a label for scoped stats.
     */
-  def newServiceIface[ServiceIface](dest: String, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = {
+  def newServiceIface[ServiceIface](dest: String, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel = if (label.isEmpty) defaultClientName else label
     val scopedStats = stats.scope(statsLabel)
     builder.newServiceIface(thriftService, protocolFactory, scopedStats)
   }
 
-  def newServiceIface[ServiceIface](dest: Name, label: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = {
+  def newServiceIface[ServiceIface](dest: Name, label: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface = {
     val thriftService = newService(dest, label)
     val statsLabel = if (label.isEmpty) defaultClientName else label
     val scopedStats = stats.scope(statsLabel)
@@ -449,18 +445,19 @@ trait ThriftRichClient { self: Client[ThriftClientRequest, Array[Byte]] =>
   }
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: String)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = newServiceIface(dest, "")
+  def newServiceIface[ServiceIface](dest: String)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface =
+    newServiceIface(dest, "")
 
   @deprecated("Must provide service label", "2015-10-26")
-  def newServiceIface[ServiceIface](dest: Name)(implicit
-      builder: ServiceIfaceBuilder[ServiceIface]
-  ): ServiceIface = newServiceIface(dest, "")
+  def newServiceIface[ServiceIface](dest: Name)(
+      implicit builder: ServiceIfaceBuilder[ServiceIface]): ServiceIface =
+    newServiceIface(dest, "")
 
-  def newMethodIface[ServiceIface, FutureIface](serviceIface: ServiceIface)(
-      implicit builder: MethodIfaceBuilder[ServiceIface, FutureIface]
-  ): FutureIface = builder.newMethodIface(serviceIface)
+  def newMethodIface[ServiceIface, FutureIface](
+      serviceIface: ServiceIface)(implicit
+      builder: MethodIfaceBuilder[ServiceIface, FutureIface]): FutureIface =
+    builder.newMethodIface(serviceIface)
 }
 
 /**

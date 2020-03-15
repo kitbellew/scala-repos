@@ -187,7 +187,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
     try {
       val aClass = GenerationUtil
         .classAtCaret(editor, file)
-        .getOrElse(return
+        .getOrElse(
+          return
         )
       val isOk = chooseOriginalMembers(aClass, project, editor)
       if (!isOk) return

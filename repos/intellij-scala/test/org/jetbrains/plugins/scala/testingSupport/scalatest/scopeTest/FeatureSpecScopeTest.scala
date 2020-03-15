@@ -10,10 +10,9 @@ trait FeatureSpecScopeTest extends FeatureSpecGenerator {
   def testFeatureSpecEmptyScope() {
     addFeatureSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(21, 7, featureSpecFileName),
-        featureSpecClassName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(21, 7, featureSpecFileName),
+      featureSpecClassName))
   }
 
   def testFeatureSpecScope() {

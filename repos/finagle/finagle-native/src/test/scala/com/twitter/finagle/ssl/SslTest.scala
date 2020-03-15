@@ -20,8 +20,7 @@ class SslTest extends FunSuite {
     "setupCA.sh",
     "makecert.sh",
     "openssl-intermediate.conf",
-    "openssl-root.conf"
-  )
+    "openssl-root.conf")
 
   // before we run any tests, construct the chain
   try {
@@ -61,8 +60,7 @@ class SslTest extends FunSuite {
     "test.example.com.cert",
     "test.example.com.key",
     "cacert.pem",
-    certChainInput.setupCADirPath.toString
-  )
+    certChainInput.setupCADirPath.toString)
 
   // now let's run some tests
   test("be able to send and receive various sized content") {
@@ -179,8 +177,7 @@ class SslTest extends FunSuite {
       certChain.rootCertOnlyPath, // cacert.pem
       "-verify",
       "9",
-      "-showcerts"
-    )
+      "-showcerts")
 
     try {
       // would prefer to have an abstraction for what's below, but
@@ -216,8 +213,7 @@ class CertChainInput(
     setupCAFilename: String,
     makeCertFilename: String,
     openSSLIntConfFilename: String,
-    openSSLRootConfFilename: String
-) {
+    openSSLRootConfFilename: String) {
   val setupCADirPath: Path = Files.createTempDirectory(setupCADirName)
   def writeResourceToDir(
       klass: Class[_],
@@ -259,8 +255,7 @@ class CertChainOutput(
     certFilename: String,
     keyFilename: String,
     rootCertOnlyFilename: String,
-    setupCADirPath: String
-) {
+    setupCADirPath: String) {
   val validChainFile = new File(setupCADirPath, validChainFilename)
   val validChainPath = validChainFile.getAbsolutePath
   if (!validChainFile.canRead())

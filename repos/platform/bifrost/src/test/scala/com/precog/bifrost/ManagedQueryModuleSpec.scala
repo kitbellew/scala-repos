@@ -292,10 +292,9 @@ trait TestManagedQueryModule
     val clock = self.clock
   }
 
-  def executorFor(apiKey: APIKey): EitherT[
+  def executorFor(apiKey: APIKey): EitherT[TestFuture, String, QueryExecutor[
     TestFuture,
-    String,
-    QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]]] = {
+    StreamT[TestFuture, CharBuffer]]] = {
     EitherT.right {
       Applicative[TestFuture] point {
         new QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]] {
@@ -312,10 +311,9 @@ trait TestManagedQueryModule
               opts.sortOrder)
             val numTicks = query.toInt
 
-            EitherT.right[
+            EitherT.right[TestFuture, EvaluationError, StreamT[
               TestFuture,
-              EvaluationError,
-              StreamT[TestFuture, CharBuffer]] {
+              CharBuffer]] {
               WriterT {
                 createQueryJob(
                   ctx.apiKey,

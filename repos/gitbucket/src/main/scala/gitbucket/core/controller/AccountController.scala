@@ -67,16 +67,14 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   case class PersonalTokenForm(note: String)
 
   val newForm = mapping(
-    "userName" -> trim(
-      label(
-        "User name",
-        text(required, maxlength(100), identifier, uniqueUserName))),
+    "userName" -> trim(label(
+      "User name",
+      text(required, maxlength(100), identifier, uniqueUserName))),
     "password" -> trim(label("Password", text(required, maxlength(20)))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress()))),
+    "mailAddress" -> trim(label(
+      "Mail Address",
+      text(required, maxlength(100), uniqueMailAddress()))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text())))
   )(AccountNewForm.apply)
@@ -84,10 +82,9 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   val editForm = mapping(
     "password" -> trim(label("Password", optional(text(maxlength(20))))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
-    "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress("userName")))),
+    "mailAddress" -> trim(label(
+      "Mail Address",
+      text(required, maxlength(100), uniqueMailAddress("userName")))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "clearImage" -> trim(label("Clear image", boolean()))
@@ -95,12 +92,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   val sshKeyForm = mapping(
     "title" -> trim(label("Title", text(required, maxlength(100)))),
-    "publicKey" -> trim(label("Key", text(required, validPublicKey)))
-  )(SshKeyForm.apply)
+    "publicKey" -> trim(label("Key", text(required, validPublicKey))))(
+    SshKeyForm.apply)
 
   val personalTokenForm = mapping(
-    "note" -> trim(label("Token", text(required, maxlength(100))))
-  )(PersonalTokenForm.apply)
+    "note" -> trim(label("Token", text(required, maxlength(100)))))(
+    PersonalTokenForm.apply)
 
   case class NewGroupForm(
       groupName: String,
@@ -115,10 +112,9 @@ trait AccountControllerBase extends AccountManagementControllerBase {
       clearImage: Boolean)
 
   val newGroupForm = mapping(
-    "groupName" -> trim(
-      label(
-        "Group name",
-        text(required, maxlength(100), identifier, uniqueUserName))),
+    "groupName" -> trim(label(
+      "Group name",
+      text(required, maxlength(100), identifier, uniqueUserName))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text()))),
     "members" -> trim(label("Members", text(required, members)))
@@ -142,14 +138,12 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   case class ForkRepositoryForm(owner: String, name: String)
 
   val newRepositoryForm = mapping(
-    "owner" -> trim(
-      label(
-        "Owner",
-        text(required, maxlength(100), identifier, existsAccount))),
-    "name" -> trim(
-      label(
-        "Repository name",
-        text(required, maxlength(100), repository, uniqueRepository))),
+    "owner" -> trim(label(
+      "Owner",
+      text(required, maxlength(100), identifier, existsAccount))),
+    "name" -> trim(label(
+      "Repository name",
+      text(required, maxlength(100), repository, uniqueRepository))),
     "description" -> trim(label("Description", optional(text()))),
     "isPrivate" -> trim(label("Repository Type", boolean())),
     "createReadme" -> trim(label("Create README", boolean()))
@@ -157,15 +151,15 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   val forkRepositoryForm = mapping(
     "owner" -> trim(label("Repository owner", text(required))),
-    "name" -> trim(label("Repository name", text(required)))
-  )(ForkRepositoryForm.apply)
+    "name" -> trim(label("Repository name", text(required))))(
+    ForkRepositoryForm.apply)
 
   case class AccountForm(accountName: String)
 
   val accountForm = mapping(
     "account" -> trim(
-      label("Group/User name", text(required, validAccountName)))
-  )(AccountForm.apply)
+      label("Group/User name", text(required, validAccountName))))(
+    AccountForm.apply)
 
   /**
     * Displays user information.
@@ -240,12 +234,11 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     val userName = params("userName")
     getAccountByUserName(userName).map {
       account =>
-        updateAccount(
-          account.copy(
-            password = form.password.map(sha1).getOrElse(account.password),
-            fullName = form.fullName,
-            mailAddress = form.mailAddress,
-            url = form.url))
+        updateAccount(account.copy(
+          password = form.password.map(sha1).getOrElse(account.password),
+          fullName = form.fullName,
+          mailAddress = form.mailAddress,
+          url = form.url))
 
         updateImage(userName, form.fileId, form.clearImage)
         flash += "info" -> "Account information has been updated."
@@ -479,10 +472,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
               member.userName == x.userName && member.isManager
             })
         }
-        helper.html.forkrepository(
-          repository,
-          (groups zip managerPermissions).toMap
-        )
+        helper.html
+          .forkrepository(repository, (groups zip managerPermissions).toMap)
       case _ => redirect(s"/${loginUserName}")
     }
   })

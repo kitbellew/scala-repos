@@ -37,11 +37,10 @@ class VectorTest extends FunSuite {
   }
 
   test("Vector.weightOf") {
-    val vec = Vector(
-      Seq(
-        Descriptor(Selector.Host("10.0.0.2", 123), 1.2, 1),
-        Descriptor(Selector.Member("9876"), 1.1, 1),
-        Descriptor(Selector.Member("1111"), 2.1, 1)))
+    val vec = Vector(Seq(
+      Descriptor(Selector.Host("10.0.0.2", 123), 1.2, 1),
+      Descriptor(Selector.Member("9876"), 1.1, 1),
+      Descriptor(Selector.Member("1111"), 2.1, 1)))
 
     val ep1 = Endpoint(
       Array(null),

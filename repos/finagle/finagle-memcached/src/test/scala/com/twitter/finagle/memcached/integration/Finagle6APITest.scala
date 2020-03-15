@@ -151,8 +151,9 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
 
   test("with static servers list") {
     val client = Memcached.client.newRichClient(
-      "twcache!localhost:%d,localhost:%d"
-        .format(testServers(0).address.getPort, testServers(1).address.getPort))
+      "twcache!localhost:%d,localhost:%d".format(
+        testServers(0).address.getPort,
+        testServers(1).address.getPort))
 
     Await.result(client.delete("foo"))
     assert(Await.result(client.get("foo")) == None)

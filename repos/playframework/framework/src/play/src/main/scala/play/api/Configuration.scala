@@ -97,8 +97,7 @@ object Configuration {
         directConfig,
         applicationConfig,
         playOverridesConfig,
-        referenceConfig
-      ).reduceLeft(_ withFallback _)
+        referenceConfig).reduceLeft(_ withFallback _)
 
       // Resolve settings. Among other things, the `play.server.dir` setting defined in directConfig will
       // be substituted into the default settings in referenceConfig.
@@ -152,9 +151,8 @@ object Configuration {
         case v                     => v
       }
 
-    Configuration(
-      ConfigFactory.parseMap(
-        toJava(data).asInstanceOf[java.util.Map[String, AnyRef]]))
+    Configuration(ConfigFactory.parseMap(
+      toJava(data).asInstanceOf[java.util.Map[String, AnyRef]]))
   }
 
   /**

@@ -113,8 +113,7 @@ class FlagTest extends FunSuite {
         naive.toSet == Set(
           Entry(Seq("flags", "foo"), "973"),
           Entry(Seq("flags", "bar"), "hello there"),
-          Entry(Seq("flags", "help"), "false")
-        ))
+          Entry(Seq("flags", "help"), "false")))
     }
   }
 
@@ -131,8 +130,7 @@ class FlagTest extends FunSuite {
       assert(
         naive.toSet == Set(
           Entry(Seq("flags", "baz"), Flag.EmptyRequired),
-          Entry(Seq("flags", "help"), "false")
-        ))
+          Entry(Seq("flags", "help"), "false")))
     }
   }
 
@@ -147,8 +145,7 @@ class FlagTest extends FunSuite {
       assert(
         naive.toSet == Set(
           Entry(Seq("flags", "foo"), "123"),
-          Entry(Seq("flags", "help"), "false")
-        ))
+          Entry(Seq("flags", "help"), "false")))
     }
   }
 

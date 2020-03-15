@@ -38,9 +38,8 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
 
   def assertError(expr: Expression, errorMessage: String): Unit = {
     val e = intercept[AnalysisException] { assertSuccess(expr) }
-    assert(
-      e.getMessage.contains(
-        s"cannot resolve '${expr.sql}' due to data type mismatch:"))
+    assert(e.getMessage.contains(
+      s"cannot resolve '${expr.sql}' due to data type mismatch:"))
     assert(e.getMessage.contains(errorMessage))
   }
 
@@ -148,10 +147,9 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
     assertErrorForDifferingTypes(If('booleanField, 'intField, 'booleanField))
 
     assertError(
-      CaseWhen(
-        Seq(
-          ('booleanField.attr, 'intField.attr),
-          ('booleanField.attr, 'mapField.attr))),
+      CaseWhen(Seq(
+        ('booleanField.attr, 'intField.attr),
+        ('booleanField.attr, 'mapField.attr))),
       "THEN and ELSE expressions should all be same type or coercible to a common type"
     )
     assertError(
@@ -161,10 +159,9 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
       "THEN and ELSE expressions should all be same type or coercible to a common type"
     )
     assertError(
-      CaseWhen(
-        Seq(
-          ('booleanField.attr, 'intField.attr),
-          ('intField.attr, 'intField.attr))),
+      CaseWhen(Seq(
+        ('booleanField.attr, 'intField.attr),
+        ('intField.attr, 'intField.attr))),
       "WHEN expressions in CaseWhen should all be boolean type")
   }
 

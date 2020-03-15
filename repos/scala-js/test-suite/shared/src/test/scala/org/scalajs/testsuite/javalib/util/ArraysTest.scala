@@ -893,89 +893,69 @@ class ArraysTest {
     assertTrue(Arrays.deepEquals(Array[AnyRef](), Array[AnyRef]()))
     assertTrue(
       Arrays.deepEquals(Array[AnyRef](null, null), Array[AnyRef](null, null)))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef]("a", "b", null),
-        Array[AnyRef]("a", "b", null)))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](null, "a", "b", null, "fooooo"),
-        Array[AnyRef](null, "a", "b", null, "fooooo")))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](null, Array[AnyRef]()),
-        Array[AnyRef](null, Array[AnyRef]())))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
-        Array[AnyRef](Array[AnyRef](), Array[AnyRef]())))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
-        Array[AnyRef](Array[AnyRef](Array[AnyRef]()))))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Int]())),
-        Array[AnyRef](Array[AnyRef](Array[Int]()))))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Double]())),
-        Array[AnyRef](Array[AnyRef](Array[Double]()))))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Int](1))),
-        Array[AnyRef](Array[AnyRef](Array[Int](1)))))
-    assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef])))))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef]("a", "b", null),
+      Array[AnyRef]("a", "b", null)))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](null, "a", "b", null, "fooooo"),
+      Array[AnyRef](null, "a", "b", null, "fooooo")))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](null, Array[AnyRef]()),
+      Array[AnyRef](null, Array[AnyRef]())))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
+      Array[AnyRef](Array[AnyRef](), Array[AnyRef]())))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
+      Array[AnyRef](Array[AnyRef](Array[AnyRef]()))))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Int]())),
+      Array[AnyRef](Array[AnyRef](Array[Int]()))))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Double]())),
+      Array[AnyRef](Array[AnyRef](Array[Double]()))))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Int](1))),
+      Array[AnyRef](Array[AnyRef](Array[Int](1)))))
+    assertTrue(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
+      Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef])))))
 
     assertFalse(Arrays.deepEquals(null: Array[AnyRef], Array[AnyRef]()))
     assertFalse(Arrays.deepEquals(Array[AnyRef](), null: Array[AnyRef]))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](), null),
-        Array[AnyRef](null, null)))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](null, Array[AnyRef]()),
-        Array[AnyRef](null, null)))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef]("a", "b", null),
-        Array[AnyRef]("a", "c", null)))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](null, "a", "b", null, "fooooo"),
-        Array[AnyRef](null, "a", "b", "c", "fooooo")))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](null, Array[AnyRef]()),
-        Array[AnyRef](null, Array[AnyRef](null))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
-        Array[AnyRef](Array[AnyRef](), Array[AnyRef](null))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](null)))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Int]())),
-        Array[AnyRef](Array[AnyRef](Array[Int](1)))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Double]())),
-        Array[AnyRef](Array[AnyRef](Array[Double](1.0)))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[Int](1))),
-        Array[AnyRef](Array[AnyRef](Array[Int](2)))))
-    assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
-        Array[AnyRef](Array[AnyRef](Array[AnyRef](2.asInstanceOf[AnyRef])))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](), null),
+      Array[AnyRef](null, null)))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](null, Array[AnyRef]()),
+      Array[AnyRef](null, null)))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef]("a", "b", null),
+      Array[AnyRef]("a", "c", null)))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](null, "a", "b", null, "fooooo"),
+      Array[AnyRef](null, "a", "b", "c", "fooooo")))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](null, Array[AnyRef]()),
+      Array[AnyRef](null, Array[AnyRef](null))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](), Array[AnyRef]()),
+      Array[AnyRef](Array[AnyRef](), Array[AnyRef](null))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[AnyRef]())),
+      Array[AnyRef](Array[AnyRef](Array[AnyRef](null)))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Int]())),
+      Array[AnyRef](Array[AnyRef](Array[Int](1)))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Double]())),
+      Array[AnyRef](Array[AnyRef](Array[Double](1.0)))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[Int](1))),
+      Array[AnyRef](Array[AnyRef](Array[Int](2)))))
+    assertFalse(Arrays.deepEquals(
+      Array[AnyRef](Array[AnyRef](Array[AnyRef](1.asInstanceOf[AnyRef]))),
+      Array[AnyRef](Array[AnyRef](Array[AnyRef](2.asInstanceOf[AnyRef])))))
   }
 
   @Test def toString_Long(): Unit = {
@@ -1104,10 +1084,9 @@ class ArraysTest {
       Arrays.deepToString(Array[AnyRef](Array[AnyRef](Array[AnyRef]()))))
     assertEquals(
       "[[[[1, 2, 3]]], [4, 5, 6]]",
-      Arrays.deepToString(
-        Array[AnyRef](
-          Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))),
-          Array[Int](4, 5, 6))))
+      Arrays.deepToString(Array[AnyRef](
+        Array[AnyRef](Array[AnyRef](Array[Int](1, 2, 3))),
+        Array[Int](4, 5, 6))))
 
     val recArr = Array[AnyRef](null, null)
     recArr(0) = recArr

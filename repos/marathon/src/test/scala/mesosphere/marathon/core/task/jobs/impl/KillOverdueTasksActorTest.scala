@@ -121,18 +121,15 @@ class KillOverdueTasksActorTest
 
     val unconfirmedOverdueTask = MarathonTestHelper.startingTaskProto(
       "unconfirmedOverdue",
-      stagedAt = now - config.taskLaunchConfirmTimeout().millis - 1.millis
-    )
+      stagedAt = now - config.taskLaunchConfirmTimeout().millis - 1.millis)
 
     val overdueStagedTask = MarathonTestHelper.stagedTaskProto(
       "overdueStagedTask",
-      stagedAt = now - 10.days
-    )
+      stagedAt = now - 10.days)
 
     val stagedTask = MarathonTestHelper.stagedTaskProto(
       "staged",
-      stagedAt = now - 10.seconds
-    )
+      stagedAt = now - 10.seconds)
 
     val runningTask = MarathonTestHelper.runningTaskProto(
       "running",
@@ -149,9 +146,7 @@ class KillOverdueTasksActorTest
         overdueUnstagedTask,
         overdueStagedTask,
         stagedTask,
-        runningTask
-      )
-    )
+        runningTask))
     taskTracker.tasksByAppSync returns TasksByApp.of(app)
 
     When(

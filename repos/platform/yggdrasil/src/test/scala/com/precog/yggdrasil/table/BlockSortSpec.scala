@@ -150,15 +150,13 @@ trait BlockSortSpec[M[+_]]
           "key":[2]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            JPath(".uid") -> CString,
-            JPath(".u") -> CBoolean,
-            JPath(".md") -> CString,
-            JPath(".l") -> CEmptyArray))
-      )
+      Some((
+        1,
+        List(
+          JPath(".uid") -> CString,
+          JPath(".u") -> CBoolean,
+          JPath(".md") -> CString,
+          JPath(".l") -> CEmptyArray)))
     )
 
     testSortDense(sampleData, SortDescending, false, JPath(".uid"))
@@ -171,9 +169,7 @@ trait BlockSortSpec[M[+_]]
         {"key":[2],"value":6},
         {"key":[1],"value":5}  
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (1, List(JPath(".") -> CString))
-      )
+      Some((1, List(JPath(".") -> CString)))
     )
 
     testSortDense(sampleData, SortDescending, false, JPath(".uid"))
@@ -201,15 +197,13 @@ trait BlockSortSpec[M[+_]]
           "key":[1]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            JPath(".uid") -> CString,
-            JPath(".fa") -> CNull,
-            JPath(".hW") -> CDouble,
-            JPath(".rzp") -> CEmptyObject))
-      )
+      Some((
+        1,
+        List(
+          JPath(".uid") -> CString,
+          JPath(".fa") -> CNull,
+          JPath(".hW") -> CDouble,
+          JPath(".rzp") -> CEmptyObject)))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".uid"), JPath(".hW"))
@@ -230,15 +224,13 @@ trait BlockSortSpec[M[+_]]
           "key":[2]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            JPath("[0]") -> CLong,
-            JPath("[1]") -> CLong,
-            JPath(".uid") -> CString,
-            JPath("abc") -> CLong))
-      )
+      Some((
+        1,
+        List(
+          JPath("[0]") -> CLong,
+          JPath("[1]") -> CLong,
+          JPath(".uid") -> CString,
+          JPath("abc") -> CLong)))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".uid"))
@@ -271,15 +263,14 @@ trait BlockSortSpec[M[+_]]
           "key":[2.0,1.0]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          2,
-          List(
-            JPath(".m") -> CEmptyArray,
-            JPath(".f") -> CBoolean,
-            JPath(".u") -> CDouble,
-            JPath(".q") -> CNum,
-            JPath(".vxu") -> CEmptyArray)))
+      Some((
+        2,
+        List(
+          JPath(".m") -> CEmptyArray,
+          JPath(".f") -> CBoolean,
+          JPath(".u") -> CDouble,
+          JPath(".q") -> CNum,
+          JPath(".vxu") -> CEmptyArray)))
     )
     testSortDense(sampleData, SortAscending, false, JPath("q"))
   }
@@ -354,20 +345,18 @@ trait BlockSortSpec[M[+_]]
           "key":[2,1,1]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          3,
-          List(
-            JPath(".uid") -> CLong,
-            JPath(".uid") -> CDouble,
-            JPath(".f.bn[0]") -> CNull,
-            JPath(".f.wei") -> CDouble,
-            JPath(".ljz[0]") -> CNull,
-            JPath(".ljz[1][0]") -> CString,
-            JPath(".ljz[2]") -> CBoolean,
-            JPath(".jmy") -> CDouble
-          ))
-      )
+      Some((
+        3,
+        List(
+          JPath(".uid") -> CLong,
+          JPath(".uid") -> CDouble,
+          JPath(".f.bn[0]") -> CNull,
+          JPath(".f.wei") -> CDouble,
+          JPath(".ljz[0]") -> CNull,
+          JPath(".ljz[1][0]") -> CString,
+          JPath(".ljz[2]") -> CBoolean,
+          JPath(".jmy") -> CDouble
+        )))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".uid"))
@@ -396,17 +385,15 @@ trait BlockSortSpec[M[+_]]
           },
           "key":[2.0]
         }]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            JPath(".e") -> CNull,
-            JPath(".chl") -> CNum,
-            JPath(".zw1") -> CNum,
-            JPath("[0]") -> CLong,
-            JPath("[1]") -> CLong,
-            JPath("[2]") -> CEmptyObject))
-      )
+      Some((
+        1,
+        List(
+          JPath(".e") -> CNull,
+          JPath(".chl") -> CNum,
+          JPath(".zw1") -> CNum,
+          JPath("[0]") -> CLong,
+          JPath("[1]") -> CLong,
+          JPath("[2]") -> CEmptyObject)))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".zw1"))
@@ -554,14 +541,12 @@ trait BlockSortSpec[M[+_]]
           "key":[10.0,1.0,4.0]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          3,
-          List(
-            JPath(".zbtQhnpnun") -> CLong,
-            JPath(".ohvhwN") -> CNum,
-            JPath(".viip") -> CNum))
-      )
+      Some((
+        3,
+        List(
+          JPath(".zbtQhnpnun") -> CLong,
+          JPath(".ohvhwN") -> CNum,
+          JPath(".viip") -> CNum)))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".zbtQhnpnun"))
@@ -573,9 +558,7 @@ trait BlockSortSpec[M[+_]]
         { "key" : [2], "value" : { "foo" : 10 } },
         { "key" : [1], "value" : { "foo" : 10 } }
        ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (1, List())
-      )
+      Some((1, List()))
     )
 
     testSortDense(sampleData, SortAscending, false, JPath(".foo"))
@@ -584,10 +567,7 @@ trait BlockSortSpec[M[+_]]
   def emptySort = {
     val sampleData = SampleData(
       (JParser.parseUnsafe("""[]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (1, List())
-      )
-    )
+      Some((1, List())))
 
     testSortDense(sampleData, SortAscending, false, JPath(".foo"))
   }

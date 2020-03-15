@@ -26,12 +26,9 @@ final class CrosstableApi(coll: Coll) {
         coll.find(select(u1, u2)).one[Crosstable])
 
   def nbGames(u1: String, u2: String): Fu[Int] =
-    coll
-      .find(
-        select(u1, u2),
-        BSONDocument("n" -> true)
-      )
-      .one[BSONDocument] map { ~_.flatMap(_.getAs[Int]("n")) }
+    coll.find(select(u1, u2), BSONDocument("n" -> true)).one[BSONDocument] map {
+      ~_.flatMap(_.getAs[Int]("n"))
+    }
 
   def add(game: Game): Funit =
     game.userIds.distinct.sorted match {
@@ -52,13 +49,11 @@ final class CrosstableApi(coll: Coll) {
               case None               => 5
               case _                  => 0
             })
-          )
-        ) ++ BSONDocument(
+          )) ++ BSONDocument(
           "$push" -> BSONDocument(
             Crosstable.BSONFields.results -> BSONDocument(
               "$each" -> List(bsonResult),
-              "$slice" -> -maxGames
-            )))
+              "$slice" -> -maxGames)))
         coll.update(select(u1, u2), bson).void
       case _ => funit
     }
@@ -108,14 +103,12 @@ final class CrosstableApi(coll: Coll) {
             .aggregate(
               Match(selector),
               List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
-            .map(
-              _.documents.foldLeft(ctDraft) {
-                case (ct, obj) =>
-                  obj.getAs[Int]("nb").fold(ct) { nb =>
-                    ct.addWins(obj.getAs[String]("_id"), nb)
-                  }
-              }
-            )
+            .map(_.documents.foldLeft(ctDraft) {
+              case (ct, obj) =>
+                obj.getAs[Int]("nb").fold(ct) { nb =>
+                  ct.addWins(obj.getAs[String]("_id"), nb)
+                }
+            })
 
           _ <- coll insert crosstable
         } yield crosstable.some

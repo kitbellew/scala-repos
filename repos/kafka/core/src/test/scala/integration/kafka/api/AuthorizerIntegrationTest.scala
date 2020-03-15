@@ -58,8 +58,12 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   val GroupReadAcl = Map(
     groupResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
-  val ClusterAcl = Map(Resource.ClusterResource -> Set(
-    new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, ClusterAction)))
+  val ClusterAcl = Map(
+    Resource.ClusterResource -> Set(new Acl(
+      KafkaPrincipal.ANONYMOUS,
+      Allow,
+      Acl.WildCardHost,
+      ClusterAction)))
   val TopicReadAcl = Map(
     topicResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
@@ -171,12 +175,11 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
     super.setUp()
 
     addAndVerifyAcls(
-      Set(
-        new Acl(
-          KafkaPrincipal.ANONYMOUS,
-          Allow,
-          Acl.WildCardHost,
-          ClusterAction)),
+      Set(new Acl(
+        KafkaPrincipal.ANONYMOUS,
+        Allow,
+        Acl.WildCardHost,
+        ClusterAction)),
       Resource.ClusterResource)
 
     for (i <- 0 until producerCount)
@@ -249,14 +252,13 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
         List(brokerId).asJava,
         2,
         Set(brokerId).asJava)).asJava
-    val brokers = Set(
-      new requests.UpdateMetadataRequest.Broker(
-        brokerId,
-        Map(
-          SecurityProtocol.PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
-            "localhost",
-            0)).asJava,
-        null)).asJava
+    val brokers = Set(new requests.UpdateMetadataRequest.Broker(
+      brokerId,
+      Map(
+        SecurityProtocol.PLAINTEXT -> new requests.UpdateMetadataRequest.EndPoint(
+          "localhost",
+          0)).asJava,
+      null)).asJava
     new requests.UpdateMetadataRequest(
       brokerId,
       Int.MaxValue,
@@ -270,10 +272,9 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       30000,
       "",
       "consumer",
-      List(
-        new JoinGroupRequest.ProtocolMetadata(
-          "consumer-range",
-          ByteBuffer.wrap("test".getBytes()))).asJava)
+      List(new JoinGroupRequest.ProtocolMetadata(
+        "consumer-range",
+        ByteBuffer.wrap("test".getBytes()))).asJava)
   }
 
   private def createSyncGroupRequest = {
@@ -767,12 +768,11 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
   private def sendRecords(numRecords: Int, tp: TopicPartition) {
     val futures = (0 until numRecords).map { i =>
-      this.producers.head.send(
-        new ProducerRecord(
-          tp.topic(),
-          tp.partition(),
-          i.toString.getBytes,
-          i.toString.getBytes))
+      this.producers.head.send(new ProducerRecord(
+        tp.topic(),
+        tp.partition(),
+        i.toString.getBytes,
+        i.toString.getBytes))
     }
     try { futures.foreach(_.get) }
     catch { case e: ExecutionException => throw e.getCause }

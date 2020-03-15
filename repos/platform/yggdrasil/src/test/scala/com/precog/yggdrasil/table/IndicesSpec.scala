@@ -193,8 +193,7 @@ trait IndicesSpec[M[+_]]
           CLong(3),
           CLong(999),
           CString("cat"),
-          RObject(Map("cat" -> CLong(13), "dog" -> CLong(12)))
-        )
+          RObject(Map("cat" -> CLong(13), "dog" -> CLong(12))))
 
       test(Array(CLong(2), CLong(2)), s2)
       def s2 = Set[RValue](CLong(3), CLong(13))
@@ -212,19 +211,11 @@ trait IndicesSpec[M[+_]]
     }
 
     val index1 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("a")),
-        valuekey("c")
-      )
+      .createFromTable(table, Array(groupkey("a")), valuekey("c"))
       .copoint
 
     val index2 = TableIndex
-      .createFromTable(
-        table,
-        Array(groupkey("b")),
-        valuekey("c")
-      )
+      .createFromTable(table, Array(groupkey("b")), valuekey("c"))
       .copoint
 
     "efficiently combine to produce unions" in {
@@ -235,10 +226,7 @@ trait IndicesSpec[M[+_]]
       }
 
       // both disjunctions have data
-      tryit(
-        (index1, Seq(0), Seq(CLong(1))),
-        (index2, Seq(0), Seq(CLong(2)))
-      )(
+      tryit((index1, Seq(0), Seq(CLong(1))), (index2, Seq(0), Seq(CLong(2))))(
         JNum(3),
         JNum(999),
         JNum(9876),
@@ -252,34 +240,29 @@ trait IndicesSpec[M[+_]]
       // only first disjunction has data
       tryit(
         (index1, Seq(0), Seq(CLong(1))),
-        (index2, Seq(0), Seq(CLong(1234567)))
-      )(
+        (index2, Seq(0), Seq(CLong(1234567))))(
         JNum(3),
         JNum(999),
         JString("cat"),
         JArray(JNum(666)),
-        JObject(Map("cat" -> JNum(13), "dog" -> JNum(12)))
-      )
+        JObject(Map("cat" -> JNum(13), "dog" -> JNum(12))))
 
       // only second disjunction has data
       tryit(
         (index1, Seq(0), Seq(CLong(-8000))),
-        (index2, Seq(0), Seq(CLong(2)))
-      )(
+        (index2, Seq(0), Seq(CLong(2))))(
         JNum(3),
         JNum(999),
         JNum(9876),
         JString("cat"),
         JNum(13),
         JArray(JNum(1), JNum(2), JNum(3), JNum(4)),
-        JObject(Map("cat" -> JNum(13), "dog" -> JNum(12)))
-      )
+        JObject(Map("cat" -> JNum(13), "dog" -> JNum(12))))
 
       // neither disjunction has data
       tryit(
         (index1, Seq(0), Seq(CLong(-8000))),
-        (index2, Seq(0), Seq(CLong(1234567)))
-      )()
+        (index2, Seq(0), Seq(CLong(1234567))))()
     }
   }
 }

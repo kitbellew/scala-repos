@@ -214,7 +214,9 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
     acls
       .find(acl =>
         acl.permissionType == permissionType
-          && (acl.principal == principal || acl.principal == Acl.WildCardPrincipal)
+          && (
+            acl.principal == principal || acl.principal == Acl.WildCardPrincipal
+          )
           && (operations == acl.operation || acl.operation == All)
           && (acl.host == host || acl.host == Acl.WildCardHost))
       .map { acl: Acl =>

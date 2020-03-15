@@ -23,13 +23,13 @@ class CookieSupportServlet extends ScalatraServlet {
   }
 
   post("/setexpiringcookie") {
-    cookies.update("thecookie", params("cookieval"))(
-      CookieOptions(maxAge = params("maxAge").toInt))
+    cookies.update("thecookie", params("cookieval"))(CookieOptions(maxAge =
+      params("maxAge").toInt))
   }
 
   post("/set-http-only-cookie") {
-    cookies.update("thecookie", params("cookieval"))(
-      CookieOptions(httpOnly = true))
+    cookies.update("thecookie", params("cookieval"))(CookieOptions(httpOnly =
+      true))
   }
 
   post("/maplikeset") {

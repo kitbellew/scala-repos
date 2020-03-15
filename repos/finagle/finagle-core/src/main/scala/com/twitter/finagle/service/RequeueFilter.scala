@@ -55,10 +55,7 @@ private[finagle] class RequeueFilter[Req, Rep](
   private[this] val requeueStat = statsReceiver.stat("requeues_per_request")
   private[this] val canNotRetryCounter = statsReceiver.counter("cannot_retry")
 
-  private[this] def responseFuture(
-      attempt: Int,
-      t: Try[Rep]
-  ): Future[Rep] = {
+  private[this] def responseFuture(attempt: Int, t: Try[Rep]): Future[Rep] = {
     requeueStat.add(attempt)
     Future.const(t)
   }
@@ -68,8 +65,7 @@ private[finagle] class RequeueFilter[Req, Rep](
       service: Service[Req, Rep],
       attempt: Int,
       retriesRemaining: Int,
-      backoffs: Stream[Duration]
-  ): Future[Rep] = {
+      backoffs: Stream[Duration]): Future[Rep] = {
     service(req).transform {
       case t @ Throw(RetryPolicy.RetryableWriteException(_)) =>
         if (!canRetry()) {

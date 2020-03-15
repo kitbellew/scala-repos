@@ -52,7 +52,9 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
         Fields.winnerColor -> game.winner.fold(3)(_.color.fold(1, 2)),
         Fields.averageRating -> game.averageUsersRating,
         Fields.ai -> game.aiLevel,
-        Fields.date -> (lila.search.Date.formatter print game.updatedAtOrCreatedAt),
+        Fields.date -> (
+          lila.search.Date.formatter print game.updatedAtOrCreatedAt
+        ),
         Fields.duration -> game.durationSeconds,
         Fields.clockInit -> game.clock.map(_.limit),
         Fields.clockInc -> game.clock.map(_.increment),
@@ -111,9 +113,7 @@ final class GameSearchApi(client: ESClient) extends SearchReadApi[Game, Query] {
     // val maxGames = 10 * 1000 * 1000
 
     lila.game.tube.gameTube.coll
-      .find(BSONDocument(
-        "ca" -> BSONDocument("$gt" -> since)
-      ))
+      .find(BSONDocument("ca" -> BSONDocument("$gt" -> since)))
       .sort(BSONDocument("ca" -> 1))
       .cursor[Game](ReadPreference.secondaryPreferred)
       .enumerate(maxGames, stopOnError = true) &>

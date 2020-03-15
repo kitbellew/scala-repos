@@ -70,9 +70,9 @@ case class ScalaMethodEvaluator(
     }
     if (obj == null) { throw EvaluationException(new NullPointerException) }
     if (!(obj.isInstanceOf[ObjectReference] || obj.isInstanceOf[ClassType])) {
-      throw EvaluationException(
-        DebuggerBundle
-          .message("evaluation.error.evaluating.method", methodName))
+      throw EvaluationException(DebuggerBundle.message(
+        "evaluation.error.evaluating.method",
+        methodName))
     }
     val args = argumentEvaluators.flatMap { ev =>
       val result = ev.evaluate(context)

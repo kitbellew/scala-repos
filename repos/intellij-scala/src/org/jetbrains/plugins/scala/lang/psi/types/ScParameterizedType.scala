@@ -116,11 +116,10 @@ class ScParameterizedType private (
           ta.typeParameters.map(tp =>
             (tp.name, ScalaPsiUtil.getPsiElementId(tp))),
           args)
-        Some(
-          AliasType(
-            ta,
-            ta.lowerBound.map(genericSubst.subst),
-            ta.upperBound.map(genericSubst.subst)))
+        Some(AliasType(
+          ta,
+          ta.lowerBound.map(genericSubst.subst),
+          ta.upperBound.map(genericSubst.subst)))
       case ScParameterizedType(p: ScProjectionType, args)
           if p.actualElement.isInstanceOf[ScTypeAlias] =>
         val ta: ScTypeAlias = p.actualElement.asInstanceOf[ScTypeAlias]
@@ -456,17 +455,16 @@ case class ScTypeParameterType(
           new Suspension[ScType]({ () => s.subst(tp.lowerBound.getOrNothing) })
         case _ =>
           new Suspension[ScType]({ () =>
-            s.subst(
-              ScCompoundType(
-                ptp.getExtendsListTypes
+            s.subst(ScCompoundType(
+              ptp.getExtendsListTypes
+                .map(ScType.create(_, ptp.getProject))
+                .toSeq ++
+                ptp.getImplementsListTypes
                   .map(ScType.create(_, ptp.getProject))
-                  .toSeq ++
-                  ptp.getImplementsListTypes
-                    .map(ScType.create(_, ptp.getProject))
-                    .toSeq,
-                Map.empty,
-                Map.empty
-              ))
+                  .toSeq,
+              Map.empty,
+              Map.empty
+            ))
           })
       },
       ptp match {

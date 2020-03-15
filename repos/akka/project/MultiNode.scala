@@ -63,9 +63,13 @@ object MultiNode extends AutoPlugin {
       inConfig(MultiJvm)(SbtScalariform.configScalariformSettings) ++
       Seq(
         jvmOptions in MultiJvm := defaultMultiJvmOptions,
-        compileInputs in (MultiJvm, compile) <<= (compileInputs in (MultiJvm, compile)) dependsOn (ScalariformKeys.format in MultiJvm),
+        compileInputs in (MultiJvm, compile) <<= (
+          compileInputs in (MultiJvm, compile)
+        ) dependsOn (ScalariformKeys.format in MultiJvm),
         scalacOptions in MultiJvm <<= scalacOptions in Test,
-        compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (compile in Test)
+        compile in MultiJvm <<= (compile in MultiJvm) triggeredBy (
+          compile in Test
+        )
       ) ++
       CliOptions.hostsFileName.map(multiNodeHostsFileName in MultiJvm := _) ++
       CliOptions.javaName.map(multiNodeJavaName in MultiJvm := _) ++
@@ -95,9 +99,9 @@ object MultiNodeScalaTest extends AutoPlugin {
   override lazy val projectSettings = Seq(
     extraOptions in MultiJvm <<= (sourceDirectory in MultiJvm) {
       src => (name: String) =>
-        (src ** (name + ".conf")).get.headOption
-          .map("-Dakka.config=" + _.absolutePath)
-          .toSeq
+        (
+          src ** (name + ".conf")
+        ).get.headOption.map("-Dakka.config=" + _.absolutePath).toSeq
     },
     scalatestOptions in MultiJvm := {
       Seq("-C", "org.scalatest.extra.QuietReporter") ++

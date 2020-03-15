@@ -45,8 +45,8 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
     * [[PartitionID]]s in `partitionsRDD` correspond to the actual partitions and create a new
     * partitioner that allows co-partitioning with `partitionsRDD`.
     */
-  override val partitioner = partitionsRDD.partitioner.orElse(
-    Some(new HashPartitioner(partitions.length)))
+  override val partitioner = partitionsRDD.partitioner.orElse(Some(
+    new HashPartitioner(partitions.length)))
 
   override def collect(): Array[Edge[ED]] = this.map(_.copy()).collect()
 
@@ -117,15 +117,14 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
   def mapEdgePartitions[ED2: ClassTag, VD2: ClassTag](
       f: (PartitionID, EdgePartition[ED, VD]) => EdgePartition[ED2, VD2])
       : EdgeRDDImpl[ED2, VD2] = {
-    this.withPartitionsRDD[ED2, VD2](
-      partitionsRDD.mapPartitions(
-        { iter =>
-          if (iter.hasNext) {
-            val (pid, ep) = iter.next()
-            Iterator(Tuple2(pid, f(pid, ep)))
-          } else { Iterator.empty }
-        },
-        preservesPartitioning = true))
+    this.withPartitionsRDD[ED2, VD2](partitionsRDD.mapPartitions(
+      { iter =>
+        if (iter.hasNext) {
+          val (pid, ep) = iter.next()
+          Iterator(Tuple2(pid, f(pid, ep)))
+        } else { Iterator.empty }
+      },
+      preservesPartitioning = true))
   }
 
   private[graphx] def withPartitionsRDD[ED2: ClassTag, VD2: ClassTag](

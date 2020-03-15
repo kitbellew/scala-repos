@@ -67,8 +67,9 @@ trait StdNames {
       "$.class".length + 1 // potential module class suffix and file extension
     val MaxNameLength = math.min(
       settings.maxClassfileName.value - maxSuffixLength,
-      2 * (settings.maxClassfileName.value - maxSuffixLength - 2 * marker.length - 32)
-    )
+      2 * (
+        settings.maxClassfileName.value - maxSuffixLength - 2 * marker.length - 32
+      ))
     def toMD5(s: String, edge: Int): String = {
       val prefix = s take edge
       val suffix = s takeRight edge
@@ -81,9 +82,7 @@ trait StdNames {
       prefix + marker + md5chars + marker + suffix
     }
     def apply(s: String): String =
-      (
-        if (s.length <= MaxNameLength) s else toMD5(s, MaxNameLength / 4)
-      )
+      (if (s.length <= MaxNameLength) s else toMD5(s, MaxNameLength / 4))
   }
 
   abstract class CommonNames extends NamesApi {
@@ -482,8 +481,7 @@ trait StdNames {
         // DUPLICATED LOGIC WITH `splitSpecializedName`
         if (name endsWith SPECIALIZED_SUFFIX)
           name.subName(0, name.lastIndexOf('m') - 1)
-        else name
-      )
+        else name)
 
     /** Return the original name and the types on which this name
       *  is specialized. For example,
@@ -511,20 +509,16 @@ trait StdNames {
 
     // Nominally, name$default$N, encoded for <init>
     def defaultGetterName(name: Name, pos: Int): TermName =
-      (
-        if (isConstructorName(name)) DEFAULT_GETTER_INIT_STRING + pos
-        else name + DEFAULT_GETTER_STRING + pos
-      )
+      (if (isConstructorName(name)) DEFAULT_GETTER_INIT_STRING + pos
+       else name + DEFAULT_GETTER_STRING + pos)
     // Nominally, name from name$default$N, CONSTRUCTOR for <init>
     def defaultGetterToMethod(name: Name): TermName =
-      (
-        if (name startsWith DEFAULT_GETTER_INIT_STRING) nme.CONSTRUCTOR
-        else
-          name indexOf DEFAULT_GETTER_STRING match {
-            case -1  => name.toTermName
-            case idx => name.toTermName take idx
-          }
-      )
+      (if (name startsWith DEFAULT_GETTER_INIT_STRING) nme.CONSTRUCTOR
+       else
+         name indexOf DEFAULT_GETTER_STRING match {
+           case -1  => name.toTermName
+           case idx => name.toTermName take idx
+         })
 
     def localDummyName(clazz: Symbol): TermName =
       newTermName(LOCALDUMMY_PREFIX + clazz.name + ">")
@@ -918,7 +912,9 @@ trait StdNames {
     val toInteger: NameType = "toInteger"
 
     def newLazyValSlowComputeName(lzyValName: Name) =
-      (lzyValName stripSuffix MODULE_VAR_SUFFIX append LAZY_SLOW_SUFFIX).toTermName
+      (
+        lzyValName stripSuffix MODULE_VAR_SUFFIX append LAZY_SLOW_SUFFIX
+      ).toTermName
 
     // ASCII names for operators
     val ADD = encode("+")

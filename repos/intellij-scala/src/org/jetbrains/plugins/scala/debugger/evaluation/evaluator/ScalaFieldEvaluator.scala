@@ -92,9 +92,9 @@ case class ScalaFieldEvaluator(
           field = fieldByName(refType, fieldName)
         }
         if (field == null || !field.isStatic) {
-          throw EvaluationException(
-            DebuggerBundle
-              .message("evaluation.error.no.static.field", fieldName))
+          throw EvaluationException(DebuggerBundle.message(
+            "evaluation.error.no.static.field",
+            fieldName))
         }
         myEvaluatedField = field
         myEvaluatedQualifier = refType
@@ -103,9 +103,9 @@ case class ScalaFieldEvaluator(
         val refType: ReferenceType = objRef.referenceType
         if (!(refType.isInstanceOf[ClassType] || refType
               .isInstanceOf[ArrayType])) {
-          throw EvaluationException(
-            DebuggerBundle
-              .message("evaluation.error.class.or.array.expected", fieldName))
+          throw EvaluationException(DebuggerBundle.message(
+            "evaluation.error.class.or.array.expected",
+            fieldName))
         }
         objRef match {
           case arrayRef: ArrayReference if "length" == fieldName =>
@@ -118,18 +118,18 @@ case class ScalaFieldEvaluator(
         var field: Field = findField(refType, context)
         if (field == null) { field = refType.fieldByName(fieldName) }
         if (field == null) {
-          throw EvaluationException(
-            DebuggerBundle
-              .message("evaluation.error.no.instance.field", fieldName))
+          throw EvaluationException(DebuggerBundle.message(
+            "evaluation.error.no.instance.field",
+            fieldName))
         }
         myEvaluatedQualifier = if (field.isStatic) refType else objRef
         myEvaluatedField = field
         if (field.isStatic) refType.getValue(field) else objRef.getValue(field)
       case null => throw EvaluationException(new NullPointerException)
       case _ =>
-        throw EvaluationException(
-          DebuggerBundle
-            .message("evaluation.error.evaluating.field", fieldName))
+        throw EvaluationException(DebuggerBundle.message(
+          "evaluation.error.evaluating.field",
+          fieldName))
     }
   }
 

@@ -278,8 +278,8 @@ private[pickling] class IrScalaSymbols[
         u: U): List[List[u.Type]] = {
       mthd.paramss.map(
         _.map(x =>
-          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
-          .map(_.asInstanceOf[u.Type]))
+          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol)).map(
+          _.asInstanceOf[u.Type]))
     }
 
     override def isMarkedTransient: Boolean = {
@@ -349,7 +349,9 @@ private[pickling] class IrScalaSymbols[
     override def isVal: Boolean = mthd.isVal
     override def isVar: Boolean =
       (mthd.getter != NoSymbol) && (mthd.setter != NoSymbol) &&
-        (mthd.setter != mthd) // THis is  hack so the setter doesn't show up in our list of vars.
+        (
+          mthd.setter != mthd
+        ) // THis is  hack so the setter doesn't show up in our list of vars.
     override def returnType[U <: Universe with Singleton](u: Universe): u.Type =
       // TODO - We need to fill in generic parameters of our owner class so that this actually works.  If we fail to do so,
       //        We wind up delegating to runtime picklers when we DO know the static types.

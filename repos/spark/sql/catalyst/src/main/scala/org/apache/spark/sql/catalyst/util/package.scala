@@ -105,8 +105,9 @@ package object util {
 
     leftPadded.zip(rightPadded).map {
       case (l, r) =>
-        (if (l == r) " "
-         else "!") + l + (" " * ((maxLeftSize - l.length) + 3)) + r
+        (if (l == r) " " else "!") + l + (
+          " " * ((maxLeftSize - l.length) + 3)
+        ) + r
     }
   }
 

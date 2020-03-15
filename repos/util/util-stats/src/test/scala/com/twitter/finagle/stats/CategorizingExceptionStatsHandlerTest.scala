@@ -29,28 +29,25 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
       receiver.counters(
         Seq("clienterrors", classOf[RuntimeException].getName)) == 1)
     assert(
-      receiver.counters(
-        Seq(
-          "clienterrors",
-          classOf[RuntimeException].getName,
-          classOf[Exception].getName)) == 1)
+      receiver.counters(Seq(
+        "clienterrors",
+        classOf[RuntimeException].getName,
+        classOf[Exception].getName)) == 1)
 
     assert(
       receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 3)
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
-      receiver.counters(
-        Seq(
-          "sourcedfailures",
-          "service",
-          classOf[RuntimeException].getName)) == 1)
+      receiver.counters(Seq(
+        "sourcedfailures",
+        "service",
+        classOf[RuntimeException].getName)) == 1)
     assert(
-      receiver.counters(
-        Seq(
-          "sourcedfailures",
-          "service",
-          classOf[RuntimeException].getName,
-          classOf[Exception].getName)) == 1)
+      receiver.counters(Seq(
+        "sourcedfailures",
+        "service",
+        classOf[RuntimeException].getName,
+        classOf[Exception].getName)) == 1)
 
     assert(
       keys == Seq(
@@ -80,8 +77,7 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
       keys == Seq(
         "failures",
         "failures/java.lang.RuntimeException",
-        "failures/java.lang.RuntimeException/java.lang.Exception"
-      ))
+        "failures/java.lang.RuntimeException/java.lang.Exception"))
   }
 
   test("supports no rollup") {
@@ -102,22 +98,20 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
     assert(receiver.counters.filterKeys(_.contains("clienterrors")).size == 2)
     assert(receiver.counters(Seq("clienterrors")) == 1)
     assert(
-      receiver.counters(
-        Seq(
-          "clienterrors",
-          classOf[RuntimeException].getName,
-          classOf[Exception].getName)) == 1)
+      receiver.counters(Seq(
+        "clienterrors",
+        classOf[RuntimeException].getName,
+        classOf[Exception].getName)) == 1)
 
     assert(
       receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 2)
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
-      receiver.counters(
-        Seq(
-          "sourcedfailures",
-          "service",
-          classOf[RuntimeException].getName,
-          classOf[Exception].getName)) == 1)
+      receiver.counters(Seq(
+        "sourcedfailures",
+        "service",
+        classOf[RuntimeException].getName,
+        classOf[Exception].getName)) == 1)
 
     assert(
       keys == Seq(

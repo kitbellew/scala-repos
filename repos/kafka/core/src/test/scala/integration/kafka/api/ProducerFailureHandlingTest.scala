@@ -240,11 +240,10 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
   def testCannotSendToInternalTopic() {
     val thrown = intercept[ExecutionException] {
       producer2
-        .send(
-          new ProducerRecord[Array[Byte], Array[Byte]](
-            TopicConstants.INTERNAL_TOPICS.iterator.next,
-            "test".getBytes,
-            "test".getBytes))
+        .send(new ProducerRecord[Array[Byte], Array[Byte]](
+          TopicConstants.INTERNAL_TOPICS.iterator.next,
+          "test".getBytes,
+          "test".getBytes))
         .get
     }
     assertTrue(
@@ -318,8 +317,9 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
         if (!e.getCause.isInstanceOf[NotEnoughReplicasException] &&
             !e.getCause.isInstanceOf[NotEnoughReplicasAfterAppendException] &&
             !e.getCause.isInstanceOf[TimeoutException]) {
-          fail("Expected NotEnoughReplicasException or NotEnoughReplicasAfterAppendException when producing to topic " +
-            "with fewer brokers than min.insync.replicas, but saw " + e.getCause)
+          fail(
+            "Expected NotEnoughReplicasException or NotEnoughReplicasAfterAppendException when producing to topic " +
+              "with fewer brokers than min.insync.replicas, but saw " + e.getCause)
         }
     }
 

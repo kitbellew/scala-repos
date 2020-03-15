@@ -69,10 +69,9 @@ class TupleTest extends WordSpec with Matchers {
     }
     "get non-primitives out of cascading tuples" in {
       val ctup = new CTuple(None, List(1, 2, 3), 1 -> 2)
-      get[(Option[Int], List[Int], (Int, Int))](ctup) shouldBe (None, List(
-        1,
-        2,
-        3), 1 -> 2)
+      get[(Option[Int], List[Int], (Int, Int))](ctup) shouldBe (
+        None, List(1, 2, 3), 1 -> 2
+      )
 
       roundTrip[(Option[Int], List[Int])]((Some(1), List())) shouldBe true
       arityConvMatches((None, Nil), 2) shouldBe true

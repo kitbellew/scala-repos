@@ -47,8 +47,7 @@ private final class ExplorerIndexer(
           Query.finished ++
           Query.turnsMoreThan(8) ++
           Query.noProvisional ++
-          Query.bothRatingsGreaterThan(1501)
-      )
+          Query.bothRatingsGreaterThan(1501))
       import reactivemongo.api._
       pimpQB(query)
         .sort(Query.sortChronological)

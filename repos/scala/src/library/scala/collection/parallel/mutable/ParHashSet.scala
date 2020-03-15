@@ -111,11 +111,8 @@ object ParHashSet extends ParSetFactory[ParHashSet] {
 
 private[mutable] abstract class ParHashSetCombiner[T](
     private val tableLoadFactor: Int)
-    extends scala.collection.parallel.BucketCombiner[
-      T,
-      ParHashSet[T],
-      AnyRef,
-      ParHashSetCombiner[T]](ParHashSetCombiner.numblocks)
+    extends scala.collection.parallel.BucketCombiner[T, ParHashSet[
+      T], AnyRef, ParHashSetCombiner[T]](ParHashSetCombiner.numblocks)
     with scala.collection.mutable.FlatHashTable.HashUtils[T] {
 //self: EnvironmentPassingCombiner[T, ParHashSet[T]] =>
   private val nonmasklen = ParHashSetCombiner.nonmasklength
@@ -179,8 +176,8 @@ private[mutable] abstract class ParHashSetCombiner[T](
   class AddingFlatHashTable(numelems: Int, lf: Int, inseedvalue: Int)
       extends FlatHashTable[T] {
     _loadFactor = lf
-    table = new Array[AnyRef](
-      capacity(FlatHashTable.sizeForThreshold(numelems, _loadFactor)))
+    table = new Array[AnyRef](capacity(
+      FlatHashTable.sizeForThreshold(numelems, _loadFactor)))
     tableSize = 0
     threshold = FlatHashTable.newThreshold(_loadFactor, table.length)
     seedvalue = inseedvalue

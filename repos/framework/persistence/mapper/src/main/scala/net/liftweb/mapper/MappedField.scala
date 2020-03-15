@@ -233,8 +233,8 @@ trait TypedField[FieldType] {
 /**
   * A Mapped field that is Nullable in the database.  Will return Empty box for NULL values and Full for non-null values
   */
-trait MappedNullableField[
-    NullableFieldType <: Any, OwnerType <: Mapper[OwnerType]]
+trait MappedNullableField[NullableFieldType <: Any, OwnerType <: Mapper[
+  OwnerType]]
     extends MappedField[Box[NullableFieldType], OwnerType] {
 
   /**
@@ -699,20 +699,16 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     * Does the "right thing" comparing mapped fields
     */
   override def equals(other: Any): Boolean = {
-    (
-      other match {
-        case e: scala.Equals => e canEqual this
-        case _               => true
-      }
-    ) && (
-      other match {
-        case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
-        case ov: AnyRef
-            if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>
-          this.get == runFilters(ov.asInstanceOf[FieldType], setFilter)
-        case ov => this.get == ov
-      }
-    )
+    (other match {
+      case e: scala.Equals => e canEqual this
+      case _               => true
+    }) && (other match {
+      case mapped: MappedField[_, _] => this.i_is_! == mapped.i_is_!
+      case ov: AnyRef
+          if (ov ne null) && dbFieldClass.isAssignableFrom(ov.getClass) =>
+        this.get == runFilters(ov.asInstanceOf[FieldType], setFilter)
+      case ov => this.get == ov
+    })
   }
 
   def canEqual(that: Any) =

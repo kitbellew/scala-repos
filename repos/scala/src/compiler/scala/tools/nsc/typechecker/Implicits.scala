@@ -124,8 +124,9 @@ trait Implicits {
     //         `implicitSearchContext.undetparams`, *not* in `context.undetparams`
     //         Here, we copy them up to parent context (analogously to the way the errors are copied above),
     //         and then filter out any which *were* inferred and are part of the substitutor in the implicit search result.
-    context.undetparams =
-      ((context.undetparams ++ result.undetparams) filterNot result.subst.from.contains).distinct
+    context.undetparams = ((
+      context.undetparams ++ result.undetparams
+    ) filterNot result.subst.from.contains).distinct
 
     if (Statistics.canEnable) Statistics.stopTimer(implicitNanos, start)
     if (Statistics.canEnable) Statistics.stopCounter(rawTypeImpl, rawTypeStart)
@@ -151,15 +152,14 @@ trait Implicits {
       if (!withMacrosDisabled) (context.withMacrosEnabled[SearchResult] _)
       else (context.withMacrosDisabled[SearchResult] _)
     def wrapper(inference: => SearchResult) = wrapper1(inference)
-    val result = wrapper(
-      inferImplicit(
-        tree,
-        pt,
-        reportAmbiguous = true,
-        isView = isView,
-        context = context,
-        saveAmbiguousDivergent = !silent,
-        pos = pos))
+    val result = wrapper(inferImplicit(
+      tree,
+      pt,
+      reportAmbiguous = true,
+      isView = isView,
+      context = context,
+      saveAmbiguousDivergent = !silent,
+      pos = pos))
     if (result.isFailure && !silent) {
       val err = context.reporter.firstError
       val errPos = err.map(_.errPos).getOrElse(pos)
@@ -332,9 +332,7 @@ trait Implicits {
       }
     override def hashCode = name.## + pre.## + sym.##
     override def toString =
-      (
-        if (tpeCache eq null) name + ": ?" else name + ": " + tpe
-      )
+      (if (tpeCache eq null) name + ": ?" else name + ": " + tpe)
   }
 
   /** A class which is used to track pending implicits to prevent infinite implicit searches.
@@ -639,9 +637,7 @@ trait Implicits {
       result
     }
     private def matchesPt(info: ImplicitInfo): Boolean =
-      (
-        info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil)
-      )
+      (info.isStablePrefix && matchesPt(depoly(info.tpe), wildPt, Nil))
 
     private def matchesPtView(
         tp: Type,
@@ -746,7 +742,9 @@ trait Implicits {
         case tr1 @ TypeRef(_, sym1, _) if sym1.isClass =>
           tp2.dealiasWiden match {
             case TypeRef(_, sym2, _) =>
-              ((sym1 eq ByNameParamClass) != (sym2 eq ByNameParamClass)) || (sym2.isClass && !(sym1 isWeakSubClass sym2))
+              ((sym1 eq ByNameParamClass) != (sym2 eq ByNameParamClass)) || (
+                sym2.isClass && !(sym1 isWeakSubClass sym2)
+              )
             case RefinedType(parents, decls) =>
               decls.nonEmpty && tr1.member(decls.head.name) == NoSymbol
             case _ => false
@@ -801,13 +799,11 @@ trait Implicits {
             pt match {
               case Function1(arg1, arg2) =>
                 typed1(
-                  atPos(itree0.pos)(
-                    Apply(
-                      itree1,
-                      List(Ident(nme.argument) setType approximate(arg1)))),
+                  atPos(itree0.pos)(Apply(
+                    itree1,
+                    List(Ident(nme.argument) setType approximate(arg1)))),
                   EXPRmode,
-                  approximate(arg2)
-                ) match {
+                  approximate(arg2)) match {
                   // try to infer implicit parameters immediately in order to:
                   //   1) guide type inference for implicit views
                   //   2) discard ineligible views right away instead of risking spurious ambiguous implicits
@@ -858,10 +854,9 @@ trait Implicits {
         else if (itree3.isErroneous)
           fail("error typechecking implicit candidate")
         else if (isLocalToCallsite && !hasMatchingSymbol(itree2))
-          fail(
-            "candidate implicit %s is shadowed by %s".format(
-              info.sym.fullLocationString,
-              itree2.symbol.fullLocationString))
+          fail("candidate implicit %s is shadowed by %s".format(
+            info.sym.fullLocationString,
+            itree2.symbol.fullLocationString))
         else {
           val tvars = undetParams map freshVar
           def ptInstantiated = pt.instantiateTypeParams(undetParams, tvars)
@@ -948,9 +943,9 @@ trait Implicits {
                 result
             }
           } else
-            fail(
-              "incompatible: %s does not match expected type %s"
-                .format(itree3.tpe, ptInstantiated))
+            fail("incompatible: %s does not match expected type %s".format(
+              itree3.tpe,
+              ptInstantiated))
         }
       } catch {
         case ex: TypeError =>
@@ -989,10 +984,14 @@ trait Implicits {
                                                   sym.accessed // #3373
                                                 symAcc.pos.pointOrElse(
                                                   0) < ownerPos &&
-                                                !(owner.ownerChain exists (o =>
-                                                  (o eq sym) || (o eq symAcc))) // probably faster to iterate only once, don't feel like duplicating hasTransOwner for this case
+                                                !(
+                                                  owner.ownerChain exists (o =>
+                                                    (o eq sym) || (o eq symAcc))
+                                                ) // probably faster to iterate only once, don't feel like duplicating hasTransOwner for this case
                                               } else
-                                                !(owner hasTransOwner sym)) // faster than owner.ownerChain contains sym
+                                                !(
+                                                  owner hasTransOwner sym
+                                                )) // faster than owner.ownerChain contains sym
       }
 
       sym.isInitialized ||
@@ -1036,27 +1035,26 @@ trait Implicits {
       private var best: SearchResult = SearchFailure
 
       private def isIneligible(info: ImplicitInfo) =
-        (
-          info.isCyclicOrErroneous
-            || isView && (info.sym eq Predef_conforms) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
-            || (!context.macrosEnabled && info.sym.isTermMacro)
-        )
+        (info.isCyclicOrErroneous
+          || isView && (
+            info.sym eq Predef_conforms
+          ) // as an implicit conversion, Predef.$conforms is a no-op, so exclude it
+          || (!context.macrosEnabled && info.sym.isTermMacro))
 
       /** True if a given ImplicitInfo (already known isValid) is eligible.
         */
       def survives(info: ImplicitInfo) =
-        (
-          !isIneligible(
-            info
-          ) // cyclic, erroneous, shadowed, or specially excluded
-            && isPlausiblyCompatible(
-              info.tpe,
-              wildPt
-            ) // optimization to avoid matchesPt
-            && !shadower.isShadowed(
-              info.name
-            ) // OPT rare, only check for plausible candidates
-            && matchesPt(info) // stable and matches expected type
+        (!isIneligible(
+          info
+        ) // cyclic, erroneous, shadowed, or specially excluded
+          && isPlausiblyCompatible(
+            info.tpe,
+            wildPt
+          ) // optimization to avoid matchesPt
+          && !shadower.isShadowed(
+            info.name
+          ) // OPT rare, only check for plausible candidates
+          && matchesPt(info) // stable and matches expected type
         )
 
       /** The implicits that are not valid because they come later in the source and
@@ -1146,15 +1144,13 @@ trait Implicits {
           case Nil => acc
           case firstPending :: otherPending =>
             def firstPendingImproves(alt: ImplicitInfo) =
-              firstPending == alt || (
-                try improves(firstPending, alt)
-                catch {
-                  case e: CyclicReference =>
-                    devWarning(
-                      s"Discarding $firstPending during implicit search due to cyclic reference.")
-                    true
-                }
-              )
+              firstPending == alt || (try improves(firstPending, alt)
+              catch {
+                case e: CyclicReference =>
+                  devWarning(
+                    s"Discarding $firstPending during implicit search due to cyclic reference.")
+                  true
+              })
 
             val typedFirstPending = typedImplicit(
               firstPending,
@@ -1476,14 +1472,12 @@ trait Implicits {
                 // this situation happens very often, so emitting an error message here (even if only for -Xlog-implicits) would be too much
                 //return failure(tp, "tag error: unsupported prefix type %s (%s)".format(pre, pre.kind))
                 return SearchFailure
-            }
-        )
+            })
       // todo. migrate hardcoded materialization in Implicits to corresponding implicit macros
-      val materializer = atPos(pos.focus)(
-        gen.mkMethodCall(
-          TagMaterializers(tagClass),
-          List(tp),
-          if (prefix != EmptyTree) List(prefix) else List()))
+      val materializer = atPos(pos.focus)(gen.mkMethodCall(
+        TagMaterializers(tagClass),
+        List(tp),
+        if (prefix != EmptyTree) List(prefix) else List()))
       if (settings.XlogImplicits)
         reporter.echo(
           pos,
@@ -1802,10 +1796,9 @@ trait Implicits {
     def allImplicits: List[SearchResult] = {
       def search(iss: Infoss, isLocalToCallsite: Boolean) =
         applicableInfos(iss, isLocalToCallsite).values
-      (
-        search(context.implicitss, isLocalToCallsite = true) ++
-          search(implicitsOfExpectedType, isLocalToCallsite = false)
-      ).toList.filter(_.tree ne EmptyTree)
+      (search(context.implicitss, isLocalToCallsite = true) ++
+        search(implicitsOfExpectedType, isLocalToCallsite = false)).toList
+        .filter(_.tree ne EmptyTree)
     }
 
     // find all implicits for some type that contains type variables

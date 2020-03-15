@@ -163,11 +163,9 @@ trait NIHDBQueryExecutorComponent {
       val jobActorSystem = ActorSystem("jobPollingActorSystem")
 
       val chefs = (1 to yggConfig.howManyChefsInTheKitchen).map { _ =>
-        actorSystem.actorOf(
-          Props(
-            Chef(
-              VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-              VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+        actorSystem.actorOf(Props(Chef(
+          VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+          VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
       }
       val masterChef = actorSystem.actorOf(
         Props[Chef].withRouter(RoundRobinRouter(chefs)))
@@ -187,14 +185,13 @@ trait NIHDBQueryExecutorComponent {
         yggConfig.cookThreshold,
         storageTimeout)
 
-      private val projectionsActor = actorSystem.actorOf(
-        Props(
-          new PathRoutingActor(
-            yggConfig.dataDir,
-            storageTimeout.duration,
-            yggConfig.quiescenceTimeout,
-            yggConfig.maxOpenPaths,
-            clock)))
+      private val projectionsActor = actorSystem.actorOf(Props(
+        new PathRoutingActor(
+          yggConfig.dataDir,
+          storageTimeout.duration,
+          yggConfig.quiescenceTimeout,
+          yggConfig.maxOpenPaths,
+          clock)))
       val ingestSystem = initShardActors(permissionsFinder, projectionsActor)
 
       private val actorVFS = new ActorVFS(
@@ -206,14 +203,12 @@ trait NIHDBQueryExecutorComponent {
       private val (scheduleStorage, scheduleStorageStoppable) =
         MongoScheduleStorage(config0.detach("scheduling"))
 
-      private val scheduleActor = actorSystem.actorOf(
-        Props(
-          new SchedulingActor(
-            jobManager,
-            permissionsFinder,
-            scheduleStorage,
-            platform,
-            clock)))
+      private val scheduleActor = actorSystem.actorOf(Props(new SchedulingActor(
+        jobManager,
+        permissionsFinder,
+        scheduleStorage,
+        platform,
+        clock)))
 
       val scheduler =
         new ActorScheduler(scheduleActor, yggConfig.schedulingTimeout)
@@ -269,10 +264,9 @@ trait NIHDBQueryExecutorComponent {
 
       def shutdown() =
         for {
-          _ <- Stoppable.stop(
-            Stoppable.fromFuture(
-              gracefulStop(scheduleActor, yggConfig.schedulingTimeout.duration)(
-                actorSystem)))
+          _ <- Stoppable.stop(Stoppable.fromFuture(
+            gracefulStop(scheduleActor, yggConfig.schedulingTimeout.duration)(
+              actorSystem)))
           _ <- Stoppable.stop(
             ingestSystem
               .map(_.stoppable)

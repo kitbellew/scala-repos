@@ -151,9 +151,8 @@ private[akka] class MsgEncoder extends OneToOneEncoder {
             w.setFailure(
               TCP.InjectFailure.newBuilder.setFailure(TCP.FailType.Shutdown))
           case TerminateMsg(Left(true)) ⇒
-            w.setFailure(
-              TCP.InjectFailure.newBuilder
-                .setFailure(TCP.FailType.ShutdownAbrupt))
+            w.setFailure(TCP.InjectFailure.newBuilder.setFailure(
+              TCP.FailType.ShutdownAbrupt))
           case GetAddress(node) ⇒
             w.setAddr(TCP.AddressRequest.newBuilder.setNode(node.name))
           case AddressReply(node, addr) ⇒

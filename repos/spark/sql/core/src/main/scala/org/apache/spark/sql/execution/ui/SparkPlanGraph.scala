@@ -142,15 +142,14 @@ private[sql] object SparkPlanGraph {
         if (name.contains("Exchange")) { exchanges += planInfo -> node }
 
         if (parent != null) { edges += SparkPlanGraphEdge(node.id, parent.id) }
-        planInfo.children.foreach(
-          buildSparkPlanGraphNode(
-            _,
-            nodeIdGenerator,
-            nodes,
-            edges,
-            node,
-            subgraph,
-            exchanges))
+        planInfo.children.foreach(buildSparkPlanGraphNode(
+          _,
+          nodeIdGenerator,
+          nodes,
+          edges,
+          node,
+          subgraph,
+          exchanges))
     }
   }
 }

@@ -35,8 +35,9 @@ object JsExpSpec extends Specification {
     "Deal with lift-json" in {
       val json = ("a" -> 4) ~ ("b" -> 44)
 
-      JE.JsArray(json, "dog")
-        .toJsCmd must_== ("""[{"a":4,"b":44}, "dog"]""" + "\n")
+      JE.JsArray(json, "dog").toJsCmd must_== (
+        """[{"a":4,"b":44}, "dog"]""" + "\n"
+      )
 
     }
 

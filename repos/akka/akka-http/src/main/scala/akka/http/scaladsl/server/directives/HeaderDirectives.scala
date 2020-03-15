@@ -24,12 +24,10 @@ trait HeaderDirectives {
       try f(header).map(Right.apply)
       catch {
         case NonFatal(e) ⇒
-          Some(
-            Left(
-              MalformedHeaderRejection(
-                header.name,
-                e.getMessage.nullAsEmpty,
-                Some(e))))
+          Some(Left(MalformedHeaderRejection(
+            header.name,
+            e.getMessage.nullAsEmpty,
+            Some(e))))
       }
 
     extract(_.request.headers.collectFirst(Function.unlift(protectedF)))

@@ -44,7 +44,9 @@ object InfoTest extends Build {
       else if (addInfo) {
         if (!deliveredWithCustom(d))
           sys.error(
-            "Expected 'license' and 'description' tags in info tag, got: \n" + (d \ "info"))
+            "Expected 'license' and 'description' tags in info tag, got: \n" + (
+              d \ "info"
+            ))
         else ()
       } else if (deliveredWithCustom(d))
         sys.error("Expected empty 'info' tag, got: \n" + (d \ "info"))

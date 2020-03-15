@@ -74,14 +74,15 @@ class BrokerPartitionInfo(
       .map { m =>
         m.leader match {
           case Some(leader) =>
-            debug(
-              "Partition [%s,%d] has leader %d"
-                .format(topic, m.partitionId, leader.id))
+            debug("Partition [%s,%d] has leader %d".format(
+              topic,
+              m.partitionId,
+              leader.id))
             new PartitionAndLeader(topic, m.partitionId, Some(leader.id))
           case None =>
-            debug(
-              "Partition [%s,%d] does not have a leader yet"
-                .format(topic, m.partitionId))
+            debug("Partition [%s,%d] does not have a leader yet".format(
+              topic,
+              m.partitionId))
             new PartitionAndLeader(topic, m.partitionId, None)
         }
       }
@@ -106,11 +107,10 @@ class BrokerPartitionInfo(
       if (tmd.errorCode == Errors.NONE.code) {
         topicPartitionInfo.put(tmd.topic, tmd)
       } else
-        warn(
-          "Error while fetching metadata [%s] for topic [%s]: %s ".format(
-            tmd,
-            tmd.topic,
-            Errors.forCode(tmd.errorCode).exception.getClass))
+        warn("Error while fetching metadata [%s] for topic [%s]: %s ".format(
+          tmd,
+          tmd.topic,
+          Errors.forCode(tmd.errorCode).exception.getClass))
       tmd.partitionsMetadata.foreach(pmd => {
         if (pmd.errorCode != Errors.NONE.code && pmd.errorCode == Errors.LEADER_NOT_AVAILABLE.code) {
           warn(

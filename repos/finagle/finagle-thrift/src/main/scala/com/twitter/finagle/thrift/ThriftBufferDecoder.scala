@@ -16,8 +16,7 @@ private[thrift] class ThriftBufferDecoder(protocolFactory: TProtocolFactory)
       ctx: ChannelHandlerContext,
       channel: Channel,
       buffer: ChannelBuffer,
-      state: VoidEnum
-  ) = {
+      state: VoidEnum) = {
     val transport = new ChannelBufferToTransport(buffer)
     val iprot = protocolFactory.getProtocol(transport)
 
@@ -38,8 +37,7 @@ private[thrift] class ThriftBufferDecoder(protocolFactory: TProtocolFactory)
       ctx: ChannelHandlerContext,
       channel: Channel,
       buffer: ChannelBuffer,
-      state: VoidEnum
-  ) =
+      state: VoidEnum) =
     try { decode(ctx, channel, buffer, state) }
     catch { case _: TTransportException => null }
 

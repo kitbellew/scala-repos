@@ -82,8 +82,8 @@ object ConsumerPerformance {
       import kafka.consumer.ConsumerConfig
       val consumerConfig = new ConsumerConfig(config.props)
       val consumerConnector: ConsumerConnector = Consumer.create(consumerConfig)
-      val topicMessageStreams = consumerConnector.createMessageStreams(
-        Map(config.topic -> config.numThreads))
+      val topicMessageStreams = consumerConnector.createMessageStreams(Map(
+        config.topic -> config.numThreads))
       var threadList = List[ConsumerPerfThread]()
       for ((topic, streamList) <- topicMessageStreams)
         for (i <- 0 until streamList.length)
@@ -110,15 +110,14 @@ object ConsumerPerformance {
     val elapsedSecs = (endMs - startMs) / 1000.0
     if (!config.showDetailedStats) {
       val totalMBRead = (totalBytesRead.get * 1.0) / (1024 * 1024)
-      println(
-        ("%s, %s, %.4f, %.4f, %d, %.4f").format(
-          config.dateFormat.format(startMs),
-          config.dateFormat.format(endMs),
-          totalMBRead,
-          totalMBRead / elapsedSecs,
-          totalMessagesRead.get,
-          totalMessagesRead.get / elapsedSecs
-        ))
+      println(("%s, %s, %.4f, %.4f, %d, %.4f").format(
+        config.dateFormat.format(startMs),
+        config.dateFormat.format(endMs),
+        totalMBRead,
+        totalMBRead / elapsedSecs,
+        totalMessagesRead.get,
+        totalMessagesRead.get / elapsedSecs
+      ))
     }
   }
 
@@ -206,14 +205,13 @@ object ConsumerPerformance {
     val elapsedMs: Double = endMs - startMs
     val totalMBRead = (bytesRead * 1.0) / (1024 * 1024)
     val mbRead = ((bytesRead - lastBytesRead) * 1.0) / (1024 * 1024)
-    println(
-      ("%s, %d, %.4f, %.4f, %d, %.4f").format(
-        dateFormat.format(endMs),
-        id,
-        totalMBRead,
-        1000.0 * (mbRead / elapsedMs),
-        messagesRead,
-        ((messagesRead - lastMessagesRead) / elapsedMs) * 1000.0))
+    println(("%s, %d, %.4f, %.4f, %d, %.4f").format(
+      dateFormat.format(endMs),
+      id,
+      totalMBRead,
+      1000.0 * (mbRead / elapsedMs),
+      messagesRead,
+      ((messagesRead - lastMessagesRead) / elapsedMs) * 1000.0))
   }
 
   class ConsumerPerfConfig(args: Array[String]) extends PerfConfig(args) {

@@ -53,10 +53,9 @@ object ByteBufferMessageSet {
         case None     => MessageSet.magicAndLargestTimestamp(messages)
       }
       var offset = -1L
-      val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+      val messageWriter = new MessageWriter(math.min(
+        math.max(MessageSet.messageSetSize(messages) / 2, 1024),
+        1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,
@@ -290,13 +289,12 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       wrapperMessageTimestamp: Option[Long],
       timestampType: TimestampType,
       messages: Message*) {
-    this(
-      ByteBufferMessageSet.create(
-        OffsetAssigner(offsetCounter, messages.size),
-        compressionCodec,
-        wrapperMessageTimestamp,
-        timestampType,
-        messages: _*))
+    this(ByteBufferMessageSet.create(
+      OffsetAssigner(offsetCounter, messages.size),
+      compressionCodec,
+      wrapperMessageTimestamp,
+      timestampType,
+      messages: _*))
   }
 
   def this(
@@ -315,13 +313,12 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       compressionCodec: CompressionCodec,
       offsetSeq: Seq[Long],
       messages: Message*) {
-    this(
-      ByteBufferMessageSet.create(
-        new OffsetAssigner(offsetSeq),
-        compressionCodec,
-        None,
-        TimestampType.CREATE_TIME,
-        messages: _*))
+    this(ByteBufferMessageSet.create(
+      new OffsetAssigner(offsetSeq),
+      compressionCodec,
+      None,
+      TimestampType.CREATE_TIME,
+      messages: _*))
   }
 
   def this(compressionCodec: CompressionCodec, messages: Message*) {

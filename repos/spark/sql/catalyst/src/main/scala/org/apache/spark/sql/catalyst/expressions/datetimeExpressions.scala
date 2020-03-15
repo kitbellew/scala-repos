@@ -521,19 +521,18 @@ case class FromUnixTime(sec: Expression, format: Expression)
       if (format.foldable) {
         if (constFormat == null) { null }
         else {
-          Try(
-            UTF8String.fromString(new SimpleDateFormat(constFormat.toString)
-              .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
+          Try(UTF8String.fromString(
+            new SimpleDateFormat(constFormat.toString).format(
+              new java.util.Date(time.asInstanceOf[Long] * 1000L))))
             .getOrElse(null)
         }
       } else {
         val f = format.eval(input)
         if (f == null) { null }
         else {
-          Try(
-            UTF8String.fromString(
-              new SimpleDateFormat(f.asInstanceOf[UTF8String].toString)
-                .format(new java.util.Date(time.asInstanceOf[Long] * 1000L))))
+          Try(UTF8String.fromString(
+            new SimpleDateFormat(f.asInstanceOf[UTF8String].toString).format(
+              new java.util.Date(time.asInstanceOf[Long] * 1000L))))
             .getOrElse(null)
         }
       }

@@ -41,8 +41,7 @@ class CORSModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[CORSConfig].toProvider[CORSConfigProvider],
-      bind[CORSFilter].toProvider[CORSFilterProvider]
-    )
+      bind[CORSFilter].toProvider[CORSFilterProvider])
 }
 
 /**

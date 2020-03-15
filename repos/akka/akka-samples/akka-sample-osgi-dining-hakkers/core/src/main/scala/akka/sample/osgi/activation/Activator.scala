@@ -48,11 +48,10 @@ class Activator extends ActorSystemActivator {
 
     val hakkersService = new DiningHakkersServiceImpl(system)
 
-    diningHakkerService = Some(
-      context.registerService(
-        classOf[DiningHakkersService].getName(),
-        hakkersService,
-        null))
+    diningHakkerService = Some(context.registerService(
+      classOf[DiningHakkersService].getName(),
+      hakkersService,
+      null))
 
   }
 

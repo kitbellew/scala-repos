@@ -109,17 +109,17 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             val name = namedElement.name
             val clazz: Option[ScTemplateDefinition] = expr.getParent match {
               case _ if expr.isInstanceOf[ScClassParameter] =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                Option(PsiTreeUtil.getParentOfType(
+                  expr,
+                  classOf[ScTemplateDefinition]))
               case _: ScEarlyDefinitions =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                Option(PsiTreeUtil.getParentOfType(
+                  expr,
+                  classOf[ScTemplateDefinition]))
               case _: ScTemplateBody =>
-                Option(
-                  PsiTreeUtil
-                    .getParentOfType(expr, classOf[ScTemplateDefinition]))
+                Option(PsiTreeUtil.getParentOfType(
+                  expr,
+                  classOf[ScTemplateDefinition]))
               case _ => None
             }
 
@@ -153,9 +153,9 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
             }
 
             if (flag) {
-              showErrorHint(
-                InspectionBundle
-                  .message("remove.apply.overloaded", namedElement.name))
+              showErrorHint(InspectionBundle.message(
+                "remove.apply.overloaded",
+                namedElement.name))
               return
             }
           case _ =>
@@ -170,10 +170,9 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
               case fun: ScFunction =>
                 val clauses = fun.effectiveParameterClauses
                 if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == cmc + 1) {
-                  showErrorHint(
-                    InspectionBundle.message(
-                      "remove.apply.implicit.parameter",
-                      resolve.asInstanceOf[PsiNamedElement].name))
+                  showErrorHint(InspectionBundle.message(
+                    "remove.apply.implicit.parameter",
+                    resolve.asInstanceOf[PsiNamedElement].name))
                   return
                 }
               case _ => //all is ok
@@ -194,19 +193,17 @@ class RemoveApplyIntention extends PsiElementBaseIntentionAction {
                       case con: ScPrimaryConstructor =>
                         val clauses = con.effectiveParameterClauses
                         if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == argsCount + 1) {
-                          showErrorHint(
-                            InspectionBundle.message(
-                              "remove.apply.constructor.implicit.parameter",
-                              parents.constructor.get.getText))
+                          showErrorHint(InspectionBundle.message(
+                            "remove.apply.constructor.implicit.parameter",
+                            parents.constructor.get.getText))
                           return
                         }
                       case fun: ScFunction =>
                         val clauses = fun.effectiveParameterClauses
                         if (clauses.length > 1 && clauses.last.isImplicit && clauses.length == argsCount + 1) {
-                          showErrorHint(
-                            InspectionBundle.message(
-                              "remove.apply.constructor.implicit.parameter",
-                              parents.constructor.get.getText))
+                          showErrorHint(InspectionBundle.message(
+                            "remove.apply.constructor.implicit.parameter",
+                            parents.constructor.get.getText))
                           return
                         }
                       case _ =>

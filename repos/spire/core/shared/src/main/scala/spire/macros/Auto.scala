@@ -56,10 +56,9 @@ abstract class AutoOps {
     c.Expr[A](Select(Ident(termName(c)(x)), termName(c)(name)))
 
   def binop[A](name: String, x: String = "x", y: String = "y"): c.Expr[A] =
-    c.Expr[A](
-      Apply(
-        Select(Ident(termName(c)(x)), termName(c)(name)),
-        List(Ident(termName(c)(y)))))
+    c.Expr[A](Apply(
+      Select(Ident(termName(c)(x)), termName(c)(name)),
+      List(Ident(termName(c)(y)))))
 
   def binopSearch[A: c.WeakTypeTag](
       names: List[String],
@@ -76,10 +75,12 @@ abstract class AutoOps {
     val tpeA = c.weakTypeTag[A].tpe
     val tpeB = c.weakTypeTag[B].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m.typeSignature match {
-        case MethodType(Nil, ret) => ret =:= tpeB
-        case _                    => false
-      })
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (
+        m.typeSignature match {
+          case MethodType(Nil, ret) => ret =:= tpeB
+          case _                    => false
+        }
+      )
     }
   }
 
@@ -89,12 +90,14 @@ abstract class AutoOps {
     val tpeB = c.weakTypeTag[B].tpe
     val tpeC = c.weakTypeTag[C].tpe
     tpeA.members exists { m =>
-      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (m.typeSignature match {
-        case MethodType(List(param), ret) =>
-          param.typeSignature =:= tpeB && ret =:= tpeC
-        case _ =>
-          false
-      })
+      m.isMethod && m.isPublic && m.name.encodedName.toString == name && (
+        m.typeSignature match {
+          case MethodType(List(param), ret) =>
+            param.typeSignature =:= tpeB && ret =:= tpeC
+          case _ =>
+            false
+        }
+      )
     }
   }
 
@@ -248,10 +251,9 @@ case class JavaAlgebra[C <: Context](c: C) extends AutoAlgebra {
       // We can implement negate interms of minus. This is actually required
       // for JScience's Rational :(
       import c.universe._
-      c.Expr[A](
-        Apply(
-          Select(Ident(termName(c)("zero")), termName(c)("minus")),
-          List(Ident(termName(c)("x")))))
+      c.Expr[A](Apply(
+        Select(Ident(termName(c)("zero")), termName(c)("minus")),
+        List(Ident(termName(c)("x")))))
     }
   def quot[A: c.WeakTypeTag]: c.Expr[A] =
     binopSearch[A]("quot" :: "divide" :: "div" :: Nil) getOrElse failedSearch(

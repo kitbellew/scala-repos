@@ -91,7 +91,9 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     def canClose(element: IElementType): Boolean = {
       element != null &&
       (element == tokenType ||
-      ((tokenType == DOC_LINK_TAG) || (tokenType == DOC_HTTP_LINK_TAG)) && element == DOC_LINK_CLOSE_TAG)
+      (
+        (tokenType == DOC_LINK_TAG) || (tokenType == DOC_HTTP_LINK_TAG)
+      ) && element == DOC_LINK_CLOSE_TAG)
     }
 
     if (tokenType == DOC_HEADER) {

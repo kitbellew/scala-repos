@@ -62,8 +62,9 @@ trait ArrayLibSpecs[M[+_]]
         case (ids, SDecimal(d)) if ids.length == 2 => d
       }
 
-      values mustEqual Set(-9, -42, 42, 87, 4, 7, 6, 12, 0, 1024, 57, 77, 46.2,
-        -100, 1, 19, 22, 11, 104, -27, 6, -2790111, 244, 13, 11)
+      values mustEqual Set(
+        -9, -42, 42, 87, 4, 7, 6, 12, 0, 1024, 57, 77, 46.2, -100, 1, 19, 22,
+        11, 104, -27, 6, -2790111, 244, 13, 11)
     }
 
     "flatten a heterogeneous set" in {
@@ -104,13 +105,12 @@ trait ArrayLibSpecs[M[+_]]
         SDecimal(244),
         SDecimal(13),
         SDecimal(11),
-        SArray(
-          Vector(
-            SDecimal(-9),
-            SDecimal(-42),
-            SDecimal(42),
-            SDecimal(87),
-            SDecimal(4)))
+        SArray(Vector(
+          SDecimal(-9),
+          SDecimal(-42),
+          SDecimal(42),
+          SDecimal(87),
+          SDecimal(4)))
       )
     }
 

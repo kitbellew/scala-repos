@@ -174,8 +174,8 @@ object TransactionalClient {
   * Connects to a single Redis host supporting transactions
   */
 private[redis] class ConnectedTransactionalClient(
-    serviceFactory: ServiceFactory[Command, Reply]
-) extends Client(serviceFactory.toService)
+    serviceFactory: ServiceFactory[Command, Reply])
+    extends Client(serviceFactory.toService)
     with TransactionalClient {
 
   def transaction(cmds: Seq[Command]): Future[Seq[Reply]] = {
@@ -204,8 +204,8 @@ private[redis] class ConnectedTransactionalClient(
       case MBulkReply(messages) => Future.value(messages)
       case EmptyMBulkReply()    => Future.Nil
       case NilMBulkReply() =>
-        Future.exception(
-          new ServerError("One or more keys were modified before transaction"))
+        Future.exception(new ServerError(
+          "One or more keys were modified before transaction"))
       case ErrorReply(message) => Future.exception(new ServerError(message))
       case _                   => Future.exception(new IllegalStateException)
     }

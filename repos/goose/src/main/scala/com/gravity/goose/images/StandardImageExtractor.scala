@@ -325,7 +325,9 @@ class StandardImageExtractor(
         val bytes: Int = getBytesForImage(image.attr("src"))
 
         val MAX_BYTES_SIZE: Int = 15728640
-        if ((bytes == 0 || bytes > minBytesForImages) && bytes < MAX_BYTES_SIZE) {
+        if ((
+              bytes == 0 || bytes > minBytesForImages
+            ) && bytes < MAX_BYTES_SIZE) {
           trace(
             logPrefix + "findImagesThatPassByteSizeTest: Found potential image - size: " + bytes + " src: " + image
               .attr("src"))
@@ -555,8 +557,9 @@ class StandardImageExtractor(
         if (continueVar) {
           if (this.isBannerDimensions(width, height)) {
             if (logger.isDebugEnabled) {
-              logger.debug(image.attr(
-                "src") + " seems like a fishy image dimension wise, skipping it")
+              logger.debug(
+                image.attr(
+                  "src") + " seems like a fishy image dimension wise, skipping it")
             }
             image.remove()
             continueVar = false

@@ -65,12 +65,16 @@ object GenProductTypes {
           case (FixedArg(argType), i) => "x%d: %s" format (i, argType)
         } mkString ", "
         val call = (1 to arity) map { j =>
-          "%s%d.%s(%s)" format (prefix, j, methodName, args.zipWithIndex map {
-            case (DelegateArg, i) => "x%d._%d" format (i, j)
-            case (FixedArg(_), i) => "x" + i
-          } mkString ", ")
+          "%s%d.%s(%s)" format (
+            prefix, j, methodName, args.zipWithIndex map {
+              case (DelegateArg, i) => "x%d._%d" format (i, j)
+              case (FixedArg(_), i) => "x" + i
+            } mkString ", "
+          )
         } mkString ("(", ", ", ")")
-        "  %sdef %s(%s): (%s) = { %s }" format (over, methodName, arglist, types, call)
+        "  %sdef %s(%s): (%s) = { %s }" format (
+          over, methodName, arglist, types, call
+        )
     }
   }
 
@@ -94,7 +98,9 @@ object GenProductTypes {
       |    new %s[%s] {
       |%s
       |    }
-      |  }""".stripMargin format (name, specTypes, implicits, structure, types, name, types, members)
+      |  }""".stripMargin format (
+      name, specTypes, implicits, structure, types, name, types, members
+    )
   }
 
   def productTrait(blocks0: List[Block]): Block = { tpe =>
@@ -182,7 +188,9 @@ object ProductTypes {
 
   private val overrideEqv: Block = { tpe =>
     import tpe._
-    "  override def eqv(x0: (%s), x1: (%s)): Boolean = compare(x0, x1) == 0" format (types, types)
+    "  override def eqv(x0: (%s), x1: (%s)): Boolean = compare(x0, x1) == 0" format (
+      types, types
+    )
   }
 
   private val compare: Block = { tpe =>
@@ -194,8 +202,9 @@ object ProductTypes {
         """%s  cmp = %s%d.compare(x0._%d, x1._%d)
             |%s  if (cmp != 0) cmp else {
             |%s
-            |%s  }""".stripMargin format (indent, prefix, i, i, i, indent, gen(
-          i + 1), indent)
+            |%s  }""".stripMargin format (
+          indent, prefix, i, i, i, indent, gen(i + 1), indent
+        )
       } else { indent + "  0" }
     }
 

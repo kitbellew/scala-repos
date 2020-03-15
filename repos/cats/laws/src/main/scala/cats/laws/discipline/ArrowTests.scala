@@ -37,8 +37,7 @@ trait ArrowTests[F[_, _]]
       EqFADCG: Eq[F[(A, D), (C, G)]],
       EqFAEDE: Eq[F[(A, E), (D, E)]],
       EqFEAED: Eq[F[(E, A), (E, D)]],
-      EqFACDBCD: Eq[F[((A, C), D), (B, (C, D))]]
-  ): RuleSet =
+      EqFACDBCD: Eq[F[((A, C), D), (B, (C, D))]]): RuleSet =
     new RuleSet {
       def name: String = "arrow"
       def bases: Seq[(String, RuleSet)] = Nil
@@ -46,8 +45,7 @@ trait ArrowTests[F[_, _]]
         Seq(
           category[A, B, C, D],
           split[A, B, C, D, E, G],
-          strong[A, B, C, D, E, G]
-        )
+          strong[A, B, C, D, E, G])
       def props: Seq[(String, Prop)] =
         Seq(
           "arrow identity" -> laws.arrowIdentity[A],

@@ -521,14 +521,13 @@ private[spark] class TaskSetManager(
               s"$taskLocality, ${serializedTask.limit} bytes)")
 
           sched.dagScheduler.taskStarted(task, info)
-          return Some(
-            new TaskDescription(
-              taskId = taskId,
-              attemptNumber = attemptNum,
-              execId,
-              taskName,
-              index,
-              serializedTask))
+          return Some(new TaskDescription(
+            taskId = taskId,
+            attemptNumber = attemptNum,
+            execId,
+            taskName,
+            index,
+            serializedTask))
         }
         case _ =>
       }
@@ -779,9 +778,10 @@ private[spark] class TaskSetManager(
       assert(null != failureReason)
       numFailures(index) += 1
       if (numFailures(index) >= maxTaskFailures) {
-        logError(
-          "Task %d in stage %s failed %d times; aborting job"
-            .format(index, taskSet.id, maxTaskFailures))
+        logError("Task %d in stage %s failed %d times; aborting job".format(
+          index,
+          taskSet.id,
+          maxTaskFailures))
         abort(
           "Task %d in stage %s failed %d times, most recent failure: %s\nDriver stacktrace:"
             .format(index, taskSet.id, maxTaskFailures, failureReason),

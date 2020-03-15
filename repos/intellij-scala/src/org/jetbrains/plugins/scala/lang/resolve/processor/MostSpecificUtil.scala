@@ -199,11 +199,10 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     List.empty /* todo? */,
                     s.subst(tp.lowerType()),
                     s.subst(tp.upperType())))
-                Left(
-                  params.map(p =>
-                    p.copy(paramType = ScExistentialType(
-                      s.subst(p.paramType),
-                      arguments))))
+                Left(params.map(p =>
+                  p.copy(paramType = ScExistentialType(
+                    s.subst(p.paramType),
+                    arguments))))
               }
             case ScTypePolymorphicType(internal, typeParams) =>
               if (!existential) {
@@ -319,10 +318,9 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                   typez.recursiveUpdate {
                     case tpt: ScTypeParameterType =>
                       typeParams.find(tp =>
-                        (
-                          tp.name,
-                          ScalaPsiUtil.getPsiElementId(
-                            tp.ptp)) == (tpt.name, tpt.getId)) match {
+                        (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                          tpt.name, tpt.getId
+                        )) match {
                         case None => (true, tpt)
                         case _ =>
                           hasRecursiveTypeParameters = true

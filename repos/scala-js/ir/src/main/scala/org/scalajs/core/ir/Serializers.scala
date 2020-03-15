@@ -588,8 +588,8 @@ object Serializers {
 
     private[this] val input = new DataInputStream(stream)
 
-    private[this] val files = Array.fill(input.readInt())(
-      new URI(input.readUTF()))
+    private[this] val files = Array.fill(input.readInt())(new URI(
+      input.readUTF()))
 
     private[this] val strings = Array.fill(input.readInt())(input.readUTF())
 

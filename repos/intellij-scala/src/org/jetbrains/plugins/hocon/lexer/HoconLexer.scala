@@ -153,11 +153,10 @@ class HoconLexer extends LexerBase {
               case _                 => drain(offset + 1, escaping = false)
             }
           } else offset
-        Some(
-          TokenMatch(
-            QuotedString,
-            drain(1, escaping = false),
-            onContents(state)))
+        Some(TokenMatch(
+          QuotedString,
+          drain(1, escaping = false),
+          onContents(state)))
       } else None
   }
 

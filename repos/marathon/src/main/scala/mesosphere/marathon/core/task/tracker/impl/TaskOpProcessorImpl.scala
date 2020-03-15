@@ -42,9 +42,8 @@ private[tracker] object TaskOpProcessorImpl {
         case Some(existingTask) =>
           actionForTaskAndStatus(existingTask, status)
         case None =>
-          Action.Fail(
-            new IllegalStateException(
-              s"$taskId of app [${taskId.appId}] does not exist"))
+          Action.Fail(new IllegalStateException(
+            s"$taskId of app [${taskId.appId}] does not exist"))
       }
     }
 
@@ -153,8 +152,7 @@ private[tracker] class TaskOpProcessorImpl(
 
       log.warn(
         s"${op.taskId} of app [${op.taskId.appId}]: try to recover from failed ${op.action.toString}",
-        cause
-      )
+        cause)
 
       repo
         .task(op.taskId.idString)
@@ -171,8 +169,7 @@ private[tracker] class TaskOpProcessorImpl(
           case NonFatal(loadingFailure) =>
             log.warn(
               s"${op.taskId} of app [${op.taskId.appId}]: task reloading failed as well",
-              loadingFailure
-            )
+              loadingFailure)
             throw cause
         }
   }

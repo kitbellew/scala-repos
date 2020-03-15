@@ -92,11 +92,7 @@ object ScalaFX_Controls_01 extends JFXApp {
   }
   val hBox = new HBox {
     spacing = 10
-    children = List(
-      searchLabel,
-      valuesLabel,
-      wrappedLabel
-    )
+    children = List(searchLabel, valuesLabel, wrappedLabel)
   }
   stage = new PrimaryStage {
     title = "ScalaFX Controls 01"

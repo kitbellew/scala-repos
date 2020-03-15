@@ -80,8 +80,8 @@ class PCA(override val uid: String)
     val pca = new feature.PCA(k = $(k))
     val pcaModel = pca.fit(input)
     copyValues(
-      new PCAModel(uid, pcaModel.pc, pcaModel.explainedVariance)
-        .setParent(this))
+      new PCAModel(uid, pcaModel.pc, pcaModel.explainedVariance).setParent(
+        this))
   }
 
   override def transformSchema(schema: StructType): StructType = {

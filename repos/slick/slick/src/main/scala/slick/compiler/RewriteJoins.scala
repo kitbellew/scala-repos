@@ -339,20 +339,19 @@ class RewriteJoins extends Phase {
         j2)
       val m = l1m.map { case (p, n) => (ElementSymbol(1) :: p, n) } ++
         r1m.map { case (p, n)       => (ElementSymbol(2) :: p, n) }
-      val m2 = m.mapValues(
-        _.replace(
-          {
-            case Ref(s) :@ tpe if s == j.leftGen =>
-              Select(
-                Ref(outsideRef) :@ j2.nodeType.asCollectionType.elementType,
-                ElementSymbol(1)) :@ tpe
-            case Ref(s) :@ tpe if s == j.rightGen =>
-              Select(
-                Ref(outsideRef) :@ j2.nodeType.asCollectionType.elementType,
-                ElementSymbol(2)) :@ tpe
-          },
-          keepType = true
-        ))
+      val m2 = m.mapValues(_.replace(
+        {
+          case Ref(s) :@ tpe if s == j.leftGen =>
+            Select(
+              Ref(outsideRef) :@ j2.nodeType.asCollectionType.elementType,
+              ElementSymbol(1)) :@ tpe
+          case Ref(s) :@ tpe if s == j.rightGen =>
+            Select(
+              Ref(outsideRef) :@ j2.nodeType.asCollectionType.elementType,
+              ElementSymbol(2)) :@ tpe
+        },
+        keepType = true
+      ))
       if (logger.isDebugEnabled) m2.foreach {
         case (p, n) =>
           logger.debug("Replacement for " + FwdPath.toString(p) + ":", n)
@@ -397,13 +396,12 @@ class RewriteJoins extends Phase {
               keepType = true
             )))
           val on2b = and(
-            on1Down.map(
-              _.replace(
-                {
-                  case Select(Ref(s), ElementSymbol(i)) :@ tpe if s == s2 =>
-                    Ref(if (i == 0) j2b.leftGen else j2b.rightGen) :@ tpe
-                },
-                keepType = true)) ++ on2Keep)
+            on1Down.map(_.replace(
+              {
+                case Select(Ref(s), ElementSymbol(i)) :@ tpe if s == s2 =>
+                  Ref(if (i == 0) j2b.leftGen else j2b.rightGen) :@ tpe
+              },
+              keepType = true)) ++ on2Keep)
           val j2c = j2b.copy(on = on2b.infer()) :@ j2b.nodeType
           val res = j.copy(right = j2c, on = on1b.infer()) :@ j.nodeType
           logger.debug("Rearranged join conditions in:", res)

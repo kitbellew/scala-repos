@@ -26,16 +26,12 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
 
       //#serve-json-implicits
       implicit val locationWrites: Writes[Location] =
-        (
-          (JsPath \ "lat").write[Double] and
-            (JsPath \ "long").write[Double]
-        )(unlift(Location.unapply))
+        ((JsPath \ "lat").write[Double] and
+          (JsPath \ "long").write[Double])(unlift(Location.unapply))
 
       implicit val placeWrites: Writes[Place] =
-        (
-          (JsPath \ "name").write[String] and
-            (JsPath \ "location").write[Location]
-        )(unlift(Place.unapply))
+        ((JsPath \ "name").write[String] and
+          (JsPath \ "location").write[Location])(unlift(Place.unapply))
       //#serve-json-implicits
 
       //#serve-json
@@ -62,16 +58,12 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
 
       //#handle-json-implicits
       implicit val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double] and
-            (JsPath \ "long").read[Double]
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double] and
+          (JsPath \ "long").read[Double])(Location.apply _)
 
       implicit val placeReads: Reads[Place] =
-        (
-          (JsPath \ "name").read[String] and
-            (JsPath \ "location").read[Location]
-        )(Place.apply _)
+        ((JsPath \ "name").read[String] and
+          (JsPath \ "location").read[Location])(Place.apply _)
       //#handle-json-implicits
 
       //#handle-json
@@ -82,15 +74,15 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
               val placeResult = json.validate[Place]
               placeResult.fold(
                 errors => {
-                  BadRequest(Json
-                    .obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+                  BadRequest(Json.obj(
+                    "status" -> "KO",
+                    "message" -> JsError.toJson(errors)))
                 },
                 place => {
                   Place.save(place)
-                  Ok(
-                    Json.obj(
-                      "status" -> "OK",
-                      "message" -> ("Place '" + place.name + "' saved.")))
+                  Ok(Json.obj(
+                    "status" -> "OK",
+                    "message" -> ("Place '" + place.name + "' saved.")))
                 }
               )
             }
@@ -127,16 +119,12 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
       import play.api.libs.functional.syntax._
 
       implicit val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double] and
-            (JsPath \ "long").read[Double]
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double] and
+          (JsPath \ "long").read[Double])(Location.apply _)
 
       implicit val placeReads: Reads[Place] =
-        (
-          (JsPath \ "name").read[String] and
-            (JsPath \ "location").read[Location]
-        )(Place.apply _)
+        ((JsPath \ "name").read[String] and
+          (JsPath \ "location").read[Location])(Place.apply _)
 
       //#handle-json-bodyparser
       def savePlace =
@@ -149,10 +137,9 @@ class ScalaJsonHttpSpec extends PlaySpecification with Results {
             },
             place => {
               Place.save(place)
-              Ok(
-                Json.obj(
-                  "status" -> "OK",
-                  "message" -> ("Place '" + place.name + "' saved.")))
+              Ok(Json.obj(
+                "status" -> "OK",
+                "message" -> ("Place '" + place.name + "' saved.")))
             }
           )
         }
@@ -190,15 +177,8 @@ object Place {
 
   var list: List[Place] = {
     List(
-      Place(
-        "Sandleford",
-        Location(51.377797, -1.318965)
-      ),
-      Place(
-        "Watership Down",
-        Location(51.235685, -1.309197)
-      )
-    )
+      Place("Sandleford", Location(51.377797, -1.318965)),
+      Place("Watership Down", Location(51.235685, -1.309197)))
   }
 
   def save(place: Place) = { list = list ::: List(place) }

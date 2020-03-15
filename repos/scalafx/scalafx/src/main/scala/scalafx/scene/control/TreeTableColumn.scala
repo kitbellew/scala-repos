@@ -64,11 +64,10 @@ object TreeTableColumn {
         treeTableView: TreeTableView[S],
         treeTableColumn: TreeTableColumn[S, T],
         value: S) =
-      this(
-        new jfxsc.TreeTableColumn.CellDataFeatures[S, T](
-          treeTableView,
-          treeTableColumn,
-          new TreeItem[S](value)))
+      this(new jfxsc.TreeTableColumn.CellDataFeatures[S, T](
+        treeTableView,
+        treeTableColumn,
+        new TreeItem[S](value)))
 
     /**
       * Returns the TreeTableColumn passed in to the constructor.
@@ -128,12 +127,11 @@ object TreeTableColumn {
         pos: TreeTablePosition[S, T],
         eventType: jfxe.EventType[jfxsc.TreeTableColumn.CellEditEvent[S, T]],
         newValue: T) =
-      this(
-        new jfxsc.TreeTableColumn.CellEditEvent(
-          table,
-          pos,
-          eventType,
-          newValue))
+      this(new jfxsc.TreeTableColumn.CellEditEvent(
+        table,
+        pos,
+        eventType,
+        newValue))
 
     /**
       * Returns the TreeTableView upon which this event occurred.

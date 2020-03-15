@@ -105,8 +105,8 @@ class IncludedFileReferenceSet(
         .asScala
         .collect {
           case msoe: ModuleSourceOrderEntry =>
-            msoe.getOwnerModule.getModuleRuntimeScope(
-              pfi.isInTestSourceContent(parent))
+            msoe.getOwnerModule.getModuleRuntimeScope(pfi.isInTestSourceContent(
+              parent))
           case loe: LibraryOrderEntry =>
             loe.getOwnerModule.getModuleRuntimeScope(
               loe.getScope == DependencyScope.TEST)

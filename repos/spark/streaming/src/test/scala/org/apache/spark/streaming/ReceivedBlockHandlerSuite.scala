@@ -126,8 +126,7 @@ class ReceivedBlockHandlerSuite
             storeResults.forall {
               _.isInstanceOf[BlockManagerBasedStoreResult]
             },
-            "Unexpected store result type"
-          )
+            "Unexpected store result type")
       }
     }
   }
@@ -154,8 +153,7 @@ class ReceivedBlockHandlerSuite
             storeResults.forall {
               _.isInstanceOf[WriteAheadLogBasedStoreResult]
             },
-            "Unexpected store result type"
-          )
+            "Unexpected store result type")
           // Verify the data in write ahead log files is correct
           val walSegments = storeResults.map { result =>
             result.asInstanceOf[WriteAheadLogBasedStoreResult].walRecordHandle
@@ -475,8 +473,8 @@ class ReceivedBlockHandlerSuite
   /** Store blocks using a handler */
   private def storeBlocks(
       receivedBlockHandler: ReceivedBlockHandler,
-      blocks: Seq[ReceivedBlock]
-  ): (Seq[StreamBlockId], Seq[ReceivedBlockStoreResult]) = {
+      blocks: Seq[ReceivedBlock])
+      : (Seq[StreamBlockId], Seq[ReceivedBlockStoreResult]) = {
     val blockIds = Seq.fill(blocks.size)(generateBlockId())
     val storeResults = blocks
       .zip(blockIds)
@@ -496,8 +494,7 @@ class ReceivedBlockHandlerSuite
   /** Store single block using a handler */
   private def storeSingleBlock(
       handler: ReceivedBlockHandler,
-      block: ReceivedBlock
-  ): (StreamBlockId, ReceivedBlockStoreResult) = {
+      block: ReceivedBlock): (StreamBlockId, ReceivedBlockStoreResult) = {
     val blockId = generateBlockId
     val blockStoreResult = handler.storeBlock(blockId, block)
     logDebug("Done inserting")

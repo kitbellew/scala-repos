@@ -37,11 +37,10 @@ class UnitInMapInspection extends OperationOnCollectionInspection {
       }
       val fixes =
         if (isInBlock)
-          Seq(
-            new ChangeReferenceNameQuickFix(
-              InspectionBundle.message("use.foreach.instead.of.map"),
-              ref,
-              "foreach"))
+          Seq(new ChangeReferenceNameQuickFix(
+            InspectionBundle.message("use.foreach.instead.of.map"),
+            ref,
+            "foreach"))
         else Seq.empty
       val unitTypeReturns = body
         .calculateReturns()

@@ -448,19 +448,15 @@ trait MatrixOpsLowPrio extends MatrixGenericOps {
   implicit def canMulM_V_def[T, B <: Vector[T]](implicit
       bb: B <:< Vector[T],
       op: OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]) =
-    (
-      implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]]
-        .asInstanceOf[
-          breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[T], B, Vector[T]]]
-      )
+    (implicitly[OpMulMatrix.Impl2[Matrix[T], Vector[T], Vector[T]]]
+      .asInstanceOf[breeze.linalg.operators.OpMulMatrix.Impl2[Matrix[
+        T], B, Vector[T]]])
 
   // ibid.
   implicit def canMulM_M_def[T, B <: Matrix[T]](implicit
       bb: B <:< Matrix[T],
       op: OpMulMatrix.Impl2[Matrix[T], Matrix[T], Matrix[T]]) =
-    (
-      op.asInstanceOf[OpMulMatrix.Impl2[Matrix[T], B, Matrix[T]]]
-    )
+    (op.asInstanceOf[OpMulMatrix.Impl2[Matrix[T], B, Matrix[T]]])
 }
 
 trait MatrixMultOps extends MatrixOps with MatrixOpsLowPrio {

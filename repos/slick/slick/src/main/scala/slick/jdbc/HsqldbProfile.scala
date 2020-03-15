@@ -122,14 +122,13 @@ trait HsqldbProfile extends JdbcProfile {
             case (LiteralNode(true), b) => b
             case (a, b)                 => Apply(Library.And, ConstArray(a, b))(UnassignedType)
           }
-          buildJoin(
-            Join(
-              rs,
-              rs2,
-              Join(ls, ls2, l, l2, JoinType.Inner, LiteralNode(true)),
-              r2,
-              JoinType.Inner,
-              on3))
+          buildJoin(Join(
+            rs,
+            rs2,
+            Join(ls, ls2, l, l2, JoinType.Inner, LiteralNode(true)),
+            r2,
+            JoinType.Inner,
+            on3))
         case j => super.buildJoin(j)
       }
     }

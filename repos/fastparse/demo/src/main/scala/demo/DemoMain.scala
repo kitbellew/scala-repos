@@ -87,8 +87,7 @@ object DemoMain {
       float.left,
       fontFamily := "monospace",
       fontSize := 16,
-      default
-    ).render
+      default).render
 
     val outputBox = div(width := "45%", float.right, overflowX.scroll).render
 
@@ -99,8 +98,7 @@ object DemoMain {
           table(
             width := "100%",
             tr(td("Success!")),
-            tr(td("value:"), td(code(s.value.toString)))
-          )
+            tr(td("value:"), td(code(s.value.toString))))
 
         case Parsed.Failure(lastParser, index, extra) =>
           val pretty = fastparse.Utils

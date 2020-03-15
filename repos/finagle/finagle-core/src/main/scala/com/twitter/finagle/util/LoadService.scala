@@ -80,15 +80,14 @@ private object ClassPath {
   private[finagle] def browseUri(
       uri: URI,
       loader: ClassLoader,
-      buf: mutable.Buffer[Info]
-  ): Unit = browseUri0(uri, loader, buf, mutable.Set[String]())
+      buf: mutable.Buffer[Info]): Unit =
+    browseUri0(uri, loader, buf, mutable.Set[String]())
 
   private def browseUri0(
       uri: URI,
       loader: ClassLoader,
       buf: mutable.Buffer[Info],
-      history: mutable.Set[String]
-  ): Unit = {
+      history: mutable.Set[String]): Unit = {
 
     if (uri.getScheme != "file") return
     val f = new File(uri)
@@ -261,8 +260,7 @@ object LoadService {
 
           DefaultLogger.log(
             Level.DEBUG,
-            s"LoadService: loaded instance of class $className for requested service $ifaceName"
-          )
+            s"LoadService: loaded instance of class $className for requested service $ifaceName")
 
           try {
             val instance = cls.newInstance().asInstanceOf[T]
@@ -274,8 +272,7 @@ object LoadService {
                 Level.FATAL,
                 s"LoadService: failed to instantiate '$className' for the requested "
                   + s"service '$ifaceName'",
-                ex
-              )
+                ex)
               None
           }
         }

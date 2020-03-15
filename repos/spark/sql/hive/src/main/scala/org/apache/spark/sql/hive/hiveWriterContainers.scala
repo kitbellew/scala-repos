@@ -152,10 +152,9 @@ private[hive] class SparkHiveWriterContainer(
 
     jID =
       new SerializableWritable[JobID](SparkHadoopWriter.createJobID(now, jobId))
-    taID = new SerializableWritable[TaskAttemptID](
-      new TaskAttemptID(
-        new TaskID(jID.value, TaskType.MAP, splitID),
-        attemptID))
+    taID = new SerializableWritable[TaskAttemptID](new TaskAttemptID(
+      new TaskID(jID.value, TaskType.MAP, splitID),
+      attemptID))
   }
 
   private def setConfParams() {

@@ -59,21 +59,16 @@ trait IssuesControllerBase extends ControllerBase {
   )(IssueCreateForm.apply)
 
   val issueTitleEditForm = mapping(
-    "title" -> trim(label("Title", text(required)))
-  )(x => x)
-  val issueEditForm = mapping(
-    "content" -> trim(optional(text()))
-  )(x => x)
+    "title" -> trim(label("Title", text(required))))(x => x)
+  val issueEditForm = mapping("content" -> trim(optional(text())))(x => x)
 
   val commentForm = mapping(
     "issueId" -> label("Issue Id", number()),
-    "content" -> trim(label("Comment", text(required)))
-  )(CommentForm.apply)
+    "content" -> trim(label("Comment", text(required))))(CommentForm.apply)
 
   val issueStateForm = mapping(
     "issueId" -> label("Issue Id", number()),
-    "content" -> trim(optional(text()))
-  )(IssueStateForm.apply)
+    "content" -> trim(optional(text())))(IssueStateForm.apply)
 
   get("/:owner/:repository/issues")(referrersOnly { repository =>
     val q = request.getParameter("q")
@@ -92,10 +87,10 @@ trait IssuesControllerBase extends ControllerBase {
             _,
             getComments(owner, name, issueId.toInt),
             getIssueLabels(owner, name, issueId.toInt),
-            (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                      owner).get.isGroupAccount)
-                                                  Nil
-                                                else List(owner))).sorted,
+            (getCollaborators(owner, name) ::: (
+              if (getAccountByUserName(owner).get.isGroupAccount) Nil
+              else List(owner)
+            )).sorted,
             getMilestonesWithIssueCount(owner, name),
             getLabels(owner, name),
             hasWritePermission(owner, name, context.loginAccount),
@@ -109,10 +104,10 @@ trait IssuesControllerBase extends ControllerBase {
     defining(repository.owner, repository.name) {
       case (owner, name) =>
         html.create(
-          (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                    owner).get.isGroupAccount)
-                                                Nil
-                                              else List(owner))).sorted,
+          (getCollaborators(owner, name) ::: (
+            if (getAccountByUserName(owner).get.isGroupAccount) Nil
+            else List(owner)
+          )).sorted,
           getMilestones(owner, name),
           getLabels(owner, name),
           hasWritePermission(owner, name, context.loginAccount),
@@ -306,24 +301,22 @@ trait IssuesControllerBase extends ControllerBase {
                   .editissue(x.content, x.issueId, x.userName, x.repositoryName)
             } getOrElse {
               contentType = formats("json")
-              org.json4s.jackson.Serialization.write(
-                Map(
-                  "title" -> x.title,
-                  "content" -> Markdown.toHtml(
-                    markdown = x.content getOrElse "No description given.",
-                    repository = repository,
-                    enableWikiLink = false,
-                    enableRefsLink = true,
-                    enableAnchor = true,
-                    enableLineBreaks = true,
-                    enableTaskList = true,
-                    hasWritePermission = isEditable(
-                      x.userName,
-                      x.repositoryName,
-                      x.openedUserName)
-                  )
+              org.json4s.jackson.Serialization.write(Map(
+                "title" -> x.title,
+                "content" -> Markdown.toHtml(
+                  markdown = x.content getOrElse "No description given.",
+                  repository = repository,
+                  enableWikiLink = false,
+                  enableRefsLink = true,
+                  enableAnchor = true,
+                  enableLineBreaks = true,
+                  enableTaskList = true,
+                  hasWritePermission = isEditable(
+                    x.userName,
+                    x.repositoryName,
+                    x.openedUserName)
                 )
-              )
+              ))
             }
           } else Unauthorized
       } getOrElse NotFound
@@ -342,23 +335,20 @@ trait IssuesControllerBase extends ControllerBase {
                 x.repositoryName)
           } getOrElse {
             contentType = formats("json")
-            org.json4s.jackson.Serialization.write(
-              Map(
-                "content" -> view.Markdown.toHtml(
-                  markdown = x.content,
-                  repository = repository,
-                  enableWikiLink = false,
-                  enableRefsLink = true,
-                  enableAnchor = true,
-                  enableLineBreaks = true,
-                  enableTaskList = true,
-                  hasWritePermission = isEditable(
-                    x.userName,
-                    x.repositoryName,
-                    x.commentedUserName)
-                )
-              )
-            )
+            org.json4s.jackson.Serialization.write(Map(
+              "content" -> view.Markdown.toHtml(
+                markdown = x.content,
+                repository = repository,
+                enableWikiLink = false,
+                enableRefsLink = true,
+                enableAnchor = true,
+                enableLineBreaks = true,
+                enableTaskList = true,
+                hasWritePermission = isEditable(
+                  x.userName,
+                  x.repositoryName,
+                  x.commentedUserName)
+              )))
           }
         } else Unauthorized
       } getOrElse NotFound

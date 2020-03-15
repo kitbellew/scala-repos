@@ -46,8 +46,8 @@ class ProducerStats(clientId: String) extends KafkaMetricsGroup {
   "0.10.0.0")
 object ProducerStatsRegistry {
   private val valueFactory = (k: String) => new ProducerStats(k)
-  private val statsRegistry =
-    new Pool[String, ProducerStats](Some(valueFactory))
+  private val statsRegistry = new Pool[String, ProducerStats](Some(
+    valueFactory))
 
   def getProducerStats(clientId: String) = {
     statsRegistry.getAndMaybePut(clientId)

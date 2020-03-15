@@ -22,13 +22,12 @@ trait ServerProvider {
     * Create a server for a given application.
     */
   final def createServer(config: ServerConfig, app: Application): Server =
-    createServer(
-      ServerProvider.Context(
-        config,
-        ApplicationProvider(app),
-        app.actorSystem,
-        app.materializer,
-        () => Future.successful(())))
+    createServer(ServerProvider.Context(
+      config,
+      ApplicationProvider(app),
+      app.actorSystem,
+      app.materializer,
+      () => Future.successful(())))
 }
 
 object ServerProvider {

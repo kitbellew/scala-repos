@@ -135,19 +135,13 @@ class EventServiceActor(
       }
   }
 
-  private val FailedAuth = Left(
-    AuthenticationFailedRejection(
-      AuthenticationFailedRejection.CredentialsRejected,
-      List()
-    )
-  )
+  private val FailedAuth = Left(AuthenticationFailedRejection(
+    AuthenticationFailedRejection.CredentialsRejected,
+    List()))
 
-  private val MissedAuth = Left(
-    AuthenticationFailedRejection(
-      AuthenticationFailedRejection.CredentialsMissing,
-      List()
-    )
-  )
+  private val MissedAuth = Left(AuthenticationFailedRejection(
+    AuthenticationFailedRejection.CredentialsMissing,
+    List()))
 
   lazy val statsActorRef = actorRefFactory.actorSelection("/user/StatsActor")
   lazy val pluginsActorRef = actorRefFactory.actorSelection(
@@ -168,22 +162,23 @@ class EventServiceActor(
         get {
           respondWithMediaType(MediaTypes.`application/json`) {
             complete {
-              Map("plugins" -> Map(
-                "inputblockers" -> pluginContext.inputBlockers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName)
-                },
-                "inputsniffers" -> pluginContext.inputSniffers.map {
-                  case (n, p) =>
-                    n -> Map(
-                      "name" -> p.pluginName,
-                      "description" -> p.pluginDescription,
-                      "class" -> p.getClass.getName)
-                }
-              ))
+              Map(
+                "plugins" -> Map(
+                  "inputblockers" -> pluginContext.inputBlockers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName)
+                  },
+                  "inputsniffers" -> pluginContext.inputSniffers.map {
+                    case (n, p) =>
+                      n -> Map(
+                        "name" -> p.pluginName,
+                        "description" -> p.pluginDescription,
+                        "class" -> p.getClass.getName)
+                  }
+                ))
             }
           }
         }
@@ -235,11 +230,9 @@ class EventServiceActor(
                       .map { eventOpt =>
                         eventOpt
                           .map(event => (StatusCodes.OK, event))
-                          .getOrElse(
-                            (
-                              StatusCodes.NotFound,
-                              Map("message" -> "Not Found"))
-                          )
+                          .getOrElse((
+                            StatusCodes.NotFound,
+                            Map("message" -> "Not Found")))
                       }
                     data
                   }
@@ -291,13 +284,12 @@ class EventServiceActor(
                   complete {
                     if (events.isEmpty || authData.events.contains(
                           event.event)) {
-                      pluginContext.inputBlockers.values.foreach(
-                        _.process(
-                          EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event),
-                          pluginContext))
+                      pluginContext.inputBlockers.values.foreach(_.process(
+                        EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event),
+                        pluginContext))
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
@@ -389,8 +381,8 @@ class EventServiceActor(
                                     eventNames = eventName.map(List(_)),
                                     targetEntityType = targetEntityType.map(
                                       Some(_)),
-                                    targetEntityId = targetEntityId.map(
-                                      Some(_)),
+                                    targetEntityId = targetEntityId.map(Some(
+                                      _)),
                                     limit = limit.orElse(Some(20)),
                                     reversed = reversed
                                   )
@@ -435,13 +427,12 @@ class EventServiceActor(
                   case Success(event) => {
                     if (allowedEvents.isEmpty || allowedEvents.contains(
                           event.event)) {
-                      pluginContext.inputBlockers.values.foreach(
-                        _.process(
-                          EventInfo(
-                            appId = appId,
-                            channelId = channelId,
-                            event = event),
-                          pluginContext))
+                      pluginContext.inputBlockers.values.foreach(_.process(
+                        EventInfo(
+                          appId = appId,
+                          channelId = channelId,
+                          event = event),
+                        pluginContext))
                       val data = eventClient
                         .futureInsert(event, appId, channelId)
                         .map { id =>
@@ -472,10 +463,9 @@ class EventServiceActor(
                     }
                   }
                   case Failure(exception) => {
-                    Future.successful(
-                      Map(
-                        "status" -> StatusCodes.BadRequest.intValue,
-                        "message" -> s"${exception.getMessage()}"))
+                    Future.successful(Map(
+                      "status" -> StatusCodes.BadRequest.intValue,
+                      "message" -> s"${exception.getMessage()}"))
                   }
                 }
 
@@ -487,8 +477,10 @@ class EventServiceActor(
                       (
                         StatusCodes.BadRequest,
                         Map(
-                          "message" -> (s"Batch request must have less than or equal to " +
-                            s"${MaxNumberOfEventsPerBatchRequest} events")))
+                          "message" -> (
+                            s"Batch request must have less than or equal to " +
+                              s"${MaxNumberOfEventsPerBatchRequest} events"
+                          )))
                     }
                   }
                 }
@@ -683,8 +675,7 @@ object EventServer {
         accessKeysClient,
         channelsClient,
         config),
-      "EventServerActor"
-    )
+      "EventServerActor")
     if (config.stats) system.actorOf(Props[StatsActor], "StatsActor")
     system.actorOf(Props[PluginsActor], "PluginsActor")
     serverActor ! StartServer(config.ip, config.port)

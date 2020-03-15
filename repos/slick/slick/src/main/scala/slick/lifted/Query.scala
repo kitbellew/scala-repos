@@ -93,8 +93,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       sh: Shape[FlatShapeLevel, O2, U2, _]) = {
     val leftGen, rightGen = new AnonSymbol
     val aliased1 = shaped.encodeRef(Ref(leftGen))
-    val aliased2 = ShapedValue(ol.lift(q2.shaped.value), sh)
-      .encodeRef(Ref(rightGen))
+    val aliased2 = ShapedValue(ol.lift(q2.shaped.value), sh).encodeRef(Ref(
+      rightGen))
     new BaseJoinQuery[E, O2, U, U2, C, E, E2](
       leftGen,
       rightGen,
@@ -115,8 +115,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       ol: OptionLift[E1, O1],
       sh: Shape[FlatShapeLevel, O1, U1, _]) = {
     val leftGen, rightGen = new AnonSymbol
-    val aliased1 = ShapedValue(ol.lift(shaped.value), sh)
-      .encodeRef(Ref(leftGen))
+    val aliased1 = ShapedValue(ol.lift(shaped.value), sh).encodeRef(Ref(
+      leftGen))
     val aliased2 = q2.shaped.encodeRef(Ref(rightGen))
     new BaseJoinQuery[O1, E2, U1, U2, C, E, E2](
       leftGen,
@@ -140,10 +140,10 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
       ol2: OptionLift[E2, O2],
       sh2: Shape[FlatShapeLevel, O2, U2, _]) = {
     val leftGen, rightGen = new AnonSymbol
-    val aliased1 = ShapedValue(ol1.lift(shaped.value), sh1)
-      .encodeRef(Ref(leftGen))
-    val aliased2 = ShapedValue(ol2.lift(q2.shaped.value), sh2)
-      .encodeRef(Ref(rightGen))
+    val aliased1 = ShapedValue(ol1.lift(shaped.value), sh1).encodeRef(Ref(
+      leftGen))
+    val aliased2 = ShapedValue(ol2.lift(q2.shaped.value), sh2).encodeRef(Ref(
+      rightGen))
     new BaseJoinQuery[O1, O2, U1, U2, C, E, E2](
       leftGen,
       rightGen,
@@ -439,19 +439,16 @@ object TableQueryMacroImpl {
   def apply[E <: AbstractTable[_]](c: Context)(
       implicit e: c.WeakTypeTag[E]): c.Expr[TableQuery[E]] = {
     import c.universe._
-    val cons = c.Expr[Tag => E](
-      Function(
-        List(
-          ValDef(
-            Modifiers(Flag.PARAM),
-            TermName("tag"),
-            Ident(typeOf[Tag].typeSymbol),
-            EmptyTree)),
-        Apply(
-          Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
-          List(Ident(TermName("tag")))
-        )
-      ))
+    val cons = c.Expr[Tag => E](Function(
+      List(ValDef(
+        Modifiers(Flag.PARAM),
+        TermName("tag"),
+        Ident(typeOf[Tag].typeSymbol),
+        EmptyTree)),
+      Apply(
+        Select(New(TypeTree(e.tpe)), termNames.CONSTRUCTOR),
+        List(Ident(TermName("tag"))))
+    ))
     reify { TableQuery.apply[E](cons.splice) }
   }
 }

@@ -59,13 +59,11 @@ object ScalaPluginUpdater {
     FOURTEEN_ONE_OLD -> Map(
       Release -> "DUMMY",
       EAP -> "http://www.jetbrains.com/idea/plugins/scala-eap-14.1.xml",
-      Nightly -> ""
-    ),
+      Nightly -> ""),
     FOURTEEN_ONE -> Map(
       Release -> "DUMMY",
       EAP -> baseUrl.format("eap"),
-      Nightly -> baseUrl.format("nightly")
-    )
+      Nightly -> baseUrl.format("nightly"))
   )
 
   val currentVersion = FOURTEEN_ONE
@@ -201,8 +199,9 @@ object ScalaPluginUpdater {
       invokeLater {
         try {
           val resp = XML.load(u)
-          val text =
-            ((resp \\ "idea-plugin").head \ "idea-version" \ "@since-build").text
+          val text = (
+            (resp \\ "idea-plugin").head \ "idea-version" \ "@since-build"
+          ).text
           val remoteBuildNumber = BuildNumber.fromString(text)
           if (localBuildNumber.compareTo(remoteBuildNumber) < 0)
             suggestIdeaUpdate(branch.toString, text)
@@ -228,11 +227,10 @@ object ScalaPluginUpdater {
         .connect(new HttpRequests.RequestProcessor[Option[UpdatesInfo]] {
           def process(request: HttpRequests.Request) = {
             try {
-              Some(
-                new UpdatesInfo(
-                  JDOMUtil
-                    .loadDocument(request.getInputStream)
-                    .detachRootElement))
+              Some(new UpdatesInfo(
+                JDOMUtil
+                  .loadDocument(request.getInputStream)
+                  .detachRootElement))
             } catch { case e: JDOMException => LOG.info(e); None }
           }
         })
@@ -259,32 +257,30 @@ object ScalaPluginUpdater {
             s"""<p/><a href="Yes">Yes</a>\n""" +
             s"""<p/><a href="No">Not now</a>""" +
             s"""<p/><a href="Ignore">Ignore this update</a>"""
-        Some(
-          GROUP.createNotification(
-            "Scala Plugin Update Failed",
-            message,
-            NotificationType.WARNING,
-            new NotificationListener {
-              override def hyperlinkUpdate(
-                  notification: Notification,
-                  event: HyperlinkEvent): Unit = {
-                notification.expire()
-                event.getDescription match {
-                  case "No" => // do nothing, will ask next time
-                  case "Yes" =>
-                    UpdateSettings.getInstance().setUpdateChannelType("eap")
-                  case "Ignore" => appSettings.ASK_PLATFORM_UPDATE = false
-                }
+        Some(GROUP.createNotification(
+          "Scala Plugin Update Failed",
+          message,
+          NotificationType.WARNING,
+          new NotificationListener {
+            override def hyperlinkUpdate(
+                notification: Notification,
+                event: HyperlinkEvent): Unit = {
+              notification.expire()
+              event.getDescription match {
+                case "No" => // do nothing, will ask next time
+                case "Yes" =>
+                  UpdateSettings.getInstance().setUpdateChannelType("eap")
+                case "Ignore" => appSettings.ASK_PLATFORM_UPDATE = false
               }
             }
-          ))
+          }
+        ))
       case Some(result) =>
-        Some(
-          GROUP.createNotification(
-            s"Your IDEA is outdated to use with Scala plugin $branch branch.<br/>" +
-              s"Please update IDEA to at least $suggestedVersion to use latest Scala plugin.",
-            NotificationType.WARNING
-          ))
+        Some(GROUP.createNotification(
+          s"Your IDEA is outdated to use with Scala plugin $branch branch.<br/>" +
+            s"Please update IDEA to at least $suggestedVersion to use latest Scala plugin.",
+          NotificationType.WARNING
+        ))
       case None => None
     }
     notification.foreach(Notifications.Bus.notify)
@@ -353,8 +349,8 @@ object ScalaPluginUpdater {
     val stream = getClass.getClassLoader
       .getResource("META-INF/plugin.xml")
       .openStream()
-    val document = new RuleTransformer(versionPatcher)
-      .transform(XML.load(stream))
+    val document = new RuleTransformer(versionPatcher).transform(XML.load(
+      stream))
     val tempFile = File.createTempFile("plugin", "xml")
     XML.save(tempFile.getAbsolutePath, document.head)
     pluginDescriptor.readExternal(tempFile.toURI.toURL)
@@ -371,12 +367,11 @@ object ScalaPluginUpdater {
       hack.set(pluginDescriptor, "0.0.0")
     } catch {
       case _: NoSuchFieldException | _: IllegalAccessException =>
-        Notifications.Bus.notify(
-          new Notification(
-            updGroupId,
-            "Scala Plugin Update",
-            "Please remove and reinstall Scala plugin to finish downgrading",
-            NotificationType.INFORMATION))
+        Notifications.Bus.notify(new Notification(
+          updGroupId,
+          "Scala Plugin Update",
+          "Please remove and reinstall Scala plugin to finish downgrading",
+          NotificationType.INFORMATION))
     }
   }
 

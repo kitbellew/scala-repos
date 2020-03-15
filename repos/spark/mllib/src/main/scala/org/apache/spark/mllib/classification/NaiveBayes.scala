@@ -213,12 +213,11 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       import sqlContext.implicits._
 
       // Create JSON metadata.
-      val metadata = compact(
-        render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> data
-              .theta(0)
-              .length) ~ ("numClasses" -> data.pi.length)))
+      val metadata = compact(render(
+        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
+          ("numFeatures" -> data.theta(0).length) ~ (
+          "numClasses" -> data.pi.length
+        )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.
@@ -268,12 +267,11 @@ object NaiveBayesModel extends Loader[NaiveBayesModel] {
       import sqlContext.implicits._
 
       // Create JSON metadata.
-      val metadata = compact(
-        render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("numFeatures" -> data
-              .theta(0)
-              .length) ~ ("numClasses" -> data.pi.length)))
+      val metadata = compact(render(
+        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
+          ("numFeatures" -> data.theta(0).length) ~ (
+          "numClasses" -> data.pi.length
+        )))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(metadataPath(path))
 
       // Create Parquet data.

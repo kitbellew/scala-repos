@@ -528,8 +528,7 @@ class CryptoConfigParser @Inject() (
         // Try to generate a stable secret. Security is not the issue here, since this is just for tests and dev mode.
         val secret = appConfLocation.fold(
           // No application.conf?  Oh well, just use something hard coded.
-          "she sells sea shells on the sea shore"
-        )(_.toString)
+          "she sells sea shells on the sea shore")(_.toString)
         val md5Secret = DigestUtils.md5Hex(secret)
         logger.debug(
           s"Generated dev mode secret $md5Secret for app at ${appConfLocation.getOrElse("unknown location")}")

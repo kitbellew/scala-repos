@@ -229,8 +229,7 @@ class ConvertibleToMethodValueInspectionTest
   }
 
   def testNonStable(): Unit = {
-    checkTextHasNoErrors(
-      """class A(s: String) {
+    checkTextHasNoErrors("""class A(s: String) {
         |  def foo(x: String) = x
         |}
         |
@@ -256,8 +255,7 @@ class ConvertibleToMethodValueInspectionTest
         |    list.map(objA.foo(_))
         |  }
         |}
-      """.stripMargin
-    )
+      """.stripMargin)
   }
 
   def testStableFunParam(): Unit = {

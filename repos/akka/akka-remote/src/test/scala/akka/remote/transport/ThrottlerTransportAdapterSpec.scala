@@ -13,8 +13,8 @@ import akka.testkit.EventFilter
 import akka.remote.EndpointException
 
 object ThrottlerTransportAdapterSpec {
-  val configA: Config =
-    ConfigFactory parseString ("""
+  val configA: Config = ConfigFactory parseString (
+    """
     akka {
       actor.provider = "akka.remote.RemoteActorRefProvider"
 
@@ -27,7 +27,8 @@ object ThrottlerTransportAdapterSpec {
       remote.netty.tcp.applied-adapters = ["trttl"]
       remote.netty.tcp.port = 0
     }
-                                                   """)
+                                                   """
+  )
 
   class Echo extends Actor {
     override def receive = {
@@ -165,21 +166,19 @@ class ThrottlerTransportAdapterSpec
   }
 
   override def beforeTermination() {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.warning(
-          source = "akka://AkkaProtocolStressTest/user/$a",
-          start = "received dead letter"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
-    systemB.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate)")
-      ))
+    system.eventStream.publish(TestEvent.Mute(
+      EventFilter.warning(
+        source = "akka://AkkaProtocolStressTest/user/$a",
+        start = "received dead letter"),
+      EventFilter.warning(pattern =
+        "received dead letter.*(InboundPayload|Disassociate)")
+    ))
+    systemB.eventStream.publish(TestEvent.Mute(
+      EventFilter[EndpointException](),
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(pattern =
+        "received dead letter.*(InboundPayload|Disassociate)")
+    ))
   }
 
   override def afterTermination(): Unit = shutdown(systemB)

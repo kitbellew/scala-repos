@@ -58,8 +58,9 @@ class LocalCheckpointSuite extends SparkFunSuite with LocalSparkContext {
     assert(
       transform(
         StorageLevel.MEMORY_AND_DISK_2) === StorageLevel.MEMORY_AND_DISK_2)
-    assert(transform(
-      StorageLevel.MEMORY_AND_DISK_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
+    assert(
+      transform(
+        StorageLevel.MEMORY_AND_DISK_SER_2) === StorageLevel.MEMORY_AND_DISK_SER_2)
   }
 
   test("basic lineage truncation") {

@@ -33,8 +33,7 @@ object FixInternalDebugLogging {
 
     val debugClassName = foldRuntime(
       older = "com.sun.net.ssl.internal.ssl.Debug",
-      newer = "sun.security.ssl.Debug"
-    )
+      newer = "sun.security.ssl.Debug")
 
     /**
       * Returns true if this class has an instance of the class returned by debugClassName, false otherwise.

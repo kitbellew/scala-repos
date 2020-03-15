@@ -75,23 +75,22 @@ object ImportMembersUtil {
             qual: ScReferenceExpression,
             `oldRef`)) =>
         val withDot = postfix
-          .replace(
-            ScalaPsiElementFactory.createExpressionFromText(
-              s"${qual.getText}.$name",
-              oldRef.getManager))
+          .replace(ScalaPsiElementFactory.createExpressionFromText(
+            s"${qual.getText}.$name",
+            oldRef.getManager))
           .asInstanceOf[ScReferenceExpression]
         replaceWithName(withDot, name)
       case expr: ScReferenceExpression =>
         oldRef
-          .replace(
-            ScalaPsiElementFactory
-              .createExpressionFromText(name, oldRef.getManager))
+          .replace(ScalaPsiElementFactory.createExpressionFromText(
+            name,
+            oldRef.getManager))
           .asInstanceOf[ScReferenceElement]
       case stCodeRef: ScStableCodeReferenceElement =>
         oldRef
-          .replace(
-            ScalaPsiElementFactory
-              .createReferenceFromText(name, oldRef.getManager))
+          .replace(ScalaPsiElementFactory.createReferenceFromText(
+            name,
+            oldRef.getManager))
           .asInstanceOf[ScReferenceElement]
       case _ => null
     }
@@ -147,8 +146,9 @@ object ImportMembersUtil {
               .bindToElement(toBind, clazz)
           case stCodeRef: ScStableCodeReferenceElement =>
             val replaced = oldRef.replace(
-              ScalaPsiElementFactory
-                .createReferenceFromText(name, oldRef.getManager))
+              ScalaPsiElementFactory.createReferenceFromText(
+                name,
+                oldRef.getManager))
             replaced
               .asInstanceOf[ScStableCodeReferenceElement]
               .bindToElement(toBind)

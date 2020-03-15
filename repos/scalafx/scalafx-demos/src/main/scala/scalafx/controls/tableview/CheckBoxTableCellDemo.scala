@@ -48,9 +48,9 @@ object CheckBoxTableCellDemo extends JFXApp {
     val name = new StringProperty(this, "name", name_)
   }
 
-  val data = ObservableBuffer[Item](
-    (1 to 10).map { i => new Item(i % 2 == 0, s"Item $i") }
-  )
+  val data = ObservableBuffer[Item]((1 to 10).map { i =>
+    new Item(i % 2 == 0, s"Item $i")
+  })
 
   stage = new PrimaryStage {
     title = "Example of a Table View with Check Boxes"
@@ -62,8 +62,9 @@ object CheckBoxTableCellDemo extends JFXApp {
             // We need to explicitly cast `_.value.selected` to modify boolean type parameters.
             // `scala.Boolean` type is different from `java.lang.Boolean`, but eventually represented the same way
             // by the compiler.
-            cellValueFactory = _.value.selected.asInstanceOf[
-              ObservableValue[java.lang.Boolean, java.lang.Boolean]]
+            cellValueFactory = _.value.selected.asInstanceOf[ObservableValue[
+              java.lang.Boolean,
+              java.lang.Boolean]]
             cellFactory = CheckBoxTableCell.forTableColumn(this)
             editable = true
             prefWidth = 180

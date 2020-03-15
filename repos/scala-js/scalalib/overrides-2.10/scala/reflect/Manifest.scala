@@ -59,7 +59,9 @@ trait Manifest[T] extends ClassManifest[T] with Equals {
   override def equals(that: Any): Boolean =
     that match {
       case m: Manifest[_] =>
-        (m canEqual this) && (this.erasure == m.erasure) && (this <:< m) && (m <:< this)
+        (m canEqual this) && (this.erasure == m.erasure) && (this <:< m) && (
+          m <:< this
+        )
       case _ => false
     }
   override def hashCode = this.erasure.##

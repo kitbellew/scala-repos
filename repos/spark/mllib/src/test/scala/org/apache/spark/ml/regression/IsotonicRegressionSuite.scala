@@ -31,9 +31,9 @@ class IsotonicRegressionSuite
 
   private def generateIsotonicInput(labels: Seq[Double]): DataFrame = {
     sqlContext
-      .createDataFrame(
-        labels.zipWithIndex.map { case (label, i) => (label, i.toDouble, 1.0) }
-      )
+      .createDataFrame(labels.zipWithIndex.map {
+        case (label, i) => (label, i.toDouble, 1.0)
+      })
       .toDF("label", "features", "weight")
   }
 
@@ -72,8 +72,8 @@ class IsotonicRegressionSuite
     val ir = new IsotonicRegression().setIsotonic(false)
 
     val model = ir.fit(dataset)
-    val features = generatePredictionInput(
-      Seq(-2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0))
+    val features = generatePredictionInput(Seq(
+      -2.0, -1.0, 0.5, 0.75, 1.0, 2.0, 9.0))
 
     val predictions = model
       .transform(features)
@@ -162,11 +162,10 @@ class IsotonicRegressionSuite
 
   test("vector features column with feature index") {
     val dataset = sqlContext
-      .createDataFrame(
-        Seq(
-          (4.0, Vectors.dense(0.0, 1.0)),
-          (3.0, Vectors.dense(0.0, 2.0)),
-          (5.0, Vectors.sparse(2, Array(1), Array(3.0)))))
+      .createDataFrame(Seq(
+        (4.0, Vectors.dense(0.0, 1.0)),
+        (3.0, Vectors.dense(0.0, 2.0)),
+        (5.0, Vectors.sparse(2, Array(1), Array(3.0)))))
       .toDF("label", "features")
 
     val ir = new IsotonicRegression()
@@ -216,6 +215,5 @@ object IsotonicRegressionSuite {
   val allParamSettings: Map[String, Any] = Map(
     "predictionCol" -> "myPrediction",
     "isotonic" -> true,
-    "featureIndex" -> 0
-  )
+    "featureIndex" -> 0)
 }

@@ -124,8 +124,8 @@ class ActorsLeakSpec
 
           // This will make sure that no SHUTDOWN message gets through
           Await.ready(
-            RARP(system).provider.transport
-              .managementCommand(ForceDisassociate(remoteAddress)),
+            RARP(system).provider.transport.managementCommand(ForceDisassociate(
+              remoteAddress)),
             3.seconds)
 
         } finally { remoteSystem.terminate() }
@@ -162,8 +162,8 @@ class ActorsLeakSpec
 
         // This will make sure that no SHUTDOWN message gets through
         Await.ready(
-          RARP(system).provider.transport
-            .managementCommand(ForceDisassociate(remoteAddress)),
+          RARP(system).provider.transport.managementCommand(ForceDisassociate(
+            remoteAddress)),
           3.seconds)
 
       } finally { remoteSystem.terminate() }

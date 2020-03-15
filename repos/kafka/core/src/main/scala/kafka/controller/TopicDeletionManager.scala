@@ -195,9 +195,8 @@ class TopicDeletionManager(
       val newTopicsToHaltDeletion = topicsToBeDeleted & topics
       topicsIneligibleForDeletion ++= newTopicsToHaltDeletion
       if (newTopicsToHaltDeletion.size > 0)
-        info(
-          "Halted deletion of topics %s".format(
-            newTopicsToHaltDeletion.mkString(",")))
+        info("Halted deletion of topics %s".format(
+          newTopicsToHaltDeletion.mkString(",")))
     }
   }
 
@@ -255,9 +254,8 @@ class TopicDeletionManager(
   private def completeReplicaDeletion(replicas: Set[PartitionAndReplica]) {
     val successfullyDeletedReplicas = replicas.filter(r =>
       isTopicQueuedUpForDeletion(r.topic))
-    debug(
-      "Deletion successfully completed for replicas %s".format(
-        successfullyDeletedReplicas.mkString(",")))
+    debug("Deletion successfully completed for replicas %s".format(
+      successfullyDeletedReplicas.mkString(",")))
     controller.replicaStateMachine.handleStateChanges(
       successfullyDeletedReplicas,
       ReplicaDeletionSuccessful)
@@ -378,9 +376,8 @@ class TopicDeletionManager(
         // send stop replica to all followers that are not in the OfflineReplica state so they stop sending fetch requests to the leader
         replicaStateMachine
           .handleStateChanges(replicasForDeletionRetry, OfflineReplica)
-        debug(
-          "Deletion started for replicas %s".format(
-            replicasForDeletionRetry.mkString(",")))
+        debug("Deletion started for replicas %s".format(
+          replicasForDeletionRetry.mkString(",")))
         controller.replicaStateMachine.handleStateChanges(
           replicasForDeletionRetry,
           ReplicaDeletionStarted,
@@ -388,9 +385,9 @@ class TopicDeletionManager(
             .stopReplicaCallback(deleteTopicStopReplicaCallback)
             .build)
         if (deadReplicasForTopic.size > 0) {
-          debug(
-            "Dead Replicas (%s) found for topic %s"
-              .format(deadReplicasForTopic.mkString(","), topic))
+          debug("Dead Replicas (%s) found for topic %s".format(
+            deadReplicasForTopic.mkString(","),
+            topic))
           markTopicIneligibleForDeletion(Set(topic))
         }
     }
@@ -409,9 +406,8 @@ class TopicDeletionManager(
     */
   private def onPartitionDeletion(
       partitionsToBeDeleted: Set[TopicAndPartition]) {
-    info(
-      "Partition deletion callback for %s".format(
-        partitionsToBeDeleted.mkString(",")))
+    info("Partition deletion callback for %s".format(
+      partitionsToBeDeleted.mkString(",")))
     val replicasPerPartition = controllerContext.replicasForPartition(
       partitionsToBeDeleted)
     startReplicaDeletion(replicasPerPartition)

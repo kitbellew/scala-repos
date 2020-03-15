@@ -26,12 +26,11 @@ object BaseTypes {
     ProgressManager.checkCanceled()
     t match {
       case ScDesignatorType(td: ScTemplateDefinition) =>
-        reduce(
-          td.superTypes.flatMap(tp =>
-            if (!notAll)
-              BaseTypes.get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(
-                tp)
-            else Seq(tp)))
+        reduce(td.superTypes.flatMap(tp =>
+          if (!notAll)
+            BaseTypes.get(tp, notAll, visitedAliases = visitedAliases) ++ Seq(
+              tp)
+          else Seq(tp)))
       case ScDesignatorType(c: PsiClass) =>
         reduce(c.getSuperTypes.flatMap { p =>
           if (!notAll)

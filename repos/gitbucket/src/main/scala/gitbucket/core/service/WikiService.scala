@@ -195,39 +195,44 @@ trait WikiService {
             if (!p.getErrors.isEmpty) {
               throw new PatchFormatException(p.getErrors())
             }
-            val revertInfo = (p.getFiles.asScala.map { fh =>
-              fh.getChangeType match {
-                case DiffEntry.ChangeType.MODIFY => {
-                  val source = getWikiPage(
-                    owner,
-                    repository,
-                    fh.getNewPath
-                      .stripSuffix(".md")).map(_.content).getOrElse("")
-                  val applied = PatchUtil.apply(source, patch, fh)
-                  if (applied != null) {
-                    Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else Nil
+            val revertInfo =
+              (
+                p.getFiles.asScala.map {
+                  fh =>
+                    fh.getChangeType match {
+                      case DiffEntry.ChangeType.MODIFY => {
+                        val source = getWikiPage(
+                          owner,
+                          repository,
+                          fh.getNewPath.stripSuffix(".md"))
+                          .map(_.content)
+                          .getOrElse("")
+                        val applied = PatchUtil.apply(source, patch, fh)
+                        if (applied != null) {
+                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                        } else Nil
+                      }
+                      case DiffEntry.ChangeType.ADD => {
+                        val applied = PatchUtil.apply("", patch, fh)
+                        if (applied != null) {
+                          Seq(RevertInfo("ADD", fh.getNewPath, applied))
+                        } else Nil
+                      }
+                      case DiffEntry.ChangeType.DELETE => {
+                        Seq(RevertInfo("DELETE", fh.getNewPath, ""))
+                      }
+                      case DiffEntry.ChangeType.RENAME => {
+                        val applied = PatchUtil.apply("", patch, fh)
+                        if (applied != null) {
+                          Seq(
+                            RevertInfo("DELETE", fh.getOldPath, ""),
+                            RevertInfo("ADD", fh.getNewPath, applied))
+                        } else { Seq(RevertInfo("DELETE", fh.getOldPath, "")) }
+                      }
+                      case _ => Nil
+                    }
                 }
-                case DiffEntry.ChangeType.ADD => {
-                  val applied = PatchUtil.apply("", patch, fh)
-                  if (applied != null) {
-                    Seq(RevertInfo("ADD", fh.getNewPath, applied))
-                  } else Nil
-                }
-                case DiffEntry.ChangeType.DELETE => {
-                  Seq(RevertInfo("DELETE", fh.getNewPath, ""))
-                }
-                case DiffEntry.ChangeType.RENAME => {
-                  val applied = PatchUtil.apply("", patch, fh)
-                  if (applied != null) {
-                    Seq(
-                      RevertInfo("DELETE", fh.getOldPath, ""),
-                      RevertInfo("ADD", fh.getNewPath, applied))
-                  } else { Seq(RevertInfo("DELETE", fh.getOldPath, "")) }
-                }
-                case _ => Nil
-              }
-            }).flatten
+              ).flatten
 
             if (revertInfo.nonEmpty) {
               val builder = DirCache.newInCore.builder()
@@ -237,21 +242,19 @@ trait WikiService {
 
               JGitUtil.processTree(git, headId) { (path, tree) =>
                 if (revertInfo.find(x => x.filePath == path).isEmpty) {
-                  builder.add(
-                    JGitUtil.createDirCacheEntry(
-                      path,
-                      tree.getEntryFileMode,
-                      tree.getEntryObjectId))
+                  builder.add(JGitUtil.createDirCacheEntry(
+                    path,
+                    tree.getEntryFileMode,
+                    tree.getEntryObjectId))
                 }
               }
 
               revertInfo.filter(_.operation == "ADD").foreach { x =>
-                builder.add(
-                  JGitUtil.createDirCacheEntry(
-                    x.filePath,
-                    FileMode.REGULAR_FILE,
-                    inserter
-                      .insert(Constants.OBJ_BLOB, x.source.getBytes("UTF-8"))))
+                builder.add(JGitUtil.createDirCacheEntry(
+                  x.filePath,
+                  FileMode.REGULAR_FILE,
+                  inserter
+                    .insert(Constants.OBJ_BLOB, x.source.getBytes("UTF-8"))))
               }
               builder.finish()
 
@@ -307,11 +310,10 @@ trait WikiService {
               if (path == currentPageName + ".md" && currentPageName != newPageName) {
                 removed = true
               } else if (path != newPageName + ".md") {
-                builder.add(
-                  JGitUtil.createDirCacheEntry(
-                    path,
-                    tree.getEntryFileMode,
-                    tree.getEntryObjectId))
+                builder.add(JGitUtil.createDirCacheEntry(
+                  path,
+                  tree.getEntryFileMode,
+                  tree.getEntryObjectId))
               } else {
                 created = false
                 updated = JGitUtil
@@ -323,11 +325,10 @@ trait WikiService {
           }
 
           if (created || updated || removed) {
-            builder.add(
-              JGitUtil.createDirCacheEntry(
-                newPageName + ".md",
-                FileMode.REGULAR_FILE,
-                inserter.insert(Constants.OBJ_BLOB, content.getBytes("UTF-8"))))
+            builder.add(JGitUtil.createDirCacheEntry(
+              newPageName + ".md",
+              FileMode.REGULAR_FILE,
+              inserter.insert(Constants.OBJ_BLOB, content.getBytes("UTF-8"))))
             builder.finish()
             val newHeadId = JGitUtil.createNewCommit(
               git,
@@ -370,11 +371,10 @@ trait WikiService {
 
           JGitUtil.processTree(git, headId) { (path, tree) =>
             if (path != pageName + ".md") {
-              builder.add(
-                JGitUtil.createDirCacheEntry(
-                  path,
-                  tree.getEntryFileMode,
-                  tree.getEntryObjectId))
+              builder.add(JGitUtil.createDirCacheEntry(
+                path,
+                tree.getEntryFileMode,
+                tree.getEntryObjectId))
             } else { removed = true }
           }
           if (removed) {

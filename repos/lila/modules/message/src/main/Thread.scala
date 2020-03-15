@@ -48,9 +48,7 @@ case class Thread(
   def nonEmptyName = (name.trim.some filter (_.nonEmpty)) | "No subject"
 
   def deleteFor(user: User) =
-    copy(
-      visibleByUserIds = visibleByUserIds filter (user.id !=)
-    )
+    copy(visibleByUserIds = visibleByUserIds filter (user.id !=))
 
   def hasPostsWrittenBy(userId: String) =
     posts exists (_.isByCreator == (creatorId == userId))
@@ -72,11 +70,7 @@ object Thread {
       name = name,
       createdAt = DateTime.now,
       updatedAt = DateTime.now,
-      posts = List(
-        Post.make(
-          text = text,
-          isByCreator = true
-        )),
+      posts = List(Post.make(text = text, isByCreator = true)),
       creatorId = creatorId,
       invitedId = invitedId,
       visibleByUserIds = List(creatorId, invitedId)
@@ -88,12 +82,10 @@ object Thread {
 
   private[message] lazy val tube = Post.tube |> { implicit pt =>
     JsTube(
-      (__.json update (
-        readDate('createdAt) andThen readDate('updatedAt)
-      )) andThen Json.reads[Thread],
-      Json.writes[Thread] andThen (__.json update (
-        writeDate('createdAt) andThen writeDate('updatedAt)
-      ))
+      (__.json update (readDate('createdAt) andThen readDate(
+        'updatedAt))) andThen Json.reads[Thread],
+      Json.writes[Thread] andThen (__.json update (writeDate(
+        'createdAt) andThen writeDate('updatedAt)))
     )
   }
 }

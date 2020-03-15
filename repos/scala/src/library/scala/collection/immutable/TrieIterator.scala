@@ -208,9 +208,7 @@ private[collection] abstract class TrieIterator[+T](elems: Array[Iterable[T]])
         if (posD == arrayD.length - 1) {
           // 3a) positioned at the last element of arrayD
           val m = arrayD(posD)
-          arrayToIterators(
-            if (isTrie(m)) getElems(m) else collisionToArray(m)
-          )
+          arrayToIterators(if (isTrie(m)) getElems(m) else collisionToArray(m))
         } else {
           // 3b) arrayD has more free elements
           val (fst, snd) = arrayD.splitAt(

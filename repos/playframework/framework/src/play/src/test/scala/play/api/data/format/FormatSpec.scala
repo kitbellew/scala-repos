@@ -36,8 +36,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
           },
-          { number => number must equalTo(BigDecimal("10.23")) }
-        )
+          { number => number must equalTo(BigDecimal("10.23")) })
     }
   }
 
@@ -49,8 +48,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
           },
-          { number => number must equalTo(BigDecimal("10.23")) }
-        )
+          { number => number must equalTo(BigDecimal("10.23")) })
     }
 
     "12.23 must not be a valid bigDecimal(10,1) : Too many decimals" in {
@@ -61,8 +59,7 @@ object FormatSpec extends Specification {
             formWithErrors.errors.head.message must equalTo(
               "error.real.precision")
           },
-          { number => "The mapping should fail." must equalTo("Error") }
-        )
+          { number => "The mapping should fail." must equalTo("Error") })
     }
 
     "12111.23 must not be a valid bigDecimal(5,2) : Too many digits" in {
@@ -73,8 +70,7 @@ object FormatSpec extends Specification {
             formWithErrors.errors.head.message must equalTo(
               "error.real.precision")
           },
-          { number => "The mapping should fail." must equalTo("Error") }
-        )
+          { number => "The mapping should fail." must equalTo("Error") })
     }
   }
 
@@ -90,8 +86,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
           },
-          { uuid => uuid must equalTo(testUUID) }
-        )
+          { uuid => uuid must equalTo(testUUID) })
     }
 
     "give an error when an invalid UUID is passed in" in {
@@ -102,8 +97,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.uuid")
           },
-          { uuid => uuid must equalTo(UUID.randomUUID()) }
-        )
+          { uuid => uuid must equalTo(UUID.randomUUID()) })
     }
   }
 
@@ -119,8 +113,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             "The mapping should not fail." must equalTo("Error")
           },
-          { char => char must equalTo(testChar) }
-        )
+          { char => char must equalTo(testChar) })
     }
 
     "give an error when an empty string is passed in" in {
@@ -131,8 +124,7 @@ object FormatSpec extends Specification {
           formWithErrors => {
             formWithErrors.errors.head.message must equalTo("error.required")
           },
-          { char => char must equalTo('X') }
-        )
+          { char => char must equalTo('X') })
     }
   }
 

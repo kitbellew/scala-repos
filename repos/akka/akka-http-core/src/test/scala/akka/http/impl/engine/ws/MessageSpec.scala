@@ -528,12 +528,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         netIn.expectCancellation()
       }
       "after receiving close frame without close code" in new ServerTestSetup {
-        pushInput(
-          frameHeader(
-            Opcode.Close,
-            0,
-            fin = true,
-            mask = Some(Random.nextInt())))
+        pushInput(frameHeader(
+          Opcode.Close,
+          0,
+          fin = true,
+          mask = Some(Random.nextInt())))
         expectComplete(messageIn)
 
         messageOut.sendComplete()
@@ -588,12 +587,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         netOut.expectComplete()
       }
       "after receiving regular close frame when fragmented message is still open" in new ServerTestSetup {
-        pushInput(
-          frameHeader(
-            Protocol.Opcode.Binary,
-            0,
-            fin = false,
-            mask = Some(Random.nextInt())))
+        pushInput(frameHeader(
+          Protocol.Opcode.Binary,
+          0,
+          fin = false,
+          mask = Some(Random.nextInt())))
         val dataSource = expectBinaryMessage().dataStream
         val inSubscriber = TestSubscriber.manualProbe[ByteString]()
         dataSource.runWith(Sink.fromSubscriber(inSubscriber))
@@ -653,12 +651,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         netIn.expectCancellation()
       }
       "after receiving error close frame with close code and with reason" in new ServerTestSetup {
-        pushInput(
-          closeFrame(
-            Protocol.CloseCodes.UnexpectedCondition,
-            mask = true,
-            msg =
-              "This alien landing came quite unexpected. Communication has been garbled."))
+        pushInput(closeFrame(
+          Protocol.CloseCodes.UnexpectedCondition,
+          mask = true,
+          msg =
+            "This alien landing came quite unexpected. Communication has been garbled."))
         val error = expectError(messageIn)
           .asInstanceOf[PeerClosedConnectionException]
         error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition
@@ -722,8 +719,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           message = "Oops, user handler failed!",
           occurrences = 1)
           .intercept {
-            messageOut.sendError(
-              new RuntimeException("Oops, user handler failed!"))
+            messageOut.sendError(new RuntimeException(
+              "Oops, user handler failed!"))
             expectCloseCodeOnNetwork(Protocol.CloseCodes.UnexpectedCondition)
 
             expectNoNetworkData() // wait for peer to close regularly
@@ -765,11 +762,10 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           netIn.expectCancellation()
         }
         "close message is invalid UTF8" in new ServerTestSetup {
-          pushInput(
-            closeFrame(
-              Protocol.CloseCodes.UnexpectedCondition,
-              mask = true,
-              msgBytes = InvalidUtf8TwoByteSequence))
+          pushInput(closeFrame(
+            Protocol.CloseCodes.UnexpectedCondition,
+            mask = true,
+            msgBytes = InvalidUtf8TwoByteSequence))
 
           val error = expectError(messageIn)
             .asInstanceOf[PeerClosedConnectionException]
@@ -985,9 +981,9 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       .fromSinkAndSource(
         Flow[Message]
           .buffer(1, OverflowStrategy.backpressure)
-          .to(
-            Sink.fromSubscriber(messageIn)
-          ), // alternatively need to request(1) before expectComplete
+          .to(Sink.fromSubscriber(
+            messageIn
+          )), // alternatively need to request(1) before expectComplete
         Source.fromPublisher(messageOut)
       )
 

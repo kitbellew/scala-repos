@@ -126,18 +126,10 @@ object Executable {
     StreamingExecutable[Query[B, BU, C], C[BU], BU]
   @inline implicit def tableQueryIsExecutable[B <: AbstractTable[_], BU, C[_]] =
     StreamingExecutable[Query[B, BU, C] with TableQuery[B], C[BU], BU]
-  @inline implicit def baseJoinQueryIsExecutable[
-      B1,
-      B2,
-      BU1,
-      BU2,
-      C[_],
-      Ba1,
-      Ba2] =
-    StreamingExecutable[
-      BaseJoinQuery[B1, B2, BU1, BU2, C, Ba1, Ba2],
-      C[(BU1, BU2)],
-      (BU1, BU2)]
+  @inline implicit def baseJoinQueryIsExecutable[B1, B2, BU1, BU2, C[
+      _], Ba1, Ba2] =
+    StreamingExecutable[BaseJoinQuery[B1, B2, BU1, BU2, C, Ba1, Ba2], C[
+      (BU1, BU2)], (BU1, BU2)]
   @inline implicit def scalarIsExecutable[R, U](
       implicit shape: Shape[_ <: FlatShapeLevel, R, U, _]): Executable[R, U] =
     new Executable[R, U] {

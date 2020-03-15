@@ -289,8 +289,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         val tempParamsFile: File = File.createTempFile(
           "scaladocfileargs",
           ".tmp")
-        val pw: PrintStream = new PrintStream(
-          new FileOutputStream(tempParamsFile))
+        val pw: PrintStream = new PrintStream(new FileOutputStream(
+          tempParamsFile))
 
         for (param <- paramListSimple) {
           var paramEsc = param

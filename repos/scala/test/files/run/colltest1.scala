@@ -89,7 +89,9 @@ object Test extends App {
     assert(ten.length == 10)
     assert(ten(0) == 1 && ten(9) == 10)
     assert(
-      (ten lengthCompare 10) == 0 && (ten lengthCompare 1) > 0 && (ten lengthCompare 11) < 0)
+      (ten lengthCompare 10) == 0 && (ten lengthCompare 1) > 0 && (
+        ten lengthCompare 11
+      ) < 0)
     assert((ten isDefinedAt 0) && (ten isDefinedAt 9))
     assert(!(ten isDefinedAt -1));
     assert(!(ten isDefinedAt 10))
@@ -130,8 +132,8 @@ object Test extends App {
     assert(ten contains 10)
     assert(!(ten contains 0))
     assert(
-      (empty ++ (1 to 7) union empty ++ (3 to 10)) == List(1, 2, 3, 4, 5, 6, 7,
-        3, 4, 5, 6, 7, 8, 9, 10))
+      (empty ++ (1 to 7) union empty ++ (3 to 10)) == List(
+        1, 2, 3, 4, 5, 6, 7, 3, 4, 5, 6, 7, 8, 9, 10))
     assert((ten diff ten).isEmpty)
     assert((ten diff List()) == ten)
     assert((ten diff (ten filter (_ % 2 == 0))) == (ten filterNot (_ % 2 == 0)))

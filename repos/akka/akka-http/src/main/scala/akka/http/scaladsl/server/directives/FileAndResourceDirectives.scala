@@ -59,8 +59,8 @@ trait FileAndResourceDirectives {
                     file.length,
                     FileIO
                       .fromFile(file)
-                      .withAttributes(
-                        ActorAttributes.dispatcher(settings.fileIODispatcher)))
+                      .withAttributes(ActorAttributes.dispatcher(
+                        settings.fileIODispatcher)))
                 }
             }
           } else complete(HttpEntity.Empty)
@@ -109,9 +109,8 @@ trait FileAndResourceDirectives {
                       length,
                       StreamConverters
                         .fromInputStream(() ⇒ url.openStream())
-                        .withAttributes(
-                          ActorAttributes.dispatcher(settings.fileIODispatcher)
-                        )
+                        .withAttributes(ActorAttributes.dispatcher(
+                          settings.fileIODispatcher))
                     ) // TODO is this needed? It already uses `val inputStreamSource = name("inputStreamSource") and IODispatcher`
                   }
               }
@@ -167,11 +166,10 @@ trait FileAndResourceDirectives {
 
         if (dirs.isEmpty) reject
         else
-          complete(
-            DirectoryListing(
-              pathPrefix + pathString,
-              isRoot = pathString == "/",
-              dirs.flatMap(_.listFiles)))
+          complete(DirectoryListing(
+            pathPrefix + pathString,
+            isRoot = pathString == "/",
+            dirs.flatMap(_.listFiles)))
       }
     }
 

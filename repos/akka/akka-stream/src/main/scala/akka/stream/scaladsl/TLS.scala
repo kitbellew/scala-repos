@@ -73,14 +73,13 @@ object TLS {
     ByteString,
     SslTlsInbound,
     NotUsed] =
-    new scaladsl.BidiFlow(
-      TlsModule(
-        Attributes.none,
-        sslContext,
-        firstSession,
-        role,
-        closing,
-        hostInfo))
+    new scaladsl.BidiFlow(TlsModule(
+      Attributes.none,
+      sslContext,
+      firstSession,
+      role,
+      closing,
+      hostInfo))
 
 }
 

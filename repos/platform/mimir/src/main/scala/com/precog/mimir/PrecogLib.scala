@@ -76,9 +76,8 @@ trait PrecogLibModule[M[+_]]
       class EnrichmentMapper(ctx: MorphContext) extends CMapperM[M] {
         import Extractor.Error
 
-        private type Result[+A] = Validation[
-          NonEmptyList[HttpClientError \/ Error],
-          A]
+        private type Result[+A] = Validation[NonEmptyList[
+          HttpClientError \/ Error], A]
         private val httpError: HttpClientError => HttpClientError \/ Error =
           -\/(_)
         private val jsonError: Error => HttpClientError \/ Error = \/-(_)
@@ -168,9 +167,8 @@ trait PrecogLibModule[M[+_]]
 
                 def populate(data: List[JValue]): Validation[Error, Slice] = {
                   if (data.size != members.cardinality) {
-                    Failure(
-                      Error.invalid(
-                        "Number of items returned does not match number sent."))
+                    Failure(Error.invalid(
+                      "Number of items returned does not match number sent."))
                   } else {
                     def sparseStream(
                         row: Int,

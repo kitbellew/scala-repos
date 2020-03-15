@@ -145,7 +145,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
         case callGraph.LambdaMetaFactoryCall(indy, _, _, _) =>
           indy.bsmArgs match {
             case Array(_, _, _, flags: Integer, xs @ _*)
-                if (flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE) != 0 =>
+                if (
+                  flags.intValue & LambdaMetafactory.FLAG_SERIALIZABLE
+                ) != 0 =>
               hasSerializableClosureInstantiation = true
             case _ =>
           }
@@ -212,12 +214,14 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   }
 
   def isScalaUnbox(insn: MethodInsnNode): Boolean = {
-    insn.owner == srBoxesRunTimeRef.internalName && (srBoxesRuntimeUnboxToMethods
-      .get(primitiveAsmTypeToBType(Type.getReturnType(insn.desc))) match {
-      case Some(MethodNameAndType(name, tp)) =>
-        name == insn.name && tp.descriptor == insn.desc
-      case _ => false
-    })
+    insn.owner == srBoxesRunTimeRef.internalName && (
+      srBoxesRuntimeUnboxToMethods.get(primitiveAsmTypeToBType(
+        Type.getReturnType(insn.desc))) match {
+        case Some(MethodNameAndType(name, tp)) =>
+          name == insn.name && tp.descriptor == insn.desc
+        case _ => false
+      }
+    )
   }
 
   def getScalaUnbox(primitiveType: Type): MethodInsnNode = {
@@ -283,7 +287,9 @@ class BackendUtils[BT <: BTypes](val btypes: BT) {
   def isModuleLoad(insn: AbstractInsnNode, moduleName: InternalName): Boolean =
     insn match {
       case fi: FieldInsnNode =>
-        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi.name == "MODULE$" && fi.desc == ("L" + moduleName + ";")
+        fi.getOpcode == GETSTATIC && fi.owner == moduleName && fi.name == "MODULE$" && fi.desc == (
+          "L" + moduleName + ";"
+        )
       case _ => false
     }
 

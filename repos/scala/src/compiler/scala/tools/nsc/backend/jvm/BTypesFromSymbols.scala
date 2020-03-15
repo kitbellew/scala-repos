@@ -75,8 +75,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     "Int.scala",
     "Float.scala",
     "Long.scala",
-    "Double.scala"
-  )
+    "Double.scala")
 
   /**
     * True if the current compilation unit is of a primitive class (scala.Boolean et al).
@@ -411,8 +410,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       else if (classSym.isInterface) superClassSym == ObjectClass
       else
         // A ClassBType for a primitive class (scala.Boolean et al) is only created when compiling these classes.
-        ((superClassSym != NoSymbol) && !superClassSym.isInterface) || (isCompilingPrimitive && primitiveTypeToBType
-          .contains(classSym)),
+        (
+          (superClassSym != NoSymbol) && !superClassSym.isInterface
+        ) || (isCompilingPrimitive && primitiveTypeToBType.contains(classSym)),
       s"Bad superClass for $classSym: $superClassSym"
     )
     val superClass =
@@ -496,8 +496,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
             if (linkedClass != NoSymbol && exitingPickler(
                   classSym.isDerivedValueClass)) {
               val moduleMemberClasses = exitingPhase(
-                currentRun.lambdaliftPhase)(
-                memberClassesForInnerClassTable(linkedClass))
+                currentRun.lambdaliftPhase)(memberClassesForInnerClassTable(
+                linkedClass))
               moduleMemberClasses.filter(
                 classOriginallyNestedInClass(_, classSym))
             } else Nil
@@ -535,14 +535,13 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
     val inlineInfo = buildInlineInfo(classSym, classBType.internalName)
 
-    classBType.info = Right(
-      ClassInfo(
-        superClass,
-        interfaces,
-        flags,
-        nestedClasses,
-        nestedInfo,
-        inlineInfo))
+    classBType.info = Right(ClassInfo(
+      superClass,
+      interfaces,
+      flags,
+      nestedClasses,
+      nestedInfo,
+      inlineInfo))
     classBType
   }
 
@@ -579,7 +578,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // in the source code.
 
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
-        if ((innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass) || // (1)
+        if ((
+              innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass
+            ) || // (1)
             (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
               innerClassSym.rawowner))) { // (2)
           // phase travel for linkedCoC - does not always work in late phases
@@ -673,20 +674,17 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
       internalName, {
         val c = ClassBType(internalName)
         // class info consistent with BCodeHelpers.genMirrorClass
-        val nested = exitingPickler(
-          memberClassesForInnerClassTable(
-            moduleClassSym)) map classBTypeFromSymbol
-        c.info = Right(
-          ClassInfo(
-            superClass = Some(ObjectRef),
-            interfaces = Nil,
-            flags =
-              asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_FINAL,
-            nestedClasses = nested,
-            nestedInfo = None,
-            inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)
-          )
-        ) // no method inline infos needed, scala never invokes methods on the mirror class
+        val nested = exitingPickler(memberClassesForInnerClassTable(
+          moduleClassSym)) map classBTypeFromSymbol
+        c.info = Right(ClassInfo(
+          superClass = Some(ObjectRef),
+          interfaces = Nil,
+          flags =
+            asm.Opcodes.ACC_SUPER | asm.Opcodes.ACC_PUBLIC | asm.Opcodes.ACC_FINAL,
+          nestedClasses = nested,
+          nestedInfo = None,
+          inlineInfo = EmptyInlineInfo.copy(isEffectivelyFinal = true)
+        )) // no method inline infos needed, scala never invokes methods on the mirror class
         c
       }
     )
@@ -697,14 +695,13 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     classBTypeFromInternalName.getOrElse(
       internalName, {
         val c = ClassBType(internalName)
-        c.info = Right(
-          ClassInfo(
-            superClass = Some(sbScalaBeanInfoRef),
-            interfaces = Nil,
-            flags = javaFlags(mainClass),
-            nestedClasses = Nil,
-            nestedInfo = None,
-            inlineInfo = EmptyInlineInfo))
+        c.info = Right(ClassInfo(
+          superClass = Some(sbScalaBeanInfoRef),
+          interfaces = Nil,
+          flags = javaFlags(mainClass),
+          nestedClasses = Nil,
+          nestedInfo = None,
+          inlineInfo = EmptyInlineInfo))
         c
       }
     )
@@ -793,8 +790,9 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     // avoid breaking proxy software which depends on subclassing, we do not
     // emit ACC_FINAL.
 
-    val finalFlag = (
-      (((sym.rawflags & symtab.Flags.FINAL) != 0) || isTopLevelModuleClass(sym))
+    val finalFlag =
+      ((((sym.rawflags & symtab.Flags.FINAL) != 0) || isTopLevelModuleClass(
+        sym))
         && !sym.enclClass.isTrait
         && !sym.isClassConstructor
         && !sym.isMutable // lazy vals and vars both

@@ -37,7 +37,9 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       return Indent.getSpaceIndent(
         if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
     }
-    if ((node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE) &&
+    if ((
+          node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE
+        ) &&
         parent.myLastNode != null) {
       child.getPsi match {
         case _: ScBlockExpr
@@ -103,9 +105,10 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
     if (node.getElementType == ScalaTokenTypes.tLBRACE &&
         Option(node.getTreeParent)
           .map(_.getElementType)
-          .exists(Set[IElementType](
-            ScalaElementTypes.TRY_BLOCK,
-            ScalaElementTypes.PACKAGING).contains)) {
+          .exists(
+            Set[IElementType](
+              ScalaElementTypes.TRY_BLOCK,
+              ScalaElementTypes.PACKAGING).contains)) {
       return if (child.getElementType == ScalaTokenTypes.tLBRACE ||
                  child.getElementType == ScalaTokenTypes.tRBRACE)
         Indent.getNoneIndent

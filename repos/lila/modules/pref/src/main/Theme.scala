@@ -44,8 +44,7 @@ object Theme extends ThemeObject {
     "grey",
     "metal",
     "olive",
-    "purple"
-  ) map { name => new Theme(name) }
+    "purple") map { name => new Theme(name) }
 
   lazy val default = allByName get "brown" err "Can't find default theme D:"
 }

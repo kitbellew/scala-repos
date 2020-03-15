@@ -16,12 +16,10 @@ class ScalaJsonAutomatedSpec extends Specification {
   case class Resident(name: String, age: Int, role: Option[String])
   //#model
 
-  val sampleJson = Json.parse(
-    """{
+  val sampleJson = Json.parse("""{
       "name" : "Fiver",
       "age" : 4
-    }"""
-  )
+    }""")
   val sampleData = Resident("Fiver", 4, None)
 
   "Scala JSON automated" should {
@@ -42,11 +40,9 @@ class ScalaJsonAutomatedSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit val residentReads =
-        (
-          (__ \ "name").read[String] and
-            (__ \ "age").read[Int] and
-            (__ \ "role").readNullable[String]
-        )(Resident)
+        ((__ \ "name").read[String] and
+          (__ \ "age").read[Int] and
+          (__ \ "role").readNullable[String])(Resident)
       //#manual-reads
 
       sampleJson.as[Resident] must_=== sampleData

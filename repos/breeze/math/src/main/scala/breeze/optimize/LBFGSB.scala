@@ -41,11 +41,12 @@ class LBFGSB(
     tolerance: Double = 1e-8,
     maxZoomIter: Int = 64,
     maxLineSearchIter: Int = 64)
-    extends FirstOrderMinimizer[
-      DenseVector[Double],
-      DiffFunction[DenseVector[Double]]](
-      LBFGSB
-        .defaultConvergenceCheck(lowerBounds, upperBounds, tolerance, maxIter))
+    extends FirstOrderMinimizer[DenseVector[Double], DiffFunction[
+      DenseVector[Double]]](LBFGSB.defaultConvergenceCheck(
+      lowerBounds,
+      upperBounds,
+      tolerance,
+      maxIter))
     with SerializableLogging {
   protected val EPS = 2.2e-16
 
@@ -317,15 +318,13 @@ class LBFGSB(
       } else if (yHistory.cols < m) {
         history.copy(
           yHistory = DenseMatrix.horzcat(yHistory, newY.toDenseMatrix.t),
-          sHistory = DenseMatrix.horzcat(sHistory, newS.toDenseMatrix.t)
-        )
+          sHistory = DenseMatrix.horzcat(sHistory, newS.toDenseMatrix.t))
       } else { //m <= k discard the oldest yk and sk
         history.copy(
           yHistory = DenseMatrix
             .horzcat(yHistory(::, 1 until m), newY.toDenseMatrix.t),
           sHistory = DenseMatrix
-            .horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t)
-        )
+            .horzcat(sHistory(::, 1 until m), newS.toDenseMatrix.t))
       }
 
     }

@@ -157,8 +157,9 @@ class FramingSpec extends AkkaSpec {
     val referenceChunk = ByteString(scala.util.Random.nextString(0x100001))
 
     val byteOrders = List(ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN)
-    val frameLengths = List(0, 1, 2, 3, 0xFF, 0x100, 0x101, 0xFFF, 0x1000,
-      0x1001, 0xFFFF, 0x10000, 0x10001)
+    val frameLengths = List(
+      0, 1, 2, 3, 0xFF, 0x100, 0x101, 0xFFF, 0x1000, 0x1001, 0xFFFF, 0x10000,
+      0x10001)
     val fieldLengths = List(1, 2, 3, 4)
     val fieldOffsets = List(0, 1, 2, 3, 15, 16, 31, 32, 44, 107)
 
@@ -196,8 +197,11 @@ class FramingSpec extends AkkaSpec {
         Await.result(
           Source(encodedFrames)
             .via(rechunk)
-            .via(Framing
-              .lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
+            .via(Framing.lengthField(
+              fieldLength,
+              fieldOffset,
+              Int.MaxValue,
+              byteOrder))
             .grouped(10000)
             .runWith(Sink.head),
           3.seconds
@@ -259,8 +263,11 @@ class FramingSpec extends AkkaSpec {
           Await.result(
             Source(List(fullFrame, partialFrame))
               .via(rechunk)
-              .via(Framing
-                .lengthField(fieldLength, fieldOffset, Int.MaxValue, byteOrder))
+              .via(Framing.lengthField(
+                fieldLength,
+                fieldOffset,
+                Int.MaxValue,
+                byteOrder))
               .grouped(10000)
               .runWith(Sink.head),
             3.seconds
@@ -277,8 +284,8 @@ class FramingSpec extends AkkaSpec {
         .atop(Framing.simpleFramingProtocol(1024).reversed)
         .join(Flow[ByteString]) // Loopback
 
-      val testMessages = List.fill(100)(
-        referenceChunk.take(Random.nextInt(1024)))
+      val testMessages = List.fill(100)(referenceChunk.take(
+        Random.nextInt(1024)))
       Await.result(
         Source(testMessages).via(codecFlow).limit(1000).runWith(Sink.seq),
         3.seconds) should ===(testMessages)

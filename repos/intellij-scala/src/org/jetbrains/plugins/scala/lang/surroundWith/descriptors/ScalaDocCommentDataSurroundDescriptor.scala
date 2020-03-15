@@ -38,7 +38,9 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
         element: PsiElement,
         isStart: Boolean): Boolean =
       element.getNode.getElementType.isInstanceOf[ScaladocSyntaxElementType] &&
-        (isStart && startOffset == element.getTextOffset || !isStart && endOffset == element.getTextRange.getEndOffset)
+        (
+          isStart && startOffset == element.getTextOffset || !isStart && endOffset == element.getTextRange.getEndOffset
+        )
 
     val startElement = file.findElementAt(startOffset)
     val endElement = file.findElementAt(endOffset - 1)
@@ -64,7 +66,9 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
     if (startElement.getParent != endElement.getParent) {
       (isFirstElementMarked, isLastElementMarked) match {
         case (true, true)
-            if (startElement.getParent.getParent == endElement.getParent.getParent) =>
+            if (
+              startElement.getParent.getParent == endElement.getParent.getParent
+            ) =>
         case (true, false)
             if (startElement.getParent.getParent == endElement.getParent) =>
         case (false, true)
@@ -111,9 +115,11 @@ class ScalaDocCommentDataSurroundDescriptor extends SurroundDescriptor {
       }
 
       elementsToSurround += nextElement
-    } while (nextElement != lastBoundElement && (
-      nextElement = nextElement.getNextSibling,
-      true)._2);
+    } while (
+      nextElement != lastBoundElement && (
+        nextElement = nextElement.getNextSibling,
+        true)._2
+    );
 
     elementsToSurround.toArray
   }

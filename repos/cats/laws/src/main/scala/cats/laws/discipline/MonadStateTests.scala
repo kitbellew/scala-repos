@@ -24,8 +24,7 @@ trait MonadStateTests[F[_], S] extends MonadTests[F] {
       EqFUnit: Eq[F[Unit]],
       EqFS: Eq[F[S]],
       EqFABC: Eq[F[(A, B, C)]],
-      iso: Isomorphisms[F]
-  ): RuleSet = {
+      iso: Isomorphisms[F]): RuleSet = {
     new RuleSet {
       def name: String = "monadState"
       def bases: Seq[(String, RuleSet)] = Nil

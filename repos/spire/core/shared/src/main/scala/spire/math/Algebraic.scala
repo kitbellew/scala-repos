@@ -952,8 +952,7 @@ object Algebraic extends AlgebraicInstances {
           val lDigits = digits + 2 - rhs.lowerBound.decimalDigits
           val rDigits = max(
             1 - rhs.lowerBound.decimalDigits,
-            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits
-          )
+            digits + 4 - 2 * rhs.lowerBound.decimalDigits + lhs.upperBound.decimalDigits)
           if (lDigits >= Int.MaxValue || rDigits >= Int.MaxValue) {
             throw new IllegalArgumentException("required precision is too high")
           } else {
@@ -980,8 +979,7 @@ object Algebraic extends AlgebraicInstances {
       def toBigDecimal(digits: Int): JBigDecimal = {
         val digits0 = max(
           checked(digits + 1),
-          checked(1 - (sub.lowerBound.decimalDigits + 1) / 2)
-        )
+          checked(1 - (sub.lowerBound.decimalDigits + 1) / 2))
         if (digits0 >= Int.MaxValue) {
           throw new IllegalArgumentException("required precision is too high")
         } else {
@@ -1263,13 +1261,11 @@ object Algebraic extends AlgebraicInstances {
           val dangerZoneStart = (unscale / 2) - 1
           val dangerZoneStop = dangerZoneStart + 2
           if (remainder >= dangerZoneStart && remainder <= dangerZoneStop) {
-            val splitter = BigDecimal(
-              new JBigDecimal(
-                truncatedUnscaledValue
-                  .multiply(BigInteger.TEN)
-                  .add(BigInteger.valueOf(5)),
-                scale + 1
-              ))
+            val splitter = BigDecimal(new JBigDecimal(
+              truncatedUnscaledValue
+                .multiply(BigInteger.TEN)
+                .add(BigInteger.valueOf(5)),
+              scale + 1))
             val cmp = exact compare Algebraic(splitter)
             val roundUp = (mode: @unchecked) match {
               case HALF_DOWN => cmp > 0
@@ -1339,8 +1335,7 @@ object Algebraic extends AlgebraicInstances {
         /** Lower bound on the value. */
         lb: Long,
         /** Upper bound on the value. */
-        ub: Long
-    ) {
+        ub: Long) {
       def getBitBound(degreeBound: Long): Long =
         checked { ub * (degreeBound - 1) + lc }
     }
@@ -1377,8 +1372,7 @@ object Algebraic extends AlgebraicInstances {
               root.tail.bitLength + 1L,
               distBound,
               Roots.lowerBound(poly),
-              Roots.upperBound(poly)
-            )
+              Roots.upperBound(poly))
 
           case Neg(sub) =>
             sub.getBound(this)
@@ -1503,41 +1497,19 @@ object Algebraic extends AlgebraicInstances {
     // require us to work outside of log arithmetic.
     private def add(lhs: Bound, rhs: Bound): Bound =
       checked {
-        Bound(
-          lhs.l + rhs.l,
-          math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1
-        )
+        Bound(lhs.l + rhs.l, math.max(lhs.u + rhs.l, lhs.l + rhs.u) + 1)
       }
 
     private def mul(lhs: Bound, rhs: Bound): Bound =
-      checked {
-        Bound(
-          lhs.l + rhs.l,
-          lhs.u + rhs.u
-        )
-      }
+      checked { Bound(lhs.l + rhs.l, lhs.u + rhs.u) }
 
     private def div(lhs: Bound, rhs: Bound): Bound =
-      checked {
-        Bound(
-          lhs.l + rhs.u,
-          lhs.u + rhs.l
-        )
-      }
+      checked { Bound(lhs.l + rhs.u, lhs.u + rhs.l) }
 
     private def nroot(sub: Bound, k: Int): Bound =
       checked {
-        if (sub.u < sub.l) {
-          Bound(
-            (sub.l + (k - 1) * sub.u) / k,
-            sub.u
-          )
-        } else {
-          Bound(
-            sub.l,
-            (sub.u * (k - 1) * sub.l) / k
-          )
-        }
+        if (sub.u < sub.l) { Bound((sub.l + (k - 1) * sub.u) / k, sub.u) }
+        else { Bound(sub.l, (sub.u * (k - 1) * sub.l) / k) }
       }
 
     private def pow(sub: Bound, k: Int): Bound = {
@@ -1548,12 +1520,8 @@ object Algebraic extends AlgebraicInstances {
           sum(checked(acc + acc), k >>> 1, x)
         }
 
-      if (k > 1) {
-        Bound(
-          sum(sub.l, k - 1, sub.l),
-          sum(sub.u, k - 1, sub.u)
-        )
-      } else if (k == 1) { sub }
+      if (k > 1) { Bound(sum(sub.l, k - 1, sub.l), sum(sub.u, k - 1, sub.u)) }
+      else if (k == 1) { sub }
       else if (k == 0) {
         throw new IllegalArgumentException("exponent cannot be 0")
       } else {

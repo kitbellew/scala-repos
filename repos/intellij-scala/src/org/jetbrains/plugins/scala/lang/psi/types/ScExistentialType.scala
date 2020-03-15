@@ -483,8 +483,7 @@ case class ScExistentialType(
       case ScUndefinedType(tpt) =>
         ScUndefinedType(
           updateRecursive(tpt, rejected, variance)
-            .asInstanceOf[ScTypeParameterType]
-        )
+            .asInstanceOf[ScTypeParameterType])
       case m @ ScMethodType(returnType, params, isImplicit) =>
         ScMethodType(
           updateRecursive(returnType, rejected, variance),

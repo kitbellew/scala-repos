@@ -85,10 +85,11 @@ class RemoteWatcherSpec
     remoteSystem.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
   def remoteAddressUid = AddressUidExtension(remoteSystem).addressUid
 
-  Seq(system, remoteSystem).foreach(muteDeadLetters(
-    akka.remote.transport.AssociationHandle.Disassociated.getClass,
-    akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(
-    _))
+  Seq(system, remoteSystem).foreach(
+    muteDeadLetters(
+      akka.remote.transport.AssociationHandle.Disassociated.getClass,
+      akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(
+      _))
 
   override def afterTermination() { shutdown(remoteSystem) }
 

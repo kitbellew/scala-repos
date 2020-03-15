@@ -99,8 +99,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       }
       .flatMap { _ =>
         val q4 =
-          (for { (x, q) <- ts.groupBy(t => (t.a, t.b)) } yield (x, q.length))
-            .sortBy(_._1)
+          (
+            for { (x, q) <- ts.groupBy(t => (t.a, t.b)) } yield (x, q.length)
+          ).sortBy(_._1)
         db.run(mark("q4", q4.result)).map {
           r4t: Seq[((Int, Option[Int]), Int)] =>
             r4t shouldBe Vector(
@@ -111,8 +112,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
               ((2, Some(2)), 1),
               ((2, Some(5)), 1),
               ((3, Some(1)), 1),
-              ((3, Some(9)), 1)
-            )
+              ((3, Some(9)), 1))
         }
       }
       .flatMap { _ =>
@@ -208,8 +208,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
           (2, Some(2)),
           (2, Some(5)),
           (3, Some(1)),
-          (3, Some(9))
-        )
+          (3, Some(9)))
         val q9 = ts.groupBy(x => x).map(_._1).to[Set]
         val q9b = ts.map(x => x).groupBy(_.*).map(_._1).to[Set]
         val q9c = ts.map(x => x).groupBy(x => x).map(_._1).to[Set]
@@ -271,8 +270,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     DBIO.seq(
       as.schema.create,
       as += 1,
-      q1.result.map(_ shouldBe Seq((Some(1), 1)))
-    )
+      q1.result.map(_ shouldBe Seq((Some(1), 1))))
   }
 
   def testGroup3 = {
@@ -300,8 +298,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         Tab("foo", "bar", "bat", 1, 5),
         Tab("foo", "bar", "bat", 2, 6),
         Tab("foo", "quux", "bat", 3, 7),
-        Tab("baz", "quux", "bat", 4, 8)
-      )
+        Tab("baz", "quux", "bat", 4, 8))
       q1 = Tabs
         .groupBy(t => (t.col1, t.col2, t.col3))
         .map { case (grp, t) => (grp._1, grp._2, t.map(_.col4).sum) }
@@ -478,10 +475,11 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       mark("q3a", q3a.result).map(_ should (r => r == Seq(1) || r == Seq(2))),
       mark("q4", q4.result).map(_.sortBy(identity) shouldBe Seq("a", "a", "c")),
       mark("q5a", q5a.result).map(_.sortBy(identity) shouldBe Seq(1, 3)),
-      mark("q5b", q5b.result).map(_.sortBy(identity) should (r =>
-        r == Seq(1, 3) || r == Seq(2, 3))),
-      mark("q5c", q5c.result).map(_.sortBy(identity) should (r =>
-        r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
+      mark("q5b", q5b.result)
+        .map(_.sortBy(identity) should (r => r == Seq(1, 3) || r == Seq(2, 3))),
+      mark("q5c", q5c.result).map(
+        _.sortBy(identity) should (r =>
+          r == Seq((1, "a"), (3, "c")) || r == Seq((2, "a"), (3, "c")))),
       mark("q6", q6.result).map(_ shouldBe 2)
     )
   }

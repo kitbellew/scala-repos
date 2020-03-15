@@ -92,8 +92,7 @@ trait ZookeeperStateMonitor {
   private[this] def loopZookeeperWork(): Unit = {
     def scheduleReadCachePoolConfig(
         op: () => Unit,
-        backoff: Stream[Duration] = DefaultZkConnectionRetryBackoff
-    ): Unit = {
+        backoff: Stream[Duration] = DefaultZkConnectionRetryBackoff): Unit = {
       DefaultFuturePool { op() } onFailure { ex =>
         zkWorkFailedCounter.incr()
         backoff match {

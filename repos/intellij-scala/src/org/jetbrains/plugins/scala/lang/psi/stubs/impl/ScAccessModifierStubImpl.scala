@@ -15,9 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScAccessModifier
   */
 class ScAccessModifierStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScAccessModifier](parent, elemType)
     with ScAccessModifierStub {
   var _isPrivate: Boolean = _
@@ -27,9 +26,8 @@ class ScAccessModifierStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       isPrivate: Boolean,
       isProtected: Boolean,
       isThis: Boolean,

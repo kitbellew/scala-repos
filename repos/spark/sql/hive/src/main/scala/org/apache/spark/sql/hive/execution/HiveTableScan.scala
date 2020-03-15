@@ -158,8 +158,8 @@ private[hive] case class HiveTableScan(
         }
       } else {
         Utils.withDummyCallSite(sqlContext.sparkContext) {
-          hadoopReader.makeRDDForPartitionedTable(
-            prunePartitions(relation.getHiveQlPartitions(partitionPruningPred)))
+          hadoopReader.makeRDDForPartitionedTable(prunePartitions(
+            relation.getHiveQlPartitions(partitionPruningPred)))
         }
       }
     val numOutputRows = longMetric("numOutputRows")

@@ -500,10 +500,7 @@ case class PrintToStderr(child: Expression) extends UnaryExpression {
   protected override def nullSafeEval(input: Any): Any = input
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
-    nullSafeCodeGen(
-      ctx,
-      ev,
-      c => s"""
+    nullSafeCodeGen(ctx, ev, c => s"""
          | System.err.println("Result of ${child.simpleString} is " + $c);
          | ${ev.value} = $c;
        """.stripMargin)

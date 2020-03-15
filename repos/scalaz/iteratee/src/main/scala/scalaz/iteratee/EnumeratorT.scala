@@ -34,8 +34,8 @@ trait EnumeratorT[E, F[_]] { self =>
       F: Monad[F],
       G: Monad[G]): F[G[EnumeratorT[B, F]]] = {
     import scalaz.syntax.semigroup._
-    val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](
-      G.point(EnumeratorT.empty[B, F])) {
+    val iter = fold[G[EnumeratorT[B, F]], F, G[EnumeratorT[B, F]]](G.point(
+      EnumeratorT.empty[B, F])) {
       case (acc, concat) =>
         G.bind(acc) { en => G.map(concat) { append => en |+| append } }
     }
@@ -69,8 +69,7 @@ trait EnumeratorT[E, F[_]] { self =>
                 k(eofInput) >>== { s =>
                   s.mapContOr(_ => sys.error("diverging iteratee"), check(s))
                 },
-              done = (a, _) => step.mapCont(f => f(elInput(a)))
-            )
+              done = (a, _) => step.mapCont(f => f(elInput(a))))
 
           iterateeT(M.bind((IterateeT.fold[E, F, B](b)(f) &= self).value) { s =>
             check(s).value

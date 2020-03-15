@@ -59,7 +59,9 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
         lookupRuntime = true)
       AlgorithmSucccess(PickleUnpickleImplementation(pickle, unpickle))
       // We special case AnyRef to be PURE reflection-based pickling.
-    } else if ((tpe.className == "java.lang.Object") || (tpe.className == "AnyRef")) {
+    } else if ((tpe.className == "java.lang.Object") || (
+                 tpe.className == "AnyRef"
+               )) {
       val pickle = SubclassDispatch.apply(Nil, tpe, None, lookupRuntime = true)
       val unpickle = SubclassUnpicklerDelegation.apply(
         Nil,

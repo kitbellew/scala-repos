@@ -168,33 +168,28 @@ class AsyncProducerTest {
   def testPartitionAndCollateEvents() {
     val producerDataList = new ArrayBuffer[KeyedMessage[Int, Message]]
     // use bogus key and partition key override for some messages
-    producerDataList.append(
-      new KeyedMessage[Int, Message](
-        "topic1",
-        key = 0,
-        message = new Message("msg1".getBytes)))
-    producerDataList.append(
-      new KeyedMessage[Int, Message](
-        "topic2",
-        key = -99,
-        partKey = 1,
-        message = new Message("msg2".getBytes)))
-    producerDataList.append(
-      new KeyedMessage[Int, Message](
-        "topic1",
-        key = 2,
-        message = new Message("msg3".getBytes)))
-    producerDataList.append(
-      new KeyedMessage[Int, Message](
-        "topic1",
-        key = -101,
-        partKey = 3,
-        message = new Message("msg4".getBytes)))
-    producerDataList.append(
-      new KeyedMessage[Int, Message](
-        "topic2",
-        key = 4,
-        message = new Message("msg5".getBytes)))
+    producerDataList.append(new KeyedMessage[Int, Message](
+      "topic1",
+      key = 0,
+      message = new Message("msg1".getBytes)))
+    producerDataList.append(new KeyedMessage[Int, Message](
+      "topic2",
+      key = -99,
+      partKey = 1,
+      message = new Message("msg2".getBytes)))
+    producerDataList.append(new KeyedMessage[Int, Message](
+      "topic1",
+      key = 2,
+      message = new Message("msg3".getBytes)))
+    producerDataList.append(new KeyedMessage[Int, Message](
+      "topic1",
+      key = -101,
+      partKey = 3,
+      message = new Message("msg4".getBytes)))
+    producerDataList.append(new KeyedMessage[Int, Message](
+      "topic2",
+      key = 4,
+      message = new Message("msg5".getBytes)))
 
     val props = new Properties()
     props.put("metadata.broker.list", brokerList)
@@ -248,15 +243,14 @@ class AsyncProducerTest {
         -99,
         1,
         new Message("msg2".getBytes)))
-    val expectedResult = Some(
-      Map(
-        0 -> Map(
-          TopicAndPartition("topic1", 0) -> topic1Broker1Data,
-          TopicAndPartition("topic2", 0) -> topic2Broker1Data),
-        1 -> Map(
-          TopicAndPartition("topic1", 1) -> topic1Broker2Data,
-          TopicAndPartition("topic2", 1) -> topic2Broker2Data)
-      ))
+    val expectedResult = Some(Map(
+      0 -> Map(
+        TopicAndPartition("topic1", 0) -> topic1Broker1Data,
+        TopicAndPartition("topic2", 0) -> topic2Broker1Data),
+      1 -> Map(
+        TopicAndPartition("topic1", 1) -> topic1Broker2Data,
+        TopicAndPartition("topic2", 1) -> topic2Broker2Data)
+    ))
 
     val actualResult = handler.partitionAndCollate(producerDataList)
     assertEquals(expectedResult, actualResult)
@@ -306,11 +300,10 @@ class AsyncProducerTest {
   @Test
   def testInvalidPartition() {
     val producerDataList = new ArrayBuffer[KeyedMessage[String, Message]]
-    producerDataList.append(
-      new KeyedMessage[String, Message](
-        "topic1",
-        "key1",
-        new Message("msg1".getBytes)))
+    producerDataList.append(new KeyedMessage[String, Message](
+      "topic1",
+      "key1",
+      new Message("msg1".getBytes)))
     val props = new Properties()
     props.put("metadata.broker.list", brokerList)
     val config = new ProducerConfig(props)
@@ -502,10 +495,9 @@ class AsyncProducerTest {
       clientId = DefaultClientId)
     val response2 = ProducerResponse(
       0,
-      Map(
-        (
-          TopicAndPartition("topic1", 0),
-          ProducerResponseStatus(Errors.NONE.code, 0L))))
+      Map((
+        TopicAndPartition("topic1", 0),
+        ProducerResponseStatus(Errors.NONE.code, 0L))))
     val mockSyncProducer = EasyMock.createMock(classOf[SyncProducer])
     // don't care about config mock
     EasyMock

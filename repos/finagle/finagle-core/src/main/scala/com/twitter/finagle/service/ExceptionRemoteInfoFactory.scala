@@ -17,24 +17,22 @@ private[finagle] object ExceptionRemoteInfoFactory {
       endpointAddr: SocketAddress,
       label: String): PartialFunction[Throwable, Future[T]] = {
     case e: HasRemoteInfo =>
-      e.setRemoteInfo(
+      e.setRemoteInfo(RemoteInfo.Available(
+        Upstream.addr,
+        ClientId.current,
+        Some(endpointAddr),
+        Some(ClientId(label)),
+        Trace.id))
+      Future.exception(e)
+    case f: Failure =>
+      Future.exception(f.withSource(
+        Failure.Source.RemoteInfo,
         RemoteInfo.Available(
           Upstream.addr,
           ClientId.current,
           Some(endpointAddr),
           Some(ClientId(label)),
-          Trace.id))
-      Future.exception(e)
-    case f: Failure =>
-      Future.exception(
-        f.withSource(
-          Failure.Source.RemoteInfo,
-          RemoteInfo.Available(
-            Upstream.addr,
-            ClientId.current,
-            Some(endpointAddr),
-            Some(ClientId(label)),
-            Trace.id)))
+          Trace.id)))
   }
 
   /**

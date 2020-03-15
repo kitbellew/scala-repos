@@ -37,22 +37,21 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
   )
   val swagger = new Swagger("1.2", "1.0.0", apiInfo)
   swagger.addAuthorization(ApiKey("apiKey"))
-  swagger.addAuthorization(
-    OAuth(
-      List("PUBLIC"),
-      List(
-        ImplicitGrant(
-          LoginEndpoint("http://localhost:8002/oauth/dialog"),
-          "access_code"),
-        AuthorizationCodeGrant(
-          TokenRequestEndpoint(
-            "http://localhost:8002/oauth/requestToken",
-            "client_id",
-            "client_secret"),
-          TokenEndpoint("http://localhost:8002/oauth/token", "access_code")
-        )
+  swagger.addAuthorization(OAuth(
+    List("PUBLIC"),
+    List(
+      ImplicitGrant(
+        LoginEndpoint("http://localhost:8002/oauth/dialog"),
+        "access_code"),
+      AuthorizationCodeGrant(
+        TokenRequestEndpoint(
+          "http://localhost:8002/oauth/requestToken",
+          "client_id",
+          "client_secret"),
+        TokenEndpoint("http://localhost:8002/oauth/token", "access_code")
       )
-    ))
+    )
+  ))
   val testServlet = new SwaggerTestServlet(swagger)
 
   addServlet(testServlet, "/pet/*")
@@ -74,12 +73,15 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     "api-docs.json"
   ) // merge (("basePath" -> ("http://localhost:" + port)):JValue)
 
-  val petOperationsJValue = readJson(
-    "pet.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val storeOperationsJValue = readJson(
-    "store.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
-  val userOperationsJValue = readJson(
-    "user.json") merge (("basePath" -> ("http://localhost:" + port)): JValue)
+  val petOperationsJValue = readJson("pet.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
+  val storeOperationsJValue = readJson("store.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
+  val userOperationsJValue = readJson("user.json") merge (
+    ("basePath" -> ("http://localhost:" + port)): JValue
+  )
 
   private def readJson(file: String) = {
     val f = if (file startsWith "/") file else "/" + file
@@ -95,7 +97,9 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       bd must beSome[JValue] and {
         val j = bd.get
         (j \ "apiVersion" must_== listResourceJValue \ "apiVersion") and
-          (j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion") and
+          (
+            j \ "swaggerVersion" must_== listResourceJValue \ "swaggerVersion"
+          ) and
           verifyInfo(j \ "info") and
           verifyApis(j \ "apis") and
           verifyAuthorizations(j \ "authorizations")
@@ -149,13 +153,27 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
     val auth = listResourceJValue \ "authorizations"
     j \ "oauth2" \ "type" must_== auth \ "oauth2" \ "type" and
       (j \ "oauth2" \ "scopes" must_== auth \ "oauth2" \ "scopes") and
-      (j \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint") and
-      (j \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url") and
-      (j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName") and
+      (
+        j \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "loginEndpoint"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "implicit" \ "tokenName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "url"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientIdName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenRequestEndpoint" \ "clientSecretName"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "url"
+      ) and
+      (
+        j \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName" must_== auth \ "oauth2" \ "grantTypes" \ "authorization_code" \ "tokenEndpoint" \ "tokenName"
+      ) and
       (j \ "apiKey" \ "type" must_== auth \ "apiKey" \ "type") and
       (j \ "apiKey" \ "passAs" must_== auth \ "apiKey" \ "passAs")
   }
@@ -399,9 +417,11 @@ class SwaggerTestServlet(protected val swagger: Swagger)
     (apiOperation[Pet]("getPetById")
       summary "Find pet by ID"
       notes "Returns a pet based on ID"
-      responseMessages (StringResponseMessage(
-        400,
-        "Invalid ID supplied"), StringResponseMessage(404, "Pet not found"))
+      responseMessages (
+        StringResponseMessage(
+          400,
+          "Invalid ID supplied"), StringResponseMessage(404, "Pet not found")
+    )
       parameter pathParam[String]("petId")
         .description("ID of pet that needs to be fetched")
       produces ("application/json", "application/xml")

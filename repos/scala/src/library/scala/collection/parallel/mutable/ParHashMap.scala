@@ -187,11 +187,10 @@ object ParHashMap extends ParMapFactory[ParHashMap] {
 
 private[mutable] abstract class ParHashMapCombiner[K, V](
     private val tableLoadFactor: Int)
-    extends scala.collection.parallel.BucketCombiner[
-      (K, V),
-      ParHashMap[K, V],
-      DefaultEntry[K, V],
-      ParHashMapCombiner[K, V]](ParHashMapCombiner.numblocks)
+    extends scala.collection.parallel.BucketCombiner[(K, V), ParHashMap[
+      K,
+      V], DefaultEntry[K, V], ParHashMapCombiner[K, V]](
+      ParHashMapCombiner.numblocks)
     with scala.collection.mutable.HashTable.HashUtils[K] {
   private val nonmasklen = ParHashMapCombiner.nonmasklength
   private val seedvalue = 27
@@ -257,8 +256,8 @@ private[mutable] abstract class ParHashMapCombiner[K, V](
       extends HashTable[K, DefaultEntry[K, V]] {
     import HashTable._
     _loadFactor = lf
-    table = new Array[HashEntry[K, DefaultEntry[K, V]]](
-      capacity(sizeForThreshold(_loadFactor, numelems)))
+    table = new Array[HashEntry[K, DefaultEntry[K, V]]](capacity(
+      sizeForThreshold(_loadFactor, numelems)))
     tableSize = 0
     seedvalue = _seedvalue
     threshold = newThreshold(_loadFactor, table.length)

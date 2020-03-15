@@ -38,9 +38,8 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
   val fifth = role("fifth")
   val sixth = role("sixth")
 
-  commonConfig(
-    ConfigFactory.parseString(
-      """
+  commonConfig(ConfigFactory.parseString(
+    """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.log-remote-lifecycle-events = off
@@ -296,8 +295,9 @@ class ClusterSingletonManagerSpec
       expectNoMsg(1 second)
     }
     runOn(oldest) { expectMsg(5.seconds, msg) }
-    runOn(roles.filterNot(r ⇒
-      r == oldest || r == controller || r == observer): _*) {
+    runOn(
+      roles.filterNot(r ⇒
+        r == oldest || r == controller || r == observer): _*) {
       expectNoMsg(1 second)
     }
     enterBarrier("after-" + msg + "-verified")

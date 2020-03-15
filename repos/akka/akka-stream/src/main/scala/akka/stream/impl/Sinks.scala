@@ -320,9 +320,8 @@ private[akka] final class HeadOptionStage[T]
 }
 
 private[akka] final class SeqStage[T]
-    extends GraphStageWithMaterializedValue[
-      SinkShape[T],
-      Future[immutable.Seq[T]]] {
+    extends GraphStageWithMaterializedValue[SinkShape[T], Future[
+      immutable.Seq[T]]] {
   val in = Inlet[T]("seq.in")
 
   override def toString: String = "SeqStage"
@@ -382,81 +381,80 @@ final private[stream] class QueueSink[T]()
 
   override def createLogicAndMaterializedValue(
       inheritedAttributes: Attributes) = {
-    val stageLogic = new GraphStageLogic(shape)
-      with CallbackWrapper[Requested[T]] {
-      type Received[E] = Try[Option[E]]
+    val stageLogic =
+      new GraphStageLogic(shape) with CallbackWrapper[Requested[T]] {
+        type Received[E] = Try[Option[E]]
 
-      val maxBuffer = inheritedAttributes
-        .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
-        .max
-      require(maxBuffer > 0, "Buffer size must be greater than 0")
+        val maxBuffer = inheritedAttributes
+          .getAttribute(classOf[InputBuffer], InputBuffer(16, 16))
+          .max
+        require(maxBuffer > 0, "Buffer size must be greater than 0")
 
-      var buffer: Buffer[Received[T]] = _
-      var currentRequest: Option[Requested[T]] = None
+        var buffer: Buffer[Received[T]] = _
+        var currentRequest: Option[Requested[T]] = None
 
-      override def preStart(): Unit = {
-        // Allocates one additional element to hold stream
-        // closed/failure indicators
-        buffer = Buffer(maxBuffer + 1, materializer)
-        setKeepGoing(true)
-        initCallback(callback.invoke)
-        pull(in)
-      }
+        override def preStart(): Unit = {
+          // Allocates one additional element to hold stream
+          // closed/failure indicators
+          buffer = Buffer(maxBuffer + 1, materializer)
+          setKeepGoing(true)
+          initCallback(callback.invoke)
+          pull(in)
+        }
 
-      override def postStop(): Unit =
-        stopCallback(promise ⇒
-          promise.failure(
-            new IllegalStateException(
+        override def postStop(): Unit =
+          stopCallback(promise ⇒
+            promise.failure(new IllegalStateException(
               "Stream is terminated. QueueSink is detached")))
 
-      private val callback: AsyncCallback[Requested[T]] = getAsyncCallback(
-        promise ⇒
-          currentRequest match {
-            case Some(_) ⇒
-              promise.failure(new IllegalStateException(
-                "You have to wait for previous future to be resolved to send another request"))
-            case None ⇒
-              if (buffer.isEmpty) currentRequest = Some(promise)
-              else {
-                if (buffer.used == maxBuffer) tryPull(in)
-                sendDownstream(promise)
-              }
-          })
+        private val callback: AsyncCallback[Requested[T]] = getAsyncCallback(
+          promise ⇒
+            currentRequest match {
+              case Some(_) ⇒
+                promise.failure(new IllegalStateException(
+                  "You have to wait for previous future to be resolved to send another request"))
+              case None ⇒
+                if (buffer.isEmpty) currentRequest = Some(promise)
+                else {
+                  if (buffer.used == maxBuffer) tryPull(in)
+                  sendDownstream(promise)
+                }
+            })
 
-      def sendDownstream(promise: Requested[T]): Unit = {
-        val e = buffer.dequeue()
-        promise.complete(e)
-        e match {
-          case Success(_: Some[_]) ⇒ //do nothing
-          case Success(None) ⇒ completeStage()
-          case Failure(t) ⇒ failStage(t)
-        }
-      }
-
-      def enqueueAndNotify(requested: Received[T]): Unit = {
-        buffer.enqueue(requested)
-        currentRequest match {
-          case Some(p) ⇒
-            sendDownstream(p)
-            currentRequest = None
-          case None ⇒ //do nothing
-        }
-      }
-
-      setHandler(
-        in,
-        new InHandler {
-          override def onPush(): Unit = {
-            enqueueAndNotify(Success(Some(grab(in))))
-            if (buffer.used < maxBuffer) pull(in)
+        def sendDownstream(promise: Requested[T]): Unit = {
+          val e = buffer.dequeue()
+          promise.complete(e)
+          e match {
+            case Success(_: Some[_]) ⇒ //do nothing
+            case Success(None) ⇒ completeStage()
+            case Failure(t) ⇒ failStage(t)
           }
-          override def onUpstreamFinish(): Unit =
-            enqueueAndNotify(Success(None))
-          override def onUpstreamFailure(ex: Throwable): Unit =
-            enqueueAndNotify(Failure(ex))
         }
-      )
-    }
+
+        def enqueueAndNotify(requested: Received[T]): Unit = {
+          buffer.enqueue(requested)
+          currentRequest match {
+            case Some(p) ⇒
+              sendDownstream(p)
+              currentRequest = None
+            case None ⇒ //do nothing
+          }
+        }
+
+        setHandler(
+          in,
+          new InHandler {
+            override def onPush(): Unit = {
+              enqueueAndNotify(Success(Some(grab(in))))
+              if (buffer.used < maxBuffer) pull(in)
+            }
+            override def onUpstreamFinish(): Unit =
+              enqueueAndNotify(Success(None))
+            override def onUpstreamFailure(ex: Throwable): Unit =
+              enqueueAndNotify(Failure(ex))
+          }
+        )
+      }
 
     (
       stageLogic,

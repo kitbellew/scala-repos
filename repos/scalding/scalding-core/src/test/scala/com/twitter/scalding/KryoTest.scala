@@ -113,15 +113,14 @@ class KryoTest extends WordSpec with Matchers {
         ListMap("good" -> 0.5, "bad" -> -1.0),
         HashMap("good" -> 0.5, "bad" -> -1.0),
         TestCaseClassForSerialization("case classes are: ", 10),
-        TestValMap(
-          Map(
-            "you" -> 1.0,
-            "every" -> 2.0,
-            "body" -> 3.0,
-            "a" -> 1.0,
-            "b" -> 2.0,
-            "c" -> 3.0,
-            "d" -> 4.0)),
+        TestValMap(Map(
+          "you" -> 1.0,
+          "every" -> 2.0,
+          "body" -> 3.0,
+          "a" -> 1.0,
+          "b" -> 2.0,
+          "c" -> 3.0,
+          "d" -> 4.0)),
         TestValHashMap(HashMap("you" -> 1.0)),
         Vector(1, 2, 3, 4, 5),
         TestValMap(null),

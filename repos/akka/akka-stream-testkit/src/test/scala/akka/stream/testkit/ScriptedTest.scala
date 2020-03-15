@@ -158,7 +158,9 @@ trait ScriptedTest extends Matchers {
     }
 
     def mayProvideInput: Boolean =
-      currentScript.someInsPending && (pendingRequests > 0) && (currentScript.pendingOuts <= maximumBuffer)
+      currentScript.someInsPending && (pendingRequests > 0) && (
+        currentScript.pendingOuts <= maximumBuffer
+      )
     def mayRequestMore: Boolean = remainingDemand > 0
 
     def shakeIt(): Boolean = {
@@ -224,11 +226,10 @@ trait ScriptedTest extends Matchers {
         doRun(0)
       } catch {
         case e: Throwable ⇒
-          println(
-            _debugLog.mkString(
-              "Steps leading to failure:\n",
-              "\n",
-              "\nCurrentScript: " + currentScript.debug))
+          println(_debugLog.mkString(
+            "Steps leading to failure:\n",
+            "\n",
+            "\nCurrentScript: " + currentScript.debug))
           throw e
       }
 

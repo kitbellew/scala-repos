@@ -62,11 +62,10 @@ class BrokerCompressionTest(
       time = time)
 
     /* append two messages */
-    log.append(
-      new ByteBufferMessageSet(
-        messageCompressionCode,
-        new Message("hello".getBytes),
-        new Message("there".getBytes)))
+    log.append(new ByteBufferMessageSet(
+      messageCompressionCode,
+      new Message("hello".getBytes),
+      new Message("there".getBytes)))
 
     def readMessage(offset: Int) =
       log.read(offset, 4096).messageSet.head.message

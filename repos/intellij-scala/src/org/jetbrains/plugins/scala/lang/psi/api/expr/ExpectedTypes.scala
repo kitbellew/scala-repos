@@ -208,23 +208,21 @@ private[expr] object ExpectedTypes {
                       subst: ScSubstitutor)) =>
                 ScalaPsiUtil.nameContext(named) match {
                   case v: ScValue =>
-                    Array(
-                      (
-                        subst.subst(
-                          named
-                            .asInstanceOf[ScTypedDefinition]
-                            .getType(TypingContext.empty)
-                            .getOrAny),
-                        v.typeElement))
+                    Array((
+                      subst.subst(
+                        named
+                          .asInstanceOf[ScTypedDefinition]
+                          .getType(TypingContext.empty)
+                          .getOrAny),
+                      v.typeElement))
                   case v: ScVariable =>
-                    Array(
-                      (
-                        subst.subst(
-                          named
-                            .asInstanceOf[ScTypedDefinition]
-                            .getType(TypingContext.empty)
-                            .getOrAny),
-                        v.typeElement))
+                    Array((
+                      subst.subst(
+                        named
+                          .asInstanceOf[ScTypedDefinition]
+                          .getType(TypingContext.empty)
+                          .getOrAny),
+                      v.typeElement))
                   case f: ScFunction if f.paramClauses.clauses.isEmpty =>
                     a.mirrorMethodCall match {
                       case Some(call) =>
@@ -234,14 +232,15 @@ private[expr] object ExpectedTypes {
                     }
                   case p: ScParameter =>
                     //for named parameters
-                    Array(
-                      (
-                        subst.subst(p.getType(TypingContext.empty).getOrAny),
-                        p.typeElement))
+                    Array((
+                      subst.subst(p.getType(TypingContext.empty).getOrAny),
+                      p.typeElement))
                   case f: PsiField =>
                     Array((
-                      subst.subst(ScType
-                        .create(f.getType, f.getProject, expr.getResolveScope)),
+                      subst.subst(ScType.create(
+                        f.getType,
+                        f.getProject,
+                        expr.getResolveScope)),
                       None))
                   case _ => Array.empty
                 }
@@ -301,9 +300,10 @@ private[expr] object ExpectedTypes {
         }
         buffer.toArray
       case infix: ScInfixExpr
-          if ((infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext) ||
-            (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)) && !expr
-            .isInstanceOf[ScTuple] =>
+          if (
+            (infix.isLeftAssoc && infix.lOp == expr.getSameElementInContext) ||
+              (!infix.isLeftAssoc && infix.rOp == expr.getSameElementInContext)
+          ) && !expr.isInstanceOf[ScTuple] =>
         val res = new ArrayBuffer[(ScType, Option[ScTypeElement])]
         val zExpr: ScExpression = expr match {
           case p: ScParenthesisedExpr => p.expr.getOrElse(return Array.empty)

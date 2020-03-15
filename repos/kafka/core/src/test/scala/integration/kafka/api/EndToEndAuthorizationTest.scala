@@ -142,47 +142,41 @@ trait EndToEndAuthorizationTest extends IntegrationTestHarness with SaslSetup {
       s"--allow-principal=$kafkaPrincipalType:$clientPrincipal"
     )
   def ClusterActionAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        ClusterAction))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      ClusterAction))
   def TopicBrokerReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, kafkaPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
   def GroupReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
   def TopicReadAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Read))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Read))
   def TopicWriteAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Write))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Write))
   def TopicDescribeAcl =
-    Set(
-      new Acl(
-        new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
-        Allow,
-        Acl.WildCardHost,
-        Describe))
+    Set(new Acl(
+      new KafkaPrincipal(kafkaPrincipalType, clientPrincipal),
+      Allow,
+      Acl.WildCardHost,
+      Describe))
   // The next two configuration parameters enable ZooKeeper secure ACLs
   // and sets the Kafka authorizer, both necessary to enable security.
   this.serverConfig.setProperty(KafkaConfig.ZkEnableSecureAclsProp, "true")

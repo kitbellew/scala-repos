@@ -94,14 +94,10 @@ class TasksResource @Inject() (
           appId,
           task,
           health.getOrElse(task.taskId, Nil),
-          appToPorts.getOrElse(appId, Nil)
-        )
+          appToPorts.getOrElse(appId, Nil))
       }
 
-      ok(
-        jsonObjString(
-          "tasks" -> enrichedTasks
-        ))
+      ok(jsonObjString("tasks" -> enrichedTasks))
     }
 
   @GET
@@ -109,13 +105,11 @@ class TasksResource @Inject() (
   @Timed
   def indexTxt(@Context req: HttpServletRequest): Response =
     authenticated(req) { implicit identity =>
-      ok(
-        EndpointsHelper.appsToEndpointString(
-          taskTracker,
-          result(groupManager.rootGroup()).transitiveApps.toSeq.filter(app =>
-            isAuthorized(ViewApp, app)),
-          "\t"
-        ))
+      ok(EndpointsHelper.appsToEndpointString(
+        taskTracker,
+        result(groupManager.rootGroup()).transitiveApps.toSeq.filter(app =>
+          isAuthorized(ViewApp, app)),
+        "\t"))
     }
 
   @POST
@@ -153,8 +147,9 @@ class TasksResource @Inject() (
         val killed = result(Future.sequence(toKill.map {
           case (appId, tasks) => taskKiller.kill(appId, _ => tasks)
         })).flatten
-        ok(jsonObjString("tasks" -> killed.map(task =>
-          EnrichedTask(task.taskId.appId, task, Seq.empty))))
+        ok(jsonObjString(
+          "tasks" -> killed.map(task =>
+            EnrichedTask(task.taskId.appId, task, Seq.empty))))
       }
 
       val tasksByAppId = tasksToAppId

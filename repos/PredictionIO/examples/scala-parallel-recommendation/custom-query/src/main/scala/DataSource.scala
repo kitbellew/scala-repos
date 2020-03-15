@@ -36,10 +36,7 @@ class DataSource(val dsp: DataSourceParams)
     // create a RDD of (entityID, Item)
     // HOWTO: collecting items(movies)
     val itemsRDD = eventsDb
-      .aggregateProperties(
-        appId = dsp.appId,
-        entityType = "item"
-      )(sc)
+      .aggregateProperties(appId = dsp.appId, entityType = "item")(sc)
       .flatMap {
         case (entityId, properties) ⇒
           ItemMarshaller.unmarshall(properties).map(entityId → _)

@@ -84,9 +84,10 @@ private[math] object Division {
       aLength: Int,
       b: Array[Int],
       bLength: Int): Array[Int] = {
-    val normA = new Array[Int](
-      aLength + 1
-    ) // the normalized dividend an extra byte is needed for correct shift
+    val normA =
+      new Array[Int](
+        aLength + 1
+      ) // the normalized dividend an extra byte is needed for correct shift
     val normB = new Array[Int](bLength + 1) // the normalized divisor
     val normBLength = bLength
     /*

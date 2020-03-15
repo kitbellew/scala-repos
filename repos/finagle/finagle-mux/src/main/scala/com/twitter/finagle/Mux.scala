@@ -30,8 +30,8 @@ object Mux
 
   private[finagle] abstract class ProtoTracing(
       process: String,
-      val role: Stack.Role
-  ) extends Stack.Module0[ServiceFactory[mux.Request, mux.Response]] {
+      val role: Stack.Role)
+      extends Stack.Module0[ServiceFactory[mux.Request, mux.Response]] {
     val description = s"Mux specific $process traces"
 
     private[this] val tracingFilter =
@@ -81,8 +81,7 @@ object Mux
 
     protected def copy1(
         stack: Stack[ServiceFactory[mux.Request, mux.Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected type In = ChannelBuffer
     protected type Out = ChannelBuffer
@@ -91,8 +90,7 @@ object Mux
       Netty3Transporter(Netty3Framer, params)
 
     protected def newDispatcher(
-        transport: Transport[In, Out]
-    ): Service[mux.Request, mux.Response] = {
+        transport: Transport[In, Out]): Service[mux.Request, mux.Response] = {
       val param.Stats(sr) = params[param.Stats]
       val param.Label(name) = params[param.Label]
 
@@ -144,8 +142,7 @@ object Mux
 
     protected def copy1(
         stack: Stack[ServiceFactory[mux.Request, mux.Response]] = this.stack,
-        params: Stack.Params = this.params
-    ): Server = copy(stack, params)
+        params: Stack.Params = this.params): Server = copy(stack, params)
 
     protected type In = ChannelBuffer
     protected type Out = ChannelBuffer
@@ -160,8 +157,7 @@ object Mux
 
     protected def newDispatcher(
         transport: Transport[In, Out],
-        service: Service[mux.Request, mux.Response]
-    ): Closable = {
+        service: Service[mux.Request, mux.Response]): Closable = {
       val param.Tracer(tracer) = params[param.Tracer]
       val Lessor.Param(lessor) = params[Lessor.Param]
 
@@ -184,6 +180,6 @@ object Mux
 
   def serve(
       addr: SocketAddress,
-      service: ServiceFactory[mux.Request, mux.Response]
-  ): ListeningServer = server.serve(addr, service)
+      service: ServiceFactory[mux.Request, mux.Response]): ListeningServer =
+    server.serve(addr, service)
 }

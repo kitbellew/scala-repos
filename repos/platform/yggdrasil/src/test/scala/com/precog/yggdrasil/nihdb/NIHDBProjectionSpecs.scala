@@ -55,11 +55,9 @@ class NIHDBProjectionSpecs
     with FutureMatchers {
   val actorSystem = ActorSystem("NIHDBActorSystem")
 
-  val chef = actorSystem.actorOf(
-    Props(
-      new Chef(
-        VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
-        VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
+  val chef = actorSystem.actorOf(Props(new Chef(
+    VersionedCookedBlockFormat(Map(1 -> V1CookedBlockFormat)),
+    VersionedSegmentFormat(Map(1 -> V1SegmentFormat)))))
 
   val txLogScheduler = new ScheduledThreadPoolExecutor(
     10,

@@ -28,9 +28,7 @@ class HistoryActorTest
   before {
     failureRepo = mock[TaskFailureRepository]
     historyActor = TestActorRef(
-      Props(
-        new HistoryActor(system.eventStream, failureRepo)
-      ))
+      Props(new HistoryActor(system.eventStream, failureRepo)))
   }
 
   test("Store TASK_FAILED") {

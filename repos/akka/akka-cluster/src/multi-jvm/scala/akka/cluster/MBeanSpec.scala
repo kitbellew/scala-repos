@@ -20,13 +20,10 @@ object MBeanMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
   val fourth = role("fourth")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
     akka.cluster.jmx.enabled = on
     akka.cluster.roles = [testNode]
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
@@ -48,15 +45,14 @@ abstract class MBeanSpec
   "Cluster MBean" must {
     "expose attributes" taggedAs LongRunningTest in {
       val info = mbeanServer.getMBeanInfo(mbeanName)
-      info.getAttributes.map(_.getName).toSet should ===(
-        Set(
-          "ClusterStatus",
-          "Members",
-          "Unreachable",
-          "MemberStatus",
-          "Leader",
-          "Singleton",
-          "Available"))
+      info.getAttributes.map(_.getName).toSet should ===(Set(
+        "ClusterStatus",
+        "Members",
+        "Unreachable",
+        "MemberStatus",
+        "Leader",
+        "Singleton",
+        "Available"))
       enterBarrier("after-1")
     }
 

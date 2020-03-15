@@ -155,8 +155,7 @@ package parallel {
           throwables
             .map(t =>
               t + "\n" + t.getStackTrace.take(10).++("...").mkString("\n"))
-            .mkString("\n\n")
-      )
+            .mkString("\n\n"))
 
   /** A helper iterator for iterating very small array buffers.
     *  Automatically forwards the signal delegate when splitting.
@@ -181,8 +180,7 @@ package parallel {
         val divsz = (until - index) / 2
         Seq(
           new BufferSplitter(buffer, index, index + divsz, signalDelegate),
-          new BufferSplitter(buffer, index + divsz, until, signalDelegate)
-        )
+          new BufferSplitter(buffer, index + divsz, until, signalDelegate))
       } else Seq(this)
     private[parallel] override def debugInformation = {
       buildString { append =>
@@ -220,8 +218,9 @@ package parallel {
     *  They can be overridden in subclasses to provide custom behaviour by modifying
     *  the receiver (which will be the return value).
     */
-  private[parallel] abstract class BucketCombiner[-Elem, +To, Buck,
-  +CombinerType <: BucketCombiner[Elem, To, Buck, CombinerType]](
+  private[parallel] abstract class BucketCombiner[
+      -Elem, +To, Buck,
+      +CombinerType <: BucketCombiner[Elem, To, Buck, CombinerType]](
       private val bucketnumber: Int)
       extends Combiner[Elem, To] {
     //self: EnvironmentPassingCombiner[Elem, To] =>

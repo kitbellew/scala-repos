@@ -147,9 +147,8 @@ private[http] class RequestContextImpl(
       case (status: StatusCode, value) if !status.isSuccess ⇒
         this.withAcceptAll.complete(trm) // retry giving up content negotiation
       case _ ⇒
-        Future.successful(
-          RouteResult.Rejected(
-            UnacceptedResponseContentTypeRejection(supported) :: Nil))
+        Future.successful(RouteResult.Rejected(
+          UnacceptedResponseContentTypeRejection(supported) :: Nil))
     }
 
   private def copy(

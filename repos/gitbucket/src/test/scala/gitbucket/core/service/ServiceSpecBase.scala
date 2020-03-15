@@ -17,10 +17,9 @@ import scala.util.Random
 trait ServiceSpecBase {
 
   def withTestDB[A](action: (Session) => A): A = {
-    FileUtil.withTmpDir(
-      new File(
-        FileUtils.getTempDirectory(),
-        Random.alphanumeric.take(10).mkString)) { dir =>
+    FileUtil.withTmpDir(new File(
+      FileUtils.getTempDirectory(),
+      Random.alphanumeric.take(10).mkString)) { dir =>
       val (url, user, pass) = (
         DatabaseConfig.url(Some(dir.toString)),
         DatabaseConfig.user,

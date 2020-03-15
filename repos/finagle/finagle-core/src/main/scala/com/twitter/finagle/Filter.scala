@@ -110,8 +110,8 @@ abstract class Filter[-ReqIn, +RepOut, +ReqOut, -RepIn]
     * @param condAndFilter a tuple of boolean and filter.
     */
   def andThenIf[Req2 >: ReqOut, Rep2 <: RepIn](
-      condAndFilter: (Boolean, Filter[ReqOut, RepIn, Req2, Rep2])
-  ): Filter[ReqIn, RepOut, Req2, Rep2] =
+      condAndFilter: (Boolean, Filter[ReqOut, RepIn, Req2, Rep2]))
+      : Filter[ReqIn, RepOut, Req2, Rep2] =
     condAndFilter match {
       case (true, filter) => andThen(filter)
       case (false, _)     => this
@@ -129,9 +129,8 @@ object Filter {
   private case class AndThen[ReqIn, RepOut, ReqOut, RepIn](
       build: Service[ReqOut, RepIn] => Service[ReqIn, RepOut])
       extends Filter[ReqIn, RepOut, ReqOut, RepIn] {
-    override def andThen[Req2, Rep2](
-        next: Filter[ReqOut, RepIn, Req2, Rep2]
-    ): Filter[ReqIn, RepOut, Req2, Rep2] =
+    override def andThen[Req2, Rep2](next: Filter[ReqOut, RepIn, Req2, Rep2])
+        : Filter[ReqIn, RepOut, Req2, Rep2] =
       if (next eq Filter.identity)
         this.asInstanceOf[Filter[ReqIn, RepOut, Req2, Rep2]]
       else AndThen(service => build(next.andThen(service)))
@@ -141,8 +140,7 @@ object Filter {
       build(service)
 
     override def andThen(
-        factory: ServiceFactory[ReqOut, RepIn]
-    ): ServiceFactory[ReqIn, RepOut] =
+        factory: ServiceFactory[ReqOut, RepIn]): ServiceFactory[ReqIn, RepOut] =
       new ServiceFactory[ReqIn, RepOut] {
         val fn: Service[ReqOut, RepIn] => Service[ReqIn, RepOut] = svc =>
           AndThen.this.andThen(svc)
@@ -219,8 +217,8 @@ object Filter {
     Identity.asInstanceOf[SimpleFilter[Req, Rep]]
 
   def mk[ReqIn, RepOut, ReqOut, RepIn](
-      f: (ReqIn, ReqOut => Future[RepIn]) => Future[RepOut]
-  ): Filter[ReqIn, RepOut, ReqOut, RepIn] =
+      f: (ReqIn, ReqOut => Future[RepIn]) => Future[RepOut])
+      : Filter[ReqIn, RepOut, ReqOut, RepIn] =
     new Filter[ReqIn, RepOut, ReqOut, RepIn] {
       def apply(request: ReqIn, service: Service[ReqOut, RepIn]) =
         f(request, service)
@@ -234,9 +232,8 @@ object Filter {
     * @param pf a partial function mapping requests to Filters that should
     *           be applied
     */
-  def choose[Req, Rep](
-      pf: PartialFunction[Req, Filter[Req, Rep, Req, Rep]]
-  ): Filter[Req, Rep, Req, Rep] =
+  def choose[Req, Rep](pf: PartialFunction[Req, Filter[Req, Rep, Req, Rep]])
+      : Filter[Req, Rep, Req, Rep] =
     new Filter[Req, Rep, Req, Rep] {
       private[this] val const: (Req => SimpleFilter[Req, Rep]) = Function.const(
         Filter.identity[Req, Rep])

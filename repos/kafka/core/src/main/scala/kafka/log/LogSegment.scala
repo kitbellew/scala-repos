@@ -94,9 +94,10 @@ class LogSegment(
   @nonthreadsafe
   def append(offset: Long, messages: ByteBufferMessageSet) {
     if (messages.sizeInBytes > 0) {
-      trace(
-        "Inserting %d bytes at offset %d at position %d"
-          .format(messages.sizeInBytes, offset, log.sizeInBytes()))
+      trace("Inserting %d bytes at offset %d at position %d".format(
+        messages.sizeInBytes,
+        offset,
+        log.sizeInBytes()))
       // append an entry to the index (if needed)
       if (bytesSinceLastIndexEntry > indexIntervalBytes) {
         index.append(offset, log.sizeInBytes())
@@ -292,12 +293,11 @@ class LogSegment(
         s"Failed to change the $fileType file suffix from $oldSuffix to $newSuffix for log segment $baseOffset",
         e)
 
-    try log.renameTo(
-      new File(CoreUtils.replaceSuffix(log.file.getPath, oldSuffix, newSuffix)))
+    try log.renameTo(new File(
+      CoreUtils.replaceSuffix(log.file.getPath, oldSuffix, newSuffix)))
     catch { case e: IOException => throw kafkaStorageException("log", e) }
-    try index.renameTo(
-      new File(
-        CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
+    try index.renameTo(new File(
+      CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
     catch { case e: IOException => throw kafkaStorageException("index", e) }
   }
 

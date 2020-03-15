@@ -60,8 +60,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
                   context.getEditor,
                   new Condition[PsiFile] {
                     def value(t: PsiFile): Boolean = t == context.getFile
-                  }
-                )
+                  })
             }
           })
         }
@@ -164,7 +163,9 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
               if (element == null) return
 
               element.getParent match {
-                case (_: ScTemplateBody) childOf ((_: ScExtendsBlock) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
+                case (_: ScTemplateBody) childOf ((
+                      _: ScExtendsBlock
+                    ) childOf (newTemplateDef: ScNewTemplateDefinition)) =>
                   val members = ScalaOIUtil.getMembersToImplement(
                     newTemplateDef)
                   ScalaOIUtil.runAction(

@@ -44,10 +44,9 @@ abstract class HadoopFsRelationTest
 
   protected def supportsDataType(dataType: DataType): Boolean = true
 
-  val dataSchema = StructType(
-    Seq(
-      StructField("a", IntegerType, nullable = false),
-      StructField("b", StringType, nullable = false)))
+  val dataSchema = StructType(Seq(
+    StructField("a", IntegerType, nullable = false),
+    StructField("b", StringType, nullable = false)))
 
   lazy val testDF = (1 to 3).map(i => (i, s"val_$i")).toDF("a", "b")
 
@@ -140,8 +139,7 @@ abstract class HadoopFsRelationTest
           .forType(
             dataType = dataType,
             nullable = true,
-            new Random(System.nanoTime())
-          )
+            new Random(System.nanoTime()))
           .getOrElse {
             fail(s"Failed to create data generator for schema $dataType")
           }
@@ -421,8 +419,7 @@ abstract class HadoopFsRelationTest
     withTable("t") {
       checkAnswer(
         sqlContext.table("t").sort('id),
-        Row(0, true) :: Row(1, false) :: Nil
-      )
+        Row(0, true) :: Row(1, false) :: Nil)
     }
   }
 

@@ -18,11 +18,7 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
     val lastId = HistoryMonth.makeId(until.getYear, until.getMonthOfYear)
     historyColl
       .find(BSONDocument())
-      .sort(
-        BSONDocument(
-          "year" -> -1,
-          "month" -> -1
-        ))
+      .sort(BSONDocument("year" -> -1, "month" -> -1))
       .cursor[HistoryMonth]()
       .collect[List]()
       .flatMap { months =>
@@ -49,12 +45,16 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
           mixedLeaderboard(
             after = new DateTime(year, month, 1, 0, 0).pp(
               "compute mod history"),
-            before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some
-          ).map {
-            _.headOption.map { champ =>
-              HistoryMonth(HistoryMonth.makeId(year, month), year, month, champ)
+            before = new DateTime(year, month, 1, 0, 0).plusMonths(1).some)
+            .map {
+              _.headOption.map { champ =>
+                HistoryMonth(
+                  HistoryMonth.makeId(year, month),
+                  year,
+                  month,
+                  champ)
+              }
             }
-          }
         }.toList
       }
       .toList
@@ -106,11 +106,9 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       before: Option[DateTime]): Fu[List[ModCount]] =
     logColl
       .aggregate(
-        Match(
-          BSONDocument(
-            "date" -> dateRange(after, before),
-            "mod" -> notLichess
-          )),
+        Match(BSONDocument(
+          "date" -> dateRange(after, before),
+          "mod" -> notLichess)),
         List(GroupField("mod")("nb" -> SumValue(1)), Sort(Descending("nb"))))
       .map {
         _.documents.flatMap { obj =>
@@ -123,11 +121,9 @@ final class Gamify(logColl: Coll, reportColl: Coll, historyColl: Coll) {
       before: Option[DateTime]): Fu[List[ModCount]] =
     reportColl
       .aggregate(
-        Match(
-          BSONDocument(
-            "createdAt" -> dateRange(after, before),
-            "processedBy" -> notLichess
-          )),
+        Match(BSONDocument(
+          "createdAt" -> dateRange(after, before),
+          "processedBy" -> notLichess)),
         List(
           GroupField("processedBy")("nb" -> SumValue(1)),
           Sort(Descending("nb")))

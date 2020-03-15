@@ -120,8 +120,8 @@ object ServerSSLEngine {
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]
       } else if (parameterTypes.length == 2 &&
                  classOf[ServerConfig].isAssignableFrom(parameterTypes(0)) &&
-                 classOf[ApplicationProvider].isAssignableFrom(
-                   parameterTypes(1))) {
+                 classOf[ApplicationProvider].isAssignableFrom(parameterTypes(
+                   1))) {
         serverConfigProviderArgsConstructor = constructor
           .asInstanceOf[Constructor[ScalaSSLEngineProvider]]
       }

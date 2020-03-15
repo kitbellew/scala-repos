@@ -109,8 +109,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
           .andThen(a)
           .cleanUp(eo => if (eo.isEmpty) Commit else Rollback)(
             DBIO.sameThreadExecutionContext)
-          .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]]
-      )
+          .asInstanceOf[DBIOAction[R, S, E with Effect.Transactional]])
 
     /** Run this Action with the specified transaction isolation level. This should be used around
       * the outermost `transactionally` Action. The semantics of using it inside a transaction are
@@ -145,13 +144,12 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         rsHoldability: ResultSetHoldability = null,
         statementInit: Statement => Unit = null,
         fetchSize: Int = 0): DBIOAction[R, S, E] =
-      (new PushStatementParameters(
-        JdbcBackend.StatementParameters(
-          rsType,
-          rsConcurrency,
-          rsHoldability,
-          statementInit,
-          fetchSize))).andThen(a).andFinally(PopStatementParameters)
+      (new PushStatementParameters(JdbcBackend.StatementParameters(
+        rsType,
+        rsConcurrency,
+        rsHoldability,
+        statementInit,
+        fetchSize))).andThen(a).andFinally(PopStatementParameters)
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,11 +177,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       sql: String,
       param: Any,
       sendEndMarker: Boolean)
-      extends SynchronousDatabaseAction[
-        Nothing,
-        Streaming[ResultSetMutator[T]],
-        Backend,
-        Effect]
+      extends SynchronousDatabaseAction[Nothing, Streaming[
+        ResultSetMutator[T]], Backend, Effect]
       with ProfileAction[Nothing, Streaming[ResultSetMutator[T]], Effect] {
     streamingAction =>
     class Mutator(
@@ -336,10 +331,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       super.result.asInstanceOf[StreamingProfileAction[R, T, Effect.Read]]
 
     /** Same as `mutate(sendEndMarker = false)`. */
-    def mutate: ProfileAction[
-      Nothing,
-      Streaming[ResultSetMutator[T]],
-      Effect.Read with Effect.Write] = mutate(false)
+    def mutate: ProfileAction[Nothing, Streaming[
+      ResultSetMutator[T]], Effect.Read with Effect.Write] = mutate(false)
 
     /** Create an Action that can be streamed in order to modify a mutable result set. All stream
       * elements will be the same [[slick.jdbc.ResultSetMutator]] object but it is in a different state each
@@ -350,10 +343,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       *                      set, poviding you with a chance to insert additional rows after
       *                      seeing all results. Only `end` (to check for this special event) and
       *                      `insert` may be called in the ResultSetMutator in this case. */
-    def mutate(sendEndMarker: Boolean = false): ProfileAction[
-      Nothing,
-      Streaming[ResultSetMutator[T]],
-      Effect.Read with Effect.Write] = {
+    def mutate(
+        sendEndMarker: Boolean = false): ProfileAction[Nothing, Streaming[
+      ResultSetMutator[T]], Effect.Read with Effect.Write] = {
       val sql = tree
         .findNode(_.isInstanceOf[CompiledStatement])
         .get
@@ -361,10 +353,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         .extra
         .asInstanceOf[SQLBuilder.Result]
         .sql
-      val (rsm @ ResultSetMapping(
-        _,
-        _,
-        CompiledMapping(_, elemType))) :@ (ct: CollectionType) = tree
+      val (rsm @ ResultSetMapping(_, _, CompiledMapping(_, elemType))) :@ (
+        ct: CollectionType
+      ) = tree
       new MutatingResultAction[T](rsm, elemType, ct, sql, param, sendEndMarker)
     }
   }

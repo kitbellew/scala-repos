@@ -76,17 +76,16 @@ class CrossValidatorSuite
   }
 
   test("cross validation with linear regression") {
-    val dataset = sqlContext.createDataFrame(
-      sc.parallelize(
-        LinearDataGenerator.generateLinearInput(
-          6.3,
-          Array(4.7, 7.2),
-          Array(0.9, -1.3),
-          Array(0.7, 1.2),
-          100,
-          42,
-          0.1),
-        2))
+    val dataset = sqlContext.createDataFrame(sc.parallelize(
+      LinearDataGenerator.generateLinearInput(
+        6.3,
+        Array(4.7, 7.2),
+        Array(0.9, -1.3),
+        Array(0.7, 1.2),
+        100,
+        42,
+        0.1),
+      2))
 
     val trainer = new LinearRegression().setSolver("l-bfgs")
     val lrParamMaps = new ParamGridBuilder()
@@ -224,8 +223,9 @@ class CrossValidatorSuite
                 assert(lr.uid === lr2.uid)
                 assert(lr.getMaxIter === lr2.getMaxIter)
               case other =>
-                throw new AssertionError(s"Loaded internal CrossValidator expected to be" +
-                  s" LogisticRegression but found type ${other.getClass.getName}")
+                throw new AssertionError(
+                  s"Loaded internal CrossValidator expected to be" +
+                    s" LogisticRegression but found type ${other.getClass.getName}")
             }
             assert(lrcv.uid === lrcv2.uid)
             assert(

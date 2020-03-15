@@ -84,11 +84,10 @@ object ModuleExtDataService {
               library.scalaLanguageLevel.getOrElse(ScalaLanguageLevel.Default),
               compilerClasspath)
           case None =>
-            showWarning(
-              SbtBundle(
-                "sbt.dataService.scalaLibraryIsNotFound",
-                compilerVersion.number,
-                module.getName))
+            showWarning(SbtBundle(
+              "sbt.dataService.scalaLibraryIsNotFound",
+              compilerVersion.number,
+              module.getName))
           case _ => // do nothing
         }
       }

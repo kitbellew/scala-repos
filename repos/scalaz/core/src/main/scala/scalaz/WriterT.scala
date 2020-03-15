@@ -67,8 +67,8 @@ final case class WriterT[F[_], W, A](run: F[(W, A)]) { self =>
   def traverse[G[_], B](f: A => G[B])(implicit
       G: Applicative[G],
       F: Traverse[F]): G[WriterT[F, W, B]] = {
-    G.map(F.traverse(run) { case (w, a) => G.map(f(a))(b => (w, b)) })(
-      WriterT(_))
+    G.map(F.traverse(run) { case (w, a) => G.map(f(a))(b => (w, b)) })(WriterT(
+      _))
   }
 
   def foldRight[B](z: => B)(f: (A, => B) => B)(implicit F: Foldable[F]) =
@@ -314,8 +314,8 @@ trait WriterTFunctions {
   def writerTU[FAB, AB, A0, B0](fab: FAB)(implicit
       u1: Unapply[Functor, FAB] { type A = AB },
       u2: Unapply2[Bifunctor, AB] { type A = A0; type B = B0 },
-      l: Leibniz.===[AB, (A0, B0)]
-  ): WriterT[u1.M, A0, B0] = WriterT(l.subst[u1.M](u1(fab)))
+      l: Leibniz.===[AB, (A0, B0)]): WriterT[u1.M, A0, B0] =
+    WriterT(l.subst[u1.M](u1(fab)))
 
   def writer[W, A](v: (W, A)): Writer[W, A] = writerT[Id, W, A](v)
 

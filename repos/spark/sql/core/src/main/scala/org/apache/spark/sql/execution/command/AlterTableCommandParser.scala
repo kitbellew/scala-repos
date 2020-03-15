@@ -311,10 +311,9 @@ object AlterTableCommandParser {
           case Token("TOK_SKEWED_LOCATION_MAP", col :: loc :: Nil) =>
             col match {
               case Token(const, Nil) =>
-                Seq(
-                  (
-                    cleanAndUnquoteString(const),
-                    cleanAndUnquoteString(loc.text)))
+                Seq((
+                  cleanAndUnquoteString(const),
+                  cleanAndUnquoteString(loc.text)))
               case Token(
                     "TOK_TABCOLVALUES",
                     Token("TOK_TABCOLVALUE", keys) :: Nil) =>

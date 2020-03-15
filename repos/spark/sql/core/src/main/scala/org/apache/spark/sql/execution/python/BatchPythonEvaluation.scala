@@ -84,12 +84,8 @@ case class BatchPythonEvaluation(
       val context = TaskContext.get()
 
       // Output iterator for results from Python.
-      val outputIterator =
-        new PythonRunner(
-          udf.func,
-          bufferSize,
-          reuseWorker
-        ).compute(inputIterator, context.partitionId(), context)
+      val outputIterator = new PythonRunner(udf.func, bufferSize, reuseWorker)
+        .compute(inputIterator, context.partitionId(), context)
 
       val unpickle = new Unpickler
       val row = new GenericMutableRow(1)

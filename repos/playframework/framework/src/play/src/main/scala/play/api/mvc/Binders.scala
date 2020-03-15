@@ -63,8 +63,7 @@ import reflect.ClassTag
   * }}}
   */
 @implicitNotFound(
-  "No QueryString binder found for type ${A}. Try to implement an implicit QueryStringBindable for this type."
-)
+  "No QueryString binder found for type ${A}. Try to implement an implicit QueryStringBindable for this type.")
 trait QueryStringBindable[A] {
   self =>
 
@@ -155,8 +154,7 @@ trait QueryStringBindable[A] {
   * }}}
   */
 @implicitNotFound(
-  "No URL path binder found for type ${A}. Try to implement an implicit PathBindable for this type."
-)
+  "No URL path binder found for type ${A}. Try to implement an implicit PathBindable for this type.")
 trait PathBindable[A] {
   self =>
 
@@ -197,8 +195,7 @@ trait PathBindable[A] {
   * Transform a value to a Javascript literal.
   */
 @implicitNotFound(
-  "No JavaScript literal binder found for type ${A}. Try to implement an implicit JavascriptLiteral for this type."
-)
+  "No JavaScript literal binder found for type ${A}. Try to implement an implicit JavascriptLiteral for this type.")
 trait JavascriptLiteral[A] {
 
   /**
@@ -353,9 +350,9 @@ object QueryStringBindable {
         params
           .get(key)
           .flatMap(_.headOption)
-          .map(
-            Right(_)
-          ) // No need to URL decode from query string since netty already does that
+          .map(Right(
+            _
+          )) // No need to URL decode from query string since netty already does that
       // Use an option here in case users call index(null) in the routes -- see #818
       def unbind(key: String, value: String) =
         key + "=" + URLEncoder.encode(Option(value).getOrElse(""), "utf-8")
@@ -383,8 +380,7 @@ object QueryStringBindable {
         _.toInt,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Int: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Int: %s".format(key, e.getMessage))
 
   /**
     * QueryString binder for Integer.
@@ -400,8 +396,7 @@ object QueryStringBindable {
         _.toLong,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Long: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Long: %s".format(key, e.getMessage))
 
   /**
     * QueryString binder for Java Long.
@@ -417,8 +412,7 @@ object QueryStringBindable {
         _.toDouble,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Double: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Double: %s".format(key, e.getMessage))
 
   /**
     * QueryString binder for Java Double.
@@ -434,8 +428,7 @@ object QueryStringBindable {
         _.toFloat,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Float: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Float: %s".format(key, e.getMessage))
 
   /**
     * QueryString binder for Java Float.
@@ -460,8 +453,7 @@ object QueryStringBindable {
         _.toString,
         (key: String, e: Exception) =>
           "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1"
-            .format(key)
-      ) {
+            .format(key)) {
     override def javascriptUnbind = """function(k,v){return k+'='+(!!v)}"""
   }
 
@@ -479,8 +471,7 @@ object QueryStringBindable {
         UUID.fromString(_),
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as UUID: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as UUID: %s".format(key, e.getMessage))
 
   /**
     * QueryString binder for Option.
@@ -663,8 +654,7 @@ object PathBindable {
         (s: String) => s,
         (s: String) => s,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as String: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as String: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Char.
@@ -687,8 +677,7 @@ object PathBindable {
         _.toInt,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Int: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Int: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Java Integer.
@@ -704,8 +693,7 @@ object PathBindable {
         _.toLong,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Long: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Long: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Java Long.
@@ -721,8 +709,7 @@ object PathBindable {
         _.toDouble,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Double: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Double: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Java Double.
@@ -738,8 +725,7 @@ object PathBindable {
         _.toFloat,
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as Float: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as Float: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Java Float.
@@ -764,8 +750,7 @@ object PathBindable {
         _.toString,
         (key: String, e: Exception) =>
           "Cannot parse parameter %s as Boolean: should be true, false, 0 or 1"
-            .format(key)
-      ) {
+            .format(key)) {
     override def javascriptUnbind = """function(k,v){return !!v}"""
   }
 
@@ -783,8 +768,7 @@ object PathBindable {
         UUID.fromString(_),
         _.toString,
         (key: String, e: Exception) =>
-          "Cannot parse parameter %s as UUID: %s".format(key, e.getMessage)
-      )
+          "Cannot parse parameter %s as UUID: %s".format(key, e.getMessage))
 
   /**
     * Path binder for Java PathBindable

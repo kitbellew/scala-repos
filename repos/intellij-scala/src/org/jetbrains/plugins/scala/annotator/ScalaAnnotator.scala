@@ -203,8 +203,8 @@ class ScalaAnnotator
               valKeyword,
               ScalaBundle.message("enumerator.val.keyword.deprecated"))
             annotation.setHighlightType(ProblemHighlightType.LIKE_DEPRECATED)
-            annotation.registerFix(
-              new RemoveValFromEnumeratorIntentionAction(enum))
+            annotation.registerFix(new RemoveValFromEnumeratorIntentionAction(
+              enum))
           case _ =>
         }
         super.visitEnumerator(enum)
@@ -218,8 +218,8 @@ class ScalaAnnotator
               ScalaBundle.message("generator.val.keyword.removed"))
             annotation.setHighlightType(
               ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-            annotation.registerFix(
-              new RemoveValFromGeneratorIntentionAction(gen))
+            annotation.registerFix(new RemoveValFromGeneratorIntentionAction(
+              gen))
           case _ =>
         }
         super.visitGenerator(gen)

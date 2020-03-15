@@ -167,9 +167,9 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                     with HomogeneousArrayColumn[a] {
                     val tpe = arrTpe
                     def apply(i: Int) =
-                      col(i).asInstanceOf[HomogeneousArrayColumn[a]](
-                        row(i)
-                      ) // primitive arrays are still objects, so the erasure here is not a problem
+                      col(i).asInstanceOf[HomogeneousArrayColumn[a]](row(
+                        i
+                      )) // primitive arrays are still objects, so the erasure here is not a problem
                   }
 
                   ref -> col
@@ -200,8 +200,7 @@ trait ArrayLibModule[M[+_]] extends ColumnarTableLibModule[M] {
             WrapObject(
               InnerArrayConcat(
                 DerefObjectStatic(Leaf(Source), paths.Key),
-                WrapArray(Scan(Leaf(Source), freshIdScanner))
-              ),
+                WrapArray(Scan(Leaf(Source), freshIdScanner))),
               paths.Key.name),
             WrapObject(
               DerefObjectStatic(Leaf(Source), paths.Value),

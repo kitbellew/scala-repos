@@ -141,10 +141,9 @@ final class Emitter private (
     for (m <- linkedClass.staticMethods) {
       val methodCache = classCache.getStaticCache(m.info.encodedName)
 
-      addTree(
-        methodCache.getOrElseUpdate(
-          m.version,
-          classEmitter.genMethod(className, m.tree)))
+      addTree(methodCache.getOrElseUpdate(
+        m.version,
+        classEmitter.genMethod(className, m.tree)))
     }
 
     if (linkedClass.hasInstances && kind.isAnyScalaJSDefinedClass) {
@@ -184,41 +183,34 @@ final class Emitter private (
       // Default methods
       for (m <- linkedClass.memberMethods) yield {
         val methodCache = classCache.getMethodCache(m.info.encodedName)
-        addTree(
-          methodCache.getOrElseUpdate(
-            m.version,
-            classEmitter.genDefaultMethod(className, m.tree)))
+        addTree(methodCache.getOrElseUpdate(
+          m.version,
+          classEmitter.genDefaultMethod(className, m.tree)))
       }
     }
 
     if (classEmitter.needInstanceTests(linkedClass)) {
-      addTree(
-        classTreeCache.instanceTests.getOrElseUpdate(
-          js.Block(
-            classEmitter.genInstanceTests(linkedClass),
-            classEmitter.genArrayInstanceTests(linkedClass)
-          )(linkedClass.pos)))
+      addTree(classTreeCache.instanceTests.getOrElseUpdate(
+        js.Block(
+          classEmitter.genInstanceTests(linkedClass),
+          classEmitter.genArrayInstanceTests(linkedClass))(linkedClass.pos)))
     }
 
     if (linkedClass.hasRuntimeTypeInfo) {
-      addTree(
-        classTreeCache.typeData.getOrElseUpdate(
-          classEmitter.genTypeData(linkedClass)))
+      addTree(classTreeCache.typeData.getOrElseUpdate(classEmitter.genTypeData(
+        linkedClass)))
     }
 
     if (linkedClass.hasInstances && kind.isClass && linkedClass.hasRuntimeTypeInfo)
-      addTree(
-        classTreeCache.setTypeData.getOrElseUpdate(
-          classEmitter.genSetTypeData(linkedClass)))
+      addTree(classTreeCache.setTypeData.getOrElseUpdate(
+        classEmitter.genSetTypeData(linkedClass)))
 
     if (linkedClass.kind.hasModuleAccessor)
-      addTree(
-        classTreeCache.moduleAccessor.getOrElseUpdate(
-          classEmitter.genModuleAccessor(linkedClass)))
+      addTree(classTreeCache.moduleAccessor.getOrElseUpdate(
+        classEmitter.genModuleAccessor(linkedClass)))
 
-    addTree(
-      classTreeCache.classExports.getOrElseUpdate(
-        classEmitter.genClassExports(linkedClass)))
+    addTree(classTreeCache.classExports.getOrElseUpdate(
+      classEmitter.genClassExports(linkedClass)))
   }
 
   // Helpers

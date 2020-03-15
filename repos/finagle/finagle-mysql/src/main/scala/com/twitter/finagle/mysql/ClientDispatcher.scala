@@ -37,10 +37,8 @@ case class LostSyncException(underlying: Throwable)
   * implementation of prepared statements in the presence of a connection pool.
   * The cache is capped at `max` and least recently used elements are evicted.
   */
-private[mysql] class PrepareCache(
-    svc: Service[Request, Result],
-    max: Int = 20
-) extends ServiceProxy[Request, Result](svc) {
+private[mysql] class PrepareCache(svc: Service[Request, Result], max: Int = 20)
+    extends ServiceProxy[Request, Result](svc) {
 
   private[this] val fn = {
     val listener = new RemovalListener[Request, Future[Result]] {
@@ -90,8 +88,8 @@ object ClientDispatcher {
     */
   def apply(
       trans: Transport[Packet, Packet],
-      handshake: HandshakeInit => Try[HandshakeResponse]
-  ): Service[Request, Result] = {
+      handshake: HandshakeInit => Try[HandshakeResponse])
+      : Service[Request, Result] = {
     new PrepareCache(new ClientDispatcher(trans, handshake))
   }
 
@@ -115,8 +113,8 @@ object ClientDispatcher {
   */
 class ClientDispatcher(
     trans: Transport[Packet, Packet],
-    handshake: HandshakeInit => Try[HandshakeResponse]
-) extends GenSerialClientDispatcher[Request, Result, Packet, Packet](trans) {
+    handshake: HandshakeInit => Try[HandshakeResponse])
+    extends GenSerialClientDispatcher[Request, Result, Packet, Packet](trans) {
   import ClientDispatcher._
 
   override def apply(req: Request): Future[Result] =
@@ -181,8 +179,7 @@ class ClientDispatcher(
   private[this] def decodePacket(
       packet: Packet,
       cmd: Byte,
-      signal: Promise[Unit]
-  ): Future[Result] =
+      signal: Promise[Unit]): Future[Result] =
     packet.body.headOption match {
       case Some(Packet.OkByte) if cmd == Command.COM_STMT_PREPARE =>
         // decode PrepareOk Result: A header packet potentially followed

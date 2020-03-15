@@ -48,9 +48,9 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle._
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
-      unmanagedClasspath in (LocalProject(
-        "saddle-core"), Test) <++= (fullClasspath in (LocalProject(
-        "saddle-test-framework"), Test)),
+      unmanagedClasspath in (
+        LocalProject("saddle-core"), Test
+      ) <++= (fullClasspath in (LocalProject("saddle-test-framework"), Test)),
       libraryDependencies <++= scalaVersion(v =>
         Seq(
           "joda-time" % "joda-time" % "2.1",
@@ -76,9 +76,7 @@ object SaddleBuild extends sbt.Build {
                 |import org.saddle.time._
                 |import org.saddle.io._""".stripMargin('|'),
         libraryDependencies <++= scalaVersion(v =>
-          Seq(
-            "org.scala-saddle" % "jhdf5" % "2.9"
-          ) ++ Shared.testDeps(v)),
+          Seq("org.scala-saddle" % "jhdf5" % "2.9") ++ Shared.testDeps(v)),
         testOptions in Test += Tests.Argument("console", "junitxml")
       )
     ) dependsOn (core)
@@ -89,9 +87,7 @@ object SaddleBuild extends sbt.Build {
       base = file("saddle-test-framework"),
       settings = Seq(
         libraryDependencies <++= scalaVersion(v =>
-          Shared.testDeps(v, "compile"))
-      )
-    ) dependsOn (core)
+          Shared.testDeps(v, "compile")))) dependsOn (core)
 
   def project(id: String, base: File, settings: Seq[Project.Setting[_]] = Nil) =
     Project(
@@ -113,11 +109,7 @@ object Shared {
       if (version.startsWith("2.9")) "org.scalacheck" %% "scalacheck" % "1.10.1"
       else "org.scalacheck" %% "scalacheck" % "1.11.5"
 
-    Seq(
-      specs2 % conf,
-      scalacheck % conf,
-      "junit" % "junit" % "4.11" % conf
-    )
+    Seq(specs2 % conf, scalacheck % conf, "junit" % "junit" % "4.11" % conf)
   }
 
   val settings = Seq(
@@ -125,8 +117,7 @@ object Shared {
     publishMavenStyle := true,
     publishArtifact in Test := false,
     pomIncludeRepository := { x => false },
-    pomExtra := (
-      <url>http://saddle.github.io/</url>
+    pomExtra := (<url>http://saddle.github.io/</url>
       <licenses>
         <license>
           <name>Apache 2.0</name>
@@ -152,8 +143,7 @@ object Shared {
           <organizationUrl>https://www.novus.com/</organizationUrl>
           <timezone>-5</timezone>
         </developer>
-      </developers>
-    ),
+      </developers>),
     scalaVersion := "2.10.5",
     version := "1.3.5-SNAPSHOT",
     crossScalaVersions := Seq("2.9.3", "2.10.5", "2.11.6"),

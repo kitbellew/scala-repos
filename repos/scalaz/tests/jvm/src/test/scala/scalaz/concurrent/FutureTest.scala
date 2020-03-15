@@ -103,17 +103,12 @@ object FutureTest extends SpecLite {
    * 3 runs.
    */
   def deadlocks(depth: Int): Future[List[Long]] =
-    if (depth == 1)
-      Future.fork(
-        Future.delay({
-          Thread.sleep(20)
-          List(System.currentTimeMillis)
-        })
-      )
+    if (depth == 1) Future.fork(Future.delay({
+      Thread.sleep(20)
+      List(System.currentTimeMillis)
+    }))
     else
-      Future.fork(
-        non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
-          case (l, r) => l ++ r
-        })
-      )
+      Future.fork(non.both(deadlocks(depth - 1), deadlocks(depth - 1)) map ({
+        case (l, r) => l ++ r
+      }))
 }

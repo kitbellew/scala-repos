@@ -72,8 +72,8 @@ class TaskReplaceActor(
     eventBus.unsubscribe(self)
     periodicalRetryKills.cancel()
     if (!promise.isCompleted)
-      promise.tryFailure(
-        new TaskUpgradeCanceledException("The task upgrade has been cancelled"))
+      promise.tryFailure(new TaskUpgradeCanceledException(
+        "The task upgrade has been cancelled"))
   }
 
   override def receive: Receive = {

@@ -66,14 +66,10 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
   test("get") {
     Await.result(client.set("foo", Buf.Utf8("bar")))
     Await.result(client.set("baz", Buf.Utf8("boing")))
-    val result = Await
-      .result(
-        client.get(Seq("foo", "baz", "notthere"))
-      )
-      .map {
-        case (key, Buf.Utf8(value)) =>
-          (key, value)
-      }
+    val result = Await.result(client.get(Seq("foo", "baz", "notthere"))).map {
+      case (key, Buf.Utf8(value)) =>
+        (key, value)
+    }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
 
@@ -83,9 +79,7 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       Await.result(client.set("bazs", Buf.Utf8("xyz")))
       Await.result(client.set("bazs", Buf.Utf8("zyx")))
       val result = Await
-        .result(
-          client.gets(Seq("foos", "bazs", "somethingelse"))
-        )
+        .result(client.gets(Seq("foos", "bazs", "somethingelse")))
         .map {
           case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
             (key, (value, casUnique))
@@ -94,11 +88,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
         "foos" -> (
           (
             "xyz",
-            "1"
-          )
+            "1")
         ), // the "cas unique" values are predictable from a fresh memcached
-        "bazs" -> (("zyx", "3"))
-      )
+        "bazs" -> (("zyx", "3")))
       assert(result == expected)
     }
   }
@@ -215,9 +207,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
 
     // set values
     Await.result(
-      Future.collect(
-        (0 to 20).map { i => client.set(s"foo$i", Buf.Utf8(s"bar$i")) }
-      ),
+      Future.collect((0 to 20).map { i =>
+        client.set(s"foo$i", Buf.Utf8(s"bar$i"))
+      }),
       TimeOut)
 
     // shutdown one memcache host
@@ -295,8 +287,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
       .configured(param.Timer(timer))
       .configured(param.Stats(statsReceiver))
       .newRichClient(
-        Name.bound(
-          Address(cacheServer.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(
+          cacheServer.boundAddress.asInstanceOf[InetSocketAddress])),
         "cacheClient")
 
     Time.withCurrentTimeFrozen { timeControl =>

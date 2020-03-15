@@ -289,8 +289,8 @@ class TcpSpec
       serverConnection.waitRead() should be(testData)
 
       // Cause error
-      tcpWriteProbe.tcpWriteSubscription.sendError(
-        new IllegalStateException("test"))
+      tcpWriteProbe.tcpWriteSubscription.sendError(new IllegalStateException(
+        "test"))
 
       tcpReadProbe.subscriberProbe.expectError()
       serverConnection.expectClosed(_.isErrorClosed)
@@ -324,8 +324,8 @@ class TcpSpec
       serverConnection.read(5)
       serverConnection.waitRead() should be(testData)
 
-      tcpWriteProbe.tcpWriteSubscription.sendError(
-        new IllegalStateException("test"))
+      tcpWriteProbe.tcpWriteSubscription.sendError(new IllegalStateException(
+        "test"))
       serverConnection.expectClosed(_.isErrorClosed)
       serverConnection.expectTerminated()
     }
@@ -423,8 +423,9 @@ class TcpSpec
 
       val (promise, result) = Source
         .maybe[ByteString]
-        .via(Tcp()
-          .outgoingConnection(serverAddress.getHostName, serverAddress.getPort))
+        .via(Tcp().outgoingConnection(
+          serverAddress.getHostName,
+          serverAddress.getPort))
         .toMat(Sink.fold(ByteString.empty)(_ ++ _))(Keep.both)
         .run()
 

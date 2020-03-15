@@ -172,9 +172,10 @@ object TestLogCleaning {
         val content =
           if (entry.message.isNull) null
           else TestUtils.readString(entry.message.payload)
-        println(
-          "offset = %s, key = %s, content = %s"
-            .format(entry.offset, key, content))
+        println("offset = %s, key = %s, content = %s".format(
+          entry.offset,
+          key,
+          content))
       }
     }
   }

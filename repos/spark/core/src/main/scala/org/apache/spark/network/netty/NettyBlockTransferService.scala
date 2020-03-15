@@ -73,12 +73,11 @@ class NettyBlockTransferService(
     if (authEnabled) {
       serverBootstrap = Some(
         new SaslServerBootstrap(transportConf, securityManager))
-      clientBootstrap = Some(
-        new SaslClientBootstrap(
-          transportConf,
-          conf.getAppId,
-          securityManager,
-          securityManager.isSaslEncryptionEnabled()))
+      clientBootstrap = Some(new SaslClientBootstrap(
+        transportConf,
+        conf.getAppId,
+        securityManager,
+        securityManager.isSaslEncryptionEnabled()))
     }
     transportContext = new TransportContext(transportConf, rpcHandler)
     clientFactory = transportContext.createClientFactory(

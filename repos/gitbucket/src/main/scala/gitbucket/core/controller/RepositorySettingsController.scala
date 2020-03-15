@@ -48,10 +48,9 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       isPrivate: Boolean)
 
   val optionsForm = mapping(
-    "repositoryName" -> trim(
-      label(
-        "Repository Name",
-        text(required, maxlength(40), identifier, renameRepositoryName))),
+    "repositoryName" -> trim(label(
+      "Repository Name",
+      text(required, maxlength(40), identifier, renameRepositoryName))),
     "description" -> trim(label("Description", optional(text()))),
     "isPrivate" -> trim(label("Repository Type", boolean()))
   )(OptionsForm.apply)
@@ -61,15 +60,15 @@ trait RepositorySettingsControllerBase extends ControllerBase {
 
   val defaultBranchForm = mapping(
     "defaultBranch" -> trim(
-      label("Default Branch", text(required, maxlength(100))))
-  )(DefaultBranchForm.apply)
+      label("Default Branch", text(required, maxlength(100)))))(
+    DefaultBranchForm.apply)
 
   // for collaborator addition
   case class CollaboratorForm(userName: String)
 
   val collaboratorForm = mapping(
-    "userName" -> trim(label("Username", text(required, collaborator)))
-  )(CollaboratorForm.apply)
+    "userName" -> trim(label("Username", text(required, collaborator))))(
+    CollaboratorForm.apply)
 
   // for web hook url addition
   case class WebHookForm(
@@ -81,15 +80,15 @@ trait RepositorySettingsControllerBase extends ControllerBase {
     mapping(
       "url" -> trim(label("url", text(required, webHook(update)))),
       "events" -> webhookEvents,
-      "token" -> optional(trim(label("token", text(maxlength(100)))))
-    )(WebHookForm.apply)
+      "token" -> optional(trim(label("token", text(maxlength(100))))))(
+      WebHookForm.apply)
 
   // for transfer ownership
   case class TransferOwnerShipForm(newOwner: String)
 
   val transferForm = mapping(
-    "newOwner" -> trim(label("New owner", text(required, transferUser)))
-  )(TransferOwnerShipForm.apply)
+    "newOwner" -> trim(label("New owner", text(required, transferUser))))(
+    TransferOwnerShipForm.apply)
 
   /**
     * Redirect to the Options page.
@@ -116,8 +115,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
         form.description,
         repository.repository.parentUserName.map { _ =>
           repository.repository.isPrivate
-        } getOrElse form.isPrivate
-      )
+        } getOrElse form.isPrivate)
       // Change repository name
       if (repository.name != form.repositoryName) {
         // Update database
@@ -355,8 +353,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
               .map(req =>
                 Map(
                   "headers" -> _headers(req.getAllHeaders),
-                  "payload" -> json
-                ))
+                  "payload" -> json))
               .recover(toErrorMap),
             20 seconds),
           "responce" -> Await.result(
@@ -365,8 +362,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
                 Map(
                   "status" -> res.getStatusLine(),
                   "body" -> EntityUtils.toString(res.getEntity()),
-                  "headers" -> _headers(res.getAllHeaders())
-                ))
+                  "headers" -> _headers(res.getAllHeaders())))
               .recover(toErrorMap),
             20 seconds
           )

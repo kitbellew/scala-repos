@@ -266,8 +266,9 @@ case class FetchResponse(
       case Some(partitionData) => partitionData
       case _ =>
         throw new IllegalArgumentException(
-          "No partition %s in fetch response %s"
-            .format(topicAndPartition, this.toString))
+          "No partition %s in fetch response %s".format(
+            topicAndPartition,
+            this.toString))
     }
   }
 

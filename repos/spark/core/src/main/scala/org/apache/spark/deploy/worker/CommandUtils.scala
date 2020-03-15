@@ -98,7 +98,9 @@ private[deploy] object CommandUtils extends Logging {
 
     // set auth secret to env variable if needed
     if (securityMgr.isAuthenticationEnabled) {
-      newEnvironment += (SecurityManager.ENV_AUTH_SECRET -> securityMgr.getSecretKey)
+      newEnvironment += (
+        SecurityManager.ENV_AUTH_SECRET -> securityMgr.getSecretKey
+      )
     }
 
     Command(
@@ -108,8 +110,8 @@ private[deploy] object CommandUtils extends Logging {
       command.classPathEntries ++ classPath,
       Seq[String](), // library path already captured in environment variable
       // filter out auth secret from java options
-      command.javaOpts.filterNot(
-        _.startsWith("-D" + SecurityManager.SPARK_AUTH_SECRET_CONF))
+      command.javaOpts.filterNot(_.startsWith(
+        "-D" + SecurityManager.SPARK_AUTH_SECRET_CONF))
     )
   }
 

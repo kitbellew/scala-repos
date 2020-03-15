@@ -197,9 +197,11 @@ private[deploy] class Worker(
 
   override def onStart() {
     assert(!registered)
-    logInfo(
-      "Starting Spark worker %s:%d with %d cores, %s RAM"
-        .format(host, port, cores, Utils.megabytesToString(memory)))
+    logInfo("Starting Spark worker %s:%d with %d cores, %s RAM".format(
+      host,
+      port,
+      cores,
+      Utils.megabytesToString(memory)))
     logInfo(s"Running Spark version ${org.apache.spark.SPARK_VERSION}")
     logInfo("Spark home: " + sparkHome)
     createWorkDir()
@@ -375,15 +377,14 @@ private[deploy] class Worker(
 
   private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit = {
     masterEndpoint
-      .ask[RegisterWorkerResponse](
-        RegisterWorker(
-          workerId,
-          host,
-          port,
-          self,
-          cores,
-          memory,
-          workerWebUiUrl))
+      .ask[RegisterWorkerResponse](RegisterWorker(
+        workerId,
+        host,
+        port,
+        self,
+        cores,
+        memory,
+        workerWebUiUrl))
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) =>
@@ -485,11 +486,10 @@ private[deploy] class Worker(
 
         val execs = executors.values.map(e =>
           new ExecutorDescription(e.appId, e.execId, e.cores, e.state))
-        masterRef.send(
-          WorkerSchedulerStateResponse(
-            workerId,
-            execs.toList,
-            drivers.keys.toSeq))
+        masterRef.send(WorkerSchedulerStateResponse(
+          workerId,
+          execs.toList,
+          drivers.keys.toSeq))
 
       case ReconnectWorker(masterUrl) =>
         logInfo(
@@ -502,9 +502,10 @@ private[deploy] class Worker(
             "Invalid Master (" + masterUrl + ") attempted to launch executor.")
         } else {
           try {
-            logInfo(
-              "Asked to launch executor %s/%d for %s"
-                .format(appId, execId, appDesc.name))
+            logInfo("Asked to launch executor %s/%d for %s".format(
+              appId,
+              execId,
+              appDesc.name))
 
             // Create the executor's working directory
             val executorDir = new File(workDir, appId + "/" + execId)
@@ -561,13 +562,12 @@ private[deploy] class Worker(
                 executors(appId + "/" + execId).kill()
                 executors -= appId + "/" + execId
               }
-              sendToMaster(
-                ExecutorStateChanged(
-                  appId,
-                  execId,
-                  ExecutorState.FAILED,
-                  Some(e.toString),
-                  None))
+              sendToMaster(ExecutorStateChanged(
+                appId,
+                execId,
+                ExecutorState.FAILED,
+                Some(e.toString),
+                None))
             }
           }
         }
@@ -640,22 +640,21 @@ private[deploy] class Worker(
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
     case RequestWorkerState =>
-      context.reply(
-        WorkerStateResponse(
-          host,
-          port,
-          workerId,
-          executors.values.toList,
-          finishedExecutors.values.toList,
-          drivers.values.toList,
-          finishedDrivers.values.toList,
-          activeMasterUrl,
-          cores,
-          memory,
-          coresUsed,
-          memoryUsed,
-          activeMasterWebUiUrl
-        ))
+      context.reply(WorkerStateResponse(
+        host,
+        port,
+        workerId,
+        executors.values.toList,
+        finishedExecutors.values.toList,
+        drivers.values.toList,
+        finishedDrivers.values.toList,
+        activeMasterUrl,
+        cores,
+        memory,
+        coresUsed,
+        memoryUsed,
+        activeMasterWebUiUrl
+      ))
   }
 
   override def onDisconnected(remoteAddress: RpcAddress): Unit = {

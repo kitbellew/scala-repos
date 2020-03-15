@@ -77,15 +77,14 @@ private[spark] class BlockManagerMasterEndpoint(
           storageLevel,
           deserializedSize,
           size) =>
-      context.reply(
-        updateBlockInfo(
-          blockManagerId,
-          blockId,
-          storageLevel,
-          deserializedSize,
-          size))
-      listenerBus.post(
-        SparkListenerBlockUpdated(BlockUpdatedInfo(_updateBlockInfo)))
+      context.reply(updateBlockInfo(
+        blockManagerId,
+        blockId,
+        storageLevel,
+        deserializedSize,
+        size))
+      listenerBus.post(SparkListenerBlockUpdated(
+        BlockUpdatedInfo(_updateBlockInfo)))
 
     case GetLocations(blockId) =>
       context.reply(getLocations(blockId))
@@ -165,21 +164,17 @@ private[spark] class BlockManagerMasterEndpoint(
     // Ask the slaves to remove the RDD, and put the result in a sequence of Futures.
     // The dispatcher is used as an implicit argument into the Future sequence construction.
     val removeMsg = RemoveRdd(rddId)
-    Future.sequence(
-      blockManagerInfo.values.map { bm =>
-        bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq
-    )
+    Future.sequence(blockManagerInfo.values.map { bm =>
+      bm.slaveEndpoint.ask[Int](removeMsg)
+    }.toSeq)
   }
 
   private def removeShuffle(shuffleId: Int): Future[Seq[Boolean]] = {
     // Nothing to do in the BlockManagerMasterEndpoint data structures
     val removeMsg = RemoveShuffle(shuffleId)
-    Future.sequence(
-      blockManagerInfo.values.map { bm =>
-        bm.slaveEndpoint.ask[Boolean](removeMsg)
-      }.toSeq
-    )
+    Future.sequence(blockManagerInfo.values.map { bm =>
+      bm.slaveEndpoint.ask[Boolean](removeMsg)
+    }.toSeq)
   }
 
   /**
@@ -194,11 +189,9 @@ private[spark] class BlockManagerMasterEndpoint(
     val requiredBlockManagers = blockManagerInfo.values.filter { info =>
       removeFromDriver || !info.blockManagerId.isDriver
     }
-    Future.sequence(
-      requiredBlockManagers.map { bm =>
-        bm.slaveEndpoint.ask[Int](removeMsg)
-      }.toSeq
-    )
+    Future.sequence(requiredBlockManagers.map { bm =>
+      bm.slaveEndpoint.ask[Int](removeMsg)
+    }.toSeq)
   }
 
   private def removeBlockManager(blockManagerId: BlockManagerId) {
@@ -216,10 +209,9 @@ private[spark] class BlockManagerMasterEndpoint(
       locations -= blockManagerId
       if (locations.size == 0) { blockLocations.remove(blockId) }
     }
-    listenerBus.post(
-      SparkListenerBlockManagerRemoved(
-        System.currentTimeMillis(),
-        blockManagerId))
+    listenerBus.post(SparkListenerBlockManagerRemoved(
+      System.currentTimeMillis(),
+      blockManagerId))
     logInfo(s"Removing block manager $blockManagerId")
   }
 
@@ -312,15 +304,13 @@ private[spark] class BlockManagerMasterEndpoint(
       askSlaves: Boolean): Future[Seq[BlockId]] = {
     val getMatchingBlockIds = GetMatchingBlockIds(filter)
     Future
-      .sequence(
-        blockManagerInfo.values.map { info =>
-          val future =
-            if (askSlaves) {
-              info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
-            } else { Future { info.blocks.asScala.keys.filter(filter).toSeq } }
-          future
-        }
-      )
+      .sequence(blockManagerInfo.values.map { info =>
+        val future =
+          if (askSlaves) {
+            info.slaveEndpoint.ask[Seq[BlockId]](getMatchingBlockIds)
+          } else { Future { info.blocks.asScala.keys.filter(filter).toSeq } }
+        future
+      })
       .map(_.flatten.toSeq)
   }
 
@@ -339,9 +329,10 @@ private[spark] class BlockManagerMasterEndpoint(
           removeExecutor(id.executorId)
         case None =>
       }
-      logInfo(
-        "Registering block manager %s with %s RAM, %s"
-          .format(id.hostPort, Utils.bytesToString(maxMemSize), id))
+      logInfo("Registering block manager %s with %s RAM, %s".format(
+        id.hostPort,
+        Utils.bytesToString(maxMemSize),
+        id))
 
       blockManagerIdByExecutor(id.executorId) = id
 
@@ -495,12 +486,11 @@ private[spark] class BlockManagerInfo(
         blockStatus = BlockStatus(storageLevel, memSize = memSize, diskSize = 0)
         _blocks.put(blockId, blockStatus)
         _remainingMem -= memSize
-        logInfo(
-          "Added %s in memory on %s (size: %s, free: %s)".format(
-            blockId,
-            blockManagerId.hostPort,
-            Utils.bytesToString(memSize),
-            Utils.bytesToString(_remainingMem)))
+        logInfo("Added %s in memory on %s (size: %s, free: %s)".format(
+          blockId,
+          blockManagerId.hostPort,
+          Utils.bytesToString(memSize),
+          Utils.bytesToString(_remainingMem)))
       }
       if (storageLevel.useDisk) {
         blockStatus = BlockStatus(
@@ -508,11 +498,10 @@ private[spark] class BlockManagerInfo(
           memSize = 0,
           diskSize = diskSize)
         _blocks.put(blockId, blockStatus)
-        logInfo(
-          "Added %s on disk on %s (size: %s)".format(
-            blockId,
-            blockManagerId.hostPort,
-            Utils.bytesToString(diskSize)))
+        logInfo("Added %s on disk on %s (size: %s)".format(
+          blockId,
+          blockManagerId.hostPort,
+          Utils.bytesToString(diskSize)))
       }
       if (!blockId.isBroadcast && blockStatus.isCached) {
         _cachedBlocks += blockId
@@ -523,19 +512,17 @@ private[spark] class BlockManagerInfo(
       _blocks.remove(blockId)
       _cachedBlocks -= blockId
       if (blockStatus.storageLevel.useMemory) {
-        logInfo(
-          "Removed %s on %s in memory (size: %s, free: %s)".format(
-            blockId,
-            blockManagerId.hostPort,
-            Utils.bytesToString(blockStatus.memSize),
-            Utils.bytesToString(_remainingMem)))
+        logInfo("Removed %s on %s in memory (size: %s, free: %s)".format(
+          blockId,
+          blockManagerId.hostPort,
+          Utils.bytesToString(blockStatus.memSize),
+          Utils.bytesToString(_remainingMem)))
       }
       if (blockStatus.storageLevel.useDisk) {
-        logInfo(
-          "Removed %s on %s on disk (size: %s)".format(
-            blockId,
-            blockManagerId.hostPort,
-            Utils.bytesToString(blockStatus.diskSize)))
+        logInfo("Removed %s on %s on disk (size: %s)".format(
+          blockId,
+          blockManagerId.hostPort,
+          Utils.bytesToString(blockStatus.diskSize)))
       }
     }
   }

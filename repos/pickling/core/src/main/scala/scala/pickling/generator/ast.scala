@@ -44,24 +44,21 @@ private[pickling] object IrAst {
       case PickleEntry(ops) =>
         f(PickleEntry(ops.map(chain).asInstanceOf[Seq[PicklerAst]]))
       case SubclassUnpicklerDelegation(subs, parent, bOpt, runtime) =>
-        f(
-          SubclassUnpicklerDelegation(
-            subs,
-            parent,
-            (bOpt map chain).asInstanceOf[Option[UnpicklerAst]],
-            runtime))
+        f(SubclassUnpicklerDelegation(
+          subs,
+          parent,
+          (bOpt map chain).asInstanceOf[Option[UnpicklerAst]],
+          runtime))
       case SubclassDispatch(subs, parent, bOpt, runtime) =>
-        f(
-          SubclassDispatch(
-            subs,
-            parent,
-            (bOpt map chain).asInstanceOf[Option[PicklerAst]],
-            runtime))
+        f(SubclassDispatch(
+          subs,
+          parent,
+          (bOpt map chain).asInstanceOf[Option[PicklerAst]],
+          runtime))
       case PickleUnpickleImplementation(p, u) =>
-        f(
-          PickleUnpickleImplementation(
-            chain(p).asInstanceOf[PicklerAst],
-            chain(u).asInstanceOf[UnpicklerAst]))
+        f(PickleUnpickleImplementation(
+          chain(p).asInstanceOf[PicklerAst],
+          chain(u).asInstanceOf[UnpicklerAst]))
     }
   }
 }
@@ -136,12 +133,10 @@ private[pickling] case class SubclassUnpicklerDelegation(
     extends UnpicklerAst {
   def requiresReflection: Boolean = false
   override def toString = {
-    val cases = (
-      parentBehavior.toList.map(b => s"case thisClass =>\n  $b") ++
-        subClasses.map(c => s" case $c => lookup implicit unpickler $c") ++
-        (if (lookupRuntime) List("case _ => lookup runtime")
-         else List("case _ => error"))
-    )
+    val cases = (parentBehavior.toList.map(b => s"case thisClass =>\n  $b") ++
+      subClasses.map(c => s" case $c => lookup implicit unpickler $c") ++
+      (if (lookupRuntime) List("case _ => lookup runtime")
+       else List("case _ => error")))
     s"clazz match {${cases.mkString("\n", "\n", "\n")}}"
   }
 }

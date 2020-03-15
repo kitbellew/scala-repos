@@ -83,9 +83,9 @@ final class NIHDBPerfTestRunner[T](
     val commandLineConfig = Configuration.parse(
       _rootDir map ("precog.storage.root = " + _) getOrElse "")
     override val config = (Configuration parse {
-      Option(
-        System.getProperty(
-          "precog.storage.root")) map ("precog.storage.root = " + _) getOrElse ""
+      Option(System.getProperty("precog.storage.root")) map (
+        "precog.storage.root = " + _
+      ) getOrElse ""
     }) ++ commandLineConfig
     val cookThreshold = 10000
     val clock = blueeyes.util.Clock.System
@@ -124,14 +124,12 @@ final class NIHDBPerfTestRunner[T](
     masterChef,
     yggConfig.cookThreshold,
     yggConfig.storageTimeout)
-  val projectionsActor = actorSystem.actorOf(
-    Props(
-      new PathRoutingActor(
-        yggConfig.dataDir,
-        yggConfig.storageTimeout.duration,
-        yggConfig.quiescenceTimeout,
-        1000,
-        yggConfig.clock)))
+  val projectionsActor = actorSystem.actorOf(Props(new PathRoutingActor(
+    yggConfig.dataDir,
+    yggConfig.storageTimeout.duration,
+    yggConfig.quiescenceTimeout,
+    1000,
+    yggConfig.clock)))
 
   val actorVFS = new ActorVFS(
     projectionsActor,

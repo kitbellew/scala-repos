@@ -36,10 +36,9 @@ trait UnCurry {
           val substitutedResult = restpe.substSym(
             params1,
             existentiallyAbstractedParam1s)
-          apply(
-            MethodType(
-              params ::: existentiallyAbstractedParam1s,
-              substitutedResult))
+          apply(MethodType(
+            params ::: existentiallyAbstractedParam1s,
+            substitutedResult))
         case MethodType(
               params,
               ExistentialType(tparams, restpe @ MethodType(_, _))) =>

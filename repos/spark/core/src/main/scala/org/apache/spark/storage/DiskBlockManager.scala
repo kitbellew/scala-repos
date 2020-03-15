@@ -51,8 +51,8 @@ private[spark] class DiskBlockManager(
   }
   // The content of subDirs is immutable but the content of subDirs(i) is mutable. And the content
   // of subDirs(i) is protected by the lock of subDirs(i)
-  private val subDirs = Array.fill(localDirs.length)(
-    new Array[File](subDirsPerLocalDir))
+  private val subDirs = Array.fill(localDirs.length)(new Array[File](
+    subDirsPerLocalDir))
 
   private val shutdownHook = addShutdownHook()
 

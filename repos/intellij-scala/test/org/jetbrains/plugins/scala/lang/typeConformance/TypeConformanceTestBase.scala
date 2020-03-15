@@ -45,8 +45,8 @@ abstract class TypeConformanceTestBase
       expr != null,
       "Not specified expression in range to check conformance.")
     val valueDecl = expr.asInstanceOf[ScPatternDefinition]
-    val declaredType = valueDecl.declaredType.getOrElse(
-      sys.error("Must provide type annotation for LHS"))
+    val declaredType = valueDecl.declaredType.getOrElse(sys.error(
+      "Must provide type annotation for LHS"))
 
     valueDecl.expr
       .getOrElse(throw new RuntimeException("Expression not found"))

@@ -74,17 +74,16 @@ class DistributedQueryingTest {
         {
           import dProfile.api._
           Await.result(
-            db.run(
-              DBIO.seq(
-                ts.result.map(d => assertEquals(tData.toSet, d.toSet)),
-                us.result.map(d => assertEquals(uData.toSet, d.toSet)),
-                ts.flatMap(t => us.map(u => (t, u)))
-                  .result
-                  .map(d =>
-                    assertEquals(
-                      tData.flatMap(t => uData.map(u => (t, u))).toSet,
-                      d.toSet))
-              )),
+            db.run(DBIO.seq(
+              ts.result.map(d => assertEquals(tData.toSet, d.toSet)),
+              us.result.map(d => assertEquals(uData.toSet, d.toSet)),
+              ts.flatMap(t => us.map(u => (t, u)))
+                .result
+                .map(d =>
+                  assertEquals(
+                    tData.flatMap(t => uData.map(u => (t, u))).toSet,
+                    d.toSet))
+            )),
             Duration.Inf
           )
         }

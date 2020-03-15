@@ -153,8 +153,8 @@ class SimplifyAppliedTypeLambdaQuickFix(
   def doApplyFix(project: Project): Unit = {
     val pType = getElement
     val parent = pType.getContext
-    pType.replace(
-      ScalaPsiElementFactory
-        .createTypeElementFromText(replacement, pType.getManager))
+    pType.replace(ScalaPsiElementFactory.createTypeElementFromText(
+      replacement,
+      pType.getManager))
   }
 }

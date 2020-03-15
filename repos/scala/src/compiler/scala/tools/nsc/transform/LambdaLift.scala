@@ -225,9 +225,10 @@ abstract class LambdaLift extends InfoTransform {
       def renameSym(sym: Symbol) {
         val originalName = sym.name
         sym setName newName(sym)
-        debuglog(
-          "renaming in %s: %s => %s"
-            .format(sym.owner.fullLocationString, originalName, sym.name))
+        debuglog("renaming in %s: %s => %s".format(
+          sym.owner.fullLocationString,
+          originalName,
+          sym.name))
       }
 
       // make sure that the name doesn't make the symbol accidentally `isAnonymousClass` (et.al) by
@@ -250,8 +251,10 @@ abstract class LambdaLift extends InfoTransform {
           //         package - subclass might have the same name), avoids a VerifyError in the case
           //         that a sub-class happens to lifts out a method with the *same* name.
           if (originalName.isTermName && calledFromInner(sym))
-            newTermNameCached(nonAnon(
-              sym.enclClass.fullName('$')) + nme.EXPAND_SEPARATOR_STRING + name)
+            newTermNameCached(
+              nonAnon(
+                sym.enclClass.fullName(
+                  '$')) + nme.EXPAND_SEPARATOR_STRING + name)
           else name
         }
       }
@@ -291,15 +294,15 @@ abstract class LambdaLift extends InfoTransform {
           "searching for " + sym + "(" + sym.owner + ") in " + enclosure + " " + enclosure.logicallyEnclosingMember)
 
         val proxyName = proxyNames.getOrElse(sym, sym.name)
-        val ps =
-          (proxies get enclosure.logicallyEnclosingMember).toList.flatten find (_.name == proxyName)
+        val ps = (
+          proxies get enclosure.logicallyEnclosingMember
+        ).toList.flatten find (_.name == proxyName)
         ps getOrElse searchIn(enclosure.skipConstructor.owner)
       }
-      debuglog(
-        "proxy %s from %s has logical enclosure %s".format(
-          sym.debugLocationString,
-          currentOwner.debugLocationString,
-          sym.owner.logicallyEnclosingMember.debugLocationString))
+      debuglog("proxy %s from %s has logical enclosure %s".format(
+        sym.debugLocationString,
+        currentOwner.debugLocationString,
+        sym.owner.logicallyEnclosingMember.debugLocationString))
 
       if (isSameOwnerEnclosure(sym)) sym else searchIn(currentOwner)
     }
@@ -370,11 +373,9 @@ abstract class LambdaLift extends InfoTransform {
             val paramDefs =
               ps map (p => ValDef(p) setPos tree.pos setType NoType)
 
-            sym.updateInfo(
-              lifted(
-                MethodType(
-                  addFree(sym, free = paramSyms, original = sym.info.params),
-                  sym.info.resultType)))
+            sym.updateInfo(lifted(MethodType(
+              addFree(sym, free = paramSyms, original = sym.info.params),
+              sym.info.resultType)))
             copyDefDef(tree)(vparamss = List(
               addFree(sym, free = paramDefs, original = vparams)))
           }
@@ -561,9 +562,11 @@ abstract class LambdaLift extends InfoTransform {
       sym: Symbol,
       free: List[A],
       original: List[A]): List[A] = {
-    val prependFree = (
-      !sym.isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
-        && (settings.Ydelambdafy.value == "method" && sym.isDelambdafyTarget) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory
+    val prependFree =
+      (!sym.isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
+        && (
+          settings.Ydelambdafy.value == "method" && sym.isDelambdafyTarget
+        ) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory
     )
     if (prependFree) free ::: original else original ::: free
   }

@@ -120,9 +120,8 @@ trait AssignmentAnnotator {
                 val annotation = holder.createErrorAnnotation(
                   assignment,
                   "Reassignment to val")
-                annotation.registerFix(
-                  new ValToVarQuickFix(
-                    ScalaPsiUtil.nameContext(r.element).asInstanceOf[ScValue]))
+                annotation.registerFix(new ValToVarQuickFix(
+                  ScalaPsiUtil.nameContext(r.element).asInstanceOf[ScValue]))
               case _ =>
                 holder.createErrorAnnotation(assignment, "Reassignment to val")
             }

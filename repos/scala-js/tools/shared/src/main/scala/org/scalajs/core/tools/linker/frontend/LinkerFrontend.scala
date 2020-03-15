@@ -96,8 +96,7 @@ object LinkerFrontend {
       /** Whether to only warn if the linker has errors. */
       val bypassLinkingErrors: Boolean = false,
       /** If true, performs expensive checks of the IR for the used parts. */
-      val checkIR: Boolean = false
-  ) {
+      val checkIR: Boolean = false) {
     @deprecated(
       "Bypassing linking errors will not be possible in the next major version.",
       "0.6.6")

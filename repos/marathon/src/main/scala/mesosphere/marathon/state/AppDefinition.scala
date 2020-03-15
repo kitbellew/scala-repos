@@ -102,8 +102,7 @@ case class AppDefinition(
       taskId = None,
       host = None,
       ports = Seq.empty,
-      envPrefix = None
-    )
+      envPrefix = None)
     val cpusResource = ScalarResource(Resource.CPUS, cpus)
     val memResource = ScalarResource(Resource.MEM, mem)
     val diskResource = ScalarResource(Resource.DISK, disk)
@@ -202,8 +201,7 @@ case class AppDefinition(
         FullVersionInfo(
           version = Timestamp(proto.getVersion),
           lastScalingAt = Timestamp(proto.getLastScalingAt),
-          lastConfigChangeAt = Timestamp(proto.getLastConfigChangeAt)
-        )
+          lastConfigChangeAt = Timestamp(proto.getLastConfigChangeAt))
       else OnlyVersion(Timestamp(proto.getVersion))
 
     val ipAddressOption =
@@ -427,8 +425,7 @@ object AppDefinition {
       FullVersionInfo(
         version = newVersion,
         lastScalingAt = newVersion,
-        lastConfigChangeAt = newVersion
-      )
+        lastConfigChangeAt = newVersion)
   }
 
   val RandomPortValue: Int = 0
@@ -512,7 +509,9 @@ object AppDefinition {
     appDef.instances should be >= 0
     appDef.disk should be >= 0.0
     appDef must definesCorrectResidencyCombination
-    (appDef.isResident is false) or (appDef.upgradeStrategy is UpgradeStrategy.validForResidentTasks)
+    (appDef.isResident is false) or (
+      appDef.upgradeStrategy is UpgradeStrategy.validForResidentTasks
+    )
   }
 
   /**

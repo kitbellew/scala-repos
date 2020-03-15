@@ -79,8 +79,7 @@ class CountMinSketchSuite extends FunSuite { // scalastyle:ignore funsuite
 
       assert(
         probCorrect > confidence,
-        s"Confidence not reached: required $confidence, reached $probCorrect"
-      )
+        s"Confidence not reached: required $confidence, reached $probCorrect")
     }
   }
 

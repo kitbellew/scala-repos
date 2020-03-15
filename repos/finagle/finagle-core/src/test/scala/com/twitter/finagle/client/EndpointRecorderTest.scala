@@ -35,9 +35,8 @@ class EndpointRecorderTest extends FunSuite {
   }
 
   test("EndpointRecorder is disabled if BindingFactory.Dest is not bound") {
-    val stk: StackBuilder[ServiceFactory[Int, Int]] = new StackBuilder(
-      Stack.Leaf(Stack.Role("never"), neverFactory)
-    )
+    val stk: StackBuilder[ServiceFactory[Int, Int]] =
+      new StackBuilder(Stack.Leaf(Stack.Role("never"), neverFactory))
 
     stk.push(EndpointRecorder.module[Int, Int])
 

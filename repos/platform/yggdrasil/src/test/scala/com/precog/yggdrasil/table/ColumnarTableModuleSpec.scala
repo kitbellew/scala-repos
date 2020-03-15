@@ -193,8 +193,7 @@ trait ColumnarTableModuleSpec[M[+_]]
       val sample: List[JValue] = List(
         JObject(
           JField("key", JArray(JNum(-1L), JNum(0L))),
-          JField("value", JNull)
-        ),
+          JField("value", JNull)),
         JObject(
           JField(
             "key",
@@ -210,16 +209,14 @@ trait ColumnarTableModuleSpec[M[+_]]
                     JBool(false),
                     JNull,
                     JNum(-8.988465674311579e307d),
-                    JNum(-3.536399224770604e307d))
-                )),
+                    JNum(-3.536399224770604e307d)))),
               JField("lwu", JNum(-5.121099465699862e307d))
             )
           )
         ),
         JObject(
           JField("key", JArray(JNum(-3918416808128018609L), JNum(-1L))),
-          JField("value", JNum(-1.0))
-        )
+          JField("value", JNum(-1.0)))
       )
 
       val dataset = fromJson(sample.toStream)
@@ -333,48 +330,43 @@ trait ColumnarTableModuleSpec[M[+_]]
         val sample: List[JValue] = List(
           JObject(
             JField("key", JArray(JNum(-1L) :: JNum(0L) :: Nil)) ::
-              JField("value", JNull) :: Nil
-          ),
+              JField("value", JNull) :: Nil),
           JObject(
             JField(
               "key",
-              JArray(JNum(-3090012080927607325L) :: JNum(
-                2875286661755661474L) :: Nil)) ::
+              JArray(
+                JNum(-3090012080927607325L) :: JNum(
+                  2875286661755661474L) :: Nil)) ::
               JField(
                 "value",
                 JObject(List(
                   JField(
                     "q8b",
-                    JArray(
-                      List(
-                        JNum(6.615224799778253e307d),
-                        JArray(List(
-                          JBool(false),
-                          JNull,
-                          JNum(-8.988465674311579e307d))),
-                        JNum(-3.536399224770604e307d)))),
+                    JArray(List(
+                      JNum(6.615224799778253e307d),
+                      JArray(List(
+                        JBool(false),
+                        JNull,
+                        JNum(-8.988465674311579e307d))),
+                      JNum(-3.536399224770604e307d)))),
                   JField("lwu", JNum(-5.121099465699862e307d))
                 ))
-              ) :: Nil
-          ),
+              ) :: Nil),
           JObject(
             JField(
               "key",
               JArray(JNum(-3918416808128018609L) :: JNum(-1L) :: Nil)) ::
-              JField("value", JNum(-1.0)) :: Nil
-          ),
+              JField("value", JNum(-1.0)) :: Nil),
           JObject(
             JField(
               "key",
               JArray(JNum(-3918416898128018609L) :: JNum(-2L) :: Nil)) ::
-              JField("value", JNum(-1.0)) :: Nil
-          ),
+              JField("value", JNum(-1.0)) :: Nil),
           JObject(
             JField(
               "key",
               JArray(JNum(-3918426808128018609L) :: JNum(-3L) :: Nil)) ::
-              JField("value", JNum(-1.0)) :: Nil
-          )
+              JField("value", JNum(-1.0)) :: Nil)
         )
 
         val dataset1 = fromJson(sample.toStream, Some(3))

@@ -275,7 +275,9 @@ trait RowFormatSupport { self: StdCodecs =>
 
       case (cType, col) =>
         sys.error(
-          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (cType, col.tpe))
+          "Cannot create column encoder, columns of wrong type (expected %s, found %s)." format (
+            cType, col.tpe
+          ))
     }
 
   protected trait ColumnValueDecoder {

@@ -27,10 +27,7 @@ final case class PluginManagement(
   def addOverrides(cp: Classpath): PluginManagement =
     addOverrides(extractOverrides(cp))
 
-  def inject: Seq[Setting[_]] =
-    Seq(
-      Keys.dependencyOverrides ++= overrides
-    )
+  def inject: Seq[Setting[_]] = Seq(Keys.dependencyOverrides ++= overrides)
 
   def resetDepth: PluginManagement =
     copy(context = Context(globalPluginProject = false, pluginProjectDepth = 0))
@@ -64,9 +61,10 @@ object PluginManagement {
 
   final class PluginClassLoader(p: ClassLoader)
       extends URLClassLoader(Array(), p) {
-    private[this] val urlSet = new collection.mutable.HashSet[
-      URI
-    ] // remember: don't use hashCode/equals on URL
+    private[this] val urlSet =
+      new collection.mutable.HashSet[
+        URI
+      ] // remember: don't use hashCode/equals on URL
     def add(urls: Seq[URL]): Unit =
       synchronized { for (url <- urls) if (urlSet.add(url.toURI)) addURL(url) }
   }

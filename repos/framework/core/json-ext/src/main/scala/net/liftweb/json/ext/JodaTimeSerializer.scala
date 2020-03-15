@@ -42,8 +42,7 @@ case object PeriodSerializer
           case JString(p) => new Period(p)
           case JNull      => null
         },
-        { case p: Period => JString(p.toString) }
-      ))
+        { case p: Period => JString(p.toString) }))
 
 case object DurationSerializer
     extends CustomSerializer[Duration](format =>
@@ -52,8 +51,7 @@ case object DurationSerializer
           case JInt(d) => new Duration(d.longValue)
           case JNull   => null
         },
-        { case d: Duration => JInt(d.getMillis) }
-      ))
+        { case d: Duration => JInt(d.getMillis) }))
 
 case object InstantSerializer
     extends CustomSerializer[Instant](format =>
@@ -62,8 +60,7 @@ case object InstantSerializer
           case JInt(i) => new Instant(i.longValue)
           case JNull   => null
         },
-        { case i: Instant => JInt(i.getMillis) }
-      ))
+        { case i: Instant => JInt(i.getMillis) }))
 
 object DateParser {
   def parse(s: String, format: Formats) =
@@ -80,8 +77,7 @@ case object DateTimeSerializer
           case JString(s) => new DateTime(DateParser.parse(s, format))
           case JNull      => null
         },
-        { case d: DateTime => JString(format.dateFormat.format(d.toDate)) }
-      ))
+        { case d: DateTime => JString(format.dateFormat.format(d.toDate)) }))
 
 case object DateMidnightSerializer
     extends CustomSerializer[DateMidnight](format =>
@@ -90,8 +86,9 @@ case object DateMidnightSerializer
           case JString(s) => new DateMidnight(DateParser.parse(s, format))
           case JNull      => null
         },
-        { case d: DateMidnight => JString(format.dateFormat.format(d.toDate)) }
-      ))
+        {
+          case d: DateMidnight => JString(format.dateFormat.format(d.toDate))
+        }))
 
 private[ext] case class _Interval(start: Long, end: Long)
 object IntervalSerializer {

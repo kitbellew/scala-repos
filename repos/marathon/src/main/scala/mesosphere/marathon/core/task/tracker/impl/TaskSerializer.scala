@@ -61,13 +61,10 @@ object TaskSerializer {
 
     def launchedTask: Option[Task.Launched] = {
       if (proto.hasStagedAt) {
-        Some(
-          Task.Launched(
-            appVersion = appVersion,
-            status = taskStatus,
-            networking = networking
-          )
-        )
+        Some(Task.Launched(
+          appVersion = appVersion,
+          status = taskStatus,
+          networking = networking))
       } else { None }
     }
 
@@ -75,8 +72,7 @@ object TaskSerializer {
       taskId = Task.Id(proto.getId),
       agentInfo = agentInfo,
       reservation,
-      launchedTask
-    )
+      launchedTask)
   }
 
   private[this] def constructTask(
@@ -188,8 +184,7 @@ private[impl] object ReservationSerializer {
       Timeout(
         Timestamp(proto.getInitiated),
         Timestamp(proto.getDeadline),
-        reason
-      )
+        reason)
     }
 
     def toProto(timeout: Timeout): ProtoTimeout = {

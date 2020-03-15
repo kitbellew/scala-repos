@@ -54,29 +54,27 @@ class MesosClusterSchedulerSuite
   }
 
   test("can queue drivers") {
-    val response = scheduler.submitDriver(
-      new MesosDriverDescription(
-        "d1",
-        "jar",
-        1000,
-        1,
-        true,
-        command,
-        Map[String, String](),
-        "s1",
-        new Date()))
+    val response = scheduler.submitDriver(new MesosDriverDescription(
+      "d1",
+      "jar",
+      1000,
+      1,
+      true,
+      command,
+      Map[String, String](),
+      "s1",
+      new Date()))
     assert(response.success)
-    val response2 = scheduler.submitDriver(
-      new MesosDriverDescription(
-        "d1",
-        "jar",
-        1000,
-        1,
-        true,
-        command,
-        Map[String, String](),
-        "s2",
-        new Date()))
+    val response2 = scheduler.submitDriver(new MesosDriverDescription(
+      "d1",
+      "jar",
+      1000,
+      1,
+      true,
+      command,
+      Map[String, String](),
+      "s2",
+      new Date()))
     assert(response2.success)
     val state = scheduler.getSchedulerState()
     val queuedDrivers = state.queuedDrivers.toList
@@ -85,17 +83,16 @@ class MesosClusterSchedulerSuite
   }
 
   test("can kill queued drivers") {
-    val response = scheduler.submitDriver(
-      new MesosDriverDescription(
-        "d1",
-        "jar",
-        1000,
-        1,
-        true,
-        command,
-        Map[String, String](),
-        "s1",
-        new Date()))
+    val response = scheduler.submitDriver(new MesosDriverDescription(
+      "d1",
+      "jar",
+      1000,
+      1,
+      true,
+      command,
+      Map[String, String](),
+      "s1",
+      new Date()))
     assert(response.success)
     val killResponse = scheduler.killDriver(response.submissionId)
     assert(killResponse.success)
@@ -105,17 +102,16 @@ class MesosClusterSchedulerSuite
 
   test("can handle multiple roles") {
     val driver = mock[SchedulerDriver]
-    val response = scheduler.submitDriver(
-      new MesosDriverDescription(
-        "d1",
-        "jar",
-        1200,
-        1.5,
-        true,
-        command,
-        Map(("spark.mesos.executor.home", "test"), ("spark.app.name", "test")),
-        "s1",
-        new Date()))
+    val response = scheduler.submitDriver(new MesosDriverDescription(
+      "d1",
+      "jar",
+      1200,
+      1.5,
+      true,
+      command,
+      Map(("spark.mesos.executor.home", "test"), ("spark.app.name", "test")),
+      "s1",
+      new Date()))
     assert(response.success)
     val offer = Offer
       .newBuilder()
@@ -155,11 +151,9 @@ class MesosClusterSchedulerSuite
 
     val capture = ArgumentCaptor.forClass(classOf[Collection[TaskInfo]])
 
-    when(
-      driver.launchTasks(
-        Matchers.eq(Collections.singleton(offer.getId)),
-        capture.capture())
-    ).thenReturn(Status.valueOf(1))
+    when(driver.launchTasks(
+      Matchers.eq(Collections.singleton(offer.getId)),
+      capture.capture())).thenReturn(Status.valueOf(1))
 
     scheduler.resourceOffers(driver, Collections.singletonList(offer))
 
@@ -181,7 +175,6 @@ class MesosClusterSchedulerSuite
 
     verify(driver, times(1)).launchTasks(
       Matchers.eq(Collections.singleton(offer.getId)),
-      capture.capture()
-    )
+      capture.capture())
   }
 }

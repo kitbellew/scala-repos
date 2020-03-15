@@ -76,7 +76,9 @@ object SwaggerSerializers {
         override val customSerializers: List[Serializer[_]] =
           self.customSerializers
         override val fieldSerializers: List[(Class[_], FieldSerializer[_])] =
-          (newSerializer.mf.runtimeClass -> newSerializer) :: self.fieldSerializers
+          (
+            newSerializer.mf.runtimeClass -> newSerializer
+          ) :: self.fieldSerializers
         override val wantsBigDecimal: Boolean = self.wantsBigDecimal
         override val primitives: Set[Type] = self.primitives
         override val companions: List[(Class[_], AnyRef)] = self.companions
@@ -224,9 +226,9 @@ object SwaggerSerializers {
       case DataType.ContainerDataType("List" | "Array", _, _) =>
         ("type" -> "array") ~ ("format" -> None)
       case DataType.ContainerDataType("Set", Some(dt), _) =>
-        ("type" -> "array") ~ ("items" -> writeDataType(
-          dt,
-          "$ref")) ~ ("uniqueItems" -> true)
+        ("type" -> "array") ~ ("items" -> writeDataType(dt, "$ref")) ~ (
+          "uniqueItems" -> true
+        )
       case DataType.ContainerDataType("Set", _, _) =>
         ("type" -> "array") ~ ("uniqueItems" -> true)
       case DataType.ValueDataType(name, _, qualifiedName) =>
@@ -455,9 +457,8 @@ object SwaggerSerializers {
                 ("parameters" -> Extraction.decompose(
                   obj.parameters.sortBy(_.position))) ~
                 ("responseMessages" -> (if (obj.responseMessages.nonEmpty)
-                                          Some(
-                                            Extraction.decompose(
-                                              obj.responseMessages))
+                                          Some(Extraction.decompose(
+                                            obj.responseMessages))
                                         else None))
 
               val consumes = dontAddOnEmpty("consumes", obj.consumes) _
@@ -466,8 +467,9 @@ object SwaggerSerializers {
               val authorizations =
                 dontAddOnEmpty("authorizations", obj.authorizations) _
               val r =
-                (consumes andThen produces andThen authorizations andThen protocols)(
-                  json)
+                (
+                  consumes andThen produces andThen authorizations andThen protocols
+                )(json)
               r merge writeDataType(obj.responseClass)
           }))
 
@@ -586,10 +588,9 @@ object SwaggerSerializers {
           {
             case value if value \ "type" == JString("apiKey") =>
               ApiKey(
-                (value \ "keyname")
-                  .extractOpt[String]
-                  .flatMap(_.blankOption)
-                  .getOrElse("apiKey"),
+                (
+                  value \ "keyname"
+                ).extractOpt[String].flatMap(_.blankOption).getOrElse("apiKey"),
                 (value \ "passAs").extract[String])
             case value if value \ "type" == JString("oauth2") =>
               OAuth(

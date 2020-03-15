@@ -343,10 +343,11 @@ object Conformance {
                   ScalaPsiManager.ClassCategory.TYPE)
               if (notNullClass != null) {
                 val notNullType = ScDesignatorType(notNullClass)
-                result = (
-                  !conforms(notNullType, l),
-                  undefinedSubst
-                ) //todo: think about undefinedSubst
+                result =
+                  (
+                    !conforms(notNullType, l),
+                    undefinedSubst
+                  ) //todo: think about undefinedSubst
               } else { result = (true, undefinedSubst) }
             case _ => result = (true, undefinedSubst)
           }
@@ -1265,8 +1266,9 @@ object Conformance {
             case ScParameterizedType(
                   des2 @ ScDesignatorType(a2: ScTypeAlias),
                   args2)
-                if a.isInstanceOf[
-                  ScTypeAliasDeclaration] && (p.designator equiv des2) =>
+                if a.isInstanceOf[ScTypeAliasDeclaration] && (
+                  p.designator equiv des2
+                ) =>
               processEquivalentDesignators(args2)
               return
             case _ =>
@@ -1751,8 +1753,7 @@ object Conformance {
                     wild.upperBound,
                     ScalaPsiElementFactory.createTypeParameterFromText(
                       wild.name,
-                      PsiManager.getInstance(ta.getProject)
-                    )
+                      PsiManager.getInstance(ta.getProject))
                   )
                 )
                 (true, tpt)

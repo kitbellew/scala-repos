@@ -13,7 +13,10 @@ trait Types extends Core {
     P((`private` | `protected`) ~ AccessQualifier.?)
   }
   val Dcl: P0 = {
-    P(Pass ~ ((`val` | `var`) ~/ ValVarDef | `def` ~/ FunDef | `type` ~/ TypeDef))
+    P(
+      Pass ~ (
+        (`val` | `var`) ~/ ValVarDef | `def` ~/ FunDef | `type` ~/ TypeDef
+      ))
   }
 
   val Mod: P0 = P(LocalMod | AccessMod | `override`)

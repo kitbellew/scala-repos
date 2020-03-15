@@ -55,8 +55,8 @@ class RemoteScatterGatherSpec
   "A remote ScatterGatherFirstCompleted pool" must {
     "be locally instantiated on a remote node and be able to communicate through its RemoteActorRef" taggedAs LongRunningTest in {
 
-      system.eventStream.publish(
-        Mute(EventFilter.warning(pattern = ".*received dead letter from.*")))
+      system.eventStream.publish(Mute(
+        EventFilter.warning(pattern = ".*received dead letter from.*")))
 
       runOn(first, second, third) {
         enterBarrier("start", "broadcast-end", "end", "done")
@@ -82,11 +82,10 @@ class RemoteScatterGatherSpec
           5.seconds,
           messages = connectionCount * iterationCount) {
           case ref: ActorRef ⇒ ref.path.address
-        }).foldLeft(
-          Map(
-            node(first).address -> 0,
-            node(second).address -> 0,
-            node(third).address -> 0)) {
+        }).foldLeft(Map(
+          node(first).address -> 0,
+          node(second).address -> 0,
+          node(third).address -> 0)) {
           case (replyMap, address) ⇒
             replyMap + (address -> (replyMap(address) + 1))
         }

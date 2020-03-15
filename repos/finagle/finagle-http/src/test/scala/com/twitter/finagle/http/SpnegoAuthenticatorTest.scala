@@ -45,9 +45,8 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
     // Spnego-filtered client/server
     val (client, server, service) = serve(credSrc, Some(credSrc))
     val req = builder.buildGet()
-    stub(service.apply(anyAuthenticated)).toReturn(
-      Future(Response(req.version, Status.Ok))
-    )
+    stub(service.apply(anyAuthenticated)).toReturn(Future(
+      Response(req.version, Status.Ok)))
     try {
       // should succeed with exactly one authenticated request
       val resp = Await.result(client(req))
@@ -73,8 +72,7 @@ class SpnegoAuthenticatorTest extends FunSuite with MockitoSugar {
 
   def serve(
       serverSrc: Credentials.ServerSource,
-      clientSrc: Option[Credentials.ClientSource] = None
-  ) = {
+      clientSrc: Option[Credentials.ClientSource] = None) = {
     val service = mock[Service[Authenticated[Request], Response]]
     val server = com.twitter.finagle.Http
       .serve("localhost:*", new ServerFilter(serverSrc) andThen service)

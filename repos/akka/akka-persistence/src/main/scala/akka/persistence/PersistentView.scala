@@ -189,12 +189,11 @@ trait PersistentView
   override def preStart(): Unit = {
     startRecovery(recovery)
     if (autoUpdate)
-      schedule = Some(
-        context.system.scheduler.schedule(
-          autoUpdateInterval,
-          autoUpdateInterval,
-          self,
-          ScheduledUpdate(autoUpdateReplayMax)))
+      schedule = Some(context.system.scheduler.schedule(
+        autoUpdateInterval,
+        autoUpdateInterval,
+        self,
+        ScheduledUpdate(autoUpdateReplayMax)))
   }
 
   private def startRecovery(recovery: Recovery): Unit = {

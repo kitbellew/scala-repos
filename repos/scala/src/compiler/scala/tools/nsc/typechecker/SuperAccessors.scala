@@ -178,11 +178,15 @@ abstract class SuperAccessors
         }
 
       val needAccessor = name.isTermName && {
-        mix.isEmpty && (clazz.isTrait || clazz != currentClass || !validCurrentOwner) ||
+        mix.isEmpty && (
+          clazz.isTrait || clazz != currentClass || !validCurrentOwner
+        ) ||
         // SI-8803. If we access super[A] from an inner class (!= currentClass) or closure (validCurrentOwner),
         // where A is the superclass we need an accessor. If A is a parent trait we don't: in this case mixin
         // will re-route the super call directly to the impl class (it's statically known).
-        !mix.isEmpty && (clazz != currentClass || !validCurrentOwner) && !mixIsTrait
+        !mix.isEmpty && (
+          clazz != currentClass || !validCurrentOwner
+        ) && !mixIsTrait
       }
 
       if (needAccessor) ensureAccessor(sel, mix.toTermName) else sel
@@ -332,12 +336,11 @@ abstract class SuperAccessors
                   debuglog(
                     s"alias replacement: $sym --> ${sym.alias} / $tree ==> $result"
                   ); //debug
-                  localTyper.typed(
-                    gen.maybeMkAsInstanceOf(
-                      transformSuperSelect(result),
-                      sym.tpe,
-                      sym.alias.tpe,
-                      beforeRefChecks = true))
+                  localTyper.typed(gen.maybeMkAsInstanceOf(
+                    transformSuperSelect(result),
+                    sym.tpe,
+                    sym.alias.tpe,
+                    beforeRefChecks = true))
                 } else {
                   /*
                    * A trait which extends a class and accesses a protected member
@@ -350,16 +353,14 @@ abstract class SuperAccessors
                    */
                   // FIXME - this should be unified with needsProtectedAccessor, but some
                   // subtlety which presently eludes me is foiling my attempts.
-                  val shouldEnsureAccessor = (
-                    currentClass.isTrait
-                      && sym.isProtected
-                      && sym.enclClass != currentClass
-                      && !sym.owner.isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
-                      && !sym.owner.isTrait
-                      && sym.owner.enclosingPackageClass != currentClass.enclosingPackageClass
-                      && qual.symbol.info.member(sym.name).exists
-                      && !needsProtectedAccessor(sym, tree.pos)
-                  )
+                  val shouldEnsureAccessor = (currentClass.isTrait
+                    && sym.isProtected
+                    && sym.enclClass != currentClass
+                    && !sym.owner.isPackageClass // SI-7091 no accessor needed package owned (ie, top level) symbols
+                    && !sym.owner.isTrait
+                    && sym.owner.enclosingPackageClass != currentClass.enclosingPackageClass
+                    && qual.symbol.info.member(sym.name).exists
+                    && !needsProtectedAccessor(sym, tree.pos))
                   if (shouldEnsureAccessor) {
                     log(
                       "Ensuring accessor for call to protected " + sym.fullLocationString + " from " + currentClass)
@@ -553,7 +554,9 @@ abstract class SuperAccessors
         case _                  => NoSymbol
       }
       val result = gen.paramToArg(v)
-      if (clazz != NoSymbol && (obj.tpe.typeSymbol isSubClass clazz)) // path-dependent type
+      if (clazz != NoSymbol && (
+            obj.tpe.typeSymbol isSubClass clazz
+          )) // path-dependent type
         gen.mkAsInstanceOf(
           result,
           pt.asSeenFrom(singleType(NoPrefix, obj), clazz))
@@ -606,15 +609,13 @@ abstract class SuperAccessors
         validCurrentOwner && clazz.thisSym.isSubClass(
           sym.owner) && !clazz.isTrait
 
-      val isCandidate = (
-        sym.isProtected
-          && sym.isJavaDefined
-          && !sym.isDefinedInPackage
-          && !accessibleThroughSubclassing
-          && (sym.enclosingPackageClass != currentClass.enclosingPackageClass)
-          && (sym.enclosingPackageClass == sym.accessBoundary(
-            sym.enclosingPackageClass))
-      )
+      val isCandidate = (sym.isProtected
+        && sym.isJavaDefined
+        && !sym.isDefinedInPackage
+        && !accessibleThroughSubclassing
+        && (sym.enclosingPackageClass != currentClass.enclosingPackageClass)
+        && (sym.enclosingPackageClass == sym.accessBoundary(
+          sym.enclosingPackageClass)))
       val host = hostForAccessorOf(sym, clazz)
       def isSelfType =
         !(host.tpe <:< host.typeOfThis) && {

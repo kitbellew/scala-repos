@@ -68,10 +68,9 @@ object scalap extends Command {
 
   val examples = Section(
     "EXAMPLES",
-    DefinitionList(
-      Definition(
-        "Display definitions for a generated class file",
-        CmdLine("hello.HelloWorld"))))
+    DefinitionList(Definition(
+      "Display definitions for a generated class file",
+      CmdLine("hello.HelloWorld"))))
 
   val exitStatus = Section(
     "EXIT STATUS",

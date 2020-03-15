@@ -90,16 +90,16 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.AbsoluteLoad))
       result mustEqual Right(
-        dag
-          .AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
+        dag.AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(
+          Line(1, 1, "")))
     }
 
     "parse out relative_load" in {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.RelativeLoad))
       result mustEqual Right(
-        dag
-          .RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
+        dag.RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(
+          Line(1, 1, "")))
     }
 
     "parse out map1" in {
@@ -109,12 +109,11 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "parse out reduce" in {
-      val result = decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushFalse,
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "count", 0x2000)))))
+      val result = decorate(Vector(
+        Line(1, 1, ""),
+        PushFalse,
+        instructions.Reduce(BuiltInReduction(
+          Reduction(Vector(), "count", 0x2000)))))
       result mustEqual Right(
         dag.Reduce(
           Reduction(Vector(), "count", 0x2000),
@@ -131,25 +130,24 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     // TODO morphisms
 
     "parse an array join" in {
-      val result = decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushString("/summer_games/london_medals"),
-          instructions.AbsoluteLoad,
-          Dup,
-          PushString("Weight"),
-          Map2Cross(DerefObject),
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
-          Map1(WrapArray),
-          Swap(1),
-          PushString("HeightIncm"),
-          Map2Cross(DerefObject),
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
-          Map1(WrapArray),
-          Map2Cross(JoinArray)
-        ))
+      val result = decorate(Vector(
+        Line(1, 1, ""),
+        PushString("/summer_games/london_medals"),
+        instructions.AbsoluteLoad,
+        Dup,
+        PushString("Weight"),
+        Map2Cross(DerefObject),
+        instructions.Reduce(BuiltInReduction(
+          Reduction(Vector(), "max", 0x2001))),
+        Map1(WrapArray),
+        Swap(1),
+        PushString("HeightIncm"),
+        Map2Cross(DerefObject),
+        instructions.Reduce(BuiltInReduction(
+          Reduction(Vector(), "max", 0x2001))),
+        Map1(WrapArray),
+        Map2Cross(JoinArray)
+      ))
 
       val line = Line(1, 1, "")
       val medals = dag.AbsoluteLoad(
@@ -184,19 +182,18 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse a single-level split" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushTrue,
-          Dup,
-          KeyPart(1),
-          Swap(1),
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          PushKey(1),
-          IUnion,
-          Merge))
+      val result = decorate(Vector(
+        line,
+        PushTrue,
+        Dup,
+        KeyPart(1),
+        Swap(1),
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        PushKey(1),
+        IUnion,
+        Merge))
 
       result must beLike {
         case Right(
@@ -218,25 +215,24 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse a bi-level split" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushTrue,
-          KeyPart(1),
-          PushFalse,
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          KeyPart(3),
-          PushKey(1),
-          instructions.Group(4),
-          instructions.Split,
-          PushGroup(4),
-          PushKey(3),
-          IUnion,
-          Merge,
-          Merge
-        ))
+      val result = decorate(Vector(
+        line,
+        PushTrue,
+        KeyPart(1),
+        PushFalse,
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        KeyPart(3),
+        PushKey(1),
+        instructions.Group(4),
+        instructions.Split,
+        PushGroup(4),
+        PushKey(3),
+        IUnion,
+        Merge,
+        Merge
+      ))
 
       result must beLike {
         case Right(
@@ -270,27 +266,26 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse a bi-level split with intermediate usage" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushTrue,
-          KeyPart(1),
-          PushFalse,
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          PushKey(1),
-          Map2Cross(Add),
-          PushNum("42"),
-          KeyPart(3),
-          PushFalse,
-          instructions.Group(4),
-          instructions.Split,
-          PushGroup(4),
-          IUnion,
-          Merge,
-          Merge
-        ))
+      val result = decorate(Vector(
+        line,
+        PushTrue,
+        KeyPart(1),
+        PushFalse,
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        PushKey(1),
+        Map2Cross(Add),
+        PushNum("42"),
+        KeyPart(3),
+        PushFalse,
+        instructions.Group(4),
+        instructions.Split,
+        PushGroup(4),
+        IUnion,
+        Merge,
+        Merge
+      ))
 
       result must beLike {
         case Right(
@@ -327,22 +322,21 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "union" >> {
         val line = Line(1, 1, "")
 
-        val result = decorate(
-          Vector(
-            line,
-            PushNum("1"),
-            KeyPart(1),
-            PushNum("3"),
-            KeyPart(1),
-            MergeBuckets(false),
-            PushNum("2"),
-            instructions.Group(3),
-            instructions.Split,
-            PushGroup(3),
-            PushKey(1),
-            IUnion,
-            Merge
-          ))
+        val result = decorate(Vector(
+          line,
+          PushNum("1"),
+          KeyPart(1),
+          PushNum("3"),
+          KeyPart(1),
+          MergeBuckets(false),
+          PushNum("2"),
+          instructions.Group(3),
+          instructions.Split,
+          PushGroup(3),
+          PushKey(1),
+          IUnion,
+          Merge
+        ))
 
         result must beLike {
           case Right(
@@ -369,22 +363,21 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       "intersect" >> {
         val line = Line(1, 1, "")
 
-        val result = decorate(
-          Vector(
-            line,
-            PushNum("1"),
-            KeyPart(1),
-            PushNum("3"),
-            KeyPart(1),
-            MergeBuckets(true),
-            PushNum("2"),
-            instructions.Group(3),
-            instructions.Split,
-            PushGroup(3),
-            PushKey(1),
-            IUnion,
-            Merge
-          ))
+        val result = decorate(Vector(
+          line,
+          PushNum("1"),
+          KeyPart(1),
+          PushNum("3"),
+          KeyPart(1),
+          MergeBuckets(true),
+          PushNum("2"),
+          instructions.Group(3),
+          instructions.Split,
+          PushGroup(3),
+          PushKey(1),
+          IUnion,
+          Merge
+        ))
 
         result must beLike {
           case Right(
@@ -413,26 +406,25 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "parse a split with zipped buckets" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushNum("1"),
-          KeyPart(1),
-          PushNum("2"),
-          instructions.Group(2),
-          PushNum("3"),
-          KeyPart(1),
-          PushNum("4"),
-          instructions.Group(3),
-          MergeBuckets(true),
-          instructions.Split,
-          PushGroup(2),
-          PushGroup(3),
-          PushKey(1),
-          IUnion,
-          IUnion,
-          Merge
-        ))
+      val result = decorate(Vector(
+        line,
+        PushNum("1"),
+        KeyPart(1),
+        PushNum("2"),
+        instructions.Group(2),
+        PushNum("3"),
+        KeyPart(1),
+        PushNum("4"),
+        instructions.Group(3),
+        MergeBuckets(true),
+        instructions.Split,
+        PushGroup(2),
+        PushGroup(3),
+        PushKey(1),
+        IUnion,
+        IUnion,
+        Merge
+      ))
 
       result must beLike {
         case Right(
@@ -469,18 +461,17 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "accept split which reduces the stack" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushNum("42"),
-          PushTrue,
-          KeyPart(1),
-          PushNull,
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          Map2Match(Add),
-          Merge))
+      val result = decorate(Vector(
+        line,
+        PushNum("42"),
+        PushTrue,
+        KeyPart(1),
+        PushNull,
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        Map2Match(Add),
+        Merge))
 
       result must beLike {
         case Right(
@@ -499,55 +490,54 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     "determine a histogram of a composite key of revenue and campaign" in {
       val line = Line(1, 1, "")
 
-      val result @ Right(dag.Split(_, _, id)) = decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushString("/organizations"),
-          instructions.AbsoluteLoad,
-          Dup,
-          Dup,
-          Dup,
-          PushString("revenue"),
-          Map2Cross(DerefObject),
-          KeyPart(1),
-          Swap(1),
-          PushString("revenue"),
-          Map2Cross(DerefObject),
-          instructions.Group(0),
-          Swap(1),
-          PushString("campaign"),
-          Map2Cross(DerefObject),
-          KeyPart(3),
-          Swap(1),
-          Swap(2),
-          PushString("campaign"),
-          Map2Cross(DerefObject),
-          instructions.Group(2),
-          MergeBuckets(true),
-          PushString("/campaigns"),
-          instructions.AbsoluteLoad,
-          Dup,
-          Swap(2),
-          Swap(1),
-          PushString("campaign"),
-          Map2Cross(DerefObject),
-          KeyPart(3),
-          Swap(1),
-          Swap(2),
-          instructions.Group(4),
-          MergeBuckets(true),
-          instructions.Split,
-          PushString("revenue"),
-          PushKey(1),
-          Map2Cross(WrapObject),
-          PushString("num"),
-          PushGroup(4),
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "count", 0x002000))),
-          Map2Cross(WrapObject),
-          Map2Cross(JoinObject),
-          Merge
-        ))
+      val result @ Right(dag.Split(_, _, id)) = decorate(Vector(
+        Line(1, 1, ""),
+        PushString("/organizations"),
+        instructions.AbsoluteLoad,
+        Dup,
+        Dup,
+        Dup,
+        PushString("revenue"),
+        Map2Cross(DerefObject),
+        KeyPart(1),
+        Swap(1),
+        PushString("revenue"),
+        Map2Cross(DerefObject),
+        instructions.Group(0),
+        Swap(1),
+        PushString("campaign"),
+        Map2Cross(DerefObject),
+        KeyPart(3),
+        Swap(1),
+        Swap(2),
+        PushString("campaign"),
+        Map2Cross(DerefObject),
+        instructions.Group(2),
+        MergeBuckets(true),
+        PushString("/campaigns"),
+        instructions.AbsoluteLoad,
+        Dup,
+        Swap(2),
+        Swap(1),
+        PushString("campaign"),
+        Map2Cross(DerefObject),
+        KeyPart(3),
+        Swap(1),
+        Swap(2),
+        instructions.Group(4),
+        MergeBuckets(true),
+        instructions.Split,
+        PushString("revenue"),
+        PushKey(1),
+        Map2Cross(WrapObject),
+        PushString("num"),
+        PushGroup(4),
+        instructions.Reduce(BuiltInReduction(
+          Reduction(Vector(), "count", 0x002000))),
+        Map2Cross(WrapObject),
+        Map2Cross(JoinObject),
+        Merge
+      ))
 
       val expectedSpec = IntersectBucketSpec(
         IntersectBucketSpec(
@@ -734,17 +724,16 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
       "3" >> {
         val line = Line(1, 1, "")
-        val result = decorate(
-          Vector(
-            line,
-            PushTrue,
-            PushString("foo"),
-            PushFalse,
-            PushNum("42"),
-            Swap(3),
-            IUnion,
-            IUnion,
-            IUnion))
+        val result = decorate(Vector(
+          line,
+          PushTrue,
+          PushString("foo"),
+          PushFalse,
+          PushNum("42"),
+          Swap(3),
+          IUnion,
+          IUnion,
+          IUnion))
         result mustEqual Right(
           IUI(
             true,
@@ -793,13 +782,12 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         {
           val instr = Map2Match(Add)
-          decorate(
-            Vector(
-              Line(1, 1, ""),
-              PushTrue,
-              Map1(Comp),
-              instr,
-              Map2Match(Sub))) mustEqual Left(StackUnderflow(instr))
+          decorate(Vector(
+            Line(1, 1, ""),
+            PushTrue,
+            Map1(Comp),
+            instr,
+            Map2Match(Sub))) mustEqual Left(StackUnderflow(instr))
         }
       }
 
@@ -818,19 +806,18 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         {
           val instr = Map2Cross(Add)
-          decorate(
-            Vector(
-              Line(1, 1, ""),
-              PushTrue,
-              Map1(Comp),
-              instr,
-              Map2Cross(Sub))) mustEqual Left(StackUnderflow(instr))
+          decorate(Vector(
+            Line(1, 1, ""),
+            PushTrue,
+            Map1(Comp),
+            instr,
+            Map2Cross(Sub))) mustEqual Left(StackUnderflow(instr))
         }
       }
 
       "reduce" >> { // similar to map1, only one underflow case!
-        val instr = instructions.Reduce(
-          BuiltInReduction(Reduction(Vector(), "count", 0x2000)))
+        val instr = instructions.Reduce(BuiltInReduction(
+          Reduction(Vector(), "count", 0x2000)))
         decorate(Vector(Line(1, 1, ""), instr)) mustEqual Left(
           StackUnderflow(instr))
       }
@@ -882,13 +869,12 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         {
           val instr = FilterMatch
-          decorate(
-            Vector(
-              Line(1, 1, ""),
-              PushTrue,
-              PushTrue,
-              Map2Match(Add),
-              instr)) mustEqual Left(StackUnderflow(instr))
+          decorate(Vector(
+            Line(1, 1, ""),
+            PushTrue,
+            PushTrue,
+            Map2Match(Add),
+            instr)) mustEqual Left(StackUnderflow(instr))
         }
       }
 
@@ -907,13 +893,12 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
 
         {
           val instr = FilterCross
-          decorate(
-            Vector(
-              Line(1, 1, ""),
-              PushTrue,
-              PushTrue,
-              Map2Match(Add),
-              instr)) mustEqual Left(StackUnderflow(instr))
+          decorate(Vector(
+            Line(1, 1, ""),
+            PushTrue,
+            PushTrue,
+            Map2Match(Add),
+            instr)) mustEqual Left(StackUnderflow(instr))
         }
       }
 
@@ -966,13 +951,12 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
           PushTrue,
           PushFalse,
           PushNum("42"))) mustEqual Left(MultipleStackValuesAtEnd)
-      decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushTrue,
-          PushFalse,
-          PushNum("42"),
-          PushString("foo"))) mustEqual Left(MultipleStackValuesAtEnd)
+      decorate(Vector(
+        Line(1, 1, ""),
+        PushTrue,
+        PushFalse,
+        PushNum("42"),
+        PushString("foo"))) mustEqual Left(MultipleStackValuesAtEnd)
     }
 
     "reject negative swap depth" in {
@@ -996,42 +980,40 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "reject merge with deepened stack" in {
-      decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushTrue,
-          KeyPart(1),
-          PushFalse,
-          instructions.Group(2),
-          instructions.Split,
-          PushKey(1),
-          PushGroup(2),
-          PushFalse,
-          Merge,
-          Drop,
-          Drop)) mustEqual Left(MergeWithUnmatchedTails)
+      decorate(Vector(
+        Line(1, 1, ""),
+        PushTrue,
+        KeyPart(1),
+        PushFalse,
+        instructions.Group(2),
+        instructions.Split,
+        PushKey(1),
+        PushGroup(2),
+        PushFalse,
+        Merge,
+        Drop,
+        Drop)) mustEqual Left(MergeWithUnmatchedTails)
     }
 
     "accept merge with reduced (but reordered) stack" in {
       val line = Line(1, 1, "")
 
-      val result @ Right(IUI(_, _, dag.Split(_, _, id))) = decorate(
-        Vector(
-          line,
-          PushTrue,
-          PushFalse,
-          PushNum("42"),
-          KeyPart(1),
-          PushNum("12"),
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          Swap(1),
-          Swap(2),
-          IUnion,
-          Merge,
-          IIntersect
-        ))
+      val result @ Right(IUI(_, _, dag.Split(_, _, id))) = decorate(Vector(
+        line,
+        PushTrue,
+        PushFalse,
+        PushNum("42"),
+        KeyPart(1),
+        PushNum("12"),
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        Swap(1),
+        Swap(2),
+        IUnion,
+        Merge,
+        IIntersect
+      ))
 
       val split = dag.Split(
         dag.Group(
@@ -1056,30 +1038,28 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
     }
 
     "reject split without corresponding merge" in {
-      decorate(
-        Vector(
-          Line(1, 1, ""),
-          PushTrue,
-          KeyPart(1),
-          PushFalse,
-          instructions.Group(2),
-          instructions.Split)) mustEqual Left(UnmatchedSplit)
+      decorate(Vector(
+        Line(1, 1, ""),
+        PushTrue,
+        KeyPart(1),
+        PushFalse,
+        instructions.Group(2),
+        instructions.Split)) mustEqual Left(UnmatchedSplit)
     }
 
     "reject split which increases the stack" in {
       val line = Line(1, 1, "")
 
-      val result = decorate(
-        Vector(
-          line,
-          PushTrue,
-          KeyPart(1),
-          PushFalse,
-          instructions.Group(2),
-          instructions.Split,
-          PushGroup(2),
-          PushTrue,
-          Merge))
+      val result = decorate(Vector(
+        line,
+        PushTrue,
+        KeyPart(1),
+        PushFalse,
+        instructions.Group(2),
+        instructions.Split,
+        PushGroup(2),
+        PushTrue,
+        Merge))
 
       result mustEqual Left(MergeWithUnmatchedTails)
     }

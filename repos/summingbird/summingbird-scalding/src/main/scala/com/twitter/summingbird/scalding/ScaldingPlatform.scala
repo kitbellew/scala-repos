@@ -107,8 +107,9 @@ object Scalding {
       s, {
         val default = MonoidIsCommutative.default
         logger.warn(
-          "Store: %s has no commutativity setting. Assuming %s"
-            .format(names, default))
+          "Store: %s has no commutativity setting. Assuming %s".format(
+            names,
+            default))
         default
       }
     ).commutativity
@@ -154,16 +155,16 @@ object Scalding {
       available
         .flatMap { intersect(desired, _) }
         .map(Right(_))
-        .getOrElse(
-          Left(List("available: " + available + ", desired: " + desired)))
+        .getOrElse(Left(
+          List("available: " + available + ", desired: " + desired)))
     } catch { case NonFatal(e) => toTry(e) }
 
   private def bisectingMinify(mode: Mode, desired: DateRange)(
       factory: (DateRange) => SSource): Option[DateRange] = {
     def isGood(end: Long): Boolean =
       STry(
-        factory(DateRange(desired.start, RichDate(end)))
-          .validateTaps(mode)).isSuccess
+        factory(DateRange(desired.start, RichDate(end))).validateTaps(
+          mode)).isSuccess
     val DateRange(start, end) = desired
     if (isGood(start.timestamp)) {
       // The invariant is that low isGood, low < upper, and upper isGood == false
@@ -178,10 +179,9 @@ object Scalding {
 
       if (isGood(end.timestamp)) Some(desired)
       else
-        Some(
-          DateRange(
-            desired.start,
-            RichDate(findEnd(start.timestamp, end.timestamp))))
+        Some(DateRange(
+          desired.start,
+          RichDate(findEnd(start.timestamp, end.timestamp))))
     } else {
       // No good data
       None
@@ -215,10 +215,8 @@ object Scalding {
     */
   def optionMappedPipeFactory[T, U](factory: (DateRange) => Mappable[T])(
       fn: T => Option[U])(implicit timeOf: TimeExtractor[U]): PipeFactory[U] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[U]] { (timeMode: (Interval[Timestamp], Mode)) =>
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[
+      U]] { (timeMode: (Interval[Timestamp], Mode)) =>
       {
         val (timeSpan, mode) = timeMode
 
@@ -245,10 +243,8 @@ object Scalding {
 
   def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(
       implicit timeOf: TimeExtractor[T]): PipeFactory[T] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[T]] { (timeMode: (Interval[Timestamp], Mode)) =>
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[
+      T]] { (timeMode: (Interval[Timestamp], Mode)) =>
       {
         val (timeSpan, mode) = timeMode
 
@@ -445,10 +441,9 @@ object Scalding {
               implicit val keyOrdering = bstore.ordering
               val Summer(storeLog, _, sg) = InternalService
                 .getSummer[K, V](dependants, bstore)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
+                .getOrElse(sys.error(
+                  "join %s is against store not in the entire job's Dag".format(
+                    ljp)))
               val (leftPf, m1) = recurse(left)
               // We have to force the fanOut on the storeLog because this kind of fanout
               // due to joining is not visible in the Dependants dag
@@ -497,10 +492,9 @@ object Scalding {
               implicit val keyOrdering = bs.ordering
               val Summer(storeLog, _, sg) = InternalService
                 .getSummer[K, U](dependants, bs)
-                .getOrElse(
-                  sys.error(
-                    "join %s is against store not in the entire job's Dag"
-                      .format(ljp)))
+                .getOrElse(sys.error(
+                  "join %s is against store not in the entire job's Dag".format(
+                    ljp)))
               implicit val semigroup: Semigroup[U] = sg
               logger.info(
                 "Service {} using {} reducers (-1 means unset)",
@@ -807,10 +801,9 @@ class Scalding(
 
       conf
         .setSerialization(
-          Left(
-            (
-              classOf[serialization.KryoHadoop],
-              initKryo.withRegistrar(kryoReg))),
+          Left((
+            classOf[serialization.KryoHadoop],
+            initKryo.withRegistrar(kryoReg))),
           Nil)
     }
   }

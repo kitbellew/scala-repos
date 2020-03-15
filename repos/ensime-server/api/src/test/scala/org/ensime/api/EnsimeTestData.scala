@@ -30,16 +30,13 @@ trait EnsimeTestData {
     symFile,
     List(
       SymbolDesignation(7, 9, ObjectSymbol),
-      SymbolDesignation(11, 22, TraitSymbol)
-    )
-  )
+      SymbolDesignation(11, 22, TraitSymbol)))
 
   val symbolInfo = new SymbolInfo("name", "localName", None, typeInfo, false)
 
   val implicitInfos = List(
     ImplicitConversionInfo(5, 6, symbolInfo),
-    ImplicitParamInfo(7, 8, symbolInfo, List(symbolInfo, symbolInfo), true)
-  )
+    ImplicitParamInfo(7, 8, symbolInfo, List(symbolInfo, symbolInfo), true))
 
   val batchSourceFile = "/abc"
 
@@ -129,8 +126,8 @@ trait EnsimeTestData {
     DeclaredAs.Trait,
     Some(LineSourcePosition(abd, 10)))
 
-  val importSuggestions = new ImportSuggestions(
-    List(List(methodSearchRes, typeSearchRes)))
+  val importSuggestions = new ImportSuggestions(List(
+    List(methodSearchRes, typeSearchRes)))
 
   val symbolSearchResults = new SymbolSearchResults(
     List(methodSearchRes, typeSearchRes))
@@ -183,26 +180,21 @@ trait EnsimeTestData {
   val dtid = DebugThreadId(13)
   val debugLocationArray = DebugArrayElement(DebugObjectId(13), 14)
 
-  val structureView = StructureView(
-    List(
-      StructureViewMember(
-        keyword = "class",
-        name = "StructureView",
-        position = sourcePos1,
-        members = Nil
-      ),
-      StructureViewMember(
-        keyword = "object",
-        name = "StructureView",
-        position = sourcePos2,
-        members = List(
-          StructureViewMember(
-            keyword = "type",
-            name = "BasicType",
-            position = sourcePos4,
-            members = Nil
-          )
-        )
-      )
-    ))
+  val structureView = StructureView(List(
+    StructureViewMember(
+      keyword = "class",
+      name = "StructureView",
+      position = sourcePos1,
+      members = Nil),
+    StructureViewMember(
+      keyword = "object",
+      name = "StructureView",
+      position = sourcePos2,
+      members = List(StructureViewMember(
+        keyword = "type",
+        name = "BasicType",
+        position = sourcePos4,
+        members = Nil))
+    )
+  ))
 }

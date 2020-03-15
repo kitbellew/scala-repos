@@ -19,13 +19,12 @@ object BuildSettings {
 object MyBuild extends Build {
   import BuildSettings._
 
-  lazy val root: Project = Project(
-    "root",
-    file("."),
-    settings = buildSettings ++ Seq(
-      run <<= run in Compile in core
-    )
-  ) aggregate (macros, core)
+  lazy val root: Project =
+    Project(
+      "root",
+      file("."),
+      settings = buildSettings ++ Seq(
+        run <<= run in Compile in core)) aggregate (macros, core)
 
   lazy val macros: Project = Project(
     "macros",
@@ -41,9 +40,6 @@ object MyBuild extends Build {
     )
   )
 
-  lazy val core: Project = Project(
-    "core",
-    file("core"),
-    settings = buildSettings
-  ) dependsOn (macros)
+  lazy val core: Project =
+    Project("core", file("core"), settings = buildSettings) dependsOn (macros)
 }

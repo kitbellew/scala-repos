@@ -22,19 +22,14 @@ class ImplicitAnalyzerSpec
     val dets = new ImplicitAnalyzer(cc).implicitDetails(pos)
     dets.map {
       case c: ImplicitConversionInfo =>
-        (
-          "conversion",
-          content.substring(c.start, c.end),
-          c.fun.name
-        )
+        ("conversion", content.substring(c.start, c.end), c.fun.name)
       case c: ImplicitParamInfo =>
         (
           "param",
           content.substring(c.start, c.end),
           c.fun.name,
           c.params.map { p => p.name },
-          c.funIsImplicit
-        )
+          c.funIsImplicit)
     }
   }
 
@@ -51,10 +46,7 @@ class ImplicitAnalyzerSpec
             }
         """
       )
-      dets should ===(
-        List(
-          ("conversion", "\"sample\"", "StringToTest")
-        ))
+      dets should ===(List(("conversion", "\"sample\"", "StringToTest")))
     }
   }
 
@@ -73,11 +65,9 @@ class ImplicitAnalyzerSpec
             }
         """
       )
-      dets should ===(
-        List(
-          ("param", "\"sample\"", "StringToTest", List("myThing"), true),
-          ("conversion", "\"sample\"", "StringToTest")
-        ))
+      dets should ===(List(
+        ("param", "\"sample\"", "StringToTest", List("myThing"), true),
+        ("conversion", "\"sample\"", "StringToTest")))
     }
   }
 
@@ -99,11 +89,9 @@ class ImplicitAnalyzerSpec
             }
         """
       )
-      dets should ===(
-        List(
-          ("param", "zz(1)(\"abc\")", "zz", List("myThing", "myThong"), false),
-          ("param", "yy", "yy", List("myThing"), false)
-        ))
+      dets should ===(List(
+        ("param", "zz(1)(\"abc\")", "zz", List("myThing", "myThong"), false),
+        ("param", "yy", "yy", List("myThing"), false)))
     }
   }
 

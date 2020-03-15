@@ -20,9 +20,8 @@ object ReplicatorChaosSpec extends MultiNodeConfig {
   val fourth = role("fourth")
   val fifth = role("fifth")
 
-  commonConfig(
-    ConfigFactory.parseString(
-      """
+  commonConfig(ConfigFactory.parseString(
+    """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.cluster.roles = ["backend"]
@@ -124,11 +123,10 @@ class ReplicatorChaosSpec
         replicator ! Update(KeyA, GCounter(), WriteLocal)(_ + 20)
         replicator ! Update(KeyB, PNCounter(), WriteTo(2, timeout))(_ + 20)
         replicator ! Update(KeyC, GCounter(), WriteAll(timeout))(_ + 20)
-        receiveN(3).toSet should be(
-          Set(
-            UpdateSuccess(KeyA, None),
-            UpdateSuccess(KeyB, None),
-            UpdateSuccess(KeyC, None)))
+        receiveN(3).toSet should be(Set(
+          UpdateSuccess(KeyA, None),
+          UpdateSuccess(KeyB, None),
+          UpdateSuccess(KeyC, None)))
 
         replicator ! Update(KeyE, GSet(), WriteLocal)(_ + "e1" + "e2")
         expectMsg(UpdateSuccess(KeyE, None))

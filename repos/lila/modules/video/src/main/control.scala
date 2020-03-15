@@ -14,9 +14,7 @@ case class TagNb(_id: Tag, nb: Int) {
 case class Filter(tags: List[String]) {
 
   def toggle(tag: String) =
-    copy(
-      tags = if (tags contains tag) tags filter (tag !=) else tags :+ tag
-    )
+    copy(tags = if (tags contains tag) tags filter (tag !=) else tags :+ tag)
 }
 
 case class UserControl(
@@ -31,8 +29,7 @@ case class UserControl(
     List(
       filter.tags.nonEmpty option s"tags=${filter.tags.sorted mkString "^"}"
         .replace(" ", "+"),
-      query.map { q => s"q=$q" }
-    ).flatten mkString "&"
+      query.map { q => s"q=$q" }).flatten mkString "&"
 
   def queryStringUnlessBot = !bot ?? queryString
 }

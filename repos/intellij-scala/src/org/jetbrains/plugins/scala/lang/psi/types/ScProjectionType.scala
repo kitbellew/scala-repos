@@ -86,11 +86,10 @@ class ScProjectionType private (
       actualElement match {
         case ta: ScTypeAlias if ta.typeParameters.length == 0 =>
           val subst: ScSubstitutor = actualSubst
-          Some(
-            AliasType(
-              ta,
-              ta.lowerBound.map(subst.subst),
-              ta.upperBound.map(subst.subst)))
+          Some(AliasType(
+            ta,
+            ta.lowerBound.map(subst.subst),
+            ta.upperBound.map(subst.subst)))
         case ta: ScTypeAlias => //higher kind case
           ta match {
             case ta: ScTypeAliasDefinition => //hack for simple cases, it doesn't cover more complicated examples
@@ -109,11 +108,10 @@ class ScProjectionType private (
                                 true
                               case _ => false
                             })
-                        return Some(
-                          AliasType(
-                            ta,
-                            Success(des, Some(element)),
-                            Success(des, Some(element))))
+                        return Some(AliasType(
+                          ta,
+                          Success(des, Some(element)),
+                          Success(des, Some(element))))
                     case _ =>
                   }
                 case _ =>
@@ -136,14 +134,13 @@ class ScProjectionType private (
             })
           )
           val s = actualSubst.followed(genericSubst)
-          Some(
-            AliasType(
-              ta,
-              ta.lowerBound.map(scType =>
-                ScExistentialType(s.subst(scType), args.toList)),
-              ta.upperBound.map(scType =>
-                ScExistentialType(s.subst(scType), args.toList))
-            ))
+          Some(AliasType(
+            ta,
+            ta.lowerBound.map(scType =>
+              ScExistentialType(s.subst(scType), args.toList)),
+            ta.upperBound.map(scType =>
+              ScExistentialType(s.subst(scType), args.toList))
+          ))
         case _ => None
       }
     } else None
@@ -534,11 +531,10 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                               true
                             case _ => false
                           })
-                      return Some(
-                        AliasType(
-                          ta,
-                          Success(des, Some(element)),
-                          Success(des, Some(element))))
+                      return Some(AliasType(
+                        ta,
+                        Success(des, Some(element)),
+                        Success(des, Some(element))))
                   case _ =>
                 }
               case _ =>
@@ -560,14 +556,13 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
             ScTypeVariable(name)
           })
         )
-        Some(
-          AliasType(
-            ta,
-            ta.lowerBound.map(scType =>
-              ScExistentialType(genericSubst.subst(scType), args.toList)),
-            ta.upperBound.map(scType =>
-              ScExistentialType(genericSubst.subst(scType), args.toList))
-          ))
+        Some(AliasType(
+          ta,
+          ta.lowerBound.map(scType =>
+            ScExistentialType(genericSubst.subst(scType), args.toList)),
+          ta.upperBound.map(scType =>
+            ScExistentialType(genericSubst.subst(scType), args.toList))
+        ))
       case _ => None
     }
   }

@@ -142,9 +142,7 @@ object TestGraphs {
 
   def singleStepInScala[T, K, V: Monoid](source: TraversableOnce[T])(
       fn: T => TraversableOnce[(K, V)]): Map[K, V] =
-    MapAlgebra.sumByKey(
-      source.flatMap(fn)
-    )
+    MapAlgebra.sumByKey(source.flatMap(fn))
 
   def singleStepJob[P <: Platform[P], T, K, V: Monoid](
       source: Producer[P, T],
@@ -159,9 +157,7 @@ object TestGraphs {
       source: TraversableOnce[T1])(
       fnA: T1 => Option[T2],
       fnB: T2 => TraversableOnce[(K, V)]): Map[K, V] =
-    MapAlgebra.sumByKey(
-      source.flatMap(fnA(_).iterator).flatMap(fnB)
-    )
+    MapAlgebra.sumByKey(source.flatMap(fnA(_).iterator).flatMap(fnB))
 
   def twinStepOptionMapFlatMapJob[P <: Platform[P], T1, T2, K, V: Monoid](
       source: Producer[P, T1],
@@ -179,8 +175,7 @@ object TestGraphs {
       fnA: T => TraversableOnce[(K1, V)],
       fnB: K1 => TraversableOnce[K2]): Map[K2, V] =
     MapAlgebra.sumByKey(
-      source.flatMap(fnA).flatMap { x => fnB(x._1).map((_, x._2)) }
-    )
+      source.flatMap(fnA).flatMap { x => fnB(x._1).map((_, x._2)) })
 
   def singleStepMapKeysJob[P <: Platform[P], T, K1, K2, V: Monoid](
       source: Producer[P, T],
@@ -202,8 +197,7 @@ object TestGraphs {
         .flatMap(preJoinFn)
         .flatMap { case (k, v) => List((k, v), (k, v)) }
         .map { case (k, v) => (k, (v, service(k))) }
-        .flatMap(postJoinFn)
-    )
+        .flatMap(postJoinFn))
 
   def repeatedTupleLeftJoinJob[P <: Platform[P], T, U, JoinedU, K, V: Monoid](
       source: Producer[P, T],
@@ -228,8 +222,7 @@ object TestGraphs {
       source
         .flatMap(preJoinFn)
         .map { case (k, v) => (k, (v, service(k))) }
-        .flatMap(postJoinFn)
-    )
+        .flatMap(postJoinFn))
 
   def leftJoinJob[P <: Platform[P], T, U, JoinedU, K, V: Monoid](
       source: Producer[P, T],
@@ -253,16 +246,10 @@ object TestGraphs {
       source
         .flatMap(preJoinFn)
         .map { case (k, v) => (k, (v, service(k))) }
-        .flatMap { case (k, v) => postJoinFn(v).map { v => (k, v) } }
-    )
+        .flatMap { case (k, v) => postJoinFn(v).map { v => (k, v) } })
 
-  def leftJoinJobWithFlatMapValues[
-      P <: Platform[P],
-      T,
-      U,
-      JoinedU,
-      K,
-      V: Monoid](
+  def leftJoinJobWithFlatMapValues[P <: Platform[
+    P], T, U, JoinedU, K, V: Monoid](
       source: Producer[P, T],
       service: P#Service[K, JoinedU],
       store: P#Store[K, V])(preJoinFn: T => TraversableOnce[(K, U)])(
@@ -369,14 +356,8 @@ object TestGraphs {
     (firstStore, finalStore)
   }
 
-  def leftJoinWithStoreJob[
-      P <: Platform[P],
-      T1,
-      T2,
-      U,
-      K,
-      JoinedU: Monoid,
-      V: Monoid](
+  def leftJoinWithStoreJob[P <: Platform[
+    P], T1, T2, U, K, JoinedU: Monoid, V: Monoid](
       source1: Producer[P, T1],
       source2: Producer[P, T2],
       storeAndService: P#Store[K, JoinedU] with P#Service[K, JoinedU],
@@ -499,13 +480,8 @@ object TestGraphs {
     (storeAfterJoin, storeAfterFlatMap)
   }
 
-  def leftJoinWithDependentStoreJoinFanoutJob[
-      P <: Platform[P],
-      T1,
-      V1: Monoid,
-      U,
-      K,
-      V: Monoid](
+  def leftJoinWithDependentStoreJoinFanoutJob[P <: Platform[
+    P], T1, V1: Monoid, U, K, V: Monoid](
       source1: Producer[P, T1],
       storeAndService: P#Store[K, V] with P#Service[K, V],
       store: P#Store[K, V1])(simpleFM1: T1 => TraversableOnce[(K, U)])(
@@ -528,17 +504,8 @@ object TestGraphs {
     indepSum.also(dependentSum)
   }
 
-  def realJoinTestJob[
-      P <: Platform[P],
-      T1,
-      T2,
-      T3,
-      T4,
-      K1,
-      K2,
-      U,
-      JoinedU,
-      V: Monoid](
+  def realJoinTestJob[P <: Platform[
+    P], T1, T2, T3, T4, K1, K2, U, JoinedU, V: Monoid](
       source1: Producer[P, T1],
       source2: Producer[P, T2],
       source3: Producer[P, T3],
@@ -572,17 +539,8 @@ object TestGraphs {
     left.sumByKey(store).write(sink)
   }
 
-  def realJoinTestJobInScala[
-      P <: Platform[P],
-      T1,
-      T2,
-      T3,
-      T4,
-      K1,
-      K2,
-      U,
-      JoinedU,
-      V: Monoid](
+  def realJoinTestJobInScala[P <: Platform[
+    P], T1, T2, T3, T4, K1, K2, U, JoinedU, V: Monoid](
       source1: List[T1],
       source2: List[T2],
       source3: List[T3],
@@ -614,14 +572,8 @@ object TestGraphs {
     (mapA, mapB)
   }
 
-  def multipleSummerJob[
-      P <: Platform[P],
-      T1,
-      T2,
-      K1,
-      V1: Monoid,
-      K2,
-      V2: Monoid](
+  def multipleSummerJob[P <: Platform[
+    P], T1, T2, K1, V1: Monoid, K2, V2: Monoid](
       source: Producer[P, T1],
       store1: P#Store[K1, V1],
       store2: P#Store[K2, V2])(
@@ -693,12 +645,10 @@ object TestGraphs {
   }
 }
 
-class TestGraphs[
-    P <: Platform[P],
-    T: Manifest: Arbitrary,
-    K: Arbitrary,
-    V: Arbitrary: Equiv: Monoid](platform: P)(store: () => P#Store[K, V])(
-    sink: () => P#Sink[T])(sourceMaker: TraversableOnce[T] => Producer[P, T])(
+class TestGraphs[P <: Platform[
+  P], T: Manifest: Arbitrary, K: Arbitrary, V: Arbitrary: Equiv: Monoid](
+    platform: P)(store: () => P#Store[K, V])(sink: () => P#Sink[T])(
+    sourceMaker: TraversableOnce[T] => Producer[P, T])(
     toLookupFn: P#Store[K, V] => (K => Option[V]))(
     toSinkChecker: (P#Sink[T], List[T]) => Boolean)(
     run: (P, P#Plan[_]) => Unit) {
@@ -789,8 +739,7 @@ class TestGraphs[
         items
           .flatMap(preJoinFn)
           .map { case (k, u) => (k, (u, serviceFn(k))) }
-          .flatMap(postJoinFn)
-      )
+          .flatMap(postJoinFn))
       .forall {
         case (k, v) =>
           val lv = lookupFn(k).getOrElse(Monoid.zero)

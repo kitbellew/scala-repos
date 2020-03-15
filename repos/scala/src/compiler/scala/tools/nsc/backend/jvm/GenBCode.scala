@@ -99,10 +99,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
      *  @param jclassName  internal name of the class
      *  @param jclassBytes bytecode emitted for the class SubItem3 represents
      */
-    case class SubItem3(
-        jclassName: String,
-        jclassBytes: Array[Byte]
-    )
+    case class SubItem3(jclassName: String, jclassBytes: Array[Byte])
 
     case class Item3(
         arrivalPos: Int,
@@ -203,8 +200,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
               claszSymbol,
               cunit,
               fieldSymbols(claszSymbol),
-              methodSymbols(cd)
-            )
+              methodSymbols(cd))
           } else null
 
         // ----------- hand over to pipeline-2
@@ -277,7 +273,9 @@ abstract class GenBCode extends BCodeSyncAndTry {
               addToQ3(item)
             } catch {
               case e: java.lang.RuntimeException
-                  if e.getMessage != null && (e.getMessage contains "too large!") =>
+                  if e.getMessage != null && (
+                    e.getMessage contains "too large!"
+                  ) =>
                 reporter.error(
                   NoPosition,
                   s"Could not write class ${item.plain.name} because it exceeds JVM code size limits. ${e.getMessage}")

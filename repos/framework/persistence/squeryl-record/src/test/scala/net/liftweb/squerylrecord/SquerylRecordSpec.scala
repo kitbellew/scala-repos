@@ -305,22 +305,28 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
         // Decimal Fields:
         val empSalary: DecimalField[Employee] = from(employees)(e =>
-          where(e.salary in
-            from(employees)(e2 => where(e2.id === td.e1.id) select (e2.salary)))
+          where(
+            e.salary in
+              from(employees)(e2 =>
+                where(e2.id === td.e1.id) select (e2.salary)))
             select (e.salary)).single
         empSalary.get must_== td.e1.salary.get
 
         // Email fields:
         val empEmail: EmailField[Employee] = from(employees)(e =>
-          where(e.email in
-            from(employees)(e2 => where(e2.id === td.e1.id) select (e2.email)))
+          where(
+            e.email in
+              from(employees)(e2 =>
+                where(e2.id === td.e1.id) select (e2.email)))
             select (e.email)).single
         empSalary.get must_== td.e1.salary.get
 
         // Boolean fields:
         val empAdmin: BooleanField[Employee] = from(employees)(e =>
-          where(e.admin in
-            from(employees)(e2 => where(e2.id === td.e2.id) select (e2.admin)))
+          where(
+            e.admin in
+              from(employees)(e2 =>
+                where(e2.id === td.e2.id) select (e2.admin)))
             select (e.admin)).single
         empAdmin.get must_== td.e2.admin.get
 

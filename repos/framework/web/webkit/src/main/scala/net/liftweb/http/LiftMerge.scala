@@ -199,8 +199,7 @@ private[http] trait LiftMerge {
 
                 normalized.copy(
                   normalizedElement.copy(child = normalizedChildren.nodes),
-                  js = normalized.js & normalizedChildren.js
-                )
+                  js = normalized.js & normalizedChildren.js)
 
               case other =>
                 other
@@ -288,16 +287,14 @@ private[http] trait LiftMerge {
       val bodyAttributes: List[(String, String)] =
         if (stateful_? && (autoIncludeComet || LiftRules.enableLiftGC)) {
           ("data-lift-gc" -> RenderVersion.get) ::
-            (
-              if (autoIncludeComet) {
-                ("data-lift-session-id" -> (S.session.map(
-                  _.uniqueId) openOr "xx")) ::
-                  S.requestCometVersions.is.toList.map {
-                    case CometVersionPair(guid, version) =>
-                      (s"data-lift-comet-$guid" -> version.toString)
-                  }
-              } else { Nil }
-            )
+            (if (autoIncludeComet) {
+               ("data-lift-session-id" -> (S.session.map(
+                 _.uniqueId) openOr "xx")) ::
+                 S.requestCometVersions.is.toList.map {
+                   case CometVersionPair(guid, version) =>
+                     (s"data-lift-comet-$guid" -> version.toString)
+                 }
+             } else { Nil })
         } else { Nil }
 
       htmlKids += nl

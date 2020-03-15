@@ -72,8 +72,10 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     // no polling for this query, the write journal will push all changes, i.e.
     // no refreshInterval
     Source
-      .actorPublisher[String](AllPersistenceIdsPublisher
-        .props(liveQuery = true, maxBufSize, writeJournalPluginId))
+      .actorPublisher[String](AllPersistenceIdsPublisher.props(
+        liveQuery = true,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("allPersistenceIds")
   }
@@ -85,8 +87,10 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
     */
   override def currentPersistenceIds(): Source[String, NotUsed] = {
     Source
-      .actorPublisher[String](AllPersistenceIdsPublisher
-        .props(liveQuery = false, maxBufSize, writeJournalPluginId))
+      .actorPublisher[String](AllPersistenceIdsPublisher.props(
+        liveQuery = false,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("currentPersistenceIds")
   }
@@ -122,14 +126,13 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
       fromSequenceNr: Long = 0L,
       toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
     Source
-      .actorPublisher[EventEnvelope](
-        EventsByPersistenceIdPublisher.props(
-          persistenceId,
-          fromSequenceNr,
-          toSequenceNr,
-          refreshInterval,
-          maxBufSize,
-          writeJournalPluginId))
+      .actorPublisher[EventEnvelope](EventsByPersistenceIdPublisher.props(
+        persistenceId,
+        fromSequenceNr,
+        toSequenceNr,
+        refreshInterval,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("eventsByPersistenceId-" + persistenceId)
   }
@@ -144,14 +147,13 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
       fromSequenceNr: Long = 0L,
       toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
     Source
-      .actorPublisher[EventEnvelope](
-        EventsByPersistenceIdPublisher.props(
-          persistenceId,
-          fromSequenceNr,
-          toSequenceNr,
-          None,
-          maxBufSize,
-          writeJournalPluginId))
+      .actorPublisher[EventEnvelope](EventsByPersistenceIdPublisher.props(
+        persistenceId,
+        fromSequenceNr,
+        toSequenceNr,
+        None,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("currentEventsByPersistenceId-" + persistenceId)
   }
@@ -195,14 +197,13 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
       tag: String,
       offset: Long = 0L): Source[EventEnvelope, NotUsed] = {
     Source
-      .actorPublisher[EventEnvelope](
-        EventsByTagPublisher.props(
-          tag,
-          offset,
-          Long.MaxValue,
-          refreshInterval,
-          maxBufSize,
-          writeJournalPluginId))
+      .actorPublisher[EventEnvelope](EventsByTagPublisher.props(
+        tag,
+        offset,
+        Long.MaxValue,
+        refreshInterval,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("eventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
   }
@@ -216,14 +217,13 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
       tag: String,
       offset: Long = 0L): Source[EventEnvelope, NotUsed] = {
     Source
-      .actorPublisher[EventEnvelope](
-        EventsByTagPublisher.props(
-          tag,
-          offset,
-          Long.MaxValue,
-          None,
-          maxBufSize,
-          writeJournalPluginId))
+      .actorPublisher[EventEnvelope](EventsByTagPublisher.props(
+        tag,
+        offset,
+        Long.MaxValue,
+        None,
+        maxBufSize,
+        writeJournalPluginId))
       .mapMaterializedValue(_ ⇒ NotUsed)
       .named("currentEventsByTag-" + URLEncoder.encode(tag, ByteString.UTF_8))
   }

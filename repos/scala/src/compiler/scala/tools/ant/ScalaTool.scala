@@ -255,8 +255,7 @@ class ScalaTool extends ScalaMatchingTask {
       ("class", mainClass.get),
       ("properties", getProperties),
       ("javaflags", javaFlags),
-      ("toolflags", toolFlags)
-    )
+      ("toolflags", toolFlags))
     // Consolidate Paths into classpath
     classpath = classpath ::: classpathPath.list.toList
     // Generate the scripts

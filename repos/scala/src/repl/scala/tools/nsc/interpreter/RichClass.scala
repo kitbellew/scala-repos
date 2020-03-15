@@ -15,11 +15,10 @@ class RichClass[T](val clazz: Class[T]) {
   // classes because our naming scheme is not doing well against the
   // jvm's many assumptions.
   def isScalaAnonymous =
-    (
-      try clazz.isAnonymousClass || (clazz.getName contains "$anon$")
-      catch {
-        case _: java.lang.InternalError => false
-      } // good ol' "Malformed class name"
+    (try clazz.isAnonymousClass || (clazz.getName contains "$anon$")
+    catch {
+      case _: java.lang.InternalError => false
+    } // good ol' "Malformed class name"
     )
 
   def supertags: List[ClassTag[_]] = supers map (_.toTag)

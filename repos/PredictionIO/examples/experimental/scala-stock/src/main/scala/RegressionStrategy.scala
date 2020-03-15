@@ -26,8 +26,8 @@ import nak.regress.LinearRegression
   */
 case class RegressionStrategyParams(
     indicators: Seq[(String, BaseIndicator)],
-    maxTrainingWindowSize: Int
-) extends Params
+    maxTrainingWindowSize: Int)
+    extends Params
 
 class RegressionStrategy(params: RegressionStrategyParams)
     extends StockStrategy[Map[String, DenseVector[Double]]] {
@@ -43,11 +43,8 @@ class RegressionStrategy(params: RegressionStrategyParams)
       (calculatedData.map(_.toVec.contents).reduce(_ ++ _) ++
         Array.fill(retF1d.length)(1.0)).toArray[Double]
     val target = DenseVector[Double](retF1d.toVec.contents)
-    val m = DenseMatrix.create[Double](
-      retF1d.length,
-      calculatedData.length + 1,
-      array
-    )
+    val m = DenseMatrix
+      .create[Double](retF1d.length, calculatedData.length + 1, array)
     val result = LinearRegression.regress(m, target)
     result
   }

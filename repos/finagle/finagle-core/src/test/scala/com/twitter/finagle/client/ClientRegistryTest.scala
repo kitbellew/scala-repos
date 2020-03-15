@@ -138,8 +138,9 @@ class ClientRegistryTest
         "high" -> "2147483647",
         "low" -> "0",
         "idleTime" -> "Duration.Top",
-        "maxWaiters" -> "2147483647"
-      ).map { case (key, value) => Entry(prefix :+ key, value) }
+        "maxWaiters" -> "2147483647").map {
+        case (key, value) => Entry(prefix :+ key, value)
+      }
 
       expected.foreach { entry => assert(filtered.contains(entry)) }
     }
@@ -157,14 +158,13 @@ class ClientRegistryTest
 
     val factory = ServiceFactory.const(mockSvc)
 
-    val stack = new StackBuilder(
-      Stack.Leaf(
-        new Stack.Head {
-          def role: Stack.Role = headRole
-          def description: String = "the head!!"
-          def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
-        },
-        factory))
+    val stack = new StackBuilder(Stack.Leaf(
+      new Stack.Head {
+        def role: Stack.Role = headRole
+        def description: String = "the head!!"
+        def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
+      },
+      factory))
     val stackable: Stackable[ServiceFactory[Int, Int]] =
       new Stack.Module1[TestParam, ServiceFactory[Int, Int]] {
         def make(
@@ -193,8 +193,7 @@ class ClientRegistryTest
       val expected = {
         Set(
           Entry(Seq("client", "fancy", "foo", "/$/fail", "name", "p1"), "999"),
-          Entry(Seq("client", "fancy", "foo", "/$/fail", "head", "p2"), "1")
-        )
+          Entry(Seq("client", "fancy", "foo", "/$/fail", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
       Await.result(factory.close())

@@ -54,9 +54,11 @@ trait SchedulerSpec
         }
       }))
       // run every 50 milliseconds
-      collectCancellable(
-        system.scheduler
-          .schedule(0 milliseconds, 50 milliseconds, tickActor, Tick))
+      collectCancellable(system.scheduler.schedule(
+        0 milliseconds,
+        50 milliseconds,
+        tickActor,
+        Tick))
 
       // after max 1 second it should be executed at least the 3 times already
       expectMsg(Tock)
@@ -81,9 +83,11 @@ trait SchedulerSpec
       }))
 
       // run immediately and then every 100 milliseconds
-      collectCancellable(
-        system.scheduler
-          .schedule(0 milliseconds, 100 milliseconds, actor, "msg"))
+      collectCancellable(system.scheduler.schedule(
+        0 milliseconds,
+        100 milliseconds,
+        actor,
+        "msg"))
       expectMsg("msg")
 
       // stop the actor and, hence, the continuous messaging from happening
@@ -115,9 +119,8 @@ trait SchedulerSpec
       // run after 300 millisec
       collectCancellable(
         system.scheduler.scheduleOnce(300 milliseconds, tickActor, Tick))
-      collectCancellable(
-        system.scheduler.scheduleOnce(300 milliseconds)(
-          countDownLatch.countDown()))
+      collectCancellable(system.scheduler.scheduleOnce(300 milliseconds)(
+        countDownLatch.countDown()))
 
       // should not be run immediately
       assert(countDownLatch.await(100, TimeUnit.MILLISECONDS) == false)
@@ -202,9 +205,8 @@ trait SchedulerSpec
       val restartLatch = new TestLatch
       val pingLatch = new TestLatch(6)
 
-      val supervisor = system.actorOf(
-        Props(new Supervisor(
-          AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
+      val supervisor = system.actorOf(Props(new Supervisor(
+        AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
       val props = Props(new Actor {
         def receive = {
           case Ping ⇒ pingLatch.countDown()
@@ -217,9 +219,11 @@ trait SchedulerSpec
         (supervisor ? props).mapTo[ActorRef],
         timeout.duration)
 
-      collectCancellable(
-        system.scheduler
-          .schedule(500 milliseconds, 500 milliseconds, actor, Ping))
+      collectCancellable(system.scheduler.schedule(
+        500 milliseconds,
+        500 milliseconds,
+        actor,
+        Ping))
       // appx 2 pings before crash
       EventFilter[Exception]("CRASH", occurrences = 1) intercept {
         collectCancellable(
@@ -248,9 +252,10 @@ trait SchedulerSpec
       }))
 
       (1 to 300).foreach { i ⇒
-        collectCancellable(
-          system.scheduler
-            .scheduleOnce(20 milliseconds, actor, Msg(System.nanoTime)))
+        collectCancellable(system.scheduler.scheduleOnce(
+          20 milliseconds,
+          actor,
+          Msg(System.nanoTime)))
         Thread.sleep(5)
       }
 
@@ -545,8 +550,8 @@ class LightArrayRevolverSchedulerSpec
         var overrun = headroom
         val cap = 1000000
         val (success, failure) = Iterator
-          .continually(
-            Try(sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
+          .continually(Try(
+            sched.scheduleOnce(100.millis)(counter.incrementAndGet())))
           .take(cap)
           .takeWhile(_.isSuccess || { overrun -= 1; overrun >= 0 })
           .partition(_.isSuccess)

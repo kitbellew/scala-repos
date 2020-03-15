@@ -67,18 +67,14 @@ object debugLoggedStatNames
     extends GlobalFlag[Set[String]](
       Set.empty,
       "Comma separated stat names for logging observed values" +
-        " (set via a -D system property to avoid load ordering issues)"
-    )
+        " (set via a -D system property to avoid load ordering issues)")
 
 // It's possible to override the scope separator (the default value for `MetricsStatsReceiver` is
 // `"/"`), which is used to separate scopes defined by  `StatsReceiver`. This flag might be useful
 // while migrating from Commons Stats (i.e., `CommonsStatsReceiver`), which is configured to use
 // `"_"` as scope separator.
 object scopeSeparator
-    extends GlobalFlag[String](
-      "/",
-      "Override the scope separator."
-    )
+    extends GlobalFlag[String]("/", "Override the scope separator.")
 
 object MetricsStatsReceiver {
   val defaultRegistry = Metrics.root()
@@ -206,8 +202,8 @@ object MetricsStatsReceiver {
 class MetricsStatsReceiver(
     val registry: Metrics,
     sink: Sink,
-    histogramFactory: String => HistogramInterface
-) extends StatsReceiverWithCumulativeGauges {
+    histogramFactory: String => HistogramInterface)
+    extends StatsReceiverWithCumulativeGauges {
   import MetricsStatsReceiver._
 
   def this(registry: Metrics, sink: Sink) =
@@ -252,10 +248,8 @@ class MetricsStatsReceiver(
       Seq(
         checkRequestsLimit("counter", counterRequests),
         checkRequestsLimit("stat", statRequests),
-        checkRequestsLimit("addGauge", gaugeRequests)
-      ).flatten
-    }
-  )
+        checkRequestsLimit("addGauge", gaugeRequests)).flatten
+    })
 
   // Scope separator, a string value used to separate scopes defined by `StatsReceiver`.
   private[this] val separator: String = scopeSeparator()

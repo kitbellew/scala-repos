@@ -10,11 +10,7 @@ object SonatypeSupport {
   val Apache2 =
     ("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
 
-  def sonatype(
-      ghUser: String,
-      ghRepo: String,
-      license: (String, URL)
-  ) =
+  def sonatype(ghUser: String, ghRepo: String, license: (String, URL)) =
     Seq(
       publishMavenStyle := true,
       publishArtifact in Test := false,
@@ -37,8 +33,7 @@ object SonatypeSupport {
           username,
           password)
       }.toSeq,
-      pomExtra := (
-        <scm>
+      pomExtra := (<scm>
         <url>git@github.com:${ghUser}/${ghRepo}.git</url>
         <connection>scm:git:git@github.com:${ghUser}/${ghRepo}.git</connection>
       </scm>
@@ -46,7 +41,6 @@ object SonatypeSupport {
         <developer>
           <id>$ghUser</id>
         </developer>
-      </developers>
-      )
+      </developers>)
     )
 }

@@ -85,8 +85,7 @@ case class MetricsSample(
       "gauges" -> gauges,
       "histograms" -> histograms,
       "meters" -> meters,
-      "timers" -> timers
-    )
+      "timers" -> timers)
 }
 
 object MetricsFormat {

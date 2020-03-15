@@ -115,8 +115,7 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
         valueSchema,
         inputData,
         pageSize = 16 * 1024 * 1024,
-        spill
-      )
+        spill)
     }
   }
 
@@ -142,14 +141,13 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
     val memoryManager = new TestMemoryManager(
       new SparkConf().set("spark.memory.offHeap.enabled", "false"))
     val taskMemMgr = new TaskMemoryManager(memoryManager, 0)
-    TaskContext.setTaskContext(
-      new TaskContextImpl(
-        stageId = 0,
-        partitionId = 0,
-        taskAttemptId = 98456,
-        attemptNumber = 0,
-        taskMemoryManager = taskMemMgr,
-        metricsSystem = null))
+    TaskContext.setTaskContext(new TaskContextImpl(
+      stageId = 0,
+      partitionId = 0,
+      taskAttemptId = 98456,
+      attemptNumber = 0,
+      taskMemoryManager = taskMemMgr,
+      metricsSystem = null))
 
     val sorter = new UnsafeKVExternalSorter(
       keySchema,
@@ -237,12 +235,6 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
       (k.asInstanceOf[InternalRow].copy(), v.asInstanceOf[InternalRow].copy())
     }
 
-    testKVSorter(
-      schema,
-      schema,
-      inputData,
-      pageSize,
-      spill = true
-    )
+    testKVSorter(schema, schema, inputData, pageSize, spill = true)
   }
 }

@@ -72,9 +72,8 @@ private[spark] class MemoryStore(
         s"memory. Please configure Spark with more memory.")
   }
 
-  logInfo(
-    "MemoryStore started with capacity %s".format(
-      Utils.bytesToString(maxMemory)))
+  logInfo("MemoryStore started with capacity %s".format(
+    Utils.bytesToString(maxMemory)))
 
   /** Total storage memory used including unroll memory, in bytes. */
   private def memoryUsed: Long = memoryManager.storageMemoryUsed
@@ -169,8 +168,9 @@ private[spark] class MemoryStore(
       initialMemoryThreshold)
 
     if (!keepUnrolling) {
-      logWarning(s"Failed to reserve initial memory threshold of " +
-        s"${Utils.bytesToString(initialMemoryThreshold)} for computing block $blockId in memory.")
+      logWarning(
+        s"Failed to reserve initial memory threshold of " +
+          s"${Utils.bytesToString(initialMemoryThreshold)} for computing block $blockId in memory.")
     } else { unrollMemoryUsedByThisBlock += initialMemoryThreshold }
 
     // Unroll this block safely, checking whether we have exceeded our threshold periodically
@@ -248,22 +248,20 @@ private[spark] class MemoryStore(
         assert(
           currentUnrollMemoryForThisTask >= currentUnrollMemoryForThisTask,
           "released too much unroll memory")
-        Left(
-          new PartiallyUnrolledIterator(
-            this,
-            unrollMemoryUsedByThisBlock,
-            unrolled = arrayValues.toIterator,
-            rest = Iterator.empty))
+        Left(new PartiallyUnrolledIterator(
+          this,
+          unrollMemoryUsedByThisBlock,
+          unrolled = arrayValues.toIterator,
+          rest = Iterator.empty))
       }
     } else {
       // We ran out of space while unrolling the values for this block
       logUnrollFailureMessage(blockId, vector.estimateSize())
-      Left(
-        new PartiallyUnrolledIterator(
-          this,
-          unrollMemoryUsedByThisBlock,
-          unrolled = vector.iterator,
-          rest = values))
+      Left(new PartiallyUnrolledIterator(
+        this,
+        unrollMemoryUsedByThisBlock,
+        unrolled = vector.iterator,
+        rest = values))
     }
   }
 
@@ -474,8 +472,7 @@ private[spark] class MemoryStore(
       s"Memory use = ${Utils.bytesToString(blocksMemoryUsed)} (blocks) + " +
         s"${Utils.bytesToString(currentUnrollMemory)} (scratch space shared across " +
         s"$numTasksUnrolling tasks(s)) = ${Utils.bytesToString(memoryUsed)}. " +
-        s"Storage limit = ${Utils.bytesToString(maxMemory)}."
-    )
+        s"Storage limit = ${Utils.bytesToString(maxMemory)}.")
   }
 
   /**
@@ -489,8 +486,7 @@ private[spark] class MemoryStore(
       finalVectorSize: Long): Unit = {
     logWarning(
       s"Not enough space to cache $blockId in memory! " +
-        s"(computed ${Utils.bytesToString(finalVectorSize)} so far)"
-    )
+        s"(computed ${Utils.bytesToString(finalVectorSize)} so far)")
     logMemoryUsage()
   }
 }

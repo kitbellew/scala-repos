@@ -46,8 +46,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     Vectors.dense(0.0, 1.0, 2.0),
     Vectors.dense(3.0, 4.0, 5.0),
     Vectors.dense(6.0, 7.0, 8.0),
-    Vectors.dense(9.0, 0.0, 1.0)
-  )
+    Vectors.dense(9.0, 0.0, 1.0))
   val sparseData = Seq(
     Vectors.sparse(3, Seq((1, 1.0), (2, 2.0))),
     Vectors.sparse(3, Seq((0, 3.0), (1, 4.0), (2, 5.0))),
@@ -161,9 +160,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
               V.toBreeze.asInstanceOf[BDM[Double]],
               localV,
               k)
-            assert(
-              closeToZero(
-                s.toBreeze.asInstanceOf[BDV[Double]] - localSigma(0 until k)))
+            assert(closeToZero(
+              s.toBreeze.asInstanceOf[BDV[Double]] - localSigma(0 until k)))
           }
         }
         val svdWithoutU = mat.computeSVD(
@@ -226,8 +224,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
         pc.toBreeze.asInstanceOf[BDM[Double]],
         principalComponents,
         k)
-      assert(
-        closeToZero(BDV(expVariance.toArray) -
+      assert(closeToZero(
+        BDV(expVariance.toArray) -
           BDV(Arrays.copyOfRange(explainedVariance.data, 0, k))))
       // Check that this method returns the same answer
       assert(pc === mat.computePrincipalComponents(k))
@@ -245,8 +243,7 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
           Vectors.dense(5.0, 14.0),
           Vectors.dense(14.0, 50.0),
           Vectors.dense(23.0, 86.0),
-          Vectors.dense(2.0, 32.0)
-        ))
+          Vectors.dense(2.0, 32.0)))
     }
   }
 
@@ -283,16 +280,14 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
       val calcQ = result.Q
       val calcR = result.R
       assert(closeToZero(abs(expected.q) - abs(calcQ.toBreeze())))
-      assert(
-        closeToZero(
-          abs(expected.r) - abs(calcR.toBreeze.asInstanceOf[BDM[Double]])))
+      assert(closeToZero(
+        abs(expected.r) - abs(calcR.toBreeze.asInstanceOf[BDM[Double]])))
       assert(closeToZero(calcQ.multiply(calcR).toBreeze - mat.toBreeze()))
       // Decomposition without computing Q
       val rOnly = mat.tallSkinnyQR(computeQ = false)
       assert(rOnly.Q == null)
-      assert(
-        closeToZero(
-          abs(expected.r) - abs(rOnly.R.toBreeze.asInstanceOf[BDM[Double]])))
+      assert(closeToZero(
+        abs(expected.r) - abs(rOnly.R.toBreeze.asInstanceOf[BDM[Double]])))
     }
   }
 
@@ -300,9 +295,8 @@ class RowMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     for (mat <- Seq(denseMat, sparseMat)) {
       val result = mat.computeCovariance()
       val expected = breeze.linalg.cov(mat.toBreeze())
-      assert(
-        closeToZero(
-          abs(expected) - abs(result.toBreeze.asInstanceOf[BDM[Double]])))
+      assert(closeToZero(
+        abs(expected) - abs(result.toBreeze.asInstanceOf[BDM[Double]])))
     }
   }
 

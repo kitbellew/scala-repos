@@ -228,8 +228,7 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
       dataType2: DataType): Unit = {
     forAll(
       LiteralGenerator.randomGen(dataType1),
-      LiteralGenerator.randomGen(dataType2)
-    ) { (l1: Literal, l2: Literal) =>
+      LiteralGenerator.randomGen(dataType2)) { (l1: Literal, l2: Literal) =>
       cmpInterpretWithCodegen(EmptyRow, c(l1, l2))
     }
   }
@@ -249,9 +248,9 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     forAll(
       LiteralGenerator.randomGen(dataType1),
       LiteralGenerator.randomGen(dataType2),
-      LiteralGenerator.randomGen(dataType3)
-    ) { (l1: Literal, l2: Literal, l3: Literal) =>
-      cmpInterpretWithCodegen(EmptyRow, c(l1, l2, l3))
+      LiteralGenerator.randomGen(dataType3)) {
+      (l1: Literal, l2: Literal, l3: Literal) =>
+        cmpInterpretWithCodegen(EmptyRow, c(l1, l2, l3))
     }
   }
 

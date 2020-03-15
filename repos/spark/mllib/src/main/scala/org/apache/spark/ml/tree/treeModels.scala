@@ -204,16 +204,15 @@ private[ml] object DecisionTreeModelReadWrite {
           (thisNodeData +: (leftNodeData ++ rightNodeData), rightIdx)
         case _: LeafNode =>
           (
-            Seq(
-              NodeData(
-                id,
-                node.prediction,
-                node.impurity,
-                node.impurityStats.stats,
-                -1.0,
-                -1,
-                -1,
-                SplitData(-1, Array.empty[Double], -1))),
+            Seq(NodeData(
+              id,
+              node.prediction,
+              node.impurity,
+              node.impurityStats.stats,
+              -1.0,
+              -1,
+              -1,
+              SplitData(-1, Array.empty[Double], -1))),
             id)
       }
   }

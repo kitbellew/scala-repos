@@ -524,8 +524,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
           response.contentString = Seq(
             Trace.id.traceId.toString,
             Trace.id.spanId.toString,
-            Trace.id.parentId.toString
-          ).mkString(".")
+            Trace.id.parentId.toString).mkString(".")
           Future.value(response)
         }
       })
@@ -688,8 +687,8 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       .configured(
         FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
       .newService(
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(
+          server.boundAddress.asInstanceOf[InetSocketAddress])),
         name)
 
     new ServiceProxy(client) {

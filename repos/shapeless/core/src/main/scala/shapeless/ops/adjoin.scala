@@ -33,18 +33,18 @@ object adjoin {
   trait LowPriorityAdjoin {
     type Aux[A, Out0] = Adjoin[A] { type Out = Out0 }
 
-    implicit def hlistAdjoin0[H, T <: HList](implicit
-        adjoinT: Adjoin[T] { type Out <: HList }
-    ): Aux[H :: T, H :: adjoinT.Out] =
+    implicit def hlistAdjoin0[H, T <: HList](
+        implicit adjoinT: Adjoin[T] { type Out <: HList })
+        : Aux[H :: T, H :: adjoinT.Out] =
       new Adjoin[H :: T] {
         type Out = H :: adjoinT.Out
 
         def apply(a: H :: T): H :: adjoinT.Out = a.head :: adjoinT(a.tail)
       }
 
-    implicit def coproductAdjoin0[H, T <: Coproduct](implicit
-        adjoinT: Adjoin[T] { type Out <: Coproduct }
-    ): Aux[H :+: T, H :+: adjoinT.Out] =
+    implicit def coproductAdjoin0[H, T <: Coproduct](
+        implicit adjoinT: Adjoin[T] { type Out <: Coproduct })
+        : Aux[H :+: T, H :+: adjoinT.Out] =
       new Adjoin[H :+: T] {
         type Out = H :+: adjoinT.Out
 
@@ -75,8 +75,7 @@ object adjoin {
 
     implicit def hlistLAdjoin1[H <: HList, T <: HList, OutT <: HList](implicit
         adjoinT: Aux[T, OutT],
-        prepend: Prepend[H, OutT]
-    ): Aux[H :: T, prepend.Out] =
+        prepend: Prepend[H, OutT]): Aux[H :: T, prepend.Out] =
       new Adjoin[H :: T] {
         type Out = prepend.Out
 
@@ -88,8 +87,7 @@ object adjoin {
         T <: Coproduct,
         OutT <: Coproduct](implicit
         adjoinT: Aux[T, OutT],
-        extend: ExtendBy[H, OutT]
-    ): Aux[H :+: T, extend.Out] =
+        extend: ExtendBy[H, OutT]): Aux[H :+: T, extend.Out] =
       new Adjoin[H :+: T] {
         type Out = extend.Out
 

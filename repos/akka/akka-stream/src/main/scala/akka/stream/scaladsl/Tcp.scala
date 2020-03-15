@@ -100,15 +100,14 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       halfClose: Boolean = false,
       idleTimeout: Duration = Duration.Inf)
       : Source[IncomingConnection, Future[ServerBinding]] =
-    Source.fromGraph(
-      new ConnectionSourceStage(
-        IO(IoTcp)(system),
-        new InetSocketAddress(interface, port),
-        backlog,
-        options,
-        halfClose,
-        idleTimeout,
-        bindShutdownTimeout))
+    Source.fromGraph(new ConnectionSourceStage(
+      IO(IoTcp)(system),
+      new InetSocketAddress(interface, port),
+      backlog,
+      options,
+      halfClose,
+      idleTimeout,
+      bindShutdownTimeout))
 
   /**
     * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
@@ -175,14 +174,13 @@ final class Tcp(system: ExtendedActorSystem) extends akka.actor.Extension {
       : Flow[ByteString, ByteString, Future[OutgoingConnection]] = {
 
     val tcpFlow = Flow
-      .fromGraph(
-        new OutgoingConnectionStage(
-          IO(IoTcp)(system),
-          remoteAddress,
-          localAddress,
-          options,
-          halfClose,
-          connectTimeout))
+      .fromGraph(new OutgoingConnectionStage(
+        IO(IoTcp)(system),
+        remoteAddress,
+        localAddress,
+        options,
+        halfClose,
+        connectTimeout))
       .via(detacher[ByteString]) // must read ahead for proper completions
 
     idleTimeout match {

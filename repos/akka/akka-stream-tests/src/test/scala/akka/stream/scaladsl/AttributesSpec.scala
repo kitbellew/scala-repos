@@ -22,10 +22,9 @@ object AttributesSpec {
 
   object AttributesSink {
     def apply(): Sink[Nothing, Future[Attributes]] =
-      new Sink(
-        new AttributesSink(
-          Attributes.name("attributesSink"),
-          Sink.shape("attributesSink")))
+      new Sink(new AttributesSink(
+        Attributes.name("attributesSink"),
+        Sink.shape("attributesSink")))
   }
 
   final class AttributesSink(
@@ -58,9 +57,8 @@ class AttributesSpec extends AkkaSpec {
   "attributes" must {
 
     "be overridable on a module basis" in {
-      val runnable = Source.empty.toMat(
-        AttributesSink().withAttributes(Attributes.name("new-name")))(
-        Keep.right)
+      val runnable = Source.empty.toMat(AttributesSink().withAttributes(
+        Attributes.name("new-name")))(Keep.right)
       whenReady(runnable.run()) { attributes ⇒
         attributes.get[Name] should contain(Name("new-name"))
       }

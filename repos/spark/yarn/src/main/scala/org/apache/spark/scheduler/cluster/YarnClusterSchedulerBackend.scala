@@ -49,18 +49,16 @@ private[spark] class YarnClusterSchedulerBackend(
       // lookup appropriate http scheme for container log urls
       val yarnHttpPolicy = yarnConf.get(
         YarnConfiguration.YARN_HTTP_POLICY_KEY,
-        YarnConfiguration.YARN_HTTP_POLICY_DEFAULT
-      )
+        YarnConfiguration.YARN_HTTP_POLICY_DEFAULT)
       val user = Utils.getCurrentUserName()
       val httpScheme =
         if (yarnHttpPolicy == "HTTPS_ONLY") "https://" else "http://"
       val baseUrl =
         s"$httpScheme$httpAddress/node/containerlogs/$containerId/$user"
       logDebug(s"Base URL for logs: $baseUrl")
-      driverLogs = Some(
-        Map(
-          "stderr" -> s"$baseUrl/stderr?start=-4096",
-          "stdout" -> s"$baseUrl/stdout?start=-4096"))
+      driverLogs = Some(Map(
+        "stderr" -> s"$baseUrl/stderr?start=-4096",
+        "stdout" -> s"$baseUrl/stdout?start=-4096"))
     } catch {
       case e: Exception =>
         logInfo(

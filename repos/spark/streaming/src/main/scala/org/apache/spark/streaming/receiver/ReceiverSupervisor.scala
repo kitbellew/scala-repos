@@ -35,8 +35,8 @@ import org.apache.spark.util.{ThreadUtils, Utils}
   */
 private[streaming] abstract class ReceiverSupervisor(
     receiver: Receiver[_],
-    conf: SparkConf
-) extends Logging {
+    conf: SparkConf)
+    extends Logging {
 
   /** Enumeration to identify current state of the Receiver */
   object ReceiverState extends Enumeration {
@@ -78,22 +78,19 @@ private[streaming] abstract class ReceiverSupervisor(
   def pushBytes(
       bytes: ByteBuffer,
       optionalMetadata: Option[Any],
-      optionalBlockId: Option[StreamBlockId]
-  )
+      optionalBlockId: Option[StreamBlockId])
 
   /** Store a iterator of received data as a data block into Spark's memory. */
   def pushIterator(
       iterator: Iterator[_],
       optionalMetadata: Option[Any],
-      optionalBlockId: Option[StreamBlockId]
-  )
+      optionalBlockId: Option[StreamBlockId])
 
   /** Store an ArrayBuffer of received data as a data block into Spark's memory. */
   def pushArrayBuffer(
       arrayBuffer: ArrayBuffer[_],
       optionalMetadata: Option[Any],
-      optionalBlockId: Option[StreamBlockId]
-  )
+      optionalBlockId: Option[StreamBlockId])
 
   /**
     * Create a custom [[BlockGenerator]] that the receiver implementation can directly control

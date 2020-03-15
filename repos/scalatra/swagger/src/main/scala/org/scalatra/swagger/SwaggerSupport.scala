@@ -618,8 +618,9 @@ trait SwaggerSupportSyntax extends Initializable with CorsSupport {
     for {
       (method, routes) ← routes.methodRoutes
       route ← routes if (route.metadata.keySet & Symbols.AllSymbols).nonEmpty
-      endpoint = route.metadata.get(Symbols.Endpoint) map (_.asInstanceOf[
-        String]) getOrElse inferSwaggerEndpoint(route)
+      endpoint = route.metadata.get(Symbols.Endpoint) map (
+        _.asInstanceOf[String]
+      ) getOrElse inferSwaggerEndpoint(route)
       operation = extract(route, method)
     } yield Entry(endpoint, operation)
 }
@@ -674,13 +675,15 @@ trait SwaggerSupport
     val op =
       route.metadata.get(Symbols.Operation) map (_.asInstanceOf[Operation])
     op map (_.copy(method = method)) getOrElse {
-      val theParams = route.metadata.get(
-        Symbols.Parameters) map (_.asInstanceOf[List[Parameter]]) getOrElse Nil
-      val errors = route.metadata.get(Symbols.Errors) map (_.asInstanceOf[List[
-        ResponseMessage[_]]]) getOrElse Nil
-      val responseClass =
-        route.metadata.get(Symbols.ResponseClass) map (_.asInstanceOf[
-          DataType]) getOrElse DataType.Void
+      val theParams = route.metadata.get(Symbols.Parameters) map (
+        _.asInstanceOf[List[Parameter]]
+      ) getOrElse Nil
+      val errors = route.metadata.get(Symbols.Errors) map (
+        _.asInstanceOf[List[ResponseMessage[_]]]
+      ) getOrElse Nil
+      val responseClass = route.metadata.get(Symbols.ResponseClass) map (
+        _.asInstanceOf[DataType]
+      ) getOrElse DataType.Void
       val summary = (route.metadata
         .get(Symbols.Summary) map (_.asInstanceOf[String])).orNull
       val notes = route.metadata.get(Symbols.Notes) map (_.asInstanceOf[String])

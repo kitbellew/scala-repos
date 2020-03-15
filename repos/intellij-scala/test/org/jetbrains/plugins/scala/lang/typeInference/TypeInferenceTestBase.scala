@@ -109,9 +109,8 @@ abstract class TypeInferenceTestBase
           case ExpectedPattern("<none>") =>
             expr.expectedType() match {
               case Some(et) =>
-                fail(
-                  "found unexpected expected type: %s".format(
-                    ScType.presentableText(et)))
+                fail("found unexpected expected type: %s".format(
+                  ScType.presentableText(et)))
               case None => // all good
             }
           case ExpectedPattern(expectedExpectedTypeText) =>

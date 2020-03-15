@@ -286,15 +286,14 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val testData = sqlContext.createDataFrame(
       sparkContext.parallelize(
         Row(null, 3.0, Double.NaN, Double.PositiveInfinity, 1.0f, 4) :: Nil),
-      StructType(
-        Seq(
-          StructField("a", DoubleType),
-          StructField("b", DoubleType),
-          StructField("c", DoubleType),
-          StructField("d", DoubleType),
-          StructField("e", FloatType),
-          StructField("f", IntegerType)
-        ))
+      StructType(Seq(
+        StructField("a", DoubleType),
+        StructField("b", DoubleType),
+        StructField("c", DoubleType),
+        StructField("d", DoubleType),
+        StructField("e", FloatType),
+        StructField("f", IntegerType)
+      ))
     )
 
     checkAnswer(
@@ -488,16 +487,14 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       testData.select(
         when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
-      Seq(Row(-1), Row(-2), Row(0))
-    )
+      Seq(Row(-1), Row(-2), Row(0)))
 
     // Without the ending otherwise, return null for unmatched conditions.
     // Also test putting a non-literal value in the expression.
     checkAnswer(
       testData.select(
         when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
-      Seq(Row(-1), Row(-2), Row(null))
-    )
+      Seq(Row(-1), Row(-2), Row(null)))
 
     // Test error handling for invalid expressions.
     intercept[IllegalArgumentException] { $"key".when($"key" === 1, -1) }
@@ -510,35 +507,29 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   test("sqrt") {
     checkAnswer(
       testData.select(sqrt('key)).orderBy('key.asc),
-      (1 to 100).map(n => Row(math.sqrt(n)))
-    )
+      (1 to 100).map(n => Row(math.sqrt(n))))
 
     checkAnswer(
       testData.select(sqrt('value), 'key).orderBy('key.asc, 'value.asc),
-      (1 to 100).map(n => Row(math.sqrt(n), n))
-    )
+      (1 to 100).map(n => Row(math.sqrt(n), n)))
 
     checkAnswer(
       testData.select(sqrt(lit(null))),
-      (1 to 100).map(_ => Row(null))
-    )
+      (1 to 100).map(_ => Row(null)))
   }
 
   test("upper") {
     checkAnswer(
       lowerCaseData.select(upper('l)),
-      ('a' to 'd').map(c => Row(c.toString.toUpperCase))
-    )
+      ('a' to 'd').map(c => Row(c.toString.toUpperCase)))
 
     checkAnswer(
       testData.select(upper('value), 'key),
-      (1 to 100).map(n => Row(n.toString, n))
-    )
+      (1 to 100).map(n => Row(n.toString, n)))
 
     checkAnswer(
       testData.select(upper(lit(null))),
-      (1 to 100).map(n => Row(null))
-    )
+      (1 to 100).map(n => Row(null)))
 
     checkAnswer(sql("SELECT upper('aB'), ucase('cDe')"), Row("AB", "CDE"))
   }
@@ -546,18 +537,15 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
   test("lower") {
     checkAnswer(
       upperCaseData.select(lower('L)),
-      ('A' to 'F').map(c => Row(c.toString.toLowerCase))
-    )
+      ('A' to 'F').map(c => Row(c.toString.toLowerCase)))
 
     checkAnswer(
       testData.select(lower('value), 'key),
-      (1 to 100).map(n => Row(n.toString, n))
-    )
+      (1 to 100).map(n => Row(n.toString, n)))
 
     checkAnswer(
       testData.select(lower(lit(null))),
-      (1 to 100).map(n => Row(null))
-    )
+      (1 to 100).map(n => Row(null)))
 
     checkAnswer(sql("SELECT lower('aB'), lcase('cDe')"), Row("ab", "cde"))
   }
@@ -570,12 +558,10 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       .toDF("a")
     checkAnswer(
       df.select(monotonicallyIncreasingId()),
-      Row(0L) :: Row(1L) :: Row((1L << 33) + 0L) :: Row((1L << 33) + 1L) :: Nil
-    )
+      Row(0L) :: Row(1L) :: Row((1L << 33) + 0L) :: Row((1L << 33) + 1L) :: Nil)
     checkAnswer(
       df.select(expr("monotonically_increasing_id()")),
-      Row(0L) :: Row(1L) :: Row((1L << 33) + 0L) :: Row((1L << 33) + 1L) :: Nil
-    )
+      Row(0L) :: Row(1L) :: Row((1L << 33) + 0L) :: Row((1L << 33) + 1L) :: Nil)
   }
 
   test("spark_partition_id") {
@@ -586,8 +572,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
       .toDF("a")
     checkAnswer(
       df.select(spark_partition_id()),
-      Row(0) :: Row(0) :: Row(1) :: Row(1) :: Nil
-    )
+      Row(0) :: Row(0) :: Row(1) :: Row(1) :: Nil)
   }
 
   test("input_file_name") {

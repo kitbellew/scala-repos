@@ -23,12 +23,9 @@ object TaskLifeTime {
 
     if (lifeTimes.isEmpty) { None }
     else {
-      Some(
-        TaskLifeTime(
-          averageSeconds = lifeTimes.sum / lifeTimes.size,
-          medianSeconds = lifeTimes(lifeTimes.size / 2)
-        )
-      )
+      Some(TaskLifeTime(
+        averageSeconds = lifeTimes.sum / lifeTimes.size,
+        medianSeconds = lifeTimes(lifeTimes.size / 2)))
     }
   }
 }

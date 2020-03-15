@@ -48,8 +48,8 @@ class OptionalSnapshotStoreSpec
     with ImplicitSender {
   import OptionalSnapshotStoreSpec._
 
-  system.eventStream.publish(
-    TestEvent.Mute(EventFilter[akka.pattern.AskTimeoutException]()))
+  system.eventStream.publish(TestEvent.Mute(
+    EventFilter[akka.pattern.AskTimeoutException]()))
 
   "Persistence extension" must {
     "initialize properly even in absence of configured snapshot store" in {

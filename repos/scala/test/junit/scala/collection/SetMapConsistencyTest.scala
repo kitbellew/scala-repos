@@ -387,10 +387,9 @@ class SetMapConsistencyTest {
                 val h = hx.asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
                 val y = (ci.HashMap.empty[A, Int] ++ h)
                   .asInstanceOf[ci.HashMap.HashTrieMap[A, Int]]
-                Some(
-                  (
-                    (h.bitmap.toHexString, h.elems.mkString, h.size),
-                    (y.bitmap.toHexString, y.elems.mkString, y.size)))
+                Some((
+                  (h.bitmap.toHexString, h.elems.mkString, h.size),
+                  (y.bitmap.toHexString, y.elems.mkString, y.size)))
               case _ => None
             }
           case _ => None
@@ -426,8 +425,7 @@ class SetMapConsistencyTest {
       () => boxIim,
       () => boxIhm[Int],
       () => boxIlm[Int],
-      () => boxItm[Int]
-    )
+      () => boxItm[Int])
     assert(
       maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), intKeys, 2000) })
   }
@@ -443,8 +441,7 @@ class SetMapConsistencyTest {
       () => boxMtm[Long],
       () => boxMohm[Long],
       () => boxIhm[Long],
-      () => boxIlm[Long]
-    )
+      () => boxIlm[Long])
     assert(
       maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), longKeys, 10000) })
   }
@@ -458,8 +455,7 @@ class SetMapConsistencyTest {
       () => boxMarm[String],
       () => boxJavaM[String],
       () => boxIhm[String],
-      () => boxIlm[String]
-    )
+      () => boxIlm[String])
     assert(maps.sliding(2).forall { ms =>
       churn(ms(0)(), ms(1)(), stringKeys, 5000)
     })
@@ -473,8 +469,7 @@ class SetMapConsistencyTest {
       () => boxMohm[Any],
       () => boxJavaM[Any],
       () => boxIhm[Any],
-      () => boxIlm[Any]
-    )
+      () => boxIlm[Any])
     assert(
       maps.sliding(2).forall { ms => churn(ms(0)(), ms(1)(), anyKeys, 10000) })
   }
@@ -506,8 +501,7 @@ class SetMapConsistencyTest {
       () => boxJavaS[Any],
       () => boxMhs[Any],
       () => boxIhs[Any],
-      () => boxIls[Any]
-    )
+      () => boxIls[Any])
     assert(sets.sliding(2).forall { ms =>
       churn(ms(0)(), ms(1)(), anyKeys, 10000, valuer = _ => 0)
     })

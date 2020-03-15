@@ -115,11 +115,9 @@ private[internal] trait TypeMaps {
         case tr @ TypeRef(pre, sym, args) =>
           val pre1 = this(pre)
           val args1 =
-            (
-              if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
-                mapOverArgs(args, sym.typeParams)
-              else args mapConserve this
-            )
+            (if (trackVariance && args.nonEmpty && !variance.isInvariant && sym.typeParams.nonEmpty)
+               mapOverArgs(args, sym.typeParams)
+             else args mapConserve this)
           if ((pre1 eq pre) && (args1 eq args)) tp
           else copyTypeRef(tp, pre1, tr.coevolveSym(pre1), args1)
         case ThisType(_) => tp
@@ -211,12 +209,10 @@ private[internal] trait TypeMaps {
     protected def mapOverArgs(
         args: List[Type],
         tparams: List[Symbol]): List[Type] =
-      (
-        if (trackVariance)
-          map2Conserve(args, tparams)((arg, tparam) =>
-            withVariance(variance * tparam.variance)(this(arg)))
-        else args mapConserve this
-      )
+      (if (trackVariance)
+         map2Conserve(args, tparams)((arg, tparam) =>
+           withVariance(variance * tparam.variance)(this(arg)))
+       else args mapConserve this)
 
     /** Applies this map to the symbol's info, setting variance = Invariant
       *  if necessary when the symbol is an alias.
@@ -462,9 +458,7 @@ private[internal] trait TypeMaps {
   def isPossiblePrefix(clazz: Symbol) = clazz.isClass && !clazz.isPackageClass
 
   protected[internal] def skipPrefixOf(pre: Type, clazz: Symbol) =
-    (
-      (pre eq NoType) || (pre eq NoPrefix) || !isPossiblePrefix(clazz)
-    )
+    ((pre eq NoType) || (pre eq NoPrefix) || !isPossiblePrefix(clazz))
 
   @deprecated("Use new AsSeenFromMap instead", "2.12.0")
   final def newAsSeenFromMap(pre: Type, clazz: Symbol): AsSeenFromMap =
@@ -519,10 +513,8 @@ private[internal] trait TypeMaps {
     // but less succinct name.
     private def isBaseClassOfEnclosingClass(base: Symbol) = {
       def loop(encl: Symbol): Boolean =
-        (
-          isPossiblePrefix(encl)
-            && ((encl isSubClass base) || loop(encl.owner.enclClass))
-        )
+        (isPossiblePrefix(encl)
+          && ((encl isSubClass base) || loop(encl.owner.enclClass)))
       // The hasCompleteInfo guard is necessary to avoid cycles during the typing
       // of certain classes, notably ones defined inside package objects.
       !base.hasCompleteInfo || loop(seenFromClass)
@@ -532,11 +524,9 @@ private[internal] trait TypeMaps {
       *  classes, or a base class of one of them?
       */
     private def isTypeParamOfEnclosingClass(sym: Symbol): Boolean =
-      (
-        sym.isTypeParameter
-          && sym.owner.isClass
-          && isBaseClassOfEnclosingClass(sym.owner)
-      )
+      (sym.isTypeParameter
+        && sym.owner.isClass
+        && isBaseClassOfEnclosingClass(sym.owner))
 
     /** Creates an existential representing a type parameter which appears
       *  in the prefix of a ThisType.
@@ -762,12 +752,10 @@ private[internal] trait TypeMaps {
         sym: Symbol,
         from: List[Symbol],
         to: List[T]): Type =
-      (
-        if (from.isEmpty) tp
-        // else if (to.isEmpty) error("Unexpected substitution on '%s': from = %s but to == Nil".format(tp, from))
-        else if (matches(from.head, sym)) toType(tp, to.head)
-        else subst(tp, sym, from.tail, to.tail)
-      )
+      (if (from.isEmpty) tp
+       // else if (to.isEmpty) error("Unexpected substitution on '%s': from = %s but to == Nil".format(tp, from))
+       else if (matches(from.head, sym)) toType(tp, to.head)
+       else subst(tp, sym, from.tail, to.tail))
 
     def apply(tp0: Type): Type =
       if (from.isEmpty) tp0
@@ -824,32 +812,28 @@ private[internal] trait TypeMaps {
         sym: Symbol,
         from: List[Symbol],
         to: List[Symbol]): Symbol =
-      (
-        if (from.isEmpty) sym
-        // else if (to.isEmpty) error("Unexpected substitution on '%s': from = %s but to == Nil".format(sym, from))
-        else if (matches(from.head, sym)) to.head
-        else subst(sym, from.tail, to.tail)
-      )
+      (if (from.isEmpty) sym
+       // else if (to.isEmpty) error("Unexpected substitution on '%s': from = %s but to == Nil".format(sym, from))
+       else if (matches(from.head, sym)) to.head
+       else subst(sym, from.tail, to.tail))
     private def substFor(sym: Symbol) = subst(sym, from, to)
 
     override def apply(tp: Type): Type =
-      (
-        if (from.isEmpty) tp
-        else
-          tp match {
-            case TypeRef(pre, sym, args) if pre ne NoPrefix =>
-              val newSym = substFor(sym)
-              // mapOver takes care of subst'ing in args
-              mapOver(
-                if (sym eq newSym) tp else copyTypeRef(tp, pre, newSym, args))
-            // assert(newSym.typeParams.length == sym.typeParams.length, "typars mismatch in SubstSymMap: "+(sym, sym.typeParams, newSym, newSym.typeParams))
-            case SingleType(pre, sym) if pre ne NoPrefix =>
-              val newSym = substFor(sym)
-              mapOver(if (sym eq newSym) tp else singleType(pre, newSym))
-            case _ =>
-              super.apply(tp)
-          }
-      )
+      (if (from.isEmpty) tp
+       else
+         tp match {
+           case TypeRef(pre, sym, args) if pre ne NoPrefix =>
+             val newSym = substFor(sym)
+             // mapOver takes care of subst'ing in args
+             mapOver(
+               if (sym eq newSym) tp else copyTypeRef(tp, pre, newSym, args))
+           // assert(newSym.typeParams.length == sym.typeParams.length, "typars mismatch in SubstSymMap: "+(sym, sym.typeParams, newSym, newSym.typeParams))
+           case SingleType(pre, sym) if pre ne NoPrefix =>
+             val newSym = substFor(sym)
+             mapOver(if (sym eq newSym) tp else singleType(pre, newSym))
+           case _ =>
+             super.apply(tp)
+         })
 
     object mapTreeSymbols extends TypeMapTransformer {
       val strictCopy = newStrictTreeCopier
@@ -982,13 +966,11 @@ private[internal] trait TypeMaps {
     private def existentialFor(pid: Int) = {
       if (existentials(pid) eq null) {
         val param = params(pid)
-        existentials(pid) = (
-          param.owner.newExistential(
-            param.name.toTypeName append nme.SINGLETON_SUFFIX,
-            param.pos,
-            param.flags)
-            setInfo singletonBounds(actuals(pid))
-        )
+        existentials(pid) = (param.owner.newExistential(
+          param.name.toTypeName append nme.SINGLETON_SUFFIX,
+          param.pos,
+          param.flags)
+          setInfo singletonBounds(actuals(pid)))
       }
       existentials(pid)
     }
@@ -1167,21 +1149,21 @@ private[internal] trait TypeMaps {
   object adaptToNewRunMap extends TypeMap {
 
     private def adaptToNewRun(pre: Type, sym: Symbol): Symbol = {
-      if (phase.flatClasses || sym.isRootSymbol || (pre eq NoPrefix) || (pre eq NoType) || sym.isPackageClass)
-        sym
+      if (phase.flatClasses || sym.isRootSymbol || (pre eq NoPrefix) || (
+            pre eq NoType
+          ) || sym.isPackageClass) sym
       else if (sym.isModuleClass) {
         val sourceModule1 = adaptToNewRun(pre, sym.sourceModule)
 
         sourceModule1.moduleClass orElse sourceModule1.initialize.moduleClass orElse {
           val msg =
             "Cannot adapt module class; sym = %s, sourceModule = %s, sourceModule.moduleClass = %s => sourceModule1 = %s, sourceModule1.moduleClass = %s"
-          debuglog(
-            msg.format(
-              sym,
-              sym.sourceModule,
-              sym.sourceModule.moduleClass,
-              sourceModule1,
-              sourceModule1.moduleClass))
+          debuglog(msg.format(
+            sym,
+            sym.sourceModule,
+            sym.sourceModule.moduleClass,
+            sourceModule1,
+            sourceModule1.moduleClass))
           sym
         }
       } else {
@@ -1210,8 +1192,7 @@ private[internal] trait TypeMaps {
             "ADAPT2 pre = " + pre +
               ", bcs.head = " + bcs.head +
               ", sym = " + sym.fullLocationString +
-              ", rebind = " + rebind0.fullLocationString
-          )
+              ", rebind = " + rebind0.fullLocationString)
         }
         rebind0.suchThat(sym => sym.isType || sym.isStable) orElse {
           debuglog(
@@ -1249,9 +1230,10 @@ private[internal] trait TypeMaps {
             val args1 = args mapConserve (this)
             try {
               val sym1 = adaptToNewRun(pre1, sym)
-              if ((pre1 eq pre) && (sym1 eq sym) && (args1 eq args) /* && sym.isExternal*/ ) {
-                tp
-              } else if (sym1 == NoSymbol) {
+              if ((pre1 eq pre) && (sym1 eq sym) && (
+                    args1 eq args
+                  ) /* && sym.isExternal*/ ) { tp }
+              else if (sym1 == NoSymbol) {
                 devWarning(
                   s"adapt to new run failed: pre=$pre pre1=$pre1 sym=$sym")
                 tp

@@ -61,8 +61,8 @@ private[streaming] class DirectKafkaInputDStream[
     _ssc: StreamingContext,
     val kafkaParams: Map[String, String],
     val fromOffsets: Map[TopicAndPartition, Long],
-    messageHandler: MessageAndMetadata[K, V] => R
-) extends InputDStream[R](_ssc)
+    messageHandler: MessageAndMetadata[K, V] => R)
+    extends InputDStream[R](_ssc)
     with Logging {
   val maxRetries = context.sparkContext.getConf
     .getInt("spark.streaming.kafka.maxRetries", 1)
@@ -78,10 +78,9 @@ private[streaming] class DirectKafkaInputDStream[
     */
   override protected[streaming] val rateController: Option[RateController] = {
     if (RateController.isBackPressureEnabled(ssc.conf)) {
-      Some(
-        new DirectKafkaRateController(
-          id,
-          RateEstimator.create(ssc.conf, context.graph.batchDuration)))
+      Some(new DirectKafkaRateController(
+        id,
+        RateEstimator.create(ssc.conf, context.graph.batchDuration)))
     } else { None }
   }
 
@@ -204,8 +203,8 @@ private[streaming] class DirectKafkaInputDStream[
       extends DStreamCheckpointData(this) {
     def batchForTime
         : mutable.HashMap[Time, Array[(String, Int, Long, Long)]] = {
-      data.asInstanceOf[
-        mutable.HashMap[Time, Array[OffsetRange.OffsetRangeTuple]]]
+      data.asInstanceOf[mutable.HashMap[Time, Array[
+        OffsetRange.OffsetRangeTuple]]]
     }
 
     override def update(time: Time) {

@@ -198,8 +198,8 @@ class AhcConfigBuilder(ahcConfig: AhcWSClientConfig = AhcWSClientConfig()) {
     builder.setMaxConnectionsPerHost(ahcConfig.maxConnectionsPerHost)
     builder.setMaxConnections(ahcConfig.maxConnectionsTotal)
     builder.setConnectionTtl(toMillis(ahcConfig.maxConnectionLifetime))
-    builder.setPooledConnectionIdleTimeout(
-      toMillis(ahcConfig.idleConnectionInPoolTimeout))
+    builder.setPooledConnectionIdleTimeout(toMillis(
+      ahcConfig.idleConnectionInPoolTimeout))
     builder.setMaxRedirects(ahcConfig.maxNumberOfRedirects)
     builder.setMaxRequestRetry(ahcConfig.maxRequestRetry)
     builder.setDisableUrlEncodingForBoundRequests(ahcConfig.disableUrlEncoding)

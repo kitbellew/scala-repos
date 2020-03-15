@@ -60,9 +60,7 @@ package object file {
 
     def parts: List[String] =
       file.getPath
-        .split(
-          Pattern.quote(JFile.separator)
-        )
+        .split(Pattern.quote(JFile.separator))
         .toList
         .filterNot(Set("", "."))
 

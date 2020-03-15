@@ -60,9 +60,8 @@ object KafkaEventStore {
     val localConfig = config.detach("local")
     val centralConfig = config.detach("central")
     println("Central config %s".format(centralConfig.toString()))
-    println(
-      "centralConfig.get[String](\"zk.connect\")=%s".format(
-        centralConfig.get[String]("zk.connect")))
+    println("centralConfig.get[String](\"zk.connect\")=%s".format(
+      centralConfig.get[String]("zk.connect")))
     centralConfig
       .get[String]("zk.connect")
       .toSuccess(
@@ -101,8 +100,9 @@ class LocalKafkaEventStore(
     extends EventStore[Future]
     with Logging {
   logger.info(
-    "Creating LocalKafkaEventStore for %s with max message size = %d"
-      .format(topic, maxMessageSize))
+    "Creating LocalKafkaEventStore for %s with max message size = %d".format(
+      topic,
+      maxMessageSize))
   private[this] val codec = new KafkaEventCodec
   private implicit val M = new blueeyes.bkka.FutureMonad(executor)
 
@@ -121,9 +121,8 @@ class LocalKafkaEventStore(
               logger.error(
                 "Failed to reach reasonable message size for event: %s".format(
                   event))
-              left(
-                StoreFailure(
-                  "Failed insertion due to excessively large event(s)!"))
+              left(StoreFailure(
+                "Failed insertion due to excessively large event(s)!"))
             } else { encodeAll(postSplit ::: xs, messages) }
           }
 
@@ -134,8 +133,7 @@ class LocalKafkaEventStore(
     val toSend = event.fold(
       ingest => encodeAll(List(event), Vector.empty),
       archive => right(List(codec.toMessage(archive))),
-      storeFile => encodeAll(List(event), Vector.empty)
-    )
+      storeFile => encodeAll(List(event), Vector.empty))
 
     toSend traverse { kafkaMessages =>
       Future {
@@ -165,8 +163,8 @@ object LocalKafkaEventStore {
       props
     }
 
-    val producer =
-      new Producer[String, Message](new ProducerConfig(localProperties))
+    val producer = new Producer[String, Message](new ProducerConfig(
+      localProperties))
     val stoppable = Stoppable.fromFuture(Future { producer.close })
 
     Some(

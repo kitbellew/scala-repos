@@ -64,11 +64,10 @@ private[hive] case class DescribeHiveTableCommand(
         }
 
         if (isExtended) {
-          results ++= Seq(
-            (
-              "Detailed Table Information",
-              table.hiveQlTable.getTTable.toString,
-              ""))
+          results ++= Seq((
+            "Detailed Table Information",
+            table.hiveQlTable.getTTable.toString,
+            ""))
         }
 
         results.map {

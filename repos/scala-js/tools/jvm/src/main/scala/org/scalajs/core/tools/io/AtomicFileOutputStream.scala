@@ -12,8 +12,8 @@ import java.net.URI
   */
 private[io] class AtomicFileOutputStream private (
     private val baseFile: File,
-    private val tmpFile: File
-) extends FileOutputStream(tmpFile) {
+    private val tmpFile: File)
+    extends FileOutputStream(tmpFile) {
 
   private[this] var _closed = false
 

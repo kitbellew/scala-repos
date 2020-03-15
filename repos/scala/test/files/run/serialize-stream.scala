@@ -4,8 +4,8 @@ object Test {
     val oos = new java.io.ObjectOutputStream(bos)
     oos.writeObject(s)
 
-    val ois = new java.io.ObjectInputStream(
-      new java.io.ByteArrayInputStream(bos.toByteArray))
+    val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(
+      bos.toByteArray))
     val obj = ois.readObject()
     println(obj)
     println(obj.asInstanceOf[Seq[T]].toList)

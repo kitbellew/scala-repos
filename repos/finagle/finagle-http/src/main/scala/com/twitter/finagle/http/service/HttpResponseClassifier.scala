@@ -26,9 +26,8 @@ object HttpResponseClassifier {
     * Converts from the more natural `(http.Request, http.Response)` types
     * to a [[ResponseClassifier]].
     */
-  def apply(
-      underlying: PartialFunction[(Request, Response), ResponseClass]
-  ): ResponseClassifier =
+  def apply(underlying: PartialFunction[(Request, Response), ResponseClass])
+      : ResponseClassifier =
     new ResponseClassifier {
       def isDefinedAt(x: ReqRep): Boolean =
         x match {

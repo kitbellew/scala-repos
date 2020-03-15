@@ -31,15 +31,15 @@ private[parser] trait SimpleHeaders {
   // http://www.w3.org/TR/cors/#access-control-allow-headers-response-header
   def `access-control-allow-headers` =
     rule {
-      zeroOrMore(token).separatedBy(
-        listSep) ~ EOI ~> (`Access-Control-Allow-Headers`(_))
+      zeroOrMore(token)
+        .separatedBy(listSep) ~ EOI ~> (`Access-Control-Allow-Headers`(_))
     }
 
   // http://www.w3.org/TR/cors/#access-control-allow-methods-response-header
   def `access-control-allow-methods` =
     rule {
-      zeroOrMore(httpMethodDef).separatedBy(
-        listSep) ~ EOI ~> (`Access-Control-Allow-Methods`(_))
+      zeroOrMore(httpMethodDef)
+        .separatedBy(listSep) ~ EOI ~> (`Access-Control-Allow-Methods`(_))
     }
 
   // http://www.w3.org/TR/cors/#access-control-allow-origin-response-header
@@ -52,8 +52,8 @@ private[parser] trait SimpleHeaders {
   // http://www.w3.org/TR/cors/#access-control-expose-headers-response-header
   def `access-control-expose-headers` =
     rule {
-      zeroOrMore(token).separatedBy(
-        listSep) ~ EOI ~> (`Access-Control-Expose-Headers`(_))
+      zeroOrMore(token)
+        .separatedBy(listSep) ~ EOI ~> (`Access-Control-Expose-Headers`(_))
     }
 
   // http://www.w3.org/TR/cors/#access-control-max-age-response-header
@@ -63,8 +63,8 @@ private[parser] trait SimpleHeaders {
   // http://www.w3.org/TR/cors/#access-control-request-headers-request-header
   def `access-control-request-headers` =
     rule {
-      zeroOrMore(token).separatedBy(
-        listSep) ~ EOI ~> (`Access-Control-Request-Headers`(_))
+      zeroOrMore(token)
+        .separatedBy(listSep) ~ EOI ~> (`Access-Control-Request-Headers`(_))
     }
 
   // http://www.w3.org/TR/cors/#access-control-request-method-request-header
@@ -89,9 +89,10 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7231#appendix-D
   def `content-encoding` =
     rule {
-      oneOrMore(token ~> (x ⇒
-        HttpEncodings.getForKeyCaseInsensitive(x) getOrElse HttpEncoding.custom(
-          x)))
+      oneOrMore(
+        token ~> (x ⇒
+          HttpEncodings.getForKeyCaseInsensitive(x) getOrElse HttpEncoding
+            .custom(x)))
         .separatedBy(listSep) ~ EOI ~> (`Content-Encoding`(_))
     }
 
@@ -172,8 +173,9 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7233#section-3.2
   def `if-range` =
     rule {
-      (`entity-tag` ~> (Left(_)) | `HTTP-date` ~> (Right(
-        _))) ~ EOI ~> (`If-Range`(_))
+      (`entity-tag` ~> (Left(_)) | `HTTP-date` ~> (Right(_))) ~ EOI ~> (
+        `If-Range`(_)
+      )
     }
 
   // http://tools.ietf.org/html/rfc7232#section-3.4
@@ -222,15 +224,16 @@ private[parser] trait SimpleHeaders {
   def `strict-transport-security` =
     rule {
       ignoreCase("max-age=") ~ `delta-seconds` ~ optional(
-        ws(";") ~ ignoreCase("includesubdomains") ~ push(
-          true)) ~ EOI ~> (`Strict-Transport-Security`(_, _))
+        ws(";") ~ ignoreCase("includesubdomains") ~ push(true)) ~ EOI ~> (
+        `Strict-Transport-Security`(_, _)
+      )
     }
 
   // http://tools.ietf.org/html/rfc7230#section-3.3.1
   def `transfer-encoding` =
     rule {
-      oneOrMore(`transfer-coding`).separatedBy(
-        listSep) ~ EOI ~> (`Transfer-Encoding`(_))
+      oneOrMore(`transfer-coding`)
+        .separatedBy(listSep) ~ EOI ~> (`Transfer-Encoding`(_))
     }
 
   // https://tools.ietf.org/html/rfc6265

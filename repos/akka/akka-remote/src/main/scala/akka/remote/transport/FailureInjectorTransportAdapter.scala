@@ -121,9 +121,8 @@ private[remote] class FailureInjectorTransportAdapter(
           remoteAddress,
           Unit,
           "interceptAssociate"))
-      statusPromise.failure(
-        new FailureInjectorException(
-          "Simulated failure of association to " + remoteAddress))
+      statusPromise.failure(new FailureInjectorException(
+        "Simulated failure of association to " + remoteAddress))
     else
       statusPromise.completeWith(
         wrappedTransport.associate(remoteAddress).map { handle ⇒

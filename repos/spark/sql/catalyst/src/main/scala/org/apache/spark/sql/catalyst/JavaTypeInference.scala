@@ -340,8 +340,7 @@ object JavaTypeInference {
           expressions.If(
             IsNull(getPath),
             expressions.Literal.create(null, ObjectType(other)),
-            result
-          )
+            result)
         } else { result }
     }
   }

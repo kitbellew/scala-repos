@@ -301,13 +301,12 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       .getOrElse(df.logicalPlan)
 
     df.sqlContext
-      .executePlan(
-        InsertIntoTable(
-          UnresolvedRelation(tableIdent),
-          partitions.getOrElse(Map.empty[String, Option[String]]),
-          input,
-          overwrite,
-          ifNotExists = false))
+      .executePlan(InsertIntoTable(
+        UnresolvedRelation(tableIdent),
+        partitions.getOrElse(Map.empty[String, Option[String]]),
+        input,
+        overwrite,
+        ifNotExists = false))
       .toRdd
   }
 

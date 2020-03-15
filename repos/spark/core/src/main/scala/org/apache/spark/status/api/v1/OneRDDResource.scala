@@ -28,9 +28,7 @@ private[v1] class OneRDDResource(ui: SparkUI) {
   def rddData(@PathParam("rddId") rddId: Int): RDDStorageInfo = {
     AllRDDResource
       .getRDDStorageInfo(rddId, ui.storageListener, true)
-      .getOrElse(
-        throw new NotFoundException(s"no rdd found w/ id $rddId")
-      )
+      .getOrElse(throw new NotFoundException(s"no rdd found w/ id $rddId"))
   }
 
 }

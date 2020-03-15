@@ -447,10 +447,9 @@ class JUnitAssertionsTest {
   @Test
   def testExpectThrows(): Unit = {
     testIfAsserts(expectThrows(classOf[Exception], throw new Exception))
-    testIfAsserts(
-      expectThrows(
-        classOf[IndexOutOfBoundsException],
-        throw new IndexOutOfBoundsException))
+    testIfAsserts(expectThrows(
+      classOf[IndexOutOfBoundsException],
+      throw new IndexOutOfBoundsException))
 
     testIfAsserts {
       val ex = expectThrows(classOf[Exception], throw new Exception("abc"))
@@ -468,10 +467,9 @@ class JUnitAssertionsTest {
   @Test
   def testAssertThrows(): Unit = {
     testIfAsserts(assertThrows(classOf[Exception], throw new Exception))
-    testIfAsserts(
-      assertThrows(
-        classOf[IndexOutOfBoundsException],
-        throw new IndexOutOfBoundsException))
+    testIfAsserts(assertThrows(
+      classOf[IndexOutOfBoundsException],
+      throw new IndexOutOfBoundsException))
 
     testIfAsserts(
       assertThrows(classOf[IndexOutOfBoundsException], throw new Exception),

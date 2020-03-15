@@ -121,15 +121,13 @@ trait ContextErrors {
     def onlyAny = tp.parents forall (_.typeSymbol == AnyClass)
     def parents_s = (if (parents.isEmpty) tp.parents else parents) mkString ", "
     def what =
-      (
-        if (tp.typeSymbol.isAbstractType) {
-          val descr =
-            if (onlyAny) "unbounded" else "bounded only by " + parents_s
-          s"$name is $descr, which means AnyRef is not a known parent"
-        } else if (tp.typeSymbol.isAnonOrRefinementClass)
-          s"the parents of this type ($parents_s) extend Any, not AnyRef"
-        else s"$name extends Any, not AnyRef"
-      )
+      (if (tp.typeSymbol.isAbstractType) {
+         val descr =
+           if (onlyAny) "unbounded" else "bounded only by " + parents_s
+         s"$name is $descr, which means AnyRef is not a known parent"
+       } else if (tp.typeSymbol.isAnonOrRefinementClass)
+         s"the parents of this type ($parents_s) extend Any, not AnyRef"
+       else s"$name extends Any, not AnyRef")
     if (isPrimitiveValueType(found) || isTrivialTopType(tp)) ""
     else
       "\n" +
@@ -193,10 +191,9 @@ trait ContextErrors {
         }
         issueNormalTypeError(
           tree,
-          "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
-                                                                         tree))
-                                                                     addendum
-                                                                   else ""))
+          "stable identifier required, but " + tree + " found." + (
+            if (treeInfo.hasVolatileType(tree)) addendum else ""
+          ))
         setError(tree)
       }
 
@@ -418,24 +415,19 @@ trait ContextErrors {
               } else ""
             }
             val semicolon =
-              (
-                if (linePrecedes(qual, sel))
-                  "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
-                else ""
-              )
+              (if (linePrecedes(qual, sel))
+                 "\npossible cause: maybe a semicolon is missing before `" + nameString + "'?"
+               else "")
             val notAnyRef =
-              (
-                if (ObjectClass.info.member(name).exists)
-                  notAnyRefMessage(target)
-                else ""
-              )
+              (if (ObjectClass.info.member(name).exists)
+                 notAnyRefMessage(target)
+               else "")
             companion + notAnyRef + semicolon
           }
           def targetStr = targetKindString + target.directObjectString
           withAddendum(qual.pos)(
             if (name == nme.CONSTRUCTOR) s"$target does not have a constructor"
-            else s"$nameString is not a member of $targetStr$addendum"
-          )
+            else s"$nameString is not a member of $targetStr$addendum")
         }
         issueNormalTypeError(sel, errMsg)
         // the error has to be set for the copied tree, otherwise
@@ -710,11 +702,10 @@ trait ContextErrors {
           name + " does not support passing a vararg parameter")
 
       def DynamicRewriteError(tree: Tree, err: AbsTypeError) = {
-        issueTypeError(
-          PosAndMsgTypeError(
-            err.errPos,
-            err.errMsg +
-              s"\nerror after rewriting to $tree\npossible cause: maybe a wrong Dynamic method signature?"))
+        issueTypeError(PosAndMsgTypeError(
+          err.errPos,
+          err.errMsg +
+            s"\nerror after rewriting to $tree\npossible cause: maybe a wrong Dynamic method signature?"))
         setError(tree)
       }
 
@@ -885,18 +876,19 @@ trait ContextErrors {
 
       def DefDefinedTwiceError(sym0: Symbol, sym1: Symbol) = {
         // Most of this hard work is associated with SI-4893.
-        val isBug =
-          sym0.isAbstractType && sym1.isAbstractType && (sym0.name startsWith "_$")
+        val isBug = sym0.isAbstractType && sym1.isAbstractType && (
+          sym0.name startsWith "_$"
+        )
         val addendums = List(
           if (sym0.associatedFile eq sym1.associatedFile)
-            Some(
-              "conflicting symbols both originated in file '%s'".format(
-                sym0.associatedFile.canonicalPath))
-          else if ((sym0.associatedFile ne NoAbstractFile) && (sym1.associatedFile ne NoAbstractFile))
-            Some(
-              "conflicting symbols originated in files '%s' and '%s'".format(
-                sym0.associatedFile.canonicalPath,
-                sym1.associatedFile.canonicalPath))
+            Some("conflicting symbols both originated in file '%s'".format(
+              sym0.associatedFile.canonicalPath))
+          else if ((
+                     sym0.associatedFile ne NoAbstractFile
+                   ) && (sym1.associatedFile ne NoAbstractFile))
+            Some("conflicting symbols originated in files '%s' and '%s'".format(
+              sym0.associatedFile.canonicalPath,
+              sym1.associatedFile.canonicalPath))
           else None,
           if (isBug)
             Some(
@@ -913,16 +905,14 @@ trait ContextErrors {
 
       // cyclic errors
       def CyclicAliasingOrSubtypingError(errPos: Position, sym0: Symbol) =
-        issueTypeError(
-          PosAndMsgTypeError(
-            errPos,
-            "cyclic aliasing or subtyping involving " + sym0))
+        issueTypeError(PosAndMsgTypeError(
+          errPos,
+          "cyclic aliasing or subtyping involving " + sym0))
 
       def CyclicReferenceError(errPos: Position, tp: Type, lockedSym: Symbol) =
-        issueTypeError(
-          PosAndMsgTypeError(
-            errPos,
-            s"illegal cyclic reference involving $tp and $lockedSym"))
+        issueTypeError(PosAndMsgTypeError(
+          errPos,
+          s"illegal cyclic reference involving $tp and $lockedSym"))
 
       // macro-related errors (also see MacroErrors below)
 
@@ -1014,7 +1004,9 @@ trait ContextErrors {
                 .getStackTrace()
                 .take(relevancyThreshold + 1)
               def isMacroInvoker(este: StackTraceElement) =
-                este.isNativeMethod || (este.getClassName != null && (este.getClassName contains "fastTrack"))
+                este.isNativeMethod || (este.getClassName != null && (
+                  este.getClassName contains "fastTrack"
+                ))
               var threshold =
                 relevantElements.reverse.indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
@@ -1049,15 +1041,11 @@ trait ContextErrors {
 
       def MacroFreeSymbolError(expandee: Tree, sym: FreeSymbol) = {
         def template(kind: String) =
-          (
-            s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
-              + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s"
-          )
+          (s"Macro expansion contains free $kind variable %s. Have you forgotten to use %s? "
+            + s"If you have troubles tracking free $kind variables, consider using -Xlog-free-${kind}s")
         val forgotten =
-          (
-            if (sym.isTerm) "splice when splicing this variable into a reifee"
-            else "c.WeakTypeTag annotation for this type parameter"
-          )
+          (if (sym.isTerm) "splice when splicing this variable into a reifee"
+           else "c.WeakTypeTag annotation for this type parameter")
         macroExpansionError(
           expandee,
           template(sym.name.nameKind)
@@ -1622,26 +1610,23 @@ trait ContextErrors {
             // per se, but which manifest as implicit conversion conflicts
             // involving Any, are further explained from foundReqMsg.
             if (AnyRefTpe <:< req)
-              (
-                if (sym == AnyClass || sym == UnitClass)
-                  (
-                    sm"""|Note: ${sym.name} is not implicitly converted to AnyRef.  You can safely
+              (if (sym == AnyClass || sym == UnitClass)
+                 (
+                   sm"""|Note: ${sym.name} is not implicitly converted to AnyRef.  You can safely
                       |pattern match `x: AnyRef` or cast `x.asInstanceOf[AnyRef]` to do so."""
-                  )
-                else
-                  boxedClass get sym map (boxed =>
-                    sm"""|Note: an implicit exists from ${sym.fullName} => ${boxed.fullName}, but
+                 )
+               else
+                 boxedClass get sym map (boxed =>
+                   sm"""|Note: an implicit exists from ${sym.fullName} => ${boxed.fullName}, but
                       |methods inherited from Object are rendered ambiguous.  This is to avoid
                       |a blanket implicit which would convert any ${sym.fullName} to any AnyRef.
-                      |You may wish to use a type ascription: `x: ${boxed.fullName}`.""") getOrElse ""
-              )
+                      |You may wish to use a type ascription: `x: ${boxed.fullName}`.""") getOrElse "")
             else
               sm"""|Note that implicit conversions are not applicable because they are ambiguous:
                     |${coreMsg}are possible conversion functions from $found to $req"""
           }
-          typeErrorMsg(found, req) + (
-            if (explanation == "") "" else "\n" + explanation
-          )
+          typeErrorMsg(found, req) + (if (explanation == "") ""
+                                      else "\n" + explanation)
         }
 
         def treeTypeArgs(annotatedTree: Tree): List[String] =
@@ -1652,19 +1637,18 @@ trait ContextErrors {
             case _ => Nil
           }
 
-        context.issueAmbiguousError(
-          AmbiguousImplicitTypeError(
-            tree,
-            (info1.sym, info2.sym) match {
-              case (ImplicitAmbiguousMsg(msg), _) =>
-                msg.format(treeTypeArgs(tree1))
-              case (_, ImplicitAmbiguousMsg(msg)) =>
-                msg.format(treeTypeArgs(tree2))
-              case (_, _) if isView => viewMsg
-              case (_, _) =>
-                s"ambiguous implicit values:\n${coreMsg}match expected type $pt"
-            }
-          ))
+        context.issueAmbiguousError(AmbiguousImplicitTypeError(
+          tree,
+          (info1.sym, info2.sym) match {
+            case (ImplicitAmbiguousMsg(msg), _) =>
+              msg.format(treeTypeArgs(tree1))
+            case (_, ImplicitAmbiguousMsg(msg)) =>
+              msg.format(treeTypeArgs(tree2))
+            case (_, _) if isView => viewMsg
+            case (_, _) =>
+              s"ambiguous implicit values:\n${coreMsg}match expected type $pt"
+          }
+        ))
       }
     }
 

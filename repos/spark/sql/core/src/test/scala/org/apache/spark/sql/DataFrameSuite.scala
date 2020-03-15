@@ -111,23 +111,20 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       unionDF.agg(avg('key), max('key), min('key), sum('key)),
-      Row(50.5, 100, 1, 25250) :: Nil
-    )
+      Row(50.5, 100, 1, 25250) :: Nil)
   }
 
   test("unionAll should union DataFrames with UDTs (SPARK-13410)") {
-    val rowRDD1 = sparkContext.parallelize(
-      Seq(Row(1, new ExamplePoint(1.0, 2.0))))
-    val schema1 = StructType(
-      Array(
-        StructField("label", IntegerType, false),
-        StructField("point", new ExamplePointUDT(), false)))
-    val rowRDD2 = sparkContext.parallelize(
-      Seq(Row(2, new ExamplePoint(3.0, 4.0))))
-    val schema2 = StructType(
-      Array(
-        StructField("label", IntegerType, false),
-        StructField("point", new ExamplePointUDT(), false)))
+    val rowRDD1 = sparkContext.parallelize(Seq(
+      Row(1, new ExamplePoint(1.0, 2.0))))
+    val schema1 = StructType(Array(
+      StructField("label", IntegerType, false),
+      StructField("point", new ExamplePointUDT(), false)))
+    val rowRDD2 = sparkContext.parallelize(Seq(
+      Row(2, new ExamplePoint(3.0, 4.0))))
+    val schema2 = StructType(Array(
+      StructField("label", IntegerType, false),
+      StructField("point", new ExamplePointUDT(), false)))
     val df1 = sqlContext.createDataFrame(rowRDD1, schema1)
     val df2 = sqlContext.createDataFrame(rowRDD2, schema2)
 
@@ -135,8 +132,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df1.unionAll(df2).orderBy("label"),
       Seq(
         Row(1, new ExamplePoint(1.0, 2.0)),
-        Row(2, new ExamplePoint(3.0, 4.0)))
-    )
+        Row(2, new ExamplePoint(3.0, 4.0))))
   }
 
   test("empty data frame") {
@@ -163,8 +159,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       df.explode("words", "word") { word: String => word.split(" ").toSeq }
         .select('word),
-      Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil
-    )
+      Row("a") :: Row("b") :: Row("c") :: Row("d") :: Row("e") :: Nil)
   }
 
   test("explode") {
@@ -178,8 +173,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         .select('_1 as 'letter, 'number)
         .groupBy('letter)
         .agg(countDistinct('number)),
-      Row("a", 3) :: Row("b", 2) :: Row("c", 1) :: Nil
-    )
+      Row("a", 3) :: Row("b", 2) :: Row("c", 1) :: Nil)
   }
 
   test(
@@ -193,9 +187,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
         .queryExecution
         .assertAnalyzed()
     }
-    assert(
-      e.getMessage.contains(
-        "Cannot explode *, explode can only be applied on a specific column."))
+    assert(e.getMessage.contains(
+      "Cannot explode *, explode can only be applied on a specific column."))
 
     df.explode('prefix, 'csv) {
         case Row(prefix: String, csv: String) =>
@@ -358,8 +351,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     // SPARK-12340: overstep the bounds of Int in SparkPlan.executeTake
     checkAnswer(
       sqlContext.range(2).toDF().limit(2147483638),
-      Row(0) :: Row(1) :: Nil
-    )
+      Row(0) :: Row(1) :: Nil)
   }
 
   test("except") {
@@ -430,8 +422,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       // SELECT *, foo(key, value) FROM testData
       testData.select($"*", foo('key, 'value)).limit(3),
-      Row(1, "1", "11") :: Row(2, "2", "22") :: Row(3, "3", "33") :: Nil
-    )
+      Row(1, "1", "11") :: Row(2, "2", "22") :: Row(3, "3", "33") :: Nil)
   }
 
   test("callUDF in SQLContext") {
@@ -680,8 +671,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("showString: array") {
     val df = Seq(
       (Array(1, 2, 3), Array(1, 2, 3)),
-      (Array(2, 3, 4), Array(2, 3, 4))
-    ).toDF()
+      (Array(2, 3, 4), Array(2, 3, 4))).toDF()
     val expectedAnswer = """+---------+---------+
                            ||       _1|       _2|
                            |+---------+---------+
@@ -712,10 +702,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("showString: minimum column width") {
-    val df = Seq(
-      (1, 1),
-      (2, 2)
-    ).toDF()
+    val df = Seq((1, 1), (2, 2)).toDF()
     val expectedAnswer = """+---+---+
                            || _1| _2|
                            |+---+---+
@@ -775,19 +762,13 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-7551: support backticks for DataFrame attribute resolution") {
-    val df = sqlContext.read.json(
-      sparkContext.makeRDD("""{"a.b": {"c": {"d..e": {"f": 1}}}}""" :: Nil))
-    checkAnswer(
-      df.select(df("`a.b`.c.`d..e`.`f`")),
-      Row(1)
-    )
+    val df = sqlContext.read.json(sparkContext.makeRDD(
+      """{"a.b": {"c": {"d..e": {"f": 1}}}}""" :: Nil))
+    checkAnswer(df.select(df("`a.b`.c.`d..e`.`f`")), Row(1))
 
-    val df2 = sqlContext.read.json(
-      sparkContext.makeRDD("""{"a  b": {"c": {"d  e": {"f": 1}}}}""" :: Nil))
-    checkAnswer(
-      df2.select(df2("`a  b`.c.d  e.f")),
-      Row(1)
-    )
+    val df2 = sqlContext.read.json(sparkContext.makeRDD(
+      """{"a  b": {"c": {"d  e": {"f": 1}}}}""" :: Nil))
+    checkAnswer(df2.select(df2("`a  b`.c.d  e.f")), Row(1))
 
     def checkError(testFun: => Unit): Unit = {
       val e = intercept[org.apache.spark.sql.AnalysisException] { testFun }
@@ -990,9 +971,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       val e1 = intercept[AnalysisException] {
         insertion.write.insertInto("rdd_base")
       }
-      assert(
-        e1.getMessage.contains(
-          "Inserting into an RDD-based table is not allowed."))
+      assert(e1.getMessage.contains(
+        "Inserting into an RDD-based table is not allowed."))
 
       // error case: insert into a logical plan that is not a LeafNode
       val indirectDS = pdf.select("_1").filter($"_1" > 5)
@@ -1000,9 +980,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       val e2 = intercept[AnalysisException] {
         insertion.write.insertInto("indirect_ds")
       }
-      assert(
-        e2.getMessage.contains(
-          "Inserting into an RDD-based table is not allowed."))
+      assert(e2.getMessage.contains(
+        "Inserting into an RDD-based table is not allowed."))
 
       // error case: insert into an OneRowRelation
       Dataset
@@ -1011,9 +990,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       val e3 = intercept[AnalysisException] {
         insertion.write.insertInto("one_row")
       }
-      assert(
-        e3.getMessage.contains(
-          "Inserting into an RDD-based table is not allowed."))
+      assert(e3.getMessage.contains(
+        "Inserting into an RDD-based table is not allowed."))
     }
   }
 
@@ -1057,8 +1035,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-9323: DataFrame.orderBy should support nested column name") {
-    val df = sqlContext.read.json(
-      sparkContext.makeRDD("""{"a": {"b": 1}}""" :: Nil))
+    val df = sqlContext.read.json(sparkContext.makeRDD(
+      """{"a": {"b": 1}}""" :: Nil))
     checkAnswer(df.orderBy("a.b"), Row(Row(1)))
   }
 
@@ -1156,10 +1134,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     }
 
     val union = df1.unionAll(df2)
-    checkAnswer(
-      union.filter('i < rand(7) * 10),
-      expected(union)
-    )
+    checkAnswer(union.filter('i < rand(7) * 10), expected(union))
     checkAnswer(
       union.select(rand(7)),
       union.rdd.collectPartitions().zipWithIndex.flatMap {
@@ -1170,16 +1145,10 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     )
 
     val intersect = df1.intersect(df2)
-    checkAnswer(
-      intersect.filter('i < rand(7) * 10),
-      expected(intersect)
-    )
+    checkAnswer(intersect.filter('i < rand(7) * 10), expected(intersect))
 
     val except = df1.except(df2)
-    checkAnswer(
-      except.filter('i < rand(7) * 10),
-      expected(except)
-    )
+    checkAnswer(except.filter('i < rand(7) * 10), expected(except))
   }
 
   test("SPARK-10743: keep the name of expression if possible when do cast") {
@@ -1371,10 +1340,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-11725: correctly handle null inputs for ScalaUDF") {
     val df = sparkContext
-      .parallelize(
-        Seq(
-          new java.lang.Integer(22) -> "John",
-          null.asInstanceOf[java.lang.Integer] -> "Lucy"))
+      .parallelize(Seq(
+        new java.lang.Integer(22) -> "John",
+        null.asInstanceOf[java.lang.Integer] -> "Lucy"))
       .toDF("age", "name")
 
     // passing null into the UDF that could handle it
@@ -1430,10 +1398,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     val df9 = Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
       .toDF("c1", "c2", "c3", "c4")
-    assert(df9.toString ===
-      "[c1: bigint, c2: struct<_1: bigint," +
-        " _2: struct<_1: bigint," +
-        " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
+    assert(
+      df9.toString ===
+        "[c1: bigint, c2: struct<_1: bigint," +
+          " _2: struct<_1: bigint," +
+          " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
 
   }
 
@@ -1469,9 +1438,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val agg1 = df.groupBy().count()
     val agg2 = df.groupBy().count()
     // two aggregates with different ExprId within them should have same result
-    assert(
-      agg1.queryExecution.executedPlan
-        .sameResult(agg2.queryExecution.executedPlan))
+    assert(agg1.queryExecution.executedPlan.sameResult(
+      agg2.queryExecution.executedPlan))
     val agg3 = df.groupBy().sum()
     assert(
       !agg1.queryExecution.executedPlan

@@ -424,13 +424,15 @@ object Index {
       case (k, v) if validID(k) => (k, v.head)
     } toMap
     else
-      sys.error(duplicates map {
-        case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
-      } mkString ("Some keys were defined with the same name but different types: ", ", ", ""))
+      sys.error(
+        duplicates map {
+          case (k, tps) => "'" + k + "' (" + tps.mkString(", ") + ")"
+        } mkString (
+          "Some keys were defined with the same name but different types: ", ", ", ""
+        ))
   }
-  private[this] type TriggerMap = collection.mutable.HashMap[
-    Task[_],
-    Seq[Task[_]]]
+  private[this] type TriggerMap = collection.mutable.HashMap[Task[_], Seq[
+    Task[_]]]
   def triggers(ss: Settings[Scope]): Triggers[Task] = {
     val runBefore = new TriggerMap
     val triggeredBy = new TriggerMap

@@ -113,8 +113,9 @@ class NettyTransportSettings(config: Config) {
       throw new ConfigurationException(s"Unknown transport: [$unknown]")
   }
 
-  val EnableSsl: Boolean = getBoolean(
-    "enable-ssl") requiring (!_ || TransportMode == Tcp, s"$TransportMode does not support SSL")
+  val EnableSsl: Boolean = getBoolean("enable-ssl") requiring (
+    !_ || TransportMode == Tcp, s"$TransportMode does not support SSL"
+  )
 
   val UseDispatcherForIo: Option[String] = getString(
     "use-dispatcher-for-io") match {
@@ -143,12 +144,15 @@ class NettyTransportSettings(config: Config) {
   val SendBufferSize: Option[Int] = optionSize("send-buffer-size")
 
   val ReceiveBufferSize: Option[Int] = optionSize(
-    "receive-buffer-size") requiring (s ⇒
-    s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP")
+    "receive-buffer-size") requiring (
+    s ⇒
+      s.isDefined || TransportMode != Udp, "receive-buffer-size must be specified for UDP"
+  )
 
-  val MaxFrameSize: Int =
-    getBytes("maximum-frame-size").toInt requiring (_ >= 32000,
-    s"Setting 'maximum-frame-size' must be at least 32000 bytes")
+  val MaxFrameSize: Int = getBytes("maximum-frame-size").toInt requiring (
+    _ >= 32000,
+    s"Setting 'maximum-frame-size' must be at least 32000 bytes"
+  )
 
   val Backlog: Int = getInt("backlog")
 
@@ -274,8 +278,9 @@ private[netty] abstract class ServerHandler(
             transport.system.name,
             hostName = None,
             port = None)
-          .getOrElse(throw new NettyTransportException(
-            s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
+          .getOrElse(
+            throw new NettyTransportException(
+              s"Unknown inbound remote address type [${remoteSocketAddress.getClass.getName}]"))
         init(channel, remoteSocketAddress, remoteAddress, msg) {
           listener notify InboundAssociation(_)
         }
@@ -332,12 +337,11 @@ private[transport] object NettyTransport {
       port: Option[Int]): Option[Address] =
     addr match {
       case sa: InetSocketAddress ⇒
-        Some(
-          Address(
-            schemeIdentifier,
-            systemName,
-            hostName.getOrElse(sa.getHostString),
-            port.getOrElse(sa.getPort)))
+        Some(Address(
+          schemeIdentifier,
+          systemName,
+          hostName.getOrElse(sa.getHostString),
+          port.getOrElse(sa.getPort)))
       case _ ⇒ None
     }
 
@@ -570,9 +574,8 @@ class NettyTransport(
           blocking { new InetSocketAddress(InetAddress.getByName(host), port) }
         }
       case _ ⇒
-        Future.failed(
-          new IllegalArgumentException(
-            s"Address [$addr] does not contain host or port information."))
+        Future.failed(new IllegalArgumentException(
+          s"Address [$addr] does not contain host or port information."))
     }
 
   override def listen: Future[(Address, Promise[AssociationEventListener])] = {

@@ -63,8 +63,9 @@ class ActorProducerTest
         }
 
         "not expect response and not block" taggedAs TimingTest in {
-          time(
-            producer.processExchangeAdapter(exchange)) should be < (200 millis)
+          time(producer.processExchangeAdapter(exchange)) should be < (
+            200 millis
+          )
         }
       }
 
@@ -216,8 +217,8 @@ class ActorProducerTest
             producer = given(outCapable = true, replyTimeout = 10 millis)
             producer.processExchangeAdapter(exchange, asyncCallback)
             asyncCallback.awaitCalled(100 millis)
-            verify(exchange).setFailure(
-              MMatchers.argThat(new ArgumentMatcher[FailureResult] {
+            verify(exchange).setFailure(MMatchers.argThat(
+              new ArgumentMatcher[FailureResult] {
                 def matches(failure: AnyRef) = {
                   failure.asInstanceOf[FailureResult].cause should be(
                     anInstanceOf[TimeoutException])
@@ -380,8 +381,8 @@ private[camel] trait ActorProducerFixture
         override val log = mock[LoggingAdapter]
         override lazy val template = mock[ProducerTemplate]
         override lazy val context = mock[DefaultCamelContext]
-        override val settings = new CamelSettings(
-          ConfigFactory.parseString("""
+        override val settings =
+          new CamelSettings(ConfigFactory.parseString("""
           akka {
             camel {
               jmx = off
@@ -393,8 +394,7 @@ private[camel] trait ActorProducerFixture
               }
             }
           }
-        """).withFallback(config),
-          sys.dynamicAccess)
+        """).withFallback(config), sys.dynamicAccess)
       }
     camel = camelWithMocks
 

@@ -104,8 +104,9 @@ class ScConstructorPatternImpl(node: ASTNode)
                   }))
               )
               val emptySubst: ScSubstitutor = new ScSubstitutor(
-                Map(td.typeParameters.map(tp =>
-                  ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
+                Map(
+                  td.typeParameters.map(tp =>
+                    ((tp.name, ScalaPsiUtil.getPsiElementId(tp)), Any)): _*),
                 Map.empty,
                 None)
               expectedType match {

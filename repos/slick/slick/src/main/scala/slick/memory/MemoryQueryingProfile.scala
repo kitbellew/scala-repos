@@ -109,8 +109,9 @@ trait MemoryQueryingProfile extends BasicProfile {
         case Library.SilentCast(
               sel @ Select(_, ElementSymbol(idx)) :@ OptionType(tpe2)) :@ tpe
             if !tpe.isInstanceOf[OptionType] =>
-          val base = createColumnConverter(sel, idx, None).asInstanceOf[
-            ResultConverter[MemoryResultConverterDomain, Option[Any]]]
+          val base = createColumnConverter(sel, idx, None)
+            .asInstanceOf[ResultConverter[MemoryResultConverterDomain, Option[
+              Any]]]
           createGetOrElseResultConverter(
             base,
             () =>

@@ -22,12 +22,11 @@ class PersistentVolumeMatcherTest
       "a resident app with persistent volumes and an offer without persistent volumes")
     val app = f.appWithPersistentVolume()
     val offer = MarathonTestHelper.makeBasicOffer().build()
-    val tasks = Seq(
-      f.makeTask(
-        app.id,
-        Task.Reservation(
-          Seq(Task.LocalVolumeId(app.id, "persistent-volume", "uuid")),
-          f.taskReservationStateNew)))
+    val tasks = Seq(f.makeTask(
+      app.id,
+      Task.Reservation(
+        Seq(Task.LocalVolumeId(app.id, "persistent-volume", "uuid")),
+        f.taskReservationStateNew)))
 
     When("We ask for a volume match")
     val matchOpt = PersistentVolumeMatcher.matchVolumes(offer, app, tasks)
@@ -43,10 +42,9 @@ class PersistentVolumeMatcherTest
       "a resident app with persistent volumes and an offer with matching persistent volumes")
     val app = f.appWithPersistentVolume()
     val localVolumeId = Task.LocalVolumeId(app.id, "persistent-volume", "uuid")
-    val tasks = Seq(
-      f.makeTask(
-        app.id,
-        Task.Reservation(Seq(localVolumeId), f.taskReservationStateNew)))
+    val tasks = Seq(f.makeTask(
+      app.id,
+      Task.Reservation(Seq(localVolumeId), f.taskReservationStateNew)))
     val offer = f.offerWithVolumes(tasks.head.taskId, localVolumeId)
 
     When("We ask for a volume match")
@@ -118,12 +116,11 @@ class PersistentVolumeMatcherTest
       "a resident app with persistent volumes and an offer with matching persistent volumes")
     val app = f.appWithPersistentVolume()
     val localVolumeId = Task.LocalVolumeId(app.id, "persistent-volume", "uuid")
-    val tasks = Seq(
-      f.makeTask(
-        app.id,
-        Task.Reservation(
-          Seq(Task.LocalVolumeId(app.id, "other-container", "uuid")),
-          f.taskReservationStateNew)))
+    val tasks = Seq(f.makeTask(
+      app.id,
+      Task.Reservation(
+        Seq(Task.LocalVolumeId(app.id, "other-container", "uuid")),
+        f.taskReservationStateNew)))
     val offer = f.offerWithVolumes(tasks.head.taskId, localVolumeId)
 
     When("We ask for a volume match")

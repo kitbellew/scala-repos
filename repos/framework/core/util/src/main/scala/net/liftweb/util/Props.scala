@@ -370,9 +370,8 @@ private[util] trait Props extends Logger {
 
     var tried: List[String] = Nil
 
-    trace(
-      "Loading properties. Active run.mode is %s".format(
-        if (modeName == "") "(Development)" else modeName))
+    trace("Loading properties. Active run.mode is %s".format(
+      if (modeName == "") "(Development)" else modeName))
 
     def vendStreams: List[(String, () => Box[InputStream])] =
       whereToLook() :::

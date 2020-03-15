@@ -36,8 +36,7 @@ class ConditionalExpressionSuite
       (true, null, 2, null),
       (false, 1, null, null),
       (null, null, 2, 2),
-      (null, 1, null, null)
-    )
+      (null, 1, null, null))
 
     // dataType must match T.
     def testIf(convert: (Integer => Any), dataType: DataType): Unit = {
@@ -210,25 +209,22 @@ class ConditionalExpressionSuite
       false,
       InternalRow.empty)
     checkEvaluation(
-      Least(
-        Seq(
-          Literal(BigDecimal("1234567890987654321123456")),
-          Literal(BigDecimal("1234567890987654321123458")))),
+      Least(Seq(
+        Literal(BigDecimal("1234567890987654321123456")),
+        Literal(BigDecimal("1234567890987654321123458")))),
       BigDecimal("1234567890987654321123456"),
       InternalRow.empty
     )
     checkEvaluation(
-      Least(
-        Seq(
-          Literal(Date.valueOf("2015-01-01")),
-          Literal(Date.valueOf("2015-07-01")))),
+      Least(Seq(
+        Literal(Date.valueOf("2015-01-01")),
+        Literal(Date.valueOf("2015-07-01")))),
       Date.valueOf("2015-01-01"),
       InternalRow.empty)
     checkEvaluation(
-      Least(
-        Seq(
-          Literal(Timestamp.valueOf("2015-07-01 08:00:00")),
-          Literal(Timestamp.valueOf("2015-07-01 10:00:00")))),
+      Least(Seq(
+        Literal(Timestamp.valueOf("2015-07-01 08:00:00")),
+        Literal(Timestamp.valueOf("2015-07-01 10:00:00")))),
       Timestamp.valueOf("2015-07-01 08:00:00"),
       InternalRow.empty
     )
@@ -289,25 +285,22 @@ class ConditionalExpressionSuite
       true,
       InternalRow.empty)
     checkEvaluation(
-      Greatest(
-        Seq(
-          Literal(BigDecimal("1234567890987654321123456")),
-          Literal(BigDecimal("1234567890987654321123458")))),
+      Greatest(Seq(
+        Literal(BigDecimal("1234567890987654321123456")),
+        Literal(BigDecimal("1234567890987654321123458")))),
       BigDecimal("1234567890987654321123458"),
       InternalRow.empty
     )
     checkEvaluation(
-      Greatest(
-        Seq(
-          Literal(Date.valueOf("2015-01-01")),
-          Literal(Date.valueOf("2015-07-01")))),
+      Greatest(Seq(
+        Literal(Date.valueOf("2015-01-01")),
+        Literal(Date.valueOf("2015-07-01")))),
       Date.valueOf("2015-07-01"),
       InternalRow.empty)
     checkEvaluation(
-      Greatest(
-        Seq(
-          Literal(Timestamp.valueOf("2015-07-01 08:00:00")),
-          Literal(Timestamp.valueOf("2015-07-01 10:00:00")))),
+      Greatest(Seq(
+        Literal(Timestamp.valueOf("2015-07-01 08:00:00")),
+        Literal(Timestamp.valueOf("2015-07-01 10:00:00")))),
       Timestamp.valueOf("2015-07-01 10:00:00"),
       InternalRow.empty
     )

@@ -222,20 +222,18 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
   // This is needed by the HTTP client fetching from the HttpServer. Put here so its
   // only set once.
   if (authOn) {
-    Authenticator.setDefault(
-      new Authenticator() {
-        override def getPasswordAuthentication(): PasswordAuthentication = {
-          var passAuth: PasswordAuthentication = null
-          val userInfo = getRequestingURL().getUserInfo()
-          if (userInfo != null) {
-            val parts = userInfo.split(":", 2)
-            passAuth =
-              new PasswordAuthentication(parts(0), parts(1).toCharArray())
-          }
-          return passAuth
+    Authenticator.setDefault(new Authenticator() {
+      override def getPasswordAuthentication(): PasswordAuthentication = {
+        var passAuth: PasswordAuthentication = null
+        val userInfo = getRequestingURL().getUserInfo()
+        if (userInfo != null) {
+          val parts = userInfo.split(":", 2)
+          passAuth =
+            new PasswordAuthentication(parts(0), parts(1).toCharArray())
         }
+        return passAuth
       }
-    )
+    })
   }
 
   // the default SSL configuration - it will be used by all communication layers unless overwritten

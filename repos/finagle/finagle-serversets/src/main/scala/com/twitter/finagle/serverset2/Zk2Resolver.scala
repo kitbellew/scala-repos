@@ -103,8 +103,7 @@ class Zk2Resolver(
             retryStream,
             hosts,
             sessionTimeout = sessionTimeout,
-            statsReceiver)
-      )
+            statsReceiver))
       new ServiceDiscoverer(
         varZkSession,
         statsReceiver.scope(statsOf(hosts)),
@@ -116,8 +115,7 @@ class Zk2Resolver(
     statsReceiver.addGauge("session_cache_size") {
       discoverers.snap.size.toFloat
     },
-    statsReceiver.addGauge("observed_serversets") { nsets.get() }
-  )
+    statsReceiver.addGauge("observed_serversets") { nsets.get() })
 
   private[this] def mkDiscoverer(hosts: String) = {
     val key = hosts.split(",").sorted mkString ","
@@ -128,9 +126,8 @@ class Zk2Resolver(
     value
   }
 
-  private[this] val serverSetOf = Memoize[
-    (ServiceDiscoverer, String),
-    Var[Activity.State[Seq[(Entry, Double)]]]] {
+  private[this] val serverSetOf = Memoize[(ServiceDiscoverer, String), Var[
+    Activity.State[Seq[(Entry, Double)]]]] {
     case (discoverer, path) => discoverer(path).run
   }
 

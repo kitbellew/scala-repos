@@ -91,8 +91,9 @@ trait ModelFactoryImplicitSupport {
       inTpl: DocTemplateImpl): List[ImplicitConversionImpl] =
     // Nothing and Null are somewhat special -- they can be transformed by any implicit conversion available in scope.
     // But we don't want that, so we'll simply refuse to find implicit conversions on for Nothing and Null
-    if (!(sym.isClass || sym.isTrait || sym == AnyRefClass) || sym == NothingClass || sym == NullClass)
-      Nil
+    if (!(
+          sym.isClass || sym.isTrait || sym == AnyRefClass
+        ) || sym == NothingClass || sym == NullClass) Nil
     else {
       val context: global.analyzer.Context = global.analyzer.rootContext(
         NoCompilationUnit)
@@ -231,13 +232,12 @@ trait ModelFactoryImplicitSupport {
         val constraints =
           implParamConstraints ::: boundsConstraints ::: substConstraints
 
-        List(
-          new ImplicitConversionImpl(
-            sym,
-            result.tree.symbol,
-            toType,
-            constraints,
-            inTpl))
+        List(new ImplicitConversionImpl(
+          sym,
+          result.tree.symbol,
+          toType,
+          constraints,
+          inTpl))
       } catch {
         case i: ImplicitNotFound =>
           //debug(s"  Eliminating: $toType")
@@ -554,12 +554,10 @@ trait ModelFactoryImplicitSupport {
   def uniteConstraints(constr: TypeConstraint): (List[Type], List[Type]) =
     try {
       (
-        List(
-          wildcardToNothing(
-            lub(constr.loBounds map typeVarToOriginOrWildcard))),
-        List(
-          wildcardToNothing(
-            glb(constr.hiBounds map typeVarToOriginOrWildcard))))
+        List(wildcardToNothing(
+          lub(constr.loBounds map typeVarToOriginOrWildcard))),
+        List(wildcardToNothing(
+          glb(constr.hiBounds map typeVarToOriginOrWildcard))))
     } catch {
       // does this actually ever happen? (probably when type vars occur in the bounds)
       case x: Throwable => (constr.loBounds.distinct, constr.hiBounds.distinct)
@@ -634,8 +632,9 @@ trait ModelFactoryImplicitSupport {
     // - common methods (in Any, AnyRef, Object) as they are automatically removed
     // - private and protected members (not accessible following an implicit conversion)
     // - members starting with _ (usually reserved for internal stuff)
-    localShouldDocument(
-      aSym) && (!aSym.isConstructor) && (aSym.owner != AnyValClass) &&
+    localShouldDocument(aSym) && (!aSym.isConstructor) && (
+      aSym.owner != AnyValClass
+    ) &&
     (aSym.owner != AnyClass) && (aSym.owner != ObjectClass) &&
     (!aSym.isProtected) && (!aSym.isPrivate) && (!aSym.name.startsWith("_")) &&
     (aSym.isMethod || aSym.isGetter || aSym.isSetter) &&

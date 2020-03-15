@@ -89,8 +89,7 @@ object ScalaVersion {
       errorHandler: String => Unit): ScalaVersion = {
     def error() =
       errorHandler(
-        s"Bad version (${versionString}) not major[.minor[.revision[-suffix]]]"
-      )
+        s"Bad version (${versionString}) not major[.minor[.revision[-suffix]]]")
 
     def toInt(s: String) =
       s match {

@@ -32,8 +32,7 @@ class UnsavedFileTest
           val inMemory = SourceFileInfo(
             missing,
             Some("class Foo { def main = { System.out.println(1) } }"),
-            None
-          )
+            None)
 
           project ! TypecheckFileReq(inMemory)
           expectMsg(VoidResponse)

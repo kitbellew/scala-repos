@@ -243,8 +243,7 @@ class GroupManager @Singleton @Inject() (
           .getOrElse(
             throw new PortRangeExhaustedException(
               config.localPortMin(),
-              config.localPortMax()
-            ))
+              config.localPortMax()))
         log.info(s"Take next configured free port: $port")
         taken += port
         port
@@ -273,8 +272,7 @@ class GroupManager @Singleton @Inject() (
           .app(app.id)
           .map(_.portNumbers.filter(p =>
             portRange.contains(p) && !app.servicePorts.contains(p)))
-          .getOrElse(Nil): _*
-      )
+          .getOrElse(Nil): _*)
 
       def nextFreeAppPort: Int =
         if (assignedAndAvailable.nonEmpty) assignedAndAvailable.dequeue()
@@ -293,28 +291,23 @@ class GroupManager @Singleton @Inject() (
         val mappings = pms.zip(servicePorts).map {
           case (pm, sp) => pm.copy(servicePort = sp)
         }
-        c.copy(
-          docker = Some(d.copy(portMappings = Some(mappings)))
-        )
+        c.copy(docker = Some(d.copy(portMappings = Some(mappings))))
       }
 
       app.copy(
         portDefinitions = mergeServicePortsAndPortDefinitions(
           app.portDefinitions,
           servicePorts),
-        container = newContainer.orElse(app.container)
-      )
+        container = newContainer.orElse(app.container))
     }
 
     val dynamicApps: Set[AppDefinition] = to.transitiveApps.map {
       case app: AppDefinition if app.hasDynamicPort => assignPorts(app)
       case app: AppDefinition                       =>
         // Always set the ports to service ports, even if we do not have dynamic ports in our port mappings
-        app.copy(
-          portDefinitions = mergeServicePortsAndPortDefinitions(
-            app.portDefinitions,
-            app.servicePorts)
-        )
+        app.copy(portDefinitions = mergeServicePortsAndPortDefinitions(
+          app.portDefinitions,
+          app.servicePorts))
     }
 
     dynamicApps.foldLeft(to) { (group, app) =>

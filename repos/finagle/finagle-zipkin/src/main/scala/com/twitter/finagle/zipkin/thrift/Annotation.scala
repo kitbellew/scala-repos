@@ -10,8 +10,7 @@ import java.nio.ByteBuffer
 case class ZipkinAnnotation(
     timestamp: Time,
     value: String,
-    endpoint: Endpoint
-) {
+    endpoint: Endpoint) {
 
   def toThrift: thrift.Annotation = {
     val thriftAnnotation = new thrift.Annotation
@@ -28,8 +27,7 @@ case class BinaryAnnotation(
     key: String,
     value: ByteBuffer,
     annotationType: thrift.AnnotationType,
-    endpoint: Endpoint
-) {
+    endpoint: Endpoint) {
   def toThrift: thrift.BinaryAnnotation = {
     val thriftAnnotation = new thrift.BinaryAnnotation
     val localEndpoint = endpoint.boundEndpoint.toThrift

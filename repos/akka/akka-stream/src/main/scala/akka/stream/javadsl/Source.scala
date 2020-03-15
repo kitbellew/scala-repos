@@ -215,12 +215,11 @@ object Source {
       s: S,
       f: function.Function[S, CompletionStage[Optional[Pair[S, E]]]])
       : Source[E, NotUsed] =
-    new Source(
-      scaladsl.Source.unfoldAsync(s)((s: S) ⇒
-        f.apply(s)
-          .toScala
-          .map(_.asScala.map(_.toScala))(
-            akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
+    new Source(scaladsl.Source.unfoldAsync(s)((s: S) ⇒
+      f.apply(s)
+        .toScala
+        .map(_.asScala.map(_.toScala))(
+          akka.dispatch.ExecutionContexts.sameThreadExecutionContext)))
 
   /**
     * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.
@@ -292,9 +291,9 @@ object Source {
       first: Source[T, _ <: Any],
       second: Source[T, _ <: Any],
       rest: java.util.List[Source[T, _ <: Any]],
-      strategy: function.Function[
-        java.lang.Integer,
-        _ <: Graph[UniformFanInShape[T, U], NotUsed]]): Source[U, NotUsed] = {
+      strategy: function.Function[java.lang.Integer, _ <: Graph[
+        UniformFanInShape[T, U],
+        NotUsed]]): Source[U, NotUsed] = {
     import scala.collection.JavaConverters._
     val seq = if (rest != null) rest.asScala.map(_.asScala) else Seq()
     new Source(
@@ -717,9 +716,8 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
       that: Graph[SourceShape[U], Mat2],
       comp: util.Comparator[U],
       matF: function.Function2[Mat, Mat2, Mat3]): javadsl.Source[U, Mat3] =
-    new Source(
-      delegate.mergeSortedMat(that)(combinerToScala(matF))(
-        Ordering.comparatorToOrdering(comp)))
+    new Source(delegate.mergeSortedMat(that)(combinerToScala(matF))(
+      Ordering.comparatorToOrdering(comp)))
 
   /**
     * Combine the elements of current [[Source]] and the given one into a stream of tuples.
@@ -1591,11 +1589,9 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): javadsl.Source[
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+  def prefixAndTail(n: Int): javadsl.Source[akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Source(delegate.prefixAndTail(n).map {
       case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
     })

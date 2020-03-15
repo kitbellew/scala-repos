@@ -200,8 +200,8 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
     */
   protected def copy1(
       stack: Stack[ServiceFactory[Req, Rep]] = this.stack,
-      params: Stack.Params = this.params
-  ): This { type In = self.In; type Out = self.Out }
+      params: Stack.Params = this.params)
+      : This { type In = self.In; type Out = self.Out }
 
   def serve(
       addr: SocketAddress,
@@ -267,10 +267,9 @@ trait StdStackServer[Req, Rep, This <: StdStackServer[Req, Rep, This]]
             // also gracefully deny new sessions.
             val d = server.newDispatcher(
               transport,
-              Service.const(
-                Future.exception(Failure
-                  .rejected("Terminating session and ignoring request", exc)))
-            )
+              Service.const(Future.exception(Failure.rejected(
+                "Terminating session and ignoring request",
+                exc))))
             connections.add(d)
             transport.onClose ensure connections.remove(d)
             // We give it a generous amount of time to shut down the session to

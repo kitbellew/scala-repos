@@ -29,11 +29,7 @@ trait FlashCookieSpec
     GuiceApplicationBuilder()
       .routes {
         case ("GET", "/flash") =>
-          Action {
-            Redirect("/landing").flashing(
-              "success" -> "found"
-            )
-          }
+          Action { Redirect("/landing").flashing("success" -> "found") }
         case ("GET", "/set-cookie") =>
           Action { Ok.withCookies(Cookie("some-cookie", "some-value")) }
         case ("GET", "/landing") =>

@@ -452,10 +452,9 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
     ld1.jsonobjlist.set(List(jd1, JsonDoc("2", "jsondoc2"), jd1))
     ld1.patternlist.set(
       List(Pattern.compile("^Mongo"), Pattern.compile("^Mongo2")))
-    ld1.maplist.set(
-      List(
-        Map("name" -> "map1", "type" -> "map"),
-        Map("name" -> "map2", "type" -> "map")))
+    ld1.maplist.set(List(
+      Map("name" -> "map1", "type" -> "map"),
+      Map("name" -> "map2", "type" -> "map")))
     ld1.binarylist.set(List[Array[Byte]]("foo".getBytes(), "bar".getBytes()))
 
     ld1.save() must_== ld1

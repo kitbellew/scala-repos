@@ -262,29 +262,21 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       // such as `and`, `or` or `not`. So, this function uses `SearchArgument.toString()`
       // to produce string expression and then compare it to given string expression below.
       // This might have to be changed after Hive version is upgraded.
-      checkFilterPredicate(
-        '_1.isNotNull,
-        """leaf-0 = (IS_NULL _1)
-          |expr = (not leaf-0)""".stripMargin.trim
-      )
-      checkFilterPredicate(
-        '_1 =!= 1,
-        """leaf-0 = (IS_NULL _1)
+      checkFilterPredicate('_1.isNotNull, """leaf-0 = (IS_NULL _1)
+          |expr = (not leaf-0)""".stripMargin.trim)
+      checkFilterPredicate('_1 =!= 1, """leaf-0 = (IS_NULL _1)
           |leaf-1 = (EQUALS _1 1)
-          |expr = (and (not leaf-0) (not leaf-1))""".stripMargin.trim
-      )
+          |expr = (and (not leaf-0) (not leaf-1))""".stripMargin.trim)
       checkFilterPredicate(
         !('_1 < 4),
         """leaf-0 = (IS_NULL _1)
           |leaf-1 = (LESS_THAN _1 4)
-          |expr = (and (not leaf-0) (not leaf-1))""".stripMargin.trim
-      )
+          |expr = (and (not leaf-0) (not leaf-1))""".stripMargin.trim)
       checkFilterPredicate(
         '_1 < 2 || '_1 > 3,
         """leaf-0 = (LESS_THAN _1 2)
           |leaf-1 = (LESS_THAN_EQUALS _1 3)
-          |expr = (or leaf-0 (not leaf-1))""".stripMargin.trim
-      )
+          |expr = (or leaf-0 (not leaf-1))""".stripMargin.trim)
       checkFilterPredicate(
         '_1 < 2 && '_1 > 3,
         """leaf-0 = (IS_NULL _1)

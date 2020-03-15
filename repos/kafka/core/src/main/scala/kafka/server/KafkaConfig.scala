@@ -1555,8 +1555,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.AutoCreateTopicsEnableProp)
   val numPartitions = getInt(KafkaConfig.NumPartitionsProp)
   val logDirs = CoreUtils.parseCsvList(
-    Option(getString(KafkaConfig.LogDirsProp))
-      .getOrElse(getString(KafkaConfig.LogDirProp)))
+    Option(getString(KafkaConfig.LogDirsProp)).getOrElse(getString(
+      KafkaConfig.LogDirProp)))
   val logSegmentBytes = getInt(KafkaConfig.LogSegmentBytesProp)
   val logFlushIntervalMessages = getLong(
     KafkaConfig.LogFlushIntervalMessagesProp)
@@ -1596,8 +1596,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     getLong(KafkaConfig.LogRollTimeJitterMillisProp))
     .getOrElse(60 * 60 * 1000L * getInt(KafkaConfig.LogRollTimeJitterHoursProp))
   val logFlushIntervalMs: java.lang.Long = Option(
-    getLong(KafkaConfig.LogFlushIntervalMsProp))
-    .getOrElse(getLong(KafkaConfig.LogFlushSchedulerIntervalMsProp))
+    getLong(KafkaConfig.LogFlushIntervalMsProp)).getOrElse(getLong(
+    KafkaConfig.LogFlushSchedulerIntervalMsProp))
   val logRetentionTimeMillis = getLogRetentionTimeMillis
   val minInSyncReplicas = getInt(KafkaConfig.MinInSyncReplicasProp)
   val logPreAllocateEnable: java.lang.Boolean = getBoolean(
@@ -1607,8 +1607,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logMessageFormatVersionString = getString(
     KafkaConfig.LogMessageFormatVersionProp)
   val logMessageFormatVersion = ApiVersion(logMessageFormatVersionString)
-  val logMessageTimestampType = TimestampType.forName(
-    getString(KafkaConfig.LogMessageTimestampTypeProp))
+  val logMessageTimestampType = TimestampType.forName(getString(
+    KafkaConfig.LogMessageTimestampTypeProp))
   val logMessageTimestampDifferenceMaxMs = getLong(
     KafkaConfig.LogMessageTimestampDifferenceMaxMsProp)
 
@@ -1640,8 +1640,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.LeaderImbalanceCheckIntervalSecondsProp)
   val uncleanLeaderElectionEnable: java.lang.Boolean = getBoolean(
     KafkaConfig.UncleanLeaderElectionEnableProp)
-  val interBrokerSecurityProtocol = SecurityProtocol.forName(
-    getString(KafkaConfig.InterBrokerSecurityProtocolProp))
+  val interBrokerSecurityProtocol = SecurityProtocol.forName(getString(
+    KafkaConfig.InterBrokerSecurityProtocolProp))
   // We keep the user-provided String as `ApiVersion.apply` can choose a slightly different version (eg if `0.10.0`
   // is passed, `0.10.0-IV0` may be picked)
   val interBrokerProtocolVersionString = getString(
@@ -1754,8 +1754,9 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     catch {
       case e: Exception =>
         throw new IllegalArgumentException(
-          "Error parsing configuration property '%s': %s"
-            .format(propName, e.getMessage))
+          "Error parsing configuration property '%s': %s".format(
+            propName,
+            e.getMessage))
     }
   }
 
@@ -1768,8 +1769,9 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       } catch {
         case e: Exception =>
           throw new IllegalArgumentException(
-            "Error creating broker listeners from '%s': %s"
-              .format(listeners, e.getMessage))
+            "Error creating broker listeners from '%s': %s".format(
+              listeners,
+              e.getMessage))
       }
     // filter port 0 for unit tests
     val endpointsWithoutZeroPort = endpoints.map(ep => ep.port).filter(_ != 0)
@@ -1803,8 +1805,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     if (getString(KafkaConfig.AdvertisedListenersProp) != null) {
       validateUniquePortAndProtocol(
         getString(KafkaConfig.AdvertisedListenersProp))
-      CoreUtils.listenerListToEndPoints(
-        getString(KafkaConfig.AdvertisedListenersProp))
+      CoreUtils.listenerListToEndPoints(getString(
+        KafkaConfig.AdvertisedListenersProp))
     } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null || getInt(
                  KafkaConfig.AdvertisedPortProp) != null) {
       CoreUtils.listenerListToEndPoints(

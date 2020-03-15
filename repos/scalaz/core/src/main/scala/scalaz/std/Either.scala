@@ -215,9 +215,8 @@ trait EitherInstances extends EitherInstances0 {
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
   val FirstRightProjectionIso2
       : λ[(α, β) => RightProjection[α, β] @@ First] <~~> Either =
-    new IsoBifunctorTemplate[
-      λ[(α, β) => RightProjection[α, β] @@ First],
-      Either] {
+    new IsoBifunctorTemplate[λ[
+      (α, β) => RightProjection[α, β] @@ First], Either] {
       def to[A, B](fa: RightProjection[A, B] @@ First) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = First(ga.right)
     }
@@ -237,9 +236,8 @@ trait EitherInstances extends EitherInstances0 {
     implicit def G: Bifunctor[Either] = eitherInstance
   }
 
-  val eitherFirstLeftInstance = new IsomorphismBifunctor[
-    λ[(α, β) => LeftProjection[α, β] @@ First],
-    Either] {
+  val eitherFirstLeftInstance = new IsomorphismBifunctor[λ[
+    (α, β) => LeftProjection[α, β] @@ First], Either] {
     def iso = FirstLeftProjectionIso2
     implicit def G: Bifunctor[Either] = eitherInstance
   }
@@ -366,23 +364,11 @@ trait EitherInstances extends EitherInstances0 {
     new Associative[Either] {
       override def reassociateLeft[A, B, C](
           f: Either[A, Either[B, C]]): Either[Either[A, B], C] =
-        f.fold(
-          a => Left(Left(a)),
-          _.fold(
-            b => Left(Right(b)),
-            Right(_)
-          )
-        )
+        f.fold(a => Left(Left(a)), _.fold(b => Left(Right(b)), Right(_)))
 
       override def reassociateRight[A, B, C](
           f: Either[Either[A, B], C]): Either[A, Either[B, C]] =
-        f.fold(
-          _.fold(
-            Left(_),
-            b => Right(Left(b))
-          ),
-          c => Right(Right(c))
-        )
+        f.fold(_.fold(Left(_), b => Right(Left(b))), c => Right(Right(c)))
 
     }
 

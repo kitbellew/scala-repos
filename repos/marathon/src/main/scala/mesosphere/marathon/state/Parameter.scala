@@ -13,8 +13,5 @@ case class Parameter(key: String, value: String) {
 
 object Parameter {
   def apply(proto: mesos.Parameter): Parameter =
-    Parameter(
-      proto.getKey,
-      proto.getValue
-    )
+    Parameter(proto.getKey, proto.getValue)
 }

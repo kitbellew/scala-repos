@@ -176,8 +176,7 @@ final class JsonView(
         .map(_.toMap)
     } yield Json.obj(
       "page" -> page,
-      "players" -> rankedPlayers.map(playerJson(sheets, tour))
-    )
+      "players" -> rankedPlayers.map(playerJson(sheets, tour)))
 
   private val firstPageCache = lila.memo.AsyncCache[String, JsObject](
     (id: String) =>
@@ -242,8 +241,7 @@ final class JsonView(
       .obj(
         "name" -> light.map(_.name),
         "title" -> light.flatMap(_.title),
-        "rating" -> rating
-      )
+        "rating" -> rating)
       .noNull
   }
 
@@ -334,11 +332,6 @@ object JsonView {
 
   private[tournament] implicit def spotlightWrites: OWrites[Spotlight] =
     OWrites { s =>
-      Json
-        .obj(
-          "iconImg" -> s.iconImg,
-          "iconFont" -> s.iconFont
-        )
-        .noNull
+      Json.obj("iconImg" -> s.iconImg, "iconFont" -> s.iconFont).noNull
     }
 }

@@ -33,8 +33,7 @@ class HealthCheckActor(
       "Starting health check actor for app [{}] version [{}] and healthCheck [{}]",
       app.id,
       app.version,
-      healthCheck
-    )
+      healthCheck)
     scheduleNextHealthCheck()
   }
 
@@ -43,8 +42,7 @@ class HealthCheckActor(
       "Restarting health check actor for app [{}] version [{}] and healthCheck [{}]",
       app.id,
       app.version,
-      healthCheck
-    )
+      healthCheck)
 
   override def postStop(): Unit = {
     nextScheduledCheck.forall { _.cancel() }
@@ -52,8 +50,7 @@ class HealthCheckActor(
       "Stopped health check actor for app [{}] version [{}] and healthCheck [{}]",
       app.id,
       app.version,
-      healthCheck
-    )
+      healthCheck)
   }
 
   def purgeStatusOfDoneTasks(): Unit = {
@@ -61,8 +58,7 @@ class HealthCheckActor(
       "Purging health status of done tasks for app [{}] version [{}] and healthCheck [{}]",
       app.id,
       app.version,
-      healthCheck
-    )
+      healthCheck)
     val activeTaskIds =
       taskTracker.appTasksLaunchedSync(app.id).map(_.taskId).toSet
     // The Map built with filterKeys wraps the original map and contains a reference to activeTaskIds.
@@ -76,13 +72,11 @@ class HealthCheckActor(
         "Scheduling next health check for app [{}] version [{}] and healthCheck [{}]",
         app.id,
         app.version,
-        healthCheck
-      )
+        healthCheck)
       nextScheduledCheck = Some(
         context.system.scheduler.scheduleOnce(healthCheck.interval) {
           self ! Tick
-        }
-      )
+        })
     }
 
   def dispatchJobs(): Unit = {
@@ -105,8 +99,7 @@ class HealthCheckActor(
     // ignore failures if maxFailures == 0
     if (consecutiveFailures >= maxFailures && maxFailures > 0) {
       log.info(
-        s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app.version}] on host ${task.agentInfo.host}"
-      )
+        s"Detected unhealthy ${task.taskId} of app [${app.id}] version [${app.version}] on host ${task.agentInfo.host}")
 
       // kill the task
       marathonSchedulerDriverHolder.driver.foreach { driver =>
@@ -174,13 +167,11 @@ class HealthCheckActor(
       taskHealth += (taskId -> newHealth)
 
       if (health.alive != newHealth.alive) {
-        eventBus.publish(
-          HealthStatusChanged(
-            appId = app.id,
-            taskId = taskId,
-            version = result.version,
-            alive = newHealth.alive)
-        )
+        eventBus.publish(HealthStatusChanged(
+          appId = app.id,
+          taskId = taskId,
+          version = result.version,
+          alive = newHealth.alive))
       }
 
     case result: HealthResult =>

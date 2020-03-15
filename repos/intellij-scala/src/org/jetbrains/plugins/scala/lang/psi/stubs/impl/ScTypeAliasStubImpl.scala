@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScTypeAliasStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScTypeAlias](parent, elemType)
     with ScTypeAliasStub {
   private var name: StringRef = _
@@ -36,9 +35,8 @@ class ScTypeAliasStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       name: String,
       isDeclaration: Boolean,
       typeElementText: String,

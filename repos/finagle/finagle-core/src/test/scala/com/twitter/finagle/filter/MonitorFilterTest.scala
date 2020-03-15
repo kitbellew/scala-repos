@@ -101,7 +101,8 @@ class MonitorFilterTest
       .build()
 
     when(
-      service(any[String])) thenThrow outer // make server service throw the mock exception
+      service(
+        any[String])) thenThrow outer // make server service throw the mock exception
 
     try { val f = Await.result(client("123")) }
     catch {
@@ -132,10 +133,9 @@ class MonitorFilterTest
     when(preparedFactory.status) thenReturn (Status.Open)
 
     val m = new MockChannel
-    when(
-      m.codec.prepareConnFactory(
-        any[ServiceFactory[String, String]],
-        any[Stack.Params])) thenReturn preparedFactory
+    when(m.codec.prepareConnFactory(
+      any[ServiceFactory[String, String]],
+      any[Stack.Params])) thenReturn preparedFactory
 
     val client = m.clientBuilder
       .monitor(_ => monitor)

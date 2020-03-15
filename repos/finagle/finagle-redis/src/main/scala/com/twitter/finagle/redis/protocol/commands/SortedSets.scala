@@ -39,13 +39,11 @@ case class ZCount(key: ChannelBuffer, min: ZInterval, max: ZInterval)
     extends StrictKeyCommand {
   def command = Commands.ZCOUNT
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.ZCOUNT,
-        key,
-        StringToChannelBuffer(min.toString),
-        StringToChannelBuffer(max.toString)
-      ))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.ZCOUNT,
+      key,
+      StringToChannelBuffer(min.toString),
+      StringToChannelBuffer(max.toString)))
 }
 object ZCount {
   def apply(args: Seq[Array[Byte]]) = {
@@ -62,12 +60,11 @@ case class ZIncrBy(key: ChannelBuffer, amount: Double, member: ChannelBuffer)
     with StrictMemberCommand {
   def command = Commands.ZINCRBY
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.ZINCRBY,
-        key,
-        StringToChannelBuffer(amount.toString),
-        member))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.ZINCRBY,
+      key,
+      StringToChannelBuffer(amount.toString),
+      member))
 }
 object ZIncrBy {
   def apply(args: Seq[Array[Byte]]) = {
@@ -414,18 +411,12 @@ sealed trait StrictZMembersCommand extends ZMembersCommand {
   }
   def membersByteArray: Seq[Array[Byte]] = {
     members.map { member =>
-      Seq(
-        StringToBytes(member.score.toString),
-        member.member.array
-      )
+      Seq(StringToBytes(member.score.toString), member.member.array)
     }.flatten
   }
   def membersChannelBuffers: Seq[ChannelBuffer] = {
     members.map { member =>
-      Seq(
-        StringToChannelBuffer(member.score.toString),
-        member.member
-      )
+      Seq(StringToChannelBuffer(member.score.toString), member.member)
     }.flatten
   }
 }

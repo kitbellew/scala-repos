@@ -68,19 +68,18 @@ class AddPrefixFix(ref: ScReferenceElement, clazz: PsiClass)
     val newRefText = parts.takeRight(2).mkString(".")
     refElem match {
       case stRef: ScStableCodeReferenceElement =>
-        stRef.replace(
-          ScalaPsiElementFactory
-            .createReferenceFromText(newRefText, stRef.getManager)) match {
+        stRef.replace(ScalaPsiElementFactory.createReferenceFromText(
+          newRefText,
+          stRef.getManager)) match {
           case r: ScStableCodeReferenceElement =>
             r.qualifier.foreach(_.bindToPackage(pckg, addImport = true))
           case _ =>
         }
       case ref: ScReferenceExpression =>
-        ref.replace(
-          ScalaPsiElementFactory.createExpressionWithContextFromText(
-            newRefText,
-            ref.getContext,
-            ref)) match {
+        ref.replace(ScalaPsiElementFactory.createExpressionWithContextFromText(
+          newRefText,
+          ref.getContext,
+          ref)) match {
           case ScReferenceExpression.withQualifier(q: ScReferenceExpression) =>
             q.bindToPackage(pckg, addImport = true)
           case _ =>

@@ -1055,8 +1055,7 @@ object SQLContext {
       new GenericInternalRow(
         methodsToConverts
           .map { case (e, convert) => convert(e.invoke(element)) }
-          .toArray[Any]
-      ): InternalRow
+          .toArray[Any]): InternalRow
     }
   }
 

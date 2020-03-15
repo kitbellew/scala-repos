@@ -104,8 +104,8 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   test("string encode/decode function") {
-    val bytes = Array[Byte](-27, -92, -89, -27, -115, -125, -28, -72, -106, -25,
-      -107, -116)
+    val bytes = Array[Byte](
+      -27, -92, -89, -27, -115, -125, -28, -72, -106, -25, -107, -116)
     // scalastyle:off
     // non ascii characters are not allowed in the code, so we disable the scalastyle here.
     val df = Seq(("大千世界", "utf-8", bytes)).toDF("a", "b", "c")
@@ -163,10 +163,7 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
   test("string substring_index function") {
     val df = Seq(("www.apache.org", ".", "zz")).toDF("a", "b", "c")
     checkAnswer(df.select(substring_index($"a", ".", 2)), Row("www.apache"))
-    checkAnswer(
-      df.selectExpr("substring_index(a, '.', 2)"),
-      Row("www.apache")
-    )
+    checkAnswer(df.selectExpr("substring_index(a, '.', 2)"), Row("www.apache"))
   }
 
   test("string locate function") {

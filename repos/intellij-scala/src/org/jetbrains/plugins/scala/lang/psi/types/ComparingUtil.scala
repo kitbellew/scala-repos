@@ -45,7 +45,9 @@ object ComparingUtil {
         clazz2,
         true) || clazz2.isInheritor(clazz1, true))
 
-    areUnrelatedClasses && (oneFinal || twoNonTraitsOrInterfaces || sealedAndAllChildrenAreIrreconcilable)
+    areUnrelatedClasses && (
+      oneFinal || twoNonTraitsOrInterfaces || sealedAndAllChildrenAreIrreconcilable
+    )
   }
 
   def isNeverSubType(

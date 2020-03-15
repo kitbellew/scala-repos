@@ -112,14 +112,12 @@ abstract class OperationOnCollectionInspectionBase
 
   private val patternLists = Map(
     likeCollectionKey -> getLikeCollectionClasses _,
-    likeOptionKey -> getLikeOptionClasses _
-  )
+    likeOptionKey -> getLikeOptionClasses _)
 
   private val setPatternLists = {
     Map(
       likeCollectionKey -> setLikeCollectionClasses _,
-      likeOptionKey -> setLikeOptionClasses _
-    )
+      likeOptionKey -> setLikeOptionClasses _)
   }
 
   override def createOptionsPanel: JComponent = {

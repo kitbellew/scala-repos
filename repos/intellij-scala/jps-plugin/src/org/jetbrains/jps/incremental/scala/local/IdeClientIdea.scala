@@ -77,12 +77,11 @@ class IdeClientIdea(
           case e: Throwable =>
             val message: String =
               "Class dependency information may be incomplete! Error parsing generated class " + outputFile.getPath
-            context.processMessage(
-              new CompilerMessage(
-                compilerName,
-                BuildMessage.Kind.WARNING,
-                message + "\n" + CompilerMessage.getTextFromThrowable(e),
-                sourcePath))
+            context.processMessage(new CompilerMessage(
+              compilerName,
+              BuildMessage.Kind.WARNING,
+              message + "\n" + CompilerMessage.getTextFromThrowable(e),
+              sourcePath))
         }
       }
     }

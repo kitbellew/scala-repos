@@ -70,10 +70,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
     }
   }
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
 
       # Disable legacy metrics.
       akka.cluster.metrics.enabled=off
@@ -109,8 +106,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
           }
         }
       }
-    """))
-      .withFallback(MultiNodeClusterSpec.clusterConfig))
+    """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 

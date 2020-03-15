@@ -75,12 +75,11 @@ trait LoggingBus extends ActorEventBus {
   private def setUpStdoutLogger(config: Settings) {
     val level = levelFor(config.StdoutLogLevel) getOrElse {
       // only log initialization errors directly with StandardOutLogger.print
-      StandardOutLogger.print(
-        Error(
-          new LoggerException,
-          simpleName(this),
-          this.getClass,
-          "unknown akka.stdout-loglevel " + config.StdoutLogLevel))
+      StandardOutLogger.print(Error(
+        new LoggerException,
+        simpleName(this),
+        this.getClass,
+        "unknown akka.stdout-loglevel " + config.StdoutLogLevel))
       ErrorLevel
     }
     AllLogLevels filter (level >= _) foreach (l ⇒
@@ -106,12 +105,11 @@ trait LoggingBus extends ActorEventBus {
     val logName = simpleName(this) + "(" + system + ")"
     val level = levelFor(system.settings.LogLevel) getOrElse {
       // only log initialization errors directly with StandardOutLogger.print
-      StandardOutLogger.print(
-        Error(
-          new LoggerException,
-          logName,
-          this.getClass,
-          "unknown akka.loglevel " + system.settings.LogLevel))
+      StandardOutLogger.print(Error(
+        new LoggerException,
+        logName,
+        this.getClass,
+        "unknown akka.loglevel " + system.settings.LogLevel))
       ErrorLevel
     }
     try {
@@ -148,11 +146,10 @@ trait LoggingBus extends ActorEventBus {
               Props(new Actor {
                 def receive = {
                   case UnhandledMessage(msg, sender, rcp) ⇒
-                    publish(
-                      Debug(
-                        rcp.path.toString,
-                        rcp.getClass,
-                        "unhandled message from " + sender + ": " + msg))
+                    publish(Debug(
+                      rcp.path.toString,
+                      rcp.getClass,
+                      "unhandled message from " + sender + ": " + msg))
                 }
               }),
               "UnhandledMessageForwarder"
@@ -182,11 +179,10 @@ trait LoggingBus extends ActorEventBus {
     val level = _logLevel // volatile access before reading loggers
     if (!(loggers contains StandardOutLogger)) {
       setUpStdoutLogger(system.settings)
-      publish(
-        Debug(
-          simpleName(this),
-          this.getClass,
-          "shutting down: StandardOutLogger started"))
+      publish(Debug(
+        simpleName(this),
+        this.getClass,
+        "shutting down: StandardOutLogger started"))
     }
     for {
       logger ← loggers
@@ -219,11 +215,10 @@ trait LoggingBus extends ActorEventBus {
       try Await.result(actor ? InitializeLogger(this), timeout.duration)
       catch {
         case _: TimeoutException ⇒
-          publish(
-            Warning(
-              logName,
-              this.getClass,
-              "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
+          publish(Warning(
+            logName,
+            this.getClass,
+            "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
           "[TIMEOUT]"
       }
     if (response != LoggerInitialized)
@@ -871,49 +866,44 @@ object Logging {
         case e: Info ⇒ info(e)
         case e: Debug ⇒ debug(e)
         case e ⇒
-          warning(
-            Warning(
-              simpleName(this),
-              this.getClass,
-              "received unexpected event of class " + e.getClass + ": " + e))
+          warning(Warning(
+            simpleName(this),
+            this.getClass,
+            "received unexpected event of class " + e.getClass + ": " + e))
       }
 
     def error(event: Error): Unit = {
       val f =
         if (event.cause == Error.NoCause) errorFormatWithoutCause
         else errorFormat
-      println(
-        f.format(
-          timestamp(event),
-          event.thread.getName,
-          event.logSource,
-          event.message,
-          stackTraceFor(event.cause)))
+      println(f.format(
+        timestamp(event),
+        event.thread.getName,
+        event.logSource,
+        event.message,
+        stackTraceFor(event.cause)))
     }
 
     def warning(event: Warning): Unit =
-      println(
-        warningFormat.format(
-          timestamp(event),
-          event.thread.getName,
-          event.logSource,
-          event.message))
+      println(warningFormat.format(
+        timestamp(event),
+        event.thread.getName,
+        event.logSource,
+        event.message))
 
     def info(event: Info): Unit =
-      println(
-        infoFormat.format(
-          timestamp(event),
-          event.thread.getName,
-          event.logSource,
-          event.message))
+      println(infoFormat.format(
+        timestamp(event),
+        event.thread.getName,
+        event.logSource,
+        event.message))
 
     def debug(event: Debug): Unit =
-      println(
-        debugFormat.format(
-          timestamp(event),
-          event.thread.getName,
-          event.logSource,
-          event.message))
+      println(debugFormat.format(
+        timestamp(event),
+        event.thread.getName,
+        event.logSource,
+        event.message))
   }
 
   /**

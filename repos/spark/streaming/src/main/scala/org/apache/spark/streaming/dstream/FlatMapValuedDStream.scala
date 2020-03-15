@@ -27,8 +27,8 @@ private[streaming] class FlatMapValuedDStream[
     V: ClassTag,
     U: ClassTag](
     parent: DStream[(K, V)],
-    flatMapValueFunc: V => TraversableOnce[U]
-) extends DStream[(K, U)](parent.ssc) {
+    flatMapValueFunc: V => TraversableOnce[U])
+    extends DStream[(K, U)](parent.ssc) {
 
   override def dependencies: List[DStream[_]] = List(parent)
 

@@ -36,8 +36,9 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
           nilStack[String, String])
           .push(verifyModule(expected))
           .push(AddrMetadataExtraction.module)
-          .make(Stack.Params.empty + LoadBalancerFactory.Dest(
-            addr) + BindingFactory.Dest(name))
+          .make(
+            Stack.Params.empty + LoadBalancerFactory.Dest(addr) + BindingFactory
+              .Dest(name))
 
       factory()
     }
@@ -71,10 +72,9 @@ class AddrMetadataExtractionTest extends FunSuite with AssertionsForJUnit {
   })
 
   test("just id for Addr.Failed")(new Ctx {
-    Await.result(
-      verify(
-        Var(Addr.Failed(new RuntimeException)),
-        bound,
-        Addr.Metadata("id" -> "/baz")))
+    Await.result(verify(
+      Var(Addr.Failed(new RuntimeException)),
+      bound,
+      Addr.Metadata("id" -> "/baz")))
   })
 }

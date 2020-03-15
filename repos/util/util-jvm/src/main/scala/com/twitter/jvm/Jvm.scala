@@ -25,11 +25,7 @@ import scala.collection.JavaConverters._
   * @param ageHisto Histogram of the number of bytes that
   * have been copied as many times. Note: 0-indexed.
   */
-case class Heap(
-    allocated: Long,
-    tenuringThreshold: Long,
-    ageHisto: Seq[Long]
-)
+case class Heap(allocated: Long, tenuringThreshold: Long, ageHisto: Seq[Long])
 
 /**
   * Information about the JVM's safepoint
@@ -91,18 +87,9 @@ trait Pool {
   }
 }
 
-case class Gc(
-    count: Long,
-    name: String,
-    timestamp: Time,
-    duration: Duration
-)
+case class Gc(count: Long, name: String, timestamp: Time, duration: Duration)
 
-case class Snapshot(
-    timestamp: Time,
-    heap: Heap,
-    lastGcs: Seq[Gc]
-)
+case class Snapshot(timestamp: Time, heap: Heap, lastGcs: Seq[Gc])
 
 /**
   * Access JVM internal performance counters. We maintain a strict

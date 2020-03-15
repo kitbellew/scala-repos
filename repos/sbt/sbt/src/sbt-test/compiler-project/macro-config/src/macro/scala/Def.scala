@@ -8,8 +8,6 @@ object Def {
     import c.universe._
 
     val s = show(a.tree)
-    c.Expr(
-      Literal(Constant(s))
-    )
+    c.Expr(Literal(Constant(s)))
   }
 }

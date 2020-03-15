@@ -29,8 +29,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (1, "Scala"),
         (2, "ScalaQuery"),
         (3, "Windows"),
-        (4, "Software")
-      )
+        (4, "Software"))
       _ <- posts.map(p => (p.title, p.category)) ++= Seq(
         ("Test Post", -1),
         ("Formal Language Processing in Scala, Part 5", 1),
@@ -169,8 +168,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         (Some((2, "b")), (3, "b")),
         (Some((3, "b")), (3, "b")),
         (None, (4, "c")),
-        (None, (5, "c"))
-      )
+        (None, (5, "c")))
       // Right outer, lift non-primitive value, then map to primitive
       q9 = (ys joinRight xs on (_.b === _.b))
         .map { case (yo, x) => (yo.map(_.a), x.a) }
@@ -270,8 +268,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
           (1, "Scala"),
           (3, "Windows"),
           (2, "ScalaQuery"),
-          (4, "Software")
-        )
+          (4, "Software"))
         _ <- posts.map(p => (p.title, p.category)) ++= Seq(
           ("Test Post", -1),
           ("Formal Language Processing in Scala, Part 5", 1),

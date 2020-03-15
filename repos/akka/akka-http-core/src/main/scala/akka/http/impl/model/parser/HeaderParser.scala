@@ -62,10 +62,9 @@ private[http] class HeaderParser(
   def success(result: HttpHeader :: HNil): Result = Right(result.head)
   def parseError(error: ParseError): Result = {
     val formatter = new ErrorFormatter(showLine = false)
-    Left(
-      ErrorInfo(
-        formatter.format(error, input),
-        formatter.formatErrorLine(error, input)))
+    Left(ErrorInfo(
+      formatter.format(error, input),
+      formatter.formatErrorLine(error, input)))
   }
   def failure(error: Throwable): Result =
     error match {
@@ -111,15 +110,13 @@ private[http] object HeaderParser {
     dispatch(parser, headerName) match {
       case r @ Right(_) if parser.cursor == v.length ⇒ r
       case r @ Right(_) ⇒
-        Left(
-          ErrorInfo(
-            "Header parsing error",
-            s"Rule for $headerName accepted trailing garbage. Is the parser missing a trailing EOI?"))
+        Left(ErrorInfo(
+          "Header parsing error",
+          s"Rule for $headerName accepted trailing garbage. Is the parser missing a trailing EOI?"))
       case Left(e) ⇒
-        Left(
-          e.copy(
-            summary = e.summary.filterNot(_ == EOI),
-            detail = e.detail.filterNot(_ == EOI)))
+        Left(e.copy(
+          summary = e.summary.filterNot(_ == EOI),
+          detail = e.detail.filterNot(_ == EOI)))
     }
   }
 

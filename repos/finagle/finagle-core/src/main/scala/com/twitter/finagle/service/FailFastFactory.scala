@@ -79,8 +79,7 @@ object FailFastFactory {
           _label: param.Label,
           _logger: param.Logger,
           _endpoint: Transporter.EndpointAddr,
-          next: ServiceFactory[Req, Rep]
-      ) = {
+          next: ServiceFactory[Req, Rep]) = {
         failFast match {
           case FailFast(false) =>
             next

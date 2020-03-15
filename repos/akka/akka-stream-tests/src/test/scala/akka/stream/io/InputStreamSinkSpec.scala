@@ -189,8 +189,8 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val bytes1 = randomByteString(10)
       val bytes2 = randomByteString(10)
       val sinkProbe = TestProbe()
-      val inputStream = Source(bytes1 :: bytes2 :: Nil)
-        .runWith(testSink(sinkProbe))
+      val inputStream = Source(bytes1 :: bytes2 :: Nil).runWith(testSink(
+        sinkProbe))
 
       //need to wait while both elements arrive to sink
       sinkProbe.expectMsgAllOf(GraphStageMessages.Push, GraphStageMessages.Push)

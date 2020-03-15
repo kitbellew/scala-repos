@@ -368,8 +368,9 @@ class MockHttpServletRequest(
   def computeRealPath(path: String) = {
     if (!path.startsWith(contextPath)) {
       throw new IllegalArgumentException(
-        "Path \"%s\" doesn't begin with context path \"%s\"!"
-          .format(path, contextPath))
+        "Path \"%s\" doesn't begin with context path \"%s\"!".format(
+          path,
+          contextPath))
     }
 
     path.substring(contextPath.length)

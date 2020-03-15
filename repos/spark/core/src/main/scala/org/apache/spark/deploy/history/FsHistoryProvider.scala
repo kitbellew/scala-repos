@@ -458,11 +458,10 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             attempt.name,
             attempts.sortWith(compareAttemptInfo))
         }
-        .getOrElse(
-          new FsApplicationHistoryInfo(
-            attempt.appId,
-            attempt.name,
-            List(attempt)))
+        .getOrElse(new FsApplicationHistoryInfo(
+          attempt.appId,
+          attempt.name,
+          List(attempt)))
       newAppMap(attempt.appId) = appInfo
     }
 
@@ -606,8 +605,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
           eventLog.getModificationTime(),
           appListener.sparkUser.getOrElse(NOT_STARTED),
           appCompleted,
-          eventLog.getLen()
-        )
+          eventLog.getLen())
         fileToAppInfo(logPath) = attemptInfo
         Some(attemptInfo)
       } else { None }

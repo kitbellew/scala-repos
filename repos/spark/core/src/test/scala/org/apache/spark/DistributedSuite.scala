@@ -307,8 +307,7 @@ class DistributedSuite
         .combineByKey(
           x => x,
           (x: Boolean, y: Boolean) => x,
-          (x: Boolean, y: Boolean) => failOnMarkedIdentity(x)
-        )
+          (x: Boolean, y: Boolean) => failOnMarkedIdentity(x))
       assert(grouped.collect.size === 1)
     }
   }

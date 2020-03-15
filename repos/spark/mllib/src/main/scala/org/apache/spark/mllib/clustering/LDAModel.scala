@@ -486,13 +486,12 @@ object LocalLDAModel extends Loader[LocalLDAModel] {
       import sqlContext.implicits._
 
       val k = topicsMatrix.numCols
-      val metadata = compact(
-        render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("k" -> k) ~ ("vocabSize" -> topicsMatrix.numRows) ~
-            ("docConcentration" -> docConcentration.toArray.toSeq) ~
-            ("topicConcentration" -> topicConcentration) ~
-            ("gammaShape" -> gammaShape)))
+      val metadata = compact(render(
+        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
+          ("k" -> k) ~ ("vocabSize" -> topicsMatrix.numRows) ~
+          ("docConcentration" -> docConcentration.toArray.toSeq) ~
+          ("topicConcentration" -> topicConcentration) ~
+          ("gammaShape" -> gammaShape)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       val topicsDenseMatrix = topicsMatrix.toBreeze.toDenseMatrix
@@ -950,14 +949,13 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       val sqlContext = SQLContext.getOrCreate(sc)
       import sqlContext.implicits._
 
-      val metadata = compact(
-        render(
-          ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
-            ("k" -> k) ~ ("vocabSize" -> vocabSize) ~
-            ("docConcentration" -> docConcentration.toArray.toSeq) ~
-            ("topicConcentration" -> topicConcentration) ~
-            ("iterationTimes" -> iterationTimes.toSeq) ~
-            ("gammaShape" -> gammaShape)))
+      val metadata = compact(render(
+        ("class" -> thisClassName) ~ ("version" -> thisFormatVersion) ~
+          ("k" -> k) ~ ("vocabSize" -> vocabSize) ~
+          ("docConcentration" -> docConcentration.toArray.toSeq) ~
+          ("topicConcentration" -> topicConcentration) ~
+          ("iterationTimes" -> iterationTimes.toSeq) ~
+          ("gammaShape" -> gammaShape)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       val newPath =

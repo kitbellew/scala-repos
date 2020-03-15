@@ -117,8 +117,8 @@ class HttpEventActorTest
   var response: HttpResponse = _
   var statusCode: StatusCode = _
   var responseAction = () => response
-  val metrics =
-    new HttpEventActor.HttpEventActorMetrics(new Metrics(new MetricRegistry))
+  val metrics = new HttpEventActor.HttpEventActorMetrics(new Metrics(
+    new MetricRegistry))
 
   implicit var system: ActorSystem = _
 

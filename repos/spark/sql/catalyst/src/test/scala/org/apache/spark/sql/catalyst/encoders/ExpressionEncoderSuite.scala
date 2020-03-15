@@ -144,14 +144,14 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
   // Kryo encoders
   encodeDecodeTest("hello", "kryo string")(encoderFor(Encoders.kryo[String]))
-  encodeDecodeTest(new KryoSerializable(15), "kryo object")(
-    encoderFor(Encoders.kryo[KryoSerializable]))
+  encodeDecodeTest(new KryoSerializable(15), "kryo object")(encoderFor(
+    Encoders.kryo[KryoSerializable]))
 
   // Java encoders
-  encodeDecodeTest("hello", "java string")(
-    encoderFor(Encoders.javaSerialization[String]))
-  encodeDecodeTest(new JavaSerializable(15), "java object")(
-    encoderFor(Encoders.javaSerialization[JavaSerializable]))
+  encodeDecodeTest("hello", "java string")(encoderFor(
+    Encoders.javaSerialization[String]))
+  encodeDecodeTest(new JavaSerializable(15), "java object")(encoderFor(
+    Encoders.javaSerialization[JavaSerializable]))
 
   // test product encoders
   private def productTest[T <: Product: ExpressionEncoder](input: T): Unit = {
@@ -168,16 +168,15 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
   productTest(PrimitiveData(1, 1, 1, 1, 1, 1, true))
 
-  productTest(
-    OptionalData(
-      Some(2),
-      Some(2),
-      Some(2),
-      Some(2),
-      Some(2),
-      Some(2),
-      Some(true),
-      Some(PrimitiveData(1, 1, 1, 1, 1, 1, true))))
+  productTest(OptionalData(
+    Some(2),
+    Some(2),
+    Some(2),
+    Some(2),
+    Some(2),
+    Some(2),
+    Some(true),
+    Some(PrimitiveData(1, 1, 1, 1, 1, 1, true))))
 
   productTest(OptionalData(None, None, None, None, None, None, None, None))
 
@@ -194,13 +193,12 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
   productTest((1, "test", PrimitiveData(1, 1, 1, 1, 1, 1, true)))
 
-  productTest(
-    RepeatedData(
-      Seq(1, 2),
-      Seq(new Integer(1), null, new Integer(2)),
-      Map(1 -> 2L),
-      Map(1 -> null),
-      PrimitiveData(1, 1, 1, 1, 1, 1, true)))
+  productTest(RepeatedData(
+    Seq(1, 2),
+    Seq(new Integer(1), null, new Integer(2)),
+    Map(1 -> 2L),
+    Map(1 -> null),
+    PrimitiveData(1, 1, 1, 1, 1, 1, true)))
 
   productTest(NestedArray(Array(Array(1, -2, 3), null, Array(4, 5, -6))))
 
@@ -233,21 +231,21 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
 
   encodeDecodeTest(
     (PrimitiveData(1, 1, 1, 1, 1, 1, true), (3, 30L)),
-    "tuple with 2 product encoders")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[PrimitiveData], ExpressionEncoder[(Int, Long)]))
+    "tuple with 2 product encoders")(ExpressionEncoder.tuple(
+    ExpressionEncoder[PrimitiveData],
+    ExpressionEncoder[(Int, Long)]))
 
   encodeDecodeTest(
     (PrimitiveData(1, 1, 1, 1, 1, 1, true), 3),
-    "tuple with flat encoder and product encoder")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[PrimitiveData], ExpressionEncoder[Int]))
+    "tuple with flat encoder and product encoder")(ExpressionEncoder.tuple(
+    ExpressionEncoder[PrimitiveData],
+    ExpressionEncoder[Int]))
 
   encodeDecodeTest(
     (3, PrimitiveData(1, 1, 1, 1, 1, 1, true)),
-    "tuple with product encoder and flat encoder")(
-    ExpressionEncoder
-      .tuple(ExpressionEncoder[Int], ExpressionEncoder[PrimitiveData]))
+    "tuple with product encoder and flat encoder")(ExpressionEncoder.tuple(
+    ExpressionEncoder[Int],
+    ExpressionEncoder[PrimitiveData]))
 
   encodeDecodeTest((1, (10, 100L)), "nested tuple encoder") {
     val intEnc = ExpressionEncoder[Int]

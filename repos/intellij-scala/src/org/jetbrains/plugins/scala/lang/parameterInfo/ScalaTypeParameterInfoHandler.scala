@@ -166,40 +166,41 @@ class ScalaTypeParameterInfoHandler
     if (params.isEmpty)
       buffer.append(CodeInsightBundle.message("parameter.info.no.parameters"))
     else {
-      buffer.append(params
-        .map((param: ScTypeParam) => {
-          val isBold =
-            if (params.indexOf(param) == index) true
-            else {
-              //todo: check type
-              false
+      buffer.append(
+        params
+          .map((param: ScTypeParam) => {
+            val isBold =
+              if (params.indexOf(param) == index) true
+              else {
+                //todo: check type
+                false
+              }
+            var paramText = param.name
+            if (param.isContravariant) paramText = "-" + paramText
+            else if (param.isCovariant) paramText = "+" + paramText
+            param.lowerBound foreach {
+              case psi.types.Nothing =>
+              case tp: ScType =>
+                paramText = paramText + " >: " + ScType.presentableText(
+                  substitutor.subst(tp))
             }
-          var paramText = param.name
-          if (param.isContravariant) paramText = "-" + paramText
-          else if (param.isCovariant) paramText = "+" + paramText
-          param.lowerBound foreach {
-            case psi.types.Nothing =>
-            case tp: ScType =>
-              paramText = paramText + " >: " + ScType.presentableText(
+            param.upperBound foreach {
+              case psi.types.Any =>
+              case tp: ScType =>
+                paramText = paramText + " <: " + ScType.presentableText(
+                  substitutor.subst(tp))
+            }
+            param.viewBound foreach { (tp: ScType) =>
+              paramText = paramText + " <% " + ScType.presentableText(
                 substitutor.subst(tp))
-          }
-          param.upperBound foreach {
-            case psi.types.Any =>
-            case tp: ScType =>
-              paramText = paramText + " <: " + ScType.presentableText(
+            }
+            param.contextBound foreach { (tp: ScType) =>
+              paramText = paramText + " : " + ScType.presentableText(
                 substitutor.subst(tp))
-          }
-          param.viewBound foreach { (tp: ScType) =>
-            paramText =
-              paramText + " <% " + ScType.presentableText(substitutor.subst(tp))
-          }
-          param.contextBound foreach { (tp: ScType) =>
-            paramText =
-              paramText + " : " + ScType.presentableText(substitutor.subst(tp))
-          }
-          if (isBold) "<b>" + paramText + "</b>" else paramText
-        })
-        .mkString(", "))
+            }
+            if (isBold) "<b>" + paramText + "</b>" else paramText
+          })
+          .mkString(", "))
     }
   }
 

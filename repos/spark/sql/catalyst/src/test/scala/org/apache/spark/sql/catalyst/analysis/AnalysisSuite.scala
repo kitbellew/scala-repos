@@ -203,13 +203,12 @@ class AnalysisSuite extends AnalysisTest {
   }
 
   test("divide should be casted into fractional types") {
-    val plan = caseInsensitiveAnalyzer.execute(
-      testRelation2.select(
-        'a / Literal(2) as 'div1,
-        'a / 'b as 'div2,
-        'a / 'c as 'div3,
-        'a / 'd as 'div4,
-        'e / 'e as 'div5))
+    val plan = caseInsensitiveAnalyzer.execute(testRelation2.select(
+      'a / Literal(2) as 'div1,
+      'a / 'b as 'div2,
+      'a / 'c as 'div3,
+      'a / 'd as 'div4,
+      'e / 'e as 'div5))
     val pl = plan.asInstanceOf[Project].projectList
 
     assert(pl(0).dataType == DoubleType)
@@ -314,8 +313,7 @@ class AnalysisSuite extends AnalysisTest {
     def checkUDF(udf: Expression, transformed: Expression): Unit = {
       checkAnalysis(
         Project(Alias(udf, "")() :: Nil, testRelation2),
-        Project(Alias(transformed, "")() :: Nil, testRelation2)
-      )
+        Project(Alias(transformed, "")() :: Nil, testRelation2))
     }
 
     // non-primitive parameters do not need special null handling

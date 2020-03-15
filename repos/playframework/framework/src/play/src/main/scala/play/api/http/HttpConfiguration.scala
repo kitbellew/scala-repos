@@ -148,9 +148,8 @@ object HttpConfiguration {
         executeActionCreatorActionFirst = config.get[Boolean](
           "play.http.actionComposition.executeActionCreatorActionFirst")
       ),
-      cookies = CookiesConfiguration(
-        strict = config.get[Boolean]("play.http.cookies.strict")
-      ),
+      cookies = CookiesConfiguration(strict = config.get[Boolean](
+        "play.http.cookies.strict")),
       session = SessionConfiguration(
         cookieName = config.getDeprecated[String](
           "play.http.session.cookieName",

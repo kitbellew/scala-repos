@@ -31,15 +31,14 @@ class SwaggerApiLookupSpec extends ScalatraSpec with JsonMatchers {
   def listResources =
     get("/api-docs") {
       status must_== 200
-      jackson.parseJson(body) \ "apis" must_== JArray(
-        List(
-          JObject(
-            "path" -> JString("/api/unnamed"),
-            "description" -> JString("The first API")),
-          JObject(
-            "path" -> JString("/api/custom-name"),
-            "description" -> JString("The second API"))
-        ))
+      jackson.parseJson(body) \ "apis" must_== JArray(List(
+        JObject(
+          "path" -> JString("/api/unnamed"),
+          "description" -> JString("The first API")),
+        JObject(
+          "path" -> JString("/api/custom-name"),
+          "description" -> JString("The second API"))
+      ))
     }
 
   def listFooOperations =

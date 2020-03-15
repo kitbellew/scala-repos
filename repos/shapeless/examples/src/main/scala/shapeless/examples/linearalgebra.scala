@@ -55,9 +55,8 @@ object LinearAlgebraExamples extends App {
       (p: PN) =>
         new VectorOps[N, PN](p) {
           def +(other: Self): Self =
-            newtype(
-              gen.from(
-                (gen.to(p) :: gen.to(other.tupled) :: HNil).transpose.map(sum)))
+            newtype(gen.from(
+              (gen.to(p) :: gen.to(other.tupled) :: HNil).transpose.map(sum)))
         }
   }
 

@@ -50,8 +50,8 @@ private[sql] object SQLExecution {
       val r =
         try {
           val callSite = Utils.getCallSite()
-          sqlContext.sparkContext.listenerBus.post(
-            SparkListenerSQLExecutionStart(
+          sqlContext.sparkContext.listenerBus
+            .post(SparkListenerSQLExecutionStart(
               executionId,
               callSite.shortForm,
               callSite.longForm,
@@ -61,8 +61,8 @@ private[sql] object SQLExecution {
             ))
           try { body }
           finally {
-            sqlContext.sparkContext.listenerBus.post(
-              SparkListenerSQLExecutionEnd(
+            sqlContext.sparkContext.listenerBus
+              .post(SparkListenerSQLExecutionEnd(
                 executionId,
                 System.currentTimeMillis()))
           }

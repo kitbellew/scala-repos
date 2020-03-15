@@ -1492,8 +1492,9 @@ trait SHtml extends Loggable {
           case Group(g) => runNodes(g)
           // button
           case e: Elem => {
-            val oldAttr: Map[String, String] = Map(allEvent.flatMap(a =>
-              e.attribute(a).map(v => a -> (v.text + "; "))): _*)
+            val oldAttr: Map[String, String] = Map(
+              allEvent.flatMap(a =>
+                e.attribute(a).map(v => a -> (v.text + "; "))): _*)
 
             val newAttr = e.attributes.filter {
               case up: UnprefixedAttribute => !oldAttr.contains(up.key)
@@ -1885,19 +1886,17 @@ trait SHtml extends Loggable {
       attrs: _*) % new UnprefixedAttribute("value", Text(settable.get), Null)
 
   def hidden(func: () => Any, attrs: ElemAttr*): Elem =
-    makeFormElement(
-      "hidden",
-      NFuncHolder(func),
-      attrs: _*) % ("value" -> "true")
+    makeFormElement("hidden", NFuncHolder(func), attrs: _*) % (
+      "value" -> "true"
+    )
 
   def hidden(
       func: (String) => Any,
       defaultlValue: String,
       attrs: ElemAttr*): Elem =
-    makeFormElement(
-      "hidden",
-      SFuncHolder(func),
-      attrs: _*) % ("value" -> defaultlValue)
+    makeFormElement("hidden", SFuncHolder(func), attrs: _*) % (
+      "value" -> defaultlValue
+    )
 
   /**
     * Create an HTML button with strOrNodeSeq as the body.  The
@@ -2093,10 +2092,9 @@ trait SHtml extends Loggable {
     val funcName = "Z" + Helpers.nextFuncName
     addFunctionMap(funcName, (func))
 
-    makeAjaxCall(
-      JsRaw(
-        LiftRules.jsArtifacts.serialize(formId).toJsCmd + " + " +
-          Str("&" + funcName + "=true").toJsCmd))
+    makeAjaxCall(JsRaw(
+      LiftRules.jsArtifacts.serialize(formId).toJsCmd + " + " +
+        Str("&" + funcName + "=true").toJsCmd))
   }
 
   /**
@@ -2344,17 +2342,15 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): NodeSeq = {
     val hiddenId = Helpers.nextFuncName
     fmapFunc(LFuncHolder(l => lf(l.filter(_ != hiddenId)))) { funcName =>
-      NodeSeq.fromSeq(
-        List(
-          attrs.foldLeft(<select multiple="true" name={funcName}>{
-            opts.flatMap {
-              case option =>
-                optionToElem(option) % selected(deflt.contains(option.value))
-            }
-          }</select>)(_ % _),
-          <input type="hidden" value={hiddenId} name={funcName}/>
-        )
-      )
+      NodeSeq.fromSeq(List(
+        attrs.foldLeft(<select multiple="true" name={funcName}>{
+          opts.flatMap {
+            case option =>
+              optionToElem(option) % selected(deflt.contains(option.value))
+          }
+        }</select>)(_ % _),
+        <input type="hidden" value={hiddenId} name={funcName}/>
+      ))
     }
   }
 

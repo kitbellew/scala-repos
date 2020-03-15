@@ -34,7 +34,9 @@ object Configuration {
     orientation == android.content.res.Configuration.ORIENTATION_SQUARE
 
   @inline def long(implicit context: Context): Boolean =
-    (conf.screenLayout & android.content.res.Configuration.SCREENLAYOUT_LONG_YES) != 0
+    (
+      conf.screenLayout & android.content.res.Configuration.SCREENLAYOUT_LONG_YES
+    ) != 0
 
   @inline def locale(implicit context: Context): Locale = conf.locale
 

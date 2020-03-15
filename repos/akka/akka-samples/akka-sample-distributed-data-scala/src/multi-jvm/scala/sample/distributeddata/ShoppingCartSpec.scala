@@ -16,9 +16,8 @@ object ShoppingCartSpec extends MultiNodeConfig {
   val node2 = role("node-2")
   val node3 = role("node-3")
 
-  commonConfig(
-    ConfigFactory.parseString(
-      """
+  commonConfig(ConfigFactory.parseString(
+    """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.log-dead-letters-during-shutdown = off
@@ -72,10 +71,9 @@ class ShoppingCartSpec
       awaitAssert {
         shoppingCart ! ShoppingCart.GetCart
         val cart = expectMsgType[Cart]
-        cart.items should be(
-          Set(
-            LineItem("1", "Apples", quantity = 2),
-            LineItem("2", "Oranges", quantity = 3)))
+        cart.items should be(Set(
+          LineItem("1", "Apples", quantity = 2),
+          LineItem("2", "Oranges", quantity = 3)))
       }
 
       enterBarrier("after-2")
@@ -96,10 +94,9 @@ class ShoppingCartSpec
       awaitAssert {
         shoppingCart ! ShoppingCart.GetCart
         val cart = expectMsgType[Cart]
-        cart.items should be(
-          Set(
-            LineItem("1", "Apples", quantity = 7),
-            LineItem("3", "Bananas", quantity = 4)))
+        cart.items should be(Set(
+          LineItem("1", "Apples", quantity = 7),
+          LineItem("3", "Bananas", quantity = 4)))
       }
 
       enterBarrier("after-3")

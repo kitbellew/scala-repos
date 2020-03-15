@@ -183,16 +183,15 @@ class KafkaServer(
     .map(logDir =>
       (
         logDir,
-        new BrokerMetadataCheckpoint(
-          new File(logDir + File.separator + brokerMetaPropsFile))))
+        new BrokerMetadataCheckpoint(new File(
+          logDir + File.separator + brokerMetaPropsFile))))
     .toMap
 
   newGauge(
     "BrokerState",
     new Gauge[Int] {
       def value = brokerState.currentState
-    }
-  )
+    })
 
   newGauge(
     "yammer-metrics-count",
@@ -200,8 +199,7 @@ class KafkaServer(
       def value = {
         com.yammer.metrics.Metrics.defaultRegistry().allMetrics().size()
       }
-    }
-  )
+    })
 
   /**
     * Start up API for bringing up a single instance of the Kafka server.
@@ -437,8 +435,7 @@ class KafkaServer(
             config.interBrokerSecurityProtocol,
             Mode.CLIENT,
             LoginType.SERVER,
-            config.values)
-        )
+            config.values))
         new NetworkClient(
           selector,
           metadataUpdater,
@@ -516,12 +513,10 @@ class KafkaServer(
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
               } else {
-                info(
-                  "Remaining partitions to move: %s".format(
-                    shutdownResponse.partitionsRemaining.asScala.mkString(",")))
-                info(
-                  "Error code from controller: %d".format(
-                    shutdownResponse.errorCode))
+                info("Remaining partitions to move: %s".format(
+                  shutdownResponse.partitionsRemaining.asScala.mkString(",")))
+                info("Error code from controller: %d".format(
+                  shutdownResponse.errorCode))
               }
             } catch {
               case ioe: IOException =>
@@ -601,12 +596,10 @@ class KafkaServer(
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
               } else {
-                info(
-                  "Remaining partitions to move: %s".format(
-                    shutdownResponse.partitionsRemaining.mkString(",")))
-                info(
-                  "Error code from controller: %d".format(
-                    shutdownResponse.errorCode))
+                info("Remaining partitions to move: %s".format(
+                  shutdownResponse.partitionsRemaining.mkString(",")))
+                info("Error code from controller: %d".format(
+                  shutdownResponse.errorCode))
               }
             } catch {
               case ioe: java.io.IOException =>

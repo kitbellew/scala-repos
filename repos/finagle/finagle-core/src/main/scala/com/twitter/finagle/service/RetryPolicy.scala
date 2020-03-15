@@ -110,14 +110,13 @@ abstract class SimpleRetryPolicy[A](i: Int)
         case Duration.Top =>
           None
         case howlong =>
-          Some(
-            (
-              howlong,
-              new SimpleRetryPolicy[A](i + 1) {
-                def shouldRetry(a: A) = SimpleRetryPolicy.this.shouldRetry(a)
-                def backoffAt(retry: Int) =
-                  SimpleRetryPolicy.this.backoffAt(retry)
-              }))
+          Some((
+            howlong,
+            new SimpleRetryPolicy[A](i + 1) {
+              def shouldRetry(a: A) = SimpleRetryPolicy.this.shouldRetry(a)
+              def backoffAt(retry: Int) =
+                SimpleRetryPolicy.this.backoffAt(retry)
+            }))
       }
     } else { None }
   }
@@ -192,8 +191,7 @@ object RetryPolicy extends JavaSingleton {
     * that acts only on exceptions.
     */
   private[finagle] def convertExceptionPolicy[Req, Rep](
-      policy: RetryPolicy[Try[Nothing]]
-  ): RetryPolicy[(Req, Try[Rep])] =
+      policy: RetryPolicy[Try[Nothing]]): RetryPolicy[(Req, Try[Rep])] =
     new RetryPolicy[(Req, Try[Rep])] {
       def apply(input: (Req, Try[Rep]))
           : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
@@ -231,8 +229,7 @@ object RetryPolicy extends JavaSingleton {
     */
   def tries[A](
       numTries: Int,
-      shouldRetry: PartialFunction[A, Boolean]
-  ): RetryPolicy[A] = {
+      shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] = {
     val backoffs = Backoff.decorrelatedJittered(5.millis, 200.millis)
     backoff[A](backoffs.take(numTries - 1))(shouldRetry)
   }
@@ -261,9 +258,8 @@ object RetryPolicy extends JavaSingleton {
     *
     * @see [[backoffJava]] for a Java friendly API.
     */
-  def backoff[A](
-      backoffs: Stream[Duration]
-  )(shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] = {
+  def backoff[A](backoffs: Stream[Duration])(
+      shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] = {
     RetryPolicy { e =>
       if (shouldRetry.applyOrElse(e, AlwaysFalse)) {
         backoffs match {
@@ -283,8 +279,7 @@ object RetryPolicy extends JavaSingleton {
     */
   def backoffJava[A](
       backoffs: juc.Callable[ju.Iterator[Duration]],
-      shouldRetry: PartialFunction[A, Boolean]
-  ): RetryPolicy[A] = {
+      shouldRetry: PartialFunction[A, Boolean]): RetryPolicy[A] = {
     backoff[A](backoffs.call().asScala.toStream)(shouldRetry)
   }
 

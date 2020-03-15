@@ -212,12 +212,11 @@ trait GroupSolver
 
             if (commonalityM.isDefined)
               (
-                Some(
-                  Group(
-                    Some(where),
-                    resolveExpr(sigma, where.left),
-                    group,
-                    dtrace)),
+                Some(Group(
+                  Some(where),
+                  resolveExpr(sigma, where.left),
+                  group,
+                  dtrace)),
                 errors)
             else (None, errors) // TODO emit a new error
           } getOrElse (None, errors)

@@ -150,25 +150,23 @@ class StorageTabSuite extends SparkFunSuite with BeforeAndAfter {
     assert(!storageListener._rddInfoMap(2).isCached)
 
     // Task end with no updated blocks. This should not change anything.
-    bus.postToAll(
-      SparkListenerTaskEnd(
-        0,
-        0,
-        "obliteration",
-        Success,
-        taskInfo,
-        new TaskMetrics))
+    bus.postToAll(SparkListenerTaskEnd(
+      0,
+      0,
+      "obliteration",
+      Success,
+      taskInfo,
+      new TaskMetrics))
     assert(storageListener._rddInfoMap.size === 3)
     assert(storageListener.rddInfoList.size === 0)
 
     // Task end with a few new persisted blocks, some from the same RDD
     val metrics1 = new TaskMetrics
-    metrics1.setUpdatedBlockStatuses(
-      Seq(
-        (RDDBlockId(0, 100), BlockStatus(memAndDisk, 400L, 0L)),
-        (RDDBlockId(0, 101), BlockStatus(memAndDisk, 0L, 400L)),
-        (RDDBlockId(1, 20), BlockStatus(memAndDisk, 0L, 240L))
-      ))
+    metrics1.setUpdatedBlockStatuses(Seq(
+      (RDDBlockId(0, 100), BlockStatus(memAndDisk, 400L, 0L)),
+      (RDDBlockId(0, 101), BlockStatus(memAndDisk, 0L, 400L)),
+      (RDDBlockId(1, 20), BlockStatus(memAndDisk, 0L, 240L))
+    ))
     bus.postToAll(
       SparkListenerTaskEnd(1, 0, "obliteration", Success, taskInfo, metrics1))
     assert(storageListener._rddInfoMap(0).memSize === 400L)
@@ -184,16 +182,12 @@ class StorageTabSuite extends SparkFunSuite with BeforeAndAfter {
 
     // Task end with a few dropped blocks
     val metrics2 = new TaskMetrics
-    metrics2.setUpdatedBlockStatuses(
-      Seq(
-        (RDDBlockId(0, 100), BlockStatus(none, 0L, 0L)),
-        (RDDBlockId(1, 20), BlockStatus(none, 0L, 0L)),
-        (
-          RDDBlockId(2, 40),
-          BlockStatus(none, 0L, 0L)
-        ), // doesn't actually exist
-        (RDDBlockId(4, 80), BlockStatus(none, 0L, 0L)) // doesn't actually exist
-      ))
+    metrics2.setUpdatedBlockStatuses(Seq(
+      (RDDBlockId(0, 100), BlockStatus(none, 0L, 0L)),
+      (RDDBlockId(1, 20), BlockStatus(none, 0L, 0L)),
+      (RDDBlockId(2, 40), BlockStatus(none, 0L, 0L)), // doesn't actually exist
+      (RDDBlockId(4, 80), BlockStatus(none, 0L, 0L)) // doesn't actually exist
+    ))
     bus.postToAll(
       SparkListenerTaskEnd(2, 0, "obliteration", Success, taskInfo, metrics2))
     assert(storageListener._rddInfoMap(0).memSize === 0L)

@@ -314,8 +314,8 @@ class VarToValFix(varDef: ScVariableDefinition, name: Option[String])
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!varDef.isValid) return
     if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
-    varDef.replace(
-      ScalaPsiElementFactory
-        .createValFromVarDefinition(varDef, varDef.getManager))
+    varDef.replace(ScalaPsiElementFactory.createValFromVarDefinition(
+      varDef,
+      varDef.getManager))
   }
 }

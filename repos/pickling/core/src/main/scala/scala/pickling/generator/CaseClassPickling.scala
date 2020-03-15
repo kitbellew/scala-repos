@@ -55,17 +55,19 @@ class CaseClassPickling(
             }.toSeq ++ standAloneVars.map { field =>
               GetField(field.methodName, field)
             })))
-            val unpickle = UnpickleBehavior(Seq(
-              CallConstructor(fields.map(_.name), c)) ++
-              standAloneVars.map { field =>
-                field.setter match {
-                  case Some(mth) => SetField(field.methodName, mth)
-                  case _ =>
-                    sys.error(
-                      s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
-                }
-              })
-            if (!allowReflection && (pickle.requiresReflection || unpickle.requiresReflection)) {
+            val unpickle = UnpickleBehavior(
+              Seq(CallConstructor(fields.map(_.name), c)) ++
+                standAloneVars.map { field =>
+                  field.setter match {
+                    case Some(mth) => SetField(field.methodName, mth)
+                    case _ =>
+                      sys.error(
+                        s"Attempting to define unpickle behavior, when no setter is defined on a var: ${field}")
+                  }
+                })
+            if (!allowReflection && (
+                  pickle.requiresReflection || unpickle.requiresReflection
+                )) {
               def reflectionErrorMessage(ast: IrAst): List[String] =
                 ast match {
                   case x: SetField if x.requiresReflection =>
@@ -178,16 +180,12 @@ class CaseClassPickling(
                       allowReflection // TODO - This should be `allow runtime pickler lookup`.
                     )
                   case x: UnpickleBehavior =>
-                    UnpickleBehavior(
-                      Seq(
-                        SubclassUnpicklerDelegation(
-                          Nil,
-                          tpe,
-                          Some(x),
-                          allowReflection
-                        )
-                      )
-                    ) // TODO - This should be `allow runtime pickler lookup`.
+                    UnpickleBehavior(Seq(SubclassUnpicklerDelegation(
+                      Nil,
+                      tpe,
+                      Some(x),
+                      allowReflection
+                    ))) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]
@@ -209,16 +207,12 @@ class CaseClassPickling(
                       allowReflection
                     ) // TODO - This should be `allow runtime pickler lookup`.
                   case x: UnpickleBehavior =>
-                    UnpickleBehavior(
-                      Seq(
-                        SubclassUnpicklerDelegation(
-                          Nil,
-                          tpe,
-                          Some(x),
-                          allowReflection
-                        )
-                      )
-                    ) // TODO - This should be `allow runtime pickler lookup`.
+                    UnpickleBehavior(Seq(SubclassUnpicklerDelegation(
+                      Nil,
+                      tpe,
+                      Some(x),
+                      allowReflection
+                    ))) // TODO - This should be `allow runtime pickler lookup`.
                   case x => x
                 }
                 .asInstanceOf[PickleUnpickleImplementation]

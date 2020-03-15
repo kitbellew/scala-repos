@@ -100,9 +100,8 @@ private[akka] class ActorRefSourceActor(
           case Fail ⇒
             log.error(
               "Failing because buffer is full and overflowStrategy is: [Fail]")
-            onErrorThenStop(
-              new BufferOverflowException(
-                s"Buffer overflow (max capacity was: $bufferSize)!"))
+            onErrorThenStop(new BufferOverflowException(
+              s"Buffer overflow (max capacity was: $bufferSize)!"))
           case Backpressure ⇒
             // there is a precondition check in Source.actorRefSource factory method
             log.debug(

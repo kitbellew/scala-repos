@@ -68,11 +68,10 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       // tests:
       val str1 = "some data"
-      val multipartForm = Multipart.FormData(
-        Multipart.FormData.BodyPart.Strict(
-          "field1",
-          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
-          Map("filename" -> "data1.txt")))
+      val multipartForm = Multipart.FormData(Multipart.FormData.BodyPart.Strict(
+        "field1",
+        HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
+        Map("filename" -> "data1.txt")))
 
       Post("/", multipartForm) ~> route ~> check {
         status shouldEqual StatusCodes.OK
@@ -125,11 +124,10 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       // tests:
       val str1 = "some data"
-      val multipartForm = Multipart.FormData(
-        Multipart.FormData.BodyPart.Strict(
-          "field1",
-          HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
-          Map("filename" -> "data1.txt")))
+      val multipartForm = Multipart.FormData(Multipart.FormData.BodyPart.Strict(
+        "field1",
+        HttpEntity(ContentTypes.`text/plain(UTF-8)`, str1),
+        Map("filename" -> "data1.txt")))
 
       Post("/", multipartForm) ~> route ~> check {
         rejection === MissingFormFieldRejection("missing")

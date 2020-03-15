@@ -31,34 +31,38 @@ import org.apache.spark.sql.types.{DoubleType, IntegerType, StructType}
 class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
 
   private lazy val left = sqlContext.createDataFrame(
-    sparkContext.parallelize(
-      Seq(
-        Row(1, 2.0),
-        Row(2, 100.0),
-        Row(2, 1.0), // This row is duplicated to ensure that we will have multiple buffered matches
-        Row(2, 1.0),
-        Row(3, 3.0),
-        Row(5, 1.0),
-        Row(6, 6.0),
-        Row(null, null)
-      )),
+    sparkContext.parallelize(Seq(
+      Row(1, 2.0),
+      Row(2, 100.0),
+      Row(
+        2,
+        1.0
+      ), // This row is duplicated to ensure that we will have multiple buffered matches
+      Row(2, 1.0),
+      Row(3, 3.0),
+      Row(5, 1.0),
+      Row(6, 6.0),
+      Row(null, null)
+    )),
     new StructType().add("a", IntegerType).add("b", DoubleType)
   )
 
   private lazy val right = sqlContext.createDataFrame(
-    sparkContext.parallelize(
-      Seq(
-        Row(0, 0.0),
-        Row(2, 3.0), // This row is duplicated to ensure that we will have multiple buffered matches
-        Row(2, -1.0),
-        Row(2, -1.0),
-        Row(2, 3.0),
-        Row(3, 2.0),
-        Row(4, 1.0),
-        Row(5, 3.0),
-        Row(7, 7.0),
-        Row(null, null)
-      )),
+    sparkContext.parallelize(Seq(
+      Row(0, 0.0),
+      Row(
+        2,
+        3.0
+      ), // This row is duplicated to ensure that we will have multiple buffered matches
+      Row(2, -1.0),
+      Row(2, -1.0),
+      Row(2, 3.0),
+      Row(3, 2.0),
+      Row(4, 1.0),
+      Row(5, 3.0),
+      Row(7, 7.0),
+      Row(null, null)
+    )),
     new StructType().add("c", IntegerType).add("d", DoubleType)
   )
 
@@ -98,8 +102,8 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
                 leftRows,
                 rightRows,
                 (left: SparkPlan, right: SparkPlan) =>
-                  EnsureRequirements(sqlContext.sessionState.conf).apply(
-                    ShuffledHashJoin(
+                  EnsureRequirements(sqlContext.sessionState.conf)
+                    .apply(ShuffledHashJoin(
                       leftKeys,
                       rightKeys,
                       joinType,
@@ -153,8 +157,8 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
               leftRows,
               rightRows,
               (left: SparkPlan, right: SparkPlan) =>
-                EnsureRequirements(sqlContext.sessionState.conf).apply(
-                  SortMergeJoin(
+                EnsureRequirements(sqlContext.sessionState.conf)
+                  .apply(SortMergeJoin(
                     leftKeys,
                     rightKeys,
                     joinType,
@@ -284,8 +288,7 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     LeftOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 
   testOuterJoin(
     "right outer join with both inputs empty",
@@ -293,8 +296,7 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     RightOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 
   testOuterJoin(
     "full outer join with both inputs empty",
@@ -302,6 +304,5 @@ class OuterJoinSuite extends SparkPlanTest with SharedSQLContext {
     right.filter("false"),
     FullOuter,
     condition,
-    Seq.empty
-  )
+    Seq.empty)
 }

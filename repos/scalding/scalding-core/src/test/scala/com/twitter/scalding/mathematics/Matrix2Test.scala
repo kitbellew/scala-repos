@@ -385,8 +385,9 @@ class Matrix2Test extends WordSpec with Matchers {
                 (1, 2) -> (8.0, 10.0, 4.0))
               toSparseMat(ob) shouldBe result
             }
-        }(implicitly[
-          TypeDescriptor[(Int, Int, (Double, Double, Double))]].converter)
+        }(
+          implicitly[
+            TypeDescriptor[(Int, Int, (Double, Double, Double))]].converter)
         .runHadoop
         .finish
     }

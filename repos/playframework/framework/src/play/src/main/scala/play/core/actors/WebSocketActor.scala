@@ -18,11 +18,10 @@ private[play] object WebSocketActor {
         enumerator: Enumerator[In],
         iteratee: Iteratee[Out, Unit],
         createHandler: ActorRef => Props) =
-      Props(
-        new WebSocketActorSupervisor[In, Out](
-          enumerator,
-          iteratee,
-          createHandler))
+      Props(new WebSocketActorSupervisor[In, Out](
+        enumerator,
+        iteratee,
+        createHandler))
   }
 
   /**

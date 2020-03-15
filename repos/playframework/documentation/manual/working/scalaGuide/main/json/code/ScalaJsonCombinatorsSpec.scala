@@ -137,10 +137,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       //#reads-complex-statement
       implicit val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double] and
-            (JsPath \ "long").read[Double]
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double] and
+          (JsPath \ "long").read[Double])(Location.apply _)
       //#reads-complex-statement
 
       val locationResult = (json \ "location").validate[Location]
@@ -174,8 +172,8 @@ class ScalaJsonCombinatorsSpec extends Specification {
       }
 
       //#reads-validation-custom
-      val improvedNameReads = (JsPath \ "name")
-        .read[String](minLength[String](2))
+      val improvedNameReads = (JsPath \ "name").read[String](minLength[String](
+        2))
       //#reads-validation-custom
       json.validate[String](improvedNameReads) must beLike {
         case x: JsSuccess[String] => x.get === "Watership Down"
@@ -192,24 +190,19 @@ class ScalaJsonCombinatorsSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
-            (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
+          (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0)))(
+          Location.apply _)
 
       implicit val residentReads: Reads[Resident] =
-        (
-          (JsPath \ "name").read[String](minLength[String](2)) and
-            (JsPath \ "age").read[Int](min(0) keepAnd max(150)) and
-            (JsPath \ "role").readNullable[String]
-        )(Resident.apply _)
+        ((JsPath \ "name").read[String](minLength[String](2)) and
+          (JsPath \ "age").read[Int](min(0) keepAnd max(150)) and
+          (JsPath \ "role").readNullable[String])(Resident.apply _)
 
       implicit val placeReads: Reads[Place] =
-        (
-          (JsPath \ "name").read[String](minLength[String](2)) and
-            (JsPath \ "location").read[Location] and
-            (JsPath \ "residents").read[Seq[Resident]]
-        )(Place.apply _)
+        ((JsPath \ "name").read[String](minLength[String](2)) and
+          (JsPath \ "location").read[Location] and
+          (JsPath \ "residents").read[Seq[Resident]])(Place.apply _)
 
       //###replace: val json = { ... }
       val json: JsValue = sampleJson
@@ -238,33 +231,23 @@ class ScalaJsonCombinatorsSpec extends Specification {
       import play.api.libs.functional.syntax._
 
       implicit val locationWrites: Writes[Location] =
-        (
-          (JsPath \ "lat").write[Double] and
-            (JsPath \ "long").write[Double]
-        )(unlift(Location.unapply))
+        ((JsPath \ "lat").write[Double] and
+          (JsPath \ "long").write[Double])(unlift(Location.unapply))
 
       implicit val residentWrites: Writes[Resident] =
-        (
-          (JsPath \ "name").write[String] and
-            (JsPath \ "age").write[Int] and
-            (JsPath \ "role").writeNullable[String]
-        )(unlift(Resident.unapply))
+        ((JsPath \ "name").write[String] and
+          (JsPath \ "age").write[Int] and
+          (JsPath \ "role").writeNullable[String])(unlift(Resident.unapply))
 
       implicit val placeWrites: Writes[Place] =
-        (
-          (JsPath \ "name").write[String] and
-            (JsPath \ "location").write[Location] and
-            (JsPath \ "residents").write[Seq[Resident]]
-        )(unlift(Place.unapply))
+        ((JsPath \ "name").write[String] and
+          (JsPath \ "location").write[Location] and
+          (JsPath \ "residents").write[Seq[Resident]])(unlift(Place.unapply))
 
       val place = Place(
         "Watership Down",
         Location(51.235685, -1.309197),
-        Seq(
-          Resident("Fiver", 4, None),
-          Resident("Bigwig", 6, Some("Owsla"))
-        )
-      )
+        Seq(Resident("Fiver", 4, None), Resident("Bigwig", 6, Some("Owsla"))))
 
       val json = Json.toJson(place)
       //#writes-model
@@ -286,16 +269,13 @@ class ScalaJsonCombinatorsSpec extends Specification {
       case class User(name: String, friends: Seq[User])
 
       implicit lazy val userReads: Reads[User] =
-        (
-          (__ \ "name").read[String] and
-            (__ \ "friends").lazyRead(Reads.seq[User](userReads))
-        )(User)
+        ((__ \ "name").read[String] and
+          (__ \ "friends").lazyRead(Reads.seq[User](userReads)))(User)
 
       implicit lazy val userWrites: Writes[User] =
-        (
-          (__ \ "name").write[String] and
-            (__ \ "friends").lazyWrite(Writes.seq[User](userWrites))
-        )(unlift(User.unapply))
+        ((__ \ "name").write[String] and
+          (__ \ "friends").lazyWrite(Writes.seq[User](userWrites)))(unlift(
+          User.unapply))
       //#reads-writes-recursive
 
       // Use Reads for JSON -> model
@@ -330,16 +310,13 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       //#format-components
       val locationReads: Reads[Location] =
-        (
-          (JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
-            (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0))
-        )(Location.apply _)
+        ((JsPath \ "lat").read[Double](min(-90.0) keepAnd max(90.0)) and
+          (JsPath \ "long").read[Double](min(-180.0) keepAnd max(180.0)))(
+          Location.apply _)
 
       val locationWrites: Writes[Location] =
-        (
-          (JsPath \ "lat").write[Double] and
-            (JsPath \ "long").write[Double]
-        )(unlift(Location.unapply))
+        ((JsPath \ "lat").write[Double] and
+          (JsPath \ "long").write[Double])(unlift(Location.unapply))
 
       implicit val locationFormat: Format[Location] = Format(
         locationReads,
@@ -370,10 +347,10 @@ class ScalaJsonCombinatorsSpec extends Specification {
 
       //#format-combinators
       implicit val locationFormat: Format[Location] =
-        (
-          (JsPath \ "lat").format[Double](min(-90.0) keepAnd max(90.0)) and
-            (JsPath \ "long").format[Double](min(-180.0) keepAnd max(180.0))
-        )(Location.apply, unlift(Location.unapply))
+        ((JsPath \ "lat").format[Double](min(-90.0) keepAnd max(90.0)) and
+          (JsPath \ "long").format[Double](min(-180.0) keepAnd max(180.0)))(
+          Location.apply,
+          unlift(Location.unapply))
       //#format-combinators
 
       // Use Reads for JSON -> model

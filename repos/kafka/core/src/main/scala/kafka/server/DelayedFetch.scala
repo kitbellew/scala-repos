@@ -119,9 +119,9 @@ class DelayedFetch(
           }
         } catch {
           case utpe: UnknownTopicOrPartitionException => // Case B
-            debug(
-              "Broker no longer know of %s, satisfy %s immediately"
-                .format(topicAndPartition, fetchMetadata))
+            debug("Broker no longer know of %s, satisfy %s immediately".format(
+              topicAndPartition,
+              fetchMetadata))
             return forceComplete()
           case nle: NotLeaderForPartitionException => // Case A
             debug(

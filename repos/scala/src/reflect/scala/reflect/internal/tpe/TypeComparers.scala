@@ -35,11 +35,9 @@ trait TypeComparers {
   def subsametypeRecursions_=(value: Int) = _subsametypeRecursions = value
 
   private def isUnifiable(pre1: Type, pre2: Type) =
-    (
-      (isEligibleForPrefixUnification(pre1) || isEligibleForPrefixUnification(
-        pre2))
-        && (pre1 =:= pre2)
-    )
+    ((isEligibleForPrefixUnification(pre1) || isEligibleForPrefixUnification(
+      pre2))
+      && (pre1 =:= pre2))
 
   /** Returns true iff we are past phase specialize,
     *  sym1 and sym2 are two existential skolems with equal names and bounds,
@@ -58,7 +56,9 @@ trait TypeComparers {
   }
 
   private def isSubPre(pre1: Type, pre2: Type, sym: Symbol) =
-    if ((pre1 ne pre2) && (pre1 ne NoPrefix) && (pre2 ne NoPrefix) && pre1 <:< pre2) {
+    if ((pre1 ne pre2) && (pre1 ne NoPrefix) && (
+          pre2 ne NoPrefix
+        ) && pre1 <:< pre2) {
       if (settings.debug) println(s"new isSubPre $sym: $pre1 <:< $pre2")
       true
     } else false
@@ -68,11 +68,9 @@ trait TypeComparers {
       pre1: Type,
       sym2: Symbol,
       pre2: Type): Boolean =
-    (
-      if (sym1 eq sym2)
-        sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
-      else (sym1.name == sym2.name) && isUnifiable(pre1, pre2)
-    )
+    (if (sym1 eq sym2)
+       sym1.hasPackageFlag || sym1.owner.hasPackageFlag || phase.erasedTypes || pre1 =:= pre2
+     else (sym1.name == sym2.name) && isUnifiable(pre1, pre2))
 
   def isDifferentType(tp1: Type, tp2: Type): Boolean =
     try {
@@ -91,18 +89,14 @@ trait TypeComparers {
     !isSameTypeConstructor(tp1, tp2)
 
   private def isSameTypeConstructor(tr1: TypeRef, tr2: TypeRef): Boolean =
-    (
-      (tr1.sym eq tr2.sym)
-        && !isDifferentType(tr1.pre, tr2.pre)
-    )
+    ((tr1.sym eq tr2.sym)
+      && !isDifferentType(tr1.pre, tr2.pre))
   private def isSameTypeConstructor(tp1: Type, tp2: Type): Boolean =
-    (
-      tp1.isInstanceOf[TypeRef]
-        && tp2.isInstanceOf[TypeRef]
-        && isSameTypeConstructor(
-          tp1.asInstanceOf[TypeRef],
-          tp2.asInstanceOf[TypeRef])
-    )
+    (tp1.isInstanceOf[TypeRef]
+      && tp2.isInstanceOf[TypeRef]
+      && isSameTypeConstructor(
+        tp1.asInstanceOf[TypeRef],
+        tp2.asInstanceOf[TypeRef]))
 
   /** Do `tp1` and `tp2` denote equivalent types? */
   def isSameType(tp1: Type, tp2: Type): Boolean =
@@ -129,11 +123,9 @@ trait TypeComparers {
 
   // @pre: at least one argument has annotations
   private def sameAnnotatedTypes(tp1: Type, tp2: Type) =
-    (
-      annotationsConform(tp1, tp2)
-        && annotationsConform(tp2, tp1)
-        && (tp1.withoutAnnotations =:= tp2.withoutAnnotations)
-    )
+    (annotationsConform(tp1, tp2)
+      && annotationsConform(tp2, tp1)
+      && (tp1.withoutAnnotations =:= tp2.withoutAnnotations))
   // We flush out any AnnotatedTypes before calling isSameType2 because
   // unlike most other subclasses of Type, we have to allow for equivalence of any
   // combination of { tp1, tp2 } { is, is not } an AnnotatedType - this because the
@@ -147,16 +139,12 @@ trait TypeComparers {
     }
 
   private def isSameHKTypes(tp1: Type, tp2: Type) =
-    (
-      tp1.isHigherKinded
-        && tp2.isHigherKinded
-        && (tp1.normalize =:= tp2.normalize)
-    )
+    (tp1.isHigherKinded
+      && tp2.isHigherKinded
+      && (tp1.normalize =:= tp2.normalize))
   private def isSameTypeRef(tr1: TypeRef, tr2: TypeRef) =
-    (
-      equalSymsAndPrefixes(tr1.sym, tr1.pre, tr2.sym, tr2.pre)
-        && (isSameHKTypes(tr1, tr2) || isSameTypes(tr1.args, tr2.args))
-    )
+    (equalSymsAndPrefixes(tr1.sym, tr1.pre, tr2.sym, tr2.pre)
+      && (isSameHKTypes(tr1, tr2) || isSameTypes(tr1.args, tr2.args)))
 
   private def isSameSingletonType(
       tp1: SingletonType,
@@ -177,11 +165,9 @@ trait TypeComparers {
   }
 
   private def isSameMethodType(mt1: MethodType, mt2: MethodType) =
-    (
-      isSameTypes(mt1.paramTypes, mt2.paramTypes)
-        && (mt1.resultType =:= mt2.resultType.substSym(mt2.params, mt1.params))
-        && (mt1.isImplicit == mt2.isImplicit)
-    )
+    (isSameTypes(mt1.paramTypes, mt2.paramTypes)
+      && (mt1.resultType =:= mt2.resultType.substSym(mt2.params, mt1.params))
+      && (mt1.isImplicit == mt2.isImplicit))
 
   private def equalTypeParamsAndResult(
       tparams1: List[Symbol],
@@ -365,21 +351,22 @@ trait TypeComparers {
     */
   private def typeRelationPreCheck(tp1: Type, tp2: Type): TriState = {
     def isTrue =
-      (
-        (tp1 eq tp2)
-          || isErrorOrWildcard(tp1)
-          || isErrorOrWildcard(tp2)
-          || (tp1 eq NoPrefix) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
-          || (tp2 eq NoPrefix) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+      ((tp1 eq tp2)
+        || isErrorOrWildcard(tp1)
+        || isErrorOrWildcard(tp2)
+        || (
+          tp1 eq NoPrefix
+        ) && tp2.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
+        || (
+          tp2 eq NoPrefix
+        ) && tp1.typeSymbol.isPackageClass // !! I do not see how this would be warranted by the spec
       )
     // isFalse, assuming !isTrue
     def isFalse =
-      (
-        (tp1 eq NoType)
-          || (tp2 eq NoType)
-          || (tp1 eq NoPrefix)
-          || (tp2 eq NoPrefix)
-      )
+      ((tp1 eq NoType)
+        || (tp2 eq NoType)
+        || (tp1 eq NoPrefix)
+        || (tp2 eq NoPrefix))
 
     if (isTrue) TriState.True
     else if (isFalse) TriState.False
@@ -390,9 +377,9 @@ trait TypeComparers {
     typeRelationPreCheck(tp1, tp2) match {
       case state if state.isKnown => state.booleanValue
       case _ if typeHasAnnotations(tp1) || typeHasAnnotations(tp2) =>
-        annotationsConform(
-          tp1,
-          tp2) && (tp1.withoutAnnotations <:< tp2.withoutAnnotations)
+        annotationsConform(tp1, tp2) && (
+          tp1.withoutAnnotations <:< tp2.withoutAnnotations
+        )
       case _ => isSubType2(tp1, tp2, depth)
     }
 
@@ -409,10 +396,8 @@ trait TypeComparers {
         if (isMethod) tp else tp.substSym(tparams1, substitutes)
       def sub2(tp: Type) = tp.substSym(tparams2, substitutes)
       def cmp(p1: Symbol, p2: Symbol) =
-        (
-          methodHigherOrderTypeParamsSubVariance(p2, p1)
-            && sub2(p2.info) <:< sub1(p1.info)
-        )
+        (methodHigherOrderTypeParamsSubVariance(p2, p1)
+          && sub2(p2.info) <:< sub1(p1.info))
 
       (tparams1 corresponds tparams2)(cmp) && (sub1(res1) <:< sub2(res2))
     }
@@ -453,8 +438,12 @@ trait TypeComparers {
           false
       }
 
-    ((tp1.typeSymbol eq NothingClass) // @M Nothing is subtype of every well-kinded type
-    || (tp2.typeSymbol eq AnyClass) // @M Any is supertype of every well-kinded type (@PP: is it? What about continuations plugin?)
+    ((
+      tp1.typeSymbol eq NothingClass
+    ) // @M Nothing is subtype of every well-kinded type
+    || (
+      tp2.typeSymbol eq AnyClass
+    ) // @M Any is supertype of every well-kinded type (@PP: is it? What about continuations plugin?)
     || isSub(tp1.normalize, tp2.normalize) && annotationsConform(
       tp1,
       tp2
@@ -562,11 +551,9 @@ trait TypeComparers {
       def abstractTypeOnRight(lo: Type) =
         isDifferentTypeConstructor(tp2, lo) && retry(tp1, lo)
       def classOnRight =
-        (
-          if (isRawType(tp2)) retry(tp1, rawToExistential(tp2))
-          else if (sym2.isRefinementClass) retry(tp1, sym2.info)
-          else fourthTry
-        )
+        (if (isRawType(tp2)) retry(tp1, rawToExistential(tp2))
+         else if (sym2.isRefinementClass) retry(tp1, sym2.info)
+         else fourthTry)
       sym2 match {
         case SingletonClass => tp1.isStable || fourthTry
         case _: ClassSymbol => classOnRight
@@ -686,11 +673,9 @@ trait TypeComparers {
     }
 
   def isNumericSubType(tp1: Type, tp2: Type) =
-    (
-      isNumericSubClass(
-        primitiveBaseClass(tp1.dealiasWiden),
-        primitiveBaseClass(tp2.dealias))
-    )
+    (isNumericSubClass(
+      primitiveBaseClass(tp1.dealiasWiden),
+      primitiveBaseClass(tp2.dealias)))
 
   /** If the given type has a primitive class among its base classes,
     *  the symbol of that class. Otherwise, NoSymbol.

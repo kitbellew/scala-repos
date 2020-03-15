@@ -28,14 +28,10 @@ object PlaySettings {
 
   lazy val defaultJavaSettings = Seq[Setting[_]](
     TwirlKeys.templateImports ++= TemplateImports.defaultJavaTemplateImports.asScala,
-    RoutesKeys.routesImport ++= Seq(
-      "play.libs.F"
-    )
-  )
+    RoutesKeys.routesImport ++= Seq("play.libs.F"))
 
   lazy val defaultScalaSettings = Seq[Setting[_]](
-    TwirlKeys.templateImports ++= TemplateImports.defaultScalaTemplateImports.asScala
-  )
+    TwirlKeys.templateImports ++= TemplateImports.defaultScalaTemplateImports.asScala)
 
   /** Ask SBT to manage the classpath for the given configuration. */
   def manageClasspath(config: Configuration) =

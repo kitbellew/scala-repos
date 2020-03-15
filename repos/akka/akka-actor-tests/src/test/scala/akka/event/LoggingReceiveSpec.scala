@@ -113,11 +113,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         val name = actor.path.toString
         actor ! "buh"
         within(1 second) {
-          expectMsg(
-            Logging.Debug(
-              actor.path.toString,
-              actor.underlyingActor.getClass,
-              "received handled message buh from " + self))
+          expectMsg(Logging.Debug(
+            actor.path.toString,
+            actor.underlyingActor.getClass,
+            "received handled message buh from " + self))
           expectMsg("x")
         }
 
@@ -141,11 +140,10 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         })
         actor ! "buh"
         within(1 second) {
-          expectMsg(
-            Logging.Debug(
-              actor.path.toString,
-              actor.underlyingActor.getClass,
-              "received handled message buh from " + self))
+          expectMsg(Logging.Debug(
+            actor.path.toString,
+            actor.underlyingActor.getClass,
+            "received handled message buh from " + self))
           expectMsg("x")
         }
       }

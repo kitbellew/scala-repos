@@ -102,8 +102,9 @@ object DecisionTreeExample {
             s"this option is ignored. default: ${defaultParams.fracTest}")
         .action((x, c) => c.copy(fracTest = x))
       opt[Boolean]("cacheNodeIds")
-        .text(s"whether to use node Id cache during training, " +
-          s"default: ${defaultParams.cacheNodeIds}")
+        .text(
+          s"whether to use node Id cache during training, " +
+            s"default: ${defaultParams.cacheNodeIds}")
         .action((x, c) => c.copy(cacheNodeIds = x))
       opt[String]("checkpointDir")
         .text(
@@ -114,8 +115,9 @@ object DecisionTreeExample {
             }}")
         .action((x, c) => c.copy(checkpointDir = Some(x)))
       opt[Int]("checkpointInterval")
-        .text(s"how often to checkpoint the node Id cache, " +
-          s"default: ${defaultParams.checkpointInterval}")
+        .text(
+          s"how often to checkpoint the node Id cache, " +
+            s"default: ${defaultParams.checkpointInterval}")
         .action((x, c) => c.copy(checkpointInterval = x))
       opt[String]("testInput")
         .text(

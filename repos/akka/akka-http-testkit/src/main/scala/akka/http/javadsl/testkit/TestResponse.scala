@@ -89,9 +89,8 @@ abstract class TestResponse(
   def header[T <: HttpHeader](clazz: Class[T]): T =
     response
       .header(ClassTag(clazz))
-      .getOrElse(
-        doFail(
-          s"Expected header of type ${clazz.getSimpleName} but wasn't found."))
+      .getOrElse(doFail(
+        s"Expected header of type ${clazz.getSimpleName} but wasn't found."))
 
   /**
     * Assert on the numeric status code.

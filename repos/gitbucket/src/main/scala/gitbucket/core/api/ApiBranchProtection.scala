@@ -20,10 +20,9 @@ object ApiBranchProtection {
       info: ProtectedBranchService.ProtectedBranchInfo): ApiBranchProtection =
     ApiBranchProtection(
       enabled = info.enabled,
-      required_status_checks = Some(
-        Status(
-          EnforcementLevel(info.enabled, info.includeAdministrators),
-          info.contexts)))
+      required_status_checks = Some(Status(
+        EnforcementLevel(info.enabled, info.includeAdministrators),
+        info.contexts)))
   val statusNone = Status(Off, Seq.empty)
   case class Status(enforcement_level: EnforcementLevel, contexts: Seq[String])
   sealed class EnforcementLevel(val name: String)
@@ -48,6 +47,5 @@ object ApiBranchProtection {
           case JString("non_admins") => NonAdmins
           case JString("everyone")   => Everyone
         },
-        { case x: EnforcementLevel => JString(x.name) }
-      ))
+        { case x: EnforcementLevel => JString(x.name) }))
 }

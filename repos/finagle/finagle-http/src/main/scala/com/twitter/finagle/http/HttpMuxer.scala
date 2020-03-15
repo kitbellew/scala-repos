@@ -41,8 +41,9 @@ class HttpMuxer(
       pattern: String,
       service: Service[Request, Response]): HttpMuxer = {
     val norm = normalize(pattern)
-    new HttpMuxer(
-      handlers.filterNot { case (pat, _) => pat == norm } :+ ((norm, service)))
+    new HttpMuxer(handlers.filterNot {
+      case (pat, _) => pat == norm
+    } :+ ((norm, service)))
   }
 
   /**
@@ -104,9 +105,10 @@ object HttpMuxer extends Service[Request, Response] {
   private[this] val log = Logger.getLogger(getClass.getName)
 
   for (handler <- LoadService[HttpMuxHandler]()) {
-    log.info(
-      "HttpMuxer[%s] = %s(%s)"
-        .format(handler.pattern, handler.getClass.getName, handler))
+    log.info("HttpMuxer[%s] = %s(%s)".format(
+      handler.pattern,
+      handler.getClass.getName,
+      handler))
     addHandler(handler.pattern, handler)
   }
 }

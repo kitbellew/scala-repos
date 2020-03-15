@@ -36,13 +36,12 @@ object DesktopUtils {
 
     if (supported) Desktop.getDesktop.browse(new URI(url))
     else
-      Notifications.Bus.notify(
-        new Notification(
-          "scala",
-          "Problem opening web page",
-          MessageFormat.format(url),
-          NotificationType.WARNING,
-          Listener))
+      Notifications.Bus.notify(new Notification(
+        "scala",
+        "Problem opening web page",
+        MessageFormat.format(url),
+        NotificationType.WARNING,
+        Listener))
   }
 
   private object Listener extends NotificationListener.Adapter {

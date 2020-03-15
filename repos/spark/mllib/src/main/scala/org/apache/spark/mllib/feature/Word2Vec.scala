@@ -46,8 +46,7 @@ private case class VocabWord(
     var cn: Int,
     var point: Array[Int],
     var code: Array[Int],
-    var codeLen: Int
-)
+    var codeLen: Int)
 
 /**
   * Word2Vec creates vector representation of words in a text corpus.
@@ -352,7 +351,9 @@ class Word2Vec extends Serializable with Logging {
                 lwc = wordCount
                 // TODO: discount by iteration?
                 alpha =
-                  learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
+                  learningRate * (1 - numPartitions * wordCount.toDouble / (
+                    trainWordsCount + 1
+                  ))
                 if (alpha < learningRate * 0.0001) alpha = learningRate * 0.0001
                 logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
               }
@@ -378,12 +379,13 @@ class Word2Vec extends Serializable with Logging {
                         // Propagate hidden -> output
                         var f = blas.sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
                         if (f > -MAX_EXP && f < MAX_EXP) {
-                          val ind =
-                            ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
+                          val ind = (
+                            (f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)
+                          ).toInt
                           f = expTable.value(ind)
-                          val g = ((1 - bcVocab
-                            .value(word)
-                            .code(d) - f) * alpha).toFloat
+                          val g = (
+                            (1 - bcVocab.value(word).code(d) - f) * alpha
+                          ).toFloat
                           blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
                           blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
                           syn1Modify(inner) += 1
@@ -406,21 +408,19 @@ class Word2Vec extends Serializable with Logging {
           Iterator
             .tabulate(vocabSize) { index =>
               if (syn0Modify(index) > 0) {
-                Some(
-                  (
-                    index,
-                    syn0Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
+                Some((
+                  index,
+                  syn0Local
+                    .slice(index * vectorSize, (index + 1) * vectorSize)))
               } else { None }
             }
             .flatten ++ Iterator
             .tabulate(vocabSize) { index =>
               if (syn1Modify(index) > 0) {
-                Some(
-                  (
-                    index + vocabSize,
-                    syn1Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
+                Some((
+                  index + vocabSize,
+                  syn1Local
+                    .slice(index * vectorSize, (index + 1) * vectorSize)))
               } else { None }
             }
             .flatten
@@ -675,10 +675,9 @@ object Word2VecModel extends Loader[Word2VecModel] {
 
       val vectorSize = model.values.head.length
       val numWords = model.size
-      val metadata = compact(
-        render(
-          ("class" -> classNameV1_0) ~ ("version" -> formatVersionV1_0) ~
-            ("vectorSize" -> vectorSize) ~ ("numWords" -> numWords)))
+      val metadata = compact(render(
+        ("class" -> classNameV1_0) ~ ("version" -> formatVersionV1_0) ~
+          ("vectorSize" -> vectorSize) ~ ("numWords" -> numWords)))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // We want to partition the model in partitions of size 32MB

@@ -49,12 +49,10 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       ZooKeeperClient.digestCredentials("user", "pass"))
 
     // create serverset
-    serverSet = new CompoundServerSet(
-      List(
-        ServerSets.create(
-          zookeeperClient,
-          ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-          zkPath)))
+    serverSet = new CompoundServerSet(List(ServerSets.create(
+      zookeeperClient,
+      ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+      zkPath)))
 
     // start five memcached server and join the cluster
     addShards(List(0, 1, 2, 3, 4))

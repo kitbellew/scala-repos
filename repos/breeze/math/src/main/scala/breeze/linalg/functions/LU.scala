@@ -35,8 +35,7 @@ object LU extends UFunc {
         Y.data,
         scala.math.max(1, M) /* LDA */,
         ipiv /* pivot indices */,
-        info
-      )
+        info)
       // A value of info.`val` < 0 would tell us that the i-th argument
       // of the call to dsyev was erroneous (where i == |info.`val`|).
       assert(info.`val` >= 0)
@@ -70,8 +69,7 @@ object LU extends UFunc {
         Y.data,
         scala.math.max(1, M) /* LDA */,
         ipiv /* pivot indices */,
-        info
-      )
+        info)
       // A value of info.`val` < 0 would tell us that the i-th argument
       // of the call to dsyev was erroneous (where i == |info.`val`|).
       assert(info.`val` >= 0)

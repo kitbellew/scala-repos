@@ -252,8 +252,10 @@ class ScForStatementImpl(node: ASTNode)
         if (text == "") None
         else {
           try {
-            Option(ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, this.getContext, this))
+            Option(ScalaPsiElementFactory.createExpressionWithContextFromText(
+              text,
+              this.getContext,
+              this))
           } catch { case e: Throwable => None }
         }
       case _ => None
@@ -269,10 +271,13 @@ class ScForStatementImpl(node: ASTNode)
             patts.foreach(patt => {
               if (patt != null && patt.desugarizedPatternIndex != -1) {
                 var element = expr.findElementAt(patt.desugarizedPatternIndex)
-                while (element != null && (element.getTextLength < patt.getTextLength ||
-                       (!element.isInstanceOf[
-                         ScPattern] && element.getTextLength == patt.getTextLength)))
-                  element = element.getParent
+                while (element != null && (
+                         element.getTextLength < patt.getTextLength ||
+                         (
+                           !element.isInstanceOf[
+                             ScPattern] && element.getTextLength == patt.getTextLength
+                         )
+                       )) element = element.getParent
                 if (element != null && element.getText == patt.getText) {
                   element match {
                     case p: ScPattern =>
@@ -303,8 +308,9 @@ class ScForStatementImpl(node: ASTNode)
         }
       }
     }
-    if ((enums.isEmpty && guards.isEmpty && gens.length == 1) || gens.isEmpty || res.isEmpty)
-      res
+    if ((
+          enums.isEmpty && guards.isEmpty && gens.length == 1
+        ) || gens.isEmpty || res.isEmpty) res
     else {
       val expr = res.get
       nextEnumerator(gens.head) match {

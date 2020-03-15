@@ -173,10 +173,12 @@ object FileSource {
         // HiddenFileFilter should better be called non-hidden but it borrows its name from the
         // private field name in hadoop FileInputFormat
         //
-        dir -> (dir,
-        OrVal(
-          SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
-        OrVal(HiddenFileFilter.accept(fileStatus.getPath)))
+        dir -> (
+          dir,
+          OrVal(
+            SuccessFileFilter.accept(fileStatus.getPath) && fileStatus.isFile),
+          OrVal(HiddenFileFilter.accept(fileStatus.getPath))
+        )
       }
 
     // OR by key
@@ -404,17 +406,16 @@ trait DelimitedScheme extends SchemedSource {
       types == null || fields.size == types.size,
       "Fields [" + fields + "] of different size than types array [" + types
         .mkString(",") + "]")
-    HadoopSchemeInstance(
-      new CHTextDelimited(
-        fields,
-        null,
-        skipHeader,
-        writeHeader,
-        separator,
-        strict,
-        quote,
-        types,
-        safe))
+    HadoopSchemeInstance(new CHTextDelimited(
+      fields,
+      null,
+      skipHeader,
+      writeHeader,
+      separator,
+      strict,
+      quote,
+      types,
+      safe))
   }
 }
 

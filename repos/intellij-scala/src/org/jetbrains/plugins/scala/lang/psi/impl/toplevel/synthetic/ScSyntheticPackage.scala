@@ -159,14 +159,15 @@ object ScSyntheticPackage {
           def getQualifiedName = fqn
 
           def getClasses = {
-            Array(pkgs.flatMap(p =>
-              if (p.fqn.length == fqn.length) p.typeDefs.flatMap {
-                case td @ (c: ScTypeDefinition)
-                    if c.fakeCompanionModule.isDefined =>
-                  Seq(td, c.fakeCompanionModule.get)
-                case td => Seq(td)
-              }
-              else Seq.empty): _*)
+            Array(
+              pkgs.flatMap(p =>
+                if (p.fqn.length == fqn.length) p.typeDefs.flatMap {
+                  case td @ (c: ScTypeDefinition)
+                      if c.fakeCompanionModule.isDefined =>
+                    Seq(td, c.fakeCompanionModule.get)
+                  case td => Seq(td)
+                }
+                else Seq.empty): _*)
           }
 
           def getClasses(scope: GlobalSearchScope) =

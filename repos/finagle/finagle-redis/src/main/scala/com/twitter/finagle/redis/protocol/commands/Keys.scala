@@ -124,11 +124,10 @@ case class PExpire(key: ChannelBuffer, milliseconds: Long)
     extends StrictKeyCommand {
   def command = Commands.PEXPIRE
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.PEXPIRE,
-        key,
-        StringToChannelBuffer(milliseconds.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.PEXPIRE,
+      key,
+      StringToChannelBuffer(milliseconds.toString)))
 }
 object PExpire {
   def apply(args: Seq[Array[Byte]]) = {
@@ -148,11 +147,10 @@ case class PExpireAt(key: ChannelBuffer, timestamp: Time)
   val milliseconds = timestamp.inMilliseconds
 
   def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.PEXPIREAT,
-        key,
-        StringToChannelBuffer(milliseconds.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.PEXPIREAT,
+      key,
+      StringToChannelBuffer(milliseconds.toString)))
 }
 object PExpireAt {
   def apply(args: Seq[Array[Byte]]) = {

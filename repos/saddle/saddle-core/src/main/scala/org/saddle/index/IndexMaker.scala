@@ -44,33 +44,21 @@ object IndexMaker extends IndexMakerLowPriority {
       def apply(in: (T[I1], T[I2])) = zip2V(in._1, in._2)
     }
 
-  implicit def make3V[
-      T[K] <: SeqLike[K],
-      I1: ST: ORD,
-      I2: ST: ORD,
-      I3: ST: ORD] =
+  implicit def make3V[T[K] <: SeqLike[
+    K], I1: ST: ORD, I2: ST: ORD, I3: ST: ORD] =
     new IndexMaker[(T[I1], T[I2], T[I3]), (I1, I2, I3)] {
       def apply(in: (T[I1], T[I2], T[I3])) = zip3V(in._1, in._2, in._3)
     }
 
-  implicit def make4V[
-      T[K] <: SeqLike[K],
-      I1: ST: ORD,
-      I2: ST: ORD,
-      I3: ST: ORD,
-      I4: ST: ORD] =
+  implicit def make4V[T[K] <: SeqLike[
+    K], I1: ST: ORD, I2: ST: ORD, I3: ST: ORD, I4: ST: ORD] =
     new IndexMaker[(T[I1], T[I2], T[I3], T[I4]), (I1, I2, I3, I4)] {
       def apply(in: (T[I1], T[I2], T[I3], T[I4])) =
         zip4V(in._1, in._2, in._3, in._4)
     }
 
-  implicit def make5V[
-      T[K] <: SeqLike[K],
-      I1: ST: ORD,
-      I2: ST: ORD,
-      I3: ST: ORD,
-      I4: ST: ORD,
-      I5: ST: ORD] =
+  implicit def make5V[T[K] <: SeqLike[
+    K], I1: ST: ORD, I2: ST: ORD, I3: ST: ORD, I4: ST: ORD, I5: ST: ORD] =
     new IndexMaker[(T[I1], T[I2], T[I3], T[I4], T[I5]), (I1, I2, I3, I4, I5)] {
       def apply(in: (T[I1], T[I2], T[I3], T[I4], T[I5])) =
         zip5V(in._1, in._2, in._3, in._4, in._5)
@@ -110,12 +98,12 @@ object IndexMaker extends IndexMakerLowPriority {
     Index(arr)
   }
 
-  private def zip4V[
-      T[K] <: SeqLike[K],
-      A: ST: ORD,
-      B: ST: ORD,
-      C: ST: ORD,
-      D: ST: ORD](a: T[A], b: T[B], c: T[C], d: T[D]): Index[(A, B, C, D)] = {
+  private def zip4V[T[K] <: SeqLike[
+    K], A: ST: ORD, B: ST: ORD, C: ST: ORD, D: ST: ORD](
+      a: T[A],
+      b: T[B],
+      c: T[C],
+      d: T[D]): Index[(A, B, C, D)] = {
     require(
       a.length == b.length && b.length == c.length && c.length == d.length,
       "Arguments must have same length")
@@ -129,13 +117,8 @@ object IndexMaker extends IndexMakerLowPriority {
     Index(arr)
   }
 
-  private def zip5V[
-      T[K] <: SeqLike[K],
-      A: ST: ORD,
-      B: ST: ORD,
-      C: ST: ORD,
-      D: ST: ORD,
-      E: ST: ORD](
+  private def zip5V[T[K] <: SeqLike[
+    K], A: ST: ORD, B: ST: ORD, C: ST: ORD, D: ST: ORD, E: ST: ORD](
       a: T[A],
       b: T[B],
       c: T[C],

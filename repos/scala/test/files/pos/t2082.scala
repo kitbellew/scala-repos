@@ -24,24 +24,22 @@ object TestSubject extends MetaTestSubject
 
 object Main {
 
-  def oneToOneJoin[
-      PType <: KeyedMapper[Long, PType] with IdPK,
-      CType <: KeyedMapper[Long, CType] with IdPK,
-      CMetaType <: CType with KeyedMetaMapper[Long, CType],
-      FKType <: MappedForeignKey[Long, PType, CType]](
+  def oneToOneJoin[PType <: KeyedMapper[
+    Long,
+    PType] with IdPK, CType <: KeyedMapper[
+    Long,
+    CType] with IdPK, CMetaType <: CType with KeyedMetaMapper[
+    Long,
+    CType], FKType <: MappedForeignKey[Long, PType, CType]](
       parents: List[PType],
       metaMapper: CMetaType,
       keyGetter: (PType) => FKType): Map[Long, CType] = Map.empty
 
   def callIt {
-    oneToOneJoin[
+    oneToOneJoin[TestRun, TestSubject, MetaTestSubject, MappedForeignKey[
+      Long,
       TestRun,
-      TestSubject,
-      MetaTestSubject,
-      MappedForeignKey[Long, TestRun, TestSubject]](
-      List(),
-      TestSubject,
-      (tr: TestRun) => tr.testSubject)
+      TestSubject]](List(), TestSubject, (tr: TestRun) => tr.testSubject)
   }
 
 }

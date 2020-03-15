@@ -20,5 +20,5 @@ class Preparator extends PPreparator[TrainingData, PreparedData] {
 class PreparedData(
     val users: EntityMap[User],
     val items: EntityMap[Item],
-    val ratings: RDD[Rating]
-) extends Serializable
+    val ratings: RDD[Rating])
+    extends Serializable

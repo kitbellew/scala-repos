@@ -32,8 +32,7 @@ object Preset {
               PerfType.Blitz,
               PerfType.Classical,
               PerfType.Correspondence)),
-          Filter(D.Color, List(chess.White))
-        )
+          Filter(D.Color, List(chess.White)))
       )
     ),
     Preset(
@@ -44,17 +43,13 @@ object Preset {
       Question(
         D.Perf,
         M.RatingDiff,
-        List(
-          Filter(D.MyCastling, List(Castling.Queenside, Castling.None))
-        ))),
+        List(Filter(D.MyCastling, List(Castling.Queenside, Castling.None))))),
     Preset(
       "When I trade queens, how do games end?",
       Question(
         D.Perf,
         M.Result,
-        List(
-          Filter(D.QueenTrade, List(QueenTrade.Yes))
-        ))),
+        List(Filter(D.QueenTrade, List(QueenTrade.Yes))))),
     Preset(
       "What is the average rating of my opponents across each variant?",
       Question(D.Perf, M.OpponentRating, Nil)),
@@ -63,8 +58,6 @@ object Preset {
       Question(
         D.PieceRole,
         M.MeanCpl,
-        List(
-          Filter(D.Phase, List(Phase.Opening))
-        )))
+        List(Filter(D.Phase, List(Phase.Opening)))))
   )
 }

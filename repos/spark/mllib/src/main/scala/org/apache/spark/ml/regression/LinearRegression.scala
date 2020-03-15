@@ -1039,14 +1039,13 @@ private class LeastSquaresCostFun(
       val combOp = (c1: LeastSquaresAggregator, c2: LeastSquaresAggregator) =>
         c1.merge(c2)
 
-      instances.treeAggregate(
-        new LeastSquaresAggregator(
-          coeffs,
-          labelStd,
-          labelMean,
-          fitIntercept,
-          featuresStd,
-          featuresMean))(seqOp, combOp)
+      instances.treeAggregate(new LeastSquaresAggregator(
+        coeffs,
+        labelStd,
+        labelMean,
+        fitIntercept,
+        featuresStd,
+        featuresMean))(seqOp, combOp)
     }
 
     val totalGradientArray = leastSquaresAggregator.gradient.toArray

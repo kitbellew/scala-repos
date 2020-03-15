@@ -65,8 +65,9 @@ class OldProducer(producerProps: Properties) extends BaseProducer {
     producerProps.setProperty(
       "partitioner.class",
       classOf[kafka.producer.ByteArrayPartitioner].getName)
-  val producer = new kafka.producer.Producer[Array[Byte], Array[Byte]](
-    new ProducerConfig(producerProps))
+  val producer =
+    new kafka.producer.Producer[Array[Byte], Array[Byte]](new ProducerConfig(
+      producerProps))
 
   override def send(topic: String, key: Array[Byte], value: Array[Byte]) {
     this.producer

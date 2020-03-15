@@ -73,10 +73,9 @@ object VersionLog {
               .disjunction
             version <- jv match {
               case JString(`unsetSentinel`) =>
-                \/.left(
-                  NotFound(
-                    "No current data for the path %s exists; it has been archived."
-                      .format(dir)))
+                \/.left(NotFound(
+                  "No current data for the path %s exists; it has been archived."
+                    .format(dir)))
               case other =>
                 other.validated[VersionEntry].disjunction leftMap { err =>
                   Corrupt(err.message)
@@ -191,9 +190,8 @@ class VersionLog(
           completedFile)
       } map { _ => PrecogUnit }
     } else {
-      IO.throwIO(
-        new IllegalStateException(
-          "Cannot make nonexistent version %s current" format version))
+      IO.throwIO(new IllegalStateException(
+        "Cannot make nonexistent version %s current" format version))
     }
   }
 
@@ -205,9 +203,8 @@ class VersionLog(
           entry.serialize.renderCompact + "\n",
           headFile) map { _ => currentVersion = Some(entry); }
       } flatMap {
-        _.isEmpty.whenM(
-          IO.throwIO(new IllegalStateException(
-            "Attempt to set head to nonexistent version %s" format newHead)))
+        _.isEmpty.whenM(IO.throwIO(new IllegalStateException(
+          "Attempt to set head to nonexistent version %s" format newHead)))
       }
     } map { _ => PrecogUnit }
   }

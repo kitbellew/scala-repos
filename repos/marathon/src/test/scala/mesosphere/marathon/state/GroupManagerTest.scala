@@ -57,8 +57,7 @@ class GroupManagerTest
         system,
         s"serializeGroupUpdates${actorId.incrementAndGet()}",
         maxParallel = 1,
-        maxQueued = 10
-      )
+        maxQueued = 10)
 
     lazy val manager = new GroupManager(
       serializeUpdates = serializeExecutions(),
@@ -96,38 +95,33 @@ class GroupManagerTest
     import Container.Docker
     import Docker.PortMapping
     import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
-    val container = Container(
-      docker = Some(
-        Docker(
-          image = "busybox",
-          network = Some(Network.BRIDGE),
-          portMappings = Some(Seq(
-            PortMapping(
-              containerPort = 8080,
-              hostPort = 0,
-              servicePort = 0,
-              protocol = "tcp"),
-            PortMapping(
-              containerPort = 9000,
-              hostPort = 10555,
-              servicePort = 10555,
-              protocol = "udp"),
-            PortMapping(
-              containerPort = 9001,
-              hostPort = 0,
-              servicePort = 0,
-              protocol = "tcp")
-          ))
-        ))
-    )
+    val container = Container(docker = Some(Docker(
+      image = "busybox",
+      network = Some(Network.BRIDGE),
+      portMappings = Some(Seq(
+        PortMapping(
+          containerPort = 8080,
+          hostPort = 0,
+          servicePort = 0,
+          protocol = "tcp"),
+        PortMapping(
+          containerPort = 9000,
+          hostPort = 10555,
+          servicePort = 10555,
+          protocol = "udp"),
+        PortMapping(
+          containerPort = 9001,
+          hostPort = 0,
+          servicePort = 0,
+          protocol = "tcp")
+      ))
+    )))
     val group = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = Seq(),
-          container = Some(container))
-      ))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = Seq(),
+        container = Some(container))))
     val update = manager(minServicePort = 10, maxServicePort = 20)
       .assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
@@ -139,16 +133,14 @@ class GroupManagerTest
   test("Reassign dynamic service ports specified in the container") {
     val from = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(10, 11))))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = PortDefinitions(10, 11))))
     val to = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(10, 0, 11))))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = PortDefinitions(10, 0, 11))))
     val update = manager(minServicePort = 10, maxServicePort = 20)
       .assignDynamicServicePorts(from, to)
     update.app("/app1".toPath).get.portNumbers should be(Seq(10, 12, 11))
@@ -160,31 +152,24 @@ class GroupManagerTest
     import Container.Docker
     import Docker.PortMapping
     import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
-    val container = Container(
-      docker = Some(
-        Docker(
-          image = "busybox",
-          network = Some(Network.BRIDGE),
-          portMappings = Some(
-            Seq(
-              PortMapping(
-                containerPort = 8080,
-                hostPort = 0,
-                servicePort = 80,
-                protocol = "tcp"),
-              PortMapping(
-                containerPort = 9000,
-                hostPort = 10555,
-                servicePort = 81,
-                protocol = "udp")
-            ))
-        ))
-    )
+    val container = Container(docker = Some(Docker(
+      image = "busybox",
+      network = Some(Network.BRIDGE),
+      portMappings = Some(Seq(
+        PortMapping(
+          containerPort = 8080,
+          hostPort = 0,
+          servicePort = 80,
+          protocol = "tcp"),
+        PortMapping(
+          containerPort = 9000,
+          hostPort = 10555,
+          servicePort = 81,
+          protocol = "udp")))
+    )))
     val group = Group(
       PathId.empty,
-      Set(
-        AppDefinition("/app1".toPath, container = Some(container))
-      ))
+      Set(AppDefinition("/app1".toPath, container = Some(container))))
     val update = manager(minServicePort = 90, maxServicePort = 900)
       .assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
@@ -200,8 +185,7 @@ class GroupManagerTest
           portDefinitions = PortDefinitions(0, 0, 0)),
         AppDefinition(
           "/app2".toPath,
-          portDefinitions = PortDefinitions(0, 2, 0))
-      )
+          portDefinitions = PortDefinitions(0, 2, 0)))
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
     update.transitiveApps.filter(_.hasDynamicPort) should be('empty)
@@ -213,9 +197,9 @@ class GroupManagerTest
   test("Don't assign duplicated service ports") {
     val group = Group(
       PathId.empty,
-      Set(
-        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(0, 10))
-      ))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = PortDefinitions(0, 10))))
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
 
     val assignedPorts: Set[Int] = update.transitiveApps.flatMap(_.portNumbers)
@@ -226,17 +210,15 @@ class GroupManagerTest
     "Assign unique service ports also when adding a dynamic service port to an app") {
     val originalGroup = Group(
       PathId.empty,
-      Set(
-        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(10, 11))
-      ))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = PortDefinitions(10, 11))))
 
     val updatedGroup = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0))
-      ))
+      Set(AppDefinition(
+        "/app1".toPath,
+        portDefinitions = PortDefinitions(0, 0, 0))))
     val result = manager(10, 20)
       .assignDynamicServicePorts(originalGroup, updatedGroup)
 
@@ -253,8 +235,7 @@ class GroupManagerTest
           portDefinitions = PortDefinitions(0, 0, 0)),
         AppDefinition(
           "/app2".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0))
-      )
+          portDefinitions = PortDefinitions(0, 0, 0)))
     )
     val ex = intercept[PortRangeExhaustedException] {
       manager(10, 15).assignDynamicServicePorts(Group.empty, group)
@@ -267,21 +248,11 @@ class GroupManagerTest
     "Retain the original container definition if port mappings are missing") {
     import Container.Docker
 
-    val container = Container(
-      docker = Some(
-        Docker(
-          image = "busybox"
-        ))
-    )
+    val container = Container(docker = Some(Docker(image = "busybox")))
 
     val group = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          id = "/app1".toPath,
-          container = Some(container)
-        )
-      ))
+      Set(AppDefinition(id = "/app1".toPath, container = Some(container))))
 
     val result = manager(10, 15).assignDynamicServicePorts(Group.empty, group)
     result.apps.size should be(1)
@@ -324,10 +295,10 @@ class GroupManagerTest
       .copy(versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
     val groupWithVersionInfo = Group(PathId.empty, Set(appWithVersionInfo))
       .copy(version = Timestamp(1))
-    when(f.appRepo.store(any()))
-      .thenReturn(Future.successful(appWithVersionInfo))
-    when(f.groupRepo.store(any(), any()))
-      .thenReturn(Future.successful(groupWithVersionInfo))
+    when(f.appRepo.store(any())).thenReturn(Future.successful(
+      appWithVersionInfo))
+    when(f.groupRepo.store(any(), any())).thenReturn(Future.successful(
+      groupWithVersionInfo))
 
     Await.result(
       f.manager.update(group.id, _ => group, version = Timestamp(1)),
@@ -351,8 +322,8 @@ class GroupManagerTest
       .thenReturn(Future.successful(Some(group)))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
     when(f.appRepo.expunge(any())).thenReturn(Future.successful(Seq(true)))
-    when(f.groupRepo.store(any(), any()))
-      .thenReturn(Future.successful(groupEmpty))
+    when(f.groupRepo.store(any(), any())).thenReturn(Future.successful(
+      groupEmpty))
 
     Await.result(
       f.manager.update(group.id, _ => groupEmpty, version = Timestamp(1)),
@@ -364,14 +335,13 @@ class GroupManagerTest
 
   def manager(minServicePort: Int, maxServicePort: Int) = {
     val f = new Fixture {
-      override lazy val config = new ScallopConf(
-        Seq(
-          "--master",
-          "foo",
-          "--local_port_min",
-          minServicePort.toString,
-          "--local_port_max",
-          maxServicePort.toString)) with MarathonConf
+      override lazy val config = new ScallopConf(Seq(
+        "--master",
+        "foo",
+        "--local_port_min",
+        minServicePort.toString,
+        "--local_port_max",
+        maxServicePort.toString)) with MarathonConf
     }
 
     f.config.afterInit()

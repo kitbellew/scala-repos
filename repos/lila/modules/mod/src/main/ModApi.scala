@@ -82,8 +82,7 @@ final class ModApi(
           user.ipBan.fold(
             firewall unblockIps spy.ipStrings,
             (spy.ipStrings map firewall.blockIp).sequenceFu >>
-              (SecurityStore disconnect user.id)
-          ) void
+              (SecurityStore disconnect user.id)) void
       }
     }
 

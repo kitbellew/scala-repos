@@ -85,7 +85,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `IMF-fixdate` =
     rule { // mixture of the spec-ed `IMF-fixdate` and `rfc850-date`
-      (`day-name-l` | `day-name`) ~ ", " ~ (date1 | date2) ~ ' ' ~ `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
+      (`day-name-l` | `day-name`) ~ ", " ~ (
+        date1 | date2
+      ) ~ ' ' ~ `time-of-day` ~ ' ' ~ ("GMT" | "UTC") ~> {
         (wkday, day, month, year, hour, min, sec) ⇒
           createDateTime(year, month, day, hour, min, sec, wkday)
       }
@@ -323,8 +325,8 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
   def `domain-value` =
     rule {
       optional('.') ~ capture(
-        oneOrMore(oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-'))
-          .separatedBy('.')) ~ OWS
+        oneOrMore(oneOrMore(oneOrMore(ALPHANUM)).separatedBy('-')).separatedBy(
+          '.')) ~ OWS
     }
 
   def `path-av` =
@@ -402,9 +404,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `byte-range-spec` =
     rule {
-      `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (ByteRange(
-        _: Long,
-        _)) | run(ByteRange.fromOffset(_)))
+      `first-byte-pos` ~ ws('-') ~ (`last-byte-pos` ~> (
+        ByteRange(_: Long, _)
+      ) | run(ByteRange.fromOffset(_)))
     }
 
   def `byte-ranges-specifier` =
@@ -471,9 +473,9 @@ private[parser] trait CommonRules { this: Parser with StringBuilding ⇒
 
   def `transfer-extension` =
     rule {
-      token ~ zeroOrMore(
-        ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (TransferEncodings
-        .Extension(_, _))
+      token ~ zeroOrMore(ws(';') ~ `transfer-parameter`) ~> (_.toMap) ~> (
+        TransferEncodings.Extension(_, _)
+      )
     }
 
   def `transfer-parameter` = rule { token ~ ws('=') ~ word ~> (_ -> _) }

@@ -43,32 +43,20 @@ class BinaryClassificationEvaluatorSuite
       .setMetricName("areaUnderPR")
 
     val vectorDF = sqlContext
-      .createDataFrame(
-        Seq(
-          (0d, Vectors.dense(12, 2.5)),
-          (1d, Vectors.dense(1, 3)),
-          (0d, Vectors.dense(10, 2))
-        ))
+      .createDataFrame(Seq(
+        (0d, Vectors.dense(12, 2.5)),
+        (1d, Vectors.dense(1, 3)),
+        (0d, Vectors.dense(10, 2))))
       .toDF("label", "rawPrediction")
     assert(evaluator.evaluate(vectorDF) === 1.0)
 
     val doubleDF = sqlContext
-      .createDataFrame(
-        Seq(
-          (0d, 0d),
-          (1d, 1d),
-          (0d, 0d)
-        ))
+      .createDataFrame(Seq((0d, 0d), (1d, 1d), (0d, 0d)))
       .toDF("label", "rawPrediction")
     assert(evaluator.evaluate(doubleDF) === 1.0)
 
     val stringDF = sqlContext
-      .createDataFrame(
-        Seq(
-          (0d, "0d"),
-          (1d, "1d"),
-          (0d, "0d")
-        ))
+      .createDataFrame(Seq((0d, "0d"), (1d, "1d"), (0d, "0d")))
       .toDF("label", "rawPrediction")
     val thrown = intercept[IllegalArgumentException] {
       evaluator.evaluate(stringDF)

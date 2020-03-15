@@ -28,8 +28,9 @@ class ConfigParser(
   // tokens
 
   val numberToken: Parser[String] = """-?\d+(\.\d+)?""".r
-  val stringToken: Parser[String] =
-    ("\"" + """([^\\\"]|\\[^ux]|\\\n|\\u[0-9a-fA-F]{4}|\\x[0-9a-fA-F]{2})*""" + "\"").r
+  val stringToken: Parser[String] = (
+    "\"" + """([^\\\"]|\\[^ux]|\\\n|\\u[0-9a-fA-F]{4}|\\x[0-9a-fA-F]{2})*""" + "\""
+  ).r
   val booleanToken: Parser[String] = "(true|on|false|off)".r
   val identToken: Parser[String] =
     """([\da-zA-Z_][-\w]*)(\.[a-zA-Z_][-\w]*)*""".r

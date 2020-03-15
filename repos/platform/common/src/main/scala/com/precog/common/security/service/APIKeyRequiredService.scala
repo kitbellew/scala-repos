@@ -55,9 +55,8 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
   def invalidAPIKey[A](implicit
       convert: JValue => A,
       M: Monad[Future]): String => Future[HttpResponse[A]] = { (msg: String) =>
-    M.point(
-      (forbidden(msg) map convert)
-        .copy(headers = HttpHeaders(`Content-Type`(application / json))))
+    M.point((forbidden(msg) map convert).copy(headers = HttpHeaders(
+      `Content-Type`(application / json))))
   }
 
   // Convenience combinator for when we know our result is an `HttpResponse` and that
@@ -81,11 +80,8 @@ trait APIKeyServiceCombinators extends HttpRequestHandlerCombinators {
 class APIKeyValidService[A, B](
     val delegate: HttpService[A, APIKey => Future[B]],
     error: String => Future[B])
-    extends DelegatingService[
-      A,
-      Validation[String, APIKey] => Future[B],
-      A,
-      APIKey => Future[B]] {
+    extends DelegatingService[A, Validation[String, APIKey] => Future[
+      B], A, APIKey => Future[B]] {
   val service = { (request: HttpRequest[A]) =>
     delegate.service(request) map {
       (f: APIKey => Future[B]) =>
@@ -96,8 +92,7 @@ class APIKeyValidService[A, B](
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
     DescriptionMetadata(
-      "A valid Precog API key is required for the use of this service.")
-  )
+      "A valid Precog API key is required for the use of this service."))
 }
 
 class APIKeyRequiredService[A, B](
@@ -131,6 +126,5 @@ class APIKeyRequiredService[A, B](
   val metadata = AboutMetadata(
     ParameterMetadata('apiKey, None),
     DescriptionMetadata(
-      "A Precog API key is required for the use of this service.")
-  )
+      "A Precog API key is required for the use of this service."))
 }

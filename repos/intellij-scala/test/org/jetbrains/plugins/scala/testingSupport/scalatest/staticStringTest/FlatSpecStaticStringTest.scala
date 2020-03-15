@@ -39,43 +39,39 @@ trait FlatSpecStaticStringTest extends ScalaTestTestCase {
   def testFlatSpecSum() = {
     addFlatSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(6, 7, flatSpecFileName),
-        flatSpecClassName,
-        "Static strings should accept sums"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(6, 7, flatSpecFileName),
+      flatSpecClassName,
+      "Static strings should accept sums"))
   }
 
   def testFlatSpecVal() = {
     addFlatSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(9, 7, flatSpecFileName),
-        flatSpecClassName,
-        "Static strings should work with consts"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(9, 7, flatSpecFileName),
+      flatSpecClassName,
+      "Static strings should work with consts"))
   }
 
   def testFlatSpecValSum() = {
     addFlatSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(12, 7, flatSpecFileName),
-        flatSpecClassName,
-        "Static strings should work with sums of consts"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(12, 7, flatSpecFileName),
+      flatSpecClassName,
+      "Static strings should work with sums of consts"))
   }
 
   def testFlatSpecNonConst() = {
     addFlatSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(15, 7, flatSpecFileName),
-        flatSpecClassName,
-        "Static strings should accept sums",
-        "Static strings should work with consts",
-        "Static strings should work with sums of consts"
-      ))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(15, 7, flatSpecFileName),
+      flatSpecClassName,
+      "Static strings should accept sums",
+      "Static strings should work with consts",
+      "Static strings should work with sums of consts"
+    ))
   }
 }

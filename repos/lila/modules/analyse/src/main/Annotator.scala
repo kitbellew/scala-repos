@@ -15,9 +15,7 @@ private[analyse] final class Annotator(netDomain: String) {
       clock: Option[Clock]): Pgn =
     annotateStatus(winner, status) {
       annotateOpening(opening) { annotateTurns(p, analysis ?? (_.advices)) }
-        .copy(
-          tags = p.tags :+ Tag("Annotator", netDomain)
-        )
+        .copy(tags = p.tags :+ Tag("Annotator", netDomain))
     }
 
   import chess.{Status => S}
@@ -63,14 +61,12 @@ private[analyse] final class Annotator(netDomain: String) {
                 move.copy(
                   nag = advice.nag.code.some,
                   comment = advice.makeComment(true, true).some,
-                  variation = makeVariation(turn, advice)
-                ))
+                  variation = makeVariation(turn, advice)))
         )
     }
 
   private def makeVariation(turn: Turn, advice: Advice): List[Turn] =
     Turn.fromMoves(
       advice.info.variation take 20 map { san => Move(san) },
-      turn plyOf advice.color
-    )
+      turn plyOf advice.color)
 }

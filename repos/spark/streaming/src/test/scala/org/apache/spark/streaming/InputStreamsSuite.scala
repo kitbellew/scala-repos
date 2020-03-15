@@ -225,7 +225,9 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
       // Let the data from the receiver be received
       val clock = ssc.scheduler.clock.asInstanceOf[ManualClock]
       val startTime = System.currentTimeMillis()
-      while ((!MultiThreadTestReceiver.haveAllThreadsFinished || output.sum < numTotalRecords) &&
+      while ((
+               !MultiThreadTestReceiver.haveAllThreadsFinished || output.sum < numTotalRecords
+             ) &&
              System.currentTimeMillis() - startTime < 5000) {
         Thread.sleep(100)
         clock.advance(batchDuration.milliseconds)
@@ -458,10 +460,9 @@ class TestServer(portToBind: Int = 0) extends Logging {
             logInfo("New connection")
             try {
               clientSocket.setTcpNoDelay(true)
-              val outputStream = new BufferedWriter(
-                new OutputStreamWriter(
-                  clientSocket.getOutputStream,
-                  StandardCharsets.UTF_8))
+              val outputStream = new BufferedWriter(new OutputStreamWriter(
+                clientSocket.getOutputStream,
+                StandardCharsets.UTF_8))
 
               while (clientSocket.isConnected) {
                 val msg = queue.poll(100, TimeUnit.MILLISECONDS)

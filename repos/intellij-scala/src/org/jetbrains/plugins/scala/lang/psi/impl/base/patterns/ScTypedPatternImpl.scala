@@ -111,14 +111,12 @@ class ScTypedPatternImpl(node: ASTNode)
                                   param.getExtendsListTypes
                                 if (listTypes.isEmpty) types.Any
                                 else
-                                  subst.subst(
-                                    Bounds.glb(
-                                      listTypes.toSeq.map(
-                                        ScType.create(
-                                          _,
-                                          getProject,
-                                          param.getResolveScope)),
-                                      checkWeak = true))
+                                  subst.subst(Bounds.glb(
+                                    listTypes.toSeq.map(ScType.create(
+                                      _,
+                                      getProject,
+                                      param.getResolveScope)),
+                                    checkWeak = true))
                               } else arg.upper //todo: glb?
                             ScSkolemizedType(
                               arg.name,

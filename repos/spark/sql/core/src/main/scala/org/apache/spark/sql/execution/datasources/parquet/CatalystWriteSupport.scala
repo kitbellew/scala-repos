@@ -72,8 +72,8 @@ private[parquet] class CatalystWriteSupport
   private val timestampBuffer = new Array[Byte](12)
 
   // Reusable byte array used to write decimal values
-  private val decimalBuffer =
-    new Array[Byte](minBytesForPrecision(DecimalType.MAX_PRECISION))
+  private val decimalBuffer = new Array[Byte](minBytesForPrecision(
+    DecimalType.MAX_PRECISION))
 
   override def init(configuration: Configuration): WriteContext = {
     val schemaString = configuration.get(CatalystWriteSupport.SPARK_ROW_SCHEMA)

@@ -96,8 +96,7 @@ private[twitter] object Message {
   private object Init {
     def encode(
         version: Short,
-        headers: Seq[(ChannelBuffer, ChannelBuffer)]
-    ): ChannelBuffer = {
+        headers: Seq[(ChannelBuffer, ChannelBuffer)]): ChannelBuffer = {
       var size = 2 // 2 bytes for version
       var iter = headers.iterator
       while (iter.hasNext) {
@@ -373,8 +372,8 @@ private[twitter] object Message {
     def typ = ???
     def tag = ???
 
-    private[this] val cb = new ReadOnlyChannelBuffer(
-      encode(Tping(Tags.PingTag)))
+    private[this] val cb = new ReadOnlyChannelBuffer(encode(
+      Tping(Tags.PingTag)))
     cb.markReaderIndex()
 
     def buf = {
@@ -409,11 +408,10 @@ private[twitter] object Message {
       extends MarkerMessage {
     def typ = Types.BAD_Tdiscarded
     lazy val buf = ChannelBuffers.wrappedBuffer(
-      ChannelBuffers.wrappedBuffer(
-        Array[Byte](
-          (which >> 16 & 0xff).toByte,
-          (which >> 8 & 0xff).toByte,
-          (which & 0xff).toByte)),
+      ChannelBuffers.wrappedBuffer(Array[Byte](
+        (which >> 16 & 0xff).toByte,
+        (which >> 8 & 0xff).toByte,
+        (which & 0xff).toByte)),
       encodeString(why))
   }
 
@@ -522,13 +520,12 @@ private[twitter] object Message {
 
     val id = trace3 match {
       case Some((spanId, parentId, traceId)) =>
-        Some(
-          TraceId(
-            Some(traceId),
-            Some(parentId),
-            spanId,
-            None,
-            Flags(traceFlags)))
+        Some(TraceId(
+          Some(traceId),
+          Some(parentId),
+          spanId,
+          None,
+          Flags(traceFlags)))
       case None => None
     }
 
@@ -656,8 +653,7 @@ private[twitter] object Message {
           m.typ,
           (m.tag >> 16 & 0xff).toByte,
           (m.tag >> 8 & 0xff).toByte,
-          (m.tag & 0xff).toByte
-        )
+          (m.tag & 0xff).toByte)
 
         ChannelBuffers.wrappedBuffer(ChannelBuffers.wrappedBuffer(head), m.buf)
     }

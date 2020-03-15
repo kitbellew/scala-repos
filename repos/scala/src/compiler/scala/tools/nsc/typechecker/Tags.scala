@@ -28,8 +28,7 @@ trait Tags {
             isView = false,
             context,
             saveAmbiguousDivergent = true,
-            pos
-          ).tree)
+            pos).tree)
       }
 
     /** Finds in scope or materializes a ClassTag.

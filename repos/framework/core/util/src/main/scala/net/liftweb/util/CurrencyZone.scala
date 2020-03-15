@@ -91,9 +91,8 @@ abstract class CurrencyZone {
           ) // try with grouping separator
         } catch {
           case e: java.text.ParseException => {
-            make(
-              BigDecimal(
-                "" + NumberFormat.getCurrencyInstance(locale).parse(x)))
+            make(BigDecimal(
+              "" + NumberFormat.getCurrencyInstance(locale).parse(x)))
           } // try with currency symbol and grouping separator
         }
       }
@@ -125,12 +124,10 @@ abstract class CurrencyZone {
     def -(that: Int): Currency = this - make(that)
 
     def /(that: Currency): Currency =
-      make(
-        new BigDecimal(
-          this.amount.bigDecimal.divide(
-            that.amount.bigDecimal,
-            scale,
-            java.math.BigDecimal.ROUND_HALF_UP)))
+      make(new BigDecimal(this.amount.bigDecimal.divide(
+        that.amount.bigDecimal,
+        scale,
+        java.math.BigDecimal.ROUND_HALF_UP)))
     def /(that: Int): Currency = this / make(that)
 
     def compare(that: Currency) = this.amount compare that.amount

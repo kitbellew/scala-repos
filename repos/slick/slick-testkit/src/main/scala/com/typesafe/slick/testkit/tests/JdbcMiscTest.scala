@@ -30,8 +30,7 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
       t1 += "a",
       t3 += Some("a"),
       t3 += None,
-      (t1 += null.asInstanceOf[String]).failed
-    )
+      (t1 += null.asInstanceOf[String]).failed)
   }
 
   def testSimpleDBIO = {
@@ -44,47 +43,42 @@ class JdbcMiscTest extends AsyncTest[JdbcTestDB] {
       GetStatementParameters.map { csp => csp shouldBe sp }
 
     DBIO.seq(
-      check(
-        JdbcBackend.StatementParameters(
-          ResultSetType.Auto,
-          ResultSetConcurrency.Auto,
-          ResultSetHoldability.Auto,
-          null,
-          0)),
+      check(JdbcBackend.StatementParameters(
+        ResultSetType.Auto,
+        ResultSetConcurrency.Auto,
+        ResultSetHoldability.Auto,
+        null,
+        0)),
       DBIO
         .seq(
-          check(
-            JdbcBackend.StatementParameters(
-              ResultSetType.ScrollInsensitive,
-              ResultSetConcurrency.Auto,
-              ResultSetHoldability.Auto,
-              null,
-              0)),
-          check(
-            JdbcBackend.StatementParameters(
-              ResultSetType.ScrollInsensitive,
-              ResultSetConcurrency.Auto,
-              ResultSetHoldability.HoldCursorsOverCommit,
-              null,
-              100)).withStatementParameters(
+          check(JdbcBackend.StatementParameters(
+            ResultSetType.ScrollInsensitive,
+            ResultSetConcurrency.Auto,
+            ResultSetHoldability.Auto,
+            null,
+            0)),
+          check(JdbcBackend.StatementParameters(
+            ResultSetType.ScrollInsensitive,
+            ResultSetConcurrency.Auto,
+            ResultSetHoldability.HoldCursorsOverCommit,
+            null,
+            100)).withStatementParameters(
             rsHoldability = ResultSetHoldability.HoldCursorsOverCommit,
             fetchSize = 100),
-          check(
-            JdbcBackend.StatementParameters(
-              ResultSetType.ScrollInsensitive,
-              ResultSetConcurrency.Auto,
-              ResultSetHoldability.Auto,
-              null,
-              0))
+          check(JdbcBackend.StatementParameters(
+            ResultSetType.ScrollInsensitive,
+            ResultSetConcurrency.Auto,
+            ResultSetHoldability.Auto,
+            null,
+            0))
         )
         .withStatementParameters(rsType = ResultSetType.ScrollInsensitive),
-      check(
-        JdbcBackend.StatementParameters(
-          ResultSetType.Auto,
-          ResultSetConcurrency.Auto,
-          ResultSetHoldability.Auto,
-          null,
-          0))
+      check(JdbcBackend.StatementParameters(
+        ResultSetType.Auto,
+        ResultSetConcurrency.Auto,
+        ResultSetHoldability.Auto,
+        null,
+        0))
     )
   }
 

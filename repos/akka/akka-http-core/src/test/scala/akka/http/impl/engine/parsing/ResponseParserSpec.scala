@@ -59,15 +59,14 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       }
 
       "a response with a simple body" in new Test {
-        collectBlocking(
-          rawParse(
-            GET,
-            prep {
-              """HTTP/1.1 200 Ok
+        collectBlocking(rawParse(
+          GET,
+          prep {
+            """HTTP/1.1 200 Ok
               |Content-Length: 4
               |
               |ABCD"""
-            })) shouldEqual Seq(Right(HttpResponse(entity = "ABCD".getBytes)))
+          })) shouldEqual Seq(Right(HttpResponse(entity = "ABCD".getBytes)))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -96,14 +95,12 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           |Transfer-Encoding: foo, chunked, bar
           |Content-Length: 0
           |
-          |""" should parseTo(
-          HttpResponse(
-            ServerOnTheMove,
-            List(
-              `Transfer-Encoding`(
-                TransferEncodings.Extension("foo"),
-                TransferEncodings.chunked,
-                TransferEncodings.Extension("bar")))))
+          |""" should parseTo(HttpResponse(
+          ServerOnTheMove,
+          List(`Transfer-Encoding`(
+            TransferEncodings.Extension("foo"),
+            TransferEncodings.chunked,
+            TransferEncodings.Extension("bar")))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -111,12 +108,11 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         """HTTP/1.0 404 Not Found
           |Host: api.example.com
           |
-          |Foobs""" should parseTo(
-          HttpResponse(
-            NotFound,
-            List(Host("api.example.com")),
-            "Foobs".getBytes,
-            `HTTP/1.0`))
+          |Foobs""" should parseTo(HttpResponse(
+          NotFound,
+          List(Host("api.example.com")),
+          "Foobs".getBytes,
+          `HTTP/1.0`))
         closeAfterResponseCompletion shouldEqual Seq(true)
       }
 
@@ -124,12 +120,11 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         """HTTP/1.0 404 Not Found
           |Host: api.example.com
           |
-          |""" should parseTo(
-          HttpResponse(
-            NotFound,
-            List(Host("api.example.com")),
-            HttpEntity.empty(ContentTypes.`application/octet-stream`),
-            `HTTP/1.0`))
+          |""" should parseTo(HttpResponse(
+          NotFound,
+          List(Host("api.example.com")),
+          HttpEntity.empty(ContentTypes.`application/octet-stream`),
+          `HTTP/1.0`))
         closeAfterResponseCompletion shouldEqual Seq(true)
       }
 
@@ -143,12 +138,10 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           |
           |Sh""",
           "ake your BOODY!HTTP/1."
-        ) should generalMultiParseTo(
-          Right(
-            HttpResponse(
-              InternalServerError,
-              List(`User-Agent`("curl/7.19.7 xyz"), Connection("close")),
-              "Shake your BOODY!")))
+        ) should generalMultiParseTo(Right(HttpResponse(
+          InternalServerError,
+          List(`User-Agent`("curl/7.19.7 xyz"), Connection("close")),
+          "Shake your BOODY!")))
         closeAfterResponseCompletion shouldEqual Seq(true)
       }
 
@@ -179,9 +172,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       "response start" in new Test {
         Seq(start, "rest") should generalMultiParseTo(
           Right(baseResponse.withEntity(Chunked(`application/pdf`, source()))),
-          Left(
-            EntityStreamError(
-              ErrorInfo("Illegal character 'r' in chunk start"))))
+          Left(EntityStreamError(
+            ErrorInfo("Illegal character 'r' in chunk start"))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -202,26 +194,24 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |0
             |
             |"""
-        ) should generalMultiParseTo(
-          Right(baseResponse.withEntity(Chunked(
-            `application/pdf`,
-            source(
-              Chunk(ByteString("abc")),
-              Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
-              Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
-              Chunk(ByteString("0123456789ABCDEF")),
-              LastChunk
-            )
-          ))))
+        ) should generalMultiParseTo(Right(baseResponse.withEntity(Chunked(
+          `application/pdf`,
+          source(
+            Chunk(ByteString("abc")),
+            Chunk(ByteString("0123456789ABCDEF"), "some=stuff;bla"),
+            Chunk(ByteString("0123456789ABCDEF"), "foo=bar"),
+            Chunk(ByteString("0123456789ABCDEF")),
+            LastChunk
+          )
+        ))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
       "message end" in new Test {
         Seq(start, """0
             |
-            |""") should generalMultiParseTo(
-          Right(baseResponse.withEntity(
-            Chunked(`application/pdf`, source(LastChunk)))))
+            |""") should generalMultiParseTo(Right(baseResponse.withEntity(
+          Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -232,33 +222,28 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |Bar: xyz
             |
             |HT""") should generalMultiParseTo(
-          Right(
-            baseResponse.withEntity(Chunked(
-              `application/pdf`,
-              source(LastChunk(
-                "nice=true",
-                List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))),
-          Left(
-            MessageStartError(
-              400: StatusCode,
-              ErrorInfo("Illegal HTTP message start")))
+          Right(baseResponse.withEntity(Chunked(
+            `application/pdf`,
+            source(LastChunk(
+              "nice=true",
+              List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))),
+          Left(MessageStartError(
+            400: StatusCode,
+            ErrorInfo("Illegal HTTP message start")))
         )
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
       "response with additional transfer encodings" in new Test {
-        Seq(
-          """HTTP/1.1 200 OK
+        Seq("""HTTP/1.1 200 OK
           |Transfer-Encoding: fancy, chunked
-          |Cont""",
-          """ent-Type: application/pdf
+          |Cont""", """ent-Type: application/pdf
           |
           |""") should generalMultiParseTo(
-          Right(
-            HttpResponse(
-              headers = List(
-                `Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
-              entity = HttpEntity.Chunked(`application/pdf`, source()))),
+          Right(HttpResponse(
+            headers = List(
+              `Transfer-Encoding`(TransferEncodings.Extension("fancy"))),
+            entity = HttpEntity.Chunked(`application/pdf`, source()))),
           Left(EntityStreamError(ErrorInfo("Entity stream truncation")))
         )
         closeAfterResponseCompletion shouldEqual Seq(false)
@@ -268,18 +253,16 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     "reject a response with" - {
       "HTTP version 1.2" in new Test {
         Seq("HTTP/1.2 200 OK\r\n") should generalMultiParseTo(
-          Left(
-            MessageStartError(
-              400: StatusCode,
-              ErrorInfo("The server-side HTTP version is not supported"))))
+          Left(MessageStartError(
+            400: StatusCode,
+            ErrorInfo("The server-side HTTP version is not supported"))))
       }
 
       "an illegal status code" in new Test {
         Seq("HTTP/1", ".1 2000 Something") should generalMultiParseTo(
-          Left(
-            MessageStartError(
-              400: StatusCode,
-              ErrorInfo("Illegal response status code"))))
+          Left(MessageStartError(
+            400: StatusCode,
+            ErrorInfo("Illegal response status code"))))
       }
 
       "a too-long response status reason" in new Test {
@@ -294,10 +277,9 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
 
       "with a missing reason phrase and no trailing space" in new Test {
         Seq("HTTP/1.1 200\r\nContent-Length: 0\r\n\r\n") should generalMultiParseTo(
-          Left(
-            MessageStartError(
-              400: StatusCode,
-              ErrorInfo("Status code misses trailing space"))))
+          Left(MessageStartError(
+            400: StatusCode,
+            ErrorInfo("Status code misses trailing space"))))
       }
     }
   }
@@ -393,12 +375,11 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                     close)),
                 entityParts) ⇒
             closeAfterResponseCompletion :+= close
-            Right(
-              HttpResponse(
-                statusCode,
-                headers,
-                createEntity(entityParts),
-                protocol))
+            Right(HttpResponse(
+              statusCode,
+              headers,
+              createEntity(entityParts),
+              protocol))
           case (
                 Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
                 tail) ⇒

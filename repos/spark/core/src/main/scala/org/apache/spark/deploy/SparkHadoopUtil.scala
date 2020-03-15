@@ -315,8 +315,8 @@ class SparkHadoopUtil extends Logging {
       .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
       .map { t =>
         val identifier = new DelegationTokenIdentifier()
-        identifier.readFields(
-          new DataInputStream(new ByteArrayInputStream(t.getIdentifier)))
+        identifier.readFields(new DataInputStream(new ByteArrayInputStream(
+          t.getIdentifier)))
         (identifier.getIssueDate + fraction * renewalInterval).toLong - now
       }
       .foldLeft(0L)(math.max)

@@ -38,11 +38,10 @@ class LocationOfLineTest_212
       Set(Loc("Multilevel$This$1$$anon$1", "<init>", 6)),
       Set(Loc("Multilevel$This$1$$anon$1", "run", 8)),
       Set(Loc("Multilevel$This$1$$anon$1", "run", 8)),
-      Set(
-        Loc(
-          "Multilevel$This$1$$anon$1",
-          "Multilevel$This$1$$anon$1$$$anonfun$1",
-          9)),
+      Set(Loc(
+        "Multilevel$This$1$$anon$1",
+        "Multilevel$This$1$$anon$1$$$anonfun$1",
+        9)),
       Set(Loc("Multilevel$", "main", 18))
     )
 
@@ -106,8 +105,7 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
     checkLocationsOfLine(
       Set(Loc("Bar", "<init>", 14)), //location for constructor is customized
       Set(Loc("Bar", "<init>", 9), Loc("Bar", "s", 9)),
-      Set(Loc("Bar", "foo", 12))
-    )
+      Set(Loc("Bar", "foo", 12)))
   }
 
   setupFile(
@@ -161,8 +159,7 @@ abstract class LocationsOfLineTestBase extends PositionManagerTestBase {
     checkLocationsOfLine(
       Set(Loc("LocalFunction$", "bar$1", 6)),
       Set(Loc("LocalFunction$", "foo$1", 9)),
-      Set(Loc("LocalFunction$", "main", 13))
-    )
+      Set(Loc("LocalFunction$", "main", 13)))
   }
 
   setupFile(

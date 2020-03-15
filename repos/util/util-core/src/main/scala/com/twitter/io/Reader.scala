@@ -166,8 +166,8 @@ object Reader {
             case Writing(_, p) =>
               val reof = new Promise[Unit]()
               state = Closing(reof)
-              p.setException(
-                new IllegalStateException("close while write is pending"))
+              p.setException(new IllegalStateException(
+                "close while write is pending"))
               reof
 
           }
@@ -236,8 +236,8 @@ object Reader {
               Future.value(Some(buf.slice(0, n)))
 
             case Reading(_, _) =>
-              Future.exception(
-                new IllegalStateException("read() while Reading"))
+              Future.exception(new IllegalStateException(
+                "read() while Reading"))
           }
         }
 

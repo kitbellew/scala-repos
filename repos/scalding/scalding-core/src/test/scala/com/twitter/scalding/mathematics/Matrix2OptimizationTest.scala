@@ -470,20 +470,18 @@ object Matrix2Props extends Properties("Matrix2") {
               _,
               _) => {
           val labelLeft = labelTree(left, start)
-          Some(
-            new LabeledTree(
-              (labelLeft.get.range._1, labelLeft.get.range._2 + 1),
-              labelLeft,
-              None))
+          Some(new LabeledTree(
+            (labelLeft.get.range._1, labelLeft.get.range._2 + 1),
+            labelLeft,
+            None))
         }
         case Product(left, right, _, _) => {
           val labelLeft = labelTree(left, start)
           val labelRight = labelTree(right, labelLeft.get.range._2 + 1)
-          Some(
-            new LabeledTree(
-              (labelLeft.get.range._1, labelRight.get.range._2),
-              labelLeft,
-              labelRight))
+          Some(new LabeledTree(
+            (labelLeft.get.range._1, labelRight.get.range._2),
+            labelLeft,
+            labelRight))
         }
         case _ => None
       }
@@ -521,7 +519,9 @@ object Matrix2Props extends Properties("Matrix2") {
           // diff is computed in the labeled tree - it measures "spread" of the tree
           // diff corresponds to (k - i) or (j - k - 1) in optimize: (k - i) * computeCosts(p, i, k) + (j - k - 1) * computeCosts(p, k + 1, j)
           Some(
-            labels.right.get.diff * cost + (left.sizeHint * (left.sizeHint * pRight.sizeHint)).total.get,
+            labels.right.get.diff * cost + (
+              left.sizeHint * (left.sizeHint * pRight.sizeHint)
+            ).total.get,
             left,
             pRight)
         }
@@ -532,7 +532,9 @@ object Matrix2Props extends Properties("Matrix2") {
               _) => {
           val (cost, pLeft, pRight) = evaluateProduct(left, labels.left.get).get
           Some(
-            labels.left.get.diff * cost + (pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)).total.get,
+            labels.left.get.diff * cost + (
+              pLeft.sizeHint * (pRight.sizeHint * right.sizeHint)
+            ).total.get,
             pLeft,
             right)
         }
@@ -542,7 +544,9 @@ object Matrix2Props extends Properties("Matrix2") {
           val (cost2, p2Left, p2Right) =
             evaluateProduct(right, labels.right.get).get
           Some(
-            labels.left.get.diff * cost1 + labels.right.get.diff * cost2 + (p1Left.sizeHint * (p1Right.sizeHint * p2Right.sizeHint)).total.get,
+            labels.left.get.diff * cost1 + labels.right.get.diff * cost2 + (
+              p1Left.sizeHint * (p1Right.sizeHint * p2Right.sizeHint)
+            ).total.get,
             p1Left,
             p2Right)
         }

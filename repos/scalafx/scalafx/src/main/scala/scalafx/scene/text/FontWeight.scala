@@ -84,8 +84,7 @@ object FontWeight
       SemiBold,
       Bold,
       ExtraBold,
-      Black
-    )
+      Black)
 
   /** Returns FontWeight by its name. */
   def findByName(name: String): FontWeight = jfxst.FontWeight.findByName(name)

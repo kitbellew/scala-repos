@@ -34,8 +34,7 @@ object Util extends Build {
       "-unchecked",
       "-feature",
       "-encoding",
-      "utf8"
-    ) ++ (CrossVersion.partialVersion(sv) match {
+      "utf8") ++ (CrossVersion.partialVersion(sv) match {
       // Needs -missing-interpolator due to https://issues.scala-lang.org/browse/SI-8761
       case Some((2, x)) if x >= 11 => Seq("-Xlint:-missing-interpolator")
       case _                       => Seq("-Xlint")
@@ -53,15 +52,13 @@ object Util extends Build {
     libraryDependencies ++= Seq(
       "junit" % "junit" % "4.8.1" % "test",
       "org.mockito" % "mockito-all" % "1.9.5" % "test",
-      "org.scalatest" %% "scalatest" % "2.2.4" % "test"
-    ),
+      "org.scalatest" %% "scalatest" % "2.2.4" % "test"),
     resolvers += "twitter repo" at "https://maven.twttr.com",
-    ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (
-      CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 10)) => false
-        case _             => true
-      }
-    ),
+    ScoverageSbtPlugin.ScoverageKeys.coverageHighlighting := (CrossVersion
+      .partialVersion(scalaVersion.value) match {
+      case Some((2, 10)) => false
+      case _             => true
+    }),
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     // Note: Use -Xlint rather than -Xlint:unchecked when TestThriftStructure
     // warnings are resolved
@@ -109,8 +106,7 @@ object Util extends Build {
     dependencyOverrides <++= scalaVersion { vsn =>
       Set(
         "com.twitter.common.zookeeper" % "client" % zkClientVersion,
-        "com.twitter.common.zookeeper" % "group" % zkGroupVersion
-      )
+        "com.twitter.common.zookeeper" % "group" % zkGroupVersion)
     }
   )
 
@@ -119,8 +115,7 @@ object Util extends Build {
     base = file("."),
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++
-      unidocSettings
-  ) aggregate (
+      unidocSettings) aggregate (
     utilFunction, utilRegistry, utilCore, utilCodec, utilCollection, utilCache, utilReflect,
     utilLint, utilLogging, utilTest, utilThrift, utilHashing, utilJvm, utilZk,
     utilZkCommon, utilZkTest, utilClassPreloader, utilBenchmark, utilApp,
@@ -131,29 +126,25 @@ object Util extends Build {
     id = "util-app",
     base = file("util-app"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-app"
-    )
+      sharedSettings)
+    .settings(name := "util-app")
     .dependsOn(utilCore, utilRegistry)
 
   lazy val utilBenchmark = Project(
     id = "util-benchmark",
     base = file("util-benchmark"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings ++ JmhPlugin.projectSettings
-  ).enablePlugins(JmhPlugin)
-    .settings(
-      name := "util-benchmark"
-    )
+      sharedSettings ++ JmhPlugin.projectSettings)
+    .enablePlugins(JmhPlugin)
+    .settings(name := "util-benchmark")
     .dependsOn(utilCore, utilEvents, utilHashing, utilJvm, utilStats)
 
   lazy val utilCache = Project(
     id = "util-cache",
     base = file("util-cache"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-cache",
       libraryDependencies ++= Seq(
         // NB: guava has a `provided` dep on jsr/javax packages, so we include them manually
@@ -167,31 +158,26 @@ object Util extends Build {
     id = "util-class-preloader",
     base = file("util-class-preloader"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-class-preloader"
-    )
+      sharedSettings)
+    .settings(name := "util-class-preloader")
     .dependsOn(utilCore)
 
   lazy val utilCodec = Project(
     id = "util-codec",
     base = file("util-codec"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-codec",
-      libraryDependencies ++= Seq(
-        "commons-codec" % "commons-codec" % "1.9"
-      )
-    )
+      libraryDependencies ++= Seq("commons-codec" % "commons-codec" % "1.9"))
     .dependsOn(utilCore)
 
   lazy val utilCollection = Project(
     id = "util-collection",
     base = file("util-collection"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-collection",
       libraryDependencies ++= Seq(
         // NB: guava has a `provided` dep on jsr/javax packages, so we include them manually
@@ -208,14 +194,13 @@ object Util extends Build {
     id = "util-core",
     base = file("util-core"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-core",
       libraryDependencies ++= Seq(
         "com.twitter" % "jsr166e" % "1.0.0",
         "com.twitter.common" % "objectsize" % "0.0.10" % "test",
-        "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"
-      ),
+        "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"),
       libraryDependencies <++= parserCombinators,
       resourceGenerators in Compile <+=
         (resourceManaged in Compile, name, version) map { (dir, name, ver) =>
@@ -235,133 +220,106 @@ object Util extends Build {
     id = "util-eval",
     base = file("util-eval"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-eval",
       libraryDependencies <+= scalaVersion {
         "org.scala-lang" % "scala-compiler" % _ % "compile"
-      }
-    )
+      })
     .dependsOn(utilCore)
 
   lazy val utilEvents = Project(
     id = "util-events",
     base = file("util-events"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-events"
-    )
-    .dependsOn(utilApp)
+      sharedSettings).settings(name := "util-events").dependsOn(utilApp)
 
   lazy val utilFunction = Project(
     id = "util-function",
     base = file("util-function"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-    name := "util-function"
-  )
+      sharedSettings).settings(name := "util-function")
 
   lazy val utilReflect = Project(
     id = "util-reflect",
     base = file("util-reflect"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-reflect",
       libraryDependencies ++= Seq(
         "asm" % "asm" % "3.3.1",
         "asm" % "asm-util" % "3.3.1",
         "asm" % "asm-commons" % "3.3.1",
-        "cglib" % "cglib" % "2.2.2"
-      )
-    )
+        "cglib" % "cglib" % "2.2.2"))
     .dependsOn(utilCore)
 
   lazy val utilHashing = Project(
     id = "util-hashing",
     base = file("util-hashing"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-hashing",
       libraryDependencies ++= Seq(
         "commons-codec" % "commons-codec" % "1.9" % "test",
-        "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"
-      )
-    )
+        "org.scalacheck" %% "scalacheck" % "1.12.2" % "test"))
     .dependsOn(utilCore % "test")
 
   lazy val utilJvm = Project(
     id = "util-jvm",
     base = file("util-jvm"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-jvm"
-    )
+      sharedSettings)
+    .settings(name := "util-jvm")
     .dependsOn(utilApp, utilCore, utilTest % "test")
 
   lazy val utilLint = Project(
     id = "util-lint",
     base = file("util-lint"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-    name := "util-lint"
-  )
+      sharedSettings).settings(name := "util-lint")
 
   lazy val utilLogging = Project(
     id = "util-logging",
     base = file("util-logging"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-logging"
-    )
+      sharedSettings)
+    .settings(name := "util-logging")
     .dependsOn(utilCore, utilApp, utilStats)
 
   lazy val utilRegistry = Project(
     id = "util-registry",
     base = file("util-registry"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-registry"
-    )
-    .dependsOn(utilCore)
+      sharedSettings).settings(name := "util-registry").dependsOn(utilCore)
 
   lazy val utilStats = Project(
     id = "util-stats",
     base = file("util-stats"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-stats"
-    )
+      sharedSettings)
+    .settings(name := "util-stats")
     .dependsOn(utilCore, utilLint)
 
   lazy val utilTest = Project(
     id = "util-test",
     base = file("util-test"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-test",
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "2.2.4",
-        "org.mockito" % "mockito-all" % "1.9.5"
-      )
-    )
+        "org.mockito" % "mockito-all" % "1.9.5"))
     .dependsOn(utilCore, utilLogging)
 
   lazy val utilThrift = Project(
     id = "util-thrift",
     base = file("util-thrift"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-thrift",
       libraryDependencies ++= Seq(
         "thrift" % "libthrift" % "0.5.0",
@@ -376,21 +334,16 @@ object Util extends Build {
     id = "util-zk",
     base = file("util-zk"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
-      name := "util-zk",
-      libraryDependencies ++= Seq(
-        zkDependency
-      )
-    )
+      sharedSettings)
+    .settings(name := "util-zk", libraryDependencies ++= Seq(zkDependency))
     .dependsOn(utilCore, utilCollection, utilLogging)
 
   lazy val utilZkCommon = Project(
     id = "util-zk-common",
     base = file("util-zk-common"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings)
+    .settings(
       name := "util-zk-common",
       libraryDependencies ++= Seq(
         "com.twitter.common.zookeeper" % "client" % zkClientVersion,
@@ -413,13 +366,10 @@ object Util extends Build {
     id = "util-zk-test",
     base = file("util-zk-test"),
     settings = Defaults.coreDefaultSettings ++
-      sharedSettings
-  ).settings(
+      sharedSettings).settings(
     name := "util-zk-test",
     libraryDependencies ++= Seq(
       "com.twitter.common" % "io" % "0.0.67" % "test",
-      zkDependency
-    )
-  )
+      zkDependency))
 
 }

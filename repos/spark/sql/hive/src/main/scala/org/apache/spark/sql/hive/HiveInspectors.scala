@@ -623,11 +623,10 @@ private[hive] trait HiveInspectors {
         var i = 0
         while (i < fieldRefs.size) {
           val tpe = structType(i).dataType
-          result.add(
-            wrap(
-              row.get(i, tpe),
-              fieldRefs.get(i).getFieldObjectInspector,
-              tpe))
+          result.add(wrap(
+            row.get(i, tpe),
+            fieldRefs.get(i).getFieldObjectInspector,
+            tpe))
           i += 1
         }
 
@@ -817,12 +816,11 @@ private[hive] trait HiveInspectors {
   def inspectorToDataType(inspector: ObjectInspector): DataType =
     inspector match {
       case s: StructObjectInspector =>
-        StructType(
-          s.getAllStructFieldRefs.asScala.map(f =>
-            types.StructField(
-              f.getFieldName,
-              inspectorToDataType(f.getFieldObjectInspector),
-              nullable = true)))
+        StructType(s.getAllStructFieldRefs.asScala.map(f =>
+          types.StructField(
+            f.getFieldName,
+            inspectorToDataType(f.getFieldObjectInspector),
+            nullable = true)))
       case l: ListObjectInspector =>
         ArrayType(inspectorToDataType(l.getListElementObjectInspector))
       case m: MapObjectInspector =>
@@ -987,16 +985,16 @@ private[hive] trait HiveInspectors {
   private def getTimestampWritable(value: Any): hiveIo.TimestampWritable =
     if (value == null) { null }
     else {
-      new hiveIo.TimestampWritable(
-        DateTimeUtils.toJavaTimestamp(value.asInstanceOf[Long]))
+      new hiveIo.TimestampWritable(DateTimeUtils.toJavaTimestamp(
+        value.asInstanceOf[Long]))
     }
 
   private def getDecimalWritable(value: Any): hiveIo.HiveDecimalWritable =
     if (value == null) { null }
     else {
       // TODO precise, scale?
-      new hiveIo.HiveDecimalWritable(
-        HiveDecimal.create(value.asInstanceOf[Decimal].toJavaBigDecimal))
+      new hiveIo.HiveDecimalWritable(HiveDecimal.create(
+        value.asInstanceOf[Decimal].toJavaBigDecimal))
     }
 
   implicit class typeInfoConversions(dt: DataType) {

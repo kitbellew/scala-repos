@@ -48,12 +48,10 @@ private[this] class MVarImpl[A](
     writeLatch: PhasedLatch)
     extends MVar[A] {
   def take =
-    read(
-      for {
-        a <- value.getAndSet(None)
-        _ <- writeLatch.release()
-      } yield a
-    )
+    read(for {
+      a <- value.getAndSet(None)
+      _ <- writeLatch.release()
+    } yield a)
 
   def put(a: => A) = write(a, value.get)
 

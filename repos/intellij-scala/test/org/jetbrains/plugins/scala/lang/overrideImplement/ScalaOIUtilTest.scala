@@ -47,8 +47,7 @@ class ScalaOIUtilTest extends SimpleTestCase {
   }
 
   def testConvertedName() {
-    assertUnimplemented(
-      """
+    assertUnimplemented("""
         |1
         |abstract class PP {
         |  def !! : Int
@@ -56,13 +55,11 @@ class ScalaOIUtilTest extends SimpleTestCase {
         |class T extends PP {
         |  def $bang$bang: Int = 0
         |}
-      """.replace("\r", "").stripMargin
-    )
+      """.replace("\r", "").stripMargin)
   }
 
   def testOverAbstract() {
-    assertUnimplemented(
-      """
+    assertUnimplemented("""
         |1
         |trait A {
         |  def foo: Int
@@ -72,8 +69,7 @@ class ScalaOIUtilTest extends SimpleTestCase {
         |}
         |class T extends B with A {
         |}
-      """.replace("\r", "").stripMargin
-    )
+      """.replace("\r", "").stripMargin)
   }
 
   def testMembers() {

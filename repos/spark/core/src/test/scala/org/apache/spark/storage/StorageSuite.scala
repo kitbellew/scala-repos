@@ -198,11 +198,11 @@ class StorageSuite extends SparkFunSuite {
     val status = storageStatus2
     // blocks that actually exist
     assert(
-      status.blocks.get(TestBlockId("dan")) === status.getBlock(
-        TestBlockId("dan")))
+      status.blocks.get(TestBlockId("dan")) === status.getBlock(TestBlockId(
+        "dan")))
     assert(
-      status.blocks.get(TestBlockId("man")) === status.getBlock(
-        TestBlockId("man")))
+      status.blocks.get(TestBlockId("man")) === status.getBlock(TestBlockId(
+        "man")))
     assert(
       status.blocks.get(RDDBlockId(0, 0)) === status.getBlock(RDDBlockId(0, 0)))
     assert(
@@ -215,8 +215,8 @@ class StorageSuite extends SparkFunSuite {
       status.blocks.get(RDDBlockId(2, 4)) === status.getBlock(RDDBlockId(2, 4)))
     // blocks that don't exist
     assert(
-      status.blocks.get(TestBlockId("fan")) === status.getBlock(
-        TestBlockId("fan")))
+      status.blocks.get(TestBlockId("fan")) === status.getBlock(TestBlockId(
+        "fan")))
     assert(
       status.blocks.get(RDDBlockId(100, 0)) === status.getBlock(
         RDDBlockId(100, 0)))

@@ -22,12 +22,8 @@ case class Firefighter(
 
 class Inheritance3Test extends FunSuite {
   test("main") {
-    val f = new Firefighter(
-      name = "Joey",
-      age = 32,
-      salary = 30000,
-      since = 1999
-    )
+    val f =
+      new Firefighter(name = "Joey", age = 32, salary = 30000, since = 1999)
 
     val pickleF = (f: Firefighter).pickle
     assert(

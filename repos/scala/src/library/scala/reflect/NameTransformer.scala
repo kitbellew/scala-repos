@@ -121,7 +121,9 @@ object NameTransformer {
             }
             /* Handle the decoding of Unicode glyphs that are
            * not valid Java/JVM identifiers */
-          } else if ((len - i) >= 6 && // Check that there are enough characters left
+          } else if ((
+                       len - i
+                     ) >= 6 && // Check that there are enough characters left
                      ch1 == 'u' &&
                      ((Character.isDigit(ch2)) ||
                      ('A' <= ch2 && ch2 <= 'F'))) {

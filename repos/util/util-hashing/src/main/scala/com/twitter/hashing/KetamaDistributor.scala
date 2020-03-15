@@ -13,8 +13,8 @@ class KetamaDistributor[A](
     // ring. In order to always hash a key to the same server as the
     // clients who depend on those versions of libmemcached, we have to reproduce their result.
     // If the oldLibMemcachedVersionComplianceMode is true the behavior will be reproduced.
-    oldLibMemcachedVersionComplianceMode: Boolean = false
-) extends Distributor[A] {
+    oldLibMemcachedVersionComplianceMode: Boolean = false)
+    extends Distributor[A] {
   private[this] val continuum = {
     val continuum = new TreeMap[Long, KetamaNode[A]]()
 

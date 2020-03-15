@@ -67,8 +67,7 @@ object CofreeTest extends SpecLite {
           fa.tail
             .map(s =>
               Foldable[CofreeLazyOption].foldRight(s, Stream.empty[A])(_ #:: _))
-            .getOrElse(Stream.empty)
-        )
+            .getOrElse(Stream.empty))
     }
 
   val treeCofreeStreamIso: Tree <~> CofreeStream =

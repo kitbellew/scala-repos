@@ -480,8 +480,8 @@ trait CompilerControl { self: Global =>
       }
 
     override def doQuickly[A](op: () => A): A = {
-      throw new FailedInterrupt(
-        new Exception("Posted a work item to a compiler that's shutting down"))
+      throw new FailedInterrupt(new Exception(
+        "Posted a work item to a compiler that's shutting down"))
     }
 
     override def askDoQuickly[A](op: () => A): InterruptReq { type R = A } = {

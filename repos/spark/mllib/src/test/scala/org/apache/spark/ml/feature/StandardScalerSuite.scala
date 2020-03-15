@@ -41,8 +41,7 @@ class StandardScalerSuite
     data = Array(
       Vectors.dense(-2.0, 2.3, 0.0),
       Vectors.dense(0.0, -5.1, 1.0),
-      Vectors.dense(1.7, -0.6, 3.3)
-    )
+      Vectors.dense(1.7, -0.6, 3.3))
     resWithMean = Array(
       Vectors.dense(-1.9, 3.433333333333, -1.433333333333),
       Vectors.dense(0.1, -3.966666666667, -0.433333333333),

@@ -64,8 +64,8 @@ trait BlockLoadSpec[M[+_]]
 
     val projections = List(actualSchema).map { subschema =>
       val stream = sampleData.data flatMap { jv =>
-        val back = subschema.foldLeft[JValue](
-          JObject(JField("key", jv \ "key") :: Nil)) {
+        val back = subschema.foldLeft[JValue](JObject(
+          JField("key", jv \ "key") :: Nil)) {
           case (obj, (jpath, ctype)) => {
             val vpath = JPath(JPathField("value") :: jpath.nodes)
             val valueAtPath = jv.get(vpath)
@@ -88,17 +88,17 @@ trait BlockLoadSpec[M[+_]]
     val module = new BlockStoreLoadTestModule(sample)
 
     val expected = sample.data flatMap { jv =>
-      val back = module.schema
-        .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
-          case (obj, (jpath, ctype)) => {
-            val vpath = JPath(JPathField("value") :: jpath.nodes)
-            val valueAtPath = jv.get(vpath)
+      val back = module.schema.foldLeft[JValue](JObject(
+        JField("key", jv \ "key") :: Nil)) {
+        case (obj, (jpath, ctype)) => {
+          val vpath = JPath(JPathField("value") :: jpath.nodes)
+          val valueAtPath = jv.get(vpath)
 
-            if (module.compliesWithSchema(valueAtPath, ctype)) {
-              obj.set(vpath, valueAtPath)
-            } else { obj }
-          }
+          if (module.compliesWithSchema(valueAtPath, ctype)) {
+            obj.set(vpath, valueAtPath)
+          } else { obj }
         }
+      }
 
       (back \ "value" != JUndefined).option(back)
     }
@@ -133,14 +133,12 @@ trait BlockLoadSpec[M[+_]]
           "key":[1]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            JPath(".u") -> CBoolean,
-            JPath(".md") -> CString,
-            JPath(".l") -> CEmptyArray))
-      )
+      Some((
+        1,
+        List(
+          JPath(".u") -> CBoolean,
+          JPath(".md") -> CString,
+          JPath(".l") -> CEmptyArray)))
     )
 
     testLoadDense(sampleData)
@@ -158,14 +156,12 @@ trait BlockLoadSpec[M[+_]]
           "key":[2,1]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          2,
-          List(
-            JPath(".fa") -> CNull,
-            JPath(".hW") -> CLong,
-            JPath(".rzp") -> CEmptyObject))
-      )
+      Some((
+        2,
+        List(
+          JPath(".fa") -> CNull,
+          JPath(".hW") -> CLong,
+          JPath(".rzp") -> CEmptyObject)))
     )
 
     testLoadDense(sampleData)
@@ -197,19 +193,17 @@ trait BlockLoadSpec[M[+_]]
            "key":[2,1,1]
          }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          3,
-          List(
-            JPath(".f.bn[0]") -> CNull,
-            JPath(".f.wei") -> CLong,
-            JPath(".f.wei") -> CDouble,
-            JPath(".ljz[0]") -> CNull,
-            JPath(".ljz[1][0]") -> CString,
-            JPath(".ljz[2]") -> CBoolean,
-            JPath(".jmy") -> CDouble
-          ))
-      )
+      Some((
+        3,
+        List(
+          JPath(".f.bn[0]") -> CNull,
+          JPath(".f.wei") -> CLong,
+          JPath(".f.wei") -> CDouble,
+          JPath(".ljz[0]") -> CNull,
+          JPath(".ljz[1][0]") -> CString,
+          JPath(".ljz[2]") -> CBoolean,
+          JPath(".jmy") -> CDouble
+        )))
     )
 
     testLoadDense(sampleData)
@@ -235,16 +229,14 @@ trait BlockLoadSpec[M[+_]]
           "key":[1,1]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          2,
-          List(
-            JPath(".dV.d") -> CBoolean,
-            JPath(".dV.l") -> CBoolean,
-            JPath(".dV.vq") -> CEmptyObject,
-            JPath(".oy.nm") -> CBoolean,
-            JPath(".uR") -> CDouble))
-      )
+      Some((
+        2,
+        List(
+          JPath(".dV.d") -> CBoolean,
+          JPath(".dV.l") -> CBoolean,
+          JPath(".dV.vq") -> CEmptyObject,
+          JPath(".oy.nm") -> CBoolean,
+          JPath(".uR") -> CDouble)))
     )
 
     testLoadDense(sampleData)
@@ -343,18 +335,17 @@ trait BlockLoadSpec[M[+_]]
           "key":[9]
         }
       ]""") --> classOf[JArray]).elements.toStream,
-      Some(
-        (
-          1,
-          List(
-            (JPath(".o8agyghfjxe") -> CEmptyArray),
-            (JPath(".fg[0]") -> CBoolean),
-            (JPath(".fg[1]") -> CNum),
-            (JPath(".fg[1]") -> CLong),
-            (JPath(".fg[2]") -> CNum),
-            (JPath(".fg[2]") -> CLong),
-            (JPath(".cfnYTg92dg") -> CString)
-          )))
+      Some((
+        1,
+        List(
+          (JPath(".o8agyghfjxe") -> CEmptyArray),
+          (JPath(".fg[0]") -> CBoolean),
+          (JPath(".fg[1]") -> CNum),
+          (JPath(".fg[1]") -> CLong),
+          (JPath(".fg[2]") -> CNum),
+          (JPath(".fg[2]") -> CLong),
+          (JPath(".cfnYTg92dg") -> CString)
+        )))
     )
 
     testLoadDense(sampleData)

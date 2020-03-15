@@ -330,11 +330,12 @@ object Messages {
       "Message pattern expected"
     )
 
-    val message =
-      ignoreWhiteSpace ~ messageKey ~ (ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace) ~ messagePattern ^^ {
-        case (_ ~ k ~ _ ~ v) =>
-          Messages.Message(k, v.trim, messageSource, messageSourceName)
-      }
+    val message = ignoreWhiteSpace ~ messageKey ~ (
+      ignoreWhiteSpace ~ "=" ~ ignoreWhiteSpace
+    ) ~ messagePattern ^^ {
+      case (_ ~ k ~ _ ~ v) =>
+        Messages.Message(k, v.trim, messageSource, messageSourceName)
+    }
 
     val sentence = (comment | positioned(message)) <~ newLine
 
@@ -353,8 +354,7 @@ object Messages {
               def position = in.pos.column - 1
               def input = messageSource.read
               def sourceName = messageSourceName
-            }
-          )
+            })
       }
     }
 
@@ -534,22 +534,20 @@ class DefaultMessagesApi @Inject() (
     preferred(request._underlyingHeader())
 
   def setLang(result: Result, lang: Lang) =
-    result.withCookies(
-      Cookie(
-        langCookieName,
-        lang.code,
-        path = Session.path,
-        domain = Session.domain,
-        secure = langCookieSecure,
-        httpOnly = langCookieHttpOnly))
+    result.withCookies(Cookie(
+      langCookieName,
+      lang.code,
+      path = Session.path,
+      domain = Session.domain,
+      secure = langCookieSecure,
+      httpOnly = langCookieHttpOnly))
 
   def clearLang(result: Result) =
-    result.discardingCookies(
-      DiscardingCookie(
-        langCookieName,
-        path = Session.path,
-        domain = Session.domain,
-        secure = langCookieSecure))
+    result.discardingCookies(DiscardingCookie(
+      langCookieName,
+      path = Session.path,
+      domain = Session.domain,
+      secure = langCookieSecure))
 
   def apply(key: String, args: Any*)(implicit lang: Lang): String = {
     translate(key, args).getOrElse(noMatch(key, args))
@@ -629,10 +627,7 @@ class DefaultMessagesApi @Inject() (
 
 class I18nModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[Langs].to[DefaultLangs],
-      bind[MessagesApi].to[DefaultMessagesApi]
-    )
+    Seq(bind[Langs].to[DefaultLangs], bind[MessagesApi].to[DefaultMessagesApi])
   }
 }
 

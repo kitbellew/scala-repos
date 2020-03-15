@@ -104,8 +104,10 @@ private[play] class GlobalSettingsHttpErrorHandler @Inject() (
       case NOT_FOUND => global.get.onHandlerNotFound(request)
       case clientError if statusCode >= 400 && statusCode < 500 =>
         Future.successful(
-          Results.Status(clientError)(views.html.defaultpages
-            .badRequest(request.method, request.uri, message)))
+          Results.Status(clientError)(views.html.defaultpages.badRequest(
+            request.method,
+            request.uri,
+            message)))
       case nonClientError =>
         throw new IllegalArgumentException(
           s"onClientError invoked with non client error status code $statusCode: $message")
@@ -296,9 +298,8 @@ class DefaultHttpErrorHandler(
   protected def onDevServerError(
       request: RequestHeader,
       exception: UsefulException): Future[Result] =
-    Future.successful(
-      InternalServerError(
-        views.html.defaultpages.devError(playEditor, exception)))
+    Future.successful(InternalServerError(
+      views.html.defaultpages.devError(playEditor, exception)))
 
   /**
     * Invoked in prod mode when a server error occurs.
@@ -312,8 +313,8 @@ class DefaultHttpErrorHandler(
   protected def onProdServerError(
       request: RequestHeader,
       exception: UsefulException): Future[Result] =
-    Future.successful(
-      InternalServerError(views.html.defaultpages.error(exception)))
+    Future.successful(InternalServerError(
+      views.html.defaultpages.error(exception)))
 
 }
 

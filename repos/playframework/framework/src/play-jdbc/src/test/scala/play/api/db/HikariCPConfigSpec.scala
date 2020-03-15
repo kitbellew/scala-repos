@@ -26,8 +26,7 @@ class HikariCPConfigSpec extends Specification {
     "set dataSource sub properties" in new Configs {
       val config = from(
         "hikaricp.dataSource.user" -> "user",
-        "hikaricp.dataSource.password" -> "password"
-      )
+        "hikaricp.dataSource.password" -> "password")
       val hikariConfig: HikariConfig =
         new HikariCPConfig(dbConfig, config).toHikariConfig
 
@@ -177,8 +176,7 @@ class HikariCPConfigSpec extends Specification {
       "minimumIdle" in new Configs {
         val config = from(
           "hikaricp.minimumIdle" -> "20",
-          "hikaricp.maximumPoolSize" -> "40"
-        )
+          "hikaricp.maximumPoolSize" -> "40")
         new HikariCPConfig(
           dbConfig,
           config).toHikariConfig.getMinimumIdle must beEqualTo(20)

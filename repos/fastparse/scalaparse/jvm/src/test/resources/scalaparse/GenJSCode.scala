@@ -223,8 +223,7 @@ abstract class GenJSCode
             withScopedVars(
               currentClassInfoBuilder := new ClassInfoBuilder,
               currentClassSym := sym,
-              unexpectedMutatedFields := mutable.Set.empty
-            ) {
+              unexpectedMutatedFields := mutable.Set.empty) {
               val tree =
                 if (isRawJSType(sym.tpe)) {
                   assert(
@@ -547,8 +546,7 @@ abstract class GenJSCode
         currentMethodSym := sym,
         methodTailJumpThisSym := NoSymbol,
         fakeTailJumpParamRepl := (NoSymbol, NoSymbol),
-        enclosingLabelDefParams := Map.empty
-      ) {
+        enclosingLabelDefParams := Map.empty) {
         assert(
           vparamss.isEmpty || vparamss.tail.isEmpty,
           "Malformed parameter list: " + vparamss)
@@ -591,8 +589,7 @@ abstract class GenJSCode
           withScopedVars(
             currentMethodInfoBuilder := createInfoBuilder(),
             mutableLocalVars := mutable.Set.empty,
-            mutatedLocalVars := mutable.Set.empty
-          ) {
+            mutatedLocalVars := mutable.Set.empty) {
             def isTraitImplForwarder =
               dd.rhs match {
                 case app: Apply => foreignIsImplClass(app.symbol.owner)
@@ -644,12 +641,10 @@ abstract class GenJSCode
                 // OK, we're good (common case)
                 methodDef
               } else {
-                val patches = (
-                  unmutatedMutableLocalVars.map(
-                    encodeLocalSym(_).name -> false) :::
-                    mutatedImmutableLocalVals.map(
-                      encodeLocalSym(_).name -> true)
-                ).toMap
+                val patches = (unmutatedMutableLocalVars.map(
+                  encodeLocalSym(_).name -> false) :::
+                  mutatedImmutableLocalVals.map(
+                    encodeLocalSym(_).name -> true)).toMap
                 patchMutableFlagOfLocals(methodDef, patches)
               }
             }
@@ -770,11 +765,9 @@ abstract class GenJSCode
       import scala.reflect.internal.Flags
 
       // Flags of members we do not want to consider for reflective call proxys
-      val excludedFlags = (
-        Flags.BRIDGE |
-          Flags.PRIVATE |
-          Flags.MACRO
-      )
+      val excludedFlags = (Flags.BRIDGE |
+        Flags.PRIVATE |
+        Flags.MACRO)
 
       /** Check if two method symbols conform in name and parameter types */
       def weakMatch(s1: Symbol)(s2: Symbol) = {
@@ -828,9 +821,7 @@ abstract class GenJSCode
       val proxyIdent = encodeMethodSym(sym, reflProxy = true)
 
       withNewLocalNameScope {
-        withScopedVars(
-          currentMethodInfoBuilder := new MethodInfoBuilder
-        ) {
+        withScopedVars(currentMethodInfoBuilder := new MethodInfoBuilder) {
           currentMethodInfoBuilder.setEncodedName(proxyIdent.name)
 
           val jsParams = for (param <- sym.tpe.params) yield {
@@ -904,18 +895,16 @@ abstract class GenJSCode
               (thisDef @ ValDef(_, nme.THIS, _, initialThis)) :: otherStats,
               rhs) =>
           // This method has tail jumps
-          withScopedVars(
-            (initialThis match {
-              case This(_) =>
-                Seq(
-                  methodTailJumpThisSym := thisDef.symbol,
-                  fakeTailJumpParamRepl := (NoSymbol, NoSymbol))
-              case Ident(_) =>
-                Seq(
-                  methodTailJumpThisSym := NoSymbol,
-                  fakeTailJumpParamRepl := (thisDef.symbol, initialThis.symbol))
-            }): _*
-          ) {
+          withScopedVars((initialThis match {
+            case This(_) =>
+              Seq(
+                methodTailJumpThisSym := thisDef.symbol,
+                fakeTailJumpParamRepl := (NoSymbol, NoSymbol))
+            case Ident(_) =>
+              Seq(
+                methodTailJumpThisSym := NoSymbol,
+                fakeTailJumpParamRepl := (thisDef.symbol, initialThis.symbol))
+          }): _*) {
             val innerBody = js.Block(
               otherStats.map(genStat) :+ (if (bodyIsStat) genStat(rhs)
                                           else genExpr(rhs)))
@@ -1068,8 +1057,8 @@ abstract class GenJSCode
           else if (paramAccessorLocals contains sym) {
             paramAccessorLocals(sym).ref
           } else {
-            js.Select(genExpr(qualifier), encodeFieldSym(sym))(
-              toIRType(sym.tpe))
+            js.Select(genExpr(qualifier), encodeFieldSym(sym))(toIRType(
+              sym.tpe))
           }
 
         case Ident(name) =>
@@ -1126,15 +1115,13 @@ abstract class GenJSCode
             abort(s"Assignment to static member ${sym.fullName} not supported")
           val genLhs = lhs match {
             case Select(qualifier, _) =>
-              val ctorAssignment = (
-                currentMethodSym.isClassConstructor &&
-                  currentMethodSym.owner == qualifier.symbol &&
-                  qualifier.isInstanceOf[This]
-              )
+              val ctorAssignment = (currentMethodSym.isClassConstructor &&
+                currentMethodSym.owner == qualifier.symbol &&
+                qualifier.isInstanceOf[This])
               if (!ctorAssignment && !suspectFieldMutable(sym))
                 unexpectedMutatedFields += sym
-              js.Select(genExpr(qualifier), encodeFieldSym(sym))(
-                toIRType(sym.tpe))
+              js.Select(genExpr(qualifier), encodeFieldSym(sym))(toIRType(
+                sym.tpe))
             case _ =>
               mutatedLocalVars += sym
               js.VarRef(encodeLocalSym(sym))(toIRType(sym.tpe))
@@ -1264,8 +1251,7 @@ abstract class GenJSCode
 
           withScopedVars(
             enclosingLabelDefParams :=
-              enclosingLabelDefParams.get + (tree.symbol -> labelParamSyms)
-          ) {
+              enclosingLabelDefParams.get + (tree.symbol -> labelParamSyms)) {
             val bodyType = toIRType(tree.tpe)
             val labelIdent = encodeLabelSym(tree.symbol)
             val blockLabelIdent = freshLocalIdent()
@@ -3221,8 +3207,7 @@ abstract class GenJSCode
         nme.UNARY_+ -> js.JSUnaryOp.+,
         nme.UNARY_- -> js.JSUnaryOp.-,
         nme.UNARY_~ -> js.JSUnaryOp.~,
-        nme.UNARY_! -> js.JSUnaryOp.!
-      )
+        nme.UNARY_! -> js.JSUnaryOp.!)
 
       def unapply(name: TermName): Option[js.JSUnaryOp.Code] = map.get(name)
     }
@@ -3593,9 +3578,7 @@ abstract class GenJSCode
         sym.isAnonymousFunction,
         s"tryGenAndRecordAnonFunctionClass called with non-anonymous function $cd")
 
-      withScopedVars(
-        currentClassSym := sym
-      ) {
+      withScopedVars(currentClassSym := sym) {
         val (functionMakerBase, functionInfo, arity) =
           tryGenAndRecordAnonFunctionClassGeneric(cd) { msg => return false }
         val functionMaker = { capturedArgs: List[js.Tree] =>
@@ -3673,9 +3656,7 @@ abstract class GenJSCode
         isRawJSFunctionDef(sym),
         s"genAndRecordRawJSFunctionClass called with non-JS function $cd")
 
-      withScopedVars(
-        currentClassSym := sym
-      ) {
+      withScopedVars(currentClassSym := sym) {
         val (functionMaker, functionInfo, _) =
           tryGenAndRecordAnonFunctionClassGeneric(cd) { msg =>
             abort(
@@ -3779,20 +3760,17 @@ abstract class GenJSCode
 
         val (applyMethod, methodInfoBuilder) = withScopedVars(
           paramAccessorLocals := (paramAccessors zip ctorParamDefs).toMap,
-          tryingToGenMethodAsJSFunction := true
-        ) {
+          tryingToGenMethodAsJSFunction := true) {
           try {
-            genMethodWithInfoBuilder(applyDef).getOrElse(
-              abort(s"Oops, $applyDef did not produce a method"))
+            genMethodWithInfoBuilder(applyDef).getOrElse(abort(
+              s"Oops, $applyDef did not produce a method"))
           } catch {
             case e: CancelGenMethodAsJSFunction =>
               fail(e.getMessage)
           }
         }
 
-        withScopedVars(
-          currentMethodInfoBuilder := methodInfoBuilder
-        ) {
+        withScopedVars(currentMethodInfoBuilder := methodInfoBuilder) {
           // Fourth step: patch the body to unbox parameters and box result
 
           val js.MethodDef(_, _, params, _, body) = applyMethod

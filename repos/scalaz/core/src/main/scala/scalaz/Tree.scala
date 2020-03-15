@@ -105,8 +105,8 @@ sealed abstract class Tree[A] {
     val f = (s: Stream[Tree[A]]) => {
       Foldable[Stream].foldMap(s)((_: Tree[A]).subForest)
     }
-    Stream.iterate(Stream(this))(
-      f) takeWhile (!_.isEmpty) map (_ map (_.rootLabel))
+    Stream
+      .iterate(Stream(this))(f) takeWhile (!_.isEmpty) map (_ map (_.rootLabel))
   }
 
   /** Binds the given function across all the subtrees of this tree. */
@@ -198,8 +198,7 @@ sealed abstract class TreeInstances {
       val b = bb
       Tree.Node(
         (a.rootLabel, b.rootLabel),
-        Zip[Stream].zipWith(a.subForest, b.subForest)(zip(_, _))
-      )
+        Zip[Stream].zipWith(a.subForest, b.subForest)(zip(_, _)))
     }
   }
 

@@ -918,9 +918,8 @@ case class Base64(child: Expression)
   override def inputTypes: Seq[DataType] = Seq(BinaryType)
 
   protected override def nullSafeEval(bytes: Any): Any = {
-    UTF8String.fromBytes(
-      org.apache.commons.codec.binary.Base64
-        .encodeBase64(bytes.asInstanceOf[Array[Byte]]))
+    UTF8String.fromBytes(org.apache.commons.codec.binary.Base64.encodeBase64(
+      bytes.asInstanceOf[Array[Byte]]))
   }
 
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {

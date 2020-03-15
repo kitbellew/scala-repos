@@ -56,9 +56,8 @@ class SubquerySuite extends QueryTest with SharedSQLContext {
         "select (select a from (select 1 as a union all select 2 as a) t) as b")
         .collect()
     }
-    assert(
-      error2.getMessage.contains(
-        "more than one row returned by a subquery used as an expression"))
+    assert(error2.getMessage.contains(
+      "more than one row returned by a subquery used as an expression"))
   }
 
   test("uncorrelated scalar subquery on a DataFrame generated query") {

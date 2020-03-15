@@ -158,7 +158,9 @@ object CharPredicate {
       extends CharPredicate {
     def apply(c: Char): Boolean = {
       val mask = if (c < 64) lowMask else highMask
-      ((1L << c) & ((c - 128) >> 31) & mask) != 0L // branchless for `(c < 128) && (mask & (1L << c) != 0)`
+      (
+        (1L << c) & ((c - 128) >> 31) & mask
+      ) != 0L // branchless for `(c < 128) && (mask & (1L << c) != 0)`
     }
 
     def ++(that: CharPredicate): CharPredicate =

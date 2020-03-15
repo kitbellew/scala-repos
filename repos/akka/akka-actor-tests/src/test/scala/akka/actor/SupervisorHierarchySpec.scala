@@ -518,11 +518,10 @@ object SupervisorHierarchySpec {
 
     when(Idle) {
       case Event(Init, _) ⇒
-        hierarchy = context.watch(
-          context.actorOf(
-            Props(new Hierarchy(size, breadth, self, 0, random))
-              .withDispatcher("hierarchy"),
-            "head"))
+        hierarchy = context.watch(context.actorOf(
+          Props(new Hierarchy(size, breadth, self, 0, random))
+            .withDispatcher("hierarchy"),
+          "head"))
         setTimer("phase", StateTimeout, 5 seconds, false)
         goto(Init)
     }
@@ -833,8 +832,8 @@ class SupervisorHierarchySpec
     "restart manager and workers in AllForOne" in {
       val countDown = new CountDownLatch(4)
 
-      val boss = system.actorOf(
-        Props(new Supervisor(OneForOneStrategy()(List(classOf[Exception])))))
+      val boss = system.actorOf(Props(
+        new Supervisor(OneForOneStrategy()(List(classOf[Exception])))))
 
       val managerProps = Props(
         new CountDownActor(countDown, AllForOneStrategy()(List())))
@@ -866,11 +865,9 @@ class SupervisorHierarchySpec
           maxNrOfRetries = 1,
           withinTimeRange = 5 seconds)(List(classOf[Throwable]))
 
-        val crasher = context.watch(
-          context.actorOf(
-            Props(new CountDownActor(
-              countDownMessages,
-              SupervisorStrategy.defaultStrategy))))
+        val crasher = context.watch(context.actorOf(Props(new CountDownActor(
+          countDownMessages,
+          SupervisorStrategy.defaultStrategy))))
 
         def receive = {
           case "killCrasher" ⇒ crasher ! Kill
@@ -994,17 +991,16 @@ class SupervisorHierarchySpec
     }
 
     "survive being stressed" in {
-      system.eventStream.publish(
-        Mute(
-          EventFilter[Failure](),
-          EventFilter.warning("Failure"),
-          EventFilter[ActorInitializationException](),
-          EventFilter[NoSuchElementException]("head of empty list"),
-          EventFilter.error(start = "changing Resume into Restart"),
-          EventFilter.error(start = "changing Resume into Create"),
-          EventFilter.error(start = "changing Recreate into Create"),
-          EventFilter.warning(start = "received dead ")
-        ))
+      system.eventStream.publish(Mute(
+        EventFilter[Failure](),
+        EventFilter.warning("Failure"),
+        EventFilter[ActorInitializationException](),
+        EventFilter[NoSuchElementException]("head of empty list"),
+        EventFilter.error(start = "changing Resume into Restart"),
+        EventFilter.error(start = "changing Resume into Create"),
+        EventFilter.error(start = "changing Recreate into Create"),
+        EventFilter.warning(start = "received dead ")
+      ))
 
       val fsm = system.actorOf(
         Props(new StressTest(testActor, size = 500, breadth = 6)),

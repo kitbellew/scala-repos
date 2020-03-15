@@ -28,9 +28,8 @@ object RemoteNodeRestartGateSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(
-    debugConfig(on = false).withFallback(ConfigFactory.parseString(
-      """
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(
+    """
       akka.loglevel = INFO
       akka.remote.log-remote-lifecycle-events = INFO
       akka.remote.retry-gate-closed-for  = 1d # Keep it long
@@ -80,8 +79,8 @@ abstract class RemoteNodeRestartGateSpec
           .warning(pattern = "address is now gated", occurrences = 1)
           .intercept {
             Await.result(
-              RARP(system).provider.transport.managementCommand(
-                ForceDisassociateExplicitly(
+              RARP(system).provider.transport
+                .managementCommand(ForceDisassociateExplicitly(
                   node(second).address,
                   AssociationHandle.Unknown)),
               3.seconds)

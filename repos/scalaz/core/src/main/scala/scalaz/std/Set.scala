@@ -2,31 +2,30 @@ package scalaz
 package std
 
 trait SetInstances {
-  implicit val setInstance: Foldable[Set] with IsEmpty[Set] = new Foldable[Set]
-    with IsEmpty[Set]
-    with Foldable.FromFoldr[Set] {
-    override def length[A](fa: Set[A]) = fa.size
-    def empty[A] = Set()
-    def plus[A](a: Set[A], b: => Set[A]) = a ++ b
-    def isEmpty[A](fa: Set[A]) = fa.isEmpty
+  implicit val setInstance: Foldable[Set] with IsEmpty[Set] =
+    new Foldable[Set] with IsEmpty[Set] with Foldable.FromFoldr[Set] {
+      override def length[A](fa: Set[A]) = fa.size
+      def empty[A] = Set()
+      def plus[A](a: Set[A], b: => Set[A]) = a ++ b
+      def isEmpty[A](fa: Set[A]) = fa.isEmpty
 
-    override def toSet[A](fa: Set[A]) = fa
+      override def toSet[A](fa: Set[A]) = fa
 
-    def foldRight[A, B](fa: Set[A], z: => B)(f: (A, => B) => B) = {
-      import scala.collection.mutable.ArrayStack
-      val s = new ArrayStack[A]
-      fa.foreach(a => s += a)
-      var r = z
-      while (!s.isEmpty) {
-        // Fixes stack overflow issue (#866)
-        val w = r
-        r = f(s.pop, w)
+      def foldRight[A, B](fa: Set[A], z: => B)(f: (A, => B) => B) = {
+        import scala.collection.mutable.ArrayStack
+        val s = new ArrayStack[A]
+        fa.foreach(a => s += a)
+        var r = z
+        while (!s.isEmpty) {
+          // Fixes stack overflow issue (#866)
+          val w = r
+          r = f(s.pop, w)
+        }
+        r
       }
-      r
+      override def all[A](fa: Set[A])(f: A => Boolean) = fa forall f
+      override def any[A](fa: Set[A])(f: A => Boolean) = fa exists f
     }
-    override def all[A](fa: Set[A])(f: A => Boolean) = fa forall f
-    override def any[A](fa: Set[A])(f: A => Boolean) = fa exists f
-  }
 
   import Ordering._
 

@@ -13,8 +13,8 @@ class FutureTests extends MinimalScalaTest {
     s match {
       case "Hello" => Future { "World" }
       case "Failure" =>
-        Future.failed(
-          new RuntimeException("Expected exception; to test fault-tolerance"))
+        Future.failed(new RuntimeException(
+          "Expected exception; to test fault-tolerance"))
       case "NoReply" => Promise[String]().future
     }
 
@@ -116,10 +116,11 @@ class FutureTests extends MinimalScalaTest {
         ECNotUsed(ec =>
           f.recover({ case _ => fail("recover should not have been called") })(
             ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.recoverWith({
-          case _ => fail("flatMap should not have been called")
-        })(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.recoverWith({
+            case _ => fail("flatMap should not have been called")
+          })(ec)) eq f)
       assert(
         f.fallbackTo(f) eq f,
         "Future.fallbackTo must be the same instance as Future.fallbackTo")
@@ -148,12 +149,15 @@ class FutureTests extends MinimalScalaTest {
         f.onSuccess({
           case _ => fail("onSuccess should not have been called")
         })(ec))
-      assert(ECNotUsed(ec =>
-        f.map(_ => fail("map should not have been called"))(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.flatMap(_ => fail("flatMap should not have been called"))(ec)) eq f)
-      assert(ECNotUsed(ec =>
-        f.filter(_ => fail("filter should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.map(_ => fail("map should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.flatMap(_ => fail("flatMap should not have been called"))(ec)) eq f)
+      assert(
+        ECNotUsed(ec =>
+          f.filter(_ => fail("filter should not have been called"))(ec)) eq f)
       assert(
         ECNotUsed(ec =>
           f.collect({ case _ => fail("collect should not have been called") })(
@@ -335,13 +339,11 @@ class FutureTests extends MinimalScalaTest {
       val future2 = future1 map (_ / 0)
       val future3 = future2 map (_.toString)
 
-      val future4 = future1 recover {
-        case e: ArithmeticException => 0
-      } map (_.toString)
+      val future4 =
+        future1 recover { case e: ArithmeticException => 0 } map (_.toString)
 
-      val future5 = future2 recover {
-        case e: ArithmeticException => 0
-      } map (_.toString)
+      val future5 =
+        future2 recover { case e: ArithmeticException => 0 } map (_.toString)
 
       val future6 = future2 recover { case e: MatchError => 0 } map (_.toString)
 

@@ -29,8 +29,8 @@ class CookieTest extends WordSpec with Matchers with BeforeAndAfterAll {
 
     "have a maxAge when the value is >= 0" in {
       val cookie = Cookie("cookiename", "value1")(CookieOptions(maxAge = 86700))
-      val dateString = Cookie.formatExpires(
-        new Date(Cookie.currentTimeMillis + 86700000))
+      val dateString = Cookie.formatExpires(new Date(
+        Cookie.currentTimeMillis + 86700000))
       cookie.toCookieString should equal(
         "cookiename=value1; Expires=" + dateString)
     }
@@ -54,15 +54,13 @@ class CookieTest extends WordSpec with Matchers with BeforeAndAfterAll {
     }
 
     "render a cookie with all options set" in {
-      val cookie = Cookie("cookiename", "value3")(
-        CookieOptions(
-          domain = "nowhere.com",
-          path = "path/to/page",
-          comment = "the cookie thingy comment",
-          maxAge = 15500,
-          secure = true,
-          httpOnly = true
-        ))
+      val cookie = Cookie("cookiename", "value3")(CookieOptions(
+        domain = "nowhere.com",
+        path = "path/to/page",
+        comment = "the cookie thingy comment",
+        maxAge = 15500,
+        secure = true,
+        httpOnly = true))
       val d = new Date(Cookie.currentTimeMillis + 15500 * 1000)
       cookie.toCookieString should
         equal(

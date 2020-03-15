@@ -53,8 +53,8 @@ class IdeClientSbt(
         val sourceToForm =
           context.getProjectDescriptor.dataManager.getSourceToFormMap
         val sourcePath = FileUtil.toCanonicalPath(source.getPath)
-        Option(sourceToForm.getState(sourcePath))
-          .map(_.asScala.map(new File(_)))
+        Option(sourceToForm.getState(sourcePath)).map(_.asScala.map(new File(
+          _)))
       }
 
       boundForms.foreach { forms =>

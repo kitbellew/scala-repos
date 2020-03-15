@@ -58,11 +58,9 @@ class Range(val start: Int, val end: Int, val step: Int)
   // should not trigger an exception. So the calculation is delayed,
   // which means it will not fail fast for those cases where failing was
   // correct.
-  override final val isEmpty = (
-    (start > end && step > 0)
-      || (start < end && step < 0)
-      || (start == end && !isInclusive)
-  )
+  override final val isEmpty = ((start > end && step > 0)
+    || (start < end && step < 0)
+    || (start == end && !isInclusive))
   final val numRangeElements: Int = {
     if (step == 0) throw new IllegalArgumentException("step cannot be 0.")
     else if (isEmpty) 0
@@ -147,11 +145,9 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return   a new range consisting of `n` first elements.
     */
   final override def take(n: Int): Range =
-    (
-      if (n <= 0 || isEmpty) newEmptyRange(start)
-      else if (n >= numRangeElements) this
-      else new Range.Inclusive(start, locationAfterN(n - 1), step)
-    )
+    (if (n <= 0 || isEmpty) newEmptyRange(start)
+     else if (n >= numRangeElements) this
+     else new Range.Inclusive(start, locationAfterN(n - 1), step))
 
   /** Creates a new range containing all the elements of this range except the first `n` elements.
     *
@@ -161,11 +157,9 @@ class Range(val start: Int, val end: Int, val step: Int)
     *  @return   a new range consisting of all the elements of this range except `n` first elements.
     */
   final override def drop(n: Int): Range =
-    (
-      if (n <= 0 || isEmpty) this
-      else if (n >= numRangeElements) newEmptyRange(end)
-      else copy(locationAfterN(n), end, step)
-    )
+    (if (n <= 0 || isEmpty) this
+     else if (n >= numRangeElements) newEmptyRange(end)
+     else copy(locationAfterN(n), end, step))
 
   /** Creates a new range containing all the elements of this range except the last one.
     *
@@ -205,10 +199,8 @@ class Range(val start: Int, val end: Int, val step: Int)
   // Tests whether a number is within the endpoints, without testing
   // whether it is a member of the sequence (i.e. when step > 1.)
   private def isWithinBoundaries(elem: Int) =
-    !isEmpty && (
-      (step > 0 && start <= elem && elem <= last) ||
-        (step < 0 && last <= elem && elem <= start)
-    )
+    !isEmpty && ((step > 0 && start <= elem && elem <= last) ||
+      (step < 0 && last <= elem && elem <= start))
   // Methods like apply throw exceptions on invalid n, but methods like take/drop
   // are forgiving: therefore the checks are with the methods.
   private def locationAfterN(n: Int) = start + (step * n)
@@ -273,7 +265,9 @@ class Range(val start: Int, val end: Int, val step: Int)
       case x: Range =>
         (x canEqual this) && (length == x.length) && (
           isEmpty || // all empty sequences are equal
-            (start == x.start && last == x.last) // same length and same endpoints implies equality
+            (
+              start == x.start && last == x.last
+            ) // same length and same endpoints implies equality
         )
       case _ =>
         super.equals(other)
@@ -314,11 +308,9 @@ object Range {
     if (step == 0) throw new IllegalArgumentException("step cannot be 0.")
 
     val isEmpty =
-      (
-        if (start == end) !isInclusive
-        else if (start < end) step < 0
-        else step > 0
-      )
+      (if (start == end) !isInclusive
+       else if (start < end) step < 0
+       else step > 0)
     if (isEmpty) 0
     else {
       // Counts with Longs so we can recognize too-large ranges.
@@ -409,10 +401,8 @@ object Range {
       BigDecimal(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
 
     def inclusive(start: Double, end: Double, step: Double) =
-      BigDecimal.inclusive(
-        toBD(start),
-        toBD(end),
-        toBD(step)) mapRange (_.doubleValue)
+      BigDecimal
+        .inclusive(toBD(start), toBD(end), toBD(step)) mapRange (_.doubleValue)
   }
 
   // As there is no appealing default step size for not-really-integral ranges,

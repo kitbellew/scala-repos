@@ -52,9 +52,10 @@ object MacroUtil {
           .getPsiFile(context.getEditor.getDocument))
         .map(_.findElementAt(context.getStartOffset))
         .filter(_ != null)
-        .map(ScalaPsiElementFactory
-          .createExpressionFromText(result.toString, _)
-          .asInstanceOf[ScExpression])
+        .map(
+          ScalaPsiElementFactory
+            .createExpressionFromText(result.toString, _)
+            .asInstanceOf[ScExpression])
     } catch { case _: IncorrectOperationException => None }
 
   def getComponentFromArrayType(scType: ScType): Option[ScType] =
@@ -85,9 +86,9 @@ object MacroUtil {
   }
 
   def getPrimaryConbstructorParams(context: ExpressionContext) =
-    Option(
-      PsiTreeUtil
-        .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
+    Option(PsiTreeUtil.getParentOfType(
+      context.getPsiElementAtStartOffset,
+      classOf[PsiClass]))
       .map {
         case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
         case other         => other

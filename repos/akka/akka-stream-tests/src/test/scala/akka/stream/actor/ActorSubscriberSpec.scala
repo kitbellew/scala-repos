@@ -81,9 +81,8 @@ object ActorSubscriberSpec {
 
     val router = {
       val routees = Vector.fill(3) {
-        ActorRefRoutee(
-          context.actorOf(
-            Props[Worker].withDispatcher(context.props.dispatcher)))
+        ActorRefRoutee(context.actorOf(
+          Props[Worker].withDispatcher(context.props.dispatcher)))
       }
       Router(RoundRobinRoutingLogic(), routees)
     }
@@ -121,8 +120,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
   "An ActorSubscriber" must {
 
     "receive requested elements" in {
-      val ref = Source(List(1, 2, 3))
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(List(1, 2, 3)).runWith(Sink.actorSubscriber(
+        manualSubscriberProps(testActor)))
       expectNoMsg(200.millis)
       ref ! "ready" // requesting 2
       expectMsg(OnNext(1))
@@ -162,8 +161,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
     }
 
     "not deliver more after cancel" in {
-      val ref = Source(1 to 5)
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(1 to 5).runWith(Sink.actorSubscriber(
+        manualSubscriberProps(testActor)))
       ref ! "ready"
       expectMsg(OnNext(1))
       expectMsg(OnNext(2))
@@ -172,8 +171,8 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
     }
 
     "terminate after cancel" in {
-      val ref = Source(1 to 5)
-        .runWith(Sink.actorSubscriber(manualSubscriberProps(testActor)))
+      val ref = Source(1 to 5).runWith(Sink.actorSubscriber(
+        manualSubscriberProps(testActor)))
       watch(ref)
       ref ! "requestAndCancel"
       expectTerminated(ref, 200.millis)
@@ -194,19 +193,17 @@ class ActorSubscriberSpec extends AkkaSpec with ImplicitSender {
     }
 
     "work with OneByOneRequestStrategy" in {
-      Source(1 to 17).runWith(
-        Sink.actorSubscriber(
-          requestStrategySubscriberProps(testActor, OneByOneRequestStrategy)))
+      Source(1 to 17).runWith(Sink.actorSubscriber(
+        requestStrategySubscriberProps(testActor, OneByOneRequestStrategy)))
       for (n ← 1 to 17) expectMsg(OnNext(n))
       expectMsg(OnComplete)
     }
 
     "work with WatermarkRequestStrategy" in {
-      Source(1 to 17).runWith(
-        Sink.actorSubscriber(
-          requestStrategySubscriberProps(
-            testActor,
-            WatermarkRequestStrategy(highWatermark = 10))))
+      Source(1 to 17).runWith(Sink.actorSubscriber(
+        requestStrategySubscriberProps(
+          testActor,
+          WatermarkRequestStrategy(highWatermark = 10))))
       for (n ← 1 to 17) expectMsg(OnNext(n))
       expectMsg(OnComplete)
     }

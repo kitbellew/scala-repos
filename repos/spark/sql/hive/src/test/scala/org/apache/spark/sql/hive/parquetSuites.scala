@@ -242,16 +242,14 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField < 8"),
-      Row(6, "str6") :: Row(7, "str7") :: Nil
-    )
+      Row(6, "str6") :: Row(7, "str7") :: Nil)
     // Insert overwrite.
     sql(
       "insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
-      Row(3, "str3") :: Row(4, "str4") :: Nil
-    )
+      Row(3, "str3") :: Row(4, "str4") :: Nil)
     dropTables("test_insert_parquet")
 
     // Create it again.
@@ -273,15 +271,13 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
-      Row(3, "str3") :: Row(4, "str4") :: Nil
-    )
+      Row(3, "str3") :: Row(4, "str4") :: Nil)
     // Insert into the table.
     sql("insert into table test_insert_parquet select a, b from jt")
     checkAnswer(
       sql(s"SELECT intField, stringField FROM test_insert_parquet"),
       (1 to 10).map(i => Row(i, s"str$i")) ++ (1 to 4).map(i =>
-        Row(i, s"str$i"))
-    )
+        Row(i, s"str$i")))
     dropTables("test_insert_parquet")
   }
 
@@ -298,8 +294,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
       checkAnswer(
         sql(s"SELECT a, b FROM test_parquet_ctas WHERE a = 1"),
-        Seq(Row(1, "str1"))
-      )
+        Seq(Row(1, "str1")))
 
       table("test_parquet_ctas").queryExecution.optimizedPlan match {
         case LogicalRelation(_: HadoopFsRelation, _, _) => // OK
@@ -338,8 +333,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       checkAnswer(
         sql(
           "SELECT intField FROM test_insert_parquet WHERE test_insert_parquet.intField > 5"),
-        sql("SELECT a FROM jt WHERE jt.a > 5").collect()
-      )
+        sql("SELECT a FROM jt WHERE jt.a > 5").collect())
     }
   }
 
@@ -370,8 +364,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
       checkAnswer(
         sql("SELECT int_array FROM test_insert_parquet"),
-        sql("SELECT a FROM jt_array").collect()
-      )
+        sql("SELECT a FROM jt_array").collect())
     }
   }
 
@@ -641,10 +634,7 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
       .mode(SaveMode.Overwrite)
       .format("parquet")
       .saveAsTable("spark_6016_fix")
-    checkAnswer(
-      sql("select * from spark_6016_fix"),
-      (1 to 10).map(i => Row(i))
-    )
+    checkAnswer(sql("select * from spark_6016_fix"), (1 to 10).map(i => Row(i)))
 
     // Create a DataFrame with four partitions. So, the created table will have four parquet files.
     val df2 = (1 to 10).map(Tuple1(_)).toDF("b").coalesce(4)
@@ -656,10 +646,7 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
     // since the new table has four parquet files, we are trying to read new footers from two files
     // and then merge metadata in footers of these four (two outdated ones and two latest one),
     // which will cause an error.
-    checkAnswer(
-      sql("select * from spark_6016_fix"),
-      (1 to 10).map(i => Row(i))
-    )
+    checkAnswer(sql("select * from spark_6016_fix"), (1 to 10).map(i => Row(i)))
 
     sql("drop table spark_6016_fix")
   }
@@ -851,13 +838,11 @@ abstract class ParquetPartitioningTest
     test(s"ordering of the partitioning columns $table") {
       checkAnswer(
         sql(s"SELECT p, stringField FROM $table WHERE p = 1"),
-        Seq.fill(10)(Row(1, "part-1"))
-      )
+        Seq.fill(10)(Row(1, "part-1")))
 
       checkAnswer(
         sql(s"SELECT stringField, p FROM $table WHERE p = 1"),
-        Seq.fill(10)(Row("part-1", 1))
-      )
+        Seq.fill(10)(Row("part-1", 1)))
     }
 
     test(s"project the partitioning column $table") {

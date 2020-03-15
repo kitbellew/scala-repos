@@ -165,10 +165,9 @@ abstract class AbstractTestRunConfiguration(
     setTestArgs(configuration.getTestArgs)
     setModule(configuration.getModule)
     val workDir = configuration.getWorkingDirectory
-    setWorkingDirectory(
-      if (workDir != null && !workDir.trim.isEmpty) { workDir }
-      else { provideDefaultWorkingDir }
-    )
+    setWorkingDirectory(if (workDir != null && !workDir.trim.isEmpty) {
+      workDir
+    } else { provideDefaultWorkingDir })
 
     setTestName(configuration.getTestName)
     setEnvVariables(configuration.getEnvironmentVariables)
@@ -318,8 +317,9 @@ abstract class AbstractTestRunConfiguration(
         val clazz = getClazz(getTestClassPath, withDependencies = false)
         if (clazz == null || isInvalidSuite(clazz)) {
           throw new RuntimeConfigurationException(
-            "No Suite Class is found for Class %s in module %s"
-              .format(getTestClassPath, getModule.getName))
+            "No Suite Class is found for Class %s in module %s".format(
+              getTestClassPath,
+              getModule.getName))
         }
         if (!ScalaPsiUtil.cachedDeepIsInheritor(clazz, suiteClass)) {
           throw new RuntimeConfigurationException(
@@ -654,8 +654,8 @@ abstract class AbstractTestRunConfiguration(
     testName = Option(JDOMExternalizer.readString(element, "testName"))
       .getOrElse("")
     testKind = TestKind.fromString(
-      Option(JDOMExternalizer.readString(element, "testKind"))
-        .getOrElse("Class"))
+      Option(JDOMExternalizer.readString(element, "testKind")).getOrElse(
+        "Class"))
     showProgressMessages = JDOMExternalizer.readBoolean(
       element,
       "showProgressMessages")

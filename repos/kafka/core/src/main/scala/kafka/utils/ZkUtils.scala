@@ -354,9 +354,10 @@ class ZkUtils(
     val brokerInfo = Json.encode(jsonMap)
     registerBrokerInZk(brokerIdPath, brokerInfo)
 
-    info(
-      "Registered broker %d at path %s with addresses: %s"
-        .format(id, brokerIdPath, advertisedEndpoints.mkString(",")))
+    info("Registered broker %d at path %s with addresses: %s".format(
+      id,
+      brokerIdPath,
+      advertisedEndpoints.mkString(",")))
   }
 
   private def registerBrokerInZk(brokerIdPath: String, brokerInfo: String) {
@@ -388,13 +389,12 @@ class ZkUtils(
   def leaderAndIsrZkData(
       leaderAndIsr: LeaderAndIsr,
       controllerEpoch: Int): String = {
-    Json.encode(
-      Map(
-        "version" -> 1,
-        "leader" -> leaderAndIsr.leader,
-        "leader_epoch" -> leaderAndIsr.leaderEpoch,
-        "controller_epoch" -> controllerEpoch,
-        "isr" -> leaderAndIsr.isr))
+    Json.encode(Map(
+      "version" -> 1,
+      "leader" -> leaderAndIsr.leader,
+      "leader_epoch" -> leaderAndIsr.leaderEpoch,
+      "controller_epoch" -> controllerEpoch,
+      "isr" -> leaderAndIsr.isr))
   }
 
   /**
@@ -759,9 +759,9 @@ class ZkUtils(
           }
         case None => Map[Int, Seq[Int]]()
       }
-      debug(
-        "Partition map for /brokers/topics/%s is %s"
-          .format(topic, partitionMap))
+      debug("Partition map for /brokers/topics/%s is %s".format(
+        topic,
+        partitionMap))
       ret += (topic -> partitionMap)
     }
     ret
@@ -772,9 +772,9 @@ class ZkUtils(
     getPartitionAssignmentForTopics(topics).map { topicAndPartitionMap =>
       val topic = topicAndPartitionMap._1
       val partitionMap = topicAndPartitionMap._2
-      debug(
-        "partition assignment of /brokers/topics/%s is %s"
-          .format(topic, partitionMap))
+      debug("partition assignment of /brokers/topics/%s is %s".format(
+        topic,
+        partitionMap))
       (topic -> partitionMap.keys.toSeq.sortWith((s, t) => s < t))
     }
   }
@@ -842,14 +842,13 @@ class ZkUtils(
 
   def getPartitionReassignmentZkData(
       partitionsToBeReassigned: Map[TopicAndPartition, Seq[Int]]): String = {
-    Json.encode(
-      Map(
-        "version" -> 1,
-        "partitions" -> partitionsToBeReassigned.map(e =>
-          Map(
-            "topic" -> e._1.topic,
-            "partition" -> e._1.partition,
-            "replicas" -> e._2))))
+    Json.encode(Map(
+      "version" -> 1,
+      "partitions" -> partitionsToBeReassigned.map(e =>
+        Map(
+          "topic" -> e._1.topic,
+          "partition" -> e._1.partition,
+          "replicas" -> e._2))))
   }
 
   def updatePartitionReassignmentData(
@@ -869,9 +868,9 @@ class ZkUtils(
         } catch {
           case nne: ZkNoNodeException =>
             createPersistentPath(zkPath, jsonData)
-            debug(
-              "Created path %s with %s for partition reassignment"
-                .format(zkPath, jsonData))
+            debug("Created path %s with %s for partition reassignment".format(
+              zkPath,
+              jsonData))
           case e2: Throwable => throw new AdminOperationException(e2.toString)
         }
     }
@@ -1159,9 +1158,9 @@ class ZKCheckedEphemeral(
           error("Invalid ACL")
           setResult(Code.INVALIDACL)
         case _ =>
-          warn(
-            "ZooKeeper event while creating registration node: %s %s"
-              .format(path, Code.get(rc)))
+          warn("ZooKeeper event while creating registration node: %s %s".format(
+            path,
+            Code.get(rc)))
           setResult(Code.get(rc))
       }
     }
@@ -1191,9 +1190,9 @@ class ZKCheckedEphemeral(
           error("Invalid ACL")
           setResult(Code.INVALIDACL)
         case _ =>
-          warn(
-            "ZooKeeper event while getting znode data: %s %s"
-              .format(path, Code.get(rc)))
+          warn("ZooKeeper event while getting znode data: %s %s".format(
+            path,
+            Code.get(rc)))
           setResult(Code.get(rc))
       }
     }

@@ -45,10 +45,9 @@ object Producer2FlatMapOperation {
                   wrapper.asInstanceOf[OnlineServiceFactory[Any, Any]])
                 .asInstanceOf[FlatMapOperation[Any, Any]]
             case OptionMappedProducer(_, op) =>
-              acc.andThen(
-                FlatMapOperation[Any, Any](
-                  op.andThen(_.iterator)
-                    .asInstanceOf[Any => TraversableOnce[Any]]))
+              acc.andThen(FlatMapOperation[Any, Any](
+                op.andThen(_.iterator)
+                  .asInstanceOf[Any => TraversableOnce[Any]]))
             case FlatMappedProducer(_, op) =>
               acc.andThen(
                 FlatMapOperation(op).asInstanceOf[FlatMapOperation[Any, Any]])

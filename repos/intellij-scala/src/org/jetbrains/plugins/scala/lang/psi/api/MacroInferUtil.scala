@@ -110,13 +110,12 @@ object MacroInferUtil {
                         case _                                 => false
                       }
                       if (!elem.isDefined) return None
-                      Some(
-                        ScParameterizedType(
-                          ScProjectionType(
-                            ScDesignatorType(obj),
-                            elem.get.asInstanceOf[PsiNamedElement],
-                            superReference = false),
-                          Seq(productLikeType, repr)))
+                      Some(ScParameterizedType(
+                        ScProjectionType(
+                          ScDesignatorType(obj),
+                          elem.get.asInstanceOf[PsiNamedElement],
+                          superReference = false),
+                        Seq(productLikeType, repr)))
                     case _ => None
                   }
                 case _ => None

@@ -104,15 +104,13 @@ class MetastoreDataSourcesSuite
            |)
          """.stripMargin)
 
-      val innerStruct = StructType(
-        Seq(StructField(
-          "=",
-          ArrayType(StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
+      val innerStruct = StructType(Seq(StructField(
+        "=",
+        ArrayType(StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
 
-      val expectedSchema = StructType(
-        Seq(
-          StructField("<d>", innerStruct, true),
-          StructField("b", StringType, true)))
+      val expectedSchema = StructType(Seq(
+        StructField("<d>", innerStruct, true),
+        StructField("b", StringType, true)))
 
       assert(expectedSchema === table("jsonTable").schema)
 
@@ -167,11 +165,9 @@ class MetastoreDataSourcesSuite
   test("check change without refresh") {
     withTempPath { tempDir =>
       withTable("jsonTable") {
-        (("a", "b") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a", "b") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         sql(s"""CREATE TABLE jsonTable
              |USING org.apache.spark.sql.json
@@ -183,11 +179,9 @@ class MetastoreDataSourcesSuite
         checkAnswer(sql("SELECT * FROM jsonTable"), Row("a", "b"))
 
         Utils.deleteRecursively(tempDir)
-        (("a1", "b1", "c1") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a1", "b1", "c1") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         // Schema is cached so the new column does not show. The updated values in existing columns
         // will show.
@@ -203,11 +197,9 @@ class MetastoreDataSourcesSuite
 
   test("drop, change, recreate") {
     withTempPath { tempDir =>
-      (("a", "b") :: Nil)
-        .toDF()
-        .toJSON
-        .rdd
-        .saveAsTextFile(tempDir.getCanonicalPath)
+      (
+        ("a", "b") :: Nil
+      ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
       withTable("jsonTable") {
         sql(s"""CREATE TABLE jsonTable
@@ -220,11 +212,9 @@ class MetastoreDataSourcesSuite
         checkAnswer(sql("SELECT * FROM jsonTable"), Row("a", "b"))
 
         Utils.deleteRecursively(tempDir)
-        (("a", "b", "c") :: Nil)
-          .toDF()
-          .toJSON
-          .rdd
-          .saveAsTextFile(tempDir.getCanonicalPath)
+        (
+          ("a", "b", "c") :: Nil
+        ).toDF().toJSON.rdd.saveAsTextFile(tempDir.getCanonicalPath)
 
         sql("DROP TABLE jsonTable")
 
@@ -781,9 +771,8 @@ class MetastoreDataSourcesSuite
 
       val actualPartitionColumns = StructType((0 until numPartCols).map {
         index =>
-          df.schema(
-            metastoreTable.properties(
-              s"spark.sql.sources.schema.partCol.$index"))
+          df.schema(metastoreTable.properties(
+            s"spark.sql.sources.schema.partCol.$index"))
       })
       // Make sure partition columns are correctly stored in metastore.
       assert(
@@ -833,9 +822,8 @@ class MetastoreDataSourcesSuite
 
       val actualBucketByColumns = StructType((0 until numBucketCols).map {
         index =>
-          df.schema(
-            metastoreTable.properties(
-              s"spark.sql.sources.schema.bucketCol.$index"))
+          df.schema(metastoreTable.properties(
+            s"spark.sql.sources.schema.bucketCol.$index"))
       })
       // Make sure bucketBy columns are correctly stored in metastore.
       assert(

@@ -150,12 +150,11 @@ private[ml] object RandomForest extends Logging {
     // At first, all the rows belong to the root nodes (node Id == 1).
     val nodeIdCache =
       if (strategy.useNodeIdCache) {
-        Some(
-          NodeIdCache.init(
-            data = baggedInput,
-            numTrees = numTrees,
-            checkpointInterval = strategy.checkpointInterval,
-            initVal = 1))
+        Some(NodeIdCache.init(
+          data = baggedInput,
+          numTrees = numTrees,
+          checkpointInterval = strategy.checkpointInterval,
+          initVal = 1))
       } else { None }
 
     // FIFO queue of nodes to train: (treeIndex, node)
@@ -632,18 +631,16 @@ private[ml] object RandomForest extends Logging {
               (LearningNode.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
             val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
             val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
-            node.leftChild = Some(
-              LearningNode(
-                LearningNode.leftChildIndex(nodeIndex),
-                leftChildIsLeaf,
-                ImpurityStats.getEmptyImpurityStats(
-                  stats.leftImpurityCalculator)))
-            node.rightChild = Some(
-              LearningNode(
-                LearningNode.rightChildIndex(nodeIndex),
-                rightChildIsLeaf,
-                ImpurityStats.getEmptyImpurityStats(
-                  stats.rightImpurityCalculator)))
+            node.leftChild = Some(LearningNode(
+              LearningNode.leftChildIndex(nodeIndex),
+              leftChildIsLeaf,
+              ImpurityStats.getEmptyImpurityStats(
+                stats.leftImpurityCalculator)))
+            node.rightChild = Some(LearningNode(
+              LearningNode.rightChildIndex(nodeIndex),
+              rightChildIsLeaf,
+              ImpurityStats.getEmptyImpurityStats(
+                stats.rightImpurityCalculator)))
 
             if (nodeIdCache.nonEmpty) {
               val nodeIndexUpdater = NodeIndexUpdater(

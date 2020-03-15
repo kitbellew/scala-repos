@@ -100,18 +100,13 @@ class ConnectionManagerTest extends FunSuite with MockitoSugar {
 
   // Note: by way of the codec, this reply is already taken care of.
   test("terminate http/1.1 connections without content length") {
-    perform(
-      makeRequest(Version.Http11),
-      makeResponse(Version.Http11),
-      true
-    )
+    perform(makeRequest(Version.Http11), makeResponse(Version.Http11), true)
   }
 
   test("terminate http/1.1 connections with Connection: close") {
     perform(
       makeRequest(Version.Http11, "Connection" -> "close"),
       makeResponse(Version.Http11),
-      true
-    )
+      true)
   }
 }

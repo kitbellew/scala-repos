@@ -29,9 +29,8 @@ private[http] class FrameEventRenderer
           ctx.push(renderStart(start))
 
         case f: FrameData ⇒
-          ctx.fail(
-            new IllegalStateException(
-              "unexpected FrameData (need FrameStart first)"))
+          ctx.fail(new IllegalStateException(
+            "unexpected FrameData (need FrameStart first)"))
       }
   }
 
@@ -57,9 +56,8 @@ private[http] class FrameEventRenderer
             }
 
           case f: FrameStart ⇒
-            ctx.fail(
-              new IllegalStateException(
-                "unexpected FrameStart (need more FrameData first)"))
+            ctx.fail(new IllegalStateException(
+              "unexpected FrameStart (need more FrameData first)"))
         }
     }
 

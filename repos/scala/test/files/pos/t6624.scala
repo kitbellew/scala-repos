@@ -1,8 +1,6 @@
 sealed trait KList[+M[_]]
 
-case class KCons[M[_], +T <: KList[M]](
-    tail: T
-) extends KList[M]
+case class KCons[M[_], +T <: KList[M]](tail: T) extends KList[M]
 
 case class KNil[M[_]]() extends KList[M]
 

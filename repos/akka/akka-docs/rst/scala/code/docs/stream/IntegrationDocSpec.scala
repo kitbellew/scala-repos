@@ -205,16 +205,15 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     sendEmails.run()
     //#external-service-mapAsyncUnordered
 
-    probe.receiveN(7).toSet should be(
-      Set(
-        "rolandkuhn@somewhere.com",
-        "patriknw@somewhere.com",
-        "bantonsson@somewhere.com",
-        "drewhk@somewhere.com",
-        "ktosopl@somewhere.com",
-        "mmartynas@somewhere.com",
-        "akkateam@somewhere.com"
-      ))
+    probe.receiveN(7).toSet should be(Set(
+      "rolandkuhn@somewhere.com",
+      "patriknw@somewhere.com",
+      "bantonsson@somewhere.com",
+      "drewhk@somewhere.com",
+      "ktosopl@somewhere.com",
+      "mmartynas@somewhere.com",
+      "akkateam@somewhere.com"
+    ))
   }
 
   "careful managed blocking with mapAsync" in {
@@ -243,16 +242,15 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     sendTextMessages.run()
     //#blocking-mapAsync
 
-    probe.receiveN(7).toSet should be(
-      Set(
-        "rolandkuhn".hashCode.toString,
-        "patriknw".hashCode.toString,
-        "bantonsson".hashCode.toString,
-        "drewhk".hashCode.toString,
-        "ktosopl".hashCode.toString,
-        "mmartynas".hashCode.toString,
-        "akkateam".hashCode.toString
-      ))
+    probe.receiveN(7).toSet should be(Set(
+      "rolandkuhn".hashCode.toString,
+      "patriknw".hashCode.toString,
+      "bantonsson".hashCode.toString,
+      "drewhk".hashCode.toString,
+      "ktosopl".hashCode.toString,
+      "mmartynas".hashCode.toString,
+      "akkateam".hashCode.toString
+    ))
   }
 
   "careful managed blocking with map" in {
@@ -325,8 +323,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system)
-        .withInputBuffer(initialSize = 4, maxSize = 4))
+      ActorMaterializerSettings(system).withInputBuffer(
+        initialSize = 4,
+        maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })
@@ -356,8 +355,9 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val service = new SometimesSlowService
 
     implicit val materializer = ActorMaterializer(
-      ActorMaterializerSettings(system)
-        .withInputBuffer(initialSize = 4, maxSize = 4))
+      ActorMaterializerSettings(system).withInputBuffer(
+        initialSize = 4,
+        maxSize = 4))
 
     Source(List("a", "B", "C", "D", "e", "F", "g", "H", "i", "J"))
       .map(elem => { println(s"before: $elem"); elem })
@@ -365,18 +365,17 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       .runForeach(elem => println(s"after: $elem"))
     //#sometimes-slow-mapAsyncUnordered
 
-    probe.receiveN(10).toSet should be(
-      Set(
-        "after: A",
-        "after: B",
-        "after: C",
-        "after: D",
-        "after: E",
-        "after: F",
-        "after: G",
-        "after: H",
-        "after: I",
-        "after: J"))
+    probe.receiveN(10).toSet should be(Set(
+      "after: A",
+      "after: B",
+      "after: C",
+      "after: D",
+      "after: E",
+      "after: F",
+      "after: G",
+      "after: H",
+      "after: I",
+      "after: J"))
   }
 
 }

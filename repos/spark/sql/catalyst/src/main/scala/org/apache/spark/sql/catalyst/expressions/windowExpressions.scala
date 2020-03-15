@@ -519,8 +519,9 @@ object SizeBasedWindowFunction {
   *
   * This documentation has been based upon similar documentation for the Hive and Presto projects.
   */
-@ExpressionDescription(usage =
-  """_FUNC_() - The ROW_NUMBER() function assigns a unique, sequential number to
+@ExpressionDescription(
+  usage =
+    """_FUNC_() - The ROW_NUMBER() function assigns a unique, sequential number to
      each row, starting with one, according to the ordering of rows within
      the window partition.""")
 case class RowNumber() extends RowNumberLike {
@@ -630,16 +631,14 @@ case class NTile(buckets: Expression)
     bucket,
     bucketThreshold,
     bucketSize,
-    bucketsWithPadding
-  )
+    bucketsWithPadding)
 
   override val initialValues = Seq(
     zero,
     zero,
     zero,
     Cast(Divide(n, buckets), IntegerType),
-    Cast(Remainder(n, buckets), IntegerType)
-  )
+    Cast(Remainder(n, buckets), IntegerType))
 
   override val updateExpressions = Seq(
     Add(rowNumber, one),
@@ -775,8 +774,9 @@ case class DenseRank(children: Seq[Expression]) extends RankLike {
   *                 change in rank. This is an internal parameter and will be assigned by the
   *                 Analyser.
   */
-@ExpressionDescription(usage =
-  """_FUNC_() - PERCENT_RANK() The PercentRank function computes the percentage
+@ExpressionDescription(
+  usage =
+    """_FUNC_() - PERCENT_RANK() The PercentRank function computes the percentage
      ranking of a value in a group of values.""")
 case class PercentRank(children: Seq[Expression])
     extends RankLike

@@ -71,10 +71,10 @@ private[ml] trait PredictorParams
   *            parameter to specify the concrete type for the corresponding model.
   */
 @DeveloperApi
-abstract class Predictor[
-    FeaturesType,
-    Learner <: Predictor[FeaturesType, Learner, M],
-    M <: PredictionModel[FeaturesType, M]]
+abstract class Predictor[FeaturesType, Learner <: Predictor[
+  FeaturesType,
+  Learner,
+  M], M <: PredictionModel[FeaturesType, M]]
     extends Estimator[M]
     with PredictorParams {
 

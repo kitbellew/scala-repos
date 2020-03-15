@@ -109,8 +109,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
           val keyIndex = keyMap
             .find(_._1.treeEquals(col))
             .map(_._2)
-            .getOrElse(throw new AnalysisException(
-              s"${col.treeString} doesn't show up in the GROUP BY list"))
+            .getOrElse(
+              throw new AnalysisException(
+                s"${col.treeString} doesn't show up in the GROUP BY list"))
           // 0 means that the column at the given index is a grouping column, 1 means it is not,
           // so we unset the bit in bitmap.
           bitmap & ~(1 << (keys.length - 1 - keyIndex))
@@ -454,7 +455,9 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
               // adjust the fraction.
               require(
                 fraction.toDouble >= (0.0 - RandomSampler.roundingEpsilon)
-                  && fraction.toDouble <= (100.0 + RandomSampler.roundingEpsilon),
+                  && fraction.toDouble <= (
+                    100.0 + RandomSampler.roundingEpsilon
+                  ),
                 s"Sampling fraction ($fraction) must be on interval [0, 100]"
               )
               Sample(
@@ -961,14 +964,15 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
         // Handle Partition By and Order By.
         val (partitionSpec, orderSpec) = partitionClause
           .map { partitionAndOrdering =>
-            val (partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil) =
-              getClauses(
-                Seq(
-                  "TOK_DISTRIBUTEBY",
-                  "TOK_ORDERBY",
-                  "TOK_SORTBY",
-                  "TOK_CLUSTERBY"),
-                partitionAndOrdering.children)
+            val (
+              partitionByClause :: orderByClause :: sortByClause :: clusterByClause :: Nil
+            ) = getClauses(
+              Seq(
+                "TOK_DISTRIBUTEBY",
+                "TOK_ORDERBY",
+                "TOK_SORTBY",
+                "TOK_CLUSTERBY"),
+              partitionAndOrdering.children)
 
             (
               partitionByClause,

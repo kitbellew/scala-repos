@@ -176,10 +176,9 @@ private[cluster] final class ClusterDaemon(settings: ClusterSettings)
   var coreSupervisor: Option[ActorRef] = None
 
   def createChildren(): Unit = {
-    coreSupervisor = Some(
-      context.actorOf(
-        Props[ClusterCoreSupervisor].withDispatcher(context.props.dispatcher),
-        name = "core"))
+    coreSupervisor = Some(context.actorOf(
+      Props[ClusterCoreSupervisor].withDispatcher(context.props.dispatcher),
+      name = "core"))
     context.actorOf(
       Props[ClusterHeartbeatReceiver].withDispatcher(context.props.dispatcher),
       name = "heartbeatReceiver")
@@ -191,12 +190,12 @@ private[cluster] final class ClusterDaemon(settings: ClusterSettings)
       coreSupervisor.foreach(_ forward msg)
     case AddOnMemberUpListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Up)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Up).withDeploy(
+          Deploy.local))
     case AddOnMemberRemovedListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Removed)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Removed).withDeploy(
+          Deploy.local))
     case PublisherCreated(publisher) ⇒
       if (settings.MetricsEnabled) {
         // metrics must be started after core/publisher to be able
@@ -234,12 +233,10 @@ private[cluster] final class ClusterCoreSupervisor
       Props[ClusterDomainEventPublisher].withDispatcher(
         context.props.dispatcher),
       name = "publisher")
-    coreDaemon = Some(
-      context.watch(
-        context.actorOf(
-          Props(classOf[ClusterCoreDaemon], publisher)
-            .withDispatcher(context.props.dispatcher),
-          name = "daemon")))
+    coreDaemon = Some(context.watch(context.actorOf(
+      Props(classOf[ClusterCoreDaemon], publisher)
+        .withDispatcher(context.props.dispatcher),
+      name = "daemon")))
     context.parent ! PublisherCreated(publisher)
   }
 
@@ -331,8 +328,11 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   val publishStatsTask: Option[Cancellable] = PublishStatsInterval match {
     case Duration.Zero | _: Duration.Infinite ⇒ None
     case d: FiniteDuration ⇒
-      Some(scheduler
-        .schedule(PeriodicTasksInitialDelay.max(d), d, self, PublishStatsTick))
+      Some(scheduler.schedule(
+        PeriodicTasksInitialDelay.max(d),
+        d,
+        self,
+        PublishStatsTick))
   }
 
   override def preStart(): Unit = {
@@ -463,17 +463,15 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           // use unique name of this actor, stopSeedNodeProcess doesn't wait for termination
           seedNodeProcessCounter += 1
           if (newSeedNodes.head == selfAddress) {
-            Some(
-              context.actorOf(
-                Props(classOf[FirstSeedNodeProcess], newSeedNodes)
-                  .withDispatcher(UseDispatcher),
-                name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
+            Some(context.actorOf(
+              Props(classOf[FirstSeedNodeProcess], newSeedNodes)
+                .withDispatcher(UseDispatcher),
+              name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
           } else {
-            Some(
-              context.actorOf(
-                Props(classOf[JoinSeedNodeProcess], newSeedNodes)
-                  .withDispatcher(UseDispatcher),
-                name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
+            Some(context.actorOf(
+              Props(classOf[JoinSeedNodeProcess], newSeedNodes)
+                .withDispatcher(UseDispatcher),
+              name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
           }
         }
     }
@@ -674,8 +672,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
         // update gossip overview
         val newOverview = localOverview copy (seen = newSeen)
-        val newGossip = localGossip copy (members = newMembers, overview =
-          newOverview) // update gossip
+        val newGossip = localGossip copy (
+          members = newMembers, overview = newOverview
+        ) // update gossip
         updateLatestGossip(newGossip)
 
         publish(latestGossip)
@@ -1076,8 +1075,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val newVersion = removed.foldLeft(localGossip.version) { (v, node) ⇒
         v.prune(VectorClock.Node(vclockName(node)))
       }
-      val newGossip = localGossip copy (members = newMembers, overview =
-        newOverview, version = newVersion)
+      val newGossip = localGossip copy (
+        members = newMembers, overview = newOverview, version = newVersion
+      )
 
       updateLatestGossip(newGossip)
 

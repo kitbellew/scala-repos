@@ -85,9 +85,8 @@ private[http] object Masking {
                 ctx.push(FrameError(p))
             }
           case _: FrameData ⇒
-            ctx.fail(
-              new IllegalStateException(
-                "unexpected FrameData (need FrameStart first)"))
+            ctx.fail(new IllegalStateException(
+              "unexpected FrameData (need FrameStart first)"))
         }
     }
     private class Running(initialMask: Int) extends State {

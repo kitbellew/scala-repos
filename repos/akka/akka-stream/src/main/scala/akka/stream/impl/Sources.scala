@@ -29,9 +29,8 @@ private[stream] object QueueSource {
 final private[stream] class QueueSource[T](
     maxBuffer: Int,
     overflowStrategy: OverflowStrategy)
-    extends GraphStageWithMaterializedValue[
-      SourceShape[T],
-      SourceQueueWithComplete[T]] {
+    extends GraphStageWithMaterializedValue[SourceShape[
+      T], SourceQueueWithComplete[T]] {
   import QueueSource._
 
   val out = Outlet[T]("queueSource.out")
@@ -54,9 +53,8 @@ final private[stream] class QueueSource[T](
       override def postStop(): Unit =
         stopCallback {
           case Offer(elem, promise) ⇒
-            promise.failure(
-              new IllegalStateException(
-                "Stream is terminated. SourceQueue is detached"))
+            promise.failure(new IllegalStateException(
+              "Stream is terminated. SourceQueue is detached"))
           case _ ⇒ // ignore
         }
 
@@ -83,8 +81,8 @@ final private[stream] class QueueSource[T](
             case Fail ⇒
               val bufferOverflowException = new BufferOverflowException(
                 s"Buffer overflow (max capacity was: $maxBuffer)!")
-              offer.promise.success(
-                QueueOfferResult.Failure(bufferOverflowException))
+              offer.promise.success(QueueOfferResult.Failure(
+                bufferOverflowException))
               completion.failure(bufferOverflowException)
               failStage(bufferOverflowException)
             case Backpressure ⇒

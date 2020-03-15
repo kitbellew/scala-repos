@@ -217,11 +217,13 @@ class MessageSerializer(val system: ExtendedActorSystem)
     cm.MetricsGossipEnvelope
       .newBuilder()
       .setFrom(addressToProto(envelope.from))
-      .setGossip(cm.MetricsGossip
-        .newBuilder()
-        .addAllAllAddresses(allAddresses.map(addressToProto(_).build()).asJava)
-        .addAllAllMetricNames(allMetricNames.asJava)
-        .addAllNodeMetrics(nodeMetrics.asJava))
+      .setGossip(
+        cm.MetricsGossip
+          .newBuilder()
+          .addAllAllAddresses(
+            allAddresses.map(addressToProto(_).build()).asJava)
+          .addAllAllMetricNames(allMetricNames.asJava)
+          .addAllNodeMetrics(nodeMetrics.asJava))
       .setReply(envelope.reply)
       .build
   }

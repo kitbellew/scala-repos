@@ -124,8 +124,7 @@ class VertexRDDImpl[VD] private[graphx] (
             other.partitionBy(this.partitioner.get),
             preservesPartitioning = true) { (partIter, msgs) =>
             partIter.map(_.minus(msgs))
-          }
-        )
+          })
     }
   }
 
@@ -142,8 +141,7 @@ class VertexRDDImpl[VD] private[graphx] (
     }
     val newPartitionsRDD = partitionsRDD.zipPartitions(
       otherPartition,
-      preservesPartitioning = true
-    ) { (thisIter, otherIter) =>
+      preservesPartitioning = true) { (thisIter, otherIter) =>
       val thisPart = thisIter.next()
       val otherPart = otherIter.next()
       Iterator(thisPart.diff(otherPart))
@@ -155,8 +153,7 @@ class VertexRDDImpl[VD] private[graphx] (
       f: (VertexId, VD, Option[VD2]) => VD3): VertexRDD[VD3] = {
     val newPartitionsRDD = partitionsRDD.zipPartitions(
       other.partitionsRDD,
-      preservesPartitioning = true
-    ) { (thisIter, otherIter) =>
+      preservesPartitioning = true) { (thisIter, otherIter) =>
       val thisPart = thisIter.next()
       val otherPart = otherIter.next()
       Iterator(thisPart.leftJoin(otherPart)(f))
@@ -178,8 +175,7 @@ class VertexRDDImpl[VD] private[graphx] (
             other.partitionBy(this.partitioner.get),
             preservesPartitioning = true) { (partIter, msgs) =>
             partIter.map(_.leftJoin(msgs)(f))
-          }
-        )
+          })
     }
   }
 
@@ -187,8 +183,7 @@ class VertexRDDImpl[VD] private[graphx] (
       f: (VertexId, VD, U) => VD2): VertexRDD[VD2] = {
     val newPartitionsRDD = partitionsRDD.zipPartitions(
       other.partitionsRDD,
-      preservesPartitioning = true
-    ) { (thisIter, otherIter) =>
+      preservesPartitioning = true) { (thisIter, otherIter) =>
       val thisPart = thisIter.next()
       val otherPart = otherIter.next()
       Iterator(thisPart.innerJoin(otherPart)(f))
@@ -209,8 +204,7 @@ class VertexRDDImpl[VD] private[graphx] (
             other.partitionBy(this.partitioner.get),
             preservesPartitioning = true) { (partIter, msgs) =>
             partIter.map(_.innerJoin(msgs)(f))
-          }
-        )
+          })
     }
   }
 

@@ -106,9 +106,9 @@ abstract class AbstractFetcherThread(
     var responseData: Map[TopicAndPartition, PD] = Map.empty
 
     try {
-      trace(
-        "Issuing to broker %d of fetch request %s"
-          .format(sourceBroker.id, fetchRequest))
+      trace("Issuing to broker %d of fetch request %s".format(
+        sourceBroker.id,
+        fetchRequest))
       responseData = fetch(fetchRequest)
     } catch {
       case t: Throwable =>
@@ -307,8 +307,8 @@ class FetcherLagMetrics(metricId: ClientIdTopicPartition)
 class FetcherLagStats(metricId: ClientIdAndBroker) {
   private val valueFactory = (k: ClientIdTopicPartition) =>
     new FetcherLagMetrics(k)
-  val stats =
-    new Pool[ClientIdTopicPartition, FetcherLagMetrics](Some(valueFactory))
+  val stats = new Pool[ClientIdTopicPartition, FetcherLagMetrics](Some(
+    valueFactory))
 
   def getFetcherLagStats(topic: String, partitionId: Int): FetcherLagMetrics = {
     stats.getAndMaybePut(

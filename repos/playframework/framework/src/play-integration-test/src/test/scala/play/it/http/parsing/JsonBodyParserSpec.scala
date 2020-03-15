@@ -25,11 +25,9 @@ object JsonBodyParserSpec extends PlaySpecification {
         bodyParser: BodyParser[A] = BodyParsers.parse.tolerantJson)(
         implicit mat: Materializer) = {
       await(
-        bodyParser(
-          FakeRequest().withHeaders(
-            contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(ByteString(json.getBytes(encoding))))
-      )
+        bodyParser(FakeRequest().withHeaders(
+          contentType.map(CONTENT_TYPE -> _).toSeq: _*))
+          .run(Source.single(ByteString(json.getBytes(encoding)))))
     }
 
     "parse JSON bodies" in new WithApplication() {

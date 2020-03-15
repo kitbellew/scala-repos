@@ -130,7 +130,7 @@ private[mllib] object RandomRDD {
       vectorSize: Int): Iterator[Vector] = {
     val generator = partition.generator.copy()
     generator.setSeed(partition.seed)
-    Iterator.fill(partition.size)(
-      new DenseVector(Array.fill(vectorSize)(generator.nextValue())))
+    Iterator.fill(partition.size)(new DenseVector(
+      Array.fill(vectorSize)(generator.nextValue())))
   }
 }

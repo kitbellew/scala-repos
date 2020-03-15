@@ -52,12 +52,11 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
         entity(as[NodeSeq]) { echoComplete }
       } ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(
-            `text/xml`,
-            `application/xml`,
-            `text/html`,
-            `application/xhtml+xml`))
+        rejection shouldEqual UnsupportedRequestContentTypeRejection(Set(
+          `text/xml`,
+          `application/xml`,
+          `text/html`,
+          `application/xhtml+xml`))
       }
       Put(
         "/",
@@ -114,12 +113,11 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
       Put("/", HttpEntity(`text/css` withCharset `UTF-8`, "<p>cool</p>")) ~> {
         entity(as[Option[NodeSeq]]) { echoComplete }
       } ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(
-            `text/xml`,
-            `application/xml`,
-            `text/html`,
-            `application/xhtml+xml`))
+        rejection shouldEqual UnsupportedRequestContentTypeRejection(Set(
+          `text/xml`,
+          `application/xml`,
+          `text/html`,
+          `application/xhtml+xml`))
       }
     }
     "properly extract with a super-unmarshaller" in {
@@ -190,34 +188,40 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
   "The 'handleWith' directive" should {
     def times2(x: Int) = x * 2
 
-    "support proper round-trip content unmarshalling/marshalling to and from a function" in (Put(
-      "/",
-      HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~> Accept(
-      `text/xxml`) ~> handleWith(times2)
-      ~> check {
-        responseEntity shouldEqual HttpEntity(`text/xxml`, "<int>84</int>")
-      })
+    "support proper round-trip content unmarshalling/marshalling to and from a function" in (
+      Put(
+        "/",
+        HttpEntity(ContentTypes.`text/html(UTF-8)`, "<int>42</int>")) ~> Accept(
+        `text/xxml`) ~> handleWith(times2)
+        ~> check {
+          responseEntity shouldEqual HttpEntity(`text/xxml`, "<int>84</int>")
+        }
+    )
 
-    "result in UnsupportedRequestContentTypeRejection rejection if there is no unmarshaller supporting the requests charset" in (Put(
-      "/",
-      HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>42</int>")) ~> Accept(
-      `text/xml`) ~> handleWith(times2)
-      ~> check {
-        rejection shouldEqual UnsupportedRequestContentTypeRejection(
-          Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
-      })
+    "result in UnsupportedRequestContentTypeRejection rejection if there is no unmarshaller supporting the requests charset" in (
+      Put(
+        "/",
+        HttpEntity(ContentTypes.`text/xml(UTF-8)`, "<int>42</int>")) ~> Accept(
+        `text/xml`) ~> handleWith(times2)
+        ~> check {
+          rejection shouldEqual UnsupportedRequestContentTypeRejection(
+            Set(ContentTypeRange(`text/xml`, iso88592), `text/html`))
+        }
+    )
 
-    "result in an UnacceptedResponseContentTypeRejection rejection if there is no marshaller supporting the requests Accept-Charset header" in (Put(
-      "/",
-      HttpEntity(
-        ContentTypes.`text/html(UTF-8)`,
-        "<int>42</int>")) ~> addHeaders(
-      Accept(`text/xxml`),
-      `Accept-Charset`(`UTF-16`)) ~>
-      handleWith(times2) ~> check {
-      rejection shouldEqual UnacceptedResponseContentTypeRejection(
-        Set(`application/xhtml+xml`, `text/xxml`))
-    })
+    "result in an UnacceptedResponseContentTypeRejection rejection if there is no marshaller supporting the requests Accept-Charset header" in (
+      Put(
+        "/",
+        HttpEntity(
+          ContentTypes.`text/html(UTF-8)`,
+          "<int>42</int>")) ~> addHeaders(
+        Accept(`text/xxml`),
+        `Accept-Charset`(`UTF-16`)) ~>
+        handleWith(times2) ~> check {
+        rejection shouldEqual UnacceptedResponseContentTypeRejection(
+          Set(`application/xhtml+xml`, `text/xxml`))
+      }
+    )
   }
 
   "The marshalling infrastructure for JSON" should {

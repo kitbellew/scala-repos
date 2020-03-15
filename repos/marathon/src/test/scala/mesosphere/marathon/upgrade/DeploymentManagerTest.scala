@@ -66,8 +66,7 @@ class DeploymentManagerTest
       AlwaysElectedLeadershipModule.forActorSystem(system),
       new InMemoryStore,
       config,
-      metrics
-    )
+      metrics)
     scheduler = mock[SchedulerActions]
     storage = mock[StorageProvider]
     appRepo = new AppRepository(
@@ -77,23 +76,20 @@ class DeploymentManagerTest
         () => AppDefinition(),
         prefix = "app:"),
       None,
-      metrics
-    )
+      metrics)
     hcManager = mock[HealthCheckManager]
   }
 
   test("deploy") {
-    val manager = TestActorRef[DeploymentManager](
-      Props(
-        classOf[DeploymentManager],
-        appRepo,
-        taskTracker,
-        taskQueue,
-        scheduler,
-        storage,
-        hcManager,
-        eventBus)
-    )
+    val manager = TestActorRef[DeploymentManager](Props(
+      classOf[DeploymentManager],
+      appRepo,
+      taskTracker,
+      taskQueue,
+      scheduler,
+      storage,
+      hcManager,
+      eventBus))
 
     val app = AppDefinition("app".toRootPath)
 
@@ -106,22 +102,19 @@ class DeploymentManagerTest
 
     awaitCond(
       manager.underlyingActor.runningDeployments.contains(plan.id),
-      5.seconds
-    )
+      5.seconds)
   }
 
   test("StopActor") {
-    val manager = TestActorRef[DeploymentManager](
-      Props(
-        classOf[DeploymentManager],
-        appRepo,
-        taskTracker,
-        taskQueue,
-        scheduler,
-        storage,
-        hcManager,
-        eventBus)
-    )
+    val manager = TestActorRef[DeploymentManager](Props(
+      classOf[DeploymentManager],
+      appRepo,
+      taskTracker,
+      taskQueue,
+      scheduler,
+      storage,
+      hcManager,
+      eventBus))
     val probe = TestProbe()
 
     probe.setAutoPilot(new AutoPilot {
@@ -141,17 +134,15 @@ class DeploymentManagerTest
   }
 
   test("Cancel deployment") {
-    val manager = TestActorRef[DeploymentManager](
-      Props(
-        classOf[DeploymentManager],
-        appRepo,
-        taskTracker,
-        taskQueue,
-        scheduler,
-        storage,
-        hcManager,
-        eventBus)
-    )
+    val manager = TestActorRef[DeploymentManager](Props(
+      classOf[DeploymentManager],
+      appRepo,
+      taskTracker,
+      taskQueue,
+      scheduler,
+      storage,
+      hcManager,
+      eventBus))
 
     implicit val timeout = Timeout(1.minute)
 

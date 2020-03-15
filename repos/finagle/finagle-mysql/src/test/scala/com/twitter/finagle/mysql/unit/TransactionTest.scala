@@ -30,12 +30,8 @@ class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
 
     Await.result(result) must equal("success")
     service.requests must equal(
-      List(
-        "START TRANSACTION",
-        sqlQuery,
-        sqlQuery,
-        "COMMIT"
-      ).map(QueryRequest(_)))
+      List("START TRANSACTION", sqlQuery, sqlQuery, "COMMIT").map(QueryRequest(
+        _)))
 
     verify(factory, times(1)).apply()
     verify(factory, times(0)).close(any[Time])
@@ -62,11 +58,7 @@ class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
     }
 
     service.requests must equal(
-      List(
-        "START TRANSACTION",
-        sqlQuery,
-        "ROLLBACK"
-      ).map(QueryRequest(_)))
+      List("START TRANSACTION", sqlQuery, "ROLLBACK").map(QueryRequest(_)))
 
     verify(factory, times(1)).apply()
     verify(factory, times(0)).close(any[Time])

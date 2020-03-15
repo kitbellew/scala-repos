@@ -98,8 +98,7 @@ class ZookeeperServerSetCluster(
       address: SocketAddress,
       endpoints: Map[String, InetSocketAddress] = Map[
         String,
-        InetSocketAddress]()
-  ): EndpointStatus = {
+        InetSocketAddress]()): EndpointStatus = {
     require(address.isInstanceOf[InetSocketAddress])
 
     serverSet.join(address.asInstanceOf[InetSocketAddress], endpoints, ALIVE)
@@ -109,8 +108,7 @@ class ZookeeperServerSetCluster(
       address: SocketAddress,
       endpoints: Map[String, InetSocketAddress] = Map[
         String,
-        InetSocketAddress]()
-  ): Unit = joinServerSet(address, endpoints)
+        InetSocketAddress]()): Unit = joinServerSet(address, endpoints)
 
   def snap: (Seq[SocketAddress], Future[Spool[Cluster.Change[SocketAddress]]]) =
     synchronized { (underlyingSet.toSeq, changes) }

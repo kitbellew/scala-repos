@@ -96,26 +96,24 @@ private[akka] object Shard {
       extractShardId: ShardRegion.ExtractShardId,
       handOffStopMessage: Any): Props = {
     if (settings.rememberEntities)
-      Props(
-        new PersistentShard(
-          typeName,
-          shardId,
-          entityProps,
-          settings,
-          extractEntityId,
-          extractShardId,
-          handOffStopMessage))
+      Props(new PersistentShard(
+        typeName,
+        shardId,
+        entityProps,
+        settings,
+        extractEntityId,
+        extractShardId,
+        handOffStopMessage))
         .withDeploy(Deploy.local)
     else
-      Props(
-        new Shard(
-          typeName,
-          shardId,
-          entityProps,
-          settings,
-          extractEntityId,
-          extractShardId,
-          handOffStopMessage))
+      Props(new Shard(
+        typeName,
+        shardId,
+        entityProps,
+        settings,
+        extractEntityId,
+        extractShardId,
+        handOffStopMessage))
         .withDeploy(Deploy.local)
   }
 }
@@ -225,13 +223,11 @@ private[akka] class Shard(
 
         if (state.entities.nonEmpty) {
           handOffStopper = Some(
-            context.watch(
-              context.actorOf(
-                handOffStopperProps(
-                  shardId,
-                  replyTo,
-                  idByRef.keySet,
-                  handOffStopMessage))))
+            context.watch(context.actorOf(handOffStopperProps(
+              shardId,
+              replyTo,
+              idByRef.keySet,
+              handOffStopMessage))))
 
           //During hand off we only care about watching for termination of the hand off stopper
           context become { case Terminated(ref) ⇒ receiveTerminated(ref) }

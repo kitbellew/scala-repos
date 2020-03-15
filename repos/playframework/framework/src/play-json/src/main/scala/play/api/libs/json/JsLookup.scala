@@ -82,8 +82,8 @@ case class JsLookup(result: JsLookupResult) extends AnyVal {
         obj.value
           .get(fieldName)
           .map(JsDefined.apply)
-          .getOrElse(
-            JsUndefined("'" + fieldName + "' is undefined on object: " + obj))
+          .getOrElse(JsUndefined(
+            "'" + fieldName + "' is undefined on object: " + obj))
       case JsDefined(o) =>
         JsUndefined(o + " is not an object")
       case undef => undef

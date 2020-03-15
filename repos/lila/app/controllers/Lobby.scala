@@ -16,12 +16,9 @@ object Lobby extends LilaController {
         html = renderHome(Results.Ok).map(NoCache),
         api = _ =>
           fuccess {
-            Ok(
-              Json.obj(
-                "lobby" -> Json.obj("version" -> Env.lobby.history.version)
-              ))
-          }
-      )
+            Ok(Json.obj(
+              "lobby" -> Json.obj("version" -> Env.lobby.history.version)))
+          })
     }
 
   def handleStatus(req: RequestHeader, status: Results.Status): Fu[Result] = {
@@ -32,10 +29,9 @@ object Lobby extends LilaController {
     Env.current.preloader(
       posts = Env.forum.recent(ctx.me, Env.team.cached.teamIds),
       tours = Env.tournament.cached promotable true,
-      simuls = Env.simul allCreatedFeaturable true
-    ) map (html.lobby.home.apply _).tupled map {
-      status(_)
-    } map ensureSessionId(ctx.req)
+      simuls = Env.simul allCreatedFeaturable true) map (
+      html.lobby.home.apply _
+    ).tupled map { status(_) } map ensureSessionId(ctx.req)
   }.mon(_.http.response.home)
 
   def seeks =
@@ -46,8 +42,7 @@ object Lobby extends LilaController {
           ctx.me
             .fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
             seeks => Ok(JsArray(seeks.map(_.render)))
-          }
-      )
+          })
     }
 
   private val socketConsumer = lila.api.TokenBucket

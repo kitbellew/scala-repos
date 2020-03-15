@@ -114,9 +114,10 @@ class DriverActor(schedulerProps: Props) extends Actor {
           .newBuilder()
           .setName("ports")
           .setType(Value.Type.RANGES)
-          .setRanges(Value.Ranges
-            .newBuilder()
-            .addRange(Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
+          .setRanges(
+            Value.Ranges
+              .newBuilder()
+              .addRange(Value.Range.newBuilder().setBegin(10000).setEnd(20000)))
           .build()
       ))
       .build()
@@ -131,8 +132,8 @@ class DriverActor(schedulerProps: Props) extends Actor {
 
     import context.dispatcher
     periodicOffers = Some(
-      context.system.scheduler.schedule(1.second, 1.seconds)(scheduler ! offers)
-    )
+      context.system.scheduler.schedule(1.second, 1.seconds)(
+        scheduler ! offers))
   }
 
   override def postStop(): Unit = {

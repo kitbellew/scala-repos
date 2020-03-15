@@ -52,8 +52,8 @@ class ThriftServerFramedCodecFactory(protocolFactory: TProtocolFactory)
 
 class ThriftServerFramedCodec(
     config: ServerCodecConfig,
-    protocolFactory: TProtocolFactory = Protocols.binaryFactory()
-) extends Codec[Array[Byte], Array[Byte]] {
+    protocolFactory: TProtocolFactory = Protocols.binaryFactory())
+    extends Codec[Array[Byte], Array[Byte]] {
   def pipelineFactory: ChannelPipelineFactory =
     ThriftServerFramedPipelineFactory
 
@@ -63,8 +63,7 @@ class ThriftServerFramedCodec(
 
   override def prepareConnFactory(
       factory: ServiceFactory[Array[Byte], Array[Byte]],
-      params: Stack.Params
-  ) = preparer.prepare(factory, params)
+      params: Stack.Params) = preparer.prepare(factory, params)
 
   override def newTraceInitializer =
     TraceInitializerFilter.serverModule[Array[Byte], Array[Byte]]
@@ -80,8 +79,7 @@ private[finagle] case class ThriftServerPreparer(
 
   def prepare(
       factory: ServiceFactory[Array[Byte], Array[Byte]],
-      params: Stack.Params
-  ): ServiceFactory[Array[Byte], Array[Byte]] =
+      params: Stack.Params): ServiceFactory[Array[Byte], Array[Byte]] =
     factory.map { service =>
       val payloadSize = new PayloadSizeFilter[Array[Byte], Array[Byte]](
         params[param.Stats].statsReceiver,
@@ -121,8 +119,7 @@ private[finagle] object UncaughtAppExceptionFilter {
   def writeExceptionMessage(
       thriftRequest: Buf,
       throwable: Throwable,
-      protocolFactory: TProtocolFactory
-  ): Buf = {
+      protocolFactory: TProtocolFactory): Buf = {
     val reqBytes = Buf.ByteArray.Owned.extract(thriftRequest)
     // NB! This is technically incorrect for one-way calls,
     // but we have no way of knowing it here. We may
@@ -154,8 +151,7 @@ private[finagle] class UncaughtAppExceptionFilter(
 
   def apply(
       request: Array[Byte],
-      service: Service[Array[Byte], Array[Byte]]
-  ): Future[Array[Byte]] =
+      service: Service[Array[Byte], Array[Byte]]): Future[Array[Byte]] =
     service(request).handle {
       case e if !e.isInstanceOf[TException] =>
         val buf = Buf.ByteArray.Owned(request)

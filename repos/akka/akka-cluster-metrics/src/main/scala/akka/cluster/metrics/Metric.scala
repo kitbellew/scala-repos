@@ -429,8 +429,9 @@ private[metrics] final case class MetricsGossip(nodes: Set[NodeMetrics]) {
   def :+(newNodeMetrics: NodeMetrics): MetricsGossip =
     nodeMetricsFor(newNodeMetrics.address) match {
       case Some(existingNodeMetrics) ⇒
-        copy(nodes =
-          nodes - existingNodeMetrics + (existingNodeMetrics update newNodeMetrics))
+        copy(nodes = nodes - existingNodeMetrics + (
+          existingNodeMetrics update newNodeMetrics
+        ))
       case None ⇒ copy(nodes = nodes + newNodeMetrics)
     }
 

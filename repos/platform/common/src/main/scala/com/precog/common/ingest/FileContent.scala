@@ -103,8 +103,7 @@ object FileContent {
       JObject(
         "data" -> JString(v.encoding.encode(v.data)),
         "mimeType" -> v.mimeType.jv,
-        "encoding" -> v.encoding.jv
-      )
+        "encoding" -> v.encoding.jv)
   }
 
   val ExtractorV0: Extractor[FileContent] = new Extractor[FileContent] {

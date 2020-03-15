@@ -708,8 +708,8 @@ object Arrays {
       original: Array[T],
       from: Int,
       to: Int): Array[T] = {
-    copyOfRangeImpl[T](original, from, to)(
-      ClassTag(original.getClass.getComponentType)).asInstanceOf[Array[T]]
+    copyOfRangeImpl[T](original, from, to)(ClassTag(
+      original.getClass.getComponentType)).asInstanceOf[Array[T]]
   }
 
   @noinline def copyOfRange[T <: AnyRef, U <: AnyRef](

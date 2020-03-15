@@ -218,9 +218,8 @@ trait ApplicationAnnotator {
       ref.get match {
         case named: PsiNamedElement
             if ScalaPsiUtil.nameContext(named).isInstanceOf[ScValue] =>
-          annotation.registerFix(
-            new ValToVarQuickFix(
-              ScalaPsiUtil.nameContext(named).asInstanceOf[ScValue]))
+          annotation.registerFix(new ValToVarQuickFix(
+            ScalaPsiUtil.nameContext(named).asInstanceOf[ScValue]))
         case _ =>
       }
     }
@@ -315,7 +314,9 @@ trait ApplicationAnnotator {
       case (exp: ScReferenceExpression) childOf (infix: ScInfixExpr)
           if infix.operation == exp =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
-      case (exp: ScReferenceExpression) childOf ((_: ScGenericCall) childOf (_: ScMethodCall)) =>
+      case (exp: ScReferenceExpression) childOf (
+            (_: ScGenericCall) childOf (_: ScMethodCall)
+          ) =>
         annotation.registerFix(new CreateMethodQuickFix(exp))
       case (exp: ScReferenceExpression) childOf (_: ScGenericCall) =>
         annotation.registerFix(new CreateParameterlessMethodQuickFix(exp))
@@ -324,8 +325,9 @@ trait ApplicationAnnotator {
         annotation.registerFix(new CreateValueQuickFix(exp))
         annotation.registerFix(new CreateVariableQuickFix(exp))
         annotation.registerFix(new CreateObjectQuickFix(exp))
-      case (stRef: ScStableCodeReferenceElement) childOf (st: ScSimpleTypeElement)
-          if st.singleton =>
+      case (stRef: ScStableCodeReferenceElement) childOf (
+            st: ScSimpleTypeElement
+          ) if st.singleton =>
       case (stRef: ScStableCodeReferenceElement) childOf(Both(
             p: ScPattern,
             (_: ScConstructorPattern | _: ScInfixPattern))) =>

@@ -46,8 +46,8 @@ class DataFrameComplexTypeSuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-12477 accessing null element in array field") {
     val df = sparkContext
-      .parallelize(
-        Seq((Seq("val1", null, "val2"), Seq(Some(1), None, Some(2)))))
+      .parallelize(Seq(
+        (Seq("val1", null, "val2"), Seq(Some(1), None, Some(2)))))
       .toDF("s", "i")
     val nullStringRow = df.selectExpr("s[1]").collect()(0)
     assert(nullStringRow == org.apache.spark.sql.Row(null))

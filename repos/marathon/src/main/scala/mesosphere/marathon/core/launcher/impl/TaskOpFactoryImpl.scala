@@ -45,12 +45,9 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
             agentInfo = Task.AgentInfo(
               host = offer.getHostname,
               agentId = Some(offer.getSlaveId.getValue),
-              attributes = offer.getAttributesList.asScala
-            ),
+              attributes = offer.getAttributesList.asScala),
             appVersion = app.version,
-            status = Task.Status(
-              stagedAt = clock.now()
-            ),
+            status = Task.Status(stagedAt = clock.now()),
             networking = Task.HostPorts(ports)
           )
           taskOperationFactory.launch(taskInfo, task)
@@ -104,8 +101,7 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
                 config.mesosRole.get.toSet,
                 reserved = true,
                 requiredLabels = TaskLabels
-                  .labelsForTask(request.frameworkId, volumeMatch.task)
-              )
+                  .labelsForTask(request.frameworkId, volumeMatch.task))
             )
 
           matchingReservedResourcesWithoutVolumes.flatMap {
@@ -126,8 +122,7 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
           offer,
           app,
           tasks.values,
-          ResourceSelector(acceptedResourceRoles, reserved = false)
-        )
+          ResourceSelector(acceptedResourceRoles, reserved = false))
         matchingResourcesForReservation.map { resourceMatch =>
           reserveAndCreateVolumes(
             request.frameworkId,
@@ -154,9 +149,7 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       case (taskInfo, ports) =>
         val launch = TaskStateOp.Launch(
           appVersion = app.version,
-          status = Task.Status(
-            stagedAt = clock.now()
-          ),
+          status = Task.Status(stagedAt = clock.now()),
           networking = Task.HostPorts(ports))
 
         // FIXME (3221): something like reserved.launch(...): LaunchedOnReservation so we don't need to match?
@@ -186,8 +179,7 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
       agentInfo = Task.AgentInfo(
         host = offer.getHostname,
         agentId = Some(offer.getSlaveId.getValue),
-        attributes = offer.getAttributesList.asScala
-      ),
+        attributes = offer.getAttributesList.asScala),
       reservation = Task.Reservation(
         persistentVolumeIds,
         Task.Reservation.State.New(timeout = None))

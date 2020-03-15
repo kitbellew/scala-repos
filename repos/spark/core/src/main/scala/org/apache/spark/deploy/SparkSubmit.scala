@@ -1152,19 +1152,19 @@ private[spark] object SparkSubmitUtils {
       "network-yarn_")
 
     components.foreach { comp =>
-      md.addExcludeRule(
-        createExclusion(
-          s"org.apache.spark:spark-$comp*:*",
-          ivySettings,
-          ivyConfName))
+      md.addExcludeRule(createExclusion(
+        s"org.apache.spark:spark-$comp*:*",
+        ivySettings,
+        ivyConfName))
     }
   }
 
   /** A nice function to use in tests as well. Values are dummy strings. */
   def getModuleDescriptor: DefaultModuleDescriptor =
-    DefaultModuleDescriptor.newDefaultInstance(
-      ModuleRevisionId
-        .newInstance("org.apache.spark", "spark-submit-parent", "1.0"))
+    DefaultModuleDescriptor.newDefaultInstance(ModuleRevisionId.newInstance(
+      "org.apache.spark",
+      "spark-submit-parent",
+      "1.0"))
 
   /**
     * Resolves any dependencies that were supplied through maven coordinates

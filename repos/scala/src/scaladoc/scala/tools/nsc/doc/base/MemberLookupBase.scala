@@ -22,7 +22,9 @@ trait MemberLookupBase {
   import rootMirror.{RootPackage, EmptyPackage}
 
   private def isRoot(s: Symbol) =
-    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
+    (
+      s eq NoSymbol
+    ) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
 
   def makeEntityLink(
       title: Inline,
@@ -59,8 +61,9 @@ trait MemberLookupBase {
     val fromRoot = lookupInRootPackage(pos, members)
 
     // (2) Or recursively go into each containing template.
-    val fromParents = Stream.iterate(site)(_.owner) takeWhile (!isRoot(
-      _)) map (lookupInTemplate(pos, members, _))
+    val fromParents = Stream.iterate(site)(_.owner) takeWhile (!isRoot(_)) map (
+      lookupInTemplate(pos, members, _)
+    )
 
     val syms = (fromRoot +: fromParents) find (!_.isEmpty) getOrElse Nil
 
@@ -74,9 +77,10 @@ trait MemberLookupBase {
             // reconstruct the original link
             def linkName(sym: Symbol) = {
               def nameString(s: Symbol) =
-                s.nameString + (if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag)
-                                  "$"
-                                else "")
+                s.nameString + (
+                  if ((s.isModule || s.isModuleClass) && !s.hasPackageFlag) "$"
+                  else ""
+                )
               val packageSuffix = if (sym.hasPackageFlag) ".package" else ""
 
               sym.ownerChain.reverse

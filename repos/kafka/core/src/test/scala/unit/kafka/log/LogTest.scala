@@ -289,10 +289,9 @@ class LogTest extends JUnitSuite {
 
     // keep appending until we have two segments with only a single message in the second segment
     while (log.numberOfSegments == 1)
-      log.append(
-        new ByteBufferMessageSet(
-          NoCompressionCodec,
-          messages = new Message("42".getBytes)))
+      log.append(new ByteBufferMessageSet(
+        NoCompressionCodec,
+        messages = new Message("42".getBytes)))
 
     // now manually truncate off all but one message from the first segment to create a gap in the messages
     log.logSegments.head.truncateTo(1)
@@ -400,16 +399,14 @@ class LogTest extends JUnitSuite {
       time = time)
 
     /* append 2 compressed message sets, each with two messages giving offsets 0, 1, 2, 3 */
-    log.append(
-      new ByteBufferMessageSet(
-        DefaultCompressionCodec,
-        new Message("hello".getBytes),
-        new Message("there".getBytes)))
-    log.append(
-      new ByteBufferMessageSet(
-        DefaultCompressionCodec,
-        new Message("alpha".getBytes),
-        new Message("beta".getBytes)))
+    log.append(new ByteBufferMessageSet(
+      DefaultCompressionCodec,
+      new Message("hello".getBytes),
+      new Message("there".getBytes)))
+    log.append(new ByteBufferMessageSet(
+      DefaultCompressionCodec,
+      new Message("alpha".getBytes),
+      new Message("beta".getBytes)))
 
     def read(offset: Int) =
       ByteBufferMessageSet.deepIterator(log.read(offset, 4096).messageSet.head)
@@ -1012,8 +1009,8 @@ class LogTest extends JUnitSuite {
     val messages =
       (0 until 2).map(id => new Message(id.toString.getBytes)).toArray
     messages.foreach(message => log.append(new ByteBufferMessageSet(message)))
-    val invalidMessage = new ByteBufferMessageSet(
-      new Message(1.toString.getBytes))
+    val invalidMessage = new ByteBufferMessageSet(new Message(
+      1.toString.getBytes))
     log.append(invalidMessage, assignOffsets = false)
   }
 

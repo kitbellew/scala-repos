@@ -63,11 +63,10 @@ object WebAccountFinder extends Logging {
     val serviceConfig = config.detach("service")
     serviceConfig.get[String]("hardcoded_account") map { accountId =>
       implicit val M = ResponseMonad(new FutureMonad(executor))
-      success(
-        new StaticAccountFinder[Response](
-          accountId,
-          serviceConfig[String]("hardcoded_rootKey", ""),
-          serviceConfig.get[String]("hardcoded_rootPath")))
+      success(new StaticAccountFinder[Response](
+        accountId,
+        serviceConfig[String]("hardcoded_rootKey", ""),
+        serviceConfig.get[String]("hardcoded_rootPath")))
     } getOrElse {
       (serviceConfig
         .get[String]("protocol")
@@ -91,8 +90,8 @@ object WebAccountFinder extends Logging {
             nels("Configuration property service.user is required")) |@|
         serviceConfig
           .get[String]("password")
-          .toSuccess(
-            nels("Configuration property service.password is required"))) {
+          .toSuccess(nels(
+            "Configuration property service.password is required"))) {
         (protocol, host, port, path, user, password) =>
           logger.info(
             "Creating new WebAccountFinder with properties %s://%s:%s/%s %s:%s"

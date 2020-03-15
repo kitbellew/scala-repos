@@ -51,8 +51,8 @@ private[streaming] class KafkaInputDStream[
     kafkaParams: Map[String, String],
     topics: Map[String, Int],
     useReliableReceiver: Boolean,
-    storageLevel: StorageLevel
-) extends ReceiverInputDStream[(K, V)](_ssc)
+    storageLevel: StorageLevel)
+    extends ReceiverInputDStream[(K, V)](_ssc)
     with Logging {
 
   def getReceiver(): Receiver[(K, V)] = {
@@ -64,15 +64,12 @@ private[streaming] class KafkaInputDStream[
   }
 }
 
-private[streaming] class KafkaReceiver[
-    K: ClassTag,
-    V: ClassTag,
-    U <: Decoder[_]: ClassTag,
-    T <: Decoder[_]: ClassTag](
+private[streaming] class KafkaReceiver[K: ClassTag, V: ClassTag, U <: Decoder[
+  _]: ClassTag, T <: Decoder[_]: ClassTag](
     kafkaParams: Map[String, String],
     topics: Map[String, Int],
-    storageLevel: StorageLevel
-) extends Receiver[(K, V)](storageLevel)
+    storageLevel: StorageLevel)
+    extends Receiver[(K, V)](storageLevel)
     with Logging {
 
   // Connection to Kafka

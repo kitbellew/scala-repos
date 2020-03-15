@@ -150,13 +150,14 @@ object ScalaProjectSettingsUtil {
           addPattern(pattern, patternJBList)
         }
       })
-      .addExtraAction(new AnActionButton(
-        ApplicationBundle.message("button.add.blank"),
-        IconUtil.getAddBlankLineIcon) {
-        def actionPerformed(e: AnActionEvent) {
-          addPattern(ScalaCodeStyleSettings.BLANK_LINE, patternJBList)
-        }
-      })
+      .addExtraAction(
+        new AnActionButton(
+          ApplicationBundle.message("button.add.blank"),
+          IconUtil.getAddBlankLineIcon) {
+          def actionPerformed(e: AnActionEvent) {
+            addPattern(ScalaCodeStyleSettings.BLANK_LINE, patternJBList)
+          }
+        })
       .setRemoveAction(new AnActionButtonRunnable {
         override def run(t: AnActionButton): Unit = {
           val listModel = JListCompatibility.getDefaultListModel(

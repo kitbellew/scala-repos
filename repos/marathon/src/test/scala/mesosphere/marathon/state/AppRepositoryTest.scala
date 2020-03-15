@@ -76,24 +76,20 @@ class AppRepositoryTest extends MarathonSpec {
     val store = mock[MarathonStore[AppDefinition]]
     val appDef1 = AppDefinition("app1".toPath)
     val appDef2 = AppDefinition("app2".toPath)
-    val appDef1Old = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(1)))
-    )
-    val appDef2Old = appDef2.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef2.version.toDateTime.minusDays(1)))
-    )
+    val appDef1Old = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(1))))
+    val appDef2Old = appDef2.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef2.version.toDateTime.minusDays(1))))
     val allApps = Seq(appDef1, appDef2, appDef1Old, appDef2Old)
 
     val future = Future.successful(
       Seq("app1", "app2") ++ allApps.map(x => s"${x.id}:${x.version}"))
 
     when(store.names()).thenReturn(future)
-    when(store.fetch(appDef1.id.toString))
-      .thenReturn(Future.successful(Some(appDef1)))
-    when(store.fetch(appDef2.id.toString))
-      .thenReturn(Future.successful(Some(appDef2)))
+    when(store.fetch(appDef1.id.toString)).thenReturn(Future.successful(Some(
+      appDef1)))
+    when(store.fetch(appDef2.id.toString)).thenReturn(Future.successful(Some(
+      appDef2)))
 
     val repo = new AppRepository(store, None, metrics)
     val res = repo.apps()
@@ -109,18 +105,12 @@ class AppRepositoryTest extends MarathonSpec {
   test("ListVersions") {
     val store = mock[MarathonStore[AppDefinition]]
     val appDef1 = AppDefinition("app1".toRootPath)
-    val version1 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(1)))
-    )
-    val version2 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(2)))
-    )
-    val version3 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(3)))
-    )
+    val version1 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(1))))
+    val version2 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(2))))
+    val version3 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(3))))
     val appDef2 = AppDefinition("app2".toRootPath)
     val allApps = Seq(appDef1, version1, version2, version3, appDef2)
 
@@ -146,18 +136,12 @@ class AppRepositoryTest extends MarathonSpec {
   test("Expunge") {
     val store = mock[MarathonStore[AppDefinition]]
     val appDef1 = AppDefinition("app1".toRootPath)
-    val version1 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(1)))
-    )
-    val version2 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(2)))
-    )
-    val version3 = appDef1.copy(
-      versionInfo = AppDefinition.VersionInfo.forNewConfig(
-        Timestamp(appDef1.version.toDateTime.minusDays(3)))
-    )
+    val version1 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(1))))
+    val version2 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(2))))
+    val version3 = appDef1.copy(versionInfo = AppDefinition.VersionInfo
+      .forNewConfig(Timestamp(appDef1.version.toDateTime.minusDays(3))))
     val appDef2 = AppDefinition("app2".toRootPath)
     val allApps = Seq(appDef1, version1, version2, version3, appDef2)
 

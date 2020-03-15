@@ -174,8 +174,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val pos2 = this.consumers(0).position(tp2)
     this
       .consumers(0)
-      .commitSync(Map[TopicPartition, OffsetAndMetadata](
-        (tp, new OffsetAndMetadata(3L))).asJava)
+      .commitSync(
+        Map[TopicPartition, OffsetAndMetadata](
+          (tp, new OffsetAndMetadata(3L))).asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertNull(this.consumers(0).committed(tp2))
 
@@ -184,8 +185,9 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     assertEquals(pos2, this.consumers(0).position(tp2))
     this
       .consumers(0)
-      .commitSync(Map[TopicPartition, OffsetAndMetadata](
-        (tp2, new OffsetAndMetadata(5L))).asJava)
+      .commitSync(
+        Map[TopicPartition, OffsetAndMetadata](
+          (tp2, new OffsetAndMetadata(5L))).asJava)
     assertEquals(3, this.consumers(0).committed(tp).offset)
     assertEquals(5, this.consumers(0).committed(tp2).offset)
 
@@ -344,13 +346,12 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     (0 until numRecords).foreach { i =>
       this
         .producers(0)
-        .send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            i.toLong,
-            s"key $i".getBytes,
-            s"value $i".getBytes))
+        .send(new ProducerRecord(
+          tp.topic(),
+          tp.partition(),
+          i.toLong,
+          s"key $i".getBytes,
+          s"value $i".getBytes))
     }
     this.producers(0).flush()
   }

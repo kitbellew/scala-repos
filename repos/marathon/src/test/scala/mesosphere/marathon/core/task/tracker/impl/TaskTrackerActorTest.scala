@@ -27,8 +27,8 @@ class TaskTrackerActorTest
     val f = new Fixture
 
     Given("a failing task loader")
-    f.taskLoader.loadTasks() returns Future.failed(
-      new RuntimeException("severe simulated loading failure"))
+    f.taskLoader.loadTasks() returns Future.failed(new RuntimeException(
+      "severe simulated loading failure"))
 
     When("the task tracker starts")
     f.taskTrackerActor
@@ -55,8 +55,7 @@ class TaskTrackerActorTest
     f.taskTrackerActor ! TaskTrackerActor.ForwardTaskOp(
       deadline,
       Task.Id("task1"),
-      TaskOpProcessor.Action.Noop
-    )
+      TaskOpProcessor.Action.Noop)
 
     Then("it will eventuall die")
     watch(f.taskTrackerActor)
@@ -101,10 +100,9 @@ class TaskTrackerActorTest
     val stagedTask = MarathonTestHelper.stagedTaskProto("staged")
     val runningTask1 = MarathonTestHelper.runningTaskProto("running1")
     val runningTask2 = MarathonTestHelper.runningTaskProto("running2")
-    val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+    val appDataMap = TaskTracker.TasksByApp.of(TaskTracker.AppTasks(
+      appId,
+      Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("the task tracker has started up")
@@ -124,10 +122,9 @@ class TaskTrackerActorTest
     val stagedTask = MarathonTestHelper.stagedTaskProto(appId)
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
-    val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+    val appDataMap = TaskTracker.TasksByApp.of(TaskTracker.AppTasks(
+      appId,
+      Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("staged task gets deleted")
@@ -163,10 +160,9 @@ class TaskTrackerActorTest
     val stagedTask = MarathonTestHelper.stagedTaskProto(appId)
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
-    val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+    val appDataMap = TaskTracker.TasksByApp.of(TaskTracker.AppTasks(
+      appId,
+      Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("staged task transitions to running")
@@ -192,10 +188,9 @@ class TaskTrackerActorTest
     val stagedTask = MarathonTestHelper.stagedTaskProto(appId)
     val runningTask1 = MarathonTestHelper.runningTaskProto(appId)
     val runningTask2 = MarathonTestHelper.runningTaskProto(appId)
-    val appDataMap = TaskTracker.TasksByApp.of(
-      TaskTracker
-        .AppTasks(appId, Iterable(stagedTask, runningTask1, runningTask2))
-    )
+    val appDataMap = TaskTracker.TasksByApp.of(TaskTracker.AppTasks(
+      appId,
+      Iterable(stagedTask, runningTask1, runningTask2)))
     f.taskLoader.loadTasks() returns Future.successful(appDataMap)
 
     When("a new staged task gets added")

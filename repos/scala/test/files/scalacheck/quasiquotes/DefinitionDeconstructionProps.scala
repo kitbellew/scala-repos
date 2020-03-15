@@ -117,13 +117,11 @@ trait ClassDeconstruction { self: QuasiquoteProperties =>
               Modifiers(),
               termNames.CONSTRUCTOR,
               List(),
-              List(
-                List(
-                  ValDef(
-                    Modifiers(PARAM | PARAMACCESSOR),
-                    TermName("x"),
-                    Ident(TypeName("Int")),
-                    EmptyTree))),
+              List(List(ValDef(
+                Modifiers(PARAM | PARAMACCESSOR),
+                TermName("x"),
+                Ident(TypeName("Int")),
+                EmptyTree))),
               TypeTree(),
               Block(List(pendingSuperCall), Literal(Constant(())))
             ))

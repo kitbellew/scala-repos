@@ -35,8 +35,8 @@ import org.scalajs.core.tools.linker.backend.emitter.{Emitter, CoreJSLibs}
 final class ClosureLinkerBackend(
     semantics: Semantics,
     withSourceMap: Boolean,
-    config: LinkerBackend.Config
-) extends LinkerBackend(semantics, ESLevel.ES5, withSourceMap, config) {
+    config: LinkerBackend.Config)
+    extends LinkerBackend(semantics, ESLevel.ES5, withSourceMap, config) {
 
   private[this] val emitter = {
     new Emitter(semantics, OutputMode.ECMAScript51Isolated)
@@ -69,10 +69,8 @@ final class ClosureLinkerBackend(
     // Build a Closure JSModule which includes the core libs
     val module = new JSModule("Scala.js")
 
-    module.add(
-      new CompilerInput(
-        toClosureSource(
-          CoreJSLibs.lib(semantics, OutputMode.ECMAScript51Isolated))))
+    module.add(new CompilerInput(toClosureSource(
+      CoreJSLibs.lib(semantics, OutputMode.ECMAScript51Isolated))))
 
     val ast = builder.closureAST
     module.add(new CompilerInput(ast, ast.getInputId(), false))

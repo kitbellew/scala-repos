@@ -914,9 +914,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     }
     val w =
       if (model.getWeightCol.isEmpty) lit(1.0) else col(model.getWeightCol)
-    predictions.select(
-      drUDF(col(model.getLabelCol), col(predictionCol), w)
-        .as("devianceResiduals"))
+    predictions.select(drUDF(col(model.getLabelCol), col(predictionCol), w).as(
+      "devianceResiduals"))
   }
 
   private lazy val pearsonResiduals: DataFrame = {

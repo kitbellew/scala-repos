@@ -395,8 +395,8 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render a simple directory with a path prefix" in {
-      Get("/files/") ~> pathPrefix("files")(
-        listDirectoryContents(base + "/someDir")) ~> check {
+      Get("/files/") ~> pathPrefix("files")(listDirectoryContents(
+        base + "/someDir")) ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>
             |<head><title>Index of /files/</title></head>
@@ -416,8 +416,8 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render a sub directory with a path prefix" in {
-      Get("/files/sub/") ~> pathPrefix("files")(
-        listDirectoryContents(base + "/someDir")) ~> check {
+      Get("/files/sub/") ~> pathPrefix("files")(listDirectoryContents(
+        base + "/someDir")) ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>
             |<head><title>Index of /files/sub/</title></head>
@@ -436,8 +436,8 @@ class FileAndResourceDirectivesSpec
       }
     }
     "properly render an empty top-level directory with a path prefix" in {
-      Get("/files/") ~> pathPrefix("files")(
-        listDirectoryContents(base + "/subDirectory/emptySub")) ~> check {
+      Get("/files/") ~> pathPrefix("files")(listDirectoryContents(
+        base + "/subDirectory/emptySub")) ~> check {
         eraseDateTime(responseAs[String]) shouldEqual prep {
           """<html>
             |<head><title>Index of /files/</title></head>

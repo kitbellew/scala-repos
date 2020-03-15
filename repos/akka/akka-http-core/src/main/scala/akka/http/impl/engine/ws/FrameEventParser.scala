@@ -140,10 +140,9 @@ private[http] object FrameEventParser extends ByteStringParser[FrameEvent] {
 
   def parseCloseCode(data: ByteString): Option[(Int, String)] = {
     def invalid(reason: String) =
-      Some(
-        (
-          Protocol.CloseCodes.ProtocolError,
-          s"Peer sent illegal close frame ($reason)."))
+      Some((
+        Protocol.CloseCodes.ProtocolError,
+        s"Peer sent illegal close frame ($reason)."))
 
     if (data.length >= 2) {
       val code = ((data(0) & 0xff) << 8) | (data(1) & 0xff)

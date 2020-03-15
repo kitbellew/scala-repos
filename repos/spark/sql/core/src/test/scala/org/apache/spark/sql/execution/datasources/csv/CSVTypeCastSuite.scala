@@ -62,9 +62,8 @@ class CSVTypeCastSuite extends SparkFunSuite {
     val exception = intercept[IllegalArgumentException] {
       CSVTypeCast.toChar("""\1""")
     }
-    assert(
-      exception.getMessage.contains(
-        "Unsupported special character for delimiter"))
+    assert(exception.getMessage.contains(
+      "Unsupported special character for delimiter"))
   }
 
   test("Nullable types are handled") {

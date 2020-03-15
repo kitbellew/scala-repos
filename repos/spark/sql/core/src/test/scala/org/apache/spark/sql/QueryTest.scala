@@ -232,12 +232,10 @@ abstract class QueryTest extends PlanTest {
       try { logicalPlan.toJSON }
       catch {
         case NonFatal(e) =>
-          fail(
-            s"""
+          fail(s"""
              |Failed to parse logical plan to JSON:
              |${logicalPlan.treeString}
-           """.stripMargin,
-            e)
+           """.stripMargin, e)
       }
 
     // scala function is not serializable to JSON, use null to replace them so that we can compare

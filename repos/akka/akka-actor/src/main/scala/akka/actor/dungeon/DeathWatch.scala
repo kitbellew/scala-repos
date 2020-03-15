@@ -108,11 +108,10 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
                 .isLocal == ifLocal && watcher != parent)
             watcher
               .asInstanceOf[InternalActorRef]
-              .sendSystemMessage(
-                DeathWatchNotification(
-                  self,
-                  existenceConfirmed = true,
-                  addressTerminated = false))
+              .sendSystemMessage(DeathWatchNotification(
+                self,
+                existenceConfirmed = true,
+                addressTerminated = false))
 
         /*
          * It is important to notify the remote watchers first, otherwise RemoteDaemon might shut down, causing
@@ -160,19 +159,17 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
         maintainAddressTerminatedSubscription(watcher) {
           watchedBy += watcher
           if (system.settings.DebugLifecycle)
-            publish(
-              Debug(
-                self.path.toString,
-                clazz(actor),
-                s"now watched by $watcher"))
+            publish(Debug(
+              self.path.toString,
+              clazz(actor),
+              s"now watched by $watcher"))
         }
     } else if (!watcheeSelf && watcherSelf) { watch(watchee) }
     else {
-      publish(
-        Warning(
-          self.path.toString,
-          clazz(actor),
-          "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, self)))
+      publish(Warning(
+        self.path.toString,
+        clazz(actor),
+        "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, self)))
     }
   }
 
@@ -185,19 +182,17 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
         maintainAddressTerminatedSubscription(watcher) {
           watchedBy -= watcher
           if (system.settings.DebugLifecycle)
-            publish(
-              Debug(
-                self.path.toString,
-                clazz(actor),
-                s"no longer watched by $watcher"))
+            publish(Debug(
+              self.path.toString,
+              clazz(actor),
+              s"no longer watched by $watcher"))
         }
     } else if (!watcheeSelf && watcherSelf) { unwatch(watchee) }
     else {
-      publish(
-        Warning(
-          self.path.toString,
-          clazz(actor),
-          "BUG: illegal Unwatch(%s,%s) for %s".format(watchee, watcher, self)))
+      publish(Warning(
+        self.path.toString,
+        clazz(actor),
+        "BUG: illegal Unwatch(%s,%s) for %s".format(watchee, watcher, self)))
     }
   }
 
@@ -214,11 +209,10 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
     // it is removed by sending DeathWatchNotification with existenceConfirmed = true to support
     // immediate creation of child with same name.
     for (a ← watching; if a.path.address == address) {
-      self.sendSystemMessage(
-        DeathWatchNotification(
-          a,
-          existenceConfirmed = childrenRefs.getByRef(a).isDefined,
-          addressTerminated = true))
+      self.sendSystemMessage(DeathWatchNotification(
+        a,
+        existenceConfirmed = childrenRefs.getByRef(a).isDefined,
+        addressTerminated = true))
     }
   }
 

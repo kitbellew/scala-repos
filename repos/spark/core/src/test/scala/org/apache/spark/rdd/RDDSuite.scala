@@ -49,8 +49,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(nums.map(_.toString).collect().toList === List("1", "2", "3", "4"))
     assert(nums.filter(_ > 2).collect().toList === List(3, 4))
     assert(
-      nums.flatMap(x => 1 to x).collect().toList === List(1, 1, 2, 1, 2, 3, 1,
-        2, 3, 4))
+      nums.flatMap(x => 1 to x).collect().toList === List(
+        1, 1, 2, 1, 2, 3, 1, 2, 3, 4))
     assert(nums.union(nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(
       nums.glom().map(_.toList).collect().toList === List(
@@ -116,8 +116,8 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
       sc.union(nums, nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(sc.union(Seq(nums)).collect().toList === List(1, 2, 3, 4))
     assert(
-      sc.union(Seq(nums, nums)).collect().toList === List(1, 2, 3, 4, 1, 2, 3,
-        4))
+      sc.union(Seq(nums, nums)).collect().toList === List(
+        1, 2, 3, 4, 1, 2, 3, 4))
   }
 
   test(
@@ -518,10 +518,9 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("collect large number of empty partitions") {
     // Regression test for SPARK-4019
     assert(
-      sc.makeRDD(0 until 10, 1000)
-        .repartition(2001)
-        .collect()
-        .toSet === (0 until 10).toSet)
+      sc.makeRDD(0 until 10, 1000).repartition(2001).collect().toSet === (
+        0 until 10
+      ).toSet)
   }
 
   test("take") {
@@ -746,12 +745,11 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   }
 
   test("sortByKey with explicit ordering") {
-    val data = sc.parallelize(
-      Seq(
-        "Bob|Smith|50",
-        "Jane|Smith|40",
-        "Thomas|Williams|30",
-        "Karen|Williams|60"))
+    val data = sc.parallelize(Seq(
+      "Bob|Smith|50",
+      "Jane|Smith|40",
+      "Thomas|Williams|30",
+      "Karen|Williams|60"))
 
     val ageOrdered = Array(
       "Thomas|Williams|30",

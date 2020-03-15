@@ -20,10 +20,7 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val bw = BufWriter.fixed(2)
     val buf = bw.writeShortBE(short).owned()
     intercept[OverflowException] { bw.writeByte(0xff) }
-    val arr = Array[Byte](
-      ((short >> 8) & 0xff).toByte,
-      (short & 0xff).toByte
-    )
+    val arr = Array[Byte](((short >> 8) & 0xff).toByte, (short & 0xff).toByte)
     assert(buf == Buf.ByteArray.Owned(arr))
   })
 
@@ -35,8 +32,7 @@ class BufWriterTest extends FunSuite with GeneratorDrivenPropertyChecks {
       ((int >> 24) & 0xff).toByte,
       ((int >> 16) & 0xff).toByte,
       ((int >> 8) & 0xff).toByte,
-      (int & 0xff).toByte
-    )
+      (int & 0xff).toByte)
     assert(buf == Buf.ByteArray.Owned(arr))
   })
 

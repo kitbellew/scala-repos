@@ -171,8 +171,7 @@ trait DefaultCaseClassDefns
       tup: Tupler.Aux[Repr0, P0],
       pgen0: Generic.Aux[P0, Repr0],
       typ0: Typeable[C],
-      tag0: ClassTag[C]
-  ) =
+      tag0: ClassTag[C]) =
     new CaseClassOps {
       type Repr = Repr0
       type LRepr = LRepr0

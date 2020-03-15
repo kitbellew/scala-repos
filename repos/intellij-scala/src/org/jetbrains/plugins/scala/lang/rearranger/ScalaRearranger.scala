@@ -46,20 +46,18 @@ class ScalaRearranger
     val groupingRules = getGroupingRules(settings)
 
     val existingInfo = new ScalaArrangementParseInfo
-    root.accept(
-      new ScalaArrangementVisitor(
-        existingInfo,
-        document,
-        collectionAsScalaIterable(ranges),
-        groupingRules))
+    root.accept(new ScalaArrangementVisitor(
+      existingInfo,
+      document,
+      collectionAsScalaIterable(ranges),
+      groupingRules))
 
     val newInfo = new ScalaArrangementParseInfo
-    element.accept(
-      new ScalaArrangementVisitor(
-        newInfo,
-        document,
-        Iterable(element.getTextRange),
-        groupingRules))
+    element.accept(new ScalaArrangementVisitor(
+      newInfo,
+      document,
+      Iterable(element.getTextRange),
+      groupingRules))
     if (newInfo.entries.size != 1) { null }
     else { Pair.create(newInfo.entries(0), existingInfo.entries) }
   }
@@ -71,12 +69,11 @@ class ScalaRearranger
       settings: ArrangementSettings) = {
     UsageTrigger.trigger(ScalaRearranger.featureId)
     val info = new ScalaArrangementParseInfo
-    root.accept(
-      new ScalaArrangementVisitor(
-        info,
-        document,
-        ranges,
-        getGroupingRules(settings)))
+    root.accept(new ScalaArrangementVisitor(
+      info,
+      document,
+      ranges,
+      getGroupingRules(settings)))
     if (settings != null) {
       for (rule <- settings.getGroupings) {
         if (DEPENDENT_METHODS == rule.getGroupingType) {
@@ -127,32 +124,30 @@ class ScalaRearranger
   override def getSerializer = ScalaRearranger.SETTINGS_SERIALIZER
 
   override def getSupportedGroupingTokens =
-    seqAsJavaList(
-      immutable.List(
-        new CompositeArrangementSettingsToken(
-          DEPENDENT_METHODS,
-          BREADTH_FIRST,
-          DEPTH_FIRST),
-        new CompositeArrangementSettingsToken(JAVA_GETTERS_AND_SETTERS),
-        new CompositeArrangementSettingsToken(SCALA_GETTERS_AND_SETTERS),
-        new CompositeArrangementSettingsToken(
-          SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
-      ))
+    seqAsJavaList(immutable.List(
+      new CompositeArrangementSettingsToken(
+        DEPENDENT_METHODS,
+        BREADTH_FIRST,
+        DEPTH_FIRST),
+      new CompositeArrangementSettingsToken(JAVA_GETTERS_AND_SETTERS),
+      new CompositeArrangementSettingsToken(SCALA_GETTERS_AND_SETTERS),
+      new CompositeArrangementSettingsToken(
+        SPLIT_INTO_UNARRANGEABLE_BLOCKS_BY_EXPRESSIONS)
+    ))
 
   override def getSupportedMatchingTokens =
-    seqAsJavaList(
-      immutable.List(
-        new CompositeArrangementSettingsToken(
-          General.TYPE,
-          scalaTypesValues.toList),
-        new CompositeArrangementSettingsToken(
-          General.MODIFIER,
-          scalaModifiers.toList),
-        new CompositeArrangementSettingsToken(
-          General.ORDER,
-          Order.KEEP,
-          Order.BY_NAME)
-      ))
+    seqAsJavaList(immutable.List(
+      new CompositeArrangementSettingsToken(
+        General.TYPE,
+        scalaTypesValues.toList),
+      new CompositeArrangementSettingsToken(
+        General.MODIFIER,
+        scalaModifiers.toList),
+      new CompositeArrangementSettingsToken(
+        General.ORDER,
+        Order.KEEP,
+        Order.BY_NAME)
+    ))
 
   override def isEnabled(
       token: ArrangementSettingsToken,
@@ -233,21 +228,18 @@ object ScalaRearranger {
       matchRules: immutable.List[ArrangementSectionRule],
       conditions: ArrangementSettingsToken*) = {
     if (conditions.length == 1) {
-      ArrangementSectionRule.create(
-        new StdArrangementMatchRule(
-          new StdArrangementEntryMatcher(
-            new ArrangementAtomMatchCondition(conditions(0), conditions(0)))
-        )
-      ) :: matchRules
+      ArrangementSectionRule.create(new StdArrangementMatchRule(
+        new StdArrangementEntryMatcher(new ArrangementAtomMatchCondition(
+          conditions(0),
+          conditions(0))))) :: matchRules
     } else {
       val composite = new ArrangementCompositeMatchCondition
       for (condition <- conditions) {
         composite.addOperand(
           new ArrangementAtomMatchCondition(condition, condition))
       }
-      ArrangementSectionRule.create(
-        new StdArrangementMatchRule(
-          new StdArrangementEntryMatcher(composite))) :: matchRules
+      ArrangementSectionRule.create(new StdArrangementMatchRule(
+        new StdArrangementEntryMatcher(composite))) :: matchRules
     }
   }
 

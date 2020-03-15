@@ -123,12 +123,11 @@ trait MetricsCollectorFactory { this: AkkaSpec ⇒
   val defaultDecayFactor = 2.0 / (1 + 10)
 
   def createMetricsCollector: MetricsCollector =
-    Try(
-      new SigarMetricsCollector(
-        selfAddress,
-        defaultDecayFactor,
-        extendedActorSystem.dynamicAccess
-          .createInstanceFor[AnyRef]("org.hyperic.sigar.Sigar", Nil))).recover {
+    Try(new SigarMetricsCollector(
+      selfAddress,
+      defaultDecayFactor,
+      extendedActorSystem.dynamicAccess
+        .createInstanceFor[AnyRef]("org.hyperic.sigar.Sigar", Nil))).recover {
       case e ⇒
         log.debug(
           "Metrics will be retreived from MBeans, Sigar failed to load. Reason: " + e)

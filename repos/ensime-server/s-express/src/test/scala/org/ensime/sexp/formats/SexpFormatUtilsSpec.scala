@@ -57,15 +57,13 @@ class SexpFormatUtilsSpec extends FormatSpec with SexpFormats {
   }
 
   it should "support safe readers" in {
-    val safe = safeReader(
-      new SexpReader[SexpString] {
-        def read(value: Sexp) =
-          value match {
-            case s: SexpString => s
-            case x             => deserializationError(x)
-          }
-      }
-    )
+    val safe = safeReader(new SexpReader[SexpString] {
+      def read(value: Sexp) =
+        value match {
+          case s: SexpString => s
+          case x             => deserializationError(x)
+        }
+    })
 
     foo.convertTo[Try[SexpString]](safe) should ===(Success(foo))
     bar.convertTo[Try[SexpString]](safe) shouldBe a[Failure[_]]

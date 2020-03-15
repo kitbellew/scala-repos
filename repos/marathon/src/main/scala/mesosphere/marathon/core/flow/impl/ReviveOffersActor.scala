@@ -22,13 +22,12 @@ private[flow] object ReviveOffersActor {
       marathonEventStream: EventStream,
       offersWanted: Observable[Boolean],
       driverHolder: MarathonSchedulerDriverHolder): Props = {
-    Props(
-      new ReviveOffersActor(
-        clock,
-        conf,
-        marathonEventStream,
-        offersWanted,
-        driverHolder))
+    Props(new ReviveOffersActor(
+      clock,
+      conf,
+      marathonEventStream,
+      offersWanted,
+      driverHolder))
   }
 
   private[impl] case object TimedCheck
@@ -111,10 +110,8 @@ private[impl] class ReviveOffersActor(
 
   override def receive: Receive =
     LoggingReceive {
-      Seq(
-        receiveOffersWantedNotifications,
-        receiveReviveOffersEvents
-      ).reduceLeft[Receive](_.orElse[Any, Unit](_))
+      Seq(receiveOffersWantedNotifications, receiveReviveOffersEvents)
+        .reduceLeft[Receive](_.orElse[Any, Unit](_))
     }
 
   private[this] def receiveOffersWantedNotifications: Receive = {

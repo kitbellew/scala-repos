@@ -471,12 +471,11 @@ final case class GroupBy(
     this2 :@ (if (!hasType)
                 CollectionType(
                   from2Type.cons,
-                  ProductType(
-                    ConstArray(
-                      NominalType(identity, by2.nodeType),
-                      CollectionType(
-                        TypedCollectionTypeConstructor.seq,
-                        from2Type.elementType))))
+                  ProductType(ConstArray(
+                    NominalType(identity, by2.nodeType),
+                    CollectionType(
+                      TypedCollectionTypeConstructor.seq,
+                      from2Type.elementType))))
               else nodeType)
   }
 }
@@ -550,7 +549,9 @@ final case class Join(
     val left2Type = left2.nodeType.asCollectionType
     val right2Type = right2.nodeType.asCollectionType
     val on2 = on.infer(
-      scope + (leftGen -> left2Type.elementType) + (rightGen -> right2Type.elementType),
+      scope + (
+        leftGen -> left2Type.elementType
+      ) + (rightGen -> right2Type.elementType),
       typeChildren)
     val (joinedLeftType, joinedRightType) = jt match {
       case JoinType.LeftOption =>
@@ -561,13 +562,13 @@ final case class Join(
         (OptionType(left2Type.elementType), OptionType(right2Type.elementType))
       case _ => (left2Type.elementType, right2Type.elementType)
     }
-    withChildren(ConstArray[Node](left2, right2, on2)) :@ (if (!hasType)
-                                                             CollectionType(
-                                                               left2Type.cons,
-                                                               ProductType(ConstArray(
-                                                                 joinedLeftType,
-                                                                 joinedRightType)))
-                                                           else nodeType)
+    withChildren(ConstArray[Node](left2, right2, on2)) :@ (
+      if (!hasType)
+        CollectionType(
+          left2Type.cons,
+          ProductType(ConstArray(joinedLeftType, joinedRightType)))
+      else nodeType
+    )
   }
 }
 

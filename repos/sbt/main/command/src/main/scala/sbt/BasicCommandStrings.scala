@@ -41,7 +41,9 @@ object BasicCommandStrings {
   def CompletionsBrief = (CompletionsCommand, CompletionsDetailed)
 
   def HistoryHelpBrief =
-    (HistoryCommands.Start -> "History command help.  Lists and describes all history commands.")
+    (
+      HistoryCommands.Start -> "History command help.  Lists and describes all history commands."
+    )
   def historyHelp =
     Help(
       Nil,

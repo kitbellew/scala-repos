@@ -41,8 +41,8 @@ import scala.collection.mutable
 private[netty3] class ChannelConnector[In, Out](
     newChannel: () => Channel,
     newTransport: Channel => Transport[In, Out],
-    statsReceiver: StatsReceiver
-) extends (SocketAddress => Future[Transport[In, Out]]) {
+    statsReceiver: StatsReceiver)
+    extends (SocketAddress => Future[Transport[In, Out]]) {
   private[this] val connectLatencyStat = statsReceiver.stat(
     "connect_latency_ms")
   private[this] val failedConnectLatencyStat = statsReceiver.stat(
@@ -99,8 +99,7 @@ object Netty3Transporter {
   val defaultChannelOptions: Map[String, Object] = Map(
     "tcpNoDelay" -> java.lang.Boolean.TRUE,
     "reuseAddress" -> java.lang.Boolean.TRUE,
-    "connectTimeoutMillis" -> (1000L: java.lang.Long)
-  )
+    "connectTimeoutMillis" -> (1000L: java.lang.Long))
 
   val channelFactory: NettyChannelFactory = new NioClientSocketChannelFactory(
     Executor,
@@ -140,8 +139,7 @@ object Netty3Transporter {
     */
   private[netty3] def make[In, Out](
       pipelineFactory: ChannelPipelineFactory,
-      params: Stack.Params
-  ): Netty3Transporter[In, Out] = {
+      params: Stack.Params): Netty3Transporter[In, Out] = {
     val Label(label) = params[Label]
     val Logger(logger) = params[Logger]
     // transport and transporter params
@@ -169,7 +167,9 @@ object Netty3Transporter {
     val Transport.Options(noDelay, reuseAddr) = params[Transport.Options]
 
     val opts = new mutable.HashMap[String, Object]()
-    opts += "connectTimeoutMillis" -> ((connectTimeout + compensation).inMilliseconds: java.lang.Long)
+    opts += "connectTimeoutMillis" -> (
+      (connectTimeout + compensation).inMilliseconds: java.lang.Long
+    )
     opts += "tcpNoDelay" -> (noDelay: java.lang.Boolean)
     opts += "reuseAddress" -> (reuseAddr: java.lang.Boolean)
     for (v <- keepAlive) opts += "keepAlive" -> (v: java.lang.Boolean)
@@ -208,8 +208,7 @@ object Netty3Transporter {
     */
   def apply[In, Out](
       pipelineFactory: ChannelPipelineFactory,
-      params: Stack.Params
-  ): Transporter[In, Out] = {
+      params: Stack.Params): Transporter[In, Out] = {
     val Stats(stats) = params[Stats]
     val transporter = make[In, Out](pipelineFactory, params)
 
@@ -305,8 +304,8 @@ case class Netty3Transporter[In, Out](
     channelSnooper: Option[ChannelSnooper] = None,
     channelOptions: Map[String, Object] =
       Netty3Transporter.defaultChannelOptions,
-    httpProxyCredentials: Option[Transporter.Credentials] = None
-) extends ((SocketAddress, StatsReceiver) => Future[Transport[In, Out]]) {
+    httpProxyCredentials: Option[Transporter.Credentials] = None)
+    extends ((SocketAddress, StatsReceiver) => Future[Transport[In, Out]]) {
   private[this] val statsHandlers =
     new IdentityHashMap[StatsReceiver, ChannelHandler]
 
@@ -321,8 +320,7 @@ case class Netty3Transporter[In, Out](
 
   private[netty3] def newPipeline(
       addr: SocketAddress,
-      statsReceiver: StatsReceiver
-  ): ChannelPipeline = {
+      statsReceiver: StatsReceiver): ChannelPipeline = {
     val pipeline = pipelineFactory.getPipeline()
 
     pipeline.addFirst("channelStatsHandler", channelStatsHandler(statsReceiver))

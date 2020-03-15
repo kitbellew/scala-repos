@@ -498,10 +498,9 @@ private[tree] object TreeEnsembleModel extends Logging {
         model.trees(0).algo.toString,
         model.combiningStrategy.toString,
         model.treeWeights)
-      val metadata = compact(
-        render(
-          ("class" -> className) ~ ("version" -> thisFormatVersion) ~
-            ("metadata" -> Extraction.decompose(ensembleMetadata))))
+      val metadata = compact(render(
+        ("class" -> className) ~ ("version" -> thisFormatVersion) ~
+          ("metadata" -> Extraction.decompose(ensembleMetadata))))
       sc.parallelize(Seq(metadata), 1).saveAsTextFile(Loader.metadataPath(path))
 
       // Create Parquet data.

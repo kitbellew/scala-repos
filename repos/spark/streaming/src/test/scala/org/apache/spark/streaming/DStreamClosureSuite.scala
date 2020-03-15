@@ -147,8 +147,7 @@ class DStreamClosureSuite extends SparkFunSuite with BeforeAndAfterAll {
         { _: Int => return; 1 },
         { case (_: Int, _: Int) => return; 1 },
         { case (_: Int, _: Int) => return; 1 },
-        new HashPartitioner(5)
-      )
+        new HashPartitioner(5))
     }
   }
   private def testReduceByKeyAndWindow(ds: DStream[(Int, Int)]): Unit = {

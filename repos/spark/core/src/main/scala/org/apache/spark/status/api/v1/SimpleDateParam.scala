@@ -38,8 +38,7 @@ private[v1] class SimpleDateParam(val originalValue: String) {
               Response
                 .status(Status.BAD_REQUEST)
                 .entity("Couldn't parse date: " + originalValue)
-                .build()
-            )
+                .build())
         }
     }
   }

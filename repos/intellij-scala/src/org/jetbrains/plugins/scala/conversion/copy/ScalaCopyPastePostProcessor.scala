@@ -88,20 +88,18 @@ class ScalaCopyPastePostProcessor
         )
     } catch {
       case p: ProcessCanceledException =>
-        Log.warn(
-          "Time-out while collecting dependencies in %s:\n%s".format(
-            file.getName,
-            file.getText.substring(startOffsets(0), endOffsets(0))))
+        Log.warn("Time-out while collecting dependencies in %s:\n%s".format(
+          file.getName,
+          file.getText.substring(startOffsets(0), endOffsets(0))))
       case e: Exception =>
         val selections = (startOffsets, endOffsets).zipped.map((a, b) =>
           file.getText.substring(a, b))
         val attachments = selections.zipWithIndex.map(p =>
           new Attachment(s"Selection-${p._2 + 1}.scala", p._1))
-        Log.error(
-          LogMessageEx.createEvent(
-            e.getMessage,
-            ExceptionUtil.getThrowableText(e),
-            attachments: _*))
+        Log.error(LogMessageEx.createEvent(
+          e.getMessage,
+          ExceptionUtil.getThrowableText(e),
+          attachments: _*))
     }
     new Associations(associations.reverse)
   }

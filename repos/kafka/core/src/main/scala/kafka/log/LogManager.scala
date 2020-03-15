@@ -215,9 +215,8 @@ class LogManager(
         delay = InitialTaskDelayMs,
         period = retentionCheckMs,
         TimeUnit.MILLISECONDS)
-      info(
-        "Starting log flusher with a default period of %d ms.".format(
-          flushCheckMs))
+      info("Starting log flusher with a default period of %d ms.".format(
+        flushCheckMs))
       scheduler.schedule(
         "kafka-log-flusher",
         flushDirtyLogs,
@@ -399,9 +398,8 @@ class LogManager(
           .format(
             topicAndPartition.topic,
             topicAndPartition.partition,
-            dataDir.getAbsolutePath, {
-              import JavaConversions._; config.originals.mkString(", ")
-            }))
+            dataDir.getAbsolutePath,
+            { import JavaConversions._; config.originals.mkString(", ") }))
       log
     }
   }

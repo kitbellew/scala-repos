@@ -41,8 +41,8 @@ object ScalaBuilder {
       modules: Set[JpsModule],
       client: Client): Either[String, ModuleLevelBuilder.ExitCode] = {
 
-    context.processMessage(
-      new ProgressMessage("Reading compilation settings..."))
+    context.processMessage(new ProgressMessage(
+      "Reading compilation settings..."))
 
     for {
       sbtData <- sbtData
@@ -66,9 +66,8 @@ object ScalaBuilder {
 
     def getPreviousIncrementalType: Option[IncrementalityType] = {
       storageFile.filter(_.exists).flatMap { file =>
-        val result = using(
-          new DataInputStream(
-            new BufferedInputStream(new FileInputStream(file)))) { in =>
+        val result = using(new DataInputStream(new BufferedInputStream(
+          new FileInputStream(file)))) { in =>
           try { Some(IncrementalityType.valueOf(in.readUTF())) }
           catch {
             case _: IOException | _: IllegalArgumentException |
@@ -85,11 +84,8 @@ object ScalaBuilder {
       storageFile.foreach { file =>
         val parentDir = file.getParentFile
         if (!parentDir.exists()) parentDir.mkdirs()
-        using(
-          new DataOutputStream(
-            new BufferedOutputStream(new FileOutputStream(file)))) {
-          _.writeUTF(incrType.name)
-        }
+        using(new DataOutputStream(new BufferedOutputStream(
+          new FileOutputStream(file)))) { _.writeUTF(incrType.name) }
       }
     }
 
@@ -123,11 +119,10 @@ object ScalaBuilder {
               context.getProjectDescriptor.getProject)) {
           cleanCaches()
           setPreviousIncrementalType(incrType)
-          context.processMessage(
-            new CompilerMessage(
-              "scala",
-              BuildMessage.Kind.WARNING,
-              "type of incremental compiler has been changed, full rebuild..."))
+          context.processMessage(new CompilerMessage(
+            "scala",
+            BuildMessage.Kind.WARNING,
+            "type of incremental compiler has been changed, full rebuild..."))
         }
       case Some(_) =>
         if (ScalaBuilder.isScalaProject(

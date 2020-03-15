@@ -32,10 +32,9 @@ class ExecutionDirectivesExamplesSpec extends RoutingSpec {
     val totallyMissingHandler = RejectionHandler
       .newBuilder()
       .handleNotFound {
-        complete(
-          (
-            StatusCodes.NotFound,
-            "Oh man, what you are looking for is long gone."))
+        complete((
+          StatusCodes.NotFound,
+          "Oh man, what you are looking for is long gone."))
       }
       .handle {
         case ValidationRejection(msg, _) =>

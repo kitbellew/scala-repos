@@ -92,17 +92,16 @@ trait ToBoxTheResponse {
           case (server, responseCode) =>
             val respHeaders = slurpApacheHeaders(getter.getResponseHeaders)
 
-            Full(
-              new TheResponse(
-                baseUrl,
-                responseCode,
-                getter.getStatusText,
-                respHeaders,
-                for {
-                  st <- Box !! getter.getResponseBodyAsStream
-                  bytes <- tryo(readWholeStream(st))
-                } yield bytes,
-                httpClient))
+            Full(new TheResponse(
+              baseUrl,
+              responseCode,
+              getter.getStatusText,
+              respHeaders,
+              for {
+                st <- Box !! getter.getResponseBodyAsStream
+                bytes <- tryo(readWholeStream(st))
+              } yield bytes,
+              httpClient))
         }
       } catch {
         case e: IOException => Failure(baseUrl + fullUrl, Full(e), Empty)

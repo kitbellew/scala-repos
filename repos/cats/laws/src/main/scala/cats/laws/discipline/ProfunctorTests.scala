@@ -22,8 +22,7 @@ trait ProfunctorTests[F[_, _]] extends Laws {
       ArbFCD: Arbitrary[F[C, D]],
       EqFAB: Eq[F[A, B]],
       EqFAD: Eq[F[A, D]],
-      EqFAG: Eq[F[A, G]]
-  ): RuleSet =
+      EqFAG: Eq[F[A, G]]): RuleSet =
     new DefaultRuleSet(
       name = "profunctor",
       parent = None,

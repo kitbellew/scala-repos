@@ -37,11 +37,10 @@ abstract class HttpServerTestSetupBase {
 
     RunnableGraph
       .fromGraph(
-        GraphDSL.create(
-          HttpServerBluePrint(
-            settings,
-            remoteAddress = remoteAddress,
-            log = NoLogging)) { implicit b ⇒ server ⇒
+        GraphDSL.create(HttpServerBluePrint(
+          settings,
+          remoteAddress = remoteAddress,
+          log = NoLogging)) { implicit b ⇒ server ⇒
           import GraphDSL.Implicits._
           Source.fromPublisher(netIn) ~> Flow[ByteString].map(
             SessionBytes(null, _)) ~> server.in2

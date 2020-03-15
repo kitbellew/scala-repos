@@ -386,9 +386,8 @@ final class ExplicitlyAskableActorRef(val actorRef: ActorRef) extends AnyVal {
           a.result.future
         }
       case _ if sender eq null ⇒
-        Future.failed[Any](
-          new IllegalArgumentException(
-            s"""No recipient provided, question not sent to [$actorRef]."""))
+        Future.failed[Any](new IllegalArgumentException(
+          s"""No recipient provided, question not sent to [$actorRef]."""))
       case _ ⇒
         val message = messageFactory(
           sender.asInstanceOf[InternalActorRef].provider.deadLetters)
@@ -515,9 +514,8 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection)
           a.result.future
         }
       case _ if sender eq null ⇒
-        Future.failed[Any](
-          new IllegalArgumentException(
-            s"""No recipient provided, question not sent to [$actorSel]."""))
+        Future.failed[Any](new IllegalArgumentException(
+          s"""No recipient provided, question not sent to [$actorSel]."""))
       case _ ⇒
         val message = messageFactory(
           sender.asInstanceOf[InternalActorRef].provider.deadLetters)
@@ -671,11 +669,10 @@ private[akka] final class PromiseActorRef private (
         if (watchee == this && watcher != this) {
           if (!addWatcher(watcher))
             // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-            watcher.sendSystemMessage(
-              DeathWatchNotification(
-                watchee,
-                existenceConfirmed = true,
-                addressTerminated = false))
+            watcher.sendSystemMessage(DeathWatchNotification(
+              watchee,
+              existenceConfirmed = true,
+              addressTerminated = false))
         } else
           System.err.println(
             "BUG: illegal Watch(%s,%s) for %s".format(watchee, watcher, this))
@@ -704,11 +701,10 @@ private[akka] final class PromiseActorRef private (
           // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
           watcher
             .asInstanceOf[InternalActorRef]
-            .sendSystemMessage(
-              DeathWatchNotification(
-                this,
-                existenceConfirmed = true,
-                addressTerminated = false))
+            .sendSystemMessage(DeathWatchNotification(
+              this,
+              existenceConfirmed = true,
+              addressTerminated = false))
         }
       }
     }

@@ -127,8 +127,7 @@ trait Event[+T] { self =>
       def register(s: Witness[Either[T, U]]): Closable =
         Closable.all(
           self.register(s.comap { t => Left(t) }),
-          other.register(s.comap { u => Right(u) })
-        )
+          other.register(s.comap { u => Right(u) }))
     }
 
   /**

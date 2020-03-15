@@ -130,18 +130,14 @@ private[simul] final class SimulApi(
           _ ?? { simul =>
             val simul2 = simul.updatePairing(
               game.id,
-              _.finish(game.status, game.winnerUserId, game.turns)
-            )
+              _.finish(game.status, game.winnerUserId, game.turns))
             update(simul2) >> currentHostIdsCache.clear >>- {
               if (simul2.isFinished)
                 userRegister ! lila.hub.actorApi.SendTo(
                   simul2.hostId,
                   lila.socket.Socket.makeMessage(
                     "simulEnd",
-                    Json.obj(
-                      "id" -> simul.id,
-                      "name" -> simul.name
-                    )))
+                    Json.obj("id" -> simul.id, "name" -> simul.name)))
             }
           }
         }
@@ -217,18 +213,16 @@ private[simul] final class SimulApi(
 
   private object publish {
     private val siteMessage = SendToFlag("simul", Json.obj("t" -> "reload"))
-    private val debouncer = system.actorOf(
-      Props(
-        new Debouncer(
-          2 seconds,
-          { (_: Debouncer.Nothing) =>
-            site ! siteMessage
-            repo.allCreated foreach { simuls =>
-              renderer ? actorApi.SimulTable(simuls) map {
-                case view: play.twirl.api.Html => ReloadSimuls(view.body)
-              } pipeToSelection lobby
-            }
-          })))
+    private val debouncer = system.actorOf(Props(new Debouncer(
+      2 seconds,
+      { (_: Debouncer.Nothing) =>
+        site ! siteMessage
+        repo.allCreated foreach { simuls =>
+          renderer ? actorApi.SimulTable(simuls) map {
+            case view: play.twirl.api.Html => ReloadSimuls(view.body)
+          } pipeToSelection lobby
+        }
+      })))
     def apply() { debouncer ! Debouncer.Nothing }
   }
 

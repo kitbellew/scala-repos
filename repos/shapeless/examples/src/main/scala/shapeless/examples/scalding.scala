@@ -57,8 +57,7 @@ object ScaldingPoC extends App {
 
   val books = List(
     "text" ->> "Not everyone knows how I killed old Phillip Mathers" :: HNil,
-    "text" ->> "No, no, I can't tell you everything" :: HNil
-  )
+    "text" ->> "No, no, I can't tell you everything" :: HNil)
 
   val lines = books.flatMap(book =>
     for (word <- book("text").split("\\s+")) yield book + ("word" ->> word))

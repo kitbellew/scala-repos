@@ -1263,13 +1263,12 @@ object TreeShakerSpecs
               NumLit(LineStream(), "42"),
               ObjectDef(
                 LineStream(),
-                Vector(
-                  (
-                    "foo",
-                    Dispatch(
-                      LineStream(),
-                      Identifier(Vector(), "a"),
-                      Vector()))))) =>
+                Vector((
+                  "foo",
+                  Dispatch(
+                    LineStream(),
+                    Identifier(Vector(), "a"),
+                    Vector()))))) =>
           ok
       }
 
@@ -1374,11 +1373,10 @@ object TreeShakerSpecs
         Vector("a", "b"),
         ArrayDef(
           LineStream(),
-          Vector(
-            Add(
-              LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              NumLit(LineStream(), "42")))),
+          Vector(Add(
+            LineStream(),
+            Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+            NumLit(LineStream(), "42")))),
         Dispatch(
           LineStream(),
           Identifier(Vector(), "a"),
@@ -1397,11 +1395,10 @@ object TreeShakerSpecs
         Vector(TicVar(LineStream(), "'a"), TicVar(LineStream(), "'b")),
         ArrayDef(
           LineStream(),
-          Vector(
-            Add(
-              LineStream(),
-              TicVar(LineStream(), "'a"),
-              NumLit(LineStream(), "42"))))
+          Vector(Add(
+            LineStream(),
+            TicVar(LineStream(), "'a"),
+            NumLit(LineStream(), "42"))))
       )
       bindRoot(tree, tree)
 
@@ -1788,11 +1785,10 @@ object TreeShakerSpecs
         Dispatch(
           LineStream(),
           Identifier(Vector(), "count"),
-          Vector(
-            Add(
-              LineStream(),
-              Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
-              NumLit(LineStream(), "42")))
+          Vector(Add(
+            LineStream(),
+            Dispatch(LineStream(), Identifier(Vector(), "a"), Vector()),
+            NumLit(LineStream(), "42")))
         ),
         Dispatch(
           LineStream(),
@@ -1813,11 +1809,10 @@ object TreeShakerSpecs
         Dispatch(
           LineStream(),
           Identifier(Vector(), "count"),
-          Vector(
-            Add(
-              LineStream(),
-              TicVar(LineStream(), "'a"),
-              NumLit(LineStream(), "42"))))
+          Vector(Add(
+            LineStream(),
+            TicVar(LineStream(), "'a"),
+            NumLit(LineStream(), "42"))))
       )
       bindRoot(tree, tree)
 

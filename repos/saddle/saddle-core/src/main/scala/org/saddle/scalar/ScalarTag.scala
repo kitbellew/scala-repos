@@ -56,7 +56,9 @@ trait ScalarTag[@spec(Boolean, Int, Long, Float, Double) T]
   override def equals(o: Any): Boolean =
     o match {
       case s: ScalarTag[_] =>
-        (this eq s) || runtimeClass == s.runtimeClass && isAny == s.isAny && isAnyVal == s.isAnyVal
+        (
+          this eq s
+        ) || runtimeClass == s.runtimeClass && isAny == s.isAny && isAnyVal == s.isAnyVal
       case _ => false
     }
 

@@ -88,14 +88,16 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     val document: Document = psiDocumentManager.getDocument(this)
     UndoManager
       .getInstance(project)
-      .undoableActionPerformed(
-        new ScalaCodeFragment.ImportClassUndoableAction(path, document, imports)
-      )
+      .undoableActionPerformed(new ScalaCodeFragment.ImportClassUndoableAction(
+        path,
+        document,
+        imports))
     val newRef = ref match {
       case st: ScStableCodeReferenceElement if st.resolve() == null =>
-        Some(
-          ScalaPsiElementFactory
-            .createReferenceFromText(st.getText, st.getParent, st))
+        Some(ScalaPsiElementFactory.createReferenceFromText(
+          st.getText,
+          st.getParent,
+          st))
       case expr: ScReferenceExpression if expr.resolve() == null =>
         Some(
           ScalaPsiElementFactory

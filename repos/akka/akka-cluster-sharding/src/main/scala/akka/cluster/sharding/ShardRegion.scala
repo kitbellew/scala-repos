@@ -36,15 +36,14 @@ object ShardRegion {
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId,
       handOffStopMessage: Any): Props =
-    Props(
-      new ShardRegion(
-        typeName,
-        Some(entityProps),
-        settings,
-        coordinatorPath,
-        extractEntityId,
-        extractShardId,
-        handOffStopMessage)).withDeploy(Deploy.local)
+    Props(new ShardRegion(
+      typeName,
+      Some(entityProps),
+      settings,
+      coordinatorPath,
+      extractEntityId,
+      extractShardId,
+      handOffStopMessage)).withDeploy(Deploy.local)
 
   /**
     * INTERNAL API
@@ -57,15 +56,14 @@ object ShardRegion {
       coordinatorPath: String,
       extractEntityId: ShardRegion.ExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId): Props =
-    Props(
-      new ShardRegion(
-        typeName,
-        None,
-        settings,
-        coordinatorPath,
-        extractEntityId,
-        extractShardId,
-        PoisonPill))
+    Props(new ShardRegion(
+      typeName,
+      None,
+      settings,
+      coordinatorPath,
+      extractEntityId,
+      extractShardId,
+      PoisonPill))
       .withDeploy(Deploy.local)
 
   /**
@@ -810,19 +808,18 @@ class ShardRegion(
             log.debug("Starting shard [{}] in region", id)
 
             val name = URLEncoder.encode(id, "utf-8")
-            val shard = context.watch(
-              context.actorOf(
-                Shard
-                  .props(
-                    typeName,
-                    id,
-                    props,
-                    settings,
-                    extractEntityId,
-                    extractShardId,
-                    handOffStopMessage)
-                  .withDispatcher(context.props.dispatcher),
-                name))
+            val shard = context.watch(context.actorOf(
+              Shard
+                .props(
+                  typeName,
+                  id,
+                  props,
+                  settings,
+                  extractEntityId,
+                  extractShardId,
+                  handOffStopMessage)
+                .withDispatcher(context.props.dispatcher),
+              name))
             shardsByRef = shardsByRef.updated(shard, id)
             shards = shards.updated(id, shard)
             startingShards += id

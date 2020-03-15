@@ -47,7 +47,9 @@ package org.ensime.core
 trait DocFinding { self: RichPresentationCompiler =>
 
   private def isRoot(s: Symbol) =
-    (s eq NoSymbol) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
+    (
+      s eq NoSymbol
+    ) || s.isRootSymbol || s.isEmptyPackage || s.isEmptyPackageClass
 
   private def fullPackage(sym: Symbol): String =
     sym.ownerChain.reverse

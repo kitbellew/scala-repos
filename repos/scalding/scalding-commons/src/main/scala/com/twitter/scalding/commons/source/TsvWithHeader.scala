@@ -79,8 +79,8 @@ class TsvWithHeader(p: String, f: Fields = Fields.UNKNOWN)(implicit mode: Mode)
         try {
           val pt = new Path(filename)
           val fs = pt.getFileSystem(conf)
-          val br = new BufferedWriter(
-            new OutputStreamWriter(fs.create(pt, true)))
+          val br = new BufferedWriter(new OutputStreamWriter(
+            fs.create(pt, true)))
 
           br.write(text)
           br.close()

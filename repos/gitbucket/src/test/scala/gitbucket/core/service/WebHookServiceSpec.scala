@@ -118,15 +118,13 @@ class WebHookServiceSpec extends FunSuite with ServiceSpecBase {
         Set(WebHook.PullRequest),
         Some("key"))
       assert(
-        service.getWebHooks("user1", "repo1") == List(
-          (
-            WebHook("user1", "repo1", "http://example.com", Some("key")),
-            Set(WebHook.PullRequest))))
+        service.getWebHooks("user1", "repo1") == List((
+          WebHook("user1", "repo1", "http://example.com", Some("key")),
+          Set(WebHook.PullRequest))))
       assert(
-        service.getWebHook("user1", "repo1", "http://example.com") == Some(
-          (
-            WebHook("user1", "repo1", "http://example.com", Some("key")),
-            Set(WebHook.PullRequest))))
+        service.getWebHook("user1", "repo1", "http://example.com") == Some((
+          WebHook("user1", "repo1", "http://example.com", Some("key")),
+          Set(WebHook.PullRequest))))
       assert(
         service
           .getWebHooksByEvent("user1", "repo1", WebHook.PullRequest) == List(
@@ -143,10 +141,9 @@ class WebHookServiceSpec extends FunSuite with ServiceSpecBase {
         Set(WebHook.Push, WebHook.Issues),
         Some("key"))
       assert(
-        service.getWebHook("user1", "repo1", "http://example.com") == Some(
-          (
-            WebHook("user1", "repo1", "http://example.com", Some("key")),
-            Set(WebHook.Push, WebHook.Issues))))
+        service.getWebHook("user1", "repo1", "http://example.com") == Some((
+          WebHook("user1", "repo1", "http://example.com", Some("key")),
+          Set(WebHook.Push, WebHook.Issues))))
       assert(
         service
           .getWebHooksByEvent("user1", "repo1", WebHook.PullRequest) == Nil)

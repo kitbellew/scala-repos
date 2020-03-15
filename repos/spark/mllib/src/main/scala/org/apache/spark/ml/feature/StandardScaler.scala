@@ -99,8 +99,8 @@ class StandardScaler(override val uid: String)
       new feature.StandardScaler(withMean = $(withMean), withStd = $(withStd))
     val scalerModel = scaler.fit(input)
     copyValues(
-      new StandardScalerModel(uid, scalerModel.std, scalerModel.mean)
-        .setParent(this))
+      new StandardScalerModel(uid, scalerModel.std, scalerModel.mean).setParent(
+        this))
   }
 
   override def transformSchema(schema: StructType): StructType = {

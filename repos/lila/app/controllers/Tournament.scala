@@ -41,12 +41,11 @@ object Tournament extends LilaController {
               finishedPaginator zip
               UserRepo.allSortToints(10) map {
               case (((visible, scheduled), finished), leaderboard) =>
-                Ok(
-                  html.tournament.home(
-                    scheduled,
-                    finished,
-                    leaderboard,
-                    env scheduleJsonView visible))
+                Ok(html.tournament.home(
+                  scheduled,
+                  finished,
+                  leaderboard,
+                  env scheduleJsonView visible))
             } map NoCache
         },
         api = _ =>
@@ -136,8 +135,8 @@ object Tournament extends LilaController {
     val userId = lila.user.User normalize user
     OptionFuResult(PairingRepo.byTourUserNb(id, userId, nb)) { pairing =>
       GameRepo game pairing.id map {
-        _.flatMap { Pov.ofUserId(_, userId) }
-          .fold(Redirect(routes.Tournament show id))(withPov)
+        _.flatMap { Pov.ofUserId(_, userId) }.fold(Redirect(
+          routes.Tournament show id))(withPov)
       }
     }
   }

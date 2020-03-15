@@ -56,8 +56,7 @@ class EnsembleVBox extends EnsembleExample {
         new VBox {
           spacing = 5
           children = List(checkBox1, checkBox2, checkBox3)
-        }
-      )
+        })
     }
   }
 }

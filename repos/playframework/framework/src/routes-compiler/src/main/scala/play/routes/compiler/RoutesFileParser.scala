@@ -47,13 +47,11 @@ object RoutesFileParser {
           case errors => Left(errors)
         }
       case parser.NoSuccess(message, in) =>
-        Left(
-          Seq(
-            RoutesCompilationError(
-              routesFile,
-              message,
-              Some(in.pos.line),
-              Some(in.pos.column))))
+        Left(Seq(RoutesCompilationError(
+          routesFile,
+          message,
+          Some(in.pos.line),
+          Some(in.pos.column))))
     }
   }
 
@@ -361,7 +359,9 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def sentence: Parser[Product with Serializable] =
     namedError(
       (comment | positioned(include) | positioned(route)),
-      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (newLine | EOF)
+      "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (
+      newLine | EOF
+    )
 
   def parser: Parser[List[Rule]] =
     phrase((blankLine | sentence *) <~ end) ^^ {

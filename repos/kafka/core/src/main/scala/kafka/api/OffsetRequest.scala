@@ -114,10 +114,9 @@ case class OffsetRequest(
       foldedTopics +
         shortStringLength(topic) +
         4 + /* partition count */
-      partitionInfos.size * (
-        4 + /* partition */
-        8 + /* time */
-        4 /* maxNumOffsets */
+      partitionInfos.size * (4 + /* partition */
+      8 + /* time */
+      4 /* maxNumOffsets */
       )
     })
 
@@ -139,10 +138,9 @@ case class OffsetRequest(
     val errorResponse = OffsetResponse(
       correlationId,
       partitionOffsetResponseMap)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, errorResponse)))
   }
 
   override def describe(details: Boolean): String = {

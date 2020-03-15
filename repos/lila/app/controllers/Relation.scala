@@ -22,27 +22,23 @@ object Relation extends LilaController {
       (ctx.userId ?? { env.api.fetchBlocks(userId, _) }) flatMap {
       case ((relation, followable), blocked) =>
         negotiate(
-          html = fuccess(
-            Ok(mini.fold(
-              html.relation.mini(
-                userId,
-                blocked = blocked,
-                followable = followable,
-                relation = relation),
-              html.relation.actions(
-                userId,
-                relation = relation,
-                blocked = blocked,
-                followable = followable)
-            ))),
+          html = fuccess(Ok(mini.fold(
+            html.relation.mini(
+              userId,
+              blocked = blocked,
+              followable = followable,
+              relation = relation),
+            html.relation.actions(
+              userId,
+              relation = relation,
+              blocked = blocked,
+              followable = followable)
+          ))),
           api = _ =>
-            fuccess(
-              Ok(
-                Json.obj(
-                  "followable" -> followable,
-                  "following" -> relation.contains(true),
-                  "blocking" -> relation.contains(false)
-                )))
+            fuccess(Ok(Json.obj(
+              "followable" -> followable,
+              "following" -> relation.contains(true),
+              "blocking" -> relation.contains(false))))
         )
     }
 

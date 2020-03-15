@@ -70,8 +70,8 @@ class ShuffleBlockFetcherIteratorSuite
   // Create a mock managed buffer for testing
   def createMockManagedBuffer(): ManagedBuffer = {
     val mockManagedBuffer = mock(classOf[ManagedBuffer])
-    when(mockManagedBuffer.createInputStream())
-      .thenReturn(mock(classOf[InputStream]))
+    when(mockManagedBuffer.createInputStream()).thenReturn(mock(
+      classOf[InputStream]))
     mockManagedBuffer
   }
 
@@ -188,10 +188,9 @@ class ShuffleBlockFetcherIteratorSuite
         }
       })
 
-    val blocksByAddress = Seq[(BlockManagerId, Seq[(BlockId, Long)])](
-      (
-        remoteBmId,
-        blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
+    val blocksByAddress = Seq[(BlockManagerId, Seq[(BlockId, Long)])]((
+      remoteBmId,
+      blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
 
     val taskContext = TaskContext.empty()
     val iterator = new ShuffleBlockFetcherIterator(
@@ -259,10 +258,9 @@ class ShuffleBlockFetcherIteratorSuite
         }
       })
 
-    val blocksByAddress = Seq[(BlockManagerId, Seq[(BlockId, Long)])](
-      (
-        remoteBmId,
-        blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
+    val blocksByAddress = Seq[(BlockManagerId, Seq[(BlockId, Long)])]((
+      remoteBmId,
+      blocks.keys.map(blockId => (blockId, 1.asInstanceOf[Long])).toSeq))
 
     val taskContext = TaskContext.empty()
     val iterator = new ShuffleBlockFetcherIterator(

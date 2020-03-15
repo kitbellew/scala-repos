@@ -134,16 +134,14 @@ trait ShardService
         path("/queries") {
           path("/'jobId") {
             get(new AsyncQueryResultServiceHandler(state.jobManager)) ~
-              delete(
-                new QueryDeleteHandler[ByteChunk](
-                  state.jobManager,
-                  state.clock))
+              delete(new QueryDeleteHandler[ByteChunk](
+                state.jobManager,
+                state.clock))
           } ~
             requireAccount(state.accountFinder) {
               // async handler *always* returns a JSON object containing the job ID
-              shardService[({
-                type λ[+α] = (((APIKey, AccountDetails)) => α)
-              })#λ] {
+              shardService[
+                ({ type λ[+α] = (((APIKey, AccountDetails)) => α) })#λ] {
                 asyncQuery(post(
                   new AsyncQueryServiceHandler(state.platform.asynchronous)))
               }
@@ -162,9 +160,8 @@ trait ShardService
       jsonAPIKey(state.apiKeyFinder) {
         requireAccount(state.accountFinder) {
           dataPath("/analytics/fs") {
-            shardService[({
-              type λ[+α] = (((APIKey, AccountDetails), Path) => α)
-            })#λ] {
+            shardService[
+              ({ type λ[+α] = (((APIKey, AccountDetails), Path) => α) })#λ] {
               query[QueryResult] {
                 {
                   get { queryService } ~
@@ -183,12 +180,10 @@ trait ShardService
               produce(application / json)(
                 new BrowseServiceHandler[ByteChunk](state.platform.vfs) map {
                   _ map { _ map { _ map { jvalueToChunk } } }
-                }
-              )(
-                ResponseModifier.responseFG[
-                  ({ type λ[α] = (APIKey, Path) => α })#λ,
-                  Future,
-                  ByteChunk])
+                })(ResponseModifier.responseFG[
+                ({ type λ[α] = (APIKey, Path) => α })#λ,
+                Future,
+                ByteChunk])
             } ~
               options {
                 (request: HttpRequest[ByteChunk]) => (a: APIKey, p: Path) =>
@@ -202,12 +197,10 @@ trait ShardService
                   state.platform.vfs,
                   legacy = true) map {
                   _ map { _ map { _ map { jvalueToChunk } } }
-                }
-              )(
-                ResponseModifier.responseFG[
-                  ({ type λ[α] = (APIKey, Path) => α })#λ,
-                  Future,
-                  ByteChunk])
+                })(ResponseModifier.responseFG[
+                ({ type λ[α] = (APIKey, Path) => α })#λ,
+                Future,
+                ByteChunk])
             } ~
               options {
                 (request: HttpRequest[ByteChunk]) => (a: APIKey, p: Path) =>
@@ -252,9 +245,8 @@ trait ShardService
       requireAccount(state.accountFinder) {
         dataPath("/analysis/fs") {
           get {
-            shardService[({
-              type λ[+α] = ((APIKey, AccountDetails), Path) => α
-            })#λ] {
+            shardService[
+              ({ type λ[+α] = ((APIKey, AccountDetails), Path) => α })#λ] {
               new AnalysisServiceHandler(
                 state.platform,
                 state.scheduler,

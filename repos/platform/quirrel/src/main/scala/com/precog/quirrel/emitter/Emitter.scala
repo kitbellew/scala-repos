@@ -268,8 +268,7 @@ trait Emitter
         op: BinaryOperation): EmitterState = {
       emitCrossOrMatchState(left, leftProv, right, rightProv)(
         ifCross = Map2Cross(op),
-        ifMatch = Map2Match(op)
-      )
+        ifMatch = Map2Match(op))
     }
 
     def emitMap(
@@ -299,8 +298,7 @@ trait Emitter
         rightProv: Provenance): EmitterState = {
       emitCrossOrMatchState(left, leftProv, right, rightProv)(
         ifCross = FilterCross,
-        ifMatch = FilterMatch
-      )
+        ifMatch = FilterMatch)
     }
 
     def emitFilter(
@@ -365,8 +363,9 @@ trait Emitter
               prepareContext(context, dispatches) { dispatches =>
                 emitExpr(target, dispatches)
               } >>
-              (origin map { labelGroup(_, id) } getOrElse mzero[
-                EmitterState]) >>
+              (
+                origin map { labelGroup(_, id) } getOrElse mzero[EmitterState]
+              ) >>
               emitInstr(Group(id))
           }
         }

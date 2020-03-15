@@ -253,15 +253,13 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       mapSideCombine: Boolean,
       serializer: Serializer): JavaPairRDD[K, C] = {
     implicit val ctag: ClassTag[C] = fakeClassTag
-    fromRDD(
-      rdd.combineByKeyWithClassTag(
-        createCombiner,
-        mergeValue,
-        mergeCombiners,
-        partitioner,
-        mapSideCombine,
-        serializer
-      ))
+    fromRDD(rdd.combineByKeyWithClassTag(
+      createCombiner,
+      mergeValue,
+      mergeCombiners,
+      partitioner,
+      mapSideCombine,
+      serializer))
   }
 
   /**
@@ -583,12 +581,11 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       mergeValue: JFunction2[C, V, C],
       mergeCombiners: JFunction2[C, C, C]): JavaPairRDD[K, C] = {
     implicit val ctag: ClassTag[C] = fakeClassTag
-    fromRDD(
-      combineByKey(
-        createCombiner,
-        mergeValue,
-        mergeCombiners,
-        defaultPartitioner(rdd)))
+    fromRDD(combineByKey(
+      createCombiner,
+      mergeValue,
+      mergeCombiners,
+      defaultPartitioner(rdd)))
   }
 
   /**
@@ -1044,9 +1041,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       numPartitions: Int): JavaPairRDD[K, V] = {
     implicit val ordering =
       comp // Allow implicit conversion of Comparator to Ordering.
-    fromRDD(
-      new OrderedRDDFunctions[K, V, (K, V)](rdd)
-        .sortByKey(ascending, numPartitions))
+    fromRDD(new OrderedRDDFunctions[K, V, (K, V)](rdd).sortByKey(
+      ascending,
+      numPartitions))
   }
 
   /**

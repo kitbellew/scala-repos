@@ -42,14 +42,13 @@ class SchedulerActionsTest
       queue,
       system.eventStream,
       TestProbe().ref,
-      mock[MarathonConf]
-    )
+      mock[MarathonConf])
 
     val app = AppDefinition(id = PathId("/myapp"))
 
     when(repo.expunge(app.id)).thenReturn(Future.successful(Seq(true)))
-    when(taskTracker.appTasks(eq(app.id))(any))
-      .thenReturn(Future.successful(Iterable.empty[Task]))
+    when(taskTracker.appTasks(eq(app.id))(any)).thenReturn(Future.successful(
+      Iterable.empty[Task]))
 
     val res = scheduler.stopApp(mock[SchedulerDriver], app)
 
@@ -84,24 +83,21 @@ class SchedulerActionsTest
       queue,
       system.eventStream,
       TestProbe().ref,
-      mock[MarathonConf]
-    )
+      mock[MarathonConf])
 
     val app = AppDefinition(id = PathId("/myapp"))
 
     val tasks = Set(runningTask, stagedTask, stagedTaskWithSlaveId)
-    when(taskTracker.tasksByApp()).thenReturn(
-      Future.successful(TasksByApp.of(AppTasks.forTasks(app.id, tasks))))
+    when(taskTracker.tasksByApp()).thenReturn(Future.successful(
+      TasksByApp.of(AppTasks.forTasks(app.id, tasks))))
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
 
     Await.result(scheduler.reconcileTasks(driver), 5.seconds)
 
     verify(driver).reconcileTasks(
-      Set(
-        runningTask,
-        stagedTask,
-        stagedTaskWithSlaveId
-      ).flatMap(_.launched.flatMap(_.status.mesosStatus)).asJava)
+      Set(runningTask, stagedTask, stagedTaskWithSlaveId)
+        .flatMap(_.launched.flatMap(_.status.mesosStatus))
+        .asJava)
     verify(driver).reconcileTasks(java.util.Arrays.asList())
   }
 
@@ -120,13 +116,12 @@ class SchedulerActionsTest
       queue,
       system.eventStream,
       TestProbe().ref,
-      mock[MarathonConf]
-    )
+      mock[MarathonConf])
 
     val app = AppDefinition(id = PathId("/myapp"))
 
-    when(taskTracker.tasksByApp())
-      .thenReturn(Future.successful(TasksByApp.empty))
+    when(taskTracker.tasksByApp()).thenReturn(Future.successful(
+      TasksByApp.empty))
     when(repo.allPathIds()).thenReturn(Future.successful(Seq()))
 
     Await.result(scheduler.reconcileTasks(driver), 5.seconds)
@@ -152,8 +147,7 @@ class SchedulerActionsTest
       queue,
       system.eventStream,
       TestProbe().ref,
-      mock[MarathonConf]
-    )
+      mock[MarathonConf])
 
     val app = AppDefinition(id = PathId("/myapp"))
     val tasksOfApp = AppTasks.forTasks(app.id, Iterable(task))
@@ -162,8 +156,8 @@ class SchedulerActionsTest
       orphanedApp.id,
       Iterable(orphanedTask))
 
-    when(taskTracker.tasksByApp()).thenReturn(
-      Future.successful(TasksByApp.of(tasksOfApp, tasksOfOrphanedApp)))
+    when(taskTracker.tasksByApp()).thenReturn(Future.successful(
+      TasksByApp.of(tasksOfApp, tasksOfOrphanedApp)))
     when(repo.allPathIds()).thenReturn(Future.successful(Seq(app.id)))
 
     Await.result(scheduler.reconcileTasks(driver), 5.seconds)

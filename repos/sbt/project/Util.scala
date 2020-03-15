@@ -11,12 +11,10 @@ object Util {
   def noPublishSettings: Seq[Setting[_]] = Seq(publish := {})
 
   def crossBuild: Seq[Setting[_]] =
-    Seq(
-      crossPaths := (scalaBinaryVersion.value match {
-        case "2.11" => true
-        case _      => false
-      })
-    )
+    Seq(crossPaths := (scalaBinaryVersion.value match {
+      case "2.11" => true
+      case _      => false
+    }))
 
   lazy val javaOnlySettings = Seq[Setting[_]](
     /*crossPaths := false, */ compileOrder := CompileOrder.JavaThenScala,
@@ -108,10 +106,7 @@ object Util {
   def srcID = "compiler-interface-src"
 
   def publishPomSettings: Seq[Setting[_]] =
-    Seq(
-      publishArtifact in makePom := false,
-      pomPostProcess := cleanPom _
-    )
+    Seq(publishArtifact in makePom := false, pomPostProcess := cleanPom _)
 
   def cleanPom(pomNode: scala.xml.Node) = {
     import scala.xml._
@@ -140,7 +135,9 @@ object Util {
     node \ "artifactId" exists { n => excludePomArtifact(n.text) }
 
   def excludePomArtifact(artifactId: String) =
-    (artifactId == "compiler-interface") || (artifactId startsWith "precompiled")
+    (artifactId == "compiler-interface") || (
+      artifactId startsWith "precompiled"
+    )
 
   val testExclusive = tags in test += ((ExclusiveTest, 1))
 
@@ -169,14 +166,13 @@ object %s {
     out
   }
   def keywordsSettings: Seq[Setting[_]] =
-    inConfig(Compile)(
-      Seq(
-        scalaKeywords := getScalaKeywords,
-        generateKeywords <<= (
-          sourceManaged,
-          scalaKeywords) map writeScalaKeywords,
-        sourceGenerators <+= generateKeywords map (x => Seq(x))
-      ))
+    inConfig(Compile)(Seq(
+      scalaKeywords := getScalaKeywords,
+      generateKeywords <<= (
+        sourceManaged,
+        scalaKeywords) map writeScalaKeywords,
+      sourceGenerators <+= generateKeywords map (x => Seq(x))
+    ))
 }
 
 object Licensed {

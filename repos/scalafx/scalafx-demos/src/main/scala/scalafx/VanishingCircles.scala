@@ -72,8 +72,7 @@ object VanishingCircles extends JFXApp {
     keyFrames = for (circle <- circles) yield at(40 s) {
       Set(
         circle.centerX -> random * stage.width(),
-        circle.centerY -> random * stage.height()
-      )
+        circle.centerY -> random * stage.height())
     }
   }.play()
 }

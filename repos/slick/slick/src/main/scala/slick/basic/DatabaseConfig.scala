@@ -90,9 +90,8 @@ object DatabaseConfig {
       if (nOld.isDefined)
         logger.warn(
           s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
-      nOld.getOrElse(
-        config.getString(basePath + "profile")
-      ) // trigger the correct error
+      nOld.getOrElse(config.getString(
+        basePath + "profile")) // trigger the correct error
     }
 
     val untypedP =
@@ -186,10 +185,9 @@ object StaticDatabaseConfigMacros {
       .takeWhile(_ != NoSymbol)
     val uriOpt =
       scopes.map(s => findUri(s.annotations)).find(_.isDefined).flatten
-    uriOpt.getOrElse(
-      c.abort(
-        c.enclosingPosition,
-        "No @StaticDatabaseConfig annotation found in enclosing scope"))
+    uriOpt.getOrElse(c.abort(
+      c.enclosingPosition,
+      "No @StaticDatabaseConfig annotation found in enclosing scope"))
   }
 
   def getImpl[P <: BasicProfile: c.WeakTypeTag](c: Context)(
@@ -204,8 +202,7 @@ object StaticDatabaseConfigMacros {
       ct: c.Expr[ClassTag[P]]): c.Expr[DatabaseConfig[P]] = {
     import c.universe._
     val uri = c.Expr[String](Literal(Constant(getURI(c))))
-    reify(
-      DatabaseConfig
-        .forURI[P](new URI(uri.splice), classLoader.splice)(ct.splice))
+    reify(DatabaseConfig.forURI[P](new URI(uri.splice), classLoader.splice)(
+      ct.splice))
   }
 }

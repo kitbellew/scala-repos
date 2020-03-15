@@ -281,8 +281,7 @@ object Test {
         "complement(A,D,N) :- article(A), adjectif(D), nom(N).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-        "?phrase(S,V,A,D,N).\n" + "?more.\n"
-    );
+        "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
@@ -300,8 +299,7 @@ object Test {
         "complement(A,D,N) :- article(A,G), adjectif(D,G), nom(N,G).\n" +
         "phrase(S,V,A,D,N) :- sujet(S), verbe(V), complement(A,D,N).\n" +
 
-        "?phrase(S,V,A,D,N).\n" + "?more.\n"
-    );
+        "?phrase(S,V,A,D,N).\n" + "?more.\n");
     Console.println;
 
     Prolog.process(
@@ -326,8 +324,7 @@ object Test {
 
         "?phrase(jean,mange,le,nil,cheval).\n" +
         "?phrase(jean,mange,le,cons(grand,nil),cheval).\n" +
-        "?phrase(jean,mange,le,cons(grand,nil),table).\n"
-    );
+        "?phrase(jean,mange,le,cons(grand,nil),table).\n");
     Console.println;
 
     ()

@@ -128,7 +128,8 @@ class MetricsBasedResizerSpec
 
       router.sendToAll(await = true)
       router.mockSend(await =
-        false) // test one message in mailbox and one in each ActorCell
+        false
+      ) // test one message in mailbox and one in each ActorCell
 
       resizer.reportMessageCount(router.routees, router.msgs.size)
       resizer.record.totalQueueLength shouldBe 3
@@ -148,11 +149,10 @@ class MetricsBasedResizerSpec
 
     "stop an underutilizationStreak when fully utilized" in {
       val resizer = DefaultOptimalSizeExploringResizer()
-      resizer.record = ResizeRecord(
-        underutilizationStreak = Some(
-          UnderUtilizationStreak(
-            start = LocalDateTime.now.minusHours(1),
-            highestUtilization = 1)))
+      resizer.record = ResizeRecord(underutilizationStreak = Some(
+        UnderUtilizationStreak(
+          start = LocalDateTime.now.minusHours(1),
+          highestUtilization = 1)))
 
       val router = TestRouter(routees(2))
       router.sendToAll(await = true)
@@ -166,9 +166,8 @@ class MetricsBasedResizerSpec
     "leave the underutilizationStreak start date unchanged when not fully utilized" in {
       val start: LocalDateTime = LocalDateTime.now.minusHours(1)
       val resizer = DefaultOptimalSizeExploringResizer()
-      resizer.record = ResizeRecord(
-        underutilizationStreak = Some(
-          UnderUtilizationStreak(start = start, highestUtilization = 1)))
+      resizer.record = ResizeRecord(underutilizationStreak = Some(
+        UnderUtilizationStreak(start = start, highestUtilization = 1)))
 
       resizer.reportMessageCount(routees(2), 0)
       resizer.record.underutilizationStreak.get.start shouldBe start
@@ -176,11 +175,10 @@ class MetricsBasedResizerSpec
 
     "leave the underutilizationStreak highestUtilization unchanged if current utilization is lower" in {
       val resizer = DefaultOptimalSizeExploringResizer()
-      resizer.record = ResizeRecord(
-        underutilizationStreak = Some(
-          UnderUtilizationStreak(
-            start = LocalDateTime.now,
-            highestUtilization = 2)))
+      resizer.record = ResizeRecord(underutilizationStreak = Some(
+        UnderUtilizationStreak(
+          start = LocalDateTime.now,
+          highestUtilization = 2)))
 
       val router = TestRouter(routees(2))
       router.mockSend(await = true)
@@ -193,11 +191,10 @@ class MetricsBasedResizerSpec
 
     "update the underutilizationStreak highestUtilization if current utilization is higher" in {
       val resizer = DefaultOptimalSizeExploringResizer()
-      resizer.record = ResizeRecord(
-        underutilizationStreak = Some(
-          UnderUtilizationStreak(
-            start = LocalDateTime.now,
-            highestUtilization = 1)))
+      resizer.record = ResizeRecord(underutilizationStreak = Some(
+        UnderUtilizationStreak(
+          start = LocalDateTime.now,
+          highestUtilization = 1)))
 
       val router = TestRouter(routees(3))
       router.mockSend(await = true, routeeIdx = 0)
@@ -285,8 +282,8 @@ class MetricsBasedResizerSpec
 
     "update the old performance log entry with updated speed " in {
       val oldSpeed = 50
-      val resizer = DefaultOptimalSizeExploringResizer(
-        weightOfLatestMetric = 0.5)
+      val resizer = DefaultOptimalSizeExploringResizer(weightOfLatestMetric =
+        0.5)
 
       resizer.performanceLog = Map(2 → oldSpeed.milliseconds)
 
@@ -312,9 +309,9 @@ class MetricsBasedResizerSpec
       val after = LocalDateTime.now
       val newSpeed = java.time.Duration.between(before, after).toMillis / 2
 
-      resizer
-        .performanceLog(2)
-        .toMillis shouldBe ((newSpeed + oldSpeed) / 2 +- 1)
+      resizer.performanceLog(2).toMillis shouldBe (
+        (newSpeed + oldSpeed) / 2 +- 1
+      )
 
       router.close()
     }
@@ -407,8 +404,8 @@ class MetricsBasedResizerSpec
 
       val resizer = DefaultOptimalSizeExploringResizer(lowerBound = 2)
       val router = system.actorOf(
-        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer))
-          .props(Props(new TestLatchingActor)))
+        RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)).props(Props(
+          new TestLatchingActor)))
       val latches = Latches(TestLatch(), TestLatch(0))
       router ! latches
       Await.ready(latches.first, timeout.duration)

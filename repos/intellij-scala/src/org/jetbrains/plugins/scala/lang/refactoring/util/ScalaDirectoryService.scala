@@ -62,8 +62,8 @@ object ScalaDirectoryService {
     val file = element.getContainingFile.asInstanceOf[ScalaFile]
     val classes = file.typeDefinitionsArray
     if (classes.length < 1)
-      throw new IncorrectOperationException(
-        getIncorrectTemplateMessage(templateName))
+      throw new IncorrectOperationException(getIncorrectTemplateMessage(
+        templateName))
     classes(0)
   }
 

@@ -393,9 +393,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
         ScalaReflection.attributesFor[(Int, String)])
       writeMetadata(schema, path, hadoopConfiguration)
 
-      assert(
-        fs.exists(
-          new Path(path, ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)))
+      assert(fs.exists(
+        new Path(path, ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)))
       assert(fs.exists(new Path(path, ParquetFileWriter.PARQUET_METADATA_FILE)))
 
       val expectedSchema = new CatalystSchemaConverter().convert(schema)

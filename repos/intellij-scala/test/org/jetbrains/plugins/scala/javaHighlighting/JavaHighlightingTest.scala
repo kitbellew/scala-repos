@@ -119,11 +119,10 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |}
       """.stripMargin
 
-    assertMatches(
-      messagesFromJavaCode(
-        scala,
-        java,
-        javaClassName = "JavaHighlightingValueTypes")) {
+    assertMatches(messagesFromJavaCode(
+      scala,
+      java,
+      javaClassName = "JavaHighlightingValueTypes")) {
       case Error("(42.0)", CannotBeApplied()) :: Nil =>
     }
   }
@@ -142,11 +141,10 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |}
       """.stripMargin
 
-    assertNoErrors(
-      messagesFromJavaCode(
-        scalaFileText = "",
-        java,
-        javaClassName = "OptionApply"))
+    assertNoErrors(messagesFromJavaCode(
+      scalaFileText = "",
+      java,
+      javaClassName = "OptionApply"))
   }
 
   def testAccessBacktick(): Unit = {
@@ -422,11 +420,10 @@ class JavaHighlightingTest extends ScalaFixtureTestCase {
         |}
       """.stripMargin
 
-    assertNoErrors(
-      messagesFromJavaCode(
-        scalaCode,
-        javaCode,
-        javaClassName = "SCL5852WrapsFoo"))
+    assertNoErrors(messagesFromJavaCode(
+      scalaCode,
+      javaCode,
+      javaClassName = "SCL5852WrapsFoo"))
   }
 
   def testGenericsParameterizedInnerClass(): Unit = {

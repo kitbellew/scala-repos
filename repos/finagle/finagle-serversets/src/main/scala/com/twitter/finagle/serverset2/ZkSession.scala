@@ -21,8 +21,7 @@ import scala.collection.concurrent
 private[serverset2] class ZkSession(
     retryStream: RetryStream,
     watchedZk: Watched[ZooKeeperReader],
-    statsReceiver: StatsReceiver
-)(implicit timer: Timer) {
+    statsReceiver: StatsReceiver)(implicit timer: Timer) {
   import ZkSession.logger
 
   /** The dynamic `WatchState` of this `ZkSession` instance. */
@@ -296,8 +295,7 @@ private[serverset2] object ZkSession {
       retryStream: RetryStream,
       hosts: String,
       sessionTimeout: Duration = DefaultSessionTimeout,
-      statsReceiver: StatsReceiver
-  )(implicit timer: Timer): ZkSession =
+      statsReceiver: StatsReceiver)(implicit timer: Timer): ZkSession =
     new ZkSession(
       retryStream,
       ClientBuilder()
@@ -316,10 +314,8 @@ private[serverset2] object ZkSession {
     * reconnects upon session expiry. Reconnect attempts cease when any
     * observation of the returned `Var[ZkSession]` is closed.
     */
-  def retrying(
-      backoff: RetryStream,
-      newZkSession: () => ZkSession
-  )(implicit timer: Timer): Var[ZkSession] = {
+  def retrying(backoff: RetryStream, newZkSession: () => ZkSession)(
+      implicit timer: Timer): Var[ZkSession] = {
     val v = Var(ZkSession.nil)
 
     @volatile var closing = false

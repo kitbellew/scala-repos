@@ -223,13 +223,12 @@ private[akka] class RemoteActorRefProvider(
     import remoteSettings._
     val failureDetector = createRemoteWatcherFailureDetector(system)
     system.systemActorOf(
-      configureDispatcher(
-        RemoteWatcher.props(
-          failureDetector,
-          heartbeatInterval = WatchHeartBeatInterval,
-          unreachableReaperInterval = WatchUnreachableReaperInterval,
-          heartbeatExpectedResponseAfter = WatchHeartbeatExpectedResponseAfter
-        )),
+      configureDispatcher(RemoteWatcher.props(
+        failureDetector,
+        heartbeatInterval = WatchHeartBeatInterval,
+        unreachableReaperInterval = WatchUnreachableReaperInterval,
+        heartbeatExpectedResponseAfter = WatchHeartbeatExpectedResponseAfter
+      )),
       "remote-watcher"
     )
   }
@@ -615,12 +614,11 @@ private[akka] class RemoteActorRef private[akka] (
         Error(e, path.toString, getClass, "interrupted during message send"))
       Thread.currentThread.interrupt()
     case NonFatal(e) ⇒
-      remote.system.eventStream.publish(
-        Error(
-          e,
-          path.toString,
-          getClass,
-          "swallowing exception during message send"))
+      remote.system.eventStream.publish(Error(
+        e,
+        path.toString,
+        getClass,
+        "swallowing exception during message send"))
   }
 
   /**

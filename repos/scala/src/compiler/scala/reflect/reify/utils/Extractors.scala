@@ -119,26 +119,22 @@ trait Extractors {
           DefDef(
             NoMods,
             reifierName,
-            List(
-              TypeDef(
-                Modifiers(PARAM),
-                tparamu,
-                List(),
-                TypeBoundsTree(
-                  Ident(NothingClass),
-                  CompoundTypeTree(
-                    Template(
-                      List(Ident(reifierUniverse), Ident(SingletonClass)),
-                      noSelfType,
-                      List())))
-              )),
-            List(
-              List(
-                ValDef(
-                  Modifiers(PARAM),
-                  nme.MIRROR_UNTYPED,
-                  AppliedTypeTree(Ident(MirrorClass), List(Ident(tparamu))),
-                  EmptyTree))),
+            List(TypeDef(
+              Modifiers(PARAM),
+              tparamu,
+              List(),
+              TypeBoundsTree(
+                Ident(NothingClass),
+                CompoundTypeTree(Template(
+                  List(Ident(reifierUniverse), Ident(SingletonClass)),
+                  noSelfType,
+                  List())))
+            )),
+            List(List(ValDef(
+              Modifiers(PARAM),
+              nme.MIRROR_UNTYPED,
+              AppliedTypeTree(Ident(MirrorClass), List(Ident(tparamu))),
+              EmptyTree))),
             reifierTpt,
             reifierBody
           )
@@ -165,10 +161,8 @@ trait Extractors {
   // if we're reifying a MethodType, we can't use it as a type argument for TypeTag ctor
   // http://groups.google.com/group/scala-internals/browse_thread/thread/2d7bb85bfcdb2e2
   private def mkTarg(tpe: Type): Tree =
-    (
-      if ((tpe eq null) || !isUseableAsTypeArg(tpe)) TypeTree(AnyTpe)
-      else TypeTree(tpe)
-    )
+    (if ((tpe eq null) || !isUseableAsTypeArg(tpe)) TypeTree(AnyTpe)
+     else TypeTree(tpe))
 
   object ReifiedTree {
     def apply(
@@ -260,15 +254,14 @@ trait Extractors {
             case Select(Select(_, tagFlavor), _) => tagFlavor
             case Select(_, tagFlavor)            => tagFlavor
           }
-          Some(
-            (
-              universe,
-              mirror,
-              SymbolTable(symbolTable1 ++ symbolTable2),
-              rtree,
-              ttpe.tpe,
-              rtpe,
-              tagFlavor == nme.TypeTag))
+          Some((
+            universe,
+            mirror,
+            SymbolTable(symbolTable1 ++ symbolTable2),
+            rtree,
+            ttpe.tpe,
+            rtpe,
+            tagFlavor == nme.TypeTag))
         case _ =>
           None
       }
@@ -329,14 +322,13 @@ trait Extractors {
             case Select(Select(_, tagFlavor), _) => tagFlavor
             case Select(_, tagFlavor)            => tagFlavor
           }
-          Some(
-            (
-              universe,
-              mirror,
-              SymbolTable(symtab),
-              ttpe.tpe,
-              rtpe,
-              tagFlavor == nme.TypeTag))
+          Some((
+            universe,
+            mirror,
+            SymbolTable(symtab),
+            ttpe.tpe,
+            rtpe,
+            tagFlavor == nme.TypeTag))
         case _ =>
           None
       }

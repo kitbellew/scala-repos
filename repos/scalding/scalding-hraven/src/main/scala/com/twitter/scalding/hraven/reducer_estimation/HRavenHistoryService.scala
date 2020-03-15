@@ -26,11 +26,10 @@ object HRavenClient {
   def apply(conf: JobConf): Try[HRavenRestClient] =
     conf
       .getFirstKey(apiHostnameKey)
-      .map(
-        new HRavenRestClient(
-          _,
-          conf.getInt(clientConnectTimeoutKey, clientConnectTimeoutDefault),
-          conf.getInt(clientReadTimeoutKey, clientReadTimeoutDefault)))
+      .map(new HRavenRestClient(
+        _,
+        conf.getInt(clientConnectTimeoutKey, clientConnectTimeoutDefault),
+        conf.getInt(clientReadTimeoutKey, clientReadTimeoutDefault)))
 }
 
 /**
@@ -92,14 +91,13 @@ object HRavenHistoryService extends HistoryService {
       signature: String,
       max: Int,
       nFetch: Int): Try[Seq[Flow]] =
-    Try(
-      client.fetchFlowsWithConfig(
-        cluster,
-        user,
-        batch,
-        signature,
-        nFetch,
-        RequiredJobConfigs: _*))
+    Try(client.fetchFlowsWithConfig(
+      cluster,
+      user,
+      batch,
+      signature,
+      nFetch,
+      RequiredJobConfigs: _*))
       .flatMap { flows =>
         Try {
           // Ugly mutable code to add task info to flows

@@ -21,8 +21,7 @@ import scala.collection.JavaConversions._
 
 @State(
   name = "HighlightingAdvisor",
-  storages = Array(new Storage("highlighting.xml"))
-)
+  storages = Array(new Storage("highlighting.xml")))
 class HighlightingAdvisor(project: Project)
     extends ProjectComponent
     with PersistentStateComponent[HighlightingSettings] {

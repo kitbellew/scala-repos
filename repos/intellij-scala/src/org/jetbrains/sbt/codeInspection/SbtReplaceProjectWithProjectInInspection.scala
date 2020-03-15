@@ -67,10 +67,9 @@ class SbtReplaceProjectWithProjectInQuickFix(call: ScMethodCall)
     val place = getElement
     place match {
       case ScMethodCall(_, Seq(_, pathElt)) =>
-        place.replace(
-          ScalaPsiElementFactory.createExpressionFromText(
-            "project.in(" + pathElt.getText + ")",
-            place.getManager))
+        place.replace(ScalaPsiElementFactory.createExpressionFromText(
+          "project.in(" + pathElt.getText + ")",
+          place.getManager))
       case _ => // do nothing
     }
   }

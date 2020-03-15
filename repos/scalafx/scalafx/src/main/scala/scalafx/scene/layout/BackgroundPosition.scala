@@ -61,14 +61,13 @@ class BackgroundPosition(override val delegate: jfxsl.BackgroundPosition)
       verticalSide: Side,
       verticalPosition: Double,
       verticalAsPercentage: Boolean) =
-    this(
-      new jfxsl.BackgroundPosition(
-        horizontalSide,
-        horizontalPosition,
-        horizontalAsPercentage,
-        verticalSide,
-        verticalPosition,
-        verticalAsPercentage))
+    this(new jfxsl.BackgroundPosition(
+      horizontalSide,
+      horizontalPosition,
+      horizontalAsPercentage,
+      verticalSide,
+      verticalPosition,
+      verticalAsPercentage))
 
   /**
     * The value indicating the position of the BackgroundImage relative to the Region along the

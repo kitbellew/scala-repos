@@ -489,16 +489,18 @@ class ScReferenceExpressionImpl(node: ASTNode)
       case Some(ScalaResolveResult(pack: PsiPackage, _)) =>
         ScType.designator(pack)
       case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
-        s.subst(clazz.constructor
-          .getOrElse(
-            return Failure("Case Class hasn't primary constructor", Some(this)))
-          .polymorphicType)
+        s.subst(
+          clazz.constructor
+            .getOrElse(
+              return Failure(
+                "Case Class hasn't primary constructor",
+                Some(this)))
+            .polymorphicType)
       case Some(ScalaResolveResult(clazz: ScTypeDefinition, s))
           if clazz.typeParameters.nonEmpty =>
-        s.subst(
-          ScParameterizedType(
-            ScType.designator(clazz),
-            clazz.typeParameters.map(new ScTypeParameterType(_, s))))
+        s.subst(ScParameterizedType(
+          ScType.designator(clazz),
+          clazz.typeParameters.map(new ScTypeParameterType(_, s))))
       case Some(ScalaResolveResult(clazz: PsiClass, _)) =>
         new ScDesignatorType(clazz, true) //static Java class
       case Some(ScalaResolveResult(field: PsiField, s)) =>
@@ -607,10 +609,9 @@ class ScReferenceExpressionImpl(node: ASTNode)
             inner match {
               case ScTypePolymorphicType(internal, typeParams2) =>
                 return Success(
-                  ScalaPsiUtil.removeBadBounds(
-                    ScTypePolymorphicType(
-                      internal,
-                      typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
+                  ScalaPsiUtil.removeBadBounds(ScTypePolymorphicType(
+                    internal,
+                    typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
                   Some(this))
               case _ =>
                 return Success(

@@ -106,8 +106,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
       numLocalityAwareTasks: Int,
       hostToLocalTaskCount: Map[String, Int],
       allocatedHostToContainersMap: HashMap[String, Set[ContainerId]],
-      localityMatchedPendingAllocations: Seq[ContainerRequest]
-  ): Array[ContainerLocalityPreferences] = {
+      localityMatchedPendingAllocations: Seq[ContainerRequest])
+      : Array[ContainerLocalityPreferences] = {
     val updatedHostToContainerCount = expectedHostToContainerCount(
       numLocalityAwareTasks,
       hostToLocalTaskCount,
@@ -190,8 +190,8 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
       localityAwareTasks: Int,
       hostToLocalTaskCount: Map[String, Int],
       allocatedHostToContainersMap: HashMap[String, Set[ContainerId]],
-      localityMatchedPendingAllocations: Seq[ContainerRequest]
-  ): Map[String, Int] = {
+      localityMatchedPendingAllocations: Seq[ContainerRequest])
+      : Map[String, Int] = {
     val totalLocalTaskNum = hostToLocalTaskCount.values.sum
     val pendingHostToContainersMap = pendingHostToContainerCount(
       localityMatchedPendingAllocations)

@@ -177,9 +177,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
     val partitions = nonEmptyRDD.partitions.map {
       _.asInstanceOf[KinesisBackedBlockRDDPartition]
     }.toSeq
-    assert(
-      partitions
-        .map { _.seqNumberRanges } === Seq(seqNumRanges1, seqNumRanges2))
+    assert(partitions.map {
+      _.seqNumberRanges
+    } === Seq(seqNumRanges1, seqNumRanges2))
     assert(partitions.map { _.blockId } === Seq(blockId1, blockId2))
     assert(partitions.forall { _.isBlockIdValid === true })
 
@@ -317,9 +317,9 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       }
     })
 
-    ssc.remember(
-      Minutes(60)
-    ) // remember all the batches so that they are all saved in checkpoint
+    ssc.remember(Minutes(
+      60
+    )) // remember all the batches so that they are all saved in checkpoint
     ssc.start()
 
     def numBatchesWithData: Int =
@@ -336,7 +336,8 @@ abstract class KinesisStreamTests(aggregateTestData: Boolean)
       assert(isCheckpointPresent && numBatchesWithData > 10)
     }
     ssc.stop(stopSparkContext =
-      true) // stop the SparkContext so that the blocks are not reused
+      true
+    ) // stop the SparkContext so that the blocks are not reused
 
     // Restart the context from checkpoint and verify whether the
     logInfo("Restarting from checkpoint")

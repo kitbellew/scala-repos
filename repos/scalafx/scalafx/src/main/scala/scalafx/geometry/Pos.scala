@@ -109,8 +109,7 @@ object Pos extends SFXEnumDelegateCompanion[jfxg.Pos, Pos] {
       BottomRight,
       BaselineLeft,
       BaselineCenter,
-      BaselineRight
-    )
+      BaselineRight)
 }
 
 sealed case class Pos(override val delegate: jfxg.Pos)

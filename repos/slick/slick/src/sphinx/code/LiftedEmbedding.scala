@@ -172,12 +172,10 @@ object LiftedEmbedding extends App {
     //#ddl
     Await.result(
       //#ddl
-      db.run(
-        DBIO.seq(
-          schema.create,
-          //...
-          schema.drop
-        ))
+      db.run(DBIO.seq(
+        schema.create,
+        //...
+        schema.drop))
       //#ddl
       ,
       Duration.Inf)
@@ -297,9 +295,9 @@ object LiftedEmbedding extends App {
         //
         val q = coffees filter { coffee =>
           // You can do any subquery here - this example uses the foreign key relation in coffees.
-          coffee.supID in (
-            coffee.supplier filter { _.name === "Delete Me" } map { _.id }
-          )
+          coffee.supID in (coffee.supplier filter {
+            _.name === "Delete Me"
+          } map { _.id })
         }
         val action = q.delete
         val affectedRowsCount: Future[Int] = db.run(action)
@@ -334,11 +332,11 @@ object LiftedEmbedding extends App {
         coffees += ("Colombian", 101, 7.99, 0, 0),
         coffees ++= Seq(
           ("French_Roast", 49, 8.99, 0, 0),
-          ("Espresso", 150, 9.99, 0, 0)
-        ),
+          ("Espresso", 150, 9.99, 0, 0)),
         // "sales" and "total" will use the default value 0:
-        coffees.map(c =>
-          (c.name, c.supID, c.price)) += ("Colombian_Decaf", 101, 8.99)
+        coffees.map(c => (c.name, c.supID, c.price)) += (
+          "Colombian_Decaf", 101, 8.99
+        )
       )
 
       // Get the statement without having to specify a value to insert:
@@ -350,15 +348,12 @@ object LiftedEmbedding extends App {
       println(sql)
 
       Await.result(
-        db.run(
-          DBIO.seq(
-            (suppliers ++= Seq(
-              (101, "", "", "", "", ""),
-              (49, "", "", "", "", ""),
-              (150, "", "", "", "", "")
-            )),
-            insertActions
-          )),
+        db.run(DBIO.seq(
+          (suppliers ++= Seq(
+            (101, "", "", "", "", ""),
+            (49, "", "", "", "", ""),
+            (150, "", "", "", "", ""))),
+          insertActions)),
         Duration.Inf)
 
       //#insert3
@@ -393,8 +388,7 @@ object LiftedEmbedding extends App {
         users2 forceInsertQuery (users.map { u =>
           (u.id, u.first ++ " " ++ u.last)
         }),
-        users2 forceInsertExpr (users.length + 1, "admin")
-      )
+        users2 forceInsertExpr (users.length + 1, "admin"))
       //#insert4
       Await.result(db.run(actions), Duration.Inf)
 
@@ -424,12 +418,7 @@ object LiftedEmbedding extends App {
     };
     {
       Await.result(
-        db.run(
-          usersForInsert ++= Seq(
-            User(None, "", ""),
-            User(None, "", "")
-          )
-        ),
+        db.run(usersForInsert ++= Seq(User(None, "", ""), User(None, "", ""))),
         Duration.Inf)
 
       {
@@ -509,8 +498,7 @@ object LiftedEmbedding extends App {
                 val current_date = SimpleLiteral[java.sql.Date]("CURRENT_DATE")
                 salesPerDay.map(_ => current_date)
                 //#simpleliteral
-              }.result.head
-            ),
+              }.result.head),
             Duration.Inf
           )
           .isInstanceOf[java.sql.Date]
@@ -553,9 +541,9 @@ object LiftedEmbedding extends App {
       case class Pair[A, B](a: A, b: B)
 
       // A Shape implementation for Pair
-      final class PairShape[Level <: ShapeLevel, M <: Pair[_, _],
-      U <: Pair[_, _]: ClassTag, P <: Pair[_, _]](
-          val shapes: Seq[Shape[_, _, _, _]])
+      final class PairShape[
+          Level <: ShapeLevel, M <: Pair[_, _], U <: Pair[_, _]: ClassTag,
+          P <: Pair[_, _]](val shapes: Seq[Shape[_, _, _, _]])
           extends MappedScalaProductShape[Level, Pair[_, _], M, U, P] {
         def buildValue(elems: IndexedSeq[Any]) = Pair(elems(0), elems(1))
         def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]) =
@@ -565,8 +553,7 @@ object LiftedEmbedding extends App {
       implicit def pairShape[Level <: ShapeLevel, M1, M2, U1, U2, P1, P2](
           implicit
           s1: Shape[_ <: Level, M1, U1, P1],
-          s2: Shape[_ <: Level, M2, U2, P2]
-      ) =
+          s2: Shape[_ <: Level, M2, U2, P2]) =
         new PairShape[Level, Pair[M1, M2], Pair[U1, U2], Pair[P1, P2]](
           Seq(s1, s2))
       //#recordtype1
@@ -584,8 +571,7 @@ object LiftedEmbedding extends App {
       val insertAction = DBIO.seq(
         as += Pair(1, "a"),
         as += Pair(2, "c"),
-        as += Pair(3, "b")
-      )
+        as += Pair(3, "b"))
 
       // Use it for returning data from a query
       val q2 = as
@@ -621,8 +607,7 @@ object LiftedEmbedding extends App {
       val insertActions = DBIO.seq(
         bs += B(1, "a"),
         bs.map(b => (b.id, b.s)) += ((2, "c")),
-        bs += B(3, "b")
-      )
+        bs += B(3, "b"))
 
       val q3 = bs
         .map { case b => LiftedB(b.id, (b.s ++ b.s)) }
@@ -652,8 +637,7 @@ object LiftedEmbedding extends App {
               column("p1"),
               column("p2")
             ), // (cols defined inline, type inferred)
-            LiftedB(id, s)
-          )
+            LiftedB(id, s))
         def * = projection
       }
       val cs = TableQuery[CRow]
@@ -661,8 +645,7 @@ object LiftedEmbedding extends App {
       val insertActions2 = DBIO.seq(
         cs += C(Pair(7, "x"), B(1, "a")),
         cs += C(Pair(8, "y"), B(2, "c")),
-        cs += C(Pair(9, "z"), B(3, "b"))
-      )
+        cs += C(Pair(9, "z"), B(3, "b")))
 
       val q4 = cs
         .map { case c => LiftedC(c.projection.p, LiftedB(c.id, (c.s ++ c.s))) }

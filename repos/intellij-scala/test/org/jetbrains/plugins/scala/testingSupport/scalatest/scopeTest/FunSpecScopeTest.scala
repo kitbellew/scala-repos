@@ -10,10 +10,9 @@ trait FunSpecScopeTest extends FunSpecGenerator {
   def testFunSpecEmptyScope() {
     addFunSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(17, 15, funSpecFileName),
-        funSpecClassName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(17, 15, funSpecFileName),
+      funSpecClassName))
   }
 
   def testFunSpecScope() {

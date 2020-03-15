@@ -47,11 +47,10 @@ class RemoteConfigSpec
       Transports.head._1 should ===(
         classOf[akka.remote.transport.netty.NettyTransport].getName)
       Transports.head._2 should ===(Nil)
-      Adapters should ===(
-        Map(
-          "gremlin" -> classOf[
-            akka.remote.transport.FailureInjectorProvider].getName,
-          "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
+      Adapters should ===(Map(
+        "gremlin" -> classOf[
+          akka.remote.transport.FailureInjectorProvider].getName,
+        "trttl" -> classOf[akka.remote.transport.ThrottlerProvider].getName))
 
       WatchFailureDetectorImplementationClass should ===(
         classOf[PhiAccrualFailureDetector].getName)

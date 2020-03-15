@@ -62,8 +62,8 @@ class HBPEvents(
       entityId: Option[String] = None,
       eventNames: Option[Seq[String]] = None,
       targetEntityType: Option[Option[String]] = None,
-      targetEntityId: Option[Option[String]] = None
-  )(sc: SparkContext): RDD[Event] = {
+      targetEntityId: Option[Option[String]] = None)(
+      sc: SparkContext): RDD[Event] = {
 
     checkTableExists(appId, channelId)
 

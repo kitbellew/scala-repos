@@ -53,8 +53,7 @@ abstract class StatementInvoker[+R] extends Invoker[R] { self =>
               1.to(meta.getColumnCount).map(_.toString),
               1.to(meta.getColumnCount)
                 .map(idx => meta.getColumnLabel(idx))
-                .to[ArrayBuffer]
-            )
+                .to[ArrayBuffer])
           } else null
         val logBuffer =
           if (doLogResult) new ArrayBuffer[ArrayBuffer[Any]] else null

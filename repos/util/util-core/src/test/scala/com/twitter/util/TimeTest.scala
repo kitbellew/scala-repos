@@ -272,8 +272,7 @@ trait TimeLikeSpec[T <: TimeLike[T]]
       val nss = Seq(
         315370851000000000L, // 3650.days+3.hours+51.seconds
         1040403005001003L, // 12.days+1.hour+3.seconds+5.milliseconds+1.microsecond+3.nanoseconds
-        1L
-      )
+        1L)
       for (ns <- nss) {
         val t = fromNanoseconds(ns)
         assert(t.inLongSeconds == t.inSeconds)
@@ -392,9 +391,9 @@ class TimeTest extends {
       assert(t0 == t1)
       assert(t0.hashCode == t1.hashCode)
       val pairs = List((t0, "foo"), (t1, "bar"))
-      assert(
-        pairs.groupBy { case (time: Time, value: String) => time } == Map(
-          t0 -> pairs))
+      assert(pairs.groupBy {
+        case (time: Time, value: String) => time
+      } == Map(t0 -> pairs))
     }
 
     "now should be now" in {
@@ -538,16 +537,24 @@ class TimeTest extends {
 
     "max" in {
       assert(
-        (10.seconds.afterEpoch max 5.seconds.afterEpoch) == 10.seconds.afterEpoch)
+        (
+          10.seconds.afterEpoch max 5.seconds.afterEpoch
+        ) == 10.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch max 10.seconds.afterEpoch) == 10.seconds.afterEpoch)
+        (
+          5.seconds.afterEpoch max 10.seconds.afterEpoch
+        ) == 10.seconds.afterEpoch)
     }
 
     "min" in {
       assert(
-        (10.seconds.afterEpoch min 5.seconds.afterEpoch) == 5.seconds.afterEpoch)
+        (
+          10.seconds.afterEpoch min 5.seconds.afterEpoch
+        ) == 5.seconds.afterEpoch)
       assert(
-        (5.seconds.afterEpoch min 10.seconds.afterEpoch) == 5.seconds.afterEpoch)
+        (
+          5.seconds.afterEpoch min 10.seconds.afterEpoch
+        ) == 5.seconds.afterEpoch)
     }
 
     "moreOrLessEquals" in {
@@ -593,9 +600,12 @@ class TimeTest extends {
       val tolerance = 2.microseconds // we permit 1us slop
 
       forAll { i: Int =>
-        assert(Time
-          .fromSeconds(i)
-          .moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
+        assert(
+          Time
+            .fromSeconds(i)
+            .moreOrLessEquals(
+              Time.fromFractionalSeconds(i.toDouble),
+              tolerance))
       }
 
       forAll { d: Double =>

@@ -66,10 +66,8 @@ class DCTSuite
     } else { (new DoubleDCT_1D(data.size)).forward(expectedResultBuffer, true) }
     val expectedResult = Vectors.dense(expectedResultBuffer)
 
-    val dataset = sqlContext.createDataFrame(
-      Seq(
-        DCTTestData(data, expectedResult)
-      ))
+    val dataset = sqlContext.createDataFrame(Seq(
+      DCTTestData(data, expectedResult)))
 
     val transformer = new DCT()
       .setInputCol("vec")

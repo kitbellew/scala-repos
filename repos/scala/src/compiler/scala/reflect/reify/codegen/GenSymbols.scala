@@ -69,19 +69,20 @@ trait GenSymbols {
        */
       val hasPackagelessParent =
         sym.ownerChain.tail.tail exists (_.isEmptyPackageClass)
-      if (sym.isStatic && (sym.isClass || sym.isModule) && !hasPackagelessParent) {
+      if (sym.isStatic && (
+            sym.isClass || sym.isModule
+          ) && !hasPackagelessParent) {
         // SI-6238: if applicable, emit references to StandardDefinitions instead of staticClass/staticModule calls
         val resolver = if (sym.isType) nme.staticClass else nme.staticModule
         mirrorMirrorCall(resolver, reify(sym.fullName))
       } else {
         if (reifyDebug)
-          println(
-            "Locatable: %s (%s) owned by %s (%s) at %s".format(
-              sym,
-              sym.accurateKindString,
-              sym.owner,
-              sym.owner.accurateKindString,
-              sym.owner.fullNameString))
+          println("Locatable: %s (%s) owned by %s (%s) at %s".format(
+            sym,
+            sym.accurateKindString,
+            sym.owner,
+            sym.owner.accurateKindString,
+            sym.owner.fullNameString))
         val rowner = reify(sym.owner)
         val rname = reify(sym.name.toString)
         if (sym.isType) mirrorBuildCall(nme.selectType, rowner, rname)
@@ -109,9 +110,9 @@ trait GenSymbols {
     reifyIntoSymtab(binding.symbol) { sym =>
       if (reifyDebug)
         println(
-          "Free term" + (if (sym.isCapturedVariable) " (captured)"
-                         else
-                           "") + ": " + sym + "(" + sym.accurateKindString + ")")
+          "Free term" + (
+            if (sym.isCapturedVariable) " (captured)" else ""
+          ) + ": " + sym + "(" + sym.accurateKindString + ")")
       val name = newTermName(
         "" + nme.REIFY_FREE_PREFIX + sym.name + (if (sym.isType)
                                                    nme.REIFY_FREE_THIS_SUFFIX

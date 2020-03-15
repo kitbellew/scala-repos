@@ -30,8 +30,7 @@ object HttpConnectHandler {
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
       pipeline: ChannelPipeline,
-      proxyCredentials: Option[Credentials]
-  ): HttpConnectHandler = {
+      proxyCredentials: Option[Credentials]): HttpConnectHandler = {
     val clientCodec = new HttpClientCodec()
     val handler =
       new HttpConnectHandler(proxyAddr, addr, clientCodec, proxyCredentials)
@@ -50,8 +49,9 @@ object HttpConnectHandler {
   def addHandler(
       proxyAddr: SocketAddress,
       addr: InetSocketAddress,
-      pipeline: ChannelPipeline
-  ): HttpConnectHandler = { addHandler(proxyAddr, addr, pipeline, None) }
+      pipeline: ChannelPipeline): HttpConnectHandler = {
+    addHandler(proxyAddr, addr, pipeline, None)
+  }
 }
 
 class HttpConnectHandler(

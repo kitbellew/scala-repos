@@ -31,10 +31,7 @@ package scalaguide.forms.scalafieldconstructor {
     import play.api.data.Forms._
     import html.models.User
 
-    val form = Form(
-      mapping(
-        "username" -> text
-      )(User.apply)(User.unapply))
+    val form = Form(mapping("username" -> text)(User.apply)(User.unapply))
   }
 
   package html {

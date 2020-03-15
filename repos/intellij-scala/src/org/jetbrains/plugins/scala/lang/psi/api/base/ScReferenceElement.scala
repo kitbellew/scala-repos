@@ -391,13 +391,13 @@ trait ScReferenceElement
         } else qualifiedName
       this match {
         case stRef: ScStableCodeReferenceElement =>
-          stRef.replace(
-            ScalaPsiElementFactory
-              .createReferenceFromText(refText, stRef.getManager))
+          stRef.replace(ScalaPsiElementFactory.createReferenceFromText(
+            refText,
+            stRef.getManager))
         case ref: ScReferenceExpression =>
-          ref.replace(
-            ScalaPsiElementFactory
-              .createExpressionFromText(refText, ref.getManager))
+          ref.replace(ScalaPsiElementFactory.createExpressionFromText(
+            refText,
+            ref.getManager))
         case _ => null
       }
     }

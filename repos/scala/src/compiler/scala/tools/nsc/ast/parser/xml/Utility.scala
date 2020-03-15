@@ -24,8 +24,7 @@ object Utility {
     "gt" -> '>',
     "amp" -> '&',
     "quot" -> '"',
-    "apos" -> '\''
-  )
+    "apos" -> '\'')
 
   /**
     * Appends unescaped string to `s`, `amp` becomes `&amp;`,

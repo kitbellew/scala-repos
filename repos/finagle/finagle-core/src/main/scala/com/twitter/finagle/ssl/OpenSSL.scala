@@ -114,9 +114,8 @@ object OpenSSL {
       val config = linker.configurationCtor.newInstance(
         configMap.asInstanceOf[MapOfStrings])
 
-      log.finest(
-        "OpenSSL context instantiated for certificate '%s'".format(
-          certificatePath))
+      log.finest("OpenSSL context instantiated for certificate '%s'".format(
+        certificatePath))
 
       linker.contextHolderCtor
         .newInstance(mallocPool, config.asInstanceOf[AnyRef])
@@ -130,10 +129,7 @@ object OpenSSL {
     }
 
     val engine: SSLEngine = linker.sslEngineCtor
-      .newInstance(
-        contextHolder,
-        bufferPool
-      )
+      .newInstance(contextHolder, bufferPool)
       .asInstanceOf[SSLEngine]
 
     Some(new Engine(engine, true))

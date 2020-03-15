@@ -57,11 +57,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     if (subscriber eq null)
       throw new IllegalArgumentException("subscriber is null")
     if (debug)
-      publish(
-        Logging.Debug(
-          simpleName(this),
-          this.getClass,
-          "subscribing " + subscriber + " to channel " + channel))
+      publish(Logging.Debug(
+        simpleName(this),
+        this.getClass,
+        "subscribing " + subscriber + " to channel " + channel))
     registerWithUnsubscriber(subscriber)
     super.subscribe(subscriber, channel)
   }
@@ -71,11 +70,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
       throw new IllegalArgumentException("subscriber is null")
     val ret = super.unsubscribe(subscriber, channel)
     if (debug)
-      publish(
-        Logging.Debug(
-          simpleName(this),
-          this.getClass,
-          "unsubscribing " + subscriber + " from channel " + channel))
+      publish(Logging.Debug(
+        simpleName(this),
+        this.getClass,
+        "unsubscribing " + subscriber + " from channel " + channel))
     unregisterIfNoMoreSubscribedChannels(subscriber)
     ret
   }
@@ -85,11 +83,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
       throw new IllegalArgumentException("subscriber is null")
     super.unsubscribe(subscriber)
     if (debug)
-      publish(
-        Logging.Debug(
-          simpleName(this),
-          this.getClass,
-          "unsubscribing " + subscriber + " from all channels"))
+      publish(Logging.Debug(
+        simpleName(this),
+        this.getClass,
+        "unsubscribing " + subscriber + " from all channels"))
     unregisterIfNoMoreSubscribedChannels(subscriber)
   }
 
@@ -129,11 +126,10 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
 
         case Right(presentUnsubscriber) ⇒
           if (debug)
-            publish(
-              Logging.Debug(
-                simpleName(this),
-                this.getClass,
-                s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
+            publish(Logging.Debug(
+              simpleName(this),
+              this.getClass,
+              s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
           false
       }
   }

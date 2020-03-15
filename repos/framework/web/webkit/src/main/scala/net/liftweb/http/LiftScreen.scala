@@ -726,10 +726,9 @@ trait AbstractScreen extends Factory with Loggable {
       s match {
         case str if (null ne str) && str.length >= len => Nil
         case _ =>
-          List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+          List(FieldError(
+            currentField.box openOr new FieldIdentifier {},
+            Text(msg)))
       }
 
   /**
@@ -743,10 +742,9 @@ trait AbstractScreen extends Factory with Loggable {
       s match {
         case str if (null eq str) || str.length <= len => Nil
         case _ =>
-          List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+          List(FieldError(
+            currentField.box openOr new FieldIdentifier {},
+            Text(msg)))
       }
 
   /**
@@ -759,10 +757,9 @@ trait AbstractScreen extends Factory with Loggable {
       s match {
         case str if (null ne str) && pat.matcher(str).matches => Nil
         case _ =>
-          List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+          List(FieldError(
+            currentField.box openOr new FieldIdentifier {},
+            Text(msg)))
       }
 
   protected def minVal[T](len: => T, msg: => String)(
@@ -1022,8 +1019,8 @@ trait AbstractScreen extends Factory with Loggable {
       name,
       default,
       field =>
-        SHtml.selectElem(field.otherValue, Full(field.is), eAttr: _*)(
-          field.set(_)),
+        SHtml.selectElem(field.otherValue, Full(field.is), eAttr: _*)(field.set(
+          _)),
       OtherValueInitializerImpl[Seq[T]](() => choices),
       stuff: _*)
   }
@@ -1052,8 +1049,8 @@ trait AbstractScreen extends Factory with Loggable {
       name,
       default,
       field =>
-        SHtml.multiSelectElem(field.otherValue, field.is, eAttr: _*)(
-          field.set(_)),
+        SHtml.multiSelectElem(field.otherValue, field.is, eAttr: _*)(field.set(
+          _)),
       OtherValueInitializerImpl[Seq[T]](() => choices),
       stuff: _*)
   }
@@ -1370,8 +1367,9 @@ trait ScreenWizardRendered extends Loggable {
       val ret =
         (<form id={nextId._1} action={url}
                method="post">{
-          S.formGroup(-1)(SHtml.hidden(() =>
-            snapshot.restore()) % liftScreenAttr("restoreAction"))
+          S.formGroup(-1)(
+            SHtml.hidden(() => snapshot.restore()) % liftScreenAttr(
+              "restoreAction"))
         }{fields}{
           S.formGroup(4)(SHtml.hidden(() => {
             val res = nextId._2();
@@ -1758,13 +1756,11 @@ trait LiftScreen
 
   protected def bindLocalAction(selector: String, func: () => JsCmd): CssSel = {
     mapLocalAction(func)(name =>
-      selector #> (
-        SHtml
-          .makeAjaxCall(
-            LiftRules.jsArtifacts.serialize(
-              NextId.get) + ("&" + LocalActionRef.get + "=" + name))
-          .cmd
-        )
+      selector #> (SHtml
+        .makeAjaxCall(
+          LiftRules.jsArtifacts
+            .serialize(NextId.get) + ("&" + LocalActionRef.get + "=" + name))
+        .cmd)
         .toJsCmd)
   }
 
@@ -1776,9 +1772,9 @@ trait LiftScreen
   }
 
   protected def setLocalAction(s: String) {
-    logger.trace(
-      "Setting LocalAction (%s) to %s"
-        .format(Integer.toString(System.identityHashCode(LocalAction), 16), s))
+    logger.trace("Setting LocalAction (%s) to %s".format(
+      Integer.toString(System.identityHashCode(LocalAction), 16),
+      s))
     LocalAction.set(s)
   }
 
@@ -1856,14 +1852,13 @@ trait LiftScreen
         .filter(_.shouldDisplay_?)
         .flatMap(f =>
           if (f.show_?)
-            List(
-              ScreenFieldInfo(
-                f,
-                f.displayHtml,
-                f.helpAsHtml,
-                f.toForm,
-                fieldBinding(f),
-                fieldTransform(f)))
+            List(ScreenFieldInfo(
+              f,
+              f.displayHtml,
+              f.helpAsHtml,
+              f.toForm,
+              fieldBinding(f),
+              fieldTransform(f)))
           else Nil), //fields: List[ScreenFieldInfo],
       Empty, // prev: Box[Elem],
       Full(cancelButton), // cancel: Box[Elem],
@@ -1900,9 +1895,10 @@ trait LiftScreen
   protected def doFinish(): JsCmd = {
     val fMap: Map[String, () => JsCmd] = LocalActions.get.get
     if (!LocalAction.get.isEmpty)
-      fMap.get(
-        LocalAction.get) map (_()) getOrElse (throw new IllegalArgumentException(
-        "No local action available with that binding"))
+      fMap.get(LocalAction.get) map (_()) getOrElse (
+        throw new IllegalArgumentException(
+          "No local action available with that binding")
+      )
     else {
       validate match {
         case Nil =>

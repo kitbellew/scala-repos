@@ -69,11 +69,10 @@ class AkkaHttpServer(
 
     val connectionSink: Sink[Http.IncomingConnection, _] = Sink.foreach {
       connection: Http.IncomingConnection =>
-        connection.handleWithAsyncHandler(
-          handleRequest(
-            connection.remoteAddress,
-            _,
-            connectionContext.isSecure))
+        connection.handleWithAsyncHandler(handleRequest(
+          connection.remoteAddress,
+          _,
+          connectionContext.isSecure))
     }
 
     val bindingFuture: Future[Http.ServerBinding] = serverSource
@@ -139,8 +138,7 @@ class AkkaHttpServer(
       request,
       taggedRequestHeader,
       requestBodySource,
-      handler
-    )
+      handler)
     responseFuture
   }
 
@@ -152,8 +150,7 @@ class AkkaHttpServer(
           requestHeader,
           EssentialAction(_ => Accumulator.done(futureResult)),
           Failure(
-            new Exception("getHandler returned Result, but not Application"))
-        )
+            new Exception("getHandler returned Result, but not Application")))
       case Right((newRequestHeader, handler, newApp)) =>
         (
           newRequestHeader,

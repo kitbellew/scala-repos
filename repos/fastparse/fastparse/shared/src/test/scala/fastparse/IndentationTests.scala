@@ -40,22 +40,16 @@ object IndentationTests extends TestSuite {
         assert(value == num)
       }
 
-      check(
-        """+
+      check("""+
           |  1
           |  1
-        """.stripMargin.trim,
-        2
-      )
-      check(
-        """+
+        """.stripMargin.trim, 2)
+      check("""+
           |  1
           |  *
           |    1
           |    2
-        """.stripMargin.trim,
-        3
-      )
+        """.stripMargin.trim, 3)
 
       check(
         """+
@@ -72,20 +66,14 @@ object IndentationTests extends TestSuite {
         """.stripMargin.trim,
         63
       )
-      check(
-        """/
+      check("""/
           |  15
           |  3
-        """.stripMargin.trim,
-        5
-      )
-      check(
-        """/
+        """.stripMargin.trim, 5)
+      check("""/
           |  63
           |  3
-        """.stripMargin.trim,
-        21
-      )
+        """.stripMargin.trim, 21)
       check(
         """+
           |  +
@@ -125,24 +113,17 @@ object IndentationTests extends TestSuite {
         val actualTrace = failure.extra.traced.trace
         assert(expectedTrace.trim == actualTrace.trim)
       }
-      * - check(
-        "+",
-        """ expr:1:1 / block:1:1 / "\n":1:1 ..."" """
-      )
-      * - check(
-        """+
+      * - check("+", """ expr:1:1 / block:1:1 / "\n":1:1 ..."" """)
+      * - check("""+
           |  1
           |1
-        """.stripMargin.trim,
-        """ expr:1:1 / (End | "\n  "):2:3 ..."\n1" """
-      )
+        """.stripMargin.trim, """ expr:1:1 / (End | "\n  "):2:3 ..."\n1" """)
       * - check(
         """+
           |  1
           |   1
         """.stripMargin.trim,
-        """ expr:1:1 / block:1:1 / factor:3:3 / (number | block):3:3 ..." 1" """
-      )
+        """ expr:1:1 / block:1:1 / factor:3:3 / (number | block):3:3 ..." 1" """)
     }
   }
 

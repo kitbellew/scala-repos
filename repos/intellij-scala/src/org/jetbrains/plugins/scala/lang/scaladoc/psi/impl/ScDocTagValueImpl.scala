@@ -137,8 +137,9 @@ class ScDocTagValueImpl(node: ASTNode)
       parent = parent.getParent
     }
 
-    if (parent == null || (parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG))
-      return Array.empty[ScNamedElement]
+    if (parent == null || (
+          parentTagType != PARAM_TAG && parentTagType != TYPE_PARAM_TAG
+        )) return Array.empty[ScNamedElement]
 
     def filterParamsByName(
         tagName: String,

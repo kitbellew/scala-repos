@@ -24,9 +24,7 @@ object MarathonBuild extends Build {
       formatSettings ++
       scalaStyleSettings ++
       publishSettings ++
-      Seq(
-        libraryDependencies ++= Dependencies.pluginInterface
-      )
+      Seq(libraryDependencies ++= Dependencies.pluginInterface)
   )
 
   lazy val root: Project = Project(
@@ -92,16 +90,14 @@ object MarathonBuild extends Build {
       Seq(
         testOptions in IntegrationTest := Seq(
           formattingTestArg,
-          Tests.Argument("-n", "integration"))
-      )
+          Tests.Argument("-n", "integration")))
 
   lazy val testSettings = Seq(
     testOptions in Test := Seq(
       formattingTestArg,
       Tests.Argument("-l", "integration")),
     parallelExecution in Test := false,
-    fork in Test := true
-  )
+    fork in Test := true)
 
   lazy val testScalaStyle = taskKey[Unit]("testScalaStyle")
 
@@ -112,8 +108,7 @@ object MarathonBuild extends Build {
         .toTask("")
         .value
     },
-    (test in Test) <<= (test in Test) dependsOn testScalaStyle
-  )
+    (test in Test) <<= (test in Test) dependsOn testScalaStyle)
 
   lazy val IntegrationTest = config("integration") extend Test
 
@@ -172,8 +167,7 @@ object MarathonBuild extends Build {
         "stax-api-1.0.1.jar",
         "commons-beanutils-core-1.8.0.jar",
         "servlet-api-2.5.jar",
-        "jsp-api-2.1.jar"
-      )
+        "jsp-api-2.1.jar")
       cp filter { x => exclude(x.data.getName) }
     }
   )
@@ -194,8 +188,7 @@ object MarathonBuild extends Build {
       .setPreference(SpaceInsideBrackets, false)
       .setPreference(SpaceInsideParentheses, false)
       .setPreference(SpacesWithinPatternBinders, true)
-      .setPreference(FormatXml, true)
-  )
+      .setPreference(FormatXml, true))
 
   /**
     * This is the standard release process without
@@ -211,8 +204,7 @@ object MarathonBuild extends Build {
       setReleaseVersion,
       commitReleaseVersion,
       tagRelease,
-      pushChanges
-    ))
+      pushChanges))
 
   /**
     * This on load trigger is used to set parameters in teamcity.
@@ -222,32 +214,28 @@ object MarathonBuild extends Build {
     * TeamCity does this by watching the output of the build it currently performs.
     * See: https://confluence.jetbrains.com/display/TCD8/Build+Script+Interaction+with+TeamCity
     */
-  lazy val teamCitySetEnvSettings = Seq(
-    onLoad in Global := {
-      sys.env.get("TEAMCITY_VERSION") match {
-        case None => // no-op
-        case Some(teamcityVersion) =>
-          def reportParameter(key: String, value: String): Unit = {
-            //env parameters will be made available as environment variables
-            println(
-              s"##teamcity[setParameter name='env.SBT_$key' value='$value']")
-            //system parameters will be made available as teamcity build parameters
-            println(
-              s"##teamcity[setParameter name='system.sbt.$key' value='$value']")
-          }
-          reportParameter("SCALA_VERSION", scalaVersion.value)
-          reportParameter("PROJECT_VERSION", version.value)
-      }
-      (onLoad in Global).value
+  lazy val teamCitySetEnvSettings = Seq(onLoad in Global := {
+    sys.env.get("TEAMCITY_VERSION") match {
+      case None => // no-op
+      case Some(teamcityVersion) =>
+        def reportParameter(key: String, value: String): Unit = {
+          //env parameters will be made available as environment variables
+          println(
+            s"##teamcity[setParameter name='env.SBT_$key' value='$value']")
+          //system parameters will be made available as teamcity build parameters
+          println(
+            s"##teamcity[setParameter name='system.sbt.$key' value='$value']")
+        }
+        reportParameter("SCALA_VERSION", scalaVersion.value)
+        reportParameter("PROJECT_VERSION", version.value)
     }
-  )
+    (onLoad in Global).value
+  })
 
   lazy val publishSettings = S3Resolver.defaults ++ Seq(
-    publishTo := Some(
-      s3resolver.value(
-        "Mesosphere Public Repo (S3)",
-        s3("downloads.mesosphere.io/maven")
-      )),
+    publishTo := Some(s3resolver.value(
+      "Mesosphere Public Repo (S3)",
+      s3("downloads.mesosphere.io/maven"))),
     SbtS3Resolver.s3credentials := new InstanceProfileCredentialsProvider()
   )
 }
@@ -255,10 +243,7 @@ object MarathonBuild extends Build {
 object Dependencies {
   import Dependency._
 
-  val pluginInterface = Seq(
-    playJson % "compile",
-    guava % "compile"
-  )
+  val pluginInterface = Seq(playJson % "compile", guava % "compile")
 
   val excludeSlf4jLog4j12 = ExclusionRule(
     organization = "org.slf4j",
@@ -368,11 +353,14 @@ object Dependency {
   val uuidGenerator =
     "com.fasterxml.uuid" % "java-uuid-generator" % V.UUIDGenerator
   val jGraphT = "org.javabits.jgrapht" % "jgrapht-core" % V.JGraphT
-  val hadoopHdfs =
-    "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll (excludeMortbayJetty, excludeJavaxServlet)
+  val hadoopHdfs = "org.apache.hadoop" % "hadoop-hdfs" % V.Hadoop excludeAll (
+    excludeMortbayJetty, excludeJavaxServlet
+  )
   val hadoopCommon =
-    "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll (excludeMortbayJetty,
-    excludeJavaxServlet)
+    "org.apache.hadoop" % "hadoop-common" % V.Hadoop excludeAll (
+      excludeMortbayJetty,
+      excludeJavaxServlet
+  )
   val beanUtils = "commons-beanutils" % "commons-beanutils" % "1.9.2"
   val scallop = "org.rogach" %% "scallop" % V.Scallop
   val jsonSchemaValidator =
@@ -384,7 +372,9 @@ object Dependency {
     "mesosphere.marathon" % "api-console" % V.MarathonApiConsole
   val graphite = "io.dropwizard.metrics" % "metrics-graphite" % V.Graphite
   val datadog =
-    "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude ("ch.qos.logback", "logback-classic")
+    "org.coursera" % "dropwizard-metrics-datadog" % V.DataDog exclude (
+      "ch.qos.logback", "logback-classic"
+  )
   val wixAccord = "com.wix" %% "accord-core" % V.WixAccord
 
   object Test {

@@ -40,8 +40,7 @@ import scalaz.syntax.traverse._
 case class CachingAPIKeyManagerSettings(
     apiKeyCacheSettings: Seq[Cache.CacheOption[APIKey, APIKeyRecord]],
     childCacheSettings: Seq[Cache.CacheOption[APIKey, Set[APIKeyRecord]]],
-    grantCacheSettings: Seq[Cache.CacheOption[GrantId, Grant]]
-)
+    grantCacheSettings: Seq[Cache.CacheOption[GrantId, Grant]])
 
 object CachingAPIKeyManagerSettings {
   val Default = CachingAPIKeyManagerSettings(

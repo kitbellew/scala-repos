@@ -7,10 +7,7 @@ object Test {
   case class Bippy2[T](x: Int, y: List[T], z: T) {}
 
   def bippies =
-    List(
-      Bippy(5, List(new C), new B),
-      Bippy2(5, List(new B), new C)
-    )
+    List(Bippy(5, List(new C), new B), Bippy2(5, List(new B), new C))
 
   def bmethod(x: B) = ()
 

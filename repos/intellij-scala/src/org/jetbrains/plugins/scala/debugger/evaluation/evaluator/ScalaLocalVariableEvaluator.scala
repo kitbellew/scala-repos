@@ -130,9 +130,9 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       case None =>
         myEvaluatedVariable = null
         myContext = null
-        throw EvaluationException(
-          DebuggerBundle
-            .message("evaluation.error.local.variable.missing", myName))
+        throw EvaluationException(DebuggerBundle.message(
+          "evaluation.error.local.variable.missing",
+          myName))
     }
   }
 

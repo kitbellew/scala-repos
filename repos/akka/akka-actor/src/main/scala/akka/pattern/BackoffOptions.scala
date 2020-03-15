@@ -234,25 +234,23 @@ private final case class BackoffOptionsImpl(
 
     backoffType match {
       case RestartImpliesFailure ⇒
-        Props(
-          new BackoffOnRestartSupervisor(
-            childProps,
-            childName,
-            minBackoff,
-            maxBackoff,
-            backoffReset,
-            randomFactor,
-            supervisorStrategy))
+        Props(new BackoffOnRestartSupervisor(
+          childProps,
+          childName,
+          minBackoff,
+          maxBackoff,
+          backoffReset,
+          randomFactor,
+          supervisorStrategy))
       case StopImpliesFailure ⇒
-        Props(
-          new BackoffSupervisor(
-            childProps,
-            childName,
-            minBackoff,
-            maxBackoff,
-            backoffReset,
-            randomFactor,
-            supervisorStrategy))
+        Props(new BackoffSupervisor(
+          childProps,
+          childName,
+          minBackoff,
+          maxBackoff,
+          backoffReset,
+          randomFactor,
+          supervisorStrategy))
     }
   }
 }

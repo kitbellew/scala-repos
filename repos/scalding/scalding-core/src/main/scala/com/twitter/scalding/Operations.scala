@@ -191,8 +191,8 @@ package com.twitter.scalding {
       // Use iterator and while for optimal performance (avoid closures/fn calls)
       if (evicted.isDefined) {
         // Don't use pattern matching in performance-critical code
-        @SuppressWarnings(
-          Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+        @SuppressWarnings(Array(
+          "org.brianmckenna.wartremover.warts.OptionPartial"))
         val it = evicted.get.iterator
         val tecol = functionCall.getOutputCollector
         while (it.hasNext) {
@@ -516,7 +516,9 @@ package com.twitter.scalding {
    */
   class SideEffectFlatMapFunction[S, C, T](
       bf: => C, // begin function returns a context
-      @transient fn: (C, S) => TraversableOnce[
+      @transient fn: (
+          C,
+          S) => TraversableOnce[
         T
       ], // function that takes a context and a tuple, returns TraversableOnce of T
       ef: C => Unit, // end function to clean up context object

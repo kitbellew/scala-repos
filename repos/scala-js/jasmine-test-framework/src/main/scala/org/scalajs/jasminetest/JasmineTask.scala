@@ -49,13 +49,11 @@ final class JasmineTask(private val runner: JasmineRunner, _taskDef: TaskDef)
     } catch {
       case t: Throwable =>
         // Jasmine itself failed. Issue a failure
-        eventHandler.handle(
-          new JasmineEvent(
-            taskDef = taskDef,
-            status = Status.Failure,
-            selector = new SuiteSelector,
-            throwable = new OptionalThrowable(t)
-          ))
+        eventHandler.handle(new JasmineEvent(
+          taskDef = taskDef,
+          status = Status.Failure,
+          selector = new SuiteSelector,
+          throwable = new OptionalThrowable(t)))
         for (log <- loggers) {
           log.error("Problem executing code in tests: " + t.toString)
           log.trace(t)

@@ -152,8 +152,7 @@ class WriteAheadLogBackedBlockRDDSuite
       numPartitionsInWAL: Int,
       testIsBlockValid: Boolean = false,
       testBlockRemove: Boolean = false,
-      testStoreInBM: Boolean = false
-  ) {
+      testStoreInBM: Boolean = false) {
     require(
       numPartitionsInBM <= numPartitions,
       "Can't put more partitions in BlockManager than that in RDD")
@@ -181,22 +180,19 @@ class WriteAheadLogBackedBlockRDDSuite
     // Make sure that the left `numPartitionsInBM` blocks are in block manager, and others are not
     require(
       blockIds.take(numPartitionsInBM).forall(blockManager.get(_).nonEmpty),
-      "Expected blocks not in BlockManager"
-    )
+      "Expected blocks not in BlockManager")
     require(
       blockIds
         .takeRight(numPartitions - numPartitionsInBM)
         .forall(blockManager.get(_).isEmpty),
-      "Unexpected blocks in BlockManager"
-    )
+      "Unexpected blocks in BlockManager")
 
     // Make sure that the right `numPartitionsInWAL` blocks are in WALs, and other are not
     require(
       recordHandles
         .takeRight(numPartitionsInWAL)
         .forall(s => new File(s.path.stripPrefix("file://")).exists()),
-      "Expected blocks not in write ahead log"
-    )
+      "Expected blocks not in write ahead log")
     require(
       recordHandles
         .take(numPartitions - numPartitionsInWAL)
@@ -252,15 +248,13 @@ class WriteAheadLogBackedBlockRDDSuite
       assert(rdd2.collect() === data.flatten)
       assert(
         blockIds.forall(blockManager.get(_).nonEmpty),
-        "All blocks not found in block manager"
-      )
+        "All blocks not found in block manager")
     }
   }
 
   private def generateWALRecordHandles(
       blockData: Seq[Seq[String]],
-      blockIds: Seq[BlockId]
-  ): Seq[FileBasedWriteAheadLogSegment] = {
+      blockIds: Seq[BlockId]): Seq[FileBasedWriteAheadLogSegment] = {
     require(blockData.size === blockIds.size)
     val writer = new FileBasedWriteAheadLogWriter(
       new File(dir, "logFile").toString,

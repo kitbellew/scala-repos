@@ -59,8 +59,7 @@ object Query {
 
   def recentlyPlaying(u: String) =
     nowPlaying(u) ++ Json.obj(
-      F.updatedAt -> $gt($date(DateTime.now minusMinutes 5))
-    )
+      F.updatedAt -> $gt($date(DateTime.now minusMinutes 5)))
 
   // use the us index
   def win(u: String) = user(u) ++ Json.obj(F.winnerId -> u)
@@ -87,11 +86,9 @@ object Query {
   def variant(v: chess.variant.Variant) =
     Json.obj(F.variant -> v.standard.fold($exists(false), v.id))
 
-  lazy val notHordeOrSincePawnsAreWhite = $or(
-    Seq(
-      Json.obj(F.variant -> $ne(chess.variant.Horde.id)),
-      sinceHordePawnsAreWhite
-    ))
+  lazy val notHordeOrSincePawnsAreWhite = $or(Seq(
+    Json.obj(F.variant -> $ne(chess.variant.Horde.id)),
+    sinceHordePawnsAreWhite))
 
   lazy val sinceHordePawnsAreWhite = Json.obj(
     F.createdAt -> $gt($date(hordeWhitePawnsSince)))

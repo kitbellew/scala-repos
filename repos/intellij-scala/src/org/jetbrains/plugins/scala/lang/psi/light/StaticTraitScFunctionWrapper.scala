@@ -51,9 +51,10 @@ object StaticTraitScFunctionWrapper {
     if (!function.isConstructor) {
       function.returnType match {
         case Success(tp, _) =>
-          builder.append(
-            JavaConversionUtil
-              .typeText(tp, function.getProject, function.getResolveScope))
+          builder.append(JavaConversionUtil.typeText(
+            tp,
+            function.getProject,
+            function.getResolveScope))
         case _ => builder.append("java.lang.Object")
       }
     }
@@ -66,9 +67,9 @@ object StaticTraitScFunctionWrapper {
 
     val qualName = containingClass.getQualifiedName
     builder.append(
-      ((qualName.substring(
-        0,
-        qualName.length() - 6) + " This") +: function.parameters.map {
+      ((
+        qualName.substring(0, qualName.length() - 6) + " This"
+      ) +: function.parameters.map {
         case param =>
           val builder = new StringBuilder
           val paramAnnotations = JavaConversionUtil
@@ -80,8 +81,10 @@ object StaticTraitScFunctionWrapper {
             case Success(tp, _) =>
               if (param.isCallByNameParameter)
                 builder.append("scala.Function0<")
-              builder.append(JavaConversionUtil
-                .typeText(tp, function.getProject, function.getResolveScope))
+              builder.append(JavaConversionUtil.typeText(
+                tp,
+                function.getProject,
+                function.getResolveScope))
               if (param.isCallByNameParameter) builder.append(">")
             case _ => builder.append("java.lang.Object")
           }

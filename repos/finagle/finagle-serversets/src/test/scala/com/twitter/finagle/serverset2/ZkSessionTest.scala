@@ -172,10 +172,9 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
       val Seq(`ew`, `ew2`, gw @ GetChildrenWatch("/foo/bar")) =
         watchedZk.value.opq
       assert(ref.get == Activity.Pending)
-      gw.res() = Return(
-        Watched(
-          Node.Children(Seq("a", "b", "c"), null),
-          Var.value(WatchState.Pending)))
+      gw.res() = Return(Watched(
+        Node.Children(Seq("a", "b", "c"), null),
+        Var.value(WatchState.Pending)))
       assert(ref.get == Activity.Ok(Set("a", "b", "c")))
       assert(watchedZk.value.opq == Seq(ew, ew2, gw))
 
@@ -214,8 +213,7 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
         assert(
           watchedZk.value.opq == Seq(
             AddAuthInfo("digest", Buf.Utf8(authInfo)),
-            Close(Time.Bottom)
-          ))
+            Close(Time.Bottom)))
       }
 
       zkState() = WatchState.SessionState(SessionState.SyncConnected)
@@ -224,8 +222,7 @@ class ZkSessionTest extends FunSuite with Eventually with IntegrationPatience {
           watchedZk.value.opq == Seq(
             AddAuthInfo("digest", Buf.Utf8(authInfo)),
             Close(Time.Bottom),
-            AddAuthInfo("digest", Buf.Utf8(authInfo))
-          ))
+            AddAuthInfo("digest", Buf.Utf8(authInfo))))
       }
     }
   }

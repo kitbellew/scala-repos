@@ -53,8 +53,7 @@ case class MongoAPIKeyManagerSettings(
     deletedAPIKeys: String = "tokens_deleted",
     deletedGrants: String = "grants_deleted",
     timeout: Timeout = new Timeout(30000),
-    rootKeyId: String = "invalid"
-)
+    rootKeyId: String = "invalid")
 
 object MongoAPIKeyManagerSettings {
   val defaults = MongoAPIKeyManagerSettings()
@@ -84,8 +83,7 @@ object MongoAPIKeyManager extends Logging {
       deletedAPIKeys,
       deletedGrants,
       timeoutMillis,
-      rootKeyId
-    )
+      rootKeyId)
 
     val mongo = RealMongo(config.detach("mongo"))
     val database = mongo.database(dbName)
@@ -115,8 +113,7 @@ object MongoAPIKeyManager extends Logging {
     val rootPermissions = Set[Permission](
       WritePermission(Path.Root, WriteAsAny),
       ReadPermission(Path.Root, WrittenByAny),
-      DeletePermission(Path.Root, WrittenByAny)
-    )
+      DeletePermission(Path.Root, WrittenByAny))
 
     val rootGrant = Grant(
       rootGrantId,
@@ -126,8 +123,7 @@ object MongoAPIKeyManager extends Logging {
       Set(),
       rootPermissions,
       new Instant(0L),
-      None
-    )
+      None)
 
     val rootAPIKeyRecord = APIKeyRecord(
       rootAPIKeyId,
@@ -140,9 +136,8 @@ object MongoAPIKeyManager extends Logging {
     for {
       _ <- db(
         insert(rootGrant.serialize.asInstanceOf[JObject]).into(grantCollection))
-      _ <- db(
-        insert(rootAPIKeyRecord.serialize.asInstanceOf[JObject])
-          .into(keyCollection))
+      _ <- db(insert(rootAPIKeyRecord.serialize.asInstanceOf[JObject]).into(
+        keyCollection))
     } yield rootAPIKeyRecord
   }
 
@@ -156,8 +151,8 @@ object MongoAPIKeyManager extends Logging {
 
       case None =>
         logger.error("Could not locate existing root API key!")
-        Promise.failed(
-          new IllegalStateException("Could not locate existing root API key!"))
+        Promise.failed(new IllegalStateException(
+          "Could not locate existing root API key!"))
     }
   }
 }
@@ -200,9 +195,8 @@ class MongoAPIKeyManager(
       issuerKey,
       grants,
       false)
-    database(
-      insert(apiKey.serialize.asInstanceOf[JObject])
-        .into(settings.apiKeys)) map { _ => apiKey }
+    database(insert(apiKey.serialize.asInstanceOf[JObject]).into(
+      settings.apiKeys)) map { _ => apiKey }
   }
 
   def createGrant(
@@ -336,9 +330,8 @@ class MongoAPIKeyManager(
     findAPIKey(apiKey).flatMap {
       case ot @ Some(t) =>
         for {
-          _ <- database(
-            insert(t.serialize.asInstanceOf[JObject])
-              .into(settings.deletedAPIKeys))
+          _ <- database(insert(t.serialize.asInstanceOf[JObject]).into(
+            settings.deletedAPIKeys))
           _ <- database(
             remove.from(settings.apiKeys).where("apiKey" === apiKey))
         } yield { ot }
@@ -354,9 +347,8 @@ class MongoAPIKeyManager(
       leafOpt <- findGrant(gid)
       result <- leafOpt map { leafGrant =>
         for {
-          _ <- database(
-            insert(leafGrant.serialize.asInstanceOf[JObject])
-              .into(settings.deletedGrants))
+          _ <- database(insert(leafGrant.serialize.asInstanceOf[JObject]).into(
+            settings.deletedGrants))
           _ <- database(remove.from(settings.grants).where("grantId" === gid))
         } yield { deletedChildren + leafGrant }
       } getOrElse { Promise successful deletedChildren }

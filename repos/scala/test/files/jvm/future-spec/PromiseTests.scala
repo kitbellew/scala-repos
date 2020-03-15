@@ -34,12 +34,10 @@ class PromiseTests extends MinimalScalaTest {
       val empty = Promise[String]().future
       val timedOut = Promise.successful[String]("Timedout").future
 
-      Await.result(
-        failure fallbackTo timedOut,
-        defaultTimeout) mustBe ("Timedout")
-      Await.result(
-        timedOut fallbackTo empty,
-        defaultTimeout) mustBe ("Timedout")
+      Await
+        .result(failure fallbackTo timedOut, defaultTimeout) mustBe ("Timedout")
+      Await
+        .result(timedOut fallbackTo empty, defaultTimeout) mustBe ("Timedout")
       Await.result(
         otherFailure fallbackTo failure fallbackTo timedOut,
         defaultTimeout) mustBe ("Timedout")
@@ -103,8 +101,8 @@ class PromiseTests extends MinimalScalaTest {
   "A failed Promise" should {
     "be completed" in {
       val message = "Expected Exception"
-      val promise = Promise[String]()
-        .complete(Failure(new RuntimeException(message)))
+      val promise = Promise[String]().complete(Failure(
+        new RuntimeException(message)))
       promise.isCompleted mustBe (true)
       futureWithException[RuntimeException](_(promise.future, message))
     }
@@ -166,9 +164,8 @@ class PromiseTests extends MinimalScalaTest {
 
     "filter result" in {
       f { (future, result) =>
-        Await.result(
-          (future filter (_ => true)),
-          defaultTimeout) mustBe (result)
+        Await
+          .result((future filter (_ => true)), defaultTimeout) mustBe (result)
         intercept[NoSuchElementException] {
           Await.result((future filter (_ => false)), defaultTimeout)
         }
@@ -177,9 +174,9 @@ class PromiseTests extends MinimalScalaTest {
 
     "transform result with map" in {
       f((future, result) =>
-        Await.result(
-          (future map (_.toString.length)),
-          defaultTimeout) mustBe (result.toString.length))
+        Await.result((future map (_.toString.length)), defaultTimeout) mustBe (
+          result.toString.length
+        ))
     }
 
     "compose result with flatMap" in {

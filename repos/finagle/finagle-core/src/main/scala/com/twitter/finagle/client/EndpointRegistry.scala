@@ -57,8 +57,7 @@ private[twitter] class EndpointRegistry {
       client: String,
       dtab: Dtab,
       path: String,
-      endpoints: Var[Addr]
-  ): Unit = {
+      endpoints: Var[Addr]): Unit = {
     val ar: AtomicReference[Addr] = new AtomicReference()
     val closable = endpoints.changes.register(Witness(ar))
     val observation = (ar, closable)

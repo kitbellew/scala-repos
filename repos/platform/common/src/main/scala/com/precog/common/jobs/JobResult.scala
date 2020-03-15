@@ -37,7 +37,9 @@ case class JobResult(mimeTypes: List[MimeType], content: Array[Byte]) {
     that match {
       case JobResult(thoseMimeTypes, thatContent) =>
         val len = content.length
-        (mimeTypes.toSet == thoseMimeTypes.toSet) && (len == thatContent.length) && {
+        (mimeTypes.toSet == thoseMimeTypes.toSet) && (
+          len == thatContent.length
+        ) && {
           var i = 0
           var result = true
           while (result && i < len) {
@@ -61,15 +63,12 @@ trait JobResultSerialization {
 
   implicit object JobResultDecomposer extends Decomposer[JobResult] {
     override def decompose(result: JobResult): JValue =
-      JObject(
-        List(
-          JField("content", JString(Base64.encodeBase64String(result.content))),
-          JField(
-            "mimeTypes",
-            JArray(result.mimeTypes map { mimeType =>
-              JString(mimeType.value)
-            }))
-        ))
+      JObject(List(
+        JField("content", JString(Base64.encodeBase64String(result.content))),
+        JField(
+          "mimeTypes",
+          JArray(result.mimeTypes map { mimeType => JString(mimeType.value) }))
+      ))
   }
 
   implicit object JobResultExtractor extends Extractor[JobResult] {

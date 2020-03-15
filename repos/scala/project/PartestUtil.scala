@@ -7,7 +7,9 @@ object PartestUtil {
       globalBase: File,
       testBase: File) {
     private val testCaseDir = new SimpleFileFilter(f =>
-      f.isDirectory && f.listFiles.nonEmpty && !(f.getParentFile / (f.name + ".res")).exists)
+      f.isDirectory && f.listFiles.nonEmpty && !(
+        f.getParentFile / (f.name + ".res")
+      ).exists)
     private val testCaseFilter =
       GlobFilter("*.scala") | GlobFilter("*.java") | GlobFilter(
         "*.res") || testCaseDir
@@ -137,9 +139,8 @@ object PartestUtil {
     }
     val P = oneOf(
       knownUnaryOptions.map(x => token(x))) | SrcPath | TestPathParser | Grep
-    (Space ~> repsep(P, oneOrMore(Space)))
-      .map(_.mkString(" "))
-      .?
-      .map(_.getOrElse("")) <~ OptSpace
+    (
+      Space ~> repsep(P, oneOrMore(Space))
+    ).map(_.mkString(" ")).?.map(_.getOrElse("")) <~ OptSpace
   }
 }

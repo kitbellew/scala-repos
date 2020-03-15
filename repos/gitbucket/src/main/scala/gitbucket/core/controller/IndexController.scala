@@ -44,14 +44,12 @@ trait IndexControllerBase extends ControllerBase {
 
   val signinForm = mapping(
     "userName" -> trim(label("Username", text(required))),
-    "password" -> trim(label("Password", text(required)))
-  )(SignInForm.apply)
+    "password" -> trim(label("Password", text(required))))(SignInForm.apply)
 
   val searchForm = mapping(
     "query" -> trim(text(required)),
     "owner" -> trim(text(required)),
-    "repository" -> trim(text(required))
-  )(SearchForm.apply)
+    "repository" -> trim(text(required)))(SearchForm.apply)
 
   case class SearchForm(query: String, owner: String, repository: String)
 
@@ -138,13 +136,11 @@ trait IndexControllerBase extends ControllerBase {
     */
   get("/_user/proposals")(usersOnly {
     contentType = formats("json")
-    org.json4s.jackson.Serialization.write(
-      Map(
-        "options" -> getAllUsers(false)
-          .filter(!_.isGroupAccount)
-          .map(_.userName)
-          .toArray)
-    )
+    org.json4s.jackson.Serialization.write(Map(
+      "options" -> getAllUsers(false)
+        .filter(!_.isGroupAccount)
+        .map(_.userName)
+        .toArray))
   })
 
   /**

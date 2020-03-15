@@ -19,9 +19,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
   */
 class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScTemplateParents](parent, elemType)
     with ScTemplateParentsStub {
   private var typesString: Seq[StringRef] = Seq.empty
@@ -30,9 +29,8 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       constructor: Option[StringRef],
       typesString: Seq[StringRef]) = {
     this(
@@ -56,9 +54,9 @@ class ScTemplateParentsStubImpl[ParentPsi <: PsiElement](
       val typeElements = types.get
       if (typeElements != null && typeElements.forall { elem =>
             val context = elem.getContext
-            context.eq(
-              getPsi) || (context.getContext != null && context.getContext.eq(
-              getPsi))
+            context.eq(getPsi) || (
+              context.getContext != null && context.getContext.eq(getPsi)
+            )
           }) return typeElements
     }
     val res: Seq[ScTypeElement] =

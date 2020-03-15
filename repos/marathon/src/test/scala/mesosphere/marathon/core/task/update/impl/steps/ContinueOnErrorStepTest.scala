@@ -39,8 +39,7 @@ class ContinueOnErrorStepTest
       step.processUpdate(
         timestamp = timestamp,
         task = dummyTask,
-        mesosStatus = TaskStatus.newBuilder().buildPartial()
-      )
+        mesosStatus = TaskStatus.newBuilder().buildPartial())
     }
 
     Given("a nested step that is always successful")
@@ -86,9 +85,7 @@ class ContinueOnErrorStepTest
     Then("it should execute the nested step")
     processUpdate(verify(nested, times(1)))
     And("produce an error message in the log")
-    logEvents.map(_.toString) should be(
-      Vector(
-        "[ERROR] while executing step nested for [task], continue with other steps")
-    )
+    logEvents.map(_.toString) should be(Vector(
+      "[ERROR] while executing step nested for [task], continue with other steps"))
   }
 }

@@ -40,29 +40,25 @@ final class xMain extends xsbti.AppMain {
     import BasicCommandStrings.runEarly
     import BuiltinCommands.{initialize, defaults}
     import CommandStrings.{BootCommand, DefaultsCommand, InitCommand}
-    runManaged(
-      initialState(
-        configuration,
-        Seq(defaults, early),
-        runEarly(DefaultsCommand) :: runEarly(
-          InitCommand) :: BootCommand :: Nil))
+    runManaged(initialState(
+      configuration,
+      Seq(defaults, early),
+      runEarly(DefaultsCommand) :: runEarly(InitCommand) :: BootCommand :: Nil))
   }
 }
 final class ScriptMain extends xsbti.AppMain {
   def run(configuration: xsbti.AppConfiguration): xsbti.MainResult =
-    runManaged(
-      initialState(
-        configuration,
-        BuiltinCommands.ScriptCommands,
-        Script.Name :: Nil))
+    runManaged(initialState(
+      configuration,
+      BuiltinCommands.ScriptCommands,
+      Script.Name :: Nil))
 }
 final class ConsoleMain extends xsbti.AppMain {
   def run(configuration: xsbti.AppConfiguration): xsbti.MainResult =
-    runManaged(
-      initialState(
-        configuration,
-        BuiltinCommands.ConsoleCommands,
-        IvyConsole.Name :: Nil))
+    runManaged(initialState(
+      configuration,
+      BuiltinCommands.ConsoleCommands,
+      IvyConsole.Name :: Nil))
 }
 
 object StandardMain {
@@ -291,10 +287,8 @@ object BuiltinCommands {
       keepKeys: AttributeKey[_] => Boolean): Parser[String] =
     singleArgument(allTaskAndSettingKeys(s).filter(keepKeys).map(_.label).toSet)
   def verbosityParser: Parser[Int] =
-    success(1) | ((Space ~ "-") ~> (
-      'v'.id.+.map(_.size + 1) |
-        ("V" ^^^ Int.MaxValue)
-    ))
+    success(1) | ((Space ~ "-") ~> ('v'.id.+.map(_.size + 1) |
+      ("V" ^^^ Int.MaxValue)))
   def taskDetail(keys: Seq[AttributeKey[_]]): Seq[(String, String)] =
     sortByLabel(withDescription(keys)) flatMap taskStrings
 
@@ -412,8 +406,7 @@ object BuiltinCommands {
           "<set>",
           ims,
           arg,
-          LineRange(0, 0)
-        )(cl)
+          LineRange(0, 0))(cl)
         val setResult =
           if (all) SettingCompletions.setAll(extracted, settings)
           else SettingCompletions.setThis(s, extracted, settings, arg)

@@ -120,8 +120,8 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
       }
     }
     if (dropped) {
-      message.onFailure(
-        new SparkException("Message is dropped because Outbox is stopped"))
+      message.onFailure(new SparkException(
+        "Message is dropped because Outbox is stopped"))
     } else { drainOutbox() }
   }
 
@@ -249,8 +249,8 @@ private[netty] class Outbox(nettyEnv: NettyRpcEnv, val address: RpcAddress) {
     // update messages and it's safe to just drain the queue.
     var message = messages.poll()
     while (message != null) {
-      message.onFailure(
-        new SparkException("Message is dropped because Outbox is stopped"))
+      message.onFailure(new SparkException(
+        "Message is dropped because Outbox is stopped"))
       message = messages.poll()
     }
   }

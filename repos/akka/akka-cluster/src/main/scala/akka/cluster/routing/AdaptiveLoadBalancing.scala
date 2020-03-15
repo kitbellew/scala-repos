@@ -63,11 +63,10 @@ final case class AdaptiveLoadBalancingRoutingLogic(
   @tailrec final def metricsChanged(event: ClusterMetricsChanged): Unit = {
     val oldValue = weightedRouteesRef.get
     val (routees, _, _) = oldValue
-    val weightedRoutees = Some(
-      new WeightedRoutees(
-        routees,
-        cluster.selfAddress,
-        metricsSelector.weights(event.nodeMetrics)))
+    val weightedRoutees = Some(new WeightedRoutees(
+      routees,
+      cluster.selfAddress,
+      metricsSelector.weights(event.nodeMetrics)))
     // retry when CAS failure
     if (!weightedRouteesRef.compareAndSet(
           oldValue,
@@ -85,11 +84,10 @@ final case class AdaptiveLoadBalancingRoutingLogic(
         val (oldRoutees, oldMetrics, oldWeightedRoutees) = oldValue
 
         if (routees ne oldRoutees) {
-          val weightedRoutees = Some(
-            new WeightedRoutees(
-              routees,
-              cluster.selfAddress,
-              metricsSelector.weights(oldMetrics)))
+          val weightedRoutees = Some(new WeightedRoutees(
+            routees,
+            cluster.selfAddress,
+            metricsSelector.weights(oldMetrics)))
           // ignore, don't update, in case of CAS failure
           weightedRouteesRef.compareAndSet(
             oldValue,
@@ -181,10 +179,9 @@ final case class AdaptiveLoadBalancingPool(
 
   override def routingLogicController(
       routingLogic: RoutingLogic): Option[Props] =
-    Some(
-      Props(
-        classOf[AdaptiveLoadBalancingMetricsListener],
-        routingLogic.asInstanceOf[AdaptiveLoadBalancingRoutingLogic]))
+    Some(Props(
+      classOf[AdaptiveLoadBalancingMetricsListener],
+      routingLogic.asInstanceOf[AdaptiveLoadBalancingRoutingLogic]))
 
   /**
     * Setting the supervisor strategy to be used for the “head” Router actor.
@@ -276,10 +273,9 @@ final case class AdaptiveLoadBalancingGroup(
 
   override def routingLogicController(
       routingLogic: RoutingLogic): Option[Props] =
-    Some(
-      Props(
-        classOf[AdaptiveLoadBalancingMetricsListener],
-        routingLogic.asInstanceOf[AdaptiveLoadBalancingRoutingLogic]))
+    Some(Props(
+      classOf[AdaptiveLoadBalancingMetricsListener],
+      routingLogic.asInstanceOf[AdaptiveLoadBalancingRoutingLogic]))
 
   /**
     * Setting the dispatcher to be used for the router head actor, which handles
@@ -378,11 +374,10 @@ case object SystemLoadAverageMetricsSelector extends CapacityMetricsSelector {
   "Superseded by akka.cluster.metrics (in akka-cluster-metrics jar)",
   "2.4")
 object MixMetricsSelector
-    extends MixMetricsSelectorBase(
-      Vector(
-        HeapMetricsSelector,
-        CpuMetricsSelector,
-        SystemLoadAverageMetricsSelector)) {
+    extends MixMetricsSelectorBase(Vector(
+      HeapMetricsSelector,
+      CpuMetricsSelector,
+      SystemLoadAverageMetricsSelector)) {
 
   /**
     * Java API: get the default singleton instance

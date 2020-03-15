@@ -214,15 +214,14 @@ object ImageUtils extends Logging {
           config.imagemagickIdentifyPath,
           localImageName)
         val fileExtension = getFileExtensionName(imageDetails)
-        Some(
-          LocallyStoredImage(
-            imageSrc,
-            localImageName,
-            linkhash,
-            imageFile.length(),
-            fileExtension,
-            imageDetails.getHeight,
-            imageDetails.getWidth))
+        Some(LocallyStoredImage(
+          imageSrc,
+          localImageName,
+          linkhash,
+          imageFile.length(),
+          fileExtension,
+          imageDetails.getHeight,
+          imageDetails.getWidth))
       } catch {
         case e: Exception => {
           trace(e, "Unable to get image file dimensions & extension name!")

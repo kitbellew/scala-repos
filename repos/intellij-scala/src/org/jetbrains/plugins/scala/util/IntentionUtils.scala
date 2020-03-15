@@ -336,10 +336,9 @@ object IntentionUtils {
     val popup = JBPopupFactory.getInstance.createListPopup(base)
     val bounds: Rectangle = getCurrentItemBounds()
 
-    popup.show(
-      new RelativePoint(
-        GoToImplicitConversionAction.getList,
-        new Point(bounds.x + bounds.width - 20, bounds.y)))
+    popup.show(new RelativePoint(
+      GoToImplicitConversionAction.getList,
+      new Point(bounds.x + bounds.width - 20, bounds.y)))
   }
 
 }

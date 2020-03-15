@@ -48,29 +48,22 @@ class PerfTestSuiteSpec extends Specification {
 
   val exInnerTest = Tree.node(
     RunSequential,
-    Stream(
-      Tree.node(
-        Group("a"),
+    Stream(Tree.node(
+      Group("a"),
+      Stream(Tree.node(
+        RunSequential,
         Stream(
           Tree.node(
-            RunSequential,
-            Stream(
-              Tree.node(
-                Group("b"),
-                Stream(
-                  Tree.node(
-                    RunConcurrent,
-                    Stream(
-                      Tree.leaf[PerfTest](RunQuery("1")),
-                      Tree.leaf[PerfTest](RunQuery("2"))
-                    ))
-                )),
-              Tree.leaf[PerfTest](RunQuery("3"))
-            )
-          )
+            Group("b"),
+            Stream(Tree.node(
+              RunConcurrent,
+              Stream(
+                Tree.leaf[PerfTest](RunQuery("1")),
+                Tree.leaf[PerfTest](RunQuery("2")))))),
+          Tree.leaf[PerfTest](RunQuery("3"))
         )
-      )
-    )
+      ))
+    ))
   )
 
   "the DSL" should {
@@ -123,12 +116,12 @@ class PerfTestSuiteSpec extends Specification {
 
       ts must beLike {
         case Some(Tree.Node(Group(_), ts)) =>
-          ts must haveTheSameElementsAs(
-            List(
-              Tree.leaf[PerfTest](RunQuery("1")),
-              Tree.leaf[PerfTest](RunQuery("2")),
-              Tree.leaf[PerfTest](RunQuery("3"))
-            )) ^^ (treeEq[PerfTest].equal(_, _))
+          ts must haveTheSameElementsAs(List(
+            Tree.leaf[PerfTest](RunQuery("1")),
+            Tree.leaf[PerfTest](RunQuery("2")),
+            Tree.leaf[PerfTest](RunQuery("3")))) ^^ (
+            treeEq[PerfTest].equal(_, _)
+          )
       }
     }
   }

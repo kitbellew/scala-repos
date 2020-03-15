@@ -172,20 +172,17 @@ class ReplicaManager(
     "LeaderCount",
     new Gauge[Int] {
       def value = { getLeaderPartitions().size }
-    }
-  )
+    })
   val partitionCount = newGauge(
     "PartitionCount",
     new Gauge[Int] {
       def value = allPartitions.size
-    }
-  )
+    })
   val underReplicatedPartitions = newGauge(
     "UnderReplicatedPartitions",
     new Gauge[Int] {
       def value = underReplicatedPartitionCount()
-    }
-  )
+    })
   val isrExpandRate = newMeter("IsrExpandsPerSec", "expands", TimeUnit.SECONDS)
   val isrShrinkRate = newMeter("IsrShrinksPerSec", "shrinks", TimeUnit.SECONDS)
 
@@ -240,9 +237,9 @@ class ReplicaManager(
     */
   def tryCompleteDelayedProduce(key: DelayedOperationKey) {
     val completed = delayedProducePurgatory.checkAndComplete(key)
-    debug(
-      "Request key %s unblocked %d producer requests."
-        .format(key.keyLabel, completed))
+    debug("Request key %s unblocked %d producer requests.".format(
+      key.keyLabel,
+      completed))
   }
 
   /**
@@ -254,9 +251,9 @@ class ReplicaManager(
     */
   def tryCompleteDelayedFetch(key: DelayedOperationKey) {
     val completed = delayedFetchPurgatory.checkAndComplete(key)
-    debug(
-      "Request key %s unblocked %d fetch requests."
-        .format(key.keyLabel, completed))
+    debug("Request key %s unblocked %d fetch requests.".format(
+      key.keyLabel,
+      completed))
   }
 
   def startup() {
@@ -359,8 +356,10 @@ class ReplicaManager(
     if (replicaOpt.isDefined) replicaOpt.get
     else
       throw new ReplicaNotAvailableException(
-        "Replica %d is not available for partition [%s,%d]"
-          .format(config.brokerId, topic, partition))
+        "Replica %d is not available for partition [%s,%d]".format(
+          config.brokerId,
+          topic,
+          partition))
   }
 
   def getLeaderReplicaIfLocal(topic: String, partitionId: Int): Replica = {
@@ -368,8 +367,10 @@ class ReplicaManager(
     partitionOpt match {
       case None =>
         throw new UnknownTopicOrPartitionException(
-          "Partition [%s,%d] doesn't exist on %d"
-            .format(topic, partitionId, config.brokerId))
+          "Partition [%s,%d] doesn't exist on %d".format(
+            topic,
+            partitionId,
+            config.brokerId))
       case Some(partition) =>
         partition.leaderReplicaIfLocal match {
           case Some(leaderReplica) => leaderReplica
@@ -420,8 +421,7 @@ class ReplicaManager(
               new PartitionResponse(
                 result.errorCode,
                 result.info.firstOffset,
-                result.info.timestamp
-              )
+                result.info.timestamp)
             ) // response status
       }
 
@@ -510,9 +510,9 @@ class ReplicaManager(
             topicPartition,
             LogAppendResult(
               LogAppendInfo.UnknownLogAppendInfo,
-              Some(
-                new InvalidTopicException("Cannot append to internal topic %s"
-                  .format(topicPartition.topic)))))
+              Some(new InvalidTopicException(
+                "Cannot append to internal topic %s".format(
+                  topicPartition.topic)))))
         } else {
           try {
             val partitionOpt = getPartition(
@@ -806,14 +806,15 @@ class ReplicaManager(
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
         val stateControllerEpochErrorMessage =
-          ("Broker %d received update metadata request with correlation id %d from an " +
-            "old controller %d with epoch %d. Latest known controller epoch is %d")
-            .format(
-              localBrokerId,
-              correlationId,
-              updateMetadataRequest.controllerId,
-              updateMetadataRequest.controllerEpoch,
-              controllerEpoch)
+          (
+            "Broker %d received update metadata request with correlation id %d from an " +
+              "old controller %d with epoch %d. Latest known controller epoch is %d"
+          ).format(
+            localBrokerId,
+            correlationId,
+            updateMetadataRequest.controllerId,
+            updateMetadataRequest.controllerEpoch,
+            controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {
@@ -849,14 +850,15 @@ class ReplicaManager(
         leaderAndISRRequest.partitionStates.asScala.foreach {
           case (topicPartition, stateInfo) =>
             stateChangeLogger.warn(
-              ("Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d since " +
-                "its controller epoch %d is old. Latest known controller epoch is %d")
-                .format(
-                  localBrokerId,
-                  leaderAndISRRequest.controllerId,
-                  correlationId,
-                  leaderAndISRRequest.controllerEpoch,
-                  controllerEpoch))
+              (
+                "Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d since " +
+                  "its controller epoch %d is old. Latest known controller epoch is %d"
+              ).format(
+                localBrokerId,
+                leaderAndISRRequest.controllerId,
+                correlationId,
+                leaderAndISRRequest.controllerEpoch,
+                controllerEpoch))
         }
         BecomeLeaderOrFollowerResult(
           responseMap,
@@ -881,17 +883,18 @@ class ReplicaManager(
                 partitionState.put(partition, stateInfo)
               else {
                 stateChangeLogger.warn(
-                  ("Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d " +
-                    "epoch %d for partition [%s,%d] as itself is not in assigned replica list %s")
-                    .format(
-                      localBrokerId,
-                      controllerId,
-                      correlationId,
-                      leaderAndISRRequest.controllerEpoch,
-                      topicPartition.topic,
-                      topicPartition.partition,
-                      stateInfo.replicas.asScala.mkString(",")
-                    ))
+                  (
+                    "Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d " +
+                      "epoch %d for partition [%s,%d] as itself is not in assigned replica list %s"
+                  ).format(
+                    localBrokerId,
+                    controllerId,
+                    correlationId,
+                    leaderAndISRRequest.controllerEpoch,
+                    topicPartition.topic,
+                    topicPartition.partition,
+                    stateInfo.replicas.asScala.mkString(",")
+                  ))
                 responseMap.put(
                   topicPartition,
                   Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
@@ -899,18 +902,19 @@ class ReplicaManager(
             } else {
               // Otherwise record the error code in response
               stateChangeLogger.warn(
-                ("Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d " +
-                  "epoch %d for partition [%s,%d] since its associated leader epoch %d is old. Current leader epoch is %d")
-                  .format(
-                    localBrokerId,
-                    controllerId,
-                    correlationId,
-                    leaderAndISRRequest.controllerEpoch,
-                    topicPartition.topic,
-                    topicPartition.partition,
-                    stateInfo.leaderEpoch,
-                    partitionLeaderEpoch
-                  ))
+                (
+                  "Broker %d ignoring LeaderAndIsr request from controller %d with correlation id %d " +
+                    "epoch %d for partition [%s,%d] since its associated leader epoch %d is old. Current leader epoch is %d"
+                ).format(
+                  localBrokerId,
+                  controllerId,
+                  correlationId,
+                  leaderAndISRRequest.controllerEpoch,
+                  topicPartition.topic,
+                  topicPartition.partition,
+                  stateInfo.leaderEpoch,
+                  partitionLeaderEpoch
+                ))
               responseMap.put(
                 topicPartition,
                 Errors.STALE_CONTROLLER_EPOCH.code)
@@ -1008,14 +1012,15 @@ class ReplicaManager(
                 correlationId)) partitionsToMakeLeaders += partition
           else
             stateChangeLogger.info(
-              ("Broker %d skipped the become-leader state change after marking its partition as leader with correlation id %d from " +
-                "controller %d epoch %d for partition %s since it is already the leader for the partition.")
-                .format(
-                  localBrokerId,
-                  correlationId,
-                  controllerId,
-                  epoch,
-                  TopicAndPartition(partition.topic, partition.partitionId)));
+              (
+                "Broker %d skipped the become-leader state change after marking its partition as leader with correlation id %d from " +
+                  "controller %d epoch %d for partition %s since it is already the leader for the partition."
+              ).format(
+                localBrokerId,
+                correlationId,
+                controllerId,
+                epoch,
+                TopicAndPartition(partition.topic, partition.partitionId)));
       }
       partitionsToMakeLeaders.foreach { partition =>
         stateChangeLogger.trace(
@@ -1119,23 +1124,10 @@ class ReplicaManager(
                     correlationId)) partitionsToMakeFollower += partition
               else
                 stateChangeLogger.info(
-                  ("Broker %d skipped the become-follower state change after marking its partition as follower with correlation id %d from " +
-                    "controller %d epoch %d for partition [%s,%d] since the new leader %d is the same as the old leader")
-                    .format(
-                      localBrokerId,
-                      correlationId,
-                      controllerId,
-                      partitionStateInfo.controllerEpoch,
-                      partition.topic,
-                      partition.partitionId,
-                      newLeaderBrokerId))
-            case None =>
-              // The leader broker should always be present in the metadata cache.
-              // If not, we should record the error message and abort the transition process for this partition
-              stateChangeLogger.error(
-                ("Broker %d received LeaderAndIsrRequest with correlation id %d from controller" +
-                  " %d epoch %d for partition [%s,%d] but cannot become follower since the new leader %d is unavailable.")
-                  .format(
+                  (
+                    "Broker %d skipped the become-follower state change after marking its partition as follower with correlation id %d from " +
+                      "controller %d epoch %d for partition [%s,%d] since the new leader %d is the same as the old leader"
+                  ).format(
                     localBrokerId,
                     correlationId,
                     controllerId,
@@ -1143,6 +1135,21 @@ class ReplicaManager(
                     partition.topic,
                     partition.partitionId,
                     newLeaderBrokerId))
+            case None =>
+              // The leader broker should always be present in the metadata cache.
+              // If not, we should record the error message and abort the transition process for this partition
+              stateChangeLogger.error(
+                (
+                  "Broker %d received LeaderAndIsrRequest with correlation id %d from controller" +
+                    " %d epoch %d for partition [%s,%d] but cannot become follower since the new leader %d is unavailable."
+                ).format(
+                  localBrokerId,
+                  correlationId,
+                  controllerId,
+                  partitionStateInfo.controllerEpoch,
+                  partition.topic,
+                  partition.partitionId,
+                  newLeaderBrokerId))
               // Create the local replica even if the leader is unavailable. This is required to ensure that we include
               // the partition's high watermark in the checkpoint file (see KAFKA-1647)
               partition.getOrCreateReplica()
@@ -1179,29 +1186,31 @@ class ReplicaManager(
 
       partitionsToMakeFollower.foreach { partition =>
         stateChangeLogger.trace(
-          ("Broker %d truncated logs and checkpointed recovery boundaries for partition [%s,%d] as part of " +
-            "become-follower request with correlation id %d from controller %d epoch %d")
-            .format(
-              localBrokerId,
-              partition.topic,
-              partition.partitionId,
-              correlationId,
-              controllerId,
-              epoch))
+          (
+            "Broker %d truncated logs and checkpointed recovery boundaries for partition [%s,%d] as part of " +
+              "become-follower request with correlation id %d from controller %d epoch %d"
+          ).format(
+            localBrokerId,
+            partition.topic,
+            partition.partitionId,
+            correlationId,
+            controllerId,
+            epoch))
       }
 
       if (isShuttingDown.get()) {
         partitionsToMakeFollower.foreach { partition =>
           stateChangeLogger.trace(
-            ("Broker %d skipped the adding-fetcher step of the become-follower state change with correlation id %d from " +
-              "controller %d epoch %d for partition [%s,%d] since it is shutting down")
-              .format(
-                localBrokerId,
-                correlationId,
-                controllerId,
-                epoch,
-                partition.topic,
-                partition.partitionId))
+            (
+              "Broker %d skipped the adding-fetcher step of the become-follower state change with correlation id %d from " +
+                "controller %d epoch %d for partition [%s,%d] since it is shutting down"
+            ).format(
+              localBrokerId,
+              correlationId,
+              controllerId,
+              epoch,
+              partition.topic,
+              partition.partitionId))
         }
       } else {
         // we do not need to check if the leader exists again since this has been done at the beginning of this process
@@ -1271,9 +1280,9 @@ class ReplicaManager(
   private def updateFollowerLogReadResults(
       replicaId: Int,
       readResults: Map[TopicAndPartition, LogReadResult]) {
-    debug(
-      "Recording follower broker %d log read results: %s "
-        .format(replicaId, readResults))
+    debug("Recording follower broker %d log read results: %s ".format(
+      replicaId,
+      readResults))
     readResults.foreach {
       case (topicAndPartition, readResult) =>
         getPartition(

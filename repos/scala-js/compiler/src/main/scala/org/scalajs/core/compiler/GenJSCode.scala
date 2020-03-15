@@ -240,8 +240,7 @@ abstract class GenJSCode
           if (!isPrimitive && !isRawJSImplClass) {
             withScopedVars(
               currentClassSym := sym,
-              unexpectedMutatedFields := mutable.Set.empty
-            ) {
+              unexpectedMutatedFields := mutable.Set.empty) {
               val tree =
                 if (isRawJSType(sym.tpe)) {
                   assert(
@@ -1059,8 +1058,7 @@ abstract class GenJSCode
         currentMethodSym := sym,
         thisLocalVarIdent := None,
         fakeTailJumpParamRepl := (NoSymbol, NoSymbol),
-        enclosingLabelDefParams := Map.empty
-      ) {
+        enclosingLabelDefParams := Map.empty) {
         assert(
           vparamss.isEmpty || vparamss.tail.isEmpty,
           "Malformed parameter list: " + vparamss)
@@ -1132,8 +1130,7 @@ abstract class GenJSCode
         } else {
           withScopedVars(
             mutableLocalVars := mutable.Set.empty,
-            mutatedLocalVars := mutable.Set.empty
-          ) {
+            mutatedLocalVars := mutable.Set.empty) {
             def isTraitImplForwarder =
               dd.rhs match {
                 case app: Apply => foreignIsImplClass(app.symbol.owner)
@@ -1197,12 +1194,10 @@ abstract class GenJSCode
                 // OK, we're good (common case)
                 methodDef
               } else {
-                val patches = (
-                  unmutatedMutableLocalVars.map(
-                    encodeLocalSym(_).name -> false) :::
-                    mutatedImmutableLocalVals.map(
-                      encodeLocalSym(_).name -> true)
-                ).toMap
+                val patches = (unmutatedMutableLocalVars.map(
+                  encodeLocalSym(_).name -> false) :::
+                  mutatedImmutableLocalVals.map(
+                    encodeLocalSym(_).name -> true)).toMap
                 patchMutableFlagOfLocals(methodDef, patches)
               }
             }
@@ -1216,8 +1211,7 @@ abstract class GenJSCode
     private val adHocInlineMethods = Set(
       "scala.collection.mutable.ArrayOps$ofRef.newBuilder$extension",
       "scala.runtime.ScalaRunTime.arrayClass",
-      "scala.runtime.ScalaRunTime.arrayElementClass"
-    )
+      "scala.runtime.ScalaRunTime.arrayElementClass")
 
     /** Patches the mutable flags of selected locals in a [[js.MethodDef]].
       *
@@ -1345,8 +1339,9 @@ abstract class GenJSCode
               case Ident(_) =>
                 // TODO Is this special-case really needed?
                 withScopedVars(
-                  fakeTailJumpParamRepl := (thisDef.symbol, initialThis.symbol)
-                ) { genInnerBody() }
+                  fakeTailJumpParamRepl := (
+                    thisDef.symbol, initialThis.symbol
+                  )) { genInnerBody() }
 
               case _ =>
                 val thisSym = thisDef.symbol
@@ -1361,9 +1356,9 @@ abstract class GenJSCode
                   genRhs)
 
                 val innerBody = {
-                  withScopedVars(
-                    thisLocalVarIdent := Some(thisLocalIdent)
-                  ) { genInnerBody() }
+                  withScopedVars(thisLocalVarIdent := Some(thisLocalIdent)) {
+                    genInnerBody()
+                  }
                 }
 
                 js.Block(thisLocalVarDef, innerBody)
@@ -1380,9 +1375,7 @@ abstract class GenJSCode
       } else {
         assert(!static, tree.pos)
 
-        withScopedVars(
-          thisLocalVarIdent := Some(freshLocalIdent("this"))
-        ) {
+        withScopedVars(thisLocalVarIdent := Some(freshLocalIdent("this"))) {
           val thisParamDef = js.ParamDef(
             thisLocalVarIdent.get.get,
             jstpe.AnyType,
@@ -1531,8 +1524,8 @@ abstract class GenJSCode
               else js.JSDotSelect(genQual, encodeFieldSym(sym))
             fromAny(boxed, enteringPhase(currentRun.posterasurePhase)(sym.tpe))
           } else {
-            js.Select(genExpr(qualifier), encodeFieldSym(sym))(
-              toIRType(sym.tpe))
+            js.Select(genExpr(qualifier), encodeFieldSym(sym))(toIRType(
+              sym.tpe))
           }
 
         case Ident(name) =>
@@ -1590,11 +1583,9 @@ abstract class GenJSCode
           val genRhs = genExpr(rhs)
           lhs match {
             case Select(qualifier, _) =>
-              val ctorAssignment = (
-                currentMethodSym.isClassConstructor &&
-                  currentMethodSym.owner == qualifier.symbol &&
-                  qualifier.isInstanceOf[This]
-              )
+              val ctorAssignment = (currentMethodSym.isClassConstructor &&
+                currentMethodSym.owner == qualifier.symbol &&
+                qualifier.isInstanceOf[This])
               if (!ctorAssignment && !suspectFieldMutable(sym))
                 unexpectedMutatedFields += sym
 
@@ -1743,8 +1734,7 @@ abstract class GenJSCode
 
           withScopedVars(
             enclosingLabelDefParams :=
-              enclosingLabelDefParams.get + (tree.symbol -> labelParamSyms)
-          ) {
+              enclosingLabelDefParams.get + (tree.symbol -> labelParamSyms)) {
             val bodyType = toIRType(tree.tpe)
             val labelIdent = encodeLabelSym(tree.symbol)
             val blockLabelIdent = freshLocalIdent()
@@ -3916,8 +3906,7 @@ abstract class GenJSCode
         nme.UNARY_+ -> js.JSUnaryOp.+,
         nme.UNARY_- -> js.JSUnaryOp.-,
         nme.UNARY_~ -> js.JSUnaryOp.~,
-        nme.UNARY_! -> js.JSUnaryOp.!
-      )
+        nme.UNARY_! -> js.JSUnaryOp.!)
 
       def unapply(name: TermName): Option[js.JSUnaryOp.Code] = map.get(name)
     }
@@ -4316,9 +4305,7 @@ abstract class GenJSCode
         sym.isAnonymousFunction,
         s"tryGenAndRecordAnonFunctionClass called with non-anonymous function $cd")
 
-      withScopedVars(
-        currentClassSym := sym
-      ) {
+      withScopedVars(currentClassSym := sym) {
         val (functionMakerBase, arity) =
           tryGenAndRecordAnonFunctionClassGeneric(cd) { msg => return false }
         val functionMaker = { capturedArgs: List[js.Tree] =>
@@ -4397,9 +4384,7 @@ abstract class GenJSCode
         isRawJSFunctionDef(sym),
         s"genAndRecordRawJSFunctionClass called with non-JS function $cd")
 
-      withScopedVars(
-        currentClassSym := sym
-      ) {
+      withScopedVars(currentClassSym := sym) {
         val (functionMaker, _) = tryGenAndRecordAnonFunctionClassGeneric(cd) {
           msg =>
             abort(
@@ -4502,11 +4487,10 @@ abstract class GenJSCode
 
         val applyMethod = withScopedVars(
           paramAccessorLocals := (paramAccessors zip ctorParamDefs).toMap,
-          tryingToGenMethodAsJSFunction := true
-        ) {
+          tryingToGenMethodAsJSFunction := true) {
           try {
-            genMethodWithCurrentLocalNameScope(applyDef).getOrElse(
-              abort(s"Oops, $applyDef did not produce a method"))
+            genMethodWithCurrentLocalNameScope(applyDef).getOrElse(abort(
+              s"Oops, $applyDef did not produce a method"))
           } catch {
             case e: CancelGenMethodAsJSFunction =>
               fail(e.getMessage)

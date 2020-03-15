@@ -18,8 +18,8 @@ case class TypeCompletionsReq(prefix: String, maxResults: Int)
 class Indexer(
     index: SearchService,
     implicit val config: EnsimeConfig,
-    implicit val vfs: EnsimeVFS
-) extends Actor
+    implicit val vfs: EnsimeVFS)
+    extends Actor
     with ActorLogging {
 
   private def typeResult(hit: FqnSymbol) =
@@ -27,8 +27,7 @@ class Indexer(
       hit.fqn,
       hit.fqn.split("\\.").last,
       hit.declAs,
-      LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs)
-    )
+      LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs))
 
   def oldSearchTypes(query: String, max: Int) =
     index
@@ -42,14 +41,12 @@ class Indexer(
     index.searchClassesMethods(terms, max).flatMap {
       case hit if hit.declAs == DeclaredAs.Class => Some(typeResult(hit))
       case hit if hit.declAs == DeclaredAs.Method =>
-        Some(
-          MethodSearchResult(
-            hit.fqn,
-            hit.fqn.split("\\.").last,
-            hit.declAs,
-            LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs),
-            hit.fqn.split("\\.").init.mkString(".")
-          ))
+        Some(MethodSearchResult(
+          hit.fqn,
+          hit.fqn.split("\\.").last,
+          hit.declAs,
+          LineSourcePositionHelper.fromFqnSymbol(hit)(config, vfs),
+          hit.fqn.split("\\.").init.mkString(".")))
       case _ => None // were never supported
     }
 

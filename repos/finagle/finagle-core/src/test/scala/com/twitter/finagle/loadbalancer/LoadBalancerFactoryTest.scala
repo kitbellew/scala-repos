@@ -129,8 +129,8 @@ class ConcurrentLoadBalancerFactoryTest
       .withStack(clientStack)
       .configured(Stats(sr))
       .newService(
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(
+          server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     assert(sr.counters(Seq("client", "loadbalancer", "adds")) == 4)

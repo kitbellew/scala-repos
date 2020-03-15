@@ -102,8 +102,8 @@ object ScalaCsrf extends PlaySpecification {
         }
       //#csrf-check
 
-      await(
-        save(FakeRequest("POST", "/")
+      await(save(
+        FakeRequest("POST", "/")
           .withCookies(Cookie("foo", "bar"))
           .withHeaders(
             CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN
@@ -166,8 +166,8 @@ object ScalaCsrf extends PlaySpecification {
       def form = GetAction { implicit req => Ok(views.html.itemsForm) }
       //#csrf-actions
 
-      await(
-        save(FakeRequest("POST", "/")
+      await(save(
+        FakeRequest("POST", "/")
           .withCookies(Cookie("foo", "bar"))
           .withHeaders(
             CONTENT_TYPE -> "application/x-www-form-urlencoded"))).header.status must_== FORBIDDEN

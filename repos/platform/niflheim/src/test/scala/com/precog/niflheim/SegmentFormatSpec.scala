@@ -41,11 +41,10 @@ class VersionedSegmentFormatSpec
     with ScalaCheck
     with SegmentFormatSupport
     with SegmentFormatMatchers {
-  val format = VersionedSegmentFormat(
-    Map(
-      1 -> V1SegmentFormat,
-      2 -> new StubSegmentFormat // Much faster version of segment formats.
-    ))
+  val format = VersionedSegmentFormat(Map(
+    1 -> V1SegmentFormat,
+    2 -> new StubSegmentFormat // Much faster version of segment formats.
+  ))
 
   "versioned segment formats" should {
     "read older versions" in {
@@ -93,41 +92,36 @@ trait SegmentFormatSpec
     "roundtrip trivial boolean segments" in surviveRoundTrip(
       BooleanSegment(1234L, CPath("a.b.c"), EmptyBitSet, EmptyBitSet, 0))
     "roundtrip trivial array segments" in {
-      surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CLong,
-          EmptyBitSet,
-          new Array[Long](0)))
-      surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CDouble,
-          EmptyBitSet,
-          new Array[Double](0)))
-      surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CNum,
-          EmptyBitSet,
-          new Array[BigDecimal](0)))
-      surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CString,
-          EmptyBitSet,
-          new Array[String](0)))
-      surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CDate,
-          EmptyBitSet,
-          new Array[DateTime](0)))
+      surviveRoundTrip(ArraySegment(
+        1234L,
+        CPath("a.b.c"),
+        CLong,
+        EmptyBitSet,
+        new Array[Long](0)))
+      surviveRoundTrip(ArraySegment(
+        1234L,
+        CPath("a.b.c"),
+        CDouble,
+        EmptyBitSet,
+        new Array[Double](0)))
+      surviveRoundTrip(ArraySegment(
+        1234L,
+        CPath("a.b.c"),
+        CNum,
+        EmptyBitSet,
+        new Array[BigDecimal](0)))
+      surviveRoundTrip(ArraySegment(
+        1234L,
+        CPath("a.b.c"),
+        CString,
+        EmptyBitSet,
+        new Array[String](0)))
+      surviveRoundTrip(ArraySegment(
+        1234L,
+        CPath("a.b.c"),
+        CDate,
+        EmptyBitSet,
+        new Array[DateTime](0)))
     }
     "roundtrip simple boolean segment" in {
       val segment = BooleanSegment(

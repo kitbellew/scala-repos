@@ -795,11 +795,10 @@ private[optimizer] abstract class OptimizerCore(
                           thenOrigType,
                           elseOrigType,
                           tree.tpe)
-                        cont(
-                          PreTransRecordTree(
-                            If(newCond, thenTree, elseTree)(commonType),
-                            refinedOrigType,
-                            cancelFun))
+                        cont(PreTransRecordTree(
+                          If(newCond, thenTree, elseTree)(commonType),
+                          refinedOrigType,
+                          cancelFun))
 
                       case (
                             PreTransRecordTree(
@@ -807,12 +806,11 @@ private[optimizer] abstract class OptimizerCore(
                               thenOrigType,
                               thenCancelFun),
                             _) if telsep.tpe.isNothingType =>
-                        cont(
-                          PreTransRecordTree(
-                            If(newCond, thenTree, finishTransformExpr(telsep))(
-                              thenTree.tpe),
-                            thenOrigType,
-                            thenCancelFun))
+                        cont(PreTransRecordTree(
+                          If(newCond, thenTree, finishTransformExpr(telsep))(
+                            thenTree.tpe),
+                          thenOrigType,
+                          thenCancelFun))
 
                       case (
                             _,
@@ -820,12 +818,11 @@ private[optimizer] abstract class OptimizerCore(
                               elseTree,
                               elseOrigType,
                               elseCancelFun)) if tthenp.tpe.isNothingType =>
-                        cont(
-                          PreTransRecordTree(
-                            If(newCond, finishTransformExpr(tthenp), elseTree)(
-                              elseTree.tpe),
-                            elseOrigType,
-                            elseCancelFun))
+                        cont(PreTransRecordTree(
+                          If(newCond, finishTransformExpr(tthenp), elseTree)(
+                            elseTree.tpe),
+                          elseOrigType,
+                          elseCancelFun))
 
                       case _ =>
                         val newThenp = finishTransformExpr(tthenp)
@@ -834,9 +831,8 @@ private[optimizer] abstract class OptimizerCore(
                           newThenp.tpe,
                           newElsep.tpe,
                           tree.tpe)
-                        cont(
-                          PreTransTree(
-                            foldIf(newCond, newThenp, newElsep)(refinedType)))
+                        cont(PreTransTree(
+                          foldIf(newCond, newThenp, newElsep)(refinedType)))
                     }
                   }
                 }
@@ -847,9 +843,8 @@ private[optimizer] abstract class OptimizerCore(
                   newThenp.tpe,
                   newElsep.tpe,
                   tree.tpe)
-                cont(
-                  PreTransTree(
-                    foldIf(newCond, newThenp, newElsep)(refinedType)))
+                cont(PreTransTree(
+                  foldIf(newCond, newThenp, newElsep)(refinedType)))
               }
           }
 
@@ -863,12 +858,11 @@ private[optimizer] abstract class OptimizerCore(
               } getOrElse default
               pretransformExpr(body)(cont)
             case _ =>
-              cont(
-                PreTransTree(
-                  Match(
-                    newSelector,
-                    cases map (c => (c._1, transformExpr(c._2))),
-                    transformExpr(default))(tree.tpe)))
+              cont(PreTransTree(
+                Match(
+                  newSelector,
+                  cases map (c => (c._1, transformExpr(c._2))),
+                  transformExpr(default))(tree.tpe)))
           }
 
         case Labeled(ident @ Ident(label, _), tpe, body) =>
@@ -947,10 +941,9 @@ private[optimizer] abstract class OptimizerCore(
                 params,
                 body,
                 tcaptureValues.map(finishTransformExpr))
-              cont(
-                PreTransTree(
-                  newClosure,
-                  RefinedType(AnyType, isExact = false, isNullable = false)))
+              cont(PreTransTree(
+                newClosure,
+                RefinedType(AnyType, isExact = false, isNullable = false)))
             }
           }
 
@@ -1067,10 +1060,9 @@ private[optimizer] abstract class OptimizerCore(
             }
 
           case PreTransTree(newQual, _) =>
-            cont(
-              PreTransTree(
-                Select(newQual, item)(expectedType),
-                RefinedType(expectedType)))
+            cont(PreTransTree(
+              Select(newQual, item)(expectedType),
+              RefinedType(expectedType)))
         }
     }
   }
@@ -1094,16 +1086,14 @@ private[optimizer] abstract class OptimizerCore(
             targs,
             cancelFun)(cont)
         } { () =>
-          cont(
-            PreTransTree(
-              New(cls, ctor, targs.map(finishTransformExpr)),
-              RefinedType(cls, isExact = true, isNullable = false)))
-        }
-      case None =>
-        cont(
-          PreTransTree(
+          cont(PreTransTree(
             New(cls, ctor, targs.map(finishTransformExpr)),
             RefinedType(cls, isExact = true, isNullable = false)))
+        }
+      case None =>
+        cont(PreTransTree(
+          New(cls, ctor, targs.map(finishTransformExpr)),
+          RefinedType(cls, isExact = true, isNullable = false)))
     }
   }
 
@@ -1252,27 +1242,23 @@ private[optimizer] abstract class OptimizerCore(
 
     pretransformExprs(receiver, args) { (treceiver, targs) =>
       def treeNotInlined =
-        cont(
-          PreTransTree(
-            Apply(
-              finishTransformExpr(treceiver),
-              methodIdent,
-              targs.map(finishTransformExpr))(tree.tpe),
-            RefinedType(tree.tpe)))
+        cont(PreTransTree(
+          Apply(
+            finishTransformExpr(treceiver),
+            methodIdent,
+            targs.map(finishTransformExpr))(tree.tpe),
+          RefinedType(tree.tpe)))
 
       treceiver.tpe.base match {
         case NothingType =>
           cont(treceiver)
         case NullType =>
-          cont(
-            PreTransTree(
-              Block(
-                finishTransformStat(treceiver),
-                Throw(
-                  New(
-                    ClassType("jl_NullPointerException"),
-                    Ident("init___", Some("<init>")),
-                    Nil)))))
+          cont(PreTransTree(Block(
+            finishTransformStat(treceiver),
+            Throw(New(
+              ClassType("jl_NullPointerException"),
+              Ident("init___", Some("<init>")),
+              Nil)))))
         case _ =>
           if (isReflProxyName(methodName)) {
             // Never inline reflective proxies
@@ -1398,14 +1384,13 @@ private[optimizer] abstract class OptimizerCore(
     def treeNotInlined0(
         transformedReceiver: Tree,
         transformedArgs: List[Tree]) =
-      cont(
-        PreTransTree(
-          ApplyStatically(
-            transformedReceiver,
-            clsType,
-            methodIdent,
-            transformedArgs)(tree.tpe),
-          RefinedType(tree.tpe)))
+      cont(PreTransTree(
+        ApplyStatically(
+          transformedReceiver,
+          clsType,
+          methodIdent,
+          transformedArgs)(tree.tpe),
+        RefinedType(tree.tpe)))
 
     def treeNotInlined =
       treeNotInlined0(transformExpr(receiver), args.map(transformExpr))
@@ -1467,10 +1452,9 @@ private[optimizer] abstract class OptimizerCore(
     implicit val pos = tree.pos
 
     def treeNotInlined0(transformedArgs: List[Tree]) =
-      cont(
-        PreTransTree(
-          ApplyStatic(classType, methodIdent, transformedArgs)(tree.tpe),
-          RefinedType(tree.tpe)))
+      cont(PreTransTree(
+        ApplyStatic(classType, methodIdent, transformedArgs)(tree.tpe),
+        RefinedType(tree.tpe)))
 
     def treeNotInlined = treeNotInlined0(args.map(transformExpr))
 
@@ -1486,10 +1470,9 @@ private[optimizer] abstract class OptimizerCore(
           callIntrinsic(intrinsicCode, None, targs, isStat, usePreTransform)(
             cont)
         } else {
-          val shouldInline =
-            target.inlineable && (target.shouldInline || shouldInlineBecauseOfArgs(
-              target,
-              targs))
+          val shouldInline = target.inlineable && (
+            target.shouldInline || shouldInlineBecauseOfArgs(target, targs)
+          )
           val allocationSites = targs.map(_.tpe.allocationSite)
           val beingInlined = scope.implsBeingInlined((allocationSites, target))
 
@@ -1517,9 +1500,8 @@ private[optimizer] abstract class OptimizerCore(
     implicit val pos = tree.pos
 
     if (args.exists(_.isInstanceOf[JSSpread])) {
-      cont(
-        PreTransTree(
-          JSFunctionApply(transformExpr(fun), args.map(transformExprOrSpread))))
+      cont(PreTransTree(
+        JSFunctionApply(transformExpr(fun), args.map(transformExprOrSpread))))
     } else {
       pretransformExpr(fun) { tfun =>
         tfun match {
@@ -1548,11 +1530,9 @@ private[optimizer] abstract class OptimizerCore(
             }
 
           case _ =>
-            cont(
-              PreTransTree(
-                JSFunctionApply(
-                  finishTransformExpr(tfun),
-                  args.map(transformExpr))))
+            cont(PreTransTree(JSFunctionApply(
+              finishTransformExpr(tfun),
+              args.map(transformExpr))))
         }
       }
     }
@@ -1650,16 +1630,14 @@ private[optimizer] abstract class OptimizerCore(
     body match {
       case Skip() =>
         assert(isStat, "Found Skip() in expression position")
-        cont(
-          PreTransTree(
-            Block((optReceiver ++: args).map(finishTransformStat)),
-            RefinedType.NoRefinedType))
+        cont(PreTransTree(
+          Block((optReceiver ++: args).map(finishTransformStat)),
+          RefinedType.NoRefinedType))
 
       case _: Literal =>
-        cont(
-          PreTransTree(
-            Block((optReceiver ++: args).map(finishTransformStat) :+ body),
-            RefinedType(body.tpe)))
+        cont(PreTransTree(
+          Block((optReceiver ++: args).map(finishTransformStat) :+ body),
+          RefinedType(body.tpe)))
 
       case This() if args.isEmpty =>
         assert(
@@ -1689,12 +1667,11 @@ private[optimizer] abstract class OptimizerCore(
           field,
           isLhsOfAssign = true) { preTransLhs =>
           // TODO Support assignment of record
-          cont(
-            PreTransTree(
-              Assign(
-                finishTransformExpr(preTransLhs),
-                finishTransformExpr(args.head)),
-              RefinedType.NoRefinedType))
+          cont(PreTransTree(
+            Assign(
+              finishTransformExpr(preTransLhs),
+              finishTransformExpr(args.head)),
+            RefinedType.NoRefinedType))
         }
 
       case _ =>
@@ -1879,16 +1856,15 @@ private[optimizer] abstract class OptimizerCore(
           case ClassOf(elemType) => (ArrayType(elemType), true)
           case _                 => (AnyType, false)
         }
-        cont(
-          PreTransTree(
+        cont(PreTransTree(
+          CallHelper(
+            "makeNativeArrayWrapper",
             CallHelper(
-              "makeNativeArrayWrapper",
-              CallHelper(
-                "arrayDataOf",
-                CallHelper("classDataOf", runtimeClass)(AnyType))(AnyType),
-              array)(resultType),
-            RefinedType(resultType, isExact = isExact, isNullable = false)
-          ))
+              "arrayDataOf",
+              CallHelper("classDataOf", runtimeClass)(AnyType))(AnyType),
+            array)(resultType),
+          RefinedType(resultType, isExact = isExact, isNullable = false)
+        ))
 
       case ArrayBuilderZeroOf =>
         contTree(finishTransformExpr(targs.head) match {
@@ -2026,19 +2002,18 @@ private[optimizer] abstract class OptimizerCore(
             ctor,
             args,
             cancelFun) { (finalFieldLocalDefs, cont2) =>
-            cont2(
-              PreTransLocalDef(LocalDef(
-                RefinedType(
-                  cls,
-                  isExact = true,
-                  isNullable = false,
-                  allocationSite = Some(allocationSite)),
-                mutable = false,
-                InlineClassInstanceReplacement(
-                  recordType,
-                  finalFieldLocalDefs,
-                  cancelFun)
-              )))
+            cont2(PreTransLocalDef(LocalDef(
+              RefinedType(
+                cls,
+                isExact = true,
+                isNullable = false,
+                allocationSite = Some(allocationSite)),
+              mutable = false,
+              InlineClassInstanceReplacement(
+                recordType,
+                finalFieldLocalDefs,
+                cancelFun)
+            )))
           }(cont1)
       }(cont)
     }
@@ -3032,24 +3007,21 @@ private[optimizer] abstract class OptimizerCore(
                 BinaryOp(Long_+, LongFromInt(x), LongFromInt(y)),
                 LongLiteral(Int.MaxValue)) =>
             trampoline {
-              withNewLocalDefs(
-                List(
-                  Binding("x", None, IntType, false, PreTransTree(x)),
-                  Binding("y", None, IntType, false, PreTransTree(y)))) {
+              withNewLocalDefs(List(
+                Binding("x", None, IntType, false, PreTransTree(x)),
+                Binding("y", None, IntType, false, PreTransTree(y)))) {
                 (tempsLocalDefs, cont) =>
                   val List(tempXDef, tempYDef) = tempsLocalDefs
                   val tempX = tempXDef.newReplacement
                   val tempY = tempYDef.newReplacement
-                  cont(
-                    PreTransTree(
-                      AndThen(
-                        AndThen(
-                          BinaryOp(Num_>, tempX, IntLiteral(0)),
-                          BinaryOp(Num_>, tempY, IntLiteral(0))),
-                        BinaryOp(
-                          Num_<,
-                          BinaryOp(Int_+, tempX, tempY),
-                          IntLiteral(0)))))
+                  cont(PreTransTree(AndThen(
+                    AndThen(
+                      BinaryOp(Num_>, tempX, IntLiteral(0)),
+                      BinaryOp(Num_>, tempY, IntLiteral(0))),
+                    BinaryOp(
+                      Num_<,
+                      BinaryOp(Int_+, tempX, tempY),
+                      IntLiteral(0)))))
               }(finishTransform(isStat = false))
             }
 
@@ -3483,10 +3455,9 @@ private[optimizer] abstract class OptimizerCore(
                 .collectFirst { case actualType: RecordType => actualType }
                 .fold[TailRec[Tree]] {
                   // None of the returned types are records
-                  cont(
-                    PreTransTree(
-                      doMakeTree(newBody, actualTypes),
-                      refinedOrigType))
+                  cont(PreTransTree(
+                    doMakeTree(newBody, actualTypes),
+                    refinedOrigType))
                 } { recordType =>
                   if (actualTypes.exists(t =>
                         t != recordType && t != NothingType)) cancelFun()
@@ -3732,12 +3703,11 @@ private[optimizer] abstract class OptimizerCore(
                     Binding("y", None, IntType, false, PreTransTree(intRhs)))) {
                     (intLocalDefs, cont1) =>
                       val List(lhsLocalDef, rhsLocalDef) = intLocalDefs
-                      doDoBuildInner(
-                        Some(() =>
-                          BinaryOp(
-                            op,
-                            LongFromInt(lhsLocalDef.newReplacement),
-                            LongFromInt(rhsLocalDef.newReplacement))))(cont1)
+                      doDoBuildInner(Some(() =>
+                        BinaryOp(
+                          op,
+                          LongFromInt(lhsLocalDef.newReplacement),
+                          LongFromInt(rhsLocalDef.newReplacement))))(cont1)
                   }(cont)
 
                 case _ =>

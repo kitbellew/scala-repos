@@ -307,9 +307,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
 
               case '\"' =>
                 in.next()
-                while (in.ch != '\"' && (in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU)) {
-                  getlitch()
-                }
+                while (in.ch != '\"' && (
+                         in.isUnicode || in.ch != CR && in.ch != LF && in.ch != SU
+                       )) { getlitch() }
                 if (in.ch == '\"') {
                   token = STRINGLIT
                   setName()

@@ -79,13 +79,12 @@ class MavenRemoteRepositoryResolver(
   }
   protected def getPublicationTime(mrid: ModuleRevisionId): Option[Long] = {
     val metadataRequest = new AetherMetadataRequest()
-    metadataRequest.setMetadata(
-      new DefaultMetadata(
-        mrid.getOrganisation,
-        mrid.getName,
-        mrid.getRevision,
-        MavenRepositoryResolver.MAVEN_METADATA_XML,
-        Metadata.Nature.RELEASE_OR_SNAPSHOT))
+    metadataRequest.setMetadata(new DefaultMetadata(
+      mrid.getOrganisation,
+      mrid.getName,
+      mrid.getRevision,
+      MavenRepositoryResolver.MAVEN_METADATA_XML,
+      Metadata.Nature.RELEASE_OR_SNAPSHOT))
     if (!isUseCacheOnly) metadataRequest.setRepository(aetherRepository)
     val metadataResultOpt =
       try system

@@ -117,10 +117,10 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
     hyperLogLogMap[T, HLL](f, errPercent) { hll => hll }
   }
 
-  private[this] def hyperLogLogMap[
-      T <% Array[Byte]: TupleConverter,
-      U: TupleSetter](f: (Fields, Fields), errPercent: Double = 1.0)(
-      fn: HLL => U) = {
+  private[this] def hyperLogLogMap[T <% Array[
+    Byte]: TupleConverter, U: TupleSetter](
+      f: (Fields, Fields),
+      errPercent: Double = 1.0)(fn: HLL => U) = {
     //bits = log(m) == 2 *log(104/errPercent) = 2log(104) - 2*log(errPercent)
     def log2(x: Double) = scala.math.log(x) / scala.math.log(2.0)
     val bits = 2 * scala.math.ceil(log2(104) - log2(errPercent)).toInt

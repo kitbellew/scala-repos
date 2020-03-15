@@ -177,27 +177,25 @@ class ResolveProcessor(
               clazz,
               ref,
               true) =>
-          addResult(
-            new ScalaResolveResult(
-              named,
-              getSubst(state),
-              getImports(state),
-              nameShadow,
-              boundClass = getBoundClass(state),
-              fromType = getFromType(state),
-              isAccessible = accessible))
+          addResult(new ScalaResolveResult(
+            named,
+            getSubst(state),
+            getImports(state),
+            nameShadow,
+            boundClass = getBoundClass(state),
+            fromType = getFromType(state),
+            isAccessible = accessible))
         case clazz: PsiClass           => //do nothing, it's wrong class or object
         case _ if isThisOrSuperResolve => //do nothing for type alias
         case _ =>
-          addResult(
-            new ScalaResolveResult(
-              named,
-              getSubst(state),
-              getImports(state),
-              nameShadow,
-              boundClass = getBoundClass(state),
-              fromType = getFromType(state),
-              isAccessible = accessible))
+          addResult(new ScalaResolveResult(
+            named,
+            getSubst(state),
+            getImports(state),
+            nameShadow,
+            boundClass = getBoundClass(state),
+            fromType = getFromType(state),
+            isAccessible = accessible))
       }
     }
     true

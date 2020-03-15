@@ -120,18 +120,16 @@ trait NIHDBIngestSupport
         for {
           _ <- M point {
             vfs.unsecured
-              .writeAll(
-                Seq(
-                  (
-                    0,
-                    IngestMessage(
-                      apiKey,
-                      path,
-                      Authorities(accountId),
-                      records,
-                      None,
-                      clock.instant,
-                      StreamRef.Append))))
+              .writeAll(Seq((
+                0,
+                IngestMessage(
+                  apiKey,
+                  path,
+                  Authorities(accountId),
+                  records,
+                  None,
+                  clock.instant,
+                  StreamRef.Append))))
               .unsafePerformIO
           }
           _ = logger.debug(

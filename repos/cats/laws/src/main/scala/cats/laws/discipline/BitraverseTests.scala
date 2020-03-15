@@ -30,8 +30,7 @@ trait BitraverseTests[F[_, _]]
       EqFCD: Eq[F[C, D]],
       EqFCH: Eq[F[C, H]],
       EqGGFEH: Eq[G[G[F[E, H]]]],
-      EqC: Eq[C]
-  ): RuleSet =
+      EqC: Eq[C]): RuleSet =
     new RuleSet {
       val name = "bitraverse"
       val parents = Seq(bifoldable[A, B, C], bifunctor[A, B, C, D, E, H])
@@ -39,8 +38,7 @@ trait BitraverseTests[F[_, _]]
       val props = Seq(
         "bitraverse identity" -> forAll(laws.bitraverseIdentity[A, B] _),
         "bitraverse composition" -> forAll(
-          laws.bitraverseCompose[G, A, B, C, D, E, H] _)
-      )
+          laws.bitraverseCompose[G, A, B, C, D, E, H] _))
     }
 }
 

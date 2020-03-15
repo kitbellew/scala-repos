@@ -485,9 +485,8 @@ final class SubSink[T](
             completeStage()
             if (!status.compareAndSet(Cancel, cb)) setCB(cb)
           case _: AsyncCallback[_] ⇒
-            failStage(
-              new IllegalStateException(
-                "Substream Source cannot be materialized more than once"))
+            failStage(new IllegalStateException(
+              "Substream Source cannot be materialized more than once"))
         }
       }
 
@@ -578,9 +577,8 @@ final class SubSource[T](
   def timeout(d: FiniteDuration): Boolean =
     status.compareAndSet(
       null,
-      ActorSubscriberMessage.OnError(
-        new SubscriptionTimeoutException(
-          s"Substream Source has not been materialized in $d")))
+      ActorSubscriberMessage.OnError(new SubscriptionTimeoutException(
+        s"Substream Source has not been materialized in $d")))
 
   override def createLogic(inheritedAttributes: Attributes) =
     new GraphStageLogic(shape) with OutHandler {
@@ -593,9 +591,8 @@ final class SubSource[T](
           case ActorSubscriberMessage.OnComplete ⇒ completeStage()
           case ActorSubscriberMessage.OnError(ex) ⇒ failStage(ex)
           case _: AsyncCallback[_] ⇒
-            failStage(
-              new IllegalStateException(
-                "Substream Source cannot be materialized more than once"))
+            failStage(new IllegalStateException(
+              "Substream Source cannot be materialized more than once"))
         }
       }
 

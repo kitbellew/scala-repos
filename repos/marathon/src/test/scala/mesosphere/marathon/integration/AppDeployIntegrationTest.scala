@@ -138,11 +138,7 @@ class AppDeployIntegrationTest
       "v1",
       instances = 1,
       withHealth = false)
-      .copy(
-        cmd = Some("false"),
-        backoff = 1.hour,
-        maxLaunchDelay = 1.hour
-      )
+      .copy(cmd = Some("false"), backoff = 1.hour, maxLaunchDelay = 1.hour)
 
     When("we request to deploy the app")
     val result = marathon.createAppV2(app)
@@ -251,8 +247,7 @@ class AppDeployIntegrationTest
       withHealth = false).copy(
       portDefinitions = PortDefinitions(31000),
       requirePorts = true,
-      healthChecks = Set(healthCheck.copy(port = Some(31000)))
-    )
+      healthChecks = Set(healthCheck.copy(port = Some(31000))))
     val check = appProxyCheck(app.id, "v1", true)
 
     When("The app is deployed")
@@ -291,9 +286,9 @@ class AppDeployIntegrationTest
       testBasePath / "command-app",
       "v1",
       instances = 1,
-      withHealth = false).copy(healthChecks = Set(
-      healthCheck
-        .copy(protocol = Protocol.COMMAND, command = Some(Command("true")))))
+      withHealth = false).copy(healthChecks = Set(healthCheck.copy(
+      protocol = Protocol.COMMAND,
+      command = Some(Command("true")))))
 
     When("The app is deployed")
     val result = marathon.createAppV2(app)
@@ -730,10 +725,7 @@ class AppDeployIntegrationTest
       cmd = Some("sleep 1"),
       instances = 0,
       container = Some(
-        Container(
-          `type` = MesosProtos.ContainerInfo.Type.MESOS
-        ))
-    )
+        Container(`type` = MesosProtos.ContainerInfo.Type.MESOS)))
 
     app.container should not be empty
     app.container.get.`type` should equal(MesosProtos.ContainerInfo.Type.MESOS)

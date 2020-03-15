@@ -122,10 +122,9 @@ class PermissionsFinder[M[+_]: Monad](
 
     apiKeyFinder.findAPIKey(apiKey, None) flatMap {
       _ map {
-        (filterWritePermissions(
-          _: v1.APIKeyDetails,
-          path,
-          at)) andThen (selectWriter _)
+        (filterWritePermissions(_: v1.APIKeyDetails, path, at)) andThen (
+          selectWriter _
+        )
       } getOrElse { None.point[M] }
     }
   }
@@ -141,9 +140,10 @@ class PermissionsFinder[M[+_]: Monad](
         filterWritePermissions(details, path, Some(at))
 
       case None =>
-        logger.warn(
-          "No API key details found for %s %s at %s"
-            .format(apiKey, path.path, at.toString))
+        logger.warn("No API key details found for %s %s at %s".format(
+          apiKey,
+          path.path,
+          at.toString))
         Set()
     }
   }

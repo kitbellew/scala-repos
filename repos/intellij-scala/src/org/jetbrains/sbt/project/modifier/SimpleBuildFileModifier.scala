@@ -57,25 +57,22 @@ class SimpleBuildFileModifier(
       .map(fileProvider =>
         fileProvider.findBuildFile(module, elementType, fileToWorkingCopy))
       .toStream
-      .map(
-        _.map(buildFileEntry =>
-          locationProvidersStream
-            .map(locationProvider =>
-              buildPsiElement(
-                module.getProject,
-                Option(
-                  if (buildFileEntry.isModuleLocal) null else module.getName),
-                elementType).map(
-                SimpleBuildFileModifier.addElementsToBuildFile(
-                  module,
-                  locationProvider,
-                  elementType,
-                  buildFileEntry.file,
-                  SimpleBuildFileModifier.newLine(module.getProject),
-                  _)
-              ))
-            .find(_.isDefined)
-            .flatten))
+      .map(_.map(buildFileEntry =>
+        locationProvidersStream
+          .map(locationProvider =>
+            buildPsiElement(
+              module.getProject,
+              Option(
+                if (buildFileEntry.isModuleLocal) null else module.getName),
+              elementType).map(SimpleBuildFileModifier.addElementsToBuildFile(
+              module,
+              locationProvider,
+              elementType,
+              buildFileEntry.file,
+              SimpleBuildFileModifier.newLine(module.getProject),
+              _)))
+          .find(_.isDefined)
+          .flatten))
       .map(opt => opt.flatten.flatten)
       .find(_.isDefined)
       .flatten
@@ -134,11 +131,10 @@ object SimpleBuildFileModifier {
       seq: Seq[String]): Option[PsiElement] =
     if (seq.isEmpty) None
     else
-      Some(
-        ScalaPsiElementFactory.createExpressionFromText(
-          prefix + inName.map(" in " + _).getOrElse("") + " ++= " +
-            createSeqString(FormatterUtil.getNormalIndentString(project), seq),
-          PsiManager.getInstance(project)))
+      Some(ScalaPsiElementFactory.createExpressionFromText(
+        prefix + inName.map(" in " + _).getOrElse("") + " ++= " +
+          createSeqString(FormatterUtil.getNormalIndentString(project), seq),
+        PsiManager.getInstance(project)))
 
   def buildLibraryDependenciesPsi(
       project: IJProject,

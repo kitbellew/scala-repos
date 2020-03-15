@@ -50,23 +50,21 @@ trait HandleCommentService {
         val commentId = (content, action) match {
           case (None, None) => None
           case (None, Some(action)) =>
-            Some(
-              createComment(
-                owner,
-                name,
-                userName,
-                issue.issueId,
-                action.capitalize,
-                action))
+            Some(createComment(
+              owner,
+              name,
+              userName,
+              issue.issueId,
+              action.capitalize,
+              action))
           case (Some(content), _) =>
-            Some(
-              createComment(
-                owner,
-                name,
-                userName,
-                issue.issueId,
-                content,
-                action.map(_ + "_comment").getOrElse("comment")))
+            Some(createComment(
+              owner,
+              name,
+              userName,
+              issue.issueId,
+              content,
+              action.map(_ + "_comment").getOrElse("comment")))
         }
 
         // record comment activity if comment is entered
@@ -75,12 +73,9 @@ trait HandleCommentService {
            else recordCommentIssueActivity _)
           (owner, name, userName, issue.issueId, _)
         }
-        recordActivity foreach (_(
-          owner,
-          name,
-          userName,
-          issue.issueId,
-          issue.title))
+        recordActivity foreach (
+          _(owner, name, userName, issue.issueId, issue.title)
+        )
 
         // extract references and create refer comment
         content.map { content =>

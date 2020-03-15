@@ -29,8 +29,7 @@ private[http4] object Bijections {
       val result = FinagleHttp.Request(
         method = methodToFinagle(r.method),
         uri = r.uri,
-        version = versionToFinagle(r.protocolVersion)
-      )
+        version = versionToFinagle(r.protocolVersion))
       writeNettyHeadersToFinagle(r.headers, result.headerMap)
       result.content = ByteBufAsBuf.Owned(r.content)
       result
@@ -51,8 +50,7 @@ private[http4] object Bijections {
         case full: NettyHttp.FullHttpResponse =>
           val resp = FinagleHttp.Response(
             versionToFinagle(rep.protocolVersion),
-            statusToFinagle(rep.status)
-          )
+            statusToFinagle(rep.status))
           writeNettyHeadersToFinagle(rep.headers, resp.headerMap)
           resp.content = ByteBufAsBuf.Owned(full.content)
 
@@ -61,8 +59,7 @@ private[http4] object Bijections {
         case empty: NettyHttp.HttpResponse =>
           val resp = FinagleHttp.Response(
             versionToFinagle(rep.protocolVersion),
-            statusToFinagle(rep.status)
-          )
+            statusToFinagle(rep.status))
           writeNettyHeadersToFinagle(rep.headers, resp.headerMap)
 
           resp

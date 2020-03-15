@@ -510,12 +510,11 @@ class SessionCatalogSuite extends SparkFunSuite {
       TableIdentifier("tbl"),
       Seq(part3),
       ignoreIfExists = false)
-    assert(
-      catalogPartitionsEqual(
-        externalCatalog,
-        "mydb",
-        "tbl",
-        Seq(part1, part2, part3)))
+    assert(catalogPartitionsEqual(
+      externalCatalog,
+      "mydb",
+      "tbl",
+      Seq(part1, part2, part3)))
   }
 
   test("create partitions when database/table does not exist") {

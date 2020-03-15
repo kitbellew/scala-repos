@@ -78,9 +78,10 @@ class PortsMatcher(
           PortWithRole(offeredRange.role, port, offeredRange.reservation)
         } orElse {
           if (failLog)
-            log.info(s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
-              s"Couldn't find host port $port (of ${requiredPorts.mkString(", ")}) " +
-              s"in any offered range for app [${app.id}]")
+            log.info(
+              s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
+                s"Couldn't find host port $port (of ${requiredPorts.mkString(", ")}) " +
+                s"in any offered range for app [${app.id}]")
           None
         }
       }
@@ -137,8 +138,9 @@ class PortsMatcher(
             case Some(PortRange(role, _, _, reservation)) =>
               Some(PortWithRole(role, pm.hostPort, reservation))
             case None =>
-              log.info(s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
-                s"Cannot find range with host port ${pm.hostPort} for app [${app.id}]")
+              log.info(
+                s"Offer [${offer.getId.getValue}]. $resourceSelector. " +
+                  s"Cannot find range with host port ${pm.hostPort} for app [${app.id}]")
               None
           }
       }

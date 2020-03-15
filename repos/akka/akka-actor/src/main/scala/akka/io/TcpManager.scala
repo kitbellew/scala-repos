@@ -54,20 +54,27 @@ private[io] class TcpManager(tcp: TcpExt)
       case c: Connect ⇒
         val commander =
           sender() // cache because we create a function that will run asynchly
-        (registry ⇒
-          Props(classOf[TcpOutgoingConnection], tcp, registry, commander, c))
+        (
+            registry ⇒
+              Props(
+                classOf[TcpOutgoingConnection],
+                tcp,
+                registry,
+                commander,
+                c))
 
       case b: Bind ⇒
         val commander =
           sender() // cache because we create a function that will run asynchly
-        (registry ⇒
-          Props(
-            classOf[TcpListener],
-            selectorPool,
-            tcp,
-            registry,
-            commander,
-            b))
+        (
+            registry ⇒
+              Props(
+                classOf[TcpListener],
+                selectorPool,
+                tcp,
+                registry,
+                commander,
+                b))
     }
 
 }

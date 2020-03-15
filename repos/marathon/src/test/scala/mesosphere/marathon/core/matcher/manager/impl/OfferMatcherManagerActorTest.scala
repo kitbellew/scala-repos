@@ -40,8 +40,8 @@ class OfferMatcherManagerActorTest
     }
 
     When("The list of offer matchers is fetched")
-    val orderedMatchers = manager.underlyingActor.offerMatchers(
-      f.reservedOffer(appId))
+    val orderedMatchers = manager.underlyingActor.offerMatchers(f.reservedOffer(
+      appId))
 
     Then("The list is sorted in the correct order")
     orderedMatchers should have size num.toLong
@@ -61,8 +61,8 @@ class OfferMatcherManagerActorTest
     }
 
     When("The list of offer matchers is fetched")
-    val sortedMatchers = manager.underlyingActor.offerMatchers(
-      f.reservedOffer(appId))
+    val sortedMatchers = manager.underlyingActor.offerMatchers(f.reservedOffer(
+      appId))
 
     Then("The list is sorted in the correct order")
     sortedMatchers should have size 2 * num.toLong
@@ -92,10 +92,9 @@ class OfferMatcherManagerActorTest
     def reservedOffer(appId: PathId, path: String = "test"): Offer = {
       import MarathonTestHelper._
       makeBasicOffer()
-        .addResources(
-          reservedDisk(
-            LocalVolumeId(appId, path, "uuid").idString,
-            containerPath = path))
+        .addResources(reservedDisk(
+          LocalVolumeId(appId, path, "uuid").idString,
+          containerPath = path))
         .build()
     }
   }

@@ -30,11 +30,9 @@ class SubSource[+Out, +Mat](
       scaladsl.RunnableGraph[Mat]]) {
 
   /** Converts this Flow to its Scala DSL counterpart */
-  def asScala: scaladsl.SubFlow[
+  def asScala: scaladsl.SubFlow[Out, Mat, scaladsl.Source[
     Out,
-    Mat,
-    scaladsl.Source[Out, Mat]#Repr,
-    scaladsl.RunnableGraph[Mat]] @uncheckedVariance = delegate
+    Mat]#Repr, scaladsl.RunnableGraph[Mat]] @uncheckedVariance = delegate
 
   /**
     * Flatten the sub-flows back into the super-source by performing a merge
@@ -902,11 +900,9 @@ class SubSource[+Out, +Mat](
     *
     * '''Cancels when''' downstream cancels or substream cancels
     */
-  def prefixAndTail(n: Int): SubSource[
-    akka.japi.Pair[
-      java.util.List[Out @uncheckedVariance],
-      javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+  def prefixAndTail(n: Int): SubSource[akka.japi.Pair[
+    java.util.List[Out @uncheckedVariance],
+    javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubSource(delegate.prefixAndTail(n).map {
       case (taken, tail) ⇒ akka.japi.Pair(taken.asJava, tail.asJava)
     })

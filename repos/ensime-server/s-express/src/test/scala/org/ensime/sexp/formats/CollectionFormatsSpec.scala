@@ -144,9 +144,7 @@ class CollectionFormatsSpec
         SexpSymbol(":end"),
         SexpNumber(100),
         SexpSymbol(":step"),
-        SexpNumber(1)
-      )
-    )
+        SexpNumber(1)))
 
     assertFormat(
       im.Range(-100, 100, 2),
@@ -156,9 +154,7 @@ class CollectionFormatsSpec
         SexpSymbol(":end"),
         SexpNumber(100),
         SexpSymbol(":step"),
-        SexpNumber(2)
-      )
-    )
+        SexpNumber(2)))
   }
 
   it should "support im.NumericRange" in {
@@ -180,8 +176,7 @@ class CollectionFormatsSpec
         SexpSymbol(":start") -> SexpNumber(-100),
         SexpSymbol(":end") -> SexpNumber(100),
         SexpSymbol(":step") -> SexpNumber(1.5),
-        SexpSymbol(":inclusive") -> SexpNil
-      )
+        SexpSymbol(":inclusive") -> SexpNil)
     )
   }
 

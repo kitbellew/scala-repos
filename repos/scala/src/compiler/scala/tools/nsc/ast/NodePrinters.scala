@@ -65,9 +65,9 @@ abstract class NodePrinters {
       if (infolevel == InfoLevel.Quiet) ""
       else {
         try {
-          List(
-            showSymbol(tree),
-            showType(tree)) filterNot (_ == "") mkString ", " trim
+          List(showSymbol(tree), showType(tree)) filterNot (
+            _ == ""
+          ) mkString ", " trim
         } catch { case ex: Throwable => "sym= <error> " + ex.getMessage }
       }
     }
@@ -114,11 +114,10 @@ abstract class NodePrinters {
       buf.clear()
       if (settings.XshowtreesStringified) buf.append(tree.toString + EOL)
       if (settings.XshowtreesCompact) {
-        buf.append(
-          showRaw(
-            tree,
-            printIds = settings.uniqid,
-            printTypes = settings.printtypes))
+        buf.append(showRaw(
+          tree,
+          printIds = settings.uniqid,
+          printTypes = settings.printtypes))
       } else {
         level = 0
         traverse(tree)

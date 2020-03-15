@@ -54,9 +54,9 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
     // All types which could conform to these types will override <:<.
     def cannotMatch = {
       import Manifest._
-      that.isInstanceOf[
-        AnyValManifest[
-          _]] || (that eq AnyVal) || (that eq Nothing) || (that eq Null)
+      that.isInstanceOf[AnyValManifest[_]] || (that eq AnyVal) || (
+        that eq Nothing
+      ) || (that eq Null)
     }
 
     // This is wrong, and I don't know how it can be made right
@@ -129,8 +129,8 @@ trait ClassManifestDeprecatedApis[T] extends OptManifest[T] {
   def newArray4(len: Int): Array[Array[Array[Array[T]]]] =
     java.lang.reflect.Array
       .newInstance(
-        arrayClass[Array[Array[T]]](
-          arrayClass[Array[T]](arrayClass[T](runtimeClass))),
+        arrayClass[Array[Array[T]]](arrayClass[Array[T]](arrayClass[T](
+          runtimeClass))),
         len)
       .asInstanceOf[Array[Array[Array[Array[T]]]]]
 

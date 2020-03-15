@@ -124,11 +124,10 @@ private[spark] abstract class YarnSchedulerBackend(
     * This includes executors already pending or running.
     */
   override def doRequestTotalExecutors(requestedTotal: Int): Boolean = {
-    yarnSchedulerEndpointRef.askWithRetry[Boolean](
-      RequestExecutors(
-        requestedTotal,
-        localityAwareTasks,
-        hostToLocalTaskCount))
+    yarnSchedulerEndpointRef.askWithRetry[Boolean](RequestExecutors(
+      requestedTotal,
+      localityAwareTasks,
+      hostToLocalTaskCount))
   }
 
   /**

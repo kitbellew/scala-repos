@@ -202,11 +202,10 @@ class ScConstructorImpl(node: ASTNode)
                   nonValueType.internalType,
                   Seq(
                     new Parameter("", None, expected, false, false, false, 0)),
-                  Seq(
-                    new Expression(
-                      InferUtil
-                        .undefineSubstitutor(nonValueType.typeParameters)
-                        .subst(subst.subst(tp).inferValueType))),
+                  Seq(new Expression(
+                    InferUtil
+                      .undefineSubstitutor(nonValueType.typeParameters)
+                      .subst(subst.subst(tp).inferValueType))),
                   nonValueType.typeParameters,
                   shouldUndefineParameters = false,
                   filterTypeParams = false
@@ -236,15 +235,14 @@ class ScConstructorImpl(node: ASTNode)
                 case p: PsiAnnotationMethod =>
                   val paramType = subst.subst(
                     ScType.create(p.getReturnType, getProject, getResolveScope))
-                  Seq(
-                    Parameter(
-                      p.getName,
-                      None,
-                      paramType,
-                      paramType,
-                      p.getDefaultValue != null,
-                      isRepeated = false,
-                      isByName = false))
+                  Seq(Parameter(
+                    p.getName,
+                    None,
+                    paramType,
+                    paramType,
+                    p.getDefaultValue != null,
+                    isRepeated = false,
+                    isByName = false))
                 case _ => Seq.empty
               }
               buffer += Success(

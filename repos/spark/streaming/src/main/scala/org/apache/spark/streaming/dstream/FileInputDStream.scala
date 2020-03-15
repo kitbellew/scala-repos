@@ -95,10 +95,9 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     * files are visible within this window, then the file will get selected in the next batch.
     */
   private val minRememberDurationS = {
-    Seconds(
-      ssc.conf.getTimeAsSeconds(
-        "spark.streaming.fileStream.minRememberDuration",
-        ssc.conf.get("spark.streaming.minRememberDuration", "60s")))
+    Seconds(ssc.conf.getTimeAsSeconds(
+      "spark.streaming.fileStream.minRememberDuration",
+      ssc.conf.get("spark.streaming.minRememberDuration", "60s")))
   }
 
   // This is a def so that it works during checkpoint recovery:
@@ -223,8 +222,7 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
         logWarning(
           "Time taken to find new files exceeds the batch size. " +
             "Consider increasing the batch size or reducing the number of " +
-            "files in the monitored directory."
-        )
+            "files in the monitored directory.")
       }
       newFiles
     } catch {

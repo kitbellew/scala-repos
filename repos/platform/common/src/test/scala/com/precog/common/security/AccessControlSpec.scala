@@ -238,8 +238,7 @@ class AccessControlSpec extends Specification {
 
       val readReduceOther = Set[Permission](
         ReadPermission(Path("/other"), WrittenByAccount(otherAccountId)),
-        ReducePermission(Path("/other"), WrittenByAccount(otherAccountId))
-      )
+        ReducePermission(Path("/other"), WrittenByAccount(otherAccountId)))
 
       apiKeyManager
         .deriveAndAddGrant(None, None, otherAPIKey, readReduceOther, userAPIKey)
@@ -624,23 +623,19 @@ class AccessControlSpec extends Specification {
         customer2AccountId)
       val customer2APIKey = customer2APIKeyRecord.apiKey
 
-      val readCustomer1Customer1 = Set[Permission](
-        ReadPermission(
-          Path("/customer1/data"),
-          WrittenByAccount(customer1AccountId)))
-      val readCustomer1AddOn = Set[Permission](
-        ReadPermission(
-          Path("/customer1/data"),
-          WrittenByAccount(addOnAccountId)))
+      val readCustomer1Customer1 = Set[Permission](ReadPermission(
+        Path("/customer1/data"),
+        WrittenByAccount(customer1AccountId)))
+      val readCustomer1AddOn = Set[Permission](ReadPermission(
+        Path("/customer1/data"),
+        WrittenByAccount(addOnAccountId)))
 
-      val readCustomer2Customer2 = Set[Permission](
-        ReadPermission(
-          Path("/customer2/data"),
-          WrittenByAccount(customer2AccountId)))
-      val readCustomer2AddOn = Set[Permission](
-        ReadPermission(
-          Path("/customer2/data"),
-          WrittenByAccount(addOnAccountId)))
+      val readCustomer2Customer2 = Set[Permission](ReadPermission(
+        Path("/customer2/data"),
+        WrittenByAccount(customer2AccountId)))
+      val readCustomer2AddOn = Set[Permission](ReadPermission(
+        Path("/customer2/data"),
+        WrittenByAccount(addOnAccountId)))
 
       hasCapability(customer1APIKey, readCustomer1Customer1) must beTrue
       hasCapability(customer1APIKey, readCustomer1AddOn) must beFalse
@@ -690,14 +685,12 @@ class AccessControlSpec extends Specification {
         customerAccountId)
       val customerAPIKey = customerAPIKeyRecord.apiKey
 
-      val readPerm = Set[Permission](
-        ReadPermission(
-          Path("/provider/customer/data"),
-          WrittenByAccount(customerAccountId)))
-      val writePerm = Set[Permission](
-        WritePermission(
-          Path("/provider/customer/data"),
-          WriteAs(customerAccountId)))
+      val readPerm = Set[Permission](ReadPermission(
+        Path("/provider/customer/data"),
+        WrittenByAccount(customerAccountId)))
+      val writePerm = Set[Permission](WritePermission(
+        Path("/provider/customer/data"),
+        WriteAs(customerAccountId)))
 
       hasCapability(providerAPIKey, readPerm) must beFalse
       hasCapability(providerAPIKey, writePerm) must beTrue

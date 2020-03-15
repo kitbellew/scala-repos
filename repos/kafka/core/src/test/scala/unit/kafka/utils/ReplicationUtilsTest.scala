@@ -33,27 +33,24 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
   val controllerEpoch = 1
   val zkVersion = 1
   val topicPath = "/brokers/topics/my-topic-test/partitions/0/state"
-  val topicData = Json.encode(
-    Map(
-      "controller_epoch" -> 1,
-      "leader" -> 1,
-      "versions" -> 1,
-      "leader_epoch" -> 1,
-      "isr" -> List(1, 2)))
-  val topicDataVersionMismatch = Json.encode(
-    Map(
-      "controller_epoch" -> 1,
-      "leader" -> 1,
-      "versions" -> 2,
-      "leader_epoch" -> 1,
-      "isr" -> List(1, 2)))
-  val topicDataMismatch = Json.encode(
-    Map(
-      "controller_epoch" -> 1,
-      "leader" -> 1,
-      "versions" -> 2,
-      "leader_epoch" -> 2,
-      "isr" -> List(1, 2)))
+  val topicData = Json.encode(Map(
+    "controller_epoch" -> 1,
+    "leader" -> 1,
+    "versions" -> 1,
+    "leader_epoch" -> 1,
+    "isr" -> List(1, 2)))
+  val topicDataVersionMismatch = Json.encode(Map(
+    "controller_epoch" -> 1,
+    "leader" -> 1,
+    "versions" -> 2,
+    "leader_epoch" -> 1,
+    "isr" -> List(1, 2)))
+  val topicDataMismatch = Json.encode(Map(
+    "controller_epoch" -> 1,
+    "leader" -> 1,
+    "versions" -> 2,
+    "leader_epoch" -> 2,
+    "isr" -> List(1, 2)))
 
   val topicDataLeaderIsrAndControllerEpoch = LeaderIsrAndControllerEpoch(
     LeaderAndIsr(1, leaderEpoch, List(1, 2), 0),

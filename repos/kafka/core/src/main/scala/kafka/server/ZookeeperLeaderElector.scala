@@ -96,9 +96,9 @@ class ZookeeperLeaderElector(
         leaderId = getControllerID
 
         if (leaderId != -1)
-          debug(
-            "Broker %d was elected as leader instead of broker %d"
-              .format(leaderId, brokerId))
+          debug("Broker %d was elected as leader instead of broker %d".format(
+            leaderId,
+            brokerId))
         else
           warn(
             "A leader has been elected but just resigned, this will result in another round of election")

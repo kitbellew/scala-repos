@@ -36,9 +36,8 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
           readChunks(out)
 
       case invalid =>
-        Future.exception(
-          new IllegalArgumentException(
-            "invalid message \"%s\"".format(invalid)))
+        Future.exception(new IllegalArgumentException(
+          "invalid message \"%s\"".format(invalid)))
     }
 
   protected def dispatch(req: Req, p: Promise[StreamResponse]) =
@@ -76,9 +75,8 @@ private[twitter] class StreamClientDispatcher[Req: RequestType](
             done ensure { trans.close() }
 
           case invalid =>
-            Future.exception(
-              new IllegalArgumentException(
-                "invalid message \"%s\"".format(invalid)))
+            Future.exception(new IllegalArgumentException(
+              "invalid message \"%s\"".format(invalid)))
         }
       }
 }

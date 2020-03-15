@@ -16,8 +16,7 @@ class AdminAPISpec extends Specification {
   val commandClient = new CommandClient(
     appClient = Storage.getMetaDataApps,
     accessKeyClient = Storage.getMetaDataAccessKeys,
-    eventClient = Storage.getLEvents()
-  )
+    eventClient = Storage.getLEvents())
 
   val adminActor = system.actorOf(
     Props(classOf[AdminServiceActor], commandClient))
@@ -27,15 +26,11 @@ class AdminAPISpec extends Specification {
       val probe = TestProbe()(system)
       probe.send(adminActor, Get("/"))
 
-      probe.expectMsg(
-        HttpResponse(
-          200,
-          HttpEntity(
-            contentType = ContentTypes.`application/json`,
-            string = """{"status":"alive"}"""
-          )
-        )
-      )
+      probe.expectMsg(HttpResponse(
+        200,
+        HttpEntity(
+          contentType = ContentTypes.`application/json`,
+          string = """{"status":"alive"}""")))
       success
     }
   }

@@ -50,8 +50,9 @@ class HListBench {
   implicit def provenShape[T, P](
       implicit shape: Shape[_ <: FlatShapeLevel, T, _, P])
       : Shape[FlatShapeLevel, ProvenShape[T], T, P] = ???
-  final class HListShape[Level <: ShapeLevel, M <: HList, U <: HList,
-  P <: HList](val shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]])
+  final class HListShape[
+      Level <: ShapeLevel, M <: HList, U <: HList, P <: HList](
+      val shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]])
       extends Shape[Level, M, U, P]
   implicit def hnilShape[Level <: ShapeLevel] =
     new HListShape[Level, HNil.type, HNil.type, HNil.type](Nil)
@@ -72,12 +73,13 @@ class HListBench {
   }
 
   trait B
-      extends A[Int :: Int :: Int :: Int :: Int ::
+      extends A[
         Int :: Int :: Int :: Int :: Int ::
-        Int :: Int :: Int :: Int :: Int ::
-        Int :: Int :: Int :: Int :: Int ::
-        Int :: Int :: Int :: Int :: Int ::
-        Int :: Int :: HNil] {
+          Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: Int :: Int :: Int ::
+          Int :: Int :: HNil] {
 
     def c: Column[Int]
 

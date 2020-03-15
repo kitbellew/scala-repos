@@ -126,8 +126,7 @@ class WorksheetEditorPrinter(
                   .takeWhile(_ == '\n')
                   .length,
                 end - start + 1,
-                end)
-            )
+                end))
           }
 
           buffed += linesCount
@@ -275,32 +274,34 @@ class WorksheetEditorPrinter(
             project,
             new Runnable {
               override def run() {
-                viewerFolding runBatchFoldingOperation (new Runnable {
-                  override def run() {
-                    foldingOffsetsCopy map {
-                      case (start, end, limit, originalEnd) =>
-                        val offset = originalDocument getLineEndOffset Math
-                          .min(originalEnd, originalDocument.getLineCount)
-                        val linesCount =
-                          viewerDocument.getLineNumber(end) - start - limit + 1
+                viewerFolding runBatchFoldingOperation (
+                  new Runnable {
+                    override def run() {
+                      foldingOffsetsCopy map {
+                        case (start, end, limit, originalEnd) =>
+                          val offset = originalDocument getLineEndOffset Math
+                            .min(originalEnd, originalDocument.getLineCount)
+                          val linesCount = viewerDocument.getLineNumber(
+                            end) - start - limit + 1
 
-                        new WorksheetFoldRegionDelegate(
-                          ed,
-                          viewerDocument.getLineStartOffset(start + limit - 1),
-                          end,
-                          offset,
-                          linesCount,
-                          group,
-                          limit
-                        )
-                    } foreach {
-                      case region =>
-                        viewerFolding addFoldRegion region
+                          new WorksheetFoldRegionDelegate(
+                            ed,
+                            viewerDocument.getLineStartOffset(
+                              start + limit - 1),
+                            end,
+                            offset,
+                            linesCount,
+                            group,
+                            limit)
+                      } foreach {
+                        case region =>
+                          viewerFolding addFoldRegion region
+                      }
+
+                      WorksheetFoldGroup.save(file, group)
                     }
-
-                    WorksheetFoldGroup.save(file, group)
-                  }
-                }, false)
+                  }, false
+                )
               }
             },
             null,
@@ -407,12 +408,11 @@ object WorksheetEditorPrinter {
                     .asInstanceOf[EditorImpl]
                     .getContentComponent
                     .hasFocus) return
-              recipient.getCaretModel.moveToVisualPosition(
-                new VisualPosition(
-                  Math.min(
-                    group left2rightOffset don.getCaretModel.getVisualPosition.getLine,
-                    recipient.getDocument.getLineCount),
-                  0))
+              recipient.getCaretModel.moveToVisualPosition(new VisualPosition(
+                Math.min(
+                  group left2rightOffset don.getCaretModel.getVisualPosition.getLine,
+                  recipient.getDocument.getLineCount),
+                0))
             }
           }
       } getOrElse new CaretAdapter {
@@ -444,20 +444,17 @@ object WorksheetEditorPrinter {
             checkAndAdd(originalImpl, viewerImpl)
 //            checkAndAdd(viewerImpl, originalImpl)
 
-            viewerImpl.getCaretModel.moveToVisualPosition(
-              new VisualPosition(
-                Math.min(
-                  originalImpl.getCaretModel.getVisualPosition.line,
-                  viewerImpl.getDocument.getLineCount),
-                0)
-            )
+            viewerImpl.getCaretModel.moveToVisualPosition(new VisualPosition(
+              Math.min(
+                originalImpl.getCaretModel.getVisualPosition.line,
+                viewerImpl.getDocument.getLineCount),
+              0))
 
             val syncSupport = new SyncScrollSupport
-            syncSupport.install(
-              Array[EditingSides](
-                new WorksheetDiffSplitters.WorksheetEditingSides(
-                  originalEditor,
-                  worksheetViewer)))
+            syncSupport.install(Array[EditingSides](
+              new WorksheetDiffSplitters.WorksheetEditingSides(
+                originalEditor,
+                worksheetViewer)))
 
             originalEditor.putUserData(DIFF_SYNC_SUPPORT, syncSupport)
 

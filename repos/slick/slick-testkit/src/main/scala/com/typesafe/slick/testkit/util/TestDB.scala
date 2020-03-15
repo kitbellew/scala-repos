@@ -208,13 +208,15 @@ abstract class JdbcTestDB(val confName: String) extends SqlTestDB {
       } yield ()
     }
   def assertTablesExist(tables: String*) =
-    DBIO.seq(tables.map(t =>
-      sql"""select 1 from #${profile
-        .quoteIdentifier(t)} where 1 < 0""".as[Int]): _*)
+    DBIO.seq(
+      tables.map(t =>
+        sql"""select 1 from #${profile
+          .quoteIdentifier(t)} where 1 < 0""".as[Int]): _*)
   def assertNotTablesExist(tables: String*) =
-    DBIO.seq(tables.map(t =>
-      sql"""select 1 from #${profile
-        .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
+    DBIO.seq(
+      tables.map(t =>
+        sql"""select 1 from #${profile
+          .quoteIdentifier(t)} where 1 < 0""".as[Int].failed): _*)
   def createSingleSessionDatabase(implicit
       session: profile.Backend#Session,
       executor: AsyncExecutor = AsyncExecutor
@@ -275,11 +277,10 @@ abstract class ExternalJdbcTestDB(confName: String)
   override lazy val testClasses
       : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] = TestkitConfig
     .getStrings(config, "testClasses")
-    .map(
-      _.map(n =>
-        Class
-          .forName(n)
-          .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
+    .map(_.map(n =>
+      Class
+        .forName(n)
+        .asInstanceOf[Class[_ <: GenericTest[_ >: Null <: TestDB]]]))
     .getOrElse(super.testClasses)
 
   def databaseFor(path: String) =
@@ -290,26 +291,20 @@ abstract class ExternalJdbcTestDB(confName: String)
   override def cleanUpBefore() {
     if (!drop.isEmpty || !create.isEmpty) {
       println("[Creating test database " + this + "]")
-      await(
-        databaseFor("adminConn").run(
-          DBIO.seq((drop ++ create).map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+      await(databaseFor("adminConn").run(
+        DBIO.seq((drop ++ create).map(s => sqlu"#$s"): _*).withPinnedSession))
     }
     if (!postCreate.isEmpty) {
-      await(
-        createDB().run(
-          DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+      await(createDB().run(
+        DBIO.seq(postCreate.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 
   override def cleanUpAfter() {
     if (!drop.isEmpty) {
       println("[Dropping test database " + this + "]")
-      await(
-        databaseFor("adminConn").run(
-          DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession
-        ))
+      await(databaseFor("adminConn").run(
+        DBIO.seq(drop.map(s => sqlu"#$s"): _*).withPinnedSession))
     }
   }
 

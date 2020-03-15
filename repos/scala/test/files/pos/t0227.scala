@@ -15,11 +15,7 @@ abstract class Base {
 }
 
 class SA(val settings: Settings) extends Base {
-  override val demands = List(
-    SD
-  ) ::: settings.f(
-    SC
-  )
+  override val demands = List(SD) ::: settings.f(SC)
 }
 
 object SC extends Factory {

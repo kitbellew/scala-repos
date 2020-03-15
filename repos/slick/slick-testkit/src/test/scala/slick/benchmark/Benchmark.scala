@@ -12,7 +12,9 @@ object Benchmark {
     val t1 = System.nanoTime()
     val total = (t1 - t0) / 1000000.0
     println(
-      COUNT + " runs tooks " + total + " ms (" + (total * 1000.0 / COUNT) + " µs per run)")
+      COUNT + " runs tooks " + total + " ms (" + (
+        total * 1000.0 / COUNT
+      ) + " µs per run)")
   }
 
   class Users(tag: Tag) extends Table[(Int, String, String)](tag, "users") {

@@ -142,7 +142,9 @@ private[http] class HttpResponseParser(
           startNewMessage(input, bodyStart)
       }
 
-    if (statusCode.allowsEntity && (contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD)) {
+    if (statusCode.allowsEntity && (
+          contextForCurrentResponse.get.requestMethod != HttpMethods.HEAD
+        )) {
       teh match {
         case None ⇒
           clh match {

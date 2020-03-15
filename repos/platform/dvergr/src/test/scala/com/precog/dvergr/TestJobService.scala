@@ -84,25 +84,19 @@ class JobServiceSpec extends TestJobService {
   val jobsClient = client.contentType[ByteChunk](JSON).path("/jobs/v1/")
 
   val simpleJob: JValue = JObject(
-    List(
-      JField("name", JString("abc")),
-      JField("type", JString("cba"))
-    ))
+    List(JField("name", JString("abc")), JField("type", JString("cba"))))
 
-  val jobWithData: JValue = JObject(
-    List(
-      JField("name", JString("xyz")),
-      JField("type", JString("zyx")),
-      JField("data", JObject(JField("x", JNum(1))))
-    ))
+  val jobWithData: JValue = JObject(List(
+    JField("name", JString("xyz")),
+    JField("type", JString("zyx")),
+    JField("data", JObject(JField("x", JNum(1))))))
 
   def startJob(ts: Option[DateTime] = None): JValue =
     JObject(
       JField("state", JString("started")) ::
         (ts map { dt =>
           JField("timestamp", dt.serialize) :: Nil
-        } getOrElse Nil)
-    )
+        } getOrElse Nil))
 
   def postJob(job: JValue, apiKey: String = validAPIKey) =
     jobsClient.query("apiKey", apiKey).post[JValue]("/jobs/")(job)
@@ -155,13 +149,11 @@ class JobServiceSpec extends TestJobService {
       unit: String,
       info: Option[JValue] = None,
       prev: Option[BigDecimal] = None) = {
-    putStatusRaw(jobId, prev)(
-      JObject(
-        JField("message", JString(message)) ::
-          JField("progress", JNum(progress)) ::
-          JField("unit", JString(unit)) ::
-          (info map (JField("info", _) :: Nil) getOrElse Nil)
-      ))
+    putStatusRaw(jobId, prev)(JObject(
+      JField("message", JString(message)) ::
+        JField("progress", JNum(progress)) ::
+        JField("unit", JString(unit)) ::
+        (info map (JField("info", _) :: Nil) getOrElse Nil)))
   }
 
   def putStatusAndGetId(
@@ -545,16 +537,14 @@ class JobServiceSpec extends TestJobService {
       val (res1, res2, res3, res4) = (for {
         jobId <- postJobAndGetId(simpleJob)
         res1 <- putStatusRaw(jobId, None)(JObject(Nil))
-        res2 <- putStatusRaw(jobId, None)(
-          JObject(
-            JField("message", JString("a")) :: JField(
-              "unit",
-              JString("%")) :: Nil))
-        res3 <- putStatusRaw(jobId, None)(
-          JObject(
-            JField("message", JString("a")) :: JField(
-              "progress",
-              JNum(99)) :: Nil))
+        res2 <- putStatusRaw(jobId, None)(JObject(
+          JField("message", JString("a")) :: JField(
+            "unit",
+            JString("%")) :: Nil))
+        res3 <- putStatusRaw(jobId, None)(JObject(
+          JField("message", JString("a")) :: JField(
+            "progress",
+            JNum(99)) :: Nil))
         res4 <- putStatusRaw(jobId, None)(JObject(
           JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint

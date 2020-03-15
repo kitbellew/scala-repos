@@ -97,12 +97,11 @@ class LinearAlgebraTest
   }
 
   test("LUfactorization") {
-    val (m, _) = LU(
-      DenseMatrix(
-        (29, 42, -4, 50, 1),
-        (20, -31, 32, 21, 2),
-        (-47, -20, 24, -22, 3),
-        (3, 17, -45, 23, 4)))
+    val (m, _) = LU(DenseMatrix(
+      (29, 42, -4, 50, 1),
+      (20, -31, 32, 21, 2),
+      (-47, -20, 24, -22, 3),
+      (3, 17, -45, 23, 4)))
     val aux = DenseMatrix(
       (-47.0000, -20.0000, 24.0000, -22.0000, 3.0000),
       (-0.4255, -39.5106, 42.2127, 11.6382, 3.2765),
@@ -481,8 +480,11 @@ class LinearAlgebraTest
     val Eig(w, wi, v) = eig(DenseMatrix((1.0, -1.0), (1.0, 1.0)))
     assert(w === DenseVector(1.0, 1.0))
     assert(wi === DenseVector(1.0, -1.0))
-    assert(max(abs(
-      v - diag(DenseVector(0.7071067811865475, -0.7071067811865475)))) < 1e-7)
+    assert(
+      max(
+        abs(
+          v - diag(
+            DenseVector(0.7071067811865475, -0.7071067811865475)))) < 1e-7)
     // TODO, we seem to throw out VI... these seems bad...
   }
 
@@ -715,8 +717,7 @@ class LinearAlgebraTest
       (5.0, 0.0, 0.9),
       (3.0, 5.0, 0.5),
       (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    )
+      (0.0, 7.0, 0.0))
 
     for (m <- List(a, a.t)) {
       val SVD(u, s, v) = svd.reduced(m)
@@ -735,8 +736,7 @@ class LinearAlgebraTest
       (5.0, 0.0, 0.9),
       (3.0, 5.0, 0.5),
       (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    ).t
+      (0.0, 7.0, 0.0)).t
 
     val SVD(u, sr, vt) = svdr(m, m.rows min m.cols)
 
@@ -751,8 +751,7 @@ class LinearAlgebraTest
       (5.0, 0.0, 0.9),
       (3.0, 5.0, 0.5),
       (7.5, 1.0, 6.0),
-      (0.0, 7.0, 0.0)
-    )
+      (0.0, 7.0, 0.0))
 
     val SVD(u, sr, vt) = svdr(m, m.rows min m.cols)
 

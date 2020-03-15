@@ -59,13 +59,8 @@ class DeploymentsResource @Inject() (
             status(ACCEPTED) // 202: Accepted
           case plan: DeploymentPlan =>
             // create a new deployment to return to the previous state
-            deploymentResult(
-              result(
-                groupManager.update(
-                  plan.original.id,
-                  plan.revert,
-                  force = true
-                )))
+            deploymentResult(result(
+              groupManager.update(plan.original.id, plan.revert, force = true)))
         }
       }
     }
@@ -91,6 +86,5 @@ class DeploymentsResource @Inject() (
   def actionToMap(action: DeploymentAction): Map[String, String] =
     Map(
       "action" -> action.getClass.getSimpleName,
-      "app" -> action.app.id.toString
-    )
+      "app" -> action.app.id.toString)
 }

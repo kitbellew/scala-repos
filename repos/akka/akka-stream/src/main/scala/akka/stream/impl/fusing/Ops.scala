@@ -432,9 +432,8 @@ private[akka] final case class Buffer[T](
       case Fail ⇒
         (ctx, elem) ⇒
           if (buffer.isFull)
-            ctx.fail(
-              new BufferOverflowException(
-                s"Buffer overflow (max capacity was: $size)!"))
+            ctx.fail(new BufferOverflowException(
+              s"Buffer overflow (max capacity was: $size)!"))
           else {
             buffer.enqueue(elem)
             ctx.pull()

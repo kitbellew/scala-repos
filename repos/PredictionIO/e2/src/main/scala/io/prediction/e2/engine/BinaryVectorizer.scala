@@ -47,15 +47,13 @@ object BinaryVectorizer {
   def apply(
       input: RDD[HashMap[String, String]],
       properties: HashSet[String]): BinaryVectorizer = {
-    new BinaryVectorizer(
-      HashMap(
-        input
-          .flatMap(identity)
-          .filter(e => properties.contains(e._1))
-          .distinct
-          .collect
-          .zipWithIndex: _*
-      ))
+    new BinaryVectorizer(HashMap(
+      input
+        .flatMap(identity)
+        .filter(e => properties.contains(e._1))
+        .distinct
+        .collect
+        .zipWithIndex: _*))
   }
 
   def apply(input: Seq[(String, String)]): BinaryVectorizer = {

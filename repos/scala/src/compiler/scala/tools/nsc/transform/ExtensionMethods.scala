@@ -52,8 +52,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         val index = alts indexOf imeth
         assert(index >= 0, alts + " does not contain " + imeth)
         def altName(index: Int) = newTermName(imeth.name + "$extension" + index)
-        altName(
-          index) #:: ((0 until alts.length).toStream filter (index != _) map altName)
+        altName(index) #:: (
+          (0 until alts.length).toStream filter (index != _) map altName
+        )
       case tpe =>
         assert(
           tpe != NoType,
@@ -189,7 +190,9 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
         thisParam)
 
       def fixres(tp: Type) =
-        tp substThisAndSym (clazz, selfParamType, clazz.typeParams, tparamsFromClass)
+        tp substThisAndSym (
+          clazz, selfParamType, clazz.typeParams, tparamsFromClass
+        )
       def fixtparam(tp: Type) = tp substSym (clazz.typeParams, tparamsFromClass)
 
       // We can't substitute symbols on the entire polytype because we
@@ -239,13 +242,11 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
 
           def makeExtensionMethodSymbol = {
             val extensionName = extensionNames(origMeth).head.toTermName
-            val extensionMeth = (
-              companion.moduleClass.newMethod(
-                extensionName,
-                tree.pos.focus,
-                origMeth.flags & ~OVERRIDE & ~PROTECTED & ~PRIVATE & ~LOCAL | FINAL)
-                setAnnotations origMeth.annotations
-            )
+            val extensionMeth = (companion.moduleClass.newMethod(
+              extensionName,
+              tree.pos.focus,
+              origMeth.flags & ~OVERRIDE & ~PROTECTED & ~PRIVATE & ~LOCAL | FINAL)
+              setAnnotations origMeth.annotations)
             origMeth.removeAnnotation(
               TailrecClass
             ) // it's on the extension method, now.
@@ -303,11 +304,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
 
           // Apply all the argument lists.
           deriveDefDef(tree)(_ =>
-            atOwner(origMeth)(
-              localTyper.typedPos(rhs.pos)(
-                gen.mkForwarder(callPrefix, mmap(vparamss)(_.symbol))
-              )
-            ))
+            atOwner(origMeth)(localTyper.typedPos(rhs.pos)(
+              gen.mkForwarder(callPrefix, mmap(vparamss)(_.symbol)))))
         case _ =>
           super.transform(tree)
       }

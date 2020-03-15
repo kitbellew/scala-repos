@@ -55,10 +55,7 @@ private[prediction] case class SetProp(
     // keep the latest set time
     val combinedT = if (this.t > that.t) this.t else that.t
 
-    SetProp(
-      fields = combinedFields,
-      t = combinedT
-    )
+    SetProp(fields = combinedFields, t = combinedT)
   }
 }
 
@@ -78,9 +75,7 @@ private[prediction] case class UnsetProp(fields: Map[String, Long])
     val combinedFields = common ++
       (this.fields -- commonKeys) ++ (that.fields -- commonKeys)
 
-    UnsetProp(
-      fields = combinedFields
-    )
+    UnsetProp(fields = combinedFields)
   }
 }
 
@@ -93,8 +88,8 @@ private[prediction] case class DeleteEntity(t: Long) extends Serializable {
 private[prediction] case class EventOp(
     val setProp: Option[SetProp] = None,
     val unsetProp: Option[UnsetProp] = None,
-    val deleteEntity: Option[DeleteEntity] = None
-) extends Serializable {
+    val deleteEntity: Option[DeleteEntity] = None)
+    extends Serializable {
 
   def ++(that: EventOp): EventOp = {
     EventOp(
@@ -142,22 +137,14 @@ private[prediction] object EventOp {
           .mapValues(jv => PropTime(jv, t))
           .map(identity)
 
-        EventOp(
-          setProp = Some(SetProp(fields = fields, t = t))
-        )
+        EventOp(setProp = Some(SetProp(fields = fields, t = t)))
       }
       case "$unset" => {
         val fields = e.properties.fields.mapValues(jv => t).map(identity)
-        EventOp(
-          unsetProp = Some(UnsetProp(fields = fields))
-        )
+        EventOp(unsetProp = Some(UnsetProp(fields = fields)))
       }
-      case "$delete" => {
-        EventOp(
-          deleteEntity = Some(DeleteEntity(t))
-        )
-      }
-      case _ => { EventOp() }
+      case "$delete" => { EventOp(deleteEntity = Some(DeleteEntity(t))) }
+      case _         => { EventOp() }
     }
   }
 }
@@ -185,8 +172,7 @@ class PBatchView(
   def aggregateProperties(
       entityType: String,
       startTimeOpt: Option[DateTime] = None,
-      untilTimeOpt: Option[DateTime] = None
-  ): RDD[(String, DataMap)] = {
+      untilTimeOpt: Option[DateTime] = None): RDD[(String, DataMap)] = {
 
     _events
       .filter(e =>
@@ -197,8 +183,7 @@ class PBatchView(
         // within same partition
         seqOp = { case (u, v) => u ++ v },
         // across partition
-        combOp = { case (accu, u) => accu ++ u }
-      )
+        combOp = { case (accu, u) => accu ++ u })
       .mapValues(_.toDataMap)
       .filter { case (k, v) => v.isDefined }
       .map { case (k, v) => (k, v.get) }

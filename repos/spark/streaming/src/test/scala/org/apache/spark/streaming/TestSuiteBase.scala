@@ -104,8 +104,8 @@ class TestInputStream[T: ClassTag](
 class TestOutputStream[T: ClassTag](
     parent: DStream[T],
     val output: ConcurrentLinkedQueue[Seq[T]] =
-      new ConcurrentLinkedQueue[Seq[T]]()
-) extends ForEachDStream[T](
+      new ConcurrentLinkedQueue[Seq[T]]())
+    extends ForEachDStream[T](
       parent,
       (rdd: RDD[T], t: Time) => {
         val collected = rdd.collect()
@@ -331,8 +331,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def setupStreams[U: ClassTag, V: ClassTag](
       input: Seq[Seq[U]],
       operation: DStream[U] => DStream[V],
-      numPartitions: Int = numInputPartitions
-  ): StreamingContext = {
+      numPartitions: Int = numInputPartitions): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
     if (checkpointDir != null) { ssc.checkpoint(checkpointDir) }
@@ -354,8 +353,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def setupStreams[U: ClassTag, V: ClassTag, W: ClassTag](
       input1: Seq[Seq[U]],
       input2: Seq[Seq[V]],
-      operation: (DStream[U], DStream[V]) => DStream[W]
-  ): StreamingContext = {
+      operation: (DStream[U], DStream[V]) => DStream[W]): StreamingContext = {
     // Create StreamingContext
     val ssc = new StreamingContext(conf, batchDuration)
     if (checkpointDir != null) { ssc.checkpoint(checkpointDir) }
@@ -381,8 +379,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def runStreams[V: ClassTag](
       ssc: StreamingContext,
       numBatches: Int,
-      numExpectedOutput: Int
-  ): Seq[Seq[V]] = {
+      numExpectedOutput: Int): Seq[Seq[V]] = {
     // Flatten each RDD into a single Seq
     runStreamsWithPartitions(ssc, numBatches, numExpectedOutput).map(
       _.flatten.toSeq)
@@ -399,8 +396,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def runStreamsWithPartitions[V: ClassTag](
       ssc: StreamingContext,
       numBatches: Int,
-      numExpectedOutput: Int
-  ): Seq[Seq[Seq[V]]] = {
+      numExpectedOutput: Int): Seq[Seq[Seq[V]]] = {
     assert(
       numBatches > 0,
       "Number of batches to run stream computation is zero")
@@ -466,8 +462,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
   def verifyOutput[V: ClassTag](
       output: Seq[Seq[V]],
       expectedOutput: Seq[Seq[V]],
-      useSet: Boolean
-  ) {
+      useSet: Boolean) {
     logInfo("--------------------------------")
     logInfo("output.size = " + output.size)
     logInfo("output")
@@ -506,8 +501,9 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       input: Seq[Seq[U]],
       operation: DStream[U] => DStream[V],
       expectedOutput: Seq[Seq[V]],
-      useSet: Boolean = false
-  ) { testOperation[U, V](input, operation, expectedOutput, -1, useSet) }
+      useSet: Boolean = false) {
+    testOperation[U, V](input, operation, expectedOutput, -1, useSet)
+  }
 
   /**
     * Test unary DStream operation with a list of inputs
@@ -523,8 +519,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       operation: DStream[U] => DStream[V],
       expectedOutput: Seq[Seq[V]],
       numBatches: Int,
-      useSet: Boolean
-  ) {
+      useSet: Boolean) {
     val numBatches_ = if (numBatches > 0) numBatches else expectedOutput.size
     withStreamingContext(setupStreams[U, V](input, operation)) { ssc =>
       val output = runStreams[V](ssc, numBatches_, expectedOutput.size)
@@ -541,8 +536,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       input2: Seq[Seq[V]],
       operation: (DStream[U], DStream[V]) => DStream[W],
       expectedOutput: Seq[Seq[W]],
-      useSet: Boolean
-  ) {
+      useSet: Boolean) {
     testOperation[U, V, W](
       input1,
       input2,
@@ -568,8 +562,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       operation: (DStream[U], DStream[V]) => DStream[W],
       expectedOutput: Seq[Seq[W]],
       numBatches: Int,
-      useSet: Boolean
-  ) {
+      useSet: Boolean) {
     val numBatches_ = if (numBatches > 0) numBatches else expectedOutput.size
     withStreamingContext(setupStreams[U, V, W](input1, input2, operation)) {
       ssc =>

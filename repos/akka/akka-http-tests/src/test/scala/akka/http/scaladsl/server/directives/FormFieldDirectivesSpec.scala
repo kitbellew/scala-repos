@@ -22,12 +22,11 @@ class FormFieldDirectivesSpec extends RoutingSpec {
 
   val nodeSeq: xml.NodeSeq = <b>yes</b>
   val urlEncodedForm = FormData(Map("firstName" -> "Mike", "age" -> "42"))
-  val urlEncodedFormWithVip = FormData(
-    Map(
-      "firstName" -> "Mike",
-      "age" -> "42",
-      "VIP" -> "true",
-      "super" -> "<b>no</b>"))
+  val urlEncodedFormWithVip = FormData(Map(
+    "firstName" -> "Mike",
+    "age" -> "42",
+    "VIP" -> "true",
+    "super" -> "<b>no</b>"))
   val multipartForm = Multipart.FormData {
     Map(
       "firstName" -> HttpEntity("Mike"),

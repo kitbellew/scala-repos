@@ -19,8 +19,9 @@ object Macros {
     import internal._
     val u = gen.mkRuntimeUniverseRef
     val m = EmptyTree
-    val tree = c.Expr[scala.reflect.runtime.universe.Tree](
-      Select(c.reifyTree(u, m, f.tree), newTermName("tree")))
+    val tree = c.Expr[scala.reflect.runtime.universe.Tree](Select(
+      c.reifyTree(u, m, f.tree),
+      newTermName("tree")))
     c.universe.reify(new ReflectiveClosure(tree.splice, f.splice))
   }
 }

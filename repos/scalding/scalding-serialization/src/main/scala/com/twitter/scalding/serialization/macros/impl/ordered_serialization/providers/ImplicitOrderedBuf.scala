@@ -43,8 +43,9 @@ object ImplicitOrderedBuf {
     import c.universe._
     def freshT(id: String) = newTermName(c.fresh(id))
 
-    val variableID =
-      (outerType.typeSymbol.fullName.hashCode.toLong + Int.MaxValue.toLong).toString
+    val variableID = (
+      outerType.typeSymbol.fullName.hashCode.toLong + Int.MaxValue.toLong
+    ).toString
     val variableNameStr = s"orderedSer_$variableID"
     val variableName = newTermName(variableNameStr)
     val typeAlias = newTypeName(c.fresh("MACROASKEDORDEREDSER"))

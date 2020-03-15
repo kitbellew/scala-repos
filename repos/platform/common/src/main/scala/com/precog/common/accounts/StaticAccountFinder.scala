@@ -39,14 +39,13 @@ class StaticAccountFinder[M[+_]: Monad](
     email: String = "static@precog.com")
     extends AccountFinder[M]
     with Logging {
-  private[this] val details = Some(
-    AccountDetails(
-      accountId,
-      email,
-      new DateTime(0),
-      apiKey,
-      Path(rootPath.getOrElse("/" + accountId)),
-      AccountPlan.Root))
+  private[this] val details = Some(AccountDetails(
+    accountId,
+    email,
+    new DateTime(0),
+    apiKey,
+    Path(rootPath.getOrElse("/" + accountId)),
+    AccountPlan.Root))
 
   logger.debug(
     "Constructed new static account manager. All queries resolve to \"%s\""

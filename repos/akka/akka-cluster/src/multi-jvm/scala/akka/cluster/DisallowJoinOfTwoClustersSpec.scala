@@ -15,9 +15,8 @@ object DisallowJoinOfTwoClustersMultiJvmSpec extends MultiNodeConfig {
   val b2 = role("b2")
   val c1 = role("c1")
 
-  commonConfig(
-    debugConfig(on = false).withFallback(
-      MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+  commonConfig(debugConfig(on = false).withFallback(
+    MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class DisallowJoinOfTwoClustersMultiJvmNode1

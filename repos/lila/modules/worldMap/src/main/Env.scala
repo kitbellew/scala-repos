@@ -11,11 +11,9 @@ final class Env(system: akka.actor.ActorSystem, config: Config) {
   private val GeoIPFile = config getString "geoip.file"
   private val GeoIPCacheTtl = config duration "geoip.cache_ttl"
 
-  private val stream = system.actorOf(
-    Props(
-      new Stream(
-        geoIp = MaxMindIpGeo(GeoIPFile, 0),
-        geoIpCacheTtl = GeoIPCacheTtl)))
+  private val stream = system.actorOf(Props(new Stream(
+    geoIp = MaxMindIpGeo(GeoIPFile, 0),
+    geoIpCacheTtl = GeoIPCacheTtl)))
 
   def getStream = {
     import play.api.libs.iteratee._

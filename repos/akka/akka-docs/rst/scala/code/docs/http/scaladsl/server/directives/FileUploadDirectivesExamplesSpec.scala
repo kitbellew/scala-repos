@@ -24,11 +24,10 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    val multipartForm = Multipart.FormData(
-      Multipart.FormData.BodyPart.Strict(
-        "csv",
-        HttpEntity(ContentTypes.`text/plain(UTF-8)`, "1,5,7\n11,13,17"),
-        Map("filename" -> "data.csv")))
+    val multipartForm = Multipart.FormData(Multipart.FormData.BodyPart.Strict(
+      "csv",
+      HttpEntity(ContentTypes.`text/plain(UTF-8)`, "1,5,7\n11,13,17"),
+      Map("filename" -> "data.csv")))
 
     Post("/", multipartForm) ~> route ~> check {
       status shouldEqual StatusCodes.OK
@@ -59,13 +58,12 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
     }
 
     // tests:
-    val multipartForm = Multipart.FormData(
-      Multipart.FormData.BodyPart.Strict(
-        "csv",
-        HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          "2,3,5\n7,11,13,17,23\n29,31,37\n"),
-        Map("filename" -> "primes.csv")))
+    val multipartForm = Multipart.FormData(Multipart.FormData.BodyPart.Strict(
+      "csv",
+      HttpEntity(
+        ContentTypes.`text/plain(UTF-8)`,
+        "2,3,5\n7,11,13,17,23\n29,31,37\n"),
+      Map("filename" -> "primes.csv")))
 
     Post("/", multipartForm) ~> route ~> check {
       status shouldEqual StatusCodes.OK

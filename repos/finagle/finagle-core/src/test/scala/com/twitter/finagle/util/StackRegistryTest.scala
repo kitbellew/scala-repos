@@ -30,14 +30,13 @@ class StackRegistryTest extends FunSuite {
   val param1 = TestParam(999)
 
   def newStack() = {
-    val stack = new StackBuilder(
-      Stack.Leaf(
-        new Stack.Head {
-          def role: Stack.Role = headRole
-          def description: String = "the head!!"
-          def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
-        },
-        List(1, 2, 3, 4)))
+    val stack = new StackBuilder(Stack.Leaf(
+      new Stack.Head {
+        def role: Stack.Role = headRole
+        def description: String = "the head!!"
+        def parameters: Seq[Stack.Param[_]] = Seq(TestParam2.param)
+      },
+      List(1, 2, 3, 4)))
     val stackable: Stackable[List[Int]] =
       new Stack.Module1[TestParam, List[Int]] {
         def make(p: TestParam, l: List[Int]): List[Int] = p.p1 :: l
@@ -64,8 +63,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
     }
@@ -85,8 +83,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "qux", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "qux", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.toSet == expected)
 
@@ -110,8 +107,7 @@ class StackRegistryTest extends FunSuite {
       val expected = {
         Set(
           Entry(Seq("test", "foo", "bar", "name", "p1"), "999"),
-          Entry(Seq("test", "foo", "bar", "head", "p2"), "1")
-        )
+          Entry(Seq("test", "foo", "bar", "head", "p2"), "1"))
       }
       assert(GlobalRegistry.get.size == reg.size)
 

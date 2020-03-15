@@ -151,9 +151,8 @@ sealed abstract class IOInstances0 extends IOInstances1 {
   implicit def IOMonoid[A](implicit A: Monoid[A]): Monoid[IO[A]] =
     Monoid.liftMonoid[IO, A](ioMonad, A)
 
-  implicit val ioMonadIO: MonadIO[IO] = new MonadIO[IO]
-    with IOLiftIO
-    with IOMonad
+  implicit val ioMonadIO: MonadIO[IO] =
+    new MonadIO[IO] with IOLiftIO with IOMonad
 }
 
 sealed abstract class IOInstances extends IOInstances0 {

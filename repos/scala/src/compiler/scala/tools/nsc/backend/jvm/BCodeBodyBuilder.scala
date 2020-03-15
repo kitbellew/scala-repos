@@ -272,8 +272,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         coercionTo(code)
       } else
         abort(
-          s"Primitive operation not handled yet: ${sym.fullName}(${fun.symbol.simpleName}) at: ${tree.pos}"
-        )
+          s"Primitive operation not handled yet: ${sym.fullName}(${fun.symbol.simpleName}) at: ${tree.pos}")
     }
 
     def genLoad(tree: Tree) { genLoad(tree, tpeTK(tree)) }
@@ -528,8 +527,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             asm.Opcodes.GETSTATIC,
             ownerName,
             fieldName,
-            fieldDesc
-          )
+            fieldDesc)
 
         case _ => abort(s"Unknown constant value: $const")
       }
@@ -693,8 +691,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               argsSize match {
                 case 1 => bc newarray elemKind
                 case _ =>
-                  val descr =
-                    ('[' * argsSize) + elemKind.descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
+                  val descr = (
+                    '[' * argsSize
+                  ) + elemKind.descriptor // denotes the same as: arrayN(elemKind, argsSize).descriptor
                   mnode.visitMultiANewArrayInsn(descr, argsSize)
               }
 
@@ -793,7 +792,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
                 case _ =>
               }
-              if ((targetTypeKind != null) && (sym == definitions.Array_clone) && invokeStyle.isVirtual) {
+              if ((targetTypeKind != null) && (
+                    sym == definitions.Array_clone
+                  ) && invokeStyle.isVirtual) {
                 // An invokevirtual points to a CONSTANT_Methodref_info which in turn points to a
                 // CONSTANT_Class_info of the receiver type.
                 // The JVMS is not explicit about this, but that receiver type may be an array type
@@ -1072,17 +1073,15 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     def genLoadModule(tree: Tree): BType = {
       val module =
-        (
-          if (!tree.symbol.isPackageClass) tree.symbol
-          else
-            tree.symbol.info.packageObject match {
-              case NoSymbol =>
-                abort(s"SI-5604: Cannot use package as value: $tree")
-              case s =>
-                abort(
-                  s"SI-5604: found package class where package object expected: $tree")
-            }
-        )
+        (if (!tree.symbol.isPackageClass) tree.symbol
+         else
+           tree.symbol.info.packageObject match {
+             case NoSymbol =>
+               abort(s"SI-5604: Cannot use package as value: $tree")
+             case s =>
+               abort(
+                 s"SI-5604: found package class where package object expected: $tree")
+           })
       lineNumber(tree)
       genLoadModule(module)
       symInfoTK(module)
@@ -1175,11 +1174,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       hostSymbol.info; methodOwner.info
 
       def needsInterfaceCall(sym: Symbol) =
-        (
-          sym.isTraitOrInterface
-            || sym.isJavaDefined && sym.isNonBottomSubClass(
-              definitions.ClassfileAnnotationClass)
-        )
+        (sym.isTraitOrInterface
+          || sym.isJavaDefined && sym.isNonBottomSubClass(
+            definitions.ClassfileAnnotationClass))
 
       val isTraitCallToObjectMethod =
         hostSymbol != methodOwner && methodOwner.isTraitOrInterface && ObjectTpe
@@ -1187,16 +1184,17 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
       // whether to reference the type of the receiver or
       // the type of the method owner
-      val useMethodOwner = ((
-        !style.isVirtual
-          || hostSymbol.isBottomClass
-          || methodOwner == definitions.ObjectClass
-      ) && !(style.isSuper && hostSymbol != null)) || isTraitCallToObjectMethod
+      val useMethodOwner = ((!style.isVirtual
+        || hostSymbol.isBottomClass
+        || methodOwner == definitions.ObjectClass) && !(
+        style.isSuper && hostSymbol != null
+      )) || isTraitCallToObjectMethod
       val receiver = if (useMethodOwner) methodOwner else hostSymbol
       val jowner = internalName(receiver)
 
-      if (style.isSuper && (isTraitCallToObjectMethod || receiver.isTraitOrInterface) && !cnode.interfaces
-            .contains(jowner)) cnode.interfaces.add(jowner)
+      if (style.isSuper && (
+            isTraitCallToObjectMethod || receiver.isTraitOrInterface
+          ) && !cnode.interfaces.contains(jowner)) cnode.interfaces.add(jowner)
 
       val jname = method.javaSimpleName.toString
       val bmType = methodBTypeFromSymbol(method)
@@ -1214,8 +1212,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             asm.Opcodes.PUTSTATIC,
             thisName,
             strMODULE_INSTANCE_FIELD,
-            "L" + thisName + ";"
-          )
+            "L" + thisName + ";")
         }
       }
 

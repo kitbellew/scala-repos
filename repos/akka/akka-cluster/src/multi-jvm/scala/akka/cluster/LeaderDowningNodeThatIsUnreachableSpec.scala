@@ -56,8 +56,8 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
     with MultiNodeClusterSpec {
 
   def this(failureDetectorPuppet: Boolean) =
-    this(
-      LeaderDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet))
+    this(LeaderDowningNodeThatIsUnreachableMultiNodeConfig(
+      failureDetectorPuppet))
 
   import multiNodeConfig._
 

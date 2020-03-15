@@ -50,8 +50,8 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
   private val MAGIC_SLEEP_TIME_MILLIS = 150
 
   private class ProcessListener(consumer: MessageConsumer, p: Process) {
-    private val streamReader = new BufferedReader(
-      new InputStreamReader(p.getInputStream))
+    private val streamReader = new BufferedReader(new InputStreamReader(
+      p.getInputStream))
 
     @volatile private var stop = false
 
@@ -98,6 +98,5 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
       myExecutor.submit(new Runnable {
         override def run() { process.waitFor() }
       }),
-      new ProcessListener(consumer, process)
-    )
+      new ProcessListener(consumer, process))
 }

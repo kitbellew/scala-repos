@@ -251,12 +251,10 @@ case class Form[T](
 
     import play.api.libs.json._
 
-    Json.toJson(
-      errors.groupBy(_.key).mapValues { errors =>
-        errors.map(e =>
-          messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
-      }
-    )
+    Json.toJson(errors.groupBy(_.key).mapValues { errors =>
+      errors.map(e =>
+        messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
+    })
 
   }
 

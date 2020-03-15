@@ -94,8 +94,7 @@ private class DNSSD {
       regType: String,
       domain: String,
       host: String,
-      port: Int
-  ): Future[Announcement] = {
+      port: Int): Future[Announcement] = {
     val reply = new Promise[Announcement]
 
     val proxy = newProxy(RegisterListenerClass) {
@@ -132,14 +131,13 @@ private class DNSSD {
     val reply = new Promise[ResolvedRecord]
     val proxy = newProxy(ResolveListenerClass) {
       case ("serviceResolved", args) =>
-        reply.setValue(
-          ResolvedRecord(
-            flags = args(1).asInstanceOf[Int],
-            ifIndex = args(2).asInstanceOf[Int],
-            fullName = args(3).asInstanceOf[String],
-            hostName = args(4).asInstanceOf[String],
-            port = args(5).asInstanceOf[Int]
-          ))
+        reply.setValue(ResolvedRecord(
+          flags = args(1).asInstanceOf[Int],
+          ifIndex = args(2).asInstanceOf[Int],
+          fullName = args(3).asInstanceOf[String],
+          hostName = args(4).asInstanceOf[String],
+          port = args(5).asInstanceOf[Int]
+        ))
 
       case ("operationFailed", _) =>
         reply.setException(new Exception("Resolve failed"))

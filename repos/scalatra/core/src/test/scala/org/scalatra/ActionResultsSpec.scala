@@ -29,11 +29,7 @@ trait ActionResultTestBase {
       if (params.getOrElse("lcase", "false") == "true") "content-type"
       else "Content-Type"
 
-    Ok(
-      "Hello, world!",
-      headers = Map(
-        headerName -> "application/vnd.ms-excel"
-      ))
+    Ok("Hello, world!", headers = Map(headerName -> "application/vnd.ms-excel"))
   }
 
   get("/custom-reason") { BadRequest(body = "abc", reason = "Bad Bad Bad") }

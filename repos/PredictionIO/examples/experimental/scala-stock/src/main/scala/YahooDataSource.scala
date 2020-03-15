@@ -345,8 +345,8 @@ object YahooDataSource {
       val appId: Int, // Ignore appId in DataSourceParams
       val entityType: String,
       val startTime: Option[DateTime] = None,
-      val untilTime: Option[DateTime] = None
-  ) extends BaseParams
+      val untilTime: Option[DateTime] = None)
+      extends BaseParams
 
   case class Daily(
       val close: Double,
@@ -363,8 +363,8 @@ object YahooDataSource {
     */
   case class Intermediate(
       val ticker: String = "",
-      val dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]()
-  ) extends Serializable {
+      val dailyMap: Map[DateTime, Daily] = Map[DateTime, Daily]())
+      extends Serializable {
     override def toString(): String =
       s"YDS.Intermediate($ticker, size=${dailyMap.size})"
   }
@@ -454,21 +454,18 @@ object YahooDataSourceRun {
       dataSourceClassOpt = Some(classOf[YahooDataSource]),
       dataSourceParams = dsp,
       preparatorClassOpt = Some(IdentityPreparator(classOf[YahooDataSource])),
-      algorithmClassMapOpt = Some(
-        Map(
-          //"" -> classOf[MomentumStrategy]
-          "" -> classOf[RegressionStrategy]
-        )),
+      algorithmClassMapOpt = Some(Map(
+        //"" -> classOf[MomentumStrategy]
+        "" -> classOf[RegressionStrategy])),
       //algorithmParamsList = Seq(("", momentumParams)),
-      algorithmParamsList = Seq(
-        (
-          "",
-          RegressionStrategyParams(
-            Seq[(String, BaseIndicator)](
-              ("RSI1", new RSIIndicator(rsiPeriod = 1)),
-              ("RSI5", new RSIIndicator(rsiPeriod = 5)),
-              ("RSI22", new RSIIndicator(rsiPeriod = 22))),
-            200))),
+      algorithmParamsList = Seq((
+        "",
+        RegressionStrategyParams(
+          Seq[(String, BaseIndicator)](
+            ("RSI1", new RSIIndicator(rsiPeriod = 1)),
+            ("RSI5", new RSIIndicator(rsiPeriod = 5)),
+            ("RSI22", new RSIIndicator(rsiPeriod = 22))),
+          200))),
       servingClassOpt = Some(LFirstServing(classOf[EmptyStrategy])),
       evaluatorClassOpt = Some(classOf[BacktestingEvaluator]),
       evaluatorParams = metricsParams,

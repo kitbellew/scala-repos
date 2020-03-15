@@ -25,7 +25,5 @@ object Release {
     )
 
   def javaVersionCheckSettings =
-    Seq(
-      javaVersionPrefix in javaVersionCheck := Some("1.6")
-    )
+    Seq(javaVersionPrefix in javaVersionCheck := Some("1.6"))
 }

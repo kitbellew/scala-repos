@@ -64,12 +64,11 @@ private[netty] class NettyRpcEnv(
   private def createClientBootstraps()
       : java.util.List[TransportClientBootstrap] = {
     if (securityManager.isAuthenticationEnabled()) {
-      java.util.Arrays.asList(
-        new SaslClientBootstrap(
-          transportConf,
-          "",
-          securityManager,
-          securityManager.isSaslEncryptionEnabled()))
+      java.util.Arrays.asList(new SaslClientBootstrap(
+        transportConf,
+        "",
+        securityManager,
+        securityManager.isSaslEncryptionEnabled()))
     } else { java.util.Collections.emptyList[TransportClientBootstrap] }
   }
 
@@ -241,9 +240,8 @@ private[netty] class NettyRpcEnv(
       val timeoutCancelable = timeoutScheduler.schedule(
         new Runnable {
           override def run(): Unit = {
-            onFailure(
-              new TimeoutException(
-                s"Cannot receive any reply in ${timeout.duration}"))
+            onFailure(new TimeoutException(
+              s"Cannot receive any reply in ${timeout.duration}"))
           }
         },
         timeout.duration.toNanos,

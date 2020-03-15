@@ -237,8 +237,8 @@ object Docs {
         task in conf in ref get structure.data
 
       // Get all the Scala sources (not the Java ones)
-      val filteredSources = taskFromProject(sources).map(
-        _.map(_.filter(_.name.endsWith(extension))))
+      val filteredSources = taskFromProject(sources).map(_.map(
+        _.filter(_.name.endsWith(extension))))
 
       // Join them
       val tasks = filteredSources.toSeq

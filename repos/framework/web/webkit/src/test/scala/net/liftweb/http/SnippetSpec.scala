@@ -31,18 +31,17 @@ object SnippetSpec extends Specification with XmlMatchers {
   "SnippetSpec Specification".title
 
   def makeReq =
-    Full(
-      new Req(
-        Req.NilPath,
-        "",
-        GetRequest,
-        Empty,
-        null,
-        System.nanoTime,
-        System.nanoTime,
-        false,
-        () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
-        Map()))
+    Full(new Req(
+      Req.NilPath,
+      "",
+      GetRequest,
+      Empty,
+      null,
+      System.nanoTime,
+      System.nanoTime,
+      false,
+      () => ParamCalcInfo(Nil, Map.empty, Nil, Empty),
+      Map()))
 
   "Templates" should {
     "Correctly process lift:content_id" in {
@@ -341,11 +340,9 @@ object SnippetSpec extends Specification with XmlMatchers {
         val ret = SHtml.onSubmitBoolean(s => ())(<input type="checkbox"/>)
 
         ret.size must_== 2
-        (ret \\ "input")
-          .flatMap(_ \ "@name")
-          .map(_.text)
-          .mkString
-          .length must be > 0
+        (
+          ret \\ "input"
+        ).flatMap(_ \ "@name").map(_.text).mkString.length must be > 0
       }
     }
 
@@ -399,11 +396,10 @@ object SnippetSpec extends Specification with XmlMatchers {
     "properly reflect the full snippet stack with S.attrs" in {
       S.initIfUninitted(new LiftSession("", "", Empty)) {
         S.withAttrs(new UnprefixedAttribute("a", "a", Null)) {
-          S.withAttrs(
-            new UnprefixedAttribute(
-              "b",
-              "b",
-              new UnprefixedAttribute("c", "c", Null))) {
+          S.withAttrs(new UnprefixedAttribute(
+            "b",
+            "b",
+            new UnprefixedAttribute("c", "c", Null))) {
             S.withAttrs(new UnprefixedAttribute("d", "d", Null)) {
               S.attr("a") must_== Full("a")
               S.attr("b") must_== Full("b")
@@ -431,11 +427,10 @@ object SnippetSpec extends Specification with XmlMatchers {
     "reflect only the last pushed values with S.currentAttrs" in {
       S.initIfUninitted(new LiftSession("", "", Empty)) {
         S.withAttrs(new UnprefixedAttribute("a", "a", Null)) {
-          S.withAttrs(
-            new UnprefixedAttribute(
-              "b",
-              "b",
-              new UnprefixedAttribute("c", "c", Null))) {
+          S.withAttrs(new UnprefixedAttribute(
+            "b",
+            "b",
+            new UnprefixedAttribute("c", "c", Null))) {
             S.withAttrs(new UnprefixedAttribute("d", "d", Null)) {
               S.currentAttr("a") must_== Empty
               S.currentAttr("b") must_== Empty

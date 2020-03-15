@@ -226,9 +226,8 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         .collect()
     }
 
-    assert(
-      exception.getMessage.contains(
-        "Malformed line in FAILFAST mode: 2015,Chevy,Volt"))
+    assert(exception.getMessage.contains(
+      "Malformed line in FAILFAST mode: 2015,Chevy,Volt"))
   }
 
   test("test for tokens more than the fields in the schema") {
@@ -393,14 +392,13 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
   test("nullable fields with user defined null value of \"null\"") {
 
     // year,make,model,comment,blank
-    val dataSchema = StructType(
-      List(
-        StructField("year", IntegerType, nullable = true),
-        StructField("make", StringType, nullable = false),
-        StructField("model", StringType, nullable = false),
-        StructField("comment", StringType, nullable = true),
-        StructField("blank", StringType, nullable = true)
-      ))
+    val dataSchema = StructType(List(
+      StructField("year", IntegerType, nullable = true),
+      StructField("make", StringType, nullable = false),
+      StructField("model", StringType, nullable = false),
+      StructField("comment", StringType, nullable = true),
+      StructField("blank", StringType, nullable = true)
+    ))
     val cars = sqlContext.read
       .format("csv")
       .schema(dataSchema)

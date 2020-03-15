@@ -108,8 +108,7 @@ private[sql] case class LogicalRDD(
   @transient override lazy val statistics: Statistics = Statistics(
     // TODO: Instead of returning a default value here, find a way to return a meaningful size
     // estimate for RDDs. See PR 1238 for more discussions.
-    sizeInBytes = BigInt(sqlContext.conf.defaultSizeInBytes)
-  )
+    sizeInBytes = BigInt(sqlContext.conf.defaultSizeInBytes))
 }
 
 /** Physical plan node for scanning data from an RDD. */

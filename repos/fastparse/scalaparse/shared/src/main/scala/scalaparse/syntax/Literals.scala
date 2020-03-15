@@ -31,7 +31,9 @@ trait Literals { l =>
   val NotNewline: P0 = P(&(WS ~ !Basic.Newline))
   val OneNLMax: P0 = {
     val ConsumeComments = P(
-      (Basic.WSChars.? ~ Literals.Comment ~ Basic.WSChars.? ~ Basic.Newline).rep)
+      (
+        Basic.WSChars.? ~ Literals.Comment ~ Basic.WSChars.? ~ Basic.Newline
+      ).rep)
     P(NoCut(WS ~ Basic.Newline.? ~ ConsumeComments ~ NotNewline))
   }
   def Pattern: P0

@@ -60,9 +60,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       ExpressionEncoder[ComplexNonEncodable1]).getMessage
     assert(
       errorMsg1.contains(s"""root class: "${clsName[ComplexNonEncodable1]}""""))
-    assert(
-      errorMsg1.contains(
-        s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
+    assert(errorMsg1.contains(
+      s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
 
     val errorMsg2 = intercept[UnsupportedOperationException](
       ExpressionEncoder[ComplexNonEncodable2]).getMessage
@@ -70,9 +69,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       errorMsg2.contains(s"""root class: "${clsName[ComplexNonEncodable2]}""""))
     assert(errorMsg2.contains(
       s"""field (class: "${clsName[ComplexNonEncodable1]}", name: "name2")"""))
-    assert(
-      errorMsg1.contains(
-        s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
+    assert(errorMsg1.contains(
+      s"""field (class: "${clsName[NonEncodable]}", name: "name1")"""))
 
     val errorMsg3 = intercept[UnsupportedOperationException](
       ExpressionEncoder[ComplexNonEncodable3]).getMessage
@@ -89,9 +87,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
       errorMsg4.contains(s"""root class: "${clsName[ComplexNonEncodable4]}""""))
     assert(
       errorMsg4.contains(s"""field (class: "scala.Array", name: "name4")"""))
-    assert(
-      errorMsg4.contains(
-        s"""array element class: "${clsName[NonEncodable]}""""))
+    assert(errorMsg4.contains(
+      s"""array element class: "${clsName[NonEncodable]}""""))
 
     val errorMsg5 = intercept[UnsupportedOperationException](
       ExpressionEncoder[ComplexNonEncodable5]).getMessage
@@ -100,9 +97,8 @@ class EncoderErrorMessageSuite extends SparkFunSuite {
     assert(
       errorMsg5.contains(s"""field (class: "scala.Option", name: "name5")"""))
     assert(errorMsg5.contains(s"""option value class: "scala.Array""""))
-    assert(
-      errorMsg5.contains(
-        s"""array element class: "${clsName[NonEncodable]}""""))
+    assert(errorMsg5.contains(
+      s"""array element class: "${clsName[NonEncodable]}""""))
   }
 
   private def clsName[T: ClassTag]: String =

@@ -137,7 +137,9 @@ private[http] class HttpResponseRendererFactory(
           def render(h: HttpHeader) = r ~~ h ~~ CrLf
 
           def mustRenderTransferEncodingChunkedHeader =
-            entity.isChunked && (!entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD) && (ctx.requestProtocol == `HTTP/1.1`)
+            entity.isChunked && (
+              !entity.isKnownEmpty || ctx.requestMethod == HttpMethods.HEAD
+            ) && (ctx.requestProtocol == `HTTP/1.1`)
 
           @tailrec def renderHeaders(
               remaining: List[HttpHeader],
@@ -244,8 +246,12 @@ private[http] class HttpResponseRendererFactory(
                       dateSeen)
 
                   case x: RawHeader
-                      if (x is "content-type") || (x is "content-length") || (x is "transfer-encoding") ||
-                        (x is "date") || (x is "server") || (x is "connection") ⇒
+                      if (x is "content-type") || (x is "content-length") || (
+                        x is "transfer-encoding"
+                      ) ||
+                        (x is "date") || (x is "server") || (
+                        x is "connection"
+                      ) ⇒
                     suppressionWarning(log, x, "illegal RawHeader")
                     renderHeaders(
                       tail,
@@ -279,7 +285,9 @@ private[http] class HttpResponseRendererFactory(
                   // if we are prohibited to keep-alive by the spec
                   alwaysClose ||
                   // if the client wants to close and we don't override
-                  (ctx.closeRequested && ((connHeader eq null) || !connHeader.hasKeepAlive)) ||
+                  (ctx.closeRequested && (
+                    (connHeader eq null) || !connHeader.hasKeepAlive
+                  )) ||
                   // if the application wants to close explicitly
                   (protocol match {
                     case `HTTP/1.1` ⇒

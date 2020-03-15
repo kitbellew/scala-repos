@@ -73,8 +73,7 @@ object SourceBuilder {
     new SourceBuilder[T](
       Source[PlatformPair, T]((scaldingSource, stormSource)),
       CompletedBuilder.injectionRegistrar[T](eventCodec),
-      newID
-    )
+      newID)
   }
 }
 
@@ -118,28 +117,22 @@ case class SourceBuilder[T: Manifest] private (
           new StormSink[U] {
             lazy val toFn = supplier()
           }
-        }
-      )
-    copy(
-      node = node.either(newNode).flatMap[T] {
-        case Left(t)  => Some(t)
-        case Right(u) => None
-      }
-    )
+        })
+    copy(node = node.either(newNode).flatMap[T] {
+      case Left(t)  => Some(t)
+      case Right(u) => None
+    })
   }
 
   def write(sink: CompoundSink[T])(
       implicit batcher: Batcher): SourceBuilder[T] =
-    copy(
-      node = node.write(
-        sink.offline.map(new BatchedSinkFromOffline[T](batcher, _)),
-        sink.online.map { supplier =>
-          new StormSink[T] {
-            lazy val toFn = supplier()
-          }
+    copy(node = node.write(
+      sink.offline.map(new BatchedSinkFromOffline[T](batcher, _)),
+      sink.online.map { supplier =>
+        new StormSink[T] {
+          lazy val toFn = supplier()
         }
-      )
-    )
+      }))
 
   def leftJoin[K, V, JoinedValue](service: CompoundService[K, JoinedValue])(
       implicit
@@ -148,17 +141,13 @@ case class SourceBuilder[T: Manifest] private (
       valMf: Manifest[V],
       joinedMf: Manifest[JoinedValue])
       : SourceBuilder[(K, (V, Option[JoinedValue]))] =
-    copy(
-      node = node
-        .asInstanceOf[Node[(K, V)]]
-        .leftJoin(
-          (
-            service.offline,
-            service.online.map { fn: Function0[ReadableStore[K, JoinedValue]] =>
-              ReadableServiceFactory(fn)
-            }
-          ))
-    )
+    copy(node = node
+      .asInstanceOf[Node[(K, V)]]
+      .leftJoin((
+        service.offline,
+        service.online.map { fn: Function0[ReadableStore[K, JoinedValue]] =>
+          ReadableServiceFactory(fn)
+        })))
 
   /** Set's an Option on all nodes ABOVE this point */
   def set(opt: Any): SourceBuilder[T] =
@@ -210,8 +199,8 @@ case class SourceBuilder[T: Manifest] private (
 
     val cb = env match {
       case scalding: ScaldingEnv =>
-        val givenStore = store.offlineStore.getOrElse(
-          sys.error("No offline store given in Scalding mode"))
+        val givenStore = store.offlineStore.getOrElse(sys.error(
+          "No offline store given in Scalding mode"))
         // Set the store to reset if needed
         val batchSetStore = scalding
           .initialBatch(batcher)
@@ -236,8 +225,8 @@ case class SourceBuilder[T: Manifest] private (
           opts)
 
       case storm: StormEnv =>
-        val supplier = store.onlineSupplier.getOrElse(
-          sys.error("No online store given in Storm mode"))
+        val supplier = store.onlineSupplier.getOrElse(sys.error(
+          "No online store given in Storm mode"))
         val givenStore = MergeableStoreFactory.from(supplier())
 
         val newNode = OptionalUnzip2[Scalding, Storm]()(node)._2

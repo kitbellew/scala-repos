@@ -61,8 +61,7 @@ class EnsembleTab extends EnsembleExample {
             new Tab {
               text = "Tab3 - Closable"
               closable = true
-            }
-          )
+            })
         },
         new Text {
           text = "Ensemble Tabs - Non Closable"
@@ -79,8 +78,7 @@ class EnsembleTab extends EnsembleExample {
             },
             new Tab {
               text = "Tab 3"
-            }
-          )
+            })
           tabClosingPolicy = TabClosingPolicy.UNAVAILABLE
           side = Side.TOP
         }

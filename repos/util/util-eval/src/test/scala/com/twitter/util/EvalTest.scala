@@ -106,8 +106,8 @@ class EvalTest extends WordSpec {
     }
 
     "uses deprecated" in {
-      val deprecated = (new Eval)
-        .apply[() => String](TempFile.fromResourcePath("/Deprecated.scala"))
+      val deprecated = (new Eval).apply[() => String](TempFile.fromResourcePath(
+        "/Deprecated.scala"))
       assert(deprecated() == "hello")
     }
 
@@ -153,9 +153,7 @@ class EvalTest extends WordSpec {
 
     "throws a compilation error when Ruby is #included" in {
       intercept[Throwable] {
-        Eval[() => String](
-          TempFile.fromResourcePath("RubyInclude.scala")
-        )
+        Eval[() => String](TempFile.fromResourcePath("RubyInclude.scala"))
       }
     }
 

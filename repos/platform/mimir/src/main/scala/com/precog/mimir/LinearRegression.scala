@@ -465,10 +465,9 @@ trait LinearRegressionLibModule[M[+_]]
         val coeffsTable = thetaInSchema.transform(
           trans.WrapObject(Leaf(Source), "coefficients"))
 
-        val stdErrResult = RObject(
-          Map(
-            "estimate" -> CNum(math.sqrt(varianceEst)),
-            "degreesOfFreedom" -> CNum(degOfFreedom)))
+        val stdErrResult = RObject(Map(
+          "estimate" -> CNum(math.sqrt(varianceEst)),
+          "degreesOfFreedom" -> CNum(degOfFreedom)))
         val residualStdError = Table.fromRValues(Stream(stdErrResult))
         val stdErrorTable = residualStdError.transform(
           trans.WrapObject(Leaf(Source), "residualStandardError"))
@@ -556,8 +555,8 @@ trait LinearRegressionLibModule[M[+_]]
             _.zipWithIndex map {
               case (tbl, idx) =>
                 val modelId = "model" + (idx + 1)
-                tbl.transform(
-                  liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+                tbl.transform(liftToValues(
+                  trans.WrapObject(TransSpec1.Id, modelId)))
             }
           }
 

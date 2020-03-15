@@ -68,11 +68,10 @@ object Stress {
       for ((status, count) <- responses.asMap.asScala)
         println("%20s\t%d".format(status, count))
       println("================")
-      println(
-        "%d requests completed in %dms (%f requests per second)".format(
-          completedRequests.get,
-          duration.inMilliseconds,
-          totalRequests.toFloat / duration.inMillis.toFloat * 1000))
+      println("%d requests completed in %dms (%f requests per second)".format(
+        completedRequests.get,
+        duration.inMilliseconds,
+        totalRequests.toFloat / duration.inMillis.toFloat * 1000))
       println("%d errors".format(errors.get))
 
       println("stats")

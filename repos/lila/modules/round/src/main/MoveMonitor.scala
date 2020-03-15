@@ -22,11 +22,10 @@ private final class MoveMonitor(system: ActorSystem, channel: ActorRef) {
               snapshot
           } flatMap (_ histogram "histogram") foreach { h =>
             if (!h.isEmpty)
-              channel ! lila.socket.Channel.Publish(
-                lila.socket.Socket.makeMessage(
+              channel ! lila.socket.Channel
+                .Publish(lila.socket.Socket.makeMessage(
                   "mlat",
-                  (h.sum / h.numberOfMeasurements / 1000000).toInt)
-              )
+                  (h.sum / h.numberOfMeasurements / 1000000).toInt))
           }
       }
     }))

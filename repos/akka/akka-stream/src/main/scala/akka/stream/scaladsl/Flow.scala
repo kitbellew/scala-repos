@@ -1058,9 +1058,8 @@ trait FlowOps[+Out, +Mat] {
     * See also [[FlowOps.conflate]], [[FlowOps.limit]], [[FlowOps.limitWeighted]] [[FlowOps.batch]] [[FlowOps.batchWeighted]]
     */
   def conflateWithSeed[S](seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
-    via(
-      Batch(1L, ConstantFun.zeroLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.conflate))
+    via(Batch(1L, ConstantFun.zeroLong, seed, aggregate).withAttributes(
+      DefaultAttributes.conflate))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by conflating elements into a summary
@@ -1111,9 +1110,8 @@ trait FlowOps[+Out, +Mat] {
     * @param aggregate Takes the currently batched value and the current pending element to produce a new aggregate
     */
   def batch[S](max: Long, seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
-    via(
-      Batch(max, ConstantFun.oneLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.batch))
+    via(Batch(max, ConstantFun.oneLong, seed, aggregate).withAttributes(
+      DefaultAttributes.batch))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by aggregating elements into batches
@@ -1145,9 +1143,8 @@ trait FlowOps[+Out, +Mat] {
     */
   def batchWeighted[S](max: Long, costFn: Out ⇒ Long, seed: Out ⇒ S)(
       aggregate: (S, Out) ⇒ S): Repr[S] =
-    via(
-      Batch(max, costFn, seed, aggregate).withAttributes(
-        DefaultAttributes.batchWeighted))
+    via(Batch(max, costFn, seed, aggregate).withAttributes(
+      DefaultAttributes.batchWeighted))
 
   /**
     * Allows a faster downstream to progress independently of a slower publisher by extrapolating elements from an older
@@ -1358,9 +1355,8 @@ trait FlowOps[+Out, +Mat] {
 
     val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
       via(Split.when(p, substreamCancelStrategy))
-        .to(
-          Sink.foreach(
-            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+        .to(Sink.foreach(
+          _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
 
     new SubFlowImpl(Flow[Out], merge, finish)
   }
@@ -1432,9 +1428,8 @@ trait FlowOps[+Out, +Mat] {
     }
     val finish: (Sink[Out, NotUsed]) ⇒ Closed = s ⇒
       via(Split.after(p, substreamCancelStrategy))
-        .to(
-          Sink.foreach(
-            _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+        .to(Sink.foreach(
+          _.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
 
@@ -2130,9 +2125,8 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
     */
   private[akka] def transformMaterializing[T, M](
       mkStageAndMaterialized: () ⇒ (Stage[Out, T], M)): ReprMat[T, M] =
-    viaMat(
-      new PushPullGraphStageWithMaterializedValue[Out, T, NotUsed, M](
-        (attr) ⇒ mkStageAndMaterialized(),
-        Attributes.none))(Keep.right)
+    viaMat(new PushPullGraphStageWithMaterializedValue[Out, T, NotUsed, M](
+      (attr) ⇒ mkStageAndMaterialized(),
+      Attributes.none))(Keep.right)
 
 }

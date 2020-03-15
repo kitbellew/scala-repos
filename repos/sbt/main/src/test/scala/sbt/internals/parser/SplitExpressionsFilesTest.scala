@@ -161,10 +161,9 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
       //TODO: ...implementations return CharRanges instead of LineRanges)
       val settingsAndDefWithoutComments = settingsAndDefs.flatMap(t =>
         removeCommentFromStatement(t._1, t._2))
-      scala.util.Success(
-        (
-          imports.map(imp => (imp._1.trim, imp._2)),
-          settingsAndDefWithoutComments))
+      scala.util.Success((
+        imports.map(imp => (imp._1.trim, imp._2)),
+        settingsAndDefWithoutComments))
     } catch {
       case e: ToolBoxError =>
         scala.util.Failure(e)

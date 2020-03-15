@@ -1150,8 +1150,9 @@ object ScalaPsiElementFactory {
                 " : " + ScType.canonicalText(
                   ScTypeUtil.stripTypeArgs(substitutor.subst(tp)))
             }
-            val boundsText =
-              (lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++ contextBoundText).mkString
+            val boundsText = (
+              lowerBoundText.toSeq ++ upperBoundText.toSeq ++ viewBoundText ++ contextBoundText
+            ).mkString
             s"$variance${typeParam.name}$clauseText$boundsText"
           }
 
@@ -1171,10 +1172,9 @@ object ScalaPsiElementFactory {
                     substitutor.subst(x.getType(TypingContext.empty).getOrAny))
                   val arrow = ScalaPsiUtil.functionArrow(param.getProject)
                   name + colon + (if (param.isCallByNameParameter) arrow
-                                  else
-                                    "") + typeText + (if (param.isRepeatedParameter)
-                                                        "*"
-                                                      else "")
+                                  else "") + typeText + (
+                    if (param.isRepeatedParameter) "*" else ""
+                  )
                 case _ => name
               }
             }

@@ -63,8 +63,8 @@ object IPC {
 final class IPC private (s: Socket) extends NotNull {
   def port = s.getLocalPort
   private val in = new BufferedReader(new InputStreamReader(s.getInputStream))
-  private val out = new BufferedWriter(
-    new OutputStreamWriter(s.getOutputStream))
+  private val out = new BufferedWriter(new OutputStreamWriter(
+    s.getOutputStream))
 
   def send(s: String) = { out.write(s); out.newLine(); out.flush() }
   def receive: String = in.readLine()

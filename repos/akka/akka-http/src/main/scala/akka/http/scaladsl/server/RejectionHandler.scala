@@ -207,15 +207,14 @@ object RejectionHandler {
         case UnsatisfiableRangeRejection(
               unsatisfiableRanges,
               actualEntityLength) ⇒
-          complete(
-            (
-              RequestedRangeNotSatisfiable,
-              List(`Content-Range`(
-                ContentRange.Unsatisfiable(actualEntityLength))),
-              unsatisfiableRanges.mkString(
-                "None of the following requested Ranges were satisfiable:\n",
-                "\n",
-                "")))
+          complete((
+            RequestedRangeNotSatisfiable,
+            List(
+              `Content-Range`(ContentRange.Unsatisfiable(actualEntityLength))),
+            unsatisfiableRanges.mkString(
+              "None of the following requested Ranges were satisfiable:\n",
+              "\n",
+              "")))
       }
       .handleAll[AuthenticationFailedRejection] { rejections ⇒
         val rejectionMessage = rejections.head.cause match {
@@ -245,11 +244,10 @@ object RejectionHandler {
       }
       .handleAll[UnacceptedResponseEncodingRejection] { rejections ⇒
         val supported = rejections.flatMap(_.supported)
-        complete(
-          (
-            NotAcceptable,
-            "Resource representation is only available with these Content-Encodings:\n" +
-              supported.map(_.value).mkString("\n")))
+        complete((
+          NotAcceptable,
+          "Resource representation is only available with these Content-Encodings:\n" +
+            supported.map(_.value).mkString("\n")))
       }
       .handleAll[UnsupportedRequestContentTypeRejection] { rejections ⇒
         val supported = rejections.flatMap(_.supported).mkString(" or ")

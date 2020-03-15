@@ -57,15 +57,13 @@ class EnsembleMenu extends EnsembleExample {
           items = List(
             new Menu("Author Info") {
               graphic = new ImageView {
-                image = new Image(
-                  this.getClass.getResourceAsStream(
-                    "/scalafx/ensemble/images/crumb-selected-focused.png"))
+                image = new Image(this.getClass.getResourceAsStream(
+                  "/scalafx/ensemble/images/crumb-selected-focused.png"))
                 margin = Insets(0, 0, 0, 5)
               }
               items = List(
                 new MenuItem("Type Safe"),
-                new MenuItem("Martin Odersky")
-              )
+                new MenuItem("Martin Odersky"))
             },
             new Menu("Features") {
               items = List(
@@ -77,9 +75,9 @@ class EnsembleMenu extends EnsembleExample {
                   selected.onInvalidate {
                     fooMenuItem.setVisible(selected())
                     println(
-                      """Menu item "foo" is now """ + (if (fooMenuItem
-                                                             .visible()) ""
-                                                       else "not") + " visible")
+                      """Menu item "foo" is now """ + (
+                        if (fooMenuItem.visible()) "" else "not"
+                      ) + " visible")
                   }
                 }
               )

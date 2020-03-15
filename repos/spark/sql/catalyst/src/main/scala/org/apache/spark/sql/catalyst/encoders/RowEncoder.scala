@@ -190,8 +190,7 @@ object RowEncoder {
         If(
           IsNull(field),
           Literal.create(null, externalDataTypeFor(dt)),
-          constructorFor(field)
-        )
+          constructorFor(field))
     }
     CreateExternalRow(fields, schema)
   }

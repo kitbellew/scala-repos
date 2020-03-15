@@ -99,10 +99,8 @@ object EphemeralStreamTest extends SpecLite {
       .iterate(0)(_ + 1)
       .tails
       .map(t => Foldable[EphemeralStream].toStream(t.take(n)))
-      .take(n) must_=== (
-      EphemeralStream.fromStream(
-        Stream.iterate(0)(_ + 1).tails.map(_ take n).toStream.take(n))
-    )
+      .take(n) must_=== (EphemeralStream.fromStream(
+      Stream.iterate(0)(_ + 1).tails.map(_ take n).toStream.take(n)))
   }
 
   "foldMap evaluates lazily" in {
@@ -113,8 +111,8 @@ object EphemeralStreamTest extends SpecLite {
 
   "foldRight evaluates lazily" in {
     val infiniteStream = EphemeralStream.iterate(true)(identity)
-    Foldable[EphemeralStream].foldRight(infiniteStream, true)(
-      _ || _) must_=== (true)
+    Foldable[EphemeralStream]
+      .foldRight(infiniteStream, true)(_ || _) must_=== (true)
   }
 
   "zipL" in {
@@ -132,11 +130,9 @@ object EphemeralStreamTest extends SpecLite {
   }
 
   "zipWithIndex" ! forAll { (xs: Stream[Int], n: Int) =>
-    EphemeralStream
-      .fromStream(xs)
-      .take(n)
-      .zipWithIndex must_=== (EphemeralStream.fromStream(
-      xs.take(n).zipWithIndex))
+    EphemeralStream.fromStream(xs).take(n).zipWithIndex must_=== (
+      EphemeralStream.fromStream(xs.take(n).zipWithIndex)
+    )
   }
 
   "zipWithIndex from infinite stream" in {

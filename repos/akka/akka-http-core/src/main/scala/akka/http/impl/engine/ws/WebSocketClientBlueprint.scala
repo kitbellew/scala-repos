@@ -63,12 +63,9 @@ object WebSocketClientBlueprint {
   def handshake(
       request: WebSocketRequest,
       settings: ClientConnectionSettings,
-      log: LoggingAdapter): BidiFlow[
-    ByteString,
-    ByteString,
-    ByteString,
-    ByteString,
-    Future[WebSocketUpgradeResponse]] = {
+      log: LoggingAdapter)
+      : BidiFlow[ByteString, ByteString, ByteString, ByteString, Future[
+        WebSocketUpgradeResponse]] = {
     import request._
     val result = Promise[WebSocketUpgradeResponse]()
 
@@ -146,10 +143,9 @@ object WebSocketClientBlueprint {
                           s"unexpected element of type ${other.getClass}")
                     }
                   case Left(problem) ⇒
-                    result.success(
-                      InvalidUpgradeResponse(
-                        response,
-                        s"WebSocket server at $uri returned $problem"))
+                    result.success(InvalidUpgradeResponse(
+                      response,
+                      s"WebSocket server at $uri returned $problem"))
                     ctx.fail(new IllegalArgumentException(
                       s"WebSocket upgrade did not finish because of '$problem'"))
                 }

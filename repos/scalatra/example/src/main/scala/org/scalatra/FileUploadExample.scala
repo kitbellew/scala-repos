@@ -50,8 +50,9 @@ class FileUploadExample
           Map(
             "Content-Type" -> (file.contentType.getOrElse(
               "application/octet-stream")),
-            "Content-Disposition" -> ("attachment; filename=\"" + file.name + "\"")
-          )
+            "Content-Disposition" -> (
+              "attachment; filename=\"" + file.name + "\""
+            ))
         )
 
       case None =>

@@ -70,18 +70,17 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
   "A TypedWriteIncrementalJob" should {
     JobTest(new TypedWriteIncrementalJob(_))
       .source(TypedTsv[Int]("input"), input)
-      .sink[(Int, Int)](
-        VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
-        outputBuffer: Buffer[(Int, Int)] =>
-          "Outputs must be as expected" in {
-            assert(outputBuffer.size === input.size)
-            val singleInj = implicitly[Injection[Int, Array[Byte]]]
-            assert(
-              input
-                .map { k => (k, k) }
-                .sortBy(_._1)
-                .toString === outputBuffer.sortBy(_._1).toList.toString)
-          }
+      .sink[(Int, Int)](VersionedKeyValSource[Array[Byte], Array[Byte]](
+        "output")) { outputBuffer: Buffer[(Int, Int)] =>
+        "Outputs must be as expected" in {
+          assert(outputBuffer.size === input.size)
+          val singleInj = implicitly[Injection[Int, Array[Byte]]]
+          assert(
+            input
+              .map { k => (k, k) }
+              .sortBy(_._1)
+              .toString === outputBuffer.sortBy(_._1).toList.toString)
+        }
       }
       .run
       .finish
@@ -90,18 +89,17 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
   "A MoreComplexTypedWriteIncrementalJob" should {
     JobTest(new MoreComplexTypedWriteIncrementalJob(_))
       .source(TypedTsv[Int]("input"), input)
-      .sink[(Int, Int)](
-        VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
-        outputBuffer: Buffer[(Int, Int)] =>
-          "Outputs must be as expected" in {
-            assert(outputBuffer.size === input.size)
-            val singleInj = implicitly[Injection[Int, Array[Byte]]]
-            assert(
-              input
-                .map { k => (k, k) }
-                .sortBy(_._1)
-                .toString === outputBuffer.sortBy(_._1).toList.toString)
-          }
+      .sink[(Int, Int)](VersionedKeyValSource[Array[Byte], Array[Byte]](
+        "output")) { outputBuffer: Buffer[(Int, Int)] =>
+        "Outputs must be as expected" in {
+          assert(outputBuffer.size === input.size)
+          val singleInj = implicitly[Injection[Int, Array[Byte]]]
+          assert(
+            input
+              .map { k => (k, k) }
+              .sortBy(_._1)
+              .toString === outputBuffer.sortBy(_._1).toList.toString)
+        }
       }
       .run
       .finish

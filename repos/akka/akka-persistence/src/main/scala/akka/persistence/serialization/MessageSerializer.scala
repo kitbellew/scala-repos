@@ -98,8 +98,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
         mf.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder
           .setDeliveryId(unconfirmed.deliveryId)
           .setDestination(unconfirmed.destination.toString)
-          .setPayload(
-            persistentPayloadBuilder(unconfirmed.message.asInstanceOf[AnyRef]))
+          .setPayload(persistentPayloadBuilder(
+            unconfirmed.message.asInstanceOf[AnyRef]))
       builder.addUnconfirmedDeliveries(unconfirmedBuilder)
     }
     builder
@@ -163,8 +163,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
     if (persistent.manifest != PersistentRepr.Undefined)
       builder.setManifest(persistent.manifest)
 
-    builder.setPayload(
-      persistentPayloadBuilder(persistent.payload.asInstanceOf[AnyRef]))
+    builder.setPayload(persistentPayloadBuilder(
+      persistent.payload.asInstanceOf[AnyRef]))
     builder.setSequenceNr(persistent.sequenceNr)
     // deleted is not used in new records from 2.4
     if (persistent.writerUuid != Undefined)

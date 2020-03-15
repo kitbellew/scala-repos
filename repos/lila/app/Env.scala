@@ -49,12 +49,10 @@ final class Env(
   system.actorOf(Props(new actor.Renderer), name = RendererName)
 
   system.actorOf(
-    Props(
-      new actor.Router(
-        baseUrl = Env.api.Net.BaseUrl,
-        protocol = Env.api.Net.Protocol,
-        domain = Env.api.Net.Domain
-      )),
+    Props(new actor.Router(
+      baseUrl = Env.api.Net.BaseUrl,
+      protocol = Env.api.Net.Protocol,
+      domain = Env.api.Net.Domain)),
     name = RouterName)
 
   lila.log.boot.info("Preloading modules")

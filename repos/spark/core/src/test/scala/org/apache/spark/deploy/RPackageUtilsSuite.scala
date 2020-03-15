@@ -101,9 +101,8 @@ class RPackageUtilsSuite
       val output = lineBuffer.mkString("\n")
       assert(output.contains("Building R package"))
       assert(output.contains("Extracting"))
-      assert(
-        output.contains(
-          s"$firstJar contains R source code. Now installing package."))
+      assert(output.contains(
+        s"$firstJar contains R source code. Now installing package."))
       assert(output.contains("doesn't contain R source code, skipping..."))
     }
   }

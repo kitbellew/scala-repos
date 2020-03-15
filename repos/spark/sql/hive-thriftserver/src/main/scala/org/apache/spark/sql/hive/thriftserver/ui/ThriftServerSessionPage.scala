@@ -126,15 +126,14 @@ private[ui] class ThriftServerSessionPage(parent: ThriftServerTab)
         </tr>
         }
 
-        Some(
-          UIUtils.listingTable(
-            headerRow,
-            generateDataRow,
-            dataRows,
-            false,
-            None,
-            Seq(null),
-            false))
+        Some(UIUtils.listingTable(
+          headerRow,
+          generateDataRow,
+          dataRows,
+          false,
+          None,
+          Seq(null),
+          false))
       } else { None }
 
     val content =

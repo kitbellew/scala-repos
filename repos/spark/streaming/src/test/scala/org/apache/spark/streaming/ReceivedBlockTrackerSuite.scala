@@ -357,14 +357,13 @@ class ReceivedBlockTrackerSuite
 
   /** Generate blocks infos using random ids */
   def generateBlockInfos(): Seq[ReceivedBlockInfo] = {
-    List.fill(5)(
-      ReceivedBlockInfo(
-        streamId,
-        Some(0L),
-        None,
-        BlockManagerBasedStoreResult(
-          StreamBlockId(streamId, math.abs(Random.nextInt)),
-          Some(0L))))
+    List.fill(5)(ReceivedBlockInfo(
+      streamId,
+      Some(0L),
+      None,
+      BlockManagerBasedStoreResult(
+        StreamBlockId(streamId, math.abs(Random.nextInt)),
+        Some(0L))))
   }
 
   /**

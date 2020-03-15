@@ -30,31 +30,30 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     * The default implementation calls `chooseAny` with a
     * two-element list and uses the `Functor` for `F` to fix up types.
     */
-  def choose[A, B](a: F[A], b: F[B]): F[(A, F[B]) \/
-    (F[A], B)] =
+  def choose[A, B](a: F[A], b: F[B]): F[
+    (A, F[B]) \/
+      (F[A], B)] =
     map(chooseAny(List[F[A \/ B]](map(a)(\/.left), map(b)(\/.right))).get) {
       (x: (A \/ B, Seq[F[A \/ B]])) =>
         x match {
           case (-\/(a), Seq(br)) =>
-            -\/(
-              (
-                a,
-                map(br) {
-                  case \/-(b) => b
-                  case _ =>
-                    sys.error(
-                      "broken residual handling in a Nondeterminism instance")
-                }))
+            -\/((
+              a,
+              map(br) {
+                case \/-(b) => b
+                case _ =>
+                  sys.error(
+                    "broken residual handling in a Nondeterminism instance")
+              }))
           case (\/-(b), Seq(ar)) =>
-            \/-(
-              (
-                map(ar) {
-                  case -\/(a) => a
-                  case _ =>
-                    sys.error(
-                      "broken residual handling in a Nondeterminism instance")
-                },
-                b))
+            \/-((
+              map(ar) {
+                case -\/(a) => a
+                case _ =>
+                  sys.error(
+                    "broken residual handling in a Nondeterminism instance")
+              },
+              b))
           case _ =>
             sys.error("broken Nondeterminism instance tossed out a residual")
         }

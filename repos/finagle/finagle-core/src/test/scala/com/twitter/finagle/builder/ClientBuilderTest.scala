@@ -36,10 +36,9 @@ class ClientBuilderTest
       preparedFactory.asInstanceOf[ServiceFactory[Any, Nothing]]
 
     val m = new MockChannel
-    when(
-      m.codec.prepareConnFactory(
-        any[ServiceFactory[String, String]],
-        any[Stack.Params]))
+    when(m.codec.prepareConnFactory(
+      any[ServiceFactory[String, String]],
+      any[Stack.Params]))
       .thenReturn(preparedFactory)
   }
 
@@ -186,8 +185,7 @@ class ClientBuilderTest
       assert(inMemory.counters(Seq("test", "tries", "requests")) == 1)
       assert(
         // 1 request and 1 retry
-        inMemory.counters(Seq("test", "requests")) == 2
-      )
+        inMemory.counters(Seq("test", "requests")) == 2)
     }
   }
 
@@ -206,8 +204,8 @@ class ClientBuilderTest
       val numFailures = 5
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(
-        WriteException(new Exception()))
+      when(service("123")) thenReturn Future.exception(WriteException(
+        new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 
@@ -268,8 +266,8 @@ class ClientBuilderTest
       val client = builder.build()
 
       val service = mock[Service[String, String]]
-      when(service("123")) thenReturn Future.exception(
-        WriteException(new Exception()))
+      when(service("123")) thenReturn Future.exception(WriteException(
+        new Exception()))
       when(service.close(any[Time])) thenReturn Future.Done
       preparedServicePromise() = Return(service)
 

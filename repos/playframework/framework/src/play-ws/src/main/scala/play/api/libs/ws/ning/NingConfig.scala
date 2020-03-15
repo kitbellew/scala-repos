@@ -139,8 +139,8 @@ class NingAsyncHttpClientConfigBuilder(
     builder.setMaxConnectionsPerHost(ningConfig.maxConnectionsPerHost)
     builder.setMaxConnections(ningConfig.maxConnectionsTotal)
     builder.setConnectionTtl(toMillis(ningConfig.maxConnectionLifetime))
-    builder.setPooledConnectionIdleTimeout(
-      toMillis(ningConfig.idleConnectionInPoolTimeout))
+    builder.setPooledConnectionIdleTimeout(toMillis(
+      ningConfig.idleConnectionInPoolTimeout))
     builder.setMaxRedirects(ningConfig.maxNumberOfRedirects)
     builder.setMaxRequestRetry(ningConfig.maxRequestRetry)
     builder.setDisableUrlEncodingForBoundRequests(ningConfig.disableUrlEncoding)

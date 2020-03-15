@@ -94,9 +94,9 @@ object VFSPathUtils extends Logging {
     logger.debug(
       "Checking for children of path %s in dir %s".format(path, pathRoot))
     Option(pathRoot.listFiles(pathFileFilter)) map { files =>
-      logger.debug(
-        "Filtering children %s in path %s"
-          .format(files.mkString("[", ", ", "]"), path))
+      logger.debug("Filtering children %s in path %s".format(
+        files.mkString("[", ", ", "]"),
+        path))
       val childMetadata = files.toList traverse { f =>
         val childPath = unescapePath(path / Path(f.getName))
         currentPathMetadata(baseDir, childPath).fold[Option[PathMetadata]](
@@ -146,14 +146,16 @@ object VFSPathUtils extends Logging {
                 {
                   case NotFound(message) =>
                     // Recurse on children to find one that is nonempty
-                    containsNonemptyChild(Option(
-                      pathDir0.listFiles(pathFileFilter)).toList.flatten) map {
+                    containsNonemptyChild(
+                      Option(
+                        pathDir0.listFiles(
+                          pathFileFilter)).toList.flatten) map {
                       case true =>
                         \/.right(PathMetadata(path, PathMetadata.PathOnly))
                       case false =>
-                        \/.left(
-                          NotFound("All subpaths of %s appear to be empty."
-                            .format(path.path)))
+                        \/.left(NotFound(
+                          "All subpaths of %s appear to be empty.".format(
+                            path.path)))
                     }
 
                   case otherError =>
@@ -161,18 +163,18 @@ object VFSPathUtils extends Logging {
                 },
                 {
                   case VersionEntry(uuid, dataType, timestamp) =>
-                    containsNonemptyChild(Option(
-                      pathDir0.listFiles(pathFileFilter)).toList.flatten) map {
+                    containsNonemptyChild(
+                      Option(
+                        pathDir0.listFiles(
+                          pathFileFilter)).toList.flatten) map {
                       case true =>
-                        \/.right(
-                          PathMetadata(
-                            path,
-                            PathMetadata.DataDir(dataType.contentType)))
+                        \/.right(PathMetadata(
+                          path,
+                          PathMetadata.DataDir(dataType.contentType)))
                       case false =>
-                        \/.right(
-                          PathMetadata(
-                            path,
-                            PathMetadata.DataOnly(dataType.contentType)))
+                        \/.right(PathMetadata(
+                          path,
+                          PathMetadata.DataOnly(dataType.contentType)))
                     }
                 }
               )

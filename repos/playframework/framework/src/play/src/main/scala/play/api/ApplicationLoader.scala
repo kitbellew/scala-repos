@@ -61,8 +61,7 @@ object ApplicationLoader {
       context.environment,
       PlayConfig(context.initialConfiguration),
       "play.application.loader",
-      classOf[GuiceApplicationLoader].getName
-    ) match {
+      classOf[GuiceApplicationLoader].getName) match {
       case None =>
         new GuiceApplicationLoader
       case Some(Left(scalaClass)) =>

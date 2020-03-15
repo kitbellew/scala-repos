@@ -38,16 +38,11 @@ object BuildCommons {
     "catalyst",
     "sql",
     "hive",
-    "hive-thriftserver"
-  ).map(ProjectRef(buildLocation, _))
+    "hive-thriftserver").map(ProjectRef(buildLocation, _))
 
-  val streamingProjects @ Seq(
-    streaming,
-    streamingKafka
-  ) = Seq(
+  val streamingProjects @ Seq(streaming, streamingKafka) = Seq(
     "streaming",
-    "streaming-kafka"
-  ).map(ProjectRef(buildLocation, _))
+    "streaming-kafka").map(ProjectRef(buildLocation, _))
 
   val allProjects @ Seq(
     core,
@@ -60,8 +55,7 @@ object BuildCommons {
     unsafe,
     testTags,
     sketch,
-    _*
-  ) = Seq(
+    _*) = Seq(
     "core",
     "graphx",
     "mllib",
@@ -71,8 +65,8 @@ object BuildCommons {
     "launcher",
     "unsafe",
     "test-tags",
-    "sketch"
-  ).map(ProjectRef(buildLocation, _)) ++ sqlProjects ++ streamingProjects
+    "sketch").map(
+    ProjectRef(buildLocation, _)) ++ sqlProjects ++ streamingProjects
 
   val optionallyEnabledProjects @ Seq(
     yarn,
@@ -214,8 +208,7 @@ object SparkBuild extends PomBuild {
       DefaultMavenRepository,
       Resolver.mavenLocal,
       Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
-        Resolver.ivyStylePatterns)
-    ),
+        Resolver.ivyStylePatterns)),
     externalResolvers := resolvers.value,
     otherResolvers <<= SbtPomKeys.mvnLocalRepository(dotM2 =>
       Seq(Resolver.file("dotM2", dotM2))),
@@ -244,19 +237,19 @@ object SparkBuild extends PomBuild {
       "-encoding",
       "UTF-8",
       "-source",
-      javacJVMVersion.value
-    ),
+      javacJVMVersion.value),
     // This -target option cannot be set in the Compile configuration scope since `javadoc` doesn't
     // play nicely with it; see https://github.com/sbt/sbt/issues/355#issuecomment-3817629 for
     // additional discussion and explanation.
     javacOptions in (Compile, compile) ++= Seq(
       "-target",
-      javacJVMVersion.value
-    ),
+      javacJVMVersion.value),
     scalacOptions in Compile ++= Seq(
       s"-target:jvm-${scalacJVMVersion.value}",
       "-sourcepath",
-      (baseDirectory in ThisBuild).value.getAbsolutePath // Required for relative source links in scaladoc
+      (
+        baseDirectory in ThisBuild
+      ).value.getAbsolutePath // Required for relative source links in scaladoc
     ),
     // Implements -Xfatal-warnings, ignoring deprecation warnings.
     // Code snippet taken from https://issues.scala-lang.org/browse/SI-8410.
@@ -306,14 +299,13 @@ object SparkBuild extends PomBuild {
   (allProjects ++ optionallyEnabledProjects ++ assemblyProjects ++ copyJarsProjects ++ Seq(
     spark,
     tools))
-    .foreach(
-      enable(
-        sharedSettings ++ DependencyOverrides.settings ++
-          ExcludedDependencies.settings))
+    .foreach(enable(
+      sharedSettings ++ DependencyOverrides.settings ++
+        ExcludedDependencies.settings))
 
   /* Enable tests settings for all projects except examples, assembly and tools */
-  (allProjects ++ optionallyEnabledProjects).foreach(
-    enable(TestSettings.settings))
+  (allProjects ++ optionallyEnabledProjects).foreach(enable(
+    TestSettings.settings))
 
   val mimaProjects = allProjects.filterNot { x =>
     Seq(
@@ -327,8 +319,7 @@ object SparkBuild extends PomBuild {
       networkYarn,
       unsafe,
       testTags,
-      sketch
-    ).contains(x)
+      sketch).contains(x)
   }
 
   mimaProjects.foreach { x => enable(MimaBuild.mimaSettings(sparkHome, x))(x) }
@@ -374,43 +365,44 @@ object SparkBuild extends PomBuild {
      """.stripMargin)
   val sparkSql = taskKey[Unit]("starts the spark sql CLI.")
 
-  enable(
-    Seq(
-      connectInput in run := true,
-      fork := true,
-      outputStrategy in run := Some(StdoutOutput),
-      javaOptions ++= Seq("-Xmx2G", "-XX:MaxPermSize=256m"),
-      sparkShell := {
-        (runMain in Compile)
-          .toTask(" org.apache.spark.repl.Main -usejavacp")
-          .value
-      },
-      sparkPackage := {
-        import complete.DefaultParsers._
-        val packages :: className :: otherArgs = spaceDelimited(
-          "<group:artifact:version> <MainClass> [args]").parsed.toList
-        val scalaRun = (runner in run).value
-        val classpath = (fullClasspath in Runtime).value
-        val args = Seq(
-          "--packages",
-          packages,
-          "--class",
-          className,
-          (Keys.`package` in Compile in "core").value.getCanonicalPath) ++ otherArgs
-        println(args)
-        scalaRun.run(
-          "org.apache.spark.deploy.SparkSubmit",
-          classpath.map(_.data),
-          args,
-          streams.value.log)
-      },
-      javaOptions in Compile += "-Dspark.master=local",
-      sparkSql := {
-        (runMain in Compile)
-          .toTask(" org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver")
-          .value
-      }
-    ))(assembly)
+  enable(Seq(
+    connectInput in run := true,
+    fork := true,
+    outputStrategy in run := Some(StdoutOutput),
+    javaOptions ++= Seq("-Xmx2G", "-XX:MaxPermSize=256m"),
+    sparkShell := {
+      (
+        runMain in Compile
+      ).toTask(" org.apache.spark.repl.Main -usejavacp").value
+    },
+    sparkPackage := {
+      import complete.DefaultParsers._
+      val packages :: className :: otherArgs = spaceDelimited(
+        "<group:artifact:version> <MainClass> [args]").parsed.toList
+      val scalaRun = (runner in run).value
+      val classpath = (fullClasspath in Runtime).value
+      val args = Seq(
+        "--packages",
+        packages,
+        "--class",
+        className,
+        (
+          Keys.`package` in Compile in "core"
+        ).value.getCanonicalPath) ++ otherArgs
+      println(args)
+      scalaRun.run(
+        "org.apache.spark.deploy.SparkSubmit",
+        classpath.map(_.data),
+        args,
+        streams.value.log)
+    },
+    javaOptions in Compile += "-Dspark.master=local",
+    sparkSql := {
+      (runMain in Compile)
+        .toTask(" org.apache.spark.sql.hive.thriftserver.SparkSQLCLIDriver")
+        .value
+    }
+  ))(assembly)
 
   enable(Seq(sparkShell := sparkShell in "assembly"))(spark)
 
@@ -427,15 +419,13 @@ object SparkBuild extends PomBuild {
 object Unsafe {
   lazy val settings = Seq(
     // This option is needed to suppress warnings from sun.misc.Unsafe usage
-    javacOptions in Compile += "-XDignore.symbol.file"
-  )
+    javacOptions in Compile += "-XDignore.symbol.file")
 }
 
 object DockerIntegrationTests {
   // This serves to override the override specified in DependencyOverrides:
   lazy val settings = Seq(
-    dependencyOverrides += "com.google.guava" % "guava" % "18.0"
-  )
+    dependencyOverrides += "com.google.guava" % "guava" % "18.0")
 }
 
 /**
@@ -451,9 +441,9 @@ object DependencyOverrides {
   not needed by sbt build.
   */
 object ExcludedDependencies {
-  lazy val settings = Seq(
-    libraryDependencies ~= { libs => libs.filterNot(_.name == "groovy-all") }
-  )
+  lazy val settings = Seq(libraryDependencies ~= { libs =>
+    libs.filterNot(_.name == "groovy-all")
+  })
 }
 
 /**
@@ -474,8 +464,7 @@ object OldDeps {
     Defaults.coreDefaultSettings ++ Seq(
       name := "old-deps",
       scalaVersion := "2.10.5",
-      libraryDependencies := allPreviousArtifactKeys.value.flatten
-    )
+      libraryDependencies := allPreviousArtifactKeys.value.flatten)
 }
 
 object Catalyst {
@@ -672,8 +661,7 @@ object PySparkAssembly {
         zipFile.delete()
         zipRecursive(src, zipFile)
         Seq[File]()
-    }
-  )
+    })
 
   private def zipRecursive(source: File, destZipFile: File) = {
     val destOutput = new ZipOutputStream(new FileOutputStream(destZipFile))
@@ -726,8 +714,8 @@ object Unidoc {
     packages
       .map(_.filterNot(_.getName.contains("$")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/deploy")))
-      .map(
-        _.filterNot(_.getCanonicalPath.contains("org/apache/spark/examples")))
+      .map(_.filterNot(
+        _.getCanonicalPath.contains("org/apache/spark/examples")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/memory")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/network")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/shuffle")))
@@ -787,11 +775,7 @@ object Unidoc {
       packageList("api.java", "api.java.function"),
       "-group",
       "Spark Streaming",
-      packageList(
-        "streaming.api.java",
-        "streaming.kafka",
-        "streaming.kinesis"
-      ),
+      packageList("streaming.api.java", "streaming.kafka", "streaming.kinesis"),
       "-group",
       "MLlib",
       packageList(
@@ -842,8 +826,7 @@ object Unidoc {
       // Add links to sources when generating Scaladoc for a non-snapshot release
       if (!isSnapshot.value) {
         Opts.doc.sourceUrl(unidocSourceBase.value + "€{FILE_PATH}.scala")
-      } else { Seq() }
-    )
+      } else { Seq() })
   )
 }
 
@@ -897,10 +880,9 @@ object TestSettings {
     // launched by the tests have access to the correct test-time classpath.
     envVars in Test ++= Map(
       "SPARK_DIST_CLASSPATH" ->
-        (fullClasspath in Test).value.files
-          .map(_.getAbsolutePath)
-          .mkString(":")
-          .stripSuffix(":"),
+        (
+          fullClasspath in Test
+        ).value.files.map(_.getAbsolutePath).mkString(":").stripSuffix(":"),
       "SPARK_PREPEND_CLASSES" -> "1",
       "SPARK_TESTING" -> "1",
       "JAVA_HOME" -> sys.env.get("JAVA_HOME").getOrElse(sys.props("java.home"))
@@ -960,8 +942,7 @@ object TestSettings {
         "org.apache.spark.api.python",
         "org.apache.spark.network",
         "org.apache.spark.deploy",
-        "org.apache.spark.util.collection"
-      ).mkString(":"),
+        "org.apache.spark.util.collection").mkString(":"),
       "-doc-title",
       "Spark " + version.value.replaceAll("-SNAPSHOT", "") + " ScalaDoc"
     )

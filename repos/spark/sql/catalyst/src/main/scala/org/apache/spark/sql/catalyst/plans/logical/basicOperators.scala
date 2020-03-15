@@ -408,9 +408,10 @@ case class Range(
   val numElements: BigInt = {
     val safeStart = BigInt(start)
     val safeEnd = BigInt(end)
-    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (step > 0)) {
-      (safeEnd - safeStart) / step
-    } else {
+    if ((safeEnd - safeStart) % step == 0 || (safeEnd > safeStart) != (
+          step > 0
+        )) { (safeEnd - safeStart) / step }
+    else {
       // the remainder has the same sign with range, could add 1 more
       (safeEnd - safeStart) / step + 1
     }

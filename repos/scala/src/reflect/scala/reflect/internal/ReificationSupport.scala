@@ -22,11 +22,10 @@ trait ReificationSupport { self: SymbolTable =>
       if (result ne NoSymbol) result
       else
         mirrorThatLoaded(owner).missingHook(owner, name) orElse {
-          throw new ScalaReflectionException(
-            "%s %s in %s not found".format(
-              if (name.isTermName) "term" else "type",
-              name,
-              owner.fullName))
+          throw new ScalaReflectionException("%s %s in %s not found".format(
+            if (name.isTermName) "term" else "type",
+            name,
+            owner.fullName))
         }
     }
 
@@ -38,8 +37,10 @@ trait ReificationSupport { self: SymbolTable =>
       if (result ne NoSymbol) result.asMethod
       else
         throw new ScalaReflectionException(
-          "overloaded method %s #%d in %s not found"
-            .format(name, index, owner.fullName))
+          "overloaded method %s #%d in %s not found".format(
+            name,
+            index,
+            owner.fullName))
     }
 
     def newFreeTerm(
@@ -493,17 +494,16 @@ trait ReificationSupport { self: SymbolTable =>
         gen.mkClassDef(mods, name, tparams0, templ)
       }
 
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            Modifiers,
-            List[List[ValDef]],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])] =
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          Modifiers,
+          List[List[ValDef]],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])] =
         tree match {
           case ClassDef(
                 mods,
@@ -516,17 +516,16 @@ trait ReificationSupport { self: SymbolTable =>
                   vparamss,
                   earlyDefs,
                   body)) if !ctorMods.isTrait && !ctorMods.hasFlag(JAVA) =>
-            Some(
-              (
-                mods,
-                name,
-                tparams,
-                ctorMods,
-                vparamss,
-                earlyDefs,
-                parents,
-                selfType,
-                body))
+            Some((
+              mods,
+              name,
+              tparams,
+              ctorMods,
+              vparamss,
+              earlyDefs,
+              parents,
+              selfType,
+              body))
           case _ =>
             None
         }
@@ -551,15 +550,14 @@ trait ReificationSupport { self: SymbolTable =>
         gen.mkClassDef(mods0, name, mkTparams(tparams), templ)
       }
 
-      def unapply(tree: Tree): Option[
-        (
-            Modifiers,
-            TypeName,
-            List[TypeDef],
-            List[Tree],
-            List[Tree],
-            ValDef,
-            List[Tree])] =
+      def unapply(tree: Tree): Option[(
+          Modifiers,
+          TypeName,
+          List[TypeDef],
+          List[Tree],
+          List[Tree],
+          ValDef,
+          List[Tree])] =
         tree match {
           case ClassDef(
                 mods,
@@ -815,14 +813,13 @@ trait ReificationSupport { self: SymbolTable =>
                   nme.CONSTRUCTOR),
                 Nil,
                 argss) =>
-            Some(
-              (
-                Nil,
-                SyntacticApplied(
-                  SyntacticAppliedType(ident, targs),
-                  argss) :: Nil,
-                noSelfType,
-                Nil))
+            Some((
+              Nil,
+              SyntacticApplied(
+                SyntacticAppliedType(ident, targs),
+                argss) :: Nil,
+              noSelfType,
+              Nil))
           case SyntacticBlock(
                 SyntacticClassDef(
                   _,

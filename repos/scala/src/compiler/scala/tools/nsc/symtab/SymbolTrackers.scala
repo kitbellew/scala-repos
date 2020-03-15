@@ -50,7 +50,9 @@ trait SymbolTrackers {
     def symbolSnapshot(unit: CompilationUnit): Map[Symbol, Set[Tree]] = {
       if (unit.body == null) Map()
       else
-        unit.body filter containsSymbol groupBy (_.symbol) mapValues (_.toSet) toMap
+        unit.body filter containsSymbol groupBy (_.symbol) mapValues (
+          _.toSet
+        ) toMap
     }
     def apply(unit: CompilationUnit) =
       new SymbolTracker(() =>
@@ -105,8 +107,7 @@ trait SymbolTrackers {
           List(
             if (isFlagsChange(root)) "F" else "",
             if (isOwnerChange(root)) "O" else "",
-            "  "
-          ).mkString take 2
+            "  ").mkString take 2
 
       def changedOwnerString =
         changed.owners get root match {
@@ -122,11 +123,9 @@ trait SymbolTrackers {
             val strs = 0 to 63 map { bit =>
               val flag = 1L << bit
               val prefix =
-                (
-                  if ((added & flag) != 0L) "+"
-                  else if ((removed & flag) != 0L) "-"
-                  else ""
-                )
+                (if ((added & flag) != 0L) "+"
+                 else if ((removed & flag) != 0L) "-"
+                 else "")
               if ((all & flag) == 0L) "" else prefix + Flags.flagToString(flag)
             }
 
@@ -135,24 +134,23 @@ trait SymbolTrackers {
             if (masked == 0L) "" else " (" + Flags.flagsToString(masked) + ")"
         }
       def symString(sym: Symbol) =
-        (
-          if (settings.debug && sym.hasCompleteInfo) {
-            val s = sym.defString take 240
-            if (s.length == 240) s + "..." else s
-          } else sym + changedOwnerString + flagSummaryString
-        )
+        (if (settings.debug && sym.hasCompleteInfo) {
+           val s = sym.defString take 240
+           if (s.length == 240) s + "..." else s
+         } else sym + changedOwnerString + flagSummaryString)
 
       def flatten = children.foldLeft(Set(root))(_ ++ _.flatten)
       def indentString(indent: String): String = {
         if (root == NoSymbol)
           children map (c => c.indentString(indent)) mkString "\n"
         else {
-          indicatorString + indent + symString(root) + (
-            if (children.isEmpty) ""
-            else
-              children map (c =>
-                c.indentString(indent + "    ")) mkString ("\n", "\n", "")
-          )
+          indicatorString + indent + symString(root) + (if (children.isEmpty) ""
+                                                        else
+                                                          children map (c =>
+                                                            c.indentString(
+                                                              indent + "    ")) mkString (
+                                                            "\n", "\n", ""
+                                                          ))
         }
       }
     }
@@ -202,11 +200,9 @@ trait SymbolTrackers {
           case (t, i) => "(%2s) ".format(i + 1) + detailString(t)
         } mkString "\n"
 
-      "" + hierarchy + (
-        if (removed.isEmpty) ""
-        else
-          "\n\n!!! " + label + ", " + removed.size + " symbols vanished:\n" + removedString
-      )
+      "" + hierarchy + (if (removed.isEmpty) ""
+                        else
+                          "\n\n!!! " + label + ", " + removed.size + " symbols vanished:\n" + removedString)
     }
   }
 }

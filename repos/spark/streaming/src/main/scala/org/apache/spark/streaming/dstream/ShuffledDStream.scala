@@ -29,8 +29,8 @@ private[streaming] class ShuffledDStream[K: ClassTag, V: ClassTag, C: ClassTag](
     mergeValue: (C, V) => C,
     mergeCombiner: (C, C) => C,
     partitioner: Partitioner,
-    mapSideCombine: Boolean = true
-) extends DStream[(K, C)](parent.ssc) {
+    mapSideCombine: Boolean = true)
+    extends DStream[(K, C)](parent.ssc) {
 
   override def dependencies: List[DStream[_]] = List(parent)
 
@@ -39,13 +39,12 @@ private[streaming] class ShuffledDStream[K: ClassTag, V: ClassTag, C: ClassTag](
   override def compute(validTime: Time): Option[RDD[(K, C)]] = {
     parent.getOrCompute(validTime) match {
       case Some(rdd) =>
-        Some(
-          rdd.combineByKey[C](
-            createCombiner,
-            mergeValue,
-            mergeCombiner,
-            partitioner,
-            mapSideCombine))
+        Some(rdd.combineByKey[C](
+          createCombiner,
+          mergeValue,
+          mergeCombiner,
+          partitioner,
+          mapSideCombine))
       case None => None
     }
   }

@@ -32,8 +32,7 @@ trait IntegrationTest {
       runConfig: RunnerAndConfigurationSettings,
       checkOutputs: Boolean = false,
       duration: Int = 3000,
-      debug: Boolean = false
-  ): (String, Option[AbstractTestProxy])
+      debug: Boolean = false): (String, Option[AbstractTestProxy])
 
   protected def createTestFromLocation(
       lineNumber: Int,
@@ -82,13 +81,12 @@ trait IntegrationTest {
           .testStatus == status &&
         parentName.map(currentParentName == _).getOrElse(true)
       } ||
-      root.getChildren.toList.exists(
-        helper(
-          _,
-          root.getValue
-            .asInstanceOf[TreeElement]
-            .getPresentation
-            .getPresentableText))
+      root.getChildren.toList.exists(helper(
+        _,
+        root.getValue
+          .asInstanceOf[TreeElement]
+          .getPresentation
+          .getPresentableText))
     }
 
     var res = false
@@ -133,9 +131,11 @@ trait IntegrationTest {
       case "" => testNames.isEmpty
       case configTestName =>
         val configTests = parseTestName(configTestName)
-        configTests.size == testNames.size && ((configTests zip testNames) forall {
-          case (actual, required) => actual == required
-        })
+        configTests.size == testNames.size && (
+          (configTests zip testNames) forall {
+            case (actual, required) => actual == required
+          }
+        )
     })
   }
 
@@ -170,7 +170,9 @@ trait IntegrationTest {
         case 0 => List(_ => true) //got an empty list of names as initial input
         case 1 =>
           ((node: AbstractTestProxy) =>
-            node.getName == names.head && (node.isLeaf || allowTail)) :: acc //last element must be leaf
+            node.getName == names.head && (
+              node.isLeaf || allowTail
+            )) :: acc //last element must be leaf
         case _ =>
           buildConditions(
             names.tail,

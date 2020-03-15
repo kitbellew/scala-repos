@@ -229,8 +229,8 @@ class ZkAsyncSemaphore(
     while (waitqIterator.hasNext) {
       val (promise, _) = waitqIterator.next()
       waitqIterator.remove()
-      promise.setException(
-        PermitNodeException("ZooKeeper client session expired."))
+      promise.setException(PermitNodeException(
+        "ZooKeeper client session expired."))
     }
   }
 

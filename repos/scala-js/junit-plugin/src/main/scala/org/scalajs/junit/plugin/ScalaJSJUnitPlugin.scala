@@ -239,8 +239,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         }
         val bootParents = List(
           TypeTree(definitions.ObjectTpe),
-          TypeTree(jUnitTestMetadataType)
-        )
+          TypeTree(jUnitTestMetadataType))
         val bootImpl = treeCopy.Template(
           clazz.impl,
           bootParents,
@@ -260,8 +259,7 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val newClazzInfo = {
           val newParentsInfo = List(
             definitions.ObjectTpe,
-            jUnitTestMetadataType
-          )
+            jUnitTestMetadataType)
           val decls = bootSym.info.decls
           decls.enter(getJUnitMetadataDef.symbol)
           decls.enter(newInstanceDef.symbol)
@@ -448,8 +446,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
               mkList(liftAnnotations(clSym)),
               gen.mkNil,
               mkMethodList(jUnitMethodMetadataTypeTree)(methods),
-              modMethods.fold(gen.mkNil)(
-                mkMethodList(jUnitMethodMetadataTypeTree))
+              modMethods.fold(gen.mkNil)(mkMethodList(
+                jUnitMethodMetadataTypeTree))
             )
           )
         }
@@ -481,8 +479,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
         val mkNewInstanceDefRhs = mkNewInstance(
           TypeTree(classSym.typeConstructor),
           Nil)
-        val mkNewInstanceDefSym = bootSymbol.newMethodSymbol(
-          newTermName("newInstance"))
+        val mkNewInstanceDefSym = bootSymbol.newMethodSymbol(newTermName(
+          "newInstance"))
         mkNewInstanceDefSym.setInfo(MethodType(Nil, definitions.ObjectTpe))
 
         typer.typedDefDef(newDefDef(mkNewInstanceDefSym, mkNewInstanceDefRhs)())

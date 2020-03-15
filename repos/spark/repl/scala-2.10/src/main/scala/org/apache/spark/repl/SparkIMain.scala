@@ -158,10 +158,9 @@ class SparkIMain(
   }
 
   private def compilerClasspath: Seq[URL] =
-    (
-      if (isInitializeComplete) global.classPath.asURLs
-      else new PathResolver(settings).result.asURLs // the compiler's classpath
-    )
+    (if (isInitializeComplete) global.classPath.asURLs
+     else new PathResolver(settings).result.asURLs // the compiler's classpath
+     )
   // NOTE: Exposed to repl package since accessed indirectly from SparkIMain
   private[repl] def settings = currentSettings
   private def mostRecentLine =
@@ -458,18 +457,16 @@ class SparkIMain(
       platform: JavaPlatform,
       urls: URL*): MergedClassPath[AbstractFile] = {
     // Collect our new jars/directories and add them to the existing set of classpaths
-    val allClassPaths = (
-      platform.classPath.asInstanceOf[MergedClassPath[AbstractFile]].entries ++
+    val allClassPaths =
+      (platform.classPath.asInstanceOf[MergedClassPath[AbstractFile]].entries ++
         urls.map(url => {
           platform.classPath.context.newClassPath(
             if (url.getProtocol == "file") {
               val f = new File(url.getPath)
               if (f.isDirectory) io.AbstractFile.getDirectory(f)
               else io.AbstractFile.getFile(f)
-            } else { io.AbstractFile.getURL(url) }
-          )
-        })
-    ).distinct
+            } else { io.AbstractFile.getURL(url) })
+        })).distinct
 
     // Combine all of our classpaths (old and new) into one merged classpath
     new MergedClassPath(allClassPaths, platform.classPath.context)
@@ -758,18 +755,16 @@ class SparkIMain(
       case Some(Nil)   => return Left(IR.Error) // parse error or empty input
       case Some(trees) => trees
     }
-    logDebug(
-      trees map (t => {
-        // [Eugene to Paul] previously it just said `t map ...`
-        // because there was an implicit conversion from Tree to a list of Trees
-        // however Martin and I have removed the conversion
-        // (it was conflicting with the new reflection API),
-        // so I had to rewrite this a bit
-        val subs = t collect { case sub => sub }
-        subs map (t0 =>
-          "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
-      }) mkString "\n"
-    )
+    logDebug(trees map (t => {
+      // [Eugene to Paul] previously it just said `t map ...`
+      // because there was an implicit conversion from Tree to a list of Trees
+      // however Martin and I have removed the conversion
+      // (it was conflicting with the new reflection API),
+      // so I had to rewrite this a bit
+      val subs = t collect { case sub => sub }
+      subs map (t0 =>
+        "  " + safePos(t0, -1) + ": " + t0.shortClass + "\n") mkString ""
+    }) mkString "\n")
     // If the last tree is a bare expression, pinpoint where it begins using the
     // AST node position and snap the line off there.  Rewrite the code embodied
     // by the last tree as a ValDef instead, so we can access the value.
@@ -818,8 +813,7 @@ class SparkIMain(
                   case (label, s) => label + ": '" + s + "'"
                 } mkString "\n")
               combined
-            }
-          )
+            })
         // Rewriting    "foo ; bar ; 123"
         // to           "foo ; bar ; val resXX = 123"
         requestFromLine(rewrittenLine, synthetic) match {
@@ -925,14 +919,15 @@ class SparkIMain(
       value: Any,
       modifiers: List[String] = Nil): IR.Result = {
     val bindRep = new ReadEvalPrint()
-    val run = bindRep.compile(
-      """
+    val run = bindRep.compile("""
                               |object %s {
                                 |  var value: %s = _
                               |  def set(x: Any) = value = x.asInstanceOf[%s]
                               |}
-                              """.stripMargin
-        .format(bindRep.evalName, boundType, boundType))
+                              """.stripMargin.format(
+      bindRep.evalName,
+      boundType,
+      boundType))
     bindRep.callEither("set", value) match {
       case Left(ex) =>
         logDebug(
@@ -1150,9 +1145,9 @@ class SparkIMain(
       // val readRoot  = getRequiredModule(readPath)   // the outermost wrapper
       // MATEI: Changed this to getClass because the root object is no longer a module (Scala singleton object)
 
-      val readRoot = rootMirror.getClassByName(
-        newTypeName(readPath)
-      ) // the outermost wrapper
+      val readRoot = rootMirror.getClassByName(newTypeName(
+        readPath
+      )) // the outermost wrapper
       (accessPath split '.').foldLeft(readRoot: Symbol) {
         case (sym, "")   => sym
         case (sym, name) => afterTyper(termMember(sym, name))
@@ -1169,7 +1164,9 @@ class SparkIMain(
           case ((pos, msg)) :: rest =>
             val filtered = rest filter {
               case (pos0, msg0) =>
-                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
+                (msg != msg0) || (
+                  pos.lineContent.trim != pos0.lineContent.trim
+                ) || {
                   // same messages and same line content after whitespace removal
                   // but we want to let through multiple warnings on the same line
                   // from the same run.  The untrimmed line will be the same since
@@ -1275,10 +1272,7 @@ class SparkIMain(
         if (!isReplPower) Nil // power mode only for now
         // $intp is not bound; punt, but include the line.
         else if (path == "$intp")
-          List(
-            "def $line = " + tquoted(originalLine),
-            "def $trees = Nil"
-          )
+          List("def $line = " + tquoted(originalLine), "def $trees = Nil")
         else
           List(
             "def $line  = " + tquoted(originalLine),
@@ -1342,8 +1336,7 @@ class SparkIMain(
         evalResult,
         lineRep.printName,
         executionWrapper,
-        lineRep.readName + ".INSTANCE" + accessPath
-      )
+        lineRep.readName + ".INSTANCE" + accessPath)
       val postamble = """
       |    )
       |  }
@@ -1411,10 +1404,10 @@ class SparkIMain(
     // lazy val definedTypes: Map[Name, Type] = {
     //   typeNames map (x => x -> afterTyper(resultSymbol.info.nonPrivateDecl(x).tpe)) toMap
     // }
-    lazy val definedSymbols = (
-      termNames.map(x => x -> applyToResultMember(x, x => x)) ++
-        typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect)
-    ).toMap[Name, Symbol] withDefaultValue NoSymbol
+    lazy val definedSymbols =
+      (termNames.map(x => x -> applyToResultMember(x, x => x)) ++
+        typeNames.map(x => x -> compilerTypeOf(x).typeSymbolDirect))
+        .toMap[Name, Symbol] withDefaultValue NoSymbol
 
     lazy val typesOfDefinedTerms = mapFrom[Name, Name, Type](termNames)(x =>
       applyToResultMember(x, _.tpe))
@@ -1577,8 +1570,9 @@ class SparkIMain(
       val staticSym = tpe.typeSymbol
       val runtimeSym = getClassIfDefined(clazz.getName)
 
-      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (runtimeSym isSubClass staticSym))
-        runtimeSym.info
+      if ((runtimeSym != NoSymbol) && (runtimeSym != staticSym) && (
+            runtimeSym isSubClass staticSym
+          )) runtimeSym.info
       else NoType
     }
   }
@@ -1772,8 +1766,7 @@ class SparkIMain(
     TypeStrings.quieter(
       afterTyper(sym.defString),
       sym.owner.name + ".this.",
-      sym.owner.fullName + "."
-    )
+      sym.owner.fullName + ".")
   }
 
   private def showCodeIfDebugging(code: String) {
@@ -1840,8 +1833,9 @@ object SparkIMain {
     def maxStringLength: Int
     def isTruncating: Boolean
     def truncate(str: String): String = {
-      if (isTruncating && (maxStringLength != 0 && str.length > maxStringLength))
-        (str take maxStringLength - 3) + "..."
+      if (isTruncating && (
+            maxStringLength != 0 && str.length > maxStringLength
+          )) (str take maxStringLength - 3) + "..."
       else str
     }
   }
@@ -1922,8 +1916,7 @@ class SparkISettings(intp: SparkIMain) extends Logging {
       "maxPrintString" -> maxPrintString,
       "maxAutoprintCompletion" -> maxAutoprintCompletion,
       "unwrapStrings" -> unwrapStrings,
-      "deprecation" -> deprecation
-    )
+      "deprecation" -> deprecation)
 
   private def allSettingsString =
     allSettings.toList sortBy (_._1) map {

@@ -71,12 +71,8 @@ class HelpersSpec extends Specification {
       implicit val system = ActorSystem()
       try {
         implicit val mat = ActorMaterializer()
-        contentAsBytes(
-          Future.successful(
-            Ok.chunked(Source(List("a", "b", "c"))))) must_== ByteString(
-          97,
-          98,
-          99)
+        contentAsBytes(Future.successful(Ok.chunked(Source(
+          List("a", "b", "c"))))) must_== ByteString(97, 98, 99)
       } finally { system.terminate() }
     }
 

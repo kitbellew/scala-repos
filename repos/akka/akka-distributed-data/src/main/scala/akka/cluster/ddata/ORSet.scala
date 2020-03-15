@@ -263,10 +263,9 @@ final class ORSet[A] private[akka] (
   private[akka] def add(node: UniqueAddress, element: A): ORSet[A] = {
     val newVvector = vvector + node
     val newDot = VersionVector(node, newVvector.versionAt(node))
-    assignAncestor(
-      new ORSet(
-        elementsMap = elementsMap.updated(element, newDot),
-        vvector = newVvector))
+    assignAncestor(new ORSet(
+      elementsMap = elementsMap.updated(element, newDot),
+      vvector = newVvector))
   }
 
   /**

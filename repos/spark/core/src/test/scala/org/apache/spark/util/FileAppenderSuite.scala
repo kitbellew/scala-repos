@@ -313,8 +313,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
       appender: FileAppender,
       outputStream: OutputStream,
       textToAppend: Seq[String],
-      sleepTimeBetweenTexts: Long
-  ): Seq[File] = {
+      sleepTimeBetweenTexts: Long): Seq[File] = {
     // send data to appender through the input stream, and wait for the data to be written
     val expectedText = textToAppend.mkString("")
     for (i <- 0 until textToAppend.size) {

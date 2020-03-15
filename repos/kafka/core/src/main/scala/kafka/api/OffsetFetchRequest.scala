@@ -99,19 +99,14 @@ case class OffsetFetchRequest(
       request: RequestChannel.Request): Unit = {
     val responseMap = requestInfo.map {
       case (topicAndPartition) =>
-        (
-          topicAndPartition,
-          OffsetMetadataAndError(
-            Errors.forException(e).code
-          ))
+        (topicAndPartition, OffsetMetadataAndError(Errors.forException(e).code))
     }.toMap
     val errorResponse = OffsetFetchResponse(
       requestInfo = responseMap,
       correlationId = correlationId)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(request.connectionId, errorResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, errorResponse)))
   }
 
   override def describe(details: Boolean): String = {

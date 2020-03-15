@@ -71,8 +71,7 @@ object PJavaEventStore {
       entityId,
       eventNamesSeq,
       targetEntityType,
-      targetEntityId
-    )(sc)
+      targetEntityId)(sc)
   }
 
   /** Aggregate properties of entities based on these special events:
@@ -101,8 +100,7 @@ object PJavaEventStore {
       entityType,
       channelName,
       startTime,
-      untilTime
-    )(sc)
+      untilTime)(sc)
   }
 
 }

@@ -8,10 +8,7 @@ import play.api.data._, Forms._
 object Cli extends LilaController {
 
   private lazy val form = Form(
-    tuple(
-      "command" -> nonEmptyText,
-      "password" -> nonEmptyText
-    ))
+    tuple("command" -> nonEmptyText, "password" -> nonEmptyText))
 
   def command =
     OpenBody { implicit ctx =>

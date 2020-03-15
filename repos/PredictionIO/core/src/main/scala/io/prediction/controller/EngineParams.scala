@@ -59,8 +59,7 @@ class EngineParams(
       (dataSourceName, dataSourceParams),
       (preparatorName, preparatorParams),
       JavaConversions.mapAsScalaMap(algorithmParamsList).toSeq,
-      (servingName, servingParams)
-    )
+      (servingName, servingParams))
   }
 
   // A case class style copy method.
@@ -106,8 +105,7 @@ object EngineParams {
       dataSourceParams = (dataSourceName, dataSourceParams),
       preparatorParams = (preparatorName, preparatorParams),
       algorithmParamsList = algorithmParamsList,
-      servingParams = (servingName, servingParams)
-    )
+      servingParams = (servingName, servingParams))
   }
 }
 

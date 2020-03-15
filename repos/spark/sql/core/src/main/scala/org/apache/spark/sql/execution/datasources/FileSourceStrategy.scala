@@ -70,10 +70,9 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
         //  - filters that need to be evaluated again after the scan
         val filterSet = ExpressionSet(filters)
 
-        val partitionColumns = AttributeSet(
-          l.resolve(
-            files.partitionSchema,
-            files.sqlContext.sessionState.analyzer.resolver))
+        val partitionColumns = AttributeSet(l.resolve(
+          files.partitionSchema,
+          files.sqlContext.sessionState.analyzer.resolver))
         val partitionKeyFilters = ExpressionSet(
           filters.filter(_.references.subsetOf(partitionColumns)))
         logInfo(
@@ -83,9 +82,9 @@ private[sql] object FileSourceStrategy extends Strategy with Logging {
           files.bucketSpec
             .map(_.bucketColumnNames)
             .getOrElse(Nil)
-            .map(l
-              .resolveQuoted(_, files.sqlContext.conf.resolver)
-              .getOrElse(sys.error(""))))
+            .map(
+              l.resolveQuoted(_, files.sqlContext.conf.resolver)
+                .getOrElse(sys.error(""))))
 
         // Partition keys are not available in the statistics of the files.
         val dataFilters = filters.filter(

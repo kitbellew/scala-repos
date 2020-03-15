@@ -573,8 +573,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       if (lastRefTypeLine - firstRefTypeLine >= 2) {
         val offsetsInTheMiddle = Seq(
           document.getLineEndOffset(firstRefTypeLine),
-          document.getLineEndOffset(firstRefTypeLine + 1)
-        )
+          document.getLineEndOffset(firstRefTypeLine + 1))
         offsetsInTheMiddle.flatMap(findAt).distinct
       } else {
         val firstLinePositions = positionsOnLine(file, firstRefTypeLine)
@@ -632,10 +631,9 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
     val cacheManager = ScalaShortNamesCacheManager.getInstance(project)
     val classes =
       if (qName.endsWith(packageSuffix))
-        Option(
-          cacheManager.getPackageObjectByName(
-            qName.stripSuffix(packageSuffix),
-            GlobalSearchScope.allScope(project))).toSeq
+        Option(cacheManager.getPackageObjectByName(
+          qName.stripSuffix(packageSuffix),
+          GlobalSearchScope.allScope(project))).toSeq
       else
         cacheManager.getClassesByFQName(
           qName.replace(packageSuffix, "."),
@@ -838,7 +836,9 @@ object ScalaPositionManager {
           case _: ScConstructorPattern | _: ScInfixPattern |
               _: ScBindingPattern =>
             true
-          case callRefId childOf ((ref: ScReferenceExpression) childOf (_: ScMethodCall))
+          case callRefId childOf (
+                (ref: ScReferenceExpression) childOf (_: ScMethodCall)
+              )
               if ref.nameId == callRefId && ref.getTextRange.getStartOffset < startLine =>
             true
           case _: ScTypeDefinition => true
@@ -904,9 +904,8 @@ object ScalaPositionManager {
   def isCompiledWithIndyLambdas(file: PsiFile): Boolean = {
     if (file == null) false
     else {
-      val originalFile = Option(
-        file.getUserData(ScalaCompilingEvaluator.originalFileKey))
-        .getOrElse(file)
+      val originalFile = Option(file.getUserData(
+        ScalaCompilingEvaluator.originalFileKey)).getOrElse(file)
       isCompiledWithIndyLambdasCache.getOrElse(originalFile, false)
     }
   }

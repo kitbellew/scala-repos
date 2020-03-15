@@ -26,11 +26,10 @@ object ItemRecEvaluation1 {
       appId = 9,
       actions = Set("rate"),
       attributeNames = CommonParams.DataSourceAttributeNames,
-      slidingEval = Some(
-        new EventsSlidingEvalParams(
-          firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
-          evalDuration = Duration.standardDays(7),
-          evalCount = 12)),
+      slidingEval = Some(new EventsSlidingEvalParams(
+        firstTrainingUntilTime = new DateTime(1998, 2, 1, 0, 0),
+        evalDuration = Duration.standardDays(7),
+        evalCount = 12)),
       //evalCount = 3)),
       evalParams = Some(new EvalParams(queryN = 10))
     )
@@ -60,8 +59,7 @@ object ItemRecEvaluation1 {
         actionsMap = Map("rate" -> None),
         goodThreshold = 3),
       measureType = MeasureType.PrecisionAtK,
-      measureK = 10
-    )
+      measureK = 10)
 
     Workflow.runEngine(
       params = WorkflowParams(batch = "MLC: ItemRec Evaluation1", verbose = 0),

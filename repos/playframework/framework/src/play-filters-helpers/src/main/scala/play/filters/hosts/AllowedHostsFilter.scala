@@ -34,11 +34,10 @@ case class AllowedHostsFilter @Inject() (
     EssentialAction { req =>
       if (hostMatchers.exists(_(req.host))) { next(req) }
       else {
-        Accumulator.done(
-          errorHandler.onClientError(
-            req,
-            Status.BAD_REQUEST,
-            s"Host not allowed: ${req.host}"))
+        Accumulator.done(errorHandler.onClientError(
+          req,
+          Status.BAD_REQUEST,
+          s"Host not allowed: ${req.host}"))
       }
     }
 }
@@ -102,8 +101,7 @@ class AllowedHostsModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[AllowedHostsConfig].toProvider[AllowedHostsConfigProvider],
-      bind[AllowedHostsFilter].toSelf
-    )
+      bind[AllowedHostsFilter].toSelf)
 }
 
 trait AllowedHostsComponents {

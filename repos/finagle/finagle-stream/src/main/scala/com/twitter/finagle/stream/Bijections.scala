@@ -57,8 +57,7 @@ private[stream] object Bijections {
         new StreamResponse.Info(
           fromNettyVersion(res.getProtocolVersion),
           StreamResponse.Status(res.getStatus.getCode),
-          fromNettyHeaders(res.headers)
-        )
+          fromNettyHeaders(res.headers))
     }
 
   implicit val toNettyResponse: From[StreamResponse.Info, HttpResponse] =
@@ -82,18 +81,14 @@ private[stream] object Bijections {
           req.getUri,
           from(req.getProtocolVersion),
           from(req.headers),
-          ChannelBufferBuf.Owned(req.getContent)
-        )
+          ChannelBufferBuf.Owned(req.getContent))
     }
 
   implicit val toNettyRequest: From[StreamRequest, HttpRequest] =
     new From[StreamRequest, HttpRequest] {
       def apply(req: StreamRequest) = {
-        val httpReq = new DefaultHttpRequest(
-          from(req.version),
-          from(req.method),
-          req.uri
-        )
+        val httpReq =
+          new DefaultHttpRequest(from(req.version), from(req.method), req.uri)
         req.headers.foreach(h => httpReq.headers.add(h.key, h.value))
         httpReq.setContent(BufChannelBuffer(req.body))
         httpReq

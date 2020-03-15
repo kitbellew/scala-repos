@@ -177,12 +177,11 @@ object PsiTypedDefinitionWrapper {
       processMethod: PsiMethod => Unit,
       processName: String => Unit = _ => ()): Unit = {
     if (nodeName == t.name) {
-      processMethod(
-        t.getTypedDefinitionWrapper(
-          isStatic,
-          isInterface,
-          role = SIMPLE_ROLE,
-          cClass))
+      processMethod(t.getTypedDefinitionWrapper(
+        isStatic,
+        isInterface,
+        role = SIMPLE_ROLE,
+        cClass))
       processName(t.name)
       if (t.isVar) {
         processMethod(
@@ -196,40 +195,36 @@ object PsiTypedDefinitionWrapper {
         val booleanBeanProperty = ScalaPsiUtil.isBooleanBeanProperty(s)
         if (beanProperty) {
           if (nodeName == "get" + t.name.capitalize) {
-            processMethod(
-              t.getTypedDefinitionWrapper(
-                isStatic,
-                isInterface,
-                role = GETTER,
-                cClass))
+            processMethod(t.getTypedDefinitionWrapper(
+              isStatic,
+              isInterface,
+              role = GETTER,
+              cClass))
             processName("get" + t.getName.capitalize)
           }
           if (t.isVar && nodeName == "set" + t.name.capitalize) {
-            processMethod(
-              t.getTypedDefinitionWrapper(
-                isStatic,
-                isInterface,
-                role = SETTER,
-                cClass))
+            processMethod(t.getTypedDefinitionWrapper(
+              isStatic,
+              isInterface,
+              role = SETTER,
+              cClass))
             processName("set" + t.getName.capitalize)
           }
         } else if (booleanBeanProperty) {
           if (nodeName == "is" + t.name.capitalize) {
-            processMethod(
-              t.getTypedDefinitionWrapper(
-                isStatic,
-                isInterface,
-                role = IS_GETTER,
-                cClass))
+            processMethod(t.getTypedDefinitionWrapper(
+              isStatic,
+              isInterface,
+              role = IS_GETTER,
+              cClass))
             processName("is" + t.getName.capitalize)
           }
           if (t.isVar && nodeName == "set" + t.name.capitalize) {
-            processMethod(
-              t.getTypedDefinitionWrapper(
-                isStatic,
-                isInterface,
-                role = SETTER,
-                cClass))
+            processMethod(t.getTypedDefinitionWrapper(
+              isStatic,
+              isInterface,
+              role = SETTER,
+              cClass))
             processName("set" + t.getName.capitalize)
           }
         }

@@ -36,13 +36,11 @@ class TaskOpProcessorImplTest
     val appId = PathId("/app")
 
     When("the processor processes a noop")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        Task.Id("task1"),
-        TaskOpProcessor.Action.Noop)
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      Task.Id("task1"),
+      TaskOpProcessor.Action.Noop))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())
@@ -60,13 +58,11 @@ class TaskOpProcessorImplTest
 
     When("the processor processes a fail")
     val cause: RuntimeException = new scala.RuntimeException("fail")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        Task.Id("task1"),
-        TaskOpProcessor.Action.Fail(cause))
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      Task.Id("task1"),
+      TaskOpProcessor.Action.Fail(cause)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())
@@ -88,13 +84,11 @@ class TaskOpProcessorImplTest
     f.taskRepository.store(task) returns Future.successful(task)
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        taskState.taskId,
-        TaskOpProcessor.Action.Update(taskState))
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      taskState.taskId,
+      TaskOpProcessor.Action.Update(taskState)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(()) // first wait for the call to complete
@@ -103,9 +97,9 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).store(task)
 
     And("the taskTracker gets the update")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor
-        .TaskUpdated(taskState, TaskTrackerActor.Ack(testActor, ())))
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskUpdated(
+      taskState,
+      TaskTrackerActor.Ack(testActor, ())))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -119,8 +113,8 @@ class TaskOpProcessorImplTest
     Given("a taskRepository and existing task")
     val taskState = MarathonTestHelper.stagedTaskForApp(appId)
     val task = taskState.marathonTask
-    f.taskRepository.store(task) returns Future.failed(
-      new RuntimeException("fail"))
+    f.taskRepository.store(task) returns Future.failed(new RuntimeException(
+      "fail"))
     f.taskRepository.task(task.getId) returns Future.successful(Some(task))
 
     When("the processor processes an update")
@@ -130,13 +124,11 @@ class TaskOpProcessorImplTest
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
-          .process(
-            TaskOpProcessor.Operation(
-              deadline,
-              testActor,
-              taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+          .process(TaskOpProcessor.Operation(
+            deadline,
+            testActor,
+            taskState.taskId,
+            TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -155,9 +147,9 @@ class TaskOpProcessorImplTest
     result should be(Success(()))
 
     And("the taskTracker gets the update")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor
-        .TaskUpdated(taskState, TaskTrackerActor.Ack(testActor, ())))
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskUpdated(
+      taskState,
+      TaskTrackerActor.Ack(testActor, ())))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -182,13 +174,11 @@ class TaskOpProcessorImplTest
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
-          .process(
-            TaskOpProcessor.Operation(
-              deadline,
-              testActor,
-              taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+          .process(TaskOpProcessor.Operation(
+            deadline,
+            testActor,
+            taskState.taskId,
+            TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -208,11 +198,9 @@ class TaskOpProcessorImplTest
 
     And(
       "the taskTracker gets a task removed and the ack contains the original failure")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.TaskRemoved(
-        taskState.taskId,
-        TaskTrackerActor.Ack(testActor, Status.Failure(storeFail)))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskRemoved(
+      taskState.taskId,
+      TaskTrackerActor.Ack(testActor, Status.Failure(storeFail))))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -237,13 +225,11 @@ class TaskOpProcessorImplTest
     val logs = CaptureLogEvents.forBlock {
       result = Try(
         f.processor
-          .process(
-            TaskOpProcessor.Operation(
-              deadline,
-              testActor,
-              taskState.taskId,
-              TaskOpProcessor.Action.Update(taskState))
-          )
+          .process(TaskOpProcessor.Operation(
+            deadline,
+            testActor,
+            taskState.taskId,
+            TaskOpProcessor.Action.Update(taskState)))
           .futureValue
       ) // we need to complete the future here to get all the logs
     }
@@ -276,13 +262,11 @@ class TaskOpProcessorImplTest
     f.taskRepository.expunge(taskId) returns Future.successful(Iterable(true))
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        Task.Id(taskId),
-        TaskOpProcessor.Action.Expunge)
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      Task.Id(taskId),
+      TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -293,9 +277,9 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).expunge(taskId)
 
     And("the taskTracker gets the update")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor
-        .TaskRemoved(Task.Id(taskId), TaskTrackerActor.Ack(testActor, ())))
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskRemoved(
+      Task.Id(taskId),
+      TaskTrackerActor.Ack(testActor, ())))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -313,10 +297,11 @@ class TaskOpProcessorImplTest
     f.taskRepository.task(taskId.idString) returns Future.successful(None)
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor
-        .Operation(deadline, testActor, taskId, TaskOpProcessor.Action.Expunge)
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      taskId,
+      TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -352,13 +337,11 @@ class TaskOpProcessorImplTest
     f.taskRepository.task(taskId) returns Future.successful(Some(task))
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        taskState.taskId,
-        TaskOpProcessor.Action.Expunge)
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      taskState.taskId,
+      TaskOpProcessor.Action.Expunge))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -373,11 +356,9 @@ class TaskOpProcessorImplTest
 
     And(
       "the taskTracker gets the update and the ack contains the expunge failure")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor.TaskUpdated(
-        taskState,
-        TaskTrackerActor.Ack(testActor, Status.Failure(expungeFails)))
-    )
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskUpdated(
+      taskState,
+      TaskTrackerActor.Ack(testActor, Status.Failure(expungeFails))))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()
@@ -394,13 +375,11 @@ class TaskOpProcessorImplTest
       Future.successful(TaskOpProcessor.Action.Noop)
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        Task.Id(taskId),
-        TaskOpProcessor.Action.UpdateStatus(update))
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      Task.Id(taskId),
+      TaskOpProcessor.Action.UpdateStatus(update)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(
@@ -436,13 +415,11 @@ class TaskOpProcessorImplTest
       .successful(TaskOpProcessor.Action.Update(unlaunched))
 
     When("the processor processes an update")
-    val result = f.processor.process(
-      TaskOpProcessor.Operation(
-        deadline,
-        testActor,
-        Task.Id(taskId),
-        TaskOpProcessor.Action.Update(unlaunched))
-    )
+    val result = f.processor.process(TaskOpProcessor.Operation(
+      deadline,
+      testActor,
+      Task.Id(taskId),
+      TaskOpProcessor.Action.Update(unlaunched)))
 
     Then("it replies with unit immediately")
     result.futureValue should be(())
@@ -451,9 +428,9 @@ class TaskOpProcessorImplTest
     verify(f.taskRepository).store(marathonTask)
 
     And("the taskTracker gets the update")
-    f.taskTrackerProbe.expectMsg(
-      TaskTrackerActor
-        .TaskUpdated(unlaunched, TaskTrackerActor.Ack(testActor, ())))
+    f.taskTrackerProbe.expectMsg(TaskTrackerActor.TaskUpdated(
+      unlaunched,
+      TaskTrackerActor.Ack(testActor, ())))
 
     And("no more interactions")
     f.verifyNoMoreInteractions()

@@ -56,8 +56,7 @@ object HandshakeInit extends Decoder[HandshakeInit] {
       Array.concat(salt1, salt2),
       serverCap,
       charset,
-      status
-    )
+      status)
   }
 }
 
@@ -68,8 +67,8 @@ case class HandshakeInit(
     salt: Array[Byte],
     serverCap: Capability,
     charset: Short,
-    status: Short
-) extends Result
+    status: Short)
+    extends Result
 
 /**
   * Represents the OK Packet received from the server. It is sent
@@ -84,8 +83,7 @@ object OK extends Decoder[OK] {
       br.readLengthCodedBinary(),
       br.readUnsignedShort(),
       br.readUnsignedShort(),
-      new String(br.takeRest())
-    )
+      new String(br.takeRest()))
   }
 }
 
@@ -94,8 +92,8 @@ case class OK(
     insertId: Long,
     serverStatus: Int,
     warningCount: Int,
-    message: String
-) extends Result
+    message: String)
+    extends Result
 
 /**
   * Represents the Error Packet received from the server and the data sent along with it.
@@ -167,8 +165,7 @@ object Field extends Decoder[Field] {
       length,
       fieldType,
       flags,
-      decimals
-    )
+      decimals)
   }
 }
 
@@ -183,8 +180,8 @@ case class Field(
     displayLength: Int,
     fieldType: Short,
     flags: Short,
-    decimals: Byte
-) extends Result {
+    decimals: Byte)
+    extends Result {
   def id: String = if (name.isEmpty) origName else name
   override val toString = "Field(%s)".format(id)
 }
@@ -213,8 +210,8 @@ case class PrepareOK(
     numOfParams: Int,
     warningCount: Int,
     columns: Seq[Field] = Nil,
-    params: Seq[Field] = Nil
-) extends Result
+    params: Seq[Field] = Nil)
+    extends Result
 
 /**
   * Used internally to synthesize a response from
@@ -234,8 +231,7 @@ object ResultSet {
   def apply(isBinaryEncoded: Boolean)(
       header: Packet,
       fieldPackets: Seq[Packet],
-      rowPackets: Seq[Packet]
-  ): Try[ResultSet] =
+      rowPackets: Seq[Packet]): Try[ResultSet] =
     Try(decode(isBinaryEncoded)(header, fieldPackets, rowPackets))
 
   def decode(isBinaryEncoded: Boolean)(

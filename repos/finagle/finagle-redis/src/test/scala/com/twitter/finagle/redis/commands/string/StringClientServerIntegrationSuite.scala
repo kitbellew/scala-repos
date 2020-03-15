@@ -48,8 +48,8 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(SetBit("bitop2", 3, 1))) == IntegerReply(0L))
 
       assert(
-        Await.result(
-          client(BitOp(BitOp.And, "bitop3", Seq("bitop1", "bitop2")))) ==
+        Await.result(client(
+          BitOp(BitOp.And, "bitop3", Seq("bitop1", "bitop2")))) ==
           IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(0L))
       assert(Await.result(client(GetBit("bitop3", 3))) == IntegerReply(1L))
@@ -62,14 +62,16 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))
 
       assert(
-        Await.result(
-          client(BitOp(BitOp.Xor, "bitop3", Seq("bitop1", "bitop2")))) ==
+        Await.result(client(
+          BitOp(BitOp.Xor, "bitop3", Seq("bitop1", "bitop2")))) ==
           IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))
 
-      assert(Await.result(
-        client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(1L))
+      assert(
+        Await.result(
+          client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(
+          1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(0L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 4))) == IntegerReply(1L))
@@ -169,8 +171,7 @@ final class StringClientServerIntegrationSuite
 
       val expects = List(
         BytesToString(RedisCodec.NIL_VALUE_BA.array),
-        BytesToString(bar.array)
-      )
+        BytesToString(bar.array))
       val req = client(MGet(List(StringToChannelBuffer("thing"), foo)))
       assertMBulkReply(req, expects)
       intercept[ClientError] {
@@ -184,16 +185,13 @@ final class StringClientServerIntegrationSuite
       val input = Map(
         StringToChannelBuffer("thing") -> StringToChannelBuffer("thang"),
         foo -> bar,
-        StringToChannelBuffer("stuff") -> StringToChannelBuffer("bleh")
-      )
+        StringToChannelBuffer("stuff") -> StringToChannelBuffer("bleh"))
       assert(Await.result(client(MSet(input))) == StatusReply("OK"))
-      val req = client(
-        MGet(
-          List(
-            StringToChannelBuffer("thing"),
-            foo,
-            StringToChannelBuffer("noexists"),
-            StringToChannelBuffer("stuff"))))
+      val req = client(MGet(List(
+        StringToChannelBuffer("thing"),
+        foo,
+        StringToChannelBuffer("noexists"),
+        StringToChannelBuffer("stuff"))))
       val expects = List(
         "thang",
         "bar",
@@ -207,25 +205,21 @@ final class StringClientServerIntegrationSuite
     withRedisClient { client =>
       val input1 = Map(
         StringToChannelBuffer("msnx.key1") -> StringToChannelBuffer("Hello"),
-        StringToChannelBuffer("msnx.key2") -> StringToChannelBuffer("there")
-      )
+        StringToChannelBuffer("msnx.key2") -> StringToChannelBuffer("there"))
       assert(Await.result(client(MSetNx(input1))) == IntegerReply(1))
       val input2 = Map(
         StringToChannelBuffer("msnx.key2") -> StringToChannelBuffer("there"),
-        StringToChannelBuffer("msnx.key3") -> StringToChannelBuffer("world")
-      )
+        StringToChannelBuffer("msnx.key3") -> StringToChannelBuffer("world"))
       assert(Await.result(client(MSetNx(input2))) == IntegerReply(0))
       val expects = List(
         "Hello",
         "there",
         BytesToString(RedisCodec.NIL_VALUE_BA.array))
       assertMBulkReply(
-        client(
-          MGet(
-            List(
-              StringToChannelBuffer("msnx.key1"),
-              StringToChannelBuffer("msnx.key2"),
-              StringToChannelBuffer("msnx.key3")))),
+        client(MGet(List(
+          StringToChannelBuffer("msnx.key1"),
+          StringToChannelBuffer("msnx.key2"),
+          StringToChannelBuffer("msnx.key3")))),
         expects)
     }
   }

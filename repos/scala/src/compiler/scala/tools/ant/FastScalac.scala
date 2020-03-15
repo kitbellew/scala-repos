@@ -106,15 +106,13 @@ class FastScalac extends Scalac {
         s.outdir,
         s.sourcepath,
         /*fsc*/
-        s.server
-      ) filter (_.value != "") flatMap (x => List(x.name, x.value))
+        s.server) filter (_.value != "") flatMap (x => List(x.name, x.value))
 
     val choiceSettings =
       List(
         /*scalac*/
         s.debuginfo,
-        s.target
-      ) filter (x => x.value != x.default) map (x =>
+        s.target) filter (x => x.value != x.default) map (x =>
         "%s:%s".format(x.name, x.value))
 
     val booleanSettings =
@@ -138,8 +136,7 @@ class FastScalac extends Scalac {
     val intSettings =
       List(
         /*fsc*/
-        s.idleMins
-      ) filter (x => x.value != x.default) flatMap (x =>
+        s.idleMins) filter (x => x.value != x.default) flatMap (x =>
         List(x.name, x.value.toString))
 
     val phaseSetting = {

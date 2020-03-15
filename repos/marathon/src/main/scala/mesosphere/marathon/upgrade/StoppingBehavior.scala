@@ -37,8 +37,8 @@ trait StoppingBehavior extends Actor with ActorLogging {
   final override def postStop(): Unit = {
     eventBus.unsubscribe(self)
     if (!promise.isCompleted)
-      promise.tryFailure(
-        new TaskUpgradeCanceledException("The operation has been cancelled"))
+      promise.tryFailure(new TaskUpgradeCanceledException(
+        "The operation has been cancelled"))
   }
 
   val taskFinished = "^TASK_(ERROR|FAILED|FINISHED|LOST|KILLED)$".r

@@ -46,12 +46,11 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
       EventFilter[BarrierEmpty](occurrences = 1) intercept {
         b ! RemoveClient(A)
       }
-      expectMsg(
-        Failed(
-          b,
-          BarrierEmpty(
-            Data(Set(), "", Nil, null),
-            "cannot remove RoleName(a): no client to remove")))
+      expectMsg(Failed(
+        b,
+        BarrierEmpty(
+          Data(Set(), "", Nil, null),
+          "cannot remove RoleName(a): no client to remove")))
     }
 
     "register clients and disconnect them" taggedAs TimingTest in {
@@ -235,11 +234,12 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
               Data(Set(), "", Nil, thr.data.deadline),
               "cannot remove RoleName(a): no client to remove")) ⇒
         case x ⇒
-          fail("Expected " + Failed(
-            barrier,
-            BarrierEmpty(
-              Data(Set(), "", Nil, null),
-              "cannot remove RoleName(a): no client to remove")) + " but got " + x)
+          fail(
+            "Expected " + Failed(
+              barrier,
+              BarrierEmpty(
+                Data(Set(), "", Nil, null),
+                "cannot remove RoleName(a): no client to remove")) + " but got " + x)
       }
       barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
       a.send(barrier, EnterBarrier("bar9", None))
@@ -258,22 +258,20 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
         val msg = expectMsgType[Failed](7 seconds)
         msg match {
           case Failed(barrier, thr: BarrierTimeout)
-              if (thr == BarrierTimeout(
-                Data(
-                  Set(nodeA, nodeB),
-                  "bar10",
-                  a.ref :: Nil,
-                  thr.data.deadline))) ⇒
+              if (thr == BarrierTimeout(Data(
+                Set(nodeA, nodeB),
+                "bar10",
+                a.ref :: Nil,
+                thr.data.deadline))) ⇒
           case x ⇒
             fail(
               "Expected " + Failed(
                 barrier,
-                BarrierTimeout(
-                  Data(
-                    Set(nodeA, nodeB),
-                    "bar10",
-                    a.ref :: Nil,
-                    null))) + " but got " + x)
+                BarrierTimeout(Data(
+                  Set(nodeA, nodeB),
+                  "bar10",
+                  a.ref :: Nil,
+                  null))) + " but got " + x)
         }
       }
     }
@@ -597,19 +595,20 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
   }
 
   private def withController(participants: Int)(f: (ActorRef) ⇒ Unit): Unit = {
-    system.actorOf(Props(new Actor {
-      val controller = context.actorOf(
-        Props(
+    system.actorOf(
+      Props(new Actor {
+        val controller = context.actorOf(Props(
           classOf[Controller],
           participants,
           new InetSocketAddress(InetAddress.getLocalHost, 0)))
-      controller ! GetSockAddr
-      override def supervisorStrategy =
-        OneForOneStrategy() {
-          case x ⇒ testActor ! Failed(controller, x); SupervisorStrategy.Restart
-        }
-      def receive = { case x: InetSocketAddress ⇒ testActor ! controller }
-    }).withDeploy(Deploy.local))
+        controller ! GetSockAddr
+        override def supervisorStrategy =
+          OneForOneStrategy() {
+            case x ⇒
+              testActor ! Failed(controller, x); SupervisorStrategy.Restart
+          }
+        def receive = { case x: InetSocketAddress ⇒ testActor ! controller }
+      }).withDeploy(Deploy.local))
     val actor = expectMsgType[ActorRef]
     f(actor)
     actor ! PoisonPill // clean up so network connections don't accumulate during test run
@@ -620,14 +619,15 @@ class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
     * forwards all failures to the testActor.
     */
   private def getBarrier(): ActorRef = {
-    system.actorOf(Props(new Actor {
-      val barrier = context.actorOf(Props[BarrierCoordinator])
-      override def supervisorStrategy =
-        OneForOneStrategy() {
-          case x ⇒ testActor ! Failed(barrier, x); SupervisorStrategy.Restart
-        }
-      def receive = { case _ ⇒ sender() ! barrier }
-    }).withDeploy(Deploy.local)) ! ""
+    system.actorOf(
+      Props(new Actor {
+        val barrier = context.actorOf(Props[BarrierCoordinator])
+        override def supervisorStrategy =
+          OneForOneStrategy() {
+            case x ⇒ testActor ! Failed(barrier, x); SupervisorStrategy.Restart
+          }
+        def receive = { case _ ⇒ sender() ! barrier }
+      }).withDeploy(Deploy.local)) ! ""
     expectMsgType[ActorRef]
   }
 

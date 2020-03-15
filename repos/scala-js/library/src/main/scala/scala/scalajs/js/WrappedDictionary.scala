@@ -87,10 +87,8 @@ object WrappedDictionary {
 
   def empty[A]: WrappedDictionary[A] = new WrappedDictionary(Dictionary.empty)
 
-  type CBF[A] = CanBuildFrom[
-    WrappedDictionary[_],
-    (String, A),
-    WrappedDictionary[A]]
+  type CBF[A] = CanBuildFrom[WrappedDictionary[
+    _], (String, A), WrappedDictionary[A]]
   implicit def canBuildFrom[A]: CBF[A] =
     new CBF[A] {
       def apply(from: WrappedDictionary[_])

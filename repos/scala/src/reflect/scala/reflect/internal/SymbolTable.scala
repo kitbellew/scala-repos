@@ -88,11 +88,10 @@ abstract class SymbolTable
   def debugStack(t: Throwable): Unit = devWarning(throwableAsString(t))
 
   private[scala] def printCaller[T](msg: String)(result: T) = {
-    Console.err.println(
-      "%s: %s\nCalled from: %s".format(
-        msg,
-        result,
-        (new Throwable).getStackTrace.drop(2).take(50).mkString("\n")))
+    Console.err.println("%s: %s\nCalled from: %s".format(
+      msg,
+      result,
+      (new Throwable).getStackTrace.drop(2).take(50).mkString("\n")))
 
     result
   }
@@ -143,9 +142,7 @@ abstract class SymbolTable
 
   private object SimpleNameOrdering extends Ordering[Names#Name] {
     def compare(n1: Names#Name, n2: Names#Name) =
-      (
-        if (n1 eq n2) 0 else n1.toString compareTo n2.toString
-      )
+      (if (n1 eq n2) 0 else n1.toString compareTo n2.toString)
   }
 
   /** Dump each symbol to stdout after shutdown.
@@ -281,10 +278,8 @@ abstract class SymbolTable
 
   final def isValidForBaseClasses(period: Period): Boolean = {
     def noChangeInBaseClasses(it: InfoTransformer, limit: Phase#Id): Boolean =
-      (
-        it.pid >= limit ||
-          !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit)
-      )
+      (it.pid >= limit ||
+        !it.changesBaseClasses && noChangeInBaseClasses(it.next, limit))
     period != 0 && runId(period) == currentRunId && {
       val pid = phaseId(period)
       if (phase.id > pid)
@@ -326,7 +321,9 @@ abstract class SymbolTable
         val method = params.last.owner
         val elemtp = formals.last.typeArgs.head match {
           case RefinedType(List(t1, t2), _)
-              if (t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass) =>
+              if (
+                t1.typeSymbol.isAbstractType && t2.typeSymbol == definitions.ObjectClass
+              ) =>
             t1 // drop intersection with Object for abstract types in varargs. UnCurry can handle them.
           case t =>
             t

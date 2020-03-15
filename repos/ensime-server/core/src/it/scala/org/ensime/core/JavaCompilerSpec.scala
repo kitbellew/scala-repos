@@ -56,14 +56,12 @@ class JavaCompilerSpec
 
   it should "link symbols to their source positions" in {
     withJavaCompiler { (_, config, cc, store, _) =>
-      val test1 = SourceFileInfo(
-        new File(
-          config.rootDir,
-          "testing/simple/src/main/java/org/example/Test1.java"))
-      val test2 = SourceFileInfo(
-        new File(
-          config.rootDir,
-          "testing/simple/src/main/java/org/example/Test2.java"))
+      val test1 = SourceFileInfo(new File(
+        config.rootDir,
+        "testing/simple/src/main/java/org/example/Test1.java"))
+      val test2 = SourceFileInfo(new File(
+        config.rootDir,
+        "testing/simple/src/main/java/org/example/Test2.java"))
 
       cc.askLinkPos(
         JavaFqn("org.example", "Test2", None),

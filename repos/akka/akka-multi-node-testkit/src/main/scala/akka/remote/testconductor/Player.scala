@@ -71,28 +71,28 @@ trait Player { this: TestConductorExt ⇒
     _client = system.actorOf(
       Props(classOf[ClientFSM], name, controllerAddr),
       "TestConductorClient")
-    val a = system.actorOf(
-      Props(
-        new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
-          var waiting: ActorRef = _
-          def receive = {
-            case fsm: ActorRef ⇒
-              waiting = sender(); fsm ! SubscribeTransitionCallBack(self)
-            case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
-                if (f == Connecting && t == AwaitDone) ⇒ // step 1, not there yet // // SI-5900 workaround
-            case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
-                if (f == AwaitDone && t == Connected) ⇒ // SI-5900 workaround
-              waiting ! Done; context stop self
-            case t: Transition[_] ⇒
-              waiting ! Status.Failure(
-                new RuntimeException("unexpected transition: " + t));
-              context stop self
-            case CurrentState(_, s: ClientFSM.State)
-                if (s == Connected) ⇒ // SI-5900 workaround
-              waiting ! Done; context stop self
-            case _: CurrentState[_] ⇒
-          }
-        }))
+    val a = system.actorOf(Props(
+      new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
+        var waiting: ActorRef = _
+        def receive = {
+          case fsm: ActorRef ⇒
+            waiting = sender(); fsm ! SubscribeTransitionCallBack(self)
+          case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
+              if (
+                f == Connecting && t == AwaitDone
+              ) ⇒ // step 1, not there yet // // SI-5900 workaround
+          case Transition(_, f: ClientFSM.State, t: ClientFSM.State)
+              if (f == AwaitDone && t == Connected) ⇒ // SI-5900 workaround
+            waiting ! Done; context stop self
+          case t: Transition[_] ⇒
+            waiting ! Status.Failure(new RuntimeException(
+              "unexpected transition: " + t)); context stop self
+          case CurrentState(_, s: ClientFSM.State)
+              if (s == Connected) ⇒ // SI-5900 workaround
+            waiting ! Done; context stop self
+          case _: CurrentState[_] ⇒
+        }
+      }))
 
     a ? client mapTo classTag[Done]
   }
@@ -201,8 +201,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   when(Connecting, stateTimeout = settings.ConnectTimeout) {
     case Event(msg: ClientOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status.Failure(new IllegalStateException(
+        "not connected yet"))
     case Event(Connected(channel), _) ⇒
       channel.write(Hello(name.name, TestConductor().address))
       goto(AwaitDone) using Data(Some(channel), None)
@@ -224,8 +224,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       log.error("received {} instead of Done", msg)
       goto(Failed)
     case Event(msg: ServerOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status.Failure(new IllegalStateException(
+        "not connected yet"))
     case Event(StateTimeout, _) ⇒
       log.error("connect timeout to TestConductor")
       goto(Failed)
@@ -315,8 +315,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   when(Failed) {
     case Event(msg: ClientOp, _) ⇒
-      stay replying Status.Failure(
-        new RuntimeException("cannot do " + msg + " while Failed"))
+      stay replying Status.Failure(new RuntimeException(
+        "cannot do " + msg + " while Failed"))
     case Event(msg: NetworkOp, _) ⇒
       log.warning("ignoring network message {} while Failed", msg)
       stay

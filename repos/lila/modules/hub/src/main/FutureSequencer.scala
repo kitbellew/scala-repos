@@ -73,10 +73,8 @@ object FutureSequencer {
           promise completeWith timeoutOption
             .orElse(executionTimeout)
             .fold(run()) { timeout =>
-              run().withTimeout(
-                duration = timeout,
-                error = Timeout(timeout)
-              )(context.system)
+              run().withTimeout(duration = timeout, error = Timeout(timeout))(
+                context.system)
             }
             .andThenAnyway { self ! Done }
         case FSequencer.WithQueueSize(f) =>

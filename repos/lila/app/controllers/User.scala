@@ -51,15 +51,14 @@ object User extends LilaController {
           case (
                 ((((pov, donor), blocked), crosstable), followable),
                 relation) =>
-            Ok(
-              html.user.mini(
-                user,
-                pov,
-                blocked,
-                followable,
-                relation,
-                crosstable,
-                donor))
+            Ok(html.user.mini(
+              user,
+              pov,
+              blocked,
+              followable,
+              relation,
+              crosstable,
+              donor))
               .withHeaders(CACHE_CONTROL -> "max-age=5")
         }
       }
@@ -78,8 +77,7 @@ object User extends LilaController {
           env.cached top50Online true map { list =>
             Ok(Json.toJson(
               list.take(getInt("nb").fold(10)(_ min max)).map(env.jsonView(_))))
-          }
-      )
+          })
     }
 
   private def filter(
@@ -158,8 +156,7 @@ object User extends LilaController {
         info = none,
         filter = GameFilterMenu.currentOf(GameFilterMenu.all, filterName),
         me = ctx.me,
-        page = page
-      )(ctx.body) map { filterName -> _ }
+        page = page)(ctx.body) map { filterName -> _ }
     }
   }
 
@@ -178,32 +175,29 @@ object User extends LilaController {
         tourneyWinners ← Env.tournament.winners scheduled nb
         online ← env.cached top50Online true
         res <- negotiate(
-          html = fuccess(
-            Ok(
-              html.user.list(
-                tourneyWinners = tourneyWinners,
-                online = online,
-                leaderboards = leaderboards,
-                nbDay = nbDay,
-                nbAllTime = nbAllTime))),
+          html = fuccess(Ok(html.user.list(
+            tourneyWinners = tourneyWinners,
+            online = online,
+            leaderboards = leaderboards,
+            nbDay = nbDay,
+            nbAllTime = nbAllTime))),
           api = _ =>
             fuccess {
               implicit val lpWrites = OWrites[UserModel.LightPerf](
                 env.jsonView.lightPerfIsOnline)
-              Ok(
-                Json.obj(
-                  "bullet" -> leaderboards.bullet,
-                  "blitz" -> leaderboards.blitz,
-                  "classical" -> leaderboards.classical,
-                  "crazyhouse" -> leaderboards.crazyhouse,
-                  "chess960" -> leaderboards.chess960,
-                  "kingOfTheHill" -> leaderboards.kingOfTheHill,
-                  "threeCheck" -> leaderboards.threeCheck,
-                  "antichess" -> leaderboards.antichess,
-                  "atomic" -> leaderboards.atomic,
-                  "horde" -> leaderboards.horde,
-                  "racingKings" -> leaderboards.racingKings
-                ))
+              Ok(Json.obj(
+                "bullet" -> leaderboards.bullet,
+                "blitz" -> leaderboards.blitz,
+                "classical" -> leaderboards.classical,
+                "crazyhouse" -> leaderboards.crazyhouse,
+                "chess960" -> leaderboards.chess960,
+                "kingOfTheHill" -> leaderboards.kingOfTheHill,
+                "threeCheck" -> leaderboards.threeCheck,
+                "antichess" -> leaderboards.antichess,
+                "atomic" -> leaderboards.atomic,
+                "horde" -> leaderboards.horde,
+                "racingKings" -> leaderboards.racingKings
+              ))
             }
         )
       } yield res
@@ -257,8 +251,7 @@ object User extends LilaController {
           err => filter(username, none, 1, Results.BadRequest),
           text =>
             env.noteApi.write(user, text, me) inject Redirect(
-              routes.User.show(username).url + "?note")
-        )
+              routes.User.show(username).url + "?note"))
       }
     }
 
@@ -268,8 +261,7 @@ object User extends LilaController {
         lila.game.BestOpponents(user.id, 50) flatMap { ops =>
           ctx.isAuth.fold(
             Env.pref.api.followables(ops map (_._1.id)),
-            fuccess(List.fill(50)(true))
-          ) flatMap { followables =>
+            fuccess(List.fill(50)(true))) flatMap { followables =>
             (ops zip followables).map {
               case ((u, nb), followable) =>
                 ctx.userId ?? { relationApi.fetchRelation(_, u.id) } map {

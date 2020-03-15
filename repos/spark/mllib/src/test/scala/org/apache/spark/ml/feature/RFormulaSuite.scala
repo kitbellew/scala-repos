@@ -39,11 +39,9 @@ class RFormulaSuite
     val result = model.transform(original)
     val resultSchema = model.transformSchema(original.schema)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          (0, 1.0, 3.0, Vectors.dense(1.0, 3.0), 0.0),
-          (2, 2.0, 5.0, Vectors.dense(2.0, 5.0), 2.0))
-      )
+      .createDataFrame(Seq(
+        (0, 1.0, 3.0, Vectors.dense(1.0, 3.0), 0.0),
+        (2, 2.0, 5.0, Vectors.dense(2.0, 5.0), 2.0)))
       .toDF("id", "v1", "v2", "features", "label")
     // TODO(ekl) make schema comparisons ignore metadata, to avoid .toString
     assert(result.schema.toString == resultSchema.toString)
@@ -99,21 +97,18 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("id ~ a + b")
     val original = sqlContext
       .createDataFrame(
-        Seq((1, "foo", 4), (2, "bar", 4), (3, "bar", 5), (4, "baz", 5))
-      )
+        Seq((1, "foo", 4), (2, "bar", 4), (3, "bar", 5), (4, "baz", 5)))
       .toDF("id", "a", "b")
     val model = formula.fit(original)
     val result = model.transform(original)
     val resultSchema = model.transformSchema(original.schema)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          (1, "foo", 4, Vectors.dense(0.0, 1.0, 4.0), 1.0),
-          (2, "bar", 4, Vectors.dense(1.0, 0.0, 4.0), 2.0),
-          (3, "bar", 5, Vectors.dense(1.0, 0.0, 5.0), 3.0),
-          (4, "baz", 5, Vectors.dense(0.0, 0.0, 5.0), 4.0)
-        )
-      )
+      .createDataFrame(Seq(
+        (1, "foo", 4, Vectors.dense(0.0, 1.0, 4.0), 1.0),
+        (2, "bar", 4, Vectors.dense(1.0, 0.0, 4.0), 2.0),
+        (3, "bar", 5, Vectors.dense(1.0, 0.0, 5.0), 3.0),
+        (4, "baz", 5, Vectors.dense(0.0, 0.0, 5.0), 4.0)
+      ))
       .toDF("id", "a", "b", "features", "label")
     assert(result.schema.toString == resultSchema.toString)
     assert(result.collect() === expected.collect())
@@ -122,26 +117,22 @@ class RFormulaSuite
   test("index string label") {
     val formula = new RFormula().setFormula("id ~ a + b")
     val original = sqlContext
-      .createDataFrame(
-        Seq(
-          ("male", "foo", 4),
-          ("female", "bar", 4),
-          ("female", "bar", 5),
-          ("male", "baz", 5))
-      )
+      .createDataFrame(Seq(
+        ("male", "foo", 4),
+        ("female", "bar", 4),
+        ("female", "bar", 5),
+        ("male", "baz", 5)))
       .toDF("id", "a", "b")
     val model = formula.fit(original)
     val result = model.transform(original)
     val resultSchema = model.transformSchema(original.schema)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          ("male", "foo", 4, Vectors.dense(0.0, 1.0, 4.0), 1.0),
-          ("female", "bar", 4, Vectors.dense(1.0, 0.0, 4.0), 0.0),
-          ("female", "bar", 5, Vectors.dense(1.0, 0.0, 5.0), 0.0),
-          ("male", "baz", 5, Vectors.dense(0.0, 0.0, 5.0), 1.0)
-        )
-      )
+      .createDataFrame(Seq(
+        ("male", "foo", 4, Vectors.dense(0.0, 1.0, 4.0), 1.0),
+        ("female", "bar", 4, Vectors.dense(1.0, 0.0, 4.0), 0.0),
+        ("female", "bar", 5, Vectors.dense(1.0, 0.0, 5.0), 0.0),
+        ("male", "baz", 5, Vectors.dense(0.0, 0.0, 5.0), 1.0)
+      ))
       .toDF("id", "a", "b", "features", "label")
     // assert(result.schema.toString == resultSchema.toString)
     assert(result.collect() === expected.collect())
@@ -151,8 +142,7 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("id ~ a + b")
     val original = sqlContext
       .createDataFrame(
-        Seq((1, "foo", 4), (2, "bar", 4), (3, "bar", 5), (4, "baz", 5))
-      )
+        Seq((1, "foo", 4), (2, "bar", 4), (3, "bar", 5), (4, "baz", 5)))
       .toDF("id", "a", "b")
     val model = formula.fit(original)
     val result = model.transform(original)
@@ -170,8 +160,7 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("id ~ vec")
     val original = sqlContext
       .createDataFrame(
-        Seq((1, Vectors.dense(0.0, 1.0)), (2, Vectors.dense(1.0, 2.0)))
-      )
+        Seq((1, Vectors.dense(0.0, 1.0)), (2, Vectors.dense(1.0, 2.0))))
       .toDF("id", "vec")
     val model = formula.fit(original)
     val result = model.transform(original)
@@ -188,8 +177,7 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("id ~ vec2")
     val base = sqlContext
       .createDataFrame(
-        Seq((1, Vectors.dense(0.0, 1.0)), (2, Vectors.dense(1.0, 2.0)))
-      )
+        Seq((1, Vectors.dense(0.0, 1.0)), (2, Vectors.dense(1.0, 2.0))))
       .toDF("id", "vec")
     val metadata = new AttributeGroup(
       "vec2",
@@ -213,18 +201,14 @@ class RFormulaSuite
   test("numeric interaction") {
     val formula = new RFormula().setFormula("a ~ b:c:d")
     val original = sqlContext
-      .createDataFrame(
-        Seq((1, 2, 4, 2), (2, 3, 4, 1))
-      )
+      .createDataFrame(Seq((1, 2, 4, 2), (2, 3, 4, 1)))
       .toDF("a", "b", "c", "d")
     val model = formula.fit(original)
     val result = model.transform(original)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          (1, 2, 4, 2, Vectors.dense(16.0), 1.0),
-          (2, 3, 4, 1, Vectors.dense(12.0), 2.0))
-      )
+      .createDataFrame(Seq(
+        (1, 2, 4, 2, Vectors.dense(16.0), 1.0),
+        (2, 3, 4, 1, Vectors.dense(12.0), 2.0)))
       .toDF("a", "b", "c", "d", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
@@ -237,29 +221,25 @@ class RFormulaSuite
   test("factor numeric interaction") {
     val formula = new RFormula().setFormula("id ~ a:b")
     val original = sqlContext
-      .createDataFrame(
-        Seq(
-          (1, "foo", 4),
-          (2, "bar", 4),
-          (3, "bar", 5),
-          (4, "baz", 5),
-          (4, "baz", 5),
-          (4, "baz", 5))
-      )
+      .createDataFrame(Seq(
+        (1, "foo", 4),
+        (2, "bar", 4),
+        (3, "bar", 5),
+        (4, "baz", 5),
+        (4, "baz", 5),
+        (4, "baz", 5)))
       .toDF("id", "a", "b")
     val model = formula.fit(original)
     val result = model.transform(original)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          (1, "foo", 4, Vectors.dense(0.0, 0.0, 4.0), 1.0),
-          (2, "bar", 4, Vectors.dense(0.0, 4.0, 0.0), 2.0),
-          (3, "bar", 5, Vectors.dense(0.0, 5.0, 0.0), 3.0),
-          (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0),
-          (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0),
-          (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0)
-        )
-      )
+      .createDataFrame(Seq(
+        (1, "foo", 4, Vectors.dense(0.0, 0.0, 4.0), 1.0),
+        (2, "bar", 4, Vectors.dense(0.0, 4.0, 0.0), 2.0),
+        (3, "bar", 5, Vectors.dense(0.0, 5.0, 0.0), 3.0),
+        (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0),
+        (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0),
+        (4, "baz", 5, Vectors.dense(5.0, 0.0, 0.0), 4.0)
+      ))
       .toDF("id", "a", "b", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
@@ -276,18 +256,15 @@ class RFormulaSuite
     val formula = new RFormula().setFormula("id ~ a:b")
     val original = sqlContext
       .createDataFrame(
-        Seq((1, "foo", "zq"), (2, "bar", "zq"), (3, "bar", "zz"))
-      )
+        Seq((1, "foo", "zq"), (2, "bar", "zq"), (3, "bar", "zz")))
       .toDF("id", "a", "b")
     val model = formula.fit(original)
     val result = model.transform(original)
     val expected = sqlContext
-      .createDataFrame(
-        Seq(
-          (1, "foo", "zq", Vectors.dense(0.0, 0.0, 1.0, 0.0), 1.0),
-          (2, "bar", "zq", Vectors.dense(1.0, 0.0, 0.0, 0.0), 2.0),
-          (3, "bar", "zz", Vectors.dense(0.0, 1.0, 0.0, 0.0), 3.0))
-      )
+      .createDataFrame(Seq(
+        (1, "foo", "zq", Vectors.dense(0.0, 0.0, 1.0, 0.0), 1.0),
+        (2, "bar", "zq", Vectors.dense(1.0, 0.0, 0.0, 0.0), 2.0),
+        (3, "bar", "zz", Vectors.dense(0.0, 1.0, 0.0, 0.0), 3.0)))
       .toDF("id", "a", "b", "features", "label")
     assert(result.collect() === expected.collect())
     val attrs = AttributeGroup.fromStructField(result.schema("features"))
@@ -331,8 +308,7 @@ class RFormulaSuite
 
     val dataset = sqlContext
       .createDataFrame(
-        Seq((1, "foo", "zq"), (2, "bar", "zq"), (3, "bar", "zz"))
-      )
+        Seq((1, "foo", "zq"), (2, "bar", "zq"), (3, "bar", "zz")))
       .toDF("id", "a", "b")
 
     val rFormula = new RFormula().setFormula("id ~ a:b")

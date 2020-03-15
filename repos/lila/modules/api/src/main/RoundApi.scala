@@ -38,16 +38,14 @@ private[api] final class RoundApi(
         (ctx.me ?? (me => noteApi.get(pov.gameId, me.id))) zip
         forecastApi.loadForDisplay(pov) map {
         case ((((json, tourOption), simulOption), note), forecast) =>
-          (
-            blindMode _ compose
-              withTournament(pov, tourOption) _ compose
-              withSimul(pov, simulOption) _ compose
-              withSteps(pov, none, initialFen, withOpening = false) _ compose
-              withNote(note) _ compose
-              withBookmark(
-                ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
-              withForecastCount(forecast.map(_.steps.size)) _
-          )(json)
+          (blindMode _ compose
+            withTournament(pov, tourOption) _ compose
+            withSimul(pov, simulOption) _ compose
+            withSteps(pov, none, initialFen, withOpening = false) _ compose
+            withNote(note) _ compose
+            withBookmark(
+              ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
+            withForecastCount(forecast.map(_.steps.size)) _)(json)
       }
     }
 
@@ -74,20 +72,18 @@ private[api] final class RoundApi(
           (pov.game.simulId ?? getSimul) zip
           (ctx.me ?? (me => noteApi.get(pov.gameId, me.id))) map {
           case (((json, tourOption), simulOption), note) =>
-            (
-              blindMode _ compose
-                withTournament(pov, tourOption) _ compose
-                withSimul(pov, simulOption) _ compose
-                withNote(note) _ compose
-                withBookmark(
-                  ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
-                withSteps(
-                  pov,
-                  analysis,
-                  initialFen,
-                  withOpening = withOpening) _ compose
-                withAnalysis(analysis) _
-            )(json)
+            (blindMode _ compose
+              withTournament(pov, tourOption) _ compose
+              withSimul(pov, simulOption) _ compose
+              withNote(note) _ compose
+              withBookmark(
+                ctx.me ?? { bookmarkApi.bookmarked(pov.game, _) }) _ compose
+              withSteps(
+                pov,
+                analysis,
+                initialFen,
+                withOpening = withOpening) _ compose
+              withAnalysis(analysis) _)(json)
         }
     }
 
@@ -143,8 +139,7 @@ private[api] final class RoundApi(
       case (pgn, analysis) =>
         json + ("analysis" -> Json.obj(
           "white" -> analysisApi.player(chess.Color.White)(analysis),
-          "black" -> analysisApi.player(chess.Color.Black)(analysis)
-        ))
+          "black" -> analysisApi.player(chess.Color.Black)(analysis)))
     }
 
   private def withTournament(pov: Pov, tourOption: Option[TourAndRanks])(
@@ -171,8 +166,7 @@ private[api] final class RoundApi(
         "id" -> simul.id,
         "hostId" -> simul.hostId,
         "name" -> simul.name,
-        "nbPlaying" -> simul.playingPairings.size
-      ))
+        "nbPlaying" -> simul.playingPairings.size))
     }
 
   private def blindMode(js: JsObject)(implicit ctx: Context) =

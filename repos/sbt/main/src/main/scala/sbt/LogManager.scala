@@ -96,15 +96,14 @@ object LogManager {
     val screenTrace = getOr(traceLevel.key, defaultTraceLevel(state))
     val backingTrace = getOr(persistTraceLevel.key, Int.MaxValue)
     val extraBacked = state.globalLogging.backed :: Nil
-    multiLogger(
-      new MultiLoggerConfig(
-        console,
-        backed,
-        extraBacked ::: extra,
-        screenLevel,
-        backingLevel,
-        screenTrace,
-        backingTrace))
+    multiLogger(new MultiLoggerConfig(
+      console,
+      backed,
+      extraBacked ::: extra,
+      screenLevel,
+      backingLevel,
+      screenTrace,
+      backingTrace))
   }
   def defaultTraceLevel(state: State): Int =
     if (state.interactive) -1 else Int.MaxValue
@@ -116,9 +115,8 @@ object LogManager {
     def command(useColor: Boolean) =
       if (useColor) BLUE + commandBase + RESET else "'" + commandBase + "'"
     context =>
-      Some(
-        "Stack trace suppressed: run %s for the full output.".format(
-          command(context.useColor)))
+      Some("Stack trace suppressed: run %s for the full output.".format(command(
+        context.useColor)))
   }
   def unwrapStreamsKey(key: ScopedKey[_]): ScopedKey[_] =
     key.scope.task match {

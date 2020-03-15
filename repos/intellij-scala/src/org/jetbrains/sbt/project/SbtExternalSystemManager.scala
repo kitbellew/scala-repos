@@ -153,13 +153,13 @@ object SbtExternalSystemManager {
           case sdkType: JavaSdkType =>
             new File(sdkType.getVMExecutablePath(sdk))
           case _ =>
-            throw new ExternalSystemException(
-              SbtBundle("sbt.import.noProjectJvmFound"))
+            throw new ExternalSystemException(SbtBundle(
+              "sbt.import.noProjectJvmFound"))
         }
       }
     } getOrElse {
-      throw new ExternalSystemException(
-        SbtBundle("sbt.import.noCustomJvmFound"))
+      throw new ExternalSystemException(SbtBundle(
+        "sbt.import.noCustomJvmFound"))
     }
   }
 

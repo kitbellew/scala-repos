@@ -25,8 +25,8 @@ case class DIMSUMAlgorithmParams(threshold: Double) extends Params
 class DIMSUMModel(
     val similarities: RDD[(Int, SparseVector)],
     val itemStringIntMap: BiMap[String, Int],
-    val items: Map[Int, Item]
-) extends IPersistentModel[DIMSUMAlgorithmParams] {
+    val items: Map[Int, Item])
+    extends IPersistentModel[DIMSUMAlgorithmParams] {
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
@@ -99,12 +99,14 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         (uindex, (iindex, 1.0))
       }
@@ -150,8 +152,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     new DIMSUMModel(
       similarities = similarities,
       itemStringIntMap = itemStringIntMap,
-      items = items
-    )
+      items = items)
   }
 
   def predict(model: DIMSUMModel, query: Query): PredictedResult = {
@@ -212,10 +213,7 @@ class DIMSUMAlgorithm(val ap: DIMSUMAlgorithmParams)
     val ord = Ordering.by[(Int, Double), Double](_._2).reverse
     val itemScores = getTopN(aggregatedScores, query.num)(ord).map {
       case (i, s) =>
-        new ItemScore(
-          item = model.itemIntStringMap(i),
-          score = s
-        )
+        new ItemScore(item = model.itemIntStringMap(i), score = s)
     }.toArray
 
     new PredictedResult(itemScores)

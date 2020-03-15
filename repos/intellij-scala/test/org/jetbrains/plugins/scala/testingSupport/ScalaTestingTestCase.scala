@@ -102,12 +102,11 @@ abstract class ScalaTestingTestCase(
       parentTestName: Option[String],
       testStatus: Int = TestStructureViewElement.normalStatusId) = {
     val structureViewRoot = buildFileStructure(testClassName + ".scala")
-    assert(
-      checkTestNodeInFileStructure(
-        structureViewRoot,
-        testName,
-        parentTestName,
-        testStatus))
+    assert(checkTestNodeInFileStructure(
+      structureViewRoot,
+      testName,
+      parentTestName,
+      testStatus))
   }
 
   override protected def buildFileStructure(
@@ -135,9 +134,8 @@ abstract class ScalaTestingTestCase(
           import scala.collection.JavaConversions._
           wrapper.initChildren()
           wrapper.getChildren.toList.foreach(node =>
-            initTree(
-              node.asInstanceOf[
-                StructureViewComponent.StructureViewTreeElementWrapper]))
+            initTree(node.asInstanceOf[
+              StructureViewComponent.StructureViewTreeElementWrapper]))
         }
         initTree(wrapper)
       }
@@ -211,8 +209,7 @@ abstract class ScalaTestingTestCase(
       ScalaPsiManager.instance(getProject).getCachedPackage(packageName) match {
         case Some(myPackage) => myPackage.getDirectories().head
         case _               => throw new RuntimeException(failedConfigMessage(packageName))
-      }
-    )
+      })
 
   override protected def createTestFromModule(
       moduleName: String): RunnerAndConfigurationSettings = {

@@ -100,8 +100,9 @@ case class TopicMetadata(
         }
       case error: Errors =>
         topicMetadataInfo.append(
-          "\nNo partition metadata for topic %s due to %s"
-            .format(topic, error.exceptionName))
+          "\nNo partition metadata for topic %s due to %s".format(
+            topic,
+            error.exceptionName))
     }
     topicMetadataInfo.append("}")
     topicMetadataInfo.toString()
@@ -182,9 +183,8 @@ case class PartitionMetadata(
       "\tleader: " + (if (leader.isDefined) leader.get.toString else "none"))
     partitionMetadataString.append("\treplicas: " + replicas.mkString(","))
     partitionMetadataString.append("\tisr: " + isr.mkString(","))
-    partitionMetadataString.append(
-      "\tisUnderReplicated: %s".format(
-        if (isr.size < replicas.size) "true" else "false"))
+    partitionMetadataString.append("\tisUnderReplicated: %s".format(
+      if (isr.size < replicas.size) "true" else "false"))
     partitionMetadataString.toString()
   }
 

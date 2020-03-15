@@ -42,38 +42,41 @@ class BigIntegerConvertTest {
   }
 
   @Test def testDoubleValueNegativeInfinity2(): Unit = {
-    val a = Array[Byte](-1, -1, -1, -1, -1, -1, -1, -8, 0, 0, 0, 0, 0, 0, 0, 0,
+    val a = Array[Byte](
+      -1, -1, -1, -1, -1, -1, -1, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      0, 0, 0, 0, 0, 0)
     val aSign = -1
     val aNumber = new BigInteger(aSign, a).doubleValue()
     assertEquals(Double.NegativeInfinity, aNumber, 0.0)
   }
 
   @Test def testDoubleValueNegMantissaIsZero(): Unit = {
-    val a = Array[Byte](-128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    val a = Array[Byte](
+      -128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      0, 0, 0, 0)
     val aSign = -1
     val aNumber = new BigInteger(aSign, a).doubleValue()
     assertEquals(-8.98846567431158e307, aNumber, 0.0)
   }
 
   @Test def testDoubleValueNegMaxValue(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -8, -1, -1, -1, -1, -1, -1,
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1, -1, -1, -1, -1)
+      -1, -1)
     val aSign = -1
     val aNumber = new BigInteger(aSign, a).doubleValue()
     assertEquals(-Double.MaxValue, aNumber, 0.0)
@@ -118,12 +121,13 @@ class BigIntegerConvertTest {
   }
 
   @Test def testDoubleValuePositiveInfinity1(): Unit = {
-    val a = Array[Byte](-1, -1, -1, -1, -1, -1, -1, -8, 0, 0, 0, 0, 0, 0, 0, 0,
+    val a = Array[Byte](
+      -1, -1, -1, -1, -1, -1, -1, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      0, 0, 0, 0, 0, 0)
     val aSign = 1
     val aNumber = new BigInteger(aSign, a).doubleValue()
     assertEquals(Double.PositiveInfinity, aNumber, 0.0)
@@ -140,12 +144,13 @@ class BigIntegerConvertTest {
   }
 
   @Test def testDoubleValuePosMantissaIsZero(): Unit = {
-    val a = Array[Byte](-128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    val a = Array[Byte](
+      -128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+      0, 0, 0, 0)
     val aSign = 1
     val result = 8.98846567431158e307
     val aNumber = new BigInteger(aSign, a).doubleValue()
@@ -153,14 +158,15 @@ class BigIntegerConvertTest {
   }
 
   @Test def testDoubleValuePosMaxValue(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -8, -1, -1, -1, -1, -1, -1,
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1, -1, -1, -1, -1)
+      -1, -1)
     val aSign = 1
     val aNumber = new BigInteger(aSign, a).doubleValue()
     assertEquals(Double.MaxValue, aNumber, 0.0)
@@ -242,8 +248,8 @@ class BigIntegerConvertTest {
   }
 
   @Ignore @Test def testFloatValueNegativeInfinity2(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1)
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
     val aSign = -1
     val aNumber = new BigInteger(aSign, a).floatValue()
     assertEquals(Float.NegativeInfinity, aNumber, 0.0f)
@@ -284,16 +290,16 @@ class BigIntegerConvertTest {
   }
 
   @Ignore @Test def testFloatValuePastNegMaxValue(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1)
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
     val aSign = -1
     val aNumber = new BigInteger(aSign, a).floatValue()
     assertEquals(Float.NegativeInfinity, aNumber, 0.0f)
   }
 
   @Ignore @Test def testFloatValuePastPosMaxValue(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1)
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
     val aSign = 1
     val aNumber = new BigInteger(aSign, a).floatValue()
     assertEquals(Float.PositiveInfinity, aNumber, 0.0f)
@@ -315,8 +321,8 @@ class BigIntegerConvertTest {
   }
 
   @Ignore @Test def testFloatValuePositiveInfinity1(): Unit = {
-    val a = Array[Byte](0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-      -1, -1, -1)
+    val a = Array[Byte](
+      0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
     val aSign = 1
     val aNumber: Float = new BigInteger(aSign, a).floatValue()
     assertEquals(Float.PositiveInfinity, aNumber, 0.0f)
@@ -435,8 +441,8 @@ class BigIntegerConvertTest {
   }
 
   @Test def testLongValuePositive1(): Unit = {
-    val aBytes = Array[Byte](12, 56, 100, -2, -76, 89, 45, 91, 3, 120, -34, -12,
-      45, 98)
+    val aBytes = Array[Byte](
+      12, 56, 100, -2, -76, 89, 45, 91, 3, 120, -34, -12, 45, 98)
     val result = 3268209772258930018L
     val aNumber = new BigInteger(aBytes).longValue()
     assertEquals(result, aNumber)

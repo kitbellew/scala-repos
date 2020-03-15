@@ -18,8 +18,8 @@ private[parser] trait WebSocketHeaders {
 
   def `sec-websocket-extensions` =
     rule {
-      oneOrMore(extension).separatedBy(
-        listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
+      oneOrMore(extension)
+        .separatedBy(listSep) ~ EOI ~> (`Sec-WebSocket-Extensions`(_))
     }
 
   def `sec-websocket-key` =

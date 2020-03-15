@@ -363,21 +363,23 @@ package object templates {
     val callQueryString =
       if (queryParams.size == 0) { "" }
       else {
-        """ + queryString(List(%s))""".format(queryParams
-          .map { p =>
-            ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
-              p.name) + """", """ + safeKeyword(
-              localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
-          }
-          .map {
-            case (u, Parameter(name, typeName, None, Some(default))) =>
-              """if(""" + safeKeyword(
-                localNames.getOrElse(
-                  name,
-                  name)) + """ == """ + default + """) None else Some(""" + u + """)"""
-            case (u, Parameter(name, typeName, None, None)) => "Some(" + u + ")"
-          }
-          .mkString(", "))
+        """ + queryString(List(%s))""".format(
+          queryParams
+            .map { p =>
+              ("""implicitly[QueryStringBindable[""" + p.typeName + """]].unbind("""" + paramNameOnQueryString(
+                p.name) + """", """ + safeKeyword(
+                localNames.get(p.name).getOrElse(p.name)) + """)""") -> p
+            }
+            .map {
+              case (u, Parameter(name, typeName, None, Some(default))) =>
+                """if(""" + safeKeyword(
+                  localNames.getOrElse(
+                    name,
+                    name)) + """ == """ + default + """) None else Some(""" + u + """)"""
+              case (u, Parameter(name, typeName, None, None)) =>
+                "Some(" + u + ")"
+            }
+            .mkString(", "))
 
       }
 
@@ -393,13 +395,14 @@ package object templates {
   def javascriptParameterConstraints(
       route: Route,
       localNames: Map[String, String]): Option[String] = {
-    Option(route.call.parameters
-      .getOrElse(Nil)
-      .filter { p => localNames.contains(p.name) && p.fixed.isDefined }
-      .map { p =>
-        localNames(
-          p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
-      }).filterNot(_.isEmpty).map(_.mkString(" && "))
+    Option(
+      route.call.parameters
+        .getOrElse(Nil)
+        .filter { p => localNames.contains(p.name) && p.fixed.isDefined }
+        .map { p =>
+          localNames(
+            p.name) + " == \"\"\" + implicitly[JavascriptLiteral[" + p.typeName + "]].to(" + p.fixed.get + ") + \"\"\""
+        }).filterNot(_.isEmpty).map(_.mkString(" && "))
   }
 
   /**
@@ -468,21 +471,22 @@ package object templates {
     val queryString =
       if (queryParams.size == 0) { "" }
       else {
-        """ + _qS([%s])""".format(queryParams
-          .map { p =>
-            val paramName: String = paramNameOnQueryString(p.name)
-            ("(\"\"\" + implicitly[QueryStringBindable[" + p.typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
-              .get(p.name)
-              .getOrElse(p.name) + """)""") -> p
-          }
-          .map {
-            case (u, Parameter(name, typeName, None, Some(default))) =>
-              """(""" + localNames
-                .get(name)
-                .getOrElse(name) + " == null ? null : " + u + ")"
-            case (u, Parameter(name, typeName, None, None)) => u
-          }
-          .mkString(", "))
+        """ + _qS([%s])""".format(
+          queryParams
+            .map { p =>
+              val paramName: String = paramNameOnQueryString(p.name)
+              ("(\"\"\" + implicitly[QueryStringBindable[" + p.typeName + "]].javascriptUnbind + \"\"\")" + """("""" + paramName + """", """ + localNames
+                .get(p.name)
+                .getOrElse(p.name) + """)""") -> p
+            }
+            .map {
+              case (u, Parameter(name, typeName, None, Some(default))) =>
+                """(""" + localNames
+                  .get(name)
+                  .getOrElse(name) + " == null ? null : " + u + ")"
+              case (u, Parameter(name, typeName, None, None)) => u
+            }
+            .mkString(", "))
 
       }
 

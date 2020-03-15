@@ -284,7 +284,9 @@ class InputOutputMetricsSuite
     // p1. Thus the math below for the test.
     assert(cartesianBytes != 0)
     assert(
-      cartesianBytes == firstSize * numPartitions + (cartVector.length * secondSize))
+      cartesianBytes == firstSize * numPartitions + (
+        cartVector.length * secondSize
+      ))
   }
 
   private def runAndReturnBytesRead(job: => Unit): Long = {

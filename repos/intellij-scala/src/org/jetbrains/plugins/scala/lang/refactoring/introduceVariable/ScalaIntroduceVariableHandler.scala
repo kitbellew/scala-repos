@@ -68,12 +68,11 @@ class ScalaIntroduceVariableHandler
 
       def findTypeElement(offset: Int) =
         if (!hasSelection && !isExpression)
-          Option(
-            PsiTreeUtil.findElementOfClassAtOffset(
-              file,
-              offset,
-              classOf[ScTypeElement],
-              false))
+          Option(PsiTreeUtil.findElementOfClassAtOffset(
+            file,
+            offset,
+            classOf[ScTypeElement],
+            false))
         else None
 
       file.findElementAt(offset) match {

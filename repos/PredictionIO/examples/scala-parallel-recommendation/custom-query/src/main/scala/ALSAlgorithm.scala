@@ -58,8 +58,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val uindex = userStringIntMap.getOrElse(r.user, -1)
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         (uindex -> iindex) -> 1
       }

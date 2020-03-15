@@ -24,11 +24,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
       routes: PartialFunction[(String, String), Handler])(
       check: WSResponse => T)(implicit awaitTimeout: Timeout): T = {
     val app = GuiceApplicationBuilder().routes(routes).build()
-    running(
-      TestServer(
-        testServerPort,
-        app,
-        serverProvider = Some(AkkaHttpServer.provider))) {
+    running(TestServer(
+      testServerPort,
+      app,
+      serverProvider = Some(AkkaHttpServer.provider))) {
       val plainRequest = wsUrl(path)(testServerPort)
       val responseFuture = exec(plainRequest)
       val response = await(responseFuture)(awaitTimeout)
@@ -99,10 +98,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "pass raw request URI to Actions" in {
       requestFromServer("/abc?foo=bar") { request =>
         request
-          .withHeaders(
-            ACCEPT_ENCODING -> "utf-8",
-            ACCEPT_LANGUAGE -> "en-US"
-          )
+          .withHeaders(ACCEPT_ENCODING -> "utf-8", ACCEPT_LANGUAGE -> "en-US")
           .get()
       } {
         case ("GET", "/abc") => Action { implicit request => Ok(request.uri) }
@@ -119,8 +115,7 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
           .withHeaders(
             ACCEPT_ENCODING -> "utf-8",
             ACCEPT_LANGUAGE -> "en-US",
-            `Raw-Request-URI`.name -> "/foo/bar/baz"
-          )
+            `Raw-Request-URI`.name -> "/foo/bar/baz")
           .get()
       } {
         case ("GET", "/abc") => Action { implicit request => Ok(request.uri) }

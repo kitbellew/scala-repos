@@ -164,13 +164,12 @@ object TreeTableView {
         treeTableItem: TreeItem[T],
         oldValue: T,
         newValue: T) =
-      this(
-        new jfxsc.TreeTableView.EditEvent[T](
-          source,
-          eventType,
-          treeTableItem,
-          oldValue,
-          newValue))
+      this(new jfxsc.TreeTableView.EditEvent[T](
+        source,
+        eventType,
+        treeTableItem,
+        oldValue,
+        newValue))
 
     /**
       * Returns the new value input into the TreeItem by the end user.
@@ -708,9 +707,8 @@ class TreeTableView[S](
     delegate
       .columnResizePolicyProperty()
       .setValue(
-        new jfxu.Callback[
-          jfxsc.TreeTableView.ResizeFeatures[_],
-          java.lang.Boolean] {
+        new jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[
+          _], java.lang.Boolean] {
           def call(
               v: jfxsc.TreeTableView.ResizeFeatures[_]): java.lang.Boolean = {
             p(v)
@@ -718,9 +716,8 @@ class TreeTableView[S](
         })
   }
   def columnResizePolicy_=(
-      p: jfxu.Callback[
-        jfxsc.TreeTableView.ResizeFeatures[_],
-        java.lang.Boolean]): Unit = {
+      p: jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[
+        _], java.lang.Boolean]): Unit = {
     delegate.columnResizePolicyProperty().setValue(p)
   }
 
@@ -863,10 +860,8 @@ class TreeTableView[S](
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]])
       : Unit = {
-    ObjectProperty.fillProperty[
-      jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](
-      onScrollToColumn,
-      v)
+    ObjectProperty.fillProperty[jfxe.EventHandler[
+      jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](onScrollToColumn, v)
   }
 
   /**

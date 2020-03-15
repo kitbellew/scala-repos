@@ -199,8 +199,7 @@ object Extraction {
               prefix + "["))
           .map(t => (t._1.substring(prefix.length), t._2))
           .toList
-          .toArray: _*
-      )
+          .toArray: _*)
 
     val ArrayProp = new Regex("""^(\.([^\.\[]+))\[(\d+)\].*$""")
     val ArrayElem = new Regex("""^(\[(\d+)\]).*$""")
@@ -292,16 +291,18 @@ object Extraction {
                   jsonFields.get(name).foreach {
                     case (n, v) =>
                       val typeArgs = typeInfo.parameterizedType
-                        .map(_.getActualTypeArguments
-                          .map(_.asInstanceOf[Class[_]])
-                          .toList
-                          .zipWithIndex
-                          .map {
-                            case (t, idx) =>
-                              if (t == classOf[java.lang.Object])
-                                ScalaSigReader.readField(name, a.getClass, idx)
-                              else t
-                          })
+                        .map(
+                          _.getActualTypeArguments
+                            .map(_.asInstanceOf[Class[_]])
+                            .toList
+                            .zipWithIndex
+                            .map {
+                              case (t, idx) =>
+                                if (t == classOf[java.lang.Object])
+                                  ScalaSigReader
+                                    .readField(name, a.getClass, idx)
+                                else t
+                            })
                       val value = extract0(
                         v,
                         typeInfo.clazz,
@@ -375,10 +376,9 @@ object Extraction {
         else {
           val grouped = fs groupBy (_.name == formats.typeHintFieldName)
           if (grouped.isDefinedAt(true))
-            Some(
-              (
-                grouped(true).head.value.values.toString,
-                grouped.get(false).getOrElse(Nil)))
+            Some((
+              grouped(true).head.value.values.toString,
+              grouped.get(false).getOrElse(Nil)))
           else None
         }
     }

@@ -123,9 +123,8 @@ case class TestMethod(
         if (r == classOf[Future[_]])
           await(method.invoke(testObject).asInstanceOf[Future[Any]])
         else if (r == classOf[DBIOAction[_, _, _]])
-          await(
-            testObject.db.run(
-              method.invoke(testObject).asInstanceOf[DBIO[Any]]))
+          await(testObject.db.run(
+            method.invoke(testObject).asInstanceOf[DBIO[Any]]))
         else
           throw new RuntimeException(
             s"Illegal return type: '${r.getName}' in test method '$name' -- AsyncTest methods must return Future or Action")
@@ -206,12 +205,11 @@ sealed abstract class GenericTest[TDB >: Null <: TestDB](
     val cs = qc.run(q.toNode)
     val found = cs.tree.collect { case c: Comprehension => c }.length
     if (found != exp)
-      throw cs.symbolNamer.use(
-        new SlickTreeException(
-          s"Found $found Comprehension nodes, should be $exp",
-          cs.tree,
-          mark = (_.isInstanceOf[Comprehension]),
-          removeUnmarked = false))
+      throw cs.symbolNamer.use(new SlickTreeException(
+        s"Found $found Comprehension nodes, should be $exp",
+        cs.tree,
+        mark = (_.isInstanceOf[Comprehension]),
+        removeUnmarked = false))
   }
 
   def rcap = RelationalCapabilities

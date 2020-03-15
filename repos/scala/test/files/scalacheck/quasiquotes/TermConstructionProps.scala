@@ -39,13 +39,11 @@ object TermConstructionProps extends QuasiquoteProperties("term construction") {
 
   property("unquote trees into block") = forAll {
     (t1: Tree, t2: Tree, t3: Tree) =>
-      blockInvariant(
-        q"""{
+      blockInvariant(q"""{
       $t1
       $t2
       $t3
-    }""",
-        List(t1, t2, t3))
+    }""", List(t1, t2, t3))
   }
 
   property("unquote tree into new") = forAll { (tree: Tree) =>

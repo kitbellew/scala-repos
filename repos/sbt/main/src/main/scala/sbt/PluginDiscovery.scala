@@ -102,11 +102,9 @@ object PluginDiscovery {
       loader: ClassLoader,
       resourceName: String,
       subclasses: String*): Seq[String] =
-    (
-      binaryModuleNames(data(classpath), loader, resourceName) ++
-        (analyzed(classpath) flatMap (a =>
-          sourceModuleNames(a, subclasses: _*)))
-    ).distinct
+    (binaryModuleNames(data(classpath), loader, resourceName) ++
+      (analyzed(classpath) flatMap (a =>
+        sourceModuleNames(a, subclasses: _*)))).distinct
 
   /** Discovers top-level modules in `analysis` that inherit from any of `subclasses`. */
   def sourceModuleNames(

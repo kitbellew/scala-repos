@@ -67,18 +67,18 @@ class AkkaConsoleReporter(
 
   private def printMeter(meter: Meter) {
     output.print("             count = %d%n".format(meter.getCount))
-    output.print(
-      "         mean rate = %2.2f events/%s%n"
-        .format(convertRate(meter.getMeanRate), getRateUnit))
-    output.print(
-      "     1-minute rate = %2.2f events/%s%n"
-        .format(convertRate(meter.getOneMinuteRate), getRateUnit))
-    output.print(
-      "     5-minute rate = %2.2f events/%s%n"
-        .format(convertRate(meter.getFiveMinuteRate), getRateUnit))
-    output.print(
-      "    15-minute rate = %2.2f events/%s%n"
-        .format(convertRate(meter.getFifteenMinuteRate), getRateUnit))
+    output.print("         mean rate = %2.2f events/%s%n".format(
+      convertRate(meter.getMeanRate),
+      getRateUnit))
+    output.print("     1-minute rate = %2.2f events/%s%n".format(
+      convertRate(meter.getOneMinuteRate),
+      getRateUnit))
+    output.print("     5-minute rate = %2.2f events/%s%n".format(
+      convertRate(meter.getFiveMinuteRate),
+      getRateUnit))
+    output.print("    15-minute rate = %2.2f events/%s%n".format(
+      convertRate(meter.getFifteenMinuteRate),
+      getRateUnit))
   }
 
   private def printCounter(entry: Counter) {
@@ -112,48 +112,48 @@ class AkkaConsoleReporter(
   private def printTimer(timer: Timer) {
     val snapshot = timer.getSnapshot
     output.print("             count = %d%n".format(timer.getCount))
-    output.print(
-      "         mean rate = %2.2f calls/%s%n"
-        .format(convertRate(timer.getMeanRate), getRateUnit))
-    output.print(
-      "     1-minute rate = %2.2f calls/%s%n"
-        .format(convertRate(timer.getOneMinuteRate), getRateUnit))
-    output.print(
-      "     5-minute rate = %2.2f calls/%s%n"
-        .format(convertRate(timer.getFiveMinuteRate), getRateUnit))
-    output.print(
-      "    15-minute rate = %2.2f calls/%s%n"
-        .format(convertRate(timer.getFifteenMinuteRate), getRateUnit))
-    output.print(
-      "               min = %2.2f %s%n"
-        .format(convertDuration(snapshot.getMin), getDurationUnit))
-    output.print(
-      "               max = %2.2f %s%n"
-        .format(convertDuration(snapshot.getMax), getDurationUnit))
-    output.print(
-      "              mean = %2.2f %s%n"
-        .format(convertDuration(snapshot.getMean), getDurationUnit))
-    output.print(
-      "            stddev = %2.2f %s%n"
-        .format(convertDuration(snapshot.getStdDev), getDurationUnit))
-    output.print(
-      "            median = %2.2f %s%n"
-        .format(convertDuration(snapshot.getMedian), getDurationUnit))
-    output.print(
-      "              75%% <= %2.2f %s%n"
-        .format(convertDuration(snapshot.get75thPercentile), getDurationUnit))
-    output.print(
-      "              95%% <= %2.2f %s%n"
-        .format(convertDuration(snapshot.get95thPercentile), getDurationUnit))
-    output.print(
-      "              98%% <= %2.2f %s%n"
-        .format(convertDuration(snapshot.get98thPercentile), getDurationUnit))
-    output.print(
-      "              99%% <= %2.2f %s%n"
-        .format(convertDuration(snapshot.get99thPercentile), getDurationUnit))
-    output.print(
-      "            99.9%% <= %2.2f %s%n"
-        .format(convertDuration(snapshot.get999thPercentile), getDurationUnit))
+    output.print("         mean rate = %2.2f calls/%s%n".format(
+      convertRate(timer.getMeanRate),
+      getRateUnit))
+    output.print("     1-minute rate = %2.2f calls/%s%n".format(
+      convertRate(timer.getOneMinuteRate),
+      getRateUnit))
+    output.print("     5-minute rate = %2.2f calls/%s%n".format(
+      convertRate(timer.getFiveMinuteRate),
+      getRateUnit))
+    output.print("    15-minute rate = %2.2f calls/%s%n".format(
+      convertRate(timer.getFifteenMinuteRate),
+      getRateUnit))
+    output.print("               min = %2.2f %s%n".format(
+      convertDuration(snapshot.getMin),
+      getDurationUnit))
+    output.print("               max = %2.2f %s%n".format(
+      convertDuration(snapshot.getMax),
+      getDurationUnit))
+    output.print("              mean = %2.2f %s%n".format(
+      convertDuration(snapshot.getMean),
+      getDurationUnit))
+    output.print("            stddev = %2.2f %s%n".format(
+      convertDuration(snapshot.getStdDev),
+      getDurationUnit))
+    output.print("            median = %2.2f %s%n".format(
+      convertDuration(snapshot.getMedian),
+      getDurationUnit))
+    output.print("              75%% <= %2.2f %s%n".format(
+      convertDuration(snapshot.get75thPercentile),
+      getDurationUnit))
+    output.print("              95%% <= %2.2f %s%n".format(
+      convertDuration(snapshot.get95thPercentile),
+      getDurationUnit))
+    output.print("              98%% <= %2.2f %s%n".format(
+      convertDuration(snapshot.get98thPercentile),
+      getDurationUnit))
+    output.print("              99%% <= %2.2f %s%n".format(
+      convertDuration(snapshot.get99thPercentile),
+      getDurationUnit))
+    output.print("            99.9%% <= %2.2f %s%n".format(
+      convertDuration(snapshot.get999thPercentile),
+      getDurationUnit))
   }
 
   private def printKnownOpsInTimespanCounter(counter: KnownOpsInTimespanTimer) {
@@ -174,21 +174,21 @@ class AkkaConsoleReporter(
     output.print("               max = %d %s%n".format(data.getMaxValue, unit))
     output.print("              mean = %2.2f %s%n".format(data.getMean, unit))
     output.print("            stddev = %2.2f%n".format(data.getStdDeviation))
-    output.print(
-      "              75%% <= %d %s%n"
-        .format(data.getValueAtPercentile(75.0), unit))
-    output.print(
-      "              95%% <= %d %s%n"
-        .format(data.getValueAtPercentile(95.0), unit))
-    output.print(
-      "              98%% <= %d %s%n"
-        .format(data.getValueAtPercentile(98.0), unit))
-    output.print(
-      "              99%% <= %d %s%n"
-        .format(data.getValueAtPercentile(99.0), unit))
-    output.print(
-      "            99.9%% <= %d %s%n"
-        .format(data.getValueAtPercentile(99.9), unit))
+    output.print("              75%% <= %d %s%n".format(
+      data.getValueAtPercentile(75.0),
+      unit))
+    output.print("              95%% <= %d %s%n".format(
+      data.getValueAtPercentile(95.0),
+      unit))
+    output.print("              98%% <= %d %s%n".format(
+      data.getValueAtPercentile(98.0),
+      unit))
+    output.print("              99%% <= %d %s%n".format(
+      data.getValueAtPercentile(99.0),
+      unit))
+    output.print("            99.9%% <= %d %s%n".format(
+      data.getValueAtPercentile(99.9),
+      unit))
 
     if (verbose) data.outputPercentileDistribution(output, 1)
   }

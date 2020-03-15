@@ -86,13 +86,11 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
       path: String,
       shardId: Int,
       addr: InetSocketAddress,
-      endpoint: Option[String]
-  ): Future[Announcement] = {
+      endpoint: Option[String]): Future[Announcement] = {
     val zkHosts = factory.hostSet(hosts)
     if (zkHosts.isEmpty)
-      Future.exception(
-        new ZkAnnouncerException(
-          "ZK client address \"%s\" resolves to nothing".format(hosts)))
+      Future.exception(new ZkAnnouncerException(
+        "ZK client address \"%s\" resolves to nothing".format(hosts)))
     else announce(factory.get(zkHosts)._1, path, shardId, addr, endpoint)
   }
 
@@ -101,8 +99,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
       path: String,
       shardId: Int,
       addr: InetSocketAddress,
-      endpoint: Option[String]
-  ): Future[Announcement] = {
+      endpoint: Option[String]): Future[Announcement] = {
     val conf = serverSets find { s =>
       s.client == client && s.path == path && s.shardId == shardId
     } getOrElse {
@@ -152,7 +149,7 @@ class ZkAnnouncer(factory: ZkClientFactory) extends Announcer { self =>
         announce(hosts, path, shardId.toInt, ia, Some(endpoint))
 
       case _ =>
-        Future.exception(
-          new ZkAnnouncerException("Invalid addr \"%s\"".format(addr)))
+        Future.exception(new ZkAnnouncerException(
+          "Invalid addr \"%s\"".format(addr)))
     }
 }

@@ -48,13 +48,12 @@ class LowLevelOutgoingConnectionSpec
 
       "has a request with default entity" in new TestSetup {
         val probe = TestPublisher.manualProbe[ByteString]()
-        requestsSub.sendNext(
-          HttpRequest(
-            PUT,
-            entity = HttpEntity(
-              ContentTypes.`application/octet-stream`,
-              8,
-              Source.fromPublisher(probe))))
+        requestsSub.sendNext(HttpRequest(
+          PUT,
+          entity = HttpEntity(
+            ContentTypes.`application/octet-stream`,
+            8,
+            Source.fromPublisher(probe))))
         expectWireData("""PUT / HTTP/1.1
             |Host: example.com
             |User-Agent: akka-http/test
@@ -266,13 +265,12 @@ class LowLevelOutgoingConnectionSpec
 
       "catch the request entity stream being shorter than the Content-Length" in new TestSetup {
         val probe = TestPublisher.manualProbe[ByteString]()
-        requestsSub.sendNext(
-          HttpRequest(
-            PUT,
-            entity = HttpEntity(
-              ContentTypes.`application/octet-stream`,
-              8,
-              Source.fromPublisher(probe))))
+        requestsSub.sendNext(HttpRequest(
+          PUT,
+          entity = HttpEntity(
+            ContentTypes.`application/octet-stream`,
+            8,
+            Source.fromPublisher(probe))))
         expectWireData("""PUT / HTTP/1.1
             |Host: example.com
             |User-Agent: akka-http/test
@@ -297,13 +295,12 @@ class LowLevelOutgoingConnectionSpec
 
       "catch the request entity stream being longer than the Content-Length" in new TestSetup {
         val probe = TestPublisher.manualProbe[ByteString]()
-        requestsSub.sendNext(
-          HttpRequest(
-            PUT,
-            entity = HttpEntity(
-              ContentTypes.`application/octet-stream`,
-              8,
-              Source.fromPublisher(probe))))
+        requestsSub.sendNext(HttpRequest(
+          PUT,
+          entity = HttpEntity(
+            ContentTypes.`application/octet-stream`,
+            8,
+            Source.fromPublisher(probe))))
         expectWireData("""PUT / HTTP/1.1
             |Host: example.com
             |User-Agent: akka-http/test
@@ -429,10 +426,9 @@ class LowLevelOutgoingConnectionSpec
 
         implicit class XResponse(response: HttpResponse) {
           def expectStrictEntityWithLength(bytes: Int) =
-            response shouldEqual HttpResponse(
-              entity = Strict(
-                ContentTypes.`application/octet-stream`,
-                ByteString(entityBase take bytes)))
+            response shouldEqual HttpResponse(entity = Strict(
+              ContentTypes.`application/octet-stream`,
+              ByteString(entityBase take bytes)))
 
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
             inside(response) {
@@ -453,7 +449,9 @@ class LowLevelOutgoingConnectionSpec
                   entity.dataBytes
                     .runFold(ByteString.empty)(_ ++ _)
                     .awaitResult(100.millis)
-                (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
+                (
+                  the[Exception] thrownBy gatherBytes
+                ).getCause shouldEqual EntityStreamSizeException(
                   limit,
                   actualSize)
             }
@@ -508,8 +506,8 @@ class LowLevelOutgoingConnectionSpec
         new LengthVerificationTest(maxContentLength = 10) {
           sendStandardRequest()
           sendCloseDelimitedResponseWithLength(11)
-          expectResponse().expectSizeErrorInEntityOfType[CloseDelimited](limit =
-            10)
+          expectResponse()
+            .expectSizeErrorInEntityOfType[CloseDelimited](limit = 10)
         }
       }
 
@@ -643,11 +641,10 @@ class LowLevelOutgoingConnectionSpec
     "support requests with an `Expect: 100-continue` headers" which {
 
       "have a strict entity and receive a `100 Continue` response" in new TestSetup {
-        requestsSub.sendNext(
-          HttpRequest(
-            POST,
-            headers = List(Expect.`100-continue`),
-            entity = "ABCDEF"))
+        requestsSub.sendNext(HttpRequest(
+          POST,
+          headers = List(Expect.`100-continue`),
+          entity = "ABCDEF"))
         expectWireData("""POST / HTTP/1.1
             |Expect: 100-continue
             |Host: example.com
@@ -680,14 +677,13 @@ class LowLevelOutgoingConnectionSpec
 
       "have a default entity and receive a `100 Continue` response" in new TestSetup {
         val entityParts = List("ABC", "DE", "FGH").map(ByteString(_))
-        requestsSub.sendNext(
-          HttpRequest(
-            POST,
-            headers = List(Expect.`100-continue`),
-            entity = HttpEntity(
-              ContentTypes.`application/octet-stream`,
-              8,
-              Source(entityParts))))
+        requestsSub.sendNext(HttpRequest(
+          POST,
+          headers = List(Expect.`100-continue`),
+          entity = HttpEntity(
+            ContentTypes.`application/octet-stream`,
+            8,
+            Source(entityParts))))
         expectWireData("""POST / HTTP/1.1
             |Expect: 100-continue
             |Host: example.com
@@ -721,11 +717,10 @@ class LowLevelOutgoingConnectionSpec
       }
 
       "receive a normal response" in new TestSetup {
-        requestsSub.sendNext(
-          HttpRequest(
-            POST,
-            headers = List(Expect.`100-continue`),
-            entity = "ABCDEF"))
+        requestsSub.sendNext(HttpRequest(
+          POST,
+          headers = List(Expect.`100-continue`),
+          entity = "ABCDEF"))
         expectWireData("""POST / HTTP/1.1
             |Expect: 100-continue
             |Host: example.com
@@ -753,11 +748,10 @@ class LowLevelOutgoingConnectionSpec
       }
 
       "receive an error response" in new TestSetup {
-        requestsSub.sendNext(
-          HttpRequest(
-            POST,
-            headers = List(Expect.`100-continue`),
-            entity = "ABCDEF"))
+        requestsSub.sendNext(HttpRequest(
+          POST,
+          headers = List(Expect.`100-continue`),
+          entity = "ABCDEF"))
         requestsSub.sendComplete()
         expectWireData("""POST / HTTP/1.1
             |Expect: 100-continue
@@ -813,8 +807,8 @@ class LowLevelOutgoingConnectionSpec
 
     def settings = {
       val s = ClientConnectionSettings(system)
-        .withUserAgentHeader(
-          Some(`User-Agent`(List(ProductVersion("akka-http", "test")))))
+        .withUserAgentHeader(Some(
+          `User-Agent`(List(ProductVersion("akka-http", "test")))))
       if (maxResponseContentLength < 0) s
       else
         s.withParserSettings(
@@ -827,11 +821,10 @@ class LowLevelOutgoingConnectionSpec
 
       RunnableGraph
         .fromGraph(
-          GraphDSL.create(
-            OutgoingConnectionBlueprint(
-              Host("example.com"),
-              settings,
-              NoLogging)) { implicit b ⇒ client ⇒
+          GraphDSL.create(OutgoingConnectionBlueprint(
+            Host("example.com"),
+            settings,
+            NoLogging)) { implicit b ⇒ client ⇒
             import GraphDSL.Implicits._
             Source.fromPublisher(netIn) ~> Flow[ByteString].map(
               SessionBytes(null, _)) ~> client.in2

@@ -390,8 +390,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val oldFields = parse(oldJson).asInstanceOf[JObject].obj
     val newFields = oldFields ++ Seq(
       JField("tomato", JString("not-a-fruit")),
-      JField("potato", JString("not-po-tah-to"))
-    )
+      JField("potato", JString("not-po-tah-to")))
     val newJson = pretty(render(JObject(newFields)))
     // send two requests, one with the unknown fields and the other without
     val (response1, code1) = sendHttpRequestWithResponse(
@@ -471,14 +470,13 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
       killMessage: String = "driver is killed",
       state: DriverState = FINISHED,
       exception: Option[Exception] = None): String = {
-    startServer(
-      new DummyMaster(
-        _,
-        submitId,
-        submitMessage,
-        killMessage,
-        state,
-        exception))
+    startServer(new DummyMaster(
+      _,
+      submitId,
+      submitMessage,
+      killMessage,
+      state,
+      exception))
   }
 
   /** Start a smarter dummy server that keeps track of submitted driver states. */
@@ -643,12 +641,11 @@ private class DummyMaster(
   override def receiveAndReply(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
     case RequestSubmitDriver(driverDesc) =>
-      context.reply(
-        SubmitDriverResponse(
-          self,
-          success = true,
-          Some(submitId),
-          submitMessage))
+      context.reply(SubmitDriverResponse(
+        self,
+        success = true,
+        Some(submitId),
+        submitMessage))
     case RequestKillDriver(driverId) =>
       context.reply(
         KillDriverResponse(self, driverId, success = true, killMessage))

@@ -172,10 +172,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
 
       case Success(_, remaining) =>
         val remainingString = remaining.source
-          .subSequence(
-            remaining.offset,
-            remaining.source.length
-          )
+          .subSequence(remaining.offset, remaining.source.length)
           .toString
 
         common.Failure(

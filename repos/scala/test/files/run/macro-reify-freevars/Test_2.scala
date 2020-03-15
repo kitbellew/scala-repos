@@ -2,14 +2,13 @@ object Test extends App {
   import scala.reflect.runtime.universe._
   import scala.reflect.runtime.{currentMirror => cm}
   import scala.tools.reflect.ToolBox
-  val q = New(
-    AppliedTypeTree(
+  val q = New(AppliedTypeTree(
+    Select(
       Select(
-        Select(
-          Select(Ident(TermName("scala")), TermName("collection")),
-          TermName("slick")),
-        TypeName("Queryable")),
-      List(Ident(TermName("Int")))))
+        Select(Ident(TermName("scala")), TermName("collection")),
+        TermName("slick")),
+      TypeName("Queryable")),
+    List(Ident(TermName("Int")))))
   val x = ValDef(NoMods, TermName("x"), Ident(TermName("Int")), EmptyTree)
   val fn = Function(
     List(x),

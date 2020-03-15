@@ -316,20 +316,18 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 def updateRes(expected: ScType) {
                   nonValueType = InferUtil.localTypeInference(
                     nonValueType.internalType,
-                    Seq(
-                      new Parameter(
-                        "",
-                        None,
-                        expected,
-                        false,
-                        false,
-                        false,
-                        0)),
-                    Seq(
-                      new Expression(
-                        InferUtil
-                          .undefineSubstitutor(nonValueType.typeParameters)
-                          .subst(res.inferValueType))),
+                    Seq(new Parameter(
+                      "",
+                      None,
+                      expected,
+                      false,
+                      false,
+                      false,
+                      0)),
+                    Seq(new Expression(
+                      InferUtil
+                        .undefineSubstitutor(nonValueType.typeParameters)
+                        .subst(res.inferValueType))),
                     nonValueType.typeParameters,
                     shouldUndefineParameters = false,
                     filterTypeParams = false
@@ -484,8 +482,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl
-                    .calculateReferenceType(ref, shapesOnly = false),
+                  ScSimpleTypeElementImpl.calculateReferenceType(
+                    ref,
+                    shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(tp, ss)
@@ -506,8 +505,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl
-                    .calculateReferenceType(ref, shapesOnly = false),
+                  ScSimpleTypeElementImpl.calculateReferenceType(
+                    ref,
+                    shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(result, ss)
@@ -562,8 +562,7 @@ object ScSimpleTypeElementImpl {
         }
       case superRef: ScSuperReference =>
         val template = superRef.drvTemplate.getOrElse(
-          return Failure("Cannot find enclosing container", Some(superRef))
-        )
+          return Failure("Cannot find enclosing container", Some(superRef)))
         Success(ScThisType(template), Some(path))
     }
   }
@@ -583,9 +582,10 @@ object ScSimpleTypeElementImpl {
                                                    (to.typeParameters.isEmpty || ref.getContext
                                                      .isInstanceOf[ScParameterizedTypeElement]) =>
                                                Some(r)
-                                             case Array(r @ ScalaResolveResult(
-                                                   to: PsiTypeParameterListOwner,
-                                                   subst: ScSubstitutor))
+                                             case Array(
+                                                   r @ ScalaResolveResult(
+                                                     to: PsiTypeParameterListOwner,
+                                                     subst: ScSubstitutor))
                                                  if to.isInstanceOf[
                                                    PsiNamedElement] &&
                                                    (to.getTypeParameters.isEmpty || ref.getContext

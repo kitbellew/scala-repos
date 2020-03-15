@@ -204,20 +204,17 @@ abstract class FormatInterpolator {
     else {
       val scalaPackage = Select(Ident(nme.ROOTPKG), TermName("scala"))
       val newStringOps = Select(
-        New(
+        New(Select(
           Select(
-            Select(
-              Select(scalaPackage, TermName("collection")),
-              TermName("immutable")),
-            TypeName("StringOps"))),
-        termNames.CONSTRUCTOR
-      )
+            Select(scalaPackage, TermName("collection")),
+            TermName("immutable")),
+          TypeName("StringOps"))),
+        termNames.CONSTRUCTOR)
       val expr = Apply(
         Select(
           Apply(newStringOps, List(Literal(Constant(format)))),
           TermName("format")),
-        ids.toList
-      )
+        ids.toList)
       val p = c.macroApplication.pos
       Block(evals.toList, atPos(p.focus)(expr)) setPos p.makeTransparent
     }
@@ -314,9 +311,10 @@ abstract class FormatInterpolator {
       *  A more complete message would be nice.
       */
     def pickAcceptable(arg: Tree, variants: Type*): Option[Type] =
-      variants find (arg.tpe <:< _) orElse (
-        variants find (c.inferImplicitView(arg, arg.tpe, _) != EmptyTree)
-      ) orElse Some(variants(0))
+      variants find (arg.tpe <:< _) orElse (variants find (c.inferImplicitView(
+        arg,
+        arg.tpe,
+        _) != EmptyTree)) orElse Some(variants(0))
   }
   object Conversion {
     import SpecifierGroups.{Spec, CC}
@@ -376,8 +374,9 @@ abstract class FormatInterpolator {
     override def verify =
       op match {
         case "%" =>
-          super.verify && noPrecision && truly(width foreach (_ =>
-            c.warning(groupPos(Width), "width ignored on literal")))
+          super.verify && noPrecision && truly(
+            width foreach (_ =>
+              c.warning(groupPos(Width), "width ignored on literal")))
         case "n" => noFlags && noWidth && noPrecision
       }
     override protected val okFlags = "-"

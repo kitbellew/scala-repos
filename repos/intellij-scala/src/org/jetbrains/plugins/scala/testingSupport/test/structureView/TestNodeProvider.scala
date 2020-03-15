@@ -288,10 +288,11 @@ object TestNodeProvider {
       paramNames: List[String]*): Boolean = {
     clauses.length == paramNames.length && (clauses zip paramNames).forall {
       case (clause, names) =>
-        clause.parameters.length == names.length && (clause.parameters zip names)
-          .forall {
-            case (param, name) => param.getType.getCanonicalText == name
-          }
+        clause.parameters.length == names.length && (
+          clause.parameters zip names
+        ).forall {
+          case (param, name) => param.getType.getCanonicalText == name
+        }
     }
   }
 
@@ -345,9 +346,8 @@ object TestNodeProvider {
         methodCall.getEffectiveInvokedExpr match {
           case ref: ScReferenceExpression => Some(ref)
           case otherExpr =>
-            Option(
-              otherExpr.findFirstChildByType(
-                ScalaElementTypes.REFERENCE_EXPRESSION))
+            Option(otherExpr.findFirstChildByType(
+              ScalaElementTypes.REFERENCE_EXPRESSION))
               .map(_.asInstanceOf[ScReferenceExpression])
         }
       case _ => None
@@ -366,27 +366,24 @@ object TestNodeProvider {
           expr,
           "ignore",
           List("void")) || checkIgnoreExpr(expr))) {
-      Some(
-        ignoredScalaTestElement(
-          expr,
-          getInfixExprTestName(expr),
-          entry.children(())))
+      Some(ignoredScalaTestElement(
+        expr,
+        getInfixExprTestName(expr),
+        entry.children(())))
     } else if (checkScInfixExpr(
                  expr,
                  "is",
                  List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(
                  expr)) {
-      Some(
-        pendingScalaTestElement(
-          expr,
-          getInfixExprTestName(expr),
-          entry.children(())))
+      Some(pendingScalaTestElement(
+        expr,
+        getInfixExprTestName(expr),
+        entry.children(())))
     } else if (checkScInfixExpr(expr, entry.funName, entry.args: _*)) {
-      Some(
-        new TestStructureViewElement(
-          expr,
-          getInfixExprTestName(expr),
-          entry.children(())))
+      Some(new TestStructureViewElement(
+        expr,
+        getInfixExprTestName(expr),
+        entry.children(())))
     } else None
   }
 
@@ -495,13 +492,12 @@ object TestNodeProvider {
       project: Project): Option[TestStructureViewElement] = {
     //check matchers here because they are supposed to be stacked, as opposed to scalaTest, where bases are distinct
     if (isSpecs2Expr(expr: ScInfixExpr)) {
-      Some(
-        new TestStructureViewElement(
-          expr,
-          getInfixExprTestName(expr),
-          children,
-          if (checkSpecsPending(expr)) TestStructureViewElement.pendingStatusId
-          else TestStructureViewElement.normalStatusId))
+      Some(new TestStructureViewElement(
+        expr,
+        getInfixExprTestName(expr),
+        children,
+        if (checkSpecsPending(expr)) TestStructureViewElement.pendingStatusId
+        else TestStructureViewElement.normalStatusId))
     } else None
   }
 
@@ -513,17 +509,15 @@ object TestNodeProvider {
           expr,
           "ignore",
           scMethodCallDefaultArg: _*)) {
-      Some(
-        ignoredScalaTestElement(
-          expr,
-          getMethodCallTestName(expr),
-          entry.children(())))
+      Some(ignoredScalaTestElement(
+        expr,
+        getMethodCallTestName(expr),
+        entry.children(())))
     } else if (entry.canPend && checkMethodCallPending(expr)) {
-      Some(
-        pendingScalaTestElement(
-          expr,
-          getMethodCallTestName(expr),
-          entry.children(())))
+      Some(pendingScalaTestElement(
+        expr,
+        getMethodCallTestName(expr),
+        entry.children(())))
     } else if (checkScMethodCall(
                  expr,
                  entry.funName,
@@ -531,11 +525,10 @@ object TestNodeProvider {
                  expr,
                  entry.funName,
                  scMethodCallDefaultArg: _*)) {
-      Some(
-        new TestStructureViewElement(
-          expr,
-          getMethodCallTestName(expr),
-          entry.children(())))
+      Some(new TestStructureViewElement(
+        expr,
+        getMethodCallTestName(expr),
+        entry.children(())))
     } else None
   }
 
@@ -551,11 +544,10 @@ object TestNodeProvider {
     extractScalaTestScInfixExpr(
       expr,
       ExtractEntry("$minus", true, false, _ => children, List("void")),
-      project).orElse(
-      extractScalaTestScInfixExpr(
-        expr,
-        ExtractEntry("in", true, true, List("void")),
-        project))
+      project).orElse(extractScalaTestScInfixExpr(
+      expr,
+      ExtractEntry("in", true, true, List("void")),
+      project))
   }
 
   private def extractFlatSpec(
@@ -578,49 +570,44 @@ object TestNodeProvider {
       expr,
       ExtractEntry("in", true, true, List("void")),
       project)
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "should",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "must",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry(
-            "can",
-            false,
-            false,
-            _ => children,
-            List("void"),
-            List("org.scalatest.words.StringVerbBlockRegistration")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry("when", false, false, _ => children, List("void")),
-          project))
-      .orElse(
-        extractScalaTestScInfixExpr(
-          expr,
-          ExtractEntry("which", false, false, _ => children, List("void")),
-          project))
+      .orElse(extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "should",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project))
+      .orElse(extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "must",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project))
+      .orElse(extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry(
+          "can",
+          false,
+          false,
+          _ => children,
+          List("void"),
+          List("org.scalatest.words.StringVerbBlockRegistration")),
+        project))
+      .orElse(extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry("when", false, false, _ => children, List("void")),
+        project))
+      .orElse(extractScalaTestScInfixExpr(
+        expr,
+        ExtractEntry("which", false, false, _ => children, List("void")),
+        project))
   }
 
   private def extractFunSpec(
@@ -640,16 +627,14 @@ object TestNodeProvider {
         List("java.lang.String"),
         List("void")),
       project)
-      .orElse(
-        extractScMethodCall(
-          expr,
-          ExtractEntry("it", true, true, scMethodCallDefaultArg: _*),
-          project))
-      .orElse(
-        extractScMethodCall(
-          expr,
-          ExtractEntry("they", true, true, scMethodCallDefaultArg: _*),
-          project))
+      .orElse(extractScMethodCall(
+        expr,
+        ExtractEntry("it", true, true, scMethodCallDefaultArg: _*),
+        project))
+      .orElse(extractScMethodCall(
+        expr,
+        ExtractEntry("they", true, true, scMethodCallDefaultArg: _*),
+        project))
   }
 
   private def extractFeatureSpec(
@@ -668,11 +653,10 @@ object TestNodeProvider {
         _ => children,
         List("java.lang.String"),
         List("void")),
-      project).orElse(
-      extractScMethodCall(
-        expr,
-        ExtractEntry("scenario", true, true, scMethodCallDefaultArg: _*),
-        project))
+      project).orElse(extractScMethodCall(
+      expr,
+      ExtractEntry("scenario", true, true, scMethodCallDefaultArg: _*),
+      project))
   }
 
   private def extractPropSpec(
@@ -724,17 +708,15 @@ object TestNodeProvider {
         expr: PsiElement,
         project: Project): Option[TestStructureViewElement] = {
       if (isUTestInfixExpr(expr)) {
-        Some(
-          new TestStructureViewElement(
-            expr,
-            getInfixExprTestName(expr.asInstanceOf[ScInfixExpr]),
-            processChildren(getInnerExprs(expr), extractUTestInner, project)))
+        Some(new TestStructureViewElement(
+          expr,
+          getInfixExprTestName(expr.asInstanceOf[ScInfixExpr]),
+          processChildren(getInnerExprs(expr), extractUTestInner, project)))
       } else if (isUTestApplyCall(expr)) {
-        Some(
-          new TestStructureViewElement(
-            expr,
-            getMethodCallTestName(expr.asInstanceOf[ScMethodCall]),
-            processChildren(getInnerExprs(expr), extractUTestInner, project)))
+        Some(new TestStructureViewElement(
+          expr,
+          getMethodCallTestName(expr.asInstanceOf[ScMethodCall]),
+          processChildren(getInnerExprs(expr), extractUTestInner, project)))
       } else None
     }
     if (isUTestSuiteApplyCall(expr)) {
@@ -812,14 +794,11 @@ object TestNodeProvider {
       case _ =>
         checkParent(elem, classOf[ScReferencePattern])
           .flatMap(checkParent(_, classOf[ScPatternList]))
-          .orElse(
-            elem.getParent match {
-              case parent: ScPatternDefinition if parent.bindings.size == 1 =>
-                Option(
-                  PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
-              case _ => None
-            }
-          )
+          .orElse(elem.getParent match {
+            case parent: ScPatternDefinition if parent.bindings.size == 1 =>
+              Option(PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
+            case _ => None
+          })
           .map((_, None))
     }
   }

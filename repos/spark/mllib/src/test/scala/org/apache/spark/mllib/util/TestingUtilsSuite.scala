@@ -192,8 +192,10 @@ class TestingUtilsSuite extends SparkFunSuite {
         Vectors.dense(Array(3.1 + 1e-5, 3.5 + 2e-7, 1 + 1e-3)) absTol 1e-6)
 
     // Comparisons of two sparse vectors
-    assert(Vectors.sparse(3, Array(0, 2), Array(3.1, 2.4)) ~==
-      Vectors.sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) absTol 1e-6)
+    assert(
+      Vectors.sparse(3, Array(0, 2), Array(3.1, 2.4)) ~==
+        Vectors
+          .sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) absTol 1e-6)
 
     assert(
       Vectors.sparse(3, Array(0, 2), Array(3.1 + 1e-8, 2.4 + 1e-7)) ~==

@@ -49,8 +49,6 @@ private[controllers] trait TheftPrevention { self: LilaController =>
         .map { Pov(game, _) }
     }
 
-  protected lazy val theftResponse = Unauthorized(
-    jsonError(
-      "This game requires authentication"
-    )) as JSON
+  protected lazy val theftResponse =
+    Unauthorized(jsonError("This game requires authentication")) as JSON
 }

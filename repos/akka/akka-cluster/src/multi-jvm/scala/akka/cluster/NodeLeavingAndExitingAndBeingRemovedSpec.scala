@@ -56,8 +56,9 @@ abstract class NodeLeavingAndExitingAndBeingRemovedSpec
               second))
           }
           awaitAssert {
-            clusterView.unreachableMembers.map(
-              _.address) should not contain (address(second))
+            clusterView.unreachableMembers.map(_.address) should not contain (
+              address(second)
+            )
           }
         }
 

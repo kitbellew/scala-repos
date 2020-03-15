@@ -117,11 +117,9 @@ class ThreadUtilsSuite extends SparkFunSuite {
     assert(runInNewThread("thread-name") {
       Thread.currentThread().isDaemon
     } === true)
-    assert(
-      runInNewThread("thread-name", isDaemon = false) {
-        Thread.currentThread().isDaemon
-      } === false
-    )
+    assert(runInNewThread("thread-name", isDaemon = false) {
+      Thread.currentThread().isDaemon
+    } === false)
     val uniqueExceptionMessage = "test" + Random.nextInt()
     val exception = intercept[IllegalArgumentException] {
       runInNewThread("thread-name") {

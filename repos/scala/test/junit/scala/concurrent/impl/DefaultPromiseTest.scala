@@ -28,8 +28,7 @@ class DefaultPromiseTest {
   /** The state of a set of set of linked promises. */
   case class Chain(
       promises: Set[PromiseId],
-      state: Either[Set[HandlerId], Try[Result]]
-  )
+      state: Either[Set[HandlerId], Try[Result]])
 
   /** A helper class that provides methods for creating, linking, completing and
     *  adding handlers to promises. With each operation it verifies that handlers

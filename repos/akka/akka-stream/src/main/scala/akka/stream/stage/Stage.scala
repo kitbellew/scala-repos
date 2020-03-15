@@ -39,13 +39,8 @@ private[stream] object AbstractStage {
   private class PushPullGraphLogic[In, Out](
       private val shape: FlowShape[In, Out],
       val attributes: Attributes,
-      val stage: AbstractStage[
-        In,
-        Out,
-        Directive,
-        Directive,
-        Context[Out],
-        LifecycleContext])
+      val stage: AbstractStage[In, Out, Directive, Directive, Context[
+        Out], LifecycleContext])
       extends GraphStageLogic(shape)
       with DetachedContext[Out] {
 
@@ -53,13 +48,9 @@ private[stream] object AbstractStage {
 
     private def ctx: DetachedContext[Out] = this
 
-    private var currentStage: AbstractStage[
-      In,
-      Out,
-      Directive,
-      Directive,
-      Context[Out],
-      LifecycleContext] = stage
+    private var currentStage
+        : AbstractStage[In, Out, Directive, Directive, Context[
+          Out], LifecycleContext] = stage
 
     {
       // No need to refer to the handle in a private val
@@ -95,13 +86,8 @@ private[stream] object AbstractStage {
           currentStage.postStop()
           currentStage = currentStage
             .restart()
-            .asInstanceOf[AbstractStage[
-              In,
-              Out,
-              Directive,
-              Directive,
-              Context[Out],
-              LifecycleContext]]
+            .asInstanceOf[AbstractStage[In, Out, Directive, Directive, Context[
+              Out], LifecycleContext]]
           currentStage.preStart(ctx)
       }
     }
@@ -203,19 +189,10 @@ private[stream] object AbstractStage {
     override def createLogicAndMaterializedValue(
         inheritedAttributes: Attributes): (GraphStageLogic, Mat) = {
       val stageAndMat = factory(inheritedAttributes)
-      val stage: AbstractStage[
-        In,
-        Out,
-        Directive,
-        Directive,
-        Context[Out],
-        LifecycleContext] = stageAndMat._1.asInstanceOf[AbstractStage[
-        In,
-        Out,
-        Directive,
-        Directive,
-        Context[Out],
-        LifecycleContext]]
+      val stage: AbstractStage[In, Out, Directive, Directive, Context[
+        Out], LifecycleContext] = stageAndMat._1
+        .asInstanceOf[AbstractStage[In, Out, Directive, Directive, Context[
+          Out], LifecycleContext]]
       (
         new PushPullGraphLogic(shape, inheritedAttributes, stage),
         stageAndMat._2)
@@ -387,13 +364,8 @@ abstract class AbstractStage[
   */
 @deprecated("Please use GraphStage instead.", "2.4.2")
 abstract class PushPullStage[In, Out]
-    extends AbstractStage[
-      In,
-      Out,
-      SyncDirective,
-      SyncDirective,
-      Context[Out],
-      LifecycleContext]
+    extends AbstractStage[In, Out, SyncDirective, SyncDirective, Context[
+      Out], LifecycleContext]
 
 /**
   * `PushStage` is a [[PushPullStage]] that always perform transitive pull by calling `ctx.pull` from `onPull`.
@@ -567,10 +539,9 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
       val elem = iter.next()
       if (iter.hasNext) {
         emitting = true
-        become(
-          emittingState(
-            iter,
-            andThen = Become(nextState.asInstanceOf[StageState[Any, Any]])))
+        become(emittingState(
+          iter,
+          andThen = Become(nextState.asInstanceOf[StageState[Any, Any]])))
       } else become(nextState)
       ctx.push(elem)
     }

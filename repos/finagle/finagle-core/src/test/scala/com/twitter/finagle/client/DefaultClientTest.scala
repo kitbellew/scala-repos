@@ -112,8 +112,7 @@ class DefaultClientTest
         endPointer,
         pool = pool,
         requestTimeout = rTimeout,
-        timer = timer
-      )
+        timer = timer)
 
       Time.withCurrentTimeFrozen { control =>
         val f1 = service(3) // has a connection
@@ -150,8 +149,7 @@ class DefaultClientTest
       endPointer,
       pool = pool,
       timer = timer,
-      statsReceiver = statsReceiver
-    )
+      statsReceiver = statsReceiver)
   }
 
   test(
@@ -237,8 +235,7 @@ class DefaultClientTest
       endPointer,
       pool = pool,
       timer = timer,
-      statsReceiver = statsReceiver
-    )
+      statsReceiver = statsReceiver)
   }
 
   test("DefaultClient should handle failureAccrual default") {
@@ -266,8 +263,7 @@ class DefaultClientTest
             DefaultLogger,
             failing,
             ResponseClassifier.Default)(timer) andThen factory
-        }
-      )
+        })
 
       Time.withCurrentTimeFrozen { control =>
         0 until 10 foreach { service(_) }

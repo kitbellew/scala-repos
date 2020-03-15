@@ -43,43 +43,38 @@ trait FeatureSpecStaticStringTest extends ScalaTestTestCase {
   def testFeatureSpecSumString() = {
     addFeatureSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(6, 7, featureSpecFileName),
-        featureSpecClassName,
-        "Feature: Feature 1 Scenario: Scenario A"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(6, 7, featureSpecFileName),
+      featureSpecClassName,
+      "Feature: Feature 1 Scenario: Scenario A"))
   }
 
   def testFeatureSpecValSumString() = {
     addFeatureSpec()
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(8, 7, featureSpecFileName),
-        featureSpecClassName,
-        "Feature: Feature 1 Scenario: Scenario B"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(8, 7, featureSpecFileName),
+      featureSpecClassName,
+      "Feature: Feature 1 Scenario: Scenario B"))
   }
 
   def testFeatureSpecValString() = {
     addFeatureSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(15, 7, featureSpecFileName),
-        featureSpecClassName,
-        "Feature: C Scenario: other"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(15, 7, featureSpecFileName),
+      featureSpecClassName,
+      "Feature: C Scenario: other"))
   }
 
   def testFeatureSpecNonConst() = {
     addFeatureSpec()
 
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(13, 7, featureSpecFileName),
-        featureSpecClassName,
-        "Feature: C Scenario: other"))
-    assert(
-      checkConfigAndSettings(
-        createTestFromLocation(19, 7, featureSpecFileName),
-        featureSpecClassName))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(13, 7, featureSpecFileName),
+      featureSpecClassName,
+      "Feature: C Scenario: other"))
+    assert(checkConfigAndSettings(
+      createTestFromLocation(19, 7, featureSpecFileName),
+      featureSpecClassName))
   }
 }

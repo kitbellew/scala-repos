@@ -120,15 +120,17 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
           val canElim = vi.getOpcode != ASTORE || {
             val currentFieldValueProds = prodCons
               .initialProducersForValueAt(vi, vi.`var`)
-            currentFieldValueProds.size == 1 && (currentFieldValueProds.head match {
-              case ParameterProducer(0) =>
-                !isStaticMethod(
-                  method
-                ) // current field value is `this`, which won't be gc'd anyway
-              case _: UninitializedLocalProducer =>
-                true // field is not yet initialized, so current value cannot leak
-              case _ => false
-            })
+            currentFieldValueProds.size == 1 && (
+              currentFieldValueProds.head match {
+                case ParameterProducer(0) =>
+                  !isStaticMethod(
+                    method
+                  ) // current field value is `this`, which won't be gc'd anyway
+                case _: UninitializedLocalProducer =>
+                  true // field is not yet initialized, so current value cannot leak
+                case _ => false
+              }
+            )
           }
           if (canElim) storesToDrop += vi
           else {
@@ -245,8 +247,9 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 case DUP2 => prodCons.frameAt(prod).peekStack(0).getSize == 2
                 case _ =>
                   InstructionStackEffect.prod(
-                    InstructionStackEffect
-                      .forAsmAnalysis(prod, prodCons.frameAt(prod))) == 1
+                    InstructionStackEffect.forAsmAnalysis(
+                      prod,
+                      prodCons.frameAt(prod))) == 1
               }
           }
 

@@ -122,8 +122,8 @@ class ExpandTables extends Phase {
               tables,
               Ref(sym),
               tree3.nodeType.asCollectionType.elementType)
-              .infer(
-                Type.Scope(sym -> tree3.nodeType.asCollectionType.elementType))
+              .infer(Type.Scope(
+                sym -> tree3.nodeType.asCollectionType.elementType))
             Bind(sym, tree3, Pure(mapping)).infer()
           }
         }

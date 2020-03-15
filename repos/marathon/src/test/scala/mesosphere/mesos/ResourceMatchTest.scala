@@ -16,35 +16,32 @@ class ResourceMatchTest extends FunSuite with GivenWhenThen with Matchers {
       labels = Map("resource" -> "ports"))
 
     val resourceMatch = ResourceMatcher.ResourceMatch(
-      scalarMatches = Iterable(
-        ScalarMatch(
-          "mem",
+      scalarMatches = Iterable(ScalarMatch(
+        "mem",
+        128.0,
+        consumed = Iterable(ScalarMatch.Consumption(
           128.0,
-          consumed = Iterable(
-            ScalarMatch
-              .Consumption(128.0, "role1", reservation = Some(memReservation))),
-          scope = ScalarMatchResult.Scope.NoneDisk
-        )
-      ),
-      portsMatch = PortsMatch(
-        Seq(PortsMatcher
-          .PortWithRole("role2", 80, reservation = Some(portReservation))))
+          "role1",
+          reservation = Some(memReservation))),
+        scope = ScalarMatchResult.Scope.NoneDisk)),
+      portsMatch = PortsMatch(Seq(PortsMatcher.PortWithRole(
+        "role2",
+        80,
+        reservation = Some(portReservation))))
     )
 
     When("converting it to resources")
     val resources = resourceMatch.resources
 
     Then("the resources should refer to the reservations")
-    resources should equal(
-      Iterable(
-        MarathonTestHelper.scalarResource(
-          "mem",
-          128,
-          "role1",
-          reservation = Some(memReservation)),
-        MarathonTestHelper
-          .portsResource(80, 80, "role2", reservation = Some(portReservation))
-      )
-    )
+    resources should equal(Iterable(
+      MarathonTestHelper.scalarResource(
+        "mem",
+        128,
+        "role1",
+        reservation = Some(memReservation)),
+      MarathonTestHelper
+        .portsResource(80, 80, "role2", reservation = Some(portReservation))
+    ))
   }
 }

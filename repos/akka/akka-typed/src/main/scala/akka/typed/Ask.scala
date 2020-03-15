@@ -41,9 +41,8 @@ object AskPattern {
         case ref: InternalActorRef if ref.isTerminated ⇒
           (
             ActorRef[U](ref.provider.deadLetters),
-            Future.failed[U](
-              new AskTimeoutException(
-                s"Recipient[$actorRef] had already been terminated.")))
+            Future.failed[U](new AskTimeoutException(
+              s"Recipient[$actorRef] had already been terminated.")))
         case ref: InternalActorRef ⇒
           if (timeout.duration.length <= 0)
             (

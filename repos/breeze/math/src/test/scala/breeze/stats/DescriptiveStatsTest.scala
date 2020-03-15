@@ -192,15 +192,15 @@ class DescriptiveStatsTest2 extends FunSuite {
     val dataOddDuplicate = DenseVector(0, 0, 0, 1, 2, 2, 2, 3, 400000)
     val dataEven = DenseVector(0f, 1f, 2f, 100f)
     val dataEvenDuplicate = DenseVector(100, 200, 200, 300, 400, 500)
-    val dataEvenDuplicate2 = DenseVector(200, 250, 400, 300, 100, 500, 550, 550,
-      550, 550)
+    val dataEvenDuplicate2 = DenseVector(
+      200, 250, 400, 300, 100, 500, 550, 550, 550, 550)
 
     val dataOddSeq = Seq(0, 1, 2, 3, 400000)
     val dataOddDuplicateSeq = Seq(0, 0, 0, 1, 2, 2, 2, 3, 400000)
     val dataEvenSeq = Seq(0f, 1f, 2f, 100f)
     val dataEvenDuplicateSeq = Seq(100, 200, 200, 300, 400, 500)
-    val dataEvenDuplicate2Seq = Seq(200, 250, 400, 300, 100, 500, 550, 550, 550,
-      550)
+    val dataEvenDuplicate2Seq = Seq(
+      200, 250, 400, 300, 100, 500, 550, 550, 550, 550)
 
     assert(
       median(dataOdd) == 2,

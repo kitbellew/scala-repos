@@ -173,13 +173,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AplusB.numCols() === B.numCols())
     assert(AplusB.toBreeze() === expected)
 
-    val C = new BlockMatrix(
-      rdd,
-      rowPerPart,
-      colPerPart,
-      m,
-      n + 1
-    ) // columns don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m,
+        n + 1
+      ) // columns don't match
     intercept[IllegalArgumentException] { gridBasedMat.add(C) }
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
@@ -228,13 +229,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AsubtractB.numCols() === B.numCols())
     assert(AsubtractB.toBreeze() === expected)
 
-    val C = new BlockMatrix(
-      rdd,
-      rowPerPart,
-      colPerPart,
-      m,
-      n + 1
-    ) // columns don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m,
+        n + 1
+      ) // columns don't match
     intercept[IllegalArgumentException] { gridBasedMat.subtract(C) }
     val largerBlocks: Seq[((Int, Int), Matrix)] = Seq(
       ((0, 0), new DenseMatrix(4, 4, new Array[Double](16))),
@@ -276,13 +278,14 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(AtimesB.numRows() === m)
     assert(AtimesB.numCols() === n)
     assert(AtimesB.toBreeze() === expected)
-    val C = new BlockMatrix(
-      rdd,
-      rowPerPart,
-      colPerPart,
-      m + 1,
-      n
-    ) // dimensions don't match
+    val C =
+      new BlockMatrix(
+        rdd,
+        rowPerPart,
+        colPerPart,
+        m + 1,
+        n
+      ) // dimensions don't match
     intercept[IllegalArgumentException] { gridBasedMat.multiply(C) }
     val largerBlocks = Seq(((0, 0), DenseMatrix.eye(4)))
     val C2 = new BlockMatrix(sc.parallelize(largerBlocks, numPartitions), 4, 4)

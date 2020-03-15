@@ -60,10 +60,9 @@ class FundepMaterializationBundle(val c: Context) {
       newTypeName("$anon"),
       List(),
       Template(
-        List(
-          AppliedTypeTree(
-            Ident(newTypeName("FundepMaterialization")),
-            List(Ident(sym), mkTpt()))),
+        List(AppliedTypeTree(
+          Ident(newTypeName("FundepMaterialization")),
+          List(Ident(sym), mkTpt()))),
         emptyValDef,
         List(
           DefDef(
@@ -73,36 +72,32 @@ class FundepMaterializationBundle(val c: Context) {
             List(List()),
             TypeTree(),
             Block(
-              List(
-                Apply(
-                  Select(
-                    Super(This(typeNames.EMPTY), typeNames.EMPTY),
-                    termNames.CONSTRUCTOR),
-                  List())),
+              List(Apply(
+                Select(
+                  Super(This(typeNames.EMPTY), typeNames.EMPTY),
+                  termNames.CONSTRUCTOR),
+                List())),
               Literal(Constant(())))
           ),
           DefDef(
             Modifiers(),
             newTermName("to"),
             List(),
-            List(
-              List(
-                ValDef(
-                  Modifiers(PARAM),
-                  newTermName("f"),
-                  Ident(sym),
-                  EmptyTree))),
+            List(List(ValDef(
+              Modifiers(PARAM),
+              newTermName("f"),
+              Ident(sym),
+              EmptyTree))),
             TypeTree(),
             mkFrom())
         )
       )
     )
-    c.Expr[FundepMaterialization[T, U]](
-      Block(
-        List(evidenceClass),
-        Apply(
-          Select(New(Ident(newTypeName("$anon"))), termNames.CONSTRUCTOR),
-          List())))
+    c.Expr[FundepMaterialization[T, U]](Block(
+      List(evidenceClass),
+      Apply(
+        Select(New(Ident(newTypeName("$anon"))), termNames.CONSTRUCTOR),
+        List())))
   }
 }
 

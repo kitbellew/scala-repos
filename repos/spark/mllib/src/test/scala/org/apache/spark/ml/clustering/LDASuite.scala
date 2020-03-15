@@ -55,8 +55,7 @@ object LDASuite {
     "learningOffset" -> 1023.0,
     "learningDecay" -> 0.52,
     "subsamplingRate" -> 0.051,
-    "docConcentration" -> Array(2.0)
-  )
+    "docConcentration" -> Array(2.0))
 }
 
 class LDASuite
@@ -207,8 +206,9 @@ class LDASuite
     topics.select("termWeights").collect().foreach {
       case r: Row =>
         val termWeights = r.getAs[Seq[Double]](0)
-        assert(termWeights.length === 3 && termWeights.forall(w =>
-          w >= 0.0 && w <= 1.0))
+        assert(
+          termWeights.length === 3 && termWeights.forall(w =>
+            w >= 0.0 && w <= 1.0))
     }
   }
 

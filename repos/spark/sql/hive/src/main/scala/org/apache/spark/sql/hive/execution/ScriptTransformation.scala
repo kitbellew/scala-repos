@@ -113,8 +113,7 @@ private[hive] case class ScriptTransformation(
         proc,
         stderrBuffer,
         TaskContext.get(),
-        localHiveConf
-      )
+        localHiveConf)
 
       // This nullability is a performance optimization in order to avoid an Option.foreach() call
       // inside of a loop
@@ -124,92 +123,93 @@ private[hive] case class ScriptTransformation(
 
       val reader = new BufferedReader(
         new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-      val outputIterator: Iterator[InternalRow] = new Iterator[InternalRow]
-        with HiveInspectors {
-        var curLine: String = null
-        val scriptOutputStream = new DataInputStream(inputStream)
+      val outputIterator: Iterator[InternalRow] =
+        new Iterator[InternalRow] with HiveInspectors {
+          var curLine: String = null
+          val scriptOutputStream = new DataInputStream(inputStream)
 
-        @Nullable val scriptOutputReader =
-          ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
+          @Nullable val scriptOutputReader =
+            ioschema.recordReader(scriptOutputStream, localHiveConf).orNull
 
-        var scriptOutputWritable: Writable = null
-        val reusedWritableObject: Writable =
-          if (null != outputSerde) {
-            outputSerde.getSerializedClass().newInstance
-          } else { null }
-        val mutableRow = new SpecificMutableRow(output.map(_.dataType))
+          var scriptOutputWritable: Writable = null
+          val reusedWritableObject: Writable =
+            if (null != outputSerde) {
+              outputSerde.getSerializedClass().newInstance
+            } else { null }
+          val mutableRow = new SpecificMutableRow(output.map(_.dataType))
 
-        override def hasNext: Boolean = {
-          if (outputSerde == null) {
-            if (curLine == null) {
-              curLine = reader.readLine()
+          override def hasNext: Boolean = {
+            if (outputSerde == null) {
               if (curLine == null) {
-                if (writerThread.exception.isDefined) {
-                  throw writerThread.exception.get
-                }
-                false
-              } else { true }
-            } else { true }
-          } else if (scriptOutputWritable == null) {
-            scriptOutputWritable = reusedWritableObject
-
-            if (scriptOutputReader != null) {
-              if (scriptOutputReader.next(scriptOutputWritable) <= 0) {
-                writerThread.exception.foreach(throw _)
-                false
-              } else { true }
-            } else {
-              try {
-                scriptOutputWritable.readFields(scriptOutputStream)
-                true
-              } catch {
-                case _: EOFException =>
+                curLine = reader.readLine()
+                if (curLine == null) {
                   if (writerThread.exception.isDefined) {
                     throw writerThread.exception.get
                   }
                   false
-              }
-            }
-          } else { true }
-        }
+                } else { true }
+              } else { true }
+            } else if (scriptOutputWritable == null) {
+              scriptOutputWritable = reusedWritableObject
 
-        override def next(): InternalRow = {
-          if (!hasNext) { throw new NoSuchElementException }
-          if (outputSerde == null) {
-            val prevLine = curLine
-            curLine = reader.readLine()
-            if (!ioschema.schemaLess) {
-              new GenericInternalRow(
-                prevLine
-                  .split(ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
-                  .map(CatalystTypeConverters.convertToCatalyst))
-            } else {
-              new GenericInternalRow(
-                prevLine
-                  .split(
-                    ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
-                    2)
-                  .map(CatalystTypeConverters.convertToCatalyst))
-            }
-          } else {
-            val raw = outputSerde.deserialize(scriptOutputWritable)
-            scriptOutputWritable = null
-            val dataList = outputSoi.getStructFieldsDataAsList(raw)
-            val fieldList = outputSoi.getAllStructFieldRefs()
-            var i = 0
-            while (i < dataList.size()) {
-              if (dataList.get(i) == null) { mutableRow.setNullAt(i) }
-              else {
-                mutableRow(i) = unwrap(
-                  dataList.get(i),
-                  fieldList.get(i).getFieldObjectInspector)
+              if (scriptOutputReader != null) {
+                if (scriptOutputReader.next(scriptOutputWritable) <= 0) {
+                  writerThread.exception.foreach(throw _)
+                  false
+                } else { true }
+              } else {
+                try {
+                  scriptOutputWritable.readFields(scriptOutputStream)
+                  true
+                } catch {
+                  case _: EOFException =>
+                    if (writerThread.exception.isDefined) {
+                      throw writerThread.exception.get
+                    }
+                    false
+                }
               }
-              i += 1
+            } else { true }
+          }
+
+          override def next(): InternalRow = {
+            if (!hasNext) { throw new NoSuchElementException }
+            if (outputSerde == null) {
+              val prevLine = curLine
+              curLine = reader.readLine()
+              if (!ioschema.schemaLess) {
+                new GenericInternalRow(
+                  prevLine
+                    .split(
+                      ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"))
+                    .map(CatalystTypeConverters.convertToCatalyst))
+              } else {
+                new GenericInternalRow(
+                  prevLine
+                    .split(
+                      ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
+                      2)
+                    .map(CatalystTypeConverters.convertToCatalyst))
+              }
+            } else {
+              val raw = outputSerde.deserialize(scriptOutputWritable)
+              scriptOutputWritable = null
+              val dataList = outputSoi.getStructFieldsDataAsList(raw)
+              val fieldList = outputSoi.getAllStructFieldRefs()
+              var i = 0
+              while (i < dataList.size()) {
+                if (dataList.get(i) == null) { mutableRow.setNullAt(i) }
+                else {
+                  mutableRow(i) = unwrap(
+                    dataList.get(i),
+                    fieldList.get(i).getFieldObjectInspector)
+                }
+                i += 1
+              }
+              mutableRow
             }
-            mutableRow
           }
         }
-      }
 
       writerThread.start()
 
@@ -239,8 +239,8 @@ private class ScriptTransformationWriterThread(
     proc: Process,
     stderrBuffer: CircularBuffer,
     taskContext: TaskContext,
-    conf: Configuration
-) extends Thread("Thread-ScriptTransformation-Feed")
+    conf: Configuration)
+    extends Thread("Thread-ScriptTransformation-Feed")
     with Logging {
 
   setDaemon(true)
@@ -336,8 +336,7 @@ private[hive] case class HiveScriptIOSchema(
 
   private val defaultFormat = Map(
     ("TOK_TABLEROWFORMATFIELD", "\t"),
-    ("TOK_TABLEROWFORMATLINES", "\n")
-  )
+    ("TOK_TABLEROWFORMATLINES", "\n"))
 
   val inputRowFormatMap = inputRowFormat.toMap.withDefault((k) =>
     defaultFormat(k))

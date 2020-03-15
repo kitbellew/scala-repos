@@ -71,8 +71,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       null,
       true,
       true,
-      indexers
-    )
+      indexers)
   }
 
   def close(): Unit =
@@ -111,11 +110,10 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
     // TODO: when guys from maven-indexer fix their code (or at least Scanner class will work as it should)
     val nexusIndexer = new DefaultNexusIndexer(
       indexer,
-      new DefaultScanner(
-        new DefaultArtifactContextProducer(new DefaultArtifactPackagingMapper)),
+      new DefaultScanner(new DefaultArtifactContextProducer(
+        new DefaultArtifactPackagingMapper)),
       indexerEngine,
-      queryCreator
-    )
+      queryCreator)
     val nexusContext = nexusIndexer.addIndexingContext(
       root.shaDigest,
       root.shaDigest,
@@ -136,8 +134,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
       null,
       true,
       true,
-      indexers
-    )
+      indexers)
   }
 
   private def updateRemote(progressIndicator: Option[ProgressIndicator]) {
@@ -155,8 +152,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
         }
       override def transferStarted(evt: TransferEvent) =
         progressIndicator foreach { indicator =>
-          indicator.setText2(
-            SbtBundle("sbt.resolverIndexer.progress.downloading"))
+          indicator.setText2(SbtBundle(
+            "sbt.resolverIndexer.progress.downloading"))
           indicator.setFraction(0.0)
         }
     }
@@ -169,8 +166,8 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
   def foreach(
       f: (ArtifactInfo => Unit),
       progressIndicator: Option[ProgressIndicator]) {
-    progressIndicator foreach (_.setText2(
-      SbtBundle("sbt.resolverIndexer.progress.converting")))
+    progressIndicator foreach (_.setText2(SbtBundle(
+      "sbt.resolverIndexer.progress.converting")))
     val searcher = context.acquireIndexSearcher()
     try {
       val reader = searcher.getIndexReader

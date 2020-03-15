@@ -178,8 +178,7 @@ class JsonFormatSpec extends FunSuite {
     commit = ApiCommitListItem.Commit(
       message = "Fix all the bugs",
       author = apiPersonIdent,
-      committer = apiPersonIdent
-    )(sha1, repo1Name),
+      committer = apiPersonIdent)(sha1, repo1Name),
     author = Some(apiUser),
     committer = Some(apiUser),
     parents = Seq(
@@ -376,10 +375,9 @@ class JsonFormatSpec extends FunSuite {
 
   val apiBranchProtection = ApiBranchProtection(
     true,
-    Some(
-      ApiBranchProtection.Status(
-        ApiBranchProtection.Everyone,
-        Seq("continuous-integration/travis-ci"))))
+    Some(ApiBranchProtection.Status(
+      ApiBranchProtection.Everyone,
+      Seq("continuous-integration/travis-ci"))))
   val apiBranchProtectionJson = """{
     "enabled": true,
     "required_status_checks": {

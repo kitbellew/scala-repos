@@ -113,8 +113,8 @@ final class JSONIngestProcessing(
             stream: StreamT[Future, Array[Byte]]): Future[IngestReport] = {
           stream.uncons.flatMap {
             case Some((bytes, rest)) =>
-              val (parsed, updatedParser) = state.parser(
-                More(ByteBuffer.wrap(bytes)))
+              val (parsed, updatedParser) = state.parser(More(
+                ByteBuffer.wrap(bytes)))
               val ingestSize = parsed.values.size
 
               val overLargeIdx = parsed.values.indexWhere(
@@ -151,8 +151,7 @@ final class JSONIngestProcessing(
                   _.fold(
                     storeFailure =>
                       IngestReport(0, (0, storeFailure.message) :: Nil),
-                    _ => IngestReport(completedRecords.size, Nil)
-                  )
+                    _ => IngestReport(completedRecords.size, Nil))
                 }
               } else { IngestReport(0, errors).point[Future] }
           }
@@ -168,8 +167,8 @@ final class JSONIngestProcessing(
         stream.uncons.flatMap {
           case Some((bytes, rest)) =>
             // Dup and rewind to ensure we have something to parse
-            val (parsed, updatedParser) = state.parser(
-              More(ByteBuffer.wrap(bytes)))
+            val (parsed, updatedParser) = state.parser(More(
+              ByteBuffer.wrap(bytes)))
 
             rest.isEmpty flatMap {
               case false =>
@@ -261,8 +260,7 @@ final class JSONIngestProcessing(
                   storeFailure =>
                     sys.error(
                       "Do something useful with %s" format storeFailure.message),
-                  _ => continue(state.update(updatedParser, ingestSize, Nil))
-                )
+                  _ => continue(state.update(updatedParser, ingestSize, Nil)))
               }
             } else {
               storage.store(

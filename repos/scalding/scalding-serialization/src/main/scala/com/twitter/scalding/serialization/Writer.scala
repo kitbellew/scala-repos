@@ -71,8 +71,8 @@ object Writer {
     new Writer[Option[T]] {
       val w = implicitly[Writer[T]]
       // Don't use pattern matching in a performance-critical section
-      @SuppressWarnings(
-        Array("org.brianmckenna.wartremover.warts.OptionPartial"))
+      @SuppressWarnings(Array(
+        "org.brianmckenna.wartremover.warts.OptionPartial"))
       def write(os: OutputStream, t: Option[T]) =
         if (t.isDefined) {
           os.write(1: Byte)
@@ -105,14 +105,9 @@ object Writer {
       }
     }
 
-  implicit def array[@specialized(
-    Boolean,
-    Byte,
-    Short,
-    Int,
-    Long,
-    Float,
-    Double) T: Writer]: Writer[Array[T]] =
+  implicit def array[
+      @specialized(Boolean, Byte, Short, Int, Long, Float, Double) T: Writer]
+      : Writer[Array[T]] =
     new Writer[Array[T]] {
       val writerT = implicitly[Writer[T]]
       def write(os: OutputStream, a: Array[T]) = {

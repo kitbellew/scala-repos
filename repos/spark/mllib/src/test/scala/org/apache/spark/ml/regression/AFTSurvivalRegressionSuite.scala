@@ -38,20 +38,18 @@ class AFTSurvivalRegressionSuite
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    datasetUnivariate = sqlContext.createDataFrame(
-      sc.parallelize(
-        generateAFTInput(1, Array(5.5), Array(0.8), 1000, 42, 1.0, 2.0, 2.0)))
+    datasetUnivariate = sqlContext.createDataFrame(sc.parallelize(
+      generateAFTInput(1, Array(5.5), Array(0.8), 1000, 42, 1.0, 2.0, 2.0)))
     datasetMultivariate = sqlContext.createDataFrame(
-      sc.parallelize(
-        generateAFTInput(
-          2,
-          Array(0.9, -1.3),
-          Array(0.7, 1.2),
-          1000,
-          42,
-          1.5,
-          2.5,
-          2.0)))
+      sc.parallelize(generateAFTInput(
+        2,
+        Array(0.9, -1.3),
+        Array(0.7, 1.2),
+        1000,
+        42,
+        1.5,
+        2.5,
+        2.0)))
   }
 
   /**
@@ -413,6 +411,5 @@ object AFTSurvivalRegressionSuite {
     "predictionCol" -> "myPrediction",
     "fitIntercept" -> true,
     "maxIter" -> 2,
-    "tol" -> 0.01
-  )
+    "tol" -> 0.01)
 }

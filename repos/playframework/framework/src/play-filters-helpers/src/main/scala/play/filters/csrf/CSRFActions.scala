@@ -142,8 +142,9 @@ class CSRFAction(
         action,
         tokenFromHeader,
         tokenName)
-    }).getOrElse(
-      checkFailed(request, "No boundary found in multipart/form-data request"))
+    }).getOrElse(checkFailed(
+      request,
+      "No boundary found in multipart/form-data request"))
   }
 
   private def checkBody[T](extractor: (ByteString, String) => Option[String])(
@@ -178,8 +179,8 @@ class CSRFAction(
         .prefixAndTail(0)
         .map(_._2)
         .concatSubstreams
-        .toMat(Sink.head[Source[ByteString, _]])(Keep.right)
-    ).mapFuture { validatedBodySource =>
+        .toMat(Sink.head[Source[ByteString, _]])(Keep.right))
+      .mapFuture { validatedBodySource =>
         action(request).run(validatedBodySource)
       }
       .recoverWith {
@@ -203,10 +204,9 @@ class CSRFAction(
 
     // First check if it's the first token
     if (body.startsWith(tokenEquals)) {
-      Some(
-        URLDecoder.decode(
-          body.drop(tokenEquals.size).takeWhile(_ != '&').utf8String,
-          "utf-8"))
+      Some(URLDecoder.decode(
+        body.drop(tokenEquals.size).takeWhile(_ != '&').utf8String,
+        "utf-8"))
     } else {
       val andTokenEquals = ByteString('&') ++ tokenEquals
       val index = body.indexOfSlice(andTokenEquals)
@@ -457,8 +457,7 @@ object CSRFAction {
       token: Token): RequestHeader = {
     request.copy(tags = request.tags ++ Map(
       Token.NameRequestTag -> token.name,
-      Token.RequestTag -> token.value
-    ))
+      Token.RequestTag -> token.value))
   }
 
   private[csrf] def tagRequest[A](
@@ -501,14 +500,13 @@ object CSRFAction {
       config.cookieName.map {
         // cookie
         name =>
-          result.withCookies(
-            Cookie(
-              name,
-              newToken,
-              path = Session.path,
-              domain = Session.domain,
-              secure = config.secureCookie,
-              httpOnly = config.httpOnlyCookie))
+          result.withCookies(Cookie(
+            name,
+            newToken,
+            path = Session.path,
+            domain = Session.domain,
+            secure = config.secureCookie,
+            httpOnly = config.httpOnlyCookie))
       } getOrElse {
 
         val newSession =
@@ -538,18 +536,16 @@ object CSRFAction {
           config.cookieName
             .flatMap { cookie =>
               request.cookies.get(cookie).map { token =>
-                result.discardingCookies(
-                  DiscardingCookie(
-                    cookie,
-                    domain = Session.domain,
-                    path = Session.path,
-                    secure = config.secureCookie))
+                result.discardingCookies(DiscardingCookie(
+                  cookie,
+                  domain = Session.domain,
+                  path = Session.path,
+                  secure = config.secureCookie))
               }
             }
             .getOrElse {
               result.withSession(result.session(request) - config.tokenName)
-            }
-        )(_ => result)
+            })(_ => result)
     }
   }
 }

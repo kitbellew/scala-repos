@@ -214,11 +214,8 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
       }
     def headOption: ProfileAction[Option[T], NoStream, Effect.Read] =
       new ProfileAction[Option[T], NoStream, Effect.Read]
-        with SynchronousDatabaseAction[
-          Option[T],
-          NoStream,
-          Backend#This,
-          Effect.Read] {
+        with SynchronousDatabaseAction[Option[
+          T], NoStream, Backend#This, Effect.Read] {
         def run(ctx: Backend#Context): Option[T] = {
           val it = getIterator(ctx)
           if (it.hasNext) Some(it.next) else None

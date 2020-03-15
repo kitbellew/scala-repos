@@ -29,29 +29,18 @@ object ThreadRepo {
     threadTube.coll
       .aggregate(
         Match(
-          BSONDocument(
-            "visibleByUserIds" -> userId,
-            "posts.isRead" -> false
-          )),
+          BSONDocument("visibleByUserIds" -> userId, "posts.isRead" -> false)),
         List(
-          Project(
-            BSONDocument(
-              "m" -> BSONDocument("$eq" -> BSONArray("$creatorId", userId)),
-              "posts.isByCreator" -> true,
-              "posts.isRead" -> true
-            )),
-          Unwind("posts"),
-          Match(
-            BSONDocument(
-              "posts.isRead" -> false
-            )),
           Project(BSONDocument(
-            "u" -> BSONDocument("$ne" -> BSONArray("$posts.isByCreator", "$m"))
-          )),
-          Match(
-            BSONDocument(
-              "u" -> true
-            )),
+            "m" -> BSONDocument("$eq" -> BSONArray("$creatorId", userId)),
+            "posts.isByCreator" -> true,
+            "posts.isRead" -> true)),
+          Unwind("posts"),
+          Match(BSONDocument("posts.isRead" -> false)),
+          Project(BSONDocument(
+            "u" -> BSONDocument(
+              "$ne" -> BSONArray("$posts.isByCreator", "$m")))),
+          Match(BSONDocument("u" -> true)),
           Group(BSONBoolean(true))("ids" -> AddToSet("_id"))
         ),
         allowDiskUse = false
@@ -63,8 +52,7 @@ object ThreadRepo {
     List.fill(thread.nbUnread) {
       $update(
         $select(thread.id) ++ Json.obj("posts.isRead" -> false),
-        $set("posts.$.isRead" -> true)
-      )
+        $set("posts.$.isRead" -> true))
     }
   }.sequenceFu.void
 

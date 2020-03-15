@@ -29,8 +29,7 @@ object DataTypeTestUtils {
     ByteType,
     ShortType,
     IntegerType,
-    LongType
-  )
+    LongType)
 
   /**
     * Instances of all [[FractionalType]]s, including both fixed- and unlimited-precision
@@ -41,8 +40,7 @@ object DataTypeTestUtils {
     DecimalType(20, 5),
     DecimalType.SYSTEM_DEFAULT,
     DoubleType,
-    FloatType
-  )
+    FloatType)
 
   /**
     * Instances of all [[NumericType]]s.
@@ -78,8 +76,7 @@ object DataTypeTestUtils {
     BooleanType,
     DateType,
     StringType,
-    TimestampType
-  )
+    TimestampType)
 
   /**
     * Instances of [[ArrayType]] for all [[AtomicType]]s. Arrays of these types may contain null.

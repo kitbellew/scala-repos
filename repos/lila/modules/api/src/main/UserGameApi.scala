@@ -19,8 +19,7 @@ final class UserGameApi(bookmarkApi: lila.bookmark.BookmarkApi) {
     }
     Json.obj(
       "filter" -> filterName,
-      "paginator" -> lila.common.paginator.PaginatorJson(pag)
-    )
+      "paginator" -> lila.common.paginator.PaginatorJson(pag))
   }
 
   private def write(g: Game, bookmarked: Boolean) =
@@ -46,8 +45,7 @@ final class UserGameApi(bookmarkApi: lila.bookmark.BookmarkApi) {
               "name" -> p.name,
               "aiLevel" -> p.aiLevel,
               "rating" -> p.rating,
-              "ratingDiff" -> p.ratingDiff
-            )
+              "ratingDiff" -> p.ratingDiff)
             .noNull
         }),
         "fen" -> Forsyth.exportBoard(g.toChess.board),

@@ -168,8 +168,7 @@ class ModuleExtDataServiceTest
       "-deprecation",
       "-target",
       "1.8",
-      "-Werror"
-    )
+      "-Werror")
     importProjectData(generateJavaProject(None, options))
 
     val compilerConfiguration = CompilerConfiguration.getInstance(getProject)

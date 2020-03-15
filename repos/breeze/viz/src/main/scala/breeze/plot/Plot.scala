@@ -162,14 +162,13 @@ class Plot() {
     rv.setDomainAxis(xaxis)
     rv.setRangeAxis(yaxis)
 
-    rv.setDrawingSupplier(
-      new DefaultDrawingSupplier(
-        Plot.paints,
-        Plot.fillPaints,
-        Plot.outlinePaints,
-        Plot.strokes,
-        Plot.outlineStrokes,
-        Plot.shapes))
+    rv.setDrawingSupplier(new DefaultDrawingSupplier(
+      Plot.paints,
+      Plot.fillPaints,
+      Plot.outlinePaints,
+      Plot.strokes,
+      Plot.outlineStrokes,
+      Plot.shapes))
 
     rv
   }

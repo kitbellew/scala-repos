@@ -71,14 +71,7 @@ object CacheHint extends SFXEnumDelegateCompanion[jfxs.CacheHint, CacheHint] {
   val SPEED = Speed
 
   protected override def unsortedValues: Array[CacheHint] =
-    Array(
-      Default,
-      Speed,
-      Quality,
-      Scale,
-      Rotate,
-      ScaleAndRotate
-    )
+    Array(Default, Speed, Quality, Scale, Rotate, ScaleAndRotate)
 }
 
 sealed case class CacheHint(override val delegate: jfxs.CacheHint)

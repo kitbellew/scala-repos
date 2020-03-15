@@ -46,8 +46,7 @@ class ChiSqSelectorSuite
       Vectors.dense(0.0),
       Vectors.dense(6.0),
       Vectors.dense(8.0),
-      Vectors.dense(5.0)
-    )
+      Vectors.dense(5.0))
 
     val df = sc
       .parallelize(data.zip(preFilteredData))

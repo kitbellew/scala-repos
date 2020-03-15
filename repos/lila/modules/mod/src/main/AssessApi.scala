@@ -75,12 +75,11 @@ final class AssessApi(
       case (
             ((Some(user), assessedGamesHead :: assessedGamesTail), relatedUs),
             relatedCheaters) =>
-        Some(
-          PlayerAggregateAssessment(
-            user,
-            assessedGamesHead :: assessedGamesTail,
-            relatedUs,
-            relatedCheaters))
+        Some(PlayerAggregateAssessment(
+          user,
+          assessedGamesHead :: assessedGamesTail,
+          relatedUs,
+          relatedCheaters))
       case _ => none
     }
   }

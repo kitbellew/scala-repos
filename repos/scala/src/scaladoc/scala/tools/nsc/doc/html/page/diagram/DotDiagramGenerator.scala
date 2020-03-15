@@ -135,8 +135,9 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         nodes = List()
         edges =
           (thisNode -> superClasses) :: subClasses.map(_ -> List(thisNode))
-        node2Index =
-          (thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits).zipWithIndex.toMap
+        node2Index = (
+          thisNode :: subClasses ::: superClasses ::: incomingImplicits ::: outgoingImplicits
+        ).zipWithIndex.toMap
         isInheritanceDiagram = true
         incomingImplicitNodes = incomingImplicits
       case _ =>
@@ -381,11 +382,10 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 dotOutput.toString
                   .split("\n")
                   .mkString("\nDot output:\n\t", "\n\t", ""))
-              settings.printMsg(
-                exc.getStackTrace.mkString(
-                  "\nException: " + exc.toString + ":\n\tat ",
-                  "\n\tat ",
-                  ""))
+              settings.printMsg(exc.getStackTrace.mkString(
+                "\nException: " + exc.toString + ":\n\tat ",
+                "\n\tat ",
+                ""))
               settings.printMsg(
                 "\n\n**********************************************************************")
             } else {
@@ -465,14 +465,13 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 } y={yposition.get.toString}/>
               val anchorNode = (g \ "a") match {
                 case Seq(Elem(prefix, "a", attribs, scope, children @ _*)) =>
-                  transform(
-                    new Elem(
-                      prefix,
-                      "a",
-                      attribs,
-                      scope,
-                      true,
-                      (children ++ imageNode): _*))
+                  transform(new Elem(
+                    prefix,
+                    "a",
+                    attribs,
+                    scope,
+                    true,
+                    (children ++ imageNode): _*))
                 case _ =>
                   g \ "a"
               }
@@ -520,8 +519,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
 
   private val graphAttributes: Map[String, String] = Map(
     "compound" -> "true",
-    "rankdir" -> "TB"
-  )
+    "rankdir" -> "TB")
 
   private val nodeAttributes = Map(
     "shape" -> "rect",
@@ -539,51 +537,43 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
     "arrowsize" -> "0.7",
     "fontcolor" -> "#aaaaaa",
     "fontsize" -> "9.00",
-    "fontname" -> "Source Code Pro"
-  )
+    "fontname" -> "Source Code Pro")
 
   private val defaultStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
     "fontcolor" -> "#7d7d7d",
-    "margin" -> "0.1,0.04"
-  )
+    "margin" -> "0.1,0.04")
 
   private val implicitStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
-    "fontcolor" -> "#7d7d7d"
-  )
+    "fontcolor" -> "#7d7d7d")
 
   private val outsideStyle = Map(
     "color" -> "#ababab",
     "fillcolor" -> "#e1e1e1",
-    "fontcolor" -> "#7d7d7d"
-  )
+    "fontcolor" -> "#7d7d7d")
 
   private val traitStyle = Map(
     "color" -> "#2E6D82",
     "fillcolor" -> "#2E6D82",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val classStyle = Map(
     "color" -> "#418565",
     "fillcolor" -> "#418565",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val objectStyle = Map(
     "color" -> "#103A51",
     "fillcolor" -> "#103A51",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private val typeStyle = Map(
     "color" -> "#2E6D82",
     "fillcolor" -> "#2E6D82",
-    "fontcolor" -> "#ffffff"
-  )
+    "fontcolor" -> "#ffffff")
 
   private def flatten(attributes: Map[String, String]) =
     attributes

@@ -172,9 +172,13 @@ class MarathonSchedulerActor private (
         val origSender = sender()
         withLockFor(appId) {
           val promise = Promise[Unit]()
-          context.actorOf(
-            TaskKillActor
-              .props(driver, appId, taskTracker, eventBus, taskIds, promise))
+          context.actorOf(TaskKillActor.props(
+            driver,
+            appId,
+            taskTracker,
+            eventBus,
+            taskIds,
+            promise))
           val res = for {
             _ <- promise.future
             Some(app) <- appRepository.currentVersion(appId)
@@ -352,20 +356,19 @@ object MarathonSchedulerActor {
       leaderInfo: LeaderInfo,
       eventBus: EventStream,
       cancellationTimeout: FiniteDuration = 1.minute): Props = {
-    Props(
-      new MarathonSchedulerActor(
-        createSchedulerActions,
-        deploymentManagerProps,
-        historyActorProps,
-        appRepository,
-        deploymentRepository,
-        healthCheckManager,
-        taskTracker,
-        taskQueue,
-        marathonSchedulerDriverHolder,
-        leaderInfo,
-        eventBus,
-        cancellationTimeout))
+    Props(new MarathonSchedulerActor(
+      createSchedulerActions,
+      deploymentManagerProps,
+      historyActorProps,
+      appRepository,
+      deploymentRepository,
+      healthCheckManager,
+      taskTracker,
+      taskQueue,
+      marathonSchedulerDriverHolder,
+      leaderInfo,
+      eventBus,
+      cancellationTimeout))
   }
 
   case class RecoverDeployments(deployments: Seq[DeploymentPlan])
@@ -496,8 +499,7 @@ class SchedulerActions(
         for (unknownAppId <- tasksByApp.allAppIdsWithTasks -- appIds) {
           log.warn(
             s"App $unknownAppId exists in TaskTracker, but not App store. " +
-              "The app was likely terminated. Will now expunge."
-          )
+              "The app was likely terminated. Will now expunge.")
           for (orphanTask <- tasksByApp.marathonAppTasks(unknownAppId)) {
             log.info(s"Killing task ${orphanTask.getId}")
             driver.killTask(protos.TaskID(orphanTask.getId))

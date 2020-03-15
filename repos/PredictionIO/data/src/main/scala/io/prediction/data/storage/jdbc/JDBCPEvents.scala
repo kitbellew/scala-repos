@@ -63,14 +63,12 @@ class JDBCPEvents(
       .map("and (" + _.map(y => s"event = '$y'").mkString(" or ") + ")")
       .getOrElse("")
     val targetEntityTypeClause = targetEntityType
-      .map(
-        _.map(x => s"and targetEntityType = '$x'")
-          .getOrElse("and targetEntityType is null"))
+      .map(_.map(x => s"and targetEntityType = '$x'").getOrElse(
+        "and targetEntityType is null"))
       .getOrElse("")
     val targetEntityIdClause = targetEntityId
-      .map(
-        _.map(x => s"and targetEntityId = '$x'")
-          .getOrElse("and targetEntityId is null"))
+      .map(_.map(x => s"and targetEntityId = '$x'").getOrElse(
+        "and targetEntityId is null"))
       .getOrElse("")
     val q = s"""
       select

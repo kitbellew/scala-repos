@@ -22,8 +22,7 @@ object IgnoreBodyParserSpec extends PlaySpecification {
         BodyParsers.parse
           .ignore(value)(FakeRequest().withHeaders(
             contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(bytes))
-      )
+          .run(Source.single(bytes)))
     }
 
     "ignore empty bodies" in new WithApplication() {

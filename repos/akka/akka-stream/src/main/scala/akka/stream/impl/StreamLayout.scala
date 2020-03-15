@@ -75,12 +75,11 @@ object StreamLayout {
     val inter = ups2.intersect(downs)
     if (downs != ups2) problems ::= s"inconsistent maps: ups ${pairs(
       ups2 -- inter)} downs ${pairs(downs -- inter)}"
-    val (allIn, dupIn, allOut, dupOut) = subModules.foldLeft(
-      (
-        Set.empty[InPort],
-        Set.empty[InPort],
-        Set.empty[OutPort],
-        Set.empty[OutPort])) {
+    val (allIn, dupIn, allOut, dupOut) = subModules.foldLeft((
+      Set.empty[InPort],
+      Set.empty[InPort],
+      Set.empty[OutPort],
+      Set.empty[OutPort])) {
       case ((ai, di, ao, doo), sm) ⇒
         (
           ai ++ sm.inPorts,

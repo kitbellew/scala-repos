@@ -144,6 +144,5 @@ object KMeansSuite {
     "predictionCol" -> "myPrediction",
     "k" -> 3,
     "maxIter" -> 2,
-    "tol" -> 0.01
-  )
+    "tol" -> 0.01)
 }

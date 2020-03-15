@@ -413,12 +413,11 @@ object Test extends BytecodeTest {
 
     // encl meth n
     List("ImplClassesAreTopLevel$B4$1", "ImplClassesAreTopLevel$$anon$16")
-      .foreach(
-        assertEnclosingMethod(
-          _,
-          "ImplClassesAreTopLevel",
-          "n",
-          "()Ljava/lang/Object;"))
+      .foreach(assertEnclosingMethod(
+        _,
+        "ImplClassesAreTopLevel",
+        "n",
+        "()Ljava/lang/Object;"))
 
     val an14 = assertAnonymous(
       _: InnerClassNode,

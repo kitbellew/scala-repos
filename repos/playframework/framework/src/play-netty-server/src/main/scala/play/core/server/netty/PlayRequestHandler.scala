@@ -53,9 +53,7 @@ private[play] class PlayRequestHandler(val server: NettyServer)
   private lazy val modelConversion = new NettyModelConversion(
     new ForwardedHeaderHandler(
       ForwardedHeaderHandler.ForwardedHeaderHandlerConfig(
-        server.applicationProvider.get.toOption.map(_.configuration))
-    )
-  )
+        server.applicationProvider.get.toOption.map(_.configuration))))
 
   /**
     * Handle the given request.
@@ -150,12 +148,11 @@ private[play] class PlayRequestHandler(val server: NettyServer)
               val processor = WebSocketHandler.messageFlowToFrameProcessor(
                 flow,
                 bufferLimit)
-              Future.successful(
-                new DefaultWebSocketHttpResponse(
-                  request.getProtocolVersion,
-                  HttpResponseStatus.OK,
-                  processor,
-                  factory))
+              Future.successful(new DefaultWebSocketHttpResponse(
+                request.getProtocolVersion,
+                HttpResponseStatus.OK,
+                processor,
+                factory))
 
           }
           .recoverWith {
@@ -176,9 +173,7 @@ private[play] class PlayRequestHandler(val server: NettyServer)
               .Status(Status.UPGRADE_REQUIRED)("Upgrade to WebSocket required")
               .withHeaders(
                 HeaderNames.UPGRADE -> "websocket",
-                HeaderNames.CONNECTION -> HeaderNames.UPGRADE
-              )
-          ))
+                HeaderNames.CONNECTION -> HeaderNames.UPGRADE)))
         handleAction(action, requestHeader, request, Some(app))
 
       case Left(e) =>
@@ -254,8 +249,8 @@ private[play] class PlayRequestHandler(val server: NettyServer)
         logger.warn("Handling TooLongFrameException", e)
         sendSimpleErrorResponse(ctx, HttpResponseStatus.REQUEST_URI_TOO_LONG)
       case e: IllegalArgumentException
-          if Option(e.getMessage).exists(
-            _.contains("Header value contains a prohibited character")) =>
+          if Option(e.getMessage).exists(_.contains(
+            "Header value contains a prohibited character")) =>
         // https://github.com/netty/netty/blob/netty-3.9.3.Final/src/main/java/org/jboss/netty/handler/codec/http/HttpHeaders.java#L1075-L1080
         logger.debug("Handling Header value error", e)
         sendSimpleErrorResponse(ctx, HttpResponseStatus.BAD_REQUEST)

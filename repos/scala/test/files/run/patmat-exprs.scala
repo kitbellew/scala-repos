@@ -439,8 +439,7 @@ trait Pattern {
     def derivative(v: Var[T]) =
       Div(
         Sub(Mul(left.derivative(v), right), Mul(left, right.derivative(v))),
-        Sqr(right)
-      )
+        Sqr(right))
 
     def eval(f: Any => Any) = num.div(left.eval(f), right.eval(f))
     def mapArgs(f: EndoFunction[Expr[_]]) = Div(f(left), f(right))

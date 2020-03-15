@@ -86,9 +86,7 @@ object PlayStreak {
 
 case class Streaks(cur: Streak, max: Streak) {
   def apply(cont: Boolean, pov: Pov)(v: Int) =
-    copy(
-      cur = cur(cont, pov)(v)
-    ).setMax
+    copy(cur = cur(cont, pov)(v)).setMax
   def reset = copy(cur = Streak.init)
   private def setMax = copy(max = if (cur.v >= max.v) cur else max)
 }
@@ -178,13 +176,11 @@ case class Result(opInt: Int, opId: UserId, at: DateTime, gameId: String)
 case class Results(results: List[Result]) {
   def agg(pov: Pov, comp: Int) =
     pov.opponent.rating.ifTrue(pov.game.rated).fold(this) { opInt =>
-      copy(
-        results = (Result(
-          opInt,
-          UserId(~pov.opponent.userId),
-          pov.game.updatedAtOrCreatedAt,
-          pov.game.id
-        ) :: results).sortBy(_.opInt * comp) take Results.nb)
+      copy(results = (Result(
+        opInt,
+        UserId(~pov.opponent.userId),
+        pov.game.updatedAtOrCreatedAt,
+        pov.game.id) :: results).sortBy(_.opInt * comp) take Results.nb)
     }
 }
 object Results {

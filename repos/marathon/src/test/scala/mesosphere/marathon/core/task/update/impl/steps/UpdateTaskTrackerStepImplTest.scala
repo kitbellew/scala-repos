@@ -34,13 +34,7 @@ class UpdateTaskTrackerStepImplTest
       .asInstanceOf[Future[Unit]] returns Future.successful(())
 
     When("processUpdate is called")
-    f.step
-      .processUpdate(
-        updateTimestamp,
-        existingTask,
-        status
-      )
-      .futureValue
+    f.step.processUpdate(updateTimestamp, existingTask, status).futureValue
 
     Then("taskTracker.statusUpdate is called")
     verify(f.taskUpdater).statusUpdate(appId, status)
@@ -62,11 +56,7 @@ class UpdateTaskTrackerStepImplTest
 
     When("processUpdate is called")
     val eventualFailure = f.step
-      .processUpdate(
-        updateTimestamp,
-        existingTask,
-        status
-      )
+      .processUpdate(updateTimestamp, existingTask, status)
       .failed
       .futureValue
 

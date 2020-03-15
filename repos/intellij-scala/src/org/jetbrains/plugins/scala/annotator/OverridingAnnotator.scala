@@ -218,29 +218,25 @@ trait OverridingAnnotator {
               ScalaPsiUtil.nameContext(sign.namedElement) match {
                 case p: ScClassParameter
                     if p.isVal || (p.isCaseClassVal && !p.isVar) =>
-                  annotation.registerFix(
-                    new AddModifierWithValOrVarQuickFix(
-                      owner,
-                      "override",
-                      addVal = true))
+                  annotation.registerFix(new AddModifierWithValOrVarQuickFix(
+                    owner,
+                    "override",
+                    addVal = true))
                 case _: ScClassParameter =>
-                  annotation.registerFix(
-                    new AddModifierWithValOrVarQuickFix(
-                      owner,
-                      "override",
-                      addVal = false))
+                  annotation.registerFix(new AddModifierWithValOrVarQuickFix(
+                    owner,
+                    "override",
+                    addVal = false))
                 case _: ScValue | _: ScFunction =>
-                  annotation.registerFix(
-                    new AddModifierWithValOrVarQuickFix(
-                      owner,
-                      "override",
-                      addVal = true))
+                  annotation.registerFix(new AddModifierWithValOrVarQuickFix(
+                    owner,
+                    "override",
+                    addVal = true))
                 case _: ScVariable =>
-                  annotation.registerFix(
-                    new AddModifierWithValOrVarQuickFix(
-                      owner,
-                      "override",
-                      addVal = false))
+                  annotation.registerFix(new AddModifierWithValOrVarQuickFix(
+                    owner,
+                    "override",
+                    addVal = false))
                 case _ =>
               }
             case _ =>

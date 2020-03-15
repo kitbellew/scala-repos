@@ -52,8 +52,7 @@ object TestStore {
     val supplier = MergeableStoreFactory.from(
       TestStore
         .apply[(K, BatchID), V](storeID)
-        .getOrElse(sys.error("Weak hash map no longer contains store"))
-    )
+        .getOrElse(sys.error("Weak hash map no longer contains store")))
     (storeID, supplier)
   }
 
@@ -64,8 +63,7 @@ object TestStore {
     val supplier = MergeableStoreFactory.fromOnlineOnly(
       TestStore
         .apply[K, V](storeID)
-        .getOrElse(sys.error("Weak hash map no longer contains store"))
-    )
+        .getOrElse(sys.error("Weak hash map no longer contains store")))
 
     (storeID, supplier)
   }

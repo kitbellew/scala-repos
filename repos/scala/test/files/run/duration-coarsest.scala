@@ -18,13 +18,8 @@ object Test extends App {
       assert(actual.length == expected.length, s"$actual, $expected")
   }
 
-  List(
-    45 minutes,
-    500 millis,
-    1500 millis,
-    23 hours,
-    40 days
-  ) foreach (x => assert(x == x.toCoarsest, x))
+  List(45 minutes, 500 millis, 1500 millis, 23 hours, 40 days) foreach (x =>
+    assert(x == x.toCoarsest, x))
 
   // toCoarsest on a FiniteDuration should return a FiniteDuration
   val finite: FiniteDuration = 1.second.toCoarsest

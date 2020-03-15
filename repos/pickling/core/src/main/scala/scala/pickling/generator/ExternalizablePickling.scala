@@ -20,11 +20,9 @@ private[pickling] class ExternalizablePickling extends PicklingAlgorithm {
     if (isExternalizable(tpe)) {
       logger.warn(
         s"Using Externalizable interface for $tpe.  This may be less efficient than writing your own pickler/unpickler.")
-      AlgorithmSucccess(
-        PickleUnpickleImplementation(
-          pickle = PickleEntry(Seq(PickleExternalizable(tpe))),
-          unpickle = UnpickleExternalizable(tpe)
-        ))
+      AlgorithmSucccess(PickleUnpickleImplementation(
+        pickle = PickleEntry(Seq(PickleExternalizable(tpe))),
+        unpickle = UnpickleExternalizable(tpe)))
     } else AlgorithmFailure(s"$tpe does not extend java.io.Externalizable")
   }
 }

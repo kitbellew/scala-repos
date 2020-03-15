@@ -227,16 +227,14 @@ class EventServiceSpec
         case (HttpResponse(HttpStatus(OK, _), _, Some(_), _), events) =>
           events flatMap {
             _.data.map(v => JParser.parseUnsafe(v.renderCompact))
-          } must contain(
-            JParser.parseUnsafe(
-              """{
+          } must contain(JParser.parseUnsafe(
+            """{
               "URL": "http://alexk2009.hubpages.com/hub/Big-Birds-that-carry-off-children",
               "Title": "Eagles carrying off children and babies", "Status": "Published",
               "24 Hours": [ 11, 0 ], "Total": [ 10856, 252 ],
               "HubScore": 91, "Comments": 21, "7 Days": 98, "30 Days": 2352,
               "Published Date": "11/05/11", "Edited Date": "12/19/12", "Featured": "yes"
-            }""")
-          )
+            }"""))
       }
     }
 

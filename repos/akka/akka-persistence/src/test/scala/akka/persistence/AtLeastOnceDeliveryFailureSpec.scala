@@ -165,9 +165,9 @@ object AtLeastOnceDeliveryFailureSpec {
     var acks = Set.empty[Int]
 
     def createSender(): ActorRef =
-      context.watch(
-        context
-          .actorOf(Props(classOf[ChaosSender], destination, probe), "sender"))
+      context.watch(context.actorOf(
+        Props(classOf[ChaosSender], destination, probe),
+        "sender"))
 
     def receive = {
       case Start ⇒ 1 to numMessages foreach (snd ! _)

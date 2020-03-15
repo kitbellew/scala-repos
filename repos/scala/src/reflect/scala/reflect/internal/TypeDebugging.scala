@@ -105,13 +105,11 @@ trait TypeDebugging {
       }
     }
     def ptLine(pairs: (String, Any)*): String =
-      (
-        pairs
-          map { case (k, v)       => (k, to_s(v)) }
-          filterNot { case (_, v) => v == "" }
-          map { case ("", v)      => v; case (k, v) => s"$k=$v" }
-          mkString ", "
-      )
+      (pairs
+        map { case (k, v)       => (k, to_s(v)) }
+        filterNot { case (_, v) => v == "" }
+        map { case ("", v)      => v; case (k, v) => s"$k=$v" }
+        mkString ", ")
     def ptTree(t: Tree): String =
       t match {
         case PackageDef(pid, _)    => s"package $pid"

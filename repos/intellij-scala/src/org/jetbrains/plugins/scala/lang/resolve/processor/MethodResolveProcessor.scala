@@ -98,19 +98,18 @@ class MethodResolveProcessor(
       }
       element match {
         case m: PsiMethod =>
-          addResult(
-            new ScalaResolveResult(
-              m,
-              s,
-              getImports(state),
-              nameShadow,
-              implicitConversionClass,
-              implicitFunction = implFunction,
-              implicitType = implType,
-              fromType = fromType,
-              isAccessible = accessible,
-              isForwardReference = forwardReference,
-              unresolvedTypeParameters = unresolvedTypeParameters))
+          addResult(new ScalaResolveResult(
+            m,
+            s,
+            getImports(state),
+            nameShadow,
+            implicitConversionClass,
+            implicitFunction = implFunction,
+            implicitType = implType,
+            fromType = fromType,
+            isAccessible = accessible,
+            isForwardReference = forwardReference,
+            unresolvedTypeParameters = unresolvedTypeParameters))
         case cc: ScClass                      =>
         case o: ScObject if o.isPackageObject => // do not resolve to package object
         case obj: ScObject
@@ -151,51 +150,7 @@ class MethodResolveProcessor(
             .filter { case r => !accessibility || r.isAccessible }
           if (seq.nonEmpty) addResults(seq)
           else
-            addResult(
-              new ScalaResolveResult(
-                named,
-                s,
-                getImports(state),
-                nameShadow,
-                implicitConversionClass,
-                implicitFunction = implFunction,
-                implicitType = implType,
-                isNamedParameter = isNamedParameter,
-                fromType = fromType,
-                isAccessible = accessible,
-                isForwardReference = forwardReference,
-                unresolvedTypeParameters = unresolvedTypeParameters))
-        case synthetic: ScSyntheticFunction =>
-          addResult(
-            new ScalaResolveResult(
-              synthetic,
-              s,
-              getImports(state),
-              nameShadow,
-              implicitConversionClass,
-              implicitFunction = implFunction,
-              implicitType = implType,
-              fromType = fromType,
-              isAccessible = accessible,
-              isForwardReference = forwardReference,
-              unresolvedTypeParameters = unresolvedTypeParameters))
-        case pack: PsiPackage =>
-          addResult(
-            new ScalaResolveResult(
-              ScPackageImpl(pack),
-              s,
-              getImports(state),
-              nameShadow,
-              implicitConversionClass,
-              implicitFunction = implFunction,
-              implicitType = implType,
-              fromType = fromType,
-              isAccessible = accessible,
-              isForwardReference = forwardReference,
-              unresolvedTypeParameters = unresolvedTypeParameters))
-        case _ =>
-          addResult(
-            new ScalaResolveResult(
+            addResult(new ScalaResolveResult(
               named,
               s,
               getImports(state),
@@ -208,6 +163,46 @@ class MethodResolveProcessor(
               isAccessible = accessible,
               isForwardReference = forwardReference,
               unresolvedTypeParameters = unresolvedTypeParameters))
+        case synthetic: ScSyntheticFunction =>
+          addResult(new ScalaResolveResult(
+            synthetic,
+            s,
+            getImports(state),
+            nameShadow,
+            implicitConversionClass,
+            implicitFunction = implFunction,
+            implicitType = implType,
+            fromType = fromType,
+            isAccessible = accessible,
+            isForwardReference = forwardReference,
+            unresolvedTypeParameters = unresolvedTypeParameters))
+        case pack: PsiPackage =>
+          addResult(new ScalaResolveResult(
+            ScPackageImpl(pack),
+            s,
+            getImports(state),
+            nameShadow,
+            implicitConversionClass,
+            implicitFunction = implFunction,
+            implicitType = implType,
+            fromType = fromType,
+            isAccessible = accessible,
+            isForwardReference = forwardReference,
+            unresolvedTypeParameters = unresolvedTypeParameters))
+        case _ =>
+          addResult(new ScalaResolveResult(
+            named,
+            s,
+            getImports(state),
+            nameShadow,
+            implicitConversionClass,
+            implicitFunction = implFunction,
+            implicitType = implType,
+            isNamedParameter = isNamedParameter,
+            fromType = fromType,
+            isAccessible = accessible,
+            isForwardReference = forwardReference,
+            unresolvedTypeParameters = unresolvedTypeParameters))
       }
     }
     true
@@ -535,10 +530,9 @@ object MethodResolveProcessor {
             typez.recursiveUpdate {
               case tpt: ScTypeParameterType =>
                 typeParameters.find(tp =>
-                  (
-                    tp.name,
-                    ScalaPsiUtil.getPsiElementId(
-                      tp.ptp)) == (tpt.name, tpt.getId)) match {
+                  (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)) == (
+                    tpt.name, tpt.getId
+                  )) match {
                   case None => (true, tpt)
                   case _ =>
                     hasRecursiveTypeParameters = true
@@ -740,10 +734,9 @@ object MethodResolveProcessor {
             val pr = problemsFor(r, applicationImplicits, proc)
             r.innerResolveResult match {
               case Some(rr) =>
-                r.copy(innerResolveResult = Some(
-                  rr.copy(
-                    problems = pr.problems,
-                    defaultParameterUsed = pr.defaultParameterUsed)))
+                r.copy(innerResolveResult = Some(rr.copy(
+                  problems = pr.problems,
+                  defaultParameterUsed = pr.defaultParameterUsed)))
               case _ =>
                 r.copy(
                   problems = pr.problems,

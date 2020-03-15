@@ -264,13 +264,11 @@ object Group {
     new Validator[Group] {
       override def apply(group: Group): Result = {
         maxApps.filter(group.transitiveApps.size > _).map { num =>
-          Failure(
-            Set(
-              RuleViolation(
-                group,
-                s"""This Marathon instance may only handle up to $num Apps!
+          Failure(Set(RuleViolation(
+            group,
+            s"""This Marathon instance may only handle up to $num Apps!
                 |(Override with command line option --max_apps)""".stripMargin,
-                None)))
+            None)))
         } getOrElse Success
       } and validator(group)
     }
@@ -310,12 +308,11 @@ object Group {
 
           if (ruleViolations.isEmpty) None
           else
-            Some(
-              GroupViolation(
-                app,
-                "app contains conflicting ports",
-                None,
-                ruleViolations.toSet))
+            Some(GroupViolation(
+              app,
+              "app contains conflicting ports",
+              None,
+              ruleViolations.toSet))
         }
 
         if (groupViolations.isEmpty) Success else Failure(groupViolations.toSet)

@@ -474,8 +474,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
     ).map(Future.value)
     assert(
       Await.result(Spool.merge(spools).flatMap(_.toSeq), 5.seconds) ==
-        Seq("a", "1", "foo", "b", "2", "bar", "c", "3", "baz")
-    )
+        Seq("a", "1", "foo", "b", "2", "bar", "c", "3", "baz"))
   }
 
   "Spool.distinctBy should distinct" in {

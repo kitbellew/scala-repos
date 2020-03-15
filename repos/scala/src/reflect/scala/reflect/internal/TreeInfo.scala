@@ -137,20 +137,20 @@ abstract class TreeInfo {
       sym: Symbol,
       tree: Tree,
       allowVolatile: Boolean): Boolean =
-    (
-      symOk(
-        sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
-        typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(
-        tree)) && !definitions.isByNameParamType(tree.tpe)
-    )
+    (symOk(sym) && (
+      !sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))
+    ) &&
+      typeOk(tree.tpe) && (allowVolatile || !hasVolatileType(
+      tree)) && !definitions.isByNameParamType(tree.tpe))
 
   private def isStableIdent(tree: Ident, allowVolatile: Boolean): Boolean =
-    (
-      symOk(tree.symbol)
-        && tree.symbol.isStable
-        && !definitions.isByNameParamType(tree.tpe)
-        && !definitions.isByName(tree.symbol)
-        && (allowVolatile || !tree.symbol.hasVolatileType) // TODO SPEC: not required by spec
+    (symOk(tree.symbol)
+      && tree.symbol.isStable
+      && !definitions.isByNameParamType(tree.tpe)
+      && !definitions.isByName(tree.symbol)
+      && (
+        allowVolatile || !tree.symbol.hasVolatileType
+      ) // TODO SPEC: not required by spec
     )
 
   /** Is `tree`'s type volatile? (Ignored if its symbol has the @uncheckedStable annotation.)
@@ -664,13 +664,11 @@ abstract class TreeInfo {
 
   /** Does this CaseDef catch Throwable? */
   def catchesThrowable(cdef: CaseDef) =
-    (
-      cdef.guard.isEmpty && (unbind(cdef.pat) match {
-        case Ident(nme.WILDCARD) => true
-        case i @ Ident(name)     => hasNoSymbol(i)
-        case _                   => false
-      })
-    )
+    (cdef.guard.isEmpty && (unbind(cdef.pat) match {
+      case Ident(nme.WILDCARD) => true
+      case i @ Ident(name)     => hasNoSymbol(i)
+      case _                   => false
+    }))
 
   /** Is this CaseDef synthetically generated, e.g. by `MatchTranslation.translateTry`? */
   def isSyntheticCase(cdef: CaseDef) =
@@ -975,7 +973,9 @@ abstract class TreeInfo {
   }
 
   def isApplyDynamicName(name: Name) =
-    (name == nme.updateDynamic) || (name == nme.selectDynamic) || (name == nme.applyDynamic) || (name == nme.applyDynamicNamed)
+    (name == nme.updateDynamic) || (name == nme.selectDynamic) || (
+      name == nme.applyDynamic
+    ) || (name == nme.applyDynamicNamed)
 
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) =
@@ -1026,13 +1026,12 @@ abstract class TreeInfo {
               val qualSym = if (qual.hasSymbolField) qual.symbol else NoSymbol
               if (qualSym.isModule) qualSym.moduleClass else qualSym
             }
-          Some(
-            (
-              isBundle,
-              isBlackbox,
-              owner,
-              ref.symbol,
-              dissectApplied(tree).targs))
+          Some((
+            isBundle,
+            isBlackbox,
+            owner,
+            ref.symbol,
+            dissectApplied(tree).targs))
         }
         case _ => None
       }

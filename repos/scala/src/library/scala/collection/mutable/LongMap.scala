@@ -66,8 +66,9 @@ final class LongMap[V] private[collection] (
     mask =
       if (n < 0) 0x7
       else
-        (((1 << (32 - java.lang.Integer
-          .numberOfLeadingZeros(n - 1))) - 1) & 0x3FFFFFFF) | 0x7
+        ((
+          (1 << (32 - java.lang.Integer.numberOfLeadingZeros(n - 1))) - 1
+        ) & 0x3FFFFFFF) | 0x7
     _keys = new Array[Long](mask + 1)
     _values = new Array[AnyRef](mask + 1)
   }
@@ -80,8 +81,7 @@ final class LongMap[V] private[collection] (
       sz: Int,
       vc: Int,
       kz: Array[Long],
-      vz: Array[AnyRef]
-  ) {
+      vz: Array[AnyRef]) {
     mask = m; extraKeys = ek; zeroValue = zv; minValue = mv; _size = sz;
     _vacant = vc; _keys = kz; _values = vz
   }

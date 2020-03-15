@@ -24,8 +24,7 @@ trait StrongTests[F[_, _]] extends ProfunctorTests[F] {
       EqFAD: Eq[F[A, D]],
       EqFAG: Eq[F[A, G]],
       EqFAEDE: Eq[F[(A, E), (D, E)]],
-      EqFEAED: Eq[F[(E, A), (E, D)]]
-  ): RuleSet =
+      EqFEAED: Eq[F[(E, A), (E, D)]]): RuleSet =
     new DefaultRuleSet(
       name = "strong",
       parent = Some(profunctor[A, B, C, D, E, G]),

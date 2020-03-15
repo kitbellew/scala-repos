@@ -49,10 +49,9 @@ trait AccountService {
             if (settings.ldap.get.mailAttribute.getOrElse("").isEmpty) {
               updateAccount(x.copy(fullName = ldapUserInfo.fullName))
             } else {
-              updateAccount(
-                x.copy(
-                  mailAddress = ldapUserInfo.mailAddress,
-                  fullName = ldapUserInfo.fullName))
+              updateAccount(x.copy(
+                mailAddress = ldapUserInfo.mailAddress,
+                fullName = ldapUserInfo.fullName))
             }
             getAccountByUserName(ldapUserInfo.userName)
           }
@@ -95,7 +94,9 @@ trait AccountService {
   def getAccountByUserName(userName: String, includeRemoved: Boolean = false)(
       implicit s: Session): Option[Account] =
     Accounts filter (t =>
-      (t.userName === userName.bind) && (t.removed === false.bind, !includeRemoved)) firstOption
+      (t.userName === userName.bind) && (
+        t.removed === false.bind, !includeRemoved
+      )) firstOption
 
   def getAccountsByUserNames(
       userNames: Set[String],
@@ -108,7 +109,9 @@ trait AccountService {
     else {
       map ++ Accounts
         .filter(t =>
-          (t.userName inSetBind needs) && (t.removed === false.bind, !includeRemoved))
+          (
+            t.userName inSetBind needs
+          ) && (t.removed === false.bind, !includeRemoved))
         .list
         .map(a => a.userName -> a)
         .toMap
@@ -119,7 +122,9 @@ trait AccountService {
       mailAddress: String,
       includeRemoved: Boolean = false)(implicit s: Session): Option[Account] =
     Accounts filter (t =>
-      (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) && (t.removed === false.bind, !includeRemoved)) firstOption
+      (t.mailAddress.toLowerCase === mailAddress.toLowerCase.bind) && (
+        t.removed === false.bind, !includeRemoved
+      )) firstOption
 
   def getAllUsers(includeRemoved: Boolean = true)(
       implicit s: Session): List[Account] =

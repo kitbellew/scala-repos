@@ -78,8 +78,7 @@ trait ArbitrarySexp {
           genSexpAtom,
           genSexpCons(level + 1),
           genSexpList(level + 1),
-          genSexpData(level + 1)
-        )
+          genSexpData(level + 1))
       }
 
   implicit def arbSexp: Arbitrary[Sexp] = Arbitrary(genSexp(0))

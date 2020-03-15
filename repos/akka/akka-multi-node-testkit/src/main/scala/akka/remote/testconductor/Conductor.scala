@@ -366,9 +366,8 @@ private[akka] class ServerFSM(val controller: ActorRef, val channel: Channel)
 
   whenUnhandled {
     case Event(ClientDisconnected, Some(s)) ⇒
-      s ! Status.Failure(
-        new ClientDisconnectedException(
-          "client disconnected in state " + stateName + ": " + channel))
+      s ! Status.Failure(new ClientDisconnectedException(
+        "client disconnected in state " + stateName + ": " + channel))
       stop()
     case Event(ClientDisconnected, None) ⇒ stop()
   }
@@ -544,7 +543,9 @@ private[akka] class Controller(
             if (nodes contains node)
               sender() ! ToClient(AddressReply(node, nodes(node).addr))
             else
-              addrInterest += node -> ((addrInterest get node getOrElse Set()) + sender())
+              addrInterest += node -> (
+                (addrInterest get node getOrElse Set()) + sender()
+              )
           case _: Done ⇒ //FIXME what should happen?
         }
       case op: CommandOp ⇒
@@ -605,11 +606,12 @@ private[akka] object BarrierCoordinator {
       with NoStackTrace
       with Printer
   final case class WrongBarrier(barrier: String, client: ActorRef, data: Data)
-      extends RuntimeException(data.clients
-        .find(_.fsm == client)
-        .map(_.name.toString)
-        .getOrElse(client.toString) +
-        " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
+      extends RuntimeException(
+        data.clients
+          .find(_.fsm == client)
+          .map(_.name.toString)
+          .getOrElse(client.toString) +
+          " tried to enter '" + barrier + "' while we were waiting for '" + data.barrier + "'")
       with NoStackTrace
       with Printer
   final case class BarrierEmpty(data: Data, msg: String)
@@ -713,10 +715,9 @@ private[akka] class BarrierCoordinator
       clients find (_.name == name) match {
         case None ⇒ stay
         case Some(client) ⇒
-          handleBarrier(
-            d.copy(
-              clients = clients - client,
-              arrived = arrived filterNot (_ == client.fsm)))
+          handleBarrier(d.copy(
+            clients = clients - client,
+            arrived = arrived filterNot (_ == client.fsm)))
       }
     case Event(FailBarrier(name), d @ Data(_, barrier, _, _)) ⇒
       if (name != barrier) throw WrongBarrier(name, sender(), d)

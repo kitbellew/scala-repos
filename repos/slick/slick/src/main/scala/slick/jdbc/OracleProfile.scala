@@ -307,10 +307,7 @@ trait OracleProfile extends JdbcProfile {
         val trg = quoteIdentifier(
           if (triggerName eq null) t.tableName + "__" + column.name + "_trg"
           else triggerName)
-        Seq(
-          s"drop trigger $trg",
-          s"drop sequence $seq"
-        )
+        Seq(s"drop trigger $trg", s"drop sequence $seq")
       }
   }
 

@@ -59,38 +59,35 @@ class ConstructorResolveProcessor(
           if (constructors.isEmpty) {
             //this is for Traits for example. They can be in constructor position.
             // But they haven't constructors.
-            addResult(
-              new ScalaResolveResult(
-                clazz,
-                subst,
-                getImports(state),
-                nameShadow0,
-                boundClass = getBoundClass(state),
-                fromType = fromType,
-                isAccessible = accessible))
-          } else {
-            addResults(
-              constructors.toSeq.map(constr =>
-                new ScalaResolveResult(
-                  constr,
-                  subst,
-                  getImports(state),
-                  nameShadow0,
-                  parentElement = Some(clazz),
-                  boundClass = getBoundClass(state),
-                  fromType = fromType,
-                  isAccessible = isAccessible(constr, ref) && accessible)))
-          }
-        case ta: ScTypeAliasDeclaration =>
-          addResult(
-            new ScalaResolveResult(
-              ta,
+            addResult(new ScalaResolveResult(
+              clazz,
               subst,
               getImports(state),
               nameShadow0,
               boundClass = getBoundClass(state),
               fromType = fromType,
               isAccessible = accessible))
+          } else {
+            addResults(constructors.toSeq.map(constr =>
+              new ScalaResolveResult(
+                constr,
+                subst,
+                getImports(state),
+                nameShadow0,
+                parentElement = Some(clazz),
+                boundClass = getBoundClass(state),
+                fromType = fromType,
+                isAccessible = isAccessible(constr, ref) && accessible)))
+          }
+        case ta: ScTypeAliasDeclaration =>
+          addResult(new ScalaResolveResult(
+            ta,
+            subst,
+            getImports(state),
+            nameShadow0,
+            boundClass = getBoundClass(state),
+            fromType = fromType,
+            isAccessible = accessible))
         case ta: ScTypeAliasDefinition =>
           lazy val r = new ScalaResolveResult(
             ta,
@@ -114,17 +111,16 @@ class ConstructorResolveProcessor(
                 else clazz.constructors
               if (constructors.isEmpty) addResult(r)
               else {
-                addResults(
-                  constructors.toSeq.map(constr =>
-                    new ScalaResolveResult(
-                      constr,
-                      subst.followed(s),
-                      getImports(state),
-                      nameShadow0,
-                      parentElement = Some(ta),
-                      boundClass = getBoundClass(state),
-                      fromType = fromType,
-                      isAccessible = isAccessible(constr, ref) && accessible)))
+                addResults(constructors.toSeq.map(constr =>
+                  new ScalaResolveResult(
+                    constr,
+                    subst.followed(s),
+                    getImports(state),
+                    nameShadow0,
+                    parentElement = Some(ta),
+                    boundClass = getBoundClass(state),
+                    fromType = fromType,
+                    isAccessible = isAccessible(constr, ref) && accessible)))
               }
             case _ =>
               addResult(r)

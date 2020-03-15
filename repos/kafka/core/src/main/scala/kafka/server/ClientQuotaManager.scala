@@ -135,9 +135,9 @@ class ClientQuotaManager(
         // If delayed, add the element to the delayQueue
         delayQueue.add(new ThrottledResponse(time, throttleTimeMs, callback))
         delayQueueSensor.record()
-        logger.debug(
-          "Quota violated for sensor (%s). Delay time: (%d)"
-            .format(clientSensors.quotaSensor.name(), throttleTimeMs))
+        logger.debug("Quota violated for sensor (%s). Delay time: (%d)".format(
+          clientSensors.quotaSensor.name(),
+          throttleTimeMs))
     }
     throttleTimeMs
   }

@@ -545,7 +545,9 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + ("#" + uid).encJs + ").show(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + (
+        "#" + uid
+      ).encJs + ").show(" + timeStr + ");} catch (e) {}"
   }
 
   /**
@@ -576,7 +578,9 @@ object JqJsCmds {
       extends JsCmd
       with HasTime {
     def toJsCmd =
-      "try{jQuery(" + ("#" + uid).encJs + ").hide(" + timeStr + ");} catch (e) {}"
+      "try{jQuery(" + (
+        "#" + uid
+      ).encJs + ").hide(" + timeStr + ");} catch (e) {}"
   }
 
   /**

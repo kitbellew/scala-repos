@@ -34,12 +34,11 @@ class FetchRequestAndResponseMetrics(metricId: ClientIdBroker)
       Map("clientId" -> clientId)
   }
 
-  val requestTimer = new KafkaTimer(
-    newTimer(
-      "FetchRequestRateAndTimeMs",
-      TimeUnit.MILLISECONDS,
-      TimeUnit.SECONDS,
-      tags))
+  val requestTimer = new KafkaTimer(newTimer(
+    "FetchRequestRateAndTimeMs",
+    TimeUnit.MILLISECONDS,
+    TimeUnit.SECONDS,
+    tags))
   val requestSizeHist = newHistogram("FetchResponseSize", biased = true, tags)
   val throttleTimeStats = newTimer(
     "FetchRequestThrottleRateAndTimeMs",
@@ -76,8 +75,8 @@ class FetchRequestAndResponseStats(clientId: String) {
   */
 object FetchRequestAndResponseStatsRegistry {
   private val valueFactory = (k: String) => new FetchRequestAndResponseStats(k)
-  private val globalStats =
-    new Pool[String, FetchRequestAndResponseStats](Some(valueFactory))
+  private val globalStats = new Pool[String, FetchRequestAndResponseStats](Some(
+    valueFactory))
 
   def getFetchRequestAndResponseStats(clientId: String) = {
     globalStats.getAndMaybePut(clientId)

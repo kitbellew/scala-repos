@@ -44,12 +44,7 @@ object SqlToSlick extends App {
   try {
 
     Await.result(
-      db.run(
-        DBIO.seq(
-          addresses.schema.create,
-          people.schema.create,
-          inserts
-        )),
+      db.run(DBIO.seq(addresses.schema.create, people.schema.create, inserts)),
       Duration.Inf)
 
     def _jdbc = {
@@ -456,8 +451,8 @@ object SqlToSlick extends App {
 
         val slickInsert = {
           //#slickQueryInsert
-          people.map(p =>
-            (p.name, p.age, p.addressId)) += ("M Odersky", 12345, 1)
+          people
+            .map(p => (p.name, p.age, p.addressId)) += ("M Odersky", 12345, 1)
           //#slickQueryInsert
         }
         val slickUpdate = {

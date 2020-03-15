@@ -255,11 +255,10 @@ class TextFormatter[V](override val delegate: jfxsc.TextFormatter[V])
       valueConverter: jfxu.StringConverter[V],
       defaultValue: V,
       filter: (TextFormatter.Change) => TextFormatter.Change) =
-    this(
-      new jfxsc.TextFormatter(
-        valueConverter,
-        defaultValue,
-        TextFormatter.toUnaryOperator(filter)))
+    this(new jfxsc.TextFormatter(
+      valueConverter,
+      defaultValue,
+      TextFormatter.toUnaryOperator(filter)))
 
   /**
     * Creates a new Formatter with the provided value converter and default value.

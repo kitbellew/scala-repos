@@ -10,7 +10,6 @@ object KeywordSimilarityEngineFactory extends IEngineFactory {
       Map("KeywordSimilarityAlgorithm" -> classOf[KeywordSimilarityAlgorithm]),
       classOf[LFirstServing[
         FriendRecommendationQuery,
-        FriendRecommendationPrediction]]
-    )
+        FriendRecommendationPrediction]])
   }
 }

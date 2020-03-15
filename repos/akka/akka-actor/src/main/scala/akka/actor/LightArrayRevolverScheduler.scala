@@ -113,12 +113,11 @@ class LightArrayRevolverScheduler(
                 runnable.run()
                 val driftNanos = clock() - getAndAdd(delay.toNanos)
                 if (self.get != null)
-                  swap(
-                    schedule(
-                      preparedEC,
-                      this,
-                      Duration.fromNanos(
-                        Math.max(delay.toNanos - driftNanos, 1))))
+                  swap(schedule(
+                    preparedEC,
+                    this,
+                    Duration.fromNanos(
+                      Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException ⇒ // ignore failure to enqueue or terminated target actor
               }
@@ -247,11 +246,11 @@ class LightArrayRevolverScheduler(
             node.value.ticks match {
               case 0 ⇒ node.value.executeTask()
               case ticks ⇒
-                val futureTick = ((
-                  time - start + // calculate the nanos since timer start
+                val futureTick =
+                  ((time - start + // calculate the nanos since timer start
                     (ticks * tickNanos) + // adding the desired delay
                     tickNanos - 1 // rounding up
-                ) / tickNanos).toInt // and converting to slot number
+                  ) / tickNanos).toInt // and converting to slot number
                 // tick is an Int that will wrap around, but toInt of futureTick gives us modulo operations
                 // and the difference (offset) will be correct in any case
                 val offset = futureTick - tick

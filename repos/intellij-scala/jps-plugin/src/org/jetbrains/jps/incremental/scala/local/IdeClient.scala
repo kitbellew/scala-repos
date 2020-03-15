@@ -48,17 +48,16 @@ abstract class IdeClient(
           val lines = text.split('\n')
           lines.filterNot(_.trim == "^").mkString("\n")
         } else text
-      context.processMessage(
-        new CompilerMessage(
-          name,
-          kind,
-          withoutPointer,
-          sourcePath.orNull,
-          -1L,
-          -1L,
-          -1L,
-          line.getOrElse(-1L),
-          column.getOrElse(-1L)))
+      context.processMessage(new CompilerMessage(
+        name,
+        kind,
+        withoutPointer,
+        sourcePath.orNull,
+        -1L,
+        -1L,
+        -1L,
+        line.getOrElse(-1L),
+        column.getOrElse(-1L)))
     }
   }
 
@@ -84,8 +83,8 @@ abstract class IdeClient(
   def debug(text: String) { ScalaBuilder.Log.info(text) }
 
   def deleted(module: File) {
-    val paths = util.Collections.singletonList(
-      FileUtil.toCanonicalPath(module.getPath))
+    val paths = util.Collections.singletonList(FileUtil.toCanonicalPath(
+      module.getPath))
     context.processMessage(new FileDeletedEvent(paths))
   }
 

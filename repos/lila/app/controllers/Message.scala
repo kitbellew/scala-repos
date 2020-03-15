@@ -56,13 +56,12 @@ object Message extends LilaController {
           err =>
             relationApi.fetchBlocks(thread otherUserId me, me.id) map {
               blocked =>
-                BadRequest(
-                  html.message.thread(
-                    thread,
-                    err,
-                    blocked,
-                    answerable =
-                      !Env.message.LichessSenders.contains(thread.creatorId)))
+                BadRequest(html.message.thread(
+                  thread,
+                  err,
+                  blocked,
+                  answerable =
+                    !Env.message.LichessSenders.contains(thread.creatorId)))
             },
           text =>
             api.makePost(thread, text, me) inject Redirect(

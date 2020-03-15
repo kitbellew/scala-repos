@@ -64,28 +64,36 @@ object FingerTreeTest extends SpecLite {
 
   "replacing last element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> ((tree :-| x).toStream must_=== (tree.toStream.init :+ x))
+      !tree.isEmpty ==> (
+        (tree :-| x).toStream must_=== (tree.toStream.init :+ x)
+      )
   }
 
   "replacing first element works correctly" ! forAll {
     (tree: SequenceTree[Int], x: Int) =>
-      !tree.isEmpty ==> ((x |-: tree).toStream must_=== (x +: tree.toStream.tail))
+      !tree.isEmpty ==> (
+        (x |-: tree).toStream must_=== (x +: tree.toStream.tail)
+      )
   }
 
   "head and tail work correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    !tree.isEmpty ==> ((tree.head === tree.toStream.head) && (tree.tail.toStream === tree.toStream.tail))
+    !tree.isEmpty ==> ((tree.head === tree.toStream.head) && (
+      tree.tail.toStream === tree.toStream.tail
+    ))
   }
 
   "last and init work correctly" ! forAll { (tree: SequenceTree[Int]) =>
     val asStream = tree.toStream
-    !tree.isEmpty ==> ((tree.last === tree.toStream.last) && (tree.init.toStream === tree.toStream.init))
+    !tree.isEmpty ==> ((tree.last === tree.toStream.last) && (
+      tree.init.toStream === tree.toStream.init
+    ))
   }
 
   "foldLeft snoc is identity" ! forAll { (tree: SequenceTree[Int]) =>
-    tree
-      .foldLeft(FingerTree.empty(SizeReducer[Int]))(_ :+ _)
-      .toStream must_== (tree.toStream)
+    tree.foldLeft(FingerTree.empty(SizeReducer[Int]))(_ :+ _).toStream must_== (
+      tree.toStream
+    )
   }
 
   "foldLeft cons is reverse" ! forAll { (tree: SequenceTree[Int]) =>

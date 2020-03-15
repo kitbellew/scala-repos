@@ -260,10 +260,9 @@ class ParquetPartitionDiscoverySuite
       PartitionSpec(
         StructType(
           Seq(StructField("a", IntegerType), StructField("b", StringType))),
-        Seq(
-          Partition(
-            InternalRow(10, UTF8String.fromString("hello")),
-            "hdfs://host:9000/path/a=10/b=hello"))
+        Seq(Partition(
+          InternalRow(10, UTF8String.fromString("hello")),
+          "hdfs://host:9000/path/a=10/b=hello"))
       )
     )
 
@@ -368,12 +367,11 @@ class ParquetPartitionDiscoverySuite
       PartitionSpec(
         StructType(
           Seq(StructField("a", StringType), StructField("b", StringType))),
-        Seq(
-          Partition(
-            InternalRow(
-              UTF8String.fromString("10"),
-              UTF8String.fromString("hello")),
-            "hdfs://host:9000/path/a=10/b=hello"))
+        Seq(Partition(
+          InternalRow(
+            UTF8String.fromString("10"),
+            UTF8String.fromString("hello")),
+          "hdfs://host:9000/path/a=10/b=hello"))
       )
     )
 
@@ -765,8 +763,8 @@ class ParquetPartitionDiscoverySuite
         .save(dir.getCanonicalPath)
 
       Files.touch(new File(s"${dir.getCanonicalPath}/b=1", ".DS_Store"))
-      Files.createParentDirs(
-        new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files.createParentDirs(new File(
+        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(dir.getCanonicalPath),
@@ -786,8 +784,8 @@ class ParquetPartitionDiscoverySuite
         .save(tablePath.getCanonicalPath)
 
       Files.touch(new File(s"${tablePath.getCanonicalPath}/", "_SUCCESS"))
-      Files.createParentDirs(
-        new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files.createParentDirs(new File(
+        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(tablePath.getCanonicalPath),
@@ -806,8 +804,8 @@ class ParquetPartitionDiscoverySuite
         .save(tablePath.getCanonicalPath)
 
       Files.touch(new File(s"${tablePath.getCanonicalPath}/", "_SUCCESS"))
-      Files.createParentDirs(
-        new File(s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
+      Files.createParentDirs(new File(
+        s"${dir.getCanonicalPath}/b=1/c=1/.foo/bar"))
 
       checkAnswer(
         sqlContext.read.format("parquet").load(tablePath.getCanonicalPath),
@@ -894,14 +892,13 @@ class ParquetPartitionDiscoverySuite
     }
 
     assert(
-      listConflictingPartitionColumns(
-        Seq(
-          (
-            new Path("file:/tmp/foo/a=1"),
-            PartitionValues(Seq("a"), Seq(Literal(1)))),
-          (
-            new Path("file:/tmp/foo/b=1"),
-            PartitionValues(Seq("b"), Seq(Literal(1)))))).trim ===
+      listConflictingPartitionColumns(Seq(
+        (
+          new Path("file:/tmp/foo/a=1"),
+          PartitionValues(Seq("a"), Seq(Literal(1)))),
+        (
+          new Path("file:/tmp/foo/b=1"),
+          PartitionValues(Seq("b"), Seq(Literal(1)))))).trim ===
         makeExpectedMessage(
           Seq("a", "b"),
           Seq("file:/tmp/foo/a=1", "file:/tmp/foo/b=1")))

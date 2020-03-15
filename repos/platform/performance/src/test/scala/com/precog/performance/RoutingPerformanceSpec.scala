@@ -93,12 +93,11 @@ trait RoutingPerformanceSpec extends Specification with PerformanceSpec {
           new Timeout(60000),
           ExecutionContext.defaultExecutionContext(system))
         system.actorOf(
-          Props(
-            new BatchStoreActor(
-              eventStore,
-              1000,
-              Some(ingestActor),
-              system.scheduler)),
+          Props(new BatchStoreActor(
+            eventStore,
+            1000,
+            Some(ingestActor),
+            system.scheduler)),
           "router")
       }
 

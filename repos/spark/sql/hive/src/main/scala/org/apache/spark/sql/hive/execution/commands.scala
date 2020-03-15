@@ -210,11 +210,12 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
       // Check if we need to throw an exception or just return.
       mode match {
         case SaveMode.ErrorIfExists =>
-          throw new AnalysisException(s"Table $tableName already exists. " +
-            s"If you are using saveAsTable, you can set SaveMode to SaveMode.Append to " +
-            s"insert data into the table or set SaveMode to SaveMode.Overwrite to overwrite" +
-            s"the existing data. " +
-            s"Or, if you are using SQL CREATE TABLE, you need to drop $tableName first.")
+          throw new AnalysisException(
+            s"Table $tableName already exists. " +
+              s"If you are using saveAsTable, you can set SaveMode to SaveMode.Append to " +
+              s"insert data into the table or set SaveMode to SaveMode.Overwrite to overwrite" +
+              s"the existing data. " +
+              s"Or, if you are using SQL CREATE TABLE, you need to drop $tableName first.")
         case SaveMode.Ignore =>
           // Since the table already exists and the save mode is Ignore, we will just return.
           return Seq.empty[Row]

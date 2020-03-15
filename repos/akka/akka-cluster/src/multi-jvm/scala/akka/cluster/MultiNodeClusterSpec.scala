@@ -137,13 +137,13 @@ trait MultiNodeClusterSpec
 
   def muteMarkingAsUnreachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
-      sys.eventStream.publish(
-        Mute(EventFilter.error(pattern = ".*Marking.* as UNREACHABLE.*")))
+      sys.eventStream.publish(Mute(
+        EventFilter.error(pattern = ".*Marking.* as UNREACHABLE.*")))
 
   def muteMarkingAsReachable(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled)
-      sys.eventStream.publish(
-        Mute(EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
+      sys.eventStream.publish(Mute(
+        EventFilter.info(pattern = ".*Marking.* as REACHABLE.*")))
 
   override def afterAll(): Unit = {
     if (!log.isDebugEnabled) {
@@ -313,8 +313,9 @@ trait MultiNodeClusterSpec
       timeout: FiniteDuration = 25.seconds): Unit = {
     within(timeout) {
       if (!canNotBePartOfMemberRing.isEmpty) // don't run this on an empty set
-        awaitAssert(canNotBePartOfMemberRing foreach (a ⇒
-          clusterView.members.map(_.address) should not contain (a)))
+        awaitAssert(
+          canNotBePartOfMemberRing foreach (a ⇒
+            clusterView.members.map(_.address) should not contain (a)))
       awaitAssert(clusterView.members.size should ===(numberOfMembers))
       awaitAssert(
         clusterView.members.map(_.status) should ===(Set(MemberStatus.Up)))

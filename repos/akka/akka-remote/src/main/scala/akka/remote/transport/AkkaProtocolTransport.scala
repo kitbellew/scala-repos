@@ -42,7 +42,9 @@ private[remote] class AkkaProtocolSettings(config: Config) {
     TransportFailureDetectorConfig.getString("implementation-class")
   val TransportHeartBeatInterval: FiniteDuration = {
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  } requiring (_ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0")
+  } requiring (
+    _ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0"
+  )
 
   val RequireCookie: Boolean = getBoolean("akka.remote.require-cookie")
 
@@ -160,8 +162,8 @@ private[transport] class AkkaProtocolManager(
       val stateActorSettings = settings
       val failureDetector = createTransportFailureDetector()
       context.actorOf(
-        RARP(context.system).configureDispatcher(
-          ProtocolStateActor.inboundProps(
+        RARP(context.system)
+          .configureDispatcher(ProtocolStateActor.inboundProps(
             HandshakeInfo(
               stateActorLocalAddress,
               AddressUidExtension(context.system).addressUid,
@@ -192,20 +194,19 @@ private[transport] class AkkaProtocolManager(
     val stateActorWrappedTransport = wrappedTransport
     val failureDetector = createTransportFailureDetector()
     context.actorOf(
-      RARP(context.system).configureDispatcher(
-        ProtocolStateActor.outboundProps(
-          HandshakeInfo(
-            stateActorLocalAddress,
-            AddressUidExtension(context.system).addressUid,
-            stateActorSettings.SecureCookie),
-          remoteAddress,
-          statusPromise,
-          stateActorWrappedTransport,
-          stateActorSettings,
-          AkkaPduProtobufCodec,
-          failureDetector,
-          refuseUid
-        )),
+      RARP(context.system).configureDispatcher(ProtocolStateActor.outboundProps(
+        HandshakeInfo(
+          stateActorLocalAddress,
+          AddressUidExtension(context.system).addressUid,
+          stateActorSettings.SecureCookie),
+        remoteAddress,
+        statusPromise,
+        stateActorWrappedTransport,
+        stateActorSettings,
+        AkkaPduProtobufCodec,
+        failureDetector,
+        refuseUid
+      )),
       actorNameFor(remoteAddress)
     )
   }
@@ -426,8 +427,8 @@ private[transport] class ProtocolStateActor(
     case Event(
           Handle(wrappedHandle),
           OutboundUnassociated(_, statusPromise, _)) ⇒
-      wrappedHandle.readHandlerPromise.trySuccess(
-        ActorHandleEventListener(self))
+      wrappedHandle.readHandlerPromise.trySuccess(ActorHandleEventListener(
+        self))
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
         failureDetector.heartbeat()
         initHeartbeatTimer()
@@ -538,19 +539,15 @@ private[transport] class ProtocolStateActor(
 
     case Event(HandshakeTimer, OutboundUnderlyingAssociated(_, wrappedHandle)) ⇒
       sendDisassociate(wrappedHandle, Unknown)
-      stop(
-        FSM.Failure(
-          TimeoutReason(
-            "No response from remote for outbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+      stop(FSM.Failure(TimeoutReason(
+        "No response from remote for outbound association. Handshake timed out after " +
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
     case Event(HandshakeTimer, InboundUnassociated(_, wrappedHandle)) ⇒
       sendDisassociate(wrappedHandle, Unknown)
-      stop(
-        FSM.Failure(
-          TimeoutReason(
-            "No response from remote for inbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+      stop(FSM.Failure(TimeoutReason(
+        "No response from remote for inbound association. Handshake timed out after " +
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
   }
 
@@ -634,8 +631,9 @@ private[transport] class ProtocolStateActor(
     } else {
       // send disassociate just to be sure
       sendDisassociate(wrappedHandle, Unknown)
-      stop(FSM.Failure(TimeoutReason(s"No response from remote. " +
-        s"Transport failure detector triggered. (internal state was $stateName)")))
+      stop(FSM.Failure(TimeoutReason(
+        s"No response from remote. " +
+          s"Transport failure detector triggered. (internal state was $stateName)")))
     }
   }
 
@@ -741,15 +739,14 @@ private[transport] class ProtocolStateActor(
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 
-    statusPromise.success(
-      new AkkaProtocolHandle(
-        localAddress,
-        wrappedHandle.remoteAddress,
-        readHandlerPromise,
-        wrappedHandle,
-        handshakeInfo,
-        self,
-        codec))
+    statusPromise.success(new AkkaProtocolHandle(
+      localAddress,
+      wrappedHandle.remoteAddress,
+      readHandlerPromise,
+      wrappedHandle,
+      handshakeInfo,
+      self,
+      codec))
     readHandlerPromise.future
   }
 
@@ -761,15 +758,14 @@ private[transport] class ProtocolStateActor(
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 
-    associationListener notify InboundAssociation(
-      new AkkaProtocolHandle(
-        localAddress,
-        handshakeInfo.origin,
-        readHandlerPromise,
-        wrappedHandle,
-        handshakeInfo,
-        self,
-        codec))
+    associationListener notify InboundAssociation(new AkkaProtocolHandle(
+      localAddress,
+      handshakeInfo.origin,
+      readHandlerPromise,
+      wrappedHandle,
+      handshakeInfo,
+      self,
+      codec))
     readHandlerPromise.future
   }
 

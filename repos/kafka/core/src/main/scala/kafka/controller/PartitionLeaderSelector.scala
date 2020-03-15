@@ -134,9 +134,9 @@ class OfflinePartitionLeaderSelector(
               liveBrokersInIsr.toList,
               currentLeaderIsrZkPathVersion + 1)
         }
-        info(
-          "Selected new leader and ISR %s for offline partition %s"
-            .format(newLeaderAndIsr.toString(), topicAndPartition))
+        info("Selected new leader and ISR %s for offline partition %s".format(
+          newLeaderAndIsr.toString(),
+          topicAndPartition))
         (newLeaderAndIsr, liveAssignedReplicas)
       case None =>
         throw new NoReplicaOnlineException(

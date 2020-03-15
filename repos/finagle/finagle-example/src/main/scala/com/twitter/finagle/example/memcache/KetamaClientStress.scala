@@ -235,10 +235,8 @@ object KetamaClientStress extends App {
           }
         case "getsAllThenCas" =>
           keyValueSet.map { case (k, v) => replicationClient.set(k, v)() }
-          val casMap: scala.collection.mutable.Map[
-            String,
-            ReplicationStatus[Option[(Buf, ReplicaCasUnique)]]] =
-            scala.collection.mutable.Map()
+          val casMap: scala.collection.mutable.Map[String, ReplicationStatus[
+            Option[(Buf, ReplicaCasUnique)]]] = scala.collection.mutable.Map()
 
           () => {
             val (key, value) = nextKeyValue

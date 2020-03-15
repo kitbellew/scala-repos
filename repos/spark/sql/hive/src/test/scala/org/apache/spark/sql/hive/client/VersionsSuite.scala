@@ -54,11 +54,10 @@ class VersionsSuite extends SparkFunSuite with Logging {
   private val ivyPath: Option[String] = {
     sys.env
       .get("SPARK_VERSIONS_SUITE_IVY_PATH")
-      .orElse(
-        Some(
-          new File(
-            sys.props("java.io.tmpdir"),
-            "hive-ivy-cache").getAbsolutePath))
+      .orElse(Some(
+        new File(
+          sys.props("java.io.tmpdir"),
+          "hive-ivy-cache").getAbsolutePath))
   }
 
   private def buildConf() = {
@@ -223,11 +222,10 @@ class VersionsSuite extends SparkFunSuite with Logging {
     test(s"$version: getPartitionsByFilter") {
       client.getPartitionsByFilter(
         client.getTable("default", "src_part"),
-        Seq(
-          EqualTo(
-            AttributeReference("key", IntegerType, false)(
-              NamedExpression.newExprId),
-            Literal(1))))
+        Seq(EqualTo(
+          AttributeReference("key", IntegerType, false)(
+            NamedExpression.newExprId),
+          Literal(1))))
     }
 
     test(s"$version: loadPartition") {

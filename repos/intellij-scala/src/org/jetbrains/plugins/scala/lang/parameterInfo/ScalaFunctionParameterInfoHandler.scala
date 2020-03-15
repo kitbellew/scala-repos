@@ -202,8 +202,10 @@ class ScalaFunctionParameterInfoHandler
                   buffer.append(param._2)
                 }
               }
-              if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) { buffer.append("<b>") }
+              if (k == index || (
+                    k == parameters.length - 1 && index >= parameters.length &&
+                    parameters.last._1.isRepeated
+                  )) { buffer.append("<b>") }
               if (k < index && !isGrey) {
                 //slow checking
                 if (k >= exprs.length) { //shouldn't be
@@ -256,8 +258,10 @@ class ScalaFunctionParameterInfoHandler
                   }
                 }
               }
-              if (k == index || (k == parameters.length - 1 && index >= parameters.length &&
-                  parameters.last._1.isRepeated)) { buffer.append("</b>") }
+              if (k == index || (
+                    k == parameters.length - 1 && index >= parameters.length &&
+                    parameters.last._1.isRepeated
+                  )) { buffer.append("</b>") }
               k = k + 1
               if (k != parameters.length) buffer.append(", ")
             }
@@ -299,10 +303,9 @@ class ScalaFunctionParameterInfoHandler
                       false,
                       false,
                       paramIndex),
-                    t._1 + ": " + ScType
-                      .presentableText(t._2) + (if (t._3 != null)
-                                                  " = " + t._3.getText
-                                                else ""))
+                    t._1 + ": " + ScType.presentableText(t._2) + (
+                      if (t._3 != null) " = " + t._3.getText else ""
+                    ))
               }
               applyToParameters(
                 paramsSeq,
@@ -356,9 +359,10 @@ class ScalaFunctionParameterInfoHandler
                         if (param.isDefault) buffer.append(" = _")
 
                         val isBold =
-                          if (method.params.indexOf(
-                                param) == index || (param.isRepeated && method.params
-                                .indexOf(param) <= index)) true
+                          if (method.params.indexOf(param) == index || (
+                                param.isRepeated && method.params.indexOf(
+                                  param) <= index
+                              )) true
                           else {
                             //todo: check type
                             false
@@ -397,9 +401,10 @@ class ScalaFunctionParameterInfoHandler
                         if (param.isVarArgs) buffer.append("*")
 
                         val isBold =
-                          if (p.getParameters.indexOf(
-                                param) == index || (param.isVarArgs && p.getParameters
-                                .indexOf(param) <= index)) true
+                          if (p.getParameters.indexOf(param) == index || (
+                                param.isVarArgs && p.getParameters.indexOf(
+                                  param) <= index
+                              )) true
                           else {
                             //todo: check type
                             false

@@ -71,10 +71,9 @@ trait ViewMkString[+A] {
   *  @tparam Coll the type of the underlying collection containing the elements.
   *  @tparam This the type of the view itself
   */
-trait TraversableViewLike[
-    +A,
-    +Coll,
-    +This <: TraversableView[A, Coll] with TraversableViewLike[A, Coll, This]]
+trait TraversableViewLike[+A, +Coll, +This <: TraversableView[
+  A,
+  Coll] with TraversableViewLike[A, Coll, This]]
     extends Traversable[A]
     with TraversableLike[A, This]
     with ViewMkString[A] {

@@ -72,10 +72,9 @@ class ScalaConsoleExecuteAction extends AnAction {
           console.textSent(line + "\n")
         })
     } else {
-      ScalaConsoleExecuteAction.LOG.info(
-        new Throwable(
-          s"Enter action in console failed: $editor, " +
-            s"$console"))
+      ScalaConsoleExecuteAction.LOG.info(new Throwable(
+        s"Enter action in console failed: $editor, " +
+          s"$console"))
     }
   }
 }

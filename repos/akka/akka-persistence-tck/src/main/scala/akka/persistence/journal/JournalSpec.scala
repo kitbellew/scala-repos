@@ -74,15 +74,14 @@ abstract class JournalSpec(config: Config)
       snr: Long,
       deleted: Boolean = false,
       confirms: Seq[String] = Nil): ReplayedMessage =
-    ReplayedMessage(
-      PersistentImpl(
-        s"a-${snr}",
-        snr,
-        pid,
-        "",
-        deleted,
-        Actor.noSender,
-        writerUuid))
+    ReplayedMessage(PersistentImpl(
+      s"a-${snr}",
+      snr,
+      pid,
+      "",
+      deleted,
+      Actor.noSender,
+      writerUuid))
 
   def writeMessages(
       fromSnr: Int,
@@ -269,13 +268,12 @@ abstract class JournalSpec(config: Config)
         }
         val msgs = (6 to 8).map { i ⇒
           val event = if (i == 7) notSerializableEvent else s"b-$i"
-          AtomicWrite(
-            PersistentRepr(
-              payload = event,
-              sequenceNr = i,
-              persistenceId = pid,
-              sender = Actor.noSender,
-              writerUuid = writerUuid))
+          AtomicWrite(PersistentRepr(
+            payload = event,
+            sequenceNr = i,
+            persistenceId = pid,
+            sender = Actor.noSender,
+            writerUuid = writerUuid))
         }
 
         val probe = TestProbe()

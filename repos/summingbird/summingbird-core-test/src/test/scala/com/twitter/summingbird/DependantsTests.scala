@@ -66,10 +66,9 @@ object DependantsTest extends Properties("Dependants") {
         implies(tdepth == 0, t.isInstanceOf[Source[_, _]]) &&
         implies(
           tdepth > 0,
-          (Producer
-            .dependenciesOf(t)
-            .map { deps.depth(_).get }
-            .max) < tdepth) &&
+          (
+            Producer.dependenciesOf(t).map { deps.depth(_).get }.max
+          ) < tdepth) &&
         implies(
           tdepth > 0,
           Producer.dependenciesOf(t).exists {
@@ -192,8 +191,9 @@ object DependantsTest extends Properties("Dependants") {
 
         depTillWrite
           .collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(
-            false) || writerDependencies.isEmpty || ((depTillWrite.toSet intersect writerDependencies) == depTillWrite.toSet)
+          .getOrElse(false) || writerDependencies.isEmpty || ((
+          depTillWrite.toSet intersect writerDependencies
+        ) == depTillWrite.toSet)
       }
     }
 
@@ -211,8 +211,9 @@ object DependantsTest extends Properties("Dependants") {
           .toSet[Producer[Memory, Any]]
         tillWrite
           .collectFirst { case MergedProducer(_, _) => true }
-          .getOrElse(
-            false) || (tillWrite.toSet & outputChildren.toSet).size == 0
+          .getOrElse(false) || (
+          tillWrite.toSet & outputChildren.toSet
+        ).size == 0
       }
     }
 

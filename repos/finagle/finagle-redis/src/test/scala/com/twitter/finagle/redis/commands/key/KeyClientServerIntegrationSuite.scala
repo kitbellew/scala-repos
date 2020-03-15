@@ -149,8 +149,8 @@ final class KeyClientServerIntegrationSuite
     RedisTest) {
     withRedisClient { client =>
       intercept[ClientError] {
-        Await.result(
-          client(ExpireAt(null: ChannelBuffer, Time.now + 3600.seconds)))
+        Await.result(client(
+          ExpireAt(null: ChannelBuffer, Time.now + 3600.seconds)))
       }
     }
   }
@@ -318,9 +318,11 @@ final class KeyClientServerIntegrationSuite
     withRedisClient { client =>
       val noSuchKey = string2ChanBuf("noSuchKey")
 
-      assert(Await
-        .result(client(RenameNx(noSuchKey, string2ChanBuf("DOES NOT MATTER"))))
-        .isInstanceOf[ErrorReply])
+      assert(
+        Await
+          .result(client(
+            RenameNx(noSuchKey, string2ChanBuf("DOES NOT MATTER"))))
+          .isInstanceOf[ErrorReply])
     }
   }
 

@@ -214,14 +214,13 @@ class JobProgressListenerSuite
     taskInfo.finishTime = 1
     var task = new ShuffleMapTask(0)
     val taskType = Utils.getFormattedClassName(task)
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        0,
-        taskType,
-        Success,
-        taskInfo,
-        taskMetrics))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      task.stageId,
+      0,
+      taskType,
+      Success,
+      taskInfo,
+      taskMetrics))
     assert(
       listener.stageIdToData
         .getOrElse((0, 0), fail())
@@ -241,14 +240,13 @@ class JobProgressListenerSuite
       true)
     taskInfo.finishTime = 1
     task = new ShuffleMapTask(0)
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        0,
-        taskType,
-        Success,
-        taskInfo,
-        taskMetrics))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      task.stageId,
+      0,
+      taskType,
+      Success,
+      taskInfo,
+      taskMetrics))
     assert(listener.stageIdToData.size === 1)
 
     // finish this task, should get updated duration
@@ -263,14 +261,13 @@ class JobProgressListenerSuite
       false)
     taskInfo.finishTime = 1
     task = new ShuffleMapTask(0)
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        0,
-        taskType,
-        Success,
-        taskInfo,
-        taskMetrics))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      task.stageId,
+      0,
+      taskType,
+      Success,
+      taskInfo,
+      taskMetrics))
     assert(
       listener.stageIdToData
         .getOrElse((0, 0), fail())
@@ -290,14 +287,13 @@ class JobProgressListenerSuite
       false)
     taskInfo.finishTime = 1
     task = new ShuffleMapTask(0)
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        0,
-        taskType,
-        Success,
-        taskInfo,
-        taskMetrics))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      task.stageId,
+      0,
+      taskType,
+      Success,
+      taskInfo,
+      taskMetrics))
     assert(
       listener.stageIdToData
         .getOrElse((0, 0), fail())
@@ -335,14 +331,13 @@ class JobProgressListenerSuite
     )
     var failCount = 0
     for (reason <- taskFailedReasons) {
-      listener.onTaskEnd(
-        SparkListenerTaskEnd(
-          task.stageId,
-          0,
-          taskType,
-          reason,
-          taskInfo,
-          metrics))
+      listener.onTaskEnd(SparkListenerTaskEnd(
+        task.stageId,
+        0,
+        taskType,
+        reason,
+        taskInfo,
+        metrics))
       failCount += 1
       assert(listener.stageIdToData((task.stageId, 0)).numCompleteTasks === 0)
       assert(
@@ -350,14 +345,13 @@ class JobProgressListenerSuite
     }
 
     // Make sure we count success as success.
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        1,
-        taskType,
-        Success,
-        taskInfo,
-        metrics))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      task.stageId,
+      1,
+      taskType,
+      Success,
+      taskInfo,
+      metrics))
     assert(listener.stageIdToData((task.stageId, 1)).numCompleteTasks === 1)
     assert(
       listener.stageIdToData((task.stageId, 0)).numFailedTasks === failCount)
@@ -411,15 +405,14 @@ class JobProgressListenerSuite
     listener.onTaskStart(SparkListenerTaskStart(1, 0, makeTaskInfo(1236L)))
     listener.onTaskStart(SparkListenerTaskStart(1, 0, makeTaskInfo(1237L)))
 
-    listener.onExecutorMetricsUpdate(
-      SparkListenerExecutorMetricsUpdate(
-        execId,
-        Array(
-          (1234L, 0, 0, makeTaskMetrics(0).accumulatorUpdates()),
-          (1235L, 0, 0, makeTaskMetrics(100).accumulatorUpdates()),
-          (1236L, 1, 0, makeTaskMetrics(200).accumulatorUpdates())
-        )
-      ))
+    listener.onExecutorMetricsUpdate(SparkListenerExecutorMetricsUpdate(
+      execId,
+      Array(
+        (1234L, 0, 0, makeTaskMetrics(0).accumulatorUpdates()),
+        (1235L, 0, 0, makeTaskMetrics(100).accumulatorUpdates()),
+        (1236L, 1, 0, makeTaskMetrics(200).accumulatorUpdates())
+      )
+    ))
 
     var stage0Data = listener.stageIdToData.get((0, 0)).get
     var stage1Data = listener.stageIdToData.get((1, 0)).get
@@ -466,23 +459,21 @@ class JobProgressListenerSuite
         .totalBlocksFetched == 202)
 
     // task that was included in a heartbeat
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        0,
-        0,
-        taskType,
-        Success,
-        makeTaskInfo(1234L, 1),
-        makeTaskMetrics(300)))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      0,
+      0,
+      taskType,
+      Success,
+      makeTaskInfo(1234L, 1),
+      makeTaskMetrics(300)))
     // task that wasn't included in a heartbeat
-    listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        1,
-        0,
-        taskType,
-        Success,
-        makeTaskInfo(1237L, 1),
-        makeTaskMetrics(400)))
+    listener.onTaskEnd(SparkListenerTaskEnd(
+      1,
+      0,
+      taskType,
+      Success,
+      makeTaskInfo(1237L, 1),
+      makeTaskMetrics(400)))
 
     stage0Data = listener.stageIdToData.get((0, 0)).get
     stage1Data = listener.stageIdToData.get((1, 0)).get

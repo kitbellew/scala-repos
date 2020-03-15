@@ -70,15 +70,13 @@ trait Unapply[TC[_[_]], MA] {
 sealed abstract class Unapply_5 {
 
   /**Unpack a value of type `M0[F[_], A0, B0, C0, D0, E0]` into types `[e]M0[F, A0, B0, C0, D0, e]` and `E0`, given an instance of `TC` */
-  implicit def unapplyMFABCDE5[
-      TC[_[_]],
+  implicit def unapplyMFABCDE5[TC[_[_]], F[_], M0[
       F[_],
-      M0[F[_], _, _, _, _, _],
-      A0,
-      B0,
-      C0,
-      D0,
-      E0](implicit TC0: TC[M0[F, A0, B0, C0, D0, ?]])
+      _,
+      _,
+      _,
+      _,
+      _], A0, B0, C0, D0, E0](implicit TC0: TC[M0[F, A0, B0, C0, D0, ?]])
       : Unapply[TC, M0[F, A0, B0, C0, D0, E0]] {
         type M[X] = M0[F, A0, B0, C0, D0, X]
         type A = E0
@@ -170,16 +168,15 @@ sealed abstract class Unapply_2 extends Unapply_3 {
 sealed abstract class Unapply_1 extends Unapply_2 {
 
   /**Unpack a value of type `M0[A0, B0, C0, D0, E0, F0, G0]` into types `[g]M0[A0, B0, C0, D0, E0, F0, g]` and `G0`, given an instance of `TC` */
-  implicit def unapplyMABCDEFG7[
-      TC[_[_]],
-      M0[_, _, _, _, _, _, _],
-      A0,
-      B0,
-      C0,
-      D0,
-      E0,
-      F0,
-      G0](implicit TC0: TC[M0[A0, B0, C0, D0, E0, F0, ?]])
+  implicit def unapplyMABCDEFG7[TC[_[_]], M0[
+      _,
+      _,
+      _,
+      _,
+      _,
+      _,
+      _], A0, B0, C0, D0, E0, F0, G0](
+      implicit TC0: TC[M0[A0, B0, C0, D0, E0, F0, ?]])
       : Unapply[TC, M0[A0, B0, C0, D0, E0, F0, G0]] {
         type M[X] = M0[A0, B0, C0, D0, E0, F0, X]
         type A = G0
@@ -192,15 +189,13 @@ sealed abstract class Unapply_1 extends Unapply_2 {
     }
 
   /**Unpack a value of type `M0[A0, B0, C0, D0, E0, F0]` into types `[f]M0[A0, B0, C0, D0, E0, f]` and `F0`, given an instance of `TC` */
-  implicit def unapplyMABCDEF6[
-      TC[_[_]],
-      M0[_, _, _, _, _, _],
-      A0,
-      B0,
-      C0,
-      D0,
-      E0,
-      F0](implicit TC0: TC[M0[A0, B0, C0, D0, E0, ?]])
+  implicit def unapplyMABCDEF6[TC[_[_]], M0[
+      _,
+      _,
+      _,
+      _,
+      _,
+      _], A0, B0, C0, D0, E0, F0](implicit TC0: TC[M0[A0, B0, C0, D0, E0, ?]])
       : Unapply[TC, M0[A0, B0, C0, D0, E0, F0]] {
         type M[X] = M0[A0, B0, C0, D0, E0, X]
         type A = F0
@@ -417,13 +412,10 @@ object Unapply21 {
     type B = U.B
   } = U
 
-  implicit def unapply210MFABC[
-      TC[_[_, _], _],
-      F[_, _],
-      M0[_[_], _, _],
-      A0,
-      B0,
-      C](implicit TC0: TC[λ[(α, β) => M0[F[α, ?], C, β]], A0])
+  implicit def unapply210MFABC[TC[_[_, _], _], F[_, _], M0[
+      _[_],
+      _,
+      _], A0, B0, C](implicit TC0: TC[λ[(α, β) => M0[F[α, ?], C, β]], A0])
       : Unapply21[TC, M0[F[A0, ?], C, B0]] {
         type M[X, Y] = M0[F[X, ?], C, Y]
         type A = A0
@@ -479,16 +471,12 @@ object UnapplyProduct {
         implicit t: T): SingletonOf[T, t.type] = SingletonOf(t)
   }
 
-  implicit def unapply[
-      TC[_[_]],
-      MA0,
-      MB0,
-      U1 <: { type A; type M[_] },
-      U2 <: { type A; type M[_] }](implicit
+  implicit def unapply[TC[
+      _[_]], MA0, MB0, U1 <: { type A; type M[_] }, U2 <: { type A; type M[_] }](
+      implicit
       sU1: SingletonOf[Unapply[TC, MA0], U1],
       sU2: SingletonOf[Unapply[TC, MB0], U2],
-      iso: U1#M <~> U2#M
-  ): UnapplyProduct[TC, MA0, MB0] {
+      iso: U1#M <~> U2#M): UnapplyProduct[TC, MA0, MB0] {
     type M[x] = U1#M[x]
     type A = U1#A
     type B = U2#A

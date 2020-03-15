@@ -73,10 +73,9 @@ private object PostgresDialect extends JdbcDialect {
       case FloatType   => Some(JdbcType("FLOAT4", Types.FLOAT))
       case DoubleType  => Some(JdbcType("FLOAT8", Types.DOUBLE))
       case t: DecimalType =>
-        Some(
-          JdbcType(
-            s"NUMERIC(${t.precision},${t.scale})",
-            java.sql.Types.NUMERIC))
+        Some(JdbcType(
+          s"NUMERIC(${t.precision},${t.scale})",
+          java.sql.Types.NUMERIC))
       case ArrayType(et, _) if et.isInstanceOf[AtomicType] =>
         getJDBCType(et)
           .map(_.databaseTypeDefinition)

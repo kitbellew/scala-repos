@@ -24,16 +24,16 @@ case class ALSAlgorithmParams(
     rank: Int,
     numIterations: Int,
     lambda: Double,
-    seed: Option[Long]
-) extends Params
+    seed: Option[Long])
+    extends Params
 
 class ALSModel(
     val rank: Int,
     val userFeatures: Map[Int, Array[Double]],
     val productFeatures: Map[Int, (Item, Option[Array[Double]])],
     val userStringIntMap: BiMap[String, Int],
-    val itemStringIntMap: BiMap[String, Int]
-) extends Serializable {
+    val itemStringIntMap: BiMap[String, Int])
+    extends Serializable {
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
@@ -90,12 +90,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         val iindex = itemStringIntMap.getOrElse(r.item, -1)
 
         if (uindex == -1)
-          logger.info(s"Couldn't convert nonexistent user ID ${r.user}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent user ID ${r.user}"
+              + " to Int index.")
 
         if (iindex == -1)
-          logger.info(s"Couldn't convert nonexistent item ID ${r.item}"
-            + " to Int index.")
+          logger.info(
+            s"Couldn't convert nonexistent item ID ${r.item}"
+              + " to Int index.")
 
         ((uindex, iindex), (r.rating, r.t)) // MODIFIED
       }
@@ -155,8 +157,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       userFeatures = userFeatures,
       productFeatures = productFeatures,
       userStringIntMap = userStringIntMap,
-      itemStringIntMap = itemStringIntMap
-    )
+      itemStringIntMap = itemStringIntMap)
   }
 
   def predict(model: ALSModel, query: Query): PredictedResult = {
@@ -248,8 +249,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
                     item = item,
                     categories = query.categories,
                     whiteList = whiteList,
-                    blackList = finalBlackList
-                  )
+                    blackList = finalBlackList)
             }
             .map {
               case (i, (item, feature)) =>
@@ -274,8 +274,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
           model = model,
           query = query,
           whiteList = whiteList,
-          blackList = finalBlackList
-        )
+          blackList = finalBlackList)
 
       }
 
@@ -284,8 +283,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         new ItemScore(
           // convert item int index back to string ID
           item = model.itemIntStringMap(i),
-          score = s
-        )
+          score = s)
     }
 
     new PredictedResult(itemScores)
@@ -355,8 +353,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
                   item = item,
                   categories = query.categories,
                   whiteList = whiteList,
-                  blackList = blackList
-                )
+                  blackList = blackList)
           }
           .map {
             case (i, (item, feature)) =>
@@ -429,8 +426,7 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       item: Item,
       categories: Option[Set[String]],
       whiteList: Option[Set[Int]],
-      blackList: Set[Int]
-  ): Boolean = {
+      blackList: Set[Int]): Boolean = {
     // can add other custom filtering here
     whiteList.map(_.contains(i)).getOrElse(true) &&
     !blackList.contains(i) &&

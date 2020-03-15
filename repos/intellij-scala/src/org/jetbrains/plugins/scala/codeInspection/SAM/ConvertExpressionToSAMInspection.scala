@@ -92,9 +92,9 @@ class ReplaceExpressionWithSAMQuickFix(elem: PsiElement, replacement: => String)
   override def doApplyFix(project: Project): Unit = {
     val element = getElement
     if (!element.isValid) return
-    element.replace(
-      ScalaPsiElementFactory
-        .createExpressionFromText(replacement, element.getManager))
+    element.replace(ScalaPsiElementFactory.createExpressionFromText(
+      replacement,
+      element.getManager))
   }
 }
 

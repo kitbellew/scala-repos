@@ -121,8 +121,8 @@ trait EvaluatingPerfTestRunner[M[+_], T]
               dag,
               dummyEvaluationContext,
               yggConfig.optimize)
-            size <- Timing.timeM("Counting stream")(
-              countStream(table.renderJson("", ",", "")))
+            size <- Timing.timeM("Counting stream")(countStream(
+              table.renderJson("", ",", "")))
           } yield size
       }
     } catch {

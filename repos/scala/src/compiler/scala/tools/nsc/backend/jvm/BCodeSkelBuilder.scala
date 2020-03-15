@@ -182,7 +182,9 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
             // it must be a top level class (name contains no $s)
             val isCandidateForForwarders = {
               exitingPickler {
-                !(lmoc.name.toString contains '$') && lmoc.hasModuleFlag && !lmoc.isNestedClass
+                !(
+                  lmoc.name.toString contains '$'
+                ) && lmoc.hasModuleFlag && !lmoc.isNestedClass
               }
             }
             if (isCandidateForForwarders) {
@@ -572,8 +574,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           bytecodeName,
           mdesc,
           jgensig,
-          mkArray(thrownExceptions)
-        )
+          mkArray(thrownExceptions))
         .asInstanceOf[asm.tree.MethodNode]
 
       emitParamNames(mnode, params)
@@ -652,11 +653,12 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
               ()
             case EmptyTree =>
               globalError(
-                "Concrete method has no definition: " + dd + (if (settings.debug)
-                                                                "(found: " + methSymbol.owner.info.decls.toList
-                                                                  .mkString(
-                                                                    ", ") + ")"
-                                                              else ""))
+                "Concrete method has no definition: " + dd + (
+                  if (settings.debug)
+                    "(found: " + methSymbol.owner.info.decls.toList
+                      .mkString(", ") + ")"
+                  else ""
+                ))
             case _ =>
               bc emitRETURN returnType
           }
@@ -671,8 +673,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
                 null,
                 veryFirstProgramPoint,
                 onePastLastProgramPoint,
-                0
-              )
+                0)
             }
             for (p <- params) {
               emitLocalVarScope(
@@ -755,8 +756,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
           "CREATOR",
           andrFieldDescr,
           null,
-          null
-        )
+          null)
         // INVOKESTATIC CREATOR(): android.os.Parcelable$Creator; -- TODO where does this Android method come from?
         val callee = definitions.getMember(
           claszSymbol.companionModule,

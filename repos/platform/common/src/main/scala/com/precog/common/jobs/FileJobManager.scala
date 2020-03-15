@@ -213,8 +213,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
       JField("message", JString(msg)) ::
         JField("progress", JNum(progress)) ::
         JField("unit", JString(unit)) ::
-        (extra map (JField("info", _) :: Nil) getOrElse Nil)
-    )
+        (extra map (JField("info", _) :: Nil) getOrElse Nil))
 
     cache
       .get(jobId)
@@ -234,8 +233,8 @@ class FileJobManager[M[+_]] private[FileJobManager] (
               M.point(Left("Current status did not match expected status."))
 
             case None if prevStatus.isDefined =>
-              M.point(
-                Left("Job has not yet started, yet a status was expected."))
+              M.point(Left(
+                "Job has not yet started, yet a status was expected."))
 
             case None =>
               for (m <- addMessage(jobId, JobManager.channels.Status, jval))

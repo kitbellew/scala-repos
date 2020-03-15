@@ -50,12 +50,10 @@ final class StringCodecSuite extends RedisRequestTest {
   test("Correctly encode BITOP AND") {
     assert(
       codec(wrap("BITOP AND baz foo bar\r\n")) ==
-        List(
-          BitOp(
-            BitOp.And,
-            StringToChannelBuffer("baz"),
-            Seq(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))
-        ))
+        List(BitOp(
+          BitOp.And,
+          StringToChannelBuffer("baz"),
+          Seq(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
   }
 
   test("Throw a ClientError if BITOP NOT is called with three arguments") {
@@ -65,11 +63,10 @@ final class StringCodecSuite extends RedisRequestTest {
   test("Correctly encode BITOP NOT") {
     assert(
       codec(wrap("BITOP NOT foo bar\r\n")) ==
-        List(
-          BitOp(
-            BitOp.Not,
-            StringToChannelBuffer("foo"),
-            Seq(StringToChannelBuffer("bar")))))
+        List(BitOp(
+          BitOp.Not,
+          StringToChannelBuffer("foo"),
+          Seq(StringToChannelBuffer("bar")))))
   }
 
   test("Correctly encode DECR with an integer key") {
@@ -182,9 +179,10 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode MGET") {
-    assert(codec(wrap("MGET foo bar\r\n")) ==
-      List(
-        MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
+    assert(
+      codec(wrap("MGET foo bar\r\n")) ==
+        List(MGet(
+          List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
   }
 
   test("Throw a ClientError if MSETNX is called with no arguments") {
@@ -210,11 +208,10 @@ final class StringCodecSuite extends RedisRequestTest {
   test("Correctly encode PSETEX") {
     assert(
       codec(wrap("PSETEX foo 1000 bar\r\n")) ==
-        List(
-          PSetEx(
-            StringToChannelBuffer("foo"),
-            1000L,
-            StringToChannelBuffer("bar"))))
+        List(PSetEx(
+          StringToChannelBuffer("foo"),
+          1000L,
+          StringToChannelBuffer("bar"))))
   }
 
   test("Correctly encode SET") {
@@ -395,9 +392,10 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode unified MGET requests", CodecTest) {
-    assert(codec(wrap("bar\r\n")) ==
-      List(
-        MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
+    assert(
+      codec(wrap("bar\r\n")) ==
+        List(MGet(
+          List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
   }
 
   // Unified MSET request

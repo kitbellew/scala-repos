@@ -30,14 +30,13 @@ class JavaWorkflow
           expectMsg(VoidResponse)
 
           project ! TypeAtPointReq(Left(fooFile), OffsetRange(30))
-          expectMsg(
-            BasicTypeInfo(
-              "pure.NoScalaHere",
-              DeclaredAs.Class,
-              "pure.NoScalaHere",
-              Nil,
-              Nil,
-              Some(EmptySourcePosition())))
+          expectMsg(BasicTypeInfo(
+            "pure.NoScalaHere",
+            DeclaredAs.Class,
+            "pure.NoScalaHere",
+            Nil,
+            Nil,
+            Some(EmptySourcePosition())))
         }
       }
     }

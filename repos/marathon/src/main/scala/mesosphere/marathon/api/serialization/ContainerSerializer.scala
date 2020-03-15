@@ -27,8 +27,7 @@ object ContainerSerializer {
     Container(
       `type` = proto.getType,
       volumes = proto.getVolumesList.asScala.map(Volume(_)).to[Seq],
-      docker = maybeDocker
-    )
+      docker = maybeDocker)
   }
 
   def toMesos(container: Container): mesos.Protos.ContainerInfo = {

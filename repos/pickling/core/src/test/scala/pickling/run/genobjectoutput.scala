@@ -120,12 +120,11 @@ class GenObjectOutputTest extends FunSuite {
     data.writeExternal(out)
 
     val data2 = ExtData(0, 0, 'a', 0)
-    val in = Externalizables.genInput[(Byte, Int, Char, Int)](
-      (
-        out.byteArr(0).asInstanceOf[Byte],
-        out.intArr(0),
-        out.charArr(0).asInstanceOf[Char],
-        out.intArr(1)))
+    val in = Externalizables.genInput[(Byte, Int, Char, Int)]((
+      out.byteArr(0).asInstanceOf[Byte],
+      out.intArr(0),
+      out.charArr(0).asInstanceOf[Char],
+      out.intArr(1)))
     data2.readExternal(in)
 
     assert(data2 == data)
@@ -137,12 +136,11 @@ class GenObjectOutputTest extends FunSuite {
     data.writeExternal(out)
 
     val data2 = ExtData2(0, 0, Array[Byte](), 0)
-    val in = Externalizables.genInput[(Byte, Int, Array[Byte], Int)](
-      (
-        out.byteArr(0).asInstanceOf[Byte],
-        out.intArr(0),
-        out.arrByteArr(0),
-        out.intArr(1)))
+    val in = Externalizables.genInput[(Byte, Int, Array[Byte], Int)]((
+      out.byteArr(0).asInstanceOf[Byte],
+      out.intArr(0),
+      out.arrByteArr(0),
+      out.intArr(1)))
     data2.readExternal(in)
 
     assert(data2 == data)
@@ -154,12 +152,11 @@ class GenObjectOutputTest extends FunSuite {
     data.writeExternal(out)
 
     val data2 = ExtData3(0, 0, Array[Byte](), new ExtDataComp(0))
-    val in = Externalizables.genInput[(Byte, Int, Array[Byte], AnyRef)](
-      (
-        out.byteArr(0).asInstanceOf[Byte],
-        out.intArr(0),
-        out.arrByteArr(0),
-        out.anyRefArr(0).asInstanceOf[AnyRef]))
+    val in = Externalizables.genInput[(Byte, Int, Array[Byte], AnyRef)]((
+      out.byteArr(0).asInstanceOf[Byte],
+      out.intArr(0),
+      out.arrByteArr(0),
+      out.anyRefArr(0).asInstanceOf[AnyRef]))
     data2.readExternal(in)
 
     assert(data2 == data)

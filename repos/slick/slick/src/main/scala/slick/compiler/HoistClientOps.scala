@@ -150,7 +150,9 @@ class HoistClientOps extends Phase {
                     val (wrap, f2) = rrepl(f)
                     wrap(Select(Ref(s), f2))
                   case Ref(s)
-                      if (s == sl1 && (bl2 ne bl)) || (s == sr1 && (br2 ne br)) =>
+                      if (
+                        s == sl1 && (bl2 ne bl)
+                      ) || (s == sr1 && (br2 ne br)) =>
                     Ref(s)
                 }
               )
@@ -244,11 +246,10 @@ class HoistClientOps extends Phase {
           (
             recCh,
             { n =>
-              IfThenElse(
-                ConstArray(
-                  Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
-                  r1,
-                  r2))
+              IfThenElse(ConstArray(
+                Library.==.typed[Boolean](recTr(n), LiteralNode(null)),
+                r1,
+                r2))
             })
       case Library.SilentCast(ch) :@ tpe if !topLevel =>
         val (recCh, recTr) = unwrap(ch, topLevel)

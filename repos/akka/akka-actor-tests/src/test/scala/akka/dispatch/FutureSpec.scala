@@ -40,8 +40,8 @@ object FutureSpec {
     def receive = {
       case "Hello" ⇒ sender() ! "World"
       case "Failure" ⇒
-        sender() ! Status.Failure(
-          new RuntimeException("Expected exception; to test fault-tolerance"))
+        sender() ! Status.Failure(new RuntimeException(
+          "Expected exception; to test fault-tolerance"))
       case "NoReply" ⇒
     }
   }
@@ -53,8 +53,8 @@ object FutureSpec {
       case "NoReply" ⇒ FutureSpec.ready(await, TestLatch.DefaultTimeout)
       case "Failure" ⇒
         FutureSpec.ready(await, TestLatch.DefaultTimeout)
-        sender() ! Status.Failure(
-          new RuntimeException("Expected exception; to test fault-tolerance"))
+        sender() ! Status.Failure(new RuntimeException(
+          "Expected exception; to test fault-tolerance"))
     }
   }
 
@@ -286,8 +286,8 @@ class FutureSpec
             val actor2 = system.actorOf(Props(new Actor {
               def receive = {
                 case s: String ⇒
-                  sender() ! Status.Failure(
-                    new ArithmeticException("/ by zero"))
+                  sender() ! Status.Failure(new ArithmeticException(
+                    "/ by zero"))
               }
             }))
             val future = actor1 ? "Hello" flatMap {
@@ -394,9 +394,8 @@ class FutureSpec
             case e: ArithmeticException ⇒ 0
           } map (_.toString)
 
-          val future6 = future2 recover {
-            case e: MatchError ⇒ 0
-          } map (_.toString)
+          val future6 =
+            future2 recover { case e: MatchError ⇒ 0 } map (_.toString)
 
           val future7 = future3 recover {
             case e: ArithmeticException ⇒ "You got ERROR"

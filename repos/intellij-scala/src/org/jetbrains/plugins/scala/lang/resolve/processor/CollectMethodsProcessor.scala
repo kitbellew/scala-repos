@@ -33,16 +33,15 @@ class CollectMethodsProcessor(place: PsiElement, name: String)
       val s = getSubst(state)
       element match {
         case m: PsiMethod =>
-          addResult(
-            new ScalaResolveResult(
-              m,
-              s,
-              getImports(state),
-              None,
-              implicitConversionClass,
-              implicitFunction = implFunction,
-              implicitType = implType,
-              isAccessible = accessible))
+          addResult(new ScalaResolveResult(
+            m,
+            s,
+            getImports(state),
+            None,
+            implicitConversionClass,
+            implicitFunction = implFunction,
+            implicitType = implType,
+            isAccessible = accessible))
         case _ =>
       }
     }

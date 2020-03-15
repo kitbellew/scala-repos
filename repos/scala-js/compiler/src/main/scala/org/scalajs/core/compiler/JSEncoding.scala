@@ -49,8 +49,7 @@ trait JSEncoding extends SubComponent { self: GenJSCode =>
   def withNewLocalNameScope[A](body: => A): A =
     withScopedVars(
       usedLocalNames := mutable.Set.empty,
-      localSymbolNames := mutable.Map.empty
-    )(body)
+      localSymbolNames := mutable.Map.empty)(body)
 
   private def freshName(base: String = "x"): String = {
     var suffix = 1

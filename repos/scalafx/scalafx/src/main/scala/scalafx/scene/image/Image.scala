@@ -60,13 +60,12 @@ class Image(override val delegate: jfxsi.Image)
       requestedHeight: Double,
       preserveRatio: Boolean,
       smooth: Boolean) =
-    this(
-      new jfxsi.Image(
-        inputStream,
-        requestedWidth,
-        requestedWidth,
-        preserveRatio,
-        smooth))
+    this(new jfxsi.Image(
+      inputStream,
+      requestedWidth,
+      requestedWidth,
+      preserveRatio,
+      smooth))
 
   /**
     * Construct an Image which pixels are loaded from the specified url.
@@ -88,13 +87,12 @@ class Image(override val delegate: jfxsi.Image)
       requestedHeight: Double,
       preserveRatio: Boolean,
       smooth: Boolean) =
-    this(
-      new jfxsi.Image(
-        url,
-        requestedWidth,
-        requestedWidth,
-        preserveRatio,
-        smooth))
+    this(new jfxsi.Image(
+      url,
+      requestedWidth,
+      requestedWidth,
+      preserveRatio,
+      smooth))
 
   /**
     * Construct a new Image with the specified parameters.
@@ -106,14 +104,13 @@ class Image(override val delegate: jfxsi.Image)
       preserveRatio: Boolean,
       smooth: Boolean,
       backgroundLoading: Boolean) =
-    this(
-      new jfxsi.Image(
-        url,
-        requestedWidth,
-        requestedWidth,
-        preserveRatio,
-        smooth,
-        backgroundLoading))
+    this(new jfxsi.Image(
+      url,
+      requestedWidth,
+      requestedWidth,
+      preserveRatio,
+      smooth,
+      backgroundLoading))
 
   /**
     *

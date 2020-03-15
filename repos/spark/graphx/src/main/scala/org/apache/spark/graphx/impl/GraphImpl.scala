@@ -174,10 +174,9 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       tripletFields.useSrc,
       tripletFields.useDst)
     val newEdges = replicatedVertexView.edges.mapEdgePartitions { (pid, part) =>
-      part.map(
-        f(
-          pid,
-          part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
+      part.map(f(
+        pid,
+        part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
     }
     new GraphImpl(vertices, replicatedVertexView.withEdges(newEdges))
   }

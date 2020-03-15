@@ -200,9 +200,10 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
       is = new ByteArrayInputStream(htmlResult.getBytes("UTF-8"))
       mimeType = URLConnection.guessContentTypeFromStream(is)
       if (mimeType != null) {
-        if ((mimeType == "text/html") == true || (mimeType == "application/xml") == true) {
-          return Some(htmlResult)
-        } else {
+        if ((mimeType == "text/html") == true || (
+              mimeType == "application/xml"
+            ) == true) { return Some(htmlResult) }
+        else {
           if (htmlResult.contains("<title>") == true && htmlResult.contains(
                 "<p>") == true) { return Some(htmlResult) }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)

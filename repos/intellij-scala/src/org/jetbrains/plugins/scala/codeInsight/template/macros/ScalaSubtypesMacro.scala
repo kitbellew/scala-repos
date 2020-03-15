@@ -51,8 +51,8 @@ class ScalaSubtypesMacro extends Macro {
                 true)
               .findAll()
               .filter(_.isInstanceOf[ScTypeDefinition])
-              .map(
-                _.asInstanceOf[ScTypeDefinition].getType(TypingContext.empty))
+              .map(_.asInstanceOf[ScTypeDefinition].getType(
+                TypingContext.empty))
               .flatMap(_.toOption)
               .flatMap(MacroUtil.getTypeLookupItem(_, project))
               .toArray

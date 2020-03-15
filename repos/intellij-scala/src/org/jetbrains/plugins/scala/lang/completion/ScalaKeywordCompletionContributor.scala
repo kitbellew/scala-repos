@@ -40,21 +40,18 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
       keywords: String*) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(
-            new NotFilter(new LeftNeighbour(new TextFilter("."))),
-            filter))),
+      PlatformPatterns.psiElement.and(new FilterPattern(new AndFilter(
+        new NotFilter(new LeftNeighbour(new TextFilter("."))),
+        filter))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,
             context: ProcessingContext,
             result: CompletionResultSet) {
           for (keyword <- keywords) {
-            result.addElement(
-              LookupElementManager.getKeywrodLookupElement(
-                keyword,
-                positionFromParameters(parameters)))
+            result.addElement(LookupElementManager.getKeywrodLookupElement(
+              keyword,
+              positionFromParameters(parameters)))
           }
         }
       }
@@ -66,19 +63,17 @@ class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
       keywords: String*) {
     extend(
       CompletionType.BASIC,
-      PlatformPatterns.psiElement.and(
-        new FilterPattern(
-          new AndFilter(new LeftNeighbour(new TextFilter(".")), filter))),
+      PlatformPatterns.psiElement.and(new FilterPattern(
+        new AndFilter(new LeftNeighbour(new TextFilter(".")), filter))),
       new CompletionProvider[CompletionParameters] {
         def addCompletions(
             parameters: CompletionParameters,
             context: ProcessingContext,
             result: CompletionResultSet) {
           for (keyword <- keywords) {
-            result.addElement(
-              LookupElementManager.getKeywrodLookupElement(
-                keyword,
-                positionFromParameters(parameters)))
+            result.addElement(LookupElementManager.getKeywrodLookupElement(
+              keyword,
+              positionFromParameters(parameters)))
           }
         }
       }

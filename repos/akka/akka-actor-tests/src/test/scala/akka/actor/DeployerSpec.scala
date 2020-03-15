@@ -83,15 +83,13 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            Deploy.NoDispatcherGiven,
-            Deploy.NoMailboxGiven)))
+      deployment should ===(Some(Deploy(
+        service,
+        deployment.get.config,
+        NoRouter,
+        NoScopeGiven,
+        Deploy.NoDispatcherGiven,
+        Deploy.NoMailboxGiven)))
     }
 
     "use None deployment for undefined service" in {
@@ -112,15 +110,13 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            dispatcher = "my-dispatcher",
-            Deploy.NoMailboxGiven)))
+      deployment should ===(Some(Deploy(
+        service,
+        deployment.get.config,
+        NoRouter,
+        NoScopeGiven,
+        dispatcher = "my-dispatcher",
+        Deploy.NoMailboxGiven)))
     }
 
     "be able to parse 'akka.actor.deployment._' with mailbox config" in {
@@ -131,15 +127,13 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         .deployer
         .lookup(service.split("/").drop(1))
 
-      deployment should ===(
-        Some(
-          Deploy(
-            service,
-            deployment.get.config,
-            NoRouter,
-            NoScopeGiven,
-            Deploy.NoDispatcherGiven,
-            mailbox = "my-mailbox")))
+      deployment should ===(Some(Deploy(
+        service,
+        deployment.get.config,
+        NoRouter,
+        NoScopeGiven,
+        Deploy.NoDispatcherGiven,
+        mailbox = "my-mailbox")))
     }
 
     "detect invalid number-of-instances" in {

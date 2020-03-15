@@ -218,9 +218,9 @@ object Flaggable {
     }
 
     override def show(out: Map[K, V]) = {
-      out.toSeq map {
-        case (k, v) => k.toString + "=" + v.toString
-      } mkString (",")
+      out.toSeq map { case (k, v) => k.toString + "=" + v.toString } mkString (
+        ","
+      )
     }
   }
 
@@ -589,8 +589,7 @@ class Flags(
     */
   def parseArgs(
       args: Array[String],
-      allowUndefinedFlags: Boolean = false
-  ): FlagParseResult =
+      allowUndefinedFlags: Boolean = false): FlagParseResult =
     synchronized {
       reset()
       val remaining = new ArrayBuffer[String]
@@ -609,19 +608,19 @@ class Flags(
             case Array(k) if !hasFlag(k) =>
               if (allowUndefinedFlags) remaining += a
               else
-                return Error(
-                  "Error parsing flag \"%s\": %s\n%s"
-                    .format(k, FlagUndefinedMessage, usage)
-                )
+                return Error("Error parsing flag \"%s\": %s\n%s".format(
+                  k,
+                  FlagUndefinedMessage,
+                  usage))
 
             // Flag isn't defined
             case Array(k, _) if !hasFlag(k) =>
               if (allowUndefinedFlags) remaining += a
               else
-                return Error(
-                  "Error parsing flag \"%s\": %s\n%s"
-                    .format(k, FlagUndefinedMessage, usage)
-                )
+                return Error("Error parsing flag \"%s\": %s\n%s".format(
+                  k,
+                  FlagUndefinedMessage,
+                  usage))
 
             // Optional argument without a value
             case Array(k) if flag(k).noArgumentOk =>
@@ -629,10 +628,10 @@ class Flags(
 
             // Mandatory argument without a value and with no more arguments.
             case Array(k) if i == args.size =>
-              return Error(
-                "Error parsing flag \"%s\": %s\n%s"
-                  .format(k, FlagValueRequiredMessage, usage)
-              )
+              return Error("Error parsing flag \"%s\": %s\n%s".format(
+                k,
+                FlagValueRequiredMessage,
+                usage))
 
             // Mandatory argument with another argument
             case Array(k) =>
@@ -640,10 +639,10 @@ class Flags(
               try flag(k).parse(args(i - 1))
               catch {
                 case NonFatal(e) =>
-                  return Error(
-                    "Error parsing flag \"%s\": %s\n%s"
-                      .format(k, e.getMessage, usage)
-                  )
+                  return Error("Error parsing flag \"%s\": %s\n%s".format(
+                    k,
+                    e.getMessage,
+                    usage))
               }
 
             // Mandatory k=v
@@ -651,10 +650,10 @@ class Flags(
               try flag(k).parse(v)
               catch {
                 case e: Throwable =>
-                  return Error(
-                    "Error parsing flag \"%s\": %s\n%s"
-                      .format(k, e.getMessage, usage)
-                  )
+                  return Error("Error parsing flag \"%s\": %s\n%s".format(
+                    k,
+                    e.getMessage,
+                    usage))
               }
           }
         } else { remaining += a }
@@ -679,10 +678,7 @@ class Flags(
     * @throws FlagParseException if an error occurs during flag-parsing.
     */
   @deprecated("Prefer result-value based `Flags.parseArgs` method", "6.17.1")
-  def parse(
-      args: Array[String],
-      undefOk: Boolean = false
-  ): Seq[String] =
+  def parse(args: Array[String], undefOk: Boolean = false): Seq[String] =
     parseArgs(args, undefOk) match {
       case Ok(remainder) => remainder
       case Help(usage)   => throw FlagUsageError(usage)
@@ -809,13 +805,11 @@ class Flags(
 
       cmd + argv0 + " [<flag>...]\n" +
         "flags:\n" +
-        (lines mkString "\n") + (
-        if (globalLines.isEmpty) ""
-        else {
-          "\nglobal flags:\n" +
-            (globalLines mkString "\n")
-        }
-      )
+        (lines mkString "\n") + (if (globalLines.isEmpty) ""
+                                 else {
+                                   "\nglobal flags:\n" +
+                                     (globalLines mkString "\n")
+                                 })
     }
 
   /**
@@ -831,8 +825,8 @@ class Flags(
     */
   def getAll(
       includeGlobal: Boolean = this.includeGlobal,
-      classLoader: ClassLoader = this.getClass.getClassLoader
-  ): Iterable[Flag[_]] =
+      classLoader: ClassLoader = this.getClass.getClassLoader)
+      : Iterable[Flag[_]] =
     synchronized {
       var flags =
         TreeSet[Flag[_]]()(Ordering.by(_.name)) ++ this.flags.valuesIterator
@@ -852,8 +846,8 @@ class Flags(
     */
   def formattedFlagValues(
       includeGlobal: Boolean = this.includeGlobal,
-      classLoader: ClassLoader = this.getClass.getClassLoader
-  ): (Iterable[String], Iterable[String]) = {
+      classLoader: ClassLoader = this.getClass.getClassLoader)
+      : (Iterable[String], Iterable[String]) = {
     val (set, unset) = getAll(includeGlobal, classLoader).partition {
       _.get.isDefined
     }
@@ -871,8 +865,7 @@ class Flags(
     */
   def formattedFlagValuesString(
       includeGlobal: Boolean = this.includeGlobal,
-      classLoader: ClassLoader = this.getClass.getClassLoader
-  ): String = {
+      classLoader: ClassLoader = this.getClass.getClassLoader): String = {
     val (set, unset) = formattedFlagValues(includeGlobal, classLoader)
     val lines = Seq("Set flags:") ++
       set ++
@@ -916,8 +909,7 @@ class Flags(
 @GlobalFlagVisible
 class GlobalFlag[T] private[app] (
     defaultOrUsage: Either[() => T, String],
-    help: String
-)(implicit _f: Flaggable[T])
+    help: String)(implicit _f: Flaggable[T])
     extends Flag[T](null, help, defaultOrUsage, false) {
 
   override protected[this] def parsingDone: Boolean = true

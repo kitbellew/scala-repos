@@ -156,9 +156,10 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     val (leftString, rightString) =
       if (!fileTextRange.contains(left.getTextRange) ||
           !fileTextRange.contains(right.getTextRange)) {
-        LOG.error(
-          "File text: \n%s\n\nDoesn't contains nodes:\n(%s, %s)"
-            .format(fileText, leftPsi.getText, rightPsi.getText))
+        LOG.error("File text: \n%s\n\nDoesn't contains nodes:\n(%s, %s)".format(
+          fileText,
+          leftPsi.getText,
+          rightPsi.getText))
         (leftPsi.getText, rightPsi.getText)
       } else
         (
@@ -479,10 +480,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     def isMultiLineStringCase(psiElem: PsiElement): Boolean = {
       psiElem match {
         case ml: ScLiteral if ml.isMultiLineString =>
-          right.getTextRange.contains(
-            new TextRange(
-              rightNode.getTextRange.getStartOffset,
-              rightNode.getTextRange.getStartOffset + 3))
+          right.getTextRange.contains(new TextRange(
+            rightNode.getTextRange.getStartOffset,
+            rightNode.getTextRange.getStartOffset + 3))
         case _: ScInfixExpr | _: ScReferenceExpression | _: ScMethodCall =>
           isMultiLineStringCase(psiElem.getFirstChild)
         case _ => false
@@ -836,22 +836,25 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
               rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi
               .isInstanceOf[ScFunction]
           val spaceInsideClosure =
-            scalaSettings.SPACE_INSIDE_CLOSURE_BRACES && (leftNode.getElementType match {
-              case ScalaElementTypes.FUNCTION_EXPR => true
-              case ScalaElementTypes.CASE_CLAUSES =>
-                block.getParent.isInstanceOf[ScArgumentExprList] ||
-                  block.getParent.isInstanceOf[ScInfixExpr]
-              case _ =>
-                scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST &&
-                  (leftPsi.isInstanceOf[ScFunctionExpr] || block
-                    .isInstanceOf[ScBlockExpr] || leftPsi
-                    .isInstanceOf[ScCaseClauses])
-            })
-          val needsSpace =
-            (oneLineNonEmpty && (spaceInsideOneLineMethod || spaceInsideClosure ||
-              scalaSettings.SPACES_IN_ONE_LINE_BLOCKS)) ||
-              leftPsi.isInstanceOf[
-                PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
+            scalaSettings.SPACE_INSIDE_CLOSURE_BRACES && (
+              leftNode.getElementType match {
+                case ScalaElementTypes.FUNCTION_EXPR => true
+                case ScalaElementTypes.CASE_CLAUSES =>
+                  block.getParent.isInstanceOf[ScArgumentExprList] ||
+                    block.getParent.isInstanceOf[ScInfixExpr]
+                case _ =>
+                  scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST &&
+                    (leftPsi.isInstanceOf[ScFunctionExpr] || block
+                      .isInstanceOf[ScBlockExpr] || leftPsi
+                      .isInstanceOf[ScCaseClauses])
+              }
+            )
+          val needsSpace = (oneLineNonEmpty && (
+            spaceInsideOneLineMethod || spaceInsideClosure ||
+              scalaSettings.SPACES_IN_ONE_LINE_BLOCKS
+          )) ||
+            leftPsi.isInstanceOf[
+              PsiComment] && scalaSettings.KEEP_ONE_LINE_LAMBDAS_IN_ARG_LIST
           val spaces = if (needsSpace) 1 else 0
 
           return Spacing.createDependentLFSpacing(
@@ -1254,9 +1257,11 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
     if (rightNode.getPsi.isInstanceOf[ScParameters] &&
         leftNode.getTreeParent.getPsi.isInstanceOf[ScFunction]) {
-      if (settings.SPACE_BEFORE_METHOD_PARENTHESES || (scalaSettings.SPACE_BEFORE_INFIX_LIKE_METHOD_PARENTHESES &&
-          ScalaNamesUtil.isOperatorName(
-            leftNode.getTreeParent.getPsi.asInstanceOf[ScFunction].name)) ||
+      if (settings.SPACE_BEFORE_METHOD_PARENTHESES || (
+            scalaSettings.SPACE_BEFORE_INFIX_LIKE_METHOD_PARENTHESES &&
+            ScalaNamesUtil.isOperatorName(
+              leftNode.getTreeParent.getPsi.asInstanceOf[ScFunction].name)
+          ) ||
           (scalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME &&
           rightNode.getTreePrev.getPsi.isInstanceOf[PsiWhiteSpace]))
         return WITH_SPACING
@@ -1294,10 +1299,13 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     //processing left parenthesis (if it's from right) only Scala cases
     if (rightNode.getPsi.isInstanceOf[ScParameters] &&
         leftNode.getTreeParent.getPsi.isInstanceOf[ScPrimaryConstructor]) {
-      if (settings.SPACE_BEFORE_METHOD_PARENTHESES || (scalaSettings.SPACE_BEFORE_INFIX_LIKE_METHOD_PARENTHESES &&
-          ScalaNamesUtil.isOperatorName(leftNode.getTreeParent.getPsi
-            .asInstanceOf[ScPrimaryConstructor]
-            .name)) ||
+      if (settings.SPACE_BEFORE_METHOD_PARENTHESES || (
+            scalaSettings.SPACE_BEFORE_INFIX_LIKE_METHOD_PARENTHESES &&
+            ScalaNamesUtil.isOperatorName(
+              leftNode.getTreeParent.getPsi
+                .asInstanceOf[ScPrimaryConstructor]
+                .name)
+          ) ||
           (scalaSettings.PRESERVE_SPACE_AFTER_METHOD_DECLARATION_NAME &&
           rightNode.getTreePrev.getPsi.isInstanceOf[PsiWhiteSpace]))
         return WITH_SPACING
@@ -1462,8 +1470,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
           if (settings.SPACE_BEFORE_METHOD_LBRACE) return WITH_SPACING
           else return WITHOUT_SPACING
         case _: ScIfStmt =>
-          if (settings.SPACE_BEFORE_IF_LBRACE && !(leftNode.getElementType == ScalaTokenTypes.kELSE))
-            return WITH_SPACING
+          if (settings.SPACE_BEFORE_IF_LBRACE && !(
+                leftNode.getElementType == ScalaTokenTypes.kELSE
+              )) return WITH_SPACING
           else if (settings.SPACE_BEFORE_ELSE_LBRACE && leftNode.getElementType == ScalaTokenTypes.kELSE)
             return WITH_SPACING
           else return WITHOUT_SPACING

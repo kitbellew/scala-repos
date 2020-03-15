@@ -116,10 +116,7 @@ class ContinuousQueryListenerSuite
   test("adding and removing listener") {
     def isListenerActive(listener: QueryStatusCollector): Boolean = {
       listener.reset()
-      testStream(MemoryStream[Int].toDS)(
-        StartStream,
-        StopStream
-      )
+      testStream(MemoryStream[Int].toDS)(StartStream, StopStream)
       listener.startStatus != null
     }
 
@@ -151,8 +148,7 @@ class ContinuousQueryListenerSuite
             listener.startStatus !== null,
             "onQueryStarted not called before query returned"),
           StopStream,
-          Assert { listener.checkAsyncErrors() }
-        )
+          Assert { listener.checkAsyncErrors() })
       }
     }
   }

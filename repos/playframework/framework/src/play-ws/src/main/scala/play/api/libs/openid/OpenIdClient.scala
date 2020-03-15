@@ -396,10 +396,7 @@ private[openid] object Discovery {
   */
 class OpenIDModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) = {
-    Seq(
-      bind[OpenIdClient].to[WsOpenIdClient],
-      bind[Discovery].to[WsDiscovery]
-    )
+    Seq(bind[OpenIdClient].to[WsOpenIdClient], bind[Discovery].to[WsDiscovery])
   }
 }
 

@@ -162,8 +162,7 @@ private[ui] class LogPage(parent: WorkerWebUI)
       logDirectory: String,
       logType: String,
       offsetOption: Option[Long],
-      byteLength: Int
-  ): (String, Long, Long, Long) = {
+      byteLength: Int): (String, Long, Long, Long) = {
 
     if (!supportedLogTypes.contains(logType)) {
       return (

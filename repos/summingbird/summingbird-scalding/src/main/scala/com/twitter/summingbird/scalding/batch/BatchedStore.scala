@@ -268,8 +268,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       optopt.flatMap(identity)
 
     // This builds the format we write to disk, which is the total sum
-    def toLastFormat(res: TypedPipe[
-      (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
+    def toLastFormat(
+        res: TypedPipe[(
+            K,
+            (
+                BatchID,
+                (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(BatchID, (K, V))] =
       res.flatMap {
         case (k, (batchid, (prev, v))) =>
@@ -279,8 +283,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       }
 
     // This builds the format we send to consumer nodes
-    def toOutputFormat(res: TypedPipe[
-      (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
+    def toOutputFormat(
+        res: TypedPipe[(
+            K,
+            (
+                BatchID,
+                (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
       res.flatMap {
         case (k, (batchid, (optopt, opt))) =>
@@ -314,9 +322,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
 
       (batchOps.coverIt(timeSpan).toList match {
         case Nil =>
-          Left(
-            List("Timespan is covered by Nil: %s batcher: %s"
-              .format(timeSpan, batcher)))
+          Left(List("Timespan is covered by Nil: %s batcher: %s".format(
+            timeSpan,
+            batcher)))
         case list => Right((in, list))
       })
     })
@@ -391,12 +399,12 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
 
       // Make sure that the time we can read includes the time just after the last
       // snapshot. We can't roll the store forward without this.
-      _ <- fromEither[FactoryInput](if (readDeltaTimestamps.contains(
-                                          firstDeltaTimestamp)) Right(())
-      else
-        Left(
-          List("Cannot load initial timestamp " + firstDeltaTimestamp.toString + " of deltas " +
-            " at " + this.toString + " only " + readDeltaTimestamps.toString)))
+      _ <- fromEither[FactoryInput](
+        if (readDeltaTimestamps.contains(firstDeltaTimestamp)) Right(())
+        else
+          Left(List(
+            "Cannot load initial timestamp " + firstDeltaTimestamp.toString + " of deltas " +
+              " at " + this.toString + " only " + readDeltaTimestamps.toString)))
 
       // Record the timespan we actually read.
       _ <- putState((readDeltaTimestamps, mode))

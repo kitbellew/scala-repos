@@ -35,8 +35,7 @@ private[sql] trait DataTypeParser extends StandardTokenParsers {
   implicit def regexToParser(regex: Regex): Parser[String] =
     acceptMatch(
       s"identifier matching regex ${regex}",
-      { case Identifier(str) if regex.unapplySeq(str).isDefined => str }
-    )
+      { case Identifier(str) if regex.unapplySeq(str).isDefined => str })
 
   protected lazy val primitiveType: Parser[DataType] =
     "(?i)string".r ^^^ StringType |

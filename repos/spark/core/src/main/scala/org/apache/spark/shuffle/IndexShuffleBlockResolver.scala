@@ -137,8 +137,8 @@ private[spark] class IndexShuffleBlockResolver(
       dataTmp: File): Unit = {
     val indexFile = getIndexFile(shuffleId, mapId)
     val indexTmp = Utils.tempFileWith(indexFile)
-    val out = new DataOutputStream(
-      new BufferedOutputStream(new FileOutputStream(indexTmp)))
+    val out = new DataOutputStream(new BufferedOutputStream(
+      new FileOutputStream(indexTmp)))
     Utils.tryWithSafeFinally {
       // We take in lengths of each block, need to convert it to offsets.
       var offset = 0L

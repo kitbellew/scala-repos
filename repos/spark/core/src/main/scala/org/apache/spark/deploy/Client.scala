@@ -115,8 +115,8 @@ private class ClientEndpoint(
 
       case "kill" =>
         val driverId = driverArgs.driverId
-        ayncSendToMasterAndForwardReply[KillDriverResponse](
-          RequestKillDriver(driverId))
+        ayncSendToMasterAndForwardReply[KillDriverResponse](RequestKillDriver(
+          driverId))
     }
   }
 

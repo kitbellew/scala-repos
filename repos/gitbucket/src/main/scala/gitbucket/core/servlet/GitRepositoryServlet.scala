@@ -36,9 +36,8 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
     setReceivePackFactory(new GitBucketReceivePackFactory())
 
     val root: File = new File(Directory.RepositoryHome)
-    setRepositoryResolver(
-      new GitBucketRepositoryResolver(
-        new FileResolver[HttpServletRequest](root, true)))
+    setRepositoryResolver(new GitBucketRepositoryResolver(
+      new FileResolver[HttpServletRequest](root, true)))
 
     super.init(config)
   }

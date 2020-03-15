@@ -126,8 +126,8 @@ class ShuffleJob(args: Args) extends Job(args) {
 }
 
 class ShuffleJobTest extends WordSpec with Matchers {
-  val expectedShuffle: List[Int] = List(10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3,
-    7)
+  val expectedShuffle: List[Int] = List(
+    10, 5, 9, 12, 0, 1, 4, 8, 11, 6, 2, 3, 7)
 
   "A ShuffleJob" should {
     val input = (0 to 12).map { Tuple1(_) }

@@ -69,7 +69,9 @@ final class UUID private (
   def timestamp(): Long = {
     if (version() != TimeBased)
       throw new UnsupportedOperationException("Not a time-based UUID")
-    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) | (i1.toLong & 0xFFFFFFFFL)
+    (((i2 >>> 16) | ((i2 & 0x0fff) << 16)).toLong << 32) | (
+      i1.toLong & 0xFFFFFFFFL
+    )
   }
 
   def clockSequence(): Int = {

@@ -59,8 +59,9 @@ class NonServerRunner(
         null
       case Right(jdk) =>
         val commands =
-          ((FileUtil toCanonicalPath jdk.executable.getPath) +: "-cp" +: classPath(
-            jdk) +: jvmParameters :+
+          ((
+            FileUtil toCanonicalPath jdk.executable.getPath
+          ) +: "-cp" +: classPath(jdk) +: jvmParameters :+
             SERVER_CLASS_NAME).++(args)
 
         val builder = new ProcessBuilder(commands.asJava)
@@ -77,8 +78,8 @@ class NonServerRunner(
             val p = builder.start()
             myProcess = Some(p)
 
-            val reader = new BufferedReader(
-              new InputStreamReader(p.getInputStream))
+            val reader = new BufferedReader(new InputStreamReader(
+              p.getInputStream))
             new MyBase64StreamReader(reader, listener)
 
             val processWaitFor = new ProcessWaitFor(

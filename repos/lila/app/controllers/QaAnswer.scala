@@ -20,14 +20,15 @@ object QaAnswer extends QaController {
             api.answer.create(data, q, me) map { answer =>
               Redirect(
                 routes.QaQuestion.show(q.id, q.slug) + "#answer-" + answer.id)
-            }
-        )
+            })
       }
     }
 
   def accept(questionId: QuestionId, answerId: AnswerId) =
     AuthBody { implicit ctx => me =>
-      (api.question findById questionId) zip (api.answer findById answerId) flatMap {
+      (api.question findById questionId) zip (
+        api.answer findById answerId
+      ) flatMap {
         case (Some(q), Some(a)) if (QaAuth canEdit q) =>
           api.answer.accept(q, a) inject Redirect(
             routes.QaQuestion.show(q.id, q.slug))
@@ -43,11 +44,10 @@ object QaAnswer extends QaController {
         v =>
           api.answer.vote(answerId, me, v == 1) map {
             case Some(vote) =>
-              Ok(
-                html.qa.vote(
-                  routes.QaAnswer.vote(questionId, answerId).url,
-                  vote,
-                  true))
+              Ok(html.qa.vote(
+                routes.QaAnswer.vote(questionId, answerId).url,
+                vote,
+                true))
             case None => NotFound
           }
       )

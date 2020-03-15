@@ -50,8 +50,7 @@ class QueueResource @Inject() (
               "delay" -> Json.obj(
                 "timeLeftSeconds" -> math
                   .max(0, timeLeft.toSeconds), //deadlines can be negative
-                "overdue" -> (timeLeft < 0.seconds)
-              )
+                "overdue" -> (timeLeft < 0.seconds))
             )
         }
       ok(Json.obj("queue" -> queuedWithDelay).toString())

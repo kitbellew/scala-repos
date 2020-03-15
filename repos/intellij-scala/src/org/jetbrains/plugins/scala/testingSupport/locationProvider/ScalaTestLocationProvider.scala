@@ -50,11 +50,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
             found match {
               case Some(file) =>
                 val res = new ArrayList[Location[_ <: PsiElement]]()
-                res.add(
-                  createLocationFor(
-                    project,
-                    file.getContainingFile,
-                    lineNumber.toInt))
+                res.add(createLocationFor(
+                  project,
+                  file.getContainingFile,
+                  lineNumber.toInt))
                 res
               case _ => searchForClassByUnqualifiedName(project, className)
             }
@@ -83,11 +82,10 @@ class ScalaTestLocationProvider extends SMTestLocator {
               case Some(td: ScTypeDefinition) =>
                 td.signaturesByName(methodName).foreach {
                   case signature: PhysicalSignature =>
-                    res.add(
-                      new PsiLocationWithName(
-                        project,
-                        signature.method,
-                        testName))
+                    res.add(new PsiLocationWithName(
+                      project,
+                      signature.method,
+                      testName))
                 }
               case _ =>
             }
@@ -109,12 +107,11 @@ class ScalaTestLocationProvider extends SMTestLocator {
               Option(c.getContainingFile).exists(_.name == fileName))
             found match {
               case Some(file) =>
-                res.add(
-                  createLocationFor(
-                    project,
-                    file.getContainingFile,
-                    lineNumber.toInt,
-                    Some(testName)))
+                res.add(createLocationFor(
+                  project,
+                  file.getContainingFile,
+                  lineNumber.toInt,
+                  Some(testName)))
               case _ =>
             }
           case _ =>

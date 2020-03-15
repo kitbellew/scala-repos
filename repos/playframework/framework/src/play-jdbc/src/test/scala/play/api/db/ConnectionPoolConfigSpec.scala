@@ -13,8 +13,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
       _.configure(
         "db.default.url" -> "jdbc:h2:mem:default",
         "db.other.driver" -> "org.h2.Driver",
-        "db.other.url" -> "jdbc:h2:mem:other"
-      )) {
+        "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
       db.database("default").withConnection { c =>
         c.getClass.getName must contain("hikari")
@@ -26,8 +25,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "play.db.pool" -> "hikaricp",
         "db.default.url" -> "jdbc:h2:mem:default",
         "db.other.driver" -> "org.h2.Driver",
-        "db.other.url" -> "jdbc:h2:mem:other"
-      )) {
+        "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
       db.database("default").withConnection { c =>
         c.getClass.getName must contain("hikari")
@@ -39,8 +37,7 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
         "play.db.pool" -> "bonecp",
         "db.default.url" -> "jdbc:h2:mem:default",
         "db.other.driver" -> "org.h2.Driver",
-        "db.other.url" -> "jdbc:h2:mem:other"
-      )) {
+        "db.other.url" -> "jdbc:h2:mem:other")) {
       val db = app.injector.instanceOf[DBApi]
       db.database("default").withConnection { c =>
         c.getClass.getName must contain("bonecp")
@@ -66,14 +63,11 @@ class ConnectionPoolConfigSpec extends PlaySpecification {
     }
 
     "use BoneCP when database-specific pool is 'bonecp'" in new WithApplication(
-      FakeApplication(
-        additionalConfiguration = Map(
-          "db.default.pool" -> "bonecp",
-          "db.default.url" -> "jdbc:h2:mem:default",
-          "db.other.driver" -> "org.h2.Driver",
-          "db.other.url" -> "jdbc:h2:mem:other"
-        )
-      )) {
+      FakeApplication(additionalConfiguration = Map(
+        "db.default.pool" -> "bonecp",
+        "db.default.url" -> "jdbc:h2:mem:default",
+        "db.other.driver" -> "org.h2.Driver",
+        "db.other.url" -> "jdbc:h2:mem:other"))) {
       val db = app.injector.instanceOf[DBApi]
       db.database("default").withConnection { c =>
         c.getClass.getName must contain("bonecp")

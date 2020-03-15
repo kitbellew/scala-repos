@@ -37,13 +37,12 @@ class ScalaDocMissingParameterDescriptionInspection
           }
         }
 
-        holder.registerProblem(
-          holder.getManager.createProblemDescriptor(
-            if (s.getValueElement != null) s.getValueElement else s,
-            getDisplayName,
-            true,
-            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
-            isOnTheFly))
+        holder.registerProblem(holder.getManager.createProblemDescriptor(
+          if (s.getValueElement != null) s.getValueElement else s,
+          getDisplayName,
+          true,
+          ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
+          isOnTheFly))
       }
     }
   }

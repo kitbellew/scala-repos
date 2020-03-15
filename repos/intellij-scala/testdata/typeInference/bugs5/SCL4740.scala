@@ -11,19 +11,21 @@ object PhoneCode {
     //prepare lookup table number -> all words, 8 lines
     val dictEntriesDigified2Words = {
       val wordToDigits = {
-        val mappingReversed = (for (chars2Digit <- Array(
-                                      "e",
-                                      "jnq",
-                                      "rwx",
-                                      "dsy",
-                                      "ft",
-                                      "am",
-                                      "civ",
-                                      "bku",
-                                      "lop",
-                                      "ghz").zipWithIndex;
-                                    char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
-          yield (char -> chars2Digit._2)).toMap
+        val mappingReversed = (
+          for (chars2Digit <- Array(
+                 "e",
+                 "jnq",
+                 "rwx",
+                 "dsy",
+                 "ft",
+                 "am",
+                 "civ",
+                 "bku",
+                 "lop",
+                 "ghz").zipWithIndex;
+               char <- (chars2Digit._1 ++ chars2Digit._1.toUpperCase))
+            yield (char -> chars2Digit._2)
+        ).toMap
         (word: String) => word.map(mappingReversed).mkString
       }
       dictEntries.toArray.groupBy(cleanString andThen wordToDigits)

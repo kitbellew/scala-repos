@@ -126,13 +126,12 @@ object ScalaUnusedImportPass {
         if (oldStamp != document.getModificationStamp) {
           val afterText: String = file.getText
           if (Comparing.strEqual(beforeText, afterText)) {
-            LOG.error(
-              LogMessageEx.createEvent(
-                "Import optimizer  hasn't optimized any imports",
-                file.getViewProvider.getVirtualFile.getPath,
-                AttachmentFactory.createAttachment(
-                  file.getViewProvider.getVirtualFile)
-              ))
+            LOG.error(LogMessageEx.createEvent(
+              "Import optimizer  hasn't optimized any imports",
+              file.getViewProvider.getVirtualFile.getPath,
+              AttachmentFactory.createAttachment(
+                file.getViewProvider.getVirtualFile)
+            ))
           }
         }
       }

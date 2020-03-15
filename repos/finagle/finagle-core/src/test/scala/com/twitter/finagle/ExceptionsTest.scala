@@ -120,13 +120,12 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     val upstreamAddr = new InetSocketAddress("2.3.4.5", 100)
     val upstreamId = "upstream"
 
-    exc.setRemoteInfo(
-      RemoteInfo.Available(
-        Some(upstreamAddr),
-        Some(ClientId(upstreamId)),
-        Some(downstreamAddr),
-        Some(ClientId(downstreamId)),
-        traceId))
+    exc.setRemoteInfo(RemoteInfo.Available(
+      Some(upstreamAddr),
+      Some(ClientId(upstreamId)),
+      Some(downstreamAddr),
+      Some(ClientId(downstreamId)),
+      traceId))
     assert(
       exc.getMessage() == "foo. Remote Info: Upstream Address: /2.3.4.5:100, Upstream Client Id: upstream, " +
         "Downstream Address: /1.2.3.4:100, Downstream Client Id: downstream, " +
@@ -137,8 +136,7 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     val ex = new NoBrokersAvailableException(
       "/s/cool/story",
       Dtab.base,
-      Dtab.read("/foo=>/$/com.twitter.butt")
-    )
+      Dtab.read("/foo=>/$/com.twitter.butt"))
 
     assert(
       ex.getMessage ==

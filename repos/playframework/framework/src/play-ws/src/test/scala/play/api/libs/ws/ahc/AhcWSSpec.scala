@@ -134,8 +134,8 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody(<aaa>value1</aaa>)
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders.get(
-        "Content-Type") must_== ("fake/contenttype; charset=utf-8")
+      req.getHeaders
+        .get("Content-Type") must_== ("fake/contenttype; charset=utf-8")
     }
 
     "Have form params on POST of content type application/x-www-form-urlencoded" in new WithApplication {
@@ -250,8 +250,8 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody("HELLO WORLD")
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders.get(
-        "Content-Type") must_== ("text/plain; charset=US-ASCII")
+      req.getHeaders
+        .get("Content-Type") must_== ("text/plain; charset=US-ASCII")
     }
 
     "Only send first content type header if two are sent" in new WithApplication {
@@ -516,8 +516,9 @@ object AhcWSSpec extends PlaySpecification with Mockito {
 
     "get the body as bytes from the AHC response" in {
       val ahcResponse: AHCResponse = mock[AHCResponse]
-      val bytes = ByteString(-87, -72, 96, -63, -32, 46, -117, -40, -128, -7,
-        61, 109, 80, 45, 44, 30)
+      val bytes = ByteString(
+        -87, -72, 96, -63, -32, 46, -117, -40, -128, -7, 61, 109, 80, 45, 44,
+        30)
       ahcResponse.getResponseBodyAsBytes returns bytes.toArray
       val response = AhcWSResponse(ahcResponse)
       response.bodyAsBytes must_== bytes

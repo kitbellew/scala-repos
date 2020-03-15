@@ -44,18 +44,17 @@ class LinearRegressionSuite
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    datasetWithDenseFeature = sqlContext.createDataFrame(
-      sc.parallelize(
-        LinearDataGenerator.generateLinearInput(
-          intercept = 6.3,
-          weights = Array(4.7, 7.2),
-          xMean = Array(0.9, -1.3),
-          xVariance = Array(0.7, 1.2),
-          nPoints = 10000,
-          seed,
-          eps = 0.1),
-        2
-      ))
+    datasetWithDenseFeature = sqlContext.createDataFrame(sc.parallelize(
+      LinearDataGenerator.generateLinearInput(
+        intercept = 6.3,
+        weights = Array(4.7, 7.2),
+        xMean = Array(0.9, -1.3),
+        xVariance = Array(0.7, 1.2),
+        nPoints = 10000,
+        seed,
+        eps = 0.1),
+      2
+    ))
     /*
        datasetWithDenseFeatureWithoutIntercept is not needed for correctness testing
        but is useful for illustrating training model without intercept
@@ -77,20 +76,19 @@ class LinearRegressionSuite
     // When feature size is larger than 4096, normal optimizer is choosed
     // as the solver of linear regression in the case of "auto" mode.
     val featureSize = 4100
-    datasetWithSparseFeature = sqlContext.createDataFrame(
-      sc.parallelize(
-        LinearDataGenerator.generateLinearInput(
-          intercept = 0.0,
-          weights = Seq.fill(featureSize)(r.nextDouble).toArray,
-          xMean = Seq.fill(featureSize)(r.nextDouble).toArray,
-          xVariance = Seq.fill(featureSize)(r.nextDouble).toArray,
-          nPoints = 200,
-          seed,
-          eps = 0.1,
-          sparsity = 0.7
-        ),
-        2
-      ))
+    datasetWithSparseFeature = sqlContext.createDataFrame(sc.parallelize(
+      LinearDataGenerator.generateLinearInput(
+        intercept = 0.0,
+        weights = Seq.fill(featureSize)(r.nextDouble).toArray,
+        xMean = Seq.fill(featureSize)(r.nextDouble).toArray,
+        xVariance = Seq.fill(featureSize)(r.nextDouble).toArray,
+        nPoints = 200,
+        seed,
+        eps = 0.1,
+        sparsity = 0.7
+      ),
+      2
+    ))
 
     /*
        R code:
@@ -100,16 +98,15 @@ class LinearRegressionSuite
        w <- c(1, 2, 3, 4)
        df <- as.data.frame(cbind(A, b))
      */
-    datasetWithWeight = sqlContext.createDataFrame(
-      sc.parallelize(
-        Seq(
-          Instance(17.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
-          Instance(19.0, 2.0, Vectors.dense(1.0, 7.0)),
-          Instance(23.0, 3.0, Vectors.dense(2.0, 11.0)),
-          Instance(29.0, 4.0, Vectors.dense(3.0, 13.0))
-        ),
-        2
-      ))
+    datasetWithWeight = sqlContext.createDataFrame(sc.parallelize(
+      Seq(
+        Instance(17.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
+        Instance(19.0, 2.0, Vectors.dense(1.0, 7.0)),
+        Instance(23.0, 3.0, Vectors.dense(2.0, 11.0)),
+        Instance(29.0, 4.0, Vectors.dense(3.0, 13.0))
+      ),
+      2
+    ))
 
     /*
        R code:
@@ -119,26 +116,24 @@ class LinearRegressionSuite
        w <- c(1, 2, 3, 4)
        df.const.label <- as.data.frame(cbind(A, b.const))
      */
-    datasetWithWeightConstantLabel = sqlContext.createDataFrame(
-      sc.parallelize(
-        Seq(
-          Instance(17.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
-          Instance(17.0, 2.0, Vectors.dense(1.0, 7.0)),
-          Instance(17.0, 3.0, Vectors.dense(2.0, 11.0)),
-          Instance(17.0, 4.0, Vectors.dense(3.0, 13.0))
-        ),
-        2
-      ))
-    datasetWithWeightZeroLabel = sqlContext.createDataFrame(
-      sc.parallelize(
-        Seq(
-          Instance(0.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
-          Instance(0.0, 2.0, Vectors.dense(1.0, 7.0)),
-          Instance(0.0, 3.0, Vectors.dense(2.0, 11.0)),
-          Instance(0.0, 4.0, Vectors.dense(3.0, 13.0))
-        ),
-        2
-      ))
+    datasetWithWeightConstantLabel = sqlContext.createDataFrame(sc.parallelize(
+      Seq(
+        Instance(17.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
+        Instance(17.0, 2.0, Vectors.dense(1.0, 7.0)),
+        Instance(17.0, 3.0, Vectors.dense(2.0, 11.0)),
+        Instance(17.0, 4.0, Vectors.dense(3.0, 13.0))
+      ),
+      2
+    ))
+    datasetWithWeightZeroLabel = sqlContext.createDataFrame(sc.parallelize(
+      Seq(
+        Instance(0.0, 1.0, Vectors.dense(0.0, 5.0).toSparse),
+        Instance(0.0, 2.0, Vectors.dense(1.0, 7.0)),
+        Instance(0.0, 3.0, Vectors.dense(2.0, 11.0)),
+        Instance(0.0, 4.0, Vectors.dense(3.0, 13.0))
+      ),
+      2
+    ))
   }
 
   /**
@@ -823,9 +818,8 @@ class LinearRegressionSuite
       // Validate that we re-insert a prediction column for evaluation
       val modelNoPredictionColFieldNames =
         modelNoPredictionCol.summary.predictions.schema.fieldNames
-      assert(
-        (datasetWithDenseFeature.schema.fieldNames.toSet)
-          .subsetOf(modelNoPredictionColFieldNames.toSet))
+      assert((datasetWithDenseFeature.schema.fieldNames.toSet).subsetOf(
+        modelNoPredictionColFieldNames.toSet))
       assert(
         modelNoPredictionColFieldNames.exists(s => s.startsWith("prediction_")))
 
@@ -970,14 +964,12 @@ class LinearRegressionSuite
           case (true, LabeledPoint(label, features)) =>
             Iterator(
               Instance(label, weight = 1.2, features),
-              Instance(label, weight = 0.8, features)
-            )
+              Instance(label, weight = 0.8, features))
           case (false, LabeledPoint(label, features)) =>
             Iterator(
               Instance(label, weight = 0.3, features),
               Instance(label, weight = 0.1, features),
-              Instance(label, weight = 0.6, features)
-            )
+              Instance(label, weight = 0.6, features))
         }
 
         val noiseData = LinearDataGenerator.generateLinearInput(

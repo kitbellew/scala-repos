@@ -105,11 +105,10 @@ object ReachingDefintionsCollector {
             place.getContext,
             place).getFirstChild)
       case _: ScObject =>
-        checkResolve(
-          createExpressionWithContextFromText(
-            element.name,
-            place.getContext,
-            place))
+        checkResolve(createExpressionWithContextFromText(
+          element.name,
+          place.getContext,
+          place))
       case _: ScTypeAlias | _: ScTypeDefinition =>
         val decl = createDeclarationFromText(
           s"val dummyVal: ${element.name}",
@@ -122,11 +121,10 @@ object ReachingDefintionsCollector {
           case _ => false
         }
       case _ =>
-        checkResolve(
-          createExpressionWithContextFromText(
-            element.name,
-            place.getContext,
-            place))
+        checkResolve(createExpressionWithContextFromText(
+          element.name,
+          place.getContext,
+          place))
     }
     isInstanceMethod || isSynthetic || resolvesAtNewPlace
   }

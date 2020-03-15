@@ -102,9 +102,8 @@ trait DefaultReadWriteTest extends TempDirectory { self: Suite =>
     * @tparam E  Type of [[Estimator]]
     * @tparam M  Type of [[Model]] produced by estimator
     */
-  def testEstimatorAndModelReadWrite[
-      E <: Estimator[M] with MLWritable,
-      M <: Model[M] with MLWritable](
+  def testEstimatorAndModelReadWrite[E <: Estimator[
+    M] with MLWritable, M <: Model[M] with MLWritable](
       estimator: E,
       dataset: DataFrame,
       testParams: Map[String, Any],

@@ -38,14 +38,13 @@ object Insight extends LilaController {
             for {
               cache <- env.api userCache user
               prefId <- env.share getPrefId user
-            } yield Ok(
-              html.insight.index(
-                u = user,
-                cache = cache,
-                prefId = prefId,
-                ui = env.jsonView.ui(cache.ecos),
-                question = env.jsonView.question(metric, dimension, filters),
-                stale = s == Stale))
+            } yield Ok(html.insight.index(
+              u = user,
+              cache = cache,
+              prefId = prefId,
+              ui = env.jsonView.ui(cache.ecos),
+              question = env.jsonView.question(metric, dimension, filters),
+              stale = s == Stale))
         }
       }
     }

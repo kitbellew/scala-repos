@@ -74,8 +74,8 @@ object WebAPIKeyFinder {
         .toValidationNel |@|
         serviceConfig
           .get[String]("protocol")
-          .toSuccess(
-            NEL("Configuration property \"service.protocol\" is required")) |@|
+          .toSuccess(NEL(
+            "Configuration property \"service.protocol\" is required")) |@|
         serviceConfig
           .get[String]("host")
           .toSuccess(
@@ -86,8 +86,8 @@ object WebAPIKeyFinder {
             NEL("Configuration property \"service.port\" is required")) |@|
         serviceConfig
           .get[String]("path")
-          .toSuccess(
-            NEL("Configuration property \"service.path\" is required"))) {
+          .toSuccess(NEL(
+            "Configuration property \"service.path\" is required"))) {
         (rootKey, protocol, host, port, path) =>
           new RealWebAPIKeyFinder(protocol, host, port, path, rootKey)
       }
@@ -166,18 +166,19 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
     withJsonClient { client0 =>
       val client =
         at map (fmt.print(_)) map (client0.query("at", _)) getOrElse client0
-      eitherT(client
-        .query("apiKey", apiKey)
-        .get[JValue]("permissions/fs" + path.urlEncode.path) map {
-        case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
-          (((_: Extractor.Error).message) <-: jvalue
-            .validated[Set[Permission]]).disjunction
-        case res =>
-          logger.error(
-            "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
-      })
+      eitherT(
+        client
+          .query("apiKey", apiKey)
+          .get[JValue]("permissions/fs" + path.urlEncode.path) map {
+          case HttpResponse(HttpStatus(OK, _), _, Some(jvalue), _) =>
+            (((_: Extractor.Error).message) <-: jvalue
+              .validated[Set[Permission]]).disjunction
+          case res =>
+            logger.error(
+              "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
+            left(
+              "Unexpected response from security service; unable to proceed." + res)
+        })
     }
   }
 

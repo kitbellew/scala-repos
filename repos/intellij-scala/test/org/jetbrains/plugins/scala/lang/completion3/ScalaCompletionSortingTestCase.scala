@@ -50,10 +50,9 @@ abstract class ScalaCompletionSortingTestCase(
   }
 
   def configureNoCompletion(path: String) {
-    myFixture.configureFromExistingVirtualFile(
-      myFixture.copyFileToProject(
-        path,
-        com.intellij.openapi.util.text.StringUtil.getShortName(path, '/')))
+    myFixture.configureFromExistingVirtualFile(myFixture.copyFileToProject(
+      path,
+      com.intellij.openapi.util.text.StringUtil.getShortName(path, '/')))
   }
 
   def incUseCount(lookup: LookupImpl, index: Int): Unit = {

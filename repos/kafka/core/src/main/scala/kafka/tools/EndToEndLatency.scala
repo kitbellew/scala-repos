@@ -156,9 +156,8 @@ object EndToEndLatency {
     }
 
     //Results
-    println(
-      "Avg latency: %.4f ms\n".format(
-        totalTime / numMessages / 1000.0 / 1000.0))
+    println("Avg latency: %.4f ms\n".format(
+      totalTime / numMessages / 1000.0 / 1000.0))
     Arrays.sort(latencies)
     val p50 = latencies((latencies.length * 0.5).toInt)
     val p99 = latencies((latencies.length * 0.99).toInt)

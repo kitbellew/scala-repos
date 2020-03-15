@@ -53,13 +53,7 @@ class TaskLifeTimeTest
     val lifeTimes = TaskLifeTime.forSomeTasks(now, tasks)
     Then("we get the correct stats")
     lifeTimes should be(
-      Some(
-        TaskLifeTime(
-          averageSeconds = 5.0,
-          medianSeconds = 4.0
-        )
-      )
-    )
+      Some(TaskLifeTime(averageSeconds = 5.0, medianSeconds = 4.0)))
   }
 
   test("life times for task with life times ignore not yet running tasks") {
@@ -70,12 +64,6 @@ class TaskLifeTimeTest
     val lifeTimes = TaskLifeTime.forSomeTasks(now, tasks)
     Then("we get the correct stats")
     lifeTimes should be(
-      Some(
-        TaskLifeTime(
-          averageSeconds = 5.0,
-          medianSeconds = 4.0
-        )
-      )
-    )
+      Some(TaskLifeTime(averageSeconds = 5.0, medianSeconds = 4.0)))
   }
 }

@@ -43,13 +43,12 @@ case class LInsert(
     with StrictValueCommand {
   val command = Commands.LINSERT
   override def toChannelBuffer =
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.LINSERT,
-        key,
-        StringToChannelBuffer(relativePosition),
-        pivot,
-        value))
+    RedisCodec.toUnifiedFormat(Seq(
+      CommandBytes.LINSERT,
+      key,
+      StringToChannelBuffer(relativePosition),
+      pivot,
+      value))
 }
 
 object LInsert {
@@ -217,11 +216,10 @@ trait ListRangeCommand extends StrictKeyCommand {
   val command: String
 
   override def toChannelBuffer = {
-    RedisCodec.toUnifiedFormat(
-      Seq(
-        StringToChannelBuffer(command),
-        key,
-        StringToChannelBuffer(start.toString),
-        StringToChannelBuffer(end.toString)))
+    RedisCodec.toUnifiedFormat(Seq(
+      StringToChannelBuffer(command),
+      key,
+      StringToChannelBuffer(start.toString),
+      StringToChannelBuffer(end.toString)))
   }
 }

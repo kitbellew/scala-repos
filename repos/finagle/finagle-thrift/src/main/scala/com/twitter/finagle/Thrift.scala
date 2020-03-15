@@ -135,8 +135,7 @@ object Thrift
         override val description = "Prepare TTwitter thrift connection"
         def make(
             params: Stack.Params,
-            next: ServiceFactory[ThriftClientRequest, Array[Byte]]
-        ) = {
+            next: ServiceFactory[ThriftClientRequest, Array[Byte]]) = {
           val Label(label) = params[Label]
           val param.ClientId(clientId) = params[param.ClientId]
           val param.ProtocolFactory(pf) = params[param.ProtocolFactory]
@@ -155,8 +154,8 @@ object Thrift
       stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
         Client.stack,
       params: Stack.Params =
-        StackClient.defaultParams + ProtocolLibrary("thrift")
-  ) extends StdStackClient[ThriftClientRequest, Array[Byte], Client]
+        StackClient.defaultParams + ProtocolLibrary("thrift"))
+      extends StdStackClient[ThriftClientRequest, Array[Byte], Client]
       with WithSessionPool[Client]
       with WithDefaultLoadBalancer[Client]
       with ThriftRichClient {
@@ -164,8 +163,7 @@ object Thrift
     protected def copy1(
         stack: Stack[ServiceFactory[ThriftClientRequest, Array[Byte]]] =
           this.stack,
-        params: Stack.Params = this.params
-    ): Client = copy(stack, params)
+        params: Stack.Params = this.params): Client = copy(stack, params)
 
     protected lazy val Label(defaultClientName) = params[Label]
 
@@ -185,12 +183,11 @@ object Thrift
     }
 
     protected def newDispatcher(
-        transport: Transport[ThriftClientRequest, Array[Byte]]
-    ): Service[ThriftClientRequest, Array[Byte]] =
+        transport: Transport[ThriftClientRequest, Array[Byte]])
+        : Service[ThriftClientRequest, Array[Byte]] =
       new SerialClientDispatcher(
         transport,
-        params[Stats].statsReceiver.scope(GenSerialClientDispatcher.StatsScope)
-      )
+        params[Stats].statsReceiver.scope(GenSerialClientDispatcher.StatsScope))
 
     def withProtocolFactory(protocolFactory: TProtocolFactory): Client =
       configured(param.ProtocolFactory(protocolFactory))
@@ -218,8 +215,7 @@ object Thrift
         if (params.contains[com.twitter.finagle.param.ResponseClassifier]) {
           ThriftResponseClassifier.usingDeserializeCtx(
             params[
-              com.twitter.finagle.param.ResponseClassifier].responseClassifier
-          )
+              com.twitter.finagle.param.ResponseClassifier].responseClassifier)
         } else { ThriftResponseClassifier.DeserializeCtxOnly }
       configured(com.twitter.finagle.param.ResponseClassifier(classifier))
     }
@@ -229,8 +225,7 @@ object Thrift
 
     override def newClient(
         dest: Name,
-        label: String
-    ): ServiceFactory[ThriftClientRequest, Array[Byte]] =
+        label: String): ServiceFactory[ThriftClientRequest, Array[Byte]] =
       deserializingClassifier.superNewClient(dest, label)
 
     // Java-friendly forwarders
@@ -269,24 +264,21 @@ object Thrift
     override def configured[P](psp: (P, Stack.Param[P])): Client =
       super.configured(psp)
     override def filtered(
-        filter: Filter[
-          ThriftClientRequest,
-          Array[Byte],
-          ThriftClientRequest,
-          Array[Byte]]): Client = super.filtered(filter)
+        filter: Filter[ThriftClientRequest, Array[
+          Byte], ThriftClientRequest, Array[Byte]]): Client =
+      super.filtered(filter)
   }
 
   val client: Thrift.Client = Client()
 
   def newService(
       dest: Name,
-      label: String
-  ): Service[ThriftClientRequest, Array[Byte]] = client.newService(dest, label)
+      label: String): Service[ThriftClientRequest, Array[Byte]] =
+    client.newService(dest, label)
 
   def newClient(
       dest: Name,
-      label: String
-  ): ServiceFactory[ThriftClientRequest, Array[Byte]] =
+      label: String): ServiceFactory[ThriftClientRequest, Array[Byte]] =
     client.newClient(dest, label)
 
   @deprecated("Use `Thrift.client.withProtocolFactory`", "6.22.0")
@@ -321,13 +313,12 @@ object Thrift
   case class Server(
       stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = Server.stack,
       params: Stack.Params =
-        StackServer.defaultParams + ProtocolLibrary("thrift")
-  ) extends StdStackServer[Array[Byte], Array[Byte], Server]
+        StackServer.defaultParams + ProtocolLibrary("thrift"))
+      extends StdStackServer[Array[Byte], Array[Byte], Server]
       with ThriftRichServer {
     protected def copy1(
         stack: Stack[ServiceFactory[Array[Byte], Array[Byte]]] = this.stack,
-        params: Stack.Params = this.params
-    ): Server = copy(stack, params)
+        params: Stack.Params = this.params): Server = copy(stack, params)
 
     protected type In = Array[Byte]
     protected type Out = Array[Byte]
@@ -348,8 +339,8 @@ object Thrift
 
     protected def newDispatcher(
         transport: Transport[In, Out],
-        service: Service[Array[Byte], Array[Byte]]
-    ) = new SerialServerDispatcher(transport, service)
+        service: Service[Array[Byte], Array[Byte]]) =
+      new SerialServerDispatcher(transport, service)
 
     def withProtocolFactory(protocolFactory: TProtocolFactory): Server =
       configured(param.ProtocolFactory(protocolFactory))
@@ -383,6 +374,6 @@ object Thrift
 
   def serve(
       addr: SocketAddress,
-      service: ServiceFactory[Array[Byte], Array[Byte]]
-  ): ListeningServer = server.serve(addr, service)
+      service: ServiceFactory[Array[Byte], Array[Byte]]): ListeningServer =
+    server.serve(addr, service)
 }

@@ -83,14 +83,13 @@ object BackoffSupervisor {
     require(
       0.0 <= randomFactor && randomFactor <= 1.0,
       "randomFactor must be between 0.0 and 1.0")
-    Props(
-      new BackoffSupervisor(
-        childProps,
-        childName,
-        minBackoff,
-        maxBackoff,
-        randomFactor,
-        strategy))
+    Props(new BackoffSupervisor(
+      childProps,
+      childName,
+      minBackoff,
+      maxBackoff,
+      randomFactor,
+      strategy))
   }
 
   /**

@@ -57,13 +57,11 @@ object SimpleConsumerPerformance {
 
     // reset to latest or smallest offset
     val topicAndPartition = TopicAndPartition(config.topic, config.partition)
-    val request = OffsetRequest(
-      Map(
-        topicAndPartition -> PartitionOffsetRequestInfo(
-          if (config.fromLatest) OffsetRequest.LatestTime
-          else OffsetRequest.EarliestTime,
-          1)
-      ))
+    val request = OffsetRequest(Map(
+      topicAndPartition -> PartitionOffsetRequestInfo(
+        if (config.fromLatest) OffsetRequest.LatestTime
+        else OffsetRequest.EarliestTime,
+        1)))
     var offset: Long = consumer
       .getOffsetsBefore(request)
       .partitionErrorAndOffsets(topicAndPartition)
@@ -110,15 +108,14 @@ object SimpleConsumerPerformance {
           val elapsed = (reportTime - lastReportTime) / 1000.0
           val totalMBRead =
             ((totalBytesRead - lastBytesRead) * 1.0) / (1024 * 1024)
-          println(
-            ("%s, %d, %.4f, %.4f, %d, %.4f").format(
-              config.dateFormat.format(reportTime),
-              config.fetchSize,
-              (totalBytesRead * 1.0) / (1024 * 1024),
-              totalMBRead / elapsed,
-              totalMessagesRead,
-              (totalMessagesRead - lastMessagesRead) / elapsed
-            ))
+          println(("%s, %d, %.4f, %.4f, %d, %.4f").format(
+            config.dateFormat.format(reportTime),
+            config.fetchSize,
+            (totalBytesRead * 1.0) / (1024 * 1024),
+            totalMBRead / elapsed,
+            totalMessagesRead,
+            (totalMessagesRead - lastMessagesRead) / elapsed
+          ))
         }
         lastReportTime = SystemTime.milliseconds
         lastBytesRead = totalBytesRead
@@ -131,16 +128,15 @@ object SimpleConsumerPerformance {
 
     if (!config.showDetailedStats) {
       val totalMBRead = (totalBytesRead * 1.0) / (1024 * 1024)
-      println(
-        ("%s, %s, %d, %.4f, %.4f, %d, %.4f").format(
-          config.dateFormat.format(startMs),
-          config.dateFormat.format(reportTime),
-          config.fetchSize,
-          totalMBRead,
-          totalMBRead / elapsed,
-          totalMessagesRead,
-          totalMessagesRead / elapsed
-        ))
+      println(("%s, %s, %d, %.4f, %.4f, %d, %.4f").format(
+        config.dateFormat.format(startMs),
+        config.dateFormat.format(reportTime),
+        config.fetchSize,
+        totalMBRead,
+        totalMBRead / elapsed,
+        totalMessagesRead,
+        totalMessagesRead / elapsed
+      ))
     }
     System.exit(0)
   }

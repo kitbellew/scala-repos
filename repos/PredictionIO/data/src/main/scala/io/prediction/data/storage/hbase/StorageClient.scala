@@ -30,8 +30,7 @@ import grizzled.slf4j.Logging
 case class HBClient(
     val conf: Configuration,
     val connection: HConnection,
-    val admin: HBaseAdmin
-)
+    val admin: HBaseAdmin)
 
 class StorageClient(val config: StorageClientConfig)
     extends BaseStorageClient
@@ -49,10 +48,12 @@ class StorageClient(val config: StorageClientConfig)
   try { HBaseAdmin.checkHBaseAvailable(conf) }
   catch {
     case e: MasterNotRunningException =>
-      error("HBase master is not running (ZooKeeper ensemble: " +
-        conf.get("hbase.zookeeper.quorum") + "). Please make sure that HBase " +
-        "is running properly, and that the configuration is pointing at the " +
-        "correct ZooKeeper ensemble.")
+      error(
+        "HBase master is not running (ZooKeeper ensemble: " +
+          conf.get(
+            "hbase.zookeeper.quorum") + "). Please make sure that HBase " +
+          "is running properly, and that the configuration is pointing at the " +
+          "correct ZooKeeper ensemble.")
       throw e
     case e: ZooKeeperConnectionException =>
       error(
@@ -76,8 +77,7 @@ class StorageClient(val config: StorageClientConfig)
   val client = HBClient(
     conf = conf,
     connection = connection,
-    admin = new HBaseAdmin(connection)
-  )
+    admin = new HBaseAdmin(connection))
 
   override val prefix = "HB"
 }

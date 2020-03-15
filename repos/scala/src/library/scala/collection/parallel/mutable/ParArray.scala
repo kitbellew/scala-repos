@@ -769,8 +769,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
         case ScanNode(left, right) =>
           Seq(
             new ScanToArray(left, z, op, targetarr),
-            new ScanToArray(right, z, op, targetarr)
-          )
+            new ScanToArray(right, z, op, targetarr))
         case _ => sys.error("Can only split scan tree internal nodes.")
       }
     def shouldSplitFurther =
@@ -843,10 +842,9 @@ object ParArray extends ParFactory[ParArray] {
       case arr: Array[AnyRef] =>
         new ParArray[T](new ExposedArraySeq[T](arr, sz))
       case _ =>
-        new ParArray[T](
-          new ExposedArraySeq[T](
-            scala.runtime.ScalaRunTime.toObjectArray(arr),
-            sz))
+        new ParArray[T](new ExposedArraySeq[T](
+          scala.runtime.ScalaRunTime.toObjectArray(arr),
+          sz))
     }
 
   def createFromCopy[T <: AnyRef: ClassTag](arr: Array[T]): ParArray[T] = {

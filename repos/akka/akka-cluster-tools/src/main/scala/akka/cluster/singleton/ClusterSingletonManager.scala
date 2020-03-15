@@ -287,10 +287,11 @@ object ClusterSingletonManager {
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
-        membersByAge = immutable.SortedSet.empty(
-          ageOrdering) union state.members.filter(m ⇒
-          (m.status == MemberStatus.Up || m.status == MemberStatus.Leaving) && matchingRole(
-            m))
+        membersByAge =
+          immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
+            (
+              m.status == MemberStatus.Up || m.status == MemberStatus.Leaving
+            ) && matchingRole(m))
         val safeToBeOldest = !state.members.exists { m ⇒
           (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
         }
@@ -505,8 +506,8 @@ class ClusterSingletonManager(
   when(Start) {
     case Event(StartOldestChangedBuffer, _) ⇒
       oldestChangedBuffer = context.actorOf(
-        Props(classOf[OldestChangedBuffer], role)
-          .withDispatcher(context.props.dispatcher))
+        Props(classOf[OldestChangedBuffer], role).withDispatcher(
+          context.props.dispatcher))
       getNextOldestChanged()
       stay
 

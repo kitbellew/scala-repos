@@ -848,16 +848,15 @@ trait BaseCometActor
         case Full(who) => forwardMessageTo(l, who) // who forward l
         case _ =>
           if (when < lastRenderTime && !partialUpdateStream_?) {
-            toDo(
-              AnswerRender(
-                new XmlOrJsCmd(
-                  spanId,
-                  lastRendering,
-                  buildSpan _,
-                  notices.toList),
-                whosAsking openOr this,
-                lastRenderTime,
-                wasLastFullRender))
+            toDo(AnswerRender(
+              new XmlOrJsCmd(
+                spanId,
+                lastRendering,
+                buildSpan _,
+                notices.toList),
+              whosAsking openOr this,
+              lastRenderTime,
+              wasLastFullRender))
             clearNotices
           } else {
             _lastRenderTime = when
@@ -865,20 +864,19 @@ trait BaseCometActor
               case Nil => listeners = (seqId, toDo) :: listeners
 
               case all @ (hd :: xs) => {
-                toDo(
-                  AnswerRender(
-                    new XmlOrJsCmd(
-                      spanId,
-                      Empty,
-                      Empty,
-                      Full(all.reverse.foldLeft(Noop)(_ & _.js)),
-                      Empty,
-                      buildSpan,
-                      false,
-                      notices.toList),
-                    whosAsking openOr this,
-                    hd.when,
-                    false))
+                toDo(AnswerRender(
+                  new XmlOrJsCmd(
+                    spanId,
+                    Empty,
+                    Empty,
+                    Full(all.reverse.foldLeft(Noop)(_ & _.js)),
+                    Empty,
+                    buildSpan,
+                    false,
+                    notices.toList),
+                  whosAsking openOr this,
+                  hd.when,
+                  false))
                 clearNotices
               }
             }
@@ -924,16 +922,15 @@ trait BaseCometActor
               }
             } else { Empty }
 
-          reply(
-            AnswerRender(
-              new XmlOrJsCmd(
-                spanId,
-                out.openOr(lastRendering),
-                buildSpan _,
-                notices.toList),
-              whosAsking openOr this,
-              lastRenderTime,
-              true))
+          reply(AnswerRender(
+            new XmlOrJsCmd(
+              spanId,
+              out.openOr(lastRendering),
+              buildSpan _,
+              notices.toList),
+            whosAsking openOr this,
+            lastRenderTime,
+            true))
           clearNotices
         }
       }
@@ -1222,13 +1219,12 @@ trait BaseCometActor
     * take over the screen real estate until the question is answered.
     */
   protected def ask(who: LiftCometActor, what: Any)(answerWith: Any => Unit) {
-    who.callInitCometActor(
-      CometCreationInfo(
-        who.uniqueId,
-        name,
-        defaultHtml,
-        attributes,
-        theSession))
+    who.callInitCometActor(CometCreationInfo(
+      who.uniqueId,
+      name,
+      defaultHtml,
+      attributes,
+      theSession))
     theSession.addCometActor(who)
 
     who ! PerformSetupComet2(Empty)
@@ -1447,17 +1443,16 @@ private[http] class XmlOrJsCmd(
             commands.toJsCmd +
             "}catch(e){" +
             catchHandler.toJsCmd +
-            "}"
-        )
+            "}")
       }
 
     var ret: JsCmd = JsCmds.JsTry(JsCmds.Run("destroy_" + id + "();"), false) &
       fullUpdateJs &
       JsCmds.JsTry(
         JsCmds.Run(
-          "destroy_" + id + " = function() {" + (destroy
-            .openOr(JsCmds.Noop)
-            .toJsCmd) + "};"),
+          "destroy_" + id + " = function() {" + (
+            destroy.openOr(JsCmds.Noop).toJsCmd
+          ) + "};"),
         false)
 
     S.appendNotices(notices)
@@ -1469,11 +1464,10 @@ private[http] class XmlOrJsCmd(
     xml.openOr(Text("")) ++ javaScript.map(s => Script(s)).openOr(Text(""))
 
   def outSpan: NodeSeq =
-    Script(
-      Run(
-        "var destroy_" + id + " = function() {" + (destroy
-          .openOr(JsCmds.Noop)
-          .toJsCmd) + "}")) ++
+    Script(Run(
+      "var destroy_" + id + " = function() {" + (
+        destroy.openOr(JsCmds.Noop).toJsCmd
+      ) + "}")) ++
       fixedXhtml.openOr(Text(""))
 }
 

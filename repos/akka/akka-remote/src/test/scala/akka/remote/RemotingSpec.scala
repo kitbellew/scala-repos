@@ -122,11 +122,10 @@ object RemotingSpec {
   """)
 
   def muteSystem(system: ActorSystem) {
-    system.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(start = "AssociationError"),
-        EventFilter.warning(pattern = "received dead letter.*")))
+    system.eventStream.publish(TestEvent.Mute(
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(start = "AssociationError"),
+      EventFilter.warning(pattern = "received dead letter.*")))
   }
 }
 
@@ -188,9 +187,10 @@ class RemotingSpec
     val bigBounceHere = system.actorFor(
       s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
-    val eventForwarder = system.actorOf(Props(new Actor {
-      def receive = { case x ⇒ testActor ! x }
-    }).withDeploy(Deploy.local))
+    val eventForwarder = system.actorOf(
+      Props(new Actor {
+        def receive = { case x ⇒ testActor ! x }
+      }).withDeploy(Deploy.local))
     system.eventStream.subscribe(eventForwarder, classOf[AssociationErrorEvent])
     system.eventStream.subscribe(eventForwarder, classOf[DisassociatedEvent])
     try {
@@ -209,13 +209,12 @@ class RemotingSpec
 
   override def atStartup() = {
     muteSystem(system);
-    remoteSystem.eventStream.publish(
-      TestEvent.Mute(
-        EventFilter[EndpointException](),
-        EventFilter.error(start = "AssociationError"),
-        EventFilter.warning(pattern =
-          "received dead letter.*(InboundPayload|Disassociate|HandleListener)")
-      ))
+    remoteSystem.eventStream.publish(TestEvent.Mute(
+      EventFilter[EndpointException](),
+      EventFilter.error(start = "AssociationError"),
+      EventFilter.warning(pattern =
+        "received dead letter.*(InboundPayload|Disassociate|HandleListener)")
+    ))
   }
 
   private def byteStringOfSize(size: Int) =
@@ -238,9 +237,9 @@ class RemotingSpec
     }
 
     "send warning message for wrong address" in {
-      filterEvents(
-        EventFilter
-          .warning(pattern = "Address is now gated for ", occurrences = 1)) {
+      filterEvents(EventFilter.warning(
+        pattern = "Address is now gated for ",
+        occurrences = 1)) {
         system.actorFor(
           "akka.test://nonexistingsystem@localhost:12346/user/echo") ! "ping"
       }
@@ -270,10 +269,9 @@ class RemotingSpec
       val moreSystems = Vector.fill(5)(
         ActorSystem(remoteSystem.name, tcpOnlyConfig))
       moreSystems foreach { sys ⇒
-        sys.eventStream.publish(
-          TestEvent.Mute(
-            EventFilter[EndpointDisassociatedException](),
-            EventFilter.warning(pattern = "received dead letter.*")))
+        sys.eventStream.publish(TestEvent.Mute(
+          EventFilter[EndpointDisassociatedException](),
+          EventFilter.warning(pattern = "received dead letter.*")))
         sys.actorOf(Props[Echo2], name = "echo")
       }
       val moreRefs = moreSystems map (sys ⇒
@@ -790,8 +788,8 @@ class RemotingSpec
 
         val handshakePacket = AkkaPduProtobufCodec.constructAssociate(
           HandshakeInfo(rawRemoteAddress, uid = 0, cookie = None))
-        val brokenPacket = AkkaPduProtobufCodec.constructPayload(
-          ByteString(0, 1, 2, 3, 4, 5, 6))
+        val brokenPacket = AkkaPduProtobufCodec.constructPayload(ByteString(
+          0, 1, 2, 3, 4, 5, 6))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)

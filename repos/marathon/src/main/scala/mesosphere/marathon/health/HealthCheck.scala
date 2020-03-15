@@ -73,8 +73,7 @@ case class HealthCheck(
       case Protocol.COMMAND =>
         assert(
           command.isDefined,
-          "A command is required when using the COMMAND health check protocol."
-        )
+          "A command is required when using the COMMAND health check protocol.")
         MesosProtos.HealthCheck.newBuilder
           .setCommand(this.command.get.toProto)
 
@@ -139,12 +138,10 @@ object HealthCheck {
               case _ => true
             }) Success
         else
-          Failure(
-            Set(
-              RuleViolation(
-                hc,
-                s"HealthCheck is having parameters violation ${hc.protocol} protocol.",
-                None)))
+          Failure(Set(RuleViolation(
+            hc,
+            s"HealthCheck is having parameters violation ${hc.protocol} protocol.",
+            None)))
       }
     }
   }

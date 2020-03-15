@@ -46,52 +46,20 @@ class SexpSpec extends EnsimeSpec {
   }
 
   "SexpData" should "create from varargs" in {
-    SexpData(
-      fookey -> barsym,
-      barkey -> foosym
-    ) should ===(
-      SexpList(
-        fookey,
-        barsym,
-        barkey,
-        foosym
-      ))
+    SexpData(fookey -> barsym, barkey -> foosym) should ===(
+      SexpList(fookey, barsym, barkey, foosym))
   }
 
   it should "unroll as basic" in {
-    SexpData(
-      fookey -> barsym,
-      barkey -> foosym
-    ) should ===(
-      SexpCons(
-        fookey,
-        SexpCons(
-          barsym,
-          SexpCons(
-            barkey,
-            SexpCons(
-              foosym,
-              SexpNil
-            )
-          )
-        )
-      ))
+    SexpData(fookey -> barsym, barkey -> foosym) should ===(SexpCons(
+      fookey,
+      SexpCons(barsym, SexpCons(barkey, SexpCons(foosym, SexpNil)))))
   }
 
   it should "match SexpData" in {
     SexpCons(
       fookey,
-      SexpCons(
-        barsym,
-        SexpCons(
-          barkey,
-          SexpCons(
-            foosym,
-            SexpNil
-          )
-        )
-      )
-    ) match {
+      SexpCons(barsym, SexpCons(barkey, SexpCons(foosym, SexpNil)))) match {
       case SexpData(kvs) if kvs.size == 2 =>
       case _                              => fail()
     }
@@ -106,9 +74,6 @@ class SexpSpec extends EnsimeSpec {
     val a = SexpList(foosym)
     val b = SexpList(barsym)
     SexpCons(a, b) should ===(
-      SexpCons(
-        SexpCons(foosym, SexpNil),
-        SexpCons(barsym, SexpNil)
-      ))
+      SexpCons(SexpCons(foosym, SexpNil), SexpCons(barsym, SexpNil)))
   }
 }

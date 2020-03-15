@@ -39,13 +39,11 @@ import scalafx.scene.text.{Font, Text}
 
 object LayoutDemo extends JFXApp {
   val hello = new Accordion {
-    panes = List(
-      new TitledPane {
-        content = new Label {
-          text = "Hello"
-        }
+    panes = List(new TitledPane {
+      content = new Label {
+        text = "Hello"
       }
-    )
+    })
   }
 
   val hbox1 = new HBox {

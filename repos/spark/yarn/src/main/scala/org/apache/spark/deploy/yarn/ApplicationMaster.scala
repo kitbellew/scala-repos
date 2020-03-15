@@ -541,9 +541,9 @@ private[spark] class ApplicationMaster(
         driverUp = true
       } catch {
         case e: Exception =>
-          logError(
-            "Failed to connect to driver at %s:%s, retrying ..."
-              .format(driverHost, driverPort))
+          logError("Failed to connect to driver at %s:%s, retrying ...".format(
+            driverHost,
+            driverPort))
           Thread.sleep(100L)
       }
     }

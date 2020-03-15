@@ -140,39 +140,39 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
     * Creates the cluster JMX MBean and registers it in the MBean server.
     */
   def createMBean() = {
-    val mbean = new StandardMBean(classOf[ClusterNodeMBean])
-      with ClusterNodeMBean {
+    val mbean =
+      new StandardMBean(classOf[ClusterNodeMBean]) with ClusterNodeMBean {
 
-      // JMX attributes (bean-style)
+        // JMX attributes (bean-style)
 
-      def getClusterStatus: String = {
-        val members = clusterView.members.toSeq.sorted(Member.ordering).map {
-          m ⇒
-            s"""{
+        def getClusterStatus: String = {
+          val members = clusterView.members.toSeq.sorted(Member.ordering).map {
+            m ⇒
+              s"""{
               |      "address": "${m.address}",
               |      "status": "${m.status}",
               |      "roles": [
               |        ${m.roles.map("\"" + _ + "\"").mkString(",\n        ")}
               |      ]
               |    }""".stripMargin
-        } mkString (",\n    ")
+          } mkString (",\n    ")
 
-        val unreachable =
-          clusterView.reachability.observersGroupedByUnreachable.toSeq
-            .sortBy(_._1)
-            .map {
-              case (subject, observers) ⇒
-                s"""{
+          val unreachable =
+            clusterView.reachability.observersGroupedByUnreachable.toSeq
+              .sortBy(_._1)
+              .map {
+                case (subject, observers) ⇒
+                  s"""{
               |      "node": "${subject.address}",
               |      "observed-by": [
               |        ${observers.toSeq.sorted
-                     .map(_.address)
-                     .mkString("\"", "\",\n        \"", "\"")}
+                       .map(_.address)
+                       .mkString("\"", "\",\n        \"", "\"")}
               |      ]
               |    }""".stripMargin
-            } mkString (",\n")
+              } mkString (",\n")
 
-        s"""{
+          s"""{
         |  "self-address": "${clusterView.selfAddress}",
         |  "members": [
         |    ${members}
@@ -182,30 +182,31 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         |  ]
         |}
         |""".stripMargin
+        }
+
+        def getMembers: String =
+          clusterView.members.toSeq.map(_.address).mkString(",")
+
+        def getUnreachable: String =
+          clusterView.unreachableMembers.map(_.address).mkString(",")
+
+        def getMemberStatus: String = clusterView.status.toString
+
+        def getLeader: String = clusterView.leader.fold("")(_.toString)
+
+        def isSingleton: Boolean = clusterView.isSingletonCluster
+
+        def isAvailable: Boolean = clusterView.isAvailable
+
+        // JMX commands
+
+        def join(address: String) = cluster.join(AddressFromURIString(address))
+
+        def leave(address: String) =
+          cluster.leave(AddressFromURIString(address))
+
+        def down(address: String) = cluster.down(AddressFromURIString(address))
       }
-
-      def getMembers: String =
-        clusterView.members.toSeq.map(_.address).mkString(",")
-
-      def getUnreachable: String =
-        clusterView.unreachableMembers.map(_.address).mkString(",")
-
-      def getMemberStatus: String = clusterView.status.toString
-
-      def getLeader: String = clusterView.leader.fold("")(_.toString)
-
-      def isSingleton: Boolean = clusterView.isSingletonCluster
-
-      def isAvailable: Boolean = clusterView.isAvailable
-
-      // JMX commands
-
-      def join(address: String) = cluster.join(AddressFromURIString(address))
-
-      def leave(address: String) = cluster.leave(AddressFromURIString(address))
-
-      def down(address: String) = cluster.down(AddressFromURIString(address))
-    }
     try {
       mBeanServer.registerMBean(mbean, clusterMBeanName)
       logInfo("Registered cluster JMX MBean [{}]", clusterMBeanName)

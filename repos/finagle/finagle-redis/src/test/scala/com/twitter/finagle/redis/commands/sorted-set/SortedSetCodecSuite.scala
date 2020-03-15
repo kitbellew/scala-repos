@@ -21,8 +21,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "ZADD foo",
       "ZADD foo 123",
       "ZADD foo BAD_SCORE bar",
-      "ZADD foo 123 bar BAD_SCORE bar"
-    ).foreach { e =>
+      "ZADD foo 123 bar BAD_SCORE bar").foreach { e =>
       intercept[ClientError] { codec(wrap("%s\r\n".format(e))) }
     }
   }
@@ -106,14 +105,10 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   }
 
   test("Throw a ClientError for ZINCRBY with invalid arguments", CodecTest) {
-    List(
-      "ZINCRBY",
-      "ZINCRBY key",
-      "ZINCRBY key 1",
-      "ZINCRBY key bad member"
-    ).foreach { b =>
-      intercept[ClientError] { codec(wrap("%s\r\n".format(b))) }
-    }
+    List("ZINCRBY", "ZINCRBY key", "ZINCRBY key 1", "ZINCRBY key bad member")
+      .foreach { b =>
+        intercept[ClientError] { codec(wrap("%s\r\n".format(b))) }
+      }
   }
 
   test("Correctly encode ZINCRBY with an integer argument") {
@@ -163,8 +158,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
   private def doCmd(cmd: String, rcmd: String) = codec(wrap(rcmd.format(cmd)))
 
   private def verifyIU(cmd: String, k: String, n: Int)(
-      f: (Seq[ChannelBuffer], Option[Weights], Option[Aggregate]) => Unit
-  ): PartialFunction[Command, Unit] =
+      f: (Seq[ChannelBuffer], Option[Weights], Option[Aggregate]) => Unit)
+      : PartialFunction[Command, Unit] =
     cmd match {
       case "ZINTERSTORE" => {
         case ZInterStore(k, n, keys, w, a) => f(keys, w, a)
@@ -253,8 +248,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       "%s myset 1",
       "%s myset 1 foo",
       "%s myset foo 1",
-      "%s myset 0 2 blah"
-    )
+      "%s myset 0 2 blah")
 
     List("ZRANGE", "ZREVRANGE").foreach { cmd =>
       bad.foreach { b =>
@@ -268,8 +262,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       k: String,
       start: Int,
       stop: Int,
-      scored: Option[CommandArgument]
-  ): PartialFunction[Command, Unit] = {
+      scored: Option[CommandArgument]): PartialFunction[Command, Unit] = {
     cmd match {
       case "ZRANGE"    => { case ZRange(k, start, stop, scored)    => () }
       case "ZREVRANGE" => { case ZRevRange(k, start, stop, scored) => () }
@@ -315,8 +308,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
 
   test(
     "Throw a ClientError for ZRANGEBYSCORE and ZREVRANGEBYSCORE with invalid arguments",
-    CodecTest
-  ) {
+    CodecTest) {
     val bad = List(
       "%s",
       "%s key",
@@ -345,9 +337,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
       cmd: String,
       k: String,
       min: ZInterval,
-      max: ZInterval)(
-      f: (Option[CommandArgument], Option[Limit]) => Unit
-  ): PartialFunction[Command, Unit] =
+      max: ZInterval)(f: (Option[CommandArgument], Option[Limit]) => Unit)
+      : PartialFunction[Command, Unit] =
     cmd match {
       case "ZRANGEBYSCORE" => {
         case ZRangeByScore(k, min, max, s, l) => f(s, l)

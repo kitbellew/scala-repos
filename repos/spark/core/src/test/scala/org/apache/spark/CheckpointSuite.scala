@@ -161,8 +161,9 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     assert(collectFunc(operatedRDD) === result)
 
     // Test whether serialized size of the partitions has reduced
-    logInfo("Size of partitions of " + rddType +
-      " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]")
+    logInfo(
+      "Size of partitions of " + rddType +
+        " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]")
     assert(
       partitionSizeAfterCheckpoint < partitionSizeBeforeCheckpoint,
       "Size of " + rddType + " partitions did not reduce after checkpointing parent RDDs" +
@@ -192,8 +193,7 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     assert(
       rddSize > rddCpDataSize,
       "RDD's checkpoint data (" + rddCpDataSize + ") is equal or larger than the " +
-        "whole RDD with checkpoint data (" + rddSize + ")"
-    )
+        "whole RDD with checkpoint data (" + rddSize + ")")
     (rddSize - rddCpDataSize, rddPartitionSize)
   }
 
@@ -222,10 +222,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
   }
 
   /** Run a test twice, once for local checkpointing and once for reliable checkpointing. */
-  protected def runTest(
-      name: String,
-      skipLocalCheckpoint: Boolean = false
-  )(body: Boolean => Unit): Unit = {
+  protected def runTest(name: String, skipLocalCheckpoint: Boolean = false)(
+      body: Boolean => Unit): Unit = {
     test(name + " [reliable checkpoint]")(body(true))
     if (!skipLocalCheckpoint) {
       test(name + " [local checkpoint]")(body(false))
@@ -288,8 +286,7 @@ class CheckpointSuite
     _: Boolean =>
       def testPartitionerCheckpointing(
           partitioner: Partitioner,
-          corruptPartitionerFile: Boolean = false
-      ): Unit = {
+          corruptPartitionerFile: Boolean = false): Unit = {
         val rddWithPartitioner = sc
           .makeRDD(1 to 4)
           .map { _ -> 1 }
@@ -517,8 +514,7 @@ class CheckpointSuite
           sc,
           Array(
             generateFatPairRDD(),
-            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-          ))
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)))
       },
       reliableCheckpoint)
 
@@ -528,8 +524,7 @@ class CheckpointSuite
           sc,
           Array(
             generateFatPairRDD(),
-            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)
-          ))
+            rdd.map(x => (x % 2, 1)).reduceByKey(partitioner, _ + _)))
       },
       reliableCheckpoint)
 
@@ -639,7 +634,6 @@ object CheckpointSuite {
       part: Partitioner): RDD[(K, Array[Iterable[V]])] = {
     new CoGroupedRDD[K](
       Seq(first.asInstanceOf[RDD[(K, _)]], second.asInstanceOf[RDD[(K, _)]]),
-      part
-    ).asInstanceOf[RDD[(K, Array[Iterable[V]])]]
+      part).asInstanceOf[RDD[(K, Array[Iterable[V]])]]
   }
 }

@@ -60,8 +60,8 @@ object ScalatraAtmosphereHandler {
     def onSuspend(event: AtmosphereResourceEvent) {}
 
     def onThrowable(event: AtmosphereResourceEvent) {
-      client(event.getResource) foreach (_.receive.lift(
-        Error(Option(event.throwable()))))
+      client(event.getResource) foreach (_.receive.lift(Error(
+        Option(event.throwable()))))
     }
 
     def onClose(event: AtmosphereResourceEvent) {}

@@ -34,12 +34,7 @@ final class Env(
   private lazy val indexer = new Indexer(
     storage = storage,
     sequencer = system.actorOf(
-      Props(
-        classOf[lila.hub.Sequencer],
-        None,
-        None,
-        logger
-      )))
+      Props(classOf[lila.hub.Sequencer], None, None, logger)))
 
   private lazy val userCacheApi = new UserCacheApi(
     coll = db(CollectionUserCache))

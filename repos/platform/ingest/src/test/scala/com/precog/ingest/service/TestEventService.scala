@@ -188,8 +188,8 @@ trait TestEventService
       sync: Boolean = true,
       batch: Boolean = false)(data: A)(implicit
       bi: A => Future[JValue],
-      t: AsyncHttpTranscoder[A, ByteChunk]
-  ): Future[(HttpResponse[JValue], List[Ingest])] = {
+      t: AsyncHttpTranscoder[A, ByteChunk])
+      : Future[(HttpResponse[JValue], List[Ingest])] = {
     val svc = client
       .contentType[A](contentType)
       .query("receipt", sync.toString)
@@ -210,8 +210,7 @@ trait TestEventService
     } yield {
       (
         response.copy(content = content),
-        stored.toList collect { case in: Ingest => in }
-      )
+        stored.toList collect { case in: Ingest => in })
     }
   }
 }

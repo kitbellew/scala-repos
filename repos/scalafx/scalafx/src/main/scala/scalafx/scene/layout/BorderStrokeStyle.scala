@@ -79,14 +79,13 @@ class BorderStrokeStyle(override val delegate: jfxsl.BorderStrokeStyle)
       miterLimit: Double,
       dashOffset: Double,
       dashArray: Seq[java.lang.Double]) =
-    this(
-      new jfxsl.BorderStrokeStyle(
-        strokeType,
-        lineJoin,
-        lineCap,
-        miterLimit,
-        dashOffset,
-        dashArray))
+    this(new jfxsl.BorderStrokeStyle(
+      strokeType,
+      lineJoin,
+      lineCap,
+      miterLimit,
+      dashOffset,
+      dashArray))
 
   /**
     * Defines the array representing the lengths of the dash segments.

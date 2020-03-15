@@ -67,8 +67,8 @@ class appTest extends JUnitSuite with ShouldMatchers {
       .asInstanceOf[StateListDrawable]
     val shadowDrawable = Robolectric.shadowOf(drawable)
 
-    val pressedDrawable = shadowDrawable.getDrawableForState(
-      Array(android.R.attr.state_pressed))
+    val pressedDrawable = shadowDrawable.getDrawableForState(Array(
+      android.R.attr.state_pressed))
     pressedDrawable shouldBe activity.getResources.getDrawable(
       android.R.drawable.btn_star_big_on)
 

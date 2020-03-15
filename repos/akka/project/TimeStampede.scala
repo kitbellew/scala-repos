@@ -10,9 +10,7 @@ object TimeStampede extends AutoPlugin {
 
   override def trigger = noTrigger
 
-  override lazy val projectSettings = Seq(
-    commands += stampVersion
-  )
+  override lazy val projectSettings = Seq(commands += stampVersion)
 
   final val Snapshot = "-SNAPSHOT"
 

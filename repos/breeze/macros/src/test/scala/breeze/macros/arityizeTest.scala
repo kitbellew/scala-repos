@@ -60,9 +60,9 @@ class arityizeTest extends FunSuite {
         name: String,
         blockDims: Array[Int] = Array(32, 1, 1))
         : (CuKernel[T @arityize.replicate] @arityize.relative(getKernel)) = {
-      new (CuKernel[T @arityize.replicate] @arityize.relative(getKernel))(
-        name,
-        blockDims)
+      new (
+        CuKernel[T @arityize.replicate] @arityize.relative(getKernel)
+      )(name, blockDims)
     }
   }
 

@@ -418,8 +418,8 @@ class ConnectionPoolSpec
     }
 
     private def handleConnection(c: Http.IncomingConnection) =
-      c.handleWithSyncHandler(
-        testServerHandler(incomingConnectionCounter.incrementAndGet()))
+      c.handleWithSyncHandler(testServerHandler(
+        incomingConnectionCounter.incrementAndGet()))
 
     def cachedHostConnectionPool[T](
         maxConnections: Int = 2,
@@ -436,9 +436,10 @@ class ConnectionPoolSpec
         pipeliningLimit,
         idleTimeout,
         ClientConnectionSettings(system))
-      flowTestBench(
-        Http()
-          .cachedHostConnectionPool[T](serverHostName, serverPort, settings))
+      flowTestBench(Http().cachedHostConnectionPool[T](
+        serverHostName,
+        serverPort,
+        settings))
     }
 
     def superPool[T](

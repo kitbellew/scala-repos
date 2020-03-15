@@ -18,9 +18,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
   */
 class ScImportExprStubImpl[ParentPsi <: PsiElement](
     parent: StubElement[ParentPsi],
-    elemType: IStubElementType[
-      _ <: StubElement[_ <: PsiElement],
-      _ <: PsiElement])
+    elemType: IStubElementType[_ <: StubElement[
+      _ <: PsiElement], _ <: PsiElement])
     extends StubBaseWrapper[ScImportExpr](parent, elemType)
     with ScImportExprStub {
 
@@ -31,9 +30,8 @@ class ScImportExprStubImpl[ParentPsi <: PsiElement](
 
   def this(
       parent: StubElement[ParentPsi],
-      elemType: IStubElementType[
-        _ <: StubElement[_ <: PsiElement],
-        _ <: PsiElement],
+      elemType: IStubElementType[_ <: StubElement[
+        _ <: PsiElement], _ <: PsiElement],
       refText: String,
       singleWildcard: Boolean) {
     this(
@@ -47,9 +45,9 @@ class ScImportExprStubImpl[ParentPsi <: PsiElement](
   def reference: Option[ScStableCodeReferenceElement] = {
     if (myReference != null) {
       val referenceElement = myReference.get
-      if (referenceElement != null && (referenceElement.isEmpty || (referenceElement.get.getContext eq getPsi))) {
-        return referenceElement
-      }
+      if (referenceElement != null && (referenceElement.isEmpty || (
+            referenceElement.get.getContext eq getPsi
+          ))) { return referenceElement }
     }
     val res =
       if (referenceText == StringRef.fromString("")) None

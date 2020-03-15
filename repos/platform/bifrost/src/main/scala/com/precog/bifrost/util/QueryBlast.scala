@@ -104,15 +104,14 @@ object QueryBlast extends AkkaDefaults {
         val now = System.currentTimeMillis()
         stats foreach {
           case (key, stats) =>
-            println(
-              "%-20d\t%12d\t%f\t%f\t%f\t%f\t(%d)".format(
-                now,
-                stats.errors,
-                intervalDouble / ((now - startTime) / 1000.0d),
-                stats.min / 1000000.0d,
-                stats.max / 1000000.0d,
-                (stats.sum / stats.count) / 1000000.0d,
-                key))
+            println("%-20d\t%12d\t%f\t%f\t%f\t%f\t(%d)".format(
+              now,
+              stats.errors,
+              intervalDouble / ((now - startTime) / 1000.0d),
+              stats.min / 1000000.0d,
+              stats.max / 1000000.0d,
+              (stats.sum / stats.count) / 1000000.0d,
+              key))
         }
         startTime = now
         stats = Map[Int, Stats]()

@@ -38,17 +38,14 @@ class BigDecimalTest {
       BigDecimal(1),
       BigDecimal(19571.125),
       BigDecimal.decimal(0.1),
-      BigDecimal(1e15)
-    )
+      BigDecimal(1e15))
     val invalids = List(
       BigDecimal(new BD("1.0000000000000000000000000000000000000000001")),
       BigDecimal("10e1000000"),
-      BigDecimal("10e-1000000")
-    )
+      BigDecimal("10e-1000000"))
     assert(
       valids.forall(_.isDecimalDouble) &&
-        invalids.forall(!_.isDecimalDouble)
-    )
+        invalids.forall(!_.isDecimalDouble))
   }
 
   // Motivated by SI-6173: BigDecimal#isWhole implementation is very heap intensive
@@ -63,8 +60,7 @@ class BigDecimalTest {
         reasonableInt == reasonable &&
         troublemaker.hashCode != reasonable.hashCode &&
         !(troublemaker == reasonableInt) &&
-        !(reasonableInt == troublemaker)
-    )
+        !(reasonableInt == troublemaker))
   }
 
   // Motivated by SI-6456: scala.math.BigDecimal should not accept a null value
@@ -81,8 +77,7 @@ class BigDecimalTest {
         isIAE(new BigDecimal(new BD("5.7"), null: MC)) &&
         isNPE(BigDecimal(null: BigInt)) &&
         isNPE(BigDecimal(null: String)) &&
-        isNPE(BigDecimal(null: Array[Char]))
-    )
+        isNPE(BigDecimal(null: Array[Char])))
   }
 
   // Motivated by SI-6153: BigDecimal.hashCode() has high collision rate
@@ -98,8 +93,7 @@ class BigDecimalTest {
         bd.## == bi.## &&
         (bd pow 4).hashCode == (bi pow 4).hashCode &&
         BigDecimal("1e150000").hashCode != BigDecimal(
-          "1e150000").toBigInt.hashCode
-    )
+          "1e150000").toBigInt.hashCode)
   }
 
   // Motivated by noticing BigDecimal(0.1f) != BigDecimal(0.1)
@@ -183,8 +177,7 @@ class BigDecimalTest {
     val same = List[Any](
       BigInt(text),
       BigDecimal(text),
-      BigDecimal(new BD(text))
-    )
+      BigDecimal(new BD(text)))
     for (a <- same; b <- same)
       assert(a == b, s"$a != $b but should be the same")
   }

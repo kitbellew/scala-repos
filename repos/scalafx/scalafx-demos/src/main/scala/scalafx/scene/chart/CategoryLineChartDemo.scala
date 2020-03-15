@@ -53,8 +53,7 @@ object CategoryLineChartDemo extends JFXApp {
           "Series 1",
           ObservableBuffer(dataPairs.map {
             case (x, y) => XYChart.Data[String, Number](x, y)
-          })
-        )
+          }))
       }
     }
   }

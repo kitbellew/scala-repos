@@ -524,8 +524,7 @@ class BatchedWriteAheadLogSuite
     val events = Seq(
       BlockAdditionEvent(ReceivedBlockInfo(0, None, None, null)),
       BatchAllocationEvent(null, null),
-      BatchCleanupEvent(Nil)
-    )
+      BatchCleanupEvent(Nil))
 
     val buffers = events.map(e =>
       Record(ByteBuffer.wrap(Utils.serialize(e)), 0L, null))
@@ -539,8 +538,8 @@ class BatchedWriteAheadLogSuite
   }
 
   test("BatchedWriteAheadLog - failures in wrappedLog get bubbled up") {
-    when(wal.write(any[ByteBuffer], anyLong))
-      .thenThrow(new RuntimeException("Hello!"))
+    when(wal.write(any[ByteBuffer], anyLong)).thenThrow(new RuntimeException(
+      "Hello!"))
     // the BatchedWriteAheadLog should bubble up any exceptions that may have happened during writes
     val batchedWal = new BatchedWriteAheadLog(wal, sparkConf)
 
@@ -556,10 +555,11 @@ class BatchedWriteAheadLogSuite
       event: String,
       time: Long): Promise[Unit] = {
     val p = Promise[Unit]()
-    p.completeWith(Future {
-      val v = wal.write(event, time)
-      assert(v === walHandle)
-    }(walBatchingExecutionContext))
+    p.completeWith(
+      Future {
+        val v = wal.write(event, time)
+        assert(v === walHandle)
+      }(walBatchingExecutionContext))
     p
   }
 

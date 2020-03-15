@@ -509,11 +509,10 @@ class ObservableBufferSpec[T]
     buffer onChange { (list, changes) =>
       {
         list.toList should equal(List("b", "d"))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer("a")),
-            Remove(1, Buffer("c")),
-            Remove(2, Buffer("e"))))
+        changes.toList should equal(List(
+          Remove(0, Buffer("a")),
+          Remove(1, Buffer("c")),
+          Remove(2, Buffer("e"))))
       }
     }
 
@@ -578,10 +577,9 @@ class ObservableBufferSpec[T]
       {
         changesDetected += 1
         list.toList should equal(List(-1, -1, -1, -1, -1))
-        changes.toList should equal(
-          List(
-            Remove(0, Buffer(1, 2, 3, 4, 5)),
-            Add(0, Buffer(-1, -1, -1, -1, -1))))
+        changes.toList should equal(List(
+          Remove(0, Buffer(1, 2, 3, 4, 5)),
+          Add(0, Buffer(-1, -1, -1, -1, -1))))
       }
     }
 
@@ -624,8 +622,8 @@ class ObservableBufferSpec[T]
 
     // Verification
     buffer.toList should equal(List('e', 'h', 'j', 'r', 't', 'z'))
-    addedValues.toList should equal(
-      List('e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
+    addedValues.toList should equal(List(
+      'e', 'a', 't', 'r', 'j', 'd', 'z', 'h'))
     removedValues.toList should equal(List('d', 'a'))
     permutations should have size 1
     permutations(0).toList should equal(

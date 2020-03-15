@@ -159,11 +159,10 @@ class ScAnnotationImpl private (
         }
         val params: Seq[ScExpression] = args.flatMap(arg => arg.exprs)
         if (params.length == 1 && !params(0).isInstanceOf[ScAssignStmt]) {
-          params(0).replace(
-            ScalaPsiElementFactory.createExpressionFromText(
-              PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(
-                0).getText,
-              params(0).getManager))
+          params(0).replace(ScalaPsiElementFactory.createExpressionFromText(
+            PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME + " = " + params(
+              0).getText,
+            params(0).getManager))
         }
         var allowNoName: Boolean = params.length == 0 &&
           (PsiAnnotation.DEFAULT_REFERENCED_METHOD_NAME.equals(

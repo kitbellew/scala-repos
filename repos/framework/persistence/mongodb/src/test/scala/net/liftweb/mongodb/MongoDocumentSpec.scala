@@ -43,8 +43,8 @@ package mongodocumentspecs {
       jlf: java.lang.Float,
       jlb: java.lang.Byte,
       jlbool: java.lang.Boolean,
-      jlsh: java.lang.Short
-  ) extends MongoDocument[Primitives] {
+      jlsh: java.lang.Short)
+      extends MongoDocument[Primitives] {
 
     def meta = Primitives
   }

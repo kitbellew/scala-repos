@@ -66,7 +66,9 @@ class ScalaInlineHandler extends InlineHandler {
     def removeElementWithNonSignificantSibilings(value: PsiElement) = {
       val children = new ArrayBuffer[PsiElement]
       var psiElement = value.getNextSibling
-      while (psiElement != null && (psiElement.getNode.getElementType == ScalaTokenTypes.tSEMICOLON || psiElement.getText.trim == "")) {
+      while (psiElement != null && (
+               psiElement.getNode.getElementType == ScalaTokenTypes.tSEMICOLON || psiElement.getText.trim == ""
+             )) {
         children += psiElement
         psiElement = psiElement.getNextSibling
       }

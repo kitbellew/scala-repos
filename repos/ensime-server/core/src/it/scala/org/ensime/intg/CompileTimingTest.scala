@@ -66,10 +66,9 @@ class CompileTimingTest
           // simulate sbt clean https://github.com/sbt/sbt/issues/106
           FileUtils.deleteDirectory(target)
 
-          asyncHelper.receiveN(2) should contain theSameElementsAs (Seq(
-            FullTypeCheckCompleteEvent,
-            CompilerRestartedEvent
-          ))
+          asyncHelper.receiveN(2) should contain theSameElementsAs (
+            Seq(FullTypeCheckCompleteEvent, CompilerRestartedEvent)
+          )
 
           project ! SymbolDesignationsReq(
             Right(exampleDiskInfo),
@@ -81,10 +80,9 @@ class CompileTimingTest
           // simulate sbt compile
           FileUtils.copyDirectory(targetBak, target)
 
-          asyncHelper.receiveN(2) should contain theSameElementsAs (Seq(
-            FullTypeCheckCompleteEvent,
-            CompilerRestartedEvent
-          ))
+          asyncHelper.receiveN(2) should contain theSameElementsAs (
+            Seq(FullTypeCheckCompleteEvent, CompilerRestartedEvent)
+          )
 
           project ! SymbolDesignationsReq(
             Right(exampleDiskInfo),

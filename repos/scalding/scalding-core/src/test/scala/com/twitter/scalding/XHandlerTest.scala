@@ -69,21 +69,26 @@ class XHandlerTest extends WordSpec with Matchers {
         "comtwitterscaldinginvalidsourceexception"
       val PlannerExceptionString = "cascadingflowplannerplannerexception"
       val ModeLoadExceptionString = "comtwitterscaldingmodeloadexception"
+      RichXHandler.createXUrl(new PlannerException) shouldBe (
+        RichXHandler.gitHubUrl + PlannerExceptionString
+      )
       RichXHandler.createXUrl(
-        new PlannerException) shouldBe (RichXHandler.gitHubUrl + PlannerExceptionString)
+        new InvalidSourceException("Invalid Source")) shouldBe (
+        RichXHandler.gitHubUrl + InvalidSouceExceptionString
+      )
+      RichXHandler.createXUrl(new NoSuchMethodError) shouldBe (
+        RichXHandler.gitHubUrl + NoSuchMethodErrorString
+      )
+      RichXHandler.createXUrl(new AbstractMethodError) shouldBe (
+        RichXHandler.gitHubUrl + AbstractMethodErrorString
+      )
+      RichXHandler.createXUrl(new NoClassDefFoundError) shouldBe (
+        RichXHandler.gitHubUrl + NoClassDefFoundErrorString
+      )
       RichXHandler.createXUrl(
-        new InvalidSourceException(
-          "Invalid Source")) shouldBe (RichXHandler.gitHubUrl + InvalidSouceExceptionString)
-      RichXHandler.createXUrl(
-        new NoSuchMethodError) shouldBe (RichXHandler.gitHubUrl + NoSuchMethodErrorString)
-      RichXHandler.createXUrl(
-        new AbstractMethodError) shouldBe (RichXHandler.gitHubUrl + AbstractMethodErrorString)
-      RichXHandler.createXUrl(
-        new NoClassDefFoundError) shouldBe (RichXHandler.gitHubUrl + NoClassDefFoundErrorString)
-      RichXHandler.createXUrl(
-        ModeLoadException(
-          "dummy",
-          new ClassNotFoundException)) shouldBe (RichXHandler.gitHubUrl + ModeLoadExceptionString)
+        ModeLoadException("dummy", new ClassNotFoundException)) shouldBe (
+        RichXHandler.gitHubUrl + ModeLoadExceptionString
+      )
     }
   }
 }

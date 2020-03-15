@@ -39,24 +39,20 @@ private[process] trait ProcessBuilderImpl {
         new FileOutputStream(file, append),
         file.getAbsolutePath)
 
-  private[process] class OStreamBuilder(
-      stream: => OutputStream,
-      label: String
-  ) extends ThreadBuilder(label, _ writeInput protect(stream)) {
+  private[process] class OStreamBuilder(stream: => OutputStream, label: String)
+      extends ThreadBuilder(label, _ writeInput protect(stream)) {
     override def hasExitValue = false
   }
 
-  private[process] class IStreamBuilder(
-      stream: => InputStream,
-      label: String
-  ) extends ThreadBuilder(label, _ processOutput protect(stream)) {
+  private[process] class IStreamBuilder(stream: => InputStream, label: String)
+      extends ThreadBuilder(label, _ processOutput protect(stream)) {
     override def hasExitValue = false
   }
 
   private[process] abstract class ThreadBuilder(
       override val toString: String,
-      runImpl: ProcessIO => Unit
-  ) extends AbstractBuilder {
+      runImpl: ProcessIO => Unit)
+      extends AbstractBuilder {
 
     override def run(io: ProcessIO): Process = {
       val success = new SyncVar[Boolean]
@@ -158,8 +154,7 @@ private[process] trait ProcessBuilderImpl {
     private[this] def lineStream(
         withInput: Boolean,
         nonZeroException: Boolean,
-        log: Option[ProcessLogger]
-    ): Stream[String] = {
+        log: Option[ProcessLogger]): Stream[String] = {
       val streamed = Streamed[String](nonZeroException)
       val process = run(BasicIO(withInput, streamed.process, log))
 
@@ -206,8 +201,8 @@ private[process] trait ProcessBuilderImpl {
   private[process] abstract class SequentialBuilder(
       a: ProcessBuilder,
       b: ProcessBuilder,
-      operatorString: String
-  ) extends BasicBuilder {
+      operatorString: String)
+      extends BasicBuilder {
 
     checkNotThis(a)
     checkNotThis(b)
@@ -217,8 +212,8 @@ private[process] trait ProcessBuilderImpl {
   private[process] class PipedBuilder(
       first: ProcessBuilder,
       second: ProcessBuilder,
-      toError: Boolean
-  ) extends SequentialBuilder(first, second, if (toError) "#|!" else "#|") {
+      toError: Boolean)
+      extends SequentialBuilder(first, second, if (toError) "#|!" else "#|") {
 
     override def createProcess(io: ProcessIO) =
       new PipedProcesses(first, second, io, toError)
@@ -226,23 +221,23 @@ private[process] trait ProcessBuilderImpl {
 
   private[process] class AndBuilder(
       first: ProcessBuilder,
-      second: ProcessBuilder
-  ) extends SequentialBuilder(first, second, "#&&") {
+      second: ProcessBuilder)
+      extends SequentialBuilder(first, second, "#&&") {
     override def createProcess(io: ProcessIO) =
       new AndProcess(first, second, io)
   }
 
   private[process] class OrBuilder(
       first: ProcessBuilder,
-      second: ProcessBuilder
-  ) extends SequentialBuilder(first, second, "#||") {
+      second: ProcessBuilder)
+      extends SequentialBuilder(first, second, "#||") {
     override def createProcess(io: ProcessIO) = new OrProcess(first, second, io)
   }
 
   private[process] class SequenceBuilder(
       first: ProcessBuilder,
-      second: ProcessBuilder
-  ) extends SequentialBuilder(first, second, "###") {
+      second: ProcessBuilder)
+      extends SequentialBuilder(first, second, "###") {
     override def createProcess(io: ProcessIO) =
       new ProcessSequence(first, second, io)
   }

@@ -48,8 +48,8 @@ object HttpServer {
       if (Some("open sesame") == request.headerMap.get(Fields.Authorization)) {
         continue(request)
       } else {
-        Future.exception(
-          new IllegalArgumentException("You don't know the secret"))
+        Future.exception(new IllegalArgumentException(
+          "You don't know the secret"))
       }
     }
   }

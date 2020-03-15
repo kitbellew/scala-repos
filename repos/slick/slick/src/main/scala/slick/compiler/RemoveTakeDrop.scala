@@ -22,7 +22,9 @@ class RemoveTakeDrop(
       def tr(n: Node): Node =
         n.replace {
           case n @ TakeDrop(from, t, d)
-              if (translateTake && t.isDefined) || (translateDrop && d.isDefined) =>
+              if (translateTake && t.isDefined) || (
+                translateDrop && d.isDefined
+              ) =>
             logger.debug(
               s"""Translating "drop $d, then take $t" to zipWithIndex operation:""",
               n)
@@ -60,8 +62,7 @@ class RemoveTakeDrop(
                       d),
                     Library.<=.typed[Boolean](
                       Select(Ref(fs), ElementSymbol(2)),
-                      constOp[Long]("+")(_ + _)(t, d))
-                  )
+                      constOp[Long]("+")(_ + _)(t, d)))
                 case _ => throw new SlickException("Unexpected empty Take/Drop")
               }
             )
@@ -101,25 +102,21 @@ class RemoveTakeDrop(
         case Drop(from, num) =>
           unapply(from) match {
             case Some((f, Some(t), None)) =>
-              Some(
-                (
-                  f,
-                  Some(
-                    constOp[Long]("max")(math.max)(
-                      LiteralNode(0L).infer(),
-                      constOp[Long]("-")(_ - _)(t, num))),
-                  Some(num)))
+              Some((
+                f,
+                Some(constOp[Long]("max")(math.max)(
+                  LiteralNode(0L).infer(),
+                  constOp[Long]("-")(_ - _)(t, num))),
+                Some(num)))
             case Some((f, None, Some(d))) =>
               Some((f, None, Some(constOp[Long]("+")(_ + _)(d, num))))
             case Some((f, Some(t), Some(d))) =>
-              Some(
-                (
-                  f,
-                  Some(
-                    constOp[Long]("max")(math.max)(
-                      LiteralNode(0L).infer(),
-                      constOp[Long]("-")(_ - _)(t, num))),
-                  Some(constOp[Long]("+")(_ + _)(d, num))))
+              Some((
+                f,
+                Some(constOp[Long]("max")(math.max)(
+                  LiteralNode(0L).infer(),
+                  constOp[Long]("-")(_ - _)(t, num))),
+                Some(constOp[Long]("+")(_ + _)(d, num))))
             case _ => Some((from, None, Some(num)))
           }
         case _ => None

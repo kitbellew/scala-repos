@@ -177,9 +177,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     def fn: (Iterator[T]) => Iterator[U] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
-    JavaRDD.fromRDD(
-      rdd.mapPartitions(fn, preservesPartitioning)(fakeClassTag[U]))(
-      fakeClassTag[U])
+    JavaRDD.fromRDD(rdd.mapPartitions(fn, preservesPartitioning)(
+      fakeClassTag[U]))(fakeClassTag[U])
   }
 
   /**
@@ -278,8 +277,8 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     // The type parameter is U instead of K in order to work around a compiler bug; see SPARK-4459
     implicit val ctagK: ClassTag[U] = fakeClassTag
     implicit val ctagV: ClassTag[JList[T]] = fakeClassTag
-    JavaPairRDD.fromRDD(
-      groupByResultToJava(rdd.groupBy(f, numPartitions)(fakeClassTag[U])))
+    JavaPairRDD.fromRDD(groupByResultToJava(
+      rdd.groupBy(f, numPartitions)(fakeClassTag[U])))
   }
 
   /**
@@ -492,8 +491,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def countByValueApprox(
       timeout: Long,
-      confidence: Double
-  ): PartialResult[java.util.Map[T, BoundedDouble]] =
+      confidence: Double): PartialResult[java.util.Map[T, BoundedDouble]] =
     rdd.countByValueApprox(timeout, confidence).map(mapAsSerializableJavaMap)
 
   /**

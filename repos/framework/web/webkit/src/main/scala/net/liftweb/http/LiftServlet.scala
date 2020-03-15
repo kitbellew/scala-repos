@@ -238,8 +238,7 @@ class LiftServlet extends Loggable {
         Full(
           session
             .map(_.checkRedirect(req.createNotFound))
-            .getOrElse(req.createNotFound)
-        )
+            .getOrElse(req.createNotFound))
       }
     }
 
@@ -419,8 +418,7 @@ class LiftServlet extends Loggable {
     CheckAuth,
     SessionLossCheck,
     StatelessResponse,
-    StatefulResponse
-  )
+    StatefulResponse)
 
   /**
     * Service the HTTP request
@@ -490,13 +488,11 @@ class LiftServlet extends Loggable {
                     case Full(v) =>
                       (
                         true,
-                        Full(
-                          LiftRules.convertResponse(
-                            (
-                              liftSession.checkRedirect(v),
-                              Nil,
-                              S.responseCookies,
-                              req))))
+                        Full(LiftRules.convertResponse((
+                          liftSession.checkRedirect(v),
+                          Nil,
+                          S.responseCookies,
+                          req))))
 
                     case Empty =>
                       (true, LiftRules.notFoundOrIgnore(req, Full(liftSession)))
@@ -504,8 +500,8 @@ class LiftServlet extends Loggable {
                     case f: net.liftweb.common.Failure =>
                       (
                         true,
-                        net.liftweb.common.Full(
-                          liftSession.checkRedirect(req.createNotFound(f))))
+                        net.liftweb.common.Full(liftSession.checkRedirect(
+                          req.createNotFound(f))))
                   }
                 }
               } catch {
@@ -513,10 +509,9 @@ class LiftServlet extends Loggable {
                     if (ite.getCause.isInstanceOf[ResponseShortcutException]) =>
                   (
                     true,
-                    Full(
-                      liftSession.handleRedirect(
-                        ite.getCause.asInstanceOf[ResponseShortcutException],
-                        req)))
+                    Full(liftSession.handleRedirect(
+                      ite.getCause.asInstanceOf[ResponseShortcutException],
+                      req)))
 
                 case rd: net.liftweb.http.ResponseShortcutException =>
                   (true, Full(liftSession.handleRedirect(rd, req)))
@@ -581,16 +576,13 @@ class LiftServlet extends Loggable {
     def unapply(ajaxPathPart: String): Option[AjaxVersionInfo] = {
       val separator = ajaxPathPart.indexOf("-")
       if (separator > -1 && ajaxPathPart.length > separator + 2)
-        Some(
-          AjaxVersionInfo(
-            ajaxPathPart.substring(0, separator),
-            java.lang.Long.parseLong(
-              ajaxPathPart.substring(separator + 1, ajaxPathPart.length - 1),
-              36),
-            Integer
-              .parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
-          )
-        )
+        Some(AjaxVersionInfo(
+          ajaxPathPart.substring(0, separator),
+          java.lang.Long.parseLong(
+            ajaxPathPart.substring(separator + 1, ajaxPathPart.length - 1),
+            36),
+          Integer.parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
+        ))
       else None
     }
   }
@@ -901,12 +893,11 @@ class LiftServlet extends Loggable {
       }
 
     if (actors.isEmpty)
-      Left(
-        Full(
-          new JsCommands(
-            LiftRules.noCometSessionCmd.vend :: js.JE
-              .JsRaw("lift.setToWatch({});")
-              .cmd :: Nil).toResponse))
+      Left(Full(
+        new JsCommands(
+          LiftRules.noCometSessionCmd.vend :: js.JE
+            .JsRaw("lift.setToWatch({});")
+            .cmd :: Nil).toResponse))
     else
       requestState.request.suspendResumeSupport_? match {
         case true => {
@@ -915,12 +906,11 @@ class LiftServlet extends Loggable {
         }
 
         case _ => {
-          Right(
-            handleNonContinuationComet(
-              requestState,
-              sessionActor,
-              actors,
-              originalRequest))
+          Right(handleNonContinuationComet(
+            requestState,
+            sessionActor,
+            actors,
+            originalRequest))
         }
       }
   }
@@ -1001,12 +991,10 @@ class LiftServlet extends Loggable {
       val toDump = request.uri + "\n" +
         request.params + "\n" +
         response.headers + "\n" +
-        (
-          response match {
-            case InMemoryResponse(data, _, _, _) => new String(data, "UTF-8")
-            case _                               => "data"
-          }
-        )
+        (response match {
+          case InMemoryResponse(data, _, _, _) => new String(data, "UTF-8")
+          case _                               => "data"
+        })
 
       logger.trace(toDump)
     }
@@ -1027,14 +1015,12 @@ class LiftServlet extends Loggable {
             val u = request
             (
               v._1,
-              (
-                (for (updated <- Full(
-                        (if (!LiftRules.excludePathFromContextPathRewriting
-                               .vend(uri)) u.contextPath
-                         else "") + uri).filter(ignore => uri.startsWith("/"));
-                      rwf <- URLRewriter.rewriteFunc)
-                  yield rwf(updated)) openOr uri
-              ))
+              ((for (updated <- Full(
+                       (if (!LiftRules.excludePathFromContextPathRewriting.vend(
+                              uri)) u.contextPath
+                        else "") + uri).filter(ignore => uri.startsWith("/"));
+                     rwf <- URLRewriter.rewriteFunc)
+                yield rwf(updated)) openOr uri))
           case _ => v
         })
 
@@ -1086,11 +1072,9 @@ class LiftServlet extends Loggable {
     response.addHeaders(header.map {
       case (name, value) => HTTPParam(name, value)
     })
-    response.addHeaders(
-      LiftRules.supplementalHeaders.vend.map {
-        case (name, value) => HTTPParam(name, value)
-      }
-    )
+    response.addHeaders(LiftRules.supplementalHeaders.vend.map {
+      case (name, value) => HTTPParam(name, value)
+    })
 
     liftResp match {
       case ResponseWithReason(_, reason) =>

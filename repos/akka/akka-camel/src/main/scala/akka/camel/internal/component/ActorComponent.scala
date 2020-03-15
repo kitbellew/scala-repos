@@ -179,7 +179,9 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
             exchange.setResponse(CamelMessage.canonicalize(msg))
           case Failure(e: TimeoutException) ⇒
             exchange.setFailure(FailureResult(new TimeoutException(
-              "Failed to get response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (endpoint.path, endpoint.replyTimeout, endpoint))))
+              "Failed to get response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (
+                endpoint.path, endpoint.replyTimeout, endpoint
+              ))))
           case Failure(throwable) ⇒
             exchange.setFailure(FailureResult(throwable))
         }
@@ -188,18 +190,22 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
           case Success(failure: FailureResult) ⇒ exchange.setFailure(failure)
           case Success(msg) ⇒
             exchange.setFailure(FailureResult(new IllegalArgumentException(
-              "Expected Ack or Failure message, but got: [%s] from actor [%s]" format (msg, endpoint.path))))
+              "Expected Ack or Failure message, but got: [%s] from actor [%s]" format (
+                msg, endpoint.path
+              ))))
           case Failure(e: TimeoutException) ⇒
             exchange.setFailure(FailureResult(new TimeoutException(
-              "Failed to get Ack or Failure response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (endpoint.path, endpoint.replyTimeout, endpoint))))
+              "Failed to get Ack or Failure response from the actor [%s] within timeout [%s]. Check replyTimeout and blocking settings [%s]" format (
+                endpoint.path, endpoint.replyTimeout, endpoint
+              ))))
           case Failure(throwable) ⇒
             exchange.setFailure(FailureResult(throwable))
         }
 
       // FIXME #3074 how do we solve this with actorSelection?
       val async =
-        try actorFor(endpoint.path)
-          .ask(messageFor(exchange))(Timeout(endpoint.replyTimeout))
+        try actorFor(endpoint.path).ask(messageFor(exchange))(Timeout(
+          endpoint.replyTimeout))
         catch { case NonFatal(e) ⇒ Future.failed(e) }
       implicit val ec =
         camel.system.dispatcher // FIXME which ExecutionContext should be used here?
@@ -217,13 +223,13 @@ private[camel] class ActorProducer(val endpoint: ActorEndpoint, camel: Camel)
     catch { case NonFatal(e) ⇒ exchange.setFailure(new FailureResult(e)) }
 
   private[this] def actorFor(path: ActorEndpointPath): ActorRef =
-    path.findActorIn(
-      camel.system) getOrElse (throw new ActorNotRegisteredException(
-      path.actorPath))
+    path.findActorIn(camel.system) getOrElse (
+      throw new ActorNotRegisteredException(path.actorPath)
+    )
 
   private[this] def messageFor(exchange: CamelExchangeAdapter) =
-    exchange.toRequestMessage(
-      Map(CamelMessage.MessageExchangeId -> exchange.getExchangeId))
+    exchange.toRequestMessage(Map(
+      CamelMessage.MessageExchangeId -> exchange.getExchangeId))
 }
 
 /**

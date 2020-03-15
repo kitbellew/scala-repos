@@ -193,7 +193,9 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "be able to start up from a non-existent directory" taggedAs (Retryable) in
+  it should "be able to start up from a non-existent directory" taggedAs (
+    Retryable
+  ) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         val dir = Files.createTempDir().canon
@@ -215,7 +217,9 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "survive removed parent base directory and recreated base" taggedAs (Retryable) in
+  it should "survive removed parent base directory and recreated base" taggedAs (
+    Retryable
+  ) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         val parent = Files.createTempDir().canon
@@ -295,7 +299,9 @@ abstract class FileWatcherSpec
       }
     }
 
-  it should "be able to start up from a non-existent base file" taggedAs (Retryable) in
+  it should "be able to start up from a non-existent base file" taggedAs (
+    Retryable
+  ) in
     withVFS { implicit vfs =>
       withTestKit { implicit tk =>
         withTempDir { dir =>
@@ -351,19 +357,17 @@ abstract class FileWatcherSpec
   }
 
   def listeners(implicit vfs: EnsimeVFS, tk: TestKit) =
-    List(
-      new FileChangeListener {
-        def fileAdded(f: FileObject): Unit = { tk.testActor ! Added(f) }
-        def fileRemoved(f: FileObject): Unit = { tk.testActor ! Removed(f) }
-        def fileChanged(f: FileObject): Unit = { tk.testActor ! Changed(f) }
-        override def baseReCreated(f: FileObject): Unit = {
-          tk.testActor ! BaseAdded(f)
-        }
-        override def baseRemoved(f: FileObject): Unit = {
-          tk.testActor ! BaseRemoved(f)
-        }
+    List(new FileChangeListener {
+      def fileAdded(f: FileObject): Unit = { tk.testActor ! Added(f) }
+      def fileRemoved(f: FileObject): Unit = { tk.testActor ! Removed(f) }
+      def fileChanged(f: FileObject): Unit = { tk.testActor ! Changed(f) }
+      override def baseReCreated(f: FileObject): Unit = {
+        tk.testActor ! BaseAdded(f)
       }
-    )
+      override def baseRemoved(f: FileObject): Unit = {
+        tk.testActor ! BaseRemoved(f)
+      }
+    })
 
 }
 

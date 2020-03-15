@@ -426,8 +426,8 @@ object TraversableOnce {
     new FlattenOps[A](travs map ev)
 
   /* Functionality reused in Iterator.CanBuildFrom */
-  private[collection] abstract class BufferedCanBuildFrom[
-      A, CC[X] <: TraversableOnce[X]]
+  private[collection] abstract class BufferedCanBuildFrom[A, CC[
+      X] <: TraversableOnce[X]]
       extends generic.CanBuildFrom[CC[_], A, CC[A]] {
     def bufferToColl[B](buff: ArrayBuffer[B]): CC[B]
     def traversableToColl[B](t: GenTraversable[B]): CC[B]

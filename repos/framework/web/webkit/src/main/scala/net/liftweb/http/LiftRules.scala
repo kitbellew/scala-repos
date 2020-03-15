@@ -175,9 +175,8 @@ object LiftRules extends LiftRulesMocker {
   type URINotFoundPF = PartialFunction[(Req, Box[Failure]), NotFound]
   type URLDecoratorPF = PartialFunction[String, String]
   type SnippetDispatchPF = PartialFunction[String, DispatchSnippet]
-  type ViewDispatchPF = PartialFunction[
-    List[String],
-    Either[() => Box[NodeSeq], LiftView]]
+  type ViewDispatchPF = PartialFunction[List[String], Either[() => Box[
+    NodeSeq], LiftView]]
   type HttpAuthProtectedResourcePF = PartialFunction[Req, Box[Role]]
   type ExceptionHandlerPF = PartialFunction[
     (Props.RunModes.Value, Req, Throwable),
@@ -541,10 +540,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
       newUrl = new java.net.URL(
         url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-      str <- tryo(
-        new String(
-          readWholeStream(newUrl.openConnection.getInputStream),
-          "UTF-8"))
+      str <- tryo(new String(
+        readWholeStream(newUrl.openConnection.getInputStream),
+        "UTF-8"))
       ma <- """Implementation-Version: (.*)""".r.findFirstMatchIn(str)
     } yield ma.group(1)
 
@@ -557,10 +555,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
       url <- Box !! LiftRules.getClass.getResource("/" + cn + ".class")
       newUrl = new java.net.URL(
         url.toExternalForm.split("!")(0) + "!" + "/META-INF/MANIFEST.MF")
-      str <- tryo(
-        new String(
-          readWholeStream(newUrl.openConnection.getInputStream),
-          "UTF-8"))
+      str <- tryo(new String(
+        readWholeStream(newUrl.openConnection.getInputStream),
+        "UTF-8"))
       ma <- """Built-Time: (.*)""".r.findFirstMatchIn(str)
       asLong <- asLong(ma.group(1))
     } yield new Date(asLong)
@@ -615,8 +612,9 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     (req: Req, parameterName: String) =>
       if (parameterName.startsWith("F"))
         logger.warn(
-          "Unmapped Lift-like parameter seen in request [%s]: %s"
-            .format(req.uri, parameterName))
+          "Unmapped Lift-like parameter seen in request [%s]: %s".format(
+            req.uri,
+            parameterName))
   }) {}
 
   /**
@@ -1053,15 +1051,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
           if (decodedMetaData.get("parallel").headOption == Some(
                 Text("true"))) {
-            DataAttributeProcessorAnswerFuture(
-              LAFuture(() =>
-                new Elem(
-                  "lift",
-                  snippetName,
-                  decodedMetaData,
-                  element.scope,
-                  false,
-                  element)))
+            DataAttributeProcessorAnswerFuture(LAFuture(() =>
+              new Elem(
+                "lift",
+                snippetName,
+                decodedMetaData,
+                element.scope,
+                false,
+                element)))
           } else {
             new Elem(
               "lift",
@@ -1104,14 +1101,10 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * if the function is not defined for the locale/path pair, the normal templating system will
     * be used.  Also, keep in mind how FactoryMaker can be used... it can be global, per request, etc.
     */
-  val externalTemplateResolver: FactoryMaker[
-    () => PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
-    new FactoryMaker(() =>
-      (
-          () =>
-            Map.empty: PartialFunction[
-              (Locale, List[String]),
-              Box[NodeSeq]])) {}
+  val externalTemplateResolver
+      : FactoryMaker[() => PartialFunction[(Locale, List[String]), Box[
+        NodeSeq]]] = new FactoryMaker(() =>
+    (() => Map.empty: PartialFunction[(Locale, List[String]), Box[NodeSeq]])) {}
 
   /**
     * There may be times when you want to entirely control the templating process.  You can insert a function
@@ -1127,9 +1120,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     new FactoryMaker(() =>
       (
           () =>
-            Map.empty: PartialFunction[
-              (String, String),
-              Box[NodeSeq => NodeSeq]])) {}
+            Map.empty: PartialFunction[(String, String), Box[
+              NodeSeq => NodeSeq]])) {}
 
   /**
     * This FactoryMaker can be used to disable the little used attributeSnippets
@@ -1867,13 +1859,11 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     */
   @volatile var contentSecurityPolicyViolationReport
       : (ContentSecurityPolicyViolation) => Box[LiftResponse] = { violation =>
-    logger.warn(
-      s"""Content security policy violation reported on page
+    logger.warn(s"""Content security policy violation reported on page
        | '${violation.documentUri}' from referrer '${violation.referrer}':
        | '${violation.blockedUri}' was blocked because it violated the
        | directive '${violation.violatedDirective}'. The policy that specified
-       | this directive is: '${violation.originalPolicy}'.""".trim
-    )
+       | this directive is: '${violation.originalPolicy}'.""".trim)
 
     Empty
   }
@@ -2087,49 +2077,48 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
     import net.liftweb.builtin.snippet._
 
-    snippetDispatch.append(
-      Map(
-        "CSS" -> CSS,
-        "Msgs" -> Msgs,
-        "Msg" -> Msg,
-        "Menu" -> Menu,
-        "css" -> CSS,
-        "msgs" -> Msgs,
-        "msg" -> Msg,
-        "menu" -> Menu,
-        "children" -> Children,
-        "comet" -> Comet,
-        "form" -> Form,
-        "ignore" -> Ignore,
-        "loc" -> Loc,
-        "surround" -> Surround,
-        "test_cond" -> TestCond,
-        "TestCond" -> TestCond,
-        "testcond" -> TestCond,
-        "embed" -> Embed,
-        "tail" -> Tail,
-        "head" -> Head,
-        "Head" -> Head,
-        "with-param" -> WithParam,
-        "withparam" -> WithParam,
-        "WithParam" -> WithParam,
-        "bind-at" -> WithParam,
-        "VersionInfo" -> VersionInfo,
-        "versioninfo" -> VersionInfo,
-        "version_info" -> VersionInfo,
-        "SkipDocType" -> SkipDocType,
-        "skipdoctype" -> SkipDocType,
-        "skip_doc_type" -> SkipDocType,
-        "xml_group" -> XmlGroup,
-        "XmlGroup" -> XmlGroup,
-        "xmlgroup" -> XmlGroup,
-        "lazy-load" -> LazyLoad,
-        "LazyLoad" -> LazyLoad,
-        "lazyload" -> LazyLoad,
-        "html5" -> HTML5,
-        "HTML5" -> HTML5,
-        "with-resource-id" -> WithResourceId
-      ))
+    snippetDispatch.append(Map(
+      "CSS" -> CSS,
+      "Msgs" -> Msgs,
+      "Msg" -> Msg,
+      "Menu" -> Menu,
+      "css" -> CSS,
+      "msgs" -> Msgs,
+      "msg" -> Msg,
+      "menu" -> Menu,
+      "children" -> Children,
+      "comet" -> Comet,
+      "form" -> Form,
+      "ignore" -> Ignore,
+      "loc" -> Loc,
+      "surround" -> Surround,
+      "test_cond" -> TestCond,
+      "TestCond" -> TestCond,
+      "testcond" -> TestCond,
+      "embed" -> Embed,
+      "tail" -> Tail,
+      "head" -> Head,
+      "Head" -> Head,
+      "with-param" -> WithParam,
+      "withparam" -> WithParam,
+      "WithParam" -> WithParam,
+      "bind-at" -> WithParam,
+      "VersionInfo" -> VersionInfo,
+      "versioninfo" -> VersionInfo,
+      "version_info" -> VersionInfo,
+      "SkipDocType" -> SkipDocType,
+      "skipdoctype" -> SkipDocType,
+      "skip_doc_type" -> SkipDocType,
+      "xml_group" -> XmlGroup,
+      "XmlGroup" -> XmlGroup,
+      "xmlgroup" -> XmlGroup,
+      "lazy-load" -> LazyLoad,
+      "LazyLoad" -> LazyLoad,
+      "lazyload" -> LazyLoad,
+      "html5" -> HTML5,
+      "HTML5" -> HTML5,
+      "with-resource-id" -> WithResourceId
+    ))
   }
   ctor()
 
@@ -2326,18 +2315,17 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
     (for {
       sc <- schema
       v <- tryo(sc.newValidator)
-      source = new StreamSource(
-        new ByteArrayInputStream(in.toString.getBytes("UTF-8")))
+      source = new StreamSource(new ByteArrayInputStream(
+        in.toString.getBytes("UTF-8")))
     } yield try {
       v.validate(source)
       Nil
     } catch {
       case e: org.xml.sax.SAXParseException =>
-        List(
-          XHTMLValidationError(
-            e.getMessage,
-            e.getLineNumber,
-            e.getColumnNumber))
+        List(XHTMLValidationError(
+          e.getMessage,
+          e.getLineNumber,
+          e.getColumnNumber))
     }) match {
       case Full(x) => x
       case Failure(msg, _, _) =>

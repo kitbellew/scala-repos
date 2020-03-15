@@ -157,9 +157,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               .isInstanceOf[ScalaFile]) return
         val lookingForAnnotations: Boolean =
           Option(
-            insertedElement.getContainingFile findElementAt (insertedElement.getTextOffset - 1)) exists {
-            _.getNode.getElementType == ScalaTokenTypes.tAT
-          }
+            insertedElement.getContainingFile findElementAt (
+              insertedElement.getTextOffset - 1
+            )) exists { _.getNode.getElementType == ScalaTokenTypes.tAT }
 
         var elementAdded = false
         def addElement(el: LookupElement) {
@@ -196,7 +196,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                             }
                           })
 
-                      if (!isExcluded && !classNameCompletion && (!lookingForAnnotations || clazz.isAnnotationType)) {
+                      if (!isExcluded && !classNameCompletion && (
+                            !lookingForAnnotations || clazz.isAnnotationType
+                          )) {
                         if (isAfterNew) {
                           val lookupElement = getLookupElementFromClass(
                             expectedTypesAfterNew,
@@ -370,9 +372,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
 
   override def advertise(parameters: CompletionParameters): String = {
     if (!parameters.getOriginalFile.isInstanceOf[ScalaFile]) return null
-    val messages = Array[String](
-      null
-    )
+    val messages = Array[String](null)
     messages apply (new Random).nextInt(messages.length)
   }
 

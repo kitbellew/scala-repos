@@ -254,8 +254,7 @@ class Bar(
     _252: Int,
     _253: Int,
     _254: Int,
-    _255: Int
-)
+    _255: Int)
 
 class BarOK(
     _1: Int,

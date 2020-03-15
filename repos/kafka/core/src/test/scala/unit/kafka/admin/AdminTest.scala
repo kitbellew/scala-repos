@@ -129,8 +129,7 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
       8 -> 3,
       9 -> 4,
       10 -> 1,
-      11 -> 1
-    )
+      11 -> 1)
     val topic = "test"
     TestUtils.createBrokersInZk(zkUtils, List(0, 1, 2, 3, 4))
     // create the topic
@@ -570,25 +569,23 @@ class AdminTest extends ZooKeeperTestHarness with Logging with RackAwareTest {
         partitionStateInfo.leaderIsrAndControllerEpoch.leaderAndIsr.leader
       assertEquals(0, leaderAfterShutdown)
 
-      assertTrue(
-        servers.forall(
-          _.apis.metadataCache
-            .getPartitionInfo(topic, partition)
-            .get
-            .leaderIsrAndControllerEpoch
-            .leaderAndIsr
-            .leader == 0))
+      assertTrue(servers.forall(
+        _.apis.metadataCache
+          .getPartitionInfo(topic, partition)
+          .get
+          .leaderIsrAndControllerEpoch
+          .leaderAndIsr
+          .leader == 0))
       partitionsRemaining = controller.shutdownBroker(0)
       assertEquals(1, partitionsRemaining.size)
       // leader doesn't change since all the replicas are shut down
-      assertTrue(
-        servers.forall(
-          _.apis.metadataCache
-            .getPartitionInfo(topic, partition)
-            .get
-            .leaderIsrAndControllerEpoch
-            .leaderAndIsr
-            .leader == 0))
+      assertTrue(servers.forall(
+        _.apis.metadataCache
+          .getPartitionInfo(topic, partition)
+          .get
+          .leaderIsrAndControllerEpoch
+          .leaderAndIsr
+          .leader == 0))
     } finally { servers.foreach(_.shutdown()) }
   }
 

@@ -50,8 +50,7 @@ class TaskTrackerModule(
   protected lazy val taskTrackerActorName = "taskTracker"
   private[this] lazy val taskTrackerActorRef = leadershipModule.startWhenLeader(
     taskTrackerActorProps,
-    taskTrackerActorName
-  )
+    taskTrackerActorName)
   private[this] lazy val taskTrackerCreatorAndUpdater =
     new TaskCreationHandlerAndUpdaterDelegate(
       clock,

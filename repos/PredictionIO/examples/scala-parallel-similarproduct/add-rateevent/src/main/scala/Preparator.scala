@@ -19,5 +19,5 @@ class Preparator extends PPreparator[TrainingData, PreparedData] {
 class PreparedData(
     val users: RDD[(String, User)],
     val items: RDD[(String, Item)],
-    val rateEvents: RDD[RateEvent]
-) extends Serializable
+    val rateEvents: RDD[RateEvent])
+    extends Serializable

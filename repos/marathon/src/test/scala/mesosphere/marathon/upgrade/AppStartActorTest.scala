@@ -47,47 +47,38 @@ class AppStartActorTest
   test("Without Health Checks") {
     val app = AppDefinition(id = PathId("app"), instances = 10)
     val promise = Promise[Unit]()
-    val ref = TestActorRef[AppStartActor](
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        system.eventStream,
-        app,
-        2,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStartActor](Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      system.eventStream,
+      app,
+      2,
+      promise))
     watch(ref)
 
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_a"),
-        taskStatus = "TASK_RUNNING",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString
-      )
-    )
-    system.eventStream.publish(
-      MesosStatusUpdateEvent(
-        slaveId = "",
-        taskId = Task.Id("task_b"),
-        taskStatus = "TASK_RUNNING",
-        message = "",
-        appId = app.id,
-        host = "",
-        ipAddresses = Nil,
-        ports = Nil,
-        version = app.version.toString
-      )
-    )
+    system.eventStream.publish(MesosStatusUpdateEvent(
+      slaveId = "",
+      taskId = Task.Id("task_a"),
+      taskStatus = "TASK_RUNNING",
+      message = "",
+      appId = app.id,
+      host = "",
+      ipAddresses = Nil,
+      ports = Nil,
+      version = app.version.toString))
+    system.eventStream.publish(MesosStatusUpdateEvent(
+      slaveId = "",
+      taskId = Task.Id("task_b"),
+      taskStatus = "TASK_RUNNING",
+      message = "",
+      appId = app.id,
+      host = "",
+      ipAddresses = Nil,
+      ports = Nil,
+      version = app.version.toString))
 
     Await.result(promise.future, 5.seconds)
 
@@ -101,19 +92,16 @@ class AppStartActorTest
       instances = 10,
       healthChecks = Set(HealthCheck()))
     val promise = Promise[Unit]()
-    val ref = TestActorRef[AppStartActor](
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        system.eventStream,
-        app,
-        2,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStartActor](Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      system.eventStream,
+      app,
+      2,
+      promise))
     watch(ref)
 
     system.eventStream.publish(
@@ -133,19 +121,16 @@ class AppStartActorTest
 
     val app = AppDefinition(id = PathId("app"), instances = 10)
     val promise = Promise[Unit]()
-    val ref = TestActorRef[AppStartActor](
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        system.eventStream,
-        app,
-        2,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStartActor](Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      system.eventStream,
+      app,
+      2,
+      promise))
     watch(ref)
 
     ref.stop()
@@ -162,19 +147,16 @@ class AppStartActorTest
   test("No tasks to start without health checks") {
     val app = AppDefinition(id = PathId("app"), instances = 10)
     val promise = Promise[Unit]()
-    val ref = TestActorRef[AppStartActor](
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        system.eventStream,
-        app,
-        0,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStartActor](Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      system.eventStream,
+      app,
+      0,
+      promise))
     watch(ref)
 
     Await.result(promise.future, 5.seconds)
@@ -189,19 +171,16 @@ class AppStartActorTest
       instances = 10,
       healthChecks = Set(HealthCheck()))
     val promise = Promise[Unit]()
-    val ref = TestActorRef[AppStartActor](
-      Props(
-        classOf[AppStartActor],
-        driver,
-        scheduler,
-        taskQueue,
-        taskTracker,
-        system.eventStream,
-        app,
-        0,
-        promise
-      )
-    )
+    val ref = TestActorRef[AppStartActor](Props(
+      classOf[AppStartActor],
+      driver,
+      scheduler,
+      taskQueue,
+      taskTracker,
+      system.eventStream,
+      app,
+      0,
+      promise))
     watch(ref)
 
     Await.result(promise.future, 5.seconds)

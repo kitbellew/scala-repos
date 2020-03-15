@@ -35,8 +35,9 @@ private[internal] trait CommonOwners {
       // First considered type is the trivial result.
       if ((result eq null) || (sym eq NoSymbol)) result = sym
       else
-        while ((result ne NoSymbol) && (result ne sym) && !(sym isNestedIn result))
-          result = result.owner
+        while ((result ne NoSymbol) && (result ne sym) && !(
+                 sym isNestedIn result
+               )) result = result.owner
     }
     def traverse(tp: Type) =
       tp.normalize match {

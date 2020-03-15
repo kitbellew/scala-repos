@@ -115,15 +115,13 @@ abstract class TreeBuilder {
       TypeTree(),
       catchExpr)
     val catchFn = Ident(catchDef.name)
-    val body = atPos(catchExpr.pos.makeTransparent)(
-      Block(
-        List(catchDef),
-        If(
-          Apply(Select(catchFn, nme.isDefinedAt), List(Ident(binder))),
-          Apply(Select(catchFn, nme.apply), List(Ident(binder))),
-          Throw(Ident(binder))
-        )
-      ))
+    val body = atPos(catchExpr.pos.makeTransparent)(Block(
+      List(catchDef),
+      If(
+        Apply(Select(catchFn, nme.isDefinedAt), List(Ident(binder))),
+        Apply(Select(catchFn, nme.apply), List(Ident(binder))),
+        Throw(Ident(binder)))
+    ))
     makeCaseDef(pat, EmptyTree, body)
   }
 

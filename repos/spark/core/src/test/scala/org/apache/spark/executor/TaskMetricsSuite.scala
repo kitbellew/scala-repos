@@ -65,12 +65,11 @@ class TaskMetricsSuite extends SparkFunSuite {
   test("create with duplicate name accum") {
     intercept[IllegalArgumentException] {
       new TaskMetrics(
-        InternalAccumulator.createAll() ++ Seq(
-          new Accumulator(
-            0,
-            IntAccumulatorParam,
-            Some(RESULT_SIZE),
-            internal = true)))
+        InternalAccumulator.createAll() ++ Seq(new Accumulator(
+          0,
+          IntAccumulatorParam,
+          Some(RESULT_SIZE),
+          internal = true)))
     }
   }
 

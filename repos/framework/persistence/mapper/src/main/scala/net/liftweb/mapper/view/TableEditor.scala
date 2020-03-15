@@ -327,8 +327,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
           { f: MappedField[_, T] =>
             ".name" #> SHtml.link(S.uri, sortFn(f), Text(capify(f.displayName)))
           },
-          fieldFilter
-        )
+          fieldFilter)
       } &
         ".table" #> {
           ".title *" #> title &

@@ -25,10 +25,9 @@ private[wiki] final class Fetch(gitUrl: String, markdownPath: String)(
           page.copy(slug = default.slug)
         }
       }).flatten
-      $remove($select.all) >> (newLangPages ::: defaultPages)
-        .map($insert(_))
-        .sequenceFu
-        .void
+      $remove($select.all) >> (
+        newLangPages ::: defaultPages
+      ).map($insert(_)).sequenceFu.void
     }
 
   private def filePage(file: File): Option[Page] = {

@@ -66,18 +66,15 @@ object GameRepo {
   def remove(id: ID) = $remove($select(id))
 
   def recentByUser(userId: String): Fu[List[Game]] =
-    $find(
-      $query(Query user userId) sort Query.sortCreated
-    )
+    $find($query(Query user userId) sort Query.sortCreated)
 
   def userPovsByGameIds(gameIds: List[String], user: User): Fu[List[Pov]] =
     $find.byOrderedIds(gameIds) map { _.flatMap(g => Pov(g, user)) }
 
   def recentPovsByUser(user: User, nb: Int): Fu[List[Pov]] =
-    $find(
-      $query(Query user user) sort Query.sortCreated,
-      nb
-    ) map { _.flatMap(g => Pov(g, user)) }
+    $find($query(Query user user) sort Query.sortCreated, nb) map {
+      _.flatMap(g => Pov(g, user))
+    }
 
   def gamesForAssessment(userId: String, nb: Int): Fu[List[Game]] =
     $find(
@@ -88,8 +85,7 @@ object GameRepo {
           ++ Query.analysed(true)
           ++ Query.turnsMoreThan(20)
           ++ Query.clock(true)) sort ($sort asc F.createdAt),
-      nb
-    )
+      nb)
 
   def unrate(gameId: String) =
     $update(
@@ -98,16 +94,15 @@ object GameRepo {
         "$unset" -> BSONDocument(
           F.rated -> true,
           s"${F.whitePlayer}.${Player.BSONFields.ratingDiff}" -> true,
-          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" -> true
-        ))
+          s"${F.blackPlayer}.${Player.BSONFields.ratingDiff}" -> true))
     )
 
   def goBerserk(pov: Pov): Funit =
     $update(
       $select(pov.gameId),
-      BSONDocument("$set" -> BSONDocument(
-        s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields.berserk}" -> true
-      )))
+      BSONDocument(
+        "$set" -> BSONDocument(
+          s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields.berserk}" -> true)))
 
   def save(progress: Progress): Funit =
     GameDiff(progress.origin, progress.game) match {
@@ -118,8 +113,7 @@ object GameRepo {
             $select(progress.origin.id),
             nonEmptyMod("$set", BSONDocument(sets)) ++ nonEmptyMod(
               "$unset",
-              BSONDocument(unsets))
-          )
+              BSONDocument(unsets)))
           .void
     }
 
@@ -207,8 +201,7 @@ object GameRepo {
       "_id",
       BSONDocument(
         "_id" -> BSONDocument("$in" -> ids),
-        F.analysed -> true
-      ).some) map lila.db.BSON.asStringSet
+        F.analysed -> true).some) map lila.db.BSON.asStringSet
 
   def exists(id: String) =
     gameTube.coll.count(BSONDocument("_id" -> id).some).map(0 <)
@@ -223,9 +216,7 @@ object GameRepo {
       BSONDocument(
         "$set" -> BSONDocument(
           s"p${pov.color.fold(0, 1)}.${Player.BSONFields.holdAlert}" ->
-            Player.HoldAlert(ply = ply | pov.game.turns, mean = mean, sd = sd)
-        )
-      )
+            Player.HoldAlert(ply = ply | pov.game.turns, mean = mean, sd = sd)))
     ).void
   }
   def setBorderAlert(pov: Pov) = setHoldAlert(pov, 0, 0, 20.some)
@@ -257,16 +248,14 @@ object GameRepo {
         "$set",
         BSONDocument(
           F.winnerId -> winnerId,
-          F.winnerColor -> winnerColor.map(_.white)
-        )) ++ BSONDocument("$unset" -> unsets)
-    )
+          F.winnerColor -> winnerColor.map(_.white))) ++ BSONDocument(
+        "$unset" -> unsets))
   }
 
   def findRandomStandardCheckmate(distribution: Int): Fu[Option[Game]] =
     $find.one(
       Query.mate ++ Json.obj("v" -> $exists(false)),
-      _ sort Query.sortCreated skip (Random nextInt distribution)
-    )
+      _ sort Query.sortCreated skip (Random nextInt distribution))
 
   def insertDenormalized(g: Game, ratedCheck: Boolean = true): Funit = {
     val g2 =
@@ -315,9 +304,7 @@ object GameRepo {
   def setImportCreatedAt(g: Game) =
     $update(
       $select(g.id),
-      BSONDocument(
-        "$set" -> BSONDocument("pgni.ca" -> g.createdAt)
-      ))
+      BSONDocument("$set" -> BSONDocument("pgni.ca" -> g.createdAt)))
 
   def saveNext(game: Game, nextId: ID): Funit =
     $update(
@@ -325,8 +312,7 @@ object GameRepo {
       $set(F.next -> nextId) ++
         $unset(
           "p0." + Player.BSONFields.isOfferingRematch,
-          "p1." + Player.BSONFields.isOfferingRematch)
-    )
+          "p1." + Player.BSONFields.isOfferingRematch))
 
   def initialFen(gameId: ID): Fu[Option[String]] =
     $primitive.one($select(gameId), F.initialFen)(_.asOpt[String])
@@ -344,14 +330,10 @@ object GameRepo {
     $find(
       Query.playable ++ Query.clock(true) ++ Json.obj(
         F.createdAt -> $gt($date(DateTime.now minusMinutes 5)),
-        F.updatedAt -> $gt($date(DateTime.now minusSeconds 40))
-      ) ++ $or(
-        Seq(
-          Json.obj(
-            s"${F.whitePlayer}.${Player.BSONFields.rating}" -> $gt(1200)),
-          Json.obj(s"${F.blackPlayer}.${Player.BSONFields.rating}" -> $gt(1200))
-        ))
-    )
+        F.updatedAt -> $gt($date(DateTime.now minusSeconds 40))) ++ $or(Seq(
+        Json.obj(s"${F.whitePlayer}.${Player.BSONFields.rating}" -> $gt(1200)),
+        Json.obj(
+          s"${F.blackPlayer}.${Player.BSONFields.rating}" -> $gt(1200)))))
 
   def count(query: Query.type => JsObject): Fu[Int] = $count(query(Query))
 
@@ -395,29 +377,22 @@ object GameRepo {
     $find($query.all sort Query.sortCreated skip (Random nextInt 1000), nb)
 
   def findMirror(game: Game): Fu[Option[Game]] =
-    $find.one(
-      $query(
+    $find.one($query(BSONDocument(
+      F.id -> BSONDocument("$ne" -> game.id),
+      F.playerUids -> BSONDocument("$in" -> game.userIds),
+      F.status -> Status.Started.id,
+      F.createdAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 15)),
+      F.updatedAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 5)),
+      "$or" -> BSONArray(
+        BSONDocument(s"${F.whitePlayer}.ai" -> BSONDocument("$exists" -> true)),
         BSONDocument(
-          F.id -> BSONDocument("$ne" -> game.id),
-          F.playerUids -> BSONDocument("$in" -> game.userIds),
-          F.status -> Status.Started.id,
-          F.createdAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 15)),
-          F.updatedAt -> BSONDocument("$gt" -> (DateTime.now minusMinutes 5)),
-          "$or" -> BSONArray(
-            BSONDocument(
-              s"${F.whitePlayer}.ai" -> BSONDocument("$exists" -> true)),
-            BSONDocument(
-              s"${F.blackPlayer}.ai" -> BSONDocument("$exists" -> true))
-          ),
-          F.binaryPieces -> game.binaryPieces
-        )
-      ))
+          s"${F.blackPlayer}.ai" -> BSONDocument("$exists" -> true))),
+      F.binaryPieces -> game.binaryPieces
+    )))
 
   def findPgnImport(pgn: String): Fu[Option[Game]] =
     gameTube.coll
-      .find(
-        BSONDocument(s"${F.pgnImport}.h" -> PgnImport.hash(pgn))
-      )
+      .find(BSONDocument(s"${F.pgnImport}.h" -> PgnImport.hash(pgn)))
       .one[Game]
 
   def getPgn(id: ID): Fu[PgnMoves] = getOptionPgn(id) map (~_)
@@ -427,35 +402,21 @@ object GameRepo {
 
   def getOptionPgn(id: ID): Fu[Option[PgnMoves]] =
     gameTube.coll
-      .find(
-        $select(id),
-        Json.obj(
-          F.id -> false,
-          F.binaryPgn -> true
-        )
-      )
+      .find($select(id), Json.obj(F.id -> false, F.binaryPgn -> true))
       .one[BSONDocument] map { _ flatMap extractPgnMoves }
 
   def lastGameBetween(
       u1: String,
       u2: String,
       since: DateTime): Fu[Option[Game]] = {
-    $find.one(
-      Json.obj(
-        F.playerUids -> Json.obj("$all" -> List(u1, u2)),
-        F.createdAt -> Json.obj("$gt" -> $date(since))
-      ))
+    $find.one(Json.obj(
+      F.playerUids -> Json.obj("$all" -> List(u1, u2)),
+      F.createdAt -> Json.obj("$gt" -> $date(since))))
   }
 
   def getUserIds(id: ID): Fu[List[String]] =
     gameTube.coll
-      .find(
-        $select(id),
-        BSONDocument(
-          F.id -> false,
-          F.playerUids -> true
-        )
-      )
+      .find($select(id), BSONDocument(F.id -> false, F.playerUids -> true))
       .one[BSONDocument] map { ~_.flatMap(_.getAs[List[String]](F.playerUids)) }
 
   // #TODO this breaks it all since reactivemongo > 0.11.9
@@ -475,18 +436,13 @@ object GameRepo {
 
     gameTube.coll
       .aggregate(
-        Match(
-          BSONDocument(
-            F.createdAt -> BSONDocument("$gt" -> since),
-            F.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
-            s"${F.playerUids}.0" -> BSONDocument("$exists" -> true)
-          )),
+        Match(BSONDocument(
+          F.createdAt -> BSONDocument("$gt" -> since),
+          F.status -> BSONDocument("$gte" -> chess.Status.Mate.id),
+          s"${F.playerUids}.0" -> BSONDocument("$exists" -> true))),
         List(
           Unwind(F.playerUids),
-          Match(
-            BSONDocument(
-              F.playerUids -> BSONDocument("$ne" -> "")
-            )),
+          Match(BSONDocument(F.playerUids -> BSONDocument("$ne" -> ""))),
           GroupField(F.playerUids)("nb" -> SumValue(1)),
           Sort(Descending("nb")),
           Limit(max)

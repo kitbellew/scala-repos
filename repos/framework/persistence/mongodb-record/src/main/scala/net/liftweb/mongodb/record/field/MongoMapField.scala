@@ -69,11 +69,9 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
     jvalue match {
       case JNothing | JNull if optional_? => setBox(Empty)
       case JObject(obj) =>
-        setBox(
-          Full(
-            Map() ++ obj.map(jf =>
-              (jf.name, jf.value.values.asInstanceOf[MapValueType]))
-          ))
+        setBox(Full(
+          Map() ++ obj.map(jf =>
+            (jf.name, jf.value.values.asInstanceOf[MapValueType]))))
       case other => setBox(FieldHelpers.expectedA("JObject", other))
     }
 
@@ -114,11 +112,8 @@ class MongoMapField[OwnerType <: BsonRecord[OwnerType], MapValueType](
   def setFromDBObject(dbo: DBObject): Box[Map[String, MapValueType]] = {
     import scala.collection.JavaConversions._
 
-    setBox(
-      Full(
-        Map() ++ dbo.keySet.map { k =>
-          (k.toString, dbo.get(k).asInstanceOf[MapValueType])
-        }
-      ))
+    setBox(Full(Map() ++ dbo.keySet.map { k =>
+      (k.toString, dbo.get(k).asInstanceOf[MapValueType])
+    }))
   }
 }

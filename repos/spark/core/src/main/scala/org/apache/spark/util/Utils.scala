@@ -426,8 +426,7 @@ private[spark] object Utils extends Logging {
         url,
         cachedFile,
         targetFile,
-        conf.getBoolean("spark.files.overwrite", false)
-      )
+        conf.getBoolean("spark.files.overwrite", false))
     } else {
       doFetchFile(url, targetDir, fileName, conf, securityMgr, hadoopConf)
     }
@@ -511,16 +510,11 @@ private[spark] object Utils extends Logging {
       if (!filesEqualRecursive(sourceFile, destFile)) {
         if (fileOverwrite) {
           logInfo(
-            s"File $destFile exists and does not match contents of $url, replacing it with $url"
-          )
+            s"File $destFile exists and does not match contents of $url, replacing it with $url")
           if (!destFile.delete()) {
             throw new SparkException(
               "Failed to delete %s while attempting to overwrite it with %s"
-                .format(
-                  destFile.getAbsolutePath,
-                  sourceFile.getAbsolutePath
-                )
-            )
+                .format(destFile.getAbsolutePath, sourceFile.getAbsolutePath))
           }
         } else {
           throw new SparkException(
@@ -529,12 +523,9 @@ private[spark] object Utils extends Logging {
       } else {
         // Do nothing if the file contents are the same, i.e. this file has been copied
         // previously.
-        logInfo(
-          "%s has been previously copied to %s".format(
-            sourceFile.getAbsolutePath,
-            destFile.getAbsolutePath
-          )
-        )
+        logInfo("%s has been previously copied to %s".format(
+          sourceFile.getAbsolutePath,
+          destFile.getAbsolutePath))
         return
       }
     }
@@ -1461,20 +1452,18 @@ private[spark] object Utils extends Logging {
         val effectiveEndIndex = math.min(
           endIndex - startIndexOfFile,
           fileToLength(file))
-        stringBuffer.append(
-          Utils.offsetBytes(
-            file.getAbsolutePath,
-            effectiveStartIndex,
-            effectiveEndIndex))
+        stringBuffer.append(Utils.offsetBytes(
+          file.getAbsolutePath,
+          effectiveStartIndex,
+          effectiveEndIndex))
       } else if (endIndex > startIndexOfFile && endIndex < endIndexOfFile) {
         // Case D: read from [start of file] to [end of require range]
         val effectiveStartIndex = math.max(startIndex - startIndexOfFile, 0)
         val effectiveEndIndex = endIndex - startIndexOfFile
-        stringBuffer.append(
-          Utils.offsetBytes(
-            file.getAbsolutePath,
-            effectiveStartIndex,
-            effectiveEndIndex))
+        stringBuffer.append(Utils.offsetBytes(
+          file.getAbsolutePath,
+          effectiveStartIndex,
+          effectiveEndIndex))
       }
       sum += fileToLength(file)
       logDebug(
@@ -2192,7 +2181,9 @@ private[spark] object Utils extends Logging {
       if (uri.getScheme != "spark" ||
           host == null ||
           port < 0 ||
-          (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+          (
+            uri.getPath != null && !uri.getPath.isEmpty
+          ) || // uri.getPath returns "" instead of null
           uri.getFragment != null ||
           uri.getQuery != null ||
           uri.getUserInfo != null) {

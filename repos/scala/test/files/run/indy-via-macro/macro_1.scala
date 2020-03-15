@@ -32,8 +32,8 @@ object Macro {
     import c.universe._
     s match {
       case l @ Literal(Constant(s: String)) =>
-        val boostrapSym = typeOf[test.Bootstrap].companion
-          .member(TermName("bootstrap"))
+        val boostrapSym = typeOf[test.Bootstrap].companion.member(TermName(
+          "bootstrap"))
         Indy(boostrapSym, l :: Nil)
       case _ =>
         q"_root_.java.util.regex.Pattern.compile($s)"

@@ -680,24 +680,25 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     "substitute multiple Strings by id" in {
       (("#foo" replaceWith "hello") &
         ("#baz" replaceWith "bye"))(
-        <b><div id="baz">Hello</div><span id="foo"/></b>
-      ) must_== (NodeSeq fromSeq <b>{Text("bye")}{Text("hello")}</b>)
+        <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (
+        NodeSeq fromSeq <b>{Text("bye")}{Text("hello")}</b>
+      )
     }
 
     "substitute multiple Strings with a List by id" in {
       ("#foo" #> "hello" &
         "#baz" #> List("bye", "bye"))(
-        <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (NodeSeq fromSeq <b>{
-        Text("bye")
-      }{Text("bye")}{Text("hello")}</b>)
+        <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (
+        NodeSeq fromSeq <b>{Text("bye")}{Text("bye")}{Text("hello")}</b>
+      )
     }
 
     "substitute multiple Strings with a List by id" in {
       (("#foo" replaceWith "hello") &
         ("#baz" replaceWith List("bye", "bye")))(
-        <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (NodeSeq fromSeq <b>{
-        Text("bye")
-      }{Text("bye")}{Text("hello")}</b>)
+        <b><div id="baz">Hello</div><span id="foo"/></b>) must_== (
+        NodeSeq fromSeq <b>{Text("bye")}{Text("bye")}{Text("hello")}</b>
+      )
     }
 
     "substitute multiple Strings with a List of XML by id" in {
@@ -804,9 +805,10 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "merge classes" in {
       val answer =
-        ("cute=moose" #> <input class="a" name="goof" value="8" id="88"/>)
-          .apply(
-            <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+        (
+          "cute=moose" #> <input class="a" name="goof" value="8" id="88"/>
+        ).apply(
+          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)
@@ -814,9 +816,10 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "merge classes" in {
       val answer =
-        ("cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>)
-          .apply(
-            <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
+        (
+          "cute=moose" replaceWith <input class="a" name="goof" value="8" id="88"/>
+        ).apply(
+          <div><input name="meow" class="b" cute="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(
         <input class="a b" cute="moose" name="goof" value="8" id="88"/>)

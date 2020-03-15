@@ -128,8 +128,7 @@ object ProdServerStart {
       address = address,
       mode = Mode.Prod,
       properties = process.properties,
-      configuration = configuration
-    )
+      configuration = configuration)
   }
 
   /**

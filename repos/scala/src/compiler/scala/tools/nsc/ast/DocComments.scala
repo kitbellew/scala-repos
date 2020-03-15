@@ -306,17 +306,15 @@ trait DocComments { self: Global =>
 
       // Append main comment
       out.append("/**")
-      out.append(
-        replaceInheritdoc(
-          mainComment(child, childSections),
-          mainComment(parent, parentSections)))
+      out.append(replaceInheritdoc(
+        mainComment(child, childSections),
+        mainComment(parent, parentSections)))
 
       // Append sections
       for (section <- childSections)
-        out.append(
-          replaceInheritdoc(
-            child.substring(section._1, section._2),
-            getParentSection(section)))
+        out.append(replaceInheritdoc(
+          child.substring(section._1, section._2),
+          getParentSection(section)))
 
       out.append("*/")
       out.toString

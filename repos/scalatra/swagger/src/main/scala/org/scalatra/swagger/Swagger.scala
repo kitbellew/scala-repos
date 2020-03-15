@@ -195,12 +195,11 @@ object Swagger {
           properties = fields.flatten,
           baseModel = am.parent.getName.blankOption,
           discriminator = am.discriminator.blankOption)
-      } orElse Some(
-        Model(
-          name,
-          name,
-          klass.fullName.blankOption,
-          properties = fields.flatten))
+      } orElse Some(Model(
+        name,
+        name,
+        klass.fullName.blankOption,
+        properties = fields.flatten))
       //      if (descr.simpleName == "Pet") println("The collected fields:\n" + result)
       result
     }

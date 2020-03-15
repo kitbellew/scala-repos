@@ -97,13 +97,11 @@ private[http] object WebSocket {
             else ctx.finish()
           case ActivelyCloseWithCode(code, reason) ⇒
             if (code.exists(Protocol.CloseCodes.isError))
-              ctx.fail(
-                new ProtocolException(
-                  s"Closing connection with error code $code"))
+              ctx.fail(new ProtocolException(
+                s"Closing connection with error code $code"))
             else
-              ctx.fail(
-                new IllegalStateException(
-                  "Regular close from FrameHandler is unexpected"))
+              ctx.fail(new IllegalStateException(
+                "Regular close from FrameHandler is unexpected"))
           case x: MessageDataPart ⇒
             inMessage = !x.last
             ctx.push(x)

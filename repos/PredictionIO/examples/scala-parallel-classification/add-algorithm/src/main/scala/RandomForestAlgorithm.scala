@@ -15,8 +15,8 @@ case class RandomForestAlgorithmParams(
     featureSubsetStrategy: String,
     impurity: String,
     maxDepth: Int,
-    maxBins: Int
-) extends Params
+    maxBins: Int)
+    extends Params
 
 // extends P2LAlgorithm because the MLlib's RandomForestModel doesn't
 // contain RDD.

@@ -73,8 +73,8 @@ class AdjustSettingsApplicationComponent extends ApplicationComponent {
       val adjustingPanel = new JPanel(new BorderLayout)
       panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10))
       val headerPanel = new JPanel(new GridLayout(0, 1, 0, 0))
-      headerPanel.add(
-        new JLabel("Recommended memory settings for Scala plugin:"))
+      headerPanel.add(new JLabel(
+        "Recommended memory settings for Scala plugin:"))
       adjustingPanel.add(headerPanel, BorderLayout.NORTH)
       val settingsPanel = new JPanel(new GridLayout(0, 2, 0, 0))
       settingsPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 10))

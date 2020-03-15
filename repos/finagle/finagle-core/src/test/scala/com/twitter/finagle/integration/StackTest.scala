@@ -32,8 +32,8 @@ class StackTest extends FunSuite {
       val client = stringClient
         .withStack(newClientStack)
         .newService(
-          Name.bound(
-            Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+          Name.bound(Address(
+            server.boundAddress.asInstanceOf[InetSocketAddress])),
           "client")
 
       // marked busy by FailureAccrualFactory
@@ -75,8 +75,8 @@ class StackTest extends FunSuite {
       val client = stringClient
         .withStack(newClientStack)
         .newService(
-          Name.bound(
-            Address(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))),
+          Name.bound(Address(
+            new InetSocketAddress(InetAddress.getLoopbackAddress, 0))),
           "client")
 
       // marked busy by FailFastFactory

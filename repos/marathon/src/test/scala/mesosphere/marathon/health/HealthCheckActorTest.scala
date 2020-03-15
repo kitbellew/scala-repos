@@ -27,8 +27,7 @@ class HealthCheckActorTest
   override lazy implicit val system: ActorSystem = ActorSystem(
     name = "system",
     defaultExecutionContext = Some(
-      CallerThreadExecutionContext.callerThreadExecutionContext)
-  )
+      CallerThreadExecutionContext.callerThreadExecutionContext))
 
   // regression test for #934
   test("should not dispatch health checks for staging tasks") {
@@ -39,8 +38,8 @@ class HealthCheckActorTest
     val appVersion = Timestamp(1)
     val app = AppDefinition(id = appId)
     val appRepository: AppRepository = mock[AppRepository]
-    when(appRepository.app(appId, appVersion))
-      .thenReturn(Future.successful(Some(app)))
+    when(appRepository.app(appId, appVersion)).thenReturn(Future.successful(
+      Some(app)))
 
     val task = MarathonTestHelper.stagedTask(
       "test_task.9876543",
@@ -50,22 +49,19 @@ class HealthCheckActorTest
 
     val holder: MarathonSchedulerDriverHolder =
       new MarathonSchedulerDriverHolder
-    val actor = TestActorRef[HealthCheckActor](
-      Props(
-        new HealthCheckActor(
-          app,
-          holder,
-          mock[MarathonScheduler],
-          HealthCheck(),
-          tracker,
-          system.eventStream) {
-          override val workerProps = Props {
-            latch.countDown()
-            new TestActors.EchoActor
-          }
+    val actor = TestActorRef[HealthCheckActor](Props(
+      new HealthCheckActor(
+        app,
+        holder,
+        mock[MarathonScheduler],
+        HealthCheck(),
+        tracker,
+        system.eventStream) {
+        override val workerProps = Props {
+          latch.countDown()
+          new TestActors.EchoActor
         }
-      )
-    )
+      }))
 
     actor.underlyingActor.dispatchJobs()
 
@@ -85,8 +81,8 @@ class HealthCheckActorTest
     val appVersion = Timestamp(1)
     val app = AppDefinition(id = appId)
     val appRepository: AppRepository = mock[AppRepository]
-    when(appRepository.app(appId, appVersion))
-      .thenReturn(Future.successful(Some(app)))
+    when(appRepository.app(appId, appVersion)).thenReturn(Future.successful(
+      Some(app)))
 
     val task = MarathonTestHelper.runningTask(
       "test_task.9876543",
@@ -94,17 +90,13 @@ class HealthCheckActorTest
 
     val healthCheck: HealthCheck = HealthCheck(maxConsecutiveFailures = 3)
 
-    val actor = TestActorRef[HealthCheckActor](
-      Props(
-        new HealthCheckActor(
-          app,
-          holder,
-          scheduler,
-          healthCheck,
-          tracker,
-          system.eventStream)
-      )
-    )
+    val actor = TestActorRef[HealthCheckActor](Props(new HealthCheckActor(
+      app,
+      holder,
+      scheduler,
+      healthCheck,
+      tracker,
+      system.eventStream)))
 
     actor.underlyingActor.checkConsecutiveFailures(
       task,

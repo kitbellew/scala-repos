@@ -86,12 +86,8 @@ object PMatrixFactorizationModel
 }
 
 class ALSAlgorithm(val ap: AlgorithmParams)
-    extends PAlgorithm[
-      AlgorithmParams,
-      RDD[Rating],
-      PMatrixFactorizationModel,
-      (Int, Int),
-      Double] {
+    extends PAlgorithm[AlgorithmParams, RDD[
+      Rating], PMatrixFactorizationModel, (Int, Int), Double] {
 
   def train(data: RDD[Rating]): PMatrixFactorizationModel = {
     val m = ALS.train(data, ap.rank, ap.numIterations, ap.lambda)
@@ -138,10 +134,7 @@ object Run {
       algorithmClassMapOpt = Some(Map("" -> classOf[ALSAlgorithm])),
       algorithmParamsList = Seq(("", ap)),
       servingClassOpt = Some(LFirstServing(classOf[ALSAlgorithm])),
-      params = WorkflowParams(
-        batch = "Imagine: P Recommendations",
-        verbose = 1
-      )
+      params = WorkflowParams(batch = "Imagine: P Recommendations", verbose = 1)
     )
   }
 }
@@ -160,5 +153,4 @@ class Tuple2IntSerializer
     extends CustomSerializer[(Int, Int)](format =>
       (
         { case JArray(List(JInt(x), JInt(y))) => (x.intValue, y.intValue) },
-        { case x: (Int, Int)                  => JArray(List(JInt(x._1), JInt(x._2))) }
-      ))
+        { case x: (Int, Int)                  => JArray(List(JInt(x._1), JInt(x._2))) }))

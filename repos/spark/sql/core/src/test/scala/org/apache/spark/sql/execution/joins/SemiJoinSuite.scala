@@ -31,31 +31,27 @@ import org.apache.spark.sql.types.{DoubleType, IntegerType, StructType}
 class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
 
   private lazy val left = sqlContext.createDataFrame(
-    sparkContext.parallelize(
-      Seq(
-        Row(1, 2.0),
-        Row(1, 2.0),
-        Row(2, 1.0),
-        Row(2, 1.0),
-        Row(3, 3.0),
-        Row(null, null),
-        Row(null, 5.0),
-        Row(6, null)
-      )),
+    sparkContext.parallelize(Seq(
+      Row(1, 2.0),
+      Row(1, 2.0),
+      Row(2, 1.0),
+      Row(2, 1.0),
+      Row(3, 3.0),
+      Row(null, null),
+      Row(null, 5.0),
+      Row(6, null))),
     new StructType().add("a", IntegerType).add("b", DoubleType)
   )
 
   private lazy val right = sqlContext.createDataFrame(
-    sparkContext.parallelize(
-      Seq(
-        Row(2, 3.0),
-        Row(2, 3.0),
-        Row(3, 2.0),
-        Row(4, 1.0),
-        Row(null, null),
-        Row(null, 5.0),
-        Row(6, null)
-      )),
+    sparkContext.parallelize(Seq(
+      Row(2, 3.0),
+      Row(2, 3.0),
+      Row(3, 2.0),
+      Row(4, 1.0),
+      Row(null, null),
+      Row(null, 5.0),
+      Row(6, null))),
     new StructType().add("c", IntegerType).add("d", DoubleType)
   )
 
@@ -91,8 +87,8 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
               leftRows,
               rightRows,
               (left: SparkPlan, right: SparkPlan) =>
-                EnsureRequirements(left.sqlContext.sessionState.conf).apply(
-                  ShuffledHashJoin(
+                EnsureRequirements(left.sqlContext.sessionState.conf)
+                  .apply(ShuffledHashJoin(
                     leftKeys,
                     rightKeys,
                     LeftSemi,
@@ -172,9 +168,5 @@ class SemiJoinSuite extends SparkPlanTest with SharedSQLContext {
     left,
     right,
     condition,
-    Seq(
-      (2, 1.0),
-      (2, 1.0)
-    )
-  )
+    Seq((2, 1.0), (2, 1.0)))
 }

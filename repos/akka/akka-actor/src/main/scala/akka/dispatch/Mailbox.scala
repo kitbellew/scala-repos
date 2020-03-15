@@ -308,7 +308,9 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
           throw new InterruptedException(
             "Interrupted while processing actor messages")
         processAllSystemMessages()
-        if ((left > 1) && ((dispatcher.isThroughputDeadlineTimeDefined == false) || (System.nanoTime - deadlineNs) < 0))
+        if ((left > 1) && ((
+              dispatcher.isThroughputDeadlineTimeDefined == false
+            ) || (System.nanoTime - deadlineNs) < 0))
           processMailbox(left - 1, deadlineNs)
       }
     }

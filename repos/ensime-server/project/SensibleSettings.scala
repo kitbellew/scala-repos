@@ -46,8 +46,7 @@ object Sensible {
       "-Werror",
       "-Xlint:-options",
       "-Xlint:-path",
-      "-Xlint:-processing"
-    ),
+      "-Xlint:-processing"),
     javacOptions in doc ++= Seq("-source", "1.6"),
     javaOptions := Seq("-Xss2m", "-XX:MaxPermSize=256m", "-Xms1g", "-Xmx1g"),
     javaOptions += "-Dfile.encoding=UTF8",
@@ -83,20 +82,19 @@ object Sensible {
         outputStrategy,
         envVars,
         javaHome,
-        connectInput
-      ).map { (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
-        val opts = ForkOptions(
-          bootJars = Nil,
-          javaHome = javaHomeDir,
-          connectInput = connectIn,
-          outputStrategy = strategy,
-          runJVMOptions = options,
-          workingDirectory = Some(base),
-          envVars = env
-        )
-        tests.map { test =>
-          Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
-        }
+        connectInput).map {
+        (tests, base, options, strategy, env, javaHomeDir, connectIn) =>
+          val opts = ForkOptions(
+            bootJars = Nil,
+            javaHome = javaHomeDir,
+            connectInput = connectIn,
+            outputStrategy = strategy,
+            runJVMOptions = options,
+            workingDirectory = Some(base),
+            envVars = env)
+          tests.map { test =>
+            Tests.Group(test.name, Seq(test), Tests.SubProcess(opts))
+          }
       },
       testOptions ++= noColorIfEmacs,
       testFrameworks := Seq(TestFrameworks.ScalaTest, TestFrameworks.JUnit)
@@ -110,10 +108,8 @@ object Sensible {
   val quasiquotesVersion = "2.0.1"
   val guavaVersion = "18.0"
 
-  val macroParadise = Seq(
-    compilerPlugin(
-      "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
-  )
+  val macroParadise = Seq(compilerPlugin(
+    "org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full))
   def shapeless(scalaVersion: String) = {
     if (scalaVersion.startsWith("2.10.")) macroParadise else Nil
   } :+ "com.chuusai" %% "shapeless" % "2.3.0"
@@ -125,8 +121,7 @@ object Sensible {
   )
   val guava = Seq(
     "com.google.guava" % "guava" % guavaVersion,
-    "com.google.code.findbugs" % "jsr305" % "3.0.1" % "provided"
-  )
+    "com.google.code.findbugs" % "jsr305" % "3.0.1" % "provided")
 
   // TODO: automate testLibs as part of the testSettings
   def testLibs(config: String = "test") =

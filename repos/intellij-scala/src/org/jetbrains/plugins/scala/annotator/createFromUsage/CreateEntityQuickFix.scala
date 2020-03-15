@@ -184,9 +184,8 @@ object CreateEntityQuickFix {
               /*stopAt = */ classOf[ScTemplateDefinition])
             if (parentBl != null) Success(parentBl)
             else
-              Failure(
-                new IllegalStateException(
-                  "Cannot find template definition for `this` reference"))
+              Failure(new IllegalStateException(
+                "Cannot find template definition for `this` reference"))
         }
       case sup: ScSuperReference =>
         unambiguousSuper(sup) match {

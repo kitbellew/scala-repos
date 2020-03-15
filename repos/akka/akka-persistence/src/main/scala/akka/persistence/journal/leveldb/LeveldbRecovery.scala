@@ -36,9 +36,8 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery {
       toSequenceNr: Long,
       max: Long)(replayCallback: PersistentRepr ⇒ Unit): Future[Unit] = {
     val nid = numericId(persistenceId)
-    Future(
-      replayMessages(nid, fromSequenceNr: Long, toSequenceNr, max: Long)(
-        replayCallback))(replayDispatcher)
+    Future(replayMessages(nid, fromSequenceNr: Long, toSequenceNr, max: Long)(
+      replayCallback))(replayDispatcher)
   }
 
   def replayMessages(

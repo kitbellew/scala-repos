@@ -43,9 +43,8 @@ object Probes {
       val startTime = System.nanoTime()
 
       def subscribe(subscriber: Subscriber[_ >: T]) = {
-        log("subscribe", subscriber.toString)(
-          publisher.subscribe(
-            subscriberProbe(name, subscriber, messageLogger, startTime)))
+        log("subscribe", subscriber.toString)(publisher.subscribe(
+          subscriberProbe(name, subscriber, messageLogger, startTime)))
       }
     }
 
@@ -63,8 +62,8 @@ object Probes {
           subscriber.onError(t))
       }
       def onSubscribe(subscription: Subscription) =
-        log("onSubscribe", subscription.toString)(
-          subscriber.onSubscribe(subscriptionProbe(name, subscription, start)))
+        log("onSubscribe", subscription.toString)(subscriber.onSubscribe(
+          subscriptionProbe(name, subscription, start)))
       def onComplete() = log("onComplete")(subscriber.onComplete())
       def onNext(t: T) = log("onNext", messageLogger(t))(subscriber.onNext(t))
     }

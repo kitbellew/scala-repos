@@ -175,11 +175,7 @@ object TokenSets {
             VALUES,
             TokenSet.orSet(
               VARIABLES,
-              TokenSet.create(ScalaElementTypes.PRIMARY_CONSTRUCTOR)
-            )
-          )
-        )
-      )
+              TokenSet.create(ScalaElementTypes.PRIMARY_CONSTRUCTOR)))))
     ),
     MemberElementTypesExtension.getAllElementTypes
   )

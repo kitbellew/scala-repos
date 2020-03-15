@@ -48,8 +48,7 @@ object PluginCommandTest extends Specification {
         PluginCommandTestPlugin0,
         PluginCommandTestPlugin1)
       output must contain(
-        "Not a valid plugin: PluginCommandTestPlugin0 (similar: sbt.PluginCommandTestPlugin0, sbt.subpackage.PluginCommandTestPlugin1)"
-      )
+        "Not a valid plugin: PluginCommandTestPlugin0 (similar: sbt.PluginCommandTestPlugin0, sbt.subpackage.PluginCommandTestPlugin1)")
     }
 
   }
@@ -106,8 +105,7 @@ object FakeState {
       ClassLoader.getSystemClassLoader,
       Nil,
       Seq(testProject),
-      Nil
-    )
+      Nil)
 
     val pluginData = PluginData(Nil, Nil, None, None, Nil)
     val detectedModules: DetectedModules[Plugin] = new DetectedModules(Nil)
@@ -144,8 +142,7 @@ object FakeState {
 
     val attributes = AttributeMap.empty ++ AttributeMap(
       AttributeEntry(Keys.sessionSettings, sessionSettings),
-      AttributeEntry(Keys.stateBuildStructure, buildStructure)
-    )
+      AttributeEntry(Keys.stateBuildStructure, buildStructure))
 
     State(
       null,

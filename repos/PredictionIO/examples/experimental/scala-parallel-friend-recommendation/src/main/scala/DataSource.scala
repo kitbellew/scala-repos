@@ -17,14 +17,12 @@ import grizzled.slf4j.Logger
 /*
   Data Source Params : path to data file
  */
-case class DataSourceParams(
-    val graphEdgelistPath: String
-) extends Params
+case class DataSourceParams(val graphEdgelistPath: String) extends Params
 
 case class TrainingData(
     val g: Graph[Int, Int],
-    val identityMatrix: RDD[(VertexId, Double)]
-) extends Serializable
+    val identityMatrix: RDD[(VertexId, Double)])
+    extends Serializable
 
 class DataSource(val dsp: DataSourceParams)
     extends PDataSource[TrainingData, EmptyEvaluationInfo, Query, Double] {
@@ -41,8 +39,8 @@ class DataSource(val dsp: DataSourceParams)
 
 case class NodeSamplingDSParams(
     val graphEdgelistPath: String,
-    val sampleFraction: Double
-) extends Params
+    val sampleFraction: Double)
+    extends Params
 
 class NodeSamplingDataSource(val dsp: NodeSamplingDSParams)
     extends PDataSource[TrainingData, EmptyEvaluationInfo, Query, Double] {
@@ -58,8 +56,8 @@ class NodeSamplingDataSource(val dsp: NodeSamplingDSParams)
 case class FFSamplingDSParams(
     val graphEdgelistPath: String,
     val sampleFraction: Double,
-    val geoParam: Double
-) extends Params
+    val geoParam: Double)
+    extends Params
 
 class ForestFireSamplingDataSource(val dsp: FFSamplingDSParams)
     extends PDataSource[TrainingData, EmptyEvaluationInfo, Query, Double] {

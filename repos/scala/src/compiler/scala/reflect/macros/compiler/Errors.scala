@@ -100,9 +100,9 @@ trait Errors extends Traces {
         untype: Boolean) = {
       def preprocess(tpe: Type) = if (untype) untypeMetalevel(tpe) else tpe
       var pssPart = (pss map (ps =>
-        ps map (p =>
-          p.defStringSeenAs(
-            preprocess(p.info))) mkString ("(", ", ", ")"))).mkString
+        ps map (p => p.defStringSeenAs(preprocess(p.info))) mkString (
+          "(", ", ", ")"
+        ))).mkString
       if (abbreviate) pssPart = abbreviateCoreAliases(pssPart)
       var retPart = preprocess(restpe).toString
       if (abbreviate || macroDdef.tpt.tpe == null)
@@ -177,9 +177,8 @@ trait Errors extends Traces {
     def MacroImplMissingParamsError(
         aparams: List[Symbol],
         rparams: List[Symbol]) =
-      compatibilityError(
-        abbreviateCoreAliases(
-          lengthMsg("value", "required", rparams(aparams.length))))
+      compatibilityError(abbreviateCoreAliases(
+        lengthMsg("value", "required", rparams(aparams.length))))
 
     def checkMacroImplParamTypeMismatch(atpe: Type, rparam: Symbol) =
       checkConforms("parameter " + rparam.name, rparam.tpe, atpe)
@@ -200,12 +199,11 @@ trait Errors extends Traces {
     }
 
     def MacroImplTargMismatchError(atargs: List[Type], atparams: List[Symbol]) =
-      compatibilityError(
-        NotWithinBoundsErrorMessage(
-          "",
-          atargs,
-          atparams,
-          macroDebugVerbose || settings.explaintypes.value))
+      compatibilityError(NotWithinBoundsErrorMessage(
+        "",
+        atargs,
+        atparams,
+        macroDebugVerbose || settings.explaintypes.value))
 
     def MacroImplTparamInstantiationError(
         atparams: List[Symbol],

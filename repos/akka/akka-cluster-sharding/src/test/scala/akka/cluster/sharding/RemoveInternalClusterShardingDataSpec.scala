@@ -149,8 +149,10 @@ class RemoveInternalClusterShardingDataSpec
       hasSnapshots("type1") should ===(false)
       hasEvents("type1") should ===(false)
       val rm = system.actorOf(
-        RemoveInternalClusterShardingData.RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type1"), testActor))
+        RemoveInternalClusterShardingData.RemoveOnePersistenceId.props(
+          journalPluginId = "",
+          persistenceId("type1"),
+          testActor))
       watch(rm)
       expectMsg(Result(Success(Removals(false, false))))
       expectTerminated(rm)
@@ -164,8 +166,10 @@ class RemoveInternalClusterShardingDataSpec
       hasEvents("type1") should ===(true)
 
       val rm = system.actorOf(
-        RemoveInternalClusterShardingData.RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type1"), testActor))
+        RemoveInternalClusterShardingData.RemoveOnePersistenceId.props(
+          journalPluginId = "",
+          persistenceId("type1"),
+          testActor))
       watch(rm)
       expectMsg(Result(Success(Removals(true, false))))
       expectTerminated(rm)
@@ -184,8 +188,10 @@ class RemoveInternalClusterShardingDataSpec
       hasEvents("type2") should ===(true)
 
       val rm = system.actorOf(
-        RemoveInternalClusterShardingData.RemoveOnePersistenceId
-          .props(journalPluginId = "", persistenceId("type2"), testActor))
+        RemoveInternalClusterShardingData.RemoveOnePersistenceId.props(
+          journalPluginId = "",
+          persistenceId("type2"),
+          testActor))
       watch(rm)
       expectMsg(Result(Success(Removals(true, true))))
       expectTerminated(rm)

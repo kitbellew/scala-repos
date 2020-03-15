@@ -43,8 +43,8 @@ class JavaActionAnnotations(
     .getOrElse(classOf[JBodyParser.Default])
 
   val controllerAnnotations = play.api.libs.Collections
-    .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](
-      Option(controller)) { clazz =>
+    .unfoldLeft[Seq[java.lang.annotation.Annotation], Option[Class[_]]](Option(
+      controller)) { clazz =>
       clazz.map(c => (Option(c.getSuperclass), c.getDeclaredAnnotations.toSeq))
     }
     .flatten

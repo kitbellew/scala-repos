@@ -43,15 +43,13 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       _ <- managers ++= Seq(
         (1, "Peter", "HR"),
         (2, "Amy", "IT"),
-        (3, "Steve", "IT")
-      )
+        (3, "Steve", "IT"))
       _ <- employees ++= Seq(
         (4, "Jennifer", 1),
         (5, "Tom", 1),
         (6, "Leonard", 2),
         (7, "Ben", 2),
-        (8, "Greg", 3)
-      )
+        (8, "Greg", 3))
       _ <- mark("q1", q1.result).map(r =>
         r.toSet shouldBe Set((2, "Amy"), (3, "Steve")))
       _ <- mark("q2", q2.result).map(r =>
@@ -87,8 +85,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       managers ++= Seq(
         (1, "Peter", "HR"),
         (2, "Amy", "IT"),
-        (3, "Steve", "IT")
-      ),
+        (3, "Steve", "IT")),
       q.result.map(r =>
         r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop
@@ -116,16 +113,8 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     seq(
       (coffees.schema ++ teas.schema).create,
-      coffees ++= Seq(
-        (10L, 1L),
-        (20L, 2L),
-        (30L, 3L)
-      ),
-      teas ++= Seq(
-        (100L, 1L),
-        (200L, 2L),
-        (300L, 3L)
-      ),
+      coffees ++= Seq((10L, 1L), (20L, 2L), (30L, 3L)),
+      teas ++= Seq((100L, 1L), (200L, 2L), (300L, 3L)),
       q1.result.map(r => r.toSet shouldBe Set((10L, 1L), (20L, 2L), (30L, 3L))),
       q2.result.map(r =>
         r.toSet shouldBe Set((100L, 1L), (200L, 2L), (300L, 3L))),
@@ -184,8 +173,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
       TableQuery[Messages].schema.create,
-      mark("q", query.result).map(_ shouldBe 0)
-    )
+      mark("q", query.result).map(_ shouldBe 0))
   }
 
   def testCountWithUnionAndSort = {
@@ -207,8 +195,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
 
     DBIO.seq(
       TableQuery[Deliveries].schema.create,
-      mark("q", query.result).map(_ shouldBe 0)
-    )
+      mark("q", query.result).map(_ shouldBe 0))
   }
 
 }

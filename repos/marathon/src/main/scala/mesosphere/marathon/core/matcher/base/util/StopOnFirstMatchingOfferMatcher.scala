@@ -15,9 +15,8 @@ class StopOnFirstMatchingOfferMatcher(chained: OfferMatcher*)
   override def matchOffer(
       deadline: Timestamp,
       offer: Offer): Future[MatchedTaskOps] = {
-    chained.foldLeft(
-      Future.successful(
-        MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))) {
+    chained.foldLeft(Future.successful(
+      MatchedTaskOps.noMatch(offer.getId, resendThisOffer = false))) {
       case (matchedFuture, nextMatcher) =>
         matchedFuture.flatMap { matched =>
           if (matched.ops.isEmpty) nextMatcher.matchOffer(deadline, offer)

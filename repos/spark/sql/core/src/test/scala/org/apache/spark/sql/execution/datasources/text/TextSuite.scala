@@ -103,8 +103,8 @@ class TextSuite extends QueryTest with SharedSQLContext {
         .mode(SaveMode.Overwrite)
         .text(tempDirPath)
     }
-    assert(
-      errMsg.getMessage.contains("Codec [illegal] is not available. " +
+    assert(errMsg.getMessage.contains(
+      "Codec [illegal] is not available. " +
         "Known codecs are"))
   }
 

@@ -157,8 +157,8 @@ package object collections {
   private[collections] val `.toIterator` = invocation("toIterator").from(
     likeCollectionClasses)
 
-  private[collections] val `.lift` = invocation("lift").from(
-    Array("scala.PartialFunction"))
+  private[collections] val `.lift` = invocation("lift").from(Array(
+    "scala.PartialFunction"))
 
   private[collections] val `.monadicMethod` = invocation(monadicMethods).from(
     likeCollectionClasses)
@@ -604,8 +604,10 @@ package object collections {
           infix
         case MethodRepr(
               itself,
-              Some(definedOutside(
-                ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
+              Some(
+                definedOutside(
+                  ScalaPsiUtil.inNameContext(
+                    v @ (_: ScVariable | _: ScValue)))),
               Some(ref),
               _)
             if isSideEffectCollectionMethod(ref) || isSetter(

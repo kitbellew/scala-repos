@@ -226,8 +226,9 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
           true) ::
         StructField(
           "structFieldSimple",
-          StructType(StructField("key", IntegerType, true) ::
-            StructField("Value", StringType, true) :: Nil),
+          StructType(
+            StructField("key", IntegerType, true) ::
+              StructField("Value", StringType, true) :: Nil),
           true) ::
         StructField(
           "structFieldComplex",
@@ -240,8 +241,7 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
                 true) :: Nil),
           true
         ) ::
-        Nil
-    )
+        Nil)
 
     assert(
       expectedSchema == caseInsensitiveContext.table("tableWithSchema").schema)
@@ -352,9 +352,8 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
           |)
         """.stripMargin)
     }
-    assert(
-      schemaNotAllowed.getMessage.contains(
-        "does not allow user-specified schemas"))
+    assert(schemaNotAllowed.getMessage.contains(
+      "does not allow user-specified schemas"))
 
     val schemaNeeded = intercept[Exception] {
       sql("""
@@ -366,9 +365,8 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
           |)
         """.stripMargin)
     }
-    assert(
-      schemaNeeded.getMessage.contains(
-        "A schema needs to be specified when using"))
+    assert(schemaNeeded.getMessage.contains(
+      "A schema needs to be specified when using"))
   }
 
   test("SPARK-5196 schema field with comment") {

@@ -11,27 +11,25 @@ trait Importers { to: SymbolTable =>
 
   override def mkImporter(
       from0: api.Universe): Importer { val from: from0.type } =
-    (
-      if (to eq from0) {
-        new Importer {
-          val from = from0
-          val reverse = this.asInstanceOf[from.Importer { val from: to.type }]
-          def importSymbol(their: from.Symbol) = their.asInstanceOf[to.Symbol]
-          def importType(their: from.Type) = their.asInstanceOf[to.Type]
-          def importTree(their: from.Tree) = their.asInstanceOf[to.Tree]
-          def importPosition(their: from.Position) =
-            their.asInstanceOf[to.Position]
-        }
-      } else {
-        // todo. fix this loophole
-        assert(
-          from0.isInstanceOf[SymbolTable],
-          "`from` should be an instance of scala.reflect.internal.SymbolTable")
-        new StandardImporter {
-          val from = from0.asInstanceOf[SymbolTable]
-        }
-      }
-    ).asInstanceOf[Importer { val from: from0.type }]
+    (if (to eq from0) {
+       new Importer {
+         val from = from0
+         val reverse = this.asInstanceOf[from.Importer { val from: to.type }]
+         def importSymbol(their: from.Symbol) = their.asInstanceOf[to.Symbol]
+         def importType(their: from.Type) = their.asInstanceOf[to.Type]
+         def importTree(their: from.Tree) = their.asInstanceOf[to.Tree]
+         def importPosition(their: from.Position) =
+           their.asInstanceOf[to.Position]
+       }
+     } else {
+       // todo. fix this loophole
+       assert(
+         from0.isInstanceOf[SymbolTable],
+         "`from` should be an instance of scala.reflect.internal.SymbolTable")
+       new StandardImporter {
+         val from = from0.asInstanceOf[SymbolTable]
+       }
+     }).asInstanceOf[Importer { val from: from0.type }]
 
   abstract class StandardImporter extends Importer {
 
@@ -217,7 +215,9 @@ trait Importers { to: SymbolTable =>
                 assert(
                   !result.isOverloaded,
                   "import failure: cannot determine unique overloaded method alternative from\n " +
-                    (result.alternatives map (_.defString) mkString "\n") + "\n that matches " + their + ":" + their.tpe
+                    (
+                      result.alternatives map (_.defString) mkString "\n"
+                    ) + "\n that matches " + their + ":" + their.tpe
                 )
                 result
               }

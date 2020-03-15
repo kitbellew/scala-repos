@@ -96,8 +96,8 @@ object Roots {
 
 private[poly] class BigDecimalSimpleRoots(
     val poly: Polynomial[BigDecimal],
-    scale: Int
-) extends Roots[BigDecimal] {
+    scale: Int)
+    extends Roots[BigDecimal] {
   private val zpoly: Polynomial[BigInt] = Roots.removeDecimal(poly)
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
 
@@ -112,8 +112,7 @@ private[poly] class BigDecimalSimpleRoots(
         case Bounded(lb, ub, _) =>
           new BigDecimal(
             BigDecimalRootRefinement(poly, lb, ub, scale).approximateValue,
-            MathContext.UNLIMITED
-          )
+            MathContext.UNLIMITED)
         case _ =>
           throw new RuntimeException("invalid isolated root interval")
       }
@@ -122,8 +121,8 @@ private[poly] class BigDecimalSimpleRoots(
 
 private[poly] class BigDecimalRelativeRoots(
     val poly: Polynomial[BigDecimal],
-    mc: MathContext
-) extends Roots[BigDecimal] {
+    mc: MathContext)
+    extends Roots[BigDecimal] {
   private val zpoly: Polynomial[BigInt] = Roots.removeDecimal(poly)
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
 
@@ -146,9 +145,8 @@ private[poly] class BigDecimalRelativeRoots(
 // FIXME: This is pretty hacky. We should implement proper exact real roots:
 // http://arxiv.org/pdf/1011.0344v2.pdf
 // http://arxiv.org/pdf/1104.1362v3.pdf
-private[poly] class FixedRealRoots(
-    val poly: Polynomial[Real]
-) extends Roots[Real] {
+private[poly] class FixedRealRoots(val poly: Polynomial[Real])
+    extends Roots[Real] {
   private val zpoly: Polynomial[BigInt] = Roots.removeFractions(
     poly.map(_.toRational))
   private val isolated: Vector[Interval[Rational]] = Roots.isolateRoots(zpoly)
@@ -173,9 +171,8 @@ private[poly] class FixedRealRoots(
     }
 }
 
-private[poly] class NumberRoots(
-    val poly: Polynomial[Number]
-) extends Roots[Number] {
+private[poly] class NumberRoots(val poly: Polynomial[Number])
+    extends Roots[Number] {
   private val roots = new BigDecimalRelativeRoots(
     poly.map(_.toBigDecimal),
     BigDecimal.defaultMathContext)

@@ -23,11 +23,9 @@ final class Api(
     Paginator(
       adapter = new Adapter(
         selector = ThreadRepo visibleByUserQuery me.id,
-        sort = Seq(ThreadRepo.recentSort)
-      ),
+        sort = Seq(ThreadRepo.recentSort)),
       currentPage = page,
-      maxPerPage = maxPerPage
-    )
+      maxPerPage = maxPerPage)
 
   def preview(userId: String): Fu[List[Thread]] =
     unreadCache(userId) flatMap { ids => $find byOrderedIds ids }

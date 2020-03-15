@@ -119,8 +119,8 @@ private[util] class RestrictParallelExecutionsActor(
     metrics.reset()
 
     for (execute <- queue) {
-      execute.complete(
-        Failure(new IllegalStateException(s"$self actor stopped")))
+      execute.complete(Failure(
+        new IllegalStateException(s"$self actor stopped")))
     }
 
     queue = Queue.empty
@@ -131,9 +131,8 @@ private[util] class RestrictParallelExecutionsActor(
   override def receive: Receive = {
     case exec: Execute[_] =>
       if (active >= maxParallel && queue.size >= maxQueued) {
-        sender ! Status.Failure(
-          new IllegalStateException(
-            s"$self queue may not exceed $maxQueued entries"))
+        sender ! Status.Failure(new IllegalStateException(
+          s"$self queue may not exceed $maxQueued entries"))
       } else {
         queue :+= exec
         startNextIfPossible()
@@ -175,11 +174,10 @@ private[util] object RestrictParallelExecutionsActor {
       metrics: CapConcurrentExecutionsMetrics,
       maxParallel: Int,
       maxQueued: Int): Props =
-    Props(
-      new RestrictParallelExecutionsActor(
-        metrics,
-        maxParallel = maxParallel,
-        maxQueued = maxQueued))
+    Props(new RestrictParallelExecutionsActor(
+      metrics,
+      maxParallel = maxParallel,
+      maxQueued = maxQueued))
 
   private val log = LoggerFactory.getLogger(getClass.getName)
   case class Execute[T](promise: Promise[T], func: () => Future[T]) {

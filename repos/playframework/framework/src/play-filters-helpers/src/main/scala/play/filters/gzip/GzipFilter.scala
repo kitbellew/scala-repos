@@ -120,10 +120,9 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(
                 new FlowShape(broadcast.in, concat.out)
             })
 
-          Future.successful(
-            Result(
-              header,
-              HttpEntity.Chunked(chunks via gzipFlow, contentType)))
+          Future.successful(Result(
+            header,
+            HttpEntity.Chunked(chunks via gzipFlow, contentType)))
       }
     } else { Future.successful(result) }
   }
@@ -246,8 +245,7 @@ object GzipFilterConfig {
     GzipFilterConfig(
       bufferSize = config.get[ConfigMemorySize]("bufferSize").toBytes.toInt,
       chunkedThreshold =
-        config.get[ConfigMemorySize]("chunkedThreshold").toBytes.toInt
-    )
+        config.get[ConfigMemorySize]("chunkedThreshold").toBytes.toInt)
   }
 }
 
@@ -267,8 +265,7 @@ class GzipFilterModule extends Module {
   def bindings(environment: Environment, configuration: Configuration) =
     Seq(
       bind[GzipFilterConfig].toProvider[GzipFilterConfigProvider],
-      bind[GzipFilter].toSelf
-    )
+      bind[GzipFilter].toSelf)
 }
 
 /**

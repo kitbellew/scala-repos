@@ -67,9 +67,7 @@ object WebSocket {
         f: NewOut => Out): MessageFlowTransformer[In, NewOut] = {
       new MessageFlowTransformer[In, NewOut] {
         def transform(flow: Flow[In, NewOut, _]) = {
-          self.transform(
-            flow map f
-          )
+          self.transform(flow map f)
         }
       }
     }
@@ -80,9 +78,7 @@ object WebSocket {
     def map[NewIn](f: In => NewIn): MessageFlowTransformer[NewIn, Out] = {
       new MessageFlowTransformer[NewIn, Out] {
         def transform(flow: Flow[NewIn, Out, _]) = {
-          self.transform(
-            Flow[In] map f via flow
-          )
+          self.transform(Flow[In] map f via flow)
         }
       }
     }
@@ -95,9 +91,7 @@ object WebSocket {
         g: NewOut => Out): MessageFlowTransformer[NewIn, NewOut] = {
       new MessageFlowTransformer[NewIn, NewOut] {
         def transform(flow: Flow[NewIn, NewOut, _]) = {
-          self.transform(
-            Flow[In] map f via flow map g
-          )
+          self.transform(Flow[In] map f via flow map g)
         }
       }
     }
@@ -123,10 +117,9 @@ object WebSocket {
             Flow[Message] collect {
               case TextMessage(text) => Left(text)
               case BinaryMessage(_) =>
-                Right(
-                  CloseMessage(
-                    Some(CloseCodes.Unacceptable),
-                    "This WebSocket only supports text frames"))
+                Right(CloseMessage(
+                  Some(CloseCodes.Unacceptable),
+                  "This WebSocket only supports text frames"))
             })(flow map TextMessage.apply)
         }
       }
@@ -143,10 +136,9 @@ object WebSocket {
             Flow[Message] collect {
               case BinaryMessage(data) => Left(data)
               case TextMessage(_) =>
-                Right(
-                  CloseMessage(
-                    Some(CloseCodes.Unacceptable),
-                    "This WebSocket only supports binary frames"))
+                Right(CloseMessage(
+                  Some(CloseCodes.Unacceptable),
+                  "This WebSocket only supports binary frames"))
             })(flow map BinaryMessage.apply)
         }
       }
@@ -169,10 +161,9 @@ object WebSocket {
         try { Left(block) }
         catch {
           case NonFatal(e) =>
-            Right(
-              CloseMessage(
-                Some(CloseCodes.Unacceptable),
-                "Unable to parse json message"))
+            Right(CloseMessage(
+              Some(CloseCodes.Unacceptable),
+              "Unable to parse json message"))
         }
 
       new MessageFlowTransformer[JsValue, JsValue] {
@@ -201,10 +192,9 @@ object WebSocket {
             .fromJson[In](json)
             .fold(
               { errors =>
-                throw WebSocketCloseException(
-                  CloseMessage(
-                    Some(CloseCodes.Unacceptable),
-                    Json.stringify(JsError.toJson(errors))))
+                throw WebSocketCloseException(CloseMessage(
+                  Some(CloseCodes.Unacceptable),
+                  Json.stringify(JsError.toJson(errors))))
               },
               identity),
         out => Json.toJson(out)

@@ -58,14 +58,12 @@ private[util] trait StackTracing extends Any {
       if (unseen(e)) {
         val trace = e.getStackTrace
         val frames =
-          (
-            if (share.nonEmpty) {
-              val spare = share.reverseIterator
-              val trimmed =
-                trace.reverse dropWhile (spare.hasNext && spare.next == _)
-              trimmed.reverse
-            } else trace
-          )
+          (if (share.nonEmpty) {
+             val spare = share.reverseIterator
+             val trimmed =
+               trace.reverse dropWhile (spare.hasNext && spare.next == _)
+             trimmed.reverse
+           } else trace)
         val prefix = frames takeWhile p
         val margin = indent * indents
         val indented = margin + indent

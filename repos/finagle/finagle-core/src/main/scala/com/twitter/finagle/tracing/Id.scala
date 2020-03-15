@@ -19,13 +19,12 @@ final class SpanId(val self: Long) extends Proxy {
 object SpanId {
   // StringBuilder.appendAll(char..) seems to be faster than
   // StringBuilder.append(string..)
-  private val lut: Array[Array[Char]] = (
-    for (b <- Byte.MinValue to Byte.MaxValue) yield {
+  private val lut: Array[Array[Char]] =
+    (for (b <- Byte.MinValue to Byte.MaxValue) yield {
       val bb = if (b < 0) b + 256 else b
       val s = "%02x".format(bb)
       Array(s(0), s(1))
-    }
-  ).toArray
+    }).toArray
 
   private def byteToChars(b: Byte): Array[Char] = lut(b + 128)
 
@@ -59,8 +58,8 @@ object TraceId {
       traceId: Option[SpanId],
       parentId: Option[SpanId],
       spanId: SpanId,
-      sampled: Option[Boolean]
-  ): TraceId = TraceId(traceId, parentId, spanId, sampled, Flags())
+      sampled: Option[Boolean]): TraceId =
+    TraceId(traceId, parentId, spanId, sampled, Flags())
 
   /**
     * Serialize a TraceId into an array of bytes.

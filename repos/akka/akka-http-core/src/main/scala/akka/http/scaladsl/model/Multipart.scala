@@ -325,11 +325,10 @@ object Multipart {
         val params = dispositionParams
         params.get("name") match {
           case Some(name) ⇒
-            Success(
-              f(
-                name,
-                params - "name",
-                headers.filterNot(_ is "content-disposition")))
+            Success(f(
+              name,
+              params - "name",
+              headers.filterNot(_ is "content-disposition")))
           case None ⇒
             Failure(IllegalHeaderException(
               "multipart/form-data part must contain `Content-Disposition` header with `name` parameter"))
@@ -451,9 +450,11 @@ object Multipart {
         contentType: ContentType,
         file: File,
         chunkSize: Int = -1): Multipart.FormData =
-      Multipart.FormData(
-        Source.single(Multipart.FormData.BodyPart
-          .fromFile(name, contentType, file, chunkSize)))
+      Multipart.FormData(Source.single(Multipart.FormData.BodyPart.fromFile(
+        name,
+        contentType,
+        file,
+        chunkSize)))
 
     /**
       * Strict [[FormData]].
@@ -521,9 +522,11 @@ object Multipart {
         import fm.executionContext
         entity
           .toStrict(timeout)
-          .map(
-            Multipart.FormData.BodyPart
-              .Strict(name, _, additionalDispositionParams, additionalHeaders))
+          .map(Multipart.FormData.BodyPart.Strict(
+            name,
+            _,
+            additionalDispositionParams,
+            additionalHeaders))
       }
 
       /** Java API */
@@ -582,12 +585,11 @@ object Multipart {
           BodyPartEntity,
           Map[String, String],
           immutable.Seq[HttpHeader])] =
-        Some(
-          (
-            value.name,
-            value.entity,
-            value.additionalDispositionParams,
-            value.additionalHeaders))
+        Some((
+          value.name,
+          value.entity,
+          value.additionalDispositionParams,
+          value.additionalHeaders))
 
       /**
         * Strict [[FormData.BodyPart]].
@@ -709,9 +711,11 @@ object Multipart {
         import fm.executionContext
         entity
           .toStrict(timeout)
-          .map(
-            Multipart.ByteRanges.BodyPart
-              .Strict(contentRange, _, rangeUnit, additionalHeaders))
+          .map(Multipart.ByteRanges.BodyPart.Strict(
+            contentRange,
+            _,
+            rangeUnit,
+            additionalHeaders))
       }
 
       /** Java API */
@@ -753,12 +757,11 @@ object Multipart {
 
       def unapply(value: Multipart.ByteRanges.BodyPart): Option[
         (ContentRange, BodyPartEntity, RangeUnit, immutable.Seq[HttpHeader])] =
-        Some(
-          (
-            value.contentRange,
-            value.entity,
-            value.rangeUnit,
-            value.additionalHeaders))
+        Some((
+          value.contentRange,
+          value.entity,
+          value.rangeUnit,
+          value.additionalHeaders))
 
       /**
         * Strict [[ByteRanges.BodyPart]].

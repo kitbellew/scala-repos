@@ -130,8 +130,8 @@ class MergeServiceSpec extends FunSpec {
         val masterId = git.getRepository.resolve(branch)
         service.mergePullRequest(git, branch, issueId, "merged", committer)
         val lastCommitId = git.getRepository.resolve(branch)
-        val commit = using(new RevWalk(git.getRepository))(
-          _.parseCommit(lastCommitId))
+        val commit = using(new RevWalk(git.getRepository))(_.parseCommit(
+          lastCommitId))
         assert(commit.getCommitterIdent() == committer)
         assert(commit.getAuthorIdent() == committer)
         assert(commit.getFullMessage() == "merged")

@@ -4,11 +4,7 @@ import AddSettings._
 import Import._
 
 object TestBuild extends Build {
-  override def projects =
-    Seq(
-      proj("a", "."),
-      proj("b", "b")
-    )
+  override def projects = Seq(proj("a", "."), proj("b", "b"))
   def proj(id: String, dir: String) =
     Project(id, file(dir), settings = Seq(name := id))
       .settingSets(buildScalaFiles)

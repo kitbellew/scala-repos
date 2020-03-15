@@ -195,8 +195,9 @@ class OffsetIndex(
     maybeLock(lock) {
       if (n >= entries)
         throw new IllegalArgumentException(
-          "Attempt to fetch the %dth entry from an index of size %d."
-            .format(n, entries))
+          "Attempt to fetch the %dth entry from an index of size %d.".format(
+            n,
+            entries))
       val idx = mmap.duplicate
       OffsetPosition(relativeOffset(idx, n), physical(idx, n))
     }
@@ -211,9 +212,10 @@ class OffsetIndex(
         !isFull,
         "Attempt to append to a full index (size = " + size + ").")
       if (size.get == 0 || offset > lastOffset) {
-        debug(
-          "Adding index entry %d => %d to %s."
-            .format(offset, position, file.getName))
+        debug("Adding index entry %d => %d to %s.".format(
+          offset,
+          position,
+          file.getName))
         this.mmap.putInt((offset - baseOffset).toInt)
         this.mmap.putInt(position)
         this.size.incrementAndGet()

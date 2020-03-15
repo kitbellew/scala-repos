@@ -50,8 +50,8 @@ private[streaming] case class RegisterReceiver(
     typ: String,
     host: String,
     executorId: String,
-    receiverEndpoint: RpcEndpointRef
-) extends ReceiverTrackerMessage
+    receiverEndpoint: RpcEndpointRef)
+    extends ReceiverTrackerMessage
 private[streaming] case class AddBlock(receivedBlockInfo: ReceivedBlockInfo)
     extends ReceiverTrackerMessage
 private[streaming] case class ReportError(
@@ -121,8 +121,7 @@ private[streaming] class ReceiverTracker(
     receiverInputStreamIds,
     ssc.scheduler.clock,
     ssc.isCheckpointPresent,
-    Option(ssc.checkpointDir)
-  )
+    Option(ssc.checkpointDir))
   private val listenerBus = ssc.scheduler.listenerBus
 
   /** Enumeration to identify current state of the ReceiverTracker */
@@ -261,8 +260,7 @@ private[streaming] class ReceiverTracker(
       host: String,
       executorId: String,
       receiverEndpoint: RpcEndpointRef,
-      senderAddress: RpcAddress
-  ): Boolean = {
+      senderAddress: RpcAddress): Boolean = {
     if (!receiverInputStreamIds.contains(streamId)) {
       throw new SparkException(
         "Register received for unexpected id " + streamId)
@@ -302,8 +300,8 @@ private[streaming] class ReceiverTracker(
         endpoint = Some(receiverEndpoint)
       )
       receiverTrackingInfos.put(streamId, receiverTrackingInfo)
-      listenerBus.post(
-        StreamingListenerReceiverStarted(receiverTrackingInfo.toReceiverInfo))
+      listenerBus.post(StreamingListenerReceiverStarted(
+        receiverTrackingInfo.toReceiverInfo))
       logInfo(
         "Registered receiver for stream " + streamId + " from " + senderAddress)
       true
@@ -339,8 +337,8 @@ private[streaming] class ReceiverTracker(
           Some(errorInfo))
     }
     receiverTrackingInfos(streamId) = newReceiverTrackingInfo
-    listenerBus.post(
-      StreamingListenerReceiverStopped(newReceiverTrackingInfo.toReceiverInfo))
+    listenerBus.post(StreamingListenerReceiverStopped(
+      newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError =
       if (error != null && !error.isEmpty) { s"$message - $error" }
       else { s"$message" }
@@ -386,8 +384,8 @@ private[streaming] class ReceiverTracker(
     }
 
     receiverTrackingInfos(streamId) = newReceiverTrackingInfo
-    listenerBus.post(
-      StreamingListenerReceiverError(newReceiverTrackingInfo.toReceiverInfo))
+    listenerBus.post(StreamingListenerReceiverError(
+      newReceiverTrackingInfo.toReceiverInfo))
     val messageWithError =
       if (error != null && !error.isEmpty) { s"$message - $error" }
       else { s"$message" }
@@ -437,10 +435,9 @@ private[streaming] class ReceiverTracker(
   private def getExecutors: Seq[ExecutorCacheTaskLocation] = {
     if (ssc.sc.isLocal) {
       val blockManagerId = ssc.sparkContext.env.blockManager.blockManagerId
-      Seq(
-        ExecutorCacheTaskLocation(
-          blockManagerId.host,
-          blockManagerId.executorId))
+      Seq(ExecutorCacheTaskLocation(
+        blockManagerId.host,
+        blockManagerId.executorId))
     } else {
       ssc.sparkContext.env.blockManager.master.getMemoryStatus
         .filter {

@@ -98,8 +98,7 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
     val expectField = SexpData(
       SexpSymbol(":text") -> SexpString("thing is ten"),
       SexpSymbol(":field") -> SexpData(
-        SexpSymbol(":column") -> SexpString("THING")
-      ),
+        SexpSymbol(":column") -> SexpString("THING")),
       SexpSymbol(":value") -> SexpString("10")
     )
 
@@ -116,8 +115,7 @@ class FamilyFormatsSpec extends FormatSpec with FamilyFormats {
     val expectAnd = SexpData(
       SexpSymbol(":left") -> expectFieldTree,
       SexpSymbol(":right") -> expectFieldTree,
-      SexpSymbol(":text") -> SexpString("wibble")
-    )
+      SexpSymbol(":text") -> SexpString("wibble"))
     assertFormat(and, expectAnd)
 
     val expectAndTree = SexpData(SexpSymbol(":AndCondition") -> expectAnd)

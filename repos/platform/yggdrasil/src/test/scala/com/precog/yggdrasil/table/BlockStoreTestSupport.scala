@@ -130,8 +130,9 @@ trait BaseBlockStoreTestModule[M[+_]]
                   case (ref @ ColumnRef(jpath, ctype), _) =>
                     jpath.nodes.head == CPathField("key") || reqCols.exists {
                       ref =>
-                        (CPathField(
-                          "value") \ ref.selector) == jpath && ref.ctype == ctype
+                        (
+                          CPathField("value") \ ref.selector
+                        ) == jpath && ref.ctype == ctype
                     }
                 }
               }

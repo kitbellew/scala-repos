@@ -48,8 +48,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       groupNames0: Map[String, Body] = Map.empty,
       groupPrio0: Map[String, Body] = Map.empty,
       hideImplicitConversions0: List[Body] = List.empty,
-      shortDescription0: List[Body] = List.empty
-  ): Comment =
+      shortDescription0: List[Body] = List.empty): Comment =
     new Comment {
       val body = body0 getOrElse Body(Seq.empty)
       val authors = authors0
@@ -250,8 +249,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         tags: Map[TagKey, List[String]],
         lastTagKey: Option[TagKey],
         remaining: List[String],
-        inCodeBlock: Boolean
-    ): Comment =
+        inCodeBlock: Boolean): Comment =
       remaining match {
 
         case CodeBlockStartRegex(before, marker, after) :: ls
@@ -555,8 +553,10 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
       * Characters used to build lists and their constructors */
-    protected val listStyles = Map[String, (Seq[
-      Block] => Block)]( // TODO Should this be defined at some list companion?
+    protected val listStyles = Map[
+      String,
+      (Seq[Block] => Block)
+    ]( // TODO Should this be defined at some list companion?
       "- " -> (UnorderedList(_)),
       "1. " -> (OrderedList(_, "decimal")),
       "I. " -> (OrderedList(_, "upperRoman")),
@@ -796,9 +796,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
     def summary(): Inline = {
       val i = inline(checkSentenceEnded())
-      Summary(
-        if (jump(".")) Chain(List(i, Text("."))) else i
-      )
+      Summary(if (jump(".")) Chain(List(i, Text("."))) else i)
     }
 
     def link(): Inline = {

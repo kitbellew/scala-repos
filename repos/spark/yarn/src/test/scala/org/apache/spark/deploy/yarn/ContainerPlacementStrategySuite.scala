@@ -75,12 +75,10 @@ class ContainerPlacementStrategySuite
 
     val handler = createAllocator(3)
     handler.updateResourceRequests()
-    handler.handleAllocatedContainers(
-      Array(
-        createContainer("host1"),
-        createContainer("host1"),
-        createContainer("host2")
-      ))
+    handler.handleAllocatedContainers(Array(
+      createContainer("host1"),
+      createContainer("host1"),
+      createContainer("host2")))
 
     val localities = handler.containerPlacementStrategy
       .localityOfRequestedContainers(
@@ -103,12 +101,10 @@ class ContainerPlacementStrategySuite
 
     val handler = createAllocator(3)
     handler.updateResourceRequests()
-    handler.handleAllocatedContainers(
-      Array(
-        createContainer("host1"),
-        createContainer("host1"),
-        createContainer("host2")
-      ))
+    handler.handleAllocatedContainers(Array(
+      createContainer("host1"),
+      createContainer("host1"),
+      createContainer("host2")))
 
     val localities = handler.containerPlacementStrategy
       .localityOfRequestedContainers(
@@ -126,14 +122,12 @@ class ContainerPlacementStrategySuite
 
     val handler = createAllocator(5)
     handler.updateResourceRequests()
-    handler.handleAllocatedContainers(
-      Array(
-        createContainer("host1"),
-        createContainer("host1"),
-        createContainer("host2"),
-        createContainer("host2"),
-        createContainer("host3")
-      ))
+    handler.handleAllocatedContainers(Array(
+      createContainer("host1"),
+      createContainer("host1"),
+      createContainer("host2"),
+      createContainer("host2"),
+      createContainer("host3")))
 
     val localities = handler.containerPlacementStrategy
       .localityOfRequestedContainers(
@@ -169,12 +163,10 @@ class ContainerPlacementStrategySuite
     "allocate locality preferred containers by considering the localities of pending requests") {
     val handler = createAllocator(3)
     handler.updateResourceRequests()
-    handler.handleAllocatedContainers(
-      Array(
-        createContainer("host1"),
-        createContainer("host1"),
-        createContainer("host2")
-      ))
+    handler.handleAllocatedContainers(Array(
+      createContainer("host1"),
+      createContainer("host1"),
+      createContainer("host2")))
 
     val pendingAllocationRequests = Seq(
       createContainerRequest(Array("host2", "host3")),

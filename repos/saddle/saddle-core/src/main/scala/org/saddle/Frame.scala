@@ -1710,12 +1710,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       }
 
       // now build row strings
-      buf.append(
-        util.buildStr(
-          nrows,
-          numRows,
-          (r: Int) => createIx(r) + " -> " + createVals(r),
-          rowBreakStr))
+      buf.append(util.buildStr(
+        nrows,
+        numRows,
+        (r: Int) => createIx(r) + " -> " + createVals(r),
+        rowBreakStr))
     }
     buf.toString()
   }
@@ -1738,7 +1737,9 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   override def equals(other: Any): Boolean =
     other match {
       case f: Frame[_, _, _] =>
-        (this eq f) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
+        (
+          this eq f
+        ) || rowIx == f.rowIx && colIx == f.colIx && values == f.values
       case _ => false
     }
 }

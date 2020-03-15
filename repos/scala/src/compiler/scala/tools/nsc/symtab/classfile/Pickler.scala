@@ -103,8 +103,9 @@ abstract class Pickler extends SubComponent {
             sym.owner))
         // don't use a class as the localized owner for type parameters that are not owned by a class: those are not instantiated by asSeenFrom
         // however, they would suddenly be considered by asSeenFrom if their localized owner became a class (causing the crashes of #4079, #2741)
-        (if ((sym.isTypeParameter || sym.isValueParameter) && !sym.owner.isClass)
-           nonClassRoot
+        (if ((
+               sym.isTypeParameter || sym.isValueParameter
+             ) && !sym.owner.isClass) nonClassRoot
          else root)
       else sym.owner
 
@@ -113,13 +114,11 @@ abstract class Pickler extends SubComponent {
       *  an existentially bound variable, or a higher-order type parameter.
       */
     private def isLocalToPickle(sym: Symbol): Boolean =
-      (sym != NoSymbol) && !sym.isPackageClass && (
-        isRootSym(sym)
-          || sym.isRefinementClass
-          || sym.isAbstractType && sym.hasFlag(EXISTENTIAL) // existential param
-          || sym.isParameter
-          || isLocalToPickle(sym.owner)
-      )
+      (sym != NoSymbol) && !sym.isPackageClass && (isRootSym(sym)
+        || sym.isRefinementClass
+        || sym.isAbstractType && sym.hasFlag(EXISTENTIAL) // existential param
+        || sym.isParameter
+        || isLocalToPickle(sym.owner))
     private def isExternalSymbol(sym: Symbol): Boolean =
       (sym != NoSymbol) && !isLocalToPickle(sym)
 

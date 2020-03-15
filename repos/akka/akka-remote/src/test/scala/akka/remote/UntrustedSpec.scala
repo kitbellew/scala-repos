@@ -145,10 +145,11 @@ akka.loglevel = DEBUG
     }
 
     "discard watch messages" in {
-      client.actorOf(Props(new Actor {
-        context.watch(target2)
-        def receive = { case x ⇒ testActor forward x }
-      }).withDeploy(Deploy.local))
+      client.actorOf(
+        Props(new Actor {
+          context.watch(target2)
+          def receive = { case x ⇒ testActor forward x }
+        }).withDeploy(Deploy.local))
       receptionist ! StopChild("child2")
       expectMsg("child2 stopped")
       // no Terminated msg, since watch was discarded

@@ -22,13 +22,11 @@ case class Health(
         copy(
           firstSuccess = firstSuccess.orElse(Some(time)),
           lastSuccess = Some(time),
-          consecutiveFailures = 0
-        )
+          consecutiveFailures = 0)
       case Unhealthy(_, _, cause, time) =>
         copy(
           lastFailure = Some(time),
           lastFailureCause = Some(cause),
-          consecutiveFailures = consecutiveFailures + 1
-        )
+          consecutiveFailures = consecutiveFailures + 1)
     }
 }

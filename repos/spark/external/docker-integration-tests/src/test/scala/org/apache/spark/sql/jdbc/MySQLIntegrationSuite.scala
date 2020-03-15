@@ -27,9 +27,7 @@ import org.apache.spark.tags.DockerTest
 class MySQLIntegrationSuite extends DockerJDBCIntegrationSuite {
   override val db = new DatabaseOnDocker {
     override val imageName = "mysql:5.7.9"
-    override val env = Map(
-      "MYSQL_ROOT_PASSWORD" -> "rootpass"
-    )
+    override val env = Map("MYSQL_ROOT_PASSWORD" -> "rootpass")
     override val jdbcPort: Int = 3306
     override def getJdbcUrl(ip: String, port: Int): String =
       s"jdbc:mysql://$ip:$port/mysql?user=root&password=rootpass"
@@ -165,15 +163,15 @@ class MySQLIntegrationSuite extends DockerJDBCIntegrationSuite {
     assert(rows(0).getString(3).equals("fox"))
     assert(rows(0).getString(4).equals("jumps"))
     assert(rows(0).getString(5).equals("over"))
-    assert(
-      java.util.Arrays
-        .equals(rows(0).getAs[Array[Byte]](6), Array[Byte](116, 104, 101, 0)))
-    assert(
-      java.util.Arrays
-        .equals(rows(0).getAs[Array[Byte]](7), Array[Byte](108, 97, 122, 121)))
-    assert(
-      java.util.Arrays
-        .equals(rows(0).getAs[Array[Byte]](8), Array[Byte](100, 111, 103)))
+    assert(java.util.Arrays.equals(
+      rows(0).getAs[Array[Byte]](6),
+      Array[Byte](116, 104, 101, 0)))
+    assert(java.util.Arrays.equals(
+      rows(0).getAs[Array[Byte]](7),
+      Array[Byte](108, 97, 122, 121)))
+    assert(java.util.Arrays.equals(
+      rows(0).getAs[Array[Byte]](8),
+      Array[Byte](100, 111, 103)))
   }
 
   test("Basic write test") {

@@ -63,11 +63,10 @@ trait PatternMatching
         case Match(sel, cases) =>
           val origTp = tree.tpe
           // setType origTp intended for CPS -- TODO: is it necessary?
-          val translated = translator.translateMatch(
-            treeCopy.Match(
-              tree,
-              transform(sel),
-              transformTrees(cases).asInstanceOf[List[CaseDef]]))
+          val translated = translator.translateMatch(treeCopy.Match(
+            tree,
+            transform(sel),
+            transformTrees(cases).asInstanceOf[List[CaseDef]]))
           try { localTyper.typed(translated) setType origTp }
           catch {
             case x: (Types#TypeError) =>

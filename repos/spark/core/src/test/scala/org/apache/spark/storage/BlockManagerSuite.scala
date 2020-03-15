@@ -465,8 +465,9 @@ class BlockManagerSuite
       master.getLocations("a1").size == 0,
       "a1 was not removed from master")
 
-    val reregister = !master.driverEndpoint
-      .askWithRetry[Boolean](BlockManagerHeartbeat(store.blockManagerId))
+    val reregister =
+      !master.driverEndpoint.askWithRetry[Boolean](BlockManagerHeartbeat(
+        store.blockManagerId))
     assert(reregister == true)
   }
 
@@ -1364,10 +1365,14 @@ class BlockManagerSuite
     assert(memoryStore.remove("unroll"))
 
     // Unroll with not enough space. This should succeed after kicking out someBlock1.
-    assert(store
-      .putIterator("someBlock1", smallList.iterator, StorageLevel.MEMORY_ONLY))
-    assert(store
-      .putIterator("someBlock2", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(store.putIterator(
+      "someBlock1",
+      smallList.iterator,
+      StorageLevel.MEMORY_ONLY))
+    assert(store.putIterator(
+      "someBlock2",
+      smallList.iterator,
+      StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       smallList.iterator,
@@ -1385,8 +1390,10 @@ class BlockManagerSuite
     // Unroll huge block with not enough space. Even after ensuring free space of 12000 * 0.4 =
     // 4800 bytes, there is still not enough room to unroll this block. This returns an iterator.
     // In the mean time, however, we kicked out someBlock2 before giving up.
-    assert(store
-      .putIterator("someBlock3", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(store.putIterator(
+      "someBlock3",
+      smallList.iterator,
+      StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       bigList.iterator,

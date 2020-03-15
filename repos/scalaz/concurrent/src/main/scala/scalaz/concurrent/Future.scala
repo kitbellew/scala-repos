@@ -108,8 +108,8 @@ sealed abstract class Future[+A] {
       case BindAsync(onFinish, g) if !cancel.get =>
         onFinish(x =>
           if (!cancel.get)
-            Trampoline.delay(
-              g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
+            Trampoline
+              .delay(g(x)) map (_ unsafePerformListenInterruptibly (cb, cancel))
           else Trampoline.done(()))
       case _ if cancel.get => ()
     }
@@ -266,9 +266,8 @@ sealed abstract class Future[+A] {
           def run() {
             if (done.compareAndSet(false, true)) {
               cancel.set(true)
-              cb(
-                -\/(new TimeoutException(
-                  s"Timed out after $timeoutInMillis milliseconds")))
+              cb(-\/(new TimeoutException(
+                s"Timed out after $timeoutInMillis milliseconds")))
             }
           }
         },
@@ -360,10 +359,9 @@ object Future {
                 val notifyWinner =
                   // If we're the first to finish, invoke `cb`, passing residuals
                   if (won.compareAndSet(false, true))
-                    cb(
-                      (
-                        a,
-                        fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
+                    cb((
+                      a,
+                      fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
                   else {
                     Trampoline.done(
                       ()

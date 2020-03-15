@@ -277,17 +277,20 @@ private[spark] class MesosClusterScheduler(
       queuedDrivers
         .find(_.submissionId.equals(submissionId))
         .map(d => new MesosDriverState("QUEUED", d))
-        .orElse(launchedDrivers
-          .get(submissionId)
-          .map(d =>
-            new MesosDriverState("RUNNING", d.driverDescription, Some(d))))
-        .orElse(finishedDrivers
-          .find(_.driverDescription.submissionId.equals(submissionId))
-          .map(d =>
-            new MesosDriverState("FINISHED", d.driverDescription, Some(d))))
-        .orElse(pendingRetryDrivers
-          .find(_.submissionId.equals(submissionId))
-          .map(d => new MesosDriverState("RETRYING", d)))
+        .orElse(
+          launchedDrivers
+            .get(submissionId)
+            .map(d =>
+              new MesosDriverState("RUNNING", d.driverDescription, Some(d))))
+        .orElse(
+          finishedDrivers
+            .find(_.driverDescription.submissionId.equals(submissionId))
+            .map(d =>
+              new MesosDriverState("FINISHED", d.driverDescription, Some(d))))
+        .orElse(
+          pendingRetryDrivers
+            .find(_.submissionId.equals(submissionId))
+            .map(d => new MesosDriverState("RETRYING", d)))
     }
   }
 
@@ -711,13 +714,12 @@ private[spark] class MesosClusterScheduler(
             .getOrElse { (1, 1) }
           val nextRetry = new Date(new Date().getTime + waitTimeSec * 1000L)
 
-          val newDriverDescription = state.driverDescription.copy(
-            retryState = Some(
-              new MesosClusterRetryState(
-                status,
-                retries,
-                nextRetry,
-                waitTimeSec)))
+          val newDriverDescription = state.driverDescription.copy(retryState =
+            Some(new MesosClusterRetryState(
+              status,
+              retries,
+              nextRetry,
+              waitTimeSec)))
           pendingRetryDrivers += newDriverDescription
           pendingRetryDriversState.persist(taskId, newDriverDescription)
         } else if (TaskState.isFinished(TaskState.fromMesos(status.getState))) {

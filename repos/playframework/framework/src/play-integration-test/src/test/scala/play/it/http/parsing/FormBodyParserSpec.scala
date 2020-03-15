@@ -22,11 +22,9 @@ class FormBodyParserSpec extends PlaySpecification {
         writeable: Writeable[B],
         mat: Materializer): Either[Result, A] = {
       await(
-        bodyParser(
-          FakeRequest().withHeaders(
-            writeable.contentType.map(CONTENT_TYPE -> _).toSeq: _*))
-          .run(Source.single(writeable.transform(body)))
-      )
+        bodyParser(FakeRequest().withHeaders(
+          writeable.contentType.map(CONTENT_TYPE -> _).toSeq: _*))
+          .run(Source.single(writeable.transform(body))))
     }
 
     case class User(name: String, age: Int)

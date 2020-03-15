@@ -748,36 +748,33 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
         UTF8String.fromString("true"),
         UTF8String.fromString("f"),
         null),
-      StructType(
-        Seq(
-          StructField("a", StringType, nullable = true),
-          StructField("b", StringType, nullable = true),
-          StructField("c", StringType, nullable = true),
-          StructField("d", StringType, nullable = true)
-        ))
+      StructType(Seq(
+        StructField("a", StringType, nullable = true),
+        StructField("b", StringType, nullable = true),
+        StructField("c", StringType, nullable = true),
+        StructField("d", StringType, nullable = true)
+      ))
     )
     val struct_notNull = Literal.create(
       InternalRow(
         UTF8String.fromString("123"),
         UTF8String.fromString("true"),
         UTF8String.fromString("f")),
-      StructType(
-        Seq(
-          StructField("a", StringType, nullable = false),
-          StructField("b", StringType, nullable = false),
-          StructField("c", StringType, nullable = false)))
+      StructType(Seq(
+        StructField("a", StringType, nullable = false),
+        StructField("b", StringType, nullable = false),
+        StructField("c", StringType, nullable = false)))
     )
 
     {
       val ret = cast(
         struct,
-        StructType(
-          Seq(
-            StructField("a", IntegerType, nullable = true),
-            StructField("b", IntegerType, nullable = true),
-            StructField("c", IntegerType, nullable = true),
-            StructField("d", IntegerType, nullable = true)
-          ))
+        StructType(Seq(
+          StructField("a", IntegerType, nullable = true),
+          StructField("b", IntegerType, nullable = true),
+          StructField("c", IntegerType, nullable = true),
+          StructField("d", IntegerType, nullable = true)
+        ))
       )
       assert(ret.resolved === true)
       checkEvaluation(ret, InternalRow(123, null, null, null))
@@ -785,26 +782,24 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct,
-        StructType(
-          Seq(
-            StructField("a", IntegerType, nullable = true),
-            StructField("b", IntegerType, nullable = true),
-            StructField("c", IntegerType, nullable = false),
-            StructField("d", IntegerType, nullable = true)
-          ))
+        StructType(Seq(
+          StructField("a", IntegerType, nullable = true),
+          StructField("b", IntegerType, nullable = true),
+          StructField("c", IntegerType, nullable = false),
+          StructField("d", IntegerType, nullable = true)
+        ))
       )
       assert(ret.resolved === false)
     }
     {
       val ret = cast(
         struct,
-        StructType(
-          Seq(
-            StructField("a", BooleanType, nullable = true),
-            StructField("b", BooleanType, nullable = true),
-            StructField("c", BooleanType, nullable = true),
-            StructField("d", BooleanType, nullable = true)
-          ))
+        StructType(Seq(
+          StructField("a", BooleanType, nullable = true),
+          StructField("b", BooleanType, nullable = true),
+          StructField("c", BooleanType, nullable = true),
+          StructField("d", BooleanType, nullable = true)
+        ))
       )
       assert(ret.resolved === true)
       checkEvaluation(ret, InternalRow(null, true, false, null))
@@ -812,13 +807,12 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct,
-        StructType(
-          Seq(
-            StructField("a", BooleanType, nullable = true),
-            StructField("b", BooleanType, nullable = true),
-            StructField("c", BooleanType, nullable = false),
-            StructField("d", BooleanType, nullable = true)
-          ))
+        StructType(Seq(
+          StructField("a", BooleanType, nullable = true),
+          StructField("b", BooleanType, nullable = true),
+          StructField("c", BooleanType, nullable = false),
+          StructField("d", BooleanType, nullable = true)
+        ))
       )
       assert(ret.resolved === false)
     }
@@ -826,11 +820,10 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct_notNull,
-        StructType(
-          Seq(
-            StructField("a", IntegerType, nullable = true),
-            StructField("b", IntegerType, nullable = true),
-            StructField("c", IntegerType, nullable = true)))
+        StructType(Seq(
+          StructField("a", IntegerType, nullable = true),
+          StructField("b", IntegerType, nullable = true),
+          StructField("c", IntegerType, nullable = true)))
       )
       assert(ret.resolved === true)
       checkEvaluation(ret, InternalRow(123, null, null))
@@ -838,22 +831,20 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct_notNull,
-        StructType(
-          Seq(
-            StructField("a", IntegerType, nullable = true),
-            StructField("b", IntegerType, nullable = true),
-            StructField("c", IntegerType, nullable = false)))
+        StructType(Seq(
+          StructField("a", IntegerType, nullable = true),
+          StructField("b", IntegerType, nullable = true),
+          StructField("c", IntegerType, nullable = false)))
       )
       assert(ret.resolved === false)
     }
     {
       val ret = cast(
         struct_notNull,
-        StructType(
-          Seq(
-            StructField("a", BooleanType, nullable = true),
-            StructField("b", BooleanType, nullable = true),
-            StructField("c", BooleanType, nullable = true)))
+        StructType(Seq(
+          StructField("a", BooleanType, nullable = true),
+          StructField("b", BooleanType, nullable = true),
+          StructField("c", BooleanType, nullable = true)))
       )
       assert(ret.resolved === true)
       checkEvaluation(ret, InternalRow(null, true, false))
@@ -861,11 +852,10 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct_notNull,
-        StructType(
-          Seq(
-            StructField("a", BooleanType, nullable = true),
-            StructField("b", BooleanType, nullable = true),
-            StructField("c", BooleanType, nullable = false)))
+        StructType(Seq(
+          StructField("a", BooleanType, nullable = true),
+          StructField("b", BooleanType, nullable = true),
+          StructField("c", BooleanType, nullable = false)))
       )
       assert(ret.resolved === false)
       checkEvaluation(ret, InternalRow(null, true, false))
@@ -874,11 +864,10 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     {
       val ret = cast(
         struct,
-        StructType(
-          Seq(
-            StructField("a", StringType, nullable = true),
-            StructField("b", StringType, nullable = true),
-            StructField("c", StringType, nullable = true))))
+        StructType(Seq(
+          StructField("a", StringType, nullable = true),
+          StructField("b", StringType, nullable = true),
+          StructField("c", StringType, nullable = true))))
       assert(ret.resolved === false)
     }
     {
@@ -893,38 +882,36 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
         Seq("123", "true", "f"),
         Map("a" -> "123", "b" -> "true", "c" -> "f"),
         Row(0)),
-      StructType(
-        Seq(
-          StructField(
-            "a",
-            ArrayType(StringType, containsNull = false),
-            nullable = true),
-          StructField(
-            "m",
-            MapType(StringType, StringType, valueContainsNull = false),
-            nullable = true),
-          StructField(
-            "s",
-            StructType(Seq(StructField("i", IntegerType, nullable = true))))
-        ))
+      StructType(Seq(
+        StructField(
+          "a",
+          ArrayType(StringType, containsNull = false),
+          nullable = true),
+        StructField(
+          "m",
+          MapType(StringType, StringType, valueContainsNull = false),
+          nullable = true),
+        StructField(
+          "s",
+          StructType(Seq(StructField("i", IntegerType, nullable = true))))
+      ))
     )
 
     val ret = cast(
       complex,
-      StructType(
-        Seq(
-          StructField(
-            "a",
-            ArrayType(IntegerType, containsNull = true),
-            nullable = true),
-          StructField(
-            "m",
-            MapType(StringType, BooleanType, valueContainsNull = false),
-            nullable = true),
-          StructField(
-            "s",
-            StructType(Seq(StructField("l", LongType, nullable = true))))
-        ))
+      StructType(Seq(
+        StructField(
+          "a",
+          ArrayType(IntegerType, containsNull = true),
+          nullable = true),
+        StructField(
+          "m",
+          MapType(StringType, BooleanType, valueContainsNull = false),
+          nullable = true),
+        StructField(
+          "s",
+          StructType(Seq(StructField("l", LongType, nullable = true))))
+      ))
     )
 
     assert(ret.resolved === false)

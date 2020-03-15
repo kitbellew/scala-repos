@@ -113,9 +113,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
       targetState: ReplicaState,
       callbacks: Callbacks = (new CallbackBuilder).build) {
     if (replicas.size > 0) {
-      info(
-        "Invoking state change to %s for replicas %s"
-          .format(targetState, replicas.mkString(",")))
+      info("Invoking state change to %s for replicas %s".format(
+        targetState,
+        replicas.mkString(",")))
       try {
         brokerRequestBatch.newBatch()
         replicas.foreach(r => handleStateChange(r, targetState, callbacks))
@@ -429,9 +429,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     val replicasForTopic = controller.controllerContext.replicasForTopic(topic)
     val replicaStatesForTopic =
       replicasForTopic.map(r => (r, replicaState(r))).toMap
-    debug(
-      "Are all replicas for topic %s deleted %s"
-        .format(topic, replicaStatesForTopic))
+    debug("Are all replicas for topic %s deleted %s".format(
+      topic,
+      replicaStatesForTopic))
     replicaStatesForTopic.forall(_._2 == ReplicaDeletionSuccessful)
   }
 
@@ -530,9 +530,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     def handleChildChange(
         parentPath: String,
         currentBrokerList: java.util.List[String]) {
-      info(
-        "Broker change listener fired for path %s with children %s"
-          .format(parentPath, currentBrokerList.sorted.mkString(",")))
+      info("Broker change listener fired for path %s with children %s".format(
+        parentPath,
+        currentBrokerList.sorted.mkString(",")))
       inLock(controllerContext.controllerLock) {
         if (hasStarted.get) {
           ControllerStats.leaderElectionTimer.time {

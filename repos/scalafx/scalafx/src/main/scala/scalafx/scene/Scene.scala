@@ -154,13 +154,12 @@ class Scene(
       height: Double,
       depthBuffer: Boolean,
       antiAliasing: SceneAntialiasing) =
-    this(
-      new jfxs.Scene(
-        new jfxs.Group(),
-        width,
-        height,
-        depthBuffer,
-        antiAliasing))
+    this(new jfxs.Scene(
+      new jfxs.Group(),
+      width,
+      height,
+      depthBuffer,
+      antiAliasing))
 
   /**
     * Creates a Scene for a specific root Node with a specific size and fill.
@@ -549,9 +548,9 @@ class Scene(
   /**
     * Gets the list of mnemonics for this `Scene`.
     */
-  def getMnemonics: jfxc.ObservableMap[
-    jfxsi.KeyCombination,
-    jfxc.ObservableList[jfxsi.Mnemonic]] = delegate.getMnemonics
+  def getMnemonics
+      : jfxc.ObservableMap[jfxsi.KeyCombination, jfxc.ObservableList[
+        jfxsi.Mnemonic]] = delegate.getMnemonics
 
   /**
     * Gets the list of accelerators for this Scene.
